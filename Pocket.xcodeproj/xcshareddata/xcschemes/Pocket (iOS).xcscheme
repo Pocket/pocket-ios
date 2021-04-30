@@ -38,6 +38,16 @@
                ReferencedContainer = "container:Pocket.xcodeproj">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "1652D69A2639E63A0005B362"
+               BuildableName = "PocketTests.xctest"
+               BlueprintName = "PocketTests"
+               ReferencedContainer = "container:Pocket.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction
