@@ -4,15 +4,11 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    var body: some View {
-        Text("Hello, world!")
-            .padding()
-    }
-}
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
+struct LoggedInView: View {
+    let account: Account
+
+    var body: some View {
+        Text("Hello \(account.firstName) \(account.lastName)!")
     }
 }
