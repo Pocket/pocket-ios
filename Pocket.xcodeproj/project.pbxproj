@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1652D69E2639E63A0005B362 /* PocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1652D69D2639E63A0005B362 /* PocketTests.swift */; };
+		1652D6A7263A00870005B362 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1652D6A6263A00870005B362 /* MockURLSession.swift */; };
 		166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* Tests_iOS.swift */; };
 		166A81D02637406C0015AA1D /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81CF2637406C0015AA1D /* Tests_macOS.swift */; };
 		166A81D22637406C0015AA1D /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81A92637406B0015AA1D /* PocketApp.swift */; };
@@ -51,6 +52,7 @@
 		1652D69B2639E63A0005B362 /* PocketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1652D69D2639E63A0005B362 /* PocketTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketTests.swift; sourceTree = "<group>"; };
 		1652D69F2639E63A0005B362 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1652D6A6263A00870005B362 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
 		166A81A92637406B0015AA1D /* PocketApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketApp.swift; sourceTree = "<group>"; };
 		166A81AA2637406B0015AA1D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		166A81AB2637406C0015AA1D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -114,8 +116,17 @@
 			children = (
 				1652D69F2639E63A0005B362 /* Info.plist */,
 				1652D69D2639E63A0005B362 /* PocketTests.swift */,
+				1652D6A5263A005F0005B362 /* Support */,
 			);
 			path = PocketTests;
+			sourceTree = "<group>";
+		};
+		1652D6A5263A005F0005B362 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				1652D6A6263A00870005B362 /* MockURLSession.swift */,
+			);
+			path = Support;
 			sourceTree = "<group>";
 		};
 		166A81A32637406B0015AA1D = {
@@ -137,6 +148,7 @@
 				166A81A92637406B0015AA1D /* PocketApp.swift */,
 				166A81AA2637406B0015AA1D /* ContentView.swift */,
 				166A81AB2637406C0015AA1D /* Assets.xcassets */,
+				16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -375,6 +387,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1652D6A7263A00870005B362 /* MockURLSession.swift in Sources */,
 				1652D69E2639E63A0005B362 /* PocketTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -383,6 +396,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
 				166A81D42637406C0015AA1D /* ContentView.swift in Sources */,
 				166A81D22637406C0015AA1D /* PocketApp.swift in Sources */,
 			);
@@ -392,6 +406,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				16BD7AF32639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
 				166A81D52637406C0015AA1D /* ContentView.swift in Sources */,
 				166A81D32637406C0015AA1D /* PocketApp.swift in Sources */,
 			);
