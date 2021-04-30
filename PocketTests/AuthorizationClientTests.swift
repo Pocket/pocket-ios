@@ -30,17 +30,19 @@ class AuthorizationServiceTests: XCTestCase {
             XCTAssertEqual(calls[0].request.value(forHTTPHeaderField: "Content-Type"), "application/json")
 
             let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
             let body = try! decoder.decode(
-                [String: String].self,
+                AuthorizeRequest.self,
                 from: calls[0].request.httpBody!
             )
 
-            XCTAssertEqual(body, [
-                "password": "super-secret-password",
-                "username": "test@example.com",
-                "consumer_key": "the-consumer-key",
-                "grant_type": "credentials"
-            ])
+            XCTAssertEqual(body, AuthorizeRequest(
+                username: "test@example.com",
+                password: "super-secret-password",
+                consumerKey: "the-consumer-key",
+                grantType: "credentials",
+                account: true
+            ))
         }
 
         XCTAssertEqual(self.task.resumeCalls, 1)
@@ -56,7 +58,14 @@ class AuthorizationServiceTests: XCTestCase {
             )
 
             let responseBody = """
-            {"access_token":"the-access-token","username":"test@example.com"}
+            {
+                "access_token":"the-access-token",
+                "username":"test@example.com",
+                "account": {
+                    "firstName":"test",
+                    "lastName":"user"
+                }
+            }
             """.data(using: .utf8)!
 
             completionHandler(
@@ -73,7 +82,7 @@ class AuthorizationServiceTests: XCTestCase {
                 return
             }
 
-            XCTAssertEqual(token, "the-access-token")
+            XCTAssertEqual(token.accessToken, "the-access-token")
         }
     }
 
@@ -277,7 +286,7 @@ class AuthorizationServiceTests: XCTestCase {
         }
     }
 
-    private func authorize(assertions: @escaping (Result<String, AuthorizationClient.Error>) -> ()) {
+    private func authorize(assertions: @escaping (Result<AuthorizeResponse, AuthorizationClient.Error>) -> ()) {
         let service = AuthorizationClient(consumerKey: "the-consumer-key", session: session)
         let done = expectation(description: "finished authorization request")
         service.authorize(

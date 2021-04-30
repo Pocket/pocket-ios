@@ -5,4 +5,10 @@
 struct AuthorizeResponse: Codable {
     let accessToken: String
     let username: String
+    let account: Account
+}
+
+struct Account: Codable {
+    let firstName: String
+    let lastName: String
 }
