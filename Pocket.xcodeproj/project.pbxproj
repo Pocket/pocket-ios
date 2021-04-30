@@ -16,11 +16,13 @@
 		166A81D02637406C0015AA1D /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81CF2637406C0015AA1D /* Tests_macOS.swift */; };
 		166A81D22637406C0015AA1D /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81A92637406B0015AA1D /* PocketApp.swift */; };
 		166A81D32637406C0015AA1D /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81A92637406B0015AA1D /* PocketApp.swift */; };
-		166A81D42637406C0015AA1D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81AA2637406B0015AA1D /* ContentView.swift */; };
-		166A81D52637406C0015AA1D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81AA2637406B0015AA1D /* ContentView.swift */; };
 		166A81D62637406C0015AA1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166A81AB2637406C0015AA1D /* Assets.xcassets */; };
 		166A81D72637406C0015AA1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166A81AB2637406C0015AA1D /* Assets.xcassets */; };
 		1697334D263CA2D20003DE2A /* AuthorizationClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */; };
+		1697334F263CB2DE0003DE2A /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334E263CB2DE0003DE2A /* LoggedInView.swift */; };
+		16973350263CB2DE0003DE2A /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334E263CB2DE0003DE2A /* LoggedInView.swift */; };
+		16973352263CB3580003DE2A /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16973351263CB3580003DE2A /* SignInView.swift */; };
+		16973353263CB3580003DE2A /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16973351263CB3580003DE2A /* SignInView.swift */; };
 		16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */; };
 		16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */; };
 		16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */; };
@@ -58,7 +60,6 @@
 		1652D69F2639E63A0005B362 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1652D6A6263A00870005B362 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
 		166A81A92637406B0015AA1D /* PocketApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketApp.swift; sourceTree = "<group>"; };
-		166A81AA2637406B0015AA1D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		166A81AB2637406C0015AA1D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		166A81B02637406C0015AA1D /* Pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pocket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		166A81B32637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -72,6 +73,8 @@
 		166A81CF2637406C0015AA1D /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		166A81D12637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClientTests.swift; sourceTree = "<group>"; };
+		1697334E263CB2DE0003DE2A /* LoggedInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInView.swift; sourceTree = "<group>"; };
+		16973351263CB3580003DE2A /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		16973355263CBB3F0003DE2A /* secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets.xcconfig; sourceTree = "<group>"; };
 		16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClient.swift; sourceTree = "<group>"; };
 		16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
@@ -161,11 +164,12 @@
 		166A81A82637406B0015AA1D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				162AAD91263C9CAA00783011 /* Authorization */,
-				166A81AA2637406B0015AA1D /* ContentView.swift */,
+				1697334E263CB2DE0003DE2A /* LoggedInView.swift */,
 				166A81A92637406B0015AA1D /* PocketApp.swift */,
-				166A81AB2637406C0015AA1D /* Assets.xcassets */,
+				16973351263CB3580003DE2A /* SignInView.swift */,
 				16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */,
+				166A81AB2637406C0015AA1D /* Assets.xcassets */,
+				162AAD91263C9CAA00783011 /* Authorization */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -423,9 +427,10 @@
 			files = (
 				162AAD8F263C7A7E00783011 /* AuthorizeRequest.swift in Sources */,
 				16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
+				1697334F263CB2DE0003DE2A /* LoggedInView.swift in Sources */,
 				16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */,
-				166A81D42637406C0015AA1D /* ContentView.swift in Sources */,
 				162AAD93263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
+				16973352263CB3580003DE2A /* SignInView.swift in Sources */,
 				166A81D22637406C0015AA1D /* PocketApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -436,9 +441,10 @@
 			files = (
 				162AAD90263C7A7E00783011 /* AuthorizeRequest.swift in Sources */,
 				16BD7AF32639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
+				16973350263CB2DE0003DE2A /* LoggedInView.swift in Sources */,
 				16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */,
-				166A81D52637406C0015AA1D /* ContentView.swift in Sources */,
 				162AAD94263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
+				16973353263CB3580003DE2A /* SignInView.swift in Sources */,
 				166A81D32637406C0015AA1D /* PocketApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

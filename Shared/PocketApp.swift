@@ -6,9 +6,23 @@ import SwiftUI
 
 @main
 struct PocketApp: App {
+    @State var authResponse: AuthorizeResponse?
+    private let authClient = AuthorizationClient(
+        consumerKey: Bundle.main.infoDictionary!["PocketAPIConsumerKey"] as! String,
+        session: URLSession.shared
+    )
+
+    @ViewBuilder
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if let account = authResponse?.account {
+                LoggedInView(account: account)
+            } else {
+                SignInView(
+                    authClient: authClient,
+                    authResponse: $authResponse
+                )
+            }
         }
     }
 }
