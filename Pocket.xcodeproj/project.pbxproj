@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1652D69E2639E63A0005B362 /* PocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1652D69D2639E63A0005B362 /* PocketTests.swift */; };
 		166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* Tests_iOS.swift */; };
 		166A81D02637406C0015AA1D /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81CF2637406C0015AA1D /* Tests_macOS.swift */; };
 		166A81D22637406C0015AA1D /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81A92637406B0015AA1D /* PocketApp.swift */; };
@@ -15,9 +16,21 @@
 		166A81D52637406C0015AA1D /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81AA2637406B0015AA1D /* ContentView.swift */; };
 		166A81D62637406C0015AA1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166A81AB2637406C0015AA1D /* Assets.xcassets */; };
 		166A81D72637406C0015AA1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166A81AB2637406C0015AA1D /* Assets.xcassets */; };
+		1697334D263CA2D20003DE2A /* AuthorizationClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */; };
+		16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */; };
+		16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */; };
+		16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */; };
+		16BD7AF32639E00A00F6471F /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		1652D6A02639E63A0005B362 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 166A81AF2637406C0015AA1D;
+			remoteInfo = "Pocket (iOS)";
+		};
 		166A81C12637406C0015AA1D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
@@ -35,6 +48,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1652D69B2639E63A0005B362 /* PocketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1652D69D2639E63A0005B362 /* PocketTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketTests.swift; sourceTree = "<group>"; };
+		1652D69F2639E63A0005B362 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		166A81A92637406B0015AA1D /* PocketApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketApp.swift; sourceTree = "<group>"; };
 		166A81AA2637406B0015AA1D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		166A81AB2637406C0015AA1D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -49,9 +65,19 @@
 		166A81CB2637406C0015AA1D /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		166A81CF2637406C0015AA1D /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		166A81D12637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClientTests.swift; sourceTree = "<group>"; };
+		16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClient.swift; sourceTree = "<group>"; };
+		16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		1652D6982639E63A0005B362 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		166A81AD2637406C0015AA1D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -83,6 +109,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1652D69C2639E63A0005B362 /* PocketTests */ = {
+			isa = PBXGroup;
+			children = (
+				1652D69F2639E63A0005B362 /* Info.plist */,
+				1652D69D2639E63A0005B362 /* PocketTests.swift */,
+			);
+			path = PocketTests;
+			sourceTree = "<group>";
+		};
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
@@ -91,6 +126,7 @@
 				166A81B92637406C0015AA1D /* macOS */,
 				166A81C32637406C0015AA1D /* Tests iOS */,
 				166A81CE2637406C0015AA1D /* Tests macOS */,
+				1652D69C2639E63A0005B362 /* PocketTests */,
 				166A81B12637406C0015AA1D /* Products */,
 			);
 			sourceTree = "<group>";
@@ -112,6 +148,7 @@
 				166A81B82637406C0015AA1D /* Pocket.app */,
 				166A81C02637406C0015AA1D /* Tests iOS.xctest */,
 				166A81CB2637406C0015AA1D /* Tests macOS.xctest */,
+				1652D69B2639E63A0005B362 /* PocketTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -154,6 +191,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		1652D69A2639E63A0005B362 /* PocketTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1652D6A42639E63A0005B362 /* Build configuration list for PBXNativeTarget "PocketTests" */;
+			buildPhases = (
+				1652D6972639E63A0005B362 /* Sources */,
+				1652D6982639E63A0005B362 /* Frameworks */,
+				1652D6992639E63A0005B362 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1652D6A12639E63A0005B362 /* PBXTargetDependency */,
+			);
+			name = PocketTests;
+			productName = PocketTests;
+			productReference = 1652D69B2639E63A0005B362 /* PocketTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		166A81AF2637406C0015AA1D /* Pocket (iOS) */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 166A81DA2637406C0015AA1D /* Build configuration list for PBXNativeTarget "Pocket (iOS)" */;
@@ -233,6 +288,10 @@
 				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1250;
 				TargetAttributes = {
+					1652D69A2639E63A0005B362 = {
+						CreatedOnToolsVersion = 12.5;
+						TestTargetID = 166A81AF2637406C0015AA1D;
+					};
 					166A81AF2637406C0015AA1D = {
 						CreatedOnToolsVersion = 12.5;
 					};
@@ -266,11 +325,19 @@
 				166A81B72637406C0015AA1D /* Pocket (macOS) */,
 				166A81BF2637406C0015AA1D /* Tests iOS */,
 				166A81CA2637406C0015AA1D /* Tests macOS */,
+				1652D69A2639E63A0005B362 /* PocketTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		1652D6992639E63A0005B362 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		166A81AE2637406C0015AA1D /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -304,6 +371,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		1652D6972639E63A0005B362 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1652D69E2639E63A0005B362 /* PocketTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		166A81AC2637406C0015AA1D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -341,6 +416,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		1652D6A12639E63A0005B362 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 166A81AF2637406C0015AA1D /* Pocket (iOS) */;
+			targetProxy = 1652D6A02639E63A0005B362 /* PBXContainerItemProxy */;
+		};
 		166A81C22637406C0015AA1D /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 166A81AF2637406C0015AA1D /* Pocket (iOS) */;
@@ -354,6 +434,47 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		1652D6A22639E63A0005B362 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = PocketTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.PocketTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pocket.app/Pocket";
+			};
+			name = Debug;
+		};
+		1652D6A32639E63A0005B362 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				INFOPLIST_FILE = PocketTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.PocketTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Pocket.app/Pocket";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		166A81D82637406C0015AA1D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -475,7 +596,7 @@
 				DEVELOPMENT_TEAM = 43AQ936H96;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -499,7 +620,7 @@
 				DEVELOPMENT_TEAM = 43AQ936H96;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = iOS/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -646,6 +767,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		1652D6A42639E63A0005B362 /* Build configuration list for PBXNativeTarget "PocketTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1652D6A22639E63A0005B362 /* Debug */,
+				1652D6A32639E63A0005B362 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		166A81A72637406B0015AA1D /* Build configuration list for PBXProject "Pocket" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
