@@ -11,7 +11,6 @@
 		162AAD90263C7A7E00783011 /* AuthorizeRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162AAD8E263C7A7E00783011 /* AuthorizeRequest.swift */; };
 		162AAD93263C9CCD00783011 /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162AAD92263C9CCD00783011 /* AuthorizeResponse.swift */; };
 		162AAD94263C9CCD00783011 /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162AAD92263C9CCD00783011 /* AuthorizeResponse.swift */; };
-		1652D69E2639E63A0005B362 /* PocketTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1652D69D2639E63A0005B362 /* PocketTests.swift */; };
 		1652D6A7263A00870005B362 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1652D6A6263A00870005B362 /* MockURLSession.swift */; };
 		166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* Tests_iOS.swift */; };
 		166A81D02637406C0015AA1D /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81CF2637406C0015AA1D /* Tests_macOS.swift */; };
@@ -56,7 +55,6 @@
 		162AAD8E263C7A7E00783011 /* AuthorizeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizeRequest.swift; sourceTree = "<group>"; };
 		162AAD92263C9CCD00783011 /* AuthorizeResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizeResponse.swift; sourceTree = "<group>"; };
 		1652D69B2639E63A0005B362 /* PocketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		1652D69D2639E63A0005B362 /* PocketTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketTests.swift; sourceTree = "<group>"; };
 		1652D69F2639E63A0005B362 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1652D6A6263A00870005B362 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
 		166A81A92637406B0015AA1D /* PocketApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketApp.swift; sourceTree = "<group>"; };
@@ -132,7 +130,6 @@
 			children = (
 				1652D69F2639E63A0005B362 /* Info.plist */,
 				1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */,
-				1652D69D2639E63A0005B362 /* PocketTests.swift */,
 				1652D6A5263A005F0005B362 /* Support */,
 			);
 			path = PocketTests;
@@ -407,7 +404,6 @@
 			files = (
 				1697334D263CA2D20003DE2A /* AuthorizationClientTests.swift in Sources */,
 				1652D6A7263A00870005B362 /* MockURLSession.swift in Sources */,
-				1652D69E2639E63A0005B362 /* PocketTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
