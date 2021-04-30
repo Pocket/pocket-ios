@@ -29,7 +29,7 @@ public class AuthorizationClient {
         self.session = session
     }
 
-    func authorize(username: String, password: String, completion: @escaping (Result<String, Error>) -> ()) {
+    func authorize(username: String, password: String, completion: @escaping (Result<AuthorizeResponse, Error>) -> ()) {
         guard let authorizeURL = URL(
             string: "/v3/oauth/authorize",
             relativeTo: AuthorizationClient.Constants.baseURL
@@ -45,7 +45,8 @@ public class AuthorizationClient {
             username: username,
             password: password,
             consumerKey: consumerKey,
-            grantType: "credentials"
+            grantType: "credentials",
+            account: true
         )
 
         let encoder = JSONEncoder()
@@ -80,7 +81,7 @@ public class AuthorizationClient {
                     return
                 }
 
-                completion(.success(response.accessToken))
+                completion(.success(response))
                 return
             case 300...399:
                 completion(.failure(.unexpectedRedirect))
