@@ -49,6 +49,6 @@
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
 	<key>PocketAPIConsumerKey</key>
-	<string>$(PocketApiConsumerKey)</string>
+	<string>$(POCKET_API_CONSUMER_KEY)</string>
 </dict>
 </plist>

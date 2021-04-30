@@ -15,6 +15,10 @@ public class AuthorizationClient {
         case serverError
         case unexpectedError
         case generic(Swift.Error)
+
+        var localizedDescription: String {
+            "Invalid email or password"
+        }
     }
 
     enum Constants {

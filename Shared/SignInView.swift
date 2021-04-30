@@ -12,6 +12,7 @@ protocol SignInViewDelegate: AnyObject {
 struct SignInView: View {
     @State private var email = ""
     @State private var password = ""
+    @State private var error: AuthorizationClient.Error?
     @Binding private var authResponse: AuthorizeResponse?
     private let authClient: AuthorizationClient
 
@@ -29,10 +30,13 @@ struct SignInView: View {
 
             Text("Email")
             TextField("", text: $email)
+                .autocapitalization(.none)
+                .disableAutocorrection(true)
+                .keyboardType(.emailAddress)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
             Text("Password")
-            TextField("", text: $password)
+            SecureField("", text: $password)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
             Button("Sign in") {
@@ -44,12 +48,20 @@ struct SignInView: View {
                     case .success(let token):
                         self.authResponse = token
                     case .failure(let error):
-                        print(error)
+                        self.error = error
                     }
                 }
+            }.alert(item: $error) { error in
+                Alert(title: Text(error.localizedDescription))
             }
         }
         .padding()
         .background(Color(UIColor.systemGray6))
+    }
+}
+
+extension AuthorizationClient.Error: Identifiable {
+    var id: String {
+        "\(self)"
     }
 }
