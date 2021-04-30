@@ -72,6 +72,7 @@
 		166A81CF2637406C0015AA1D /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		166A81D12637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClientTests.swift; sourceTree = "<group>"; };
+		16973355263CBB3F0003DE2A /* secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets.xcconfig; sourceTree = "<group>"; };
 		16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClient.swift; sourceTree = "<group>"; };
 		16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -146,6 +147,7 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
+				16973354263CBB290003DE2A /* Config */,
 				166A81A82637406B0015AA1D /* Shared */,
 				166A81B22637406C0015AA1D /* iOS */,
 				166A81B92637406C0015AA1D /* macOS */,
@@ -213,6 +215,14 @@
 				166A81D12637406C0015AA1D /* Info.plist */,
 			);
 			path = "Tests macOS";
+			sourceTree = "<group>";
+		};
+		16973354263CBB290003DE2A /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				16973355263CBB3F0003DE2A /* secrets.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -513,6 +523,7 @@
 		};
 		166A81D82637406C0015AA1D /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16973355263CBB3F0003DE2A /* secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -572,6 +583,7 @@
 		};
 		166A81D92637406C0015AA1D /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 16973355263CBB3F0003DE2A /* secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
