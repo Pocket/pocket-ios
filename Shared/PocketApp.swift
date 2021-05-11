@@ -4,24 +4,34 @@
 
 import SwiftUI
 
+class AppState: ObservableObject {
+    @Published
+    var authToken: String?
+}
+
 @main
 struct PocketApp: App {
-    @State var authResponse: AuthorizeResponse?
-    private let authClient = AuthorizationClient(
-        consumerKey: Bundle.main.infoDictionary!["PocketAPIConsumerKey"] as! String,
-        session: URLSession.shared
-    )
+    @ObservedObject
+    var appState = AppState()
+
+    @Environment(\.accessTokenStore)
+    private var accessTokenStore: AccessTokenStore
+
+    init() {
+        if CommandLine.arguments.contains("clearKeychain") {
+            try? accessTokenStore.delete()
+        }
+
+        appState.authToken = accessTokenStore.accessToken
+    }
 
     @ViewBuilder
     var body: some Scene {
         WindowGroup {
-            if let account = authResponse?.account {
-                LoggedInView(account: account)
+            if appState.authToken != nil {
+                LoggedInView()
             } else {
-                SignInView(
-                    authClient: authClient,
-                    authResponse: $authResponse
-                )
+                SignInView(authToken: $appState.authToken)
             }
         }
     }

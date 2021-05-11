@@ -5,52 +5,59 @@
 import SwiftUI
 
 
-protocol SignInViewDelegate: AnyObject {
-    func signInViewDidTapSignIn(_ signInView: SignInView)
-}
-
 struct SignInView: View {
-    @State private var email = ""
-    @State private var password = ""
-    @State private var error: AuthorizationClient.Error?
-    @Binding private var authResponse: AuthorizeResponse?
-    private let authClient: AuthorizationClient
+    enum SignInError: Error, Identifiable {
+        case signInError(Error)
 
-    init(
-        authClient: AuthorizationClient,
-        authResponse: Binding<AuthorizeResponse?>
-    ) {
-        self.authClient = authClient
-        self._authResponse = authResponse
+        var localizedDescription: String {
+            switch self {
+            case .signInError(let error):
+                return error.localizedDescription
+            }
+        }
+
+        var id: String {
+            return "\(self)"
+        }
     }
+
+    @Environment(\.authorizationClient)
+    private var authClient: AuthorizationClient
+
+    @Environment(\.accessTokenStore)
+    private var accessTokenStore: AccessTokenStore
+
+    @State
+    private var email = ""
+
+    @State
+    private var password = ""
+
+    @State
+    private var error: SignInError?
+
+    @Binding
+    var authToken: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Sign in to Pocket").font(.title)
 
             Text("Email")
-            TextField("", text: $email)
+            TextField("Email", text: $email)
+                .accessibility(identifier: "email")
+                .textFieldStyle(RoundedBorderTextFieldStyle())
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .keyboardType(.emailAddress)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
 
             Text("Password")
             SecureField("", text: $password)
+                .accessibility(identifier: "password")
                 .textFieldStyle(RoundedBorderTextFieldStyle())
 
             Button("Sign in") {
-                authClient.authorize(
-                    username: email,
-                    password: password
-                ) { result in
-                    switch result {
-                    case .success(let token):
-                        self.authResponse = token
-                    case .failure(let error):
-                        self.error = error
-                    }
-                }
+                self.signIn()
             }.alert(item: $error) { error in
                 Alert(title: Text(error.localizedDescription))
             }
@@ -58,10 +65,25 @@ struct SignInView: View {
         .padding()
         .background(Color(UIColor.systemGray6))
     }
-}
 
-extension AuthorizationClient.Error: Identifiable {
-    var id: String {
-        "\(self)"
+    func signIn() {
+        authClient.authorize(
+            username: email,
+            password: password
+        ) { result in
+            switch result {
+            case .success(let token):
+                do {
+                    try accessTokenStore.save(token: token.accessToken)
+                } catch {
+                    self.error = .signInError(error)
+                    return
+                }
+
+                self.authToken = token.accessToken
+            case .failure(let error):
+                self.error = .signInError(error)
+            }
+        }
     }
 }

@@ -22,7 +22,9 @@ public class AuthorizationClient {
     }
 
     enum Constants {
-        static let baseURL = URL(string: "https://getpocket.com")!
+        static let baseURL = URL(
+            string: ProcessInfo.processInfo.environment["POCKET_V3_BASE_URL"] ?? "https://getpocket.com"
+        )!
     }
 
     private let session: URLSessionProtocol

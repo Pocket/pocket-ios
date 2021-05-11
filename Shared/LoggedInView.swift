@@ -6,9 +6,7 @@ import SwiftUI
 
 
 struct LoggedInView: View {
-    let account: Account
-
     var body: some View {
-        Text("Hello \(account.firstName) \(account.lastName)!")
+        Text("Signed in!")
     }
 }
