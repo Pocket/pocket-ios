@@ -32,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "166A81BF2637406C0015AA1D"
-               BuildableName = "Tests iOS.xctest"
-               BlueprintName = "Tests iOS"
+               BlueprintIdentifier = "1652D69A2639E63A0005B362"
+               BuildableName = "PocketTests.xctest"
+               BlueprintName = "PocketTests"
                ReferencedContainer = "container:Pocket.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -42,9 +42,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1652D69A2639E63A0005B362"
-               BuildableName = "PocketTests.xctest"
-               BlueprintName = "PocketTests"
+               BlueprintIdentifier = "166A81BF2637406C0015AA1D"
+               BuildableName = "Tests iOS.xctest"
+               BlueprintName = "Tests iOS"
                ReferencedContainer = "container:Pocket.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -70,6 +70,12 @@
             ReferencedContainer = "container:Pocket.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "clearKeychain"
+            isEnabled = "NO">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,6 +18,16 @@
 		166A81D32637406C0015AA1D /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81A92637406B0015AA1D /* PocketApp.swift */; };
 		166A81D62637406C0015AA1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166A81AB2637406C0015AA1D /* Assets.xcassets */; };
 		166A81D72637406C0015AA1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166A81AB2637406C0015AA1D /* Assets.xcassets */; };
+		167F8084264B011600D8F507 /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 167F8083264B011600D8F507 /* Sails */; };
+		167F8086264B1DB300D8F507 /* AccessTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8085264B1DB300D8F507 /* AccessTokenStore.swift */; };
+		167F8087264B1DB300D8F507 /* AccessTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8085264B1DB300D8F507 /* AccessTokenStore.swift */; };
+		167F8089264B1E1700D8F507 /* AccessTokenStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8088264B1E1700D8F507 /* AccessTokenStoreTests.swift */; };
+		167F808B264B213900D8F507 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F808A264B213900D8F507 /* Keychain.swift */; };
+		167F808C264B213900D8F507 /* Keychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F808A264B213900D8F507 /* Keychain.swift */; };
+		167F808E264B2CC200D8F507 /* MockKeychain.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F808D264B2CC200D8F507 /* MockKeychain.swift */; };
+		167F8090264B2CCB00D8F507 /* Calls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F808F264B2CCB00D8F507 /* Calls.swift */; };
+		167F8092264B2E8F00D8F507 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8091264B2E8F00D8F507 /* Environment.swift */; };
+		167F8093264B2E8F00D8F507 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8091264B2E8F00D8F507 /* Environment.swift */; };
 		1697334D263CA2D20003DE2A /* AuthorizationClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */; };
 		1697334F263CB2DE0003DE2A /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334E263CB2DE0003DE2A /* LoggedInView.swift */; };
 		16973350263CB2DE0003DE2A /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334E263CB2DE0003DE2A /* LoggedInView.swift */; };
@@ -72,6 +82,12 @@
 		166A81CB2637406C0015AA1D /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		166A81CF2637406C0015AA1D /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		166A81D12637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		167F8085264B1DB300D8F507 /* AccessTokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenStore.swift; sourceTree = "<group>"; };
+		167F8088264B1E1700D8F507 /* AccessTokenStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenStoreTests.swift; sourceTree = "<group>"; };
+		167F808A264B213900D8F507 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
+		167F808D264B2CC200D8F507 /* MockKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockKeychain.swift; sourceTree = "<group>"; };
+		167F808F264B2CCB00D8F507 /* Calls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calls.swift; sourceTree = "<group>"; };
+		167F8091264B2E8F00D8F507 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
 		1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClientTests.swift; sourceTree = "<group>"; };
 		1697334E263CB2DE0003DE2A /* LoggedInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInView.swift; sourceTree = "<group>"; };
 		16973351263CB3580003DE2A /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
@@ -106,6 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				167F8084264B011600D8F507 /* Sails in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +142,7 @@
 				16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */,
 				162AAD8E263C7A7E00783011 /* AuthorizeRequest.swift */,
 				162AAD92263C9CCD00783011 /* AuthorizeResponse.swift */,
+				167F8085264B1DB300D8F507 /* AccessTokenStore.swift */,
 			);
 			path = Authorization;
 			sourceTree = "<group>";
@@ -133,6 +151,7 @@
 			isa = PBXGroup;
 			children = (
 				1652D69F2639E63A0005B362 /* Info.plist */,
+				167F8088264B1E1700D8F507 /* AccessTokenStoreTests.swift */,
 				1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */,
 				1652D6A5263A005F0005B362 /* Support */,
 			);
@@ -143,6 +162,8 @@
 			isa = PBXGroup;
 			children = (
 				1652D6A6263A00870005B362 /* MockURLSession.swift */,
+				167F808D264B2CC200D8F507 /* MockKeychain.swift */,
+				167F808F264B2CCB00D8F507 /* Calls.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -164,6 +185,8 @@
 		166A81A82637406B0015AA1D /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				167F8091264B2E8F00D8F507 /* Environment.swift */,
+				167F808A264B213900D8F507 /* Keychain.swift */,
 				1697334E263CB2DE0003DE2A /* LoggedInView.swift */,
 				166A81A92637406B0015AA1D /* PocketApp.swift */,
 				16973351263CB3580003DE2A /* SignInView.swift */,
@@ -298,6 +321,9 @@
 				166A81C22637406C0015AA1D /* PBXTargetDependency */,
 			);
 			name = "Tests iOS";
+			packageProductDependencies = (
+				167F8083264B011600D8F507 /* Sails */,
+			);
 			productName = "Tests iOS";
 			productReference = 166A81C02637406C0015AA1D /* Tests iOS.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
@@ -358,6 +384,9 @@
 				Base,
 			);
 			mainGroup = 166A81A32637406B0015AA1D;
+			packageReferences = (
+				167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */,
+			);
 			productRefGroup = 166A81B12637406C0015AA1D /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -416,8 +445,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				167F8090264B2CCB00D8F507 /* Calls.swift in Sources */,
 				1697334D263CA2D20003DE2A /* AuthorizationClientTests.swift in Sources */,
+				167F8089264B1E1700D8F507 /* AccessTokenStoreTests.swift in Sources */,
 				1652D6A7263A00870005B362 /* MockURLSession.swift in Sources */,
+				167F808E264B2CC200D8F507 /* MockKeychain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -431,7 +463,10 @@
 				16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */,
 				162AAD93263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
 				16973352263CB3580003DE2A /* SignInView.swift in Sources */,
+				167F8092264B2E8F00D8F507 /* Environment.swift in Sources */,
+				167F8086264B1DB300D8F507 /* AccessTokenStore.swift in Sources */,
 				166A81D22637406C0015AA1D /* PocketApp.swift in Sources */,
+				167F808B264B213900D8F507 /* Keychain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -444,8 +479,11 @@
 				16973350263CB2DE0003DE2A /* LoggedInView.swift in Sources */,
 				16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */,
 				162AAD94263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
+				167F808C264B213900D8F507 /* Keychain.swift in Sources */,
+				167F8087264B1DB300D8F507 /* AccessTokenStore.swift in Sources */,
 				16973353263CB3580003DE2A /* SignInView.swift in Sources */,
 				166A81D32637406C0015AA1D /* PocketApp.swift in Sources */,
+				167F8093264B2E8F00D8F507 /* Environment.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -876,6 +914,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jacobsimeon/Sails.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		167F8083264B011600D8F507 /* Sails */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */;
+			productName = Sails;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 166A81A42637406B0015AA1D /* Project object */;
 }
