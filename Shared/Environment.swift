@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SwiftUI
+import Sync
 
 
 private struct AccessTokenStoreKey: EnvironmentKey {
@@ -18,6 +19,10 @@ private struct AuthorizationClientKey: EnvironmentKey {
     )
 }
 
+struct SourceKey: EnvironmentKey {
+    static var defaultValue = Source()
+}
+
 extension EnvironmentValues {
     var accessTokenStore: AccessTokenStore {
         get { self[AccessTokenStoreKey.self] }
@@ -27,5 +32,10 @@ extension EnvironmentValues {
     var authorizationClient: AuthorizationClient {
         get { self[AuthorizationClientKey.self] }
         set { self[AuthorizationClientKey.self] = newValue }
+    }
+
+    var source: Source {
+        get { self[SourceKey.self] }
+        set { self[SourceKey.self] = newValue }
     }
 }

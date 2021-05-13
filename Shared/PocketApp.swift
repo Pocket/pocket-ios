@@ -3,6 +3,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SwiftUI
+import Apollo
+import Sync
+
 
 class AppState: ObservableObject {
     @Published
@@ -17,9 +20,16 @@ struct PocketApp: App {
     @Environment(\.accessTokenStore)
     private var accessTokenStore: AccessTokenStore
 
+    @Environment(\.source)
+    private var source: Source
+    
     init() {
         if CommandLine.arguments.contains("clearKeychain") {
             try? accessTokenStore.delete()
+        }
+
+        if CommandLine.arguments.contains("clearCoreData") {
+            source.clear()
         }
 
         appState.authToken = accessTokenStore.accessToken
@@ -28,11 +38,24 @@ struct PocketApp: App {
     @ViewBuilder
     var body: some Scene {
         WindowGroup {
-            if appState.authToken != nil {
-                LoggedInView()
-            } else {
-                SignInView(authToken: $appState.authToken)
+            AppView(appState: appState)
+                .environment(\.managedObjectContext, source.managedObjectContext)
+        }
+    }
+}
+
+struct AppView: View {
+    @ObservedObject
+    var appState: AppState
+    
+    var body: some View {
+        if let token = appState.authToken {
+            NavigationView {
+                ItemListView(token: token)
+                    .navigationTitle("My List")
             }
+        } else {
+            SignInView(authToken: $appState.authToken)
         }
     }
 }

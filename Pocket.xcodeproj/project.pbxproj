@@ -28,15 +28,37 @@
 		167F8090264B2CCB00D8F507 /* Calls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F808F264B2CCB00D8F507 /* Calls.swift */; };
 		167F8092264B2E8F00D8F507 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8091264B2E8F00D8F507 /* Environment.swift */; };
 		167F8093264B2E8F00D8F507 /* Environment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8091264B2E8F00D8F507 /* Environment.swift */; };
+		167F80AE264C9AFE00D8F507 /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F80AD264C9AFE00D8F507 /* ItemListView.swift */; };
+		167F80AF264C9AFE00D8F507 /* ItemListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F80AD264C9AFE00D8F507 /* ItemListView.swift */; };
 		1697334D263CA2D20003DE2A /* AuthorizationClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */; };
-		1697334F263CB2DE0003DE2A /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334E263CB2DE0003DE2A /* LoggedInView.swift */; };
-		16973350263CB2DE0003DE2A /* LoggedInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334E263CB2DE0003DE2A /* LoggedInView.swift */; };
 		16973352263CB3580003DE2A /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16973351263CB3580003DE2A /* SignInView.swift */; };
 		16973353263CB3580003DE2A /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16973351263CB3580003DE2A /* SignInView.swift */; };
 		16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */; };
 		16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */; };
 		16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */; };
 		16BD7AF32639E00A00F6471F /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */; };
+		16C4D86F2655DECC00AA2C00 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 16C4D86E2655DECC00AA2C00 /* Fixtures */; };
+		16C4D8712655DED800AA2C00 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C4D8702655DED800AA2C00 /* Fixture.swift */; };
+		F220F29F264DC0DE0064D272 /* Sync.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F220F296264DC0DE0064D272 /* Sync.framework */; };
+		F220F2A8264DC0DE0064D272 /* Sync.h in Headers */ = {isa = PBXBuildFile; fileRef = F220F298264DC0DE0064D272 /* Sync.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F220F2AB264DC0DE0064D272 /* Sync.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F220F296264DC0DE0064D272 /* Sync.framework */; };
+		F220F2AC264DC0DE0064D272 /* Sync.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F220F296264DC0DE0064D272 /* Sync.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		F220F2B4264DC0EA0064D272 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F80AA264C991E00D8F507 /* Source.swift */; };
+		F220F2B5264DC1520064D272 /* PocketModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 167F80A6264C98BA00D8F507 /* PocketModel.xcdatamodeld */; };
+		F220F2B6264DC1820064D272 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F80A3264C77C600D8F507 /* API.swift */; };
+		F220F2BA264DC2750064D272 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = F220F2B9264DC2750064D272 /* Apollo */; };
+		F220F2BB264DC2B50064D272 /* SourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F220F28F264DBCAF0064D272 /* SourceTests.swift */; };
+		F220F2D32653289B0064D272 /* list.graphql in Resources */ = {isa = PBXBuildFile; fileRef = F220F2D22653289B0064D272 /* list.graphql */; };
+		F224931B2653F5D40013B47D /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F224931A2653F5D40013B47D /* ReaderView.swift */; };
+		F224931C2653F9990013B47D /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F224931A2653F5D40013B47D /* ReaderView.swift */; };
+		F2DCEED226546EEB00EC0E58 /* MockCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F220F2CC2652C29F0064D272 /* MockCancellable.swift */; };
+		F2DCEED326546EEF00EC0E58 /* MockApolloClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F220F2C92652C2660064D272 /* MockApolloClient.swift */; };
+		F2DCEED5265592E400EC0E58 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEED4265592E400EC0E58 /* Requests.swift */; };
+		F2DCEED72655930800EC0E58 /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEED62655930800EC0E58 /* Space.swift */; };
+		F2DCEED92655934700EC0E58 /* NSPersistentContainer+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEED82655934700EC0E58 /* NSPersistentContainer+Extensions.swift */; };
+		F2DCEEDB2655936300EC0E58 /* ApolloClient+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEDA2655936300EC0E58 /* ApolloClient+Extensions.swift */; };
+		F2DCEEDD2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEDC2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift */; };
+		F2DCEEDF2655939200EC0E58 /* Item+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEDE2655939200EC0E58 /* Item+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,7 +83,35 @@
 			remoteGlobalIDString = 166A81B72637406C0015AA1D;
 			remoteInfo = "Pocket (macOS)";
 		};
+		F220F2A0264DC0DE0064D272 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F220F295264DC0DE0064D272;
+			remoteInfo = Sync;
+		};
+		F220F2A9264DC0DE0064D272 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F220F295264DC0DE0064D272;
+			remoteInfo = Sync;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F220F2B0264DC0DE0064D272 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				F220F2AC264DC0DE0064D272 /* Sync.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		162AAD8E263C7A7E00783011 /* AuthorizeRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizeRequest.swift; sourceTree = "<group>"; };
@@ -88,12 +138,34 @@
 		167F808D264B2CC200D8F507 /* MockKeychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockKeychain.swift; sourceTree = "<group>"; };
 		167F808F264B2CCB00D8F507 /* Calls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Calls.swift; sourceTree = "<group>"; };
 		167F8091264B2E8F00D8F507 /* Environment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Environment.swift; sourceTree = "<group>"; };
+		167F80A2264C762E00D8F507 /* schema.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = schema.json; sourceTree = "<group>"; };
+		167F80A3264C77C600D8F507 /* API.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
+		167F80A7264C98BA00D8F507 /* PocketModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PocketModel.xcdatamodel; sourceTree = "<group>"; };
+		167F80AA264C991E00D8F507 /* Source.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Source.swift; sourceTree = "<group>"; };
+		167F80AD264C9AFE00D8F507 /* ItemListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemListView.swift; sourceTree = "<group>"; };
 		1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClientTests.swift; sourceTree = "<group>"; };
-		1697334E263CB2DE0003DE2A /* LoggedInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedInView.swift; sourceTree = "<group>"; };
 		16973351263CB3580003DE2A /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		16973355263CBB3F0003DE2A /* secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets.xcconfig; sourceTree = "<group>"; };
 		16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClient.swift; sourceTree = "<group>"; };
 		16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
+		16C4D86E2655DECC00AA2C00 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
+		16C4D8702655DED800AA2C00 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
+		F220F28F264DBCAF0064D272 /* SourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourceTests.swift; sourceTree = "<group>"; };
+		F220F296264DC0DE0064D272 /* Sync.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sync.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F220F298264DC0DE0064D272 /* Sync.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Sync.h; sourceTree = "<group>"; };
+		F220F299264DC0DE0064D272 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F220F29E264DC0DE0064D272 /* SyncTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SyncTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F220F2A7264DC0DE0064D272 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F220F2C92652C2660064D272 /* MockApolloClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockApolloClient.swift; sourceTree = "<group>"; };
+		F220F2CC2652C29F0064D272 /* MockCancellable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCancellable.swift; sourceTree = "<group>"; };
+		F220F2D22653289B0064D272 /* list.graphql */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = list.graphql; sourceTree = "<group>"; };
+		F224931A2653F5D40013B47D /* ReaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderView.swift; sourceTree = "<group>"; };
+		F2DCEED4265592E400EC0E58 /* Requests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Requests.swift; sourceTree = "<group>"; };
+		F2DCEED62655930800EC0E58 /* Space.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Space.swift; sourceTree = "<group>"; };
+		F2DCEED82655934700EC0E58 /* NSPersistentContainer+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSPersistentContainer+Extensions.swift"; sourceTree = "<group>"; };
+		F2DCEEDA2655936300EC0E58 /* ApolloClient+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApolloClient+Extensions.swift"; sourceTree = "<group>"; };
+		F2DCEEDC2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApolloClientProtocol+Extensions.swift"; sourceTree = "<group>"; };
+		F2DCEEDE2655939200EC0E58 /* Item+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +180,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F220F2AB264DC0DE0064D272 /* Sync.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -130,6 +203,22 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F220F293264DC0DE0064D272 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F220F2BA264DC2750064D272 /* Apollo in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F220F29B264DC0DE0064D272 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F220F29F264DC0DE0064D272 /* Sync.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -178,7 +267,10 @@
 				166A81C32637406C0015AA1D /* Tests iOS */,
 				166A81CE2637406C0015AA1D /* Tests macOS */,
 				1652D69C2639E63A0005B362 /* PocketTests */,
+				F220F297264DC0DE0064D272 /* Sync */,
+				F220F2A4264DC0DE0064D272 /* SyncTests */,
 				166A81B12637406C0015AA1D /* Products */,
+				F220F2B8264DC2750064D272 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -187,10 +279,11 @@
 			children = (
 				167F8091264B2E8F00D8F507 /* Environment.swift */,
 				167F808A264B213900D8F507 /* Keychain.swift */,
-				1697334E263CB2DE0003DE2A /* LoggedInView.swift */,
 				166A81A92637406B0015AA1D /* PocketApp.swift */,
 				16973351263CB3580003DE2A /* SignInView.swift */,
 				16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */,
+				167F80AD264C9AFE00D8F507 /* ItemListView.swift */,
+				F224931A2653F5D40013B47D /* ReaderView.swift */,
 				166A81AB2637406C0015AA1D /* Assets.xcassets */,
 				162AAD91263C9CAA00783011 /* Authorization */,
 			);
@@ -205,6 +298,8 @@
 				166A81C02637406C0015AA1D /* Tests iOS.xctest */,
 				166A81CB2637406C0015AA1D /* Tests macOS.xctest */,
 				1652D69B2639E63A0005B362 /* PocketTests.xctest */,
+				F220F296264DC0DE0064D272 /* Sync.framework */,
+				F220F29E264DC0DE0064D272 /* SyncTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -252,7 +347,66 @@
 			path = Config;
 			sourceTree = "<group>";
 		};
+		F220F297264DC0DE0064D272 /* Sync */ = {
+			isa = PBXGroup;
+			children = (
+				F220F2D22653289B0064D272 /* list.graphql */,
+				F220F298264DC0DE0064D272 /* Sync.h */,
+				167F80A2264C762E00D8F507 /* schema.json */,
+				F220F299264DC0DE0064D272 /* Info.plist */,
+				167F80A3264C77C600D8F507 /* API.swift */,
+				F2DCEEDA2655936300EC0E58 /* ApolloClient+Extensions.swift */,
+				F2DCEEDC2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift */,
+				F2DCEEDE2655939200EC0E58 /* Item+Extensions.swift */,
+				F2DCEED82655934700EC0E58 /* NSPersistentContainer+Extensions.swift */,
+				F2DCEED4265592E400EC0E58 /* Requests.swift */,
+				167F80AA264C991E00D8F507 /* Source.swift */,
+				F2DCEED62655930800EC0E58 /* Space.swift */,
+				167F80A6264C98BA00D8F507 /* PocketModel.xcdatamodeld */,
+			);
+			path = Sync;
+			sourceTree = "<group>";
+		};
+		F220F2A4264DC0DE0064D272 /* SyncTests */ = {
+			isa = PBXGroup;
+			children = (
+				16C4D86E2655DECC00AA2C00 /* Fixtures */,
+				F220F2A7264DC0DE0064D272 /* Info.plist */,
+				F220F28F264DBCAF0064D272 /* SourceTests.swift */,
+				F220F2C72652C2660064D272 /* Support */,
+			);
+			path = SyncTests;
+			sourceTree = "<group>";
+		};
+		F220F2B8264DC2750064D272 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		F220F2C72652C2660064D272 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				F220F2C92652C2660064D272 /* MockApolloClient.swift */,
+				F220F2CC2652C29F0064D272 /* MockCancellable.swift */,
+				16C4D8702655DED800AA2C00 /* Fixture.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		F220F291264DC0DE0064D272 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F220F2A8264DC0DE0064D272 /* Sync.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
 		1652D69A2639E63A0005B362 /* PocketTests */ = {
@@ -280,12 +434,16 @@
 				166A81AC2637406C0015AA1D /* Sources */,
 				166A81AD2637406C0015AA1D /* Frameworks */,
 				166A81AE2637406C0015AA1D /* Resources */,
+				F220F2B0264DC0DE0064D272 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				F220F2AA264DC0DE0064D272 /* PBXTargetDependency */,
 			);
 			name = "Pocket (iOS)";
+			packageProductDependencies = (
+			);
 			productName = "Pocket (iOS)";
 			productReference = 166A81B02637406C0015AA1D /* Pocket.app */;
 			productType = "com.apple.product-type.application";
@@ -346,6 +504,46 @@
 			productReference = 166A81CB2637406C0015AA1D /* Tests macOS.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		F220F295264DC0DE0064D272 /* Sync */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F220F2AD264DC0DE0064D272 /* Build configuration list for PBXNativeTarget "Sync" */;
+			buildPhases = (
+				F220F291264DC0DE0064D272 /* Headers */,
+				F220F2B7264DC1A90064D272 /* Apollo Codegen */,
+				F220F292264DC0DE0064D272 /* Sources */,
+				F220F293264DC0DE0064D272 /* Frameworks */,
+				F220F294264DC0DE0064D272 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Sync;
+			packageProductDependencies = (
+				F220F2B9264DC2750064D272 /* Apollo */,
+			);
+			productName = Sync;
+			productReference = F220F296264DC0DE0064D272 /* Sync.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		F220F29D264DC0DE0064D272 /* SyncTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F220F2B1264DC0DE0064D272 /* Build configuration list for PBXNativeTarget "SyncTests" */;
+			buildPhases = (
+				F220F29A264DC0DE0064D272 /* Sources */,
+				F220F29B264DC0DE0064D272 /* Frameworks */,
+				F220F29C264DC0DE0064D272 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F220F2A1264DC0DE0064D272 /* PBXTargetDependency */,
+			);
+			name = SyncTests;
+			productName = SyncTests;
+			productReference = F220F29E264DC0DE0064D272 /* SyncTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -373,6 +571,12 @@
 						CreatedOnToolsVersion = 12.5;
 						TestTargetID = 166A81B72637406C0015AA1D;
 					};
+					F220F295264DC0DE0064D272 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+					F220F29D264DC0DE0064D272 = {
+						CreatedOnToolsVersion = 12.5;
+					};
 				};
 			};
 			buildConfigurationList = 166A81A72637406B0015AA1D /* Build configuration list for PBXProject "Pocket" */;
@@ -386,6 +590,7 @@
 			mainGroup = 166A81A32637406B0015AA1D;
 			packageReferences = (
 				167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */,
+				167F8094264C610F00D8F507 /* XCRemoteSwiftPackageReference "apollo-ios" */,
 			);
 			productRefGroup = 166A81B12637406C0015AA1D /* Products */;
 			projectDirPath = "";
@@ -396,6 +601,8 @@
 				166A81BF2637406C0015AA1D /* Tests iOS */,
 				166A81CA2637406C0015AA1D /* Tests macOS */,
 				1652D69A2639E63A0005B362 /* PocketTests */,
+				F220F295264DC0DE0064D272 /* Sync */,
+				F220F29D264DC0DE0064D272 /* SyncTests */,
 			);
 		};
 /* End PBXProject section */
@@ -438,7 +645,47 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F220F294264DC0DE0064D272 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F220F2D32653289B0064D272 /* list.graphql in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F220F29C264DC0DE0064D272 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				16C4D86F2655DECC00AA2C00 /* Fixtures in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F220F2B7264DC1A90064D272 /* Apollo Codegen */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Sync/schema.json",
+				"$(SRCROOT)/Sync/list.graphql",
+			);
+			name = "Apollo Codegen";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Sync/API.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n# Go to the build root and search up the chain to find the Derived Data Path where the source packages are checked out.\nDERIVED_DATA_CANDIDATE=\"${BUILD_ROOT}\"\n\nwhile ! [ -d \"${DERIVED_DATA_CANDIDATE}/SourcePackages\" ]; do\n  if [ \"${DERIVED_DATA_CANDIDATE}\" = / ]; then\n    echo >&2 \"error: Unable to locate SourcePackages directory from BUILD_ROOT: '${BUILD_ROOT}'\"\n    exit 1\n  fi\n\n  DERIVED_DATA_CANDIDATE=\"$(dirname \"${DERIVED_DATA_CANDIDATE}\")\"\ndone\n\n# Grab a reference to the directory where scripts are checked out\nSCRIPT_PATH=\"${DERIVED_DATA_CANDIDATE}/SourcePackages/checkouts/apollo-ios/scripts\"\n\nif [ -z \"${SCRIPT_PATH}\" ]; then\n    echo >&2 \"error: Couldn't find the CLI script in your checked out SPM packages; make sure to add the framework to your project.\"\n    exit 1\nfi\n\ndate\n\n\"${SCRIPT_PATH}\"/run-bundled-codegen.sh \\\ncodegen:generate \\\n--target=swift \\\n--includes=${SRCROOT}/Sync/**/*.graphql \\\n--localSchemaFile=\"${SRCROOT}/Sync/schema.json\" \\\n\"${SRCROOT}/Sync/API.swift\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		1652D6972639E63A0005B362 /* Sources */ = {
@@ -459,9 +706,10 @@
 			files = (
 				162AAD8F263C7A7E00783011 /* AuthorizeRequest.swift in Sources */,
 				16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
-				1697334F263CB2DE0003DE2A /* LoggedInView.swift in Sources */,
 				16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */,
+				F224931B2653F5D40013B47D /* ReaderView.swift in Sources */,
 				162AAD93263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
+				167F80AE264C9AFE00D8F507 /* ItemListView.swift in Sources */,
 				16973352263CB3580003DE2A /* SignInView.swift in Sources */,
 				167F8092264B2E8F00D8F507 /* Environment.swift in Sources */,
 				167F8086264B1DB300D8F507 /* AccessTokenStore.swift in Sources */,
@@ -475,10 +723,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				162AAD90263C7A7E00783011 /* AuthorizeRequest.swift in Sources */,
+				F224931C2653F9990013B47D /* ReaderView.swift in Sources */,
 				16BD7AF32639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
-				16973350263CB2DE0003DE2A /* LoggedInView.swift in Sources */,
 				16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */,
 				162AAD94263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
+				167F80AF264C9AFE00D8F507 /* ItemListView.swift in Sources */,
 				167F808C264B213900D8F507 /* Keychain.swift in Sources */,
 				167F8087264B1DB300D8F507 /* AccessTokenStore.swift in Sources */,
 				16973353263CB3580003DE2A /* SignInView.swift in Sources */,
@@ -503,6 +752,33 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F220F292264DC0DE0064D272 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F2DCEED72655930800EC0E58 /* Space.swift in Sources */,
+				F220F2B4264DC0EA0064D272 /* Source.swift in Sources */,
+				F2DCEED5265592E400EC0E58 /* Requests.swift in Sources */,
+				F2DCEEDD2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift in Sources */,
+				F220F2B6264DC1820064D272 /* API.swift in Sources */,
+				F220F2B5264DC1520064D272 /* PocketModel.xcdatamodeld in Sources */,
+				F2DCEEDB2655936300EC0E58 /* ApolloClient+Extensions.swift in Sources */,
+				F2DCEED92655934700EC0E58 /* NSPersistentContainer+Extensions.swift in Sources */,
+				F2DCEEDF2655939200EC0E58 /* Item+Extensions.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F220F29A264DC0DE0064D272 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F2DCEED226546EEB00EC0E58 /* MockCancellable.swift in Sources */,
+				F220F2BB264DC2B50064D272 /* SourceTests.swift in Sources */,
+				F2DCEED326546EEF00EC0E58 /* MockApolloClient.swift in Sources */,
+				16C4D8712655DED800AA2C00 /* Fixture.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -520,6 +796,16 @@
 			isa = PBXTargetDependency;
 			target = 166A81B72637406C0015AA1D /* Pocket (macOS) */;
 			targetProxy = 166A81CC2637406C0015AA1D /* PBXContainerItemProxy */;
+		};
+		F220F2A1264DC0DE0064D272 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F220F295264DC0DE0064D272 /* Sync */;
+			targetProxy = F220F2A0264DC0DE0064D272 /* PBXContainerItemProxy */;
+		};
+		F220F2AA264DC0DE0064D272 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F220F295264DC0DE0064D272 /* Sync */;
+			targetProxy = F220F2A9264DC0DE0064D272 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -681,6 +967,7 @@
 		166A81DB2637406C0015AA1D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
@@ -705,6 +992,7 @@
 		166A81DC2637406C0015AA1D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Mozilla Corporation (43AQ936H96)";
@@ -856,6 +1144,110 @@
 			};
 			name = Release;
 		};
+		F220F2AE264DC0DE0064D272 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 43AQ936H96;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sync/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.pocket.Sync;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		F220F2AF264DC0DE0064D272 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 43AQ936H96;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = Sync/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.pocket.Sync;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		F220F2B2264DC0DE0064D272 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				INFOPLIST_FILE = SyncTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.pocket.SyncTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F220F2B3264DC0DE0064D272 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				INFOPLIST_FILE = SyncTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.pocket.SyncTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -913,6 +1305,24 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		F220F2AD264DC0DE0064D272 /* Build configuration list for PBXNativeTarget "Sync" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F220F2AE264DC0DE0064D272 /* Debug */,
+				F220F2AF264DC0DE0064D272 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F220F2B1264DC0DE0064D272 /* Build configuration list for PBXNativeTarget "SyncTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F220F2B2264DC0DE0064D272 /* Debug */,
+				F220F2B3264DC0DE0064D272 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -924,6 +1334,14 @@
 				kind = branch;
 			};
 		};
+		167F8094264C610F00D8F507 /* XCRemoteSwiftPackageReference "apollo-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apollographql/apollo-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.43.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -932,7 +1350,25 @@
 			package = 167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */;
 			productName = Sails;
 		};
+		F220F2B9264DC2750064D272 /* Apollo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 167F8094264C610F00D8F507 /* XCRemoteSwiftPackageReference "apollo-ios" */;
+			productName = Apollo;
+		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		167F80A6264C98BA00D8F507 /* PocketModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				167F80A7264C98BA00D8F507 /* PocketModel.xcdatamodel */,
+			);
+			currentVersion = 167F80A7264C98BA00D8F507 /* PocketModel.xcdatamodel */;
+			path = PocketModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 166A81A42637406B0015AA1D /* Project object */;
 }

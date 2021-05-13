@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "166A81AF2637406C0015AA1D"
-               BuildableName = "Pocket.app"
-               BlueprintName = "Pocket (iOS)"
+               BlueprintIdentifier = "F220F295264DC0DE0064D272"
+               BuildableName = "Sync.framework"
+               BlueprintName = "Sync"
                ReferencedContainer = "container:Pocket.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,26 +28,6 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "1652D69A2639E63A0005B362"
-               BuildableName = "PocketTests.xctest"
-               BlueprintName = "PocketTests"
-               ReferencedContainer = "container:Pocket.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "166A81BF2637406C0015AA1D"
-               BuildableName = "Tests iOS.xctest"
-               BlueprintName = "Tests iOS"
-               ReferencedContainer = "container:Pocket.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
@@ -70,26 +50,6 @@
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
       allowLocationSimulation = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "166A81AF2637406C0015AA1D"
-            BuildableName = "Pocket.app"
-            BlueprintName = "Pocket (iOS)"
-            ReferencedContainer = "container:Pocket.xcodeproj">
-         </BuildableReference>
-      </BuildableProductRunnable>
-      <CommandLineArguments>
-         <CommandLineArgument
-            argument = "clearCoreData"
-            isEnabled = "YES">
-         </CommandLineArgument>
-         <CommandLineArgument
-            argument = "clearKeychain"
-            isEnabled = "NO">
-         </CommandLineArgument>
-      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -97,16 +57,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
-      <BuildableProductRunnable
-         runnableDebuggingMode = "0">
+      <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "166A81AF2637406C0015AA1D"
-            BuildableName = "Pocket.app"
-            BlueprintName = "Pocket (iOS)"
+            BlueprintIdentifier = "F220F295264DC0DE0064D272"
+            BuildableName = "Sync.framework"
+            BlueprintName = "Sync"
             ReferencedContainer = "container:Pocket.xcodeproj">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">
