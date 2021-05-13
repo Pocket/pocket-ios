@@ -1,0 +1,25 @@
+{
+  "data": {
+    "__typename": "Query",
+    "userByToken": {
+      "__typename": "User",
+      "userItems": {
+        "__typename": "UserItemConnection",
+        "nodes": [
+          {
+            "__typename": "UserItem",
+            "url": "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming",
+            "asyncItem": {
+              "__typename": "AsyncItem",
+              "item": {
+                "__typename": "Item",
+                "title": "The Tricks to Make Yourself Effortlessly Charming",
+                "givenUrl": "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
