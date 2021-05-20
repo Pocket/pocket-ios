@@ -77,14 +77,17 @@ class SourceTests: XCTestCase {
 
         let request = Requests.fetchItems()
         let items = try container.viewContext.fetch(request)
-        XCTAssertEqual(items.count, 20)
+        XCTAssertEqual(items.count, 2)
+
+        // TODO: Assert on item content
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistsItems() throws {
         // set up the context with an existing item
+        let itemURL = URL(string: "http://example.com/item-1")!
         let item = Item(context: container.viewContext)
-        item.url = URL(string: "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming")!
-        item.title = "not updated"
+        item.url = itemURL
+        item.title = "Item 1"
         try container.viewContext.save()
 
         client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
@@ -96,13 +99,9 @@ class SourceTests: XCTestCase {
 
         source.refresh(token: "the-token")
 
-        let request = Requests.fetchItem(byURL: item.url!.absoluteString)
+        let request = Requests.fetchItem(byURL: itemURL.absoluteString)
         let items = try container.viewContext.fetch(request)
-        XCTAssertEqual(items[0].title, "The Tricks to Make Yourself Effortlessly Charming")
-
-        let allItemsRequest = Requests.fetchItems()
-        let allItems = try container.viewContext.fetch(allItemsRequest)
-        XCTAssertEqual(allItems.count, 1)
+        XCTAssertEqual(items[0].title, "Updated Item 1")
     }
 
     func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() throws {

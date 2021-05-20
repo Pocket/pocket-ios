@@ -1,25 +1,56 @@
 {
-  "data": {
-    "__typename": "Query",
-    "userByToken": {
-      "__typename": "User",
-      "userItems": {
-        "__typename": "UserItemConnection",
-        "nodes": [
-          {
-            "__typename": "UserItem",
-            "url": "http://localhost:8080/hello.html",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Item",
-                "givenUrl": "http://localhost:8080/hello.html"
-              }
+    "data": {
+        "__typename": "Query",
+        "userByToken": {
+            "__typename": "User",
+            "userItems": {
+                "__typename": "UserItemConnection",
+                "nodes": [
+                    {
+                        "__typename": "UserItem",
+                        "url": "http://localhost:8080/hello.html",
+                        "asyncItem": {
+                            "__typename": "AsyncItem",
+                            "item": {
+                                "__typename": "Item",
+                                "title": "Item 1",
+                                "domain": null,
+                                "timeToRead": 6,
+                                "topImageUrl": null,
+                                "givenUrl": "http://localhost:8080/hello.html",
+                                "userItem": {
+                                    "__typename": "UserItem",
+                                    "_createdAt": 1621535870168
+                                },
+                                "domainMetadata": {
+                                    "__typename": "DomainMetadata",
+                                    "name": "Pocket"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "__typename": "UserItem",
+                        "url": "http://localhost:8080/hello.html",
+                        "asyncItem": {
+                            "__typename": "AsyncItem",
+                            "item": {
+                                "__typename": "Item",
+                                "title": "Item 2",
+                                "domain": "getpocket.com",
+                                "timeToRead": null,
+                                "topImageUrl": null,
+                                "givenUrl": "http://localhost:8080/hello.html",
+                                "userItem": {
+                                    "__typename": "UserItem",
+                                    "_createdAt": 1621535868168
+                                },
+                                "domainMetadata": null
+                            }
+                        }
+                    }
+                ]
             }
-          }
-        ]
-      }
+        }
     }
-  }
 }

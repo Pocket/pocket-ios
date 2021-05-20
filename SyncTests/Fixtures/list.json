@@ -1,253 +1,58 @@
 {
-  "data": {
-    "__typename": "Query",
-    "userByToken": {
-      "__typename": "User",
-      "userItems": {
-        "__typename": "UserItemConnection",
-        "nodes": [
-          {
-            "__typename": "UserItem",
-            "url": "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "The Tricks to Make Yourself Effortlessly Charming",
-                "givenUrl": "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming"
-              }
+    "data": {
+        "userByToken": {
+            "__typename": "User",
+            "userItems": {
+                "__typename": "UserItemConnection",
+                "nodes": [
+                    {
+                        "__typename": "UserItem",
+                        "url": "https://example.com/item-1",
+                        "asyncItem": {
+                            "__typename": "AsyncItem",
+                            "item": {
+                                "__typename": "Item",
+                                "title": "Item 1",
+                                "domain": null,
+                                "timeToRead": 6,
+                                "topImageUrl": "https://example.com/item-2/image.jpg",
+                                "givenUrl": "https://example.com/item-1",
+                                "userItem": {
+                                    "__typename": "UserItem",
+                                    "_createdAt": 1621550941418
+                                },
+                                "domainMetadata": {
+                                    "__typename": "DomainMetadata",
+                                    "name": "WIRED"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "__typename": "UserItem",
+                        "url": "https://example.com/item-2",
+                        "asyncItem": {
+                            "__typename": "AsyncItem",
+                            "item": {
+                                "__typename": "Item",
+                                "title": "Item 2",
+                                "domain": null,
+                                "timeToRead": 6,
+                                "topImageUrl": "https://example.com/item-2/image.jpg",
+                                "givenUrl": "https://example.com/item-2",
+                                "userItem": {
+                                    "__typename": "UserItem",
+                                    "_createdAt": 1621550941418
+                                },
+                                "domainMetadata": {
+                                    "__typename": "DomainMetadata",
+                                    "name": "WIRED"
+                                }
+                            }
+                        }
+                    }
+                ]
             }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "The Tricks to Make Yourself Effortlessly Charming",
-                "givenUrl": "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://getpocket.com/explore/item/red-lentil-curry-with-sweet-potatoes-slow-cooker",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Red Lentil Curry with Sweet Potatoes {Slow Cooker} Recipe",
-                "givenUrl": "https://getpocket.com/explore/item/red-lentil-curry-with-sweet-potatoes-slow-cooker"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://theweek.com/articles/980731/short-history-white-house-cats",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "A short history of White House cats",
-                "givenUrl": "https://theweek.com/articles/980731/short-history-white-house-cats"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.theguardian.com/media/2021/may/07/guardian-200-what-we-got-wrong-the-guardians-worst-errors-of-judgment-over-200-years",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "What we got wrong: the Guardian’s worst errors of judgment over 200 years",
-                "givenUrl": "https://www.theguardian.com/media/2021/may/07/guardian-200-what-we-got-wrong-the-guardians-worst-errors-of-judgment-over-200-years"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.theguardian.com/media/2021/may/07/guardian-200-what-we-got-wrong-the-guardians-worst-errors-of-judgment-over-200-years",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "What we got wrong: the Guardian’s worst errors of judgment over 200 years",
-                "givenUrl": "https://www.theguardian.com/media/2021/may/07/guardian-200-what-we-got-wrong-the-guardians-worst-errors-of-judgment-over-200-years"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://getpocket.com/explore/item/proof-of-life-how-would-we-recognise-an-alien-if-we-saw-one",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Proof of Life: How Would We Recognize an Alien If We Saw One?",
-                "givenUrl": "https://getpocket.com/explore/item/proof-of-life-how-would-we-recognise-an-alien-if-we-saw-one"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://taskandpurpose.com/opinion/traumatic-brain-injury-military",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "A Marine special operator’s fragmented legacy: Blast, impact, trauma, and everything that comes after",
-                "givenUrl": "https://taskandpurpose.com/opinion/traumatic-brain-injury-military"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "The Tricks to Make Yourself Effortlessly Charming",
-                "givenUrl": "https://getpocket.com/explore/item/the-tricks-to-make-yourself-effortlessly-charming"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.thecut.com/2021/05/quitting-your-job-as-self-care.html",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "The Clock-Out Cure",
-                "givenUrl": "https://www.thecut.com/2021/05/quitting-your-job-as-self-care.html"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.bloomberg.com/news/features/2021-05-11/secretive-swiss-bank-pictet-torn-between-old-money-and-new-risk",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Inside Pictet, the Secretive Swiss Bank for the World’s Richest People",
-                "givenUrl": "https://www.bloomberg.com/news/features/2021-05-11/secretive-swiss-bank-pictet-torn-between-old-money-and-new-risk"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://getpocket.com/explore/item/proof-of-life-how-would-we-recognise-an-alien-if-we-saw-one",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Proof of Life: How Would We Recognize an Alien If We Saw One?",
-                "givenUrl": "https://getpocket.com/explore/item/proof-of-life-how-would-we-recognise-an-alien-if-we-saw-one"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.nbcnews.com/tech/security/scam-text-messages-are-rampant-no-easy-fix-rcna840",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Why cybercriminals looking to steal personal info are using text messages as bait",
-                "givenUrl": "https://www.nbcnews.com/tech/security/scam-text-messages-are-rampant-no-easy-fix-rcna840"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://taskandpurpose.com/opinion/traumatic-brain-injury-military",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "A Marine special operator’s fragmented legacy: Blast, impact, trauma, and everything that comes after",
-                "givenUrl": "https://taskandpurpose.com/opinion/traumatic-brain-injury-military"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://theweek.com/articles/980731/short-history-white-house-cats",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "A short history of White House cats",
-                "givenUrl": "https://theweek.com/articles/980731/short-history-white-house-cats"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.theguardian.com/media/2021/may/07/guardian-200-what-we-got-wrong-the-guardians-worst-errors-of-judgment-over-200-years",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "What we got wrong: the Guardian’s worst errors of judgment over 200 years",
-                "givenUrl": "https://www.theguardian.com/media/2021/may/07/guardian-200-what-we-got-wrong-the-guardians-worst-errors-of-judgment-over-200-years"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.wired.com/story/everyone-is-a-subscription",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Everything Is Becoming Paywalled Content—Even You",
-                "givenUrl": "https://www.wired.com/story/everyone-is-a-subscription"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.wired.com/story/everyone-is-a-subscription/",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Everything Is Becoming Paywalled Content—Even You",
-                "givenUrl": "https://www.wired.com/story/everyone-is-a-subscription/"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.wired.com/story/everyone-is-a-subscription",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Everything Is Becoming Paywalled Content—Even You",
-                "givenUrl": "https://www.wired.com/story/everyone-is-a-subscription"
-              }
-            }
-          },
-          {
-            "__typename": "UserItem",
-            "url": "https://www.bloomberg.com/news/features/2021-05-11/secretive-swiss-bank-pictet-torn-between-old-money-and-new-risk",
-            "asyncItem": {
-              "__typename": "AsyncItem",
-              "item": {
-                "__typename": "Item",
-                "title": "Inside Pictet, the Secretive Swiss Bank for the World’s Richest People",
-                "givenUrl": "https://www.bloomberg.com/news/features/2021-05-11/secretive-swiss-bank-pictet-torn-between-old-money-and-new-risk"
-              }
-            }
-          }
-        ]
-      }
+        }
     }
-  }
 }
