@@ -31,7 +31,7 @@
                     },
                     {
                         "__typename": "UserItem",
-                        "url": "http://localhost:8080/hello.html",
+                        "url": "http://example.com/item-2",
                         "asyncItem": {
                             "__typename": "AsyncItem",
                             "item": {
@@ -40,7 +40,7 @@
                                 "domain": "getpocket.com",
                                 "timeToRead": null,
                                 "topImageUrl": null,
-                                "givenUrl": "http://localhost:8080/hello.html",
+                                "givenUrl": "http://example.com/item-2",
                                 "userItem": {
                                     "__typename": "UserItem",
                                     "_createdAt": 1621535868168

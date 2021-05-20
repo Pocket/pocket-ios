@@ -66,6 +66,11 @@
 		F2DCEEDB2655936300EC0E58 /* ApolloClient+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEDA2655936300EC0E58 /* ApolloClient+Extensions.swift */; };
 		F2DCEEDD2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEDC2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift */; };
 		F2DCEEDF2655939200EC0E58 /* Item+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEDE2655939200EC0E58 /* Item+Extensions.swift */; };
+		F2DCEEE1265704AC00EC0E58 /* RemoteImageLoaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEE0265704AC00EC0E58 /* RemoteImageLoaderTests.swift */; };
+		F2DCEEE32657153500EC0E58 /* RemoteImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEE22657153500EC0E58 /* RemoteImageView.swift */; };
+		F2DCEEE52657153F00EC0E58 /* RemoteImageLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEE42657153F00EC0E58 /* RemoteImageLoader.swift */; };
+		F2DCEEE7265715DB00EC0E58 /* ItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEE6265715DB00EC0E58 /* ItemRow.swift */; };
+		F2DCEEE9265715ED00EC0E58 /* ItemDestinationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEEE8265715ED00EC0E58 /* ItemDestinationView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -180,6 +185,11 @@
 		F2DCEEDA2655936300EC0E58 /* ApolloClient+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApolloClient+Extensions.swift"; sourceTree = "<group>"; };
 		F2DCEEDC2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ApolloClientProtocol+Extensions.swift"; sourceTree = "<group>"; };
 		F2DCEEDE2655939200EC0E58 /* Item+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Item+Extensions.swift"; sourceTree = "<group>"; };
+		F2DCEEE0265704AC00EC0E58 /* RemoteImageLoaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageLoaderTests.swift; sourceTree = "<group>"; };
+		F2DCEEE22657153500EC0E58 /* RemoteImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageView.swift; sourceTree = "<group>"; };
+		F2DCEEE42657153F00EC0E58 /* RemoteImageLoader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteImageLoader.swift; sourceTree = "<group>"; };
+		F2DCEEE6265715DB00EC0E58 /* ItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRow.swift; sourceTree = "<group>"; };
+		F2DCEEE8265715ED00EC0E58 /* ItemDestinationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDestinationView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,6 +266,7 @@
 				1652D69F2639E63A0005B362 /* Info.plist */,
 				167F8088264B1E1700D8F507 /* AccessTokenStoreTests.swift */,
 				1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */,
+				F2DCEEE0265704AC00EC0E58 /* RemoteImageLoaderTests.swift */,
 				1652D6A5263A005F0005B362 /* Support */,
 			);
 			path = PocketTests;
@@ -292,12 +303,16 @@
 			isa = PBXGroup;
 			children = (
 				167F8091264B2E8F00D8F507 /* Environment.swift */,
+				167F80AD264C9AFE00D8F507 /* ItemListView.swift */,
+				F2DCEEE8265715ED00EC0E58 /* ItemDestinationView.swift */,
+				F2DCEEE6265715DB00EC0E58 /* ItemRow.swift */,
 				167F808A264B213900D8F507 /* Keychain.swift */,
 				166A81A92637406B0015AA1D /* PocketApp.swift */,
+				F224931A2653F5D40013B47D /* ReaderView.swift */,
+				F2DCEEE42657153F00EC0E58 /* RemoteImageLoader.swift */,
+				F2DCEEE22657153500EC0E58 /* RemoteImageView.swift */,
 				16973351263CB3580003DE2A /* SignInView.swift */,
 				16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */,
-				167F80AD264C9AFE00D8F507 /* ItemListView.swift */,
-				F224931A2653F5D40013B47D /* ReaderView.swift */,
 				166A81AB2637406C0015AA1D /* Assets.xcassets */,
 				162AAD91263C9CAA00783011 /* Authorization */,
 			);
@@ -734,6 +749,7 @@
 				1697334D263CA2D20003DE2A /* AuthorizationClientTests.swift in Sources */,
 				167F8089264B1E1700D8F507 /* AccessTokenStoreTests.swift in Sources */,
 				1652D6A7263A00870005B362 /* MockURLSession.swift in Sources */,
+				F2DCEEE1265704AC00EC0E58 /* RemoteImageLoaderTests.swift in Sources */,
 				167F808E264B2CC200D8F507 /* MockKeychain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -744,6 +760,9 @@
 			files = (
 				162AAD8F263C7A7E00783011 /* AuthorizeRequest.swift in Sources */,
 				16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
+				F2DCEEE9265715ED00EC0E58 /* ItemDestinationView.swift in Sources */,
+				F2DCEEE52657153F00EC0E58 /* RemoteImageLoader.swift in Sources */,
+				F2DCEEE7265715DB00EC0E58 /* ItemRow.swift in Sources */,
 				16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */,
 				F224931B2653F5D40013B47D /* ReaderView.swift in Sources */,
 				162AAD93263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
@@ -752,6 +771,7 @@
 				167F8092264B2E8F00D8F507 /* Environment.swift in Sources */,
 				167F8086264B1DB300D8F507 /* AccessTokenStore.swift in Sources */,
 				166A81D22637406C0015AA1D /* PocketApp.swift in Sources */,
+				F2DCEEE32657153500EC0E58 /* RemoteImageView.swift in Sources */,
 				167F808B264B213900D8F507 /* Keychain.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

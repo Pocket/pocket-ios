@@ -11,6 +11,8 @@ class MockURLSessionDataTask: URLSessionDataTaskProtocol {
     func resume() {
         resumeCalls += 1
     }
+    
+    func cancel() { }
 }
 
 class MockURLSession: URLSessionProtocol {

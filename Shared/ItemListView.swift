@@ -24,7 +24,7 @@ struct ItemListView: View {
     var body: some View {
         List(items) { item in
             ZStack(alignment: .leading) {
-                ItemRow(item: item)
+                ItemRow(item: item, loader: RemoteImageLoader(url: item.url, session: URLSession.shared))
                 NavigationLink(destination: ItemDestinationView(item: item)) { }
                     .hidden()
             }
@@ -32,40 +32,4 @@ struct ItemListView: View {
     }
 }
 
-struct ItemRow: View {
-    @ObservedObject
-    private var item: Item
 
-    init(item: Item) {
-        self.item = item
-    }
-
-    var body: some View {
-        VStack(alignment: .leading) {
-            Text(item.title ?? item.url?.absoluteString ?? "Missing Title")
-                .font(.body)
-            Text(caption(item))
-                .font(.caption)
-        }
-    }
-    
-    private func caption(_ item: Item) -> String {
-        var components: [String] = []
-        components.append(item.domain ?? "Missing Domain")
-        if item.timeToRead > 0 {
-            let timeToRead = "\(item.timeToRead) min"
-            components.append(timeToRead)
-        }
-        return components.joined(separator: " • ")
-    }
-}
-
-struct ItemDestinationView: View {
-    let item: Item
-    
-    var body: some View {
-        ReaderView(item: item)
-            .navigationBarTitle(item.title ?? "Reader", displayMode: .inline)
-            .accessibility(identifier: "web-reader")
-    }
-}
