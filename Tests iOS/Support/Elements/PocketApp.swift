@@ -43,6 +43,6 @@ struct PocketApp {
     }
 
     func webReaderView() -> WebReaderScreen {
-        return WebReaderScreen(el: app.webViews["web-reader"])
+        return WebReaderScreen(el: app.webViews.element(boundBy: 0))
     }
 }
