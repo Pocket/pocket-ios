@@ -1,0 +1,25 @@
+{
+  "data": {
+    "__typename": "Query",
+    "userByToken": {
+      "__typename": "User",
+      "userItems": {
+        "__typename": "UserItemConnection",
+        "nodes": [
+          {
+            "__typename": "UserItem",
+            "url": "http://localhost:8080/hello.html",
+            "asyncItem": {
+              "__typename": "AsyncItem",
+              "item": {
+                "__typename": "Item",
+                "title": "Item",
+                "givenUrl": "http://localhost:8080/hello.html"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

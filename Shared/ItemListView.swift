@@ -53,5 +53,6 @@ struct ItemDestinationView: View {
     var body: some View {
         ReaderView(item: item)
             .navigationBarTitle(item.title ?? "Reader", displayMode: .inline)
+            .accessibility(identifier: "web-reader")
     }
 }

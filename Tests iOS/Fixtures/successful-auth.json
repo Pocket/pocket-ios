@@ -1,0 +1,8 @@
+{
+    "access_token":"the-access-token",
+    "username":"test@example.com",
+    "account": {
+        "firstName":"test",
+        "lastName":"user"
+    }
+}

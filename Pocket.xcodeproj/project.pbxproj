@@ -18,6 +18,13 @@
 		166A81D32637406C0015AA1D /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81A92637406B0015AA1D /* PocketApp.swift */; };
 		166A81D62637406C0015AA1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166A81AB2637406C0015AA1D /* Assets.xcassets */; };
 		166A81D72637406C0015AA1D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 166A81AB2637406C0015AA1D /* Assets.xcassets */; };
+		166BACF62656E34B00E401F0 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 166BACF52656E34B00E401F0 /* Fixtures */; };
+		166BACF82656E3C600E401F0 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BACF72656E3C600E401F0 /* Fixture.swift */; };
+		166BAD092656E76B00E401F0 /* ItemElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD042656E76B00E401F0 /* ItemElement.swift */; };
+		166BAD0A2656E76B00E401F0 /* SignInScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD052656E76B00E401F0 /* SignInScreen.swift */; };
+		166BAD0B2656E76B00E401F0 /* WebReaderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD062656E76B00E401F0 /* WebReaderScreen.swift */; };
+		166BAD0C2656E76B00E401F0 /* UserListScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD072656E76B00E401F0 /* UserListScreen.swift */; };
+		166BAD0D2656E76B00E401F0 /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD082656E76B00E401F0 /* PocketApp.swift */; };
 		167F8084264B011600D8F507 /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 167F8083264B011600D8F507 /* Sails */; };
 		167F8086264B1DB300D8F507 /* AccessTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8085264B1DB300D8F507 /* AccessTokenStore.swift */; };
 		167F8087264B1DB300D8F507 /* AccessTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8085264B1DB300D8F507 /* AccessTokenStore.swift */; };
@@ -132,6 +139,13 @@
 		166A81CB2637406C0015AA1D /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		166A81CF2637406C0015AA1D /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		166A81D12637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		166BACF52656E34B00E401F0 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
+		166BACF72656E3C600E401F0 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
+		166BAD042656E76B00E401F0 /* ItemElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemElement.swift; sourceTree = "<group>"; };
+		166BAD052656E76B00E401F0 /* SignInScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInScreen.swift; sourceTree = "<group>"; };
+		166BAD062656E76B00E401F0 /* WebReaderScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebReaderScreen.swift; sourceTree = "<group>"; };
+		166BAD072656E76B00E401F0 /* UserListScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListScreen.swift; sourceTree = "<group>"; };
+		166BAD082656E76B00E401F0 /* PocketApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PocketApp.swift; sourceTree = "<group>"; };
 		167F8085264B1DB300D8F507 /* AccessTokenStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenStore.swift; sourceTree = "<group>"; };
 		167F8088264B1E1700D8F507 /* AccessTokenStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccessTokenStoreTests.swift; sourceTree = "<group>"; };
 		167F808A264B213900D8F507 /* Keychain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Keychain.swift; sourceTree = "<group>"; };
@@ -324,6 +338,8 @@
 		166A81C32637406C0015AA1D /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
+				166BACF92656E6A500E401F0 /* Support */,
+				166BACF52656E34B00E401F0 /* Fixtures */,
 				166A81C42637406C0015AA1D /* Tests_iOS.swift */,
 				166A81C62637406C0015AA1D /* Info.plist */,
 			);
@@ -337,6 +353,27 @@
 				166A81D12637406C0015AA1D /* Info.plist */,
 			);
 			path = "Tests macOS";
+			sourceTree = "<group>";
+		};
+		166BACF92656E6A500E401F0 /* Support */ = {
+			isa = PBXGroup;
+			children = (
+				166BAD032656E76B00E401F0 /* Elements */,
+				166BACF72656E3C600E401F0 /* Fixture.swift */,
+			);
+			path = Support;
+			sourceTree = "<group>";
+		};
+		166BAD032656E76B00E401F0 /* Elements */ = {
+			isa = PBXGroup;
+			children = (
+				166BAD042656E76B00E401F0 /* ItemElement.swift */,
+				166BAD052656E76B00E401F0 /* SignInScreen.swift */,
+				166BAD062656E76B00E401F0 /* WebReaderScreen.swift */,
+				166BAD072656E76B00E401F0 /* UserListScreen.swift */,
+				166BAD082656E76B00E401F0 /* PocketApp.swift */,
+			);
+			path = Elements;
 			sourceTree = "<group>";
 		};
 		16973354263CBB290003DE2A /* Config */ = {
@@ -635,6 +672,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				166BACF62656E34B00E401F0 /* Fixtures in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -740,7 +778,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				166BAD0C2656E76B00E401F0 /* UserListScreen.swift in Sources */,
+				166BAD0D2656E76B00E401F0 /* PocketApp.swift in Sources */,
+				166BAD0B2656E76B00E401F0 /* WebReaderScreen.swift in Sources */,
 				166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */,
+				166BAD0A2656E76B00E401F0 /* SignInScreen.swift in Sources */,
+				166BACF82656E3C600E401F0 /* Fixture.swift in Sources */,
+				166BAD092656E76B00E401F0 /* ItemElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
