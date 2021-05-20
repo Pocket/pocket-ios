@@ -9,118 +9,69 @@ import NIO
 
 class Tests_iOS: XCTestCase {
     var server: Application!
-    var app: XCUIApplication!
+    var app: PocketApp!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
+
+        let uiApp = XCUIApplication()
+        app = PocketApp(app: uiApp)
+
         server = Application()
-        app = XCUIApplication()
+
+        server.routes.post("/") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "initial-list")
+            }
+        }
+
+        server.routes.post("/v3/oauth/authorize") { _, _ in
+            Response(
+                status: .created,
+                headers: [("X-Source", "Pocket")],
+                content: Fixture.data(name: "successful-auth")
+            )
+        }
+
+        server.routes.get("/hello.html") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         try server.start()
     }
 
     override func tearDownWithError() throws {
         try server.stop()
-    }
-
-    func test_firstLaunch_and_persistence_and_interaction() throws {
-        assertFirstLaunch()
-        assertSubsequentLaunch()
-        assertItemInteraction()
-    }
-}
-
-extension Tests_iOS {
-    func response(itemTitle: String) -> Response {
-        return Response {
-            Status.ok
-            """
-            {
-              "data": {
-                "__typename": "Query",
-                "userByToken": {
-                  "__typename": "User",
-                  "userItems": {
-                    "__typename": "UserItemConnection",
-                    "nodes": [
-                      {
-                        "__typename": "UserItem",
-                        "url": "http://localhost:8080/hello.html",
-                        "asyncItem": {
-                          "__typename": "AsyncItem",
-                          "item": {
-                            "__typename": "Item",
-                            "title": "\(itemTitle)",
-                            "givenUrl": "http://localhost:8080/hello.html"
-                          }
-                        }
-                      }
-                    ]
-                  }
-                }
-              }
-            }
-            """
-        }
-    }
-    
-    func assertFirstLaunch() {
-        assert(app.state == .notRunning)
-        
-        server.routes.post("/v3/oauth/authorize") { _, _ in
-            Response(
-                status: .created,
-                headers: [("X-Source", "Pocket")],
-                content:
-                """
-                {
-                    "access_token":"the-access-token",
-                    "username":"test@example.com",
-                    "account": {
-                        "firstName":"test",
-                        "lastName":"user"
-                    }
-                }
-                """
-            )
-        }
-
-        server.routes.post("/") { _, loop in
-            self.response(itemTitle: "Item")
-        }
-            
-        app.launchEnvironment = [
-            "POCKET_V3_BASE_URL": "http://localhost:8080",
-            "POCKET_CLIENT_API_URL": "http://localhost:8080"
-        ]
-
-        app.launchArguments = [
-            "clearKeychain",
-            "clearCoreData"
-        ]
-        app.launch()
-
-        app.textFields["email"].tap()
-        app.typeText("test@example.com")
-
-        app.secureTextFields["password"].tap()
-        app.typeText("super-secret-password")
-        app.buttons["Sign in"].tap()
-
-        let list = app.tables["user-list"]
-        XCTAssertTrue(list.waitForExistence(timeout: 1))
-
-        let firstCell = app.cells.element(boundBy: 0)
-
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 1))
-        XCTAssertTrue(firstCell.label.starts(with: "Item"))
-    }
-    
-    func assertSubsequentLaunch() {
-        assert(app.state == .runningForeground)
-        
         app.terminate()
-        app.launchArguments = []
+    }
+
+    func test_1_signingIn_whenSigninIsSuccessful_showsUserList() {
+        app.launch(
+            arguments: [
+                "clearKeychain",
+                "clearCoreData"
+            ]
+        )
         
+        let signInView = app.signInView()
+        XCTAssertTrue(signInView.waitForExistence())
+        signInView.signIn(
+            email: "test@example.com",
+            password: "super-secret-password"
+        )
+
+        let listView = app.userListView()
+        XCTAssertTrue(listView.waitForExistence())
+
+        let item = listView.itemView(withLabelStartingWith: "Item")
+        XCTAssertTrue(item.waitForExistence())
+    }
+
+    func test_2_subsequentAppLaunch_displaysCachedContent() {
         var promise: EventLoopPromise<Response>?
         server.routes.post("/") { _, loop in
             promise = loop.makePromise()
@@ -128,62 +79,39 @@ extension Tests_iOS {
         }
 
         app.launch()
-        let list = app.tables["user-list"]
-        XCTAssertTrue(list.waitForExistence(timeout: 1))
+        let list = app.userListView()
+        XCTAssertTrue(list.waitForExistence())
 
-        let firstCell = list.cells.element(boundBy: 0)
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 1.0))
+        let item = list.itemView(withLabelStartingWith: "Item")
+        XCTAssertTrue(item.waitForExistence())
+        XCTAssertEqual(list.itemCount, 1)
 
-        XCTAssertEqual(list.cells.count, 1)
-        XCTAssertTrue(firstCell.label.starts(with: "Item"))
-
-        promise?.succeed(response(itemTitle: "Updated Item"))
-        let predicate = NSPredicate(format: "label BEGINSWITH 'Updated Item'")
-        let updatedCell = list.cells.element(matching: predicate)
-        XCTAssertTrue(updatedCell.waitForExistence(timeout: 1))
-        XCTAssertEqual(list.cells.count, 1)
-    }
-    
-    func assertItemInteraction() {
-        assert(app.state == .runningForeground)
-        
-        server.routes.get("hello.html") { _, _ in
+        promise?.succeed(
             Response {
-            Status.ok
-            """
-            <html>
-                <style>
-                    .container {
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        height: 100%
-                    }
-                    h1 {
-                        font-size: 148;
-                        font-family: Arial;
-                    }
-                </style>
-                <body>
-                    <div class="container">
-                        <h1>Hello, world</h1>
-                    </div>
-                </body>
-            </html>
-            """
+                Status.ok
+                Fixture.data(name: "updated-list")
             }
-        }
+        )
 
-        let list = app.tables["user-list"]
-        XCTAssertTrue(list.waitForExistence(timeout: 1))
+        let updatedItem = list.itemView(withLabelStartingWith: "Updated Item")
+        XCTAssertTrue(updatedItem.waitForExistence())
+        XCTAssertEqual(list.itemCount, 1)
+    }
 
-        let firstCell = list.cells.element(boundBy: 0)
-        XCTAssertTrue(firstCell.waitForExistence(timeout: 1))
+    func test_3_tappingItem_displaysWebReaderView() {
+        app.launch()
 
-        firstCell.tap()
+        let list = app.userListView()
+        XCTAssertTrue(list.waitForExistence())
 
-        let webView = app.webViews.element(boundBy: 0)
-        XCTAssertTrue(webView.waitForExistence(timeout: 1))
-        XCTAssertTrue(webView.staticTexts["Hello, world"].waitForExistence(timeout: 1))
+        let item = list.itemView(at: 0)
+        XCTAssertTrue(item.waitForExistence())
+        item.tap()
+
+        let webReaderView = app.webReaderView()
+        XCTAssertTrue(webReaderView.waitForExistence())
+
+        let text = webReaderView.staticText(matching: "Hello, world")
+        XCTAssertTrue(text.waitForExistence(timeout: 10))
     }
 }
