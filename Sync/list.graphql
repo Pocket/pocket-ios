@@ -6,7 +6,16 @@ query UserByToken($token: String!, $pagination: PaginationInput) {
         asyncItem {
           item {
             title
+            domain
+            timeToRead
+            topImageUrl
             givenUrl
+            userItem {
+                _createdAt
+            }
+            domainMetadata {
+                name
+            }
           }
         }
       }

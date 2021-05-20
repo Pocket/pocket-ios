@@ -20,6 +20,10 @@ struct ItemElement {
         el.label
     }
 
+    func contains(string: String) -> Bool {
+        return el.label.contains(string)
+    }
+
     func tap() {
         el.tap()
     }

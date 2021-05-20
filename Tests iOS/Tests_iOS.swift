@@ -67,8 +67,18 @@ class Tests_iOS: XCTestCase {
         let listView = app.userListView()
         XCTAssertTrue(listView.waitForExistence())
 
-        let item = listView.itemView(withLabelStartingWith: "Item")
-        XCTAssertTrue(item.waitForExistence())
+        do {
+            let item = listView.itemView(withLabelStartingWith: "Item 1")
+            XCTAssertTrue(item.waitForExistence())
+            XCTAssertTrue(item.contains(string: "Pocket"))
+            XCTAssertTrue(item.contains(string: "6 min"))
+        }
+
+        do {
+            let item = listView.itemView(withLabelStartingWith: "Item 2")
+            XCTAssertTrue(item.waitForExistence())
+            XCTAssertTrue(item.contains(string: "getpocket.com"))
+        }
     }
 
     func test_2_subsequentAppLaunch_displaysCachedContent() {
@@ -79,12 +89,12 @@ class Tests_iOS: XCTestCase {
         }
 
         app.launch()
-        let list = app.userListView()
-        XCTAssertTrue(list.waitForExistence())
+        let listView = app.userListView()
+        XCTAssertTrue(listView.waitForExistence())
 
-        let item = list.itemView(withLabelStartingWith: "Item")
+        let item = listView.itemView(withLabelStartingWith: "Item")
         XCTAssertTrue(item.waitForExistence())
-        XCTAssertEqual(list.itemCount, 1)
+        XCTAssertEqual(listView.itemCount, 2)
 
         promise?.succeed(
             Response {
@@ -93,9 +103,17 @@ class Tests_iOS: XCTestCase {
             }
         )
 
-        let updatedItem = list.itemView(withLabelStartingWith: "Updated Item")
-        XCTAssertTrue(updatedItem.waitForExistence())
-        XCTAssertEqual(list.itemCount, 1)
+        do {
+            let item = listView.itemView(withLabelStartingWith: "Updated Item 1")
+            XCTAssertTrue(item.waitForExistence())
+        }
+
+        do {
+            let item = listView.itemView(withLabelStartingWith: "Updated Item 2")
+            XCTAssertTrue(item.waitForExistence())
+        }
+
+        XCTAssertEqual(listView.itemCount, 2)
     }
 
     func test_3_tappingItem_displaysWebReaderView() {

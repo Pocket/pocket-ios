@@ -74,7 +74,18 @@ public final class UserByTokenQuery: GraphQLQuery {
               item {
                 __typename
                 title
+                domain
+                timeToRead
+                topImageUrl
                 givenUrl
+                userItem {
+                  __typename
+                  _createdAt
+                }
+                domainMetadata {
+                  __typename
+                  name
+                }
               }
             }
           }
@@ -299,7 +310,12 @@ public final class UserByTokenQuery: GraphQLQuery {
                 return [
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                   GraphQLField("title", type: .scalar(String.self)),
+                  GraphQLField("domain", type: .scalar(String.self)),
+                  GraphQLField("timeToRead", type: .scalar(Int.self)),
+                  GraphQLField("topImageUrl", type: .scalar(String.self)),
                   GraphQLField("givenUrl", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("userItem", type: .object(UserItem.selections)),
+                  GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
                 ]
               }
 
@@ -309,8 +325,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(title: String? = nil, givenUrl: String) {
-                self.init(unsafeResultMap: ["__typename": "Item", "title": title, "givenUrl": givenUrl])
+              public init(title: String? = nil, domain: String? = nil, timeToRead: Int? = nil, topImageUrl: String? = nil, givenUrl: String, userItem: UserItem? = nil, domainMetadata: DomainMetadatum? = nil) {
+                self.init(unsafeResultMap: ["__typename": "Item", "title": title, "domain": domain, "timeToRead": timeToRead, "topImageUrl": topImageUrl, "givenUrl": givenUrl, "userItem": userItem.flatMap { (value: UserItem) -> ResultMap in value.resultMap }, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }])
               }
 
               public var __typename: String {
@@ -332,6 +348,36 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
               }
 
+              /// The domain, such as 'getpocket.com' of the {.resolved_url}
+              public var domain: String? {
+                get {
+                  return resultMap["domain"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "domain")
+                }
+              }
+
+              /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
+              public var timeToRead: Int? {
+                get {
+                  return resultMap["timeToRead"] as? Int
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "timeToRead")
+                }
+              }
+
+              /// The page's / publisher's preferred thumbnail image
+              public var topImageUrl: String? {
+                get {
+                  return resultMap["topImageUrl"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "topImageUrl")
+                }
+              }
+
               /// The url as provided by the user when saving. Only http or https schemes allowed.
               public var givenUrl: String {
                 get {
@@ -339,6 +385,106 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "givenUrl")
+                }
+              }
+
+              /// Helper property to identify if the given item is in the user's list
+              public var userItem: UserItem? {
+                get {
+                  return (resultMap["userItem"] as? ResultMap).flatMap { UserItem(unsafeResultMap: $0) }
+                }
+                set {
+                  resultMap.updateValue(newValue?.resultMap, forKey: "userItem")
+                }
+              }
+
+              /// Additional information about the item domain, when present, use this for displaying the domain name
+              public var domainMetadata: DomainMetadatum? {
+                get {
+                  return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
+                }
+                set {
+                  resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
+                }
+              }
+
+              public struct UserItem: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["UserItem"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("_createdAt", type: .nonNull(.scalar(String.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(_createdAt: String) {
+                  self.init(unsafeResultMap: ["__typename": "UserItem", "_createdAt": _createdAt])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// Unix timestamp of when the entity was created
+                public var _createdAt: String {
+                  get {
+                    return resultMap["_createdAt"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "_createdAt")
+                  }
+                }
+              }
+
+              public struct DomainMetadatum: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["DomainMetadata"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("name", type: .scalar(String.self)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(name: String? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "DomainMetadata", "name": name])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// The name of the domain (e.g., The New York Times)
+                public var name: String? {
+                  get {
+                    return resultMap["name"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "name")
+                  }
                 }
               }
             }

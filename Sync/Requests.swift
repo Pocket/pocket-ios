@@ -8,7 +8,10 @@ import CoreData
 public enum Requests {
     public static func fetchItems() -> NSFetchRequest<Item> {
         let request: NSFetchRequest<Item> = Item.fetchRequest()
-        request.sortDescriptors = []
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Item.timestamp, ascending: false),
+            NSSortDescriptor(keyPath: \Item.title, ascending: true)
+        ]
         return request
     }
     
