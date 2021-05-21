@@ -58,6 +58,7 @@
 		F220F2D32653289B0064D272 /* list.graphql in Resources */ = {isa = PBXBuildFile; fileRef = F220F2D22653289B0064D272 /* list.graphql */; };
 		F224931B2653F5D40013B47D /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F224931A2653F5D40013B47D /* ReaderView.swift */; };
 		F224931C2653F9990013B47D /* ReaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F224931A2653F5D40013B47D /* ReaderView.swift */; };
+		F2C5FF3426584CA000C42A8D /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F2C5FF3326584CA000C42A8D /* Kingfisher */; };
 		F2DCEED226546EEB00EC0E58 /* MockCancellable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F220F2CC2652C29F0064D272 /* MockCancellable.swift */; };
 		F2DCEED326546EEF00EC0E58 /* MockApolloClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = F220F2C92652C2660064D272 /* MockApolloClient.swift */; };
 		F2DCEED5265592E400EC0E58 /* Requests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2DCEED4265592E400EC0E58 /* Requests.swift */; };
@@ -204,6 +205,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F2C5FF3426584CA000C42A8D /* Kingfisher in Frameworks */,
 				F220F2AB264DC0DE0064D272 /* Sync.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -495,6 +497,7 @@
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
+				F2C5FF3326584CA000C42A8D /* Kingfisher */,
 			);
 			productName = "Pocket (iOS)";
 			productReference = 166A81B02637406C0015AA1D /* Pocket.app */;
@@ -643,6 +646,7 @@
 			packageReferences = (
 				167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */,
 				167F8094264C610F00D8F507 /* XCRemoteSwiftPackageReference "apollo-ios" */,
+				F2C5FF3226584CA000C42A8D /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			productRefGroup = 166A81B12637406C0015AA1D /* Products */;
 			projectDirPath = "";
@@ -1406,6 +1410,14 @@
 				minimumVersion = 0.43.0;
 			};
 		};
+		F2C5FF3226584CA000C42A8D /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.3.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1418,6 +1430,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 167F8094264C610F00D8F507 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = Apollo;
+		};
+		F2C5FF3326584CA000C42A8D /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F2C5FF3226584CA000C42A8D /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 
