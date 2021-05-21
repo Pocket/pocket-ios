@@ -81,6 +81,21 @@ class SourceTests: XCTestCase {
 
         // TODO: Assert on item content
     }
+    
+    func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() throws {
+        client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
+            let result = Fixture.load(name: "duplicate-list").asGraphQLResult(from: query)
+            completion?(.success(result))
+
+            return MockCancellable()
+        }
+
+        source.refresh(token: "the-token")
+
+        let request = Requests.fetchItems()
+        let items = try container.viewContext.fetch(request)
+        XCTAssertEqual(items.count, 1)
+    }
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistsItems() throws {
         // set up the context with an existing item
@@ -99,7 +114,7 @@ class SourceTests: XCTestCase {
 
         source.refresh(token: "the-token")
 
-        let request = Requests.fetchItem(byURL: itemURL.absoluteString)
+        let request = Requests.fetchItem(byURLString: itemURL.absoluteString)
         let items = try container.viewContext.fetch(request)
         XCTAssertEqual(items[0].title, "Updated Item 1")
     }

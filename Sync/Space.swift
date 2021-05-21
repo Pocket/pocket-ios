@@ -21,14 +21,14 @@ class Space {
         })
     }
     
-    func fetchItem(byURL url: String) throws -> Item? {
-        let request = Requests.fetchItem(byURL: url)
+    func fetchItem(byURLString url: String) throws -> Item? {
+        let request = Requests.fetchItem(byURLString: url)
         let result = try context.fetch(request)
         return result.first
     }
     
-    func fetchOrCreateItem(byURL url: String) throws -> Item {
-        return try fetchItem(byURL: url) ?? Item(context: context)
+    func fetchOrCreateItem(byURLString url: String) throws -> Item {
+        return try fetchItem(byURLString: url) ?? Item(context: context)
     }
     
     func fetchItems() throws -> [Item] {
