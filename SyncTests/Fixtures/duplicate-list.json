@@ -1,0 +1,58 @@
+{
+    "data": {
+        "userByToken": {
+            "__typename": "User",
+            "userItems": {
+                "__typename": "UserItemConnection",
+                "nodes": [
+                    {
+                        "__typename": "UserItem",
+                        "url": "https://example.com/item-1",
+                        "asyncItem": {
+                            "__typename": "AsyncItem",
+                            "item": {
+                                "__typename": "Item",
+                                "title": "Item 1",
+                                "domain": null,
+                                "timeToRead": 6,
+                                "topImageUrl": "https://example.com/item-2/image.jpg",
+                                "givenUrl": "https://example.com/duplicate-url",
+                                "userItem": {
+                                    "__typename": "UserItem",
+                                    "_createdAt": 1621550941418
+                                },
+                                "domainMetadata": {
+                                    "__typename": "DomainMetadata",
+                                    "name": "WIRED"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "__typename": "UserItem",
+                        "url": "https://example.com/item-1",
+                        "asyncItem": {
+                            "__typename": "AsyncItem",
+                            "item": {
+                                "__typename": "Item",
+                                "title": "Item 1",
+                                "domain": null,
+                                "timeToRead": 6,
+                                "topImageUrl": "https://example.com/item-2/image.jpg",
+                                "givenUrl": "https://example.com/duplicate-url",
+                                "userItem": {
+                                    "__typename": "UserItem",
+                                    "_createdAt": 1621550941418
+                                },
+                                "domainMetadata": {
+                                    "__typename": "DomainMetadata",
+                                    "name": "WIRED"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

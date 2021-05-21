@@ -55,12 +55,8 @@ extension Source {
                 continue
             }
             
-            let item = try! space.fetchOrCreateItem(byURL: remoteItem.givenUrl)
+            let item = try! space.fetchOrCreateItem(byURLString: remoteItem.givenUrl)
             item.update(from: remoteItem)
-            
-            // This is a workaround to avoid duplicate items being saved.
-            // TODO: FIXME.
-            try! space.save()
         }
         
         try! space.save()

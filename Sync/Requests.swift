@@ -15,9 +15,9 @@ public enum Requests {
         return request
     }
     
-    public static func fetchItem(byURL url: String) -> NSFetchRequest<Item> {
+    public static func fetchItem(byURLString url: String) -> NSFetchRequest<Item> {
         let request: NSFetchRequest<Item> = Item.fetchRequest()
-        request.predicate = NSPredicate(format: "url == %@", url)
+        request.predicate = NSPredicate(format: "url.absoluteString == %@", url)
         request.fetchLimit = 1
         return request
     }
