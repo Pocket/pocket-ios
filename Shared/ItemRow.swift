@@ -4,17 +4,14 @@
 
 import SwiftUI
 import Sync
+import Kingfisher
 
 struct ItemRow: View {
     @ObservedObject
     private var item: Item
-    
-    @ObservedObject
-    var remoteImageLoader: RemoteImageLoader
 
-    init(item: Item, loader: RemoteImageLoader) {
+    init(item: Item) {
         self.item = item
-        self.remoteImageLoader = loader
     }
     
     var body: some View {
@@ -30,10 +27,17 @@ struct ItemRow: View {
                 Spacer()
                 
                 VStack {
-                    RemoteImageView(loader: remoteImageLoader) {
-                        Rectangle().foregroundColor(.gray)
-                    }
-                    .frame(width: 64, height: 64).cornerRadius(4)
+                    KFImage(item.thumbnailURL)
+                        .placeholder {
+                            Rectangle()
+                                .foregroundColor(.gray)
+                                .frame(width: Constants.thumbnailSize.width, height: Constants.thumbnailSize.height)
+                                .cornerRadius(Constants.cornerRadius)
+                        }
+                        .scaleFactor(UIScreen.main.scale)
+                        .setProcessor(ResizingImageProcessor(referenceSize: Constants.thumbnailSize, mode: .aspectFill))
+                        .appendProcessor(CroppingImageProcessor(size: Constants.thumbnailSize))
+                        .appendProcessor(RoundCornerImageProcessor(cornerRadius: Constants.cornerRadius))
                     Spacer()
                 }
             }
@@ -48,5 +52,12 @@ struct ItemRow: View {
             components.append(timeToRead)
         }
         return components.joined(separator: " • ")
+    }
+}
+
+extension ItemRow {
+    enum Constants {
+        static let cornerRadius: CGFloat = 4
+        static let thumbnailSize = CGSize(width: 64, height: 64)
     }
 }
