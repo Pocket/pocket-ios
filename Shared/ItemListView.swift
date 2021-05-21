@@ -24,7 +24,7 @@ struct ItemListView: View {
     var body: some View {
         List(items) { item in
             ZStack(alignment: .leading) {
-                ItemRow(item: item, loader: RemoteImageLoader(url: item.thumbnailURL, session: URLSession.shared))
+                ItemRow(item: item)
                 NavigationLink(destination: ItemDestinationView(item: item)) { }
                     .hidden()
             }
