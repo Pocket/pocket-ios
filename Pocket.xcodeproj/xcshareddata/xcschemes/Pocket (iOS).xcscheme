@@ -83,7 +83,11 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "clearCoreData"
-            isEnabled = "YES">
+            isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "clearImageCache"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "clearKeychain"
