@@ -5,6 +5,7 @@
 import SwiftUI
 import Apollo
 import Sync
+import Kingfisher
 
 
 class AppState: ObservableObject {
@@ -21,7 +22,7 @@ struct PocketApp: App {
     private var accessTokenStore: AccessTokenStore
 
     @Environment(\.source)
-    private var source: Source
+    private var source: Sync.Source
     
     init() {
         if CommandLine.arguments.contains("clearKeychain") {
@@ -30,6 +31,10 @@ struct PocketApp: App {
 
         if CommandLine.arguments.contains("clearCoreData") {
             source.clear()
+        }
+        
+        if CommandLine.arguments.contains("clearImageCache") {
+            ImageCache.default.clearCache()
         }
 
         appState.authToken = accessTokenStore.accessToken
