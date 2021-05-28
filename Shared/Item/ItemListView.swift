@@ -4,6 +4,7 @@
 
 import SwiftUI
 import Sync
+import Textile
 
 
 struct ItemListView: View {
@@ -20,16 +21,13 @@ struct ItemListView: View {
         source.refresh(token: token)
     }
 
-
     var body: some View {
         List(items) { item in
             ZStack(alignment: .leading) {
-                ItemRow(item: item)
+                ItemRowView(model: ItemPresenter(item: item))
                 NavigationLink(destination: ItemDestinationView(item: item)) { }
                     .hidden()
             }
         }.accessibility(identifier: "user-list")
     }
 }
-
-

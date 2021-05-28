@@ -6,6 +6,7 @@ import SwiftUI
 import Apollo
 import Sync
 import Kingfisher
+import Textile
 
 
 class AppState: ObservableObject {
@@ -36,8 +37,10 @@ struct PocketApp: App {
         if CommandLine.arguments.contains("clearImageCache") {
             ImageCache.default.clearCache()
         }
-
+        
+        Textiles.initialize()
         appState.authToken = accessTokenStore.accessToken
+
     }
 
     @ViewBuilder
@@ -48,6 +51,8 @@ struct PocketApp: App {
         }
     }
 }
+
+
 
 struct AppView: View {
     @ObservedObject
