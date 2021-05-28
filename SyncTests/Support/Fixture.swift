@@ -32,6 +32,11 @@ class Fixture {
         }
     }
 
+    static func decode<T: Decodable>(name: String, ext: String = "json") -> T {
+        let fixture = load(name: name, ext: ext)
+        return fixture.decode()
+    }
+
     func asGraphQLResult<Query: GraphQLQuery>(from query: Query) -> GraphQLResult<Query.Data> {
         do {
             let anyJSON = try JSONSerialization.jsonObject(with: data, options: [])
@@ -44,6 +49,14 @@ class Fixture {
             return try response.parseResultFast()
         } catch {
             fatalError("Could not decode graphQL result: \(error)")
+        }
+    }
+
+    func decode<T: Decodable>(using decoder: JSONDecoder = JSONDecoder()) -> T {
+        do {
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            fatalError("\(error)")
         }
     }
 }
