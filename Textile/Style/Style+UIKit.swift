@@ -9,7 +9,11 @@ import UIKit
 @available(iOS 1.0, *)
 extension UIColor {
     convenience init?(_ colorAsset: ColorAsset) {
-        self.init(named: colorAsset._name)
+        self.init(
+            named: colorAsset._name,
+            in: Textiles.bundle,
+            compatibleWith: nil
+        )
     }
 }
 
@@ -32,12 +36,21 @@ extension UIFont.Weight {
 @available(iOS 1.0, *)
 extension UIFontDescriptor {
     convenience init(_ descriptor: FontDescriptor) {
-        let traits: [UIFontDescriptor.TraitKey: Any] = [
-            .weight: descriptor.weight.flatMap(UIFont.Weight.init) ?? .regular
+        var traits: [UIFontDescriptor.TraitKey: Any] = [
+            .weight: descriptor.weight.flatMap(UIFont.Weight.init) ?? .regular,
         ]
 
+        if let slant = descriptor.slant {
+            switch slant {
+            case .none:
+                break
+            case .italic:
+                traits[.slant] = 1
+            }
+        }
+
         var fontAttributes: [UIFontDescriptor.AttributeName: Any] = [
-            .traits: traits
+            .traits: traits,
         ]
 
         if let family = descriptor.family {
@@ -58,15 +71,43 @@ extension UIFont {
     }
 }
 
+extension NSUnderlineStyle {
+    init?(_ underlineStyle: UnderlineStyle) {
+        switch underlineStyle {
+        case .none:
+            return nil
+        case .single:
+            self = .single
+        }
+    }
+
+    init?(_ strike: Strike) {
+        switch strike {
+        case .none:
+            return nil
+        case .strikethrough:
+            self = .single
+        }
+    }
+}
+
 @available(iOS 1.0, *)
 public extension Style {
     var textAttributes: [NSAttributedString.Key: Any] {
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFont(fontDescriptor),
+            .font: UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor))
         ]
 
         if let color = UIColor(colorAsset) {
             attributes[.foregroundColor] = color
+        }
+
+        if let underline = NSUnderlineStyle(underlineStyle) {
+            attributes[.underlineStyle] = underline.rawValue
+        }
+
+        if let strike = NSUnderlineStyle(strike) {
+            attributes[.strikethroughStyle] = strike.rawValue
         }
 
         return attributes

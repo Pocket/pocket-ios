@@ -4,6 +4,7 @@
 
 import SwiftUI
 import Sync
+import Textile
 
 
 private struct AccessTokenStoreKey: EnvironmentKey {
@@ -23,6 +24,10 @@ struct SourceKey: EnvironmentKey {
     static var defaultValue = Source()
 }
 
+struct StyleKey: EnvironmentKey {
+    static var defaultValue = Style.body.sansSerif
+}
+
 extension EnvironmentValues {
     var accessTokenStore: AccessTokenStore {
         get { self[AccessTokenStoreKey.self] }
@@ -37,5 +42,10 @@ extension EnvironmentValues {
     var source: Source {
         get { self[SourceKey.self] }
         set { self[SourceKey.self] = newValue }
+    }
+    
+    var style: Style {
+        get { self[StyleKey.self] }
+        set { self[StyleKey.self] = newValue }
     }
 }

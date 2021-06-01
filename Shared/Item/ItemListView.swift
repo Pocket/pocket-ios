@@ -6,7 +6,6 @@ import SwiftUI
 import Sync
 import Textile
 
-
 struct ItemListView: View {
     @Environment(\.source)
     private var source: Source
@@ -25,7 +24,7 @@ struct ItemListView: View {
         List(items) { item in
             ZStack(alignment: .leading) {
                 ItemRowView(model: ItemPresenter(item: item))
-                NavigationLink(destination: ItemDestinationView(item: item)) { }
+                NavigationLink(destination: ArticleView(article: Article.sample)) { }
                     .hidden()
             }
         }.accessibility(identifier: "user-list")

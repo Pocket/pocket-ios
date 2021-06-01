@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public enum ArticleComponent: Equatable {
+public enum ArticleComponent: Hashable {
     case bodyText(BodyText)
     case byline(Byline)
     case copyright(Copyright)
@@ -14,4 +14,10 @@ public enum ArticleComponent: Equatable {
     case quote(Quote)
     case title(Title)
     case unsupported(String)
+}
+
+extension ArticleComponent: Identifiable {
+    public var id: ArticleComponent {
+        return self
+    }
 }
