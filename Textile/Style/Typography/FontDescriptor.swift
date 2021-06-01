@@ -6,12 +6,18 @@ public struct FontDescriptor {
     let family: Family?
     let size: Size?
     let weight: Weight?
+    let slant: Slant?
 
     public enum Weight {
         case regular
         case medium
         case semibold
         case bold
+    }
+
+    public enum Slant {
+        case none
+        case italic
     }
 
     public struct Family {
@@ -22,16 +28,32 @@ public struct FontDescriptor {
         let size: Int
     }
 
+    public init(
+        family: Family? = nil,
+        size: Size? = nil,
+        weight: Weight? = nil,
+        slant: Slant? = nil
+    ) {
+        self.family = family
+        self.size = size
+        self.weight = weight
+        self.slant = slant
+    }
+
     func with(family: Family) -> FontDescriptor {
-        FontDescriptor(family: family, size: size, weight: weight)
+        FontDescriptor(family: family, size: size, weight: weight, slant: slant)
     }
 
     func with(size: Size) -> FontDescriptor {
-        FontDescriptor(family: family, size: size, weight: weight)
+        FontDescriptor(family: family, size: size, weight: weight, slant: slant)
     }
 
     func with(weight: Weight) -> FontDescriptor {
-        FontDescriptor(family: family, size: size, weight: weight)
+        FontDescriptor(family: family, size: size, weight: weight, slant: slant)
+    }
+
+    func with(slant: Slant) -> FontDescriptor {
+        FontDescriptor(family: family, size: size, weight: weight, slant: slant)
     }
 }
 

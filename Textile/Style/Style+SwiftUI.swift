@@ -29,11 +29,9 @@ public extension Font {
     init(_ descriptor: FontDescriptor) {
         let size = descriptor.size.flatMap(CGFloat.init) ?? 0
 
-        if let name = descriptor.family?.name {
-            self = .custom(name, size: size)
-        } else {
-            self = .system(size: size)
-        }
+        self = descriptor
+            .family
+            .flatMap { .custom($0.name, size: size) } ?? .system(size: size)
 
         self = descriptor
             .weight
