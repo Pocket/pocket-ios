@@ -19,7 +19,7 @@ class Tests_iOS: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/") { _, _ in
+        server.routes.post("/graphql") { _, _ in
             Response {
                 Status.ok
                 Fixture.data(name: "initial-list")
@@ -70,20 +70,20 @@ class Tests_iOS: XCTestCase {
         do {
             let item = listView.itemView(withLabelStartingWith: "Item 1")
             XCTAssertTrue(item.waitForExistence())
-            XCTAssertTrue(item.contains(string: "Pocket"))
+            XCTAssertTrue(item.contains(string: "WIRED"))
             XCTAssertTrue(item.contains(string: "6 min"))
         }
 
         do {
             let item = listView.itemView(withLabelStartingWith: "Item 2")
             XCTAssertTrue(item.waitForExistence())
-            XCTAssertTrue(item.contains(string: "getpocket.com"))
+            XCTAssertTrue(item.contains(string: "wired.com"))
         }
     }
 
     func test_2_subsequentAppLaunch_displaysCachedContent() {
         var promise: EventLoopPromise<Response>?
-        server.routes.post("/") { _, loop in
+        server.routes.post("/graphql") { _, loop in
             promise = loop.makePromise()
             return promise!.futureResult
         }
@@ -116,7 +116,7 @@ class Tests_iOS: XCTestCase {
         XCTAssertEqual(listView.itemCount, 2)
     }
 
-    func test_3_tappingItem_displaysWebReaderView() {
+    func test_3_tappingItem_displaysNativeReaderView() {
         app.launch()
 
         let list = app.userListView()
@@ -126,10 +126,29 @@ class Tests_iOS: XCTestCase {
         XCTAssertTrue(item.waitForExistence())
         item.tap()
 
-        let webReaderView = app.webReaderView()
-        XCTAssertTrue(webReaderView.waitForExistence())
+        let readerView = app.readerView()
+        XCTAssertTrue(readerView.waitForExistence())
 
-        let text = webReaderView.staticText(matching: "Hello, world")
-        XCTAssertTrue(text.waitForExistence(timeout: 10))
+        let expectedStrings = [
+            "Venenatis Ridiculus Vehicula",
+            "By Jacob & David",
+            "Vestibulum id ligula porta felis",
+            "Euismod Ipsum Mollis",
+            "Maecenas faucibus mollis interdum. Etiam porta sem",
+            "Dolor Pharetra Parturient Egestas",
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+            "Ornare Mollis Magna Ipsum",
+            "Etiam porta sem malesuada magna mollis euismod",
+            "Inline Modifiers",
+            "Any text component can include inline modifiers.",
+            "This paragraph contains a link to my favorite",
+            "This paragraph contains a few inline styles.",
+            "Copyright Pocket 2021"
+        ]
+
+        for expectedString in expectedStrings {
+            let text = readerView.staticText(containing: expectedString)
+            XCTAssertTrue(text.waitForExistence(timeout: 10))
+        }
     }
 }

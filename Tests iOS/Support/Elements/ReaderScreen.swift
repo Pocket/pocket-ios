@@ -5,7 +5,7 @@
 import XCTest
 
 
-struct WebReaderScreen {
+struct ReaderScreen {
     private let el: XCUIElement
 
     init(el: XCUIElement) {
@@ -16,7 +16,8 @@ struct WebReaderScreen {
         return el.waitForExistence(timeout: timeout)
     }
 
-    func staticText(matching string: String) -> XCUIElement {
-        return el.staticTexts[string]
+    func staticText(containing string: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label CONTAINS %@", string)
+        return el.textViews.element(matching: predicate)
     }
 }

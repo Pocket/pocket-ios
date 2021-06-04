@@ -31,6 +31,7 @@ struct ArticleView: View {
         }
         .padding([.top, .horizontal])
         .environmentObject(state)
+        .accessibility(identifier: "article-view")
     }
 }
 
