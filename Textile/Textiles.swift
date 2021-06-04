@@ -23,6 +23,9 @@ public class Textiles {
         if #available(iOS 1.0, *) {
             UINavigationBar.appearance().titleTextAttributes = Style.navigationTitle.textAttributes
             UINavigationBar.appearance().largeTitleTextAttributes = Style.largeNavigationTitle.textAttributes
+            
+            UIToolbar.appearance().barTintColor = UIColor(ColorAsset.ui.white1)
+            UIToolbar.appearance().tintColor = UIColor(ColorAsset.ui.grey1)
         }
     }
 
