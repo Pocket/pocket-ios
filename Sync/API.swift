@@ -88,6 +88,9 @@ public final class UserByTokenQuery: GraphQLQuery {
               _createdAt
               item {
                 __typename
+                title
+                topImageUrl
+                timeToRead
                 domain
                 domainMetadata {
                   __typename
@@ -101,9 +104,6 @@ public final class UserByTokenQuery: GraphQLQuery {
                   src
                   imageId
                 }
-                title
-                topImageUrl
-                timeToRead
               }
             }
           }
@@ -350,12 +350,12 @@ public final class UserByTokenQuery: GraphQLQuery {
               public static var selections: [GraphQLSelection] {
                 return [
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("domain", type: .scalar(String.self)),
-                  GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
-                  GraphQLField("images", type: .list(.object(Image.selections))),
                   GraphQLField("title", type: .scalar(String.self)),
                   GraphQLField("topImageUrl", type: .scalar(String.self)),
                   GraphQLField("timeToRead", type: .scalar(Int.self)),
+                  GraphQLField("domain", type: .scalar(String.self)),
+                  GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
+                  GraphQLField("images", type: .list(.object(Image.selections))),
                 ]
               }
 
@@ -365,8 +365,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(domain: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, title: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil) {
-                self.init(unsafeResultMap: ["__typename": "Item", "domain": domain, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "title": title, "topImageUrl": topImageUrl, "timeToRead": timeToRead])
+              public init(title: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+                self.init(unsafeResultMap: ["__typename": "Item", "title": title, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
               }
 
               public var __typename: String {
@@ -375,36 +375,6 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "__typename")
-                }
-              }
-
-              /// The domain, such as 'getpocket.com' of the {.resolved_url}
-              public var domain: String? {
-                get {
-                  return resultMap["domain"] as? String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "domain")
-                }
-              }
-
-              /// Additional information about the item domain, when present, use this for displaying the domain name
-              public var domainMetadata: DomainMetadatum? {
-                get {
-                  return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
-                }
-                set {
-                  resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
-                }
-              }
-
-              /// Array of images within an article
-              public var images: [Image?]? {
-                get {
-                  return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
-                }
-                set {
-                  resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
                 }
               }
 
@@ -435,6 +405,36 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "timeToRead")
+                }
+              }
+
+              /// The domain, such as 'getpocket.com' of the {.resolved_url}
+              public var domain: String? {
+                get {
+                  return resultMap["domain"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "domain")
+                }
+              }
+
+              /// Additional information about the item domain, when present, use this for displaying the domain name
+              public var domainMetadata: DomainMetadatum? {
+                get {
+                  return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
+                }
+                set {
+                  resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
+                }
+              }
+
+              /// Array of images within an article
+              public var images: [Image?]? {
+                get {
+                  return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
+                }
+                set {
+                  resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
                 }
               }
 
