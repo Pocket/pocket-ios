@@ -15,8 +15,8 @@
         "repositoryURL": "https://github.com/swift-server/async-http-client.git",
         "state": {
           "branch": null,
-          "revision": "0dda95cffcdf3d96ca551e5701efd1661cf31374",
-          "version": "1.2.5"
+          "revision": "8ccba7328d178ac05a1a9803cf3f2c6660d2f826",
+          "version": "1.3.0"
         }
       },
       {
@@ -51,7 +51,7 @@
         "repositoryURL": "https://github.com/jacobsimeon/Sails.git",
         "state": {
           "branch": "master",
-          "revision": "6303d2bb15bef7d16b4f459a11307b05e92f61bf",
+          "revision": "5cefc7d01cf0f24fbea205d5ce9d2659e77be3ed",
           "version": null
         }
       },
