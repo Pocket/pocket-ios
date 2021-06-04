@@ -4,22 +4,32 @@
 import Apollo
 import Foundation
 
+/// Pagination request. To determine which edges to return, the connection
+/// evaluates the `before` and `after` cursors (if given) to filter the
+/// edges, then evaluates `first`/`last` to slice the edges (only include a
+/// value for either `first` or `last`, not both). If all fields are null,
+/// by default will return a page with the first 30 elements.
 public struct PaginationInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   /// - Parameters:
   ///   - after: Returns the elements in the list that come after the specified cursor.
+  /// The specified cursor is not included in the result.
   ///   - before: Returns the elements in the list that come before the specified cursor.
-  ///   - first: Returns the first _n_ elements from the list.
-  ///   - last: Returns the last _n_ elements from the list.
-  public init(after: Swift.Optional<GraphQLID?> = nil, before: Swift.Optional<GraphQLID?> = nil, first: Swift.Optional<Int?> = nil, last: Swift.Optional<Int?> = nil) {
+  /// The specified cursor is not included in the result.
+  ///   - first: Returns the first _n_ elements from the list. Must be a non-negative integer.
+  /// If `first` contains a value, `last` should be null/omitted in the input.
+  ///   - last: Returns the last _n_ elements from the list. Must be a non-negative integer.
+  /// If `last` contains a value, `first` should be null/omitted in the input.
+  public init(after: Swift.Optional<String?> = nil, before: Swift.Optional<String?> = nil, first: Swift.Optional<Int?> = nil, last: Swift.Optional<Int?> = nil) {
     graphQLMap = ["after": after, "before": before, "first": first, "last": last]
   }
 
   /// Returns the elements in the list that come after the specified cursor.
-  public var after: Swift.Optional<GraphQLID?> {
+  /// The specified cursor is not included in the result.
+  public var after: Swift.Optional<String?> {
     get {
-      return graphQLMap["after"] as? Swift.Optional<GraphQLID?> ?? Swift.Optional<GraphQLID?>.none
+      return graphQLMap["after"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "after")
@@ -27,16 +37,18 @@ public struct PaginationInput: GraphQLMapConvertible {
   }
 
   /// Returns the elements in the list that come before the specified cursor.
-  public var before: Swift.Optional<GraphQLID?> {
+  /// The specified cursor is not included in the result.
+  public var before: Swift.Optional<String?> {
     get {
-      return graphQLMap["before"] as? Swift.Optional<GraphQLID?> ?? Swift.Optional<GraphQLID?>.none
+      return graphQLMap["before"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "before")
     }
   }
 
-  /// Returns the first _n_ elements from the list.
+  /// Returns the first _n_ elements from the list. Must be a non-negative integer.
+  /// If `first` contains a value, `last` should be null/omitted in the input.
   public var first: Swift.Optional<Int?> {
     get {
       return graphQLMap["first"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
@@ -46,7 +58,8 @@ public struct PaginationInput: GraphQLMapConvertible {
     }
   }
 
-  /// Returns the last _n_ elements from the list.
+  /// Returns the last _n_ elements from the list. Must be a non-negative integer.
+  /// If `last` contains a value, `first` should be null/omitted in the input.
   public var last: Swift.Optional<Int?> {
     get {
       return graphQLMap["last"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
@@ -64,28 +77,33 @@ public final class UserByTokenQuery: GraphQLQuery {
     query UserByToken($token: String!, $pagination: PaginationInput) {
       userByToken(token: $token) {
         __typename
-        userItems(pagination: $pagination) {
+        savedItems(pagination: $pagination) {
           __typename
-          nodes {
+          edges {
             __typename
-            url
-            asyncItem {
+            cursor
+            node {
               __typename
+              url
+              _createdAt
               item {
                 __typename
-                title
                 domain
-                timeToRead
-                topImageUrl
-                givenUrl
-                userItem {
-                  __typename
-                  _createdAt
-                }
                 domainMetadata {
                   __typename
                   name
+                  logo
                 }
+                images {
+                  __typename
+                  height
+                  width
+                  src
+                  imageId
+                }
+                title
+                topImageUrl
+                timeToRead
               }
             }
           }
@@ -143,7 +161,7 @@ public final class UserByTokenQuery: GraphQLQuery {
       public static var selections: [GraphQLSelection] {
         return [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-          GraphQLField("userItems", arguments: ["pagination": GraphQLVariable("pagination")], type: .object(UserItem.selections)),
+          GraphQLField("savedItems", arguments: ["pagination": GraphQLVariable("pagination")], type: .object(SavedItem.selections)),
         ]
       }
 
@@ -153,8 +171,8 @@ public final class UserByTokenQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(userItems: UserItem? = nil) {
-        self.init(unsafeResultMap: ["__typename": "User", "userItems": userItems.flatMap { (value: UserItem) -> ResultMap in value.resultMap }])
+      public init(savedItems: SavedItem? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "savedItems": savedItems.flatMap { (value: SavedItem) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -167,22 +185,22 @@ public final class UserByTokenQuery: GraphQLQuery {
       }
 
       /// Get a general paginated listing of all user items for the user
-      public var userItems: UserItem? {
+      public var savedItems: SavedItem? {
         get {
-          return (resultMap["userItems"] as? ResultMap).flatMap { UserItem(unsafeResultMap: $0) }
+          return (resultMap["savedItems"] as? ResultMap).flatMap { SavedItem(unsafeResultMap: $0) }
         }
         set {
-          resultMap.updateValue(newValue?.resultMap, forKey: "userItems")
+          resultMap.updateValue(newValue?.resultMap, forKey: "savedItems")
         }
       }
 
-      public struct UserItem: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["UserItemConnection"]
+      public struct SavedItem: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["SavedItemConnection"]
 
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-            GraphQLField("nodes", type: .list(.object(Node.selections))),
+            GraphQLField("edges", type: .list(.object(Edge.selections))),
           ]
         }
 
@@ -192,8 +210,8 @@ public final class UserByTokenQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(nodes: [Node?]? = nil) {
-          self.init(unsafeResultMap: ["__typename": "UserItemConnection", "nodes": nodes.flatMap { (value: [Node?]) -> [ResultMap?] in value.map { (value: Node?) -> ResultMap? in value.flatMap { (value: Node) -> ResultMap in value.resultMap } } }])
+        public init(edges: [Edge?]? = nil) {
+          self.init(unsafeResultMap: ["__typename": "SavedItemConnection", "edges": edges.flatMap { (value: [Edge?]) -> [ResultMap?] in value.map { (value: Edge?) -> ResultMap? in value.flatMap { (value: Edge) -> ResultMap in value.resultMap } } }])
         }
 
         public var __typename: String {
@@ -205,24 +223,24 @@ public final class UserByTokenQuery: GraphQLQuery {
           }
         }
 
-        /// A list of nodes.
-        public var nodes: [Node?]? {
+        /// A list of edges.
+        public var edges: [Edge?]? {
           get {
-            return (resultMap["nodes"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Node?] in value.map { (value: ResultMap?) -> Node? in value.flatMap { (value: ResultMap) -> Node in Node(unsafeResultMap: value) } } }
+            return (resultMap["edges"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Edge?] in value.map { (value: ResultMap?) -> Edge? in value.flatMap { (value: ResultMap) -> Edge in Edge(unsafeResultMap: value) } } }
           }
           set {
-            resultMap.updateValue(newValue.flatMap { (value: [Node?]) -> [ResultMap?] in value.map { (value: Node?) -> ResultMap? in value.flatMap { (value: Node) -> ResultMap in value.resultMap } } }, forKey: "nodes")
+            resultMap.updateValue(newValue.flatMap { (value: [Edge?]) -> [ResultMap?] in value.map { (value: Edge?) -> ResultMap? in value.flatMap { (value: Edge) -> ResultMap in value.resultMap } } }, forKey: "edges")
           }
         }
 
-        public struct Node: GraphQLSelectionSet {
-          public static let possibleTypes: [String] = ["UserItem"]
+        public struct Edge: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["SavedItemEdge"]
 
           public static var selections: [GraphQLSelection] {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-              GraphQLField("url", type: .nonNull(.scalar(String.self))),
-              GraphQLField("asyncItem", type: .nonNull(.object(AsyncItem.selections))),
+              GraphQLField("cursor", type: .nonNull(.scalar(String.self))),
+              GraphQLField("node", type: .object(Node.selections)),
             ]
           }
 
@@ -232,8 +250,8 @@ public final class UserByTokenQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(url: String, asyncItem: AsyncItem) {
-            self.init(unsafeResultMap: ["__typename": "UserItem", "url": url, "asyncItem": asyncItem.resultMap])
+          public init(cursor: String, node: Node? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SavedItemEdge", "cursor": cursor, "node": node.flatMap { (value: Node) -> ResultMap in value.resultMap }])
           }
 
           public var __typename: String {
@@ -245,33 +263,35 @@ public final class UserByTokenQuery: GraphQLQuery {
             }
           }
 
-          /// The url the user saved to their list
-          public var url: String {
+          /// A cursor for use in pagination.
+          public var cursor: String {
             get {
-              return resultMap["url"]! as! String
+              return resultMap["cursor"]! as! String
             }
             set {
-              resultMap.updateValue(newValue, forKey: "url")
+              resultMap.updateValue(newValue, forKey: "cursor")
             }
           }
 
-          /// Link to the underlying Pocket Item for the URL
-          public var asyncItem: AsyncItem {
+          /// The item at the end of the edge.
+          public var node: Node? {
             get {
-              return AsyncItem(unsafeResultMap: resultMap["asyncItem"]! as! ResultMap)
+              return (resultMap["node"] as? ResultMap).flatMap { Node(unsafeResultMap: $0) }
             }
             set {
-              resultMap.updateValue(newValue.resultMap, forKey: "asyncItem")
+              resultMap.updateValue(newValue?.resultMap, forKey: "node")
             }
           }
 
-          public struct AsyncItem: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["AsyncItem"]
+          public struct Node: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SavedItem"]
 
             public static var selections: [GraphQLSelection] {
               return [
                 GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                GraphQLField("item", type: .object(Item.selections)),
+                GraphQLField("url", type: .nonNull(.scalar(String.self))),
+                GraphQLField("_createdAt", type: .nonNull(.scalar(String.self))),
+                GraphQLField("item", type: .nonNull(.object(Item.selections))),
               ]
             }
 
@@ -281,8 +301,8 @@ public final class UserByTokenQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(item: Item? = nil) {
-              self.init(unsafeResultMap: ["__typename": "AsyncItem", "item": item.flatMap { (value: Item) -> ResultMap in value.resultMap }])
+            public init(url: String, _createdAt: String, item: Item) {
+              self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "_createdAt": _createdAt, "item": item.resultMap])
             }
 
             public var __typename: String {
@@ -294,12 +314,33 @@ public final class UserByTokenQuery: GraphQLQuery {
               }
             }
 
-            public var item: Item? {
+            /// The url the user saved to their list
+            public var url: String {
               get {
-                return (resultMap["item"] as? ResultMap).flatMap { Item(unsafeResultMap: $0) }
+                return resultMap["url"]! as! String
               }
               set {
-                resultMap.updateValue(newValue?.resultMap, forKey: "item")
+                resultMap.updateValue(newValue, forKey: "url")
+              }
+            }
+
+            /// Unix timestamp of when the entity was created
+            public var _createdAt: String {
+              get {
+                return resultMap["_createdAt"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "_createdAt")
+              }
+            }
+
+            /// Link to the underlying Pocket Item for the URL
+            public var item: Item {
+              get {
+                return Item(unsafeResultMap: resultMap["item"]! as! ResultMap)
+              }
+              set {
+                resultMap.updateValue(newValue.resultMap, forKey: "item")
               }
             }
 
@@ -309,13 +350,12 @@ public final class UserByTokenQuery: GraphQLQuery {
               public static var selections: [GraphQLSelection] {
                 return [
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("title", type: .scalar(String.self)),
                   GraphQLField("domain", type: .scalar(String.self)),
-                  GraphQLField("timeToRead", type: .scalar(Int.self)),
-                  GraphQLField("topImageUrl", type: .scalar(String.self)),
-                  GraphQLField("givenUrl", type: .nonNull(.scalar(String.self))),
-                  GraphQLField("userItem", type: .object(UserItem.selections)),
                   GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
+                  GraphQLField("images", type: .list(.object(Image.selections))),
+                  GraphQLField("title", type: .scalar(String.self)),
+                  GraphQLField("topImageUrl", type: .scalar(String.self)),
+                  GraphQLField("timeToRead", type: .scalar(Int.self)),
                 ]
               }
 
@@ -325,8 +365,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(title: String? = nil, domain: String? = nil, timeToRead: Int? = nil, topImageUrl: String? = nil, givenUrl: String, userItem: UserItem? = nil, domainMetadata: DomainMetadatum? = nil) {
-                self.init(unsafeResultMap: ["__typename": "Item", "title": title, "domain": domain, "timeToRead": timeToRead, "topImageUrl": topImageUrl, "givenUrl": givenUrl, "userItem": userItem.flatMap { (value: UserItem) -> ResultMap in value.resultMap }, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }])
+              public init(domain: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, title: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil) {
+                self.init(unsafeResultMap: ["__typename": "Item", "domain": domain, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "title": title, "topImageUrl": topImageUrl, "timeToRead": timeToRead])
               }
 
               public var __typename: String {
@@ -335,16 +375,6 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "__typename")
-                }
-              }
-
-              /// The title as determined by the parser.
-              public var title: String? {
-                get {
-                  return resultMap["title"] as? String
-                }
-                set {
-                  resultMap.updateValue(newValue, forKey: "title")
                 }
               }
 
@@ -358,13 +388,33 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
               }
 
-              /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
-              public var timeToRead: Int? {
+              /// Additional information about the item domain, when present, use this for displaying the domain name
+              public var domainMetadata: DomainMetadatum? {
                 get {
-                  return resultMap["timeToRead"] as? Int
+                  return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
                 }
                 set {
-                  resultMap.updateValue(newValue, forKey: "timeToRead")
+                  resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
+                }
+              }
+
+              /// Array of images within an article
+              public var images: [Image?]? {
+                get {
+                  return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
+                }
+                set {
+                  resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+                }
+              }
+
+              /// The title as determined by the parser.
+              public var title: String? {
+                get {
+                  return resultMap["title"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "title")
                 }
               }
 
@@ -378,73 +428,13 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
               }
 
-              /// The url as provided by the user when saving. Only http or https schemes allowed.
-              public var givenUrl: String {
+              /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
+              public var timeToRead: Int? {
                 get {
-                  return resultMap["givenUrl"]! as! String
+                  return resultMap["timeToRead"] as? Int
                 }
                 set {
-                  resultMap.updateValue(newValue, forKey: "givenUrl")
-                }
-              }
-
-              /// Helper property to identify if the given item is in the user's list
-              public var userItem: UserItem? {
-                get {
-                  return (resultMap["userItem"] as? ResultMap).flatMap { UserItem(unsafeResultMap: $0) }
-                }
-                set {
-                  resultMap.updateValue(newValue?.resultMap, forKey: "userItem")
-                }
-              }
-
-              /// Additional information about the item domain, when present, use this for displaying the domain name
-              public var domainMetadata: DomainMetadatum? {
-                get {
-                  return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
-                }
-                set {
-                  resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
-                }
-              }
-
-              public struct UserItem: GraphQLSelectionSet {
-                public static let possibleTypes: [String] = ["UserItem"]
-
-                public static var selections: [GraphQLSelection] {
-                  return [
-                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-                    GraphQLField("_createdAt", type: .nonNull(.scalar(String.self))),
-                  ]
-                }
-
-                public private(set) var resultMap: ResultMap
-
-                public init(unsafeResultMap: ResultMap) {
-                  self.resultMap = unsafeResultMap
-                }
-
-                public init(_createdAt: String) {
-                  self.init(unsafeResultMap: ["__typename": "UserItem", "_createdAt": _createdAt])
-                }
-
-                public var __typename: String {
-                  get {
-                    return resultMap["__typename"]! as! String
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "__typename")
-                  }
-                }
-
-                /// Unix timestamp of when the entity was created
-                public var _createdAt: String {
-                  get {
-                    return resultMap["_createdAt"]! as! String
-                  }
-                  set {
-                    resultMap.updateValue(newValue, forKey: "_createdAt")
-                  }
+                  resultMap.updateValue(newValue, forKey: "timeToRead")
                 }
               }
 
@@ -455,6 +445,7 @@ public final class UserByTokenQuery: GraphQLQuery {
                   return [
                     GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                     GraphQLField("name", type: .scalar(String.self)),
+                    GraphQLField("logo", type: .scalar(String.self)),
                   ]
                 }
 
@@ -464,8 +455,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(name: String? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "DomainMetadata", "name": name])
+                public init(name: String? = nil, logo: String? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "DomainMetadata", "name": name, "logo": logo])
                 }
 
                 public var __typename: String {
@@ -484,6 +475,89 @@ public final class UserByTokenQuery: GraphQLQuery {
                   }
                   set {
                     resultMap.updateValue(newValue, forKey: "name")
+                  }
+                }
+
+                /// Url for the logo image
+                public var logo: String? {
+                  get {
+                    return resultMap["logo"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "logo")
+                  }
+                }
+              }
+
+              public struct Image: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["Image"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("height", type: .scalar(Int.self)),
+                    GraphQLField("width", type: .scalar(Int.self)),
+                    GraphQLField("src", type: .scalar(String.self)),
+                    GraphQLField("imageId", type: .scalar(Int.self)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(height: Int? = nil, width: Int? = nil, src: String? = nil, imageId: Int? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Image", "height": height, "width": width, "src": src, "imageId": imageId])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// If known, the height of the image in px
+                public var height: Int? {
+                  get {
+                    return resultMap["height"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "height")
+                  }
+                }
+
+                /// If known, the width of the image in px
+                public var width: Int? {
+                  get {
+                    return resultMap["width"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "width")
+                  }
+                }
+
+                /// Absolute url to the image
+                public var src: String? {
+                  get {
+                    return resultMap["src"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "src")
+                  }
+                }
+
+                /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+                public var imageId: Int? {
+                  get {
+                    return resultMap["imageId"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "imageId")
                   }
                 }
               }

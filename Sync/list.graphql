@@ -1,21 +1,26 @@
 query UserByToken($token: String!, $pagination: PaginationInput) {
   userByToken(token: $token) {
-    userItems(pagination: $pagination) {
-      nodes {
-        url
-        asyncItem {
+    savedItems(pagination: $pagination) {
+      edges {
+        cursor
+        node {
+          url
+          _createdAt
           item {
-            title
             domain
-            timeToRead
-            topImageUrl
-            givenUrl
-            userItem {
-                _createdAt
-            }
             domainMetadata {
-                name
+              name
+              logo
             }
+            images {
+              height
+              width
+              src
+              imageId
+            }
+            title
+            topImageUrl
+            timeToRead
           }
         }
       }

@@ -21,7 +21,10 @@ private struct AuthorizationClientKey: EnvironmentKey {
 }
 
 struct SourceKey: EnvironmentKey {
-    static var defaultValue = Source()
+    // TODO: Find a way to not require two instances of AccessTokenStore
+    static var defaultValue = Source(
+        accessTokenProvider: AccessTokenStore(keychain: SecItemKeychain())
+    )
 }
 
 struct StyleKey: EnvironmentKey {
