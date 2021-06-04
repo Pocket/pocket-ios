@@ -29,7 +29,7 @@ struct ArticleView: View {
                 ArticleComponentView(component)
             }
         }
-        .padding()
+        .padding([.top, .horizontal])
         .environmentObject(state)
     }
 }

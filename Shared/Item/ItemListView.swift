@@ -24,7 +24,7 @@ struct ItemListView: View {
         List(items) { item in
             ZStack(alignment: .leading) {
                 ItemRowView(model: ItemPresenter(item: item))
-                NavigationLink(destination: ArticleView(article: Article.sample)) { }
+                NavigationLink(destination: ItemDestinationView(item: item, article: Article.sample)) { }
                     .hidden()
             }
         }.accessibility(identifier: "user-list")
