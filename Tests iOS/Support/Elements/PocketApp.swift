@@ -7,7 +7,7 @@ import XCTest
 struct PocketApp {
     static let defaultEnvironment = [
         "POCKET_V3_BASE_URL": "http://localhost:8080",
-        "POCKET_CLIENT_API_URL": "http://localhost:8080"
+        "POCKET_CLIENT_API_URL": "http://localhost:8080/graphql"
     ]
 
     private let app: XCUIApplication
@@ -42,7 +42,7 @@ struct PocketApp {
         return UserListScreen(el: app.tables["user-list"])
     }
 
-    func webReaderView() -> WebReaderScreen {
-        return WebReaderScreen(el: app.webViews.element(boundBy: 0))
+    func readerView() -> ReaderScreen {
+        return ReaderScreen(el: app.scrollViews["article-view"])
     }
 }
