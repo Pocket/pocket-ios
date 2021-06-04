@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import Sync
 
 
 class AccessTokenStore {
@@ -65,5 +66,13 @@ class AccessTokenStore {
         if status != errSecSuccess {
             throw Error.secItemError(status)
         }
+    }
+}
+
+extension AccessTokenStore: AccessTokenProvider {
+    var consumerKey: String {
+        // TODO: Find a way to not have to access this directly via bundle
+        // (we are doing the same thing in Environment when instantiating AuthorizationClient
+        return Bundle.main.infoDictionary!["PocketAPIConsumerKey"] as! String
     }
 }

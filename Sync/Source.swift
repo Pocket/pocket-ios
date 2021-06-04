@@ -15,9 +15,25 @@ public class Source {
     public var managedObjectContext: NSManagedObjectContext {
         space.context
     }
+
+    public convenience init(
+        accessTokenProvider: AccessTokenProvider,
+        container: NSPersistentContainer = .createDefault(),
+        errorSubject: PassthroughSubject<Error, Never>? = nil
+    ) {
+        let apollo = ApolloClient.createDefault(
+            accessTokenProvider: accessTokenProvider
+        )
+
+        self.init(
+            apollo: apollo,
+            container: container,
+            errorSubject: errorSubject
+        )
+    }
     
     public required init(
-        apollo: ApolloClientProtocol = ApolloClient.createDefault(),
+        apollo: ApolloClientProtocol,
         container: NSPersistentContainer = .createDefault(),
         errorSubject: PassthroughSubject<Error, Never>? = nil
     ) {
@@ -46,17 +62,17 @@ public class Source {
 
 extension Source {
     private func updateItems(_ data: GraphQLResult<UserByTokenQuery.Data>) {
-        guard let nodes = data.data?.userByToken?.userItems?.nodes else {
+        guard let edges = data.data?.userByToken?.savedItems?.edges else {
             return
         }
-        
-        for node in nodes {
-            guard let remoteItem = node?.asyncItem.item else {
+
+        for edge in edges {
+            guard let node = edge?.node else {
                 continue
             }
             
-            let item = try! space.fetchOrCreateItem(byURLString: remoteItem.givenUrl)
-            item.update(from: remoteItem)
+            let item = try! space.fetchOrCreateItem(byURLString: node.url)
+            item.update(from: node)
         }
         
         try! space.save()

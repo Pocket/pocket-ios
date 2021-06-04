@@ -6,25 +6,26 @@ import Foundation
 
 
 extension Item {
-    typealias RemoteItem = UserByTokenQuery.Data.UserByToken.UserItem.Node.AsyncItem.Item
+    typealias RemoteItem = UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node
     
     func update(from remoteItem: RemoteItem) {
-        domain = remoteItem.domainMetadata?.name ?? remoteItem.domain ?? "No Domain"
-        title = remoteItem.title
-        url = URL(string: remoteItem.givenUrl)
-        
-        if let imageURL = remoteItem.topImageUrl {
+        domain = remoteItem.item.domainMetadata?.name ?? remoteItem.item.domain ?? "No Domain"
+        title = remoteItem.item.title
+        url = URL(string: remoteItem.url)
+
+        if let imageURL = remoteItem.item.topImageUrl {
             thumbnailURL = URL(string: imageURL)
         }
-        
-        if let time = remoteItem.timeToRead {
+
+        if let time = remoteItem.item.timeToRead {
             timeToRead = Int32(time)
         }
-        
-        if let unixTimestamp = remoteItem.userItem?._createdAt,
-           let timeInterval = TimeInterval(unixTimestamp) {
-            let interval = round(timeInterval / 1000)
-            timestamp = Date(timeIntervalSince1970: interval)
+
+        guard let timeInterval = TimeInterval(remoteItem._createdAt) else {
+            return
         }
+        
+        let interval = round(timeInterval / 1000)
+        timestamp = Date(timeIntervalSince1970: interval)
     }
 }
