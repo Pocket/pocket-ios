@@ -1,30 +1,37 @@
 {
     "data": {
         "userByToken": {
-            "__typename": "User",
-            "userItems": {
-                "__typename": "UserItemConnection",
-                "nodes": [
+            "__typename": "[type-name-here]",
+            "savedItems": {
+                "__typename": "[type-name-here]",
+                "edges": [
                     {
-                        "__typename": "UserItem",
-                        "url": "http://example.com/item-1",
-                        "asyncItem": {
-                            "__typename": "AsyncItem",
+                        "__typename": "[type-name-here]",
+                        "cursor": "cursor-1",
+                        "node": {
+                            "__typename": "[type-name-here]",
+                            "url": "http://example.com/item-1",
+                            "_createdAt": 0,
                             "item": {
-                                "__typename": "Item",
+                                "__typename": "[type-name-here]",
                                 "title": "Updated Item 1",
+                                "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
                                 "timeToRead": 6,
-                                "topImageUrl": "https://example.com/item-1/image.jpg",
-                                "givenUrl": "http://example.com/item-1",
-                                "userItem": {
-                                    "__typename": "UserItem",
-                                    "_createdAt": 1621550941418
-                                },
                                 "domainMetadata": {
-                                    "__typename": "DomainMetadata",
-                                    "name": "WIRED"
-                                }
+                                    "__typename": "[type-name-here]",
+                                    "name": "WIRED",
+                                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                                },
+                                "images": [
+                                    {
+                                        "__typename": "[type-name-here]",
+                                        "height": 1,
+                                        "width": 2,
+                                        "src": "http://example.com/item-1",
+                                        "imageId": 1
+                                    }
+                                ]
                             }
                         }
                     }
@@ -33,4 +40,3 @@
         }
     }
 }
-
