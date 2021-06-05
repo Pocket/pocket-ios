@@ -4,6 +4,7 @@
 
 import Foundation
 import CoreText
+import Kingfisher
 
 #if canImport(UIKit)
 import UIKit
@@ -50,5 +51,9 @@ public class Textiles {
             }
             return true
         }
+    }
+
+    public static func clearImageCache() {
+        ImageCache.default.clearCache()
     }
 }

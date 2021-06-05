@@ -5,7 +5,6 @@
 import SwiftUI
 import Apollo
 import Sync
-import Kingfisher
 import Textile
 
 
@@ -35,7 +34,7 @@ struct PocketApp: App {
         }
         
         if CommandLine.arguments.contains("clearImageCache") {
-            ImageCache.default.clearCache()
+            Textiles.clearImageCache()
         }
         
         Textiles.initialize()

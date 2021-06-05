@@ -98,7 +98,6 @@
 		F227F0C9265EAF7E0031F985 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = F227F0C8265EAF7E0031F985 /* Style.swift */; };
 		F227F0D5265FE6740031F985 /* ItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F227F0D4265FE6740031F985 /* ItemRow.swift */; };
 		F227F0D7265FE89B0031F985 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F227F0D6265FE89B0031F985 /* Kingfisher */; };
-		F2C5FF3426584CA000C42A8D /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F2C5FF3326584CA000C42A8D /* Kingfisher */; };
 		F2C5FF3E265D4B0900C42A8D /* Textile.h in Headers */ = {isa = PBXBuildFile; fileRef = F2C5FF3C265D4B0900C42A8D /* Textile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F2C5FF45265D4C2700C42A8D /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F2C5FF44265D4C2700C42A8D /* Colors.xcassets */; };
 		F2C5FF4B265D88DC00C42A8D /* Palettes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C5FF4A265D88DC00C42A8D /* Palettes.swift */; };
@@ -294,7 +293,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F2C5FF3426584CA000C42A8D /* Kingfisher in Frameworks */,
 				F227F0C6265E97910031F985 /* Textile.framework in Frameworks */,
 				F220F2AB264DC0DE0064D272 /* Sync.framework in Frameworks */,
 			);
@@ -739,7 +737,6 @@
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
-				F2C5FF3326584CA000C42A8D /* Kingfisher */,
 			);
 			productName = "Pocket (iOS)";
 			productReference = 166A81B02637406C0015AA1D /* Pocket.app */;
@@ -1854,11 +1851,6 @@
 			productName = Apollo;
 		};
 		F227F0D6265FE89B0031F985 /* Kingfisher */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = F2C5FF3226584CA000C42A8D /* XCRemoteSwiftPackageReference "Kingfisher" */;
-			productName = Kingfisher;
-		};
-		F2C5FF3326584CA000C42A8D /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = F2C5FF3226584CA000C42A8D /* XCRemoteSwiftPackageReference "Kingfisher" */;
 			productName = Kingfisher;
