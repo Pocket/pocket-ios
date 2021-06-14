@@ -78,6 +78,7 @@
 		16C4D8712655DED800AA2C00 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C4D8702655DED800AA2C00 /* Fixture.swift */; };
 		16E14D2126680666009A0991 /* Sync+Textile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E14D2026680666009A0991 /* Sync+Textile.swift */; };
 		16E14D2226680666009A0991 /* Sync+Textile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E14D2026680666009A0991 /* Sync+Textile.swift */; };
+		16FD61E42677CC42001A1B33 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = 16FD61E32677CC42001A1B33 /* Apollo */; };
 		16FED3B0266048100095EEE6 /* ColorAsset.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FED3AF266048100095EEE6 /* ColorAsset.swift */; };
 		16FED3B326604B920095EEE6 /* Style+SwiftUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FED3B226604B920095EEE6 /* Style+SwiftUI.swift */; };
 		16FED3B526604BC60095EEE6 /* Style+UIKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FED3B426604BC60095EEE6 /* Style+UIKit.swift */; };
@@ -90,7 +91,6 @@
 		F220F2B4264DC0EA0064D272 /* Source.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F80AA264C991E00D8F507 /* Source.swift */; };
 		F220F2B5264DC1520064D272 /* PocketModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 167F80A6264C98BA00D8F507 /* PocketModel.xcdatamodeld */; };
 		F220F2B6264DC1820064D272 /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F80A3264C77C600D8F507 /* API.swift */; };
-		F220F2BA264DC2750064D272 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = F220F2B9264DC2750064D272 /* Apollo */; };
 		F220F2BB264DC2B50064D272 /* SourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F220F28F264DBCAF0064D272 /* SourceTests.swift */; };
 		F220F2D32653289B0064D272 /* list.graphql in Resources */ = {isa = PBXBuildFile; fileRef = F220F2D22653289B0064D272 /* list.graphql */; };
 		F227F0C6265E97910031F985 /* Textile.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F2C5FF3A265D4B0900C42A8D /* Textile.framework */; };
@@ -324,7 +324,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F220F2BA264DC2750064D272 /* Apollo in Frameworks */,
+				16FD61E42677CC42001A1B33 /* Apollo in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -814,7 +814,7 @@
 			);
 			name = Sync;
 			packageProductDependencies = (
-				F220F2B9264DC2750064D272 /* Apollo */,
+				16FD61E32677CC42001A1B33 /* Apollo */,
 			);
 			productName = Sync;
 			productReference = F220F296264DC0DE0064D272 /* Sync.framework */;
@@ -866,7 +866,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1250;
-				LastUpgradeCheck = 1250;
+				LastUpgradeCheck = 1300;
 				TargetAttributes = {
 					1652D69A2639E63A0005B362 = {
 						CreatedOnToolsVersion = 12.5;
@@ -1845,7 +1845,7 @@
 			package = 167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */;
 			productName = Sails;
 		};
-		F220F2B9264DC2750064D272 /* Apollo */ = {
+		16FD61E32677CC42001A1B33 /* Apollo */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 167F8094264C610F00D8F507 /* XCRemoteSwiftPackageReference "apollo-ios" */;
 			productName = Apollo;
