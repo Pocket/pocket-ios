@@ -16,6 +16,9 @@ struct ItemDestinationView: View {
     @State
     var shouldPresentWebView = false
     
+    @State
+    var shouldPresentOverflow = false
+    
     @ViewBuilder
     private var destinationView: some View {
         if let article = article {
@@ -35,7 +38,8 @@ struct ItemDestinationView: View {
         destinationView
             .toolbar(item: item,
                      presentationMode: _presentationMode.wrappedValue,
-                     shouldPresentWebView: $shouldPresentWebView)
+                     shouldPresentWebView: $shouldPresentWebView,
+                     shouldPresentOverflow: $shouldPresentOverflow)
     }
 }
 
@@ -48,10 +52,16 @@ private struct ItemToolbar: ViewModifier {
     @Binding
     private var shouldPresentWebView: Bool
     
-    init(item: Item, presentationMode: Binding<PresentationMode>, shouldPresentWebView: Binding<Bool>) {
+    @Binding
+    private var shouldPresentOverflow: Bool
+    
+    init(item: Item, presentationMode: Binding<PresentationMode>,
+         shouldPresentWebView: Binding<Bool>,
+         shouldPresentOverflow: Binding<Bool>) {
         self.item = item
         _presentationMode = presentationMode
         _shouldPresentWebView = shouldPresentWebView
+        _shouldPresentOverflow = shouldPresentOverflow
     }
     
     func body(content: Content) -> some View {
@@ -76,16 +86,31 @@ private struct ItemToolbar: ViewModifier {
                     Image(systemName: "safari")
                 }
                 .disabled(item.url == nil)
+                
+                Button(action: {
+                    shouldPresentOverflow = true
+                }) {
+                    Image(systemName: "ellipsis")
+                }
             }
         }
         .sheet(isPresented: $shouldPresentWebView) {
             SafariView(url: item.url!).ignoresSafeArea()
         }
+        .popover(isPresented: $shouldPresentOverflow) {
+            ReaderSettingsView()
+        }
     }
 }
 
 private extension View {
-    func toolbar(item: Item, presentationMode: Binding<PresentationMode>, shouldPresentWebView: Binding<Bool>) -> some View {
-        self.modifier(ItemToolbar(item: item, presentationMode: presentationMode, shouldPresentWebView: shouldPresentWebView))
+    func toolbar(item: Item,
+                 presentationMode: Binding<PresentationMode>,
+                 shouldPresentWebView: Binding<Bool>,
+                 shouldPresentOverflow: Binding<Bool>) -> some View {
+        self.modifier(ItemToolbar(item: item,
+                                  presentationMode: presentationMode,
+                                  shouldPresentWebView: shouldPresentWebView,
+                                  shouldPresentOverflow: shouldPresentOverflow))
     }
 }
