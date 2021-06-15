@@ -55,6 +55,16 @@ public struct FontDescriptor {
     func with(slant: Slant) -> FontDescriptor {
         FontDescriptor(family: family, size: size, weight: weight, slant: slant)
     }
+    
+    func adjustingSize(by adjustment: Int) -> FontDescriptor {
+        guard let size = size else {
+            return self
+        }
+        
+        let adjusted = size.size + adjustment
+        let adjustedSize = Size(size: adjusted)
+        return FontDescriptor(family: family, size: adjustedSize, weight: weight, slant: slant)
+    }
 }
 
 extension FontDescriptor.Family: ExpressibleByStringLiteral {

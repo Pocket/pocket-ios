@@ -102,6 +102,8 @@
 		F227F0D7265FE89B0031F985 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F227F0D6265FE89B0031F985 /* Kingfisher */; };
 		F22DBC0426794ACA002E1895 /* ReaderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22DBC0326794ACA002E1895 /* ReaderSettingsView.swift */; };
 		F22DBC0526794ACA002E1895 /* ReaderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22DBC0326794ACA002E1895 /* ReaderSettingsView.swift */; };
+		F27DED31267956ED00154791 /* ReaderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F27DED30267956ED00154791 /* ReaderSettings.swift */; };
+		F27DED32267956ED00154791 /* ReaderSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F27DED30267956ED00154791 /* ReaderSettings.swift */; };
 		F2C5FF3E265D4B0900C42A8D /* Textile.h in Headers */ = {isa = PBXBuildFile; fileRef = F2C5FF3C265D4B0900C42A8D /* Textile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F2C5FF45265D4C2700C42A8D /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F2C5FF44265D4C2700C42A8D /* Colors.xcassets */; };
 		F2C5FF4B265D88DC00C42A8D /* Palettes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C5FF4A265D88DC00C42A8D /* Palettes.swift */; };
@@ -270,6 +272,7 @@
 		F227F0C8265EAF7E0031F985 /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		F227F0D4265FE6740031F985 /* ItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRow.swift; sourceTree = "<group>"; };
 		F22DBC0326794ACA002E1895 /* ReaderSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSettingsView.swift; sourceTree = "<group>"; };
+		F27DED30267956ED00154791 /* ReaderSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSettings.swift; sourceTree = "<group>"; };
 		F2C5FF3A265D4B0900C42A8D /* Textile.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Textile.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2C5FF3C265D4B0900C42A8D /* Textile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Textile.h; sourceTree = "<group>"; };
 		F2C5FF3D265D4B0900C42A8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -680,6 +683,7 @@
 			isa = PBXGroup;
 			children = (
 				F22DBC0326794ACA002E1895 /* ReaderSettingsView.swift */,
+				F27DED30267956ED00154791 /* ReaderSettings.swift */,
 			);
 			path = Reader;
 			sourceTree = "<group>";
@@ -1061,6 +1065,7 @@
 				16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */,
 				162AAD93263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
 				160CD82326698E4300AA84A1 /* TextContentView.swift in Sources */,
+				F27DED31267956ED00154791 /* ReaderSettings.swift in Sources */,
 				16C03ACD266296FF0034CD8C /* ArticleView.swift in Sources */,
 				160CD81F26698D8200AA84A1 /* Article+sample.swift in Sources */,
 				167F80AE264C9AFE00D8F507 /* ItemListView.swift in Sources */,
@@ -1082,6 +1087,7 @@
 				162AAD90263C7A7E00783011 /* AuthorizeRequest.swift in Sources */,
 				160CD82826698EF500AA84A1 /* ArticleViewState.swift in Sources */,
 				16BE21BD266068FF0037F783 /* ItemPresenter.swift in Sources */,
+				F27DED32267956ED00154791 /* ReaderSettings.swift in Sources */,
 				16BD7AF32639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
 				160CD82B2669940600AA84A1 /* ArticleComponentView.swift in Sources */,
 				16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */,
