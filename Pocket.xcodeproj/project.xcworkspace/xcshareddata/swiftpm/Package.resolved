@@ -2,7 +2,7 @@
   "object": {
     "pins": [
       {
-        "package": "Apollo",
+        "package": "apollo-ios",
         "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
         "state": {
           "branch": null,
