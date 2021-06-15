@@ -100,6 +100,8 @@
 		F227F0C9265EAF7E0031F985 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = F227F0C8265EAF7E0031F985 /* Style.swift */; };
 		F227F0D5265FE6740031F985 /* ItemRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F227F0D4265FE6740031F985 /* ItemRow.swift */; };
 		F227F0D7265FE89B0031F985 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = F227F0D6265FE89B0031F985 /* Kingfisher */; };
+		F22DBC0426794ACA002E1895 /* ReaderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22DBC0326794ACA002E1895 /* ReaderSettingsView.swift */; };
+		F22DBC0526794ACA002E1895 /* ReaderSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F22DBC0326794ACA002E1895 /* ReaderSettingsView.swift */; };
 		F2C5FF3E265D4B0900C42A8D /* Textile.h in Headers */ = {isa = PBXBuildFile; fileRef = F2C5FF3C265D4B0900C42A8D /* Textile.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F2C5FF45265D4C2700C42A8D /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F2C5FF44265D4C2700C42A8D /* Colors.xcassets */; };
 		F2C5FF4B265D88DC00C42A8D /* Palettes.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2C5FF4A265D88DC00C42A8D /* Palettes.swift */; };
@@ -267,6 +269,7 @@
 		F227F0C3265E96290031F985 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CoreText.framework; sourceTree = DEVELOPER_DIR; };
 		F227F0C8265EAF7E0031F985 /* Style.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Style.swift; sourceTree = "<group>"; };
 		F227F0D4265FE6740031F985 /* ItemRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemRow.swift; sourceTree = "<group>"; };
+		F22DBC0326794ACA002E1895 /* ReaderSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderSettingsView.swift; sourceTree = "<group>"; };
 		F2C5FF3A265D4B0900C42A8D /* Textile.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Textile.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F2C5FF3C265D4B0900C42A8D /* Textile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Textile.h; sourceTree = "<group>"; };
 		F2C5FF3D265D4B0900C42A8D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -427,6 +430,7 @@
 				160CD82526698EA600AA84A1 /* Article */,
 				162AAD91263C9CAA00783011 /* Authorization */,
 				16BE21BA266068DE0037F783 /* Item */,
+				F27DED292679546400154791 /* Reader */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -670,6 +674,14 @@
 				16C4D8702655DED800AA2C00 /* Fixture.swift */,
 			);
 			path = Support;
+			sourceTree = "<group>";
+		};
+		F27DED292679546400154791 /* Reader */ = {
+			isa = PBXGroup;
+			children = (
+				F22DBC0326794ACA002E1895 /* ReaderSettingsView.swift */,
+			);
+			path = Reader;
 			sourceTree = "<group>";
 		};
 		F2C5FF3B265D4B0900C42A8D /* Textile */ = {
@@ -1041,6 +1053,7 @@
 			files = (
 				162AAD8F263C7A7E00783011 /* AuthorizeRequest.swift in Sources */,
 				16BE21BC266068FF0037F783 /* ItemPresenter.swift in Sources */,
+				F22DBC0426794ACA002E1895 /* ReaderSettingsView.swift in Sources */,
 				160CD82A2669940600AA84A1 /* ArticleComponentView.swift in Sources */,
 				16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */,
 				F2D6C793266A6C63002022AD /* SafariView.swift in Sources */,
@@ -1074,6 +1087,7 @@
 				16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */,
 				162AAD94263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
 				16B133AA267BBAC000BD0A2B /* StaticDataCleaner.swift in Sources */,
+				F22DBC0526794ACA002E1895 /* ReaderSettingsView.swift in Sources */,
 				167F80AF264C9AFE00D8F507 /* ItemListView.swift in Sources */,
 				16E14D2226680666009A0991 /* Sync+Textile.swift in Sources */,
 				167F808C264B213900D8F507 /* Keychain.swift in Sources */,
