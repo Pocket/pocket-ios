@@ -13,13 +13,16 @@ struct ItemDestinationView: View {
     }
 
     @Environment(\.presentationMode) @Binding
-    var presentationMode: PresentationMode
+    private var presentationMode: PresentationMode
     
     @State
-    var shouldPresentWebView = false
+    private var shouldPresentWebView = false
     
     @State
-    var shouldPresentOverflow = false
+    private var shouldPresentOverflow = false
+    
+    @StateObject
+    private var settings = ReaderSettings()
     
     @ViewBuilder
     private var destinationView: some View {
@@ -41,6 +44,7 @@ struct ItemDestinationView: View {
                      presentationMode: _presentationMode.wrappedValue,
                      shouldPresentWebView: $shouldPresentWebView,
                      shouldPresentOverflow: $shouldPresentOverflow)
+            .environmentObject(settings)
     }
 }
 

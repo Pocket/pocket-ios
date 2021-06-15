@@ -5,13 +5,19 @@
 import SwiftUI
 
 struct ReaderSettingsView: View {
+    private enum Constants {
+        static let allowedAdjustments = -10...10
+    }
+    
     @Environment(\.presentationMode)
-    var presentationMode
+    private var presentationMode
+    
+    @EnvironmentObject
+    private var settings: ReaderSettings
     
     @State
-    var selectedFontIndex = 0
-    
-    var availableFonts = ["Graphik", "Blanco"]
+    private var selectedFontIndex = 0
+    private var availableFonts = ["Graphik", "Blanco"]
     
     var body: some View {
         NavigationView {
@@ -23,7 +29,7 @@ struct ReaderSettingsView: View {
                         }
                     }
                     
-                    Stepper("Font size", onIncrement: nil, onDecrement: nil)
+                    Stepper("Font Size", value: $settings.fontSizeAdjustment, in: Constants.allowedAdjustments)
                 }
             }
             .navigationBarTitle("Settings", displayMode: .inline)

@@ -71,4 +71,8 @@ public struct Style {
     public func with(strike: Strike) -> Style {
         return Style(fontDescriptor: fontDescriptor, color: colorAsset, underlineStyle: underlineStyle, strike: strike)
     }
+    
+    public func adjustingSize(by adjustment: Int) -> Style {
+        return Style(fontDescriptor: fontDescriptor.adjustingSize(by: adjustment), color: colorAsset, underlineStyle: underlineStyle, strike: strike)
+    }
 }

@@ -8,6 +8,9 @@ import Sync
 
 
 struct ArticleComponentView: View {
+    @EnvironmentObject
+    var settings: ReaderSettings
+    
     private let component: ArticleComponent
 
     init(_ component: ArticleComponent) {
@@ -17,7 +20,7 @@ struct ArticleComponentView: View {
     var body: some View {
         switch component {
         case .bodyText(let bodyText):
-            TextContentView(bodyText.text, style: .body.serif)
+            TextContentView(bodyText.text, style: .body.serif.adjustingSize(by: settings.fontSizeAdjustment))
         case .byline(let byline):
             TextContentView(byline.text, style: .byline)
         case .copyright(let copyright):
