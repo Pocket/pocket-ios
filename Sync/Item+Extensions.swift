@@ -12,6 +12,7 @@ extension Item {
         domain = remoteItem.item.domainMetadata?.name ?? remoteItem.item.domain ?? "No Domain"
         title = remoteItem.item.title
         url = URL(string: remoteItem.url)
+        particleJSON = remoteItem.item.particleJson
 
         if let imageURL = remoteItem.item.topImageUrl {
             thumbnailURL = URL(string: imageURL)

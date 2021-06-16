@@ -79,7 +79,16 @@ class SourceTests: XCTestCase {
         let items = try container.viewContext.fetch(request)
         XCTAssertEqual(items.count, 2)
 
-        // TODO: Assert on item content
+        do {
+            let item = items[0]
+            XCTAssertEqual(item.domain, "WIRED")
+            XCTAssertEqual(item.thumbnailURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
+            XCTAssertEqual(item.timestamp, Date(timeIntervalSince1970: 0))
+            XCTAssertEqual(item.timeToRead, 6)
+            XCTAssertEqual(item.title, "Item 1")
+            XCTAssertEqual(item.url, URL(string: "https://example.com/item-1")!)
+            XCTAssertEqual(item.particleJSON, "<just-json-things>")
+        }
     }
     
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() throws {
