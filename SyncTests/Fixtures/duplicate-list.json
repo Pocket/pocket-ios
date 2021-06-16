@@ -18,7 +18,7 @@
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
                                 "timeToRead": 6,
-                                "particleJson": "",
+                                "particleJson": "<just-json-things>",
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -49,7 +49,7 @@
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
                                 "timeToRead": 6,
-                                "particleJson": "",
+                                "particleJson": "<just-json-things>",
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
