@@ -20,23 +20,23 @@ struct ArticleComponentView: View {
     var body: some View {
         switch component {
         case .bodyText(let bodyText):
-            TextContentView(bodyText.text, style: .body.serif.adjustingSize(by: settings.fontSizeAdjustment))
+            TextContentView(bodyText.text, style: .body.serif.with(settings: settings))
         case .byline(let byline):
-            TextContentView(byline.text, style: .byline)
+            TextContentView(byline.text, style: .byline.with(settings: settings))
         case .copyright(let copyright):
-            TextContentView(copyright.text, style: .copyright)
+            TextContentView(copyright.text, style: .copyright.with(settings: settings))
         case .header(let header):
-            TextContentView(header.text, style: header.style)
+            TextContentView(header.text, style: header.style.with(settings: settings))
         case .message(let message):
-            TextContentView(message.text, style: .message)
+            TextContentView(message.text, style: .message.with(settings: settings))
         case .pre(let pre):
-            TextContentView(pre.text, style: .pre)
+            TextContentView(pre.text, style: .pre.with(settings: settings))
         case .publisherMessage(let publisherMessage):
-            TextContentView(publisherMessage.text, style: .message)
+            TextContentView(publisherMessage.text, style: .message.with(settings: settings))
         case .quote(let quote):
-            TextContentView(quote.text, style: .quote)
+            TextContentView(quote.text, style: .quote.with(settings: settings))
         case .title(let title):
-            TextContentView(title.text, style: .title)
+            TextContentView(title.text, style: .title.with(settings: settings))
         case .image:
             EmptyView()
         case .unsupported:
@@ -52,6 +52,10 @@ private extension Style {
     static let quote: Style = .body.serif.with(slant: .italic)
     static let title: Style = .header.sansSerif.h1
     static let pre: Style = .body.sansSerif
+    
+    func with(settings: ReaderSettings) -> Style {
+        self.with(family: settings.fontFamily).adjustingSize(by: settings.fontSizeAdjustment)
+    }
 }
 
 extension Header {

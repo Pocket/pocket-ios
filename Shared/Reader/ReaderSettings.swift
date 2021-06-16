@@ -3,10 +3,14 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Combine
+import Textile
 
 class ReaderSettings: ObservableObject {
     @Published
     var fontSizeAdjustment: Int = 0
+    
+    @Published
+    var fontFamily: FontDescriptor.Family = .graphik
 }
 
 
