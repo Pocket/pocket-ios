@@ -7,7 +7,8 @@ import Textile
 
 struct ReaderSettingsView: View {
     private enum Constants {
-        static let allowedAdjustments = -10...10
+        static let allowedAdjustments = -6...6
+        static let adjustmentStep = 2
         static let allowedFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
     }
     
@@ -31,7 +32,17 @@ struct ReaderSettingsView: View {
                     Stepper("Font Size",
                             value: $settings.fontSizeAdjustment,
                             in: Constants.allowedAdjustments,
-                            step: 2)
+                            step: Constants.adjustmentStep)
+                }
+                
+                Section(header: Text("Preview")) {
+                    Text(
+                        [
+                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                            "Phasellus suscipit risus in placerat lobortis.",
+                            "Vivamus condimentum, augue et volutpat posuere."
+                        ].joined(separator: " ")
+                    ).style(.body.serif.with(settings: settings))
                 }
             }
             .navigationBarTitle("", displayMode: .inline)
@@ -41,5 +52,11 @@ struct ReaderSettingsView: View {
                 }
             }
         }
+    }
+}
+
+private extension Style {
+    func with(settings: ReaderSettings) -> Style {
+        self.with(family: settings.fontFamily).adjustingSize(by: settings.fontSizeAdjustment)
     }
 }
