@@ -22,6 +22,10 @@ public struct FontDescriptor {
 
     public struct Family: Hashable {
         public let name: String
+        
+        public init(name: String) {
+            self.name = name
+        }
     }
 
     public struct Size {
