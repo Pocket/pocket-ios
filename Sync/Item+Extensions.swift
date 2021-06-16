@@ -29,4 +29,11 @@ extension Item {
         let interval = round(timeInterval / 1000)
         timestamp = Date(timeIntervalSince1970: interval)
     }
+
+    public var particle: Article? {
+        return particleJSON?.data(using: .utf8).flatMap { data in
+            let decoder = JSONDecoder()
+            return try? decoder.decode(Article.self, from: data)
+        }
+    }
 }
