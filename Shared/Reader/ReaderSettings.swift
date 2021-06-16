@@ -4,13 +4,23 @@
 
 import Combine
 import Textile
+import SwiftUI
 
 class ReaderSettings: ObservableObject {
-    @Published
+    @AppStorage("readerFontSizeAdjustment")
     var fontSizeAdjustment: Int = 0
     
-    @Published
+    @AppStorage("readerFontFamily")
     var fontFamily: FontDescriptor.Family = .graphik
 }
 
+extension FontDescriptor.Family: RawRepresentable {
+    public init?(rawValue: String) {
+        self = FontDescriptor.Family(name: rawValue)
+    }
+    
+    public var rawValue: String {
+        return self.name
+    }
+}
 
