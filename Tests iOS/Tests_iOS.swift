@@ -148,7 +148,7 @@ class Tests_iOS: XCTestCase {
             "Etiam porta sem malesuada magna mollis euismod",
             "Inline Modifiers",
             "Any text component can include inline modifiers.",
-            "This paragraph contains a link to my favorite",
+            "This paragraph contains a link a website",
             "This paragraph contains a few inline styles.",
             "Copyright Pocket 2021"
         ]
