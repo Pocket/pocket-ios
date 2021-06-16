@@ -18,6 +18,7 @@
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
                                 "timeToRead": 6,
+                                "particleJson": "<just-json-things>",
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
