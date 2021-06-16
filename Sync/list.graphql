@@ -11,6 +11,7 @@ query UserByToken($token: String!, $pagination: PaginationInput) {
             topImageUrl
             timeToRead
             domain
+            particleJson
             domainMetadata {
               name
               logo
