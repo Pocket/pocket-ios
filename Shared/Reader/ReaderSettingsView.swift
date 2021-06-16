@@ -3,10 +3,12 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SwiftUI
+import Textile
 
 struct ReaderSettingsView: View {
     private enum Constants {
         static let allowedAdjustments = -10...10
+        static let allowedFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
     }
     
     @Environment(\.presentationMode)
@@ -15,24 +17,24 @@ struct ReaderSettingsView: View {
     @EnvironmentObject
     private var settings: ReaderSettings
     
-    @State
-    private var selectedFontIndex = 0
-    private var availableFonts = ["Graphik", "Blanco"]
-    
     var body: some View {
         NavigationView {
             Form {
                 Section(header: Text("Display Settings")) {
-                    Picker("Font", selection: $selectedFontIndex) {
-                        ForEach(0..<availableFonts.count) {
-                            Text(self.availableFonts[$0])
+                    Picker("Font", selection: $settings.fontFamily) {
+                        ForEach(0..<Constants.allowedFontFamilies.count) {
+                            Text(Constants.allowedFontFamilies[$0].name)
+                                .tag(Constants.allowedFontFamilies[$0])
                         }
                     }
                     
-                    Stepper("Font Size", value: $settings.fontSizeAdjustment, in: Constants.allowedAdjustments)
+                    Stepper("Font Size",
+                            value: $settings.fontSizeAdjustment,
+                            in: Constants.allowedAdjustments,
+                            step: 2)
                 }
             }
-            .navigationBarTitle("Settings", displayMode: .inline)
+            .navigationBarTitle("", displayMode: .inline)
             .toolbar {
                 Button("Done") {
                     presentationMode.wrappedValue.dismiss()

@@ -20,8 +20,8 @@ public struct FontDescriptor {
         case italic
     }
 
-    public struct Family {
-        let name: String
+    public struct Family: Hashable {
+        public let name: String
     }
 
     public struct Size {
