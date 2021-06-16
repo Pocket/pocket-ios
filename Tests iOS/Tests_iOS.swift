@@ -20,9 +20,12 @@ class Tests_iOS: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { _, _ in
-            Response {
+            return Response {
                 Status.ok
-                Fixture.data(name: "initial-list")
+                Fixture
+                    .load(name: "initial-list")
+                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+                    .data
             }
         }
 
@@ -99,7 +102,11 @@ class Tests_iOS: XCTestCase {
         promise?.succeed(
             Response {
                 Status.ok
-                Fixture.data(name: "updated-list")
+                Fixture
+                    .load(name: "updated-list")
+                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+                    .data
+
             }
         )
 
