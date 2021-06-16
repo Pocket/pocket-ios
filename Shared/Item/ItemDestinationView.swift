@@ -7,9 +7,11 @@ import Sync
 
 struct ItemDestinationView: View {
     private let item: Item
-    
-    private let article: Article?
-    
+
+    private var article: Article? {
+        item.particle
+    }
+
     @Environment(\.presentationMode) @Binding
     var presentationMode: PresentationMode
     
@@ -26,9 +28,8 @@ struct ItemDestinationView: View {
         }
     }
     
-    init(item: Item, article: Article?) {
+    init(item: Item) {
         self.item = item
-        self.article = article
     }
     
     var body: some View {
