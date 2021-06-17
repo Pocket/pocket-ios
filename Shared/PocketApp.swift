@@ -23,8 +23,14 @@ struct PocketApp: App {
 
     @Environment(\.source)
     private var source: Sync.Source
-    
+
     init() {
+        let staticDataCleaner = StaticDataCleaner(
+            bundle: Bundle.main,
+            source: source
+        )
+        staticDataCleaner.clearIfNecessary()
+
         if CommandLine.arguments.contains("clearKeychain") {
             try? accessTokenStore.delete()
         }
@@ -39,7 +45,6 @@ struct PocketApp: App {
         
         Textiles.initialize()
         appState.authToken = accessTokenStore.accessToken
-
     }
 
     @ViewBuilder
