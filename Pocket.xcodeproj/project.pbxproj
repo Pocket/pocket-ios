@@ -63,6 +63,8 @@
 		1697334D263CA2D20003DE2A /* AuthorizationClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */; };
 		16973352263CB3580003DE2A /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16973351263CB3580003DE2A /* SignInView.swift */; };
 		16973353263CB3580003DE2A /* SignInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16973351263CB3580003DE2A /* SignInView.swift */; };
+		16B133A9267BBAC000BD0A2B /* StaticDataCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B133A8267BBAC000BD0A2B /* StaticDataCleaner.swift */; };
+		16B133AA267BBAC000BD0A2B /* StaticDataCleaner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16B133A8267BBAC000BD0A2B /* StaticDataCleaner.swift */; };
 		16BD7AEF2639DE9000F6471F /* AuthorizationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */; };
 		16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */; };
 		16BD7AF22639E00A00F6471F /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */; };
@@ -236,6 +238,7 @@
 		1697334C263CA2D20003DE2A /* AuthorizationClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClientTests.swift; sourceTree = "<group>"; };
 		16973351263CB3580003DE2A /* SignInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignInView.swift; sourceTree = "<group>"; };
 		16973355263CBB3F0003DE2A /* secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets.xcconfig; sourceTree = "<group>"; };
+		16B133A8267BBAC000BD0A2B /* StaticDataCleaner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StaticDataCleaner.swift; sourceTree = "<group>"; };
 		16BD7AEE2639DE9000F6471F /* AuthorizationClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthorizationClient.swift; sourceTree = "<group>"; };
 		16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
 		16BE21BB266068FF0037F783 /* ItemPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemPresenter.swift; sourceTree = "<group>"; };
@@ -417,6 +420,7 @@
 				166A81A92637406B0015AA1D /* PocketApp.swift */,
 				F2D6C792266A6C63002022AD /* SafariView.swift */,
 				16973351263CB3580003DE2A /* SignInView.swift */,
+				16B133A8267BBAC000BD0A2B /* StaticDataCleaner.swift */,
 				16E14D2026680666009A0991 /* Sync+Textile.swift */,
 				16BD7AF12639E00A00F6471F /* URLSessionProtocol.swift */,
 				166A81AB2637406C0015AA1D /* Assets.xcassets */,
@@ -1047,6 +1051,7 @@
 				16C03ACD266296FF0034CD8C /* ArticleView.swift in Sources */,
 				160CD81F26698D8200AA84A1 /* Article+sample.swift in Sources */,
 				167F80AE264C9AFE00D8F507 /* ItemListView.swift in Sources */,
+				16B133A9267BBAC000BD0A2B /* StaticDataCleaner.swift in Sources */,
 				16973352263CB3580003DE2A /* SignInView.swift in Sources */,
 				167F8092264B2E8F00D8F507 /* Environment.swift in Sources */,
 				167F8086264B1DB300D8F507 /* AccessTokenStore.swift in Sources */,
@@ -1068,6 +1073,7 @@
 				160CD82B2669940600AA84A1 /* ArticleComponentView.swift in Sources */,
 				16BD7AF02639DE9000F6471F /* AuthorizationClient.swift in Sources */,
 				162AAD94263C9CCD00783011 /* AuthorizeResponse.swift in Sources */,
+				16B133AA267BBAC000BD0A2B /* StaticDataCleaner.swift in Sources */,
 				167F80AF264C9AFE00D8F507 /* ItemListView.swift in Sources */,
 				16E14D2226680666009A0991 /* Sync+Textile.swift in Sources */,
 				167F808C264B213900D8F507 /* Keychain.swift in Sources */,
