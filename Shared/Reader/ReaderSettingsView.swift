@@ -10,6 +10,13 @@ struct ReaderSettingsView: View {
         static let allowedAdjustments = -6...6
         static let adjustmentStep = 2
         static let allowedFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
+        static let preview: String = {
+            [
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                "Phasellus suscipit risus in placerat lobortis.",
+                "Vivamus condimentum, augue et volutpat posuere."
+            ].joined(separator: " ")
+        }()
     }
     
     @Environment(\.presentationMode)
@@ -36,13 +43,8 @@ struct ReaderSettingsView: View {
                 }
                 
                 Section(header: Text("Preview")) {
-                    Text(
-                        [
-                            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-                            "Phasellus suscipit risus in placerat lobortis.",
-                            "Vivamus condimentum, augue et volutpat posuere."
-                        ].joined(separator: " ")
-                    ).style(.body.serif.with(settings: settings))
+                    Text(Constants.preview)
+                        .style(.body.serif.with(settings: settings))
                 }
             }
             .navigationBarTitle("", displayMode: .inline)

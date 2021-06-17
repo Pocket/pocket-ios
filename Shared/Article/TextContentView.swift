@@ -12,6 +12,9 @@ struct TextContentView: View {
     private let style: Style
 
     @EnvironmentObject
+    private var settings: ReaderSettings
+    
+    @EnvironmentObject
     private var articleState: ArticleViewState
 
     init(_ text: TextContent, style: Style) {
@@ -20,7 +23,7 @@ struct TextContentView: View {
     }
 
     var attributedText: NSAttributedString {
-        text.attributedString(baseStyle: style)
+        text.attributedString(baseStyle: style.with(settings: settings))
     }
 
     var tappedURL: Binding<URL?> {
@@ -32,5 +35,11 @@ struct TextContentView: View {
             content: attributedText,
             tappedURL: tappedURL
         )
+    }
+}
+
+private extension Style {
+    func with(settings: ReaderSettings) -> Style {
+        self.with(family: settings.fontFamily).adjustingSize(by: settings.fontSizeAdjustment)
     }
 }

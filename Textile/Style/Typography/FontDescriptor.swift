@@ -61,13 +61,7 @@ public struct FontDescriptor {
     }
     
     func adjustingSize(by adjustment: Int) -> FontDescriptor {
-        guard let size = size else {
-            return self
-        }
-        
-        let adjusted = size.size + adjustment
-        let adjustedSize = Size(size: adjusted)
-        return FontDescriptor(family: family, size: adjustedSize, weight: weight, slant: slant)
+        return FontDescriptor(family: family, size: size?.adjusting(by: adjustment), weight: weight, slant: slant)
     }
 }
 
@@ -80,5 +74,13 @@ extension FontDescriptor.Family: ExpressibleByStringLiteral {
 extension FontDescriptor.Size: ExpressibleByIntegerLiteral {
     public init(integerLiteral value: IntegerLiteralType) {
         self.init(size: value)
+    }
+}
+
+extension FontDescriptor.Size {
+    public func adjusting(by adjustment: Int) -> FontDescriptor.Size {
+        let adjusted = self.size + adjustment
+        let adjustedSize = FontDescriptor.Size(size: adjusted)
+        return adjustedSize
     }
 }

@@ -8,9 +8,6 @@ import Sync
 
 
 struct ArticleComponentView: View {
-    @EnvironmentObject
-    var settings: ReaderSettings
-    
     private let component: ArticleComponent
 
     init(_ component: ArticleComponent) {
@@ -20,23 +17,23 @@ struct ArticleComponentView: View {
     var body: some View {
         switch component {
         case .bodyText(let bodyText):
-            TextContentView(bodyText.text, style: .body.serif.with(settings: settings))
+            TextContentView(bodyText.text, style: .body.serif)
         case .byline(let byline):
-            TextContentView(byline.text, style: .byline.with(settings: settings))
+            TextContentView(byline.text, style: .byline)
         case .copyright(let copyright):
-            TextContentView(copyright.text, style: .copyright.with(settings: settings))
+            TextContentView(copyright.text, style: .copyright)
         case .header(let header):
-            TextContentView(header.text, style: header.style.with(settings: settings))
+            TextContentView(header.text, style: header.style)
         case .message(let message):
-            TextContentView(message.text, style: .message.with(settings: settings))
+            TextContentView(message.text, style: .message)
         case .pre(let pre):
-            TextContentView(pre.text, style: .pre.with(settings: settings))
+            TextContentView(pre.text, style: .pre)
         case .publisherMessage(let publisherMessage):
-            TextContentView(publisherMessage.text, style: .message.with(settings: settings))
+            TextContentView(publisherMessage.text, style: .message)
         case .quote(let quote):
-            TextContentView(quote.text, style: .quote.with(settings: settings))
+            TextContentView(quote.text, style: .quote)
         case .title(let title):
-            TextContentView(title.text, style: .title.with(settings: settings))
+            TextContentView(title.text, style: .title)
         case .image:
             EmptyView()
         case .unsupported:
@@ -52,10 +49,6 @@ private extension Style {
     static let quote: Style = .body.serif.with(slant: .italic)
     static let title: Style = .header.sansSerif.h1
     static let pre: Style = .body.sansSerif
-    
-    func with(settings: ReaderSettings) -> Style {
-        self.with(family: settings.fontFamily).adjustingSize(by: settings.fontSizeAdjustment)
-    }
 }
 
 extension Header {
