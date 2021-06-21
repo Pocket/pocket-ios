@@ -61,9 +61,11 @@ private struct ItemToolbar: ViewModifier {
     @Binding
     private var isPresentingOverflow: Bool
     
-    init(item: Item, presentationMode: Binding<PresentationMode>,
-         isPresentingWebView: Binding<Bool>,
-         isPresentingOverflow: Binding<Bool>) {
+    init(
+        item: Item, presentationMode: Binding<PresentationMode>,
+        isPresentingWebView: Binding<Bool>,
+        isPresentingOverflow: Binding<Bool>
+    ) {
         self.item = item
         _presentationMode = presentationMode
         _isPresentingWebView = isPresentingWebView
@@ -110,10 +112,12 @@ private struct ItemToolbar: ViewModifier {
 }
 
 private extension View {
-    func toolbar(item: Item,
-                 presentationMode: Binding<PresentationMode>,
-                 isPresentingWebView: Binding<Bool>,
-                 isPresentingOverflow: Binding<Bool>) -> some View {
+    func toolbar(
+        item: Item,
+        presentationMode: Binding<PresentationMode>,
+        isPresentingWebView: Binding<Bool>,
+        isPresentingOverflow: Binding<Bool>
+    ) -> some View {
         self.modifier(
             ItemToolbar(
                 item: item,
