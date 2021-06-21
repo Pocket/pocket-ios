@@ -6,34 +6,34 @@
                 "__typename": "[type-name-here]",
                 "pageInfo": {
                     "__typename": "[type-name-here]",
-                    "hasNextPage": false
+                    "hasNextPage": true
                 },
                 "edges": [
                     {
                         "__typename": "[type-name-here]",
-                        "cursor": "cursor-1",
+                        "cursor": "cursor-3",
                         "node": {
                             "__typename": "[type-name-here]",
-                            "url": "http://example.com/item-1",
+                            "url": "https://example.com/item-3",
                             "_createdAt": 0,
                             "item": {
                                 "__typename": "[type-name-here]",
-                                "title": "Updated Item 1",
-                                "topImageUrl": "https://example.com/item-1/top-image.jpg",
+                                "title": "Item 3",
+                                "topImageUrl": "https://example.com/item-3/top-image.jpg",
                                 "domain": null,
                                 "timeToRead": 6,
-                                "particleJson": "<just-json-things>",
+                                "particleJson": "",
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
-                                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                                    "logo": "http://example.com/item-3/domain-logo.jpg"
                                 },
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",
                                         "height": 1,
                                         "width": 2,
-                                        "src": "http://example.com/item-1",
+                                        "src": "http://example.com/item-3/image-1.jpg",
                                         "imageId": 1
                                     }
                                 ]
@@ -45,3 +45,4 @@
         }
     }
 }
+
