@@ -6,7 +6,7 @@
                 "__typename": "[type-name-here]",
                 "pageInfo": {
                     "__typename": "[type-name-here]",
-                    "hasNextPage": false
+                    "hasNextPage": true
                 },
                 "edges": [
                     {
@@ -18,11 +18,11 @@
                             "_createdAt": 0,
                             "item": {
                                 "__typename": "[type-name-here]",
-                                "title": "Updated Item 1",
+                                "title": "Item 1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
                                 "timeToRead": 6,
-                                "particleJson": #PARTICLE_JSON#,
+                                "particleJson": "",
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -39,40 +39,10 @@
                                 ]
                             }
                         }
-                    },
-                    {
-                        "__typename": "[type-name-here]",
-                        "cursor": "cursor-2",
-                        "node": {
-                            "__typename": "[type-name-here]",
-                            "url": "https://example.com/item-2",
-                            "_createdAt": 0,
-                            "item": {
-                                "__typename": "[type-name-here]",
-                                "title": "Updated Item 2",
-                                "topImageUrl": "https://example.com/item-2/top-image.jpg",
-                                "domain": null,
-                                "timeToRead": 6,
-                                "particleJson": #PARTICLE_JSON#,
-                                "domainMetadata": {
-                                    "__typename": "[type-name-here]",
-                                    "name": "WIRED",
-                                    "logo": "http://example.com/item-2/domain-logo.jpg"
-                                },
-                                "images": [
-                                    {
-                                        "__typename": "[type-name-here]",
-                                        "height": 1,
-                                        "width": 2,
-                                        "src": "http://example.com/item-2/image-1.jpg",
-                                        "imageId": 1
-                                    }
-                                ]
-                            }
-                        }
                     }
                 ]
             }
         }
     }
 }
+

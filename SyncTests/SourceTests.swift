@@ -54,11 +54,14 @@ class SourceTests: XCTestCase {
     }
 
     func test_refresh_fetchesUserByTokenQueryWithGivenToken() {
+        let expectFetch = expectation(description: "Expect a fetch call")
         client.stubFetch { (_: UserByTokenQuery, _, _, _, _) -> Apollo.Cancellable in
+            expectFetch.fulfill()
             return MockCancellable()
         }
 
         source.refresh(token: "the-token")
+        waitForExpectations(timeout: 1)
 
         XCTAssertFalse(client.fetchCalls.isEmpty)
         let call: MockApolloClient.FetchCall<UserByTokenQuery> = client.fetchCall(at: 0)
@@ -66,14 +69,17 @@ class SourceTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() throws {
+        let expectFetch = expectation(description: "Expect a fetch call")
         client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
             let result = Fixture.load(name: "list").asGraphQLResult(from: query)
             completion?(.success(result))
 
+            expectFetch.fulfill()
             return MockCancellable()
         }
 
         source.refresh(token: "the-token")
+        waitForExpectations(timeout: 1)
 
         let request = Requests.fetchItems()
         let items = try container.viewContext.fetch(request)
@@ -92,14 +98,17 @@ class SourceTests: XCTestCase {
     }
     
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() throws {
+        let expectFetch = expectation(description: "Expect a fetch call")
         client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
             let result = Fixture.load(name: "duplicate-list").asGraphQLResult(from: query)
             completion?(.success(result))
 
+            expectFetch.fulfill()
             return MockCancellable()
         }
 
         source.refresh(token: "the-token")
+        waitForExpectations(timeout: 1)
 
         let request = Requests.fetchItems()
         let items = try container.viewContext.fetch(request)
@@ -114,14 +123,17 @@ class SourceTests: XCTestCase {
         item.title = "Item 1"
         try container.viewContext.save()
 
+        let expectFetch = expectation(description: "Expect a fetch call")
         client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
             let result = Fixture.load(name: "updated-item").asGraphQLResult(from: query)
             completion?(.success(result))
 
+            expectFetch.fulfill()
             return MockCancellable()
         }
 
         source.refresh(token: "the-token")
+        waitForExpectations(timeout: 1)
 
         let request = Requests.fetchItem(byURLString: itemURL.absoluteString)
         let items = try container.viewContext.fetch(request)
@@ -143,5 +155,78 @@ class SourceTests: XCTestCase {
         source.refresh(token: "the-token")
 
         waitForExpectations(timeout: 1.0)
+    }
+
+    func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() throws {
+        var fetches = 0
+
+        let expectTwoFetches = expectation(description: "Expecting two fetches")
+        client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
+            defer { fetches += 1 }
+
+            let result: Fixture
+            switch fetches {
+            case 0:
+                result = Fixture.load(name: "paginated-list-1")
+            case 1:
+                XCTAssertEqual(query.pagination?.after, "cursor-1")
+                result = Fixture.load(name: "paginated-list-2")
+            default:
+                XCTFail("Unexpected number of fetches: \(fetches)")
+                return MockCancellable()
+            }
+
+            completion?(.success(result.asGraphQLResult(from: query)))
+            if fetches == 1 {
+                expectTwoFetches.fulfill()
+            }
+
+            return MockCancellable()
+        }
+
+        source.refresh(token: "the-token")
+        waitForExpectations(timeout: 1.0)
+
+        let request = Requests.fetchItems()
+        let items = try container.viewContext.fetch(request)
+        XCTAssertEqual(items.count, 2)
+    }
+
+    func test_refresh_whenItemCountExceedsMax_fetchesMaxNumberOfItems() throws {
+        var fetches = 0
+
+        let expectTwoFetches = expectation(description: "Expecting two fetches")
+        client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
+            defer { fetches += 1 }
+
+            let result: Fixture
+            switch fetches {
+            case 0:
+                result = Fixture.load(name: "large-list-1")
+            case 1:
+                XCTAssertEqual(query.pagination?.after, "cursor-1")
+                result = Fixture.load(name: "large-list-2")
+            case 2:
+                XCTAssertEqual(query.pagination?.after, "cursor-2")
+                result = Fixture.load(name: "large-list-3")
+            default:
+                XCTFail("Unexpected number of fetches: \(fetches)")
+                return MockCancellable()
+            }
+
+            completion?(.success(result.asGraphQLResult(from: query)))
+            if fetches == 2 {
+                expectTwoFetches.fulfill()
+            }
+
+            return MockCancellable()
+        }
+
+        source.refresh(token: "the-token", maxItems: 3)
+        waitForExpectations(timeout: 1.0)
+
+        let request = Requests.fetchItems()
+        let items = try container.viewContext.fetch(request)
+        XCTAssertEqual(items.count, 3)
     }
 }
