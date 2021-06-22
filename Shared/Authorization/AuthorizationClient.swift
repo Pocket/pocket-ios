@@ -80,7 +80,6 @@ public class AuthorizationClient {
                 }
 
                 let decoder = JSONDecoder()
-                decoder.keyDecodingStrategy = .convertFromSnakeCase
                 guard let data = data,
                       let response = try? decoder.decode(AuthorizeResponse.self, from: data) else {
                     completion(.failure(.invalidResponse))

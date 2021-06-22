@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SwiftUI
+import Sentry
 
 
 struct SignInView: View {
@@ -75,12 +76,15 @@ struct SignInView: View {
             case .success(let token):
                 do {
                     try accessTokenStore.save(token: token.accessToken)
+                    SentrySDK.setUser(User(userId: token.account.userID))
                 } catch {
                     self.error = .signInError(error)
                     return
                 }
 
-                self.authToken = token.accessToken
+                DispatchQueue.main.async {
+                    self.authToken = token.accessToken
+                }
             case .failure(let error):
                 self.error = .signInError(error)
             }

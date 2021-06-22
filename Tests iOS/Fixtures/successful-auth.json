@@ -2,7 +2,8 @@
     "access_token":"the-access-token",
     "username":"test@example.com",
     "account": {
-        "firstName":"test",
-        "lastName":"user"
+        "first_name":"test",
+        "last_name":"user",
+        "user_id": "<the-user-id>"
     }
 }
