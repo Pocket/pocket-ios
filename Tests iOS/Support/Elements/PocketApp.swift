@@ -45,4 +45,12 @@ struct PocketApp {
     func readerView() -> ReaderScreen {
         return ReaderScreen(el: app.scrollViews["article-view"])
     }
+
+    func readerToolbar() -> ReaderToolbar {
+        return ReaderToolbar(el: app.toolbars.element(boundBy: 0))
+    }
+
+    func webReaderView() -> WebReaderScreen {
+        return WebReaderScreen(el: app.webViews.element(boundBy: 0))
+    }
 }
