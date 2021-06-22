@@ -4,27 +4,18 @@
 
 import SwiftUI
 import Sync
-import Textile
 
 
 private struct AccessTokenStoreKey: EnvironmentKey {
-    static var defaultValue: AccessTokenStore = AccessTokenStore(
-        keychain: SecItemKeychain()
-    )
+    static var defaultValue: AccessTokenStore = Services.shared.accessTokenStore
 }
 
 private struct AuthorizationClientKey: EnvironmentKey {
-    static var defaultValue: AuthorizationClient = AuthorizationClient(
-        consumerKey: Bundle.main.infoDictionary!["PocketAPIConsumerKey"] as! String,
-        session: URLSession.shared
-    )
+    static var defaultValue: AuthorizationClient = Services.shared.authClient
 }
 
 struct SourceKey: EnvironmentKey {
-    // TODO: Find a way to not require two instances of AccessTokenStore
-    static var defaultValue = Source(
-        accessTokenProvider: AccessTokenStore(keychain: SecItemKeychain())
-    )
+    static var defaultValue = Services.shared.source
 }
 
 extension EnvironmentValues {

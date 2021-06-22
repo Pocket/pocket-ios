@@ -19,11 +19,13 @@ public class Source {
 
     public convenience init(
         accessTokenProvider: AccessTokenProvider,
+        consumerKey: String,
         container: NSPersistentContainer = .createDefault(),
         errorSubject: PassthroughSubject<Error, Never>? = nil
     ) {
         let apollo = ApolloClient.createDefault(
-            accessTokenProvider: accessTokenProvider
+            accessTokenProvider: accessTokenProvider,
+            consumerKey: consumerKey
         )
 
         self.init(
