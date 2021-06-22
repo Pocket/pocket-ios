@@ -37,7 +37,7 @@ class Tests_iOS: XCTestCase {
             )
         }
 
-        server.routes.get("/hello.html") { _, _ in
+        server.routes.get("/hello") { _, _ in
             Response {
                 Status.ok
                 Fixture.data(name: "hello", ext: "html")
@@ -157,5 +157,30 @@ class Tests_iOS: XCTestCase {
             let text = readerView.staticText(containing: expectedString)
             XCTAssertTrue(text.waitForExistence(timeout: 10))
         }
+    }
+
+    func test_3_webReader_displaysWebContent() {
+        app.launch()
+
+        let list = app.userListView()
+        XCTAssertTrue(list.waitForExistence())
+
+        let item = list.itemView(at: 0)
+        XCTAssertTrue(item.waitForExistence())
+        item.tap()
+
+        let readerView = app.readerView()
+        XCTAssertTrue(readerView.waitForExistence())
+
+        let toolbar = app.readerToolbar()
+        XCTAssertTrue(toolbar.waitForExistence())
+
+        let webReaderButton = toolbar.webReaderButton()
+        XCTAssertTrue(webReaderButton.waitForExistence(timeout: 10))
+        webReaderButton.tap()
+
+        let webView = app.webReaderView()
+        XCTAssertTrue(webView.waitForExistence())
+        XCTAssertTrue(webView.staticText(matching: "Hello, world").waitForExistence(timeout: 10))
     }
 }
