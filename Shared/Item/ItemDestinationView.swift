@@ -94,6 +94,7 @@ private struct ItemToolbar: ViewModifier {
                     Image(systemName: "safari")
                 }
                 .disabled(item.url == nil)
+                .accessibility(identifier: "web-reader-button")
                 
                 Button(action: {
                     isPresentingOverflow = true
