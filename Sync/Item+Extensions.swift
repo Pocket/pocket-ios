@@ -9,10 +9,15 @@ extension Item {
     typealias RemoteItem = UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node
     
     func update(from remoteItem: RemoteItem) {
-        domain = remoteItem.item.domainMetadata?.name ?? remoteItem.item.domain ?? "No Domain"
+        domain = remoteItem.item.domain
         title = remoteItem.item.title
         url = URL(string: remoteItem.url)
         particleJSON = remoteItem.item.particleJson
+
+        if let context = managedObjectContext {
+            domainMetadata = DomainMetadata(context: context)
+            domainMetadata?.name = remoteItem.item.domainMetadata?.name
+        }
 
         if let imageURL = remoteItem.item.topImageUrl {
             thumbnailURL = URL(string: imageURL)

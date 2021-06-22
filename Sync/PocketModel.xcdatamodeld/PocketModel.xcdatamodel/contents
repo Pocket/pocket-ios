@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19141.11" systemVersion="20E232" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="DomainMetadata" representedClassName="DomainMetadata" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
+    </entity>
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
         <attribute name="domain" optional="YES" attributeType="String"/>
         <attribute name="particleJSON" optional="YES" attributeType="String"/>
@@ -8,8 +12,10 @@
         <attribute name="timeToRead" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="URI"/>
+        <relationship name="domainMetadata" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DomainMetadata" inverseName="item" inverseEntity="DomainMetadata"/>
     </entity>
     <elements>
-        <element name="Item" positionX="-63" positionY="-18" width="128" height="134"/>
+        <element name="Item" positionX="-63" positionY="-18" width="128" height="149"/>
+        <element name="DomainMetadata" positionX="-63" positionY="36" width="128" height="59"/>
     </elements>
 </model>

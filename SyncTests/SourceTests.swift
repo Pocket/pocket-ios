@@ -105,7 +105,8 @@ class SourceTests: XCTestCase {
 
         do {
             let item = items[0]
-            XCTAssertEqual(item.domain, "WIRED")
+            XCTAssertEqual(item.domain, "example.com")
+            XCTAssertEqual(item.domainMetadata?.name, "WIRED")
             XCTAssertEqual(item.thumbnailURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
             XCTAssertEqual(item.timestamp, Date(timeIntervalSince1970: 0))
             XCTAssertEqual(item.timeToRead, 6)
