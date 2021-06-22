@@ -6,12 +6,21 @@ import CoreData
 import Apollo
 import Combine
 
+public enum SyncEvent {
+    case finished
+    case error(Error)
+}
 
 public class Source {
+    public let syncEvents: PassthroughSubject<SyncEvent, Never> = PassthroughSubject()
+
     private let space: Space
     private let apollo: ApolloClientProtocol
-    private let errorSubject: PassthroughSubject<Error, Never>?
-    private let syncQ: OperationQueue
+    private let syncQ: OperationQueue = {
+        let q = OperationQueue()
+        q.maxConcurrentOperationCount = 1
+        return q
+    }()
 
     public var managedObjectContext: NSManagedObjectContext {
         space.context
@@ -20,30 +29,22 @@ public class Source {
     public convenience init(
         accessTokenProvider: AccessTokenProvider,
         consumerKey: String,
-        container: NSPersistentContainer = .createDefault(),
-        errorSubject: PassthroughSubject<Error, Never>? = nil
+        container: NSPersistentContainer = .createDefault()
     ) {
         let apollo = ApolloClient.createDefault(
             accessTokenProvider: accessTokenProvider,
             consumerKey: consumerKey
         )
 
-        self.init(
-            apollo: apollo,
-            container: container,
-            errorSubject: errorSubject
-        )
+        self.init(apollo: apollo, container: container)
     }
     
     public required init(
         apollo: ApolloClientProtocol,
-        container: NSPersistentContainer = .createDefault(),
-        errorSubject: PassthroughSubject<Error, Never>? = nil
+        container: NSPersistentContainer = .createDefault()
     ) {
         self.apollo = apollo
         self.space = Space(container: container)
-        self.errorSubject = errorSubject
-        self.syncQ = OperationQueue()
     }
 
     public func refresh(token: String, maxItems: Int = 400) {
@@ -53,7 +54,7 @@ public class Source {
             query: UserByTokenQuery(token: token),
             maxItems: maxItems,
             nextPageQueue: syncQ,
-            errorSubject: errorSubject
+            syncEvents: syncEvents
         ))
     }
 
@@ -67,7 +68,7 @@ private class FetchPageOfItems: Operation {
     private let space: Space
     private let query: UserByTokenQuery
     private let maxItems: Int
-    private let errorSubject: PassthroughSubject<Error, Never>?
+    private let syncEvents: PassthroughSubject<SyncEvent, Never>
     private weak var nextPageQueue: OperationQueue?
 
     override var isAsynchronous: Bool {
@@ -113,14 +114,14 @@ private class FetchPageOfItems: Operation {
         query: UserByTokenQuery,
         maxItems: Int,
         nextPageQueue: OperationQueue?,
-        errorSubject: PassthroughSubject<Error, Never>?
+        syncEvents: PassthroughSubject<SyncEvent, Never>
     ) {
         self.apollo = apollo
         self.space = space
         self.query = query
         self.maxItems = maxItems
         self.nextPageQueue = nextPageQueue
-        self.errorSubject = errorSubject
+        self.syncEvents = syncEvents
 
         super.init()
     }
@@ -134,12 +135,12 @@ private class FetchPageOfItems: Operation {
     private func handle(result: Result<GraphQLResult<UserByTokenQuery.Data>, Error>) {
         switch result {
         case .failure(let error):
-            errorSubject?.send(error)
+            syncEvents.send(.error(error))
         case .success(let data):
             do {
                 try updateItems(from: data)
             } catch {
-                errorSubject?.send(error)
+                syncEvents.send(.error(error))
             }
         }
         isExecuting = false
@@ -178,12 +179,33 @@ private class FetchPageOfItems: Operation {
                 query: nextPageQuery,
                 maxItems: maxItems - edges.count,
                 nextPageQueue: nextPageQueue,
-                errorSubject: errorSubject
+                syncEvents: syncEvents
             )
-
+            op.addDependency(self)
             nextPageQueue?.addOperation(op)
         } else {
+            let op = FinishSyncOperation(space: space, syncEvents: syncEvents)
+            op.addDependency(self)
+            nextPageQueue?.addOperation(op)
+        }
+    }
+}
+
+class FinishSyncOperation: Operation {
+    let space: Space
+    let syncEvents: PassthroughSubject<SyncEvent, Never>
+
+    init(space: Space, syncEvents: PassthroughSubject<SyncEvent, Never>) {
+        self.space = space
+        self.syncEvents = syncEvents
+    }
+
+    override func main() {
+        do {
             try space.save()
+            syncEvents.send(.finished)
+        } catch {
+            syncEvents.send(.error(error))
         }
     }
 }
