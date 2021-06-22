@@ -39,8 +39,10 @@ class Space {
     }
     
     func save() throws {
-        if context.hasChanges {
-            try context.save()
+        try DispatchQueue.main.sync {
+            if context.hasChanges {
+                try context.save()
+            }
         }
     }
     

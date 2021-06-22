@@ -58,18 +58,6 @@ class MockApolloClient: ApolloClientProtocol {
         }
 
         return impl(query, cachePolicy, contextIdentifier, queue, resultHandler)
-
-//        if query is UserByTokenQuery,
-//           let resultHandler = resultHandler as? GraphQLResultHandler<UserByTokenQuery.Data> {
-//            let url = Bundle(for: Self.self).url(forResource: "list", withExtension: "json")!
-//            let jsonData = try! Data(contentsOf: url)
-//            let json = (try! JSONSerialization.jsonObject(with: jsonData, options: []) as! [String: Any])["data"] as! [String: Any]
-//            let data = try! UserByTokenQuery.Data(jsonObject: json)
-//            let result = GraphQLResult(data: data, extensions: nil, errors: nil, source: .cache, dependentKeys: nil)
-//            resultHandler(.success(result))
-//        }
-//
-//        return MockCancellable()
     }
 
     func stubFetch<Query: GraphQLQuery>(impl: @escaping FetchImpl<Query>) {
