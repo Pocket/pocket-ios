@@ -62,8 +62,9 @@ class AuthorizationServiceTests: XCTestCase {
                 "access_token":"the-access-token",
                 "username":"test@example.com",
                 "account": {
-                    "firstName":"test",
-                    "lastName":"user"
+                    "first_name":"test",
+                    "last_name":"user",
+                    "user_id": "<the-user-id>"
                 }
             }
             """.data(using: .utf8)!
@@ -83,6 +84,7 @@ class AuthorizationServiceTests: XCTestCase {
             }
 
             XCTAssertEqual(token.accessToken, "the-access-token")
+            XCTAssertEqual(token.account.userID, "<the-user-id>")
         }
     }
 

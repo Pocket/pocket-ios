@@ -41,6 +41,7 @@
 		166EFAE626825DC000A027CD /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE426825DC000A027CD /* Keys.swift */; };
 		166EFAE8268281F300A027CD /* ReaderToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE7268281F300A027CD /* ReaderToolbar.swift */; };
 		166EFAEA2682821300A027CD /* WebReaderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE92682821300A027CD /* WebReaderScreen.swift */; };
+		166EFAED26828C8700A027CD /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 166EFAEC26828C8700A027CD /* Sentry */; };
 		167F8084264B011600D8F507 /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 167F8083264B011600D8F507 /* Sails */; };
 		167F8086264B1DB300D8F507 /* AccessTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8085264B1DB300D8F507 /* AccessTokenStore.swift */; };
 		167F8087264B1DB300D8F507 /* AccessTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8085264B1DB300D8F507 /* AccessTokenStore.swift */; };
@@ -314,6 +315,7 @@
 			files = (
 				F227F0C6265E97910031F985 /* Textile.framework in Frameworks */,
 				F220F2AB264DC0DE0064D272 /* Sync.framework in Frameworks */,
+				166EFAED26828C8700A027CD /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -771,6 +773,7 @@
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
+				166EFAEC26828C8700A027CD /* Sentry */,
 			);
 			productName = "Pocket (iOS)";
 			productReference = 166A81B02637406C0015AA1D /* Pocket.app */;
@@ -945,6 +948,7 @@
 				167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */,
 				167F8094264C610F00D8F507 /* XCRemoteSwiftPackageReference "apollo-ios" */,
 				F2C5FF3226584CA000C42A8D /* XCRemoteSwiftPackageReference "Kingfisher" */,
+				166EFAEB26828C8700A027CD /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = 166A81B12637406C0015AA1D /* Products */;
 			projectDirPath = "";
@@ -1859,6 +1863,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		166EFAEB26828C8700A027CD /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jacobsimeon/Sails.git";
@@ -1886,6 +1898,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		166EFAEC26828C8700A027CD /* Sentry */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 166EFAEB26828C8700A027CD /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
+		};
 		167F8083264B011600D8F507 /* Sails */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */;

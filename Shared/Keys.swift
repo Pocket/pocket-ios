@@ -9,12 +9,22 @@ struct Keys {
     static let shared = Keys()
 
     let pocketApiConsumerKey: String
+    let sentryDSN: String
 
     private init() {
-        guard let pocketApiConsumerKey = Bundle.main.infoDictionary!["PocketAPIConsumerKey"] as? String else {
+        guard let info = Bundle.main.infoDictionary else {
+            fatalError("Unable to load info dictionary for main bundle")
+        }
+
+        guard let pocketApiConsumerKey = info["PocketAPIConsumerKey"] as? String else {
             fatalError("Unable to extract PocketApiConsumerKey from main bundle")
         }
 
+        guard let sentryDSN = info["SentryDSN"] as? String else {
+            fatalError("Unable to extract SentryDSN from main bundle")
+        }
+
         self.pocketApiConsumerKey = pocketApiConsumerKey
+        self.sentryDSN = sentryDSN
     }
 }
