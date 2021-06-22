@@ -6,7 +6,7 @@ import Apollo
 
 
 extension ApolloClient {
-    public static func createDefault(accessTokenProvider: AccessTokenProvider) -> ApolloClient {
+    public static func createDefault(accessTokenProvider: AccessTokenProvider, consumerKey: String) -> ApolloClient {
         let urlStringFromEnvironment = ProcessInfo.processInfo.environment["POCKET_CLIENT_API_URL"]
         let urlString = urlStringFromEnvironment ?? "https://getpocket.com/graphql"
         let url = URL(string: urlString)!
@@ -15,7 +15,7 @@ extension ApolloClient {
         return ApolloClient(
             networkTransport: RequestChainNetworkTransport(
                 interceptorProvider: PrependingInterceptorProvider(
-                    prepend: AuthParamsInterceptor(tokenProvider: accessTokenProvider),
+                    prepend: AuthParamsInterceptor(tokenProvider: accessTokenProvider, consumerKey: consumerKey),
                     base: LegacyInterceptorProvider(store: store)
                 ),
                 endpointURL: url
@@ -27,14 +27,15 @@ extension ApolloClient {
 
 public protocol AccessTokenProvider {
     var accessToken: String? { get }
-    var consumerKey: String { get }
 }
 
 private class AuthParamsInterceptor: ApolloInterceptor {
     private let tokenProvider: AccessTokenProvider
+    private let consumerKey: String
 
-    init(tokenProvider: AccessTokenProvider) {
+    init(tokenProvider: AccessTokenProvider, consumerKey: String) {
         self.tokenProvider = tokenProvider
+        self.consumerKey = consumerKey
     }
 
     func interceptAsync<Operation>(
@@ -54,7 +55,7 @@ private class AuthParamsInterceptor: ApolloInterceptor {
 
         var items = components.queryItems ?? []
         items.append(contentsOf: [
-            URLQueryItem(name: "consumer_key", value: tokenProvider.consumerKey),
+            URLQueryItem(name: "consumer_key", value: consumerKey),
             URLQueryItem(name: "access_token", value: tokenProvider.accessToken),
         ])
         components.queryItems = items

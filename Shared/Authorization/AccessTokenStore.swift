@@ -70,9 +70,5 @@ class AccessTokenStore {
 }
 
 extension AccessTokenStore: AccessTokenProvider {
-    var consumerKey: String {
-        // TODO: Find a way to not have to access this directly via bundle
-        // (we are doing the same thing in Environment when instantiating AuthorizationClient
-        return Bundle.main.infoDictionary!["PocketAPIConsumerKey"] as! String
-    }
+
 }
