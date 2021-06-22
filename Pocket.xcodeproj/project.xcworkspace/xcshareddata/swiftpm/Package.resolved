@@ -56,6 +56,15 @@
         }
       },
       {
+        "package": "sentry-cocoa",
+        "repositoryURL": "https://github.com/getsentry/sentry-cocoa.git",
+        "state": {
+          "branch": null,
+          "revision": "f7c3de2d9fc09d7a61f7259521d97091fb2f8bda",
+          "version": "7.1.3"
+        }
+      },
+      {
         "package": "Spectre",
         "repositoryURL": "https://github.com/kylef/Spectre.git",
         "state": {
