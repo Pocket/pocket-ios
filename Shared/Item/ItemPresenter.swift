@@ -19,7 +19,7 @@ class ItemPresenter: ItemRow {
     }
 
     public var domain: String {
-        item.domain ?? "Unknown Domain"
+        item.domainMetadata?.name ?? item.domain ?? ""
     }
 
     public var timeToRead: String? {
