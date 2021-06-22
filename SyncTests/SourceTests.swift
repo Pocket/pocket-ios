@@ -16,7 +16,6 @@ enum TestError: Error {
 class SourceTests: XCTestCase {
     var client: MockApolloClient!
     var source: Source!
-    var errorSubject: PassthroughSubject<Error, Never>!
     var cancellables: Set<AnyCancellable> = []
 
     static let container: NSPersistentContainer = {
@@ -39,11 +38,9 @@ class SourceTests: XCTestCase {
         }
 
         client = MockApolloClient()
-        errorSubject = PassthroughSubject()
         source = Source(
             apollo: client,
-            container: container,
-            errorSubject: errorSubject
+            container: container
         )
 
         source.clear()
@@ -53,13 +50,42 @@ class SourceTests: XCTestCase {
         cancellables = []
     }
 
-    func test_refresh_fetchesUserByTokenQueryWithGivenToken() {
-        let expectFetch = expectation(description: "Expect a fetch call")
-        client.stubFetch { (_: UserByTokenQuery, _, _, _, _) -> Apollo.Cancellable in
-            expectFetch.fulfill()
+    private func configureMockClientToFail(withError expectedError: TestError, assertions: @escaping (Error) -> ()) {
+        let expectError = expectation(description: "Expecting error")
+        source.syncEvents.sink { event in
+            guard case .error(let actualError) = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+
+            assertions(actualError)
+            expectError.fulfill()
+        }.store(in: &cancellables)
+
+        client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
+            completion?(.failure(expectedError))
             return MockCancellable()
         }
+    }
 
+    private func configureMockClientToReturnFixture(named fixtureName: String) {
+        let expectCompletion = expectation(description: "Expect sync completion")
+        source.syncEvents.sink { event in
+            if case .finished = event {
+                expectCompletion.fulfill()
+            }
+        }.store(in: &cancellables)
+
+        client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
+            let result = Fixture.load(name: fixtureName).asGraphQLResult(from: query)
+            completion?(.success(result))
+
+            return MockCancellable()
+        }
+    }
+
+    func test_refresh_fetchesUserByTokenQueryWithGivenToken() {
+        configureMockClientToReturnFixture(named: "list")
         source.refresh(token: "the-token")
         waitForExpectations(timeout: 1)
 
@@ -69,15 +95,7 @@ class SourceTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() throws {
-        let expectFetch = expectation(description: "Expect a fetch call")
-        client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
-            let result = Fixture.load(name: "list").asGraphQLResult(from: query)
-            completion?(.success(result))
-
-            expectFetch.fulfill()
-            return MockCancellable()
-        }
-
+        configureMockClientToReturnFixture(named: "list")
         source.refresh(token: "the-token")
         waitForExpectations(timeout: 1)
 
@@ -98,15 +116,7 @@ class SourceTests: XCTestCase {
     }
     
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() throws {
-        let expectFetch = expectation(description: "Expect a fetch call")
-        client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
-            let result = Fixture.load(name: "duplicate-list").asGraphQLResult(from: query)
-            completion?(.success(result))
-
-            expectFetch.fulfill()
-            return MockCancellable()
-        }
-
+        configureMockClientToReturnFixture(named: "duplicate-list")
         source.refresh(token: "the-token")
         waitForExpectations(timeout: 1)
 
@@ -115,7 +125,7 @@ class SourceTests: XCTestCase {
         XCTAssertEqual(items.count, 1)
     }
 
-    func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistsItems() throws {
+    func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() throws {
         // set up the context with an existing item
         let itemURL = URL(string: "http://example.com/item-1")!
         let item = Item(context: container.viewContext)
@@ -123,15 +133,7 @@ class SourceTests: XCTestCase {
         item.title = "Item 1"
         try container.viewContext.save()
 
-        let expectFetch = expectation(description: "Expect a fetch call")
-        client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
-            let result = Fixture.load(name: "updated-item").asGraphQLResult(from: query)
-            completion?(.success(result))
-
-            expectFetch.fulfill()
-            return MockCancellable()
-        }
-
+        configureMockClientToReturnFixture(named: "updated-item")
         source.refresh(token: "the-token")
         waitForExpectations(timeout: 1)
 
@@ -141,29 +143,28 @@ class SourceTests: XCTestCase {
     }
 
     func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() throws {
-        let expectError = expectation(description: "Expecting error")
-        errorSubject.sink { error in
-            XCTAssertEqual(error as? TestError, TestError.anError)
-            expectError.fulfill()
-        }.store(in: &cancellables)
-
-        client.stubFetch { (_: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
-            completion?(.failure(TestError.anError))
-            return MockCancellable()
+        let expectedError = TestError.anError
+        configureMockClientToFail(withError: expectedError) { error in
+            XCTAssertEqual(error as? TestError, expectedError)
         }
 
         source.refresh(token: "the-token")
-
         waitForExpectations(timeout: 1.0)
     }
 
     func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() throws {
+        let finishSync = expectation(description: "Finish sync")
+        source.syncEvents.sink { event in
+            guard case .finished = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+
+            finishSync.fulfill()
+        }.store(in: &cancellables)
+
         var fetches = 0
-
-        let expectTwoFetches = expectation(description: "Expecting two fetches")
         client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
-            defer { fetches += 1 }
-
             let result: Fixture
             switch fetches {
             case 0:
@@ -176,11 +177,8 @@ class SourceTests: XCTestCase {
                 return MockCancellable()
             }
 
+            fetches += 1
             completion?(.success(result.asGraphQLResult(from: query)))
-            if fetches == 1 {
-                expectTwoFetches.fulfill()
-            }
-
             return MockCancellable()
         }
 
@@ -193,12 +191,18 @@ class SourceTests: XCTestCase {
     }
 
     func test_refresh_whenItemCountExceedsMax_fetchesMaxNumberOfItems() throws {
+        let finishSync = expectation(description: "Finish sync")
+        source.syncEvents.sink { event in
+            guard case .finished = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+
+            finishSync.fulfill()
+        }.store(in: &cancellables)
+
         var fetches = 0
-
-        let expectTwoFetches = expectation(description: "Expecting two fetches")
         client.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
-            defer { fetches += 1 }
-
             let result: Fixture
             switch fetches {
             case 0:
@@ -214,16 +218,13 @@ class SourceTests: XCTestCase {
                 return MockCancellable()
             }
 
+            fetches += 1
             completion?(.success(result.asGraphQLResult(from: query)))
-            if fetches == 2 {
-                expectTwoFetches.fulfill()
-            }
-
             return MockCancellable()
         }
 
         source.refresh(token: "the-token", maxItems: 3)
-        waitForExpectations(timeout: 1.0)
+        waitForExpectations(timeout: 1)
 
         let request = Requests.fetchItems()
         let items = try container.viewContext.fetch(request)
