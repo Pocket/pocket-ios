@@ -68,6 +68,8 @@ struct SignInView: View {
     }
 
     func signIn() {
+        SentrySDK.crash()
+
         authClient.authorize(
             username: email,
             password: password
