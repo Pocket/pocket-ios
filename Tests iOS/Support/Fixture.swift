@@ -4,7 +4,6 @@
 
 import Foundation
 import Apollo
-import Sync
 
 
 class Fixture {
