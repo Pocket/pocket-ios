@@ -22,6 +22,8 @@
 		162AAD93263C9CCD00783011 /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162AAD92263C9CCD00783011 /* AuthorizeResponse.swift */; };
 		162AAD94263C9CCD00783011 /* AuthorizeResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 162AAD92263C9CCD00783011 /* AuthorizeResponse.swift */; };
 		1652D6A7263A00870005B362 /* MockURLSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1652D6A6263A00870005B362 /* MockURLSession.swift */; };
+		16679D52268500580053A380 /* Crashlogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16679D51268500580053A380 /* Crashlogger.swift */; };
+		16679D54268500790053A380 /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 16679D53268500790053A380 /* Sentry */; };
 		166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* Tests_iOS.swift */; };
 		166A81D02637406C0015AA1D /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81CF2637406C0015AA1D /* Tests_macOS.swift */; };
 		166A81D22637406C0015AA1D /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81A92637406B0015AA1D /* PocketApp.swift */; };
@@ -41,7 +43,6 @@
 		166EFAE626825DC000A027CD /* Keys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE426825DC000A027CD /* Keys.swift */; };
 		166EFAE8268281F300A027CD /* ReaderToolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE7268281F300A027CD /* ReaderToolbar.swift */; };
 		166EFAEA2682821300A027CD /* WebReaderScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE92682821300A027CD /* WebReaderScreen.swift */; };
-		166EFAED26828C8700A027CD /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = 166EFAEC26828C8700A027CD /* Sentry */; };
 		167F8084264B011600D8F507 /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 167F8083264B011600D8F507 /* Sails */; };
 		167F8086264B1DB300D8F507 /* AccessTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8085264B1DB300D8F507 /* AccessTokenStore.swift */; };
 		167F8087264B1DB300D8F507 /* AccessTokenStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 167F8085264B1DB300D8F507 /* AccessTokenStore.swift */; };
@@ -201,6 +202,7 @@
 		1652D69B2639E63A0005B362 /* PocketTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PocketTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1652D69F2639E63A0005B362 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1652D6A6263A00870005B362 /* MockURLSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLSession.swift; sourceTree = "<group>"; };
+		16679D51268500580053A380 /* Crashlogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Crashlogger.swift; sourceTree = "<group>"; };
 		166A81A92637406B0015AA1D /* PocketApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketApp.swift; sourceTree = "<group>"; };
 		166A81AB2637406C0015AA1D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		166A81B02637406C0015AA1D /* Pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pocket.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -315,7 +317,6 @@
 			files = (
 				F227F0C6265E97910031F985 /* Textile.framework in Frameworks */,
 				F220F2AB264DC0DE0064D272 /* Sync.framework in Frameworks */,
-				166EFAED26828C8700A027CD /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,6 +347,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				16FD61E42677CC42001A1B33 /* Apollo in Frameworks */,
+				16679D54268500790053A380 /* Sentry in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -647,7 +649,6 @@
 		F220F297264DC0DE0064D272 /* Sync */ = {
 			isa = PBXGroup;
 			children = (
-				1684A3FE265DC0480006BE6C /* Particle */,
 				F220F2D22653289B0064D272 /* list.graphql */,
 				F220F298264DC0DE0064D272 /* Sync.h */,
 				167F80A2264C762E00D8F507 /* schema.json */,
@@ -655,11 +656,13 @@
 				167F80A3264C77C600D8F507 /* API.swift */,
 				F2DCEEDA2655936300EC0E58 /* ApolloClient+Extensions.swift */,
 				F2DCEEDC2655937800EC0E58 /* ApolloClientProtocol+Extensions.swift */,
+				16679D51268500580053A380 /* Crashlogger.swift */,
 				F2DCEEDE2655939200EC0E58 /* Item+Extensions.swift */,
 				F2DCEED82655934700EC0E58 /* NSPersistentContainer+Extensions.swift */,
 				F2DCEED4265592E400EC0E58 /* Requests.swift */,
 				167F80AA264C991E00D8F507 /* Source.swift */,
 				F2DCEED62655930800EC0E58 /* Space.swift */,
+				1684A3FE265DC0480006BE6C /* Particle */,
 				167F80A6264C98BA00D8F507 /* PocketModel.xcdatamodeld */,
 			);
 			path = Sync;
@@ -773,7 +776,6 @@
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
-				166EFAEC26828C8700A027CD /* Sentry */,
 			);
 			productName = "Pocket (iOS)";
 			productReference = 166A81B02637406C0015AA1D /* Pocket.app */;
@@ -852,6 +854,7 @@
 			name = Sync;
 			packageProductDependencies = (
 				16FD61E32677CC42001A1B33 /* Apollo */,
+				16679D53268500790053A380 /* Sentry */,
 			);
 			productName = Sync;
 			productReference = F220F296264DC0DE0064D272 /* Sync.framework */;
@@ -1157,6 +1160,7 @@
 				1684A405265DC2840006BE6C /* ArticleComponent.swift in Sources */,
 				F2DCEED72655930800EC0E58 /* Space.swift in Sources */,
 				F220F2B4264DC0EA0064D272 /* Source.swift in Sources */,
+				16679D52268500580053A380 /* Crashlogger.swift in Sources */,
 				F2DCEED5265592E400EC0E58 /* Requests.swift in Sources */,
 				1684A425265DD93C0006BE6C /* InlineStyle.swift in Sources */,
 				1684A421265DD8920006BE6C /* PublisherMessage.swift in Sources */,
@@ -1898,7 +1902,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		166EFAEC26828C8700A027CD /* Sentry */ = {
+		16679D53268500790053A380 /* Sentry */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 166EFAEB26828C8700A027CD /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 			productName = Sentry;
