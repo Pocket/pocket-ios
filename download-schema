@@ -1,5 +1,0 @@
-#!/usr/bin/env sh
-
-apollo schema:download \
-  --endpoint=https://client-api.getpocket.com/ \
-  Sync/schema.json

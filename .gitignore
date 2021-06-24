@@ -119,3 +119,5 @@ iOSInjectionProject/
 
 Config/secrets.xcconfig
 **/*.otf
+**/.swiftpm
+**/.tmp
