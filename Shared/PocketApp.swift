@@ -6,7 +6,6 @@ import SwiftUI
 import Apollo
 import Sync
 import Textile
-import Sentry
 
 
 class AppState: ObservableObject {
@@ -26,10 +25,7 @@ struct PocketApp: App {
     private var source: Sync.Source
 
     init() {
-        SentrySDK.start { options in
-            options.dsn = Keys.shared.sentryDSN
-            options.debug = true
-        }
+        Crashlogger.start(dsn: Keys.shared.sentryDSN)
 
         let staticDataCleaner = StaticDataCleaner(
             bundle: Bundle.main,
