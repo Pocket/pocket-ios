@@ -6,6 +6,7 @@ import CoreData
 import Apollo
 import Combine
 
+
 public enum SyncEvent {
     case finished
     case error(Error)
@@ -135,11 +136,13 @@ private class FetchPageOfItems: Operation {
     private func handle(result: Result<GraphQLResult<UserByTokenQuery.Data>, Error>) {
         switch result {
         case .failure(let error):
+            Crashlogger.capture(error: error)
             syncEvents.send(.error(error))
         case .success(let data):
             do {
                 try updateItems(from: data)
             } catch {
+                Crashlogger.capture(error: error)
                 syncEvents.send(.error(error))
             }
         }
@@ -205,6 +208,7 @@ class FinishSyncOperation: Operation {
             try space.save()
             syncEvents.send(.finished)
         } catch {
+            Crashlogger.capture(error: error)
             syncEvents.send(.error(error))
         }
     }
