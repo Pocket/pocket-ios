@@ -26,6 +26,7 @@ extension ArticleComponent: Decodable {
 
         guard let componentType = ComponentType(rawValue: rawType) else {
             self = .unsupported(rawType)
+            Crashlogger.capture(message: "Encountered unsupported \(ArticleComponent.self) type: \(rawType)")
             return
         }
 
