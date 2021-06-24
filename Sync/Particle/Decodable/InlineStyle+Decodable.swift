@@ -39,6 +39,7 @@ extension InlineStyle: Decodable {
             case .strong:
                 return .strong
             case .none:
+                Crashlogger.capture(message: "Encountered unsupported \(InlineStyle.self) type: \(rawStyle)")
                 return .unsupported(rawStyle)
             }
         }()
