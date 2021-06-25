@@ -39,9 +39,11 @@ class Space {
     }
     
     func save() throws {
-        try DispatchQueue.main.sync {
-            if context.hasChanges {
-                try context.save()
+        if Thread.isMainThread {
+            try _save()
+        } else {
+            try DispatchQueue.main.sync {
+                try _save()
             }
         }
     }
@@ -52,6 +54,14 @@ class Space {
             let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             try context.execute(deleteRequest)
+        }
+    }
+}
+
+private extension Space {
+    func _save() throws {
+        if context.hasChanges {
+            try context.save()
         }
     }
 }
