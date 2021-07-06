@@ -23,9 +23,11 @@ struct ItemListView: View {
     var body: some View {
         List(items) { item in
             ZStack(alignment: .leading) {
+                NavigationLink(
+                    destination: ItemDestinationView(item: item)
+                ) { EmptyView() }
+
                 ItemRowView(model: ItemPresenter(item: item))
-                NavigationLink(destination: ItemDestinationView(item: item)) { }
-                    .hidden()
             }
         }.accessibility(identifier: "user-list")
     }

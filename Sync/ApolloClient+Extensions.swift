@@ -12,11 +12,12 @@ extension ApolloClient {
         let url = URL(string: urlString)!
 
         let store = ApolloStore()
+
         return ApolloClient(
             networkTransport: RequestChainNetworkTransport(
                 interceptorProvider: PrependingInterceptorProvider(
                     prepend: AuthParamsInterceptor(tokenProvider: accessTokenProvider, consumerKey: consumerKey),
-                    base: LegacyInterceptorProvider(store: store)
+                    base: DefaultInterceptorProvider(store: store)
                 ),
                 endpointURL: url
             ),

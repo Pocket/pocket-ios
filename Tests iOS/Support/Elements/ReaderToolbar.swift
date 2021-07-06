@@ -9,7 +9,7 @@ struct ReaderToolbar {
     let el: XCUIElement
 
     func webReaderButton() -> XCUIElement {
-        return el.buttons["safari"]
+        return el.buttons["web-reader-button"]
     }
 
     func waitForExistence() -> Bool {
