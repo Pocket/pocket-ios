@@ -31,8 +31,7 @@ extension Item {
             return
         }
         
-        let interval = round(timeInterval / 1000)
-        timestamp = Date(timeIntervalSince1970: interval)
+        timestamp = Date(timeIntervalSince1970: timeInterval)
     }
 
     public var particle: Article? {
