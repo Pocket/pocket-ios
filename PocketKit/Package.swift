@@ -5,7 +5,7 @@ import PackageDescription
 
 let package = Package(
     name: "PocketKit",
-    platforms: [.iOS("14"), .macOS("11")],
+    platforms: [.iOS("15"), .macOS("11")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
         .library(name: "Textile", targets: ["Textile"]),
