@@ -19,6 +19,12 @@ class ItemPresenter: ItemRow {
     public var title: String {
         item.title ?? item.thumbnailURL?.absoluteString ?? "Missing Title"
     }
+    
+    public var languageDirection: LanguageDirection {
+        let language = item.language ?? "en"
+        let direction = Locale.characterDirection(forLanguage: language)
+        return direction == .rightToLeft ? .rightToLeft : .leftToRight
+    }
 
     public var domain: String {
         item.domainMetadata?.name ?? item.domain ?? ""

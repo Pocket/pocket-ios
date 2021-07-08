@@ -93,6 +93,7 @@ public final class UserByTokenQuery: GraphQLQuery {
               item {
                 __typename
                 title
+                language
                 topImageUrl
                 timeToRead
                 domain
@@ -407,6 +408,7 @@ public final class UserByTokenQuery: GraphQLQuery {
                 return [
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                   GraphQLField("title", type: .scalar(String.self)),
+                  GraphQLField("language", type: .scalar(String.self)),
                   GraphQLField("topImageUrl", type: .scalar(String.self)),
                   GraphQLField("timeToRead", type: .scalar(Int.self)),
                   GraphQLField("domain", type: .scalar(String.self)),
@@ -422,8 +424,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(title: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, particleJson: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-                self.init(unsafeResultMap: ["__typename": "Item", "title": title, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "particleJson": particleJson, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+              public init(title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, particleJson: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+                self.init(unsafeResultMap: ["__typename": "Item", "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "particleJson": particleJson, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
               }
 
               public var __typename: String {
@@ -442,6 +444,16 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "title")
+                }
+              }
+
+              /// The detected language of the article
+              public var language: String? {
+                get {
+                  return resultMap["language"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "language")
                 }
               }
 

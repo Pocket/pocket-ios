@@ -10,6 +10,7 @@ extension Item {
     
     func update(from remoteItem: RemoteItem) {
         domain = remoteItem.item.domain
+        language = remoteItem.item.language
         title = remoteItem.item.title
         url = URL(string: remoteItem.url)
         particleJSON = remoteItem.item.particleJson
