@@ -21,6 +21,7 @@
                                 "title": "Item 1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": "example.com",
+                                "language": "en",
                                 "timeToRead": 6,
                                 "particleJson": "<just-json-things>",
                                 "domainMetadata": {
@@ -52,6 +53,7 @@
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": null,
+                                "language": "en",
                                 "timeToRead": 6,
                                 "particleJson": "<just-json-things>",
                                 "domainMetadata": {

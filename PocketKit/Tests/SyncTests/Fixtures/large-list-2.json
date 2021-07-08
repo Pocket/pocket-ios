@@ -21,6 +21,7 @@
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": null,
+                                "language": "en",
                                 "timeToRead": 6,
                                 "particleJson": "",
                                 "domainMetadata": {
