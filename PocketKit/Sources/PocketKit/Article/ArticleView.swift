@@ -19,17 +19,14 @@ struct ArticleView: View {
     }
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            NavigationLink(
-                destination: Text("Destination"),
-                isActive: $state.isNavigationLinkActive
-            ) { }.hidden()
-
+        List {
             ForEach(article.content) { component in
                 ArticleComponentView(component)
+                    .listRowSeparator(.hidden)
             }
         }
-        .padding([.top, .horizontal])
+        .listStyle(.plain)
+        .padding([.top])
         .environmentObject(state)
         .accessibility(identifier: "article-view")
     }

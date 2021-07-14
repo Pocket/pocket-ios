@@ -6,6 +6,10 @@
 import UIKit
 #endif
 
+#if canImport(SwiftUI)
+import SwiftUI
+#endif
+
 @available(iOS 1.0, *)
 extension UIColor {
     convenience init?(_ colorAsset: ColorAsset) {
@@ -111,5 +115,26 @@ public extension Style {
         }
 
         return attributes
+    }
+}
+
+@available(iOS 15.0, *)
+public extension Style {
+    var attributes: AttributeContainer {
+        var container = AttributeContainer()
+        
+        container.font = Font(fontDescriptor)
+        
+        container.foregroundColor = Color(colorAsset)
+        
+        if let underline = NSUnderlineStyle(underlineStyle) {
+            container.underlineStyle = underline
+        }
+        
+        if let strike = NSUnderlineStyle(strike) {
+            container.strikethroughStyle = strike
+        }
+        
+        return container
     }
 }
