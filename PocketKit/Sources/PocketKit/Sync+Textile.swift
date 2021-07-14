@@ -8,29 +8,24 @@ import Foundation
 
 
 extension TextContent {
-    func attributedString(baseStyle: Style) -> NSAttributedString {
-        let attributedText = NSMutableAttributedString(
-            string: text,
-            attributes: baseStyle.textAttributes
-        )
-
-        applyModifiers(to: attributedText, baseStyle)
-        return attributedText
-    }
-
-    private func applyModifiers(to attributedText: NSMutableAttributedString, _ baseStyle: Style) {
+    func attributedString(baseStyle: Style) -> AttributedString {
+        var string = AttributedString(text, attributes: baseStyle.attributes)
+        
         guard let modifiers = modifiers else {
-            return
+            return string
         }
-
+        
         for modifier in modifiers {
-            guard let attrs = modifier.textAttributes(extending: baseStyle),
-                  let range = modifier.range else {
-                return
+            guard let attributes = modifier.attributes(extending: baseStyle),
+                  let modifierRange = modifier.range,
+                  let range = Range(modifierRange, in: string) else {
+                      continue
             }
-
-            attributedText.addAttributes(attrs, range: range)
+            
+            string[range].mergeAttributes(attributes)
         }
+        
+        return string
     }
 }
 
@@ -41,6 +36,17 @@ extension InlineModifier {
             return link.textAttributes(baseStyle: baseStyle)
         case .style(let style):
             return style.extend(baseStyle)?.textAttributes
+        case .unsupported:
+            return nil
+        }
+    }
+    
+    func attributes(extending baseStyle: Style) -> AttributeContainer? {
+        switch self {
+        case .link(let link):
+            return link.attributes(baseStyle: baseStyle)
+        case .style(let style):
+            return style.extend(baseStyle)?.attributes
         case .unsupported:
             return nil
         }
@@ -67,6 +73,16 @@ extension InlineLink {
         textAttributes[.link] = address
 
         return textAttributes
+    }
+
+    func attributes(baseStyle: Style) -> AttributeContainer {
+        var container = baseStyle
+            .with(underlineStyle: .single)
+            .attributes
+        
+        container.link = address
+        
+        return container
     }
 }
 

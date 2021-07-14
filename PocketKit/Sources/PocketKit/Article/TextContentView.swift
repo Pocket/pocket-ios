@@ -21,8 +21,8 @@ struct TextContentView: View {
         self.text = text
         self.style = style
     }
-
-    var attributedText: NSAttributedString {
+    
+    var content: AttributedString {
         text.attributedString(baseStyle: style.with(settings: settings))
     }
 
@@ -31,10 +31,7 @@ struct TextContentView: View {
     }
 
     var body: some View {
-        AttributedStringView(
-            content: attributedText,
-            tappedURL: tappedURL
-        )
+        Text(content)
     }
 }
 
