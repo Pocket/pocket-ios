@@ -8,24 +8,29 @@ import Foundation
 
 
 extension TextContent {
-    func attributedString(baseStyle: Style) -> AttributedString {
-        var string = AttributedString(text, attributes: baseStyle.attributes)
-        
-        guard let modifiers = modifiers else {
-            return string
-        }
-        
-        for modifier in modifiers {
-            guard let attributes = modifier.attributes(extending: baseStyle),
-                  let modifierRange = modifier.range,
-                  let range = Range(modifierRange, in: string) else {
-                      continue
+    func attributedString(baseStyle: Style) -> AttributedString? {
+        do {
+            var string = try AttributedString(markdown: text)
+            string.setAttributes(baseStyle.attributes)
+            
+            guard let modifiers = modifiers else {
+                return string
             }
             
-            string[range].mergeAttributes(attributes)
+            for modifier in modifiers {
+                guard let attributes = modifier.attributes(extending: baseStyle),
+                      let modifierRange = modifier.range,
+                      let range = Range(modifierRange, in: string) else {
+                          continue
+                }
+                
+                string[range].mergeAttributes(attributes)
+            }
+            
+            return string
+        } catch {
+            return nil
         }
-        
-        return string
     }
 }
 

@@ -22,16 +22,21 @@ struct TextContentView: View {
         self.style = style
     }
     
-    var content: AttributedString {
+    private var content: AttributedString? {
         text.attributedString(baseStyle: style.with(settings: settings))
     }
 
-    var tappedURL: Binding<URL?> {
+    private var tappedURL: Binding<URL?> {
         $articleState.url
     }
 
     var body: some View {
-        Text(content)
+        if let content = content {
+            Text(content)
+        } else {
+            Text("An error occurred while trying to load your article.")
+                .style(style.with(settings: settings))
+        }
     }
 }
 
