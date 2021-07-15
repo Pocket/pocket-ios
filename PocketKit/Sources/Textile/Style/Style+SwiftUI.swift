@@ -52,3 +52,17 @@ public extension Text {
             .foregroundColor(Color(style.colorAsset))
     }
 }
+
+public extension TextField {
+    func style(_ style: Style) -> some View {
+        font(Font(style.fontDescriptor))
+            .foregroundColor(Color(style.colorAsset))
+    }
+}
+
+public extension SecureField {
+    func style(_ style: Style) -> some View {
+        font(Font(style.fontDescriptor))
+            .foregroundColor(Color(style.colorAsset))
+    }
+}
