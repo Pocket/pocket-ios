@@ -29,18 +29,7 @@ extension TextContent {
     }
 }
 
-extension InlineModifier {
-    func textAttributes(extending baseStyle: Style) -> [NSAttributedString.Key: Any]? {
-        switch self {
-        case .link(let link):
-            return link.textAttributes(baseStyle: baseStyle)
-        case .style(let style):
-            return style.extend(baseStyle)?.textAttributes
-        case .unsupported:
-            return nil
-        }
-    }
-    
+extension InlineModifier {    
     func attributes(extending baseStyle: Style) -> AttributeContainer? {
         switch self {
         case .link(let link):
@@ -65,23 +54,13 @@ extension InlineModifier {
 }
 
 extension InlineLink {
-    func textAttributes(baseStyle: Style) -> [NSAttributedString.Key: Any] {
-        var textAttributes = baseStyle
-            .with(underlineStyle: .single)
-            .textAttributes
-
-        textAttributes[.link] = address
-
-        return textAttributes
-    }
-
     func attributes(baseStyle: Style) -> AttributeContainer {
         var container = baseStyle
             .with(underlineStyle: .single)
             .attributes
-        
+
         container.link = address
-        
+
         return container
     }
 }
