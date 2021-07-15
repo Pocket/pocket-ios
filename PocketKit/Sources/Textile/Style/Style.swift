@@ -61,7 +61,7 @@ public struct Style {
     }
 
     public func with(color: ColorAsset) -> Style {
-        return Style(fontDescriptor: fontDescriptor, color: colorAsset, underlineStyle: underlineStyle, strike: strike)
+        return Style(fontDescriptor: fontDescriptor, color: color, underlineStyle: underlineStyle, strike: strike)
     }
 
     public func with(underlineStyle: UnderlineStyle) -> Style {

@@ -25,7 +25,7 @@ struct SignInScreen {
     }
 
     func signInButton() -> XCUIElement {
-        app.buttons["Sign in"]
+        app.buttons["Sign In"]
     }
 
     func signIn(email: String, password: String) {

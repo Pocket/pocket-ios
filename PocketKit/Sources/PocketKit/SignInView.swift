@@ -4,7 +4,13 @@
 
 import SwiftUI
 import Sync
+import Textile
 
+private extension SignInView {
+    static let titleStyle: Style = .header.sansSerif.h2
+    static let textFieldStyle: Style = .header.sansSerif.h5.with(weight: .regular).with(color: .ui.grey2)
+    static let textStyle: Style = .header.sansSerif.h5.with(color: .ui.white1)
+}
 
 struct SignInView: View {
     enum SignInError: Error, Identifiable {
@@ -39,32 +45,49 @@ struct SignInView: View {
 
     @Binding
     var authToken: String?
-
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Sign in to Pocket").font(.title)
-
-            Text("Email")
-            TextField("Email", text: $email)
-                .accessibility(identifier: "email")
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-                .keyboardType(.emailAddress)
-
-            Text("Password")
-            SecureField("", text: $password)
-                .accessibility(identifier: "password")
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-
-            Button("Sign in") {
+        VStack(alignment: .center, spacing: 36) {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Pocket")
+                    .style(SignInView.titleStyle)
+                TextField("Username or email", text: $email)
+                    .style(SignInView.textFieldStyle)
+                    .padding(.all, 8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color(.ui.grey6), lineWidth: 2)
+                    )
+                    .autocapitalization(.none)
+                    .disableAutocorrection(true)
+                    .keyboardType(.emailAddress)
+                    .accessibility(identifier: "email")
+                SecureField("Password", text: $password)
+                    .style(SignInView.textFieldStyle)
+                    .padding(.all, 8)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 10)
+                            .stroke(Color(.ui.grey6), lineWidth: 2)
+                    )
+                    .accessibility(identifier: "password")
+            }
+            Button{
                 self.signIn()
-            }.alert(item: $error) { error in
+            } label: {
+                Text("Sign In")
+                    .style(SignInView.textStyle)
+                    .frame(maxWidth: 256)
+            }
+            .alert(item: $error) { error in
                 Alert(title: Text(error.localizedDescription))
             }
+            .tint(Color(ColorAsset.ui.lapis1))
+            .buttonStyle(.bordered)
+            .controlSize(.large)
+            .controlProminence(.increased)
+            .colorScheme(.light)
         }
         .padding()
-        .background(Color(UIColor.systemGray6))
     }
 
     func signIn() {
