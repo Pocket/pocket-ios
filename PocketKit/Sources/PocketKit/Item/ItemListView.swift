@@ -26,9 +26,12 @@ struct ItemListView: View {
                 NavigationLink(
                     destination: ItemDestinationView(item: item)
                 ) { EmptyView() }
+                .opacity(0)
 
                 ItemRowView(model: ItemPresenter(item: item))
             }
-        }.accessibility(identifier: "user-list")
+        }
+        .listStyle(.plain)
+        .accessibility(identifier: "user-list")
     }
 }

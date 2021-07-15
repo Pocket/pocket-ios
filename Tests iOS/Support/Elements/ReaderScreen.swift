@@ -18,6 +18,6 @@ struct ReaderScreen {
 
     func staticText(containing string: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS %@", string)
-        return el.textViews.element(matching: predicate)
+        return el.staticTexts.element(matching: predicate)
     }
 }
