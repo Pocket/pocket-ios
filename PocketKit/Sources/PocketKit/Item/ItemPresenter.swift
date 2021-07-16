@@ -21,9 +21,7 @@ class ItemPresenter: ItemRow {
     }
     
     public var languageDirection: LanguageDirection {
-        let language = item.language ?? "en"
-        let direction = Locale.characterDirection(forLanguage: language)
-        return direction == .rightToLeft ? .rightToLeft : .leftToRight
+        item.languageDirection
     }
 
     public var domain: String {
