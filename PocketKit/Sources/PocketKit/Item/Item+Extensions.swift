@@ -5,9 +5,10 @@
 import Foundation
 import Textile
 import Sync
+import SwiftUI
 
 public extension Item {
-    var languageDirection: LanguageDirection {
+    var characterDirection: LayoutDirection {
         let language = language ?? "en"
         let direction = Locale.characterDirection(forLanguage: language)
         return direction == .rightToLeft ? .rightToLeft : .leftToRight

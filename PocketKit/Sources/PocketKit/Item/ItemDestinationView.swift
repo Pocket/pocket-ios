@@ -22,12 +22,14 @@ struct ItemDestinationView: View {
     private var isPresentingOverflow = false
     
     @StateObject
-    private var settings: ReaderSettings
+    private var settings = ReaderSettings()
     
     @ViewBuilder
     private var destinationView: some View {
         if let article = article {
-            ArticleView(article: article).navigationBarHidden(true)
+            ArticleView(article: article)
+                .navigationBarHidden(true)
+                .environment(\.characterDirection, item.characterDirection)
         } else {
             // TODO: Implement a view for when an article for the item doesn't exist.
             EmptyView()
@@ -36,10 +38,6 @@ struct ItemDestinationView: View {
     
     init(item: Item) {
         self.item = item
-        
-        let settings = ReaderSettings()
-        settings.languageDirection = item.languageDirection
-        _settings = StateObject(wrappedValue: settings)
     }
     
     var body: some View {
