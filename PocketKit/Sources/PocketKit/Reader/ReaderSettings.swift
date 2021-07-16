@@ -12,8 +12,6 @@ class ReaderSettings: ObservableObject {
     
     @AppStorage("readerFontFamily")
     var fontFamily: FontDescriptor.Family = .graphik
-    
-    var languageDirection: LanguageDirection = .leftToRight
 }
 
 extension FontDescriptor.Family: RawRepresentable {

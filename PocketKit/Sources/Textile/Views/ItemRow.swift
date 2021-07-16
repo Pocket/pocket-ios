@@ -16,23 +16,14 @@ private extension Style {
     static let detail: Style = .header.sansSerif.p4.with(color: .ui.grey4)
 }
 
-public enum LanguageDirection {
-    case leftToRight
-    case rightToLeft
-}
-
 public protocol ItemRow: ObservableObject {
     var title: String { get }
-    var languageDirection: LanguageDirection { get }
     var domain: String { get }
     var timeToRead: String? { get }
     var thumbnailURL: URL? { get }
 }
 
 public struct ItemRowView<Model: ItemRow>: View {
-    @Environment(\.layoutDirection)
-    private var layoutDirection
-    
     private var model: Model
 
     public init(model: Model) {
@@ -89,7 +80,6 @@ struct ItemRow_Previews: PreviewProvider {
         nascetur ridiculus mus. Donec sed odio dui.
         """
 
-        var languageDirection: LanguageDirection = .leftToRight
         var domain: String = "Etiam Sem Magna Parturient Bibendum"
         var timeToRead: String? = "5 min"
         var thumbnailURL: URL? = URL(string: "http://placekitten.com/200/300")!

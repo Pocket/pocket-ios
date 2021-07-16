@@ -14,8 +14,12 @@ private struct AuthorizationClientKey: EnvironmentKey {
     static var defaultValue: AuthorizationClient = Services.shared.authClient
 }
 
-struct SourceKey: EnvironmentKey {
+private struct SourceKey: EnvironmentKey {
     static var defaultValue = Services.shared.source
+}
+
+private struct CharacterDirectionKey: EnvironmentKey {
+    static var defaultValue: LayoutDirection = .leftToRight
 }
 
 extension EnvironmentValues {
@@ -32,5 +36,10 @@ extension EnvironmentValues {
     var source: Source {
         get { self[SourceKey.self] }
         set { self[SourceKey.self] = newValue }
+    }
+    
+    var characterDirection: LayoutDirection {
+        get { self[CharacterDirectionKey.self] }
+        set { self[CharacterDirectionKey.self] = newValue }
     }
 }

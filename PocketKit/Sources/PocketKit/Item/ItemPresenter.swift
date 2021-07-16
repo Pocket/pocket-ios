@@ -19,10 +19,6 @@ class ItemPresenter: ItemRow {
     public var title: String {
         item.title ?? item.thumbnailURL?.absoluteString ?? "Missing Title"
     }
-    
-    public var languageDirection: LanguageDirection {
-        item.languageDirection
-    }
 
     public var domain: String {
         item.domainMetadata?.name ?? item.domain ?? ""

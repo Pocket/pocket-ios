@@ -14,6 +14,9 @@ struct TextContentView: View {
     @Environment(\.layoutDirection)
     private var layoutDirection: LayoutDirection
     
+    @Environment(\.characterDirection)
+    private var characterDirection: LayoutDirection
+    
     @EnvironmentObject
     private var settings: ReaderSettings
     
@@ -46,20 +49,24 @@ struct TextContentView: View {
 
 extension TextContentView {
     private var alignment: Alignment {
-        switch settings.languageDirection {
+        switch characterDirection {
         case .leftToRight:
             return layoutDirection == .leftToRight ? .leading : .trailing
         case .rightToLeft:
             return layoutDirection == .rightToLeft ? .leading : .trailing
+        @unknown default:
+            return .leading
         }
     }
     
     private var textAlignment: TextAlignment {
-        switch settings.languageDirection {
+        switch characterDirection {
         case .leftToRight:
             return layoutDirection == .leftToRight ? .leading : .trailing
         case .rightToLeft:
             return layoutDirection == .rightToLeft ? .leading : .trailing
+        @unknown default:
+            return .leading
         }
     }
 }
