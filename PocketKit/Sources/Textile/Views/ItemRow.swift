@@ -46,7 +46,6 @@ public struct ItemRowView<Model: ItemRow>: View {
                 Text(model.title)
                     .style(.title)
                     .lineLimit(3)
-                    .multilineTextAlignment(textAlignment)
                 HStack(spacing: 4) {
                     Text(model.domain)
                         .style(.detail)
@@ -77,17 +76,6 @@ public struct ItemRowView<Model: ItemRow>: View {
                     Spacer()
                 }
             }
-        }
-    }
-}
-
-extension ItemRowView {
-    private var textAlignment: TextAlignment {
-        switch model.languageDirection {
-        case .leftToRight:
-            return layoutDirection == .leftToRight ? .leading : .trailing
-        case .rightToLeft:
-            return layoutDirection == .rightToLeft ? .leading : .trailing
         }
     }
 }
