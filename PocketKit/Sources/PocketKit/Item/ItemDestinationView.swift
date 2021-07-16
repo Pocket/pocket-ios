@@ -22,7 +22,7 @@ struct ItemDestinationView: View {
     private var isPresentingOverflow = false
     
     @StateObject
-    private var settings = ReaderSettings()
+    private var settings: ReaderSettings
     
     @ViewBuilder
     private var destinationView: some View {
@@ -36,6 +36,10 @@ struct ItemDestinationView: View {
     
     init(item: Item) {
         self.item = item
+        
+        let settings = ReaderSettings()
+        settings.languageDirection = item.languageDirection
+        _settings = StateObject(wrappedValue: settings)
     }
     
     var body: some View {

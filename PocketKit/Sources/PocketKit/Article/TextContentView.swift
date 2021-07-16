@@ -11,6 +11,9 @@ struct TextContentView: View {
     private let text: TextContent
     private let style: Style
 
+    @Environment(\.layoutDirection)
+    private var layoutDirection: LayoutDirection
+    
     @EnvironmentObject
     private var settings: ReaderSettings
     
@@ -33,9 +36,22 @@ struct TextContentView: View {
     var body: some View {
         if let content = content {
             Text(content)
+                .multilineTextAlignment(textAlignment)
         } else {
             Text("An error occurred while trying to load your article.")
                 .style(style.with(settings: settings))
+                .multilineTextAlignment(textAlignment)
+        }
+    }
+}
+
+extension TextContentView {
+    private var textAlignment: TextAlignment {
+        switch settings.languageDirection {
+        case .leftToRight:
+            return layoutDirection == .leftToRight ? .leading : .trailing
+        case .rightToLeft:
+            return layoutDirection == .rightToLeft ? .leading : .trailing
         }
     }
 }
