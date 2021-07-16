@@ -36,16 +36,24 @@ struct TextContentView: View {
     var body: some View {
         if let content = content {
             Text(content)
+                .frame(maxWidth: .infinity, alignment: alignment)
                 .multilineTextAlignment(textAlignment)
         } else {
-            Text("An error occurred while trying to load your article.")
-                .style(style.with(settings: settings))
-                .multilineTextAlignment(textAlignment)
+            EmptyView()
         }
     }
 }
 
 extension TextContentView {
+    private var alignment: Alignment {
+        switch settings.languageDirection {
+        case .leftToRight:
+            return layoutDirection == .leftToRight ? .leading : .trailing
+        case .rightToLeft:
+            return layoutDirection == .rightToLeft ? .leading : .trailing
+        }
+    }
+    
     private var textAlignment: TextAlignment {
         switch settings.languageDirection {
         case .leftToRight:
