@@ -16,6 +16,7 @@
                             "__typename": "[type-name-here]",
                             "url": "http://example.com/item-1",
                             "_createdAt": 0,
+                            "isArchived": false,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Updated Item 1",

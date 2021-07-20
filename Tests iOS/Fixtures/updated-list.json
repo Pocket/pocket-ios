@@ -16,6 +16,7 @@
                             "__typename": "[type-name-here]",
                             "url": "http://localhost:8080/hello",
                             "_createdAt": 0,
+                            "isArchived": false,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Updated Item 1",
@@ -48,6 +49,7 @@
                             "__typename": "[type-name-here]",
                             "url": "https://example.com/item-2",
                             "_createdAt": 0,
+                            "isArchived": false,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Updated Item 2",

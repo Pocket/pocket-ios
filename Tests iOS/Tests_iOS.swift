@@ -183,4 +183,23 @@ class Tests_iOS: XCTestCase {
         XCTAssertTrue(webView.waitForExistence())
         XCTAssertTrue(webView.staticText(matching: "Hello, world").waitForExistence(timeout: 10))
     }
+
+    func test_4_list_excludesArchivedContent() {
+        server.routes.post("/graphql") { _, loop in
+            Response {
+                Status.ok
+                Fixture
+                    .load(name: "list-with-archived-item")
+                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+                    .data
+            }
+        }
+
+        app.launch()
+        let listView = app.userListView()
+        XCTAssertTrue(listView.waitForExistence())
+
+        XCTAssertEqual(listView.itemCount, 1)
+        XCTAssertTrue(listView.itemView(at: 0).contains(string: "Item 2"))
+    }
 }

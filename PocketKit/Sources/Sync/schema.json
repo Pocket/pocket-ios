@@ -13,6 +13,7 @@
         "kind": "OBJECT",
         "name": "Author",
         "description": "Information about an Author of an article or some content",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "id",
@@ -64,6 +65,7 @@
         "kind": "SCALAR",
         "name": "ID",
         "description": "The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `\"4\"`) or integer (such as `4`) input value will be accepted as an ID.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -74,6 +76,7 @@
         "kind": "SCALAR",
         "name": "String",
         "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -84,6 +87,7 @@
         "kind": "ENUM",
         "name": "CacheControlScope",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -107,6 +111,7 @@
         "kind": "OBJECT",
         "name": "Collection",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "externalId",
@@ -314,6 +319,7 @@
         "kind": "OBJECT",
         "name": "CollectionAuthor",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "externalId",
@@ -409,6 +415,7 @@
         "kind": "SCALAR",
         "name": "Boolean",
         "description": "The `Boolean` scalar type represents `true` or `false`.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -419,6 +426,7 @@
         "kind": "OBJECT",
         "name": "CollectionsResult",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "pagination",
@@ -470,6 +478,7 @@
         "kind": "ENUM",
         "name": "CollectionStatus",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -499,6 +508,7 @@
         "kind": "OBJECT",
         "name": "CollectionStory",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "externalId",
@@ -646,6 +656,7 @@
         "kind": "SCALAR",
         "name": "Int",
         "description": "The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -656,6 +667,7 @@
         "kind": "OBJECT",
         "name": "CollectionStoryAuthor",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -699,6 +711,7 @@
         "kind": "OBJECT",
         "name": "CuratedInfo",
         "description": "This type represents the information we need on a curated item.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "title",
@@ -746,6 +759,7 @@
         "kind": "OBJECT",
         "name": "CurationCategory",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "externalId",
@@ -805,6 +819,7 @@
         "kind": "SCALAR",
         "name": "DateString",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -815,6 +830,7 @@
         "kind": "OBJECT",
         "name": "DomainMetadata",
         "description": "Metadata from a domain, originally populated from ClearBit",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -862,6 +878,7 @@
         "kind": "OBJECT",
         "name": "IABCategory",
         "description": "TODO: add comments to all the fields in here!\nthere's a documentation ticket - do this in that ticket",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "externalId",
@@ -921,6 +938,7 @@
         "kind": "OBJECT",
         "name": "IABParentCategory",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "externalId",
@@ -1004,6 +1022,7 @@
         "kind": "OBJECT",
         "name": "Image",
         "description": "An image, typically a thumbnail or article view image for an {Item}",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "caption",
@@ -1087,6 +1106,7 @@
         "kind": "ENUM",
         "name": "Imageness",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -1116,6 +1136,7 @@
         "kind": "OBJECT",
         "name": "Item",
         "description": "The heart of Pocket\nA url and meta data related to it.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "itemId",
@@ -1631,6 +1652,7 @@
         "kind": "UNION",
         "name": "ItemResult",
         "description": "Union type for items that may or may not be processed",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -1652,6 +1674,7 @@
         "kind": "SCALAR",
         "name": "Markdown",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -1662,6 +1685,7 @@
         "kind": "OBJECT",
         "name": "Mutation",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "createSavedItem",
@@ -1679,7 +1703,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1706,7 +1732,9 @@
                   "name": "String",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1737,7 +1765,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1768,7 +1798,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1799,7 +1831,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1830,7 +1864,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1861,7 +1897,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1892,7 +1930,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1923,7 +1963,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1954,7 +1996,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -1993,7 +2037,9 @@
                     }
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2028,7 +2074,9 @@
                   "name": "TagUpdateInput",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2059,7 +2107,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2098,7 +2148,9 @@
                     }
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2133,7 +2185,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2162,6 +2216,7 @@
         "kind": "OBJECT",
         "name": "PageInfo",
         "description": "Information about pagination in a connection.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "endCursor",
@@ -2229,6 +2284,7 @@
         "kind": "ENUM",
         "name": "PageType",
         "description": "Represents a type of page for /explore\nDeprecated for SlateLineups",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -2252,6 +2308,7 @@
         "kind": "OBJECT",
         "name": "Pagination",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "currentPage",
@@ -2327,6 +2384,7 @@
         "kind": "INPUT_OBJECT",
         "name": "PaginationInput",
         "description": "Pagination request. To determine which edges to return, the connection\nevaluates the `before` and `after` cursors (if given) to filter the\nedges, then evaluates `first`/`last` to slice the edges (only include a\nvalue for either `first` or `last`, not both). If all fields are null,\nby default will return a page with the first 30 elements.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -2337,7 +2395,9 @@
               "name": "String",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "before",
@@ -2347,7 +2407,9 @@
               "name": "String",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "first",
@@ -2357,7 +2419,9 @@
               "name": "Int",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "last",
@@ -2367,7 +2431,9 @@
               "name": "Int",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -2378,6 +2444,7 @@
         "kind": "OBJECT",
         "name": "PendingItem",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "url",
@@ -2417,6 +2484,7 @@
         "kind": "ENUM",
         "name": "PendingItemStatus",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -2440,6 +2508,7 @@
         "kind": "OBJECT",
         "name": "Publisher",
         "description": "The publisher that the curation team set for the syndicated article",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -2487,6 +2556,7 @@
         "kind": "OBJECT",
         "name": "Query",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "userByToken",
@@ -2504,7 +2574,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2531,7 +2603,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2558,7 +2632,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               },
               {
                 "name": "algorithmicCount",
@@ -2568,7 +2644,9 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": "20"
+                "defaultValue": "20",
+                "isDeprecated": false,
+                "deprecationReason": null
               },
               {
                 "name": "curatedCount",
@@ -2578,7 +2656,9 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": "5"
+                "defaultValue": "5",
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2629,7 +2709,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               },
               {
                 "name": "recommendationCount",
@@ -2639,7 +2721,9 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": "10"
+                "defaultValue": "10",
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2662,7 +2746,9 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": "0"
+                "defaultValue": "0",
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2701,7 +2787,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               },
               {
                 "name": "slateCount",
@@ -2711,7 +2799,9 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": "8"
+                "defaultValue": "8",
+                "isDeprecated": false,
+                "deprecationReason": null
               },
               {
                 "name": "recommendationCount",
@@ -2721,7 +2811,9 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": "10"
+                "defaultValue": "10",
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2748,7 +2840,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2775,7 +2869,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2802,7 +2898,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2825,7 +2923,9 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               },
               {
                 "name": "perPage",
@@ -2835,7 +2935,9 @@
                   "name": "Int",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2866,7 +2968,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -2887,6 +2991,7 @@
         "kind": "INPUT_OBJECT",
         "name": "RecItUserProfile",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -2909,7 +3014,9 @@
                 }
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -2920,6 +3027,7 @@
         "kind": "OBJECT",
         "name": "Recommendation",
         "description": "Represents a Recomendation from Pocket",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "id",
@@ -3039,6 +3147,7 @@
         "kind": "INTERFACE",
         "name": "RemoteEntity",
         "description": "Interface that all state based entities must implement",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "id",
@@ -3125,6 +3234,7 @@
         "kind": "OBJECT",
         "name": "SavedItem",
         "description": "Represents a Pocket Item that a user has saved to their list.\n(Said otherways, indicates a saved url to a users list and associated user specific information.)",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "url",
@@ -3334,6 +3444,7 @@
         "kind": "OBJECT",
         "name": "SavedItemConnection",
         "description": "The connection type for SavedItem.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "edges",
@@ -3393,6 +3504,7 @@
         "kind": "INPUT_OBJECT",
         "name": "SavedItemCreateInput",
         "description": "Input field for creating a SavedItem",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -3407,7 +3519,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "isFavorite",
@@ -3417,7 +3531,9 @@
               "name": "Boolean",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "timestamp",
@@ -3427,7 +3543,9 @@
               "name": "Timestamp",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -3438,6 +3556,7 @@
         "kind": "OBJECT",
         "name": "SavedItemEdge",
         "description": "An edge in a connection.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "cursor",
@@ -3477,6 +3596,7 @@
         "kind": "ENUM",
         "name": "SavedItemsContentType",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3500,6 +3620,7 @@
         "kind": "INPUT_OBJECT",
         "name": "SavedItemsFilter",
         "description": "Input field for filtering a user's list",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -3510,7 +3631,9 @@
               "name": "Timestamp",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "isFavorite",
@@ -3520,7 +3643,9 @@
               "name": "Boolean",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "isArchived",
@@ -3530,7 +3655,9 @@
               "name": "Boolean",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "tagIds",
@@ -3548,7 +3675,9 @@
                 }
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "tagNames",
@@ -3566,7 +3695,9 @@
                 }
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "isHighlighted",
@@ -3576,7 +3707,9 @@
               "name": "Boolean",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "contentType",
@@ -3586,7 +3719,9 @@
               "name": "SavedItemsContentType",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -3597,6 +3732,7 @@
         "kind": "INPUT_OBJECT",
         "name": "SavedItemsSort",
         "description": "Input to sort fetched user items",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -3611,7 +3747,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "sortOrder",
@@ -3625,7 +3763,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -3636,6 +3776,7 @@
         "kind": "ENUM",
         "name": "SavedItemsSortBy",
         "description": "Enum to specify the sort by field (these are the current options, we could add more in the future)",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3671,6 +3812,7 @@
         "kind": "ENUM",
         "name": "SavedItemsSortOrder",
         "description": "Enum to specify the sort order of user items fetched",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3694,6 +3836,7 @@
         "kind": "ENUM",
         "name": "SavedItemStatus",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -3729,6 +3872,7 @@
         "kind": "INPUT_OBJECT",
         "name": "SavedItemTagUpdateInput",
         "description": "Input field for updating a User Item to have or not have tags",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -3743,7 +3887,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "tagIds",
@@ -3761,7 +3907,9 @@
                 }
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -3772,6 +3920,7 @@
         "kind": "INPUT_OBJECT",
         "name": "SavedItemUpdateInput",
         "description": "Input field for updating a SavedItem",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -3786,7 +3935,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "isFavorite",
@@ -3796,7 +3947,9 @@
               "name": "Boolean",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "isArchived",
@@ -3806,7 +3959,9 @@
               "name": "Boolean",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "tagIds",
@@ -3824,7 +3979,9 @@
                 }
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "tagNames",
@@ -3842,7 +3999,9 @@
                 }
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "timestamp",
@@ -3852,7 +4011,9 @@
               "name": "Timestamp",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -3863,6 +4024,7 @@
         "kind": "OBJECT",
         "name": "Slate",
         "description": "A grouping of item recomendations that relate to each other under a specific name and description",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "id",
@@ -3970,6 +4132,7 @@
         "kind": "OBJECT",
         "name": "SlateLineup",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "id",
@@ -4053,6 +4216,7 @@
         "kind": "OBJECT",
         "name": "SyndicatedArticle",
         "description": "An article that Pocket has syndicated and we also host on our own site",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "slug",
@@ -4088,6 +4252,7 @@
         "kind": "OBJECT",
         "name": "Tag",
         "description": "Represents a Tag that a User has created for their list",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -4201,6 +4366,7 @@
         "kind": "OBJECT",
         "name": "TagConnection",
         "description": "The connection type for Tag.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "edges",
@@ -4260,6 +4426,7 @@
         "kind": "INPUT_OBJECT",
         "name": "TagCreateInput",
         "description": "Input field for creating a Tag",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -4274,7 +4441,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "savedItemId",
@@ -4288,7 +4457,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -4299,6 +4470,7 @@
         "kind": "OBJECT",
         "name": "TagEdge",
         "description": "An edge in a connection.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "cursor",
@@ -4338,6 +4510,7 @@
         "kind": "INPUT_OBJECT",
         "name": "TagUpdateInput",
         "description": "Input field for updating a Tag",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -4352,7 +4525,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "name",
@@ -4366,7 +4541,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -4377,6 +4554,7 @@
         "kind": "SCALAR",
         "name": "Timestamp",
         "description": "Integer based represention of a unix timestamp",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -4387,6 +4565,7 @@
         "kind": "OBJECT",
         "name": "Topic",
         "description": "Represents a topic for /explore\nDeprecated for SlateLineups",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "id",
@@ -4594,6 +4773,7 @@
         "kind": "OBJECT",
         "name": "TopicRecommendations",
         "description": "Represents a set of recomednations for /explore\nDeprecated for SlateLineups",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "curatedRecommendations",
@@ -4653,6 +4833,7 @@
         "kind": "OBJECT",
         "name": "UnleashAssignment",
         "description": "Details on the variant/status of this toggle for a given user/context",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -4720,6 +4901,7 @@
         "kind": "OBJECT",
         "name": "UnleashAssignmentList",
         "description": "Contains a list of all toggles.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "assignments",
@@ -4751,6 +4933,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UnleashContext",
         "description": "Information about the user and device. Based on https://unleash.github.io/docs/unleash_context\n\nUsed to calculate assignment values.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -4761,7 +4944,9 @@
               "name": "String",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "environment",
@@ -4771,7 +4956,9 @@
               "name": "UnleashEnvironment",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "userId",
@@ -4781,7 +4968,9 @@
               "name": "String",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "sessionId",
@@ -4795,7 +4984,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "remoteAddress",
@@ -4805,7 +4996,9 @@
               "name": "String",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "properties",
@@ -4815,7 +5008,9 @@
               "name": "UnleashProperties",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -4826,6 +5021,7 @@
         "kind": "ENUM",
         "name": "UnleashEnvironment",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -4855,6 +5051,7 @@
         "kind": "INPUT_OBJECT",
         "name": "UnleashProperties",
         "description": "Extended properties that Unleash can use to assign users through a toggle's strategies.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
@@ -4865,7 +5062,9 @@
               "name": "String",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "accountCreatedAt",
@@ -4875,7 +5074,9 @@
               "name": "String",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "recItUserProfile",
@@ -4885,7 +5086,9 @@
               "name": "RecItUserProfile",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "interfaces": null,
@@ -4896,6 +5099,7 @@
         "kind": "SCALAR",
         "name": "Url",
         "description": "These are all just renamed strings right now",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -4906,6 +5110,7 @@
         "kind": "OBJECT",
         "name": "User",
         "description": null,
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "id",
@@ -4983,7 +5188,9 @@
                   "name": "SavedItemsFilter",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               },
               {
                 "name": "sort",
@@ -4993,7 +5200,9 @@
                   "name": "SavedItemsSort",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               },
               {
                 "name": "pagination",
@@ -5003,7 +5212,9 @@
                   "name": "PaginationInput",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -5026,7 +5237,9 @@
                   "name": "PaginationInput",
                   "ofType": null
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -5053,7 +5266,9 @@
                     "ofType": null
                   }
                 },
-                "defaultValue": null
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -5074,6 +5289,7 @@
         "kind": "OBJECT",
         "name": "Video",
         "description": "A Video, typically within an Article View of an {Item} or if the Item is a video itself.\"",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "height",
@@ -5181,6 +5397,7 @@
         "kind": "ENUM",
         "name": "Videoness",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -5210,6 +5427,7 @@
         "kind": "ENUM",
         "name": "VideoType",
         "description": null,
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -5269,6 +5487,7 @@
         "kind": "OBJECT",
         "name": "__Schema",
         "description": "A GraphQL Schema defines the capabilities of a GraphQL server. It exposes all available types and directives on the server, as well as the entry points for query, mutation, and subscription operations.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "description",
@@ -5380,6 +5599,7 @@
         "kind": "OBJECT",
         "name": "__Type",
         "description": "The fundamental unit of any GraphQL Schema is the type. There are many kinds of types in GraphQL as represented by the `__TypeKind` enum.\n\nDepending on the kind of a type, certain fields describe information about that type. Scalar types provide no information beyond a name, description and optional `specifiedByUrl`, while Enum types provide their values. Object and Interface types provide the fields they describe. Abstract types, Union and Interface, provide the Object types possible at runtime. List and NonNull types compose other types.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "kind",
@@ -5445,7 +5665,9 @@
                   "name": "Boolean",
                   "ofType": null
                 },
-                "defaultValue": "false"
+                "defaultValue": "false",
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -5516,7 +5738,9 @@
                   "name": "Boolean",
                   "ofType": null
                 },
-                "defaultValue": "false"
+                "defaultValue": "false",
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -5547,7 +5771,9 @@
                   "name": "Boolean",
                   "ofType": null
                 },
-                "defaultValue": "false"
+                "defaultValue": "false",
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -5588,6 +5814,7 @@
         "kind": "ENUM",
         "name": "__TypeKind",
         "description": "An enum describing what kind of type a given `__Type` is.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -5647,6 +5874,7 @@
         "kind": "OBJECT",
         "name": "__Field",
         "description": "Object and Interface types are described by a list of Fields, each of which has a name, potentially a list of arguments, and a return type.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -5688,7 +5916,9 @@
                   "name": "Boolean",
                   "ofType": null
                 },
-                "defaultValue": "false"
+                "defaultValue": "false",
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -5765,6 +5995,7 @@
         "kind": "OBJECT",
         "name": "__InputValue",
         "description": "Arguments provided to Fields or Directives and the input fields of an InputObject are represented as Input Values which describe their type and optionally a default value.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -5860,6 +6091,7 @@
         "kind": "OBJECT",
         "name": "__EnumValue",
         "description": "One possible value for a given Enum. Enum values are unique values, not a placeholder for a string or numeric value. However an Enum value is returned in a JSON response as a string.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -5927,6 +6159,7 @@
         "kind": "OBJECT",
         "name": "__Directive",
         "description": "A Directive provides a way to describe alternate runtime execution and type validation behavior in a GraphQL document.\n\nIn some cases, you need to provide options to alter GraphQL's execution behavior in ways field arguments will not suffice, such as conditionally including or skipping a field. Directives provide this by describing additional information to the executor.",
+        "specifiedByUrl": null,
         "fields": [
           {
             "name": "name",
@@ -6030,6 +6263,7 @@
         "kind": "ENUM",
         "name": "__DirectiveLocation",
         "description": "A Directive can be adjacent to many parts of the GraphQL language, a __DirectiveLocation describes one such possible adjacencies.",
+        "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
         "interfaces": null,
@@ -6173,7 +6407,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6197,7 +6433,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "url",
@@ -6211,7 +6449,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6235,7 +6475,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6259,7 +6501,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "graph",
@@ -6273,7 +6517,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6297,7 +6543,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6321,7 +6569,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6345,7 +6595,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6371,7 +6623,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6397,7 +6651,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6420,7 +6676,9 @@
               "name": "String",
               "ofType": null
             },
-            "defaultValue": "\"No longer supported\""
+            "defaultValue": "\"No longer supported\"",
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6444,7 +6702,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6466,7 +6726,9 @@
               "name": "Boolean",
               "ofType": null
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6490,7 +6752,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       },
@@ -6514,7 +6778,9 @@
                 "ofType": null
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           },
           {
             "name": "filter",
@@ -6532,7 +6798,9 @@
                 }
               }
             },
-            "defaultValue": null
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ]
       }
