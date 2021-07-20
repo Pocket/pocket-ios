@@ -217,6 +217,7 @@ public final class UserByTokenQuery: GraphQLQuery {
               __typename
               url
               isArchived
+              _deletedAt
               _createdAt
               item {
                 __typename
@@ -478,6 +479,7 @@ public final class UserByTokenQuery: GraphQLQuery {
                 GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                 GraphQLField("url", type: .nonNull(.scalar(String.self))),
                 GraphQLField("isArchived", type: .nonNull(.scalar(Bool.self))),
+                GraphQLField("_deletedAt", type: .scalar(String.self)),
                 GraphQLField("_createdAt", type: .nonNull(.scalar(String.self))),
                 GraphQLField("item", type: .nonNull(.object(Item.selections))),
               ]
@@ -489,8 +491,8 @@ public final class UserByTokenQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(url: String, isArchived: Bool, _createdAt: String, item: Item) {
-              self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "isArchived": isArchived, "_createdAt": _createdAt, "item": item.resultMap])
+            public init(url: String, isArchived: Bool, _deletedAt: String? = nil, _createdAt: String, item: Item) {
+              self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "isArchived": isArchived, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "item": item.resultMap])
             }
 
             public var __typename: String {
@@ -519,6 +521,16 @@ public final class UserByTokenQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "isArchived")
+              }
+            }
+
+            /// Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
+            public var _deletedAt: String? {
+              get {
+                return resultMap["_deletedAt"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "_deletedAt")
               }
             }
 
