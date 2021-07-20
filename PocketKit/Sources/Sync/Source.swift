@@ -21,12 +21,14 @@ public class Source {
     }()
 
     public convenience init(
+        sessionProvider: SessionProvider,
         accessTokenProvider: AccessTokenProvider,
         consumerKey: String
     ) {
         self.init(
             space: Space(container: .createDefault()),
             apollo: ApolloClient.createDefault(
+                sessionProvider: sessionProvider,
                 accessTokenProvider: accessTokenProvider,
                 consumerKey: consumerKey
             ),

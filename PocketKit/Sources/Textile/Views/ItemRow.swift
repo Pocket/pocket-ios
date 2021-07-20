@@ -17,6 +17,7 @@ private extension Style {
 }
 
 public protocol ItemRow: ObservableObject {
+    var index: Int { get }
     var title: String { get }
     var domain: String { get }
     var timeToRead: String? { get }
@@ -81,13 +82,15 @@ public struct ItemRowView<Model: ItemRow>: View {
 
 struct ItemRow_Previews: PreviewProvider {
     class DummyModel: ItemRow, Identifiable {
+        var index = 0
+        
         var id = "hi"
-
+        
         var title: String = """
         Cum sociis natoque penatibus et magnis dis parturient montes,
         nascetur ridiculus mus. Donec sed odio dui.
         """
-
+        
         var domain: String = "Etiam Sem Magna Parturient Bibendum"
         var timeToRead: String? = "5 min"
         var thumbnailURL: URL? = URL(string: "http://placekitten.com/200/300")!

@@ -6,26 +6,10 @@ import Foundation
 
 
 protocol URLSessionProtocol {
-    func dataTask(
-        with request: URLRequest,
-        completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void
-    ) -> URLSessionDataTaskProtocol
+    func data(
+        for request: URLRequest,
+        delegate: URLSessionTaskDelegate?
+    ) async throws -> (Data, URLResponse)
 }
 
-protocol URLSessionDataTaskProtocol {
-    func resume()
-    func cancel()
-}
-
-extension URLSession: URLSessionProtocol {
-    func dataTask(
-        with request: URLRequest,
-        completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void
-    ) -> URLSessionDataTaskProtocol {
-        return self.dataTask(with: request, completionHandler: completionHandler) as URLSessionDataTask
-    }
-}
-
-extension URLSessionDataTask: URLSessionDataTaskProtocol {
-
-}
+extension URLSession: URLSessionProtocol { }

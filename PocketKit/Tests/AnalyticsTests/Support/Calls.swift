@@ -17,8 +17,5 @@ struct Calls<T> {
     var last: T? {
         return calls.last
     }
-    
-    var count: Int {
-        return calls.count
-    }
 }
+

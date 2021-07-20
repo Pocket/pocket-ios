@@ -72,7 +72,9 @@ struct SignInView: View {
                     .accessibility(identifier: "password")
             }
             Button{
-                self.signIn()
+                Task {
+                    await self.signIn()
+                }
             } label: {
                 Text("Sign In")
                     .style(SignInView.textStyle)
@@ -82,26 +84,21 @@ struct SignInView: View {
                 Alert(title: Text(error.localizedDescription))
             }
             .tint(Color(ColorAsset.ui.lapis1))
-            .buttonStyle(.bordered)
+            .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .controlProminence(.increased)
             .colorScheme(.light)
         }
         .padding()
     }
 
-    func signIn() {
-        authClient.authorize(
-            username: email,
-            password: password
-        ) { result in
-            switch result {
-            case .success(let token):
-                self.authState.authToken = token
-            case .failure(let error):
-                Crashlogger.capture(error: error)
-                self.error = .signInError(error)
-            }
+    func signIn() async {
+        do {
+            let guid = try await authClient.requestGUID()
+            let authorization = try await authClient.authorize(guid: guid, username: email, password: password)
+            self.authState.authorization = Authorization(guid: guid, response: authorization)
+        } catch {
+            let error = error
+            Crashlogger.capture(error: error)
         }
     }
 }

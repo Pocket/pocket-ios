@@ -5,11 +5,14 @@
 import UIKit
 import Sync
 import Textile
+import Analytics
 
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private var accessTokenStore: AccessTokenStore
     private var source: Sync.Source
+    private var tracker: Tracker
+    private var userDefaults: UserDefaults
 
     convenience override init() {
         self.init(services: Services.shared)
@@ -18,19 +21,26 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     init(services: Services) {
         self.accessTokenStore = services.accessTokenStore
         self.source = services.source
+        self.tracker = services.tracker
+        self.userDefaults = services.userDefaults
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         Crashlogger.start(dsn: Keys.shared.sentryDSN)
+        
+        if CommandLine.arguments.contains("clearUserDefaults") {
+            userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        }
 
         SignOutOnFirstLaunch(
             accessTokenStore: accessTokenStore,
-            userDefaults: .standard
+            userDefaults: userDefaults
         ).signOutOnFirstLaunch()
 
         let staticDataCleaner = StaticDataCleaner(
             bundle: Bundle.main,
-            source: source
+            source: source,
+            userDefaults: userDefaults
         )
         staticDataCleaner.clearIfNecessary()
 
@@ -51,6 +61,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         Textiles.initialize()
+        setupTracker()
 
         return true
     }
@@ -68,5 +79,13 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         config.delegateClass = PocketSceneDelegate.self
 
         return config
+    }
+}
+
+private extension PocketAppDelegate {
+    func setupTracker() {
+        let key = Keys.shared.pocketApiConsumerKey
+        let apiUser = APIUser(consumerKey: key)
+        tracker.addPersistentContext(apiUser)
     }
 }

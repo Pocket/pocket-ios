@@ -2,11 +2,12 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-struct AuthorizeRequest: Codable, Equatable {
-    let guid: String
-    let username: String
-    let password: String
-    let consumerKey: String
-    let grantType: String
-    let account: Bool
+import Foundation
+import Analytics
+
+
+struct Content: SnowplowContext {
+    static let schema = "iglu:com.pocket/content/jsonschema/1-0-0"
+    
+    let url: URL
 }

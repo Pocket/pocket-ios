@@ -5,40 +5,27 @@
 import Foundation
 @testable import PocketKit
 
-class MockURLSessionDataTask: URLSessionDataTaskProtocol {
-    var resumeCalls = 0
-
-    func resume() {
-        resumeCalls += 1
-    }
-    
-    func cancel() { }
-}
-
 class MockURLSession: URLSessionProtocol {
-    struct DataTaskCall {
+    struct DataCall {
         let request: URLRequest
     }
 
-    typealias DataTaskImpl = (URLRequest, (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTaskProtocol
+    typealias DataImpl = (URLRequest) throws -> (Data, URLResponse)
 
-    private var dataTaskWithCompletionImpl: DataTaskImpl?
+    private var dataImpl: DataImpl?
 
-    var dataTaskCalls: [DataTaskCall] = []
+    var dataTaskCalls: [DataCall] = []
 
-    func dataTask(
-        with request: URLRequest,
-        completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void
-    ) -> URLSessionDataTaskProtocol {
-        guard let impl = dataTaskWithCompletionImpl else {
+    func data(for request: URLRequest, delegate: URLSessionTaskDelegate?) async throws -> (Data, URLResponse) {
+        guard let impl = dataImpl else {
             fatalError("\(Self.self).\(#function) is not stubbed")
         }
-
-        dataTaskCalls.append(DataTaskCall(request: request))
-        return impl(request, completionHandler)
+        
+        dataTaskCalls.append(DataCall(request: request))
+        return try impl(request)
     }
 
-    func stubDataTaskWithCompletion(impl: @escaping DataTaskImpl) {
-        dataTaskWithCompletionImpl = impl
+    func stubData(_ impl: @escaping DataImpl) {
+        dataImpl = impl
     }
 }

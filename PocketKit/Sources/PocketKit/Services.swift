@@ -4,18 +4,25 @@
 
 import Sync
 import Foundation
+import Analytics
 
 
 struct Services {
     static let shared = Services()
 
+    let userDefaults: UserDefaults
+    let session: Session
     let keychain: Keychain
     let accessTokenStore: AccessTokenStore
     let urlSession: URLSessionProtocol
     let authClient: AuthorizationClient
     let source: Source
+    let tracker: Tracker
+    let sceneTracker: SceneTracker
 
     private init() {
+        userDefaults = .standard
+        session = Session(userDefaults: userDefaults)
         keychain = SecItemKeychain()
         accessTokenStore = KeychainAccessTokenStore(keychain: keychain)
 
@@ -26,8 +33,16 @@ struct Services {
         )
 
         source = Source(
+            sessionProvider: session,
             accessTokenProvider: accessTokenStore,
             consumerKey: Keys.shared.pocketApiConsumerKey
         )
+
+        let snowplow = PocketSnowplowTracker()
+        tracker = PocketTracker(snowplow: snowplow)
+        
+        sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
     }
 }
+
+extension Session: SessionProvider { }

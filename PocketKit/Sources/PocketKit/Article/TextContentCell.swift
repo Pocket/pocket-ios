@@ -6,6 +6,11 @@ protocol TextContentCellDelegate: AnyObject {
         _ cell: TextContentCell,
         didShareSelecedText selectedText: String
     )
+    
+    func textContentCell(
+        _ cell: TextContentCell,
+        shouldOpenURL url: URL
+    ) -> Bool
 }
 
 class TextContentCell: UICollectionViewCell {
@@ -23,6 +28,7 @@ class TextContentCell: UICollectionViewCell {
         textView.textContainerInset = .zero
         textView.isEditable = false
         textView.isScrollEnabled = false
+        textView.delegate = self
         textView.shareDelegate = self
 
         contentView.addSubview(textView)
@@ -47,6 +53,12 @@ class TextContentCell: UICollectionViewCell {
 
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
+    }
+}
+
+extension TextContentCell: UITextViewDelegate {
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        return delegate?.textContentCell(self, shouldOpenURL: URL) ?? true
     }
 }
 

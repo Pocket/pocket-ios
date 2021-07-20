@@ -10,6 +10,7 @@ let package = Package(
         .library(name: "PocketKit", targets: ["PocketKit"]),
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
+        .library(name: "Analytics", targets: ["Analytics"]),
         .executable(name: "ApolloCodegen", targets: ["ApolloCodegen"]),
     ],
     dependencies: [
@@ -17,9 +18,10 @@ let package = Package(
         .package(name: "Kingfisher", url: "https://github.com/onevcat/Kingfisher.git", .branch("fix/xcode-13")),
         .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.0.0")),
         .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.0")),
+        .package(name: "SnowplowTracker", url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMinor(from: "2.2.0"))
     ],
     targets: [
-        .target(name: "PocketKit", dependencies: ["Sync", "Textile"]),
+        .target(name: "PocketKit", dependencies: ["Sync", "Textile", "Analytics"]),
         .testTarget(name: "PocketKitTests", dependencies: ["PocketKit"]),
 
         .target(
@@ -41,6 +43,14 @@ let package = Package(
             name: "SyncTests",
             dependencies: ["Sync"],
             resources: [.copy("Fixtures")]
+        ),
+        
+        .target(
+            name: "Analytics",
+            dependencies: ["SnowplowTracker"]
+        ),
+        .testTarget(name: "AnalyticsTests",
+                    dependencies: ["Analytics"]
         ),
 
         .executableTarget(

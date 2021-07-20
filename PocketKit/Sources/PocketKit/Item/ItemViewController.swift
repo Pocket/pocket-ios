@@ -1,5 +1,6 @@
 import UIKit
 import Combine
+import Analytics
 
 
 protocol ItemViewControllerDelegate: AnyObject {
@@ -10,11 +11,15 @@ protocol ItemViewControllerDelegate: AnyObject {
 class ItemViewController: UIViewController {
     private let itemHost: ArticleViewController
     private var subscriptions: [AnyCancellable] = []
+    
+    var uiContext: SnowplowContext {
+        return UIContext.articleView.screen
+    }
 
     weak var delegate: ItemViewControllerDelegate?
 
-    init(selection: ItemSelection, readerSettings: ReaderSettings) {
-        itemHost = ArticleViewController(readerSettings: readerSettings)
+    init(selection: ItemSelection, readerSettings: ReaderSettings, tracker: Tracker) {
+        itemHost = ArticleViewController(readerSettings: readerSettings, tracker: tracker)
 
         super.init(nibName: nil, bundle: nil)
 
