@@ -84,7 +84,7 @@ class SourceTests: XCTestCase {
         }
     }
 
-    func test_refresh_fetchesUserByTokenQueryWithGivenToken() {
+    func test_refresh_fetchesUserByTokenQueryWithGivenTokenAndFilteringOutArchivedItems() {
         configureMockClientToReturnFixture(named: "list")
         source.refresh(token: "the-token")
         waitForExpectations(timeout: 1)
@@ -92,6 +92,7 @@ class SourceTests: XCTestCase {
         XCTAssertFalse(client.fetchCalls.isEmpty)
         let call: MockApolloClient.FetchCall<UserByTokenQuery> = client.fetchCall(at: 0)
         XCTAssertEqual(call.query.token, "the-token")
+        XCTAssertEqual(call.query.savedItemsFilter?.isArchived, false)
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() throws {
@@ -113,6 +114,7 @@ class SourceTests: XCTestCase {
             XCTAssertEqual(item.title, "Item 1")
             XCTAssertEqual(item.url, URL(string: "https://example.com/item-1")!)
             XCTAssertEqual(item.particleJSON, "<just-json-things>")
+            XCTAssertEqual(item.isArchived, false)
         }
     }
     

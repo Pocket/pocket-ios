@@ -52,7 +52,10 @@ public class Source {
         syncQ.addOperation(FetchPageOfItems(
             apollo: apollo,
             space: space,
-            query: UserByTokenQuery(token: token),
+            query: UserByTokenQuery(
+                token: token,
+                savedItemsFilter: SavedItemsFilter(isArchived: false)
+            ),
             maxItems: maxItems,
             nextPageQueue: syncQ,
             syncEvents: syncEvents
@@ -173,7 +176,8 @@ private class FetchPageOfItems: Operation {
         if self.maxItems > edges.count, hasNextPage {
             let nextPageQuery = UserByTokenQuery(
                 token: query.token,
-                pagination: PaginationInput(after: after)
+                pagination: PaginationInput(after: after),
+                savedItemsFilter: SavedItemsFilter(isArchived: false)
             )
 
             let op = FetchPageOfItems(

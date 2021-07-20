@@ -8,6 +8,7 @@ import CoreData
 public enum Requests {
     public static func fetchItems() -> NSFetchRequest<Item> {
         let request: NSFetchRequest<Item> = Item.fetchRequest()
+        request.predicate = NSPredicate(format: "isArchived = false")
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \Item.timestamp, ascending: false),
             NSSortDescriptor(keyPath: \Item.title, ascending: true)

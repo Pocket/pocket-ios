@@ -70,14 +70,141 @@ public struct PaginationInput: GraphQLMapConvertible {
   }
 }
 
+/// Input field for filtering a user's list
+public struct SavedItemsFilter: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - updatedSince: Optional, filter to get user items updated since a date
+  ///   - isFavorite: Optional, filter to get user items that have been favorited
+  ///   - isArchived: Optional, filter to get user items that have been archived
+  ///   - tagIds: Optional, filter to get user items with the specific tag by ID
+  ///   - tagNames: Optional, filter to get user items with the specific tag
+  ///   - isHighlighted: Optional, filter to get user items with highlights
+  ///   - contentType: Optional, filter to get user items based on content type
+  public init(updatedSince: Swift.Optional<String?> = nil, isFavorite: Swift.Optional<Bool?> = nil, isArchived: Swift.Optional<Bool?> = nil, tagIds: Swift.Optional<[GraphQLID]?> = nil, tagNames: Swift.Optional<[String]?> = nil, isHighlighted: Swift.Optional<Bool?> = nil, contentType: Swift.Optional<SavedItemsContentType?> = nil) {
+    graphQLMap = ["updatedSince": updatedSince, "isFavorite": isFavorite, "isArchived": isArchived, "tagIds": tagIds, "tagNames": tagNames, "isHighlighted": isHighlighted, "contentType": contentType]
+  }
+
+  /// Optional, filter to get user items updated since a date
+  public var updatedSince: Swift.Optional<String?> {
+    get {
+      return graphQLMap["updatedSince"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "updatedSince")
+    }
+  }
+
+  /// Optional, filter to get user items that have been favorited
+  public var isFavorite: Swift.Optional<Bool?> {
+    get {
+      return graphQLMap["isFavorite"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "isFavorite")
+    }
+  }
+
+  /// Optional, filter to get user items that have been archived
+  public var isArchived: Swift.Optional<Bool?> {
+    get {
+      return graphQLMap["isArchived"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "isArchived")
+    }
+  }
+
+  /// Optional, filter to get user items with the specific tag by ID
+  public var tagIds: Swift.Optional<[GraphQLID]?> {
+    get {
+      return graphQLMap["tagIds"] as? Swift.Optional<[GraphQLID]?> ?? Swift.Optional<[GraphQLID]?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "tagIds")
+    }
+  }
+
+  /// Optional, filter to get user items with the specific tag
+  public var tagNames: Swift.Optional<[String]?> {
+    get {
+      return graphQLMap["tagNames"] as? Swift.Optional<[String]?> ?? Swift.Optional<[String]?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "tagNames")
+    }
+  }
+
+  /// Optional, filter to get user items with highlights
+  public var isHighlighted: Swift.Optional<Bool?> {
+    get {
+      return graphQLMap["isHighlighted"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "isHighlighted")
+    }
+  }
+
+  /// Optional, filter to get user items based on content type
+  public var contentType: Swift.Optional<SavedItemsContentType?> {
+    get {
+      return graphQLMap["contentType"] as? Swift.Optional<SavedItemsContentType?> ?? Swift.Optional<SavedItemsContentType?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "contentType")
+    }
+  }
+}
+
+public enum SavedItemsContentType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case video
+  case article
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "VIDEO": self = .video
+      case "ARTICLE": self = .article
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .video: return "VIDEO"
+      case .article: return "ARTICLE"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: SavedItemsContentType, rhs: SavedItemsContentType) -> Bool {
+    switch (lhs, rhs) {
+      case (.video, .video): return true
+      case (.article, .article): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [SavedItemsContentType] {
+    return [
+      .video,
+      .article,
+    ]
+  }
+}
+
 public final class UserByTokenQuery: GraphQLQuery {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    query UserByToken($token: String!, $pagination: PaginationInput) {
+    query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
       userByToken(token: $token) {
         __typename
-        savedItems(pagination: $pagination) {
+        savedItems(pagination: $pagination, filter: $savedItemsFilter) {
           __typename
           pageInfo {
             __typename
@@ -89,6 +216,7 @@ public final class UserByTokenQuery: GraphQLQuery {
             node {
               __typename
               url
+              isArchived
               _createdAt
               item {
                 __typename
@@ -122,14 +250,16 @@ public final class UserByTokenQuery: GraphQLQuery {
 
   public var token: String
   public var pagination: PaginationInput?
+  public var savedItemsFilter: SavedItemsFilter?
 
-  public init(token: String, pagination: PaginationInput? = nil) {
+  public init(token: String, pagination: PaginationInput? = nil, savedItemsFilter: SavedItemsFilter? = nil) {
     self.token = token
     self.pagination = pagination
+    self.savedItemsFilter = savedItemsFilter
   }
 
   public var variables: GraphQLMap? {
-    return ["token": token, "pagination": pagination]
+    return ["token": token, "pagination": pagination, "savedItemsFilter": savedItemsFilter]
   }
 
   public struct Data: GraphQLSelectionSet {
@@ -167,7 +297,7 @@ public final class UserByTokenQuery: GraphQLQuery {
       public static var selections: [GraphQLSelection] {
         return [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-          GraphQLField("savedItems", arguments: ["pagination": GraphQLVariable("pagination")], type: .object(SavedItem.selections)),
+          GraphQLField("savedItems", arguments: ["pagination": GraphQLVariable("pagination"), "filter": GraphQLVariable("savedItemsFilter")], type: .object(SavedItem.selections)),
         ]
       }
 
@@ -347,6 +477,7 @@ public final class UserByTokenQuery: GraphQLQuery {
               return [
                 GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                 GraphQLField("url", type: .nonNull(.scalar(String.self))),
+                GraphQLField("isArchived", type: .nonNull(.scalar(Bool.self))),
                 GraphQLField("_createdAt", type: .nonNull(.scalar(String.self))),
                 GraphQLField("item", type: .nonNull(.object(Item.selections))),
               ]
@@ -358,8 +489,8 @@ public final class UserByTokenQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(url: String, _createdAt: String, item: Item) {
-              self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "_createdAt": _createdAt, "item": item.resultMap])
+            public init(url: String, isArchived: Bool, _createdAt: String, item: Item) {
+              self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "isArchived": isArchived, "_createdAt": _createdAt, "item": item.resultMap])
             }
 
             public var __typename: String {
@@ -378,6 +509,16 @@ public final class UserByTokenQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "url")
+              }
+            }
+
+            /// Helper property to indicate if the user item is archived
+            public var isArchived: Bool {
+              get {
+                return resultMap["isArchived"]! as! Bool
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "isArchived")
               }
             }
 
