@@ -13,7 +13,9 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
             coordinator: PocketSceneCoordinator(
                 accessTokenStore: Services.shared.accessTokenStore,
                 authClient: Services.shared.authClient,
-                source: Services.shared.source
+                source: Services.shared.source,
+                tracker: Services.shared.tracker,
+                session: Services.shared.session
             )
         )
     }

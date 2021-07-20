@@ -8,15 +8,22 @@ import SwiftUI
 
 
 struct StaticDataCleaner {
+    static let hasClearedStaticDataKey = "StatisDataCleaner.hasClearedStaticData"
     private let bundle: Bundle
     private let source: Source
 
-    @AppStorage("hasClearedStaticData")
-    private var hasClearedStaticData: Bool = false
+    @AppStorage
+    private var hasClearedStaticData: Bool
 
-    init(bundle: Bundle, source: Source) {
+    init(bundle: Bundle, source: Source, userDefaults: UserDefaults) {
         self.bundle = bundle
         self.source = source
+        
+        _hasClearedStaticData = AppStorage(
+            wrappedValue: false,
+            Self.hasClearedStaticDataKey,
+            store: userDefaults
+        )
     }
 
     private var currentBuildNumber: Int? {

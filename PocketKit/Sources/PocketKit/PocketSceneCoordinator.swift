@@ -3,12 +3,15 @@ import Sync
 import SwiftUI
 import Combine
 import SafariServices
+import Analytics
 
 
 class PocketSceneCoordinator {
     private let accessTokenStore: AccessTokenStore
     private let authClient: AuthorizationClient
     private let source: Source
+    private let tracker: Tracker
+    private let session: Session
 
     private let itemSelection = ItemSelection()
     private let authState = AuthorizationState()
@@ -23,11 +26,15 @@ class PocketSceneCoordinator {
     init(
         accessTokenStore: AccessTokenStore,
         authClient: AuthorizationClient,
-        source: Source
+        source: Source,
+        tracker: Tracker,
+        session: Session
     ) {
         self.accessTokenStore = accessTokenStore
         self.authClient = authClient
         self.source = source
+        self.tracker = tracker
+        self.session = session
 
         let signInView = SignInView(authClient: authClient, state: authState)
         signIn = UIHostingController(rootView: signInView)
@@ -45,7 +52,11 @@ class PocketSceneCoordinator {
 
         window = UIWindow(windowScene: windowScene)
 
-        if let token = accessTokenStore.accessToken {
+        if let token = accessTokenStore.accessToken,
+           let guid = session.guid,
+           let userID = session.userID {
+            finalizeAuthentication(guid: guid, userID: userID)
+            
             source.refresh(token: token)
             window?.rootViewController = split
             split.show(.primary)
@@ -60,12 +71,15 @@ class PocketSceneCoordinator {
         let listView = ItemListView(
             selection: itemSelection,
             source: source
-        ).environment(\.managedObjectContext, source.mainContext)
+        )
+        .environment(\.managedObjectContext, source.mainContext)
+        .environment(\.tracker, tracker)
 
         let primaryViewController = UIHostingController(rootView: listView)
         let secondaryViewController = ItemViewController(
             selection: itemSelection,
-            readerSettings: readerSettings
+            readerSettings: readerSettings,
+            tracker: tracker
         )
 
         split.setViewController(primaryViewController, for: .primary)
@@ -82,8 +96,8 @@ class PocketSceneCoordinator {
             }
         }.store(in: &subscriptions)
 
-        authState.$authToken.receive(on: DispatchQueue.main).sink { [weak self] response in
-            self?.handleAuthResponse(response)
+        authState.$authorization.receive(on: DispatchQueue.main).sink { [weak self] authorization in
+            self?.handleAuthResponse(authorization)
         }.store(in: &subscriptions)
     }
 
@@ -91,19 +105,21 @@ class PocketSceneCoordinator {
         split.show(.secondary)
     }
 
-    private func handleAuthResponse(_ response: AuthorizeResponse?) {
-        guard let token = response else {
+    private func handleAuthResponse(_ response: Authorization?) {
+        guard let authorization = response else {
             return
         }
 
         do {
-            try accessTokenStore.save(token: token.accessToken)
-            Crashlogger.setUserID(token.account.userID)
+            try accessTokenStore.save(token: authorization.response.accessToken)
+            session.guid = authorization.guid
+            session.userID = authorization.response.account.userID
+            finalizeAuthentication(guid: authorization.guid, userID: authorization.response.account.userID)
         } catch {
             Crashlogger.capture(error: error)
         }
 
-        source.refresh(token: token.accessToken)
+        source.refresh(token: authorization.response.accessToken)
         UIView.transition(
             with: window!,
             duration: 0.25,
@@ -114,6 +130,13 @@ class PocketSceneCoordinator {
             },
             completion: nil
         )
+    }
+    
+    private func finalizeAuthentication(guid: String, userID: String) {
+        let user = SnowplowUser(guid: guid, userID: userID)
+        tracker.addPersistentContext(user)
+        
+        Crashlogger.setUserID(userID)
     }
 }
 
@@ -149,6 +172,11 @@ extension PocketSceneCoordinator: ItemViewControllerDelegate {
 
         let safariVC = SFSafariViewController(url: url)
         split.present(safariVC, animated: true)
+        
+        let content = Content(url: url)
+        let contexts = [content, itemViewController.uiContext, UIContext.articleView.switchToWebView]
+        let engagement = Engagement(type: .general, value: nil)
+        tracker.track(event: engagement, contexts)
     }
 
     private func shouldDisplaySettingsAsSheet(traitCollection: UITraitCollection) -> Bool {

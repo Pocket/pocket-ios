@@ -43,6 +43,14 @@ class Tests_iOS: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
+        
+        server.routes.get("v3/guid") { _, _ in
+            Response(
+                status: .created,
+                headers: [("X-Source", "Pocket")],
+                content: Fixture.data(name: "guid")
+            )
+        }
 
         try server.start()
     }
@@ -56,7 +64,8 @@ class Tests_iOS: XCTestCase {
         app.launch(
             arguments: [
                 "clearKeychain",
-                "clearCoreData"
+                "clearCoreData",
+                "clearUserDefaults"
             ]
         )
         

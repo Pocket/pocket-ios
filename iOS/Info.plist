@@ -33,6 +33,10 @@
 	<string>$(POCKET_API_CONSUMER_KEY)</string>
 	<key>SentryDSN</key>
 	<string>$(SENTRY_DSN)</string>
+	<key>SnowplowEndpoint</key>
+	<string>$(SNOWPLOW_ENDPOINT)</string>
+	<key>SnowplowIdentifier</key>
+	<string>$(SNOWPLOW_IDENTIFIER)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

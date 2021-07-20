@@ -5,6 +5,10 @@
 import Foundation
 
 
+private struct GUIDResponse: Decodable {
+    let guid: String
+}
+
 public class AuthorizationClient {
     enum Error: Swift.Error {
         case invalidResponse
@@ -34,8 +38,59 @@ public class AuthorizationClient {
         self.consumerKey = consumerKey
         self.session = session
     }
+    
+    func requestGUID() async throws -> String {
+        guard let url = URL(
+            string: "/v3/guid",
+            relativeTo: AuthorizationClient.Constants.baseURL
+        ) else {
+            fatalError("Unable to construct guid URL")
+        }
+        
+        let request = URLRequest(url: url)
+        
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await session.data(for: request, delegate: nil)
+        } catch {
+            throw Error.generic(error)
+        }
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw Error.unexpectedError
+        }
 
-    func authorize(username: String, password: String, completion: @escaping (Result<AuthorizeResponse, Error>) -> ()) {
+        switch httpResponse.statusCode {
+        case 200...299:
+            guard let source = httpResponse.value(forHTTPHeaderField: "X-Source"),
+                  source == "Pocket" else {
+                      throw Error.invalidSource
+            }
+
+            let decoder = JSONDecoder()
+            guard let response = try? decoder.decode(GUIDResponse.self, from: data) else {
+                throw Error.invalidResponse
+            }
+
+            return response.guid
+        case 300...399:
+            throw Error.unexpectedRedirect
+        case 400:
+            throw Error.badRequest
+        case 401...499:
+            throw Error.invalidCredentials
+        case 500...599:
+            throw Error.serverError
+        default:
+            throw Error.unexpectedError
+        }
+    }
+
+    func authorize(
+        guid: String,
+        username: String,
+        password: String
+    ) async throws -> AuthorizeResponse {
         guard let authorizeURL = URL(
             string: "/v3/oauth/authorize",
             relativeTo: AuthorizationClient.Constants.baseURL
@@ -48,6 +103,7 @@ public class AuthorizationClient {
         request.addValue("application/json", forHTTPHeaderField: "X-Accept")
 
         let requestBody = AuthorizeRequest(
+            guid: guid,
             username: username,
             password: password,
             consumerKey: consumerKey,
@@ -59,53 +115,41 @@ public class AuthorizationClient {
         encoder.keyEncodingStrategy = .convertToSnakeCase
         request.httpBody = try! encoder.encode(requestBody)
         request.httpMethod = "POST"
-
-        let task = session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(.generic(error)))
-                return
-            }
-
-            guard let httpResponse = response as? HTTPURLResponse else {
-                completion(.failure(.unexpectedError))
-                return
-            }
-
-            switch httpResponse.statusCode {
-            case 200...299:
-                guard let source = httpResponse.value(forHTTPHeaderField: "X-Source"),
-                      source == "Pocket" else {
-                    completion(.failure(.invalidSource))
-                    return
-                }
-
-                let decoder = JSONDecoder()
-                guard let data = data,
-                      let response = try? decoder.decode(AuthorizeResponse.self, from: data) else {
-                    completion(.failure(.invalidResponse))
-                    return
-                }
-
-                completion(.success(response))
-                return
-            case 300...399:
-                completion(.failure(.unexpectedRedirect))
-                return
-            case 400:
-                completion(.failure(.badRequest))
-                return
-            case 401...499:
-                completion(.failure(.invalidCredentials))
-                return
-            case 500...599:
-                completion(.failure(.serverError))
-                return
-            default:
-                completion(.failure(.unexpectedError))
-                return
-            }
+        
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await session.data(for: request, delegate: nil)
+        } catch {
+            throw Error.generic(error)
+        }
+        
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw Error.unexpectedError
         }
 
-        task.resume()
+        switch httpResponse.statusCode {
+        case 200...299:
+            guard let source = httpResponse.value(forHTTPHeaderField: "X-Source"),
+                  source == "Pocket" else {
+                      throw Error.invalidSource
+            }
+
+            let decoder = JSONDecoder()
+            guard let response = try? decoder.decode(AuthorizeResponse.self, from: data) else {
+                throw Error.invalidResponse
+            }
+
+            return response
+        case 300...399:
+            throw Error.unexpectedRedirect
+        case 400:
+            throw Error.badRequest
+        case 401...499:
+            throw Error.invalidCredentials
+        case 500...599:
+            throw Error.serverError
+        default:
+            throw Error.unexpectedError
+        }
     }
 }

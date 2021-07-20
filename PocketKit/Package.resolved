@@ -2,12 +2,21 @@
   "object": {
     "pins": [
       {
-        "package": "apollo-ios",
+        "package": "Apollo",
         "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
         "state": {
           "branch": null,
           "revision": "84e28febb0a6cc3b4b08968c0d7043afd288004e",
           "version": "0.45.0"
+        }
+      },
+      {
+        "package": "FMDB",
+        "repositoryURL": "https://github.com/ccgus/fmdb",
+        "state": {
+          "branch": null,
+          "revision": "61e51fde7f7aab6554f30ab061cc588b28a97d04",
+          "version": "2.7.7"
         }
       },
       {
@@ -38,12 +47,21 @@
         }
       },
       {
-        "package": "sentry-cocoa",
+        "package": "Sentry",
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa.git",
         "state": {
           "branch": null,
           "revision": "f7c3de2d9fc09d7a61f7259521d97091fb2f8bda",
           "version": "7.1.3"
+        }
+      },
+      {
+        "package": "SnowplowTracker",
+        "repositoryURL": "https://github.com/snowplow/snowplow-objc-tracker",
+        "state": {
+          "branch": null,
+          "revision": "2cf806e834a75ce801c46f0182f23b481655762b",
+          "version": "2.2.1"
         }
       },
       {

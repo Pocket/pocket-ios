@@ -2,6 +2,7 @@ import UIKit
 import Sync
 import Textile
 import Combine
+import Analytics
 
 
 private extension Style {
@@ -26,13 +27,24 @@ class ArticleViewController: UICollectionViewController {
     private var article: Article? {
         item?.particle
     }
+    
+    private var contexts: [SnowplowContext] {
+        guard let item = item, let url = item.url else {
+            return []
+        }
+        
+        let content = Content(url: url)
+        return [UIContext.articleView.screen, content]
+    }
 
     private let readerSettings: ReaderSettings
+    private let tracker: Tracker
 
     private var subscriptions: [AnyCancellable] = []
 
-    init(readerSettings: ReaderSettings) {
+    init(readerSettings: ReaderSettings, tracker: Tracker) {
         self.readerSettings = readerSettings
+        self.tracker = tracker
 
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 8
@@ -185,5 +197,16 @@ extension ArticleViewController: TextContentCellDelegate {
         )
 
         present(shareSheet, animated: true)
+    }
+    
+    func textContentCell(
+        _ cell: TextContentCell,
+        shouldOpenURL url: URL
+    ) -> Bool {
+        let contentOpen = ContentOpen(destination: .external, trigger: .click)
+        let link = UIContext.articleView.link
+        let contexts = contexts + [link]
+        tracker.track(event: contentOpen, contexts)
+        return true
     }
 }

@@ -8,54 +8,55 @@ import XCTest
 
 class AuthorizationServiceTests: XCTestCase {
     var session: MockURLSession!
-    var task: MockURLSessionDataTask!
+    var client: AuthorizationClient!
 
     override func setUp() {
         session = MockURLSession()
-        task = MockURLSessionDataTask()
-    }
+        client = AuthorizationClient(consumerKey: "the-consumer-key", session: session)
 
-    func test_authorize_sendsPostRequestWithCorrectParameters() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
-            completionHandler(nil, .ok, nil)
-            return self.task
+    }
+}
+
+// MARK: - Authorize
+extension AuthorizationServiceTests {
+    func test_authorize_sendsPostRequestWithCorrectParameters() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            return (Data(), .ok!)
         }
 
-        authorize { _ in
-            let calls = self.session.dataTaskCalls
-            XCTAssertEqual(calls.count, 1)
-            XCTAssertEqual(calls[0].request.url?.path, "/v3/oauth/authorize")
-            XCTAssertEqual(calls[0].request.httpMethod, "POST")
-            XCTAssertEqual(calls[0].request.value(forHTTPHeaderField: "X-Accept"), "application/json")
-            XCTAssertEqual(calls[0].request.value(forHTTPHeaderField: "Content-Type"), "application/json")
+        _ = try? await authorize()
+        let calls = self.session.dataTaskCalls
+        XCTAssertEqual(calls.count, 1)
+        XCTAssertEqual(calls[0].request.url?.path, "/v3/oauth/authorize")
+        XCTAssertEqual(calls[0].request.httpMethod, "POST")
+        XCTAssertEqual(calls[0].request.value(forHTTPHeaderField: "X-Accept"), "application/json")
+        XCTAssertEqual(calls[0].request.value(forHTTPHeaderField: "Content-Type"), "application/json")
 
-            let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            let body = try! decoder.decode(
-                AuthorizeRequest.self,
-                from: calls[0].request.httpBody!
-            )
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        let body = try! decoder.decode(
+            AuthorizeRequest.self,
+            from: calls[0].request.httpBody!
+        )
 
-            XCTAssertEqual(body, AuthorizeRequest(
-                username: "test@example.com",
-                password: "super-secret-password",
-                consumerKey: "the-consumer-key",
-                grantType: "credentials",
-                account: true
-            ))
-        }
-
-        XCTAssertEqual(self.task.resumeCalls, 1)
+        XCTAssertEqual(body, AuthorizeRequest(
+            guid: "sample-guid",
+            username: "test@example.com",
+            password: "super-secret-password",
+            consumerKey: "the-consumer-key",
+            grantType: "credentials",
+            account: true
+        ))
     }
 
-    func test_authorize_whenServerRespondsWith200_invokesCompletionWithAccessToken() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
+    func test_authorize_whenServerRespondsWith200_invokesCompletionWithAccessToken() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
                 httpVersion: "1.1",
                 headerFields: ["X-Source": "Pocket"]
-            )
+            )!
 
             let responseBody = """
             {
@@ -69,236 +70,392 @@ class AuthorizationServiceTests: XCTestCase {
             }
             """.data(using: .utf8)!
 
-            completionHandler(
-                responseBody,
-                response,
-                nil
-            )
-            return self.task
+            return (responseBody, response)
         }
 
-        authorize { result in
-            guard case .success(let token) = result else {
-                XCTFail("Unexpected result: \(result). Expected success")
-                return
-            }
-
-            XCTAssertEqual(token.accessToken, "the-access-token")
-            XCTAssertEqual(token.account.userID, "<the-user-id>")
+        do {
+            let response = try await authorize()
+            XCTAssertEqual(response.accessToken, "the-access-token")
+            XCTAssertEqual(response.account.userID, "<the-user-id>")
+        } catch {
+            XCTFail("authorize() should not throw an error in this context: \(error)")
         }
     }
 
-    func test_authorize_when200AndDataIsNil_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
+    func test_authorize_when200AndDataIsEmpty_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
                 httpVersion: "1.1",
                 headerFields: ["X-Source": "Pocket"]
-            )
+            )!
 
-            completionHandler(nil, response, nil)
-            return self.task
+            return (Data(), response)
         }
 
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
-                return
-            }
-
-            guard case .invalidResponse = error else {
-                XCTFail("Unexpected error \(error). Expected invalid response")
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.invalidResponse = error else {
+                XCTFail("Unexpected error: \(error). Expected an invalid response")
                 return
             }
         }
     }
 
-    func test_authorize_when200AndResponseDoesNotContainAccessToken_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
+    func test_authorize_when200AndResponseDoesNotContainAccessToken_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
                 httpVersion: "1.1",
                 headerFields: ["X-Source": "Pocket"]
-            )
+            )!
 
-            completionHandler("no-access_token=lol".data(using: .utf8), response, nil)
-            return self.task
+            return (Data(), response)
         }
 
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
-                return
-            }
-
-            guard case .invalidResponse = error else {
-                XCTFail("Unexpected error \(error). Expected invalid response")
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.invalidResponse = error else {
+                XCTFail("Unexpected error: \(error). Expected an invalid response")
                 return
             }
         }
     }
 
-    func test_authorize_whenStatusIs300_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
-            let response = HTTPURLResponse(url: request.url, statusCode: 300)
-            completionHandler(Data(), response, nil)
-            return self.task
+    func test_authorize_whenStatusIs300_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url, statusCode: 300)!
+            return (Data(), response)
         }
 
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.unexpectedRedirect = error else {
+                XCTFail("Unexpected error: \(error). Expected an unexpected redirect")
                 return
             }
-
-            guard case .unexpectedRedirect = error else {
-                XCTFail("Unexpected error \(error). Expected unexpectedRedirect")
-                return
-            }
-
         }
     }
 
-    func test_authorize_whenErrorIsNotNil_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
-            completionHandler(nil, nil, ExampleError.anError)
-            return self.task
+    func test_authorize_whenErrorIsNotNil_invokesCompletionWithError() async {
+        session.stubData { _ throws -> (Data, URLResponse) in
+            throw ExampleError.anError
         }
-
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
+        
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.generic(let internalError) = error else {
+                XCTFail("Unexpected error: \(error). Expected a generic error")
                 return
             }
-
-            guard case .generic(let internalError) = error else {
-                XCTFail("Unexpected error: \(error). Expected generic error")
-                return
-            }
-
+            
             XCTAssertEqual(internalError as? ExampleError, ExampleError.anError)
         }
     }
 
-    func test_authorize_whenStatusIs400_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
-            let response = HTTPURLResponse(url: request.url, statusCode: 400)
-            completionHandler(nil, response, nil)
-            return self.task
+    func test_authorize_whenStatusIs400_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url, statusCode: 400)!
+            return (Data(), response)
         }
-
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
-                return
-            }
-
-            guard case .badRequest = error else {
-                XCTFail("Unexpected error: \(error). Expected generic error")
+        
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.badRequest = error else {
+                XCTFail("Unexpected error: \(error). Expected a bad request")
                 return
             }
         }
     }
 
-    func test_authorize_whenStatusIs401_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
-            let response = HTTPURLResponse(url: request.url, statusCode: 401)
-            completionHandler(nil, response, nil)
-            return self.task
+    func test_authorize_whenStatusIs401_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url, statusCode: 401)!
+            return (Data(), response)
         }
 
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
-                return
-            }
-
-            guard case .invalidCredentials = error else {
-                XCTFail("Unexpected error: \(error). Expected invalid credentials error")
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.invalidCredentials = error else {
+                XCTFail("Unexpected error: \(error). Expected invalid credentials")
                 return
             }
         }
     }
 
-    func test_authorize_whenStatusIs500_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
-            let response = HTTPURLResponse(url: request.url, statusCode: 500)
-            completionHandler(nil, response, nil)
-            return self.task
+    func test_authorize_whenStatusIs500_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url, statusCode: 500)!
+            return (Data(), response)
         }
 
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
-                return
-            }
-
-            guard case .serverError = error else {
-                XCTFail("Unexpected error: \(error). Expected server error")
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.serverError = error else {
+                XCTFail("Unexpected error: \(error). Expected a server error")
                 return
             }
         }
     }
 
-    func test_authorize_whenStatusIs9001_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
-            let response = HTTPURLResponse(url: request.url, statusCode: 9001)
-            completionHandler(nil, response, nil)
-            return self.task
+    func test_authorize_whenStatusIs9001_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url!, statusCode: 9001)!
+            return (Data(), response)
         }
 
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
-                return
-            }
-
-            guard case .unexpectedError = error else {
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.unexpectedError = error else {
                 XCTFail("Unexpected error: \(error). Expected an unexpected error")
                 return
             }
         }
     }
 
-    func test_authorize_whenSourceHeaderIsInvalid_invokesCompletionWithError() {
-        session.stubDataTaskWithCompletion { request, completionHandler in
+    func test_authorize_whenSourceHeaderIsInvalid_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
                 httpVersion: "1.1",
                 headerFields: ["X-Source": "not-Pocket"]
-            )
-
-            completionHandler(nil, response, nil)
-            return self.task
+            )!
+            
+            return (Data(), response)
         }
 
-        authorize { result in
-            guard case .failure(let error) = result else {
-                XCTFail("Unexpected result: \(result). Expected failure")
-                return
-            }
-
-            guard case .invalidSource = error else {
-                XCTFail("Unexpected error: \(error). Expected invalidSource")
+        do {
+            _ = try await authorize()
+        } catch {
+            guard case AuthorizationClient.Error.invalidSource = error else {
+                XCTFail("Unexpected error: \(error). Expected an invalid source")
                 return
             }
         }
     }
 
-    private func authorize(assertions: @escaping (Result<AuthorizeResponse, AuthorizationClient.Error>) -> ()) {
-        let service = AuthorizationClient(consumerKey: "the-consumer-key", session: session)
-        let done = expectation(description: "finished authorization request")
-        service.authorize(
+    private func authorize() async throws -> AuthorizeResponse {
+        return try await client.authorize(
+            guid: "sample-guid",
             username: "test@example.com",
             password: "super-secret-password"
-        ) { result in
-            assertions(result)
-            done.fulfill()
+        )
+    }
+}
+
+// MARK: - GUID
+extension AuthorizationServiceTests {
+    func test_guid_sendsGETRequestWithCorrectParameters() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let data = "sample-guid".data(using: .utf8)!
+            return (data, .ok!)
         }
-        waitForExpectations(timeout: 1.0)
+
+        _ = try? await client.requestGUID()
+        let calls = self.session.dataTaskCalls
+        XCTAssertEqual(calls.count, 1)
+        XCTAssertEqual(calls[0].request.url?.path, "/v3/guid")
+        XCTAssertEqual(calls[0].request.httpMethod, "GET")
+    }
+
+    func test_guid_whenServerRespondsWith200_invokesCompletionWithGUID() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: "1.1",
+                headerFields: ["X-Source": "Pocket"]
+            )!
+
+            let responseBody = """
+            {
+                "guid": "sample-guid"
+            }
+            """.data(using: .utf8)!
+
+            return (responseBody, response)
+        }
+
+        do {
+            let guid = try await client.requestGUID()
+            XCTAssertEqual(guid, "sample-guid")
+        } catch {
+            XCTFail("requestGUID() should not throw an error in this context: \(error)")
+        }
+    }
+
+    func test_guid_when200AndDataIsEmpty_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: "1.1",
+                headerFields: ["X-Source": "Pocket"]
+            )!
+
+            return (Data(), response)
+        }
+
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.invalidResponse = error else {
+                XCTFail("Unexpected error: \(error). Expected an invalid response")
+                return
+            }
+        }
+    }
+
+    func test_guid_when200AndResponseDoesNotContainAccessToken_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: "1.1",
+                headerFields: ["X-Source": "Pocket"]
+            )!
+
+            return (Data(), response)
+        }
+
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.invalidResponse = error else {
+                XCTFail("Unexpected error: \(error). Expected an invalid response")
+                return
+            }
+        }
+    }
+
+    func test_guid_whenStatusIs300_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url, statusCode: 300)!
+            return (Data(), response)
+        }
+
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.unexpectedRedirect = error else {
+                XCTFail("Unexpected error: \(error). Expected an unexpected redirect")
+                return
+            }
+        }
+    }
+
+    func test_guid_whenErrorIsNotNil_invokesCompletionWithError() async {
+        session.stubData { _ throws -> (Data, URLResponse) in
+            throw ExampleError.anError
+        }
+        
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.generic(let internalError) = error else {
+                XCTFail("Unexpected error: \(error). Expected a generic error")
+                return
+            }
+            
+            XCTAssertEqual(internalError as? ExampleError, ExampleError.anError)
+        }
+    }
+
+    func test_guid_whenStatusIs400_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url, statusCode: 400)!
+            return (Data(), response)
+        }
+        
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.badRequest = error else {
+                XCTFail("Unexpected error: \(error). Expected a bad request")
+                return
+            }
+        }
+    }
+
+    func test_guid_whenStatusIs401_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url, statusCode: 401)!
+            return (Data(), response)
+        }
+
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.invalidCredentials = error else {
+                XCTFail("Unexpected error: \(error). Expected invalid credentials")
+                return
+            }
+        }
+    }
+
+    func test_guid_whenStatusIs500_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url, statusCode: 500)!
+            return (Data(), response)
+        }
+
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.serverError = error else {
+                XCTFail("Unexpected error: \(error). Expected a server error")
+                return
+            }
+        }
+    }
+
+    func test_guid_whenStatusIs9001_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(url: request.url!, statusCode: 9001)!
+            return (Data(), response)
+        }
+
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.unexpectedError = error else {
+                XCTFail("Unexpected error: \(error). Expected an unexpected error")
+                return
+            }
+        }
+    }
+
+    func test_guid_whenSourceHeaderIsInvalid_invokesCompletionWithError() async {
+        session.stubData { (request) throws -> (Data, URLResponse) in
+            let response = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: "1.1",
+                headerFields: ["X-Source": "not-Pocket"]
+            )!
+            
+            return (Data(), response)
+        }
+
+        do {
+            _ = try await client.requestGUID()
+        } catch {
+            guard case AuthorizationClient.Error.invalidSource = error else {
+                XCTFail("Unexpected error: \(error). Expected an invalid source")
+                return
+            }
+        }
     }
 }
 

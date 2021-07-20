@@ -20,6 +20,20 @@
                ReferencedContainer = "container:Pocket.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AnalyticsTests"
+               BuildableName = "AnalyticsTests"
+               BlueprintName = "AnalyticsTests"
+               ReferencedContainer = "container:PocketKit">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -56,6 +70,16 @@
                BuildableName = "Tests iOS.xctest"
                BlueprintName = "Tests iOS"
                ReferencedContainer = "container:Pocket.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AnalyticsTests"
+               BuildableName = "AnalyticsTests"
+               BlueprintName = "AnalyticsTests"
+               ReferencedContainer = "container:PocketKit">
             </BuildableReference>
          </TestableReference>
       </Testables>

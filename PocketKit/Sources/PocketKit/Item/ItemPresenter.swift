@@ -11,9 +11,12 @@ import Foundation
 class ItemPresenter: ItemRow {
     @Published
     private var item: Item
+    
+    let index: Int
 
-    init(item: Item) {
+    init(item: Item, index: Int) {
         self.item = item
+        self.index = index
     }
 
     public var title: String {
