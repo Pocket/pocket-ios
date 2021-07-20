@@ -16,6 +16,7 @@
                             "__typename": "[type-name-here]",
                             "url": "http://localhost:8080/hello",
                             "_createdAt": 0,
+                            "_deletedAt": null,
                             "isArchived": true,
                             "item": {
                                 "__typename": "[type-name-here]",
@@ -49,6 +50,7 @@
                             "__typename": "[type-name-here]",
                             "url": "https://example.com/item-2",
                             "_createdAt": 0,
+                            "_deletedAt": null,
                             "isArchived": false,
                             "item": {
                                 "__typename": "[type-name-here]",
@@ -65,6 +67,36 @@
                                         "height": 1,
                                         "width": 2,
                                         "src": "http://example.com/item-2/image-1.jpg",
+                                        "imageId": 1
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    {
+                        "__typename": "[type-name-here]",
+                        "cursor": "cursor-3",
+                        "node": {
+                            "__typename": "[type-name-here]",
+                            "url": "https://example.com/item-3",
+                            "_createdAt": 0,
+                            "_deletedAt": 1,
+                            "isArchived": false,
+                            "item": {
+                                "__typename": "[type-name-here]",
+                                "title": "Item 3",
+                                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                                "domain": "wired.com",
+                                "language": "en",
+                                "timeToRead": 6,
+                                "domainMetadata": null,
+                                "particleJson": #PARTICLE_JSON#,
+                                "images": [
+                                    {
+                                        "__typename": "[type-name-here]",
+                                        "height": 1,
+                                        "width": 2,
+                                        "src": "http://example.com/item-3/image-1.jpg",
                                         "imageId": 1
                                     }
                                 ]

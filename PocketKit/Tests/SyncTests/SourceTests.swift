@@ -100,7 +100,7 @@ class SourceTests: XCTestCase {
         source.refresh(token: "the-token")
         waitForExpectations(timeout: 1)
 
-        let request = Requests.fetchItems()
+        let request = Requests.fetchAllItems()
         let items = try container.viewContext.fetch(request)
         XCTAssertEqual(items.count, 2)
 
@@ -115,6 +115,7 @@ class SourceTests: XCTestCase {
             XCTAssertEqual(item.url, URL(string: "https://example.com/item-1")!)
             XCTAssertEqual(item.particleJSON, "<just-json-things>")
             XCTAssertEqual(item.isArchived, false)
+            XCTAssertEqual(item.deletedAt, Date(timeIntervalSince1970: 1))
         }
     }
     
@@ -123,7 +124,7 @@ class SourceTests: XCTestCase {
         source.refresh(token: "the-token")
         waitForExpectations(timeout: 1)
 
-        let request = Requests.fetchItems()
+        let request = Requests.fetchAllItems()
         let items = try container.viewContext.fetch(request)
         XCTAssertEqual(items.count, 1)
     }
@@ -188,7 +189,7 @@ class SourceTests: XCTestCase {
         source.refresh(token: "the-token")
         waitForExpectations(timeout: 1.0)
 
-        let request = Requests.fetchItems()
+        let request = Requests.fetchAllItems()
         let items = try container.viewContext.fetch(request)
         XCTAssertEqual(items.count, 2)
     }
@@ -229,7 +230,7 @@ class SourceTests: XCTestCase {
         source.refresh(token: "the-token", maxItems: 3)
         waitForExpectations(timeout: 1)
 
-        let request = Requests.fetchItems()
+        let request = Requests.fetchAllItems()
         let items = try container.viewContext.fetch(request)
         XCTAssertEqual(items.count, 3)
     }
