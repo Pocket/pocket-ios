@@ -17,7 +17,9 @@ class ItemPresenter: ItemRow {
     }
 
     public var title: String {
-        item.title ?? item.thumbnailURL?.absoluteString ?? "Missing Title"
+        [item.title, item.url?.absoluteString]
+            .compactMap { $0 }
+            .first { !$0.isEmpty } ?? ""
     }
 
     public var domain: String {
