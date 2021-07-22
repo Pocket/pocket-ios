@@ -6,7 +6,7 @@ import XCTest
 @testable import PocketKit
 
 
-class AccessTokenStoreTests: XCTestCase {
+class KeychainAccessTokenStoreTests: XCTestCase {
     var mockKeychain: MockKeychain!
 
     override func setUp() {
@@ -14,7 +14,7 @@ class AccessTokenStoreTests: XCTestCase {
     }
 
     func test_save_callsAddItem() throws {
-        let store = AccessTokenStore(keychain: mockKeychain)
+        let store = KeychainAccessTokenStore(keychain: mockKeychain)
         try store.save(token: "the-token")
 
         XCTAssertTrue(mockKeychain.addCalls.wasCalled)
@@ -30,13 +30,13 @@ class AccessTokenStoreTests: XCTestCase {
 
     func test_save_whenAddItemFails_throwsAnError() {
         mockKeychain.addReturnVal = 1
-        let store = AccessTokenStore(keychain: mockKeychain)
+        let store = KeychainAccessTokenStore(keychain: mockKeychain)
 
         XCTAssertThrowsError(try store.save(token: "the-token"))
     }
 
     func test_accessToken_callsCopyMatching() {
-        let store = AccessTokenStore(keychain: mockKeychain)
+        let store = KeychainAccessTokenStore(keychain: mockKeychain)
         _ = store.accessToken
 
         XCTAssertTrue(mockKeychain.copyMatchingCalls.wasCalled)
@@ -53,20 +53,20 @@ class AccessTokenStoreTests: XCTestCase {
 
     func test_accessToken_whenCopyMatchingSucceeds_returnsDecodedToken() {
         mockKeychain.copyMatchingResult = "the-token".data(using: .utf8) as CFTypeRef
-        let store = AccessTokenStore(keychain: mockKeychain)
+        let store = KeychainAccessTokenStore(keychain: mockKeychain)
 
         XCTAssertEqual(store.accessToken, "the-token")
     }
 
     func test_accessToken_whenCopyMatchingFails_returnsNil() {
         mockKeychain.copyMatchingReturnVal = 1
-        let store = AccessTokenStore(keychain: mockKeychain)
+        let store = KeychainAccessTokenStore(keychain: mockKeychain)
 
         XCTAssertEqual(store.accessToken, nil)
     }
 
     func test_delete_callsDelete() throws {
-        let store = AccessTokenStore(keychain: mockKeychain)
+        let store = KeychainAccessTokenStore(keychain: mockKeychain)
         try store.delete()
 
         XCTAssertTrue(mockKeychain.deleteCalls.wasCalled)
@@ -81,7 +81,7 @@ class AccessTokenStoreTests: XCTestCase {
 
     func test_delete_whenDeleteFails_throwsAnError() {
         mockKeychain.deleteReturnVal = 1
-        let store = AccessTokenStore(keychain: mockKeychain)
+        let store = KeychainAccessTokenStore(keychain: mockKeychain)
 
         XCTAssertThrowsError(try store.delete())
     }

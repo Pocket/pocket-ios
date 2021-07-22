@@ -17,7 +17,7 @@ struct Services {
 
     private init() {
         keychain = SecItemKeychain()
-        accessTokenStore = AccessTokenStore(keychain: keychain)
+        accessTokenStore = KeychainAccessTokenStore(keychain: keychain)
 
         urlSession = URLSession.shared
         authClient = AuthorizationClient(
