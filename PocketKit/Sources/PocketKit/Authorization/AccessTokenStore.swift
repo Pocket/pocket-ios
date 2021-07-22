@@ -6,7 +6,15 @@ import Foundation
 import Sync
 
 
-class AccessTokenStore {
+protocol AccessTokenStore: AccessTokenProvider {
+    var accessToken: String? { get }
+
+    func save(token: String) throws
+
+    func delete() throws
+}
+
+class KeychainAccessTokenStore: AccessTokenStore {
     enum Error: Swift.Error {
         case secItemError(OSStatus)
     }
@@ -67,8 +75,4 @@ class AccessTokenStore {
             throw Error.secItemError(status)
         }
     }
-}
-
-extension AccessTokenStore: AccessTokenProvider {
-
 }
