@@ -25,6 +25,10 @@ public struct PocketApp: App {
 
     public init() {
         Crashlogger.start(dsn: Keys.shared.sentryDSN)
+        SignOutOnFirstLaunch(
+            accessTokenStore: accessTokenStore,
+            userDefaults: UserDefaults.standard
+        ).signOutOnFirstLaunch()
 
         let staticDataCleaner = StaticDataCleaner(
             bundle: Bundle.main,
