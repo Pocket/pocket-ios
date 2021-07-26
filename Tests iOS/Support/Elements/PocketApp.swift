@@ -47,7 +47,7 @@ struct PocketApp {
     }
 
     func readerToolbar() -> ReaderToolbar {
-        return ReaderToolbar(el: app.toolbars.element(boundBy: 0))
+        return ReaderToolbar(el: app.navigationBars.element(boundBy: 0))
     }
 
     func webReaderView() -> WebReaderScreen {
