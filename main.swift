@@ -4,4 +4,4 @@
 
 import PocketKit
 
-PocketApp.main()
+PocketAppDelegate.main()

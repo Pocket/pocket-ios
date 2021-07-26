@@ -5,33 +5,59 @@
 import SwiftUI
 import Sync
 import Textile
+import CoreData
+
 
 struct ItemListView: View {
-    @Environment(\.source)
-    private var source: Source
+    private let context: NSManagedObjectContext
+    private let selection: ItemSelection
 
-    private let token: String
-    
-    @FetchRequest(fetchRequest: Requests.fetchItems())
-    var items: FetchedResults<Item>
-
-    init(token: String) {
-        self.token = token
-        source.refresh(token: token)
+    init(
+        context: NSManagedObjectContext,
+        selection: ItemSelection
+    ) {
+        self.context = context
+        self.selection = selection
     }
 
     var body: some View {
-        List(items) { item in
-            ZStack(alignment: .leading) {
-                NavigationLink(
-                    destination: ItemDestinationView(item: item)
-                ) { EmptyView() }
-                .opacity(0)
+        _ItemListView(selection: selection)
+            .environment(\.managedObjectContext, context)
+    }
+}
 
-                ItemRowView(model: ItemPresenter(item: item))
+private struct _ItemListView: View {
+    @Environment(\.source)
+    private var source: Source
+
+    @FetchRequest(fetchRequest: Requests.fetchItems())
+    var items: FetchedResults<Item>
+
+    @ObservedObject
+    private var selection: ItemSelection
+
+    init(selection: ItemSelection) {
+        self.selection = selection
+    }
+
+    func background(item: Item) -> Color {
+        if item.url == selection.selectedItem?.url {
+            return Color(ColorAsset.ui.grey6)
+        } else {
+            return Color.clear
+        }
+    }
+
+    var body: some View {
+        List {
+            ForEach(items) { item in
+                Button(action: { selection.selectedItem = item }) {
+                    ItemRowView(model: ItemPresenter(item: item))
+                }.listRowBackground(background(item: item))
             }
         }
         .listStyle(.plain)
         .accessibility(identifier: "user-list")
+        .navigationTitle(Text("My List"))
     }
 }

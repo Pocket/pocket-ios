@@ -2,32 +2,30 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import SwiftUI
-import Apollo
+import UIKit
 import Sync
 import Textile
 
 
-class AppState: ObservableObject {
-    @Published
-    var authToken: String?
-}
-
-public struct PocketApp: App {
-    @ObservedObject
-    var appState = AppState()
-
-    @Environment(\.accessTokenStore)
+public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private var accessTokenStore: AccessTokenStore
-
-    @Environment(\.source)
     private var source: Sync.Source
 
-    public init() {
+    convenience override init() {
+        self.init(services: Services.shared)
+    }
+
+    init(services: Services) {
+        self.accessTokenStore = services.accessTokenStore
+        self.source = services.source
+    }
+
+    public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
         Crashlogger.start(dsn: Keys.shared.sentryDSN)
+
         SignOutOnFirstLaunch(
             accessTokenStore: accessTokenStore,
-            userDefaults: UserDefaults.standard
+            userDefaults: .standard
         ).signOutOnFirstLaunch()
 
         let staticDataCleaner = StaticDataCleaner(
@@ -43,38 +41,28 @@ public struct PocketApp: App {
         if CommandLine.arguments.contains("clearCoreData") {
             source.clear()
         }
-        
+
         if CommandLine.arguments.contains("clearImageCache") {
             Textiles.clearImageCache()
         }
-        
+
         Textiles.initialize()
-        appState.authToken = accessTokenStore.accessToken
+
+        return true
     }
 
-    @ViewBuilder
-    public var body: some Scene {
-        WindowGroup {
-            AppView(appState: appState)
-                .environment(\.managedObjectContext, source.managedObjectContext)
-        }
-    }
-}
+    public func application(
+        _ application: UIApplication,
+        configurationForConnecting connectingSceneSession: UISceneSession,
+        options: UIScene.ConnectionOptions
+    ) -> UISceneConfiguration {
+        let config = UISceneConfiguration(
+            name: "Default Configuration",
+            sessionRole: connectingSceneSession.role
+        )
+        config.sceneClass = UIWindowScene.self
+        config.delegateClass = PocketSceneDelegate.self
 
-
-
-struct AppView: View {
-    @ObservedObject
-    var appState: AppState
-    
-    var body: some View {
-        if let token = appState.authToken {
-            NavigationView {
-                ItemListView(token: token)
-                    .navigationTitle("My List")
-            }
-        } else {
-            SignInView(authToken: $appState.authToken)
-        }
+        return config
     }
 }

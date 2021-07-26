@@ -28,11 +28,7 @@ struct SignInView: View {
         }
     }
 
-    @Environment(\.authorizationClient)
     private var authClient: AuthorizationClient
-
-    @Environment(\.accessTokenStore)
-    private var accessTokenStore: AccessTokenStore
 
     @State
     private var email = ""
@@ -43,9 +39,13 @@ struct SignInView: View {
     @State
     private var error: SignInError?
 
-    @Binding
-    var authToken: String?
-    
+    var authState: AuthorizationState
+
+    init(authClient: AuthorizationClient, state: AuthorizationState) {
+        self.authClient = authClient
+        self.authState = state
+    }
+
     var body: some View {
         VStack(alignment: .center, spacing: 36) {
             VStack(alignment: .leading, spacing: 16) {
@@ -97,17 +97,7 @@ struct SignInView: View {
         ) { result in
             switch result {
             case .success(let token):
-                do {
-                    try accessTokenStore.save(token: token.accessToken)
-                    Crashlogger.setUserID(token.account.userID)
-                } catch {
-                    self.error = .signInError(error)
-                    return
-                }
-
-                DispatchQueue.main.async {
-                    self.authToken = token.accessToken
-                }
+                self.authState.authToken = token
             case .failure(let error):
                 Crashlogger.capture(error: error)
                 self.error = .signInError(error)
