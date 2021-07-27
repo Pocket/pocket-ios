@@ -9,27 +9,6 @@ import CoreData
 
 
 struct ItemListView: View {
-    private let context: NSManagedObjectContext
-    private let selection: ItemSelection
-
-    init(
-        context: NSManagedObjectContext,
-        selection: ItemSelection
-    ) {
-        self.context = context
-        self.selection = selection
-    }
-
-    var body: some View {
-        _ItemListView(selection: selection)
-            .environment(\.managedObjectContext, context)
-    }
-}
-
-private struct _ItemListView: View {
-    @Environment(\.source)
-    private var source: Source
-
     @FetchRequest(fetchRequest: Requests.fetchItems())
     var items: FetchedResults<Item>
 
