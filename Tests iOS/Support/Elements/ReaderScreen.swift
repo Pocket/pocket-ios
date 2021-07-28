@@ -16,8 +16,29 @@ struct ReaderScreen {
         return el.waitForExistence(timeout: timeout)
     }
 
-    func staticText(containing string: String) -> XCUIElement {
+    func cell(containing string: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS %@", string)
-        return el.staticTexts.element(matching: predicate)
+        return el.cells.containing(predicate).element(boundBy: 0)
+    }
+
+    func scrollCellToTop(_ cell: XCUIElement) {
+        let readerViewCenter = el.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+
+        let navbarHeight: CGFloat = 94
+        let gracePixelsBeforeScrollingBegins: CGFloat = 10
+        let lineSpacing: CGFloat = 8
+        let dy = -cell.frame.maxY +
+            navbarHeight -
+            gracePixelsBeforeScrollingBegins -
+            lineSpacing
+
+        let endingPoint = readerViewCenter.withOffset(CGVector(dx: 0, dy: dy))
+
+        readerViewCenter.press(
+            forDuration: 0.1,
+            thenDragTo: endingPoint,
+            withVelocity: .slow,
+            thenHoldForDuration: 0.1
+        )
     }
 }
