@@ -149,7 +149,7 @@ extension PocketSceneCoordinator: ItemViewControllerDelegate {
     }
 
     private func shouldDisplaySettingsAsSheet(traitCollection: UITraitCollection) -> Bool {
-        return traitCollection.userInterfaceIdiom == .pad ||
+        return traitCollection.userInterfaceIdiom == .phone ||
         traitCollection.horizontalSizeClass == .compact
     }
 }
