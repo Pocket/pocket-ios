@@ -84,7 +84,7 @@ struct SignInView: View {
             .tint(Color(ColorAsset.ui.lapis1))
             .buttonStyle(.bordered)
             .controlSize(.large)
-            .controlProminence(.increased)
+            .buttonStyle(.borderedProminent)
             .colorScheme(.light)
         }
         .padding()
