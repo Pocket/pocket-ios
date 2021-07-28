@@ -154,8 +154,9 @@ class Tests_iOS: XCTestCase {
         ]
 
         for expectedString in expectedStrings {
-            let text = readerView.staticText(containing: expectedString)
-            XCTAssertTrue(text.waitForExistence(timeout: 10))
+            let cell = readerView.cell(containing: expectedString)
+            XCTAssertTrue(cell.waitForExistence(timeout: 10))
+            readerView.scrollCellToTop(cell)
         }
     }
 

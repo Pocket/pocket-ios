@@ -46,10 +46,22 @@ public extension Color {
     }
 }
 
+public extension SwiftUI.TextAlignment {
+    init(_ textAlignment: TextAlignment) {
+        switch textAlignment {
+        case .left:
+            self = .leading
+        case .right:
+            self = .trailing
+        }
+    }
+}
+
 public extension Text {
-    func style(_ style: Style) -> Text {
+    func style(_ style: Style) -> some View {
         font(Font(style.fontDescriptor))
             .foregroundColor(Color(style.colorAsset))
+            .multilineTextAlignment(SwiftUI.TextAlignment(style.paragraph.alignment))
     }
 }
 
