@@ -16,7 +16,6 @@ extension InlineModifier: Decodable {
         let container = try decoder.container(keyedBy: InlineModifierTypeKey.self)
         let typeString = try container.decode(String.self, forKey: .type)
         guard let type = InlineModifierType(rawValue: typeString) else {
-            Crashlogger.capture(message: "Encountered unsupported \(InlineModifier.self) type: \(typeString)")
             self = .unsupported(typeString)
             return
         }
