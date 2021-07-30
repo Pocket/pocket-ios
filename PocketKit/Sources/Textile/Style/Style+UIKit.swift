@@ -2,15 +2,10 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-#if canImport(UIKit)
 import UIKit
-#endif
-
-#if canImport(SwiftUI)
 import SwiftUI
-#endif
 
-@available(iOS 1.0, *)
+
 extension UIColor {
     convenience init?(_ colorAsset: ColorAsset) {
         self.init(
@@ -21,7 +16,6 @@ extension UIColor {
     }
 }
 
-@available(iOS 1.0, *)
 extension UIFont.Weight {
     init(_ weight: FontDescriptor.Weight) {
         switch weight {
@@ -37,7 +31,6 @@ extension UIFont.Weight {
     }
 }
 
-@available(iOS 1.0, *)
 extension UIFontDescriptor {
     convenience init(_ descriptor: FontDescriptor) {
         var traits: [UIFontDescriptor.TraitKey: Any] = [
@@ -65,7 +58,6 @@ extension UIFontDescriptor {
     }
 }
 
-@available(iOS 1.0, *)
 extension UIFont {
     convenience init(_ descriptor: FontDescriptor) {
         self.init(
@@ -95,11 +87,31 @@ extension NSUnderlineStyle {
     }
 }
 
-@available(iOS 1.0, *)
+extension NSTextAlignment {
+    init(_ textAlignment: TextAlignment) {
+        switch textAlignment {
+        case .left:
+            self = .left
+        case .right:
+            self = .right
+        }
+    }
+}
+
+extension NSParagraphStyle {
+    static func from(_ paragraphStyle: ParagraphStyle) -> NSParagraphStyle {
+        let style = NSMutableParagraphStyle()
+        style.alignment = NSTextAlignment(paragraphStyle.alignment)
+
+        return style
+    }
+}
+
 public extension Style {
     var textAttributes: [NSAttributedString.Key: Any] {
         var attributes: [NSAttributedString.Key: Any] = [
-            .font: UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor))
+            .font: UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor)),
+            .paragraphStyle: NSParagraphStyle.from(paragraph)
         ]
 
         if let color = UIColor(colorAsset) {
@@ -118,7 +130,6 @@ public extension Style {
     }
 }
 
-@available(iOS 15.0, *)
 public extension Style {
     var attributes: AttributeContainer {
         var container = AttributeContainer()

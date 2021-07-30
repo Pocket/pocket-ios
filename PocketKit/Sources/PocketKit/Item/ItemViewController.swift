@@ -1,5 +1,5 @@
 import UIKit
-import SwiftUI
+import Combine
 
 
 protocol ItemViewControllerDelegate: AnyObject {
@@ -8,21 +8,19 @@ protocol ItemViewControllerDelegate: AnyObject {
 }
 
 class ItemViewController: UIViewController {
-    private let itemView: ItemDestinationView
-    private let itemHost: UIHostingController<ItemDestinationView>
+    private let itemHost: ArticleViewController
+    private var subscriptions: [AnyCancellable] = []
+
     weak var delegate: ItemViewControllerDelegate?
 
-    init(
-        selection: ItemSelection,
-        readerSettings: ReaderSettings
-    ) {
-        itemView = ItemDestinationView(
-            selection: selection,
-            readerSettings: readerSettings
-        )
-        itemHost = UIHostingController(rootView: itemView)
+    init(selection: ItemSelection, readerSettings: ReaderSettings) {
+        itemHost = ArticleViewController(readerSettings: readerSettings)
 
         super.init(nibName: nil, bundle: nil)
+
+        selection.$selectedItem.sink { selectedItem in
+            self.itemHost.item = selectedItem
+        }.store(in: &subscriptions)
 
         navigationItem.rightBarButtonItems = [
             UIBarButtonItem(

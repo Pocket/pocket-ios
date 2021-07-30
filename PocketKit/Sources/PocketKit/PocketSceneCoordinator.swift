@@ -75,8 +75,10 @@ class PocketSceneCoordinator {
     }
 
     private func bindToStateChanges() {
-        itemSelection.$selectedItem.sink { [weak self] item in
-            self?.handleItemSelection()
+        itemSelection.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] item in
+            if item != nil {
+                self?.handleItemSelection()
+            }
         }.store(in: &subscriptions)
 
         authState.$authToken.receive(on: DispatchQueue.main).sink { [weak self] response in
@@ -149,7 +151,7 @@ extension PocketSceneCoordinator: ItemViewControllerDelegate {
     }
 
     private func shouldDisplaySettingsAsSheet(traitCollection: UITraitCollection) -> Bool {
-        return traitCollection.userInterfaceIdiom == .pad ||
+        return traitCollection.userInterfaceIdiom == .phone ||
         traitCollection.horizontalSizeClass == .compact
     }
 }

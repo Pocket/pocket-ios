@@ -5,42 +5,61 @@
 import Textile
 import Sync
 import Foundation
+import UIKit
 
 
 extension TextContent {
-    func attributedString(baseStyle: Style) -> AttributedString? {
-        do {
-            var string = try AttributedString(markdown: text)
-            string.setAttributes(baseStyle.attributes)
-            
-            guard let modifiers = modifiers else {
-                return string
+    func attributedString(baseStyle: Style) -> NSAttributedString {
+        let attributedText: NSMutableAttributedString
+
+        // TODO: Don't bother with markdown parsing
+        // once backend is properly decoding HTML entities
+        if let text = try? NSMutableAttributedString(markdown: text) {
+            attributedText = text
+            attributedText.addAttributes(
+                baseStyle.textAttributes,
+                range: NSRange(location: 0, length: attributedText.length)
+            )
+        } else {
+            attributedText = NSMutableAttributedString(
+                string: text,
+                attributes: baseStyle.textAttributes
+            )
+        }
+
+        applyModifiers(to: attributedText, baseStyle)
+        return attributedText
+    }
+
+    private func applyModifiers(to attributedText: NSMutableAttributedString, _ baseStyle: Style) {
+        guard let modifiers = modifiers else {
+            return
+        }
+
+        for modifier in modifiers {
+            guard let attrs = modifier.textAttributes(extending: baseStyle),
+                  var range = modifier.range else {
+                      return
+                  }
+
+            // Protect against out of bounds issues when applying new attributes.
+            // Because decoding HTML entities sometimes changes the length of the string
+            if range.location + range.length > attributedText.length {
+                range.length = attributedText.length - range.location
             }
-            
-            for modifier in modifiers {
-                guard let attributes = modifier.attributes(extending: baseStyle),
-                      let modifierRange = modifier.range,
-                      let range = Range(modifierRange, in: string) else {
-                          continue
-                }
-                
-                string[range].mergeAttributes(attributes)
-            }
-            
-            return string
-        } catch {
-            return nil
+
+            attributedText.addAttributes(attrs, range: range)
         }
     }
 }
 
 extension InlineModifier {    
-    func attributes(extending baseStyle: Style) -> AttributeContainer? {
+    func textAttributes(extending baseStyle: Style) -> [NSAttributedString.Key: Any]? {
         switch self {
         case .link(let link):
-            return link.attributes(baseStyle: baseStyle)
+            return link.textAttributes(baseStyle: baseStyle)
         case .style(let style):
-            return style.extend(baseStyle)?.attributes
+            return style.extend(baseStyle)?.textAttributes
         case .unsupported:
             return nil
         }
@@ -59,14 +78,14 @@ extension InlineModifier {
 }
 
 extension InlineLink {
-    func attributes(baseStyle: Style) -> AttributeContainer {
-        var container = baseStyle
+    func textAttributes(baseStyle: Style) -> [NSAttributedString.Key: Any] {
+        var textAttributes = baseStyle
             .with(underlineStyle: .single)
-            .attributes
+            .textAttributes
 
-        container.link = address
+        textAttributes[.link] = address
 
-        return container
+        return textAttributes
     }
 }
 
@@ -85,6 +104,20 @@ extension InlineStyle {
             return baseStyle.with(strike: .strikethrough)
         case .unsupported:
             return nil
+        }
+    }
+}
+
+extension Header {
+    var style: Style {
+        switch level {
+        case 1: return .header.serif.h1
+        case 2: return .header.serif.h2
+        case 3: return .header.serif.h3
+        case 4: return .header.serif.h4
+        case 5: return .header.serif.h5
+        case 6: return .header.serif.h6
+        default: return .header.serif.h1
         }
     }
 }

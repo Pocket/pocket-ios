@@ -5,12 +5,18 @@
 import Foundation
 import Textile
 import Sync
-import SwiftUI
 
 public extension Item {
-    var characterDirection: LayoutDirection {
-        let language = language ?? "en"
-        let direction = Locale.characterDirection(forLanguage: language)
-        return direction == .rightToLeft ? .rightToLeft : .leftToRight
+    var textAlignment: TextAlignment {
+        let direction = Locale.characterDirection(forLanguage: language ?? "en")
+
+        switch direction {
+        case .rightToLeft:
+            return .right
+        case .unknown, .leftToRight, .topToBottom, .bottomToTop:
+            return .left
+        @unknown default:
+            return .left
+        }
     }
 }

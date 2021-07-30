@@ -43,7 +43,7 @@ struct PocketApp {
     }
 
     func readerView() -> ReaderScreen {
-        return ReaderScreen(el: app.tables["article-view"])
+        return ReaderScreen(el: app.collectionViews["article-view"])
     }
 
     func readerToolbar() -> ReaderToolbar {
