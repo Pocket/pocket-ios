@@ -106,7 +106,9 @@ extension ArticleViewController {
         style: Style
     ) -> TextContentCell {
         let cell: TextContentCell = collectionView.dequeueCell(for: indexPath)
+
         cell.attributedText = attributedText(textContent: textContent, style: style)
+        cell.delegate = self
 
         return cell
     }
@@ -161,3 +163,27 @@ extension ArticleViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
+extension ArticleViewController: TextContentCellDelegate {
+    func textContentCell(
+        _ cell: TextContentCell,
+        didShareSelecedText selectedText: String
+    ) {
+        guard let url = item?.url else {
+            return
+        }
+
+        let text = [item?.title, "\"\(selectedText)\""]
+            .compactMap { $0 }
+            .joined(separator: "\n\n")
+
+        // wrap the URL and text in an ActivityItemSource to preserve separation when sharing
+        let activityItems = [url, text].map(ActivityItemSource.init)
+
+        let shareSheet = UIActivityViewController(
+            activityItems: activityItems,
+            applicationActivities: nil
+        )
+
+        present(shareSheet, animated: true)
+    }
+}
