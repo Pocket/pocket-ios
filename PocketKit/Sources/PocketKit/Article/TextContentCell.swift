@@ -1,8 +1,21 @@
 import UIKit
 
 
+protocol TextContentCellDelegate: AnyObject {
+    func textContentCell(
+        _ cell: TextContentCell,
+        didShareSelecedText selectedText: String
+    )
+}
+
 class TextContentCell: UICollectionViewCell {
-    private let textView = UITextView()
+    private let textView = TextViewWithCustomShareAction()
+
+    weak var delegate: TextContentCellDelegate?
+
+    var selectedText: String {
+        (textView.text as NSString).substring(with: textView.selectedRange)
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -10,6 +23,7 @@ class TextContentCell: UICollectionViewCell {
         textView.textContainerInset = .zero
         textView.isEditable = false
         textView.isScrollEnabled = false
+        textView.shareDelegate = self
 
         contentView.addSubview(textView)
         textView.translatesAutoresizingMaskIntoConstraints = false
@@ -33,5 +47,32 @@ class TextContentCell: UICollectionViewCell {
 
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
+    }
+}
+
+extension TextContentCell: TextViewWithCustomShareActionDelegate {
+    fileprivate func textViewDidSelectShareAction(_ textView: TextViewWithCustomShareAction) {
+        delegate?.textContentCell(self, didShareSelecedText: selectedText)
+    }
+}
+
+private protocol TextViewWithCustomShareActionDelegate: AnyObject {
+    func textViewDidSelectShareAction(_ textView: TextViewWithCustomShareAction)
+}
+
+///
+/// A text view that notifies a delegate when user shares selected text
+///
+private class TextViewWithCustomShareAction: UITextView {
+    weak var shareDelegate: TextViewWithCustomShareActionDelegate?
+
+    // This method is called by the system when a user taps "Share"
+    // in the menu that appears when selecting text
+    // It is, admittedly, a bit hackish to override this method,
+    // but because of the way the responder chain works this is the simplest way to
+    // handle this notification and also get access to the selected text
+    @objc
+    func _share(_ sender: Any?) {
+        shareDelegate?.textViewDidSelectShareAction(self)
     }
 }
