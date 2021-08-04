@@ -1,3 +1,29 @@
+fragment SavedItemParts on SavedItem {
+  itemId: id
+  url
+  isArchived
+  _deletedAt
+  _createdAt
+  item {
+    title
+    language
+    topImageUrl
+    timeToRead
+    domain
+    particleJson
+    domainMetadata {
+      name
+      logo
+    }
+    images {
+      height
+      width
+      src
+      imageId
+    }
+  }
+}
+
 query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
   userByToken(token: $token) {
     savedItems(pagination: $pagination, filter: $savedItemsFilter) {
@@ -7,30 +33,15 @@ query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilt
       edges {
         cursor
         node {
-          url
-          isArchived
-          _deletedAt
-          _createdAt
-          item {
-            title
-            language
-            topImageUrl
-            timeToRead
-            domain
-            particleJson
-            domainMetadata {
-              name
-              logo
-            }
-            images {
-              height
-              width
-              src
-              imageId
-            }
-          }
+          ...SavedItemParts
         }
       }
     }
+  }
+}
+
+mutation FavoriteItem($itemID: ID!) {
+  updateSavedItemFavorite(id: $itemID) {
+    ...SavedItemParts
   }
 }

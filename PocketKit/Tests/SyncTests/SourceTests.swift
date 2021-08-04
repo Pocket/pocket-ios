@@ -106,6 +106,7 @@ class SourceTests: XCTestCase {
 
         do {
             let item = items[0]
+            XCTAssertEqual(item.itemID, "item-id-1")
             XCTAssertEqual(item.domain, "example.com")
             XCTAssertEqual(item.domainMetadata?.name, "WIRED")
             XCTAssertEqual(item.thumbnailURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
