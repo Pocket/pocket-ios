@@ -11,6 +11,65 @@
     "types": [
       {
         "kind": "OBJECT",
+        "name": "ArticleMarkdown",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "text",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "images",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "OBJECT",
+                  "name": "MarkdownImagePosition",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "SCALAR",
+        "name": "String",
+        "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "Author",
         "description": "Information about an Author of an article or some content",
         "specifiedByUrl": null,
@@ -65,17 +124,6 @@
         "kind": "SCALAR",
         "name": "ID",
         "description": "The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `\"4\"`) or integer (such as `4`) input value will be accepted as an ID.",
-        "specifiedByUrl": null,
-        "fields": null,
-        "inputFields": null,
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
-        "name": "String",
-        "description": "The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.",
         "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
@@ -220,6 +268,34 @@
             "type": {
               "kind": "SCALAR",
               "name": "Url",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "language",
+            "description": "note that language is *not* being used as locale - only to specify the\nlanguage of the collection.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "partnership",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "CollectionPartnership",
               "ofType": null
             },
             "isDeprecated": false,
@@ -418,6 +494,162 @@
         "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "CollectionPartnership",
+        "description": "If a collection was made in partnership with an external company, this\nentity will hold all required info about that partnership.",
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "externalId",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "type",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "ENUM",
+                "name": "CollectionPartnershipType",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "name",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "url",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Url",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "imageUrl",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Url",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "blurb",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Markdown",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "ENUM",
+        "name": "CollectionPartnershipType",
+        "description": "Type and enums related to Collections made in partnership with a company.",
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "PARTNERED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "SPONSORED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
+        "kind": "INPUT_OBJECT",
+        "name": "CollectionsFiltersInput",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "language",
+            "description": "if not provided, or if an unsupported language is requested, defaults to `en`",
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
         "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
@@ -645,6 +877,22 @@
             },
             "isDeprecated": false,
             "deprecationReason": null
+          },
+          {
+            "name": "fromPartner",
+            "description": "if True, the story is provided by a partner and should be displayed as such",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Boolean",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
           }
         ],
         "inputFields": null,
@@ -827,6 +1075,58 @@
         "possibleTypes": null
       },
       {
+        "kind": "INPUT_OBJECT",
+        "name": "DeleteSavedItemTagsInput",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": [
+          {
+            "name": "savedItemId",
+            "description": "The id of the SavedItem from which to delete a Tag association",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tagIds",
+            "description": "The ids of the Tag to disassociate from the SavedItem",
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "LIST",
+                "name": null,
+                "ofType": {
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
+                }
+              }
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "DomainMetadata",
         "description": "Metadata from a domain, originally populated from ClearBit",
@@ -877,7 +1177,7 @@
       {
         "kind": "OBJECT",
         "name": "IABCategory",
-        "description": "TODO: add comments to all the fields in here!\nthere's a documentation ticket - do this in that ticket",
+        "description": "Interactive Advertising Bureau Category - these are used on clients to serve relevant ads",
         "specifiedByUrl": null,
         "fields": [
           {
@@ -1607,6 +1907,42 @@
             "deprecationReason": null
           },
           {
+            "name": "articleMarkdownWithImagePositions",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "OBJECT",
+              "name": "ArticleMarkdown",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "articleMarkdownWithImages",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "marticleJson",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "syndicatedArticle",
             "description": "If the item has a syndicated counterpart the syndication information",
             "args": [],
@@ -1683,13 +2019,69 @@
       },
       {
         "kind": "OBJECT",
+        "name": "MarkdownImagePosition",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "index",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "position",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "src",
+            "description": "Fallback is to use the images field in the Item entity",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
         "name": "Mutation",
         "description": null,
         "specifiedByUrl": null,
         "fields": [
           {
-            "name": "createSavedItem",
-            "description": "Creates a user item (saves an item to a users list)",
+            "name": "upsertSavedItem",
+            "description": "Updates a SavedItem, undeletes and unarchives it, bringing it to the top of the user's list, if it exists\nand creates it if it doesn't.",
             "args": [
               {
                 "name": "input",
@@ -1699,69 +2091,7 @@
                   "name": null,
                   "ofType": {
                     "kind": "INPUT_OBJECT",
-                    "name": "SavedItemCreateInput",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "SavedItem",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "reAddSavedItem",
-            "description": "Adds a user item to a users list, and if it was previously in the users list will put the back to the top of the list",
-            "args": [
-              {
-                "name": "url",
-                "description": null,
-                "type": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "OBJECT",
-                "name": "SavedItem",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "updateSavedItem",
-            "description": "Update mutation to change the state of the user item",
-            "args": [
-              {
-                "name": "input",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "INPUT_OBJECT",
-                    "name": "SavedItemUpdateInput",
+                    "name": "SavedItemUpsertInput",
                     "ofType": null
                   }
                 },
@@ -1784,7 +2114,7 @@
           },
           {
             "name": "updateSavedItemArchive",
-            "description": "Archives a user item (same thing if archive state is passed to updateSavedItem)",
+            "description": "Archives a SavedItem",
             "args": [
               {
                 "name": "id",
@@ -1817,7 +2147,7 @@
           },
           {
             "name": "updateSavedItemUnArchive",
-            "description": "Unarchives a user item (same thing if archive state is passed to updateSavedItem)",
+            "description": "Unarchives a SavedItem",
             "args": [
               {
                 "name": "id",
@@ -1850,7 +2180,7 @@
           },
           {
             "name": "updateSavedItemUnDelete",
-            "description": "Undo the delete operation for an user item",
+            "description": "Undo the delete operation for a SavedItem",
             "args": [
               {
                 "name": "id",
@@ -1883,7 +2213,7 @@
           },
           {
             "name": "updateSavedItemFavorite",
-            "description": "Favorites a user item (same thing if favorite state is passed to updateSavedItem)",
+            "description": "Favorites a SavedItem",
             "args": [
               {
                 "name": "id",
@@ -1916,7 +2246,7 @@
           },
           {
             "name": "updateSavedItemUnFavorite",
-            "description": "Unfavorites a user item (same thing if favorite state is passed to updateSavedItem)",
+            "description": "Unfavorites a SavedItem",
             "args": [
               {
                 "name": "id",
@@ -1948,8 +2278,8 @@
             "deprecationReason": null
           },
           {
-            "name": "updateSavedItemTag",
-            "description": "Modifies the User tags that are associated with the User Item",
+            "name": "updateSavedItemTags",
+            "description": "Set the Tags that are associated with a SavedItem.\nWill replace any existing Tag associations on the SavedItem.\nTo remove all Tags from a SavedItem, use `deleteTagsBySavedItem`.",
             "args": [
               {
                 "name": "input",
@@ -1982,7 +2312,7 @@
           },
           {
             "name": "deleteSavedItem",
-            "description": "Deletes a user item from the users list",
+            "description": "Deletes a SavedItem from the users list. Returns ID of the\ndeleted SavedItem",
             "args": [
               {
                 "name": "id",
@@ -2005,8 +2335,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "OBJECT",
-                "name": "SavedItem",
+                "kind": "SCALAR",
+                "name": "ID",
                 "ofType": null
               }
             },
@@ -2015,7 +2345,7 @@
           },
           {
             "name": "createTags",
-            "description": "Creates user tags that a user can use to classify user items",
+            "description": "Creates user tags that a user can use to classify SavedItems",
             "args": [
               {
                 "name": "input",
@@ -2064,15 +2394,19 @@
           },
           {
             "name": "updateTag",
-            "description": "Updates a user tag (renames the tag)",
+            "description": "Updates a Tag (renames the tag), and returns the updated Tag.\nIf a Tag with the updated name already exists in the database, will\nassociate that Tag to all relevant SavedItems rather than creating\na duplicate Tag object.",
             "args": [
               {
                 "name": "input",
                 "description": null,
                 "type": {
-                  "kind": "INPUT_OBJECT",
-                  "name": "TagUpdateInput",
-                  "ofType": null
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "INPUT_OBJECT",
+                    "name": "TagUpdateInput",
+                    "ofType": null
+                  }
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -2093,17 +2427,17 @@
           },
           {
             "name": "deleteTag",
-            "description": "Deletes a user tag. This is essentially deletes the tag and also deletes it from all asoociated items.\nWill also update the _updatedAt time of all associated SavedItemTags",
+            "description": "Deletes a Tag object. This is deletes the Tag and all SavedItem associations\n(removes the Tag from all SavedItems). Returns ID of the deleted Tag.",
             "args": [
               {
-                "name": "tagName",
+                "name": "id",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
                   "name": null,
                   "ofType": {
                     "kind": "SCALAR",
-                    "name": "String",
+                    "name": "ID",
                     "ofType": null
                   }
                 },
@@ -2116,8 +2450,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "OBJECT",
-                "name": "Tag",
+                "kind": "SCALAR",
+                "name": "ID",
                 "ofType": null
               }
             },
@@ -2126,10 +2460,10 @@
           },
           {
             "name": "deleteSavedItemTags",
-            "description": "Deletes specified user tags from a user item. Deletes all tags with the given ids.\nWill also update the _updatedAt time of all associated SavedItemTags",
+            "description": "Deletes the association between a Tag and a SavedItem\n(removes a Tag from a SavedItem).\nNote that if this operation results in a Tag having no associations\nto a SavedItem, the Tag object will be deleted.",
             "args": [
               {
-                "name": "ids",
+                "name": "input",
                 "description": null,
                 "type": {
                   "kind": "NON_NULL",
@@ -2141,8 +2475,8 @@
                       "kind": "NON_NULL",
                       "name": null,
                       "ofType": {
-                        "kind": "SCALAR",
-                        "name": "ID",
+                        "kind": "INPUT_OBJECT",
+                        "name": "DeleteSavedItemTagsInput",
                         "ofType": null
                       }
                     }
@@ -2157,13 +2491,9 @@
               "kind": "LIST",
               "name": null,
               "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Tag",
-                  "ofType": null
-                }
+                "kind": "OBJECT",
+                "name": "SavedItemTagAssociation",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -2171,7 +2501,7 @@
           },
           {
             "name": "deleteTagsBySavedItem",
-            "description": "Deletes all tags for a user item.\nWill also update the _updatedAt time of all associated SavedItemTags",
+            "description": "Removes all Tag associations from a SavedItem. Returns the ID of the\nSavedItem that had its Tag associations cleared.\nNote that if this operation results in a Tag having no associations\nto a SavedItem, the Tag object will be deleted.",
             "args": [
               {
                 "name": "savedItemId",
@@ -2191,16 +2521,12 @@
               }
             ],
             "type": {
-              "kind": "LIST",
+              "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "OBJECT",
-                  "name": "Tag",
-                  "ofType": null
-                }
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
               }
             },
             "isDeprecated": false,
@@ -2938,6 +3264,18 @@
                 "defaultValue": null,
                 "isDeprecated": false,
                 "deprecationReason": null
+              },
+              {
+                "name": "filters",
+                "description": null,
+                "type": {
+                  "kind": "INPUT_OBJECT",
+                  "name": "CollectionsFiltersInput",
+                  "ofType": null
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
               }
             ],
             "type": {
@@ -3254,7 +3592,7 @@
           },
           {
             "name": "isFavorite",
-            "description": "Helper property to indicate if the user item is favorited",
+            "description": "Helper property to indicate if the SavedItem is favorited",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3270,7 +3608,7 @@
           },
           {
             "name": "favoritedAt",
-            "description": "Timestamp that the user item became favorited, null if not favorited",
+            "description": "Timestamp that the SavedItem became favorited, null if not favorited",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -3282,7 +3620,7 @@
           },
           {
             "name": "isArchived",
-            "description": "Helper property to indicate if the user item is archived",
+            "description": "Helper property to indicate if the SavedItem is archived",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3298,7 +3636,7 @@
           },
           {
             "name": "archivedAt",
-            "description": "Timestamp that the user item became archied, null if not archived",
+            "description": "Timestamp that the SavedItem became archied, null if not archived",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -3326,7 +3664,7 @@
           },
           {
             "name": "tags",
-            "description": "The user tag's that the user has assigned to this user item",
+            "description": "The Tags assocaited with this SavedItem",
             "args": [],
             "type": {
               "kind": "LIST",
@@ -3346,7 +3684,7 @@
           },
           {
             "name": "status",
-            "description": "The user tag's that the user has assigned to this user item",
+            "description": "The status of this SavedItem",
             "args": [],
             "type": {
               "kind": "ENUM",
@@ -3393,13 +3731,9 @@
             "description": "Unix timestamp of when the entity was last updated, if any property on the entity is modified this timestamp is set to the modified time",
             "args": [],
             "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "Timestamp",
-                "ofType": null
-              }
+              "kind": "SCALAR",
+              "name": "Timestamp",
+              "ofType": null
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -3480,7 +3814,7 @@
           },
           {
             "name": "totalCount",
-            "description": "Identifies the total count of items in the connection.",
+            "description": "Identifies the total count of SavedItems in the connection.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -3497,58 +3831,6 @@
         ],
         "inputFields": null,
         "interfaces": [],
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
-        "name": "SavedItemCreateInput",
-        "description": "Input field for creating a SavedItem",
-        "specifiedByUrl": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "url",
-            "description": "The url to create the User Item with. (the url to save to the list)",
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "String",
-                "ofType": null
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "isFavorite",
-            "description": "Optional, create the user item as a favorited item",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "timestamp",
-            "description": "Optional, time that request was submitted by client epoch/unix time",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Timestamp",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
       },
@@ -3576,7 +3858,7 @@
           },
           {
             "name": "node",
-            "description": "The item at the end of the edge.",
+            "description": "The SavedItem at the end of the edge.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -3595,7 +3877,7 @@
       {
         "kind": "ENUM",
         "name": "SavedItemsContentType",
-        "description": null,
+        "description": "A SavedItem can be one of these content types",
         "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
@@ -3625,7 +3907,7 @@
         "inputFields": [
           {
             "name": "updatedSince",
-            "description": "Optional, filter to get user items updated since a date",
+            "description": "Optional, filter to get SavedItems updated since a date",
             "type": {
               "kind": "SCALAR",
               "name": "Timestamp",
@@ -3637,7 +3919,7 @@
           },
           {
             "name": "isFavorite",
-            "description": "Optional, filter to get user items that have been favorited",
+            "description": "Optional, filter to get SavedItems that have been favorited",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -3649,7 +3931,7 @@
           },
           {
             "name": "isArchived",
-            "description": "Optional, filter to get user items that have been archived",
+            "description": "Optional, filter to get SavedItems that have been archived",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -3661,7 +3943,7 @@
           },
           {
             "name": "tagIds",
-            "description": "Optional, filter to get user items with the specific tag by ID",
+            "description": "Optional, filter to get SavedItems associated to the specified Tag.",
             "type": {
               "kind": "LIST",
               "name": null,
@@ -3681,7 +3963,7 @@
           },
           {
             "name": "tagNames",
-            "description": "Optional, filter to get user items with the specific tag",
+            "description": "Optional, filter to get SavedItems associated to the specified Tag name.\nTo get untagged items, include the string '_untagged_'.",
             "type": {
               "kind": "LIST",
               "name": null,
@@ -3701,7 +3983,7 @@
           },
           {
             "name": "isHighlighted",
-            "description": "Optional, filter to get user items with highlights",
+            "description": "Optional, filter to get SavedItems with highlights",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -3713,7 +3995,7 @@
           },
           {
             "name": "contentType",
-            "description": "Optional, filter to get user items based on content type",
+            "description": "Optional, filter to get SavedItems based on content type",
             "type": {
               "kind": "ENUM",
               "name": "SavedItemsContentType",
@@ -3731,13 +4013,13 @@
       {
         "kind": "INPUT_OBJECT",
         "name": "SavedItemsSort",
-        "description": "Input to sort fetched user items",
+        "description": "Input to sort fetched SavedItems",
         "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
             "name": "sortBy",
-            "description": "The field by which to sort user items",
+            "description": "The field by which to sort SavedItems",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -3753,7 +4035,7 @@
           },
           {
             "name": "sortOrder",
-            "description": "The order in which to sort user items",
+            "description": "The order in which to sort SavedItems",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -3811,7 +4093,7 @@
       {
         "kind": "ENUM",
         "name": "SavedItemsSortOrder",
-        "description": "Enum to specify the sort order of user items fetched",
+        "description": "Enum to specify the sort order of SavedItems fetched",
         "specifiedByUrl": null,
         "fields": null,
         "inputFields": null,
@@ -3869,15 +4151,59 @@
         "possibleTypes": null
       },
       {
+        "kind": "OBJECT",
+        "name": "SavedItemTagAssociation",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "savedItemId",
+            "description": "The ID of the SavedItem associated with the Tag",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "tagId",
+            "description": "The ID of the Tag associated with the SavedItem",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "ID",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "INPUT_OBJECT",
         "name": "SavedItemTagUpdateInput",
-        "description": "Input field for updating a User Item to have or not have tags",
+        "description": "Input field for setting all Tag associations on a SavedItem.",
         "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
             "name": "savedItemId",
-            "description": "The user item id to modify the tags on",
+            "description": "The SavedItem ID to associate Tags to",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -3893,7 +4219,7 @@
           },
           {
             "name": "tagIds",
-            "description": "Will replace all user tag associations for the user item with the user tags provided.\nIf sent with an empty array, will remove all tags from the SavedItem",
+            "description": "The set of Tag IDs to associate to the SavedItem",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -3901,9 +4227,13 @@
                 "kind": "LIST",
                 "name": null,
                 "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
+                  "kind": "NON_NULL",
+                  "name": null,
+                  "ofType": {
+                    "kind": "SCALAR",
+                    "name": "ID",
+                    "ofType": null
+                  }
                 }
               }
             },
@@ -3918,20 +4248,20 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "SavedItemUpdateInput",
-        "description": "Input field for updating a SavedItem",
+        "name": "SavedItemUpsertInput",
+        "description": "Input field for upserting a SavedItem",
         "specifiedByUrl": null,
         "fields": null,
         "inputFields": [
           {
-            "name": "id",
-            "description": "The UUID representing the user item",
+            "name": "url",
+            "description": "The url to create/update the SavedItem with. (the url to save to the list)",
             "type": {
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "ID",
+                "name": "String",
                 "ofType": null
               }
             },
@@ -3941,63 +4271,11 @@
           },
           {
             "name": "isFavorite",
-            "description": "Optional, will update the favorite state to this value if provided",
+            "description": "Optional, create/update the SavedItem as a favorited item",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
               "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "isArchived",
-            "description": "Optional, will update the archive state to this value if provided",
-            "type": {
-              "kind": "SCALAR",
-              "name": "Boolean",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "tagIds",
-            "description": "Optional, if provided will replace all user tag associations for this user item with the user tags provided.\nIf sent with an empty array, will remove all tags from this SavedItem",
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "ID",
-                  "ofType": null
-                }
-              }
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "tagNames",
-            "description": "Optional, if provided will replace all user tag associations for this user item with the user tags provided.\nIf sent with an empty array, will remove all tags from this SavedItem",
-            "type": {
-              "kind": "LIST",
-              "name": null,
-              "ofType": {
-                "kind": "NON_NULL",
-                "name": null,
-                "ofType": {
-                  "kind": "SCALAR",
-                  "name": "String",
-                  "ofType": null
-                }
-              }
             },
             "defaultValue": null,
             "isDeprecated": false,
@@ -4256,7 +4534,7 @@
         "fields": [
           {
             "name": "name",
-            "description": "The actual tag the user created for their list",
+            "description": "The actual tag string the user created for their list",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4272,7 +4550,7 @@
           },
           {
             "name": "savedItems",
-            "description": "The user item's that the user has assigned to this user tag",
+            "description": "The SavedItems associated with this Tag",
             "args": [],
             "type": {
               "kind": "LIST",
@@ -4402,7 +4680,7 @@
           },
           {
             "name": "totalCount",
-            "description": "Identifies the total count of items in the connection.",
+            "description": "Identifies the total count of Tags in the connection.",
             "args": [],
             "type": {
               "kind": "NON_NULL",
@@ -4431,7 +4709,7 @@
         "inputFields": [
           {
             "name": "name",
-            "description": "The user provided tag",
+            "description": "The user provided tag string",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -4447,7 +4725,7 @@
           },
           {
             "name": "savedItemId",
-            "description": "ID of the user item to be tagged",
+            "description": "ID of the SavedItem to associate with this Tag",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -4490,7 +4768,7 @@
           },
           {
             "name": "node",
-            "description": "The item at the end of the edge.",
+            "description": "The Tag at the end of the edge.",
             "args": [],
             "type": {
               "kind": "OBJECT",
@@ -4531,7 +4809,7 @@
           },
           {
             "name": "name",
-            "description": "The user provided tag",
+            "description": "The updated tag string",
             "type": {
               "kind": "NON_NULL",
               "name": null,
@@ -5178,7 +5456,7 @@
           },
           {
             "name": "savedItems",
-            "description": "Get a general paginated listing of all user items for the user",
+            "description": "Get a general paginated listing of all SavedItems for the user",
             "args": [
               {
                 "name": "filter",
@@ -5227,7 +5505,7 @@
           },
           {
             "name": "tags",
-            "description": "Get a paginated listing of all user tags",
+            "description": "Get a paginated listing of all a user's Tags",
             "args": [
               {
                 "name": "pagination",
@@ -5252,7 +5530,7 @@
           },
           {
             "name": "savedItemById",
-            "description": "Get a user item by its id",
+            "description": "Get a SavedItem by its id",
             "args": [
               {
                 "name": "id",

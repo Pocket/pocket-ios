@@ -9,6 +9,7 @@ extension Item {
     typealias RemoteItem = UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node
     
     func update(from remoteItem: RemoteItem) {
+        itemID = remoteItem.itemId
         isArchived = remoteItem.isArchived
         domain = remoteItem.item.domain
         language = remoteItem.item.language
