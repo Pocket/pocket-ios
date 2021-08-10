@@ -46,6 +46,10 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             Textiles.clearImageCache()
         }
 
+        if let accessToken = ProcessInfo.processInfo.environment["accessToken"] {
+            try? accessTokenStore.save(token: accessToken)
+        }
+
         Textiles.initialize()
 
         return true
