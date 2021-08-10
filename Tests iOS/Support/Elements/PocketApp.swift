@@ -22,10 +22,12 @@ struct PocketApp {
 
     func launch(
         arguments: [String] = [],
-        environment: [String: String] = PocketApp.defaultEnvironment
+        environment: [String: String] = [:]
     ) {
-        app.launchArguments = arguments
-        app.launchEnvironment = environment
+        app.launchArguments = arguments + ["disableSentry"]
+        app.launchEnvironment = PocketApp
+            .defaultEnvironment
+            .merging(environment) { key, _ in key }
 
         app.launch()
     }
