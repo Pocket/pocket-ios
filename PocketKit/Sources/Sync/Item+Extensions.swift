@@ -6,11 +6,14 @@ import Foundation
 
 
 extension Item {
-    typealias RemoteItem = UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node
-    
-    func update(from remoteItem: RemoteItem) {
+    func update(from node: UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node) {
+        update(from: node.fragments.savedItemParts)
+    }
+
+    func update(from remoteItem: SavedItemParts) {
         itemID = remoteItem.itemId
         isArchived = remoteItem.isArchived
+        isFavorite = remoteItem.isFavorite
         domain = remoteItem.item.domain
         language = remoteItem.item.language
         title = remoteItem.item.title

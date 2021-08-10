@@ -33,4 +33,8 @@ class ItemPresenter: ItemRow {
     public var thumbnailURL: URL? {
         item.thumbnailURL
     }
+
+    public var isFavorite: Bool {
+        item.isFavorite
+    }
 }

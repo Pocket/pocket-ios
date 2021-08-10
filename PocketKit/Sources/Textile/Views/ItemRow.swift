@@ -21,6 +21,7 @@ public protocol ItemRow: ObservableObject {
     var domain: String { get }
     var timeToRead: String? { get }
     var thumbnailURL: URL? { get }
+    var isFavorite: Bool { get }
 }
 
 public struct ItemRowView<Model: ItemRow>: View {
@@ -46,6 +47,13 @@ public struct ItemRowView<Model: ItemRow>: View {
                         Text(timeToRead).style(.detail)
                     }
                 }
+
+                if model.isFavorite {
+                    Image(systemName: "star.fill")
+                        .accessibilityIdentifier("favorite")
+                        .foregroundColor(Color(.branding.amber3))
+                }
+
                 Spacer()
             }.lineSpacing(6)
             
@@ -83,6 +91,7 @@ struct ItemRow_Previews: PreviewProvider {
         var domain: String = "Etiam Sem Magna Parturient Bibendum"
         var timeToRead: String? = "5 min"
         var thumbnailURL: URL? = URL(string: "http://placekitten.com/200/300")!
+        var isFavorite: Bool = false
     }
 
     static var previews: some View {

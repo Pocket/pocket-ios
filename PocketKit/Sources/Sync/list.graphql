@@ -2,6 +2,7 @@ fragment SavedItemParts on SavedItem {
   itemId: id
   url
   isArchived
+  isFavorite
   _deletedAt
   _createdAt
   item {
@@ -42,6 +43,12 @@ query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilt
 
 mutation FavoriteItem($itemID: ID!) {
   updateSavedItemFavorite(id: $itemID) {
-    ...SavedItemParts
+    id
+  }
+}
+
+mutation UnfavoriteItem($itemID: ID!) {
+  updateSavedItemUnFavorite(id: $itemID) {
+    id
   }
 }

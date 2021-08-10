@@ -27,4 +27,20 @@ struct ItemElement {
     func tap() {
         el.tap()
     }
+
+    func showActions() {
+        el.swipeLeft()
+    }
+
+    func favoriteButton() -> XCUIElement {
+        el.buttons["Favorite"]
+    }
+
+    func favoriteIcon() -> XCUIElement {
+        el.images["favorite"]
+    }
+
+    func unfavoriteButton() -> XCUIElement {
+        el.buttons["Unfavorite"]
+    }
 }

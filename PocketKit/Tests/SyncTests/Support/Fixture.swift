@@ -37,7 +37,7 @@ class Fixture {
         return fixture.decode()
     }
 
-    func asGraphQLResult<Query: GraphQLQuery>(from query: Query) -> GraphQLResult<Query.Data> {
+    func asGraphQLResult<Operation: GraphQLOperation>(from operation: Operation) -> GraphQLResult<Operation.Data> {
         do {
             let anyJSON = try JSONSerialization.jsonObject(with: data, options: [])
 
@@ -45,7 +45,7 @@ class Fixture {
                 throw DecodeError.invalidJSON
             }
 
-            let response = GraphQLResponse(operation: query, body: jsonObject)
+            let response = GraphQLResponse(operation: operation, body: jsonObject)
             return try response.parseResultFast()
         } catch {
             fatalError("Could not decode graphQL result: \(error)")

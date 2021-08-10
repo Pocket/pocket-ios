@@ -19,6 +19,7 @@
                             "_createdAt": 0,
                             "_deletedAt": 1,
                             "isArchived": false,
+                            "isFavorite": true,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Item 1",
@@ -54,6 +55,7 @@
                             "_createdAt": 0,
                             "_deletedAt": null,
                             "isArchived": false,
+                            "isFavorite": false,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Item 2",

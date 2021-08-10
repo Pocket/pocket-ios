@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */; };
 		166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* Tests_iOS.swift */; };
 		166A81D02637406C0015AA1D /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81CF2637406C0015AA1D /* Tests_macOS.swift */; };
 		166BACF62656E34B00E401F0 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 166BACF52656E34B00E401F0 /* Fixtures */; };
@@ -79,6 +80,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteBuffer+read.swift"; sourceTree = "<group>"; };
 		1624B85A268508180099B6EF /* PocketKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PocketKit; sourceTree = "<group>"; };
 		166A81B02637406C0015AA1D /* Pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pocket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		166A81B32637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 			children = (
 				166BAD032656E76B00E401F0 /* Elements */,
 				166BACF72656E3C600E401F0 /* Fixture.swift */,
+				1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -465,6 +468,7 @@
 				166BAD0D2656E76B00E401F0 /* PocketApp.swift in Sources */,
 				166BAD0B2656E76B00E401F0 /* ReaderScreen.swift in Sources */,
 				166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */,
+				1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */,
 				166EFAE8268281F300A027CD /* ReaderToolbar.swift in Sources */,
 				166EFAEA2682821300A027CD /* WebReaderScreen.swift in Sources */,
 				166BAD0A2656E76B00E401F0 /* SignInScreen.swift in Sources */,
