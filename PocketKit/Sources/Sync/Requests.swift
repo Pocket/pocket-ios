@@ -30,4 +30,11 @@ public enum Requests {
         request.fetchLimit = 1
         return request
     }
+
+    public static func fetchItem(byItemID itemID: String) -> NSFetchRequest<Item> {
+        let request = Item.fetchRequest()
+        request.predicate = NSPredicate(format: "itemID = %@", itemID)
+        request.fetchLimit = 1
+        return request
+    }
 }

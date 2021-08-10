@@ -19,6 +19,7 @@
                             "_createdAt": 0,
                             "_deletedAt": null,
                             "isArchived": false,
+                            "isFavorite": false,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Item 3",

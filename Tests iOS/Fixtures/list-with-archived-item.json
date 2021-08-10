@@ -14,10 +14,12 @@
                         "cursor": "cursor-1",
                         "node": {
                             "__typename": "[type-name-here]",
+                            "itemId": "item-id-1",
                             "url": "http://localhost:8080/hello",
                             "_createdAt": 0,
                             "_deletedAt": null,
                             "isArchived": true,
+                            "isFavorite": false,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Item 1",
@@ -48,10 +50,12 @@
                         "cursor": "cursor-2",
                         "node": {
                             "__typename": "[type-name-here]",
+                            "itemId": "item-id-2",
                             "url": "https://example.com/item-2",
                             "_createdAt": 0,
                             "_deletedAt": null,
                             "isArchived": false,
+                            "isFavorite": false,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Item 2",
@@ -78,10 +82,12 @@
                         "cursor": "cursor-3",
                         "node": {
                             "__typename": "[type-name-here]",
+                            "itemId": "item-id-3",
                             "url": "https://example.com/item-3",
                             "_createdAt": 0,
                             "_deletedAt": 1,
                             "isArchived": false,
+                            "isFavorite": false,
                             "item": {
                                 "__typename": "[type-name-here]",
                                 "title": "Item 3",

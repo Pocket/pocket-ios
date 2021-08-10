@@ -58,8 +58,9 @@ class PocketSceneCoordinator {
 
     private func configureSplitView() {
         let listView = ItemListView(
-            selection: itemSelection
-        ).environment(\.managedObjectContext, source.managedObjectContext)
+            selection: itemSelection,
+            source: source
+        ).environment(\.managedObjectContext, source.mainContext)
 
         let primaryViewController = UIHostingController(rootView: listView)
         let secondaryViewController = ItemViewController(
