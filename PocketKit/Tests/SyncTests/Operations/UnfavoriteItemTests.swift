@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import Apollo
 
 @testable import Sync
 
@@ -8,36 +9,32 @@ class UnfavoriteItemTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!
     var subscriptions: [AnyCancellable] = []
+    var queue: OperationQueue!
+    var events: PassthroughSubject<SyncEvent, Never>!
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
         space = Space(container: .testContainer)
+        queue = OperationQueue()
+        events = PassthroughSubject()
+    }
 
+    override func tearDownWithError() throws {
+        subscriptions = []
         try space.clear()
     }
 
-    override func tearDown() {
-        subscriptions = []
-    }
-
-    @discardableResult
-    func seedItem() throws -> Item {
-        let item = space.newItem()
-        item.itemID = "the-item-id"
-        item.url = URL(string: "http://example.com/item-1")!
-        item.title = "Item 1"
-        item.isFavorite = false
-        try space.save()
-
-        return item
-    }
-
-    func performOperation(events: PassthroughSubject<SyncEvent, Never> = PassthroughSubject()) {
+    func performOperation(
+        space: Space? = nil,
+        apollo: ApolloClientProtocol? = nil,
+        itemID: String = "test-item-id",
+        events: PassthroughSubject<SyncEvent, Never>? = nil
+    ) {
         let operation = UnfavoriteItem(
-            space: space,
-            apollo: apollo,
-            itemID: "test-item-id",
-            events: events
+            space: space ?? self.space,
+            apollo: apollo ?? self.apollo,
+            itemID: itemID,
+            events: events ?? self.events
         )
 
         let expectationToCompleteOperation = expectation(
@@ -48,54 +45,25 @@ class UnfavoriteItemTests: XCTestCase {
             expectationToCompleteOperation.fulfill()
         }
 
-        let queue = OperationQueue()
         queue.addOperation(operation)
+
+        wait(for: [expectationToCompleteOperation], timeout: 1)
     }
 
-    private func configureMockClientToReturnFixture(named fixtureName: String) {
-        let expectFavorite = expectation(description: "Expect an unfavorite item mutation")
-        apollo.stubPerform { (mutation: UnfavoriteItemMutation, _, queue, completion) in
-            defer { expectFavorite.fulfill() }
-
-            XCTAssertEqual(mutation.itemID, "test-item-id")
-
-            let data = Fixture
-                .load(name: "unfavorite")
-                .asGraphQLResult(from: mutation)
-
-            queue.async {
-                completion?(.success(data))
-            }
-
-            return MockCancellable()
-        }
-    }
-
-    private func configureMockClientToFail(with error: Error) {
-        let expectFavorite = expectation(description: "Expect a favorite item request")
-        apollo.stubPerform { (mutation: UnfavoriteItemMutation, _, queue, completion) in
-            defer { expectFavorite.fulfill() }
-
-            queue.async {
-                completion?(.failure(error))
-            }
-
-            return MockCancellable()
-        }
-    }
 
     func test_unfavoriteItem_sendsUnfavoriteMutation_andUpdatesLocalStorage() throws {
-        try seedItem()
+        try space.seedItem()
+        apollo.stubPerform(toReturnFixtureNamed: "unfavorite", asResultType: UnfavoriteItemMutation.self)
 
-        configureMockClientToReturnFixture(named: "unfavorite")
         performOperation()
 
-        waitForExpectations(timeout: 1)
+        let call: MockApolloClient.PerformCall<UnfavoriteItemMutation>? = apollo.performCall(at: 0)
+        XCTAssertEqual(call?.mutation.itemID, "test-item-id")
     }
 
     func test_unfavoriteItem_whenMutationFails_publishesError() throws {
-        _ = try seedItem()
-        let events = PassthroughSubject<SyncEvent, Never>()
+        try space.seedItem()
+        apollo.stubPerform(ofMutationType: UnfavoriteItemMutation.self, toReturnError: TestError.anError)
 
         var error: Error?
         events.sink { event in
@@ -106,10 +74,7 @@ class UnfavoriteItemTests: XCTestCase {
             error = e
         }.store(in: &subscriptions)
 
-        configureMockClientToFail(with: TestError.anError)
-        performOperation(events: events)
-
-        waitForExpectations(timeout: 1)
+        performOperation()
 
         XCTAssertNotNil(error)
         XCTAssertEqual(error as? TestError, .anError)
