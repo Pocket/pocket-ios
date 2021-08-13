@@ -7,8 +7,6 @@ import Apollo
 import Combine
 
 
-
-
 public class Source {
     public let syncEvents: PassthroughSubject<SyncEvent, Never> = PassthroughSubject()
 

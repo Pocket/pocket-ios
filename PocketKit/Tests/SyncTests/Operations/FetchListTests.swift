@@ -10,56 +10,51 @@ class FetchListTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!
     var events: PassthroughSubject<SyncEvent, Never>!
+    var queue: OperationQueue!
     var cancellables: Set<AnyCancellable> = []
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
         events = PassthroughSubject()
-
+        queue = OperationQueue()
         space = Space(container: .testContainer)
+    }
+
+    override func tearDownWithError() throws {
+        cancellables = []
         try space.clear()
     }
 
-    override func tearDown() {
-        cancellables = []
-    }
-
-    func performOperation(maxItems: Int = 400) {
+    func performOperation(
+        token: String = "test-token",
+        apollo: ApolloClientProtocol? = nil,
+        space: Space? = nil,
+        events: PassthroughSubject<SyncEvent, Never>? = nil,
+        maxItems: Int = 400
+    ) {
         let operation = FetchList(
-            token: "test-token",
-            apollo: apollo,
-            space: space,
-            events: events,
+            token: token,
+            apollo: apollo ?? self.apollo,
+            space: space ?? self.space,
+            events: events ?? self.events,
             maxItems: maxItems
         )
 
         let expectationToCompleteOperation = expectation(
-            description: "Expect operation to complete"
+            description: "Expect the FetchList operation to complete"
         )
 
         operation.completionBlock = {
             expectationToCompleteOperation.fulfill()
         }
 
-        let queue = OperationQueue()
         queue.addOperation(operation)
 
         wait(for: [expectationToCompleteOperation], timeout: 1)
     }
 
-    private func configureMockClientToReturnFixture(named fixtureName: String) {
-        apollo.stubFetch { (query: UserByTokenQuery, _, _, queue, completion) -> Apollo.Cancellable in
-            queue.async {
-                let result = Fixture.load(name: fixtureName).asGraphQLResult(from: query)
-                completion?(.success(result))
-            }
-
-            return MockCancellable()
-        }
-    }
-
     func test_refresh_fetchesUserByTokenQueryWithGivenToken() {
-        configureMockClientToReturnFixture(named: "list")
+        apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
 
         performOperation()
 
@@ -69,32 +64,30 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() throws {
-        configureMockClientToReturnFixture(named: "list")
+        apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
 
         performOperation()
 
         let items = try space.fetchAllItems()
         XCTAssertEqual(items.count, 2)
 
-        do {
-            let item = items[0]
-            XCTAssertEqual(item.itemID, "item-id-1")
-            XCTAssertTrue(item.isFavorite)
-            XCTAssertEqual(item.domain, "example.com")
-            XCTAssertEqual(item.domainMetadata?.name, "WIRED")
-            XCTAssertEqual(item.thumbnailURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
-            XCTAssertEqual(item.timestamp, Date(timeIntervalSince1970: 0))
-            XCTAssertEqual(item.timeToRead, 6)
-            XCTAssertEqual(item.title, "Item 1")
-            XCTAssertEqual(item.url, URL(string: "https://example.com/item-1")!)
-            XCTAssertEqual(item.particleJSON, "<just-json-things>")
-            XCTAssertEqual(item.isArchived, false)
-            XCTAssertEqual(item.deletedAt, Date(timeIntervalSince1970: 1))
-        }
+        let item = items[0]
+        XCTAssertEqual(item.itemID, "item-id-1")
+        XCTAssertTrue(item.isFavorite)
+        XCTAssertEqual(item.domain, "example.com")
+        XCTAssertEqual(item.domainMetadata?.name, "WIRED")
+        XCTAssertEqual(item.thumbnailURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
+        XCTAssertEqual(item.timestamp, Date(timeIntervalSince1970: 0))
+        XCTAssertEqual(item.timeToRead, 6)
+        XCTAssertEqual(item.title, "Item 1")
+        XCTAssertEqual(item.url, URL(string: "https://example.com/item-1")!)
+        XCTAssertEqual(item.particleJSON, "<just-json-things>")
+        XCTAssertEqual(item.isArchived, false)
+        XCTAssertEqual(item.deletedAt, Date(timeIntervalSince1970: 1))
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() throws {
-        configureMockClientToReturnFixture(named: "duplicate-list")
+        apollo.stubFetch(toReturnFixturedNamed: "duplicate-list", asResultType: UserByTokenQuery.self)
 
         performOperation()
 
@@ -103,8 +96,9 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() throws {
-        let itemURL = URL(string: "http://example.com/item-1")!
+        apollo.stubFetch(toReturnFixturedNamed: "updated-item", asResultType: UserByTokenQuery.self)
 
+        let itemURL = URL(string: "http://example.com/item-1")!
         do {
             let item = space.newItem()
             item.url = itemURL
@@ -112,7 +106,6 @@ class FetchListTests: XCTestCase {
             try space.save()
         }
 
-        configureMockClientToReturnFixture(named: "updated-item")
         performOperation()
 
         let item = try space.fetchItem(byURLString: itemURL.absoluteString)
@@ -120,6 +113,8 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() throws {
+        apollo.stubFetch(ofQueryType: UserByTokenQuery.self, toReturnError: TestError.anError)
+
         var error: Error?
         events.sink { event in
             guard case .error(let actualError) = event else {
@@ -129,14 +124,6 @@ class FetchListTests: XCTestCase {
             error = actualError
         }.store(in: &cancellables)
 
-        apollo.stubFetch { (query: UserByTokenQuery, _, _, queue, completion) -> Apollo.Cancellable in
-            queue.async {
-                completion?(.failure(TestError.anError))
-            }
-
-            return MockCancellable()
-        }
-
         performOperation()
 
         XCTAssertEqual(error as? TestError, .anError)
@@ -144,7 +131,9 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() throws {
         var fetches = 0
-        apollo.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { (query: UserByTokenQuery, _, _, queue, completion) -> Apollo.Cancellable in
+            defer { fetches += 1 }
+
             let result: Fixture
             switch fetches {
             case 0:
@@ -157,8 +146,9 @@ class FetchListTests: XCTestCase {
                 return MockCancellable()
             }
 
-            fetches += 1
-            completion?(.success(result.asGraphQLResult(from: query)))
+            queue.async {
+                completion?(.success(result.asGraphQLResult(from: query)))
+            }
             return MockCancellable()
         }
 
@@ -170,7 +160,9 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenItemCountExceedsMax_fetchesMaxNumberOfItems() throws {
         var fetches = 0
-        apollo.stubFetch { (query: UserByTokenQuery, _, _, _, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { (query: UserByTokenQuery, _, _, queue, completion) -> Apollo.Cancellable in
+            defer { fetches += 1 }
+
             let result: Fixture
             switch fetches {
             case 0:
@@ -186,8 +178,10 @@ class FetchListTests: XCTestCase {
                 return MockCancellable()
             }
 
-            fetches += 1
-            completion?(.success(result.asGraphQLResult(from: query)))
+            queue.async {
+                completion?(.success(result.asGraphQLResult(from: query)))
+            }
+
             return MockCancellable()
         }
 
