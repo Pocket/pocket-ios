@@ -1027,6 +1027,59 @@ public final class UnfavoriteItemMutation: GraphQLMutation {
   }
 }
 
+public final class DeleteItemMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation DeleteItem($itemID: ID!) {
+      deleteSavedItem(id: $itemID)
+    }
+    """
+
+  public let operationName: String = "DeleteItem"
+
+  public var itemID: GraphQLID
+
+  public init(itemID: GraphQLID) {
+    self.itemID = itemID
+  }
+
+  public var variables: GraphQLMap? {
+    return ["itemID": itemID]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("deleteSavedItem", arguments: ["id": GraphQLVariable("itemID")], type: .nonNull(.scalar(GraphQLID.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(deleteSavedItem: GraphQLID) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "deleteSavedItem": deleteSavedItem])
+    }
+
+    /// Deletes a SavedItem from the users list. Returns ID of the
+    /// deleted SavedItem
+    public var deleteSavedItem: GraphQLID {
+      get {
+        return resultMap["deleteSavedItem"]! as! GraphQLID
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "deleteSavedItem")
+      }
+    }
+  }
+}
+
 public struct SavedItemParts: GraphQLFragment {
   /// The raw GraphQL definition of this fragment.
   public static let fragmentDefinition: String =

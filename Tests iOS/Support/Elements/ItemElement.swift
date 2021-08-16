@@ -12,6 +12,10 @@ struct ItemElement {
         self.el = el
     }
 
+    var exists: Bool {
+        el.exists
+    }
+
     func waitForExistence(timeout: TimeInterval = 1) -> Bool {
         return el.waitForExistence(timeout: timeout)
     }
@@ -28,6 +32,10 @@ struct ItemElement {
         el.tap()
     }
 
+    func favoriteIcon() -> XCUIElement {
+        el.images["favorite"]
+    }
+
     func showActions() {
         el.swipeLeft()
     }
@@ -36,11 +44,11 @@ struct ItemElement {
         el.buttons["Favorite"]
     }
 
-    func favoriteIcon() -> XCUIElement {
-        el.images["favorite"]
-    }
-
     func unfavoriteButton() -> XCUIElement {
         el.buttons["Unfavorite"]
+    }
+
+    func deleteButton() -> XCUIElement {
+        el.buttons["Delete"]
     }
 }

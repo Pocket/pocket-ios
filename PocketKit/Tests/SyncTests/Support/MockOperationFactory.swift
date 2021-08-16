@@ -60,4 +60,20 @@ class MockOperationFactory: SyncOperationFactory {
 
         return impl(space, apollo, itemID, events)
     }
+
+    // MARK: - deleteItem
+    typealias DeleteItemImpl = (ApolloClientProtocol, PassthroughSubject<SyncEvent, Never>, String) -> Operation
+    private var deleteItemImpl: DeleteItemImpl?
+
+    func stubDeleteItem(impl: @escaping DeleteItemImpl) {
+        deleteItemImpl = impl
+    }
+
+    func deleteItem(apollo: ApolloClientProtocol, events: PassthroughSubject<SyncEvent, Never>, itemID: String) -> Operation {
+        guard let impl = deleteItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        return impl(apollo, events, itemID)
+    }
 }

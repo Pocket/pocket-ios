@@ -77,14 +77,34 @@ class SourceTests: XCTestCase {
             operations: operations
         )
 
-        let item = space.newItem()
-        item.itemID = "test-item-id"
-        item.isFavorite = true
-        try space.save()
+        let item = try space.seedItem()
 
         source.unfavorite(item: item)
         XCTAssertFalse(item.isFavorite)
 
         waitForExpectations(timeout: 1)
+    }
+
+    func test_delete_removesItemFromLocalStorage_andExecutesDeleteOperation() throws {
+        let item = try space.seedItem(itemID: "delete-me")
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubDeleteItem { _, _ , _ in
+            return BlockOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let source = Source(
+            space: space,
+            apollo: apollo,
+            operations: operations
+        )
+
+        source.delete(item: item)
+
+        let fetchedItem = try space.fetchItem(byItemID: "delete-me")
+        XCTAssertNil(fetchedItem)
+        XCTAssertFalse(item.hasChanges)
+        wait(for: [expectationToRunOperation], timeout: 1)
     }
 }

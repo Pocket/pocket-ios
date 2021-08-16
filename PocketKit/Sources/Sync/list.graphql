@@ -52,3 +52,7 @@ mutation UnfavoriteItem($itemID: ID!) {
     id
   }
 }
+
+mutation DeleteItem($itemID: ID!) {
+  deleteSavedItem(id: $itemID)
+}
