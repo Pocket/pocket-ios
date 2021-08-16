@@ -76,6 +76,13 @@ class MockApolloClient: ApolloClientProtocol {
         return call
     }
 
+    func fetchCall<Query: GraphQLQuery>(
+        withQueryType queryType: Query.Type,
+        at index: Int
+    ) -> FetchCall<Query> {
+        return fetchCall(at: index)
+    }
+
     // MARK: - perform
 
     struct PerformCall<Mutation: GraphQLMutation> {
@@ -124,13 +131,23 @@ class MockApolloClient: ApolloClientProtocol {
     }
 
     func performCall<Mutation: GraphQLMutation>(at index: Int) -> PerformCall<Mutation>? {
-        let anyCall = performCalls[index]
+        guard index < performCalls.count else {
+            return nil
+        }
 
+        let anyCall = performCalls[index]
         guard let call = anyCall as? MockApolloClient.PerformCall<Mutation> else {
             fatalError("Call is incorrect type: \(anyCall)")
         }
 
         return call
+    }
+
+    func performCall<Mutation: GraphQLMutation>(
+        withMutationType mutationType: Mutation.Type,
+        at index: Int
+    ) -> PerformCall<Mutation>? {
+        return performCall(at: index)
     }
 
     // MARK: - not implemented

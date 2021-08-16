@@ -5,7 +5,7 @@ import Apollo
 @testable import Sync
 
 
-class FavoriteItemTests: XCTestCase {
+class DeleteItemTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!
     var subscriptions: [AnyCancellable] = []
@@ -25,16 +25,14 @@ class FavoriteItemTests: XCTestCase {
     }
 
     func performOperation(
-        space: Space? = nil,
         apollo: ApolloClientProtocol? = nil,
         itemID: String = "test-item-id",
         events: PassthroughSubject<SyncEvent, Never>? = nil
     ) {
-        let operation = FavoriteItem(
-            space: space ?? self.space,
+        let operation = DeleteItem(
             apollo: apollo ?? self.apollo,
-            itemID: itemID,
-            events: events ?? self.events
+            events: events ?? self.events,
+            itemID: itemID
         )
 
         let expectationToCompleteOperation = expectation(
@@ -50,19 +48,27 @@ class FavoriteItemTests: XCTestCase {
         wait(for: [expectationToCompleteOperation], timeout: 1)
     }
 
-    func test_favoriteItem_sendsFavoriteItemMutation() throws {
+    func tests_deleteItem_sendsDeleteItemMutation() throws {
         try space.seedItem()
-        apollo.stubPerform(toReturnFixtureNamed: "favorite", asResultType: FavoriteItemMutation.self)
+        apollo.stubPerform(toReturnFixtureNamed: "delete", asResultType: DeleteItemMutation.self)
 
         performOperation()
 
-        let call: MockApolloClient.PerformCall<FavoriteItemMutation>? = apollo.performCall(at: 0)
+        let call = apollo.performCall(
+            withMutationType: DeleteItemMutation.self,
+            at: 0
+        )
+
         XCTAssertEqual(call?.mutation.itemID, "test-item-id")
     }
 
-    func test_favoriteItem_whenMutationFails_publishesError() throws {
+    func test_deleteItem_whenMutationFails_sendsError() throws {
         try space.seedItem()
-        apollo.stubPerform(ofMutationType: FavoriteItemMutation.self, toReturnError: TestError.anError)
+
+        apollo.stubPerform(
+            ofMutationType: DeleteItemMutation.self,
+            toReturnError: TestError.anError
+        )
 
         var error: Error?
         events.sink { event in
@@ -78,4 +84,6 @@ class FavoriteItemTests: XCTestCase {
         XCTAssertNotNil(error)
         XCTAssertEqual(error as? TestError, .anError)
     }
+
+
 }

@@ -98,6 +98,21 @@ public class Source {
         )
     }
 
+    public func delete(item: Item) {
+        guard let itemID = item.itemID else {
+            return
+        }
+
+        space.delete(item)
+        try? space.save()
+
+        syncQ.addOperation(operations.deleteItem(
+            apollo: apollo,
+            events: syncEvents,
+            itemID: itemID
+        ))
+    }
+
     public func clear() {
         try? space.clear()
     }

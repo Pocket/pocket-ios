@@ -44,6 +44,10 @@ class Space {
         return Item(context: context)
     }
 
+    func delete(_ item: Item) {
+        context.delete(item)
+    }
+
     func save() throws {
         try context.save()
     }

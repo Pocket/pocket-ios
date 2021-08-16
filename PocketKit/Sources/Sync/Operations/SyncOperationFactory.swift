@@ -25,6 +25,12 @@ protocol SyncOperationFactory {
         itemID: String,
         events: PassthroughSubject<SyncEvent, Never>
     ) -> Operation
+
+    func deleteItem(
+        apollo: ApolloClientProtocol,
+        events: PassthroughSubject<SyncEvent, Never>,
+        itemID: String
+    ) -> Operation
 }
 
 class OperationFactory: SyncOperationFactory {
@@ -70,5 +76,13 @@ class OperationFactory: SyncOperationFactory {
             itemID: itemID,
             events: events
         )
+    }
+
+    func deleteItem(
+        apollo: ApolloClientProtocol,
+        events: PassthroughSubject<SyncEvent, Never>,
+        itemID: String
+    ) -> Operation {
+        DeleteItem(apollo: apollo, events: events, itemID: itemID)
     }
 }
