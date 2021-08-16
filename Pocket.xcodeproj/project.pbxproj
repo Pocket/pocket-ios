@@ -37,6 +37,7 @@
 		16BA7D6326851513009A17C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA7D6226851513009A17C1 /* main.swift */; };
 		16BA7D6626851579009A17C1 /* PocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16BA7D6526851579009A17C1 /* PocketKit */; };
 		16E32B0226851AEB000CC36D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16D47E7F26851AB40095D5A4 /* Assets.xcassets */; };
+		16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +91,7 @@
 		16973355263CBB3F0003DE2A /* secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets.xcconfig; sourceTree = "<group>"; };
 		16BA7D6226851513009A17C1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		16D47E7F26851AB40095D5A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveAnItemTests.swift; sourceTree = "<group>"; };
 		F227F0C3265E96290031F985 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CoreText.framework; sourceTree = DEVELOPER_DIR; };
 /* End PBXFileReference section */
 
@@ -144,6 +146,7 @@
 				166A81C42637406C0015AA1D /* Tests_iOS.swift */,
 				166A81C62637406C0015AA1D /* Info.plist */,
 				1674057626CAC35F0061434E /* DeleteAnItemTests.swift */,
+				16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */,
 			);
 			path = "Tests iOS";
 			sourceTree = "<group>";
@@ -341,6 +344,7 @@
 				166BAD0B2656E76B00E401F0 /* ReaderScreen.swift in Sources */,
 				166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */,
 				1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */,
+				16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */,
 				166EFAE8268281F300A027CD /* ReaderToolbar.swift in Sources */,
 				166EFAEA2682821300A027CD /* WebReaderScreen.swift in Sources */,
 				166BAD0A2656E76B00E401F0 /* SignInScreen.swift in Sources */,

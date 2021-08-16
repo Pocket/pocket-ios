@@ -42,11 +42,18 @@ struct ItemListView: View {
                     .swipeActions {
                         favoriteButton(for: item)
                             .tint(Color(.branding.amber3))
+
                         Button {
                             source.delete(item: item)
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }.tint(.red)
+
+                        Button {
+                            source.archive(item: item)
+                        } label: {
+                            Label("Archive", systemImage: "archivebox")
+                        }.tint(Color(.branding.iris1))
                     }
                     .listRowBackground(background(item: item))
             }

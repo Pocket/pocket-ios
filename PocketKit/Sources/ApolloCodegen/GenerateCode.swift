@@ -11,7 +11,6 @@ struct GenerateCode: ParsableCommand {
     func run() throws {
         let options = ApolloCodegenOptions(
             codegenEngine: .typescript,
-            additionalInflectionRules: [],
             includes: "**/*.graphql",
             mergeInFieldsFromFragmentSpreads: true,
             modifier: .public,

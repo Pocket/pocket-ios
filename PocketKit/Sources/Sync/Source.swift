@@ -113,6 +113,24 @@ public class Source {
         ))
     }
 
+    public func archive(item: Item) {
+        guard let itemID = item.itemID else {
+            return
+        }
+
+        space.delete(item)
+        try? space.save()
+
+        let mutation = ArchiveItemMutation(itemID: itemID)
+        let operation = operations.itemMutationOperation(
+            apollo: apollo,
+            events: syncEvents,
+            mutation: mutation
+        )
+
+        syncQ.addOperation(operation)
+    }
+
     public func clear() {
         try? space.clear()
     }

@@ -51,4 +51,8 @@ struct ItemElement {
     func deleteButton() -> XCUIElement {
         el.buttons["Delete"]
     }
+
+    func archiveButton() -> XCUIElement {
+        el.buttons["Archive"]
+    }
 }
