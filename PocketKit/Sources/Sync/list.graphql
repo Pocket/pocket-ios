@@ -53,6 +53,12 @@ mutation UnfavoriteItem($itemID: ID!) {
   }
 }
 
+mutation ArchiveItem($itemID: ID!) {
+  updateSavedItemArchive(id: $itemID) {
+    id
+  }
+}
+
 mutation DeleteItem($itemID: ID!) {
   deleteSavedItem(id: $itemID)
 }

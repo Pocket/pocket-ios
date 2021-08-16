@@ -31,6 +31,12 @@ protocol SyncOperationFactory {
         events: PassthroughSubject<SyncEvent, Never>,
         itemID: String
     ) -> Operation
+
+    func itemMutationOperation<Mutation: GraphQLMutation>(
+        apollo: ApolloClientProtocol,
+        events: PassthroughSubject<SyncEvent, Never>,
+        mutation: Mutation
+    ) -> Operation
 }
 
 class OperationFactory: SyncOperationFactory {
@@ -84,5 +90,13 @@ class OperationFactory: SyncOperationFactory {
         itemID: String
     ) -> Operation {
         DeleteItem(apollo: apollo, events: events, itemID: itemID)
+    }
+
+    func itemMutationOperation<Mutation: GraphQLMutation>(
+        apollo: ApolloClientProtocol,
+        events: PassthroughSubject<SyncEvent, Never>,
+        mutation: Mutation
+    ) -> Operation {
+        ItemMutationOperation(apollo: apollo, events: events, mutation: mutation)
     }
 }

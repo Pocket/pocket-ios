@@ -107,4 +107,29 @@ class SourceTests: XCTestCase {
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 1)
     }
+
+    func tests_archive_removesItemFromLocalStorage_andExecutesArchiveMutation() throws {
+        let item = try space.seedItem(itemID: "archive-me")
+        let expectationToRunOperation = expectation(description: "Run operation")
+
+        operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
+            return BlockOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let source = Source(
+            space: space,
+            apollo: apollo,
+            operations: operations
+        )
+
+        source.archive(item: item)
+
+        let fetchedItem = try space.fetchItem(byItemID: "archive-me")
+        XCTAssertNil(fetchedItem)
+        XCTAssertFalse(item.hasChanges)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+    }
 }
