@@ -63,78 +63,51 @@ public class Source {
     }
 
     public func favorite(item: Item) {
-        guard let itemID = item.itemID else {
-            return
+        mutate(item, FavoriteItemMutation.init) { item in
+            item.isFavorite = true
         }
-
-        item.isFavorite = true
-        try? space.save()
-
-        let mutation = FavoriteItemMutation(itemID: itemID)
-        let operation = operations.itemMutationOperation(
-            apollo: apollo,
-            events: syncEvents,
-            mutation: mutation
-        )
-
-        syncQ.addOperation(operation)
     }
 
     public func unfavorite(item: Item) {
-        guard let itemID = item.itemID else {
-            return
+        mutate(item, UnfavoriteItemMutation.init) { item in
+            item.isFavorite = false
         }
-
-        item.isFavorite = false
-        try? space.save()
-
-        let mutation = UnfavoriteItemMutation(itemID: itemID)
-        let operation = operations.itemMutationOperation(
-            apollo: apollo,
-            events: syncEvents,
-            mutation: mutation
-        )
-
-        syncQ.addOperation(operation)
     }
 
     public func delete(item: Item) {
-        guard let itemID = item.itemID else {
-            return
+        mutate(item, DeleteItemMutation.init) { item in
+            space.delete(item)
         }
-
-        space.delete(item)
-        try? space.save()
-
-        let mutation = DeleteItemMutation(itemID: itemID)
-        let operation = operations.itemMutationOperation(
-            apollo: apollo,
-            events: syncEvents,
-            mutation: mutation
-        )
-
-        syncQ.addOperation(operation)
     }
 
     public func archive(item: Item) {
-        guard let itemID = item.itemID else {
-            return
+        mutate(item, ArchiveItemMutation.init) { item in
+            space.delete(item)
         }
-
-        space.delete(item)
-        try? space.save()
-
-        let mutation = ArchiveItemMutation(itemID: itemID)
-        let operation = operations.itemMutationOperation(
-            apollo: apollo,
-            events: syncEvents,
-            mutation: mutation
-        )
-
-        syncQ.addOperation(operation)
     }
 
     public func clear() {
         try? space.clear()
+    }
+
+    private func mutate<Mutation: GraphQLMutation>(
+        _ item: Item,
+        _ remoteMutation: (String) -> Mutation,
+        localMutation: (Item) -> ()
+    ) {
+        guard let itemID = item.itemID else {
+            return
+        }
+
+        localMutation(item)
+        try? space.save()
+
+        let operation = operations.itemMutationOperation(
+            apollo: apollo,
+            events: syncEvents,
+            mutation: remoteMutation(itemID)
+        )
+
+        syncQ.addOperation(operation)
     }
 }
