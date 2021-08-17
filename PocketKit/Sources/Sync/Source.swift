@@ -70,14 +70,14 @@ public class Source {
         item.isFavorite = true
         try? space.save()
 
-        syncQ.addOperation(
-            operations.favoriteItem(
-                space: space,
-                apollo: apollo,
-                itemID: itemID,
-                events: syncEvents
-            )
+        let mutation = FavoriteItemMutation(itemID: itemID)
+        let operation = operations.itemMutationOperation(
+            apollo: apollo,
+            events: syncEvents,
+            mutation: mutation
         )
+
+        syncQ.addOperation(operation)
     }
 
     public func unfavorite(item: Item) {
@@ -88,14 +88,14 @@ public class Source {
         item.isFavorite = false
         try? space.save()
 
-        syncQ.addOperation(
-            operations.unfavoriteItem(
-                space: space,
-                apollo: apollo,
-                itemID: itemID,
-                events: syncEvents
-            )
+        let mutation = UnfavoriteItemMutation(itemID: itemID)
+        let operation = operations.itemMutationOperation(
+            apollo: apollo,
+            events: syncEvents,
+            mutation: mutation
         )
+
+        syncQ.addOperation(operation)
     }
 
     public func delete(item: Item) {
@@ -106,11 +106,14 @@ public class Source {
         space.delete(item)
         try? space.save()
 
-        syncQ.addOperation(operations.deleteItem(
+        let mutation = DeleteItemMutation(itemID: itemID)
+        let operation = operations.itemMutationOperation(
             apollo: apollo,
             events: syncEvents,
-            itemID: itemID
-        ))
+            mutation: mutation
+        )
+
+        syncQ.addOperation(operation)
     }
 
     public func archive(item: Item) {

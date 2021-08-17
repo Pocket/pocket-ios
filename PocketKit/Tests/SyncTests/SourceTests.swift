@@ -41,7 +41,7 @@ class SourceTests: XCTestCase {
 
     func test_favorite_togglesIsFavorite_andAddsFavoriteItemOperationToQueue() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubFavoriteItem { _, _, _, _ in
+        operations.stubItemMutationOperation { (_, _ , _: FavoriteItemMutation) in
             return BlockOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -65,7 +65,7 @@ class SourceTests: XCTestCase {
 
     func test_unfavorite_unsetsIsFavorite_andAddsUnfavoriteItemOperationToQueue() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubUnfavoriteItem { _, _, _, _ in
+        operations.stubItemMutationOperation { (_, _ , _: UnfavoriteItemMutation) in
             return BlockOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -88,7 +88,7 @@ class SourceTests: XCTestCase {
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteOperation() throws {
         let item = try space.seedItem(itemID: "delete-me")
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubDeleteItem { _, _ , _ in
+        operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
             return BlockOperation {
                 expectationToRunOperation.fulfill()
             }
