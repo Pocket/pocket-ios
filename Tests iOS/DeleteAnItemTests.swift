@@ -44,7 +44,9 @@ class DeleteAnItemTests: XCTestCase {
                 "clearImageCache"
             ],
             environment: [
-                "accessToken": "test-access-token"
+                "accessToken": "test-access-token",
+                "sessionGUID": "session-guid",
+                "sessionUserID": "session-user-id",
             ]
         )
 
