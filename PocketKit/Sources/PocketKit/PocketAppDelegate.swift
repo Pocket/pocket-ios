@@ -13,6 +13,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private var source: Sync.Source
     private var tracker: Tracker
     private var userDefaults: UserDefaults
+    private var session: Session
 
     convenience override init() {
         self.init(services: Services.shared)
@@ -23,6 +24,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.source = services.source
         self.tracker = services.tracker
         self.userDefaults = services.userDefaults
+        self.session = services.session
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
@@ -58,6 +60,14 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
         if let accessToken = ProcessInfo.processInfo.environment["accessToken"] {
             try? accessTokenStore.save(token: accessToken)
+        }
+
+        if let guid = ProcessInfo.processInfo.environment["sessionGUID"] {
+            session.guid = guid
+        }
+
+        if let userID = ProcessInfo.processInfo.environment["sessionUserID"] {
+            session.userID = userID
         }
 
         Textiles.initialize()
