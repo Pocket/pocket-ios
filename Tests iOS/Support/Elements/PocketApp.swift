@@ -56,6 +56,10 @@ struct PocketApp {
         return WebReaderScreen(el: app.webViews.element(boundBy: 0))
     }
 
+    func shareSheet() -> XCUIElement {
+        return app.otherElements["ActivityListView"]
+    }
+
     func favoriteButton() -> XCUIElement {
         app.buttons["Favorite"]
     }
@@ -70,5 +74,9 @@ struct PocketApp {
 
     func archiveButton() -> XCUIElement {
         app.buttons["Archive"]
+    }
+
+    func shareButton() -> XCUIElement {
+        app.buttons["Share"]
     }
 }
