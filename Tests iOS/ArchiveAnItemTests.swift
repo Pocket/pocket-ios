@@ -58,7 +58,7 @@ class ArchiveAnItemTests: XCTestCase {
 
         itemCell.showActions()
 
-        let archiveButton = itemCell.archiveButton()
+        let archiveButton = app.archiveButton()
         XCTAssertTrue(archiveButton.waitForExistence(timeout: 1))
 
         let expectRequest = expectation(description: "A request to the server")

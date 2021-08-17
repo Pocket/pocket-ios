@@ -6,6 +6,7 @@ import Textile
 import Sync
 import Combine
 import Foundation
+import Sync
 
 
 class ItemPresenter: ItemRow {
@@ -14,9 +15,12 @@ class ItemPresenter: ItemRow {
     
     let index: Int
 
-    init(item: Item, index: Int) {
+    private let source: Source
+
+    init(item: Item, index: Int, source: Source) {
         self.item = item
         self.index = index
+        self.source = source
     }
 
     public var title: String {
@@ -25,8 +29,14 @@ class ItemPresenter: ItemRow {
             .first { !$0.isEmpty } ?? ""
     }
 
-    public var domain: String {
-        item.domainMetadata?.name ?? item.domain ?? ""
+    public var detail: String {
+        [domain, timeToRead]
+            .compactMap { $0 }
+            .joined(separator: " • ")
+    }
+
+    public var domain: String? {
+        item.domainMetadata?.name ?? item.domain
     }
 
     public var timeToRead: String? {
@@ -39,5 +49,21 @@ class ItemPresenter: ItemRow {
 
     public var isFavorite: Bool {
         item.isFavorite
+    }
+
+    func favorite() {
+        source.favorite(item: item)
+    }
+
+    func unfavorite() {
+        source.unfavorite(item: item)
+    }
+
+    func archive() {
+        source.archive(item: item)
+    }
+
+    func delete() {
+        source.delete(item: item)
     }
 }

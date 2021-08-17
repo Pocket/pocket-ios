@@ -232,7 +232,7 @@ class Tests_iOS: XCTestCase {
         XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
         itemCell.showActions()
 
-        let favoriteButton = itemCell.favoriteButton()
+        let favoriteButton = app.favoriteButton()
         XCTAssertTrue(favoriteButton.waitForExistence(timeout: 1))
 
 
@@ -266,7 +266,7 @@ class Tests_iOS: XCTestCase {
         XCTAssertTrue(favoriteIcon.waitForExistence(timeout: 1))
 
         itemCell.showActions()
-        let unfavoriteButton = itemCell.unfavoriteButton()
+        let unfavoriteButton = app.unfavoriteButton()
         XCTAssertTrue(unfavoriteButton.waitForExistence(timeout: 1))
 
 
