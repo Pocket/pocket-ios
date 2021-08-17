@@ -22,6 +22,7 @@ public protocol ItemRow: ObservableObject {
     var detail: String { get }
     var thumbnailURL: URL? { get }
     var isFavorite: Bool { get }
+    var activityItems: [Any] { get }
 
     func favorite()
     func unfavorite()
@@ -32,10 +33,13 @@ public protocol ItemRow: ObservableObject {
 public struct ItemRowView<Model: ItemRow>: View {
     private var model: Model
 
+    @State
+    private var isShareSheetPresented = false
+
     public init(model: Model) {
         self.model = model
     }
-    
+
     public var body: some View {
         VStack(alignment: .leading) {
             HStack(alignment: .top) {
@@ -79,22 +83,32 @@ public struct ItemRowView<Model: ItemRow>: View {
                     favoriteButton()
 
                     Button {
-                        model.delete()
-                    } label: {
-                        Label("Delete", systemImage: "trash")
-                    }.tint(.red)
-
-                    Button {
                         model.archive()
                     } label: {
                         Label("Archive", systemImage: "archivebox")
-                    }.tint(Color(.branding.iris1))
+                    }
+
+                    Button {
+                        model.delete()
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+
+                    Button {
+                        isShareSheetPresented.toggle()
+                    } label: {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
 
                 } label: {
                     Image(systemName: "ellipsis.circle")
                 }.foregroundColor(Color(.ui.grey3))
             }
-        }.padding(.vertical, 8)
+        }
+        .padding(.vertical, 8)
+        .sheet(isPresented: $isShareSheetPresented) {
+            ActivitySheet(activityItems: model.activityItems)
+        }
     }
 
     @ViewBuilder
@@ -129,6 +143,7 @@ struct ItemRow_Previews: PreviewProvider {
         var detail: String = "Etiam Sem Magna Parturient Bibendum • 5 min"
         var thumbnailURL: URL? = URL(string: "http://placekitten.com/200/300")!
         var isFavorite: Bool = false
+        var activityItems: [Any] = []
 
         func favorite() {}
         func unfavorite() {}

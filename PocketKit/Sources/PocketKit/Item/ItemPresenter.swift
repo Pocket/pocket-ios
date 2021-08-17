@@ -51,6 +51,13 @@ class ItemPresenter: ItemRow {
         item.isFavorite
     }
 
+    public var activityItems: [Any] {
+        return [
+            item.url.flatMap(ActivityItemSource.init),
+            item.title.flatMap(ActivityItemSource.init)
+        ].compactMap { $0 }
+    }
+
     func favorite() {
         source.favorite(item: item)
     }
