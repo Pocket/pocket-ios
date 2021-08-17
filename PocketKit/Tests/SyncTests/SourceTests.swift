@@ -39,7 +39,8 @@ class SourceTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func test_favorite_togglesIsFavorite_andAddsFavoriteItemOperationToQueue() throws {
+    func test_favorite_togglesIsFavorite_andExecutesFavoriteMutation() throws {
+        let item = try space.seedItem(itemID: "test-item-id")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: FavoriteItemMutation) in
             return BlockOperation {
@@ -52,18 +53,14 @@ class SourceTests: XCTestCase {
             apollo: apollo,
             operations: operations
         )
-
-        let item = space.newItem()
-        item.itemID = "test-item-id"
-        try space.save()
-
         source.favorite(item: item)
-        XCTAssertTrue(item.isFavorite)
 
+        XCTAssertTrue(item.isFavorite)
         waitForExpectations(timeout: 1)
     }
 
-    func test_unfavorite_unsetsIsFavorite_andAddsUnfavoriteItemOperationToQueue() throws {
+    func test_unfavorite_unsetsIsFavorite_andExecutesUnfavoriteMutation() throws {
+        let item = try space.seedItem()
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: UnfavoriteItemMutation) in
             return BlockOperation {
@@ -76,16 +73,13 @@ class SourceTests: XCTestCase {
             apollo: apollo,
             operations: operations
         )
-
-        let item = try space.seedItem()
-
         source.unfavorite(item: item)
-        XCTAssertFalse(item.isFavorite)
 
+        XCTAssertFalse(item.isFavorite)
         waitForExpectations(timeout: 1)
     }
 
-    func test_delete_removesItemFromLocalStorage_andExecutesDeleteOperation() throws {
+    func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
         let item = try space.seedItem(itemID: "delete-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
@@ -99,7 +93,6 @@ class SourceTests: XCTestCase {
             apollo: apollo,
             operations: operations
         )
-
         source.delete(item: item)
 
         let fetchedItem = try space.fetchItem(byItemID: "delete-me")
@@ -111,7 +104,6 @@ class SourceTests: XCTestCase {
     func tests_archive_removesItemFromLocalStorage_andExecutesArchiveMutation() throws {
         let item = try space.seedItem(itemID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
-
         operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
             return BlockOperation {
                 expectationToRunOperation.fulfill()
@@ -123,13 +115,11 @@ class SourceTests: XCTestCase {
             apollo: apollo,
             operations: operations
         )
-
         source.archive(item: item)
 
         let fetchedItem = try space.fetchItem(byItemID: "archive-me")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 1)
-
     }
 }
