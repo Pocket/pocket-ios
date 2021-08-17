@@ -19,11 +19,11 @@ struct ItemListView: View {
     @ObservedObject
     private var selection: ItemSelection
 
-    private let source: Source
+    @Environment(\.source)
+    private var source: Source
 
-    init(selection: ItemSelection, source: Source) {
+    init(selection: ItemSelection) {
         self.selection = selection
-        self.source = source
     }
 
     private func background(item: Item) -> Color {
@@ -40,15 +40,6 @@ struct ItemListView: View {
                 ItemListViewRow(item: item, selection: selection, index: index)
                     .trackable(.home.item(index: UInt(index)))
                     .swipeActions {
-                        favoriteButton(for: item)
-                            .tint(Color(.branding.amber3))
-
-                        Button {
-                            source.delete(item: item)
-                        } label: {
-                            Label("Delete", systemImage: "trash")
-                        }.tint(.red)
-
                         Button {
                             source.archive(item: item)
                         } label: {
@@ -56,29 +47,13 @@ struct ItemListView: View {
                         }.tint(Color(.branding.iris1))
                     }
                     .listRowBackground(background(item: item))
+                    .environment(\.source, source)
             }
         }
         .trackable(.home.list)
         .listStyle(.plain)
         .accessibility(identifier: "user-list")
         .navigationTitle(Text("My List"))
-    }
-
-    @ViewBuilder
-    private func favoriteButton(for item: Item) -> some View {
-        if item.isFavorite {
-            Button {
-                source.unfavorite(item: item)
-            } label: {
-                Label("Unfavorite", systemImage: "star.slash")
-            }
-        } else {
-            Button {
-                source.favorite(item: item)
-            } label: {
-                Label("Favorite", systemImage: "star")
-            }
-        }
     }
 }
 
@@ -88,6 +63,9 @@ private struct ItemListViewRow: View {
     
     @Environment(\.tracker)
     var tracker: Tracker
+
+    @Environment(\.source)
+    var source: Source
     
     @ObservedObject
     private var selection: ItemSelection
@@ -123,7 +101,7 @@ private struct ItemListViewRow: View {
             
             selection.selectedItem = item
         }) {
-            ItemRowView(model: ItemPresenter(item: item, index: index))
+            ItemRowView(model: ItemPresenter(item: item, index: index, source: source))
                 .onAppear {
                     let impression = Impression(component: .content, requirement: .instant)
                     tracker.track(event: impression, contexts)

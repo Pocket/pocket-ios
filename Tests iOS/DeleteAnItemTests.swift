@@ -58,7 +58,7 @@ class DeleteAnItemTests: XCTestCase {
 
         itemCell.showActions()
 
-        let deleteButton = itemCell.deleteButton()
+        let deleteButton = app.deleteButton()
         XCTAssertTrue(deleteButton.waitForExistence(timeout: 1))
 
         let expectRequest = expectation(description: "A request to the server")

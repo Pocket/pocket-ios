@@ -29,7 +29,8 @@ struct ItemElement {
     }
 
     func tap() {
-        el.tap()
+        let vector = CGVector(dx: 0.1, dy: 0.1)
+        el.coordinate(withNormalizedOffset: vector).tap()
     }
 
     func favoriteIcon() -> XCUIElement {
@@ -37,22 +38,9 @@ struct ItemElement {
     }
 
     func showActions() {
-        el.swipeLeft()
-    }
+        let button = el.buttons.element(boundBy: 1)
+        XCTAssertTrue(button.waitForExistence(timeout: 1))
 
-    func favoriteButton() -> XCUIElement {
-        el.buttons["Favorite"]
-    }
-
-    func unfavoriteButton() -> XCUIElement {
-        el.buttons["Unfavorite"]
-    }
-
-    func deleteButton() -> XCUIElement {
-        el.buttons["Delete"]
-    }
-
-    func archiveButton() -> XCUIElement {
-        el.buttons["Archive"]
+        button.tap()
     }
 }

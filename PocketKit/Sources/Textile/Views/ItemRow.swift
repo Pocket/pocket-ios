@@ -19,10 +19,14 @@ private extension Style {
 public protocol ItemRow: ObservableObject {
     var index: Int { get }
     var title: String { get }
-    var domain: String { get }
-    var timeToRead: String? { get }
+    var detail: String { get }
     var thumbnailURL: URL? { get }
     var isFavorite: Bool { get }
+
+    func favorite()
+    func unfavorite()
+    func archive()
+    func delete()
 }
 
 public struct ItemRowView<Model: ItemRow>: View {
@@ -33,36 +37,22 @@ public struct ItemRowView<Model: ItemRow>: View {
     }
     
     public var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            VStack(alignment: .leading, spacing: 8) {
-                Spacer()
-                Text(model.title)
-                    .style(.title)
-                    .lineLimit(3)
-                HStack(spacing: 4) {
-                    Text(model.domain)
+        VStack(alignment: .leading) {
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(model.title)
+                        .style(.title)
+                        .lineLimit(3)
+                        .fixedSize(horizontal: false, vertical: true)
+
+                    Text(model.detail)
                         .style(.detail)
                         .lineLimit(1)
-                    if let timeToRead = model.timeToRead {
-                        Text("•").style(.detail)
-                        Text(timeToRead).style(.detail)
-                    }
                 }
 
-                if model.isFavorite {
-                    Image(systemName: "star.fill")
-                        .accessibilityIdentifier("favorite")
-                        .foregroundColor(Color(.branding.amber3))
-                }
-
-                Spacer()
-            }.lineSpacing(6)
-            
-            if let thumbnailURL = model.thumbnailURL {
-                Spacer()
-                
-                VStack {
+                if let thumbnailURL = model.thumbnailURL {
                     Spacer()
+
                     KFImage(thumbnailURL)
                         .placeholder {
                             Rectangle()
@@ -73,8 +63,53 @@ public struct ItemRowView<Model: ItemRow>: View {
                         .setProcessor(ResizingImageProcessor(referenceSize: Constants.thumbnailSize, mode: .aspectFill))
                         .appendProcessor(CroppingImageProcessor(size: Constants.thumbnailSize))
                         .cornerRadius(Constants.cornerRadius)
-                    Spacer()
                 }
+            }
+
+            HStack {
+                if model.isFavorite {
+                    Image(systemName: "star.fill")
+                        .accessibilityIdentifier("favorite")
+                        .foregroundColor(Color(.branding.amber3))
+                }
+
+                Spacer()
+
+                Menu {
+                    favoriteButton()
+
+                    Button {
+                        model.delete()
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }.tint(.red)
+
+                    Button {
+                        model.archive()
+                    } label: {
+                        Label("Archive", systemImage: "archivebox")
+                    }.tint(Color(.branding.iris1))
+
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                }.foregroundColor(Color(.ui.grey3))
+            }
+        }.padding(.vertical, 8)
+    }
+
+    @ViewBuilder
+    private func favoriteButton() -> some View {
+        if model.isFavorite {
+            Button {
+                model.unfavorite()
+            } label: {
+                Label("Unfavorite", systemImage: "star.slash")
+            }
+        } else {
+            Button {
+                model.favorite()
+            } label: {
+                Label("Favorite", systemImage: "star")
             }
         }
     }
@@ -91,10 +126,14 @@ struct ItemRow_Previews: PreviewProvider {
         nascetur ridiculus mus. Donec sed odio dui.
         """
         
-        var domain: String = "Etiam Sem Magna Parturient Bibendum"
-        var timeToRead: String? = "5 min"
+        var detail: String = "Etiam Sem Magna Parturient Bibendum • 5 min"
         var thumbnailURL: URL? = URL(string: "http://placekitten.com/200/300")!
         var isFavorite: Bool = false
+
+        func favorite() {}
+        func unfavorite() {}
+        func archive() {}
+        func delete() {}
     }
 
     static var previews: some View {

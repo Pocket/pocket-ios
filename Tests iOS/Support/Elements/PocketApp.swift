@@ -55,4 +55,20 @@ struct PocketApp {
     func webReaderView() -> WebReaderScreen {
         return WebReaderScreen(el: app.webViews.element(boundBy: 0))
     }
+
+    func favoriteButton() -> XCUIElement {
+        app.buttons["Favorite"]
+    }
+
+    func unfavoriteButton() -> XCUIElement {
+        app.buttons["Unfavorite"]
+    }
+
+    func deleteButton() -> XCUIElement {
+        app.buttons["Delete"]
+    }
+
+    func archiveButton() -> XCUIElement {
+        app.buttons["Archive"]
+    }
 }
