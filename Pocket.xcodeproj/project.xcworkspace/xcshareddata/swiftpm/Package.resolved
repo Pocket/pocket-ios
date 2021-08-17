@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
         "state": {
           "branch": null,
-          "revision": "f3d9f55144b636a2569f938f5969e50174d39009",
-          "version": "0.46.0"
+          "revision": "9c91310c31e654bc6bcc8d33e2cf67f4ad56c311",
+          "version": "0.47.1"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa.git",
         "state": {
           "branch": null,
-          "revision": "d9b37a6664cf2467efda861e1383ec806a221b18",
-          "version": "7.1.4"
+          "revision": "b9fd3e6c28658e0c791534000ca04178c7a723ac",
+          "version": "7.2.0"
         }
       },
       {
@@ -71,15 +71,6 @@
           "branch": null,
           "revision": "0a9893ec030501a3956bee572d6b4fdd3ae158a1",
           "version": "0.12.2"
-        }
-      },
-      {
-        "package": "Starscream",
-        "repositoryURL": "https://github.com/apollographql/Starscream",
-        "state": {
-          "branch": null,
-          "revision": "8cf77babe5901693396436f4f418a6db0f328b78",
-          "version": "3.1.2"
         }
       },
       {
@@ -105,8 +96,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "9a992ee3de1f8da9f2968fc96b26714834f3105f",
-          "version": "2.31.1"
+          "revision": "0f6a62a87506c8fe63503efbf97cf601e78abf64",
+          "version": "2.32.0"
         }
       },
       {
@@ -123,8 +114,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio-ssl.git",
         "state": {
           "branch": null,
-          "revision": "9db7cee4b62c39160a6bd513a47a1ecdcceac18a",
-          "version": "2.14.0"
+          "revision": "4829979d9f5ed9a2f4c6efd9c1ed51d1ab4d0394",
+          "version": "2.14.1"
         }
       },
       {
@@ -132,8 +123,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio-transport-services.git",
         "state": {
           "branch": null,
-          "revision": "39587bceccda72780e2a8a8c5e857e42a9df2fa8",
-          "version": "1.11.0"
+          "revision": "5fd5ba4d3ec6b981b74eedf451d736d6ab85dd0e",
+          "version": "1.11.1"
         }
       }
     ]
