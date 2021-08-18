@@ -7,20 +7,34 @@ import Sync
 import Combine
 import Foundation
 import Sync
+import Analytics
 
 
 class ItemPresenter: ItemRow {
     @Published
     private var item: Item
+
+    @Published
+    var isShareSheetPresented = false
     
     let index: Int
 
     private let source: Source
+    private let tracker: Tracker
+    private let contexts: [SnowplowContext]
 
-    init(item: Item, index: Int, source: Source) {
+    init(
+        item: Item,
+        index: Int,
+        source: Source,
+        tracker: Tracker,
+        contexts: [SnowplowContext]
+    ) {
         self.item = item
         self.index = index
         self.source = source
+        self.tracker = tracker
+        self.contexts = contexts
     }
 
     public var title: String {
@@ -60,17 +74,40 @@ class ItemPresenter: ItemRow {
 
     func favorite() {
         source.favorite(item: item)
+        track(identifier: .itemFavorite)
     }
 
     func unfavorite() {
         source.unfavorite(item: item)
+        track(identifier: .itemUnfavorite)
     }
 
     func archive() {
         source.archive(item: item)
+        track(identifier: .itemArchive)
     }
 
     func delete() {
         source.delete(item: item)
+        track(identifier: .itemDelete)
+    }
+
+    func share() {
+        isShareSheetPresented = true
+        track(identifier: .itemShare)
+    }
+
+    private func track(identifier: UIIdentifier) {
+        guard let url = item.url else {
+            return
+        }
+
+        let contexts: [SnowplowContext] = contexts + [
+            UIContext.button(identifier: identifier),
+            Content(url: url)
+        ]
+
+        let event = Engagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
     }
 }
