@@ -60,6 +60,10 @@ struct PocketApp {
         return app.otherElements["ActivityListView"]
     }
 
+    func showItemActions() {
+        app.navigationBars.buttons["more"].tap()
+    }
+
     func favoriteButton() -> XCUIElement {
         app.buttons["Favorite"]
     }

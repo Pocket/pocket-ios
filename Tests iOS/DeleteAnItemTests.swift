@@ -29,14 +29,7 @@ class DeleteAnItemTests: XCTestCase {
         }
 
         try server.start()
-    }
 
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
-    }
-
-    func test_deletingAnItemFromList_removesItFromList_andSyncsWithServer() {
         app.launch(
             arguments: [
                 "clearKeychain",
@@ -49,7 +42,14 @@ class DeleteAnItemTests: XCTestCase {
                 "sessionUserID": "session-user-id",
             ]
         )
+    }
 
+    override func tearDownWithError() throws {
+        try server.stop()
+        app.terminate()
+    }
+
+    func test_deletingAnItemFromList_removesItFromList_andSyncsWithServer() {
         let listView = app.userListView()
         XCTAssertTrue(listView.waitForExistence())
 
@@ -74,6 +74,48 @@ class DeleteAnItemTests: XCTestCase {
         }
 
         deleteButton.tap()
+        XCTAssertFalse(itemCell.exists)
+
+        wait(for: [expectRequest], timeout: 1)
+        guard let requestBody = deleteRequestBody else {
+            XCTFail("Expected request body to not be nil")
+            return
+        }
+        XCTAssertTrue(requestBody.contains("deleteSavedItem"))
+        XCTAssertTrue(requestBody.contains("item-id-2"))
+    }
+
+    func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
+        let listView = app.userListView()
+        XCTAssertTrue(listView.waitForExistence())
+
+        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
+        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
+
+        itemCell.tap()
+
+        let readerView = app.readerView()
+        XCTAssertTrue(readerView.waitForExistence())
+
+        app.showItemActions()
+
+        let deleteButton = app.deleteButton()
+        XCTAssertTrue(deleteButton.waitForExistence(timeout: 1))
+
+        let expectRequest = expectation(description: "A request to the server")
+        var deleteRequestBody: String?
+        server.routes.post("/graphql") { request, loop in
+            deleteRequestBody = body(of: request)
+            expectRequest.fulfill()
+
+            return Response {
+                Status.ok
+                Fixture.data(name: "delete")
+            }
+        }
+
+        deleteButton.tap()
+        XCTAssertTrue(listView.waitForExistence())
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)

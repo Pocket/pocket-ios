@@ -74,16 +74,21 @@ class PocketSceneCoordinator {
             .environment(\.tracker, tracker)
 
         let primaryViewController = UIHostingController(rootView: listView)
-        let secondaryViewController = ItemViewController(
+
+        let itemViewController = ItemViewController(
             selection: itemSelection,
             readerSettings: readerSettings,
-            tracker: tracker
+            tracker: tracker,
+            source: source
+        )
+        let secondaryViewController = UINavigationController(
+            rootViewController: itemViewController
         )
 
         split.setViewController(primaryViewController, for: .primary)
         split.setViewController(secondaryViewController, for: .secondary)
 
-        secondaryViewController.delegate = self
+        itemViewController.delegate = self
         split.delegate = self
     }
 
@@ -148,19 +153,9 @@ extension PocketSceneCoordinator: UISplitViewControllerDelegate {
 }
 
 extension PocketSceneCoordinator: ItemViewControllerDelegate {
-    func itemViewControllerDidTapOverflowButton(_ itemViewController: ItemViewController) {
+    func itemViewControllerDidTapReaderSettings(_ itemViewController: ItemViewController) {
         let settings = UIHostingController(rootView: ReaderSettingsView(settings: readerSettings))
-
-        if shouldDisplaySettingsAsSheet(traitCollection: split.traitCollection) {
-            settings.sheetPresentationController?.detents = [.medium()]
-        } else {
-            settings.modalPresentationStyle = .popover
-
-            let anchor = itemViewController.navigationItem.rightBarButtonItems?[0]
-            settings.popoverPresentationController?.barButtonItem = anchor
-        }
-
-        split.present(settings, animated: true)
+        showInReaderAsModal(settings, within: itemViewController)
     }
 
     func itemViewControllerDidTapWebViewButton(_ itemViewController: ItemViewController) {
@@ -177,8 +172,59 @@ extension PocketSceneCoordinator: ItemViewControllerDelegate {
         tracker.track(event: engagement, contexts)
     }
 
+    func itemViewControllerDidDeleteItem(_ itemViewController: ItemViewController) {
+        popReader()
+    }
+
+    func itemViewControllerDidArchiveItem(_ itemViewController: ItemViewController) {
+        popReader()
+    }
+
+    func itemViewController(_ itemViewController: ItemViewController, didTapShareItem item: Item) {
+        let items = [
+            item.url.flatMap(ActivityItemSource.init),
+            item.title.flatMap(ActivityItemSource.init)
+        ].compactMap { $0 }
+
+        showInReaderAsModal(
+            UIActivityViewController(
+                activityItems: items,
+                applicationActivities: nil
+            ),
+            within: itemViewController,
+            detents: [.large()]
+        )
+    }
+
+    private func showInReaderAsModal(
+        _ modal: UIViewController,
+        within itemViewController: ItemViewController,
+        detents: [UISheetPresentationController.Detent] = [.medium()]
+    ) {
+        let shouldDisplayAsSheet = split.traitCollection.userInterfaceIdiom == .phone ||
+        split.traitCollection.horizontalSizeClass == .compact
+
+        if shouldDisplayAsSheet {
+            modal.sheetPresentationController?.detents = detents
+        } else {
+            modal.modalPresentationStyle = .popover
+
+            let anchor = itemViewController.navigationItem.rightBarButtonItems?[0]
+            modal.popoverPresentationController?.barButtonItem = anchor
+        }
+
+        split.present(modal, animated: true)
+    }
+
     private func shouldDisplaySettingsAsSheet(traitCollection: UITraitCollection) -> Bool {
         return traitCollection.userInterfaceIdiom == .phone ||
         traitCollection.horizontalSizeClass == .compact
+    }
+
+    private func popReader() {
+        itemSelection.selectedItem = nil
+        split.viewController(for: .secondary)?
+            .navigationController?
+            .popViewController(animated: true)
     }
 }
