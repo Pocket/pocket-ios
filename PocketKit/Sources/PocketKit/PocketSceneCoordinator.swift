@@ -6,7 +6,7 @@ import SafariServices
 import Analytics
 
 
-class PocketSceneCoordinator {
+class PocketSceneCoordinator: NSObject {
     private let accessTokenStore: AccessTokenStore
     private let authClient: AuthorizationClient
     private let source: Source
@@ -20,6 +20,7 @@ class PocketSceneCoordinator {
     private var window: UIWindow?
     private let split: UISplitViewController
     private let signIn: UIHostingController<SignInView>
+    private let primaryNavigationController: UINavigationController
 
     private var subscriptions: [AnyCancellable] = []
 
@@ -38,10 +39,12 @@ class PocketSceneCoordinator {
 
         let signInView = SignInView(authClient: authClient, state: authState)
         signIn = UIHostingController(rootView: signInView)
-
         split = UISplitViewController(style: .doubleColumn)
-        configureSplitView()
+        primaryNavigationController = UINavigationController()
 
+        super.init()
+
+        configureSplitView()
         bindToStateChanges()
     }
 
@@ -73,7 +76,7 @@ class PocketSceneCoordinator {
             .environment(\.source, source)
             .environment(\.tracker, tracker)
 
-        let primaryViewController = UIHostingController(rootView: listView)
+        primaryNavigationController.viewControllers = [UIHostingController(rootView: listView)]
 
         let itemViewController = ItemViewController(
             selection: itemSelection,
@@ -81,13 +84,11 @@ class PocketSceneCoordinator {
             tracker: tracker,
             source: source
         )
-        let secondaryViewController = UINavigationController(
-            rootViewController: itemViewController
-        )
 
-        split.setViewController(primaryViewController, for: .primary)
-        split.setViewController(secondaryViewController, for: .secondary)
+        split.setViewController(primaryNavigationController, for: .primary)
+        split.setViewController(itemViewController, for: .secondary)
 
+        primaryNavigationController.delegate = self
         itemViewController.delegate = self
         split.delegate = self
     }
@@ -223,8 +224,15 @@ extension PocketSceneCoordinator: ItemViewControllerDelegate {
 
     private func popReader() {
         itemSelection.selectedItem = nil
-        split.viewController(for: .secondary)?
-            .navigationController?
-            .popViewController(animated: true)
+        primaryNavigationController.popViewController(animated: true)
+    }
+}
+
+extension PocketSceneCoordinator: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if viewController === navigationController.viewControllers.first,
+           split.traitCollection.horizontalSizeClass == .compact {
+            itemSelection.selectedItem = nil
+        }
     }
 }
