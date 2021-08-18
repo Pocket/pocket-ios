@@ -534,7 +534,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next;
 				PRODUCT_NAME = Pocket;
-				PROVISIONING_PROFILE_SPECIFIER = "Pocket Distribution Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "com.mozilla.pocket.next 2021-08-12";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
