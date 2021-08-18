@@ -15,10 +15,10 @@ protocol ItemViewControllerDelegate: AnyObject {
 class ItemViewController: UIViewController {
     private let itemHost: ArticleViewController
     private let source: Source
+    private let tracker: Tracker
     private var moreButtonItem: UIBarButtonItem?
     private var subscriptions: [AnyCancellable] = []
     private var observer: NSKeyValueObservation?
-
 
     var uiContext: SnowplowContext {
         return UIContext.articleView.screen
@@ -33,7 +33,8 @@ class ItemViewController: UIViewController {
         source: Source
     ) {
         self.source = source
-        itemHost = ArticleViewController(readerSettings: readerSettings, tracker: tracker)
+        self.tracker = tracker
+        self.itemHost = ArticleViewController(readerSettings: readerSettings, tracker: tracker)
 
         super.init(nibName: nil, bundle: nil)
 
@@ -158,6 +159,7 @@ extension ItemViewController {
         }
 
         source.favorite(item: item)
+        track(identifier: .itemFavorite, item: item)
     }
 
     private func unfavorite() {
@@ -166,6 +168,7 @@ extension ItemViewController {
         }
 
         source.unfavorite(item: item)
+        track(identifier: .itemUnfavorite, item: item)
     }
 
     private func archive() {
@@ -175,6 +178,7 @@ extension ItemViewController {
 
         source.archive(item: item)
         delegate?.itemViewControllerDidArchiveItem(self)
+        track(identifier: .itemArchive, item: item)
     }
 
     private func delete() {
@@ -184,6 +188,7 @@ extension ItemViewController {
 
         source.delete(item: item)
         delegate?.itemViewControllerDidDeleteItem(self)
+        track(identifier: .itemDelete, item: item)
     }
 
     private func share() {
@@ -192,5 +197,21 @@ extension ItemViewController {
         }
 
         delegate?.itemViewController(self, didTapShareItem: item)
+        track(identifier: .itemShare, item: item)
+    }
+
+    private func track(identifier: UIIdentifier, item: Item) {
+        guard let url = item.url else {
+            return
+        }
+
+        let contexts: [SnowplowContext] = [
+            uiContext,
+            UIContext.button(identifier: identifier),
+            Content(url: url)
+        ]
+
+        let event = Engagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
     }
 }

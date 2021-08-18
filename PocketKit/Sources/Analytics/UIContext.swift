@@ -24,6 +24,11 @@ public enum UIIdentifier: String, Encodable {
     case item
     case articleLink = "article_link"
     case switchToWebView = "switch_to_web_view"
+    case itemDelete = "item_delete"
+    case itemArchive = "item_archive"
+    case itemFavorite = "item_favorite"
+    case itemUnfavorite = "item_unfavorite"
+    case itemShare = "item_share"
 }
 
 public enum UIComponentDetail: String, Encodable {
@@ -80,6 +85,14 @@ public extension UIContext {
     
     static let home = Home()
     static let articleView = ArticleView()
+
+    static func button(identifier: UIIdentifier) -> UIContext {
+        UIContext(
+            type: .button,
+            hierarchy: 0,
+            identifier: identifier
+        )
+    }
 }
 
 // MARK: - SwiftUI

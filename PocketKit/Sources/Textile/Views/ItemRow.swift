@@ -6,6 +6,7 @@
 import SwiftUI
 import Kingfisher
 
+
 private enum Constants {
     static let cornerRadius: CGFloat = 4
     static let thumbnailSize = CGSize(width: 90, height: 60)
@@ -23,14 +24,17 @@ public protocol ItemRow: ObservableObject {
     var thumbnailURL: URL? { get }
     var isFavorite: Bool { get }
     var activityItems: [Any] { get }
+    var isShareSheetPresented: Bool { get set }
 
     func favorite()
     func unfavorite()
     func archive()
     func delete()
+    func share()
 }
 
 public struct ItemRowView<Model: ItemRow>: View {
+    @ObservedObject
     private var model: Model
 
     @State
@@ -80,7 +84,19 @@ public struct ItemRowView<Model: ItemRow>: View {
                 Spacer()
 
                 Menu {
-                    favoriteButton()
+                    if model.isFavorite {
+                        Button {
+                            model.unfavorite()
+                        } label: {
+                            Label("Unfavorite", systemImage: "star.slash")
+                        }
+                    } else {
+                        Button {
+                            model.favorite()
+                        } label: {
+                            Label("Favorite", systemImage: "star")
+                        }
+                    }
 
                     Button {
                         model.archive()
@@ -95,7 +111,7 @@ public struct ItemRowView<Model: ItemRow>: View {
                     }
 
                     Button {
-                        isShareSheetPresented.toggle()
+                        model.share()
                     } label: {
                         Label("Share", systemImage: "square.and.arrow.up")
                     }
@@ -106,25 +122,8 @@ public struct ItemRowView<Model: ItemRow>: View {
             }
         }
         .padding(.vertical, 8)
-        .sheet(isPresented: $isShareSheetPresented) {
+        .sheet(isPresented: $model.isShareSheetPresented) {
             ActivitySheet(activityItems: model.activityItems)
-        }
-    }
-
-    @ViewBuilder
-    private func favoriteButton() -> some View {
-        if model.isFavorite {
-            Button {
-                model.unfavorite()
-            } label: {
-                Label("Unfavorite", systemImage: "star.slash")
-            }
-        } else {
-            Button {
-                model.favorite()
-            } label: {
-                Label("Favorite", systemImage: "star")
-            }
         }
     }
 }
@@ -132,23 +131,25 @@ public struct ItemRowView<Model: ItemRow>: View {
 struct ItemRow_Previews: PreviewProvider {
     class DummyModel: ItemRow, Identifiable {
         var index = 0
-        
+
         var id = "hi"
-        
+
         var title: String = """
         Cum sociis natoque penatibus et magnis dis parturient montes,
         nascetur ridiculus mus. Donec sed odio dui.
         """
-        
+
         var detail: String = "Etiam Sem Magna Parturient Bibendum • 5 min"
         var thumbnailURL: URL? = URL(string: "http://placekitten.com/200/300")!
         var isFavorite: Bool = false
         var activityItems: [Any] = []
+        var isShareSheetPresented = false
 
         func favorite() {}
         func unfavorite() {}
         func archive() {}
         func delete() {}
+        func share() {}
     }
 
     static var previews: some View {

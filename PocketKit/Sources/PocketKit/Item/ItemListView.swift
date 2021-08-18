@@ -22,6 +22,12 @@ struct ItemListView: View {
     @Environment(\.source)
     private var source: Source
 
+    @Environment(\.tracker)
+    private var tracker: Tracker
+
+    @Environment(\.uiContexts)
+    private var contexts: [UIContext]
+
     init(selection: ItemSelection) {
         self.selection = selection
     }
@@ -41,7 +47,7 @@ struct ItemListView: View {
                     .trackable(.home.item(index: UInt(index)))
                     .swipeActions {
                         Button {
-                            source.archive(item: item)
+                            archive(item: item, index: index)
                         } label: {
                             Label("Archive", systemImage: "archivebox")
                         }.tint(Color(.branding.iris1))
@@ -54,6 +60,25 @@ struct ItemListView: View {
         .listStyle(.plain)
         .accessibility(identifier: "user-list")
         .navigationTitle(Text("My List"))
+    }
+
+    private func archive(item: Item, index: Int) {
+        source.archive(item: item)
+
+        guard let url = item.url else {
+            return
+        }
+
+        let contexts = self.contexts as [SnowplowContext] + [
+            UIContext.home.item(index: UInt(index)),
+            UIContext.button(identifier: .itemArchive),
+            Content(url: url)
+        ]
+
+        tracker.track(
+            event: Engagement(type: .general, value: nil),
+            contexts
+        )
     }
 }
 
@@ -101,7 +126,16 @@ private struct ItemListViewRow: View {
             
             selection.selectedItem = item
         }) {
-            ItemRowView(model: ItemPresenter(item: item, index: index, source: source))
+            ItemRowView(
+                model: ItemPresenter(
+                    item: item,
+                    index: index,
+                    source: source,
+                    tracker: tracker,
+                    contexts: uiContexts
+                )
+            )
+                .trackable(.home.item(index: UInt(index)))
                 .onAppear {
                     let impression = Impression(component: .content, requirement: .instant)
                     tracker.track(event: impression, contexts)
