@@ -137,6 +137,11 @@ private struct ItemListViewRow: View {
             )
                 .trackable(.home.item(index: UInt(index)))
                 .onAppear {
+                    let contexts = contexts
+                    guard contexts.count > 1 else {
+                        return
+                    }
+                    
                     let impression = Impression(component: .content, requirement: .instant)
                     tracker.track(event: impression, contexts)
                 }

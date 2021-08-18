@@ -3,11 +3,13 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Analytics
+import Foundation
 
 struct APIUser: SnowplowContext {
     static var schema = "iglu:com.pocket/api_user/jsonschema/1-0-1"
     
     let id: UInt
+    let clientVersion: String
 }
 
 extension APIUser {
@@ -21,11 +23,13 @@ extension APIUser {
         }
         
         self.id = id
+        self.clientVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
     }
 }
 
 private extension APIUser {
     enum CodingKeys: String, CodingKey {
         case id = "api_id"
+        case clientVersion = "client_version"
     }
 }
