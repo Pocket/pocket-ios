@@ -29,14 +29,7 @@ class ArchiveAnItemTests: XCTestCase {
         }
 
         try server.start()
-    }
 
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
-    }
-
-    func test_archivingAnItemFromList_removesItFromList_andSyncsWithServer() {
         app.launch(
             arguments: [
                 "clearKeychain",
@@ -49,7 +42,14 @@ class ArchiveAnItemTests: XCTestCase {
                 "sessionUserID": "session-user-id",
             ]
         )
+    }
 
+    override func tearDownWithError() throws {
+        try server.stop()
+        app.terminate()
+    }
+
+    func test_archivingAnItemFromList_removesItFromList_andSyncsWithServer() {
         let listView = app.userListView()
         XCTAssertTrue(listView.waitForExistence())
 
@@ -74,6 +74,48 @@ class ArchiveAnItemTests: XCTestCase {
         }
 
         archiveButton.tap()
+        XCTAssertFalse(itemCell.exists)
+
+        wait(for: [expectRequest], timeout: 1)
+        guard let requestBody = archiveRequestBody else {
+            XCTFail("Expected request body to not be nil")
+            return
+        }
+        XCTAssertTrue(requestBody.contains("updateSavedItemArchive"))
+        XCTAssertTrue(requestBody.contains("item-id-2"))
+    }
+
+    func test_archivingAnItemFromReader_archivesItem_andPopsBackToList() {
+        let listView = app.userListView()
+        XCTAssertTrue(listView.waitForExistence())
+
+        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
+        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
+
+        itemCell.tap()
+
+        let readerView = app.readerView()
+        XCTAssertTrue(readerView.waitForExistence())
+
+        app.showItemActions()
+
+        let archiveButton = app.archiveButton()
+        XCTAssertTrue(archiveButton.waitForExistence(timeout: 1))
+
+        let expectRequest = expectation(description: "A request to the server")
+        var archiveRequestBody: String?
+        server.routes.post("/graphql") { request, loop in
+            archiveRequestBody = body(of: request)
+            expectRequest.fulfill()
+
+            return Response {
+                Status.ok
+                Fixture.data(name: "archive")
+            }
+        }
+
+        archiveButton.tap()
+        XCTAssertTrue(listView.waitForExistence())
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)

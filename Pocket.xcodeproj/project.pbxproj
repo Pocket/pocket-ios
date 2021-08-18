@@ -21,6 +21,7 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		160056F326CC7FFD00700A80 /* FavoriteAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160056F226CC7FFD00700A80 /* FavoriteAnItemTests.swift */; };
 		1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */; };
 		166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* Tests_iOS.swift */; };
 		166BACF62656E34B00E401F0 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 166BACF52656E34B00E401F0 /* Fixtures */; };
@@ -72,6 +73,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		160056F226CC7FFD00700A80 /* FavoriteAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteAnItemTests.swift; sourceTree = "<group>"; };
 		1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteBuffer+read.swift"; sourceTree = "<group>"; };
 		1624B85A268508180099B6EF /* PocketKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PocketKit; sourceTree = "<group>"; };
 		166A81B02637406C0015AA1D /* Pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pocket.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -143,13 +145,14 @@
 		166A81C32637406C0015AA1D /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
+				166A81C62637406C0015AA1D /* Info.plist */,
 				166BACF92656E6A500E401F0 /* Support */,
 				166BACF52656E34B00E401F0 /* Fixtures */,
 				166A81C42637406C0015AA1D /* Tests_iOS.swift */,
-				166A81C62637406C0015AA1D /* Info.plist */,
 				1674057626CAC35F0061434E /* DeleteAnItemTests.swift */,
 				16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */,
 				168292C726CC64C300830140 /* ShareAnItemTests.swift */,
+				160056F226CC7FFD00700A80 /* FavoriteAnItemTests.swift */,
 			);
 			path = "Tests iOS";
 			sourceTree = "<group>";
@@ -350,6 +353,7 @@
 				16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */,
 				166EFAE8268281F300A027CD /* ReaderToolbar.swift in Sources */,
 				166EFAEA2682821300A027CD /* WebReaderScreen.swift in Sources */,
+				160056F326CC7FFD00700A80 /* FavoriteAnItemTests.swift in Sources */,
 				166BAD0A2656E76B00E401F0 /* SignInScreen.swift in Sources */,
 				168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */,
 				166BACF82656E3C600E401F0 /* Fixture.swift in Sources */,

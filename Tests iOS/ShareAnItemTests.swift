@@ -29,14 +29,7 @@ class ShareAnItemTests: XCTestCase {
         }
 
         try server.start()
-    }
 
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
-    }
-
-    func test_sharingAnItemFromList_presentsShareSheet() {
         app.launch(
             arguments: [
                 "clearKeychain",
@@ -49,7 +42,14 @@ class ShareAnItemTests: XCTestCase {
                 "sessionUserID": "session-user-id",
             ]
         )
+    }
 
+    override func tearDownWithError() throws {
+        try server.stop()
+        app.terminate()
+    }
+
+    func test_sharingAnItemFromList_presentsShareSheet() {
         let listView = app.userListView()
         XCTAssertTrue(listView.waitForExistence())
 
@@ -57,6 +57,29 @@ class ShareAnItemTests: XCTestCase {
         XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
 
         itemCell.showActions()
+
+        let shareButton = app.shareButton()
+        XCTAssertTrue(shareButton.waitForExistence(timeout: 1))
+
+        shareButton.tap()
+
+        let shareSheet = app.shareSheet()
+        XCTAssertTrue(shareSheet.waitForExistence(timeout: 1))
+    }
+
+    func test_sharingAnItemFromReader_presentsShareSheet() {
+        let listView = app.userListView()
+        XCTAssertTrue(listView.waitForExistence())
+
+        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
+        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
+
+        itemCell.tap()
+
+        let reader = app.readerView()
+        XCTAssertTrue(reader.waitForExistence())
+
+        app.showItemActions()
 
         let shareButton = app.shareButton()
         XCTAssertTrue(shareButton.waitForExistence(timeout: 1))
