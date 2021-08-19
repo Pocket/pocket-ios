@@ -56,6 +56,9 @@ struct ItemListView: View {
                     .environment(\.source, source)
             }
         }
+        .refreshable {
+            await source.refresh()
+        }
         .trackable(.home.list)
         .listStyle(.plain)
         .accessibility(identifier: "user-list")

@@ -9,7 +9,8 @@ protocol SyncOperationFactory {
         apollo: ApolloClientProtocol,
         space: Space,
         events: PassthroughSubject<SyncEvent, Never>,
-        maxItems: Int
+        maxItems: Int,
+        lastRefresh: LastRefresh
     ) -> Operation
 
     func itemMutationOperation<Mutation: GraphQLMutation>(
@@ -25,14 +26,16 @@ class OperationFactory: SyncOperationFactory {
         apollo: ApolloClientProtocol,
         space: Space,
         events: PassthroughSubject<SyncEvent, Never>,
-        maxItems: Int
+        maxItems: Int,
+        lastRefresh: LastRefresh
     ) -> Operation {
         return FetchList(
             token: token,
             apollo: apollo,
             space: space,
             events: events,
-            maxItems: maxItems
+            maxItems: maxItems,
+            lastRefresh: lastRefresh
         )
     }
 

@@ -9,19 +9,22 @@ class FetchList: AsyncOperation {
     private let space: Space
     private let events: PassthroughSubject<SyncEvent, Never>
     private let maxItems: Int
+    private let lastRefresh: LastRefresh
 
     init(
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: PassthroughSubject<SyncEvent, Never>,
-        maxItems: Int
+        maxItems: Int,
+        lastRefresh: LastRefresh
     ) {
         self.token = token
         self.apollo = apollo
         self.space = space
         self.events = events
         self.maxItems = maxItems
+        self.lastRefresh = lastRefresh
 
         super.init()
     }
@@ -31,13 +34,14 @@ class FetchList: AsyncOperation {
     }
 
     private func fetchPage(maxItems: Int, after: String? = nil) {
-        let query: UserByTokenQuery
+        let query = UserByTokenQuery(token: token)
 
         if let after = after {
-            let pagination = PaginationInput(after: after)
-            query = UserByTokenQuery(token: token, pagination: pagination)
-        } else {
-            query = UserByTokenQuery(token: token)
+            query.pagination = PaginationInput(after: after)
+        }
+
+        if let updatedSince = lastRefresh.lastRefresh {
+            query.savedItemsFilter = SavedItemsFilter(updatedSince: String(updatedSince))
         }
 
         _ = apollo.fetch(query: query) { [weak self] result in
@@ -62,11 +66,8 @@ class FetchList: AsyncOperation {
               let edges = savedItems.edges,
               let maybeLastItem = edges.last,
               let lastItem = maybeLastItem else {
-                  // We got a successful response from the server but
-                  // there was no meaningful data in the response
-                  // You could make the case that we should error here,
-                  // but at the moment we just consider the operation complete
-                  finishOperation()
+                  // User's list is empty
+                  succeedOperation()
                   return
         }
 
@@ -82,7 +83,7 @@ class FetchList: AsyncOperation {
         if savedItems.pageInfo.hasNextPage, maxItems > edges.count {
             fetchPage(maxItems: maxItems - edges.count, after: lastItem.cursor)
         } else {
-            finishOperation()
+            succeedOperation()
         }
     }
 
@@ -105,6 +106,11 @@ class FetchList: AsyncOperation {
         // TODO: listen for error events on Source and capture errors there
         Crashlogger.capture(error: error)
         events.send(.error(error))
+        finishOperation()
+    }
+
+    private func succeedOperation() {
+        lastRefresh.refreshed()
         finishOperation()
     }
 }

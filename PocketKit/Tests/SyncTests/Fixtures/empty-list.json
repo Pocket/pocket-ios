@@ -1,0 +1,15 @@
+{
+    "data": {
+        "userByToken": {
+            "__typename": "[type-name-here]",
+            "savedItems": {
+                "__typename": "[type-name-here]",
+                "pageInfo": {
+                    "__typename": "[type-name-here]",
+                    "hasNextPage": false
+                },
+                "edges": []
+            }
+        }
+    }
+}

@@ -55,12 +55,12 @@ class PocketSceneCoordinator: NSObject {
 
         window = UIWindow(windowScene: windowScene)
 
-        if let token = accessTokenStore.accessToken,
+        if accessTokenStore.accessToken != nil,
            let guid = session.guid,
            let userID = session.userID {
             finalizeAuthentication(guid: guid, userID: userID)
             
-            source.refresh(token: token)
+            source.refresh()
             window?.rootViewController = split
             split.show(.primary)
         } else {
@@ -123,7 +123,7 @@ class PocketSceneCoordinator: NSObject {
             Crashlogger.capture(error: error)
         }
 
-        source.refresh(token: authorization.response.accessToken)
+        source.refresh()
         UIView.transition(
             with: window!,
             duration: 0.25,

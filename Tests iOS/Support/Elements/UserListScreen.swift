@@ -28,4 +28,33 @@ struct UserListScreen {
     var itemCount: Int {
         el.cells.count
     }
+
+    func wait(file: StaticString = #file, line: UInt = #line) -> UserListScreen {
+        if el.exists {
+            return self
+        } else {
+            XCTAssertTrue(
+                waitForExistence(),
+                "Expected \(Self.self) to exist but it ain't",
+                file: file,
+                line: line
+            )
+
+            return self
+        }
+    }
+
+    func pullToRefresh() {
+        let centerCenter = CGVector(dx: 0.5, dy: 0.8)
+
+        el.cells
+            .element(boundBy: 0)
+            .coordinate(withNormalizedOffset: centerCenter)
+            .press(
+                forDuration: 0.1,
+                thenDragTo: el.coordinate(
+                    withNormalizedOffset: centerCenter
+                )
+            )
+    }
 }

@@ -14,14 +14,36 @@ class SourceTests: XCTestCase {
     var space: Space!
     var apollo: MockApolloClient!
     var operations: MockOperationFactory!
+    var lastRefresh: MockLastRefresh!
+    var tokenProvider: MockAccessTokenProvider!
 
     override func setUpWithError() throws {
         space = Space(container: .testContainer)
         apollo = MockApolloClient()
         operations = MockOperationFactory()
+        lastRefresh = MockLastRefresh()
+        tokenProvider = MockAccessTokenProvider()
+        lastRefresh.stubGetLastRefresh { nil}
+    }
+
+    func subject(
+        space: Space? = nil,
+        apollo: ApolloClientProtocol? = nil,
+        operations: OperationFactory? = nil,
+        lastRefresh: LastRefresh? = nil,
+        tokenProvider: AccessTokenProvider? = nil
+    ) -> Source {
+        Source(
+            space: space ?? self.space,
+            apollo: apollo ?? self.apollo,
+            operations: operations ?? self.operations,
+            lastRefresh: lastRefresh ?? self.lastRefresh,
+            accessTokenProvider: tokenProvider ?? self.tokenProvider
+        )
     }
 
     func test_refresh_addsFetchListOperationToQueue() {
+        tokenProvider.accessToken = "test-token"
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubFetchList { _, _, _, _, _ in
             return BlockOperation {
@@ -29,14 +51,44 @@ class SourceTests: XCTestCase {
             }
         }
 
-        let source = Source(
-            space: space,
-            apollo: apollo,
-            operations: operations
-        )
+        let source = subject()
 
-        source.refresh(token: "test-token")
+        source.refresh()
         waitForExpectations(timeout: 1)
+
+        XCTAssertEqual(operations.fetchListCall(at: 0)?.token, "test-token")
+    }
+
+    func test_refreshWithCompletion_callsCompletionWhenFinished() {
+        tokenProvider.accessToken = "test-token"
+        operations.stubFetchList { _, _, _, _, _ in
+            return BlockOperation { }
+        }
+
+        let source = subject()
+
+        let expectationToRunOperation = expectation(description: "Run operation")
+        source.refresh {
+            expectationToRunOperation.fulfill()
+        }
+
+        wait(for: [expectationToRunOperation], timeout: 1)
+    }
+
+    func test_refresh_whenTokenIsNil_callsCompletion() {
+        tokenProvider.accessToken = nil
+        operations.stubFetchList { _, _, _, _, _ in
+            return BlockOperation { }
+        }
+
+        let source = subject()
+
+        let expectationToRunOperation = expectation(description: "Run operation")
+        source.refresh {
+            expectationToRunOperation.fulfill()
+        }
+
+        wait(for: [expectationToRunOperation], timeout: 1)
     }
 
     func test_favorite_togglesIsFavorite_andExecutesFavoriteMutation() throws {
@@ -48,11 +100,7 @@ class SourceTests: XCTestCase {
             }
         }
 
-        let source = Source(
-            space: space,
-            apollo: apollo,
-            operations: operations
-        )
+        let source = subject()
         source.favorite(item: item)
 
         XCTAssertTrue(item.isFavorite)
@@ -68,11 +116,7 @@ class SourceTests: XCTestCase {
             }
         }
 
-        let source = Source(
-            space: space,
-            apollo: apollo,
-            operations: operations
-        )
+        let source = subject()
         source.unfavorite(item: item)
 
         XCTAssertFalse(item.isFavorite)
@@ -88,11 +132,7 @@ class SourceTests: XCTestCase {
             }
         }
 
-        let source = Source(
-            space: space,
-            apollo: apollo,
-            operations: operations
-        )
+        let source = subject()
         source.delete(item: item)
 
         let fetchedItem = try space.fetchItem(byItemID: "delete-me")
@@ -110,11 +150,7 @@ class SourceTests: XCTestCase {
             }
         }
 
-        let source = Source(
-            space: space,
-            apollo: apollo,
-            operations: operations
-        )
+        let source = subject()
         source.archive(item: item)
 
         let fetchedItem = try space.fetchItem(byItemID: "archive-me")

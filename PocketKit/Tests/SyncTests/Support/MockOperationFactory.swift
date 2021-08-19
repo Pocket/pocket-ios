@@ -8,6 +8,23 @@ import Combine
 class MockOperationFactory: SyncOperationFactory {
 
     // MARK: - fetchList
+    struct FetchListCall {
+        let token: String
+        let apollo: ApolloClientProtocol
+        let space: Space
+        let events: PassthroughSubject<SyncEvent, Never>
+        let maxItems: Int
+        let lastRefresh: LastRefresh
+    }
+    private var fetchListCalls: [FetchListCall] = []
+    func fetchListCall(at index: Int) -> FetchListCall? {
+        guard index < fetchListCalls.count else {
+            return nil
+        }
+
+        return fetchListCalls[index]
+    }
+
     typealias FetchListImpl = (String, ApolloClientProtocol, Space, PassthroughSubject<SyncEvent, Never>, Int) -> Operation
     private var fetchListImpl: FetchListImpl?
 
@@ -15,7 +32,15 @@ class MockOperationFactory: SyncOperationFactory {
         fetchListImpl = impl
     }
 
-    func fetchList(token: String, apollo: ApolloClientProtocol, space: Space, events: PassthroughSubject<SyncEvent, Never>, maxItems: Int) -> Operation {
+    func fetchList(
+        token: String,
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: PassthroughSubject<SyncEvent, Never>,
+        maxItems: Int,
+        lastRefresh: LastRefresh
+    ) -> Operation {
+        fetchListCalls.append(FetchListCall(token: token, apollo: apollo, space: space, events: events, maxItems: maxItems, lastRefresh: lastRefresh))
         guard let impl = fetchListImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
