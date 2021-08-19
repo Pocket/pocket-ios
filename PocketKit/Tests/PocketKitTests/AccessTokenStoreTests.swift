@@ -51,6 +51,32 @@ class KeychainAccessTokenStoreTests: XCTestCase {
         )
     }
 
+    func test_accessToken_cachesValueFromKeychain() throws {
+        let store = KeychainAccessTokenStore(keychain: mockKeychain)
+        mockKeychain.copyMatchingResult = "the-token".data(using: .utf8) as CFTypeRef
+        mockKeychain.deleteReturnVal = 0
+
+        _ = store.accessToken // fetch from keychain
+        _ = store.accessToken // use in-memory cache
+
+        XCTAssertEqual(mockKeychain.copyMatchingCalls.count, 1)
+
+        try store.save(token: "new-token")
+        mockKeychain.copyMatchingResult = "new-token".data(using: .utf8) as CFTypeRef
+        XCTAssertEqual(store.accessToken, "new-token")
+        XCTAssertEqual(store.accessToken, "new-token")
+        XCTAssertEqual(mockKeychain.copyMatchingCalls.count, 2)
+
+        try store.delete()
+        mockKeychain.copyMatchingResult = nil
+        XCTAssertEqual(store.accessToken, nil)
+        XCTAssertEqual(mockKeychain.copyMatchingCalls.count, 3)
+
+        mockKeychain.copyMatchingResult = "even-newer-token".data(using: .utf8) as CFTypeRef
+        XCTAssertEqual(store.accessToken, "even-newer-token")
+        XCTAssertEqual(mockKeychain.copyMatchingCalls.count, 4)
+    }
+
     func test_accessToken_whenCopyMatchingSucceeds_returnsDecodedToken() {
         mockKeychain.copyMatchingResult = "the-token".data(using: .utf8) as CFTypeRef
         let store = KeychainAccessTokenStore(keychain: mockKeychain)
