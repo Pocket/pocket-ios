@@ -12,6 +12,8 @@ public class Source {
 
     private let space: Space
     private let apollo: ApolloClientProtocol
+    private let lastRefresh: LastRefresh
+    private let tokenProvider: AccessTokenProvider
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -23,7 +25,8 @@ public class Source {
     public convenience init(
         sessionProvider: SessionProvider,
         accessTokenProvider: AccessTokenProvider,
-        consumerKey: String
+        consumerKey: String,
+        defaults: UserDefaults
     ) {
         self.init(
             space: Space(container: .createDefault()),
@@ -32,34 +35,47 @@ public class Source {
                 accessTokenProvider: accessTokenProvider,
                 consumerKey: consumerKey
             ),
-            operations: OperationFactory()
+            operations: OperationFactory(),
+            lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
+            accessTokenProvider: accessTokenProvider
         )
     }
 
     init(
         space: Space,
         apollo: ApolloClientProtocol,
-        operations: SyncOperationFactory
+        operations: SyncOperationFactory,
+        lastRefresh: LastRefresh,
+        accessTokenProvider: AccessTokenProvider
     ) {
         self.space = space
         self.apollo = apollo
         self.operations = operations
+        self.lastRefresh = lastRefresh
+        self.tokenProvider = accessTokenProvider
     }
 
     public var mainContext: NSManagedObjectContext {
         space.context
     }
 
-    public func refresh(token: String, maxItems: Int = 400) {
-        syncQ.addOperation(
-            operations.fetchList(
-                token: token,
-                apollo: apollo,
-                space: space,
-                events: syncEvents,
-                maxItems: maxItems
-            )
+    public func refresh(maxItems: Int = 400, completion: (() -> ())? = nil) {
+        guard let token = tokenProvider.accessToken else {
+            completion?()
+            return
+        }
+
+        let operation = operations.fetchList(
+            token: token,
+            apollo: apollo,
+            space: space,
+            events: syncEvents,
+            maxItems: maxItems,
+            lastRefresh: lastRefresh
         )
+
+        operation.completionBlock = completion
+        syncQ.addOperation(operation)
     }
 
     public func favorite(item: Item) {

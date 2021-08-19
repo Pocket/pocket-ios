@@ -11,12 +11,14 @@ class FetchListTests: XCTestCase {
     var space: Space!
     var events: PassthroughSubject<SyncEvent, Never>!
     var queue: OperationQueue!
+    var lastRefresh: MockLastRefresh!
     var cancellables: Set<AnyCancellable> = []
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
         events = PassthroughSubject()
         queue = OperationQueue()
+        lastRefresh = MockLastRefresh()
         space = Space(container: .testContainer)
     }
 
@@ -30,14 +32,16 @@ class FetchListTests: XCTestCase {
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil,
         events: PassthroughSubject<SyncEvent, Never>? = nil,
-        maxItems: Int = 400
+        maxItems: Int = 400,
+        lastRefresh: LastRefresh? = nil
     ) {
         let operation = FetchList(
             token: token,
             apollo: apollo ?? self.apollo,
             space: space ?? self.space,
             events: events ?? self.events,
-            maxItems: maxItems
+            maxItems: maxItems,
+            lastRefresh: lastRefresh ?? self.lastRefresh
         )
 
         let expectationToCompleteOperation = expectation(
@@ -61,6 +65,8 @@ class FetchListTests: XCTestCase {
         XCTAssertFalse(apollo.fetchCalls.isEmpty)
         let call: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
         XCTAssertEqual(call.query.token, "test-token")
+
+        XCTAssertEqual(lastRefresh.refreshedCallCount, 1)
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() throws {
@@ -127,6 +133,7 @@ class FetchListTests: XCTestCase {
         performOperation()
 
         XCTAssertEqual(error as? TestError, .anError)
+        XCTAssertEqual(lastRefresh.refreshedCallCount, 0)
     }
 
     func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() throws {
@@ -189,5 +196,35 @@ class FetchListTests: XCTestCase {
 
         let items = try space.fetchItems()
         XCTAssertEqual(items.count, 3)
+    }
+
+    func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() {
+        lastRefresh.stubGetLastRefresh { 123456789 }
+        apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
+
+        performOperation()
+
+        let call: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
+        XCTAssertNotNil(call.query.savedItemsFilter)
+        XCTAssertEqual(call.query.savedItemsFilter?.updatedSince, "123456789")
+    }
+
+    func test_refresh_whenUpdatedSinceIsNotPresent_doesNotIncludeUpdatedSinceFilter() {
+        apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
+
+        performOperation()
+
+        let call: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
+        XCTAssertNil(call.query.savedItemsFilter)
+    }
+
+    func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() {
+        apollo.stubFetch(
+            toReturnFixturedNamed: "empty-list",
+            asResultType: UserByTokenQuery.self
+        )
+
+        performOperation()
+        XCTAssertEqual(lastRefresh.refreshedCallCount, 1)
     }
 }
