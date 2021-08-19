@@ -25,7 +25,12 @@ class KeychainAccessTokenStore: AccessTokenStore {
         self.keychain = keychain
     }
 
+    private var _accessToken: String?
     var accessToken: String? {
+        guard _accessToken == nil else {
+            return _accessToken
+        }
+
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Bundle.main.bundleIdentifier!,
@@ -44,10 +49,13 @@ class KeychainAccessTokenStore: AccessTokenStore {
             return nil
         }
 
+        _accessToken = token
         return token
     }
 
     func save(token: String) throws {
+        _accessToken = nil
+
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Bundle.main.bundleIdentifier!,
@@ -65,6 +73,8 @@ class KeychainAccessTokenStore: AccessTokenStore {
     }
 
     func delete() throws {
+        _accessToken = nil
+
         let query: [String: Any] = [
             kSecClass as String: kSecClassGenericPassword,
             kSecAttrService as String: Bundle.main.bundleIdentifier!,
