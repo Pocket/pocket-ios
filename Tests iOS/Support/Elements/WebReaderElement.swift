@@ -5,14 +5,14 @@
 import XCTest
 
 
-struct WebReaderScreen {
-    let el: XCUIElement
+struct WebReaderElement: PocketUIElement {
+    let element: XCUIElement
 
-    func waitForExistence() -> Bool {
-        return el.waitForExistence(timeout: 1)
+    init(_ element: XCUIElement) {
+        self.element = element
     }
 
     func staticText(matching string: String) -> XCUIElement {
-        return el.staticTexts[string]
+        return element.staticTexts[string]
     }
 }

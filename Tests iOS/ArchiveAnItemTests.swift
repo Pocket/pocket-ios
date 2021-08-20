@@ -8,13 +8,13 @@ import Sails
 
 class ArchiveAnItemTests: XCTestCase {
     var server: Application!
-    var app: PocketApp!
+    var app: PocketAppElement!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
-        app = PocketApp(app: uiApp)
+        app = PocketAppElement(app: uiApp)
 
         server = Application()
 
@@ -50,16 +50,13 @@ class ArchiveAnItemTests: XCTestCase {
     }
 
     func test_archivingAnItemFromList_removesItFromList_andSyncsWithServer() {
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        let itemCell = app
+            .userListView
+            .itemView(withLabelStartingWith: "Item 2")
 
-        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
-        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
-
-        itemCell.showActions()
-
-        let archiveButton = app.archiveButton()
-        XCTAssertTrue(archiveButton.waitForExistence(timeout: 1))
+        itemCell
+            .itemActionButton.wait()
+            .tap()
 
         let expectRequest = expectation(description: "A request to the server")
         var archiveRequestBody: String?
@@ -73,7 +70,7 @@ class ArchiveAnItemTests: XCTestCase {
             }
         }
 
-        archiveButton.tap()
+        app.archiveButton.wait().tap()
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)
@@ -86,21 +83,10 @@ class ArchiveAnItemTests: XCTestCase {
     }
 
     func test_archivingAnItemFromReader_archivesItem_andPopsBackToList() {
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
-
+        let listView = app.userListView
         let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
-        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
 
-        itemCell.tap()
-
-        let readerView = app.readerView()
-        XCTAssertTrue(readerView.waitForExistence())
-
-        app.showItemActions()
-
-        let archiveButton = app.archiveButton()
-        XCTAssertTrue(archiveButton.waitForExistence(timeout: 1))
+        itemCell.wait().tap()
 
         let expectRequest = expectation(description: "A request to the server")
         var archiveRequestBody: String?
@@ -114,8 +100,16 @@ class ArchiveAnItemTests: XCTestCase {
             }
         }
 
-        archiveButton.tap()
-        XCTAssertTrue(listView.waitForExistence())
+        app
+            .readerView
+            .readerToolbar
+            .moreButton
+            .wait()
+            .tap()
+
+        app.archiveButton.wait().tap()
+
+        listView.wait()
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)

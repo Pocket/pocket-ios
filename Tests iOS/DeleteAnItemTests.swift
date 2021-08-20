@@ -8,13 +8,13 @@ import Sails
 
 class DeleteAnItemTests: XCTestCase {
     var server: Application!
-    var app: PocketApp!
+    var app: PocketAppElement!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
-        app = PocketApp(app: uiApp)
+        app = PocketAppElement(app: uiApp)
 
         server = Application()
 
@@ -50,16 +50,13 @@ class DeleteAnItemTests: XCTestCase {
     }
 
     func test_deletingAnItemFromList_removesItFromList_andSyncsWithServer() {
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        let itemCell = app
+            .userListView
+            .itemView(withLabelStartingWith: "Item 2")
 
-        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
-        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
-
-        itemCell.showActions()
-
-        let deleteButton = app.deleteButton()
-        XCTAssertTrue(deleteButton.waitForExistence(timeout: 1))
+        itemCell
+            .itemActionButton.wait()
+            .tap()
 
         let expectRequest = expectation(description: "A request to the server")
         var deleteRequestBody: String?
@@ -73,7 +70,7 @@ class DeleteAnItemTests: XCTestCase {
             }
         }
 
-        deleteButton.tap()
+        app.deleteButton.wait().tap()
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)
@@ -86,21 +83,12 @@ class DeleteAnItemTests: XCTestCase {
     }
 
     func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
-
-        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
-        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
+        let itemCell = app
+            .userListView
+            .itemView(withLabelStartingWith: "Item 2")
+            .wait()
 
         itemCell.tap()
-
-        let readerView = app.readerView()
-        XCTAssertTrue(readerView.waitForExistence())
-
-        app.showItemActions()
-
-        let deleteButton = app.deleteButton()
-        XCTAssertTrue(deleteButton.waitForExistence(timeout: 1))
 
         let expectRequest = expectation(description: "A request to the server")
         var deleteRequestBody: String?
@@ -114,10 +102,14 @@ class DeleteAnItemTests: XCTestCase {
             }
         }
 
-        deleteButton.tap()
-        XCTAssertTrue(listView.waitForExistence())
-        XCTAssertFalse(itemCell.exists)
+        app
+            .readerView
+            .readerToolbar
+            .moreButton
+            .wait()
+            .tap()
 
+        app.deleteButton.wait().tap()
         wait(for: [expectRequest], timeout: 1)
         guard let requestBody = deleteRequestBody else {
             XCTFail("Expected request body to not be nil")
@@ -125,5 +117,8 @@ class DeleteAnItemTests: XCTestCase {
         }
         XCTAssertTrue(requestBody.contains("deleteSavedItem"))
         XCTAssertTrue(requestBody.contains("item-id-2"))
+
+        app.userListView.wait()
+        XCTAssertFalse(itemCell.exists)
     }
 }
