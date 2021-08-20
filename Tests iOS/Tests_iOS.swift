@@ -9,13 +9,13 @@ import NIO
 
 class Tests_iOS: XCTestCase {
     var server: Application!
-    var app: PocketApp!
+    var app: PocketAppElement!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
-        app = PocketApp(app: uiApp)
+        app = PocketAppElement(app: uiApp)
 
         server = Application()
 
@@ -68,27 +68,31 @@ class Tests_iOS: XCTestCase {
                 "clearUserDefaults"
             ]
         )
-        
-        let signInView = app.signInView()
-        XCTAssertTrue(signInView.waitForExistence())
-        signInView.signIn(
-            email: "test@example.com",
-            password: "super-secret-password"
-        )
 
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        let signInView = app.signInView.wait()
+
+        signInView.emailField.tap()
+        app.typeText("test@example.com")
+        signInView.passwordField.tap()
+        app.typeText("super-secret-password")
+        signInView.signInButton.tap()
+
+        let listView = app.userListView.wait()
 
         do {
-            let item = listView.itemView(withLabelStartingWith: "Item 1")
-            XCTAssertTrue(item.waitForExistence())
+            let item = listView
+                .itemView(withLabelStartingWith: "Item 1")
+                .wait()
+
             XCTAssertTrue(item.contains(string: "WIRED"))
             XCTAssertTrue(item.contains(string: "6 min"))
         }
 
         do {
-            let item = listView.itemView(withLabelStartingWith: "Item 2")
-            XCTAssertTrue(item.waitForExistence())
+            let item = listView
+                .itemView(withLabelStartingWith: "Item 2")
+                .wait()
+
             XCTAssertTrue(item.contains(string: "wired.com"))
         }
     }
@@ -100,12 +104,15 @@ class Tests_iOS: XCTestCase {
             return promise!.futureResult
         }
 
-        app.launch()
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        let listView = app
+            .launch()
+            .userListView
+            .wait()
 
-        let item = listView.itemView(withLabelStartingWith: "Item")
-        XCTAssertTrue(item.waitForExistence())
+        listView
+            .itemView(withLabelStartingWith: "Item")
+            .wait()
+
         XCTAssertEqual(listView.itemCount, 2)
 
         promise?.succeed(
@@ -120,30 +127,27 @@ class Tests_iOS: XCTestCase {
         )
 
         do {
-            let item = listView.itemView(withLabelStartingWith: "Updated Item 1")
-            XCTAssertTrue(item.waitForExistence())
+            listView
+                .itemView(withLabelStartingWith: "Updated Item 1")
+                .wait()
         }
 
         do {
-            let item = listView.itemView(withLabelStartingWith: "Updated Item 2")
-            XCTAssertTrue(item.waitForExistence())
+            listView
+                .itemView(withLabelStartingWith: "Updated Item 2")
+                .wait()
         }
 
         XCTAssertEqual(listView.itemCount, 2)
     }
 
     func test_3_tappingItem_displaysNativeReaderView() {
-        app.launch()
-
-        let list = app.userListView()
-        XCTAssertTrue(list.waitForExistence())
-
-        let item = list.itemView(at: 0)
-        XCTAssertTrue(item.waitForExistence())
-        item.tap()
-
-        let readerView = app.readerView()
-        XCTAssertTrue(readerView.waitForExistence())
+        app
+            .launch()
+            .userListView
+            .itemView(at: 0)
+            .wait()
+            .tap()
 
         let expectedStrings = [
             "Venenatis Ridiculus Vehicula",
@@ -163,35 +167,34 @@ class Tests_iOS: XCTestCase {
         ]
 
         for expectedString in expectedStrings {
-            let cell = readerView.cell(containing: expectedString)
-            XCTAssertTrue(cell.waitForExistence(timeout: 10))
-            readerView.scrollCellToTop(cell)
+            let cell = app
+                .readerView
+                .cell(containing: expectedString)
+                .wait()
+
+            app.readerView.scrollCellToTop(cell)
         }
     }
 
     func test_3_webReader_displaysWebContent() {
-        app.launch()
+        app
+            .launch()
+            .userListView
+            .itemView(at: 0)
+            .wait()
+            .tap()
 
-        let list = app.userListView()
-        XCTAssertTrue(list.waitForExistence())
+        app
+            .readerView
+            .readerToolbar
+            .webReaderButton
+            .wait()
+            .tap()
 
-        let item = list.itemView(at: 0)
-        XCTAssertTrue(item.waitForExistence())
-        item.tap()
-
-        let readerView = app.readerView()
-        XCTAssertTrue(readerView.waitForExistence())
-
-        let toolbar = app.readerToolbar()
-        XCTAssertTrue(toolbar.waitForExistence())
-
-        let webReaderButton = toolbar.webReaderButton()
-        XCTAssertTrue(webReaderButton.waitForExistence(timeout: 10))
-        webReaderButton.tap()
-
-        let webView = app.webReaderView()
-        XCTAssertTrue(webView.waitForExistence())
-        XCTAssertTrue(webView.staticText(matching: "Hello, world").waitForExistence(timeout: 10))
+        app
+            .webReaderView
+            .staticText(matching: "Hello, world")
+            .wait()
     }
 
     func test_4_list_excludesArchivedContent() {
@@ -205,9 +208,7 @@ class Tests_iOS: XCTestCase {
             }
         }
 
-        app.launch()
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        let listView = app.launch().userListView.wait()
 
         XCTAssertEqual(listView.itemCount, 1)
         XCTAssertTrue(listView.itemView(at: 0).contains(string: "Item 2"))

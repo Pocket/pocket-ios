@@ -9,13 +9,13 @@ import NIO
 
 class FavoriteAnItemTests: XCTestCase {
     var server: Application!
-    var app: PocketApp!
+    var app: PocketAppElement!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
-        app = PocketApp(app: uiApp)
+        app = PocketAppElement(app: uiApp)
 
         server = Application()
 
@@ -74,16 +74,14 @@ class FavoriteAnItemTests: XCTestCase {
     }
 
     func test_favoritingAndUnfavoritingAnItemFromList_showsFavoritedIcon_andSyncsWithServer() {
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        let itemCell = app
+            .userListView
+            .itemView(withLabelStartingWith: "Item 2")
 
-        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
-        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
-        itemCell.showActions()
-
-        let favoriteButton = app.favoriteButton()
-        XCTAssertTrue(favoriteButton.waitForExistence(timeout: 1))
-
+        itemCell
+            .itemActionButton
+            .wait()
+            .tap()
 
         let expectRequest = expectation(description: "A request to the server")
         var favoriteRequestBody: String?
@@ -97,10 +95,9 @@ class FavoriteAnItemTests: XCTestCase {
             }
         }
 
-        favoriteButton.tap()
+        app.favoriteButton.wait().tap()
+
         wait(for: [expectRequest], timeout: 1)
-
-
         do {
             guard let requestBody = favoriteRequestBody else {
                 XCTFail("Expected request body to not be nil")
@@ -111,17 +108,10 @@ class FavoriteAnItemTests: XCTestCase {
             XCTAssertTrue(requestBody.contains("item-id-2"))
         }
 
-        let favoriteIcon = itemCell.favoriteIcon()
-        XCTAssertTrue(favoriteIcon.waitForExistence(timeout: 1))
-
-        itemCell.showActions()
-        let unfavoriteButton = app.unfavoriteButton()
-        XCTAssertTrue(unfavoriteButton.waitForExistence(timeout: 1))
-
+        itemCell.favoriteIcon.wait()
 
         let expectUnfavoriteRequest = expectation(description: "A request to the server")
         var unfavoriteRequestBody: String?
-
         server.routes.post("/graphql") { request, loop in
             unfavoriteRequestBody = body(of: request)
             expectUnfavoriteRequest.fulfill()
@@ -132,10 +122,11 @@ class FavoriteAnItemTests: XCTestCase {
             }
         }
 
-        unfavoriteButton.tap()
+        itemCell.itemActionButton.tap()
+        app.unfavoriteButton.wait().tap()
 
         wait(for: [expectUnfavoriteRequest], timeout: 1)
-        XCTAssertFalse(itemCell.favoriteIcon().exists)
+        XCTAssertFalse(itemCell.favoriteIcon.exists)
         do {
             guard let requestBody = unfavoriteRequestBody else {
                 XCTFail("Expected request body to not be nil")
@@ -148,38 +139,38 @@ class FavoriteAnItemTests: XCTestCase {
     }
 
     func test_favoritingAndUnfavoritingAnItemFromReader_togglesMenu_andSyncsWithServer() {
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        app
+            .userListView
+            .itemView(withLabelStartingWith: "Item 2")
+            .wait()
+            .tap()
 
-        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
-        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
+        let moreButton = app
+            .readerView
+            .readerToolbar
+            .moreButton
 
-        itemCell.tap()
-
-        let readerView = app.readerView()
-        XCTAssertTrue(readerView.waitForExistence())
-
-        app.showItemActions()
-
-        let favoriteButton = app.favoriteButton()
-        XCTAssertTrue(favoriteButton.waitForExistence(timeout: 1))
-
-        let expectRequest = expectation(description: "A request to the server")
-        var favoriteRequestBody: String?
-        server.routes.post("/graphql") { request, loop in
-            favoriteRequestBody = body(of: request)
-            expectRequest.fulfill()
-
-            return Response {
-                Status.ok
-                Fixture.data(name: "favorite")
-            }
-        }
-
-        favoriteButton.tap()
-        wait(for: [expectRequest], timeout: 1)
-
+        // Favoriting
         do {
+            // Set up the request handler
+            let expectRequest = expectation(description: "A request to the server")
+            var favoriteRequestBody: String?
+            server.routes.post("/graphql") { request, loop in
+                favoriteRequestBody = body(of: request)
+                expectRequest.fulfill()
+
+                return Response {
+                    Status.ok
+                    Fixture.data(name: "favorite")
+                }
+            }
+
+            // Tap the favorite button in the overflow menu
+            moreButton.wait().tap()
+            app.favoriteButton.wait().tap()
+
+            // Assert request was made with correct params
+            wait(for: [expectRequest], timeout: 1)
             guard let requestBody = favoriteRequestBody else {
                 XCTFail("Expected request body to not be nil")
                 return
@@ -189,29 +180,26 @@ class FavoriteAnItemTests: XCTestCase {
             XCTAssertTrue(requestBody.contains("item-id-2"))
         }
 
-        app.showItemActions()
-        let unfavoriteButton = app.unfavoriteButton()
-        XCTAssertTrue(unfavoriteButton.waitForExistence(timeout: 1))
-        XCTAssertFalse(app.favoriteButton().exists)
-
-        let expectUnfavoriteRequest = expectation(description: "A request to the server")
-        var unfavoriteRequestBody: String?
-
-        server.routes.post("/graphql") { request, loop in
-            unfavoriteRequestBody = body(of: request)
-            expectUnfavoriteRequest.fulfill()
-
-            return Response {
-                Status.ok
-                Fixture.data(name: "unfavorite")
-            }
-        }
-
-        unfavoriteButton.tap()
-
-        wait(for: [expectUnfavoriteRequest], timeout: 1)
-        XCTAssertFalse(itemCell.favoriteIcon().exists)
+        // Unfavoriting
         do {
+            // Set up the request handler
+            let expectUnfavoriteRequest = expectation(description: "A request to the server")
+            var unfavoriteRequestBody: String?
+            server.routes.post("/graphql") { request, loop in
+                unfavoriteRequestBody = body(of: request)
+                expectUnfavoriteRequest.fulfill()
+
+                return Response {
+                    Status.ok
+                    Fixture.data(name: "unfavorite")
+                }
+            }
+
+            // Tap the Unfavorite button from overflow menu
+            moreButton.tap()
+            app.unfavoriteButton.wait().tap()
+
+            wait(for: [expectUnfavoriteRequest], timeout: 1)
             guard let requestBody = unfavoriteRequestBody else {
                 XCTFail("Expected request body to not be nil")
                 return
@@ -221,8 +209,8 @@ class FavoriteAnItemTests: XCTestCase {
             XCTAssertTrue(requestBody.contains("item-id-2"))
         }
 
-        app.showItemActions()
-        XCTAssertTrue(favoriteButton.waitForExistence(timeout: 1))
-        XCTAssertFalse(unfavoriteButton.exists)
+        moreButton.tap()
+        app.favoriteButton.wait()
+        XCTAssertFalse(app.unfavoriteButton.exists)
     }
 }

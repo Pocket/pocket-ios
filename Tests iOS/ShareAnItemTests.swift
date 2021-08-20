@@ -8,13 +8,13 @@ import Sails
 
 class ShareAnItemTests: XCTestCase {
     var server: Application!
-    var app: PocketApp!
+    var app: PocketAppElement!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
-        app = PocketApp(app: uiApp)
+        app = PocketAppElement(app: uiApp)
 
         server = Application()
 
@@ -50,43 +50,34 @@ class ShareAnItemTests: XCTestCase {
     }
 
     func test_sharingAnItemFromList_presentsShareSheet() {
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        app
+            .userListView
+            .itemView(withLabelStartingWith: "Item 2")
+            .itemActionButton.wait()
+            .tap()
 
-        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
-        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
+        app.shareButton.wait().tap()
 
-        itemCell.showActions()
-
-        let shareButton = app.shareButton()
-        XCTAssertTrue(shareButton.waitForExistence(timeout: 1))
-
-        shareButton.tap()
-
-        let shareSheet = app.shareSheet()
-        XCTAssertTrue(shareSheet.waitForExistence(timeout: 1))
+        app.shareSheet.wait()
     }
 
     func test_sharingAnItemFromReader_presentsShareSheet() {
-        let listView = app.userListView()
-        XCTAssertTrue(listView.waitForExistence())
+        app
+            .userListView
+            .itemView(withLabelStartingWith: "Item 2")
+            .wait()
+            .tap()
 
-        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
-        XCTAssertTrue(itemCell.waitForExistence(timeout: 1))
+        app
+            .readerView
+            .readerToolbar
+            .moreButton.wait()
+            .tap()
 
-        itemCell.tap()
+        app
+            .shareButton.wait()
+            .tap()
 
-        let reader = app.readerView()
-        XCTAssertTrue(reader.waitForExistence())
-
-        app.showItemActions()
-
-        let shareButton = app.shareButton()
-        XCTAssertTrue(shareButton.waitForExistence(timeout: 1))
-
-        shareButton.tap()
-
-        let shareSheet = app.shareSheet()
-        XCTAssertTrue(shareSheet.waitForExistence(timeout: 1))
+        app.shareSheet.wait()
     }
 }

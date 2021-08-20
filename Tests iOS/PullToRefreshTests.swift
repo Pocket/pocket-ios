@@ -8,13 +8,13 @@ import Sails
 
 class PullToRefreshTests: XCTestCase {
     var server: Application!
-    var app: PocketApp!
+    var app: PocketAppElement!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
-        app = PocketApp(app: uiApp)
+        app = PocketAppElement(app: uiApp)
 
         server = Application()
 
@@ -50,8 +50,7 @@ class PullToRefreshTests: XCTestCase {
     }
 
     func test_myList_pullToRefresh_fetchesNewContent() {
-        let listView = app.userListView().wait()
-
+        let listView = app.userListView.wait()
         XCTAssertEqual(listView.itemCount, 2)
 
         server.routes.post("/graphql") { _, _ in
@@ -66,14 +65,12 @@ class PullToRefreshTests: XCTestCase {
 
         listView.pullToRefresh()
 
-        do {
-            let item = listView.itemView(withLabelStartingWith: "Updated Item 1")
-            XCTAssertTrue(item.waitForExistence())
-        }
+        listView
+            .itemView(withLabelStartingWith: "Updated Item 1")
+            .wait()
 
-        do {
-            let item = listView.itemView(withLabelStartingWith: "Updated Item 2")
-            XCTAssertTrue(item.waitForExistence())
-        }
+        listView
+            .itemView(withLabelStartingWith: "Updated Item 2")
+            .wait()
     }
 }

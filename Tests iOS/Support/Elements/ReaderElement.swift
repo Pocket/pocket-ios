@@ -5,24 +5,28 @@
 import XCTest
 
 
-struct ReaderScreen {
-    private let el: XCUIElement
+struct ReaderElement: PocketUIElement {
+    let element: XCUIElement
 
-    init(el: XCUIElement) {
-        self.el = el
+    init(_ element: XCUIElement) {
+        self.element = element
     }
 
-    func waitForExistence(timeout: TimeInterval = 1) -> Bool {
-        return el.waitForExistence(timeout: timeout)
+    var readerToolbar: ReaderToolbarElement {
+        return ReaderToolbarElement(element.navigationBars.element(boundBy: 0))
     }
 
     func cell(containing string: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS %@", string)
-        return el.cells.containing(predicate).element(boundBy: 0)
+        return element
+            .cells
+            .containing(predicate)
+            .element(boundBy: 0)
     }
 
     func scrollCellToTop(_ cell: XCUIElement) {
-        let readerViewCenter = el.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+        let readerViewCenter = element
+            .coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
 
         let navbarHeight: CGFloat = 94
         let gracePixelsBeforeScrollingBegins: CGFloat = 10
