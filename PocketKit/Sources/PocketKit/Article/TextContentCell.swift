@@ -26,6 +26,7 @@ class TextContentCell: UICollectionViewCell {
         super.init(frame: frame)
 
         textView.textContainerInset = .zero
+        textView.textContainer.lineFragmentPadding = .zero
         textView.isEditable = false
         textView.isScrollEnabled = false
         textView.delegate = self
