@@ -41,13 +41,18 @@ class ArticleViewController: UICollectionViewController {
     private let tracker: Tracker
 
     private var subscriptions: [AnyCancellable] = []
+    private var layout: UICollectionViewFlowLayout = {
+        let layout = UICollectionViewFlowLayout()
+        layout.minimumLineSpacing = 8
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
+
+        return layout
+    }()
 
     init(readerSettings: ReaderSettings, tracker: Tracker) {
         self.readerSettings = readerSettings
         self.tracker = tracker
 
-        let layout = UICollectionViewFlowLayout()
-        layout.minimumLineSpacing = 8
         super.init(collectionViewLayout: layout)
 
         collectionView.accessibilityIdentifier = "article-view"
@@ -163,7 +168,10 @@ extension ArticleViewController: UICollectionViewDelegateFlowLayout {
     private func textSize(for textContent: TextContent, style: Style) -> CGSize {
         let text = attributedText(textContent: textContent, style: style)
 
-        let maxWidth = collectionView.frame.width
+        let maxWidth = collectionView.frame.width -
+            layout.sectionInset.left -
+            layout.sectionInset.right
+
         return CGSize(
             width: maxWidth,
             height: text.boundingRect(
