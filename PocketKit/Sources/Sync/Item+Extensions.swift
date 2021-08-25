@@ -33,14 +33,9 @@ extension Item {
             timeToRead = Int32(time)
         }
 
-        if let timeInterval = TimeInterval(remoteItem._createdAt) {
-            timestamp = Date(timeIntervalSince1970: timeInterval)
-        }
-
-        if let deletedAtString = remoteItem._deletedAt,
-           let timeInterval = TimeInterval(deletedAtString) {
-            deletedAt = Date(timeIntervalSince1970: timeInterval)
-        }
+        timestamp = Date(timeIntervalSince1970: TimeInterval(remoteItem._createdAt))
+        deletedAt = remoteItem._deletedAt
+            .flatMap { Date(timeIntervalSince1970: TimeInterval($0)) }
     }
 
     public var particle: Article? {

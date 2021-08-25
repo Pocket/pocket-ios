@@ -75,22 +75,26 @@ public struct SavedItemsFilter: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
   /// - Parameters:
-  ///   - updatedSince: Optional, filter to get SavedItems updated since a date
+  ///   - updatedSince: Optional, filter to get SavedItems updated since a unix timestamp
   ///   - isFavorite: Optional, filter to get SavedItems that have been favorited
-  ///   - isArchived: Optional, filter to get SavedItems that have been archived
+  ///   - isArchived: Optional, filter to get SavedItems that have been archived.
+  /// This field is deprecated. Use status instead.
+  /// TODO: Add deprecate tag once input field deprecation is enabled.
+  /// Ref: https://github.com/apollographql/federation/issues/912
   ///   - tagIds: Optional, filter to get SavedItems associated to the specified Tag.
   ///   - tagNames: Optional, filter to get SavedItems associated to the specified Tag name.
   /// To get untagged items, include the string '_untagged_'.
   ///   - isHighlighted: Optional, filter to get SavedItems with highlights
   ///   - contentType: Optional, filter to get SavedItems based on content type
-  public init(updatedSince: Swift.Optional<String?> = nil, isFavorite: Swift.Optional<Bool?> = nil, isArchived: Swift.Optional<Bool?> = nil, tagIds: Swift.Optional<[GraphQLID]?> = nil, tagNames: Swift.Optional<[String]?> = nil, isHighlighted: Swift.Optional<Bool?> = nil, contentType: Swift.Optional<SavedItemsContentType?> = nil) {
-    graphQLMap = ["updatedSince": updatedSince, "isFavorite": isFavorite, "isArchived": isArchived, "tagIds": tagIds, "tagNames": tagNames, "isHighlighted": isHighlighted, "contentType": contentType]
+  ///   - status: Optional, filter to get user items based on status.
+  public init(updatedSince: Swift.Optional<Int?> = nil, isFavorite: Swift.Optional<Bool?> = nil, isArchived: Swift.Optional<Bool?> = nil, tagIds: Swift.Optional<[GraphQLID]?> = nil, tagNames: Swift.Optional<[String]?> = nil, isHighlighted: Swift.Optional<Bool?> = nil, contentType: Swift.Optional<SavedItemsContentType?> = nil, status: Swift.Optional<SavedItemStatusFilter?> = nil) {
+    graphQLMap = ["updatedSince": updatedSince, "isFavorite": isFavorite, "isArchived": isArchived, "tagIds": tagIds, "tagNames": tagNames, "isHighlighted": isHighlighted, "contentType": contentType, "status": status]
   }
 
-  /// Optional, filter to get SavedItems updated since a date
-  public var updatedSince: Swift.Optional<String?> {
+  /// Optional, filter to get SavedItems updated since a unix timestamp
+  public var updatedSince: Swift.Optional<Int?> {
     get {
-      return graphQLMap["updatedSince"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+      return graphQLMap["updatedSince"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
     }
     set {
       graphQLMap.updateValue(newValue, forKey: "updatedSince")
@@ -107,7 +111,10 @@ public struct SavedItemsFilter: GraphQLMapConvertible {
     }
   }
 
-  /// Optional, filter to get SavedItems that have been archived
+  /// Optional, filter to get SavedItems that have been archived.
+  /// This field is deprecated. Use status instead.
+  /// TODO: Add deprecate tag once input field deprecation is enabled.
+  /// Ref: https://github.com/apollographql/federation/issues/912
   public var isArchived: Swift.Optional<Bool?> {
     get {
       return graphQLMap["isArchived"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
@@ -157,6 +164,16 @@ public struct SavedItemsFilter: GraphQLMapConvertible {
       graphQLMap.updateValue(newValue, forKey: "contentType")
     }
   }
+
+  /// Optional, filter to get user items based on status.
+  public var status: Swift.Optional<SavedItemStatusFilter?> {
+    get {
+      return graphQLMap["status"] as? Swift.Optional<SavedItemStatusFilter?> ?? Swift.Optional<SavedItemStatusFilter?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "status")
+    }
+  }
 }
 
 /// A SavedItem can be one of these content types
@@ -196,6 +213,52 @@ public enum SavedItemsContentType: RawRepresentable, Equatable, Hashable, CaseIt
     return [
       .video,
       .article,
+    ]
+  }
+}
+
+/// Valid statuses a client may use to filter SavedItems
+public enum SavedItemStatusFilter: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case unread
+  case archived
+  case hidden
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "UNREAD": self = .unread
+      case "ARCHIVED": self = .archived
+      case "HIDDEN": self = .hidden
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .unread: return "UNREAD"
+      case .archived: return "ARCHIVED"
+      case .hidden: return "HIDDEN"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: SavedItemStatusFilter, rhs: SavedItemStatusFilter) -> Bool {
+    switch (lhs, rhs) {
+      case (.unread, .unread): return true
+      case (.archived, .archived): return true
+      case (.hidden, .hidden): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [SavedItemStatusFilter] {
+    return [
+      .unread,
+      .archived,
+      .hidden,
     ]
   }
 }
@@ -467,8 +530,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                 GraphQLField("url", type: .nonNull(.scalar(String.self))),
                 GraphQLField("isArchived", type: .nonNull(.scalar(Bool.self))),
                 GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
-                GraphQLField("_deletedAt", type: .scalar(String.self)),
-                GraphQLField("_createdAt", type: .nonNull(.scalar(String.self))),
+                GraphQLField("_deletedAt", type: .scalar(Int.self)),
+                GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
                 GraphQLField("item", type: .nonNull(.object(Item.selections))),
               ]
             }
@@ -479,7 +542,7 @@ public final class UserByTokenQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(itemId: GraphQLID, url: String, isArchived: Bool, isFavorite: Bool, _deletedAt: String? = nil, _createdAt: String, item: Item) {
+            public init(itemId: GraphQLID, url: String, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, item: Item) {
               self.init(unsafeResultMap: ["__typename": "SavedItem", "itemId": itemId, "url": url, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "item": item.resultMap])
             }
 
@@ -533,9 +596,9 @@ public final class UserByTokenQuery: GraphQLQuery {
             }
 
             /// Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
-            public var _deletedAt: String? {
+            public var _deletedAt: Int? {
               get {
-                return resultMap["_deletedAt"] as? String
+                return resultMap["_deletedAt"] as? Int
               }
               set {
                 resultMap.updateValue(newValue, forKey: "_deletedAt")
@@ -543,9 +606,9 @@ public final class UserByTokenQuery: GraphQLQuery {
             }
 
             /// Unix timestamp of when the entity was created
-            public var _createdAt: String {
+            public var _createdAt: Int {
               get {
-                return resultMap["_createdAt"]! as! String
+                return resultMap["_createdAt"]! as! Int
               }
               set {
                 resultMap.updateValue(newValue, forKey: "_createdAt")
@@ -1220,8 +1283,8 @@ public struct SavedItemParts: GraphQLFragment {
       GraphQLField("url", type: .nonNull(.scalar(String.self))),
       GraphQLField("isArchived", type: .nonNull(.scalar(Bool.self))),
       GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
-      GraphQLField("_deletedAt", type: .scalar(String.self)),
-      GraphQLField("_createdAt", type: .nonNull(.scalar(String.self))),
+      GraphQLField("_deletedAt", type: .scalar(Int.self)),
+      GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
       GraphQLField("item", type: .nonNull(.object(Item.selections))),
     ]
   }
@@ -1232,7 +1295,7 @@ public struct SavedItemParts: GraphQLFragment {
     self.resultMap = unsafeResultMap
   }
 
-  public init(itemId: GraphQLID, url: String, isArchived: Bool, isFavorite: Bool, _deletedAt: String? = nil, _createdAt: String, item: Item) {
+  public init(itemId: GraphQLID, url: String, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, item: Item) {
     self.init(unsafeResultMap: ["__typename": "SavedItem", "itemId": itemId, "url": url, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "item": item.resultMap])
   }
 
@@ -1286,9 +1349,9 @@ public struct SavedItemParts: GraphQLFragment {
   }
 
   /// Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
-  public var _deletedAt: String? {
+  public var _deletedAt: Int? {
     get {
-      return resultMap["_deletedAt"] as? String
+      return resultMap["_deletedAt"] as? Int
     }
     set {
       resultMap.updateValue(newValue, forKey: "_deletedAt")
@@ -1296,9 +1359,9 @@ public struct SavedItemParts: GraphQLFragment {
   }
 
   /// Unix timestamp of when the entity was created
-  public var _createdAt: String {
+  public var _createdAt: Int {
     get {
-      return resultMap["_createdAt"]! as! String
+      return resultMap["_createdAt"]! as! Int
     }
     set {
       resultMap.updateValue(newValue, forKey: "_createdAt")

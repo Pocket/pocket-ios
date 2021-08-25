@@ -206,7 +206,7 @@ class FetchListTests: XCTestCase {
 
         let call: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
         XCTAssertNotNil(call.query.savedItemsFilter)
-        XCTAssertEqual(call.query.savedItemsFilter?.updatedSince, "123456789")
+        XCTAssertEqual(call.query.savedItemsFilter?.updatedSince, 123456789)
     }
 
     func test_refresh_whenUpdatedSinceIsNotPresent_doesNotIncludeUpdatedSinceFilter() {

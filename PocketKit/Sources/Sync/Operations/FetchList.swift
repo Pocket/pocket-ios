@@ -41,7 +41,7 @@ class FetchList: AsyncOperation {
         }
 
         if let updatedSince = lastRefresh.lastRefresh {
-            query.savedItemsFilter = SavedItemsFilter(updatedSince: String(updatedSince))
+            query.savedItemsFilter = SavedItemsFilter(updatedSince: updatedSince)
         }
 
         _ = apollo.fetch(query: query) { [weak self] result in

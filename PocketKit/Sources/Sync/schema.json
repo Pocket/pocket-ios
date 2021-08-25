@@ -722,6 +722,12 @@
             "deprecationReason": null
           },
           {
+            "name": "REVIEW",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "PUBLISHED",
             "description": null,
             "isDeprecated": false,
@@ -2279,7 +2285,7 @@
           },
           {
             "name": "updateSavedItemTags",
-            "description": "Set the Tags that are associated with a SavedItem.\nWill replace any existing Tag associations on the SavedItem.\nTo remove all Tags from a SavedItem, use `deleteTagsBySavedItem`.",
+            "description": "Set the Tags that are associated with a SavedItem.\nWill replace any existing Tag associations on the SavedItem.\nTo remove all Tags from a SavedItem, use `updateSavedItemRemoveTags`.",
             "args": [
               {
                 "name": "input",
@@ -2292,6 +2298,35 @@
                     "name": "SavedItemTagUpdateInput",
                     "ofType": null
                   }
+                },
+                "defaultValue": null,
+                "isDeprecated": false,
+                "deprecationReason": null
+              }
+            ],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "OBJECT",
+                "name": "SavedItem",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "updateSavedItemRemoveTags",
+            "description": "Removes all Tag associations from a SavedItem. Returns the\nSavedItem that had its Tag associations cleared.\nNote that if this operation results in a Tag having no associations\nto a SavedItem, the Tag object will be deleted.",
+            "args": [
+              {
+                "name": "savedItemId",
+                "description": null,
+                "type": {
+                  "kind": "SCALAR",
+                  "name": "ID",
+                  "ofType": null
                 },
                 "defaultValue": null,
                 "isDeprecated": false,
@@ -2493,39 +2528,6 @@
               "ofType": {
                 "kind": "OBJECT",
                 "name": "SavedItemTagAssociation",
-                "ofType": null
-              }
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "deleteTagsBySavedItem",
-            "description": "Removes all Tag associations from a SavedItem. Returns the ID of the\nSavedItem that had its Tag associations cleared.\nNote that if this operation results in a Tag having no associations\nto a SavedItem, the Tag object will be deleted.",
-            "args": [
-              {
-                "name": "savedItemId",
-                "description": null,
-                "type": {
-                  "kind": "NON_NULL",
-                  "name": null,
-                  "ofType": {
-                    "kind": "SCALAR",
-                    "name": "ID",
-                    "ofType": null
-                  }
-                },
-                "defaultValue": null,
-                "isDeprecated": false,
-                "deprecationReason": null
-              }
-            ],
-            "type": {
-              "kind": "NON_NULL",
-              "name": null,
-              "ofType": {
-                "kind": "SCALAR",
-                "name": "ID",
                 "ofType": null
               }
             },
@@ -3509,7 +3511,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3521,7 +3523,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3545,7 +3547,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3612,7 +3614,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3640,7 +3642,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3719,7 +3721,7 @@
               "name": null,
               "ofType": {
                 "kind": "SCALAR",
-                "name": "Timestamp",
+                "name": "Int",
                 "ofType": null
               }
             },
@@ -3732,7 +3734,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3756,7 +3758,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -3907,10 +3909,10 @@
         "inputFields": [
           {
             "name": "updatedSince",
-            "description": "Optional, filter to get SavedItems updated since a date",
+            "description": "Optional, filter to get SavedItems updated since a unix timestamp",
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "defaultValue": null,
@@ -3931,7 +3933,7 @@
           },
           {
             "name": "isArchived",
-            "description": "Optional, filter to get SavedItems that have been archived",
+            "description": "Optional, filter to get SavedItems that have been archived.\nThis field is deprecated. Use status instead.\nTODO: Add deprecate tag once input field deprecation is enabled.\nRef: https://github.com/apollographql/federation/issues/912",
             "type": {
               "kind": "SCALAR",
               "name": "Boolean",
@@ -3999,6 +4001,18 @@
             "type": {
               "kind": "ENUM",
               "name": "SavedItemsContentType",
+              "ofType": null
+            },
+            "defaultValue": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "status",
+            "description": "Optional, filter to get user items based on status.",
+            "type": {
+              "kind": "ENUM",
+              "name": "SavedItemStatusFilter",
               "ofType": null
             },
             "defaultValue": null,
@@ -4151,6 +4165,36 @@
         "possibleTypes": null
       },
       {
+        "kind": "ENUM",
+        "name": "SavedItemStatusFilter",
+        "description": "Valid statuses a client may use to filter SavedItems",
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": [
+          {
+            "name": "UNREAD",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "ARCHIVED",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "HIDDEN",
+            "description": null,
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "SavedItemTagAssociation",
         "description": null,
@@ -4286,7 +4330,7 @@
             "description": "Optional, time that request was submitted by client epoch/unix time",
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "defaultValue": null,
@@ -4586,7 +4630,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -4598,7 +4642,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -4622,7 +4666,7 @@
             "args": [],
             "type": {
               "kind": "SCALAR",
-              "name": "Timestamp",
+              "name": "Int",
               "ofType": null
             },
             "isDeprecated": false,
@@ -4824,17 +4868,6 @@
             "deprecationReason": null
           }
         ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "SCALAR",
-        "name": "Timestamp",
-        "description": "Integer based represention of a unix timestamp",
-        "specifiedByUrl": null,
-        "fields": null,
-        "inputFields": null,
         "interfaces": null,
         "enumValues": null,
         "possibleTypes": null
