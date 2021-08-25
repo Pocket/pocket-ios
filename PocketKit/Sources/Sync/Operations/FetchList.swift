@@ -37,7 +37,7 @@ class FetchList: AsyncOperation {
         let query = UserByTokenQuery(token: token)
 
         if let after = after {
-            query.pagination = PaginationInput(after: after)
+            query.pagination = PaginationInput(after: after, first: 30)
         }
 
         if let updatedSince = lastRefresh.lastRefresh {
