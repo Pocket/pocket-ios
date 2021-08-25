@@ -62,17 +62,8 @@ class FetchList: AsyncOperation {
     }
 
     private func handle(data: UserByTokenQuery.Data?, maxItems: Int) {
-        guard let savedItems = data?.userByToken?.savedItems,
-              let edges = savedItems.edges,
-              let maybeLastItem = edges.last,
-              let lastItem = maybeLastItem else {
-                  // User's list is empty
-                  succeedOperation()
-                  return
-        }
-
         do {
-            try createOrUpdateItems(from: edges)
+            try createOrUpdateItems(from: data)
         } catch {
             // TODO: Add a test for the case where core data throws an error
             // would probably require mocking `Space`
@@ -80,16 +71,22 @@ class FetchList: AsyncOperation {
             return
         }
 
-        if savedItems.pageInfo.hasNextPage, maxItems > edges.count {
-            fetchPage(maxItems: maxItems - edges.count, after: lastItem.cursor)
+        if let savedItems = data?.userByToken?.savedItems,
+           let itemCount = savedItems.edges?.count,
+           let cursor = savedItems.pageInfo.endCursor,
+           savedItems.pageInfo.hasNextPage,
+           maxItems > itemCount {
+            fetchPage(maxItems: maxItems - itemCount, after: cursor)
         } else {
             succeedOperation()
         }
     }
 
-    private func createOrUpdateItems(
-        from edges: [UserByTokenQuery.Data.UserByToken.SavedItem.Edge?]
-    ) throws {
+    private func createOrUpdateItems(from data: UserByTokenQuery.Data?) throws {
+        guard let edges = data?.userByToken?.savedItems?.edges else {
+            return
+        }
+
         for edge in edges {
             guard let node = edge?.node else {
                 continue
