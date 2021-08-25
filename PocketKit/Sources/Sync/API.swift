@@ -275,6 +275,7 @@ public final class UserByTokenQuery: GraphQLQuery {
           pageInfo {
             __typename
             hasNextPage
+            endCursor
           }
           edges {
             __typename
@@ -436,6 +437,7 @@ public final class UserByTokenQuery: GraphQLQuery {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("hasNextPage", type: .nonNull(.scalar(Bool.self))),
+              GraphQLField("endCursor", type: .scalar(String.self)),
             ]
           }
 
@@ -445,8 +447,8 @@ public final class UserByTokenQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(hasNextPage: Bool) {
-            self.init(unsafeResultMap: ["__typename": "PageInfo", "hasNextPage": hasNextPage])
+          public init(hasNextPage: Bool, endCursor: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PageInfo", "hasNextPage": hasNextPage, "endCursor": endCursor])
           }
 
           public var __typename: String {
@@ -465,6 +467,16 @@ public final class UserByTokenQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "hasNextPage")
+            }
+          }
+
+          /// When paginating forwards, the cursor to continue.
+          public var endCursor: String? {
+            get {
+              return resultMap["endCursor"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "endCursor")
             }
           }
         }

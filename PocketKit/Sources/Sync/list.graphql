@@ -30,6 +30,7 @@ query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilt
     savedItems(pagination: $pagination, filter: $savedItemsFilter) {
       pageInfo {
         hasNextPage
+        endCursor
       }
       edges {
         cursor

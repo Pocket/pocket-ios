@@ -6,7 +6,8 @@
                 "__typename": "[type-name-here]",
                 "pageInfo": {
                     "__typename": "[type-name-here]",
-                    "hasNextPage": true
+                    "hasNextPage": true,
+                    "endCursor": "cursor-3"
                 },
                 "edges": [
                     {
