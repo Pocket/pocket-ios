@@ -63,6 +63,8 @@ class FetchList: AsyncOperation {
 
         if let updatedSince = lastRefresh.lastRefresh {
             query.savedItemsFilter = SavedItemsFilter(updatedSince: updatedSince)
+        } else {
+            query.savedItemsFilter = SavedItemsFilter(status: .unread)
         }
 
         return try await apollo.fetch(query: query)
