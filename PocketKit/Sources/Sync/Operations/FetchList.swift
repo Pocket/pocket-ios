@@ -30,13 +30,34 @@ class FetchList: AsyncOperation {
     }
 
     override func main() {
-        fetchPage(maxItems: maxItems)
+        Task {
+            do {
+                try await fetchList()
+
+                lastRefresh.refreshed()
+                finishOperation()
+            } catch {
+                Crashlogger.capture(error: error)
+                events.send(.error(error))
+                finishOperation()
+            }
+        }
     }
 
-    private func fetchPage(maxItems: Int, after: String? = nil) {
+    private func fetchList() async throws {
+        var pagination = PaginationSpec(maxItems: maxItems)
+
+        repeat {
+            let result = try await fetchPage(cursor: pagination.cursor)
+            try updateLocalStorage(result: result)
+            pagination = pagination.nextPage(result: result)
+        } while pagination.shouldFetchNextPage
+    }
+
+    private func fetchPage(cursor: String?) async throws -> GraphQLResult<UserByTokenQuery.Data> {
         let query = UserByTokenQuery(token: token)
 
-        if let after = after {
+        if let after = cursor {
             query.pagination = PaginationInput(after: after, first: 30)
         }
 
@@ -44,70 +65,59 @@ class FetchList: AsyncOperation {
             query.savedItemsFilter = SavedItemsFilter(updatedSince: updatedSince)
         }
 
-        _ = apollo.fetch(query: query) { [weak self] result in
-            self?.handle(result: result, maxItems: maxItems)
-        }
+        return try await apollo.fetch(query: query)
     }
 
-    private func handle(
-        result: Result<GraphQLResult<UserByTokenQuery.Data>, Error>,
-        maxItems: Int
-    ) {
-        switch result {
-        case .failure(let error):
-            failOperation(error: error)
-        case .success(let data):
-            handle(data: data.data, maxItems: maxItems)
-        }
-    }
-
-    private func handle(data: UserByTokenQuery.Data?, maxItems: Int) {
-        do {
-            try createOrUpdateItems(from: data)
-        } catch {
-            // TODO: Add a test for the case where core data throws an error
-            // would probably require mocking `Space`
-            failOperation(error: error)
+    private func updateLocalStorage(result: GraphQLResult<UserByTokenQuery.Data>) throws {
+        guard let edges = result.data?.userByToken?.savedItems?.edges else {
             return
         }
 
-        if let savedItems = data?.userByToken?.savedItems,
-           let itemCount = savedItems.edges?.count,
-           let cursor = savedItems.pageInfo.endCursor,
-           savedItems.pageInfo.hasNextPage,
-           maxItems > itemCount {
-            fetchPage(maxItems: maxItems - itemCount, after: cursor)
-        } else {
-            succeedOperation()
-        }
-    }
+        try space.context.performAndWait {
+            for edge in edges {
+                guard let node = edge?.node else {
+                    continue
+                }
 
-    private func createOrUpdateItems(from data: UserByTokenQuery.Data?) throws {
-        guard let edges = data?.userByToken?.savedItems?.edges else {
-            return
-        }
+                let item = try space.fetchOrCreateItem(byURLString: node.url)
+                item.update(from: node)
 
-        for edge in edges {
-            guard let node = edge?.node else {
-                continue
+                if item.deletedAt != nil, item.isArchived {
+                    space.delete(item)
+                }
             }
 
-            let item = try space.fetchOrCreateItem(byURLString: node.url)
-            item.update(from: node)
+            try space.save()
+        }
+    }
+
+    struct PaginationSpec {
+        let cursor: String?
+        let shouldFetchNextPage: Bool
+        let maxItems: Int
+
+        init(maxItems: Int) {
+            self.init(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems)
         }
 
-        try space.save()
-    }
+        private init(cursor: String?, shouldFetchNextPage: Bool, maxItems: Int) {
+            self.cursor = cursor
+            self.shouldFetchNextPage = shouldFetchNextPage
+            self.maxItems = maxItems
+        }
 
-    private func failOperation(error: Error) {
-        // TODO: listen for error events on Source and capture errors there
-        Crashlogger.capture(error: error)
-        events.send(.error(error))
-        finishOperation()
-    }
+        func nextPage(result: GraphQLResult<UserByTokenQuery.Data>) -> PaginationSpec {
+            guard let savedItems = result.data?.userByToken?.savedItems,
+                  let itemCount = savedItems.edges?.count,
+                  let endCursor = savedItems.pageInfo.endCursor else {
+                      return PaginationSpec(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems)
+                  }
 
-    private func succeedOperation() {
-        lastRefresh.refreshed()
-        finishOperation()
+            return PaginationSpec(
+                cursor: endCursor,
+                shouldFetchNextPage: savedItems.pageInfo.hasNextPage && itemCount < maxItems,
+                maxItems: maxItems - itemCount
+            )
+        }
     }
 }
