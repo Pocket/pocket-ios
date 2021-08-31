@@ -15,4 +15,17 @@ extension ApolloClientProtocol {
             resultHandler: resultHandler
         )
     }
+
+    func fetch<Query: GraphQLQuery>(query: Query) async throws -> GraphQLResult<Query.Data> {
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<GraphQLResult<Query.Data>, Error>) in
+            _ = fetch(query: query) { result in
+                switch result {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let data):
+                    continuation.resume(returning: data)
+                }
+            }
+        }
+    }
 }
