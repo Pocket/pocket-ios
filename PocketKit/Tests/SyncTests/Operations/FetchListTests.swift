@@ -209,13 +209,13 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(call.query.savedItemsFilter?.updatedSince, 123456789)
     }
 
-    func test_refresh_whenUpdatedSinceIsNotPresent_doesNotIncludeUpdatedSinceFilter() {
+    func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() {
         apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
 
         performOperation()
 
         let call: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
-        XCTAssertNil(call.query.savedItemsFilter)
+        XCTAssertEqual(call.query.savedItemsFilter?.status, .unread)
     }
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() {
