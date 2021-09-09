@@ -38,6 +38,9 @@
 		1674057726CAC35F0061434E /* DeleteAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1674057626CAC35F0061434E /* DeleteAnItemTests.swift */; };
 		167F8084264B011600D8F507 /* Sails in Frameworks */ = {isa = PBXBuildFile; productRef = 167F8083264B011600D8F507 /* Sails */; };
 		168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168292C726CC64C300830140 /* ShareAnItemTests.swift */; };
+		16A140E926E7E3BE002D8012 /* DiscoverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A140E826E7E3BE002D8012 /* DiscoverTests.swift */; };
+		16A140EB26E7E7A0002D8012 /* TabBarElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A140EA26E7E7A0002D8012 /* TabBarElement.swift */; };
+		16A140ED26E7E836002D8012 /* DiscoverViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A140EC26E7E836002D8012 /* DiscoverViewElement.swift */; };
 		16BA7D6326851513009A17C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA7D6226851513009A17C1 /* main.swift */; };
 		16BA7D6626851579009A17C1 /* PocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16BA7D6526851579009A17C1 /* PocketKit */; };
 		16E32B0226851AEB000CC36D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16D47E7F26851AB40095D5A4 /* Assets.xcassets */; };
@@ -98,6 +101,9 @@
 		1674057626CAC35F0061434E /* DeleteAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAnItemTests.swift; sourceTree = "<group>"; };
 		168292C726CC64C300830140 /* ShareAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareAnItemTests.swift; sourceTree = "<group>"; };
 		16973355263CBB3F0003DE2A /* secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets.xcconfig; sourceTree = "<group>"; };
+		16A140E826E7E3BE002D8012 /* DiscoverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverTests.swift; sourceTree = "<group>"; };
+		16A140EA26E7E7A0002D8012 /* TabBarElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarElement.swift; sourceTree = "<group>"; };
+		16A140EC26E7E836002D8012 /* DiscoverViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverViewElement.swift; sourceTree = "<group>"; };
 		16BA7D6226851513009A17C1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		16D47E7F26851AB40095D5A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefreshTests.swift; sourceTree = "<group>"; };
@@ -160,6 +166,7 @@
 				168292C726CC64C300830140 /* ShareAnItemTests.swift */,
 				160056F226CC7FFD00700A80 /* FavoriteAnItemTests.swift */,
 				16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */,
+				16A140E826E7E3BE002D8012 /* DiscoverTests.swift */,
 			);
 			path = "Tests iOS";
 			sourceTree = "<group>";
@@ -186,6 +193,8 @@
 				166BAD072656E76B00E401F0 /* UserListElement.swift */,
 				166EFAE92682821300A027CD /* WebReaderElement.swift */,
 				166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */,
+				16A140EA26E7E7A0002D8012 /* TabBarElement.swift */,
+				16A140EC26E7E836002D8012 /* DiscoverViewElement.swift */,
 			);
 			path = Elements;
 			sourceTree = "<group>";
@@ -365,8 +374,11 @@
 				166EFAEA2682821300A027CD /* WebReaderElement.swift in Sources */,
 				16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */,
 				160056F326CC7FFD00700A80 /* FavoriteAnItemTests.swift in Sources */,
+				16A140ED26E7E836002D8012 /* DiscoverViewElement.swift in Sources */,
 				166BAD0A2656E76B00E401F0 /* SignInFormElement.swift in Sources */,
 				168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */,
+				16A140EB26E7E7A0002D8012 /* TabBarElement.swift in Sources */,
+				16A140E926E7E3BE002D8012 /* DiscoverTests.swift in Sources */,
 				166BACF82656E3C600E401F0 /* Fixture.swift in Sources */,
 				166F8F2926D0494F00F898E3 /* PocketUIElement.swift in Sources */,
 				166BAD092656E76B00E401F0 /* ItemRowElement.swift in Sources */,

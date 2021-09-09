@@ -17,7 +17,7 @@ struct ItemListView: View {
     }
 
     @ObservedObject
-    private var selection: ItemSelection
+    private var model: MainViewModel
 
     @Environment(\.source)
     private var source: Source
@@ -28,12 +28,12 @@ struct ItemListView: View {
     @Environment(\.uiContexts)
     private var contexts: [UIContext]
 
-    init(selection: ItemSelection) {
-        self.selection = selection
+    init(model: MainViewModel) {
+        self.model = model
     }
 
     private func background(item: Item) -> Color {
-        if item.url == selection.selectedItem?.url {
+        if item.url == model.selectedItem?.url {
             return Color(ColorAsset.ui.grey6)
         } else {
             return Color.clear
@@ -43,7 +43,7 @@ struct ItemListView: View {
     var body: some View {
         List {
             ForEach(content, id: \.1) { (index, item) in
-                ItemListViewRow(item: item, selection: selection, index: index)
+                ItemListViewRow(item: item, model: model, index: index)
                     .trackable(.home.item(index: UInt(index)))
                     .swipeActions {
                         Button {
@@ -96,7 +96,7 @@ private struct ItemListViewRow: View {
     var source: Source
     
     @ObservedObject
-    private var selection: ItemSelection
+    private var model: MainViewModel
     
     private let item: Item
     
@@ -112,9 +112,9 @@ private struct ItemListViewRow: View {
         return contexts
     }
 
-    init(item: Item, selection: ItemSelection, index: Int) {
+    init(item: Item, model: MainViewModel, index: Int) {
         self.item = item
-        self.selection = selection
+        self.model = model
         self.index = index
     }
 
@@ -127,7 +127,7 @@ private struct ItemListViewRow: View {
                 tracker.track(event: open, contexts)
             }
             
-            selection.selectedItem = item
+            model.selectedItem = item
         }) {
             ItemRowView(
                 model: ItemPresenter(
