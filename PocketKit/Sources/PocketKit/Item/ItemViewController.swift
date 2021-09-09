@@ -5,9 +5,6 @@ import Sync
 
 
 protocol ItemViewControllerDelegate: AnyObject {
-    func itemViewControllerDidTapReaderSettings(_ itemViewController: ItemViewController)
-    func itemViewControllerDidTapWebViewButton(_ itemViewController: ItemViewController)
-    func itemViewController(_ itemViewController: ItemViewController, didTapShareItem item: Item)
     func itemViewControllerDidDeleteItem(_ itemViewController: ItemViewController)
     func itemViewControllerDidArchiveItem(_ itemViewController: ItemViewController)
 }
@@ -16,9 +13,10 @@ class ItemViewController: UIViewController {
     private let itemHost: ArticleViewController
     private let source: Source
     private let tracker: Tracker
-    private var moreButtonItem: UIBarButtonItem?
+    private let moreButtonItem: UIBarButtonItem
     private var subscriptions: [AnyCancellable] = []
     private var observer: NSKeyValueObservation?
+    private let model: MainViewModel
 
     var uiContext: SnowplowContext {
         return UIContext.articleView.screen
@@ -27,21 +25,35 @@ class ItemViewController: UIViewController {
     weak var delegate: ItemViewControllerDelegate?
 
     init(
-        selection: ItemSelection,
-        readerSettings: ReaderSettings,
+        model: MainViewModel,
         tracker: Tracker,
         source: Source
     ) {
         self.source = source
         self.tracker = tracker
-        self.itemHost = ArticleViewController(readerSettings: readerSettings, tracker: tracker)
+        self.itemHost = ArticleViewController(readerSettings: model.readerSettings, tracker: tracker)
+        self.model = model
+        self.moreButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "ellipsis"),
+            menu: nil
+        )
 
         super.init(nibName: nil, bundle: nil)
 
-        selection.$selectedItem.sink { [weak self] selectedItem in
+        navigationItem.rightBarButtonItems = [
+            moreButtonItem,
+            UIBarButtonItem(
+                image: UIImage(systemName: "safari"),
+                style: .plain,
+                target: self,
+                action: #selector(showWebView)
+            )
+        ]
+
+        model.$selectedItem.sink { [weak self] selectedItem in
             self?.itemHost.item = selectedItem
             self?.observer = selectedItem?.observe(\.isFavorite, options: [.initial]) { [weak self] _, _ in
-                self?.resetNavbarRightBarButtonItems()
+                self?.buildOverflowMenu()
             }
         }.store(in: &subscriptions)
     }
@@ -61,78 +73,63 @@ class ItemViewController: UIViewController {
         ])
     }
 
-    func resetNavbarRightBarButtonItems() {
-        guard let item = itemHost.item else {
-            navigationItem.rightBarButtonItems = []
-            return
-        }
 
-        let favorite: () -> UIAction = {
-            if item.isFavorite {
-                return UIAction(
-                    title: "Unfavorite",
-                    image: UIImage(systemName: "star.slash"),
-                    handler: { [weak self] _ in
-                        self?.unfavorite()
-                    }
-                )
-            } else {
-                return UIAction(
-                    title: "Favorite",
-                    image: UIImage(systemName: "star"),
-                    handler: { [weak self] _ in
-                        self?.favorite()
-                    }
-                )
-            }
-        }
 
-        navigationItem.rightBarButtonItems = [
-            UIBarButtonItem(
-                image: UIImage(systemName: "ellipsis"),
-                menu: UIMenu(
-                    image: nil,
-                    identifier: nil,
-                    options: [],
-                    children: [
-                        UIAction(
-                            title: "Display Settings",
-                            image: UIImage(systemName: "textformat.size"),
+    func buildOverflowMenu() {
+        moreButtonItem.menu = UIMenu(
+            image: nil,
+            identifier: nil,
+            options: [],
+            children: [
+                UIAction(
+                    title: "Display Settings",
+                    image: UIImage(systemName: "textformat.size"),
+                    handler: { [weak self] _ in
+                        self?.showReaderSettings()
+                    }
+                ),
+                {
+                    if model.selectedItem?.isFavorite == true {
+                        return UIAction(
+                            title: "Unfavorite",
+                            image: UIImage(systemName: "star.slash"),
                             handler: { [weak self] _ in
-                                self?.showReaderSettings()
+                                self?.unfavorite()
                             }
-                        ),
-                        favorite(),
-                        UIAction(
-                            title: "Archive",
-                            image: UIImage(systemName: "archivebox"),
+                        )
+                    } else {
+                        return UIAction(
+                            title: "Favorite",
+                            image: UIImage(systemName: "star"),
                             handler: { [weak self] _ in
-                                self?.archive()
+                                self?.favorite()
                             }
-                        ),
-                        UIAction(
-                            title: "Delete",
-                            image: UIImage(systemName: "trash"),
-                            handler: { [weak self] _ in
-                                self?.delete()
-                            }
-                        ),
-                        UIAction(
-                            title: "Share",
-                            image: UIImage(systemName: "square.and.arrow.up"),
-                            handler: { [weak self] _ in
-                                self?.share()
-                            }
-                        ),
-                    ])
-            ),
-            UIBarButtonItem(
-                image: UIImage(systemName: "safari"),
-                style: .plain,
-                target: self,
-                action: #selector(showWebView)
-            )
-        ]
+                        )
+                    }
+                }(),
+                UIAction(
+                    title: "Archive",
+                    image: UIImage(systemName: "archivebox"),
+                    handler: { [weak self] _ in
+                        self?.archive()
+                    }
+                ),
+                UIAction(
+                    title: "Delete",
+                    image: UIImage(systemName: "trash"),
+                    handler: { [weak self] _ in
+                        self?.delete()
+                    }
+                ),
+                UIAction(
+                    title: "Share",
+                    image: UIImage(systemName: "square.and.arrow.up"),
+                    handler: { [weak self] _ in
+                        self?.share()
+                    }
+                ),
+            ]
+        )
     }
 
     required init?(coder: NSCoder) {
@@ -141,12 +138,16 @@ class ItemViewController: UIViewController {
 
     @objc
     private func showWebView() {
-        delegate?.itemViewControllerDidTapWebViewButton(self)
+        model.presentedWebReaderURL = model.selectedItem?.url
     }
 
     @objc
     private func showReaderSettings() {
-        delegate?.itemViewControllerDidTapReaderSettings(self)
+        model.isPresentingReaderSettings = true
+    }
+
+    var popoverAnchor: UIBarButtonItem? {
+        navigationItem.rightBarButtonItems?[0]
     }
 }
 
@@ -196,7 +197,11 @@ extension ItemViewController {
             return
         }
 
-        delegate?.itemViewController(self, didTapShareItem: item)
+        model.sharedActivityItems = [
+            item.url.flatMap(ActivityItemSource.init),
+            item.title.flatMap(ActivityItemSource.init)
+        ].compactMap { $0 }
+
         track(identifier: .itemShare, item: item)
     }
 

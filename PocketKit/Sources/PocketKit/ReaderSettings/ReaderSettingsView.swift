@@ -41,6 +41,6 @@ struct ReaderSettingsView: View {
                     )
                 }
             }
-        }
+        }.navigationViewStyle(.stack)
     }
 }
