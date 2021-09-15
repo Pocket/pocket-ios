@@ -14,7 +14,7 @@ let package = Package(
         .executable(name: "ApolloCodegen", targets: ["ApolloCodegen"]),
     ],
     dependencies: [
-        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "0.43.0")),
+        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "0.48.0")),
         .package(name: "Kingfisher", url: "https://github.com/onevcat/Kingfisher.git", .branch("fix/xcode-13")),
         .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.0.0")),
         .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.0")),
