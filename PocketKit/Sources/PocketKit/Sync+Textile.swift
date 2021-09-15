@@ -47,6 +47,10 @@ extension TextContent {
             if range.location + range.length > attributedText.length {
                 range.length = attributedText.length - range.location
             }
+            
+            guard let _ = Range(range, in: attributedText.string) else {
+                return
+            }
 
             attributedText.addAttributes(attrs, range: range)
         }
