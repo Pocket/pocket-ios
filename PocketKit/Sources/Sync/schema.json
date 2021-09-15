@@ -1949,6 +1949,26 @@
             "deprecationReason": null
           },
           {
+            "name": "marticle",
+            "description": "The Marticle format of the article, used by clients for native article view.",
+            "args": [],
+            "type": {
+              "kind": "LIST",
+              "name": null,
+              "ofType": {
+                "kind": "NON_NULL",
+                "name": null,
+                "ofType": {
+                  "kind": "UNION",
+                  "name": "MarticleComponent",
+                  "ofType": null
+                }
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "syndicatedArticle",
             "description": "If the item has a syndicated counterpart the syndication information",
             "args": [],
@@ -2069,6 +2089,216 @@
               "kind": "SCALAR",
               "name": "String",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MarticleCodeBlock",
+        "description": "A pre formatted text in the HTML content.",
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "content",
+            "description": "Content of a pre tag",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "language",
+            "description": "Assuming the codeblock was a programming language, this field is used to identify it.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Int",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "UNION",
+        "name": "MarticleComponent",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": [
+          {
+            "kind": "OBJECT",
+            "name": "MarticleText",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "Image",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "MarticleDivider",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "MarticleTable",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "MarticleHeading",
+            "ofType": null
+          },
+          {
+            "kind": "OBJECT",
+            "name": "MarticleCodeBlock",
+            "ofType": null
+          }
+        ]
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MarticleDivider",
+        "description": null,
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "content",
+            "description": "Always '---'; provided for convenience if building a markdown string",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MarticleHeading",
+        "description": "A heading in an article, with markdown formatting.",
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "content",
+            "description": "Heading text, in markdown.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Markdown",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "level",
+            "description": "Heading level. Restricted to values 1-6.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Int",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MarticleTable",
+        "description": "Content in a table.",
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "content",
+            "description": "Raw HTML representation of the table.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "String",
+                "ofType": null
+              }
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          }
+        ],
+        "inputFields": null,
+        "interfaces": [],
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
+        "kind": "OBJECT",
+        "name": "MarticleText",
+        "description": "A section of the article's text content, in markdown.\nA subset of gfm is supported. See README.md for more information.",
+        "specifiedByUrl": null,
+        "fields": [
+          {
+            "name": "content",
+            "description": "Markdown text content. Typically, a paragraph.",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "Markdown",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -2769,6 +2999,17 @@
         "possibleTypes": null
       },
       {
+        "kind": "SCALAR",
+        "name": "PCTest",
+        "description": "A test string",
+        "specifiedByUrl": null,
+        "fields": null,
+        "inputFields": null,
+        "interfaces": null,
+        "enumValues": null,
+        "possibleTypes": null
+      },
+      {
         "kind": "OBJECT",
         "name": "PendingItem",
         "description": null,
@@ -3148,6 +3389,22 @@
               "kind": "OBJECT",
               "name": "SlateLineup",
               "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "helloProspectCuration",
+            "description": "Test Prospect Curation API",
+            "args": [],
+            "type": {
+              "kind": "NON_NULL",
+              "name": null,
+              "ofType": {
+                "kind": "SCALAR",
+                "name": "PCTest",
+                "ofType": null
+              }
             },
             "isDeprecated": false,
             "deprecationReason": null
@@ -3656,8 +3913,8 @@
               "kind": "NON_NULL",
               "name": null,
               "ofType": {
-                "kind": "OBJECT",
-                "name": "Item",
+                "kind": "UNION",
+                "name": "ItemResult",
                 "ofType": null
               }
             },

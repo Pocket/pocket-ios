@@ -22,7 +22,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "item": {
-                                "__typename": "[type-name-here]",
+                                "__typename": "Item",
                                 "title": "Updated Item 1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
@@ -50,7 +50,7 @@
                         "__typename": "[type-name-here]",
                         "cursor": "cursor-2",
                         "node": {
-                            "__typename": "[type-name-here]",
+                            "__typename": "Item",
                             "itemId": "item-id-2",
                             "url": "https://example.com/item-2",
                             "_createdAt": 0,
@@ -58,7 +58,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "item": {
-                                "__typename": "[type-name-here]",
+                                "__typename": "Item",
                                 "title": "Updated Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": null,
