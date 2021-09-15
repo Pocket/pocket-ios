@@ -22,7 +22,7 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "item": {
-                                "__typename": "[type-name-here]",
+                                "__typename": "Item",
                                 "title": "Updated Item 1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,

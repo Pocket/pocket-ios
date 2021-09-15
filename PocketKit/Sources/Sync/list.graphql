@@ -6,23 +6,33 @@ fragment SavedItemParts on SavedItem {
   _deletedAt
   _createdAt
   item {
-    title
-    language
-    topImageUrl
-    timeToRead
-    domain
-    particleJson
-    domainMetadata {
-      name
-      logo
-    }
-    images {
-      height
-      width
-      src
-      imageId
-    }
+    ...ItemParts
+    ...PendingItemParts
   }
+}
+
+fragment ItemParts on Item {
+  title
+  language
+  topImageUrl
+  timeToRead
+  domain
+  particleJson
+  domainMetadata {
+    name
+    logo
+  }
+  images {
+    height
+    width
+    src
+    imageId
+  }
+}
+
+fragment PendingItemParts on PendingItem {
+  url
+  status
 }
 
 query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {

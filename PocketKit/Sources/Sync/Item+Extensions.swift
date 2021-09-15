@@ -6,36 +6,43 @@ import Foundation
 
 
 extension Item {
-    func update(from node: UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node) {
-        update(from: node.fragments.savedItemParts)
+    typealias RemoteSavedItem = UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node
+    typealias RemoteItem = RemoteSavedItem.Item.AsItem
+
+    func update(from savedItem: RemoteSavedItem) {
+        itemID = savedItem.itemId
+        isArchived = savedItem.isArchived
+        url = URL(string: savedItem.url)
+        isFavorite = savedItem.isFavorite
+        timestamp = Date(timeIntervalSince1970: TimeInterval(savedItem._createdAt))
+        deletedAt = savedItem._deletedAt
+            .flatMap { Date(timeIntervalSince1970: TimeInterval($0)) }
+
+        update(from: savedItem.item.asItem)
     }
 
-    func update(from remoteItem: SavedItemParts) {
-        itemID = remoteItem.itemId
-        isArchived = remoteItem.isArchived
-        isFavorite = remoteItem.isFavorite
-        domain = remoteItem.item.domain
-        language = remoteItem.item.language
-        title = remoteItem.item.title
-        url = URL(string: remoteItem.url)
-        particleJSON = remoteItem.item.particleJson
+    func update(from item: RemoteItem?) {
+        guard let item = item else {
+            return
+        }
+
+        domain = item.domain
+        language = item.language
+        title = item.title
+        particleJSON = item.particleJson
 
         if let context = managedObjectContext {
             domainMetadata = DomainMetadata(context: context)
-            domainMetadata?.name = remoteItem.item.domainMetadata?.name
+            domainMetadata?.name = item.domainMetadata?.name
         }
 
-        if let imageURL = remoteItem.item.topImageUrl {
+        if let imageURL = item.topImageUrl {
             thumbnailURL = URL(string: imageURL)
         }
 
-        if let time = remoteItem.item.timeToRead {
+        if let time = item.timeToRead {
             timeToRead = Int32(time)
         }
-
-        timestamp = Date(timeIntervalSince1970: TimeInterval(remoteItem._createdAt))
-        deletedAt = remoteItem._deletedAt
-            .flatMap { Date(timeIntervalSince1970: TimeInterval($0)) }
     }
 
     public var particle: Article? {
