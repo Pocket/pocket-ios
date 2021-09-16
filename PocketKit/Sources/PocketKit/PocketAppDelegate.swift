@@ -28,7 +28,9 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        Crashlogger.start(dsn: Keys.shared.sentryDSN)
+        if !CommandLine.arguments.contains("disableSentry") {
+            Crashlogger.start(dsn: Keys.shared.sentryDSN)
+        }
         
         if CommandLine.arguments.contains("clearUserDefaults") {
             userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
