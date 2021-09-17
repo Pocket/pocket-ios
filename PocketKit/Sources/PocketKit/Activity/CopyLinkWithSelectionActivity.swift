@@ -1,0 +1,53 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import UIKit
+
+
+class CopyLinkWithSelectionActivity: UIActivity {
+    private var link: URL? = nil
+    private var highlight: String? = nil
+    
+    static override var activityCategory: UIActivity.Category {
+        return .action
+    }
+    
+    override var activityType: UIActivity.ActivityType? {
+        return .copySelection
+    }
+    
+    override var activityTitle: String? {
+        return "Copy link with selection"
+    }
+    
+    override var activityImage: UIImage? {
+        return UIImage(systemName: "highlighter")
+    }
+    
+    override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
+        return activityItems.first { $0 is URL } != nil && activityItems.first { $0 is String} != nil
+    }
+
+    override func prepare(withActivityItems activityItems: [Any]) {
+        guard let link = activityItems.first(where: { $0 is URL }) as? URL,
+        let highlight = activityItems.first(where: { $0 is String}) as? String else {
+            return
+        }
+
+        self.link = link
+        self.highlight = highlight
+    }
+
+    override func perform() {
+        guard let link = link, let highlight = highlight else {
+            return
+        }
+        
+        let components = [link.absoluteString, "\"\(highlight)\""]
+        let string = components.joined(separator: "\n\n")
+
+        UIPasteboard.general.string = string
+    }
+}
+

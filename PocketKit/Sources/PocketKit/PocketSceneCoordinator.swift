@@ -182,16 +182,11 @@ extension PocketSceneCoordinator: ItemViewControllerDelegate {
     }
 
     func itemViewController(_ itemViewController: ItemViewController, didTapShareItem item: Item) {
-        let items = [
-            item.url.flatMap(ActivityItemSource.init),
-            item.title.flatMap(ActivityItemSource.init)
-        ].compactMap { $0 }
+        let activity = PocketItemActivity(item: item)
+        let sheet = UIActivityViewController(activity: activity)
 
         showInReaderAsModal(
-            UIActivityViewController(
-                activityItems: items,
-                applicationActivities: nil
-            ),
+            sheet,
             within: itemViewController,
             detents: [.large()]
         )
