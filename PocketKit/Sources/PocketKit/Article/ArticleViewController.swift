@@ -188,23 +188,13 @@ extension ArticleViewController: TextContentCellDelegate {
         _ cell: TextContentCell,
         didShareSelecedText selectedText: String
     ) {
-        guard let url = item?.url else {
+        guard let item = item else {
             return
         }
-
-        let text = [item?.title, "\"\(selectedText)\""]
-            .compactMap { $0 }
-            .joined(separator: "\n\n")
-
-        // wrap the URL and text in an ActivityItemSource to preserve separation when sharing
-        let activityItems = [url, text].map(ActivityItemSource.init)
-
-        let shareSheet = UIActivityViewController(
-            activityItems: activityItems,
-            applicationActivities: nil
-        )
-
-        present(shareSheet, animated: true)
+        
+        let activity = PocketItemActivity(item: item, additionalText: selectedText)
+        let sheet = UIActivityViewController(activity: activity)
+        present(sheet, animated: true)
     }
     
     func textContentCell(

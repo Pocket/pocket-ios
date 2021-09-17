@@ -67,8 +67,7 @@ class ItemPresenter: ItemRow {
 
     public var activityItems: [Any] {
         return [
-            item.url.flatMap(ActivityItemSource.init),
-            item.title.flatMap(ActivityItemSource.init)
+            item.url.flatMap(ActivityItemSource.init)
         ].compactMap { $0 }
     }
 
