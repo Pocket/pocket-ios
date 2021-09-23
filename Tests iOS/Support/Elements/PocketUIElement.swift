@@ -31,4 +31,10 @@ extension PocketUIElement {
         _ = element.wait(timeout: timeout, file: file, line: line)
         return self
     }
+
+    @discardableResult
+    func verify() -> Self {
+        element.verify()
+        return self
+    }
 }

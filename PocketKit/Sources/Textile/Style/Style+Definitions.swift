@@ -20,6 +20,7 @@ public extension FontDescriptor.Size {
     static let p2: Self = 19
     static let p3: Self = 16
     static let p4: Self = 14
+    static let p5: Self = 12
     static let body: Self = 19
 }
 
@@ -44,6 +45,7 @@ public extension Style {
             public let p2 = Style(family: .graphik, size: .p2, weight: .regular)
             public let p3 = Style(family: .graphik, size: .p3, weight: .regular)
             public let p4 = Style(family: .graphik, size: .p4, weight: .regular)
+            public let p5 = Style(family: .graphik, size: .p5, weight: .regular)
         }
 
         public struct Serif {
@@ -57,6 +59,7 @@ public extension Style {
             public let p2 = Style(family: .blanco, size: .p2, weight: .regular)
             public let p3 = Style(family: .blanco, size: .p3, weight: .regular)
             public let p4 = Style(family: .blanco, size: .p4, weight: .regular)
+            public let p5 = Style(family: .blanco, size: .p5, weight: .regular)
         }
     }
 

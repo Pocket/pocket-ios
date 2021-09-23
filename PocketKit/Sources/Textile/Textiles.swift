@@ -33,20 +33,7 @@ public class Textiles {
             return
         }
 
-        CTFontManagerRegisterFontURLs(fonts as CFArray, .process, true) { errors, done in
-            if (done) {
-                let errors = errors as! [NSError]
-                errors.forEach { error in
-                    var components = [error.localizedDescription]
-                    if let urls = error.userInfo["CTFontManagerErrorFontURLs"] as? [String],
-                       let url = urls.first,
-                       let font = url.components(separatedBy: " -- ").first {
-                        components += [font]
-                    }
-                    let description = components.joined(separator: " -- ")
-                    print(description)
-                }
-            }
+        CTFontManagerRegisterFontURLs(fonts as CFArray, .process, true) { _, _ in
             return true
         }
     }

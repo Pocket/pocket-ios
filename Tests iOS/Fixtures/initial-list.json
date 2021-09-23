@@ -29,6 +29,7 @@
                                 "language": "en",
                                 "timeToRead": 6,
                                 "particleJson": #PARTICLE_JSON#,
+                                "excerpt": "Cursus Aenean Elit",
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -66,6 +67,7 @@
                                 "timeToRead": 6,
                                 "domainMetadata": null,
                                 "particleJson": #PARTICLE_JSON#,
+                                "excerpt": "Cursus Aenean Elit",
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",

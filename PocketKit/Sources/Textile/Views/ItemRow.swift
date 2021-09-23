@@ -64,7 +64,7 @@ public struct ItemRowView<Model: ItemRow>: View {
                     KFImage(thumbnailURL)
                         .placeholder {
                             Rectangle()
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(.ui.grey6))
                                 .frame(width: Constants.thumbnailSize.width, height: Constants.thumbnailSize.height)
                         }
                         .scaleFactor(UIScreen.main.scale)

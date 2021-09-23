@@ -10,6 +10,23 @@ class ShareAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
+    func listResponse(_ fixtureName: String = "initial-list") -> Response {
+        Response {
+            Status.ok
+            Fixture
+                .load(name: fixtureName)
+                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+                .data
+        }
+    }
+
+    func slateResponse() -> Response {
+        Response {
+            Status.ok
+            Fixture.load(name: "slates").data
+        }
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -18,13 +35,13 @@ class ShareAnItemTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { _, _ in
-            return Response {
-                Status.ok
-                Fixture
-                    .load(name: "initial-list")
-                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                    .data
+        server.routes.post("/graphql") { request, _ in
+            let requestBody = body(of: request)
+
+            if requestBody!.contains("getSlateLineup")  {
+                return self.slateResponse()
+            } else {
+                return self.listResponse()
             }
         }
 
@@ -50,6 +67,8 @@ class ShareAnItemTests: XCTestCase {
     }
 
     func test_sharingAnItemFromList_presentsShareSheet() {
+        app.tabBar.myListButton.wait().tap()
+
         app
             .userListView
             .itemView(withLabelStartingWith: "Item 2")
@@ -62,6 +81,8 @@ class ShareAnItemTests: XCTestCase {
     }
 
     func test_sharingAnItemFromReader_presentsShareSheet() {
+        app.tabBar.myListButton.wait().tap()
+
         app
             .userListView
             .itemView(withLabelStartingWith: "Item 2")

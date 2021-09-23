@@ -2,8 +2,19 @@ import UIKit
 
 
 extension UICollectionView {
-    func register(cellClass: AnyClass) {
-        register(cellClass, forCellWithReuseIdentifier: "\(cellClass)")
+    func register<T: UICollectionViewCell>(cellClass: T.Type) {
+        register(cellClass, forCellWithReuseIdentifier: "\(T.self)")
+    }
+
+    func register<T: UICollectionReusableView>(
+        viewClass: T.Type,
+        forSupplementaryViewOfKind kind: String
+    ) {
+        register(
+            viewClass,
+            forSupplementaryViewOfKind: kind,
+            withReuseIdentifier: "\(T.self)"
+        )
     }
 
     func dequeueCell<T: UICollectionViewCell>(for indexPath: IndexPath) -> T {
@@ -14,5 +25,19 @@ extension UICollectionView {
         }
 
         return typedCell
+    }
+
+    func dequeueReusableView<T: UICollectionReusableView>(forSupplementaryViewOfKind kind: String, for indexPath: IndexPath) -> T {
+        let supplementaryView = dequeueReusableSupplementaryView(
+            ofKind: kind,
+            withReuseIdentifier: "\(T.self)",
+            for: indexPath
+        )
+
+        guard let typedSupplementaryView = supplementaryView as? T else {
+            fatalError("Unable to cast supplementary view of type \(type(of: supplementaryView)) to expected type \(T.self)")
+        }
+
+        return typedSupplementaryView
     }
 }

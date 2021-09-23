@@ -14,6 +14,7 @@ public class Source {
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
     private let tokenProvider: AccessTokenProvider
+    private let slateService: SlateService
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -28,16 +29,19 @@ public class Source {
         consumerKey: String,
         defaults: UserDefaults
     ) {
+        let apollo = ApolloClient.createDefault(
+            sessionProvider: sessionProvider,
+            accessTokenProvider: accessTokenProvider,
+            consumerKey: consumerKey
+        )
+
         self.init(
             space: Space(container: .createDefault()),
-            apollo: ApolloClient.createDefault(
-                sessionProvider: sessionProvider,
-                accessTokenProvider: accessTokenProvider,
-                consumerKey: consumerKey
-            ),
+            apollo: apollo,
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
-            accessTokenProvider: accessTokenProvider
+            accessTokenProvider: accessTokenProvider,
+            slateService: APISlateService(apollo: apollo)
         )
     }
 
@@ -46,19 +50,28 @@ public class Source {
         apollo: ApolloClientProtocol,
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
-        accessTokenProvider: AccessTokenProvider
+        accessTokenProvider: AccessTokenProvider,
+        slateService: SlateService
     ) {
         self.space = space
         self.apollo = apollo
         self.operations = operations
         self.lastRefresh = lastRefresh
         self.tokenProvider = accessTokenProvider
+        self.slateService = slateService
     }
 
     public var mainContext: NSManagedObjectContext {
         space.context
     }
 
+    public func clear() {
+        try? space.clear()
+    }
+}
+
+// MARK: - List items
+extension Source {
     public func refresh(maxItems: Int = 400, completion: (() -> ())? = nil) {
         guard let token = tokenProvider.accessToken else {
             completion?()
@@ -102,10 +115,6 @@ public class Source {
         }
     }
 
-    public func clear() {
-        try? space.clear()
-    }
-
     private func mutate<Mutation: GraphQLMutation>(
         _ item: Item,
         _ remoteMutation: (String) -> Mutation,
@@ -125,5 +134,12 @@ public class Source {
         )
 
         syncQ.addOperation(operation)
+    }
+}
+
+// MARK: - Slates
+extension Source {
+    public func fetchSlates() async throws -> [Slate] {
+        return try await slateService.fetchSlates()
     }
 }

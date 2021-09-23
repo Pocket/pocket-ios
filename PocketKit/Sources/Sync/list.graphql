@@ -18,6 +18,7 @@ fragment ItemParts on Item {
   timeToRead
   domain
   particleJson
+  excerpt
   domainMetadata {
     name
     logo
@@ -72,4 +73,25 @@ mutation ArchiveItem($itemID: ID!) {
 
 mutation DeleteItem($itemID: ID!) {
   deleteSavedItem(id: $itemID)
+}
+
+query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
+  getSlateLineup(slateLineupId: $lineupID, recommendationCount: $maxRecommendations) {
+    id
+    slates {
+      id
+      displayName
+      description
+      recommendations {
+        id
+        itemId
+        feedId
+        publisher
+        recSrc
+        item {
+          ...ItemParts
+        }
+      }
+    }
+  }
 }

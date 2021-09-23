@@ -29,7 +29,8 @@ let package = Package(
             dependencies: ["Kingfisher"],
             resources: [
                 .copy("Style/Typography/Fonts"),
-                .process("Style/Colors/Colors.xcassets")
+                .process("Style/Colors/Colors.xcassets"),
+                .process("Style/Icons/Icons.xcassets"),
             ]
         ),
 

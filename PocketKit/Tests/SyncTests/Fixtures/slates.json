@@ -1,0 +1,98 @@
+{
+    "data": {
+        "getSlateLineup": {
+            "id": "slate-lineup-1",
+            "__typename": "[some-type-name]",
+            "slates": [
+                {
+                    "__typename": "[some-type-name]",
+                    "id": "slate-1",
+                    "displayName": "Slate 1",
+                    "description": "The description of slate 1",
+                    "recommendations": [
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "slate-1-rec-1",
+                            "itemId": "slate-1-item-1",
+                            "feedId": 1,
+                            "publisher": "lifehacker.com",
+                            "recSrc": "RecommendationAPI",
+                            "item": {
+                                "__typename": "[some-type-name]",
+                                "title": "Slate 1, Recommendation 1",
+                                "language": "en",
+                                "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
+                                "timeToRead": 1,
+                                "particleJson": "{}",
+                                "images": [],
+                                "excerpt": "Cursus Aenean Elit",
+                                "domain": "slate-1-rec-1.example.com",
+                                "domainMetadata": {
+                                    "__typename": "[some-type-name]",
+                                    "name": "Lifehacker",
+                                    "logo": "https://slate-1-rec-1.example.com/logo.png"
+                                }
+                            }
+                        },
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "slate-1-rec-2",
+                            "itemId": "slate-1-item-2",
+                            "feedId": 2,
+                            "publisher": "lifehacker.com",
+                            "recSrc": "RecommendationAPI",
+                            "item": {
+                                "__typename": "[some-type-name]",
+                                "title": "Slate 1, Recommendation 2",
+                                "language": "en",
+                                "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
+                                "timeToRead": 2,
+                                "particleJson": "{}",
+                                "images": [],
+                                "excerpt": "Cursus Aenean Elit",
+                                "domain": "slate-1-rec-2.example.com",
+                                "domainMetadata": {
+                                    "__typename": "[some-type-name]",
+                                    "name": "Lifehacker",
+                                    "logo": "https://slate-1-rec-2.example.com/logo.png"
+                                }
+                            }
+                        }
+                    ],
+                },
+                {
+                    "__typename": "[some-type-name]",
+                    "id": "slate-2",
+                    "displayName": "Slate 2",
+                    "description": "The description of slate 2",
+                    "recommendations": [
+                        {
+                            "__typename": "[some-type-name]",
+                            "id": "slate-2-rec-1",
+                            "itemId": "slate-2-item-1",
+                            "feedId": 2,
+                            "publisher": "lifehacker.com",
+                            "recSrc": "RecommendationAPI",
+                            "item": {
+                                "__typename": "[some-type-name]",
+                                "title": "Slate 2, Recommendation 1",
+                                "language": "en",
+                                "topImageUrl": "http://example.com/slate-2-rec-1/top-image.png",
+                                "timeToRead": 3,
+                                "particleJson": "{}",
+                                "images": [],
+                                "excerpt": "Cursus Aenean Elit",
+                                "domain": "slate-2-rec-2.example.com",
+                                "domainMetadata": {
+                                    "__typename": "[some-type-name]",
+                                    "name": "Lifehacker",
+                                    "logo": "https://slate-2-rec-2.example.com/logo.png"
+                                }
+                            }
+                        }
+                    ],
+                }
+            ]
+        }
+    }
+}

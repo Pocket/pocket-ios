@@ -41,13 +41,13 @@ class CompactMainCoordinator: NSObject {
         myList.tabBarItem.title = "My List"
         myList.tabBarItem.image = UIImage(systemName: "list.dash")
 
-        home = UINavigationController(rootViewController: UIHostingController(rootView: DiscoverView()))
-        home.tabBarItem.accessibilityIdentifier = "discover-tab-bar-button"
+        home = UINavigationController(rootViewController: HomeViewController(source: source))
+        home.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
         home.tabBarItem.title = "Home"
         home.tabBarItem.image = UIImage(systemName: "house")
 
         tabBarController = UITabBarController()
-        tabBarController.viewControllers = [myList, home]
+        tabBarController.viewControllers = [home, myList]
 
         super.init()
 
@@ -91,7 +91,7 @@ class CompactMainCoordinator: NSObject {
             switch section {
             case .myList:
                 self.showMyList()
-            case .discover:
+            case .home:
                 self.showHome()
             }
         }.store(in: &subscriptions)

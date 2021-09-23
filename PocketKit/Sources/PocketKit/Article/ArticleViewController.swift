@@ -73,9 +73,9 @@ class ArticleViewController: UICollectionViewController {
     private func attributedText(textContent: TextContent, style: Style) -> NSAttributedString {
         let adjustedStyle = style
             .with(settings: readerSettings)
-            .with(paragraph: style.paragraph.with(
-                alignment: item?.textAlignment ?? .left
-            ))
+            .with { paragraph in
+                paragraph.with(alignment: item?.textAlignment ?? .left)
+            }
 
         return textContent.attributedString(baseStyle: adjustedStyle)
     }

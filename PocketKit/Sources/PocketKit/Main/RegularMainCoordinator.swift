@@ -45,7 +45,7 @@ class RegularMainCoordinator: NSObject {
         )
 
         myList = UIHostingController(rootView: listView)
-        home = UIHostingController(rootView: DiscoverView())
+        home = HomeViewController(source: source)
         item = ItemViewController(
             model: model,
             tracker: tracker,
@@ -69,8 +69,8 @@ class RegularMainCoordinator: NSObject {
             }
         }.store(in: &longSubscriptions)
 
-        model.$sharedActivityItems.sink { [weak self] activityItems in
-            self?.share(activityItems: activityItems)
+        model.$sharedActivity.sink { [weak self] activity in
+            self?.share(activity: activity)
         }.store(in: &longSubscriptions)
 
         model.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
@@ -115,7 +115,7 @@ class RegularMainCoordinator: NSObject {
             switch section {
             case .myList:
                 self.showMyList()
-            case .discover:
+            case .home:
                 self.showHome()
             }
         }.store(in: &subscriptions)
@@ -153,17 +153,14 @@ class RegularMainCoordinator: NSObject {
         tracker.track(event: engagement, contexts)
     }
 
-    func share(activityItems: [Any]?) {
-        guard let activityItems = activityItems else {
+    func share(activity: PocketActivity?) {
+        guard let activity = activity else {
             return
         }
 
-        let activityController = UIActivityViewController(
-            activityItems: activityItems,
-            applicationActivities: nil
-        )
+        let activityController = UIActivityViewController(activity: activity)
         activityController.completionWithItemsHandler = { [weak self] _, _, _, _ in
-            self?.model.sharedActivityItems = nil
+            self?.model.sharedActivity = nil
         }
 
         showInReaderAsModal(
