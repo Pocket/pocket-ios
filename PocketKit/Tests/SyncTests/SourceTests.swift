@@ -16,6 +16,7 @@ class SourceTests: XCTestCase {
     var operations: MockOperationFactory!
     var lastRefresh: MockLastRefresh!
     var tokenProvider: MockAccessTokenProvider!
+    var slateService: MockSlateService!
 
     override func setUpWithError() throws {
         space = Space(container: .testContainer)
@@ -23,6 +24,8 @@ class SourceTests: XCTestCase {
         operations = MockOperationFactory()
         lastRefresh = MockLastRefresh()
         tokenProvider = MockAccessTokenProvider()
+        slateService = MockSlateService()
+
         lastRefresh.stubGetLastRefresh { nil}
     }
 
@@ -31,14 +34,16 @@ class SourceTests: XCTestCase {
         apollo: ApolloClientProtocol? = nil,
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
-        tokenProvider: AccessTokenProvider? = nil
+        tokenProvider: AccessTokenProvider? = nil,
+        slateService: SlateService? = nil
     ) -> Source {
         Source(
             space: space ?? self.space,
             apollo: apollo ?? self.apollo,
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
-            accessTokenProvider: tokenProvider ?? self.tokenProvider
+            accessTokenProvider: tokenProvider ?? self.tokenProvider,
+            slateService: slateService ?? self.slateService
         )
     }
 
@@ -157,5 +162,16 @@ class SourceTests: XCTestCase {
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 1)
+    }
+
+    func test_refreshSlates_executesRefreshSlatesOperation() async throws {
+        let expectedSlates = [Slate(id: "my-slate", name: "My Slate", description: "My very awesome slate", recommendations: [])]
+        slateService.stubFetchSlates {
+            return expectedSlates
+        }
+
+        let actualSlates = try await subject().fetchSlates()
+
+        XCTAssertEqual(actualSlates, expectedSlates)
     }
 }

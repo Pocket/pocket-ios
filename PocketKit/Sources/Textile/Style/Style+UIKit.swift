@@ -7,12 +7,12 @@ import SwiftUI
 
 
 extension UIColor {
-    convenience init?(_ colorAsset: ColorAsset) {
+    public convenience init(_ colorAsset: ColorAsset) {
         self.init(
             named: colorAsset._name,
             in: .module,
             compatibleWith: nil
-        )
+        )!
     }
 }
 
@@ -98,10 +98,24 @@ extension NSTextAlignment {
     }
 }
 
+extension NSLineBreakMode {
+    init?(_ lineBreakMode: LineBreakMode) {
+        switch lineBreakMode {
+        case .byTruncatingTail:
+            self = .byTruncatingTail
+        case .none:
+            return nil
+        }
+    }
+}
+
 extension NSParagraphStyle {
     static func from(_ paragraphStyle: ParagraphStyle) -> NSParagraphStyle {
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment(paragraphStyle.alignment)
+        if let lineBreakMode = NSLineBreakMode(paragraphStyle.lineBreakMode) {
+            style.lineBreakMode = lineBreakMode
+        }
 
         return style
     }
@@ -111,12 +125,9 @@ public extension Style {
     var textAttributes: [NSAttributedString.Key: Any] {
         var attributes: [NSAttributedString.Key: Any] = [
             .font: UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor)),
-            .paragraphStyle: NSParagraphStyle.from(paragraph)
+            .paragraphStyle: NSParagraphStyle.from(paragraph),
+            .foregroundColor: UIColor(colorAsset)
         ]
-
-        if let color = UIColor(colorAsset) {
-            attributes[.foregroundColor] = color
-        }
 
         if let underline = NSUnderlineStyle(underlineStyle) {
             attributes[.underlineStyle] = underline.rawValue
@@ -132,20 +143,18 @@ public extension Style {
 
 public extension Style {
     var attributes: AttributeContainer {
-        var container = AttributeContainer()
-        
-        container.font = Font(fontDescriptor)
-        
-        container.foregroundColor = Color(colorAsset)
-        
-        if let underline = NSUnderlineStyle(underlineStyle) {
-            container.underlineStyle = underline
-        }
-        
-        if let strike = NSUnderlineStyle(strike) {
-            container.strikethroughStyle = strike
-        }
-        
-        return container
+        return AttributeContainer(textAttributes)
+    }
+}
+
+public extension UIImage {
+    convenience init?(asset: ImageAsset) {
+        self.init(named: asset.name, in: .module, with: nil)
+    }
+}
+
+public extension NSAttributedString {
+    convenience init(_ string: String, style: Style) {
+        self.init(string: string, attributes: style.textAttributes)
     }
 }

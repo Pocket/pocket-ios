@@ -73,8 +73,6 @@ class ItemViewController: UIViewController {
         ])
     }
 
-
-
     func buildOverflowMenu() {
         moreButtonItem.menu = UIMenu(
             image: nil,
@@ -197,11 +195,7 @@ extension ItemViewController {
             return
         }
 
-        model.sharedActivityItems = [
-            item.url.flatMap(ActivityItemSource.init),
-            item.title.flatMap(ActivityItemSource.init)
-        ].compactMap { $0 }
-
+        model.sharedActivity = PocketItemActivity(item: item, additionalText: nil)
         track(identifier: .itemShare, item: item)
     }
 

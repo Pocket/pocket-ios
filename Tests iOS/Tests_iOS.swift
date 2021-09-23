@@ -11,6 +11,23 @@ class Tests_iOS: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
+    func listResponse(_ fixtureName: String = "initial-list") -> Response {
+        Response {
+            Status.ok
+            Fixture
+                .load(name: fixtureName)
+                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+                .data
+        }
+    }
+
+    func slateResponse() -> Response {
+        Response {
+            Status.ok
+            Fixture.load(name: "slates").data
+        }
+    }
+
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -19,13 +36,13 @@ class Tests_iOS: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { _, _ in
-            return Response {
-                Status.ok
-                Fixture
-                    .load(name: "initial-list")
-                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                    .data
+        server.routes.post("/graphql") { request, _ in
+            let requestBody = body(of: request)
+
+            if requestBody!.contains("getSlateLineup")  {
+                return self.slateResponse()
+            } else {
+                return self.listResponse()
             }
         }
 
@@ -77,6 +94,7 @@ class Tests_iOS: XCTestCase {
         app.typeText("super-secret-password")
         signInView.signInButton.tap()
 
+        app.tabBar.myListButton.wait().tap()
         let listView = app.userListView.wait()
 
         do {
@@ -99,15 +117,19 @@ class Tests_iOS: XCTestCase {
 
     func test_2_subsequentAppLaunch_displaysCachedContent() {
         var promise: EventLoopPromise<Response>?
-        server.routes.post("/graphql") { _, loop in
-            promise = loop.makePromise()
-            return promise!.futureResult
+        server.routes.post("/graphql") { request, loop in
+            let requestBody = body(of: request)
+
+            if requestBody!.contains("getSlateLineup")  {
+                return self.slateResponse()
+            } else {
+                promise = loop.makePromise()
+                return promise!.futureResult
+            }
         }
 
-        let listView = app
-            .launch()
-            .userListView
-            .wait()
+        app.launch().tabBar.myListButton.wait().tap()
+        let listView = app.userListView.wait()
 
         listView
             .itemView(withLabelStartingWith: "Item")
@@ -142,8 +164,9 @@ class Tests_iOS: XCTestCase {
     }
 
     func test_3_tappingItem_displaysNativeReaderView() {
+        app.launch().tabBar.myListButton.wait().tap()
+
         app
-            .launch()
             .userListView
             .itemView(at: 0)
             .wait()
@@ -177,8 +200,9 @@ class Tests_iOS: XCTestCase {
     }
 
     func test_3_webReader_displaysWebContent() {
+        app.launch().tabBar.myListButton.wait().tap()
+
         app
-            .launch()
             .userListView
             .itemView(at: 0)
             .wait()
@@ -198,17 +222,33 @@ class Tests_iOS: XCTestCase {
     }
 
     func test_4_list_excludesArchivedContent() {
-        server.routes.post("/graphql") { _, loop in
-            Response {
-                Status.ok
-                Fixture
-                    .load(name: "list-with-archived-item")
-                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                    .data
+        server.routes.post("/graphql") { request, _ in
+            let requestBody = body(of: request)
+
+            if requestBody!.contains("getSlateLineup")  {
+                print("Slate requested!")
+                return self.slateResponse()
+            } else {
+                print("List requested!")
+                return self.listResponse("list-with-archived-item")
             }
         }
 
-        let listView = app.launch().userListView.wait()
+        app.launch(
+            arguments: [
+                "clearKeychain",
+                "clearCoreData",
+                "clearImageCache"
+            ],
+            environment: [
+                "accessToken": "test-access-token",
+                "sessionGUID": "session-guid",
+                "sessionUserID": "session-user-id",
+            ]
+        ).tabBar.myListButton.wait().tap()
+
+        let listView = app.userListView.wait()
+        listView.itemView(at: 0).wait()
 
         XCTAssertEqual(listView.itemCount, 1)
         XCTAssertTrue(listView.itemView(at: 0).contains(string: "Item 2"))

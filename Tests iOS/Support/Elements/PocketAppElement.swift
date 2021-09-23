@@ -24,6 +24,10 @@ struct PocketAppElement {
         return SignInFormElement(app)
     }
 
+    var homeView: HomeViewElement {
+        return HomeViewElement(app.collectionViews["home"])
+    }
+
     var userListView: UserListElement {
         return UserListElement(app.tables["user-list"])
     }
@@ -38,6 +42,10 @@ struct PocketAppElement {
 
     var shareSheet: XCUIElement {
         return app.otherElements["ActivityListView"]
+    }
+
+    var tabBar: TabBarElement {
+        return TabBarElement(app.tabBars.element(boundBy: 0))
     }
 
     var favoriteButton: XCUIElement {

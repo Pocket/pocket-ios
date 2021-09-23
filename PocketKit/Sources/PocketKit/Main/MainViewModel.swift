@@ -5,7 +5,7 @@ import Foundation
 
 class MainViewModel: ObservableObject {
     @Published
-    var selectedSection: AppSection = .myList
+    var selectedSection: AppSection = .home
 
     @Published
     var selectedItem: Item?
@@ -23,16 +23,16 @@ class MainViewModel: ObservableObject {
     var presentedWebReaderURL: URL?
 
     @Published
-    var sharedActivityItems: [Any]?
+    var sharedActivity: PocketActivity?
 
     enum AppSection: CaseIterable, Identifiable {
-        case discover
+        case home
         case myList
 
         var navigationTitle: String {
             switch self {
-            case .discover:
-                return "Discover"
+            case .home:
+                return "Home"
             case .myList:
                 return "My List"
             }
