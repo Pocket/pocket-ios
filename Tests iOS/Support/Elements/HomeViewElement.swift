@@ -11,6 +11,13 @@ struct HomeViewElement: PocketUIElement {
         self.element = element
     }
 
+    func topicChip(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title)
+        return element.cells
+            .matching(identifier: "topic-chip")
+            .containing(predicate).element(boundBy: 0)
+    }
+
     func slateHeader(_ title: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label = %@", title)
         return element.otherElements.containing(predicate).element(boundBy: 0)

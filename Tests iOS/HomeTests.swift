@@ -78,4 +78,19 @@ class HomeTests: XCTestCase {
         home.slateHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
     }
+
+    func test_selectingChipInTopicCarousel_showsSlateDetailView() {
+        let chip = app.homeView.topicChip("Slate 2").wait()
+
+        server.routes.post("/graphql") { request, _ in
+            Response {
+                Status.ok
+                Fixture.load(name: "slate-detail").data
+            }
+        }
+
+        chip.tap()
+
+        app.slateDetailView.wait()
+    }
 }
