@@ -1,12 +1,18 @@
 {
     "data": {
         "getSlate": {
-            "id": "2e3ddc90-8def-46d7-b85f-da7525c66fb1",
+            "__typename": "[some-type-name]",
+            "id": "slate-1",
             "displayName": "Slate 1",
+            "description": "The description of slate 1",
             "recommendations": [
                 {
+                    "__typename": "[some-type-name]",
                     "id": "1",
                     "itemId": "item-1",
+                    "feedId": 1,
+                    "publisher": "Lifehacker",
+                    "recSrc": "source-1",
                     "item": {
                         "__typename": "[some-type-name]",
                         "title": "Slate 1, Recommendation 1",
@@ -25,8 +31,12 @@
                     }
                 },
                 {
+                    "__typename": "[some-type-name]",
                     "id": "2",
                     "itemId": "item-2",
+                    "feedId": 2,
+                    "publisher": "Lifehacker",
+                    "recSrc": "source-2",
                     "item": {
                         "__typename": "[some-type-name]",
                         "title": "Slate 1, Recommendation 2",
@@ -43,10 +53,14 @@
                             "logo": "https://slate-1-rec-2.example.com/logo.png"
                         }
                     }
-                },        },
+                },
                 {
+                    "__typename": "[some-type-name]",
                     "id": "3",
                     "itemId": "item-3",
+                    "feedId": 3,
+                    "publisher": "Lifehacker",
+                    "recSrc": "source-3",
                     "item": {
                         "__typename": "[some-type-name]",
                         "title": "Slate 1, Recommendation 3",

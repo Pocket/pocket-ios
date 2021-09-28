@@ -24,7 +24,6 @@
 		160056F326CC7FFD00700A80 /* FavoriteAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160056F226CC7FFD00700A80 /* FavoriteAnItemTests.swift */; };
 		1606F21B26EBC1A200238111 /* HomeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1606F21A26EBC1A200238111 /* HomeTests.swift */; };
 		1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */; };
-		1648D5A527024C4100F67C4B /* TopicCarouselElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1648D5A427024C4100F67C4B /* TopicCarouselElement.swift */; };
 		1648D5A727024C6400F67C4B /* SlateDetailElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1648D5A627024C6400F67C4B /* SlateDetailElement.swift */; };
 		166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* Tests_iOS.swift */; };
 		166BACF62656E34B00E401F0 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 166BACF52656E34B00E401F0 /* Fixtures */; };
@@ -85,7 +84,6 @@
 		1606F21A26EBC1A200238111 /* HomeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTests.swift; sourceTree = "<group>"; };
 		1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteBuffer+read.swift"; sourceTree = "<group>"; };
 		1624B85A268508180099B6EF /* PocketKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PocketKit; sourceTree = "<group>"; };
-		1648D5A427024C4100F67C4B /* TopicCarouselElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopicCarouselElement.swift; sourceTree = "<group>"; };
 		1648D5A627024C6400F67C4B /* SlateDetailElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlateDetailElement.swift; sourceTree = "<group>"; };
 		166A81B02637406C0015AA1D /* Pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pocket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		166A81B32637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -199,7 +197,6 @@
 				166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */,
 				16A6807E26EBC71300A64545 /* TabBarElement.swift */,
 				16A6808026EBC78800A64545 /* HomeViewElement.swift */,
-				1648D5A427024C4100F67C4B /* TopicCarouselElement.swift */,
 				1648D5A627024C6400F67C4B /* SlateDetailElement.swift */,
 			);
 			path = Elements;
@@ -388,7 +385,6 @@
 				168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */,
 				166BACF82656E3C600E401F0 /* Fixture.swift in Sources */,
 				166F8F2926D0494F00F898E3 /* PocketUIElement.swift in Sources */,
-				1648D5A527024C4100F67C4B /* TopicCarouselElement.swift in Sources */,
 				166BAD092656E76B00E401F0 /* ItemRowElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
