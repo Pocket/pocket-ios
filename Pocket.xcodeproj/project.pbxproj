@@ -348,7 +348,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd \"${SRCROOT}\"/PocketKit\nxcrun -sdk macosx swift run ApolloCodegen generate\n";
+			shellScript = "if [[ -z ${SKIP_APOLLO_CODEGEN} ]]; then\n  echo Running Apollo Codegen\n  cd \"${SRCROOT}\"/PocketKit\n  xcrun -sdk macosx swift run ApolloCodegen generate\nelse\n  echo Skipping Apollo Codegen\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
