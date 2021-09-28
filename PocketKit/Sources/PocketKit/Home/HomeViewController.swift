@@ -18,7 +18,12 @@ class HomeViewController: UIViewController {
     }
 
     private lazy var layout = UICollectionViewCompositionalLayout { [self] index, env in
-        sectionProvider.section(for: slates?[index], width: env.container.effectiveContentSize.width)
+        switch index {
+        case 0:
+            return sectionProvider.topicCarouselSection(slates: slates)
+        default:
+            return sectionProvider.section(for: slates?[index - 1], width: env.container.effectiveContentSize.width)
+        }
     }
 
     private lazy var collectionView: UICollectionView = UICollectionView(
@@ -33,10 +38,12 @@ class HomeViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         collectionView.register(cellClass: RecommendationCell.self)
+        collectionView.register(cellClass: TopicChipCell.self)
         collectionView.register(viewClass: SlateHeaderView.self, forSupplementaryViewOfKind: SlateHeaderView.kind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.dividerElementKind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.twoUpDividerElementKind)
         collectionView.dataSource = self
+        collectionView.delegate = self
 
         collectionView.accessibilityIdentifier = "home"
 
@@ -68,34 +75,50 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return slates?.count ?? 0
-    }
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        guard let slate = slates?[section] else {
+        guard let slates = slates else {
             return 0
         }
 
-        return min(slate.recommendations.count, 5)
+        return slates.count + 1
+    }
+
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return slates?.count ?? 0
+        default:
+            return min(slates?[section - 1].recommendations.count ?? 0, 5)
+        }
     }
 
     func collectionView(
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
-        let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-        guard let recommendation = slates?[indexPath.section].recommendations[indexPath.item] else {
+        switch indexPath.section {
+        case 0:
+            let cell: TopicChipCell = collectionView.dequeueCell(for: indexPath)
+            guard let slate = slates?[indexPath.item] else {
+                return cell
+            }
+
+            cell.accessibilityIdentifier = "topic-chip"
+            cell.titleLabel.attributedText = TopicChipPresenter(slate: slate).attributedTitle
+            return cell
+        default:
+            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+            guard let recommendation = slates?[indexPath.section - 1].recommendations[indexPath.item] else {
+                return cell
+            }
+
+            let presenter = RecommendationPresenter(recommendation: recommendation)
+            cell.mode = indexPath.item == 0 ? .hero : .mini
+            loadImage(from: recommendation, at: indexPath, into: cell.thumbnailImageView)
+            cell.titleLabel.attributedText = presenter.attributedTitle
+            cell.subtitleLabel.attributedText = presenter.attributedDetail
+            cell.excerptLabel.attributedText = presenter.attributedExcerpt
             return cell
         }
-
-        let presenter = RecommendationPresenter(recommendation: recommendation)
-        cell.mode = indexPath.item == 0 ? .hero : .mini
-        loadImage(from: recommendation, at: indexPath, into: cell.thumbnailImageView)
-        cell.titleLabel.attributedText = presenter.attributedTitle
-        cell.subtitleLabel.attributedText = presenter.attributedDetail
-        cell.excerptLabel.attributedText = presenter.attributedExcerpt
-
-        return cell
     }
 
     private func loadImage(
@@ -137,7 +160,7 @@ extension HomeViewController: UICollectionViewDataSource {
         switch kind {
         case SlateHeaderView.kind:
             let header: SlateHeaderView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
-            guard let slate = slates?[indexPath.section] else {
+            guard let slate = slates?[indexPath.section - 1] else {
                 return header
             }
 
@@ -151,5 +174,14 @@ extension HomeViewController: UICollectionViewDataSource {
         default:
             fatalError("Unknown supplementary view kind: \(kind)")
         }
+    }
+}
+
+extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: false)
+
+        let slateDetail = SlateDetailViewController()
+        navigationController?.pushViewController(slateDetail, animated: true)
     }
 }

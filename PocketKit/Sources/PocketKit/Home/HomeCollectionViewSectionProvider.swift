@@ -3,6 +3,52 @@ import Sync
 
 
 class HomeViewControllerSectionProvider {
+    func topicCarouselSection(slates: [Slate]?) -> NSCollectionLayoutSection {
+        guard let slates = slates, !slates.isEmpty else {
+            return NSCollectionLayoutSection(
+                group: .horizontal(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .absolute(0),
+                        heightDimension: .absolute(0)
+                    ),
+                    subitems: []
+                )
+            )
+        }
+
+        let items = slates.map { slate -> (width: CGFloat, item: NSCollectionLayoutItem) in
+            let chip = TopicChipPresenter(slate: slate)
+            let width = TopicChipCell.width(chip: chip)
+
+            return (width: width, item: NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .absolute(width),
+                    heightDimension: .absolute(TopicChipCell.height)
+                )
+            ))
+        }
+
+        let spacing: CGFloat = 12
+        let totalWidth = items.reduce(0) { $0 + $1.width } + (spacing * CGFloat(slates.count) - 1)
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .absolute(totalWidth),
+                heightDimension: .absolute(TopicChipCell.height)
+            ),
+            subitems: items.map { $0.item }
+        )
+        group.interItemSpacing = .fixed(spacing)
+
+
+        let section = NSCollectionLayoutSection(
+            group: group
+        )
+        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 16, trailing: 16)
+
+        section.orthogonalScrollingBehavior = .continuous
+        return section
+    }
+
     func section(for slate: Slate?, width: CGFloat) -> NSCollectionLayoutSection {
         let dividerHeight: CGFloat = 17
         let margin: CGFloat = 8

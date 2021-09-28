@@ -1,0 +1,70 @@
+{
+    "data": {
+        "getSlate": {
+            "id": "2e3ddc90-8def-46d7-b85f-da7525c66fb1",
+            "displayName": "Slate 1",
+            "recommendations": [
+                {
+                    "id": "1",
+                    "itemId": "item-1",
+                    "item": {
+                        "__typename": "[some-type-name]",
+                        "title": "Slate 1, Recommendation 1",
+                        "language": "en",
+                        "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
+                        "timeToRead": 1,
+                        "particleJson": "{}",
+                        "images": [],
+                        "excerpt": "Cursus Aenean Elit",
+                        "domain": "slate-1-rec-1.example.com",
+                        "domainMetadata": {
+                            "__typename": "[some-type-name]",
+                            "name": "Lifehacker",
+                            "logo": "https://slate-1-rec-1.example.com/logo.png"
+                        }
+                    }
+                },
+                {
+                    "id": "2",
+                    "itemId": "item-2",
+                    "item": {
+                        "__typename": "[some-type-name]",
+                        "title": "Slate 1, Recommendation 2",
+                        "language": "en",
+                        "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
+                        "timeToRead": 2,
+                        "particleJson": "{}",
+                        "images": [],
+                        "excerpt": "Cursus Aenean Elit",
+                        "domain": "slate-1-rec-2.example.com",
+                        "domainMetadata": {
+                            "__typename": "[some-type-name]",
+                            "name": "Lifehacker",
+                            "logo": "https://slate-1-rec-2.example.com/logo.png"
+                        }
+                    }
+                },        },
+                {
+                    "id": "3",
+                    "itemId": "item-3",
+                    "item": {
+                        "__typename": "[some-type-name]",
+                        "title": "Slate 1, Recommendation 3",
+                        "language": "en",
+                        "topImageUrl": "http://example.com/slate-1-rec-3/top-image.png",
+                        "timeToRead": 3,
+                        "particleJson": "{}",
+                        "images": [],
+                        "excerpt": "Cursus Aenean Elit",
+                        "domain": "slate-1-rec-3.example.com",
+                        "domainMetadata": {
+                            "__typename": "[some-type-name]",
+                            "name": "Lifehacker",
+                            "logo": "https://slate-1-rec-3.example.com/logo.png"
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}
