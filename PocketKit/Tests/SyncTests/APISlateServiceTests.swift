@@ -16,7 +16,7 @@ class APISlateServiceTests: XCTestCase {
         APISlateService(apollo: apollo ?? self.apollo)
     }
 
-    func test_fetchSlates_storesContentLocally() async throws {
+    func test_fetchSlates_returnsSlates() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
         let slates = try await subject().fetchSlates()
@@ -63,6 +63,34 @@ class APISlateServiceTests: XCTestCase {
             XCTAssertEqual(recommendation.particleJSON, "{}")
             XCTAssertEqual(recommendation.domain, "slate-2-rec-2.example.com")
             XCTAssertEqual(recommendation.domainMetadata?.name, "Lifehacker")
+        }
+    }
+
+    func test_fetchSlate_returnsSlateDetails() async throws {
+        apollo.stubFetch(toReturnFixturedNamed: "slate-detail", asResultType: GetSlateQuery.self)
+
+        let slate = try await subject().fetchSlate("the-slate-id")
+
+        XCTAssertEqual(slate?.id, "slate-1")
+        XCTAssertEqual(slate?.name, "Slate 1")
+        XCTAssertEqual(slate?.description, "The description of slate 1")
+        XCTAssertEqual(slate?.recommendations.count, 3)
+
+        let recommendations = slate?.recommendations
+
+        do {
+            let recommendation = recommendations?[0]
+            XCTAssertEqual(recommendation?.id, "1")
+        }
+
+        do {
+            let recommendation = recommendations?[1]
+            XCTAssertEqual(recommendation?.id, "2")
+        }
+
+        do {
+            let recommendation = recommendations?[2]
+            XCTAssertEqual(recommendation?.id, "3")
         }
     }
 }
