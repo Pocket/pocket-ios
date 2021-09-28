@@ -29,7 +29,7 @@ struct PocketAppElement {
     }
 
     var slateDetailView: SlateDetailElement {
-        return SlateDetailElement(app.otherElements["slate-detail"])
+        return SlateDetailElement(app.collectionViews["slate-detail"])
     }
 
     var userListView: UserListElement {

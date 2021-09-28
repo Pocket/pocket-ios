@@ -1,13 +1,13 @@
 import Foundation
 
 
-public struct Slate: Identifiable, Equatable {
+public struct Slate: Identifiable, Equatable, Hashable {
     public let id: String
     public let name: String?
     public let description: String?
     public let recommendations: [Recommendation]
 
-    public struct Recommendation: Identifiable, Equatable {
+    public struct Recommendation: Identifiable, Equatable, Hashable {
         public let id: String?
         public let itemID: String
         public let feedID: Int?
@@ -23,7 +23,7 @@ public struct Slate: Identifiable, Equatable {
         public let excerpt: String?
     }
 
-    public struct DomainMetadata: Equatable {
+    public struct DomainMetadata: Equatable, Hashable {
         public let name: String?
     }
 }

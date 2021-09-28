@@ -91,6 +91,8 @@ class HomeTests: XCTestCase {
 
         chip.tap()
 
-        app.slateDetailView.wait()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").verify()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").verify()
     }
 }
