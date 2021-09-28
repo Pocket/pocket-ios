@@ -36,6 +36,22 @@ fragment PendingItemParts on PendingItem {
   status
 }
 
+fragment SlateParts on Slate {
+  id
+  displayName
+  description
+  recommendations {
+    id
+    itemId
+    feedId
+    publisher
+    recSrc
+    item {
+      ...ItemParts
+    }
+  }
+}
+
 query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
   userByToken(token: $token) {
     savedItems(pagination: $pagination, filter: $savedItemsFilter) {
@@ -79,19 +95,13 @@ query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
   getSlateLineup(slateLineupId: $lineupID, recommendationCount: $maxRecommendations) {
     id
     slates {
-      id
-      displayName
-      description
-      recommendations {
-        id
-        itemId
-        feedId
-        publisher
-        recSrc
-        item {
-          ...ItemParts
-        }
-      }
+      ...SlateParts
     }
+  }
+}
+
+query GetSlate($slateID: String!, $recommendationCount: Int!) {
+  getSlate(slateId: $slateID, recommendationCount: $recommendationCount) {
+    ...SlateParts
   }
 }

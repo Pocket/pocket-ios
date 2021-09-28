@@ -2,7 +2,7 @@ import Foundation
 
 
 extension Slate {
-    typealias Remote = GetSlateLineupQuery.Data.GetSlateLineup.Slate
+    typealias Remote = SlateParts
 
     init(remote: Remote) {
         self.init(
@@ -15,7 +15,7 @@ extension Slate {
 }
 
 extension Slate.Recommendation {
-    typealias Remote = Slate.Remote.Recommendation
+    typealias Remote = SlateParts.Recommendation
 
     init(remote: Remote) {
         self.init(

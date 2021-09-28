@@ -3,6 +3,7 @@ import Foundation
 
 protocol SlateService {
     func fetchSlates() async throws -> [Slate]
+    func fetchSlate(_ slateID: String) async throws -> Slate?
 }
 
 class APISlateService: SlateService {
@@ -15,8 +16,19 @@ class APISlateService: SlateService {
     }
 
     func fetchSlates() async throws -> [Slate] {
-        try await apollo
-            .fetch(query: GetSlateLineupQuery(lineupID: Self.lineupID, maxRecommendations: 5))
-            .data?.getSlateLineup?.slates.map(Slate.init) ?? []
+        let query = GetSlateLineupQuery(lineupID: Self.lineupID, maxRecommendations: 5)
+
+        return try await apollo
+            .fetch(query: query)
+            .data?.getSlateLineup?.slates.map { slate in
+                Slate(remote: slate.fragments.slateParts)
+            } ?? []
+    }
+
+    func fetchSlate(_ slateID: String) async throws -> Slate? {
+        let query = GetSlateQuery(slateID: slateID, recommendationCount: 25)
+        let remote = try await apollo.fetch(query: query).data?.getSlate
+
+        return (remote?.fragments.slateParts).flatMap(Slate.init)
     }
 }

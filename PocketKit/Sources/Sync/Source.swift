@@ -142,4 +142,8 @@ extension Source {
     public func fetchSlates() async throws -> [Slate] {
         return try await slateService.fetchSlates()
     }
+
+    public func fetchSlate(_ slateID: String) async throws -> Slate? {
+        return try await slateService.fetchSlate(slateID)
+    }
 }

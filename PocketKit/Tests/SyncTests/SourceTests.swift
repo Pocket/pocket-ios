@@ -164,7 +164,7 @@ class SourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
-    func test_refreshSlates_executesRefreshSlatesOperation() async throws {
+    func test_fetchSlates_returnsResultsFromSlateService() async throws {
         let expectedSlates = [Slate(id: "my-slate", name: "My Slate", description: "My very awesome slate", recommendations: [])]
         slateService.stubFetchSlates {
             return expectedSlates
@@ -173,5 +173,16 @@ class SourceTests: XCTestCase {
         let actualSlates = try await subject().fetchSlates()
 
         XCTAssertEqual(actualSlates, expectedSlates)
+    }
+
+    func test_fetchSlate_returnsResultFromSlateService() async throws {
+        let expectedSlate = Slate(id: "my-slate", name: "My Slate", description: "My very awesome slate", recommendations: [])
+        slateService.stubFetchSlate { _ in
+            return expectedSlate
+        }
+
+        let actualSlate = try await subject().fetchSlate("the-slate-id")
+
+        XCTAssertEqual(actualSlate, expectedSlate)
     }
 }
