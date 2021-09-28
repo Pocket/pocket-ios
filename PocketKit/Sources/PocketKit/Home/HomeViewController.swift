@@ -111,45 +111,15 @@ extension HomeViewController: UICollectionViewDataSource {
                 return cell
             }
 
-            let presenter = RecommendationPresenter(recommendation: recommendation)
             cell.mode = indexPath.item == 0 ? .hero : .mini
-            loadImage(from: recommendation, at: indexPath, into: cell.thumbnailImageView)
+            
+            let presenter = RecommendationPresenter(recommendation: recommendation)
+            presenter.loadImage(into: cell.thumbnailImageView, cellWidth: cell.frame.width)
             cell.titleLabel.attributedText = presenter.attributedTitle
             cell.subtitleLabel.attributedText = presenter.attributedDetail
             cell.excerptLabel.attributedText = presenter.attributedExcerpt
             return cell
         }
-    }
-
-    private func loadImage(
-        from recommendation: Slate.Recommendation,
-        at indexPath: IndexPath,
-        into imageView: UIImageView
-    ) {
-        let imageWidth = (collectionView
-            .layoutAttributesForItem(at: indexPath)?
-            .size.width ?? 0)
-        - RecommendationCell.layoutMargins.left
-        - RecommendationCell.layoutMargins.right
-
-        let imageSize = CGSize(
-            width: imageWidth,
-            height: imageWidth * RecommendationCell.imageAspectRatio
-        )
-
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(
-            with: recommendation.topImageURL,
-            options: [
-                .scaleFactor(UIScreen.main.scale),
-                .processor(ResizingImageProcessor(
-                    referenceSize: imageSize,
-                    mode: .aspectFill
-                ).append(
-                    another: CroppingImageProcessor(size: imageSize)
-                )),
-            ]
-        )
     }
 
     func collectionView(
@@ -181,7 +151,12 @@ extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
 
-        let slateDetail = SlateDetailViewController()
+        guard let slates = slates else {
+            return
+        }
+        
+        let slate = slates[indexPath.item]
+        let slateDetail = SlateDetailViewController(source: source, slateID: slate.id)
         navigationController?.pushViewController(slateDetail, animated: true)
     }
 }

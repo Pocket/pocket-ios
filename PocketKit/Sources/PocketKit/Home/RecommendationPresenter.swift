@@ -1,6 +1,7 @@
 import Sync
 import Textile
-import Foundation
+import UIKit
+import Kingfisher
 
 
 private extension Style {
@@ -50,6 +51,31 @@ struct RecommendationPresenter {
         }
 
         return NSAttributedString(detail, style: style)
+    }
+    
+    func loadImage(into imageView: UIImageView, cellWidth: CGFloat) {
+        let imageWidth = cellWidth
+        - RecommendationCell.layoutMargins.left
+        - RecommendationCell.layoutMargins.right
+        
+        let imageSize = CGSize(
+            width: imageWidth,
+            height: imageWidth * RecommendationCell.imageAspectRatio
+        )
+
+        imageView.kf.indicatorType = .activity
+        imageView.kf.setImage(
+            with: recommendation.topImageURL,
+            options: [
+                .scaleFactor(UIScreen.main.scale),
+                .processor(ResizingImageProcessor(
+                    referenceSize: imageSize,
+                    mode: .aspectFill
+                ).append(
+                    another: CroppingImageProcessor(size: imageSize)
+                )),
+            ]
+        )
     }
 
     private var detail: String {
