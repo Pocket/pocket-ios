@@ -153,7 +153,7 @@ class ItemViewController: UIViewController {
 
 extension ItemViewController {
     private func favorite() {
-        guard let item = itemHost.item else {
+        guard let item = model.selectedItem else {
             return
         }
 
@@ -162,7 +162,7 @@ extension ItemViewController {
     }
 
     private func unfavorite() {
-        guard let item = itemHost.item else {
+        guard let item = model.selectedItem else {
             return
         }
 
@@ -171,7 +171,7 @@ extension ItemViewController {
     }
 
     private func archive() {
-        guard let item = itemHost.item else {
+        guard let item = model.selectedItem else {
             return
         }
 
@@ -181,7 +181,7 @@ extension ItemViewController {
     }
 
     private func delete() {
-        guard let item = itemHost.item else {
+        guard let item = model.selectedItem else {
             return
         }
 
@@ -191,7 +191,7 @@ extension ItemViewController {
     }
 
     private func share() {
-        guard let item = itemHost.item else {
+        guard let item = model.selectedItem else {
             return
         }
 

@@ -8,15 +8,6 @@ import Sync
 
 public extension Item {
     var textAlignment: TextAlignment {
-        let direction = Locale.characterDirection(forLanguage: language ?? "en")
-
-        switch direction {
-        case .rightToLeft:
-            return .right
-        case .unknown, .leftToRight, .topToBottom, .bottomToTop:
-            return .left
-        @unknown default:
-            return .left
-        }
+        TextAlignment(language: language)
     }
 }

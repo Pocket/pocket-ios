@@ -17,14 +17,17 @@ struct PocketItemActivity: PocketActivity {
     let activityItems: [Any]
    
     init(item: Item, additionalText: String? = nil) {
-        self.activityItems = Self.activityItems(for: item, additionalText: additionalText)
+        self.activityItems = Self.activityItems(for: item.url, additionalText: additionalText)
+    }
+
+    init(recommendation: Slate.Recommendation, additionalText: String? = nil) {
+        self.activityItems = Self.activityItems(for: recommendation.url, additionalText: additionalText)
     }
     
-    private static func activityItems(for item: Item, additionalText: String?) -> [Any] {
-        let items = [
-            item.url.flatMap(ActivityItemSource.init),
+    private static func activityItems(for url: URL?, additionalText: String?) -> [Any] {
+        [
+            url.flatMap(ActivityItemSource.init),
             additionalText.flatMap(ActivityItemSource.init)
         ].compactMap { $0 }
-        return items
     }
 }

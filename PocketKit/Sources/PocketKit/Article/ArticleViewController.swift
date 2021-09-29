@@ -15,8 +15,16 @@ private extension Style {
     static let pre: Style = .body.sansSerif
 }
 
+protocol Readable {
+    var particle: Article? { get }
+    var url: URL? { get }
+    var textAlignment: TextAlignment { get }
+
+    func shareActivity(additionalText: String?) -> PocketActivity?
+}
+
 class ArticleViewController: UICollectionViewController {
-    var item: Item? {
+    var item: Readable? {
         didSet {
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -188,11 +196,10 @@ extension ArticleViewController: TextContentCellDelegate {
         _ cell: TextContentCell,
         didShareSelecedText selectedText: String
     ) {
-        guard let item = item else {
+        guard let item = item, let activity = item.shareActivity(additionalText: selectedText) else {
             return
         }
-        
-        let activity = PocketItemActivity(item: item, additionalText: selectedText)
+
         let sheet = UIActivityViewController(activity: activity)
         present(sheet, animated: true)
     }
