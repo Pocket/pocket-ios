@@ -6,10 +6,15 @@ import Foundation
 
 extension UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node {
     var preferredURLString: String {
-        item.fragments.itemParts?.resolvedUrl
-        ?? item.fragments.itemParts?.givenUrl
+        item.fragments.itemParts?.preferredURLString
         ?? item.fragments.pendingItemParts?.url
         ?? url
+    }
+}
+
+extension ItemParts {
+    var preferredURLString: String {
+        resolvedUrl ?? givenUrl
     }
 }
 
