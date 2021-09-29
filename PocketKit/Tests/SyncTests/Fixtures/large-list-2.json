@@ -23,6 +23,8 @@
                             "isFavorite": false,
                             "item": {
                                 "__typename": "Item",
+                                "givenUrl": "https://given.example.com/item-2",
+                                "resolvedUrl": "https://resolved.example.com/item-2",
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": null,

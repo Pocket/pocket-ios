@@ -4,21 +4,29 @@
 
 import Foundation
 
+extension UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node {
+    var preferredURLString: String {
+        item.fragments.itemParts?.resolvedUrl
+        ?? item.fragments.itemParts?.givenUrl
+        ?? item.fragments.pendingItemParts?.url
+        ?? url
+    }
+}
 
 extension Item {
     typealias RemoteSavedItem = UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node
-    typealias RemoteItem = RemoteSavedItem.Item.AsItem
+    typealias RemoteItem = ItemParts
 
     func update(from savedItem: RemoteSavedItem) {
         itemID = savedItem.itemId
         isArchived = savedItem.isArchived
-        url = URL(string: savedItem.url)
+        url = URL(string: savedItem.preferredURLString)
         isFavorite = savedItem.isFavorite
         timestamp = Date(timeIntervalSince1970: TimeInterval(savedItem._createdAt))
         deletedAt = savedItem._deletedAt
             .flatMap { Date(timeIntervalSince1970: TimeInterval($0)) }
 
-        update(from: savedItem.item.asItem)
+        update(from: savedItem.item.fragments.itemParts)
     }
 
     func update(from item: RemoteItem?) {

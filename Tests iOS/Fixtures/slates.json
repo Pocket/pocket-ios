@@ -19,6 +19,8 @@
                             "recSrc": "RecommendationAPI",
                             "item": {
                                 "__typename": "[some-type-name]",
+                                "givenUrl": "https://example.com/item-1",
+                                "resolvedUrl": "https://example.com/item-1",
                                 "title": "Slate 1, Recommendation 1",
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
@@ -43,6 +45,8 @@
                             "recSrc": "RecommendationAPI",
                             "item": {
                                 "__typename": "[some-type-name]",
+                                "givenUrl": "https://example.com/item-2",
+                                "resolvedUrl": "https://example.com/item-2",
                                 "title": "Slate 1, Recommendation 2",
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
@@ -75,6 +79,8 @@
                             "recSrc": "RecommendationAPI",
                             "item": {
                                 "__typename": "[some-type-name]",
+                                "givenUrl": "https://example.com/item-1",
+                                "resolvedUrl": "https://example.com/item-1",
                                 "title": "Slate 2, Recommendation 1",
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-2-rec-1/top-image.png",
@@ -99,6 +105,8 @@
                             "recSrc": "RecommendationAPI",
                             "item": {
                                 "__typename": "[some-type-name]",
+                                "givenUrl": "https://example.com/item-2",
+                                "resolvedUrl": "https://example.com/item-2",
                                 "title": "Slate 2, Recommendation 2",
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-2-rec-2/top-image.png",

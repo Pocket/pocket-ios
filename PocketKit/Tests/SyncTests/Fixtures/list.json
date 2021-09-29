@@ -23,6 +23,8 @@
                             "isFavorite": true,
                             "item": {
                                 "__typename": "Item",
+                                "givenUrl": "https://given.example.com/item-1",
+                                "resolvedUrl": "https://resolved.example.com/item-1",
                                 "title": "Item 1",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": "example.com",
@@ -60,6 +62,8 @@
                             "isFavorite": false,
                             "item": {
                                 "__typename": "Item",
+                                "givenUrl": "https://given.example.com/item-2",
+                                "resolvedUrl": "https://resolved.example.com/item-2",
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": null,
