@@ -2,6 +2,7 @@ import UIKit
 import Sync
 import Kingfisher
 import Textile
+import Analytics
 
 
 class HomeViewController: UIViewController {
@@ -9,6 +10,8 @@ class HomeViewController: UIViewController {
     static let twoUpDividerElementKind: String = "twoup-divider"
 
     private let source: Sync.Source
+    private let tracker: Tracker
+    private let readerSettings: ReaderSettings
     private let sectionProvider: HomeViewControllerSectionProvider
 
     private var slates: [Slate]? {
@@ -31,8 +34,10 @@ class HomeViewController: UIViewController {
         collectionViewLayout: layout
     )
 
-    init(source: Sync.Source) {
+    init(source: Sync.Source, tracker: Tracker, readerSettings: ReaderSettings) {
         self.source = source
+        self.tracker = tracker
+        self.readerSettings = readerSettings
         self.sectionProvider = HomeViewControllerSectionProvider()
 
         super.init(nibName: nil, bundle: nil)
@@ -150,13 +155,27 @@ extension HomeViewController: UICollectionViewDataSource {
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
-
         guard let slates = slates else {
             return
         }
-        
-        let slate = slates[indexPath.item]
-        let slateDetail = SlateDetailViewController(source: source, slateID: slate.id)
-        navigationController?.pushViewController(slateDetail, animated: true)
+
+        switch indexPath.section {
+        case 0:
+            let slateDetail = SlateDetailViewController(
+                source: source,
+                readerSettings: readerSettings,
+                tracker: tracker,
+                slateID: slates[indexPath.item].id
+            )
+
+            navigationController?.pushViewController(slateDetail, animated: true)
+        default:
+            let article = ArticleViewController(
+                readerSettings: readerSettings,
+                tracker: tracker
+            )
+            article.item = slates[indexPath.section - 1].recommendations[indexPath.item]
+            navigationController?.pushViewController(article, animated: true)
+        }
     }
 }

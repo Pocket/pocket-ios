@@ -41,7 +41,7 @@ class CompactMainCoordinator: NSObject {
         myList.tabBarItem.title = "My List"
         myList.tabBarItem.image = UIImage(systemName: "list.dash")
 
-        home = UINavigationController(rootViewController: HomeViewController(source: source))
+        home = UINavigationController(rootViewController: HomeViewController(source: source, tracker: tracker, readerSettings: model.readerSettings))
         home.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
         home.tabBarItem.title = "Home"
         home.tabBarItem.image = UIImage(systemName: "house")

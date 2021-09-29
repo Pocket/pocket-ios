@@ -1,5 +1,6 @@
 import UIKit
 import Sync
+import Analytics
 
 
 class SlateDetailViewController: UIViewController {
@@ -55,6 +56,8 @@ class SlateDetailViewController: UIViewController {
     }()
     
     private let source: Source
+    private let tracker: Tracker
+    private let readerSettings: ReaderSettings
     
     private let slateID: String
     private var slate: Slate? {
@@ -72,13 +75,21 @@ class SlateDetailViewController: UIViewController {
         }
     }
     
-    init(source: Source, slateID: String) {
+    init(
+        source: Source,
+        readerSettings: ReaderSettings,
+        tracker: Tracker,
+        slateID: String
+    ) {
         self.source = source
+        self.readerSettings = readerSettings
+        self.tracker = tracker
         self.slateID = slateID
     
         super.init(nibName: nil, bundle: nil)
         
         collectionView.dataSource = dataSource
+        collectionView.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -95,5 +106,18 @@ class SlateDetailViewController: UIViewController {
         Task {
             self.slate = try await source.fetchSlate(slateID)
         }
+    }
+}
+
+extension SlateDetailViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let recommendation = slate?.recommendations[indexPath.item] else {
+            return
+        }
+
+        let article = ArticleViewController(readerSettings: readerSettings, tracker: tracker)
+        article.item = recommendation
+
+        navigationController?.pushViewController(article, animated: true)
     }
 }

@@ -45,7 +45,11 @@ class RegularMainCoordinator: NSObject {
         )
 
         myList = UIHostingController(rootView: listView)
-        home = HomeViewController(source: source)
+        home = HomeViewController(
+            source: source,
+            tracker: tracker,
+            readerSettings: model.readerSettings
+        )
         item = ItemViewController(
             model: model,
             tracker: tracker,

@@ -23,7 +23,9 @@ class ShareAnItemTests: XCTestCase {
     func slateResponse() -> Response {
         Response {
             Status.ok
-            Fixture.load(name: "slates").data
+            Fixture.load(name: "slates")
+                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+                .data
         }
     }
 

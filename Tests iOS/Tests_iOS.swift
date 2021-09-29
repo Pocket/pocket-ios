@@ -24,7 +24,9 @@ class Tests_iOS: XCTestCase {
     func slateResponse() -> Response {
         Response {
             Status.ok
-            Fixture.load(name: "slates").data
+            Fixture.load(name: "slates")
+                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+                .data
         }
     }
 
@@ -199,7 +201,7 @@ class Tests_iOS: XCTestCase {
         }
     }
 
-    func test_3_webReader_displaysWebContent() {
+    func test_4_webReader_displaysWebContent() {
         app.launch().tabBar.myListButton.wait().tap()
 
         app
@@ -221,7 +223,7 @@ class Tests_iOS: XCTestCase {
             .wait()
     }
 
-    func test_4_list_excludesArchivedContent() {
+    func test_5_list_excludesArchivedContent() {
         server.routes.post("/graphql") { request, _ in
             let requestBody = body(of: request)
 
