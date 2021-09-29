@@ -86,7 +86,7 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(item.timestamp, Date(timeIntervalSince1970: 0))
         XCTAssertEqual(item.timeToRead, 6)
         XCTAssertEqual(item.title, "Item 1")
-        XCTAssertEqual(item.url, URL(string: "https://example.com/item-1")!)
+        XCTAssertEqual(item.url, URL(string: "https://resolved.example.com/item-1")!)
         XCTAssertEqual(item.particleJSON, "<just-json-things>")
         XCTAssertEqual(item.isArchived, false)
         XCTAssertEqual(item.deletedAt, Date(timeIntervalSince1970: 1))
@@ -104,7 +104,7 @@ class FetchListTests: XCTestCase {
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() throws {
         apollo.stubFetch(toReturnFixturedNamed: "updated-item", asResultType: UserByTokenQuery.self)
 
-        let itemURL = URL(string: "http://example.com/item-1")!
+        let itemURL = URL(string: "http://resolved.example.com/item-1")!
         do {
             let item = space.newItem()
             item.url = itemURL

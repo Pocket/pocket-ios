@@ -1,6 +1,6 @@
 fragment SavedItemParts on SavedItem {
-  itemId: id
   url
+  itemId: id
   isArchived
   isFavorite
   _deletedAt
@@ -12,6 +12,8 @@ fragment SavedItemParts on SavedItem {
 }
 
 fragment ItemParts on Item {
+  givenUrl
+  resolvedUrl
   title
   language
   topImageUrl

@@ -24,6 +24,8 @@
                             "item": {
                                 "__typename": "Item",
                                 "title": "Item 1",
+                                "givenUrl": "http://localhost:8080/hello",
+                                "resolvedUrl": "http://localhost:8080/hello",
                                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                 "domain": null,
                                 "language": "en",
@@ -60,6 +62,8 @@
                             "isFavorite": false,
                             "item": {
                                 "__typename": "Item",
+                                "givenUrl": "https://example.com/item-2",
+                                "resolvedUrl": "https://example.com/item-2",
                                 "title": "Item 2",
                                 "topImageUrl": "https://example.com/item-2/top-image.jpg",
                                 "domain": "wired.com",

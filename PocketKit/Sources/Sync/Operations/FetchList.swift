@@ -81,7 +81,7 @@ class FetchList: AsyncOperation {
                     continue
                 }
 
-                let item = try space.fetchOrCreateItem(byURLString: node.url)
+                let item = try space.fetchOrCreateItem(byURLString: node.preferredURLString)
                 item.update(from: node)
 
                 if item.deletedAt != nil, item.isArchived {
