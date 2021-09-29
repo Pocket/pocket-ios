@@ -20,6 +20,7 @@ extension Slate.Recommendation {
     init(remote: Remote) {
         self.init(
             id: remote.id,
+            url: URL(string: remote.item.fragments.itemParts.preferredURLString),
             itemID: remote.itemId,
             feedID: remote.feedId,
             publisher: remote.publisher,

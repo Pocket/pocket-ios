@@ -52,6 +52,7 @@ class APISlateServiceTests: XCTestCase {
 
             let recommendation = slate.recommendations[0]
             XCTAssertEqual(recommendation.id, "slate-2-rec-1")
+            XCTAssertEqual(recommendation.url, URL(string: "https://resolved.example.com/rec-1")!)
             XCTAssertEqual(recommendation.itemID, "slate-2-item-1")
             XCTAssertEqual(recommendation.feedID, 2)
             XCTAssertEqual(recommendation.publisher, "lifehacker.com")

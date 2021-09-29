@@ -9,6 +9,7 @@ public struct Slate: Identifiable, Equatable, Hashable {
 
     public struct Recommendation: Identifiable, Equatable, Hashable {
         public let id: String?
+        public let url: URL?
         public let itemID: String
         public let feedID: Int?
         public let publisher: String?
