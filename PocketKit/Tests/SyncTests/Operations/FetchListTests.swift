@@ -104,17 +104,17 @@ class FetchListTests: XCTestCase {
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() throws {
         apollo.stubFetch(toReturnFixturedNamed: "updated-item", asResultType: UserByTokenQuery.self)
 
-        let itemURL = URL(string: "http://resolved.example.com/item-1")!
+        let itemID = "item-id-1"
         do {
             let item = space.newItem()
-            item.url = itemURL
+            item.itemID = itemID
             item.title = "Item 1"
             try space.save()
         }
 
         performOperation()
 
-        let item = try space.fetchItem(byURLString: itemURL.absoluteString)
+        let item = try space.fetchItem(byItemID: itemID)
         XCTAssertEqual(item?.title, "Updated Item 1")
     }
 

@@ -15,12 +15,6 @@ class Space {
         self.container = container
     }
 
-    func fetchItem(byURLString url: String) throws -> Item? {
-        let request = Requests.fetchItem(byURLString: url)
-        let result = try context.fetch(request)
-        return result.first
-    }
-
     func fetchItem(byItemID itemID: String) throws -> Item? {
         let request = Requests.fetchItem(byItemID: itemID)
         return try context.fetch(request).first
@@ -36,8 +30,8 @@ class Space {
         return try context.fetch(Requests.fetchAllItems())
     }
     
-    func fetchOrCreateItem(byURLString url: String) throws -> Item {
-        try fetchItem(byURLString: url) ?? newItem()
+    func fetchOrCreateItem(byItemID itemID: String) throws -> Item {
+        try fetchItem(byItemID: itemID) ?? newItem()
     }
 
     func newItem() -> Item {
