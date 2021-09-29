@@ -24,13 +24,6 @@ public enum Requests {
         return request
     }
     
-    public static func fetchItem(byURLString url: String) -> NSFetchRequest<Item> {
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
-        request.predicate = NSPredicate(format: "url.absoluteString == %@", url)
-        request.fetchLimit = 1
-        return request
-    }
-
     public static func fetchItem(byItemID itemID: String) -> NSFetchRequest<Item> {
         let request = Item.fetchRequest()
         request.predicate = NSPredicate(format: "itemID = %@", itemID)
