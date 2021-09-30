@@ -63,6 +63,7 @@ class ArticleViewController: UICollectionViewController {
 
         super.init(collectionViewLayout: layout)
 
+        collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.accessibilityIdentifier = "article-view"
         collectionView.register(cellClass: TextContentCell.self)
         collectionView.register(cellClass: EmptyCell.self)

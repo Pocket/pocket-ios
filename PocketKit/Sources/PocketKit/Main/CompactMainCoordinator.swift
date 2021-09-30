@@ -13,7 +13,7 @@ class CompactMainCoordinator: NSObject {
 
     private let tabBarController: UITabBarController
     private let myList: UINavigationController
-    private let home: UIViewController
+    private let home: UINavigationController
 
     private let tracker: Tracker
     private let source: Source
@@ -36,18 +36,34 @@ class CompactMainCoordinator: NSObject {
             .environment(\.source, source)
             .environment(\.tracker, tracker)
 
-        myList = UINavigationController(rootViewController: UIHostingController(rootView: listView))
+        let listHost = UIHostingController(rootView: listView)
+        listHost.view.backgroundColor = UIColor(.ui.white1)
+        myList = UINavigationController(rootViewController: listHost)
+        myList.navigationBar.prefersLargeTitles = true
+        myList.navigationBar.barTintColor = UIColor(.ui.white1)
+        myList.navigationBar.tintColor = UIColor(.ui.grey1)
         myList.tabBarItem.accessibilityIdentifier = "my-list-tab-bar-button"
         myList.tabBarItem.title = "My List"
         myList.tabBarItem.image = UIImage(systemName: "list.dash")
 
-        home = UINavigationController(rootViewController: HomeViewController(source: source, tracker: tracker, readerSettings: model.readerSettings))
+        let homeRoot = HomeViewController(
+            source: source,
+            tracker: tracker,
+            readerSettings: model.readerSettings
+        )
+        homeRoot.view.backgroundColor = UIColor(.ui.white1)
+        home = UINavigationController(rootViewController:homeRoot)
+        home.navigationBar.prefersLargeTitles = true
+        home.navigationBar.barTintColor = UIColor(.ui.white1)
+        home.navigationBar.tintColor = UIColor(.ui.grey1)
         home.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
         home.tabBarItem.title = "Home"
         home.tabBarItem.image = UIImage(systemName: "house")
 
         tabBarController = UITabBarController()
         tabBarController.viewControllers = [home, myList]
+        tabBarController.tabBar.barTintColor = UIColor(.ui.white1)
+        tabBarController.tabBar.tintColor = UIColor(.ui.grey1)
 
         super.init()
 
@@ -79,6 +95,7 @@ class CompactMainCoordinator: NSObject {
             source: source
         )
         itemVC.delegate = self
+        itemVC.hidesBottomBarWhenPushed = true
 
         myList.pushViewController(itemVC, animated: animated)
     }

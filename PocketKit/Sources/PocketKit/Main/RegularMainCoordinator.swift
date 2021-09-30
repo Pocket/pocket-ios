@@ -12,7 +12,7 @@ class RegularMainCoordinator: NSObject {
     }
 
     private let splitController: UISplitViewController
-    private let navigationSidebar: UIViewController
+    private let navigationSidebar: UINavigationController
     private let myList: UIViewController
     private let home: UIViewController
     private let item: ItemViewController
@@ -40,27 +40,50 @@ class RegularMainCoordinator: NSObject {
             .environment(\.tracker, tracker)
 
         splitController = UISplitViewController(style: .tripleColumn)
-        navigationSidebar = UIHostingController(
-            rootView: NavigationSidebarView(model: model)
-        )
-
+        splitController.displayModeButtonVisibility = .always
+        
+        navigationSidebar = UINavigationController(rootViewController: NavigationSidebarViewController(model: model))
+        
         myList = UIHostingController(rootView: listView)
+        myList.view.backgroundColor = UIColor(.ui.white1)
+        
         home = HomeViewController(
             source: source,
             tracker: tracker,
             readerSettings: model.readerSettings
         )
+        home.view.backgroundColor = UIColor(.ui.white1)
+        
         item = ItemViewController(
             model: model,
             tracker: tracker,
             source: source
         )
+        item.view.backgroundColor = UIColor(.ui.white1)
 
         super.init()
 
         splitController.setViewController(navigationSidebar, for: .primary)
         splitController.setViewController(myList, for: .supplementary)
         splitController.setViewController(item, for: .secondary)
+        
+        splitController.view.tintColor = UIColor(.ui.grey1)
+
+        navigationSidebar.navigationBar.prefersLargeTitles = true
+        navigationSidebar.navigationBar.barTintColor = UIColor(.ui.white1)
+        navigationSidebar.navigationBar.tintColor = UIColor(.ui.grey1)
+
+        myList.navigationController?.navigationBar.prefersLargeTitles = true
+        myList.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
+        myList.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
+
+        home.navigationController?.navigationBar.prefersLargeTitles = true
+        home.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
+        home.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
+
+        item.navigationController?.navigationBar.prefersLargeTitles = true
+        item.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
+        item.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
 
         item.delegate = self
         splitController.delegate = self

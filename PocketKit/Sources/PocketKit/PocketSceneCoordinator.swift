@@ -35,6 +35,7 @@ class PocketSceneCoordinator: NSObject {
 
         let signInView = SignInView(authClient: authClient, state: authState)
         signIn = UIHostingController(rootView: signInView)
+        signIn.view.backgroundColor = UIColor(.ui.white1)
         main = MainCoordinator(model: mainViewModel, source: source, tracker: tracker)
 
         super.init()

@@ -52,6 +52,8 @@ struct ItemListView: View {
                             Label("Archive", systemImage: "archivebox")
                         }.tint(Color(.branding.iris1))
                     }
+                    .listRowSeparator(.visible, edges: [.bottom])
+                    .listRowSeparator(.hidden, edges: [.top])
                     .listRowBackground(background(item: item))
                     .environment(\.source, source)
             }
@@ -148,6 +150,6 @@ private struct ItemListViewRow: View {
                     let impression = Impression(component: .content, requirement: .instant)
                     tracker.track(event: impression, contexts)
                 }
-        }
+        }.listRowBackground(Color(.ui.white1))
     }
 }
