@@ -28,4 +28,21 @@ extension ApolloClientProtocol {
             }
         }
     }
+
+    func perform<Mutation: GraphQLMutation>(mutation: Mutation) async throws -> GraphQLResult<Mutation.Data> {
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<GraphQLResult<Mutation.Data>, Error>) in
+            _ = perform(
+                mutation: mutation,
+                publishResultToStore: false,
+                queue: .main
+            ) { result in
+                switch result {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let data):
+                    continuation.resume(returning: data)
+                }
+            }
+        }
+    }
 }

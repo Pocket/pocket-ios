@@ -1,6 +1,7 @@
 import Foundation
 import Apollo
 import Combine
+import CoreData
 
 
 protocol SyncOperationFactory {
@@ -8,15 +9,23 @@ protocol SyncOperationFactory {
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
-        events: PassthroughSubject<SyncEvent, Never>,
+        events: SyncEvents,
         maxItems: Int,
         lastRefresh: LastRefresh
     ) -> Operation
 
     func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
-        events: PassthroughSubject<SyncEvent, Never>,
+        events: SyncEvents,
         mutation: Mutation
+    ) -> Operation
+
+    func saveItemOperation(
+        managedItemID: NSManagedObjectID,
+        url: URL,
+        events: SyncEvents,
+        apollo: ApolloClientProtocol,
+        space: Space
     ) -> Operation
 }
 
@@ -25,7 +34,7 @@ class OperationFactory: SyncOperationFactory {
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
-        events: PassthroughSubject<SyncEvent, Never>,
+        events: SyncEvents,
         maxItems: Int,
         lastRefresh: LastRefresh
     ) -> Operation {
@@ -41,9 +50,25 @@ class OperationFactory: SyncOperationFactory {
 
     func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
-        events: PassthroughSubject<SyncEvent, Never>,
+        events: SyncEvents,
         mutation: Mutation
     ) -> Operation {
         SavedItemMutationOperation(apollo: apollo, events: events, mutation: mutation)
+    }
+
+    func saveItemOperation(
+        managedItemID: NSManagedObjectID,
+        url: URL,
+        events: SyncEvents,
+        apollo: ApolloClientProtocol,
+        space: Space
+    ) -> Operation {
+        SaveItemOperation(
+            managedItemID: managedItemID,
+            url: url,
+            events: events,
+            apollo: apollo,
+            space: space
+        )
     }
 }

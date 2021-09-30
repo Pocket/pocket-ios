@@ -7,7 +7,7 @@ class FetchList: AsyncOperation {
     private let token: String
     private let apollo: ApolloClientProtocol
     private let space: Space
-    private let events: PassthroughSubject<SyncEvent, Never>
+    private let events: SyncEvents
     private let maxItems: Int
     private let lastRefresh: LastRefresh
 
@@ -15,7 +15,7 @@ class FetchList: AsyncOperation {
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
-        events: PassthroughSubject<SyncEvent, Never>,
+        events: SyncEvents,
         maxItems: Int,
         lastRefresh: LastRefresh
     ) {

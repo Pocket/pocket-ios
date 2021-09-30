@@ -29,6 +29,10 @@ class SourceTests: XCTestCase {
         lastRefresh.stubGetLastRefresh { nil}
     }
 
+    override func tearDownWithError() throws {
+        try space.clear()
+    }
+
     func subject(
         space: Space? = nil,
         apollo: ApolloClientProtocol? = nil,
@@ -162,6 +166,60 @@ class SourceTests: XCTestCase {
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 1)
+    }
+
+    func test_saveRecommendation_createsPendingItem_andExecutesSaveItemOperation() throws {
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubSaveItemOperation { (_, _, _ , _, _) in
+            return BlockOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let recommendation = Slate.Recommendation(
+            id: "recommendation-1",
+            item: Slate.Item(
+                id: "item-1",
+                givenURL: URL(string: "https://given.example.com/item-1")!,
+                resolvedURL: URL(string: "https://resolved.example.com/item-1")!,
+                title: "Item 1",
+                language: "en",
+                topImageURL: URL(string: "https://example.com/item-1/top-image.png")!,
+                timeToRead: 1,
+                particleJSON: "{}",
+                excerpt: "This is the excerpt for Item 1",
+                domain: "example.com",
+                domainMetadata: Slate.DomainMetadata(
+                    name: "Example",
+                    logo: URL(string: "https://example.com/logo.png")!
+                )
+            )
+        )
+
+        let source = subject()
+        source.save(recommendation: recommendation)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        let savedItems = try space.fetchSavedItems()
+        XCTAssertEqual(savedItems.count, 1)
+
+        let savedItem = savedItems[0]
+        XCTAssertEqual(savedItem.url, URL(string: "https://resolved.example.com/item-1")!)
+
+        let item = savedItem.item
+        XCTAssertNotNil(item)
+        XCTAssertEqual(item?.remoteID, recommendation.item.id)
+        XCTAssertEqual(item?.givenURL, recommendation.item.givenURL)
+        XCTAssertEqual(item?.resolvedURL, recommendation.item.resolvedURL)
+        XCTAssertEqual(item?.title, recommendation.item.title)
+        XCTAssertEqual(item?.language, recommendation.item.language)
+        XCTAssertEqual(item?.topImageURL, recommendation.item.topImageURL)
+        XCTAssertEqual(item.flatMap { Int($0.timeToRead) }, recommendation.item.timeToRead)
+        XCTAssertEqual(item?.particleJSON, recommendation.item.particleJSON)
+        XCTAssertEqual(item?.excerpt, recommendation.item.excerpt)
+        XCTAssertEqual(item?.domain, recommendation.item.domain)
+        XCTAssertEqual(item?.domainMetadata?.name, recommendation.item.domainMetadata?.name)
+        XCTAssertEqual(item?.domainMetadata?.logo, recommendation.item.domainMetadata?.logo)
     }
 
     func test_fetchSlates_returnsResultsFromSlateService() async throws {

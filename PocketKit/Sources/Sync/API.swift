@@ -263,6 +263,49 @@ public enum SavedItemStatusFilter: RawRepresentable, Equatable, Hashable, CaseIt
   }
 }
 
+/// Input field for upserting a SavedItem
+public struct SavedItemUpsertInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - url: The url to create/update the SavedItem with. (the url to save to the list)
+  ///   - isFavorite: Optional, create/update the SavedItem as a favorited item
+  ///   - timestamp: Optional, time that request was submitted by client epoch/unix time
+  public init(url: String, isFavorite: Swift.Optional<Bool?> = nil, timestamp: Swift.Optional<Int?> = nil) {
+    graphQLMap = ["url": url, "isFavorite": isFavorite, "timestamp": timestamp]
+  }
+
+  /// The url to create/update the SavedItem with. (the url to save to the list)
+  public var url: String {
+    get {
+      return graphQLMap["url"] as! String
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "url")
+    }
+  }
+
+  /// Optional, create/update the SavedItem as a favorited item
+  public var isFavorite: Swift.Optional<Bool?> {
+    get {
+      return graphQLMap["isFavorite"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "isFavorite")
+    }
+  }
+
+  /// Optional, time that request was submitted by client epoch/unix time
+  public var timestamp: Swift.Optional<Int?> {
+    get {
+      return graphQLMap["timestamp"] as? Swift.Optional<Int?> ?? Swift.Optional<Int?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "timestamp")
+    }
+  }
+}
+
 public enum PendingItemStatus: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case resolved
@@ -1244,6 +1287,745 @@ public final class UserByTokenQuery: GraphQLQuery {
                     }
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+public final class SaveItemMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation SaveItem($input: SavedItemUpsertInput!) {
+      upsertSavedItem(input: $input) {
+        __typename
+        ...SavedItemParts
+      }
+    }
+    """
+
+  public let operationName: String = "SaveItem"
+
+  public var queryDocument: String {
+    var document: String = operationDefinition
+    document.append("\n" + SavedItemParts.fragmentDefinition)
+    document.append("\n" + ItemParts.fragmentDefinition)
+    document.append("\n" + DomainMetadataParts.fragmentDefinition)
+    document.append("\n" + PendingItemParts.fragmentDefinition)
+    return document
+  }
+
+  public var input: SavedItemUpsertInput
+
+  public init(input: SavedItemUpsertInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("upsertSavedItem", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.object(UpsertSavedItem.selections))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(upsertSavedItem: UpsertSavedItem) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "upsertSavedItem": upsertSavedItem.resultMap])
+    }
+
+    /// Updates a SavedItem, undeletes and unarchives it, bringing it to the top of the user's list, if it exists
+    /// and creates it if it doesn't.
+    public var upsertSavedItem: UpsertSavedItem {
+      get {
+        return UpsertSavedItem(unsafeResultMap: resultMap["upsertSavedItem"]! as! ResultMap)
+      }
+      set {
+        resultMap.updateValue(newValue.resultMap, forKey: "upsertSavedItem")
+      }
+    }
+
+    public struct UpsertSavedItem: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["SavedItem"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("url", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", alias: "remoteID", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("isArchived", type: .nonNull(.scalar(Bool.self))),
+          GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
+          GraphQLField("_deletedAt", type: .scalar(Int.self)),
+          GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("item", type: .nonNull(.object(Item.selections))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, item: Item) {
+        self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "item": item.resultMap])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// The url the user saved to their list
+      public var url: String {
+        get {
+          return resultMap["url"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "url")
+        }
+      }
+
+      /// Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation
+      public var remoteId: GraphQLID {
+        get {
+          return resultMap["remoteID"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "remoteID")
+        }
+      }
+
+      /// Helper property to indicate if the SavedItem is archived
+      public var isArchived: Bool {
+        get {
+          return resultMap["isArchived"]! as! Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "isArchived")
+        }
+      }
+
+      /// Helper property to indicate if the SavedItem is favorited
+      public var isFavorite: Bool {
+        get {
+          return resultMap["isFavorite"]! as! Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "isFavorite")
+        }
+      }
+
+      /// Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
+      public var _deletedAt: Int? {
+        get {
+          return resultMap["_deletedAt"] as? Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "_deletedAt")
+        }
+      }
+
+      /// Unix timestamp of when the entity was created
+      public var _createdAt: Int {
+        get {
+          return resultMap["_createdAt"]! as! Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "_createdAt")
+        }
+      }
+
+      /// Link to the underlying Pocket Item for the URL
+      public var item: Item {
+        get {
+          return Item(unsafeResultMap: resultMap["item"]! as! ResultMap)
+        }
+        set {
+          resultMap.updateValue(newValue.resultMap, forKey: "item")
+        }
+      }
+
+      public var fragments: Fragments {
+        get {
+          return Fragments(unsafeResultMap: resultMap)
+        }
+        set {
+          resultMap += newValue.resultMap
+        }
+      }
+
+      public struct Fragments {
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public var savedItemParts: SavedItemParts {
+          get {
+            return SavedItemParts(unsafeResultMap: resultMap)
+          }
+          set {
+            resultMap += newValue.resultMap
+          }
+        }
+      }
+
+      public struct Item: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["PendingItem", "Item"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLTypeCase(
+              variants: ["Item": AsItem.selections, "PendingItem": AsPendingItem.selections],
+              default: [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              ]
+            )
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, particleJson: String? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
+          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "particleJson": particleJson, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+        }
+
+        public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
+          return Item(unsafeResultMap: ["__typename": "PendingItem", "url": url, "status": status])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(unsafeResultMap: resultMap)
+          }
+          set {
+            resultMap += newValue.resultMap
+          }
+        }
+
+        public struct Fragments {
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public var itemParts: ItemParts? {
+            get {
+              if !ItemParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+              return ItemParts(unsafeResultMap: resultMap)
+            }
+            set {
+              guard let newValue = newValue else { return }
+              resultMap += newValue.resultMap
+            }
+          }
+
+          public var pendingItemParts: PendingItemParts? {
+            get {
+              if !PendingItemParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+              return PendingItemParts(unsafeResultMap: resultMap)
+            }
+            set {
+              guard let newValue = newValue else { return }
+              resultMap += newValue.resultMap
+            }
+          }
+        }
+
+        public var asItem: AsItem? {
+          get {
+            if !AsItem.possibleTypes.contains(__typename) { return nil }
+            return AsItem(unsafeResultMap: resultMap)
+          }
+          set {
+            guard let newValue = newValue else { return }
+            resultMap = newValue.resultMap
+          }
+        }
+
+        public struct AsItem: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["Item"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("itemId", alias: "remoteID", type: .nonNull(.scalar(String.self))),
+              GraphQLField("givenUrl", type: .nonNull(.scalar(String.self))),
+              GraphQLField("resolvedUrl", type: .scalar(String.self)),
+              GraphQLField("title", type: .scalar(String.self)),
+              GraphQLField("language", type: .scalar(String.self)),
+              GraphQLField("topImageUrl", type: .scalar(String.self)),
+              GraphQLField("timeToRead", type: .scalar(Int.self)),
+              GraphQLField("domain", type: .scalar(String.self)),
+              GraphQLField("particleJson", type: .scalar(String.self)),
+              GraphQLField("excerpt", type: .scalar(String.self)),
+              GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
+              GraphQLField("images", type: .list(.object(Image.selections))),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, particleJson: String? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "particleJson": particleJson, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps.
+          public var remoteId: String {
+            get {
+              return resultMap["remoteID"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "remoteID")
+            }
+          }
+
+          /// The url as provided by the user when saving. Only http or https schemes allowed.
+          public var givenUrl: String {
+            get {
+              return resultMap["givenUrl"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "givenUrl")
+            }
+          }
+
+          /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
+          public var resolvedUrl: String? {
+            get {
+              return resultMap["resolvedUrl"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "resolvedUrl")
+            }
+          }
+
+          /// The title as determined by the parser.
+          public var title: String? {
+            get {
+              return resultMap["title"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "title")
+            }
+          }
+
+          /// The detected language of the article
+          public var language: String? {
+            get {
+              return resultMap["language"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "language")
+            }
+          }
+
+          /// The page's / publisher's preferred thumbnail image
+          public var topImageUrl: String? {
+            get {
+              return resultMap["topImageUrl"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "topImageUrl")
+            }
+          }
+
+          /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
+          public var timeToRead: Int? {
+            get {
+              return resultMap["timeToRead"] as? Int
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "timeToRead")
+            }
+          }
+
+          /// The domain, such as 'getpocket.com' of the {.resolved_url}
+          public var domain: String? {
+            get {
+              return resultMap["domain"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "domain")
+            }
+          }
+
+          /// The pocket particle format of the article. Json encoded string.
+          /// Reserving the particle field for when we decide to define the
+          /// particle format/schema in the graph
+          @available(*, deprecated, message: "Use the marticle field instead")
+          public var particleJson: String? {
+            get {
+              return resultMap["particleJson"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "particleJson")
+            }
+          }
+
+          /// A snippet of text from the article
+          public var excerpt: String? {
+            get {
+              return resultMap["excerpt"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "excerpt")
+            }
+          }
+
+          /// Additional information about the item domain, when present, use this for displaying the domain name
+          public var domainMetadata: DomainMetadatum? {
+            get {
+              return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
+            }
+          }
+
+          /// Array of images within an article
+          public var images: [Image?]? {
+            get {
+              return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
+            }
+            set {
+              resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+            }
+          }
+
+          public var fragments: Fragments {
+            get {
+              return Fragments(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
+          }
+
+          public struct Fragments {
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public var itemParts: ItemParts {
+              get {
+                return ItemParts(unsafeResultMap: resultMap)
+              }
+              set {
+                resultMap += newValue.resultMap
+              }
+            }
+
+            public var pendingItemParts: PendingItemParts? {
+              get {
+                if !PendingItemParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                return PendingItemParts(unsafeResultMap: resultMap)
+              }
+              set {
+                guard let newValue = newValue else { return }
+                resultMap += newValue.resultMap
+              }
+            }
+          }
+
+          public struct DomainMetadatum: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["DomainMetadata"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("name", type: .scalar(String.self)),
+                GraphQLField("logo", type: .scalar(String.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(name: String? = nil, logo: String? = nil) {
+              self.init(unsafeResultMap: ["__typename": "DomainMetadata", "name": name, "logo": logo])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The name of the domain (e.g., The New York Times)
+            public var name: String? {
+              get {
+                return resultMap["name"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "name")
+              }
+            }
+
+            /// Url for the logo image
+            public var logo: String? {
+              get {
+                return resultMap["logo"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "logo")
+              }
+            }
+
+            public var fragments: Fragments {
+              get {
+                return Fragments(unsafeResultMap: resultMap)
+              }
+              set {
+                resultMap += newValue.resultMap
+              }
+            }
+
+            public struct Fragments {
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public var domainMetadataParts: DomainMetadataParts {
+                get {
+                  return DomainMetadataParts(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+            }
+          }
+
+          public struct Image: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["Image"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("height", type: .scalar(Int.self)),
+                GraphQLField("width", type: .scalar(Int.self)),
+                GraphQLField("src", type: .nonNull(.scalar(String.self))),
+                GraphQLField("imageId", type: .nonNull(.scalar(Int.self))),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(height: Int? = nil, width: Int? = nil, src: String, imageId: Int) {
+              self.init(unsafeResultMap: ["__typename": "Image", "height": height, "width": width, "src": src, "imageId": imageId])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// If known, the height of the image in px
+            public var height: Int? {
+              get {
+                return resultMap["height"] as? Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "height")
+              }
+            }
+
+            /// If known, the width of the image in px
+            public var width: Int? {
+              get {
+                return resultMap["width"] as? Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "width")
+              }
+            }
+
+            /// Absolute url to the image
+            public var src: String {
+              get {
+                return resultMap["src"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "src")
+              }
+            }
+
+            /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+            public var imageId: Int {
+              get {
+                return resultMap["imageId"]! as! Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "imageId")
+              }
+            }
+          }
+        }
+
+        public var asPendingItem: AsPendingItem? {
+          get {
+            if !AsPendingItem.possibleTypes.contains(__typename) { return nil }
+            return AsPendingItem(unsafeResultMap: resultMap)
+          }
+          set {
+            guard let newValue = newValue else { return }
+            resultMap = newValue.resultMap
+          }
+        }
+
+        public struct AsPendingItem: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PendingItem"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("url", type: .nonNull(.scalar(String.self))),
+              GraphQLField("status", type: .scalar(PendingItemStatus.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(url: String, status: PendingItemStatus? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PendingItem", "url": url, "status": status])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// URL of the item that the user gave for the SavedItem
+          /// that is pending processing by parser
+          public var url: String {
+            get {
+              return resultMap["url"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "url")
+            }
+          }
+
+          public var status: PendingItemStatus? {
+            get {
+              return resultMap["status"] as? PendingItemStatus
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "status")
+            }
+          }
+
+          public var fragments: Fragments {
+            get {
+              return Fragments(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
+          }
+
+          public struct Fragments {
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public var itemParts: ItemParts? {
+              get {
+                if !ItemParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                return ItemParts(unsafeResultMap: resultMap)
+              }
+              set {
+                guard let newValue = newValue else { return }
+                resultMap += newValue.resultMap
+              }
+            }
+
+            public var pendingItemParts: PendingItemParts {
+              get {
+                return PendingItemParts(unsafeResultMap: resultMap)
+              }
+              set {
+                resultMap += newValue.resultMap
               }
             }
           }

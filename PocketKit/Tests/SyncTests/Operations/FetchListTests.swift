@@ -9,7 +9,7 @@ import Apollo
 class FetchListTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!
-    var events: PassthroughSubject<SyncEvent, Never>!
+    var events: SyncEvents!
     var queue: OperationQueue!
     var lastRefresh: MockLastRefresh!
     var cancellables: Set<AnyCancellable> = []
@@ -31,7 +31,7 @@ class FetchListTests: XCTestCase {
         token: String = "test-token",
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil,
-        events: PassthroughSubject<SyncEvent, Never>? = nil,
+        events: SyncEvents? = nil,
         maxItems: Int = 400,
         lastRefresh: LastRefresh? = nil
     ) {
@@ -86,6 +86,7 @@ class FetchListTests: XCTestCase {
         XCTAssertTrue(savedItem.isFavorite)
 
         let item = savedItem.item
+        XCTAssertEqual(item?.remoteID, "item-1")
         XCTAssertEqual(item?.givenURL, URL(string: "https://given.example.com/item-1")!)
         XCTAssertEqual(item?.resolvedURL, URL(string: "https://resolved.example.com/item-1")!)
         XCTAssertEqual(item?.title, "Item 1")
