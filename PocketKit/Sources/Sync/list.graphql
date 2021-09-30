@@ -72,6 +72,12 @@ query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilt
   }
 }
 
+mutation SaveItem($input: SavedItemUpsertInput!) {
+  upsertSavedItem(input: $input) {
+    ...SavedItemParts
+  }
+}
+
 mutation FavoriteItem($itemID: ID!) {
   updateSavedItemFavorite(id: $itemID) {
     id

@@ -4,12 +4,12 @@ import Apollo
 
 class SavedItemMutationOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let apollo: ApolloClientProtocol
-    private let events: PassthroughSubject<SyncEvent, Never>
+    private let events: SyncEvents
     private let mutation: Mutation
 
     init(
         apollo: ApolloClientProtocol,
-        events: PassthroughSubject<SyncEvent, Never>,
+        events: SyncEvents,
         mutation: Mutation
     ) {
         self.apollo = apollo

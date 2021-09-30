@@ -1,6 +1,7 @@
 import Foundation
 import Apollo
 import Combine
+import CoreData
 
 @testable import Sync
 
@@ -12,7 +13,7 @@ class MockOperationFactory: SyncOperationFactory {
         let token: String
         let apollo: ApolloClientProtocol
         let space: Space
-        let events: PassthroughSubject<SyncEvent, Never>
+        let events: SyncEvents
         let maxItems: Int
         let lastRefresh: LastRefresh
     }
@@ -25,7 +26,7 @@ class MockOperationFactory: SyncOperationFactory {
         return fetchListCalls[index]
     }
 
-    typealias FetchListImpl = (String, ApolloClientProtocol, Space, PassthroughSubject<SyncEvent, Never>, Int) -> Operation
+    typealias FetchListImpl = (String, ApolloClientProtocol, Space, SyncEvents, Int) -> Operation
     private var fetchListImpl: FetchListImpl?
 
     func stubFetchList(impl: @escaping FetchListImpl) {
@@ -36,7 +37,7 @@ class MockOperationFactory: SyncOperationFactory {
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
-        events: PassthroughSubject<SyncEvent, Never>,
+        events: SyncEvents,
         maxItems: Int,
         lastRefresh: LastRefresh
     ) -> Operation {
@@ -50,7 +51,7 @@ class MockOperationFactory: SyncOperationFactory {
 
     // MARK: - itemMutationOperation
     typealias ItemMutationOperationImpl<Mutation: GraphQLMutation> =
-        (ApolloClientProtocol, PassthroughSubject<SyncEvent, Never>, Mutation) -> Operation
+        (ApolloClientProtocol, SyncEvents, Mutation) -> Operation
 
     private var itemMutationOperationImpls: [String: Any] = [:]
 
@@ -62,7 +63,7 @@ class MockOperationFactory: SyncOperationFactory {
 
     func savedItemMutationOperation<Mutation>(
         apollo: ApolloClientProtocol,
-        events: PassthroughSubject<SyncEvent, Never>,
+        events: SyncEvents,
         mutation: Mutation
     ) -> Operation where Mutation : GraphQLMutation {
         guard let impl = itemMutationOperationImpls["\(Mutation.self)"] else {
@@ -74,5 +75,21 @@ class MockOperationFactory: SyncOperationFactory {
         }
 
         return typedImpl(apollo, events, mutation)
+    }
+
+    // MARK: - saveItemOperation
+    typealias SaveItemOperationImpl = (NSManagedObjectID, URL, SyncEvents, ApolloClientProtocol, Space) -> Operation
+    private var saveItemOperationImpl: SaveItemOperationImpl?
+
+    func stubSaveItemOperation(_ impl: @escaping SaveItemOperationImpl) {
+        saveItemOperationImpl = impl
+    }
+
+    func saveItemOperation(managedItemID: NSManagedObjectID, url: URL, events: SyncEvents, apollo: ApolloClientProtocol, space: Space) -> Operation {
+        guard let impl = saveItemOperationImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        return impl(managedItemID, url, events, apollo, space)
     }
 }

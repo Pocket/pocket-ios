@@ -10,7 +10,7 @@ class ItemMutationOperationTests: XCTestCase {
     var space: Space!
     var subscriptions: [AnyCancellable] = []
     var queue: OperationQueue!
-    var events: PassthroughSubject<SyncEvent, Never>!
+    var events: SyncEvents!
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
@@ -27,7 +27,7 @@ class ItemMutationOperationTests: XCTestCase {
     func performOperation<Mutation: GraphQLMutation>(
         mutation: Mutation,
         apollo: ApolloClientProtocol? = nil,
-        events: PassthroughSubject<SyncEvent, Never>? = nil
+        events: SyncEvents? = nil
     ) {
         let operation = SavedItemMutationOperation(
             apollo: apollo ?? self.apollo,

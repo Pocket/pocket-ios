@@ -30,6 +30,7 @@ extension SavedItem {
 
 extension Item {
     func update(remote: ItemParts) {
+        remoteID = remote.remoteId
         givenURL = URL(string: remote.givenUrl)
         resolvedURL = remote.resolvedUrl.flatMap(URL.init)
         title = remote.title
