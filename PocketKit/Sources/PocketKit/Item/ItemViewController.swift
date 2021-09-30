@@ -39,6 +39,9 @@ class ItemViewController: UIViewController {
         )
 
         super.init(nibName: nil, bundle: nil)
+        
+        title = nil
+        navigationItem.largeTitleDisplayMode = .never
 
         navigationItem.rightBarButtonItems = [
             moreButtonItem,

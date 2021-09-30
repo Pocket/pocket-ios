@@ -88,6 +88,10 @@ class SlateDetailViewController: UIViewController {
     
         super.init(nibName: nil, bundle: nil)
         
+        title = nil
+        navigationItem.largeTitleDisplayMode = .never
+        
+        collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.dataSource = dataSource
         collectionView.delegate = self
     }
