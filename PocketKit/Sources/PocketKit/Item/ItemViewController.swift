@@ -202,7 +202,7 @@ extension ItemViewController {
         track(identifier: .itemShare, item: item)
     }
 
-    private func track(identifier: UIIdentifier, item: Item) {
+    private func track(identifier: UIIdentifier, item: SavedItem) {
         guard let url = item.url else {
             return
         }

@@ -29,7 +29,7 @@ class ItemMutationOperationTests: XCTestCase {
         apollo: ApolloClientProtocol? = nil,
         events: PassthroughSubject<SyncEvent, Never>? = nil
     ) {
-        let operation = ItemMutationOperation(
+        let operation = SavedItemMutationOperation(
             apollo: apollo ?? self.apollo,
             events: events ?? self.events,
             mutation: mutation

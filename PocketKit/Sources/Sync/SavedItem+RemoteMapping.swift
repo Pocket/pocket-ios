@@ -18,7 +18,7 @@ extension ItemParts {
     }
 }
 
-extension Item {
+extension SavedItem {
     typealias RemoteSavedItem = UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node
     typealias RemoteItem = ItemParts
 

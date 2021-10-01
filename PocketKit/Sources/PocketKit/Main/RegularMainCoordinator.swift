@@ -125,7 +125,7 @@ class RegularMainCoordinator: NSObject {
         splitController.setViewController(home, for: .supplementary)
     }
 
-    func show(item: Item) {
+    func show(item: SavedItem) {
         splitController.show(.secondary)
     }
 

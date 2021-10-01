@@ -13,7 +13,7 @@ protocol SyncOperationFactory {
         lastRefresh: LastRefresh
     ) -> Operation
 
-    func itemMutationOperation<Mutation: GraphQLMutation>(
+    func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
         events: PassthroughSubject<SyncEvent, Never>,
         mutation: Mutation
@@ -39,11 +39,11 @@ class OperationFactory: SyncOperationFactory {
         )
     }
 
-    func itemMutationOperation<Mutation: GraphQLMutation>(
+    func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
         events: PassthroughSubject<SyncEvent, Never>,
         mutation: Mutation
     ) -> Operation {
-        ItemMutationOperation(apollo: apollo, events: events, mutation: mutation)
+        SavedItemMutationOperation(apollo: apollo, events: events, mutation: mutation)
     }
 }

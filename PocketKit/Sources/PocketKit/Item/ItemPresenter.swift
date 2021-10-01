@@ -12,7 +12,7 @@ import Analytics
 
 class ItemPresenter: ItemRow {
     @Published
-    private var item: Item
+    private var item: SavedItem
 
     @Published
     var isShareSheetPresented = false
@@ -24,7 +24,7 @@ class ItemPresenter: ItemRow {
     private let contexts: [SnowplowContext]
 
     init(
-        item: Item,
+        item: SavedItem,
         index: Int,
         source: Source,
         tracker: Tracker,

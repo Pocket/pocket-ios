@@ -74,7 +74,7 @@ class FetchListTests: XCTestCase {
 
         performOperation()
 
-        let items = try space.fetchAllItems()
+        let items = try space.fetchAllSavedItems()
         XCTAssertEqual(items.count, 2)
 
         let item = items[0]
@@ -97,7 +97,7 @@ class FetchListTests: XCTestCase {
 
         performOperation()
 
-        let items = try space.fetchItems()
+        let items = try space.fetchSavedItems()
         XCTAssertEqual(items.count, 1)
     }
 
@@ -106,7 +106,7 @@ class FetchListTests: XCTestCase {
 
         let itemID = "item-id-1"
         do {
-            let item = space.newItem()
+            let item = space.newSavedItem()
             item.itemID = itemID
             item.title = "Item 1"
             try space.save()
@@ -114,7 +114,7 @@ class FetchListTests: XCTestCase {
 
         performOperation()
 
-        let item = try space.fetchItem(byItemID: itemID)
+        let item = try space.fetchSavedItem(byRemoteID: itemID)
         XCTAssertEqual(item?.title, "Updated Item 1")
     }
 
@@ -161,7 +161,7 @@ class FetchListTests: XCTestCase {
 
         performOperation()
 
-        let items = try space.fetchItems()
+        let items = try space.fetchSavedItems()
         XCTAssertEqual(items.count, 2)
     }
 
@@ -194,7 +194,7 @@ class FetchListTests: XCTestCase {
 
         performOperation(maxItems: 3)
 
-        let items = try space.fetchItems()
+        let items = try space.fetchSavedItems()
         XCTAssertEqual(items.count, 3)
     }
 
