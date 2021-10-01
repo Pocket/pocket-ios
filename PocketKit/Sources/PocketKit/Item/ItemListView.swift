@@ -9,10 +9,10 @@ import CoreData
 import Analytics
 
 struct ItemListView: View {
-    @FetchRequest(fetchRequest: Requests.fetchItems())
-    var items: FetchedResults<Item>
+    @FetchRequest(fetchRequest: Requests.fetchSavedItems())
+    var items: FetchedResults<SavedItem>
 
-    private var content: [(Int, Item)] {
+    private var content: [(Int, SavedItem)] {
         return Array(zip(items.indices, items))
     }
 
@@ -32,7 +32,7 @@ struct ItemListView: View {
         self.model = model
     }
 
-    private func background(item: Item) -> Color {
+    private func background(item: SavedItem) -> Color {
         if item.url == model.selectedItem?.url {
             return Color(ColorAsset.ui.grey6)
         } else {
@@ -67,7 +67,7 @@ struct ItemListView: View {
         .navigationTitle(Text("My List"))
     }
 
-    private func archive(item: Item, index: Int) {
+    private func archive(item: SavedItem, index: Int) {
         source.archive(item: item)
 
         guard let url = item.url else {
@@ -100,7 +100,7 @@ private struct ItemListViewRow: View {
     @ObservedObject
     private var model: MainViewModel
     
-    private let item: Item
+    private let item: SavedItem
     
     private let index: Int
     
@@ -114,7 +114,7 @@ private struct ItemListViewRow: View {
         return contexts
     }
 
-    init(item: Item, model: MainViewModel, index: Int) {
+    init(item: SavedItem, model: MainViewModel, index: Int) {
         self.item = item
         self.model = model
         self.index = index

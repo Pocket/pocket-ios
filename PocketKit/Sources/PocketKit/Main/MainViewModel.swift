@@ -8,7 +8,7 @@ class MainViewModel: ObservableObject {
     var selectedSection: AppSection = .home
 
     @Published
-    var selectedItem: Item?
+    var selectedItem: SavedItem?
 
     @Published
     var readerSettings = ReaderSettings()

@@ -2,7 +2,7 @@ import Combine
 import Apollo
 
 
-class ItemMutationOperation<Mutation: GraphQLMutation>: AsyncOperation {
+class SavedItemMutationOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let apollo: ApolloClientProtocol
     private let events: PassthroughSubject<SyncEvent, Never>
     private let mutation: Mutation

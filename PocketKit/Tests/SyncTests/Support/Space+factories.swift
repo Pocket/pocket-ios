@@ -8,8 +8,8 @@ extension Space {
         url: String = "http://example.com/item-1",
         title: String = "Item 1",
         isFavorite: Bool = false
-    ) throws -> Item {
-        let item = newItem()
+    ) throws -> SavedItem {
+        let item = newSavedItem()
         item.itemID = itemID
         item.url = URL(string: url)!
         item.title = title

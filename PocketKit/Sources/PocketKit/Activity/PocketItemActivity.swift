@@ -16,7 +16,7 @@ struct PocketItemActivity: PocketActivity {
     
     let activityItems: [Any]
    
-    init(item: Item, additionalText: String? = nil) {
+    init(item: SavedItem, additionalText: String? = nil) {
         self.activityItems = Self.activityItems(for: item.url, additionalText: additionalText)
     }
 

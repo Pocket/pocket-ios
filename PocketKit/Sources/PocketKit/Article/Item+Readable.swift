@@ -1,6 +1,6 @@
 import Sync
 
-extension Item: Readable {
+extension SavedItem: Readable {
     func shareActivity(additionalText: String?) -> PocketActivity? {
         PocketItemActivity(item: self, additionalText: additionalText)
     }

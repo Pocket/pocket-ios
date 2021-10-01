@@ -15,30 +15,30 @@ class Space {
         self.container = container
     }
 
-    func fetchItem(byItemID itemID: String) throws -> Item? {
-        let request = Requests.fetchItem(byItemID: itemID)
+    func fetchSavedItem(byRemoteID remoteID: String) throws -> SavedItem? {
+        let request = Requests.fetchSavedItem(byRemoteID: remoteID)
         return try context.fetch(request).first
     }
 
-    func fetchItems() throws -> [Item] {
-        let request = Requests.fetchItems()
+    func fetchSavedItems() throws -> [SavedItem] {
+        let request = Requests.fetchSavedItems()
         let results = try context.fetch(request)
         return results
     }
 
-    func fetchAllItems() throws -> [Item] {
-        return try context.fetch(Requests.fetchAllItems())
+    func fetchAllSavedItems() throws -> [SavedItem] {
+        return try context.fetch(Requests.fetchAllSavedItems())
     }
     
-    func fetchOrCreateItem(byItemID itemID: String) throws -> Item {
-        try fetchItem(byItemID: itemID) ?? newItem()
+    func fetchOrCreateSavedItem(byRemoteID itemID: String) throws -> SavedItem {
+        try fetchSavedItem(byRemoteID: itemID) ?? newSavedItem()
     }
 
-    func newItem() -> Item {
-        return Item(context: context)
+    func newSavedItem() -> SavedItem {
+        return SavedItem(context: context)
     }
 
-    func delete(_ item: Item) {
+    func delete(_ item: SavedItem) {
         context.delete(item)
     }
 

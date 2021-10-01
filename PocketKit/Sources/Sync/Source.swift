@@ -91,34 +91,34 @@ extension Source {
         syncQ.addOperation(operation)
     }
 
-    public func favorite(item: Item) {
+    public func favorite(item: SavedItem) {
         mutate(item, FavoriteItemMutation.init) { item in
             item.isFavorite = true
         }
     }
 
-    public func unfavorite(item: Item) {
+    public func unfavorite(item: SavedItem) {
         mutate(item, UnfavoriteItemMutation.init) { item in
             item.isFavorite = false
         }
     }
 
-    public func delete(item: Item) {
+    public func delete(item: SavedItem) {
         mutate(item, DeleteItemMutation.init) { item in
             space.delete(item)
         }
     }
 
-    public func archive(item: Item) {
+    public func archive(item: SavedItem) {
         mutate(item, ArchiveItemMutation.init) { item in
             space.delete(item)
         }
     }
 
     private func mutate<Mutation: GraphQLMutation>(
-        _ item: Item,
+        _ item: SavedItem,
         _ remoteMutation: (String) -> Mutation,
-        localMutation: (Item) -> ()
+        localMutation: (SavedItem) -> ()
     ) {
         guard let itemID = item.itemID else {
             return
@@ -127,7 +127,7 @@ extension Source {
         localMutation(item)
         try? space.save()
 
-        let operation = operations.itemMutationOperation(
+        let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: syncEvents,
             mutation: remoteMutation(itemID)

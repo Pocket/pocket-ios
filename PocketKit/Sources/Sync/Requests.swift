@@ -6,27 +6,27 @@ import CoreData
 
 
 public enum Requests {
-    public static func fetchItems() -> NSFetchRequest<Item> {
-        let request = fetchAllItems()
+    public static func fetchSavedItems() -> NSFetchRequest<SavedItem> {
+        let request = fetchAllSavedItems()
         request.predicate = NSPredicate(format: "isArchived = false && deletedAt = nil")
 
         return request
     }
 
-    public static func fetchAllItems() -> NSFetchRequest<Item> {
-        let request: NSFetchRequest<Item> = Item.fetchRequest()
+    public static func fetchAllSavedItems() -> NSFetchRequest<SavedItem> {
+        let request: NSFetchRequest<SavedItem> = SavedItem.fetchRequest()
 
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \Item.timestamp, ascending: false),
-            NSSortDescriptor(keyPath: \Item.title, ascending: true)
+            NSSortDescriptor(keyPath: \SavedItem.timestamp, ascending: false),
+            NSSortDescriptor(keyPath: \SavedItem.title, ascending: true)
         ]
 
         return request
     }
     
-    public static func fetchItem(byItemID itemID: String) -> NSFetchRequest<Item> {
-        let request = Item.fetchRequest()
-        request.predicate = NSPredicate(format: "itemID = %@", itemID)
+    public static func fetchSavedItem(byRemoteID remoteID: String) -> NSFetchRequest<SavedItem> {
+        let request = SavedItem.fetchRequest()
+        request.predicate = NSPredicate(format: "itemID = %@", remoteID)
         request.fetchLimit = 1
         return request
     }

@@ -88,7 +88,7 @@ class CompactMainCoordinator: NSObject {
         tabBarController.selectedViewController = home
     }
 
-    func show(item: Item, animated: Bool) {
+    func show(item: SavedItem, animated: Bool) {
         let itemVC = ItemViewController(
             model: model,
             tracker: tracker,

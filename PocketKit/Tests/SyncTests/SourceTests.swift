@@ -140,7 +140,7 @@ class SourceTests: XCTestCase {
         let source = subject()
         source.delete(item: item)
 
-        let fetchedItem = try space.fetchItem(byItemID: "delete-me")
+        let fetchedItem = try space.fetchSavedItem(byRemoteID: "delete-me")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 1)
@@ -158,7 +158,7 @@ class SourceTests: XCTestCase {
         let source = subject()
         source.archive(item: item)
 
-        let fetchedItem = try space.fetchItem(byItemID: "archive-me")
+        let fetchedItem = try space.fetchSavedItem(byRemoteID: "archive-me")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 1)

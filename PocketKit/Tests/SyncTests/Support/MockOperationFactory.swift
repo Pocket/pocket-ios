@@ -60,7 +60,7 @@ class MockOperationFactory: SyncOperationFactory {
         itemMutationOperationImpls["\(Mutation.self)"] = impl
     }
 
-    func itemMutationOperation<Mutation>(
+    func savedItemMutationOperation<Mutation>(
         apollo: ApolloClientProtocol,
         events: PassthroughSubject<SyncEvent, Never>,
         mutation: Mutation
