@@ -74,22 +74,31 @@ class FetchListTests: XCTestCase {
 
         performOperation()
 
-        let items = try space.fetchAllSavedItems()
-        XCTAssertEqual(items.count, 2)
+        let savedItems = try space.fetchAllSavedItems()
+        XCTAssertEqual(savedItems.count, 2)
 
-        let item = items[0]
-        XCTAssertEqual(item.itemID, "item-id-1")
-        XCTAssertTrue(item.isFavorite)
-        XCTAssertEqual(item.domain, "example.com")
-        XCTAssertEqual(item.domainMetadata?.name, "WIRED")
-        XCTAssertEqual(item.thumbnailURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
-        XCTAssertEqual(item.timestamp, Date(timeIntervalSince1970: 0))
-        XCTAssertEqual(item.timeToRead, 6)
-        XCTAssertEqual(item.title, "Item 1")
-        XCTAssertEqual(item.url, URL(string: "https://resolved.example.com/item-1")!)
-        XCTAssertEqual(item.particleJSON, "<just-json-things>")
-        XCTAssertEqual(item.isArchived, false)
-        XCTAssertEqual(item.deletedAt, Date(timeIntervalSince1970: 1))
+        let savedItem = savedItems[0]
+        XCTAssertEqual(savedItem.remoteID, "saved-item-1")
+        XCTAssertEqual(savedItem.url, URL(string: "https://example.com/item-1")!)
+        XCTAssertEqual(savedItem.createdAt?.timeIntervalSince1970, 0)
+        XCTAssertEqual(savedItem.deletedAt?.timeIntervalSince1970, 1)
+        XCTAssertEqual(savedItem.isArchived, false)
+        XCTAssertTrue(savedItem.isFavorite)
+
+        let item = savedItem.item
+        XCTAssertEqual(item?.givenURL, URL(string: "https://given.example.com/item-1")!)
+        XCTAssertEqual(item?.resolvedURL, URL(string: "https://resolved.example.com/item-1")!)
+        XCTAssertEqual(item?.title, "Item 1")
+        XCTAssertEqual(item?.topImageURL, URL(string: "https://example.com/item-1/top-image.jpg")!)
+        XCTAssertEqual(item?.domain, "example.com")
+        XCTAssertEqual(item?.language, "en")
+        XCTAssertEqual(item?.timeToRead, 6)
+        XCTAssertEqual(item?.particleJSON, "<just-json-things>")
+        XCTAssertEqual(item?.excerpt, "Cursus Aenean Elit")
+
+        let domain = item?.domainMetadata
+        XCTAssertEqual(domain?.name, "WIRED")
+        XCTAssertEqual(domain?.logo, URL(string: "http://example.com/item-1/domain-logo.jpg")!)
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() throws {
@@ -103,19 +112,12 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() throws {
         apollo.stubFetch(toReturnFixturedNamed: "updated-item", asResultType: UserByTokenQuery.self)
-
-        let itemID = "item-id-1"
-        do {
-            let item = space.newSavedItem()
-            item.itemID = itemID
-            item.title = "Item 1"
-            try space.save()
-        }
+        try space.seedItem(remoteID: "saved-item-1", title: "Item 1")
 
         performOperation()
 
-        let item = try space.fetchSavedItem(byRemoteID: itemID)
-        XCTAssertEqual(item?.title, "Updated Item 1")
+        let item = try space.fetchSavedItem(byRemoteID: "saved-item-1")
+        XCTAssertEqual(item?.item?.title, "Updated Item 1")
     }
 
     func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() throws {

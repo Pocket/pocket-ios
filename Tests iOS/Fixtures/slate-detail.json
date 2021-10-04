@@ -9,12 +9,9 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "1",
-                    "itemId": "item-1",
-                    "feedId": 1,
-                    "publisher": "Lifehacker",
-                    "recSrc": "source-1",
                     "item": {
                         "__typename": "[some-type-name]",
+                        "remoteID": "item-1",
                         "givenUrl": "https://example.com/item-1",
                         "resolvedUrl": "https://example.com/item-1",
                         "title": "Slate 1, Recommendation 1",
@@ -35,12 +32,9 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "2",
-                    "itemId": "item-2",
-                    "feedId": 2,
-                    "publisher": "Lifehacker",
-                    "recSrc": "source-2",
                     "item": {
                         "__typename": "[some-type-name]",
+                        "remoteID": "item-2",
                         "givenUrl": "https://example.com/item-2",
                         "resolvedUrl": "https://example.com/item-2",
                         "title": "Slate 1, Recommendation 2",
@@ -61,12 +55,9 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "3",
-                    "itemId": "item-3",
-                    "feedId": 3,
-                    "publisher": "Lifehacker",
-                    "recSrc": "source-3",
                     "item": {
                         "__typename": "[some-type-name]",
+                        "remoteID": "item-3",
                         "givenUrl": "https://example.com/item-3",
                         "resolvedUrl": "https://example.com/item-3",
                         "title": "Slate 1, Recommendation 3",

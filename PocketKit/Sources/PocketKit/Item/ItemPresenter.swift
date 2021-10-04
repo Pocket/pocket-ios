@@ -12,7 +12,11 @@ import Analytics
 
 class ItemPresenter: ItemRow {
     @Published
-    private var item: SavedItem
+    private var savedItem: SavedItem
+
+    private var item: Item? {
+        savedItem.item
+    }
 
     @Published
     var isShareSheetPresented = false
@@ -30,7 +34,7 @@ class ItemPresenter: ItemRow {
         tracker: Tracker,
         contexts: [SnowplowContext]
     ) {
-        self.item = item
+        self.savedItem = item
         self.index = index
         self.source = source
         self.tracker = tracker
@@ -38,7 +42,10 @@ class ItemPresenter: ItemRow {
     }
 
     public var title: String {
-        [item.title, item.url?.absoluteString]
+        [
+            savedItem.item?.title,
+            savedItem.bestURL?.absoluteString
+        ]
             .compactMap { $0 }
             .first { !$0.isEmpty } ?? ""
     }
@@ -50,44 +57,50 @@ class ItemPresenter: ItemRow {
     }
 
     public var domain: String? {
-        item.domainMetadata?.name ?? item.domain
+        item?.domainMetadata?.name
+        ?? item?.domain
     }
 
     public var timeToRead: String? {
-        item.timeToRead > 0 ? "\(item.timeToRead) min" : nil
+        guard let timeToRead = item?.timeToRead,
+                timeToRead > 0 else {
+            return nil
+        }
+
+        return "\(timeToRead) min"
     }
 
     public var thumbnailURL: URL? {
-        item.thumbnailURL
+        item?.topImageURL
     }
 
     public var isFavorite: Bool {
-        item.isFavorite
+        savedItem.isFavorite
     }
 
     public var activityItems: [Any] {
         return [
-            item.url.flatMap(ActivityItemSource.init)
+            savedItem.bestURL.flatMap(ActivityItemSource.init)
         ].compactMap { $0 }
     }
 
     func favorite() {
-        source.favorite(item: item)
+        source.favorite(item: savedItem)
         track(identifier: .itemFavorite)
     }
 
     func unfavorite() {
-        source.unfavorite(item: item)
+        source.unfavorite(item: savedItem)
         track(identifier: .itemUnfavorite)
     }
 
     func archive() {
-        source.archive(item: item)
+        source.archive(item: savedItem)
         track(identifier: .itemArchive)
     }
 
     func delete() {
-        source.delete(item: item)
+        source.delete(item: savedItem)
         track(identifier: .itemDelete)
     }
 
@@ -97,7 +110,7 @@ class ItemPresenter: ItemRow {
     }
 
     private func track(identifier: UIIdentifier) {
-        guard let url = item.url else {
+        guard let url = savedItem.bestURL else {
             return
         }
 

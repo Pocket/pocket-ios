@@ -100,7 +100,7 @@ class DeleteAnItemTests: XCTestCase {
             return
         }
         XCTAssertTrue(requestBody.contains("deleteSavedItem"))
-        XCTAssertTrue(requestBody.contains("item-id-2"))
+        XCTAssertTrue(requestBody.contains("item-2"))
     }
 
     func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
@@ -139,7 +139,7 @@ class DeleteAnItemTests: XCTestCase {
             return
         }
         XCTAssertTrue(requestBody.contains("deleteSavedItem"))
-        XCTAssertTrue(requestBody.contains("item-id-2"))
+        XCTAssertTrue(requestBody.contains("item-2"))
 
         app.userListView.wait()
         XCTAssertFalse(itemCell.exists)

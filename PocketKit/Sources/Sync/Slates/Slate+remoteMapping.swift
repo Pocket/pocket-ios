@@ -20,32 +20,39 @@ extension Slate.Recommendation {
     init(remote: Remote) {
         self.init(
             id: remote.id,
-            url: URL(string: remote.item.fragments.itemParts.preferredURLString),
-            itemID: remote.itemId,
-            feedID: remote.feedId,
-            publisher: remote.publisher,
-            source: remote.recSrc,
-            title: remote.item.title,
-            language: remote.item.language,
-            topImageURL: remote.item.topImageUrl.flatMap { URL(string: $0) },
-            timeToRead: remote.item.timeToRead,
-            particleJSON: remote.item.particleJson,
-            domain: remote.item.domain,
-            domainMetadata: Slate.DomainMetadata(remote: remote.item.domainMetadata),
-            excerpt: remote.item.excerpt
+            item: Slate.Item(remote: remote.item.fragments.itemParts)
+        )
+    }
+}
+
+extension Slate.Item {
+    typealias Remote = ItemParts
+
+    init(remote: Remote) {
+        self.init(
+            id: remote.remoteId,
+            givenURL: URL(string: remote.givenUrl),
+            resolvedURL: remote.resolvedUrl.flatMap(URL.init),
+            title: remote.title,
+            language: remote.language,
+            topImageURL: remote.topImageUrl.flatMap(URL.init),
+            timeToRead: remote.timeToRead,
+            particleJSON: remote.particleJson,
+            excerpt: remote.excerpt,
+            domain: remote.domain,
+            domainMetadata: (remote.domainMetadata?.fragments.domainMetadataParts).flatMap(Slate.DomainMetadata.init)
         )
     }
 }
 
 extension Slate.DomainMetadata {
-    typealias Remote = Slate.Recommendation.Remote.Item.DomainMetadatum
+    typealias Remote = DomainMetadataParts
 
-    init?(remote: Remote?) {
-        guard let remote = remote else {
-            return nil
-        }
-
-        self.init(name: remote.name)
+    init(remote: Remote) {
+        self.init(
+            name: remote.name,
+            logo: remote.logo.flatMap(URL.init)
+        )
     }
 }
 

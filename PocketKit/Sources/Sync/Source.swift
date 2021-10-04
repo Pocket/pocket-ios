@@ -120,7 +120,7 @@ extension Source {
         _ remoteMutation: (String) -> Mutation,
         localMutation: (SavedItem) -> ()
     ) {
-        guard let itemID = item.itemID else {
+        guard let remoteID = item.remoteID else {
             return
         }
 
@@ -130,7 +130,7 @@ extension Source {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: syncEvents,
-            mutation: remoteMutation(itemID)
+            mutation: remoteMutation(remoteID)
         )
 
         syncQ.addOperation(operation)

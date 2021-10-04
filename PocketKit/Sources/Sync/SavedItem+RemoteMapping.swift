@@ -3,65 +3,56 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import CoreData
 
-extension UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node {
-    var preferredURLString: String {
-        item.fragments.itemParts?.preferredURLString
-        ?? item.fragments.pendingItemParts?.url
-        ?? url
-    }
-}
-
-extension ItemParts {
-    var preferredURLString: String {
-        resolvedUrl ?? givenUrl
-    }
-}
 
 extension SavedItem {
-    typealias RemoteSavedItem = UserByTokenQuery.Data.UserByToken.SavedItem.Edge.Node
+    typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
 
-    func update(from savedItem: RemoteSavedItem) {
-        itemID = savedItem.itemId
-        isArchived = savedItem.isArchived
-        url = URL(string: savedItem.preferredURLString)
-        isFavorite = savedItem.isFavorite
-        timestamp = Date(timeIntervalSince1970: TimeInterval(savedItem._createdAt))
-        deletedAt = savedItem._deletedAt
-            .flatMap { Date(timeIntervalSince1970: TimeInterval($0)) }
+    func update(from remote: RemoteSavedItem) {
+        remoteID = remote.remoteId
+        url = URL(string: remote.url)
+        createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
+        deletedAt = remote._deletedAt.flatMap { Date(timeIntervalSince1970: TimeInterval($0)) }
+        isArchived = remote.isArchived
+        isFavorite = remote.isFavorite
 
-        update(from: savedItem.item.fragments.itemParts)
+        guard let itemParts = remote.item.fragments.itemParts,
+              let context = managedObjectContext else {
+                  return
+              }
+
+        item = item ?? Item(context: context)
+        item?.update(remote: itemParts)
     }
+}
 
-    func update(from item: RemoteItem?) {
-        guard let item = item else {
-            return
-        }
+extension Item {
+    func update(remote: ItemParts) {
+        givenURL = URL(string: remote.givenUrl)
+        resolvedURL = remote.resolvedUrl.flatMap(URL.init)
+        title = remote.title
+        topImageURL = remote.topImageUrl.flatMap(URL.init)
+        domain = remote.domain
+        language = remote.language
+        timeToRead = remote.timeToRead.flatMap(Int32.init) ?? 0
+        particleJSON = remote.particleJson
+        excerpt = remote.excerpt
 
-        domain = item.domain
-        language = item.language
-        title = item.title
-        particleJSON = item.particleJson
+        guard let domainParts = remote.domainMetadata?.fragments.domainMetadataParts,
+              let context = managedObjectContext else {
+                  return
+              }
 
-        if let context = managedObjectContext {
-            domainMetadata = DomainMetadata(context: context)
-            domainMetadata?.name = item.domainMetadata?.name
-        }
-
-        if let imageURL = item.topImageUrl {
-            thumbnailURL = URL(string: imageURL)
-        }
-
-        if let time = item.timeToRead {
-            timeToRead = Int32(time)
-        }
+        domainMetadata = domainMetadata ?? DomainMetadata(context: context)
+        domainMetadata?.update(remote: domainParts)
     }
+}
 
-    public var particle: Article? {
-        return particleJSON?.data(using: .utf8).flatMap { data in
-            let decoder = JSONDecoder()
-            return try? decoder.decode(Article.self, from: data)
-        }
+extension DomainMetadata {
+    func update(remote: DomainMetadataParts) {
+        name = remote.name
+        logo = remote.logo.flatMap(URL.init)
     }
 }

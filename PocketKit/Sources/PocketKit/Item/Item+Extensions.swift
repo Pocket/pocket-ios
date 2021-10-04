@@ -8,6 +8,10 @@ import Sync
 
 public extension SavedItem {
     var textAlignment: TextAlignment {
-        TextAlignment(language: language)
+        TextAlignment(language: item?.language)
+    }
+
+    var bestURL: URL? {
+        item?.resolvedURL ?? item?.givenURL ?? url
     }
 }

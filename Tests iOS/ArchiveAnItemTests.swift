@@ -100,7 +100,7 @@ class ArchiveAnItemTests: XCTestCase {
             return
         }
         XCTAssertTrue(requestBody.contains("updateSavedItemArchive"))
-        XCTAssertTrue(requestBody.contains("item-id-2"))
+        XCTAssertTrue(requestBody.contains("item-2"))
     }
 
     func test_archivingAnItemFromReader_archivesItem_andPopsBackToList() {
@@ -141,6 +141,6 @@ class ArchiveAnItemTests: XCTestCase {
             return
         }
         XCTAssertTrue(requestBody.contains("updateSavedItemArchive"))
-        XCTAssertTrue(requestBody.contains("item-id-2"))
+        XCTAssertTrue(requestBody.contains("item-2"))
     }
 }
