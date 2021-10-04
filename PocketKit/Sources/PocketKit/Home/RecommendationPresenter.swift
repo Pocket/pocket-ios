@@ -30,7 +30,7 @@ struct RecommendationPresenter {
     }
 
     var attributedTitle: NSAttributedString {
-        return NSAttributedString(recommendation.title ?? "", style: .title)
+        return NSAttributedString(recommendation.item.title ?? "", style: .title)
     }
 
     var attributedTitleForMeasurement: NSAttributedString {
@@ -38,7 +38,7 @@ struct RecommendationPresenter {
             paragraph.with(lineBreakMode: .none)
         }
 
-        return NSAttributedString(recommendation.title ?? "", style: style)
+        return NSAttributedString(recommendation.item.title ?? "", style: style)
     }
 
     var attributedDetail: NSAttributedString {
@@ -65,7 +65,7 @@ struct RecommendationPresenter {
 
         imageView.kf.indicatorType = .activity
         imageView.kf.setImage(
-            with: recommendation.topImageURL,
+            with: recommendation.item.topImageURL,
             options: [
                 .scaleFactor(UIScreen.main.scale),
                 .processor(ResizingImageProcessor(
@@ -83,7 +83,7 @@ struct RecommendationPresenter {
     }
 
     var attributedExcerpt: NSAttributedString {
-        return NSAttributedString(recommendation.excerpt ?? "", style: .excerpt)
+        return NSAttributedString(recommendation.item.excerpt ?? "", style: .excerpt)
     }
 
     var attributedExcerptForMeasurement: NSAttributedString {
@@ -91,18 +91,19 @@ struct RecommendationPresenter {
             paragraph.with(lineBreakMode: .none)
         }
 
-        return NSAttributedString(recommendation.excerpt ?? "", style: style)
+        return NSAttributedString(recommendation.item.excerpt ?? "", style: style)
     }
 
     private var domain: String? {
-        recommendation.domainMetadata?.name ?? recommendation.domain
+        recommendation.item.domainMetadata?.name ?? recommendation.item.domain
     }
 
     private var timeToRead: String? {
-        guard let timeToRead = recommendation.timeToRead else {
+        guard let timeToRead = recommendation.item.timeToRead,
+              timeToRead > 0 else {
             return nil
         }
 
-        return timeToRead > 0 ? "\(timeToRead) min" : nil
+        return "\(timeToRead) min"
     }
 }

@@ -97,7 +97,7 @@ class SourceTests: XCTestCase {
     }
 
     func test_favorite_togglesIsFavorite_andExecutesFavoriteMutation() throws {
-        let item = try space.seedItem(itemID: "test-item-id")
+        let item = try space.seedItem(remoteID: "test-item-id")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: FavoriteItemMutation) in
             return BlockOperation {
@@ -129,7 +129,7 @@ class SourceTests: XCTestCase {
     }
 
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
-        let item = try space.seedItem(itemID: "delete-me")
+        let item = try space.seedItem(remoteID: "delete-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
             return BlockOperation {
@@ -147,7 +147,7 @@ class SourceTests: XCTestCase {
     }
 
     func tests_archive_removesItemFromLocalStorage_andExecutesArchiveMutation() throws {
-        let item = try space.seedItem(itemID: "archive-me")
+        let item = try space.seedItem(remoteID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
             return BlockOperation {

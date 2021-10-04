@@ -16,11 +16,19 @@ private extension Style {
 }
 
 protocol Readable {
-    var particle: Article? { get }
-    var url: URL? { get }
+    var particleJSON: String? { get }
+    var readerURL: URL? { get }
     var textAlignment: TextAlignment { get }
 
     func shareActivity(additionalText: String?) -> PocketActivity?
+}
+
+extension Readable {
+    var particle: Article? {
+        particleJSON?.data(using: .utf8).flatMap { data in
+            try? JSONDecoder().decode(Article.self, from: data)
+        }
+    }
 }
 
 class ArticleViewController: UICollectionViewController {
@@ -37,7 +45,7 @@ class ArticleViewController: UICollectionViewController {
     }
     
     private var contexts: [SnowplowContext] {
-        guard let item = item, let url = item.url else {
+        guard let item = item, let url = item.readerURL else {
             return []
         }
         

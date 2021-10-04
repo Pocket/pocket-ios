@@ -31,15 +31,15 @@ class Space {
     }
     
     func fetchOrCreateSavedItem(byRemoteID itemID: String) throws -> SavedItem {
-        try fetchSavedItem(byRemoteID: itemID) ?? newSavedItem()
+        try fetchSavedItem(byRemoteID: itemID) ?? new()
     }
 
-    func newSavedItem() -> SavedItem {
-        return SavedItem(context: context)
+    func new<T: NSManagedObject>() -> T {
+        return T(context: context)
     }
 
-    func delete(_ item: SavedItem) {
-        context.delete(item)
+    func delete(_ object: NSManagedObject) {
+        context.delete(object)
     }
 
     func save() throws {

@@ -17,8 +17,8 @@ public enum Requests {
         let request: NSFetchRequest<SavedItem> = SavedItem.fetchRequest()
 
         request.sortDescriptors = [
-            NSSortDescriptor(keyPath: \SavedItem.timestamp, ascending: false),
-            NSSortDescriptor(keyPath: \SavedItem.title, ascending: true)
+            NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: false),
+            NSSortDescriptor(key: "item.title", ascending: true)
         ]
 
         return request
@@ -26,7 +26,7 @@ public enum Requests {
     
     public static func fetchSavedItem(byRemoteID remoteID: String) -> NSFetchRequest<SavedItem> {
         let request = SavedItem.fetchRequest()
-        request.predicate = NSPredicate(format: "itemID = %@", remoteID)
+        request.predicate = NSPredicate(format: "remoteID = %@", remoteID)
         request.fetchLimit = 1
         return request
     }

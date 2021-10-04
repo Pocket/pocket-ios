@@ -15,7 +15,7 @@
                         "cursor": "cursor-1",
                         "node": {
                             "__typename": "[type-name-here]",
-                            "itemId": "item-id-1",
+                            "remoteID": "saved-item-1",
                             "url": "http://localhost:8080/hello",
                             "_createdAt": 0,
                             "_deletedAt": null,
@@ -23,6 +23,7 @@
                             "isFavorite": false,
                             "item": {
                                 "__typename": "Item",
+                                "remoteID": "item-1",
                                 "title": "Item 1",
                                 "givenUrl": "http://localhost:8080/hello",
                                 "resolvedUrl": "http://localhost:8080/hello",
@@ -54,7 +55,7 @@
                         "cursor": "cursor-2",
                         "node": {
                             "__typename": "[type-name-here]",
-                            "itemId": "item-id-2",
+                            "remoteID": "saved-item-2",
                             "url": "https://example.com/item-2",
                             "_createdAt": 0,
                             "_deletedAt": null,
@@ -62,6 +63,7 @@
                             "isFavorite": false,
                             "item": {
                                 "__typename": "Item",
+                                "remoteID": "item-2",
                                 "givenUrl": "https://example.com/item-2",
                                 "resolvedUrl": "https://example.com/item-2",
                                 "title": "Item 2",

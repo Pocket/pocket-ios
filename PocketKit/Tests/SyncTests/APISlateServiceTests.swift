@@ -52,18 +52,23 @@ class APISlateServiceTests: XCTestCase {
 
             let recommendation = slate.recommendations[0]
             XCTAssertEqual(recommendation.id, "slate-2-rec-1")
-            XCTAssertEqual(recommendation.url, URL(string: "https://resolved.example.com/rec-1")!)
-            XCTAssertEqual(recommendation.itemID, "slate-2-item-1")
-            XCTAssertEqual(recommendation.feedID, 2)
-            XCTAssertEqual(recommendation.publisher, "lifehacker.com")
-            XCTAssertEqual(recommendation.source, "RecommendationAPI")
-            XCTAssertEqual(recommendation.title, "Slate 2, Recommendation 1")
-            XCTAssertEqual(recommendation.language, "en")
-            XCTAssertEqual(recommendation.topImageURL, URL(string: "http://example.com/slate-2-rec-1/top-image.png"))
-            XCTAssertEqual(recommendation.timeToRead, 3)
-            XCTAssertEqual(recommendation.particleJSON, "{}")
-            XCTAssertEqual(recommendation.domain, "slate-2-rec-2.example.com")
-            XCTAssertEqual(recommendation.domainMetadata?.name, "Lifehacker")
+
+            let item = recommendation.item
+            XCTAssertEqual(item.id, "item-3")
+            XCTAssertEqual(item.givenURL, URL(string: "https://given.example.com/rec-1")!)
+            XCTAssertEqual(item.resolvedURL, URL(string: "https://resolved.example.com/rec-1")!)
+            XCTAssertEqual(item.title, "Slate 2, Recommendation 1")
+            XCTAssertEqual(item.language, "en")
+            XCTAssertEqual(item.topImageURL, URL(string: "http://example.com/slate-2-rec-1/top-image.png"))
+            XCTAssertEqual(item.timeToRead, 3)
+            XCTAssertEqual(item.particleJSON, "{}")
+            XCTAssertEqual(item.excerpt, "Cursus Aenean Elit")
+            XCTAssertEqual(item.domain, "slate-2-rec-1.example.com")
+
+            let domain = item.domainMetadata
+            XCTAssertNotNil(domain)
+            XCTAssertEqual(domain?.name, "Lifehacker")
+            XCTAssertEqual(domain?.logo, URL(string: "https://slate-2-rec-1.example.com/logo.png"))
         }
     }
 

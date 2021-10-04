@@ -126,7 +126,7 @@ class FavoriteAnItemTests: XCTestCase {
             }
 
             XCTAssertTrue(requestBody.contains("updateSavedItemFavorite"))
-            XCTAssertTrue(requestBody.contains("item-id-2"))
+            XCTAssertTrue(requestBody.contains("item-2"))
         }
 
         itemCell.favoriteIcon.wait()
@@ -155,7 +155,7 @@ class FavoriteAnItemTests: XCTestCase {
             }
 
             XCTAssertTrue(requestBody.contains("updateSavedItemUnFavorite"))
-            XCTAssertTrue(requestBody.contains("item-id-2"))
+            XCTAssertTrue(requestBody.contains("item-2"))
         }
     }
 
@@ -200,7 +200,7 @@ class FavoriteAnItemTests: XCTestCase {
             }
 
             XCTAssertTrue(requestBody.contains("updateSavedItemFavorite"))
-            XCTAssertTrue(requestBody.contains("item-id-2"))
+            XCTAssertTrue(requestBody.contains("item-2"))
         }
 
         // Unfavoriting
@@ -229,7 +229,7 @@ class FavoriteAnItemTests: XCTestCase {
             }
 
             XCTAssertTrue(requestBody.contains("updateSavedItemUnFavorite"))
-            XCTAssertTrue(requestBody.contains("item-id-2"))
+            XCTAssertTrue(requestBody.contains("item-2"))
         }
 
         moreButton.tap()

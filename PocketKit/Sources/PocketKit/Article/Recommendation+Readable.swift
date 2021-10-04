@@ -4,14 +4,16 @@ import Sync
 
 
 extension Slate.Recommendation: Readable {
-    var particle: Article? {
-        particleJSON?.data(using: .utf8).flatMap { data in
-            try? JSONDecoder().decode(Article.self, from: data)
-        }
+    var readerURL: URL? {
+        item.resolvedURL ?? item.givenURL
+    }
+
+    var particleJSON: String? {
+        item.particleJSON
     }
 
     var textAlignment: TextAlignment {
-        TextAlignment(language: language)
+        TextAlignment(language: item.language)
     }
 
     func shareActivity(additionalText: String?) -> PocketActivity? {

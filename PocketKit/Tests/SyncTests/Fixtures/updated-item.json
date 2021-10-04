@@ -15,7 +15,7 @@
                         "cursor": "cursor-1",
                         "node": {
                             "__typename": "[type-name-here]",
-                            "itemId": "item-id-1",
+                            "remoteID": "saved-item-1",
                             "url": "http://example.com/item-1",
                             "_createdAt": 0,
                             "_deletedAt": null,
@@ -23,6 +23,7 @@
                             "isFavorite": false,
                             "item": {
                                 "__typename": "Item",
+                                "remoteID": "item-1",
                                 "givenUrl": "https://given.example.com/item-1",
                                 "resolvedUrl": "http://resolved.example.com/item-1",
                                 "title": "Updated Item 1",
