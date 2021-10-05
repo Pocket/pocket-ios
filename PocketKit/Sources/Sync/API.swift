@@ -2384,6 +2384,8 @@ public final class GetSlateLineupQuery: GraphQLQuery {
       ) {
         __typename
         id
+        requestId
+        experimentId
         slates {
           __typename
           ...SlateParts
@@ -2450,6 +2452,8 @@ public final class GetSlateLineupQuery: GraphQLQuery {
         return [
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("requestId", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("experimentId", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("slates", type: .nonNull(.list(.nonNull(.object(Slate.selections))))),
         ]
       }
@@ -2460,8 +2464,8 @@ public final class GetSlateLineupQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(id: GraphQLID, slates: [Slate]) {
-        self.init(unsafeResultMap: ["__typename": "SlateLineup", "id": id, "slates": slates.map { (value: Slate) -> ResultMap in value.resultMap }])
+      public init(id: GraphQLID, requestId: GraphQLID, experimentId: GraphQLID, slates: [Slate]) {
+        self.init(unsafeResultMap: ["__typename": "SlateLineup", "id": id, "requestId": requestId, "experimentId": experimentId, "slates": slates.map { (value: Slate) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -2483,6 +2487,28 @@ public final class GetSlateLineupQuery: GraphQLQuery {
         }
       }
 
+      /// A guid that is unique to every API request that returned slates, such as `getRecommendationSlateLineup` or `getSlate`.
+      /// The API will provide a new request id every time apps hit the API.
+      public var requestId: GraphQLID {
+        get {
+          return resultMap["requestId"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "requestId")
+        }
+      }
+
+      /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment.
+      /// Production apps typically won't request a specific one, but can for QA or during a/b testing.
+      public var experimentId: GraphQLID {
+        get {
+          return resultMap["experimentId"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "experimentId")
+        }
+      }
+
       /// An ordered list of slates for the client to display
       public var slates: [Slate] {
         get {
@@ -2501,6 +2527,8 @@ public final class GetSlateLineupQuery: GraphQLQuery {
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(String.self))),
+            GraphQLField("requestId", type: .nonNull(.scalar(GraphQLID.self))),
+            GraphQLField("experimentId", type: .nonNull(.scalar(GraphQLID.self))),
             GraphQLField("displayName", type: .scalar(String.self)),
             GraphQLField("description", type: .scalar(String.self)),
             GraphQLField("recommendations", type: .nonNull(.list(.nonNull(.object(Recommendation.selections))))),
@@ -2513,8 +2541,8 @@ public final class GetSlateLineupQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(id: String, displayName: String? = nil, description: String? = nil, recommendations: [Recommendation]) {
-          self.init(unsafeResultMap: ["__typename": "Slate", "id": id, "displayName": displayName, "description": description, "recommendations": recommendations.map { (value: Recommendation) -> ResultMap in value.resultMap }])
+        public init(id: String, requestId: GraphQLID, experimentId: GraphQLID, displayName: String? = nil, description: String? = nil, recommendations: [Recommendation]) {
+          self.init(unsafeResultMap: ["__typename": "Slate", "id": id, "requestId": requestId, "experimentId": experimentId, "displayName": displayName, "description": description, "recommendations": recommendations.map { (value: Recommendation) -> ResultMap in value.resultMap }])
         }
 
         public var __typename: String {
@@ -2532,6 +2560,28 @@ public final class GetSlateLineupQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`.
+        /// The API will provide a new request id every time apps hit the API.
+        public var requestId: GraphQLID {
+          get {
+            return resultMap["requestId"]! as! GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "requestId")
+          }
+        }
+
+        /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment.
+        /// Production apps typically won't request a specific one, but can for QA or during a/b testing.
+        public var experimentId: GraphQLID {
+          get {
+            return resultMap["experimentId"]! as! GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "experimentId")
           }
         }
 
@@ -3059,6 +3109,8 @@ public final class GetSlateQuery: GraphQLQuery {
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
           GraphQLField("id", type: .nonNull(.scalar(String.self))),
+          GraphQLField("requestId", type: .nonNull(.scalar(GraphQLID.self))),
+          GraphQLField("experimentId", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("displayName", type: .scalar(String.self)),
           GraphQLField("description", type: .scalar(String.self)),
           GraphQLField("recommendations", type: .nonNull(.list(.nonNull(.object(Recommendation.selections))))),
@@ -3071,8 +3123,8 @@ public final class GetSlateQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(id: String, displayName: String? = nil, description: String? = nil, recommendations: [Recommendation]) {
-        self.init(unsafeResultMap: ["__typename": "Slate", "id": id, "displayName": displayName, "description": description, "recommendations": recommendations.map { (value: Recommendation) -> ResultMap in value.resultMap }])
+      public init(id: String, requestId: GraphQLID, experimentId: GraphQLID, displayName: String? = nil, description: String? = nil, recommendations: [Recommendation]) {
+        self.init(unsafeResultMap: ["__typename": "Slate", "id": id, "requestId": requestId, "experimentId": experimentId, "displayName": displayName, "description": description, "recommendations": recommendations.map { (value: Recommendation) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -3090,6 +3142,28 @@ public final class GetSlateQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue, forKey: "id")
+        }
+      }
+
+      /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`.
+      /// The API will provide a new request id every time apps hit the API.
+      public var requestId: GraphQLID {
+        get {
+          return resultMap["requestId"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "requestId")
+        }
+      }
+
+      /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment.
+      /// Production apps typically won't request a specific one, but can for QA or during a/b testing.
+      public var experimentId: GraphQLID {
+        get {
+          return resultMap["experimentId"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "experimentId")
         }
       }
 
@@ -4684,6 +4758,8 @@ public struct SlateParts: GraphQLFragment {
     fragment SlateParts on Slate {
       __typename
       id
+      requestId
+      experimentId
       displayName
       description
       recommendations {
@@ -4703,6 +4779,8 @@ public struct SlateParts: GraphQLFragment {
     return [
       GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
       GraphQLField("id", type: .nonNull(.scalar(String.self))),
+      GraphQLField("requestId", type: .nonNull(.scalar(GraphQLID.self))),
+      GraphQLField("experimentId", type: .nonNull(.scalar(GraphQLID.self))),
       GraphQLField("displayName", type: .scalar(String.self)),
       GraphQLField("description", type: .scalar(String.self)),
       GraphQLField("recommendations", type: .nonNull(.list(.nonNull(.object(Recommendation.selections))))),
@@ -4715,8 +4793,8 @@ public struct SlateParts: GraphQLFragment {
     self.resultMap = unsafeResultMap
   }
 
-  public init(id: String, displayName: String? = nil, description: String? = nil, recommendations: [Recommendation]) {
-    self.init(unsafeResultMap: ["__typename": "Slate", "id": id, "displayName": displayName, "description": description, "recommendations": recommendations.map { (value: Recommendation) -> ResultMap in value.resultMap }])
+  public init(id: String, requestId: GraphQLID, experimentId: GraphQLID, displayName: String? = nil, description: String? = nil, recommendations: [Recommendation]) {
+    self.init(unsafeResultMap: ["__typename": "Slate", "id": id, "requestId": requestId, "experimentId": experimentId, "displayName": displayName, "description": description, "recommendations": recommendations.map { (value: Recommendation) -> ResultMap in value.resultMap }])
   }
 
   public var __typename: String {
@@ -4734,6 +4812,28 @@ public struct SlateParts: GraphQLFragment {
     }
     set {
       resultMap.updateValue(newValue, forKey: "id")
+    }
+  }
+
+  /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`.
+  /// The API will provide a new request id every time apps hit the API.
+  public var requestId: GraphQLID {
+    get {
+      return resultMap["requestId"]! as! GraphQLID
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "requestId")
+    }
+  }
+
+  /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment.
+  /// Production apps typically won't request a specific one, but can for QA or during a/b testing.
+  public var experimentId: GraphQLID {
+    get {
+      return resultMap["experimentId"]! as! GraphQLID
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "experimentId")
     }
   }
 

@@ -16,16 +16,22 @@ class APISlateServiceTests: XCTestCase {
         APISlateService(apollo: apollo ?? self.apollo)
     }
 
-    func test_fetchSlates_returnsSlates() async throws {
+    func test_fetchSlateLineup_returnsSlateLineup() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
-        let slates = try await subject().fetchSlates()
+        let lineup = try await subject().fetchSlateLineup("slate-lineup-1")
+        XCTAssertNotNil(lineup)
+        XCTAssertEqual(lineup!.id, "slate-lineup-1")
+        XCTAssertEqual(lineup!.requestID, "slate-lineup-1-request")
+        XCTAssertEqual(lineup!.experimentID, "slate-lineup-1-experiment")
 
-        XCTAssertEqual(slates.count, 2)
+        XCTAssertEqual(lineup?.slates.count, 2)
 
         do {
-            let slate = slates[0]
+            let slate = lineup!.slates[0]
             XCTAssertEqual(slate.id, "slate-1")
+            XCTAssertEqual(slate.requestID, "slate-1-request")
+            XCTAssertEqual(slate.experimentID, "slate-1-experiment")
             XCTAssertEqual(slate.name, "Slate 1")
             XCTAssertEqual(slate.description, "The description of slate 1")
             XCTAssertEqual(slate.recommendations.count, 2)
@@ -44,8 +50,10 @@ class APISlateServiceTests: XCTestCase {
         }
 
         do {
-            let slate = slates[1]
+            let slate = lineup!.slates[1]
             XCTAssertEqual(slate.id, "slate-2")
+            XCTAssertEqual(slate.requestID, "slate-2-request")
+            XCTAssertEqual(slate.experimentID, "slate-2-experiment")
             XCTAssertEqual(slate.name, "Slate 2")
             XCTAssertEqual(slate.description, "The description of slate 2")
             XCTAssertEqual(slate.recommendations.count, 1)

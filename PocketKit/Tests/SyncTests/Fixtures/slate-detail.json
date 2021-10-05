@@ -3,6 +3,8 @@
         "getSlate": {
             "__typename": "[some-type-name]",
             "id": "slate-1",
+            "requestId": "slate-1-request",
+            "experimentId": "slate-1-experiment",
             "displayName": "Slate 1",
             "description": "The description of slate 1",
             "recommendations": [

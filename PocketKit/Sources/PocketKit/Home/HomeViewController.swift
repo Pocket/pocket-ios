@@ -17,6 +17,8 @@ enum HomeItem: Hashable {
 }
 
 class HomeViewController: UIViewController {
+    private static let lineupID = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
+    
     static let dividerElementKind: String = "divider"
     static let twoUpDividerElementKind: String = "twoup-divider"
 
@@ -27,11 +29,15 @@ class HomeViewController: UIViewController {
     private let savedRecommendationsService: SavedRecommendationsService
     private var subscriptions: [AnyCancellable] = []
 
-    private var slates: [Slate]? {
+    private var slateLineup: SlateLineup? {
         didSet {
             applySnapshot()
             savedRecommendationsService.slates = slates
         }
+    }
+    
+    private var slates: [Slate]? {
+        return slateLineup?.slates
     }
 
     private lazy var layout = UICollectionViewCompositionalLayout { [self] index, env in
@@ -90,14 +96,9 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
 
         Task {
-            let slates = try? await source.fetchSlates()
-            setSlates(slates: slates)
+            let lineup = try? await source.fetchSlateLineup(Self.lineupID)
+            self.slateLineup = lineup
         }
-    }
-
-    @MainActor
-    private func setSlates(slates: [Slate]?) {
-        self.slates = slates
     }
 
     required init?(coder: NSCoder) {
@@ -211,6 +212,50 @@ extension HomeViewController {
 }
 
 extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard indexPath.section == 1 else {
+            return
+        }
+        
+        guard let lineup = slateLineup,
+              let visibleSlate = slates?[indexPath.section - 1] else {
+                  return
+              }
+        
+        let slateLineup = SnowplowSlateLineup(
+            id: lineup.id,
+            requestID: lineup.requestID,
+            experiment: lineup.experimentID
+        )
+        
+        let slate = SnowplowSlate(
+            id: visibleSlate.id,
+            requestID: visibleSlate.requestID,
+            experiment: visibleSlate.experimentID,
+            index: UIIndex(indexPath.section - 1)
+        )
+        
+        let visibleRecommendation = visibleSlate.recommendations[indexPath.item]
+        guard let recommendationID = visibleRecommendation.id else {
+            return
+        }
+        
+        let recommendation = SnowplowRecommendation(
+            id: recommendationID,
+            index: UIIndex(indexPath.item)
+        )
+        
+        guard let url = visibleRecommendation.item.resolvedURL ?? visibleRecommendation.item.givenURL else {
+            return
+        }
+        
+        let content = Content(url: url)
+        
+        let item = UIContext.home.item(index: UInt(indexPath.item))
+        let impression = Impression(component: .content, requirement: .instant)
+        tracker.track(event: impression, [item, slateLineup, slate, recommendation, content])
+    }
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
         guard let slates = slates else {
@@ -234,6 +279,14 @@ extension HomeViewController: UICollectionViewDelegate {
             )
             article.item = slates[indexPath.section - 1].recommendations[indexPath.item]
             navigationController?.pushViewController(article, animated: true)
+            
+            guard let url = article.item?.readerURL else {
+                return
+            }
+            
+            let open = ContentOpen(destination: .internal, trigger: .click)
+            let content = Content(url: url)
+            tracker.track(event: open, [content])
         }
     }
 }
