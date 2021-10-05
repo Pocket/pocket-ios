@@ -139,8 +139,8 @@ extension Source {
 
 // MARK: - Slates
 extension Source {
-    public func fetchSlates() async throws -> [Slate] {
-        return try await slateService.fetchSlates()
+    public func fetchSlateLineup(_ identifier: String) async throws -> SlateLineup? {
+        return try await slateService.fetchSlateLineup(identifier)
     }
 
     public func fetchSlate(_ slateID: String) async throws -> Slate? {

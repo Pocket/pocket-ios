@@ -35,6 +35,7 @@ public enum UIIdentifier: String, Encodable {
 
 public enum UIComponentDetail: String, Encodable {
     case itemRow = "item_row"
+    case homeCard = "discover_tile"
 }
 
 public struct UIContext: SnowplowContext {
@@ -75,7 +76,7 @@ public extension UIContext {
         public let screen = UIContext(type: .screen, identifier: .home)
         
         public func item(index: UIIndex) -> UIContext {
-            UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
+            UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .homeCard, index: index)
         }
     }
     

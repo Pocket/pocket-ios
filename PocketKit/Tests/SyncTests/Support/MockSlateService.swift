@@ -2,14 +2,14 @@
 
 
 class MockSlateService: SlateService {
-    typealias FetchSlatesImpl = () async throws -> [Slate]
-    private var fetchSlatesImpl: FetchSlatesImpl?
-    func stubFetchSlates(impl: @escaping FetchSlatesImpl) {
-        fetchSlatesImpl = impl
+    typealias FetchSlateLineupImpl = () async throws -> SlateLineup
+    private var fetchSlateLineupImpl: FetchSlateLineupImpl?
+    func stubFetchSlateLineup(impl: @escaping FetchSlateLineupImpl) {
+        fetchSlateLineupImpl = impl
     }
 
-    func fetchSlates() async throws -> [Slate] {
-        guard let impl = fetchSlatesImpl else {
+    func fetchSlateLineup(_ identifier: String) async throws -> SlateLineup? {
+        guard let impl = fetchSlateLineupImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 

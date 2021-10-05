@@ -165,18 +165,41 @@ class SourceTests: XCTestCase {
     }
 
     func test_fetchSlates_returnsResultsFromSlateService() async throws {
-        let expectedSlates = [Slate(id: "my-slate", name: "My Slate", description: "My very awesome slate", recommendations: [])]
-        slateService.stubFetchSlates {
-            return expectedSlates
+        let slate = Slate(
+            id: "my-slate",
+            requestID: "request-id",
+            experimentID: "experiment-id",
+            name: "My Slate",
+            description: "slate-description",
+            recommendations: []
+        )
+        
+        let expectedLineup = SlateLineup(
+            id: "lineup-id",
+            requestID: "lineup-request-id",
+            experimentID: "experiment-id",
+            slates: [slate]
+        )
+        
+        slateService.stubFetchSlateLineup {
+            expectedLineup
         }
 
-        let actualSlates = try await subject().fetchSlates()
+        let actualLineup = try await subject().fetchSlateLineup("")
 
-        XCTAssertEqual(actualSlates, expectedSlates)
+        XCTAssertEqual(actualLineup, expectedLineup)
     }
 
     func test_fetchSlate_returnsResultFromSlateService() async throws {
-        let expectedSlate = Slate(id: "my-slate", name: "My Slate", description: "My very awesome slate", recommendations: [])
+        let expectedSlate = Slate(
+            id: "my-slate",
+            requestID: "request-id",
+            experimentID: "experiment-id",
+            name: "My Slate",
+            description: "slate-description",
+            recommendations: []
+        )
+        
         slateService.stubFetchSlate { _ in
             return expectedSlate
         }

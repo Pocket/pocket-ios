@@ -45,6 +45,8 @@ fragment PendingItemParts on PendingItem {
 
 fragment SlateParts on Slate {
   id
+  requestId
+  experimentId
   displayName
   description
   recommendations {
@@ -97,6 +99,8 @@ mutation DeleteItem($itemID: ID!) {
 query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
   getSlateLineup(slateLineupId: $lineupID, recommendationCount: $maxRecommendations) {
     id
+    requestId
+    experimentId
     slates {
       ...SlateParts
     }
