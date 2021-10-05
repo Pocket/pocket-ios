@@ -150,7 +150,7 @@ class SourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
-    func tests_archive_removesItemFromLocalStorage_andExecutesArchiveMutation() throws {
+    func test_archive_removesItemFromLocalStorage_andExecutesArchiveMutation() throws {
         let item = try space.seedItem(remoteID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
