@@ -1,0 +1,40 @@
+{
+    "data": {
+        "upsertSavedItem": {
+            "__typename": "[type-name-here]",
+            "remoteID": "saved-item-1",
+            "url": "https://example.com/item-1",
+            "_createdAt": 0,
+            "_deletedAt": null,
+            "isArchived": false,
+            "isFavorite": false,
+            "item": {
+                "__typename": "Item",
+                "remoteID": "recommended-item-1",
+                "givenUrl": "https://given.example.com/item-1",
+                "resolvedUrl": "https://resolved.example.com/item-1",
+                "title": "Saved Recommendation 1",
+                "topImageUrl": "https://example.com/item-1/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "particleJson": "",
+                "excerpt": "Cursus Aenean Elit",
+                "domainMetadata": {
+                    "__typename": "[type-name-here]",
+                    "name": "WIRED",
+                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                },
+                "images": [
+                    {
+                        "__typename": "[type-name-here]",
+                        "height": 1,
+                        "width": 2,
+                        "src": "http://example.com/item-1/image-1.jpg",
+                        "imageId": 1
+                    }
+                ]
+            }
+        }
+    }
+}

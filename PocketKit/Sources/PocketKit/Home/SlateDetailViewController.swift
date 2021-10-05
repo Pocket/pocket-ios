@@ -38,6 +38,11 @@ class SlateDetailViewController: UIViewController {
             cell.titleLabel.attributedText = presenter.attributedTitle
             cell.subtitleLabel.attributedText = presenter.attributedDetail
             cell.excerptLabel.attributedText = presenter.attributedExcerpt
+
+            let action = UIAction(identifier: .saveRecommendation) { [weak self] _ in
+                self?.source.save(recommendation: recommendation)
+            }
+            cell.saveButton.addAction(action, for: .primaryActionTriggered)
         }
         
         let dataSource = UICollectionViewDiffableDataSource<Slate, Slate.Recommendation>(

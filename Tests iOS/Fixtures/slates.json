@@ -15,7 +15,7 @@
                             "id": "slate-1-rec-1",
                             "item": {
                                 "__typename": "[some-type-name]",
-                                "remoteID": "item-1",
+                                "remoteID": "recommended-item-1",
                                 "givenUrl": "https://example.com/item-1",
                                 "resolvedUrl": "https://example.com/item-1",
                                 "title": "Slate 1, Recommendation 1",
@@ -38,7 +38,7 @@
                             "id": "slate-1-rec-2",
                             "item": {
                                 "__typename": "[some-type-name]",
-                                "remoteID": "item-2",
+                                "remoteID": "recommended-item-2",
                                 "givenUrl": "https://example.com/item-2",
                                 "resolvedUrl": "https://example.com/item-2",
                                 "title": "Slate 1, Recommendation 2",
@@ -69,7 +69,7 @@
                             "id": "slate-2-rec-1",
                             "item": {
                                 "__typename": "[some-type-name]",
-                                "remoteID": "item-3",
+                                "remoteID": "recommended-item-3",
                                 "givenUrl": "https://example.com/item-1",
                                 "resolvedUrl": "https://example.com/item-1",
                                 "title": "Slate 2, Recommendation 1",
@@ -91,7 +91,7 @@
                             "__typename": "[some-type-name]",
                             "id": "slate-2-rec-2",
                             "item": {
-                                "remoteID": "item-4",
+                                "remoteID": "recommended-item-4",
                                 "__typename": "[some-type-name]",
                                 "givenUrl": "https://example.com/item-2",
                                 "resolvedUrl": "https://example.com/item-2",

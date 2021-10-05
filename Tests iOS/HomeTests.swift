@@ -4,6 +4,7 @@
 
 import XCTest
 import Sails
+import NIO
 
 
 class HomeTests: XCTestCase {
@@ -116,4 +117,39 @@ class HomeTests: XCTestCase {
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
         app.readerView.cell(containing: "By Jacob & David").wait()
     }
+
+    func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
+        let saveButton = app.homeView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait()
+
+        let saveRequestExpectation = expectation(description: "A save mutation request")
+        var promise: EventLoopPromise<Response>?
+        var requestBody: String?
+        server.routes.post("/graphql") { request, loop in
+            requestBody = body(of: request)
+            saveRequestExpectation.fulfill()
+            promise = loop.makePromise()
+
+            return promise!.futureResult
+        }
+
+        saveButton.tap()
+        app.tabBar.myListButton.tap()
+        app.userListView.itemView(withLabelStartingWith: "Slate 1, Recommendation 1").wait()
+
+        wait(for: [saveRequestExpectation], timeout: 1)
+        XCTAssertEqual(requestBody?.contains("upsertSavedItem"), true)
+        XCTAssertEqual(requestBody?.contains("https:\\/\\/example.com\\/item-1"), true)
+
+        promise?.succeed(Response(status: .ok, content: Fixture.load(name: "save-item").data))
+        app.userListView.itemView(withLabelStartingWith: "Saved Recommendation 1").wait()
+    }
+
+    func test_tappingSaveButtonInRecommendationCellinSlateDetailView_savesItemToList() {
+        app.homeView.topicChip("Slate 1").wait().tap()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait().tap()
+
+        app.tabBar.myListButton.tap()
+        app.userListView.itemView(withLabelStartingWith: "Slate 1, Recommendation 1").wait()
+    }
+
 }
