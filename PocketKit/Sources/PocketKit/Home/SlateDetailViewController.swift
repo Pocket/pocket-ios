@@ -119,7 +119,10 @@ extension SlateDetailViewController: UICollectionViewDelegate {
             return
         }
 
-        let article = ArticleViewController(readerSettings: readerSettings, tracker: tracker)
+        let article = ArticleViewController(
+            readerSettings: readerSettings,
+            tracker: tracker.childTracker(hosting: UIContext.articleView.screen)
+        )
         article.item = recommendation
 
         navigationController?.pushViewController(article, animated: true)

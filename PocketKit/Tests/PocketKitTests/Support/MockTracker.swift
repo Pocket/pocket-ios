@@ -21,6 +21,10 @@ class MockTracker: Tracker {
     func track<T: SnowplowEvent>(event: T, _ contexts: [SnowplowContext]?) {
         trackCalls.add(TrackCall(event: event, contexts: contexts))
     }
+    
+    func childTracker(with contexts: [SnowplowContext]) -> Tracker {
+        NoopTracker()
+    }
 }
 
 struct MockEvent: SnowplowEvent {

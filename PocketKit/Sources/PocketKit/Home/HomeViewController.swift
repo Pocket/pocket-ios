@@ -164,7 +164,7 @@ extension HomeViewController: UICollectionViewDelegate {
             let slateDetail = SlateDetailViewController(
                 source: source,
                 readerSettings: readerSettings,
-                tracker: tracker,
+                tracker: tracker.childTracker(hosting: UIContext.slateDetail.screen),
                 slateID: slates[indexPath.item].id
             )
 
@@ -172,7 +172,7 @@ extension HomeViewController: UICollectionViewDelegate {
         default:
             let article = ArticleViewController(
                 readerSettings: readerSettings,
-                tracker: tracker
+                tracker: tracker.childTracker(hosting: UIContext.articleView.screen)
             )
             article.item = slates[indexPath.section - 1].recommendations[indexPath.item]
             navigationController?.pushViewController(article, animated: true)

@@ -6,17 +6,6 @@ import Foundation
 import SnowplowTracker
 
 
-public protocol Tracker {
-    func addPersistentContext(_ context: SnowplowContext)
-    func track<T: SnowplowEvent>(event: T, _ contexts: [SnowplowContext]?)
-}
-
-public extension Tracker {
-    func addPersistentContexts(_ contexts: [SnowplowContext]) {
-        contexts.forEach { addPersistentContext($0) }
-    }
-}
-
 public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracking
     
@@ -41,6 +30,10 @@ public class PocketTracker: Tracker {
         event.contexts.addObjects(from: snowplowContexts)
         
         snowplow.track(event: event)
+    }
+    
+    public func childTracker(with contexts: [SnowplowContext]) -> Tracker {
+        return NoopTracker()
     }
 }
 
@@ -79,17 +72,5 @@ extension PocketTracker {
                   }
             return context
         }
-    }
-}
-
-private extension UIContext {
-    func with(hierarchy: UIHierarchy) -> UIContext {
-        UIContext(
-            type: type,
-            hierarchy: hierarchy,
-            identifier: identifier,
-            componentDetail: componentDetail,
-            index: index
-        )
     }
 }

@@ -50,7 +50,7 @@ class ArticleViewController: UICollectionViewController {
         }
         
         let content = Content(url: url)
-        return [UIContext.articleView.screen, content]
+        return [content]
     }
 
     private let readerSettings: ReaderSettings
