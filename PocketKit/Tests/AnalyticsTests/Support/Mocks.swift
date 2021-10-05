@@ -5,6 +5,32 @@ import Analytics
 import SnowplowTracker
 
 
+class MockTracker: Analytics.Tracker {
+    struct TrackCall {
+        let event: SnowplowEvent
+        let contexts: [SnowplowContext]?
+    }
+
+    struct AddPersistentCall {
+        let context: SnowplowContext
+    }
+
+    private(set) var trackCalls = Calls<TrackCall>()
+    private(set) var addPersistentCalls = Calls<AddPersistentCall>()
+    
+    func addPersistentContext(_ context: SnowplowContext) {
+        addPersistentCalls.add(AddPersistentCall(context: context))
+    }
+    
+    func track<T: SnowplowEvent>(event: T, _ contexts: [SnowplowContext]?) {
+        trackCalls.add(TrackCall(event: event, contexts: contexts))
+    }
+    
+    func childTracker(with contexts: [SnowplowContext]) -> Analytics.Tracker {
+        NoopTracker()
+    }
+}
+
 class MockSnowplow: SnowplowTracking {
     struct TrackCall {
         let event: SelfDescribing
@@ -17,13 +43,13 @@ class MockSnowplow: SnowplowTracking {
     }
 }
 
-struct MockEvent: SnowplowEvent {
+struct MockEvent: SnowplowEvent, Equatable {
     static var schema = "mock-event"
     
     let value: Int
 }
 
-struct MockContext: SnowplowContext {
+struct MockContext: SnowplowContext, Equatable {
     static var schema = "mock-context"
     
     let value: String

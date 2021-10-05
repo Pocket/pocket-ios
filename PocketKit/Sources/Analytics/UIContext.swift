@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import SwiftUI
+import Foundation
 
 
 // MARK: - Trackable
@@ -19,7 +19,8 @@ public enum UIType: String, Encodable {
 }
 
 public enum UIIdentifier: String, Encodable {
-    case home
+    case home = "discover"
+    case myList = "home"
     case reader
     case item
     case articleLink = "article_link"
@@ -29,6 +30,7 @@ public enum UIIdentifier: String, Encodable {
     case itemFavorite = "item_favorite"
     case itemUnfavorite = "item_unfavorite"
     case itemShare = "item_share"
+    case slateDetail = "discover_topic"
 }
 
 public enum UIComponentDetail: String, Encodable {
@@ -45,7 +47,7 @@ public struct UIContext: SnowplowContext {
     
     public init(
         type: UIType,
-        hierarchy: UIHierarchy,
+        hierarchy: UIHierarchy = 0,
         identifier: UIIdentifier,
         componentDetail: UIComponentDetail? = nil,
         index: UIIndex? = nil
@@ -70,7 +72,15 @@ private extension UIContext {
 
 public extension UIContext {
     struct Home {
-        public var list = UIContext(type: .screen, hierarchy: 0, identifier: .home)
+        public let screen = UIContext(type: .screen, identifier: .home)
+        
+        public func item(index: UIIndex) -> UIContext {
+            UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
+        }
+    }
+    
+    struct MyList {
+        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .myList)
         
         public func item(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
@@ -78,13 +88,19 @@ public extension UIContext {
     }
     
     struct ArticleView {
-        public var screen = UIContext(type: .screen, hierarchy: 0, identifier: .reader)
-        public var link = UIContext(type: .link, hierarchy: 0, identifier: .articleLink)
-        public var switchToWebView = UIContext(type: .button, hierarchy: 0, identifier: .switchToWebView)
+        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .reader)
+        public let link = UIContext(type: .link, hierarchy: 0, identifier: .articleLink)
+        public let switchToWebView = UIContext(type: .button, hierarchy: 0, identifier: .switchToWebView)
+    }
+    
+    struct SlateDetail {
+        public let screen = UIContext(type: .screen, identifier: .slateDetail)
     }
     
     static let home = Home()
+    static let myList = MyList()
     static let articleView = ArticleView()
+    static let slateDetail = SlateDetail()
 
     static func button(identifier: UIIdentifier) -> UIContext {
         UIContext(
@@ -92,31 +108,5 @@ public extension UIContext {
             hierarchy: 0,
             identifier: identifier
         )
-    }
-}
-
-// MARK: - SwiftUI
-public struct TrackableView<T: View>: View {
-    private var content: T
-    
-    @Environment(\.uiContexts)
-    private var viewContexts: [UIContext]
-    
-    private var currentContext: UIContext
-    
-    init(_ context: UIContext, _ content: () -> T) {
-        self.content = content()
-        self.currentContext = context
-    }
-    
-    public var body: some View {
-        content.environment(\.uiContexts, viewContexts + [currentContext])
-    }
-}
-
-public extension View {
-    @ViewBuilder
-    func trackable(_ context: UIContext) -> TrackableView<Self> {
-        TrackableView(context) { self }
     }
 }

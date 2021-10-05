@@ -49,7 +49,7 @@ class RegularMainCoordinator: NSObject {
         
         home = HomeViewController(
             source: source,
-            tracker: tracker,
+            tracker: tracker.childTracker(hosting: UIContext.home.screen),
             readerSettings: model.readerSettings
         )
         home.view.backgroundColor = UIColor(.ui.white1)

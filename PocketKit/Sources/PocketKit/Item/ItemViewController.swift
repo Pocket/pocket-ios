@@ -18,10 +18,6 @@ class ItemViewController: UIViewController {
     private var observer: NSKeyValueObservation?
     private let model: MainViewModel
 
-    var uiContext: SnowplowContext {
-        return UIContext.articleView.screen
-    }
-
     weak var delegate: ItemViewControllerDelegate?
 
     init(
@@ -208,7 +204,6 @@ extension ItemViewController {
         }
 
         let contexts: [SnowplowContext] = [
-            uiContext,
             UIContext.button(identifier: identifier),
             Content(url: url)
         ]

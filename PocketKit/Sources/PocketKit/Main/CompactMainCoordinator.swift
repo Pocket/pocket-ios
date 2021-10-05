@@ -48,7 +48,7 @@ class CompactMainCoordinator: NSObject {
 
         let homeRoot = HomeViewController(
             source: source,
-            tracker: tracker,
+            tracker: tracker.childTracker(hosting: UIContext.home.screen),
             readerSettings: model.readerSettings
         )
         homeRoot.view.backgroundColor = UIColor(.ui.white1)
@@ -91,7 +91,7 @@ class CompactMainCoordinator: NSObject {
     func show(item: SavedItem, animated: Bool) {
         let itemVC = ItemViewController(
             model: model,
-            tracker: tracker,
+            tracker: tracker.childTracker(hosting: UIContext.articleView.screen),
             source: source
         )
         itemVC.delegate = self
