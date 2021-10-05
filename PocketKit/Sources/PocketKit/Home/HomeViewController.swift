@@ -123,6 +123,12 @@ extension HomeViewController: UICollectionViewDataSource {
             cell.titleLabel.attributedText = presenter.attributedTitle
             cell.subtitleLabel.attributedText = presenter.attributedDetail
             cell.excerptLabel.attributedText = presenter.attributedExcerpt
+
+            let action = UIAction(identifier: .saveRecommendation) { [weak self] _ in
+                self?.source.save(recommendation: recommendation)
+            }
+            cell.saveButton.addAction(action, for: .primaryActionTriggered)
+
             return cell
         }
     }
@@ -178,4 +184,8 @@ extension HomeViewController: UICollectionViewDelegate {
             navigationController?.pushViewController(article, animated: true)
         }
     }
+}
+
+extension UIAction.Identifier {
+    static let saveRecommendation = UIAction.Identifier(rawValue: "save-recommendation-action")
 }

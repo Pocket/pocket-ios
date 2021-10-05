@@ -12,9 +12,11 @@ struct SlateDetailElement: PocketUIElement {
         element.cells
     }
 
-    func recommendationCell(_ title: String) -> XCUIElement {
-        return element.cells
+    func recommendationCell(_ title: String) -> RecommendationCellElement {
+        let element = element.cells
             .containing(.staticText, identifier: title)
             .element(boundBy: 0)
+
+        return RecommendationCellElement(element)
     }
 }

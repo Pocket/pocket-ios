@@ -22,6 +22,10 @@ extension PocketUIElement {
         element.frame
     }
 
+    func tap() {
+        element.tap()
+    }
+
     @discardableResult
     func wait(
         timeout: TimeInterval = 1,
