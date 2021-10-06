@@ -165,6 +165,29 @@ class SlateDetailViewController: UIViewController {
 }
 
 extension SlateDetailViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        guard let slate = slate else {
+            return
+        }
+        
+        let snowplowSlate = SnowplowSlate(
+            id: slate.id,
+            requestID: slate.requestID,
+            experiment: slate.experimentID,
+            index: UIIndex(indexPath.item)
+        )
+        
+        let recommendation = slate.recommendations[indexPath.item]
+        guard let recommendationID = recommendation.id else {
+            return
+        }
+        
+        let snowplowRecommendation = SnowplowRecommendation(id: recommendationID, index: UIIndex(indexPath.item))
+        let context = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.row))
+        let impression = Impression(component: .content, requirement: .instant)
+        tracker.track(event: impression, [context, snowplowSlate, snowplowRecommendation])
+    }
+ 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let recommendation = slate?.recommendations[indexPath.item] else {
             return
