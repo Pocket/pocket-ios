@@ -1,6 +1,7 @@
 import UIKit
 import Analytics
 import Sync
+import Combine
 
 
 class MainCoordinator {
@@ -10,6 +11,8 @@ class MainCoordinator {
 
     private let compact: CompactMainCoordinator
     private let regular: RegularMainCoordinator
+    
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(
         model: MainViewModel,
@@ -29,6 +32,21 @@ class MainCoordinator {
         )
 
         regular.setCompactViewController(compact.viewController)
+        
+        model.$selectedSection
+            .sink { section in
+                let context: UIContext
+                switch section {
+                case .home:
+                    context = UIContext.home.screen
+                case .myList:
+                    context = UIContext.myList.screen
+                }
+
+                let impression = Impression(component: .screen, requirement: .instant)
+                tracker.track(event: impression, [context])
+            }
+            .store(in: &subscriptions)
     }
 
     func showList() {
