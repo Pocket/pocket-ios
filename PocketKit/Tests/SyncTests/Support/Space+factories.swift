@@ -6,16 +6,28 @@ extension Space {
     func seedSavedItem(
         remoteID: String = "saved-item-1",
         url: String = "http://example.com/item-1",
-        title: String = "Item 1",
-        isFavorite: Bool = false
+        isFavorite: Bool = false,
+        item: Item? = nil
     ) throws -> SavedItem {
-        let item: SavedItem = new()
-        item.remoteID = remoteID
-        item.isFavorite = isFavorite
-        item.url = URL(string: url)!
+        let savedItem: SavedItem = new()
+        savedItem.remoteID = remoteID
+        savedItem.isFavorite = isFavorite
+        savedItem.url = URL(string: url)!
 
-        item.item = new()
-        item.item?.title = title
+        savedItem.item = item ?? new()
+
+        try save()
+        return savedItem
+    }
+
+    @discardableResult
+    func seedItem(
+        remoteID: String = "item-1",
+        title: String = "Item 1"
+    ) throws -> Item {
+        let item: Item = new()
+        item.remoteID = remoteID
+        item.title = title
 
         try save()
         return item

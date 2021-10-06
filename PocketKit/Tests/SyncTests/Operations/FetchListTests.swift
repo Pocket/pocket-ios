@@ -113,7 +113,10 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() throws {
         apollo.stubFetch(toReturnFixturedNamed: "updated-item", asResultType: UserByTokenQuery.self)
-        try space.seedSavedItem(remoteID: "saved-item-1", title: "Item 1")
+        try space.seedSavedItem(
+            remoteID: "saved-item-1",
+            item: space.seedItem(title: "Item 1")
+        )
 
         performOperation()
 
