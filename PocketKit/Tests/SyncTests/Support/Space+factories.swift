@@ -3,7 +3,7 @@ import Foundation
 
 extension Space {
     @discardableResult
-    func seedItem(
+    func seedSavedItem(
         remoteID: String = "saved-item-1",
         url: String = "http://example.com/item-1",
         title: String = "Item 1",
