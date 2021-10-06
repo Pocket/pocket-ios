@@ -31,6 +31,7 @@ public enum UIIdentifier: String, Encodable {
     case itemUnfavorite = "item_unfavorite"
     case itemShare = "item_share"
     case slateDetail = "discover_topic"
+    case recommendation = "recommendation"
 }
 
 public enum UIComponentDetail: String, Encodable {
@@ -96,6 +97,10 @@ public extension UIContext {
     
     struct SlateDetail {
         public let screen = UIContext(type: .screen, identifier: .slateDetail)
+        
+        public func recommendation(index: UIIndex) -> UIContext {
+            UIContext(type: .card, hierarchy: 0, identifier: .recommendation, componentDetail: .homeCard, index: index)
+        }
     }
     
     static let home = Home()
