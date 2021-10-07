@@ -77,34 +77,8 @@ class HomeViewController: UIViewController {
 
         navigationItem.title = "Home"
 
-        savedRecommendationsService.$itemIDs.sink { savedItemIDs in
-            // TODO: Extract this out into some kind of controller or view model
-
-            guard let slates = self.slates else {
-                return
-            }
-
-            let difference = self.savedRecommendationsService.itemIDs.difference(from: savedItemIDs)
-            let changed = difference.map { change -> String in
-                switch change {
-                case let .insert(_, element, _):
-                    return element
-                case let .remove(_, element, _):
-                    return element
-                }
-            }
-
-            let indexPaths: [IndexPath] = slates.enumerated().flatMap { slateIndex, slate in
-                slate.recommendations.enumerated().filter { _, rec in
-                    changed.contains(rec.item.id)
-                }.map { recIndex, _ in
-                    [slateIndex + 1, recIndex]
-                }
-            }
-
-            DispatchQueue.main.async {
-                self.collectionView.reloadItems(at: indexPaths)
-            }
+        savedRecommendationsService.$itemIDs.sink { [weak self] savedItemIDs in
+            self?.updateRecommendationSaveButtons(savedItemIDs: savedItemIDs)
         }.store(in: &subscriptions)
     }
 
@@ -202,6 +176,30 @@ extension HomeViewController {
         }
 
         dataSource.apply(snapshot)
+    }
+
+    private func updateRecommendationSaveButtons(savedItemIDs: [String]) {
+        guard let slates = slates else {
+            return
+        }
+
+        let difference = savedRecommendationsService.itemIDs.difference(from: savedItemIDs)
+        let changed = difference.map { change -> String in
+            switch change {
+            case let .insert(_, element, _), let .remove(_, element, _):
+                return element
+            }
+        }
+
+        let needsReconfigured: [HomeItem] = slates.flatMap { slate in
+            slate.recommendations.filter { changed.contains($0.item.id) }
+        }.map { .recommendation($0) }
+
+        DispatchQueue.main.async {
+            var snapshot = self.dataSource.snapshot()
+            snapshot.reconfigureItems(needsReconfigured)
+            self.dataSource.apply(snapshot)
+        }
     }
 
     private func isRecommendationSaved(_ recommendation: Slate.Recommendation) -> Bool {
