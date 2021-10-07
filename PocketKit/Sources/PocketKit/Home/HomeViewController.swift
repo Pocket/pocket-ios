@@ -3,6 +3,7 @@ import Sync
 import Kingfisher
 import Textile
 import Analytics
+import Combine
 
 
 enum HomeSection: Hashable {
@@ -23,10 +24,13 @@ class HomeViewController: UIViewController {
     private let tracker: Tracker
     private let readerSettings: ReaderSettings
     private let sectionProvider: HomeViewControllerSectionProvider
+    private let savedRecommendationsService: SavedRecommendationsService
+    private var subscriptions: [AnyCancellable] = []
 
     private var slates: [Slate]? {
         didSet {
             applySnapshot()
+            savedRecommendationsService.slates = slates
         }
     }
 
@@ -50,6 +54,7 @@ class HomeViewController: UIViewController {
         self.source = source
         self.tracker = tracker
         self.readerSettings = readerSettings
+        self.savedRecommendationsService = source.savedRecommendationsService()
         self.sectionProvider = HomeViewControllerSectionProvider()
 
         super.init(nibName: nil, bundle: nil)
@@ -71,6 +76,36 @@ class HomeViewController: UIViewController {
         collectionView.accessibilityIdentifier = "home"
 
         navigationItem.title = "Home"
+
+        savedRecommendationsService.$itemIDs.sink { savedItemIDs in
+            // TODO: Extract this out into some kind of controller or view model
+
+            guard let slates = self.slates else {
+                return
+            }
+
+            let difference = self.savedRecommendationsService.itemIDs.difference(from: savedItemIDs)
+            let changed = difference.map { change -> String in
+                switch change {
+                case let .insert(_, element, _):
+                    return element
+                case let .remove(_, element, _):
+                    return element
+                }
+            }
+
+            let indexPaths: [IndexPath] = slates.enumerated().flatMap { slateIndex, slate in
+                slate.recommendations.enumerated().filter { _, rec in
+                    changed.contains(rec.item.id)
+                }.map { recIndex, _ in
+                    [slateIndex + 1, recIndex]
+                }
+            }
+
+            DispatchQueue.main.async {
+                self.collectionView.reloadItems(at: indexPaths)
+            }
+        }.store(in: &subscriptions)
     }
 
     override func loadView() {
@@ -119,6 +154,12 @@ extension HomeViewController {
             }
             cell.saveButton.addAction(action, for: .primaryActionTriggered)
 
+            if isRecommendationSaved(recommendation) {
+                cell.saveButton.configuration?.title = "Saved"
+            } else {
+                cell.saveButton.configuration?.title = "Save"
+            }
+
             return cell
         }
     }
@@ -161,6 +202,10 @@ extension HomeViewController {
         }
 
         dataSource.apply(snapshot)
+    }
+
+    private func isRecommendationSaved(_ recommendation: Slate.Recommendation) -> Bool {
+        return savedRecommendationsService.itemIDs.contains(recommendation.item.id)
     }
 }
 

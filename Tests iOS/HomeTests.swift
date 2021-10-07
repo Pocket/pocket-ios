@@ -119,7 +119,8 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
-        let saveButton = app.homeView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait()
+        let cell = app.homeView.recommendationCell("Slate 1, Recommendation 1")
+        let saveButton = cell.saveButton.wait()
 
         let saveRequestExpectation = expectation(description: "A save mutation request")
         var promise: EventLoopPromise<Response>?
@@ -133,6 +134,8 @@ class HomeTests: XCTestCase {
         }
 
         saveButton.tap()
+        XCTAssertEqual(saveButton.label, "Saved")
+
         app.tabBar.myListButton.tap()
         app.userListView.itemView(withLabelStartingWith: "Slate 1, Recommendation 1").wait()
 

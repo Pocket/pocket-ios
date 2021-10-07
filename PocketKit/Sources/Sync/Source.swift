@@ -189,4 +189,8 @@ extension Source {
     public func fetchSlate(_ slateID: String) async throws -> Slate? {
         return try await slateService.fetchSlate(slateID)
     }
+
+    public func savedRecommendationsService() -> SavedRecommendationsService {
+        SavedRecommendationsService(space: space)
+    }
 }

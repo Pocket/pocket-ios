@@ -13,6 +13,6 @@ struct RecommendationCellElement: PocketUIElement {
     }
 
     var saveButton: XCUIElement {
-        element.buttons["Save"]
+        element.buttons["save-button"]
     }
 }

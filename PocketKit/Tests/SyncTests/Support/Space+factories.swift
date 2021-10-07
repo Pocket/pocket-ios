@@ -16,12 +16,15 @@ extension Space {
 
         savedItem.item = item ?? new()
 
-        try save()
+        try context.performAndWait {
+            try save()
+        }
+        
         return savedItem
     }
 
     @discardableResult
-    func seedItem(
+    func buildItem(
         remoteID: String = "item-1",
         title: String = "Item 1"
     ) throws -> Item {
@@ -29,7 +32,6 @@ extension Space {
         item.remoteID = remoteID
         item.title = title
 
-        try save()
         return item
     }
 }

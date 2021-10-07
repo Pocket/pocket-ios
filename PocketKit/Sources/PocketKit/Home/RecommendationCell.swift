@@ -47,7 +47,10 @@ class RecommendationCell: UICollectionViewCell {
         configuration.imagePadding = 4
         configuration.image = UIImage(asset: .save)
 
-        return UIButton.recommendationButton(configuration: configuration, primaryAction: nil)
+        let button = UIButton.recommendationButton(configuration: configuration, primaryAction: nil)
+        button.accessibilityIdentifier = "save-button"
+
+        return button
     }()
 
     let overflowButton: UIButton = {
