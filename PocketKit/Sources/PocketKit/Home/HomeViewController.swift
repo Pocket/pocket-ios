@@ -5,6 +5,16 @@ import Textile
 import Analytics
 
 
+enum HomeSection: Hashable {
+    case topicCarousel
+    case slate(Slate)
+}
+
+enum HomeItem: Hashable {
+    case topicChip(Slate)
+    case recommendation(Slate.Recommendation)
+}
+
 class HomeViewController: UIViewController {
     static let dividerElementKind: String = "divider"
     static let twoUpDividerElementKind: String = "twoup-divider"
@@ -16,7 +26,24 @@ class HomeViewController: UIViewController {
 
     private var slates: [Slate]? {
         didSet {
-            collectionView.reloadData()
+            var snapshot = NSDiffableDataSourceSnapshot<HomeSection, HomeItem>()
+
+            guard let slates = slates else {
+                dataSource.apply(snapshot)
+                return
+            }
+
+            snapshot.appendSections([.topicCarousel] + slates.map { HomeSection.slate($0) })
+            snapshot.appendItems(slates.map { HomeItem.topicChip($0) }, toSection: .topicCarousel)
+
+            for slate in slates {
+                snapshot.appendItems(
+                    slate.recommendations.map { .recommendation($0) },
+                    toSection: .slate(slate)
+                )
+            }
+
+            dataSource.apply(snapshot)
         }
     }
 
@@ -28,6 +55,8 @@ class HomeViewController: UIViewController {
             return sectionProvider.section(for: slates?[index - 1], width: env.container.effectiveContentSize.width)
         }
     }
+
+    private var dataSource: UICollectionViewDiffableDataSource<HomeSection, HomeItem>!
 
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
@@ -42,14 +71,20 @@ class HomeViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
+        dataSource = UICollectionViewDiffableDataSource<HomeSection, HomeItem>(collectionView: collectionView) { [unowned self] _, indexPath, item in
+            return self.cellFor(item, at: indexPath)
+        }
+
+        dataSource.supplementaryViewProvider = { [unowned self] _, kind, indexPath in
+            return self.viewForSupplementaryElement(ofKind: kind, at: indexPath)
+        }
+
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: TopicChipCell.self)
         collectionView.register(viewClass: SlateHeaderView.self, forSupplementaryViewOfKind: SlateHeaderView.kind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.dividerElementKind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.twoUpDividerElementKind)
-        collectionView.dataSource = self
         collectionView.delegate = self
-
         collectionView.accessibilityIdentifier = "home"
 
         navigationItem.title = "Home"
@@ -78,46 +113,18 @@ class HomeViewController: UIViewController {
     }
 }
 
-extension HomeViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
-        guard let slates = slates else {
-            return 0
-        }
-
-        return slates.count + 1
-    }
-
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        switch section {
-        case 0:
-            return slates?.count ?? 0
-        default:
-            return min(slates?[section - 1].recommendations.count ?? 0, 5)
-        }
-    }
-
-    func collectionView(
-        _ collectionView: UICollectionView,
-        cellForItemAt indexPath: IndexPath
-    ) -> UICollectionViewCell {
-        switch indexPath.section {
-        case 0:
+extension HomeViewController {
+    func cellFor(_ item: HomeItem, at indexPath: IndexPath) -> UICollectionViewCell {
+        switch item {
+        case .topicChip(let slate):
             let cell: TopicChipCell = collectionView.dequeueCell(for: indexPath)
-            guard let slate = slates?[indexPath.item] else {
-                return cell
-            }
-
             cell.accessibilityIdentifier = "topic-chip"
             cell.titleLabel.attributedText = TopicChipPresenter(slate: slate).attributedTitle
             return cell
-        default:
+        case .recommendation(let recommendation):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-            guard let recommendation = slates?[indexPath.section - 1].recommendations[indexPath.item] else {
-                return cell
-            }
-
             cell.mode = indexPath.item == 0 ? .hero : .mini
-            
+
             let presenter = RecommendationPresenter(recommendation: recommendation)
             presenter.loadImage(into: cell.thumbnailImageView, cellWidth: cell.frame.width)
             cell.titleLabel.attributedText = presenter.attributedTitle
@@ -133,11 +140,7 @@ extension HomeViewController: UICollectionViewDataSource {
         }
     }
 
-    func collectionView(
-        _ collectionView: UICollectionView,
-        viewForSupplementaryElementOfKind kind: String,
-        at indexPath: IndexPath
-    ) -> UICollectionReusableView {
+    func viewForSupplementaryElement(ofKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case SlateHeaderView.kind:
             let header: SlateHeaderView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
