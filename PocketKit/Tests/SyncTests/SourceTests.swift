@@ -243,7 +243,7 @@ class SourceTests: XCTestCase {
         )
 
         let source = subject()
-        try source.archive(recommendation: recommendation)
+        source.archive(recommendation: recommendation)
 
         wait(for: [expectationToRunOperation], timeout: 1)
 
