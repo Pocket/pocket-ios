@@ -123,14 +123,26 @@ class HomeTests: XCTestCase {
         let saveButton = cell.saveButton.wait()
 
         let saveRequestExpectation = expectation(description: "A save mutation request")
+        let archiveRequestExpectation = expectation(description: "An archive mutation request")
         var promise: EventLoopPromise<Response>?
         var requestBody: String?
         server.routes.post("/graphql") { request, loop in
             requestBody = body(of: request)
-            saveRequestExpectation.fulfill()
-            promise = loop.makePromise()
 
-            return promise!.futureResult
+            if requestBody?.contains("upsertSavedItem") == true {
+                saveRequestExpectation.fulfill()
+                promise = loop.makePromise()
+                return promise!.futureResult
+            } else if requestBody?.contains("updateSavedItemArchive") == true {
+                archiveRequestExpectation.fulfill()
+
+                return Response {
+                    Status.ok
+                    Fixture.data(name: "archive")
+                }
+            } else {
+                fatalError("Unexpected request")
+            }
         }
 
         saveButton.tap()
@@ -145,6 +157,13 @@ class HomeTests: XCTestCase {
 
         promise?.succeed(Response(status: .ok, content: Fixture.load(name: "save-item").data))
         app.userListView.itemView(withLabelStartingWith: "Saved Recommendation 1").wait()
+
+        app.tabBar.homeButton.tap()
+        saveButton.tap()
+
+        XCTAssertEqual(saveButton.label, "Save")
+        wait(for: [archiveRequestExpectation], timeout: 1)
+        XCTAssertFalse(app.userListView.itemView(withLabelStartingWith: "Slate 1, Recommendation 1").exists)
     }
 
     func test_tappingSaveButtonInRecommendationCellinSlateDetailView_savesItemToList() {

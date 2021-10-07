@@ -20,6 +20,11 @@ class Space {
         return try context.fetch(request).first
     }
 
+    func fetchSavedItem(byRemoteItemID remoteItemID: String) throws -> SavedItem? {
+        let request = Requests.fetchSavedItem(byRemoteItemID: remoteItemID)
+        return try context.fetch(request).first
+    }
+
     func fetchSavedItems() throws -> [SavedItem] {
         let request = Requests.fetchSavedItems()
         let results = try context.fetch(request)

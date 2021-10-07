@@ -93,47 +93,6 @@ extension Source {
         syncQ.addOperation(operation)
     }
 
-    public func save(recommendation: Slate.Recommendation) {
-        guard let url = recommendation.item.resolvedURL ?? recommendation.item.givenURL else {
-            return
-        }
-
-        let savedItem: SavedItem = space.new()
-        savedItem.url = url
-
-        let item: Item = space.new()
-        item.remoteID = recommendation.item.id
-        item.givenURL = recommendation.item.givenURL
-        item.resolvedURL = recommendation.item.resolvedURL
-        item.title = recommendation.item.title
-        item.language = recommendation.item.language
-        item.topImageURL = recommendation.item.topImageURL
-        item.timeToRead = recommendation.item.timeToRead.flatMap(Int32.init) ?? 0
-        item.particleJSON = recommendation.item.particleJSON
-        item.excerpt = recommendation.item.excerpt
-        item.domain = recommendation.item.domain
-        item.domainMetadata = recommendation.item.domainMetadata.flatMap { remote in
-            let domainMeta: DomainMetadata = space.new()
-            domainMeta.name = remote.name
-            domainMeta.logo = remote.logo
-
-            return domainMeta
-        }
-
-        savedItem.item = item
-        try? space.save()
-
-        let operation = operations.saveItemOperation(
-            managedItemID: savedItem.objectID,
-            url: url,
-            events: syncEvents,
-            apollo: apollo,
-            space: space
-        )
-
-        syncQ.addOperation(operation)
-    }
-
     public func favorite(item: SavedItem) {
         mutate(item, FavoriteItemMutation.init) { item in
             item.isFavorite = true
@@ -192,5 +151,54 @@ extension Source {
 
     public func savedRecommendationsService() -> SavedRecommendationsService {
         SavedRecommendationsService(space: space)
+    }
+
+    public func save(recommendation: Slate.Recommendation) {
+        guard let url = recommendation.item.resolvedURL ?? recommendation.item.givenURL else {
+            return
+        }
+
+        let savedItem: SavedItem = space.new()
+        savedItem.url = url
+
+        let item: Item = space.new()
+        item.remoteID = recommendation.item.id
+        item.givenURL = recommendation.item.givenURL
+        item.resolvedURL = recommendation.item.resolvedURL
+        item.title = recommendation.item.title
+        item.language = recommendation.item.language
+        item.topImageURL = recommendation.item.topImageURL
+        item.timeToRead = recommendation.item.timeToRead.flatMap(Int32.init) ?? 0
+        item.particleJSON = recommendation.item.particleJSON
+        item.excerpt = recommendation.item.excerpt
+        item.domain = recommendation.item.domain
+        item.domainMetadata = recommendation.item.domainMetadata.flatMap { remote in
+            let domainMeta: DomainMetadata = space.new()
+            domainMeta.name = remote.name
+            domainMeta.logo = remote.logo
+
+            return domainMeta
+        }
+
+        savedItem.item = item
+        try? space.save()
+
+        let operation = operations.saveItemOperation(
+            managedItemID: savedItem.objectID,
+            url: url,
+            events: syncEvents,
+            apollo: apollo,
+            space: space
+        )
+
+        syncQ.addOperation(operation)
+    }
+
+    public func archive(recommendation: Slate.Recommendation) {
+        guard let savedItem = try? space.fetchSavedItem(byRemoteItemID: recommendation.item.id) else {
+            return
+        }
+
+        archive(item: savedItem)
     }
 }
