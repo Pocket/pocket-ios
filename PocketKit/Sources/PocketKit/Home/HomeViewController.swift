@@ -121,7 +121,7 @@ extension HomeViewController {
             if isRecommendationSaved(recommendation) {
                 cell.saveButton.mode = .saved
                 tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
-                    print("archive the item")
+                    self?.source.archive(recommendation: recommendation)
                 }
             } else {
                 cell.saveButton.mode = .save

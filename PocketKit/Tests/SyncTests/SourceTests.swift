@@ -222,6 +222,34 @@ class SourceTests: XCTestCase {
         XCTAssertEqual(item?.domainMetadata?.logo, recommendation.item.domainMetadata?.logo)
     }
 
+    func test_archiveRecommendation_archivesTheRespectiveItem() async throws {
+        try space.seedSavedItem(
+            remoteID: "saved-item-1",
+            item: space.buildItem(
+                remoteID: "item-1"
+            )
+        )
+
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
+            return BlockOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let recommendation: Slate.Recommendation = .build(
+            id: "recommendation-1",
+            item: .build(id: "item-1")
+        )
+
+        let source = subject()
+        try source.archive(recommendation: recommendation)
+
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        try XCTAssertNil(space.fetchSavedItem(byRemoteID: "saved-item-1"))
+    }
+
     func test_fetchSlates_returnsResultsFromSlateService() async throws {
         let expectedSlates = [Slate(id: "my-slate", name: "My Slate", description: "My very awesome slate", recommendations: [])]
         slateService.stubFetchSlates {
