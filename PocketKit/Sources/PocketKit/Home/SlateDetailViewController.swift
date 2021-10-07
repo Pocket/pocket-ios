@@ -1,6 +1,7 @@
 import UIKit
 import Sync
 import Analytics
+import Combine
 
 
 class SlateDetailViewController: UIViewController {
@@ -39,10 +40,19 @@ class SlateDetailViewController: UIViewController {
             cell.subtitleLabel.attributedText = presenter.attributedDetail
             cell.excerptLabel.attributedText = presenter.attributedExcerpt
 
-            let action = UIAction(identifier: .saveRecommendation) { [weak self] _ in
-                self?.source.save(recommendation: recommendation)
+            let tapAction: UIAction
+            if self.isRecommendationSaved(recommendation) {
+                cell.saveButton.mode = .saved
+                tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
+                    self?.source.archive(recommendation: recommendation)
+                }
+            } else {
+                cell.saveButton.mode = .save
+                tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
+                    self?.source.save(recommendation: recommendation)
+                }
             }
-            cell.saveButton.addAction(action, for: .primaryActionTriggered)
+            cell.saveButton.addAction(tapAction, for: .primaryActionTriggered)
         }
         
         let dataSource = UICollectionViewDiffableDataSource<Slate, Slate.Recommendation>(
@@ -61,6 +71,8 @@ class SlateDetailViewController: UIViewController {
     }()
     
     private let source: Source
+    private let savedRecommendationsService: SavedRecommendationsService
+    private var subscriptions: [AnyCancellable] = []
     private let tracker: Tracker
     private let readerSettings: ReaderSettings
     
@@ -77,6 +89,7 @@ class SlateDetailViewController: UIViewController {
             snapshot.appendItems(slate.recommendations, toSection: slate)
             
             dataSource.apply(snapshot)
+            savedRecommendationsService.slates = [slate]
         }
     }
     
@@ -90,6 +103,7 @@ class SlateDetailViewController: UIViewController {
         self.readerSettings = readerSettings
         self.tracker = tracker
         self.slateID = slateID
+        self.savedRecommendationsService = source.savedRecommendationsService()
     
         super.init(nibName: nil, bundle: nil)
         
@@ -99,6 +113,10 @@ class SlateDetailViewController: UIViewController {
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.dataSource = dataSource
         collectionView.delegate = self
+
+        savedRecommendationsService.$itemIDs.sink { [weak self] savedItemIDs in
+            self?.updateRecommendationSaveButtons(savedItemIDs: savedItemIDs)
+        }.store(in: &subscriptions)
     }
     
     required init?(coder: NSCoder) {
@@ -115,6 +133,34 @@ class SlateDetailViewController: UIViewController {
         Task {
             self.slate = try await source.fetchSlate(slateID)
         }
+    }
+
+    private func updateRecommendationSaveButtons(savedItemIDs: [String]) {
+        guard let slate = slate else {
+            return
+        }
+
+        let difference = savedRecommendationsService.itemIDs.difference(from: savedItemIDs)
+        let changed = difference.map { change -> String in
+            switch change {
+            case let .insert(_, element, _), let .remove(_, element, _):
+                return element
+            }
+        }
+
+        let needsReconfigured = slate.recommendations.filter {
+            changed.contains($0.item.id)
+        }
+
+        DispatchQueue.main.async {
+            var snapshot = self.dataSource.snapshot()
+            snapshot.reconfigureItems(needsReconfigured)
+            self.dataSource.apply(snapshot)
+        }
+    }
+
+    private func isRecommendationSaved(_ recommendation: Slate.Recommendation) -> Bool {
+        return savedRecommendationsService.itemIDs.contains(recommendation.item.id)
     }
 }
 

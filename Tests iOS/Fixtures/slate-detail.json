@@ -8,10 +8,10 @@
             "recommendations": [
                 {
                     "__typename": "[some-type-name]",
-                    "id": "1",
+                    "id": "slate-1-rec-1",
                     "item": {
                         "__typename": "[some-type-name]",
-                        "remoteID": "item-1",
+                        "remoteID": "recommended-item-1",
                         "givenUrl": "https://example.com/item-1",
                         "resolvedUrl": "https://example.com/item-1",
                         "title": "Slate 1, Recommendation 1",
@@ -31,10 +31,10 @@
                 },
                 {
                     "__typename": "[some-type-name]",
-                    "id": "2",
+                    "id": "slate-1-rec-2",
                     "item": {
                         "__typename": "[some-type-name]",
-                        "remoteID": "item-2",
+                        "remoteID": "recommended-item-2",
                         "givenUrl": "https://example.com/item-2",
                         "resolvedUrl": "https://example.com/item-2",
                         "title": "Slate 1, Recommendation 2",
@@ -54,10 +54,10 @@
                 },
                 {
                     "__typename": "[some-type-name]",
-                    "id": "3",
+                    "id": "slate-1-rec-3",
                     "item": {
                         "__typename": "[some-type-name]",
-                        "remoteID": "item-3",
+                        "remoteID": "recommended-item-3",
                         "givenUrl": "https://example.com/item-3",
                         "resolvedUrl": "https://example.com/item-3",
                         "title": "Slate 1, Recommendation 3",
