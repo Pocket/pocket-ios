@@ -217,43 +217,8 @@ extension HomeViewController: UICollectionViewDelegate {
             return
         }
         
-        guard let lineup = slateLineup,
-              let visibleSlate = slates?[indexPath.section - 1] else {
-                  return
-              }
-        
-        let slateLineup = SnowplowSlateLineup(
-            id: lineup.id,
-            requestID: lineup.requestID,
-            experiment: lineup.experimentID
-        )
-        
-        let slate = SnowplowSlate(
-            id: visibleSlate.id,
-            requestID: visibleSlate.requestID,
-            experiment: visibleSlate.experimentID,
-            index: UIIndex(indexPath.section - 1)
-        )
-        
-        let visibleRecommendation = visibleSlate.recommendations[indexPath.item]
-        guard let recommendationID = visibleRecommendation.id else {
-            return
-        }
-        
-        let recommendation = SnowplowRecommendation(
-            id: recommendationID,
-            index: UIIndex(indexPath.item)
-        )
-        
-        guard let url = visibleRecommendation.item.resolvedURL ?? visibleRecommendation.item.givenURL else {
-            return
-        }
-        
-        let content = Content(url: url)
-        
-        let item = UIContext.home.item(index: UInt(indexPath.item))
         let impression = Impression(component: .content, requirement: .instant)
-        tracker.track(event: impression, [item, slateLineup, slate, recommendation, content])
+        tracker.track(event: impression, contexts(for: indexPath))
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -280,13 +245,56 @@ extension HomeViewController: UICollectionViewDelegate {
             article.item = slates[indexPath.section - 1].recommendations[indexPath.item]
             navigationController?.pushViewController(article, animated: true)
             
-            guard let url = article.item?.readerURL else {
-                return
+            let engagement = Engagement(type: .general, value: nil)
+            tracker.track(event: engagement, contexts(for: indexPath))
+        }
+    }
+}
+
+extension HomeViewController {
+    private func contexts(for indexPath: IndexPath) -> [SnowplowContext] {
+        switch indexPath.section {
+        case 0:
+            return []
+        case 1:
+            guard let lineup = slateLineup,
+                  let visibleSlate = slates?[indexPath.section - 1] else {
+                      return []
+                  }
+            
+            let slateLineup = SnowplowSlateLineup(
+                id: lineup.id,
+                requestID: lineup.requestID,
+                experiment: lineup.experimentID
+            )
+            
+            let slate = SnowplowSlate(
+                id: visibleSlate.id,
+                requestID: visibleSlate.requestID,
+                experiment: visibleSlate.experimentID,
+                index: UIIndex(indexPath.section - 1)
+            )
+            
+            let visibleRecommendation = visibleSlate.recommendations[indexPath.item]
+            guard let recommendationID = visibleRecommendation.id else {
+                return []
             }
             
-            let open = ContentOpen(destination: .internal, trigger: .click)
+            let recommendation = SnowplowRecommendation(
+                id: recommendationID,
+                index: UIIndex(indexPath.item)
+            )
+            
+            guard let url = visibleRecommendation.item.resolvedURL ?? visibleRecommendation.item.givenURL else {
+                return []
+            }
+            
             let content = Content(url: url)
-            tracker.track(event: open, [content])
+            let item = UIContext.home.item(index: UInt(indexPath.item))
+            
+            return [item, content, slateLineup, slate, recommendation]
+        default:
+            return []
         }
     }
 }
