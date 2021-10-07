@@ -8,6 +8,7 @@ public struct ImageAsset {
 
 extension ImageAsset {
     public static let save = ImageAsset("save")
+    public static let saved = ImageAsset("saved")
     public static let horizontalOverflow = ImageAsset("horizontalOverflow")
     public static let verticalOverflow = ImageAsset("verticalOverflow")
 }
