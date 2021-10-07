@@ -115,7 +115,7 @@ class FetchListTests: XCTestCase {
         apollo.stubFetch(toReturnFixturedNamed: "updated-item", asResultType: UserByTokenQuery.self)
         try space.seedSavedItem(
             remoteID: "saved-item-1",
-            item: space.seedItem(title: "Item 1")
+            item: space.buildItem(title: "Item 1")
         )
 
         performOperation()

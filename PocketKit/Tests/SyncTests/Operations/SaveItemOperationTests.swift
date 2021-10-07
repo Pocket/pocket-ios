@@ -64,7 +64,9 @@ class SaveItemOperationTests: XCTestCase {
         savedItem.url = url
         savedItem.item = space.new()
         savedItem.item?.givenURL = url
-        try space.save()
+        try space.context.performAndWait {
+            try space.save()
+        }
 
         performOperation(managedItemID: savedItem.objectID, url: url)
 
