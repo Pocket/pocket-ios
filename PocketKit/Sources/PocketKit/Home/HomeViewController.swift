@@ -117,22 +117,26 @@ extension HomeViewController {
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
             cell.mode = indexPath.item == 0 ? .hero : .mini
 
+            let tapAction: UIAction
+            if isRecommendationSaved(recommendation) {
+                cell.saveButton.mode = .saved
+                tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
+                    print("archive the item")
+                }
+            } else {
+                cell.saveButton.mode = .save
+                tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
+                    self?.source.save(recommendation: recommendation)
+                }
+            }
+            cell.saveButton.addAction(tapAction, for: .primaryActionTriggered)
+
             let presenter = RecommendationPresenter(recommendation: recommendation)
             presenter.loadImage(into: cell.thumbnailImageView, cellWidth: cell.frame.width)
             cell.titleLabel.attributedText = presenter.attributedTitle
             cell.subtitleLabel.attributedText = presenter.attributedDetail
             cell.excerptLabel.attributedText = presenter.attributedExcerpt
 
-            let action = UIAction(identifier: .saveRecommendation) { [weak self] _ in
-                self?.source.save(recommendation: recommendation)
-            }
-            cell.saveButton.addAction(action, for: .primaryActionTriggered)
-
-            if isRecommendationSaved(recommendation) {
-                cell.saveButton.configuration?.title = "Saved"
-            } else {
-                cell.saveButton.configuration?.title = "Save"
-            }
 
             return cell
         }

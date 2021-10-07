@@ -4,32 +4,130 @@ import Textile
 
 private extension Style {
     static let saveTitle: Style = .header.sansSerif.p3.with(color: .ui.grey4).with(weight: .medium)
+    static let saveTitleHighlighted: Style = .header.sansSerif.p3.with(color: .ui.grey1).with(weight: .medium)
 }
 
-extension UIButton {
-    static func recommendationButton(configuration: UIButton.Configuration, primaryAction: UIAction?) -> UIButton {
-        let button = UIButton(configuration: configuration, primaryAction: primaryAction)
-        var config = configuration
+class RecommendationSaveButton: UIButton {
+    enum Mode {
+        case save
+        case saved
 
-        config.imageColorTransformer = UIConfigurationColorTransformer { _ in
-            switch button.state {
-            case .selected, .highlighted:
-                return UIColor(.ui.grey1)
-            default:
-                return UIColor(.ui.grey4)
+        var title: String {
+            switch self {
+            case .save:
+                return "Save"
+            case .saved:
+                return "Saved"
             }
         }
 
-        config.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { attributes in
-            switch button.state {
-            case .selected, .highlighted:
-                return Style.saveTitle.with(color: .ui.grey1).attributes
-            default:
-                return Style.saveTitle.attributes
+        var image: ImageAsset {
+            switch self {
+            case .save:
+                return .save
+            case .saved:
+                return .saved
             }
         }
+    }
 
-        button.configuration = config
-        return button
+    var mode: Mode = .save {
+        didSet {
+            configuration?.image = UIImage(asset: mode.image)
+            updateTitle()
+        }
+    }
+
+    var isTitleHidden: Bool = false {
+        didSet {
+            updateTitle()
+        }
+    }
+
+    init() {
+        super.init(frame: .zero)
+        configuration = .plain()
+        configuration?.contentInsets = .zero
+        configuration?.imagePadding = 4
+
+        configuration?.imageColorTransformer = UIConfigurationColorTransformer { [weak self] _ in
+            return self?.imageColor() ?? UIColor(.ui.grey1)
+        }
+
+        configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { [weak self] _ in
+            return self?.textAttributes() ?? Style.saveTitle.attributes
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func textAttributes() -> AttributeContainer {
+        switch state {
+        case .selected, .highlighted:
+            return Style.saveTitleHighlighted.attributes
+        default:
+            return Style.saveTitle.attributes
+        }
+    }
+
+    private func imageColor() -> UIColor {
+        let imageColor: ColorAsset = {
+            switch state {
+            case .highlighted, .selected:
+                switch mode {
+                case .save:
+                    return .ui.grey1
+                case .saved:
+                    return .ui.coral1
+                }
+            default:
+                switch mode {
+                case .save:
+                    return .ui.grey4
+                case .saved:
+                    return .ui.coral2
+                }
+            }
+        }()
+
+        return UIColor(imageColor)
+    }
+
+    private func updateTitle() {
+        if isTitleHidden {
+            configuration?.title = ""
+        } else {
+            configuration?.title = mode.title
+        }
+    }
+}
+
+class RecommendationOverflowButton: UIButton {
+    init() {
+        super.init(frame: .zero)
+
+        configuration = .plain()
+        configuration?.contentInsets = .zero
+        configuration?.image = UIImage(asset: .verticalOverflow)?
+            .withRenderingMode(.alwaysTemplate)
+
+        configuration?.imageColorTransformer = UIConfigurationColorTransformer { [weak self] _ in
+            self?.imageColor() ?? UIColor(.ui.grey4)
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func imageColor() -> UIColor {
+        switch state {
+        case .selected, .highlighted:
+            return UIColor(.ui.grey1)
+        default:
+            return UIColor(.ui.grey4)
+        }
     }
 }

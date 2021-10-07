@@ -41,25 +41,14 @@ class RecommendationCell: UICollectionViewCell {
         return label
     }()
 
-    let saveButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        configuration.contentInsets = .zero
-        configuration.imagePadding = 4
-        configuration.image = UIImage(asset: .save)
-
-        let button = UIButton.recommendationButton(configuration: configuration, primaryAction: nil)
+    let saveButton: RecommendationSaveButton = {
+        let button = RecommendationSaveButton()
         button.accessibilityIdentifier = "save-button"
 
         return button
     }()
 
-    let overflowButton: UIButton = {
-        var configuration = UIButton.Configuration.plain()
-        configuration.contentInsets = .zero
-        configuration.image = UIImage(asset: .verticalOverflow)
-
-        return UIButton.recommendationButton(configuration: configuration, primaryAction: nil)
-    }()
+    let overflowButton = RecommendationOverflowButton()
 
     private let textStack: UIStackView = {
         let stack = UIStackView()
@@ -133,8 +122,8 @@ class RecommendationCell: UICollectionViewCell {
             textStackTopConstraint.constant = Hero.textStackTopMargin
             textStack.spacing = Hero.textStackSpacing
             excerptLabel.isHidden = false
+            saveButton.isTitleHidden = false
             subtitleLabel.numberOfLines = Hero.numberOfSubtitleLines
-            saveButton.configuration?.title = "Save"
 
             buttonStackTopConstraintHero.isActive = true
             buttonStackTopConstraintMini.isActive = false
@@ -142,7 +131,7 @@ class RecommendationCell: UICollectionViewCell {
             textStackTopConstraint.constant = Mini.textStackTopMargin
             textStack.spacing = Mini.textStackSpacing
             excerptLabel.isHidden = true
-            saveButton.configuration?.attributedTitle = nil
+            saveButton.isTitleHidden = true
             subtitleLabel.numberOfLines = Mini.numberOfSubtitleLines
 
             buttonStackTopConstraintHero.isActive = false
