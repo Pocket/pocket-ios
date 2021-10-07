@@ -163,12 +163,11 @@ extension HomeViewController {
     }
 
     private func applySnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<HomeSection, HomeItem>()
         guard let slates = slates else {
-            dataSource.apply(snapshot)
             return
         }
 
+        var snapshot = NSDiffableDataSourceSnapshot<HomeSection, HomeItem>()
         snapshot.appendSections([.topicCarousel] + slates.map { HomeSection.slate($0) })
         snapshot.appendItems(slates.map { HomeItem.topicChip($0) }, toSection: .topicCarousel)
 
