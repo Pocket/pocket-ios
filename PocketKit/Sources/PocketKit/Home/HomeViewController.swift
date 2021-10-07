@@ -26,24 +26,7 @@ class HomeViewController: UIViewController {
 
     private var slates: [Slate]? {
         didSet {
-            var snapshot = NSDiffableDataSourceSnapshot<HomeSection, HomeItem>()
-
-            guard let slates = slates else {
-                dataSource.apply(snapshot)
-                return
-            }
-
-            snapshot.appendSections([.topicCarousel] + slates.map { HomeSection.slate($0) })
-            snapshot.appendItems(slates.map { HomeItem.topicChip($0) }, toSection: .topicCarousel)
-
-            for slate in slates {
-                snapshot.appendItems(
-                    slate.recommendations.map { .recommendation($0) },
-                    toSection: .slate(slate)
-                )
-            }
-
-            dataSource.apply(snapshot)
+            applySnapshot()
         }
     }
 
@@ -158,6 +141,26 @@ extension HomeViewController {
         default:
             fatalError("Unknown supplementary view kind: \(kind)")
         }
+    }
+
+    private func applySnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<HomeSection, HomeItem>()
+        guard let slates = slates else {
+            dataSource.apply(snapshot)
+            return
+        }
+
+        snapshot.appendSections([.topicCarousel] + slates.map { HomeSection.slate($0) })
+        snapshot.appendItems(slates.map { HomeItem.topicChip($0) }, toSection: .topicCarousel)
+
+        for slate in slates {
+            snapshot.appendItems(
+                slate.recommendations.map { .recommendation($0) },
+                toSection: .slate(slate)
+            )
+        }
+
+        dataSource.apply(snapshot)
     }
 }
 
