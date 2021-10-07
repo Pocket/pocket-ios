@@ -166,8 +166,35 @@ class SlateDetailViewController: UIViewController {
 
 extension SlateDetailViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let slate = slate else {
+        let impression = Impression(component: .content, requirement: .instant)
+        tracker.track(event: impression, contexts(for: indexPath))
+    }
+ 
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let recommendation = slate?.recommendations[indexPath.item] else {
             return
+        }
+        
+        let engagement = Engagement(type: .general, value: nil)
+        tracker.track(event: engagement, contexts(for: indexPath))
+
+        let article = ArticleViewController(
+            readerSettings: readerSettings,
+            tracker: tracker.childTracker(hosting: UIContext.articleView.screen)
+        )
+        article.item = recommendation
+
+        navigationController?.pushViewController(article, animated: true)
+        
+        let contentOpen = ContentOpen(destination: .internal, trigger: .click)
+        tracker.track(event: contentOpen, contexts(for: indexPath))
+    }
+}
+
+extension SlateDetailViewController {
+    private func contexts(for indexPath: IndexPath) -> [SnowplowContext] {
+        guard let slate = slate else {
+            return []
         }
         
         let snowplowSlate = SnowplowSlate(
@@ -179,26 +206,17 @@ extension SlateDetailViewController: UICollectionViewDelegate {
         
         let recommendation = slate.recommendations[indexPath.item]
         guard let recommendationID = recommendation.id else {
-            return
+            return []
         }
-        
         let snowplowRecommendation = SnowplowRecommendation(id: recommendationID, index: UIIndex(indexPath.item))
-        let context = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.row))
-        let impression = Impression(component: .content, requirement: .instant)
-        tracker.track(event: impression, [context, snowplowSlate, snowplowRecommendation])
-    }
- 
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let recommendation = slate?.recommendations[indexPath.item] else {
-            return
+        
+        guard let url = recommendation.readerURL else {
+            return []
         }
-
-        let article = ArticleViewController(
-            readerSettings: readerSettings,
-            tracker: tracker.childTracker(hosting: UIContext.articleView.screen)
-        )
-        article.item = recommendation
-
-        navigationController?.pushViewController(article, animated: true)
+        let content = Content(url: url)
+        
+        let context = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.row))
+     
+        return [context, content, snowplowSlate, snowplowRecommendation]
     }
 }

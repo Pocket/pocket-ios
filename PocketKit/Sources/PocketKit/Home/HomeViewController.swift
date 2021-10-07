@@ -238,6 +238,9 @@ extension HomeViewController: UICollectionViewDelegate {
 
             navigationController?.pushViewController(slateDetail, animated: true)
         default:
+            let engagement = Engagement(type: .general, value: nil)
+            tracker.track(event: engagement, contexts(for: indexPath))
+            
             let article = ArticleViewController(
                 readerSettings: readerSettings,
                 tracker: tracker.childTracker(hosting: UIContext.articleView.screen)
@@ -245,8 +248,8 @@ extension HomeViewController: UICollectionViewDelegate {
             article.item = slates[indexPath.section - 1].recommendations[indexPath.item]
             navigationController?.pushViewController(article, animated: true)
             
-            let engagement = Engagement(type: .general, value: nil)
-            tracker.track(event: engagement, contexts(for: indexPath))
+            let contentOpen = ContentOpen(destination: .internal, trigger: .click)
+            tracker.track(event: contentOpen, contexts(for: indexPath))
         }
     }
 }
