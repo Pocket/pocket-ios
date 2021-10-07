@@ -50,7 +50,17 @@ class HomeTests: XCTestCase {
         server.routes.post("/graphql") { request, _ in
             let requestBody = body(of: request)
 
-            if requestBody!.contains("getSlateLineup")  {
+            if requestBody?.contains("upsertSavedItem") == true {
+                return Response {
+                    Status.ok
+                    Fixture.data(name: "save-item")
+                }
+            } else if requestBody?.contains("updateSavedItemArchive") == true {
+                return Response {
+                    Status.ok
+                    Fixture.data(name: "archive")
+                }
+            } else if requestBody!.contains("getSlateLineup")  {
                 return self.slateResponse()
             } else if requestBody!.contains("getSlate(") {
                 return self.slateDetailResponse()
@@ -168,10 +178,23 @@ class HomeTests: XCTestCase {
 
     func test_tappingSaveButtonInRecommendationCellinSlateDetailView_savesItemToList() {
         app.homeView.topicChip("Slate 1").wait().tap()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait().tap()
+
+        do {
+            let saveButton = app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait()
+            saveButton.tap()
+            XCTAssertEqual(saveButton.label, "Saved")
+        }
 
         app.tabBar.myListButton.tap()
-        app.userListView.itemView(withLabelStartingWith: "Slate 1, Recommendation 1").wait()
+        app.userListView.itemView(withLabelStartingWith: "Saved Recommendation 1").wait()
+
+        app.tabBar.homeButton.tap()
+
+        do {
+            let saveButton = app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait()
+            saveButton.tap()
+            XCTAssertEqual(saveButton.label, "Save")
+        }
     }
 
 }
