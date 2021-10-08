@@ -50,6 +50,9 @@ class SlateDetailViewController: UIViewController {
                 cell.saveButton.mode = .save
                 tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
                     self?.source.save(recommendation: recommendation)
+
+                    let engagement = Engagement(type: .save, value: nil)
+                    self?.tracker.track(event: engagement, self?.contexts(for: indexPath))
                 }
             }
             cell.saveButton.addAction(tapAction, for: .primaryActionTriggered)
