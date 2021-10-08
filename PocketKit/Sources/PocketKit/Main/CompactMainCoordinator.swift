@@ -67,6 +67,7 @@ class CompactMainCoordinator: NSObject {
 
         super.init()
 
+        tabBarController.delegate = self
         myList.delegate = self
 
         collapsedSubscription = model.$isCollapsed
@@ -147,5 +148,15 @@ extension CompactMainCoordinator: UINavigationControllerDelegate {
         if viewController === myList.viewControllers.first {
             model.selectedItem = nil
         }
+    }
+}
+
+extension CompactMainCoordinator: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
+        guard let index = tabBarController.viewControllers?.firstIndex(of: viewController) else {
+            return
+        }
+
+        model.selectedSection = MainViewModel.AppSection.allCases[index]
     }
 }
