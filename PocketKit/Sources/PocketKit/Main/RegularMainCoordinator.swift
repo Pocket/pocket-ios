@@ -15,7 +15,10 @@ class RegularMainCoordinator: NSObject {
     private let navigationSidebar: UINavigationController
     private let myList: UIViewController
     private let home: UIViewController
-    private let item: ItemViewController
+
+    private let readerRoot: UINavigationController
+    private let itemVC: ItemViewController
+    private let recommendationVC: ArticleViewController
 
     private let tracker: Tracker
     private let source: Source
@@ -47,26 +50,22 @@ class RegularMainCoordinator: NSObject {
         myList = UIHostingController(rootView: listView)
         myList.view.backgroundColor = UIColor(.ui.white1)
         
-        home = HomeViewController(
-            source: source,
-            tracker: tracker,
-            readerSettings: model.readerSettings
-        )
+        home = HomeViewController(source: source, tracker: tracker, model: model)
         home.view.backgroundColor = UIColor(.ui.white1)
-        
-        item = ItemViewController(
-            model: model,
-            tracker: tracker,
-            source: source
-        )
-        item.view.backgroundColor = UIColor(.ui.white1)
+
+        itemVC = ItemViewController(model: model, tracker: tracker, source: source)
+        itemVC.view.backgroundColor = UIColor(.ui.white1)
+
+        recommendationVC = ArticleViewController(readerSettings: model.readerSettings, tracker: tracker)
+
+        readerRoot = UINavigationController(rootViewController: itemVC)
 
         super.init()
 
         splitController.setViewController(navigationSidebar, for: .primary)
         splitController.setViewController(myList, for: .supplementary)
-        splitController.setViewController(item, for: .secondary)
-        
+        splitController.setViewController(readerRoot, for: .secondary)
+
         splitController.view.tintColor = UIColor(.ui.grey1)
 
         navigationSidebar.navigationBar.prefersLargeTitles = true
@@ -81,12 +80,13 @@ class RegularMainCoordinator: NSObject {
         home.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
         home.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
 
-        item.navigationController?.navigationBar.prefersLargeTitles = true
-        item.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
-        item.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
+        itemVC.navigationController?.navigationBar.prefersLargeTitles = true
+        itemVC.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
+        itemVC.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
 
-        item.delegate = self
+        itemVC.delegate = self
         splitController.delegate = self
+        home.navigationController?.delegate = self
 
         model.$isCollapsed.receive(on: DispatchQueue.main).sink { [weak self] isCollapsed in
             if !isCollapsed {
@@ -126,7 +126,28 @@ class RegularMainCoordinator: NSObject {
     }
 
     func show(item: SavedItem) {
+        itemVC.savedItem = item
+        readerRoot.viewControllers = [itemVC]
+
         splitController.show(.secondary)
+    }
+
+    func show(recommendation: Slate.Recommendation) {
+        recommendationVC.item = recommendation
+        readerRoot.viewControllers = [recommendationVC]
+
+        splitController.show(.secondary)
+    }
+
+    func showSlate(withID slateID: String, animated: Bool) {
+        let slateDetail = SlateDetailViewController(
+            source: source,
+            model: model,
+            tracker: tracker,
+            slateID: slateID
+        )
+
+        home.navigationController?.pushViewController(slateDetail, animated: animated)
     }
 
     func showSupplementary() {
@@ -138,6 +159,9 @@ class RegularMainCoordinator: NSObject {
     }
 
     func subscribeToModelChanges() {
+        var isResetting = true
+        home.navigationController?.popToRootViewController(animated: false)
+
         model.$selectedSection.receive(on: DispatchQueue.main).sink { section in
             switch section {
             case .myList:
@@ -154,6 +178,26 @@ class RegularMainCoordinator: NSObject {
 
             self?.show(item: item)
         }.store(in: &subscriptions)
+
+        model.$selectedSlateID.receive(on: DispatchQueue.main).sink { [weak self] slateID in
+            guard let slateID = slateID else {
+                return
+            }
+
+            self?.showSlate(withID: slateID, animated: !isResetting)
+        }.store(in: &subscriptions)
+
+        model.$selectedRecommendation.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+            guard let recommendation = recommendation else {
+                return
+            }
+
+            self?.show(recommendation: recommendation)
+        }.store(in: &subscriptions)
+
+        DispatchQueue.main.async {
+            isResetting = false
+        }
     }
 
     func presentReaderSettings() {
@@ -207,7 +251,7 @@ class RegularMainCoordinator: NSObject {
             modal.modalPresentationStyle = .popover
         }
 
-        modal.popoverPresentationController?.barButtonItem = item.popoverAnchor
+        modal.popoverPresentationController?.barButtonItem = itemVC.popoverAnchor
         splitController.present(modal, animated: true)
     }
 }
@@ -243,5 +287,13 @@ extension RegularMainCoordinator: UISplitViewControllerDelegate {
 extension RegularMainCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.presentedWebReaderURL = nil
+    }
+}
+
+extension RegularMainCoordinator: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        if viewController === home {
+            model.selectedSlateID = nil
+        }
     }
 }

@@ -74,7 +74,7 @@ class SlateDetailViewController: UIViewController {
     private let savedRecommendationsService: SavedRecommendationsService
     private var subscriptions: [AnyCancellable] = []
     private let tracker: Tracker
-    private let readerSettings: ReaderSettings
+    private let model: MainViewModel
     
     private let slateID: String
     private var slate: Slate? {
@@ -95,12 +95,12 @@ class SlateDetailViewController: UIViewController {
     
     init(
         source: Source,
-        readerSettings: ReaderSettings,
+        model: MainViewModel,
         tracker: Tracker,
         slateID: String
     ) {
         self.source = source
-        self.readerSettings = readerSettings
+        self.model = model
         self.tracker = tracker
         self.slateID = slateID
         self.savedRecommendationsService = source.savedRecommendationsService()
@@ -170,9 +170,6 @@ extension SlateDetailViewController: UICollectionViewDelegate {
             return
         }
 
-        let article = ArticleViewController(readerSettings: readerSettings, tracker: tracker)
-        article.item = recommendation
-
-        navigationController?.pushViewController(article, animated: true)
+        model.selectedRecommendation = recommendation
     }
 }
