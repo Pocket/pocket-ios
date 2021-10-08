@@ -22,7 +22,7 @@ class HomeViewController: UIViewController {
 
     private let source: Sync.Source
     private let tracker: Tracker
-    private let readerSettings: ReaderSettings
+    private let model: MainViewModel
     private let sectionProvider: HomeViewControllerSectionProvider
     private let savedRecommendationsService: SavedRecommendationsService
     private var subscriptions: [AnyCancellable] = []
@@ -50,10 +50,10 @@ class HomeViewController: UIViewController {
         collectionViewLayout: layout
     )
 
-    init(source: Sync.Source, tracker: Tracker, readerSettings: ReaderSettings) {
+    init(source: Sync.Source, tracker: Tracker, model: MainViewModel) {
         self.source = source
         self.tracker = tracker
-        self.readerSettings = readerSettings
+        self.model = model
         self.savedRecommendationsService = source.savedRecommendationsService()
         self.sectionProvider = HomeViewControllerSectionProvider()
 
@@ -219,21 +219,9 @@ extension HomeViewController: UICollectionViewDelegate {
 
         switch indexPath.section {
         case 0:
-            let slateDetail = SlateDetailViewController(
-                source: source,
-                readerSettings: readerSettings,
-                tracker: tracker,
-                slateID: slates[indexPath.item].id
-            )
-
-            navigationController?.pushViewController(slateDetail, animated: true)
+            model.selectedSlateID = slates[indexPath.item].id
         default:
-            let article = ArticleViewController(
-                readerSettings: readerSettings,
-                tracker: tracker
-            )
-            article.item = slates[indexPath.section - 1].recommendations[indexPath.item]
-            navigationController?.pushViewController(article, animated: true)
+            model.selectedRecommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
         }
     }
 }

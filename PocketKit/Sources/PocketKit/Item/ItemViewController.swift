@@ -22,6 +22,15 @@ class ItemViewController: UIViewController {
         return UIContext.articleView.screen
     }
 
+    var savedItem: SavedItem? {
+        didSet {
+            itemHost.item = savedItem
+            observer = savedItem?.observe(\.isFavorite, options: [.initial]) { [weak self] _, _ in
+                self?.buildOverflowMenu()
+            }
+        }
+    }
+
     weak var delegate: ItemViewControllerDelegate?
 
     init(
@@ -52,19 +61,14 @@ class ItemViewController: UIViewController {
                 action: #selector(showWebView)
             )
         ]
-
-        model.$selectedItem.sink { [weak self] selectedItem in
-            self?.itemHost.item = selectedItem
-            self?.observer = selectedItem?.observe(\.isFavorite, options: [.initial]) { [weak self] _, _ in
-                self?.buildOverflowMenu()
-            }
-        }.store(in: &subscriptions)
     }
 
     override func loadView() {
         view = UIView()
-        view.addSubview(itemHost.view)
+
+        itemHost.willMove(toParent: self)
         addChild(itemHost)
+        view.addSubview(itemHost.view)
         itemHost.didMove(toParent: self)
 
         itemHost.view.translatesAutoresizingMaskIntoConstraints = false

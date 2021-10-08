@@ -49,7 +49,7 @@ class CompactMainCoordinator: NSObject {
         let homeRoot = HomeViewController(
             source: source,
             tracker: tracker,
-            readerSettings: model.readerSettings
+            model: model
         )
         homeRoot.view.backgroundColor = UIColor(.ui.white1)
         home = UINavigationController(rootViewController:homeRoot)
@@ -69,6 +69,7 @@ class CompactMainCoordinator: NSObject {
 
         tabBarController.delegate = self
         myList.delegate = self
+        home.delegate = self
 
         collapsedSubscription = model.$isCollapsed
             .receive(on: DispatchQueue.main)
@@ -95,15 +96,39 @@ class CompactMainCoordinator: NSObject {
             tracker: tracker,
             source: source
         )
+        itemVC.savedItem = item
         itemVC.delegate = self
         itemVC.hidesBottomBarWhenPushed = true
 
         myList.pushViewController(itemVC, animated: animated)
     }
 
+    func show(recommendation: Slate.Recommendation, animated: Bool) {
+        let article = ArticleViewController(
+            readerSettings: model.readerSettings,
+            tracker: tracker
+        )
+        article.hidesBottomBarWhenPushed = true
+        article.item = recommendation
+
+        home.pushViewController(article, animated: animated)
+    }
+
+    func showSlate(withID slateID: String, animated: Bool) {
+        let slateDetail = SlateDetailViewController(
+            source: source,
+            model: model,
+            tracker: tracker,
+            slateID: slateID
+        )
+
+        home.pushViewController(slateDetail, animated: animated)
+    }
+
     func subscribeToModelChanges() {
         var isResetting = true
         myList.popToRootViewController(animated: false)
+        home.popToRootViewController(animated: false)
 
         model.$selectedSection.receive(on: DispatchQueue.main).sink { section in
             switch section {
@@ -120,6 +145,22 @@ class CompactMainCoordinator: NSObject {
             }
 
             self?.show(item: item, animated: !isResetting)
+        }.store(in: &subscriptions)
+
+        model.$selectedSlateID.receive(on: DispatchQueue.main).sink { [weak self] slateID in
+            guard let slateID = slateID else {
+                return
+            }
+
+            self?.showSlate(withID: slateID, animated: !isResetting)
+        }.store(in: &subscriptions)
+
+        model.$selectedRecommendation.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+            guard let recommendation = recommendation else {
+                return
+            }
+
+            self?.show(recommendation: recommendation, animated: !isResetting)
         }.store(in: &subscriptions)
 
         DispatchQueue.main.async {
@@ -145,8 +186,25 @@ extension CompactMainCoordinator: ItemViewControllerDelegate {
 
 extension CompactMainCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        if viewController === myList.viewControllers.first {
-            model.selectedItem = nil
+        switch navigationController {
+        case myList:
+            if viewController === myList.viewControllers.first {
+                model.selectedItem = nil
+                return
+            }
+        case home:
+            if viewController === home.viewControllers.first {
+                model.selectedSlateID = nil
+                model.selectedRecommendation = nil
+                return
+            }
+
+            if viewController is SlateDetailViewController {
+                model.selectedRecommendation = nil
+                return
+            }
+        default:
+            break
         }
     }
 }

@@ -11,6 +11,12 @@ class MainViewModel: ObservableObject {
     var selectedItem: SavedItem?
 
     @Published
+    var selectedRecommendation: Slate.Recommendation?
+
+    @Published
+    var selectedSlateID: String?
+
+    @Published
     var readerSettings = ReaderSettings()
 
     @Published
