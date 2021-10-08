@@ -9,18 +9,19 @@ extension Space {
         isFavorite: Bool = false,
         item: Item? = nil
     ) throws -> SavedItem {
-        let savedItem: SavedItem = new()
-        savedItem.remoteID = remoteID
-        savedItem.isFavorite = isFavorite
-        savedItem.url = URL(string: url)!
-
-        savedItem.item = item ?? new()
+        var savedItem: SavedItem?
 
         try context.performAndWait {
+            savedItem = new()
+            savedItem?.remoteID = remoteID
+            savedItem?.isFavorite = isFavorite
+            savedItem?.url = URL(string: url)!
+            savedItem?.item = item ?? new()
+
             try save()
         }
         
-        return savedItem
+        return savedItem!
     }
 
     @discardableResult
@@ -28,10 +29,14 @@ extension Space {
         remoteID: String = "item-1",
         title: String = "Item 1"
     ) throws -> Item {
-        let item: Item = new()
-        item.remoteID = remoteID
-        item.title = title
+        var item: Item?
 
-        return item
+        context.performAndWait {
+            item = new()
+            item?.remoteID = remoteID
+            item?.title = title
+        }
+
+        return item!
     }
 }
