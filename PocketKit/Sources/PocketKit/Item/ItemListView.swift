@@ -44,7 +44,7 @@ struct ItemListView: View {
         List {
             ForEach(content, id: \.1) { (index, item) in
                 ItemListViewRow(item: item, model: model, index: index)
-                    .trackable(.home.item(index: UInt(index)))
+                    .trackable(.myList.item(index: UInt(index)))
                     .swipeActions {
                         Button {
                             archive(item: item, index: index)
@@ -61,7 +61,7 @@ struct ItemListView: View {
         .refreshable {
             await source.refresh()
         }
-        .trackable(.home.list)
+        .trackable(.myList.screen)
         .listStyle(.plain)
         .accessibility(identifier: "user-list")
         .navigationTitle(Text("My List"))
@@ -75,7 +75,7 @@ struct ItemListView: View {
         }
 
         let contexts = self.contexts as [SnowplowContext] + [
-            UIContext.home.item(index: UInt(index)),
+            UIContext.myList.item(index: UInt(index)),
             UIContext.button(identifier: .itemArchive),
             Content(url: url)
         ]
@@ -140,7 +140,7 @@ private struct ItemListViewRow: View {
                     contexts: uiContexts
                 )
             )
-                .trackable(.home.item(index: UInt(index)))
+                .trackable(.myList.item(index: UInt(index)))
                 .onAppear {
                     let contexts = contexts
                     guard contexts.count > 1 else {
