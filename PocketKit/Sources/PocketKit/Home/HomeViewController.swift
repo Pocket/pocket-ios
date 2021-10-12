@@ -82,6 +82,12 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         collectionView.accessibilityIdentifier = "home"
 
+        let action = UIAction { [weak self] _ in
+            self?.fetchLineup()
+        }
+
+        collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
+
         navigationItem.title = "Home"
 
         savedRecommendationsService.$itemIDs.sink { [weak self] savedItemIDs in
@@ -95,10 +101,17 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        fetchLineup()
+    }
 
+    private func fetchLineup() {
         Task {
             let lineup = try? await source.fetchSlateLineup(Self.lineupID)
             self.slateLineup = lineup
+
+            if collectionView.refreshControl?.isRefreshing == true {
+                collectionView.refreshControl?.endRefreshing()
+            }
         }
     }
 

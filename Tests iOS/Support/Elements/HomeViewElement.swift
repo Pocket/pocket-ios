@@ -30,4 +30,19 @@ struct HomeViewElement: PocketUIElement {
 
         return RecommendationCellElement(element)
     }
+
+    func pullToRefresh() {
+        let topCenter = CGVector(dx: 0.5, dy: 0.1)
+        let centerCenter = CGVector(dx: 0.5, dy: 0.8)
+
+        element.cells
+            .element(boundBy: 0)
+            .coordinate(withNormalizedOffset: topCenter)
+            .press(
+                forDuration: 0.1,
+                thenDragTo: element.coordinate(
+                    withNormalizedOffset: centerCenter
+                )
+            )
+    }
 }
