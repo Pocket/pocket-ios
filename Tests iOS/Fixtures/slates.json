@@ -2,11 +2,15 @@
     "data": {
         "getSlateLineup": {
             "id": "slate-lineup-1",
+            "requestId": "slate-lineup-1-request",
+            "experimentId": "slate-lineup-1-experiment",
             "__typename": "[some-type-name]",
             "slates": [
                 {
                     "__typename": "[some-type-name]",
                     "id": "slate-1",
+                    "requestId": "slate-1-request",
+                    "experimentId": "slate-1-experiment",
                     "displayName": "Slate 1",
                     "description": "The description of slate 1",
                     "recommendations": [
@@ -61,6 +65,8 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "slate-2",
+                    "requestId": "slate-2-request",
+                    "experimentId": "slate-2-experiment",
                     "displayName": "Slate 2",
                     "description": "The description of slate 2",
                     "recommendations": [

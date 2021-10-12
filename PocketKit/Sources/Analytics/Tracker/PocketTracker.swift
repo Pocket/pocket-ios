@@ -33,7 +33,7 @@ public class PocketTracker: Tracker {
     }
     
     public func childTracker(with contexts: [SnowplowContext]) -> Tracker {
-        return NoopTracker()
+        return LinkedTracker(parent: self, contexts: contexts)
     }
 }
 
