@@ -215,7 +215,7 @@ extension HomeViewController {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard indexPath.section == 1 else {
+        guard indexPath.section != 0 else {
             return
         }
         
@@ -249,7 +249,7 @@ extension HomeViewController {
         switch indexPath.section {
         case 0:
             return []
-        case 1:
+        default:
             guard let lineup = slateLineup,
                   let visibleSlate = slates?[indexPath.section - 1] else {
                       return []
@@ -286,8 +286,6 @@ extension HomeViewController {
             let item = UIContext.home.item(index: UInt(indexPath.item))
             
             return [item, content, slateLineup, slate, recommendation]
-        default:
-            return []
         }
     }
 }
