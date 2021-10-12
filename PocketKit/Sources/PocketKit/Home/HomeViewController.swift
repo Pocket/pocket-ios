@@ -231,6 +231,9 @@ extension HomeViewController: UICollectionViewDelegate {
         case 0:
             model.selectedSlateID = slates[indexPath.item].id
         default:
+            let engagement = Engagement(type: .general, value: nil)
+            tracker.track(event: engagement, contexts(for: indexPath))
+            
             model.selectedRecommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
 
             let open = ContentOpen(destination: .internal, trigger: .click)
