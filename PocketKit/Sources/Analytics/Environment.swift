@@ -25,15 +25,3 @@ public extension EnvironmentValues {
         set { self[TrackerKey.self] = newValue }
     }
 }
-
-public struct NoopTracker: Tracker {
-    public init() { }
-    
-    public func addPersistentContext(_ context: SnowplowContext) {
-        fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
-    }
-    
-    public func track<T: SnowplowEvent>(event: T, _ contexts: [SnowplowContext]?) {
-        fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
-    }
-}

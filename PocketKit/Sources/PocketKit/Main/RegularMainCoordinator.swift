@@ -50,7 +50,11 @@ class RegularMainCoordinator: NSObject {
         myList = UIHostingController(rootView: listView)
         myList.view.backgroundColor = UIColor(.ui.white1)
         
-        home = HomeViewController(source: source, tracker: tracker, model: model)
+        home = HomeViewController(
+            source: source,
+            tracker: tracker.childTracker(hosting: UIContext.home.screen), 
+            model: model
+        )
         home.view.backgroundColor = UIColor(.ui.white1)
 
         itemVC = ItemViewController(model: model, tracker: tracker, source: source)
