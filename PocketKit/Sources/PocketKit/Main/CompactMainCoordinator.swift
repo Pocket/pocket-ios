@@ -218,13 +218,3 @@ extension CompactMainCoordinator: UITabBarControllerDelegate {
         model.selectedSection = MainViewModel.AppSection.allCases[index]
     }
 }
-
-extension CompactMainCoordinator: UITabBarControllerDelegate {
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        guard let index = tabBarController.viewControllers?.firstIndex(of: viewController) else {
-            return
-        }
-        
-        model.selectedSection = MainViewModel.AppSection.allCases[index]
-    }
-}

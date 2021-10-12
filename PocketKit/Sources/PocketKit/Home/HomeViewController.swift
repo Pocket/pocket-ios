@@ -239,7 +239,7 @@ extension HomeViewController: UICollectionViewDelegate {
             model.selectedRecommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
 
             let open = ContentOpen(destination: .internal, trigger: .click)
-            tracker.track(open, contexts(for: indexPath))
+            tracker.track(event: open, contexts(for: indexPath))
         }
     }
 }
