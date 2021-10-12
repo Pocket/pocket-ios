@@ -65,7 +65,7 @@ struct RecommendationPresenter {
 
         imageView.kf.indicatorType = .activity
         imageView.kf.setImage(
-            with: recommendation.item.topImageURL,
+            with: cachedTopImageURL,
             options: [
                 .scaleFactor(UIScreen.main.scale),
                 .processor(ResizingImageProcessor(
@@ -76,6 +76,10 @@ struct RecommendationPresenter {
                 )),
             ]
         )
+    }
+
+    private var cachedTopImageURL: URL? {
+        return imageCacheURL(for: recommendation.item.topImageURL)
     }
 
     private var detail: String {

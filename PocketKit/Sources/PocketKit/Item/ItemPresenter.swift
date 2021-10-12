@@ -71,7 +71,7 @@ class ItemPresenter: ItemRow {
     }
 
     public var thumbnailURL: URL? {
-        item?.topImageURL
+        return imageCacheURL(for: item?.topImageURL)
     }
 
     public var isFavorite: Bool {
