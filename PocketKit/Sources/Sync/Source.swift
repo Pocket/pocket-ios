@@ -68,6 +68,7 @@ public class Source {
     }
 
     public func clear() {
+        lastRefresh.reset()
         try? space.clear()
     }
 }

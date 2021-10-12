@@ -34,4 +34,16 @@ class MockLastRefresh: LastRefresh {
 
         impl()
     }
+
+    typealias ResetImpl = () -> Void
+    private var resetImpl: ResetImpl?
+    private(set) var resetCallCount = 0
+    func reset() {
+        resetCallCount += 1
+        guard let impl = resetImpl else {
+            return
+        }
+
+        impl()
+    }
 }
