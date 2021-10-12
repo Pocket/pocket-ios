@@ -186,4 +186,19 @@ class HomeTests: XCTestCase {
         }
     }
 
+    func test_pullToRefresh_fetchesUpdatedContent() {
+        let home = app.homeView
+        home.recommendationCell("Slate 1, Recommendation 1").wait()
+
+        server.routes.post("/graphql") { request, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "updated-slates")
+            }
+        }
+
+        home.pullToRefresh()
+
+        home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
+    }
 }
