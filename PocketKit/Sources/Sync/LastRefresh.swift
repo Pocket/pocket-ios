@@ -4,6 +4,7 @@ import Foundation
 protocol LastRefresh {
     var lastRefresh: Int? { get }
     func refreshed()
+    func reset()
 }
 
 struct UserDefaultsLastRefresh: LastRefresh {
@@ -27,6 +28,10 @@ struct UserDefaultsLastRefresh: LastRefresh {
 
     func refreshed() {
         defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedAtKey)
+    }
+
+    func reset() {
+        defaults.set(nil, forKey: Self.lastRefreshedAtKey)
     }
 
     private static let lastRefreshedAtKey = "lastRefreshedAt"
