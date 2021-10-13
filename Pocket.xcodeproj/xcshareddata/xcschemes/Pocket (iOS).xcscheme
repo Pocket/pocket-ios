@@ -110,6 +110,10 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
+            argument = "disableSnowplow"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
             argument = "disableSentry"
             isEnabled = "YES">
          </CommandLineArgument>

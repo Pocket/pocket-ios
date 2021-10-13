@@ -36,6 +36,10 @@ public class PocketSnowplowTracker: SnowplowTracking {
             network: networkConfiguration,
             configurations: [trackerConfiguration]
         )
+        
+        if CommandLine.arguments.contains("disableSnowplow") {
+            tracker.pause()
+        }
     }
     
     public func track(event: SelfDescribing) {
