@@ -77,7 +77,7 @@ struct PocketAppElement {
         arguments: [String] = [],
         environment: [String: String] = [:]
     ) -> PocketAppElement {
-        app.launchArguments = arguments + ["disableSentry"]
+        app.launchArguments = arguments + ["disableSentry", "disableSnowplow"]
         app.launchEnvironment = PocketAppElement
             .defaultEnvironment
             .merging(environment) { key, _ in key }
