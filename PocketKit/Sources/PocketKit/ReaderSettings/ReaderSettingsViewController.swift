@@ -1,18 +1,12 @@
 import SwiftUI
 
 
-class ReaderSettingsViewController: UIHostingController<ReaderSettingsView> {
-    private let onDismiss: () -> Void
-
+class ReaderSettingsViewController: OnDismissHostingController<ReaderSettingsView> {
     init(settings: ReaderSettings, onDismiss: @escaping () -> Void) {
-        self.onDismiss = onDismiss
-        super.init(rootView: ReaderSettingsView(settings: settings))
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        if isBeingDismissed {
-            onDismiss()
-        }
+        super.init(
+            rootView: ReaderSettingsView(settings: settings),
+            onDismiss: onDismiss
+        )
     }
 
     @MainActor @objc required dynamic init?(coder aDecoder: NSCoder) {

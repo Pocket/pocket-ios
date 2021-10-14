@@ -63,7 +63,7 @@ class Tests_iOS: XCTestCase {
             }
         }
         
-        server.routes.get("v3/guid") { _, _ in
+        server.routes.get("/v3/guid") { _, _ in
             Response(
                 status: .created,
                 headers: [("X-Source", "Pocket")],
@@ -80,13 +80,7 @@ class Tests_iOS: XCTestCase {
     }
 
     func test_1_signingIn_whenSigninIsSuccessful_showsUserList() {
-        app.launch(
-            arguments: [
-                "clearKeychain",
-                "clearCoreData",
-                "clearUserDefaults"
-            ]
-        )
+        app.launch(environment: LaunchEnvironment(accessToken: nil, sessionGUID: nil, sessionUserID: nil))
 
         let signInView = app.signInView.wait()
 
@@ -130,7 +124,12 @@ class Tests_iOS: XCTestCase {
             }
         }
 
-        app.launch().tabBar.myListButton.wait().tap()
+        app.launch(
+            arguments: LaunchArguments(
+                clearKeychain: false,
+                clearCoreData: false
+            )
+        ).tabBar.myListButton.wait().tap()
         let listView = app.userListView.wait()
 
         listView
@@ -165,7 +164,7 @@ class Tests_iOS: XCTestCase {
         XCTAssertEqual(listView.itemCount, 2)
     }
 
-    func test_3_tappingItem_displaysNativeReaderView() {
+    func test_tappingItem_displaysNativeReaderView() {
         app.launch().tabBar.myListButton.wait().tap()
 
         app
@@ -201,7 +200,7 @@ class Tests_iOS: XCTestCase {
         }
     }
 
-    func test_4_webReader_displaysWebContent() {
+    func test_webReader_displaysWebContent() {
         app.launch().tabBar.myListButton.wait().tap()
 
         app
@@ -223,7 +222,7 @@ class Tests_iOS: XCTestCase {
             .wait()
     }
 
-    func test_5_list_excludesArchivedContent() {
+    func test_list_excludesArchivedContent() {
         server.routes.post("/graphql") { request, _ in
             let requestBody = body(of: request)
 
@@ -236,18 +235,7 @@ class Tests_iOS: XCTestCase {
             }
         }
 
-        app.launch(
-            arguments: [
-                "clearKeychain",
-                "clearCoreData",
-                "clearImageCache"
-            ],
-            environment: [
-                "accessToken": "test-access-token",
-                "sessionGUID": "session-guid",
-                "sessionUserID": "session-user-id",
-            ]
-        ).tabBar.myListButton.wait().tap()
+        app.launch().tabBar.myListButton.wait().tap()
 
         let listView = app.userListView.wait()
         listView.itemView(at: 0).wait()

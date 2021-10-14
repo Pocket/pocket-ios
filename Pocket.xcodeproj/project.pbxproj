@@ -48,6 +48,10 @@
 		16E32B0226851AEB000CC36D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16D47E7F26851AB40095D5A4 /* Assets.xcassets */; };
 		16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */; };
 		16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */; };
+		F2843C1E2714D18200E03ED5 /* ReportARecommendationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2843C1D2714D18200E03ED5 /* ReportARecommendationTests.swift */; };
+		F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */; };
+		F2A5B6B4271E03B300FB8BF2 /* LaunchArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A5B6B3271E03B300FB8BF2 /* LaunchArguments.swift */; };
+		F2A5B6B6271E03C400FB8BF2 /* LaunchEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A5B6B5271E03C400FB8BF2 /* LaunchEnvironment.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -113,6 +117,10 @@
 		16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefreshTests.swift; sourceTree = "<group>"; };
 		16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveAnItemTests.swift; sourceTree = "<group>"; };
 		F227F0C3265E96290031F985 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CoreText.framework; sourceTree = DEVELOPER_DIR; };
+		F2843C1D2714D18200E03ED5 /* ReportARecommendationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportARecommendationTests.swift; sourceTree = "<group>"; };
+		F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewElement.swift; sourceTree = "<group>"; };
+		F2A5B6B3271E03B300FB8BF2 /* LaunchArguments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchArguments.swift; sourceTree = "<group>"; };
+		F2A5B6B5271E03C400FB8BF2 /* LaunchEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchEnvironment.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -171,6 +179,7 @@
 				160056F226CC7FFD00700A80 /* FavoriteAnItemTests.swift */,
 				16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */,
 				1606F21A26EBC1A200238111 /* HomeTests.swift */,
+				F2843C1D2714D18200E03ED5 /* ReportARecommendationTests.swift */,
 			);
 			path = "Tests iOS";
 			sourceTree = "<group>";
@@ -181,6 +190,8 @@
 				166BAD032656E76B00E401F0 /* Elements */,
 				166BACF72656E3C600E401F0 /* Fixture.swift */,
 				1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */,
+				F2A5B6B3271E03B300FB8BF2 /* LaunchArguments.swift */,
+				F2A5B6B5271E03C400FB8BF2 /* LaunchEnvironment.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -201,6 +212,7 @@
 				16A6808026EBC78800A64545 /* HomeViewElement.swift */,
 				1648D5A627024C6400F67C4B /* SlateDetailElement.swift */,
 				16C2B03E270CF82700D194AA /* RecommendationCellElement.swift */,
+				F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */,
 			);
 			path = Elements;
 			sourceTree = "<group>";
@@ -371,6 +383,7 @@
 				1674057726CAC35F0061434E /* DeleteAnItemTests.swift in Sources */,
 				166BAD0C2656E76B00E401F0 /* UserListElement.swift in Sources */,
 				166BAD0D2656E76B00E401F0 /* PocketAppElement.swift in Sources */,
+				F2843C1E2714D18200E03ED5 /* ReportARecommendationTests.swift in Sources */,
 				1648D5A727024C6400F67C4B /* SlateDetailElement.swift in Sources */,
 				166BAD0B2656E76B00E401F0 /* ReaderElement.swift in Sources */,
 				166F8F2726D0488900F898E3 /* XCUIElement+wait.swift in Sources */,
@@ -378,7 +391,9 @@
 				166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */,
 				1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */,
 				16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */,
+				F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */,
 				166EFAE8268281F300A027CD /* ReaderToolbarElement.swift in Sources */,
+				F2A5B6B4271E03B300FB8BF2 /* LaunchArguments.swift in Sources */,
 				166EFAEA2682821300A027CD /* WebReaderElement.swift in Sources */,
 				16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */,
 				160056F326CC7FFD00700A80 /* FavoriteAnItemTests.swift in Sources */,
@@ -389,6 +404,7 @@
 				168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */,
 				166BACF82656E3C600E401F0 /* Fixture.swift in Sources */,
 				166F8F2926D0494F00F898E3 /* PocketUIElement.swift in Sources */,
+				F2A5B6B6271E03C400FB8BF2 /* LaunchEnvironment.swift in Sources */,
 				166BAD092656E76B00E401F0 /* ItemRowElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

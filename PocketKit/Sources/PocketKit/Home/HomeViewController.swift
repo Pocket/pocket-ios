@@ -4,6 +4,7 @@ import Kingfisher
 import Textile
 import Analytics
 import Combine
+import SwiftUI
 
 
 enum HomeSection: Hashable {
@@ -134,6 +135,11 @@ extension HomeViewController {
                 }
             }
             cell.saveButton.addAction(tapAction, for: .primaryActionTriggered)
+            
+            let reportAction = UIAction(identifier: .recommendationOverflow) { [weak self] _ in
+                self?.report(recommendation)
+            }
+            cell.overflowButton.addAction(reportAction, for: .primaryActionTriggered)
 
             let presenter = RecommendationPresenter(recommendation: recommendation)
             presenter.loadImage(into: cell.thumbnailImageView, cellWidth: cell.frame.width)
@@ -210,6 +216,10 @@ extension HomeViewController {
 
     private func isRecommendationSaved(_ recommendation: Slate.Recommendation) -> Bool {
         return savedRecommendationsService.itemIDs.contains(recommendation.item.id)
+    }
+    
+    private func report(_ recommendation: Slate.Recommendation) {
+        model.selectedRecommendationToReport = recommendation
     }
 }
 
@@ -292,4 +302,5 @@ extension HomeViewController {
 
 extension UIAction.Identifier {
     static let saveRecommendation = UIAction.Identifier(rawValue: "save-recommendation-action")
+    static let recommendationOverflow = UIAction.Identifier(rawValue: "recommendation-overflow")
 }

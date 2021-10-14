@@ -4,12 +4,8 @@
 
 import XCTest
 
-struct PocketAppElement {
-    static let defaultEnvironment = [
-        "POCKET_V3_BASE_URL": "http://localhost:8080",
-        "POCKET_CLIENT_API_URL": "http://localhost:8080/graphql"
-    ]
 
+struct PocketAppElement {
     private let app: XCUIApplication
 
     init(app: XCUIApplication) {
@@ -35,6 +31,7 @@ struct PocketAppElement {
     var userListView: UserListElement {
         return UserListElement(app.tables["user-list"])
     }
+    
 
     var readerView: ReaderElement {
         return ReaderElement(app)
@@ -42,6 +39,10 @@ struct PocketAppElement {
 
     var webReaderView: WebReaderElement {
         return WebReaderElement(app.webViews.element(boundBy: 0))
+    }
+    
+    var reportView: ReportViewElement {
+        return ReportViewElement(app.tables["report-recommendation"])
     }
 
     var shareSheet: XCUIElement {
@@ -74,13 +75,11 @@ struct PocketAppElement {
 
     @discardableResult
     func launch(
-        arguments: [String] = [],
-        environment: [String: String] = [:]
+        arguments: LaunchArguments = LaunchArguments(),
+        environment: LaunchEnvironment = LaunchEnvironment()
     ) -> PocketAppElement {
-        app.launchArguments = arguments + ["disableSentry", "disableSnowplow"]
-        app.launchEnvironment = PocketAppElement
-            .defaultEnvironment
-            .merging(environment) { key, _ in key }
+        app.launchArguments = arguments.toArray()
+        app.launchEnvironment = environment.toDictionary()
 
         app.launch()
 

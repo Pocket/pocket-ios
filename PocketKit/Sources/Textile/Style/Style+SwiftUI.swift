@@ -78,3 +78,10 @@ public extension SecureField {
             .foregroundColor(Color(style.colorAsset))
     }
 }
+
+public extension TextEditor {
+    func style(_ style: Style) -> some View {
+        font(Font(style.fontDescriptor))
+            .foregroundColor(Color(style.colorAsset))
+    }
+}
