@@ -28,6 +28,7 @@ public struct UIPalette {
     public let teal5 = ColorAsset.ui("teal5")
     public let teal6 = ColorAsset.ui("teal6")
     
+    public let white = ColorAsset.ui("white")
     public let white1 = ColorAsset.ui("white1")
 }
 

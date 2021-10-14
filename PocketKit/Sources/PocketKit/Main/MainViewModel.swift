@@ -12,6 +12,9 @@ class MainViewModel: ObservableObject {
 
     @Published
     var selectedRecommendation: Slate.Recommendation?
+    
+    @Published
+    var selectedRecommendationToReport: Slate.Recommendation?
 
     @Published
     var selectedSlateID: String?

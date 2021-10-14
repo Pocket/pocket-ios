@@ -73,18 +73,7 @@ class FavoriteAnItemTests: XCTestCase {
 
         try server.start()
 
-        app.launch(
-            arguments: [
-                "clearKeychain",
-                "clearCoreData",
-                "clearImageCache"
-            ],
-            environment: [
-                "accessToken": "test-access-token",
-                "sessionGUID": "session-guid",
-                "sessionUserID": "session-user-id",
-            ]
-        )
+        app.launch()
     }
 
     override func tearDownWithError() throws {

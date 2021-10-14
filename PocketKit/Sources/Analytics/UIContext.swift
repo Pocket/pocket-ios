@@ -16,6 +16,7 @@ public enum UIType: String, Encodable {
     case reader
     case link
     case button
+    case dialog
 }
 
 public enum UIIdentifier: String, Encodable {
@@ -32,6 +33,8 @@ public enum UIIdentifier: String, Encodable {
     case itemShare = "item_share"
     case slateDetail = "discover_topic"
     case recommendation = "recommendation"
+    case reportItem = "report_item"
+    case submit
 }
 
 public enum UIComponentDetail: String, Encodable {
@@ -84,6 +87,8 @@ public extension UIContext {
     struct MyList {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .myList)
         
+        public var report = UIContext(type: .dialog, hierarchy: 0, identifier: .reportItem)
+        
         public func item(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
         }
@@ -107,6 +112,8 @@ public extension UIContext {
     static let myList = MyList()
     static let articleView = ArticleView()
     static let slateDetail = SlateDetail()
+    
+    static let reportDialog = UIContext(type: .dialog, identifier: .reportItem)
 
     static func button(identifier: UIIdentifier) -> UIContext {
         UIContext(

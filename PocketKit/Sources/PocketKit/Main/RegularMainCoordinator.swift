@@ -57,10 +57,17 @@ class RegularMainCoordinator: NSObject {
         )
         home.view.backgroundColor = UIColor(.ui.white1)
 
-        itemVC = ItemViewController(model: model, tracker: tracker, source: source)
+        itemVC = ItemViewController(
+            model: model,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            source: source
+        )
         itemVC.view.backgroundColor = UIColor(.ui.white1)
 
-        recommendationVC = ArticleViewController(readerSettings: model.readerSettings, tracker: tracker)
+        recommendationVC = ArticleViewController(
+            readerSettings: model.readerSettings,
+            tracker: tracker.childTracker(hosting: .articleView.screen)
+        )
 
         readerRoot = UINavigationController(rootViewController: itemVC)
 
@@ -115,6 +122,16 @@ class RegularMainCoordinator: NSObject {
         model.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.presentWebReader(url: url)
         }.store(in: &longSubscriptions)
+        
+        model.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+            guard let recommendation = recommendation else {
+                return
+            }
+
+            self?.report(recommendation: recommendation, animated: true) {
+                self?.model.selectedRecommendationToReport = nil
+            }
+        }.store(in: &longSubscriptions)
     }
 
     func setCompactViewController(_ compact: UIViewController) {
@@ -142,12 +159,24 @@ class RegularMainCoordinator: NSObject {
 
         splitController.show(.secondary)
     }
+    
+    func report(recommendation: Slate.Recommendation, animated: Bool, onDismiss: @escaping () -> Void) {
+        let host = ReportRecommendationHostingController(
+            recommendation: recommendation,
+            model: model,
+            tracker: tracker.childTracker(hosting: .reportDialog),
+            onDismiss: onDismiss
+        )
+        host.modalPresentationStyle = .formSheet
+        splitController.present(host, animated: animated)
+    }
+
 
     func showSlate(withID slateID: String, animated: Bool) {
         let slateDetail = SlateDetailViewController(
             source: source,
             model: model,
-            tracker: tracker,
+            tracker: tracker.childTracker(hosting: .slateDetail.screen),
             slateID: slateID
         )
 
@@ -198,7 +227,7 @@ class RegularMainCoordinator: NSObject {
 
             self?.show(recommendation: recommendation)
         }.store(in: &subscriptions)
-
+        
         DispatchQueue.main.async {
             isResetting = false
         }

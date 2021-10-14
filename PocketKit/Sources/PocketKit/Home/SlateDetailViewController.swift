@@ -56,6 +56,11 @@ class SlateDetailViewController: UIViewController {
                 }
             }
             cell.saveButton.addAction(tapAction, for: .primaryActionTriggered)
+            
+            let reportAction = UIAction(identifier: .recommendationOverflow) { [weak self] _ in
+                self?.report(recommendation)
+            }
+            cell.overflowButton.addAction(reportAction, for: .primaryActionTriggered)
         }
         
         let dataSource = UICollectionViewDiffableDataSource<Slate, Slate.Recommendation>(
@@ -164,6 +169,10 @@ class SlateDetailViewController: UIViewController {
 
     private func isRecommendationSaved(_ recommendation: Slate.Recommendation) -> Bool {
         return savedRecommendationsService.itemIDs.contains(recommendation.item.id)
+    }
+    
+    private func report(_ recommendation: Slate.Recommendation) {
+        model.selectedRecommendationToReport = recommendation
     }
 }
 

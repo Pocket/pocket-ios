@@ -48,7 +48,11 @@ class RecommendationCell: UICollectionViewCell {
         return button
     }()
 
-    let overflowButton = RecommendationOverflowButton()
+    let overflowButton: RecommendationOverflowButton = {
+        let button = RecommendationOverflowButton()
+        button.accessibilityIdentifier = "report-button"
+        return button
+    }()
 
     private let textStack: UIStackView = {
         let stack = UIStackView()

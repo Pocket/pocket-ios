@@ -122,14 +122,19 @@ private struct ItemListViewRow: View {
 
     var body: some View {
         Button(action: {
-            if let url = item.url {
-                let open = ContentOpen(destination: .internal, trigger: .click)
-                let content = Content(url: url)
-                let contexts: [SnowplowContext] = uiContexts + [content]
-                tracker.track(event: open, contexts)
+            guard let url = item.url else {
+                return
             }
             
+            let content = Content(url: url)
+            let contexts: [SnowplowContext] = uiContexts + [content]
+            let engagement = Engagement(type: .general, value: nil)
+            tracker.track(event: engagement, contexts)
+            
             model.selectedItem = item
+            
+            let open = ContentOpen(destination: .internal, trigger: .click)
+            tracker.track(event: open, contexts)
         }) {
             ItemRowView(
                 model: ItemPresenter(

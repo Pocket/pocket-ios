@@ -8,7 +8,7 @@ class RecommendationOverflowButton: UIButton {
 
         configuration = .plain()
         configuration?.contentInsets = .zero
-        configuration?.image = UIImage(asset: .verticalOverflow)?
+        configuration?.image = UIImage(asset: .alert)
             .withRenderingMode(.alwaysTemplate)
 
         configuration?.imageColorTransformer = UIConfigurationColorTransformer { [weak self] _ in

@@ -93,7 +93,7 @@ class CompactMainCoordinator: NSObject {
     func show(item: SavedItem, animated: Bool) {
         let itemVC = ItemViewController(
             model: model,
-            tracker: tracker.childTracker(hosting: UIContext.articleView.screen),
+            tracker: tracker.childTracker(hosting: .articleView.screen),
             source: source
         )
         itemVC.savedItem = item
@@ -106,7 +106,7 @@ class CompactMainCoordinator: NSObject {
     func show(recommendation: Slate.Recommendation, animated: Bool) {
         let article = ArticleViewController(
             readerSettings: model.readerSettings,
-            tracker: tracker
+            tracker: tracker.childTracker(hosting: .articleView.screen)
         )
         article.hidesBottomBarWhenPushed = true
         article.item = recommendation
@@ -118,7 +118,7 @@ class CompactMainCoordinator: NSObject {
         let slateDetail = SlateDetailViewController(
             source: source,
             model: model,
-            tracker: tracker,
+            tracker: tracker.childTracker(hosting: .slateDetail.screen),
             slateID: slateID
         )
 

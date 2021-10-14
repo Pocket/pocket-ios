@@ -148,8 +148,14 @@ public extension Style {
 }
 
 public extension UIImage {
-    convenience init?(asset: ImageAsset) {
-        self.init(named: asset.name, in: .module, with: nil)
+    convenience init(asset: ImageAsset) {
+        self.init(named: asset.name, in: .module, with: nil)!
+    }
+}
+
+public extension Image {
+    init(asset: ImageAsset) {
+        self.init(uiImage: UIImage(asset: asset))
     }
 }
 
