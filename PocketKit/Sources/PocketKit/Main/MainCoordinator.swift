@@ -2,6 +2,7 @@ import UIKit
 import Analytics
 import Sync
 import Combine
+import BackgroundTasks
 
 
 class MainCoordinator {

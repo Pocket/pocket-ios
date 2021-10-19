@@ -15,7 +15,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                 authClient: Services.shared.authClient,
                 source: Services.shared.source,
                 tracker: Services.shared.tracker,
-                session: Services.shared.session
+                session: Services.shared.session,
+                refreshCoordinator: Services.shared.refreshCoordinator
             )
         )
     }

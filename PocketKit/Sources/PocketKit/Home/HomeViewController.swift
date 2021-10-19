@@ -5,6 +5,7 @@ import Textile
 import Analytics
 import Combine
 import SwiftUI
+import BackgroundTasks
 
 
 enum HomeSection: Hashable {
@@ -106,12 +107,22 @@ class HomeViewController: UIViewController {
 
     private func fetchLineup() {
         Task {
-            let lineup = try? await source.fetchSlateLineup(Self.lineupID)
-            self.slateLineup = lineup
+            await fetchLineupAsync()
+        }
+    }
 
-            if collectionView.refreshControl?.isRefreshing == true {
-                collectionView.refreshControl?.endRefreshing()
-            }
+    private func fetchLineupAsync() async {
+        let lineup = try? await source.fetchSlateLineup(Self.lineupID)
+        self.slateLineup = lineup
+        if collectionView.refreshControl?.isRefreshing == true {
+            collectionView.refreshControl?.endRefreshing()
+        }
+    }
+
+    func handleBackgroundRefresh(task: BGTask) {
+        Task {
+            await fetchLineupAsync()
+            task.setTaskCompleted(success: true)
         }
     }
 

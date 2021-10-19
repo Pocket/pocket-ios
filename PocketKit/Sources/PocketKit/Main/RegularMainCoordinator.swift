@@ -14,7 +14,7 @@ class RegularMainCoordinator: NSObject {
     private let splitController: UISplitViewController
     private let navigationSidebar: UINavigationController
     private let myList: UIViewController
-    private let home: UIViewController
+    private let home: HomeViewController
 
     private let readerRoot: UINavigationController
     private let itemVC: ItemViewController
@@ -227,7 +227,11 @@ class RegularMainCoordinator: NSObject {
 
             self?.show(recommendation: recommendation)
         }.store(in: &subscriptions)
-        
+
+        model.refreshTasks.receive(on: DispatchQueue.main).sink { [weak self] task in
+            self?.home.handleBackgroundRefresh(task: task)
+        }.store(in: &subscriptions)
+
         DispatchQueue.main.async {
             isResetting = false
         }
