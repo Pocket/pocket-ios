@@ -6,14 +6,16 @@ import UIKit
 import Sync
 import Textile
 import Analytics
+import BackgroundTasks
 
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
-    private var accessTokenStore: AccessTokenStore
-    private var source: Sync.Source
-    private var tracker: Tracker
-    private var userDefaults: UserDefaults
-    private var session: Session
+    private let accessTokenStore: AccessTokenStore
+    private let source: Sync.Source
+    private let tracker: Tracker
+    private let userDefaults: UserDefaults
+    private let session: Session
+    private let refreshCoordinator: RefreshCoordinator
 
     convenience override init() {
         self.init(services: Services.shared)
@@ -25,6 +27,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.tracker = services.tracker
         self.userDefaults = services.userDefaults
         self.session = services.session
+        self.refreshCoordinator = services.refreshCoordinator
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
@@ -74,6 +77,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
         Textiles.initialize()
         setupTracker()
+        refreshCoordinator.initialize()
 
         return true
     }

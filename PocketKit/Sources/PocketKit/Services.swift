@@ -19,6 +19,7 @@ struct Services {
     let source: Source
     let tracker: Tracker
     let sceneTracker: SceneTracker
+    let refreshCoordinator: RefreshCoordinator
 
     private init() {
         userDefaults = .standard
@@ -43,6 +44,7 @@ struct Services {
         tracker = PocketTracker(snowplow: snowplow)
         
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
+        refreshCoordinator = RefreshCoordinator(taskScheduler: .shared)
     }
 }
 

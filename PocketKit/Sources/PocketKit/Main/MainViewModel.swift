@@ -1,6 +1,7 @@
 import Combine
 import Sync
 import Foundation
+import BackgroundTasks
 
 
 class MainViewModel: ObservableObject {
@@ -33,6 +34,16 @@ class MainViewModel: ObservableObject {
 
     @Published
     var sharedActivity: PocketActivity?
+
+    var refreshTasks: AnyPublisher<BGTask, Never> {
+        refreshCoordinator.tasksPublisher
+    }
+
+    private let refreshCoordinator: RefreshCoordinator
+
+    init(refreshCoordinator: RefreshCoordinator) {
+        self.refreshCoordinator = refreshCoordinator
+    }
 
     enum AppSection: CaseIterable, Identifiable {
         case home

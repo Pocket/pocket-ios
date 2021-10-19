@@ -13,6 +13,7 @@ class CompactMainCoordinator: NSObject {
 
     private let tabBarController: UITabBarController
     private let myList: UINavigationController
+    private let homeRoot: HomeViewController
     private let home: UINavigationController
 
     private let tracker: Tracker
@@ -46,7 +47,7 @@ class CompactMainCoordinator: NSObject {
         myList.tabBarItem.title = "My List"
         myList.tabBarItem.image = UIImage(systemName: "list.dash")
 
-        let homeRoot = HomeViewController(
+        homeRoot = HomeViewController(
             source: source,
             tracker: tracker.childTracker(hosting: UIContext.home.screen),
             model: model
@@ -161,6 +162,10 @@ class CompactMainCoordinator: NSObject {
             }
 
             self?.show(recommendation: recommendation, animated: !isResetting)
+        }.store(in: &subscriptions)
+
+        model.refreshTasks.receive(on: DispatchQueue.main).sink { [weak self] task in
+            self?.homeRoot.handleBackgroundRefresh(task: task)
         }.store(in: &subscriptions)
 
         DispatchQueue.main.async {

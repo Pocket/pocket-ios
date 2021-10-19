@@ -12,7 +12,7 @@ class PocketSceneCoordinator: NSObject {
     private let tracker: Tracker
     private let session: Session
 
-    private let mainViewModel = MainViewModel()
+    private let mainViewModel: MainViewModel
     private let authState = AuthorizationState()
     private var window: UIWindow?
 
@@ -26,12 +26,14 @@ class PocketSceneCoordinator: NSObject {
         authClient: AuthorizationClient,
         source: Source,
         tracker: Tracker,
-        session: Session
+        session: Session,
+        refreshCoordinator: RefreshCoordinator
     ) {
         self.accessTokenStore = accessTokenStore
         self.source = source
         self.tracker = tracker
         self.session = session
+        self.mainViewModel = MainViewModel(refreshCoordinator: refreshCoordinator)
 
         let signInView = SignInView(authClient: authClient, state: authState)
         signIn = UIHostingController(rootView: signInView)
