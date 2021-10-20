@@ -2,6 +2,8 @@ import UIKit
 import Sync
 import Analytics
 import Combine
+import Lottie
+import Textile
 
 
 class SlateDetailViewController: UIViewController {
@@ -78,6 +80,20 @@ class SlateDetailViewController: UIViewController {
         return collectionView
     }()
     
+    private lazy var overscrollView: HomeOverscrollView = {
+        let view = HomeOverscrollView(frame: .zero)
+        view.alpha = 0
+        view.attributedText = NSAttributedString(
+            "You're all caught up!\nCheck back later for more.",
+            style: .overscroll
+        )
+        view.animation = Animation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
+        return view
+    }()
+    
+    private var overscrollTopConstraint: NSLayoutConstraint? = nil
+    private var overscrollOffset = 0
+    
     private let source: Source
     private let savedRecommendationsService: SavedRecommendationsService
     private var subscriptions: [AnyCancellable] = []
@@ -125,18 +141,41 @@ class SlateDetailViewController: UIViewController {
         savedRecommendationsService.$itemIDs.sink { [weak self] savedItemIDs in
             self?.updateRecommendationSaveButtons(savedItemIDs: savedItemIDs)
         }.store(in: &subscriptions)
+        
+        collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
+            self?.setupOverflowView(contentSize: contentSize)
+        }.store(in: &subscriptions)
+        
+        collectionView.publisher(for: \.contentOffset, options: [.new]).sink { [weak self] contentOffset in
+            self?.updateOverflowView(contentOffset: contentOffset)
+        }.store(in: &subscriptions)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not implemented")
     }
 
-    override func loadView() {
-        view = collectionView
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionView)
+        
+        overscrollView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(overscrollView)
+        overscrollTopConstraint = overscrollView.topAnchor.constraint(equalTo: collectionView.bottomAnchor)
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            overscrollTopConstraint!,
+            overscrollView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
+            overscrollView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
+            overscrollView.heightAnchor.constraint(equalToConstant: 96)
+        ])
         
         Task {
             self.slate = try await source.fetchSlate(slateID)
@@ -173,6 +212,41 @@ class SlateDetailViewController: UIViewController {
     
     private func report(_ recommendation: Slate.Recommendation) {
         model.selectedRecommendationToReport = recommendation
+    }
+    
+    private func setupOverflowView(contentSize: CGSize) {
+        let shouldHide = contentSize.height <= collectionView.frame.height
+        overscrollView.isHidden = shouldHide
+    }
+    
+    private func updateOverflowView(contentOffset: CGPoint) {
+        guard collectionView.contentSize.height > collectionView.frame.height else {
+            return
+        }
+        
+        let visibleHeight = round(
+            collectionView.frame.height
+            - collectionView.adjustedContentInset.top
+            - collectionView.adjustedContentInset.bottom
+        )
+        let yOffset = round(contentOffset.y + collectionView.adjustedContentInset.top)
+        let overscroll = max(-round(collectionView.contentSize.height - yOffset - visibleHeight), 0)
+        
+        if overscroll > 0 {
+            let constant = overscroll + collectionView.adjustedContentInset.bottom
+            overscrollTopConstraint?.constant = -constant
+            overscrollView.alpha = min(overscroll / 96, 1)
+            
+            if !overscrollView.didFinishPreviousAnimation {
+                overscrollView.isAnimating = true
+            }
+        }
+        
+        if overscroll == 0 {
+            if overscrollView.didFinishPreviousAnimation {
+                overscrollView.isAnimating = false
+            }
+        }
     }
 }
 
@@ -225,4 +299,8 @@ extension SlateDetailViewController {
      
         return [context, content, snowplowSlate, snowplowRecommendation]
     }
+}
+
+private extension Style {
+    static let overscroll = Style.header.sansSerif.p3.with { $0.with(alignment: .center) }
 }
