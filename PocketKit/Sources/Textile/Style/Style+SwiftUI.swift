@@ -53,6 +53,8 @@ public extension SwiftUI.TextAlignment {
             self = .leading
         case .right:
             self = .trailing
+        case .center:
+            self = .center
         }
     }
 }
