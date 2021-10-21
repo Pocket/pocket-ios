@@ -31,7 +31,9 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                                "particleJson": #PARTICLE_JSON#,
+                                "marticle": [],
+                                "authors": [],
+                                "datePublished": "2021-01-01 12:01:01",
                                 "excerpt": "Cursus Aenean Elit",
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
@@ -73,7 +75,9 @@
                                 "timeToRead": 6,
                                 "domainMetadata": null,
                                 "excerpt": "Cursus Aenean Elit",
-                                "particleJson": #PARTICLE_JSON#,
+                                "marticle": [],
+                                "authors": [],
+                                "datePublished": "2021-01-01 12:01:01",
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",
@@ -109,7 +113,9 @@
                                 "timeToRead": 6,
                                 "domainMetadata": null,
                                 "excerpt": "Cursus Aenean Elit",
-                                "particleJson": #PARTICLE_JSON#,
+                                "marticle": [],
+                                "authors": [],
+                                "datePublished": "2021-01-01 12:01:01",
                                 "images": [
                                     {
                                         "__typename": "[type-name-here]",

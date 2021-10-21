@@ -186,7 +186,9 @@ class SourceTests: XCTestCase {
                 language: "en",
                 topImageURL: URL(string: "https://example.com/item-1/top-image.png")!,
                 timeToRead: 1,
-                particleJSON: "{}",
+                article: Article(
+                    components: [.heading(HeadingComponent(content: "# Hello", level: 1))]
+                ),
                 excerpt: "This is the excerpt for Item 1",
                 domain: "example.com",
                 domainMetadata: Slate.DomainMetadata(
@@ -215,7 +217,7 @@ class SourceTests: XCTestCase {
         XCTAssertEqual(item?.language, recommendation.item.language)
         XCTAssertEqual(item?.topImageURL, recommendation.item.topImageURL)
         XCTAssertEqual(item.flatMap { Int($0.timeToRead) }, recommendation.item.timeToRead)
-        XCTAssertEqual(item?.particleJSON, recommendation.item.particleJSON)
+        XCTAssertEqual(item?.article, recommendation.item.article)
         XCTAssertEqual(item?.excerpt, recommendation.item.excerpt)
         XCTAssertEqual(item?.domain, recommendation.item.domain)
         XCTAssertEqual(item?.domainMetadata?.name, recommendation.item.domainMetadata?.name)

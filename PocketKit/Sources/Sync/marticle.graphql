@@ -1,0 +1,59 @@
+fragment MarticleTextParts on MarticleText {
+    content
+}
+
+fragment ImageParts on Image {
+    caption
+    credit
+    imageID: imageId
+    src
+    height
+    width
+}
+
+fragment MarticleDividerParts on MarticleDivider {
+    content
+}
+
+fragment MarticleTableParts on MarticleTable {
+    html
+}
+
+fragment MarticleHeadingParts on MarticleHeading {
+    content
+    level
+}
+
+fragment MarticleCodeBlockParts on MarticleCodeBlock {
+    text
+    language
+}
+
+fragment VideoParts on Video {
+    height
+    src
+    type
+    vid
+    videoID: videoId
+    width
+    length
+}
+
+fragment MarticleBulletedListParts on MarticleBulletedList {
+    rows {
+        content
+        level
+    }
+}
+
+fragment MarticleNumberedListParts on MarticleNumberedList {
+    rows {
+        content
+        level
+        index
+    }
+}
+
+fragment MarticleBlockquoteParts on MarticleBlockquote {
+    content
+}

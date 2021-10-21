@@ -58,7 +58,9 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_fetchesUserByTokenQueryWithGivenToken() {
-        apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
+        let fixture = Fixture.load(name: "list")
+            .replacing("MARTICLE", withFixtureNamed: "marticle")
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
 
         performOperation()
 
@@ -70,7 +72,9 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() throws {
-        apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
+        let fixture = Fixture.load(name: "list")
+            .replacing("MARTICLE", withFixtureNamed: "marticle")
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
 
         performOperation()
 
@@ -94,8 +98,16 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(item?.domain, "example.com")
         XCTAssertEqual(item?.language, "en")
         XCTAssertEqual(item?.timeToRead, 6)
-        XCTAssertEqual(item?.particleJSON, "<just-json-things>")
         XCTAssertEqual(item?.excerpt, "Cursus Aenean Elit")
+        XCTAssertEqual(item?.datePublished, Date(timeIntervalSinceReferenceDate: 631195261))
+
+        let expected: [ArticleComponent] = Fixture.load(name: "marticle").decode()
+        XCTAssertEqual(item?.article?.components, expected)
+
+        let authors = item?.authors?.compactMap { $0 as? Author }
+        XCTAssertEqual(authors?[0].id, "author-1")
+        XCTAssertEqual(authors?[0].name, "Eleanor")
+        XCTAssertEqual(authors?[0].url, URL(string: "https://example.com/authors/eleanor")!)
 
         let domain = item?.domainMetadata
         XCTAssertEqual(domain?.name, "WIRED")
@@ -206,7 +218,10 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() {
         lastRefresh.stubGetLastRefresh { 123456789 }
-        apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
+
+        let fixture = Fixture.load(name: "list")
+            .replacing("MARTICLE", withFixtureNamed: "marticle")
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
 
         performOperation()
 
@@ -216,7 +231,9 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() {
-        apollo.stubFetch(toReturnFixturedNamed: "list", asResultType: UserByTokenQuery.self)
+        let fixture = Fixture.load(name: "list")
+            .replacing("MARTICLE", withFixtureNamed: "marticle")
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
 
         performOperation()
 

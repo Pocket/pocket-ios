@@ -50,7 +50,9 @@ extension Slate.Item {
             language: remote.language,
             topImageURL: remote.topImageUrl.flatMap(URL.init),
             timeToRead: remote.timeToRead,
-            particleJSON: remote.particleJson,
+            article: remote.marticle.flatMap {
+                Article(components: $0.map(ArticleComponent.init))
+            },
             excerpt: remote.excerpt,
             domain: remote.domain,
             domainMetadata: (remote.domainMetadata?.fragments.domainMetadataParts).flatMap(Slate.DomainMetadata.init)

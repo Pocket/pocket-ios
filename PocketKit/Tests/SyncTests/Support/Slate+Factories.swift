@@ -40,7 +40,7 @@ extension Slate.Item {
             language: nil,
             topImageURL: nil,
             timeToRead: nil,
-            particleJSON: nil,
+            article: nil,
             excerpt: nil,
             domain: nil,
             domainMetadata: nil

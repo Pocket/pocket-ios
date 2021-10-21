@@ -1,21 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="20E232" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19461" systemVersion="20G165" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Author" representedClassName="Author" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="url" optional="YES" attributeType="URI"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="authors" inverseEntity="Item"/>
+    </entity>
     <entity name="DomainMetadata" representedClassName="DomainMetadata" syncable="YES" codeGenerationType="class">
         <attribute name="logo" optional="YES" attributeType="URI"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
     </entity>
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
+        <attribute name="article" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName=".Article"/>
+        <attribute name="datePublished" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="domain" optional="YES" attributeType="String"/>
         <attribute name="excerpt" optional="YES" attributeType="String"/>
         <attribute name="givenURL" optional="YES" attributeType="URI"/>
         <attribute name="language" optional="YES" attributeType="String"/>
-        <attribute name="particleJSON" optional="YES" attributeType="String"/>
+        <attribute name="marticleJSON" optional="YES" attributeType="Binary"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="resolvedURL" optional="YES" attributeType="URI"/>
         <attribute name="timeToRead" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="topImageURL" optional="YES" attributeType="URI"/>
+        <relationship name="authors" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Author" inverseName="item" inverseEntity="Author"/>
         <relationship name="domainMetadata" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DomainMetadata" inverseName="item" inverseEntity="DomainMetadata"/>
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="item" inverseEntity="SavedItem"/>
     </entity>
@@ -29,8 +38,9 @@
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Item" inverseName="savedItem" inverseEntity="Item"/>
     </entity>
     <elements>
+        <element name="Author" positionX="-9" positionY="144" width="128" height="89"/>
         <element name="DomainMetadata" positionX="-63" positionY="36" width="128" height="14"/>
-        <element name="Item" positionX="-45" positionY="99" width="128" height="209"/>
+        <element name="Item" positionX="-45" positionY="99" width="128" height="254"/>
         <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="134"/>
     </elements>
 </model>

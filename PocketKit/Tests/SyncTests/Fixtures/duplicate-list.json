@@ -31,8 +31,10 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                                "particleJson": "<just-json-things>",
+                                "marticle": [],
                                 "excerpt": "Cursus Aenean Elit",
+                                "datePublished": "2021-01-01 12:01:01",
+                                "authors": [],
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -71,8 +73,10 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                                "particleJson": "<just-json-things>",
+                                "marticle": [],
                                 "excerpt": "Cursus Aenean Elit",
+                                "datePublished": "2021-01-01 12:01:01",
+                                "authors": [],
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
