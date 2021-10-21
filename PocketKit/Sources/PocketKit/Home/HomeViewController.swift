@@ -84,7 +84,7 @@ class HomeViewController: UIViewController {
         collectionView.accessibilityIdentifier = "home"
 
         let action = UIAction { [weak self] _ in
-            self?.fetchLineup()
+            self?.handleRefresh()
         }
 
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
@@ -102,26 +102,29 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        fetchLineup()
-    }
 
-    private func fetchLineup() {
         Task {
-            await fetchLineupAsync()
+            let lineup = try? await source.fetchSlateLineup(Self.lineupID)
+            slateLineup = lineup
         }
     }
 
-    private func fetchLineupAsync() async {
-        let lineup = try? await source.fetchSlateLineup(Self.lineupID)
-        self.slateLineup = lineup
-        if collectionView.refreshControl?.isRefreshing == true {
-            collectionView.refreshControl?.endRefreshing()
+    private func handleRefresh() {
+        Task {
+            let lineup = try? await source.fetchSlateLineup(Self.lineupID)
+            slateLineup = lineup
+
+            if self.collectionView.refreshControl?.isRefreshing == true {
+                self.collectionView.refreshControl?.endRefreshing()
+            }
         }
     }
 
     func handleBackgroundRefresh(task: BGTask) {
         Task {
-            await fetchLineupAsync()
+            let lineup = try? await source.fetchSlateLineup(Self.lineupID)
+            slateLineup = lineup
+
             task.setTaskCompleted(success: true)
         }
     }
