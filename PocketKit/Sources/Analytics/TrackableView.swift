@@ -9,18 +9,18 @@ import SwiftUI
 public struct TrackableView<T: View>: View {
     private var content: T
     
-    @Environment(\.uiContexts)
-    private var viewContexts: [UIContext]
+    @Environment(\.tracker)
+    private var tracker: Tracker
     
-    private var currentContext: UIContext
+    private var context: UIContext
     
     init(_ context: UIContext, _ content: () -> T) {
         self.content = content()
-        self.currentContext = context
+        self.context = context
     }
     
     public var body: some View {
-        content.environment(\.uiContexts, viewContexts + [currentContext])
+        content.environment(\.tracker, tracker.childTracker(hosting: context))
     }
 }
 
