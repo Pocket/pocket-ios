@@ -61,6 +61,7 @@ class HomeViewController: UIViewController {
     
     private lazy var overscrollView: HomeOverscrollView = {
         let view = HomeOverscrollView(frame: .zero)
+        view.accessibilityIdentifier = "home-overscroll"
         view.alpha = 0
         view.isHidden = true
         view.attributedText = NSAttributedString(
@@ -82,6 +83,8 @@ class HomeViewController: UIViewController {
         self.sectionProvider = HomeViewControllerSectionProvider()
 
         super.init(nibName: nil, bundle: nil)
+        
+        view.accessibilityIdentifier = "home"
 
         dataSource = UICollectionViewDiffableDataSource<HomeSection, HomeItem>(collectionView: collectionView) { [unowned self] _, indexPath, item in
             return self.cellFor(item, at: indexPath)
@@ -97,7 +100,6 @@ class HomeViewController: UIViewController {
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.dividerElementKind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.twoUpDividerElementKind)
         collectionView.delegate = self
-        collectionView.accessibilityIdentifier = "home"
 
         let action = UIAction { [weak self] _ in
             self?.handleRefresh()

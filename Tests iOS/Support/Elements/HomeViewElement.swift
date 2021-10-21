@@ -11,6 +11,10 @@ struct HomeViewElement: PocketUIElement {
         self.element = element
     }
 
+    var overscrollView: XCUIElement {
+        element.otherElements["home-overscroll"]
+    }
+
     func topicChip(_ title: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label = %@", title)
         return element.cells
@@ -44,5 +48,22 @@ struct HomeViewElement: PocketUIElement {
                     withNormalizedOffset: centerCenter
                 )
             )
+    }
+    
+    func overscroll() {
+        let origin = CGVector(dx: 0.5, dy: 0.8)
+        let destination = CGVector(dx: 0.5, dy: 0.2)
+
+        element
+            .coordinate(withNormalizedOffset: origin)
+            .press(forDuration: 0.1, thenDragTo: element.coordinate(withNormalizedOffset: destination), withVelocity: .fast, thenHoldForDuration: 0)
+
+        element
+            .coordinate(withNormalizedOffset: origin)
+            .press(forDuration: 0.1, thenDragTo: element.coordinate(withNormalizedOffset: destination), withVelocity: .fast, thenHoldForDuration: 0)
+
+        element
+            .coordinate(withNormalizedOffset: origin)
+            .press(forDuration: 0.1, thenDragTo: element.coordinate(withNormalizedOffset: destination), withVelocity: .fast, thenHoldForDuration: 1)
     }
 }
