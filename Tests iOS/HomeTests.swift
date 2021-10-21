@@ -185,20 +185,58 @@ class HomeTests: XCTestCase {
             XCTAssertEqual(saveButton.label, "Save")
         }
     }
+}
 
+extension HomeTests {
     func test_pullToRefresh_fetchesUpdatedContent() {
         let home = app.homeView
         home.recommendationCell("Slate 1, Recommendation 1").wait()
-
+        
         server.routes.post("/graphql") { request, _ in
             Response {
                 Status.ok
                 Fixture.data(name: "updated-slates")
             }
         }
-
+        
         home.pullToRefresh()
-
+        
         home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
+    }
+
+    func test_overscrollingHome_showsOverscrollView() {
+        let home = app.homeView
+        let overscrollView = home.overscrollView
+
+        home.slateHeader("Slate 1").wait()
+        
+        DispatchQueue.main.async {
+            home.overscroll()
+        }
+        
+        let exists = NSPredicate(format: "exists == 1")
+        let doesExist = expectation(for: exists, evaluatedWith: overscrollView)
+        let isHittable = NSPredicate(format: "isHittable == 1")
+        let hittable = expectation(for: isHittable, evaluatedWith: overscrollView)
+        wait(for: [doesExist, hittable], timeout: 10)
+    }
+    
+    func test_overscrollingSlateDetail_showsOverscrollView() {
+        app.homeView.topicChip("Slate 1").wait().tap()
+        
+        let slateDetail = app.slateDetailView
+        let overscrollView = slateDetail.overscrollView
+        slateDetail.recommendationCell("Slate 1, Recommendation 1").wait()
+
+        
+        DispatchQueue.main.async {
+            slateDetail.overscroll()
+        }
+        
+        let exists = NSPredicate(format: "exists == 1")
+        let doesExist = expectation(for: exists, evaluatedWith: overscrollView)
+        let isHittable = NSPredicate(format: "isHittable == 1")
+        let hittable = expectation(for: isHittable, evaluatedWith: overscrollView)
+        wait(for: [doesExist, hittable], timeout: 10)
     }
 }

@@ -21,11 +21,11 @@ struct PocketAppElement {
     }
 
     var homeView: HomeViewElement {
-        return HomeViewElement(app.collectionViews["home"])
+        return HomeViewElement(app.otherElements["home"])
     }
 
     var slateDetailView: SlateDetailElement {
-        return SlateDetailElement(app.collectionViews["slate-detail"])
+        return SlateDetailElement(app.otherElements["slate-detail"])
     }
 
     var userListView: UserListElement {

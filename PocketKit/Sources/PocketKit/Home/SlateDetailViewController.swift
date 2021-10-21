@@ -76,12 +76,12 @@ class SlateDetailViewController: UIViewController {
 
     private lazy var collectionView: UICollectionView = {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-        collectionView.accessibilityIdentifier = "slate-detail"
         return collectionView
     }()
     
     private lazy var overscrollView: HomeOverscrollView = {
         let view = HomeOverscrollView(frame: .zero)
+        view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
         view.attributedText = NSAttributedString(
             "You're all caught up!\nCheck back later for more.",
@@ -130,6 +130,8 @@ class SlateDetailViewController: UIViewController {
         self.savedRecommendationsService = source.savedRecommendationsService()
     
         super.init(nibName: nil, bundle: nil)
+        
+        view.accessibilityIdentifier = "slate-detail"
         
         title = nil
         navigationItem.largeTitleDisplayMode = .never
