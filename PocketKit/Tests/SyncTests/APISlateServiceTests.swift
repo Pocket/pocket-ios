@@ -69,7 +69,6 @@ class APISlateServiceTests: XCTestCase {
             XCTAssertEqual(item.language, "en")
             XCTAssertEqual(item.topImageURL, URL(string: "http://example.com/slate-2-rec-1/top-image.png"))
             XCTAssertEqual(item.timeToRead, 3)
-            XCTAssertEqual(item.particleJSON, "{}")
             XCTAssertEqual(item.excerpt, "Cursus Aenean Elit")
             XCTAssertEqual(item.domain, "slate-2-rec-1.example.com")
 
@@ -77,6 +76,15 @@ class APISlateServiceTests: XCTestCase {
             XCTAssertNotNil(domain)
             XCTAssertEqual(domain?.name, "Lifehacker")
             XCTAssertEqual(domain?.logo, URL(string: "https://slate-2-rec-1.example.com/logo.png"))
+
+            switch item.article?.components[0] {
+            case .blockquote(let blockquote):
+                XCTAssertEqual(blockquote.content, "Pellentesque Ridiculus Porta")
+            case .none:
+                XCTFail("Expected blockquote component, got nil")
+            case .some(let component):
+                XCTFail("Expected blockquote component, got \(component)")
+            }
         }
     }
 

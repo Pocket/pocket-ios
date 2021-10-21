@@ -20,7 +20,24 @@ fragment ItemParts on Item {
   topImageUrl
   timeToRead
   domain
-  particleJson
+  datePublished
+  authors {
+    id
+    name
+    url
+  }
+  marticle {
+    ...MarticleTextParts
+    ...ImageParts
+    ...MarticleDividerParts
+    ...MarticleTableParts
+    ...MarticleHeadingParts
+    ...MarticleCodeBlockParts
+    ...VideoParts
+    ...MarticleBulletedListParts
+    ...MarticleNumberedListParts
+    ...MarticleBlockquoteParts
+  }
   excerpt
   domainMetadata {
     ...DomainMetadataParts

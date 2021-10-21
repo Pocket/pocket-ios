@@ -27,7 +27,7 @@ public struct Slate: Identifiable, Equatable, Hashable {
         public let language: String?
         public let topImageURL: URL?
         public let timeToRead: Int?
-        public let particleJSON: String?
+        public let article: Article?
         public let excerpt: String?
         public let domain: String?
         public let domainMetadata: DomainMetadata?

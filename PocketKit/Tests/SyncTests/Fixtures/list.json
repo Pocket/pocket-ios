@@ -31,8 +31,17 @@
                                 "domain": "example.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                                "particleJson": "<just-json-things>",
+                                "marticle": #MARTICLE#,
                                 "excerpt": "Cursus Aenean Elit",
+                                "datePublished": "2021-01-01 12:01:01",
+                                "authors": [
+                                    {
+                                        "__typename": "Author",
+                                        "id": "author-1",
+                                        "name": "Eleanor",
+                                        "url": "https://example.com/authors/eleanor"
+                                    }
+                                ],
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",
@@ -71,8 +80,10 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                                "particleJson": "<just-json-things>",
+                                "marticle": [],
                                 "excerpt": "Cursus Aenean Elit",
+                                "datePublished": "2021-01-01 12:01:01",
+                                "authors": [],
                                 "domainMetadata": {
                                     "__typename": "[type-name-here]",
                                     "name": "WIRED",

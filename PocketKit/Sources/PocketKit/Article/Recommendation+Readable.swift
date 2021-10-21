@@ -4,12 +4,28 @@ import Sync
 
 
 extension Slate.Recommendation: Readable {
-    var readerURL: URL? {
-        item.resolvedURL ?? item.givenURL
+    var title: String? {
+        nil
     }
 
-    var particleJSON: String? {
-        item.particleJSON
+    var author: String? {
+        nil
+    }
+
+    var domain: String? {
+        nil
+    }
+
+    var publishDate: Date? {
+        nil
+    }
+
+    var components: [ArticleComponent]? {
+        []
+    }
+
+    var readerURL: URL? {
+        item.resolvedURL ?? item.givenURL
     }
 
     var textAlignment: TextAlignment {

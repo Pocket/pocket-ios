@@ -170,9 +170,9 @@ extension Source {
         item.language = recommendation.item.language
         item.topImageURL = recommendation.item.topImageURL
         item.timeToRead = recommendation.item.timeToRead.flatMap(Int32.init) ?? 0
-        item.particleJSON = recommendation.item.particleJSON
         item.excerpt = recommendation.item.excerpt
         item.domain = recommendation.item.domain
+        item.article = recommendation.item.article
         item.domainMetadata = recommendation.item.domainMetadata.flatMap { remote in
             let domainMeta: DomainMetadata = space.new()
             domainMeta.name = remote.name

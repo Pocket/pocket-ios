@@ -13,9 +13,8 @@ class PullToRefreshTests: XCTestCase {
     func listResponse(_ fixtureName: String = "initial-list") -> Response {
         Response {
             Status.ok
-            Fixture
-                .load(name: fixtureName)
-                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+            Fixture.load(name: fixtureName)
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
                 .data
         }
     }
@@ -23,9 +22,7 @@ class PullToRefreshTests: XCTestCase {
     func slateResponse() -> Response {
         Response {
             Status.ok
-            Fixture.load(name: "slates")
-                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                .data
+            Fixture.data(name: "slates")
         }
     }
 
@@ -66,10 +63,7 @@ class PullToRefreshTests: XCTestCase {
         server.routes.post("/graphql") { _, _ in
             return Response {
                 Status.ok
-                Fixture
-                    .load(name: "updated-list")
-                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                    .data
+                Fixture.data(name: "updated-list")
             }
         }
 

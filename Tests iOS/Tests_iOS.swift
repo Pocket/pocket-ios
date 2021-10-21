@@ -14,9 +14,8 @@ class Tests_iOS: XCTestCase {
     func listResponse(_ fixtureName: String = "initial-list") -> Response {
         Response {
             Status.ok
-            Fixture
-                .load(name: fixtureName)
-                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+            Fixture.load(name: fixtureName)
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
                 .data
         }
     }
@@ -24,9 +23,7 @@ class Tests_iOS: XCTestCase {
     func slateResponse() -> Response {
         Response {
             Status.ok
-            Fixture.load(name: "slates")
-                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                .data
+            Fixture.data(name: "slates")
         }
     }
 
@@ -141,11 +138,7 @@ class Tests_iOS: XCTestCase {
         promise?.succeed(
             Response {
                 Status.ok
-                Fixture
-                    .load(name: "updated-list")
-                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                    .data
-
+                Fixture.data(name: "updated-list")
             }
         )
 
@@ -174,20 +167,10 @@ class Tests_iOS: XCTestCase {
             .tap()
 
         let expectedStrings = [
-            "Venenatis Ridiculus Vehicula",
-            "By Jacob & David",
-            "Vestibulum id ligula porta felis",
-            "Euismod Ipsum Mollis",
-            "Maecenas faucibus mollis interdum. Etiam porta sem",
-            "Dolor Pharetra Parturient Egestas",
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-            "Ornare Mollis Magna Ipsum",
-            "Etiam porta sem malesuada magna mollis euismod",
-            "Inline Modifiers",
-            "Any text component can include inline modifiers.",
-            "This paragraph contains a link a website",
-            "This paragraph contains a few inline styles.",
-            "Copyright Pocket 2021"
+            "Item 1",
+            "by Jacob and David",
+            "WIRED",
+            "January 1st, 2021",
         ]
 
         for expectedString in expectedStrings {
@@ -227,10 +210,8 @@ class Tests_iOS: XCTestCase {
             let requestBody = body(of: request)
 
             if requestBody!.contains("getSlateLineup")  {
-                print("Slate requested!")
                 return self.slateResponse()
             } else {
-                print("List requested!")
                 return self.listResponse("list-with-archived-item")
             }
         }

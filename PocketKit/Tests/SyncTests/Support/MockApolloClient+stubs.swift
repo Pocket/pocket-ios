@@ -41,18 +41,26 @@ extension MockApolloClient {
 
     func stubFetch<T: GraphQLQuery>(
         toReturnFixturedNamed fixtureName: String,
+        asResultType resultType: T.Type,
+        handler: (() -> ())? = nil
+    ) {
+        stubFetch(
+            toReturnFixture: Fixture.load(name: fixtureName),
+            asResultType: resultType,
+            handler: handler
+        )
+    }
+
+    func stubFetch<T: GraphQLQuery>(
+        toReturnFixture fixture: Fixture,
         asResultType: T.Type,
         handler: (() -> ())? = nil
     ) {
         stubFetch { (query: T, _, _, queue, completion) -> Apollo.Cancellable in
             defer { handler?() }
 
-            let result = Fixture
-                .load(name: fixtureName)
-                .asGraphQLResult(from: query)
-
             queue.async {
-                completion?(.success(result))
+                completion?(.success(fixture.asGraphQLResult(from: query)))
             }
 
             return MockCancellable()
