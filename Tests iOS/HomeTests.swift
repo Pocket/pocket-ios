@@ -14,9 +14,8 @@ class HomeTests: XCTestCase {
     func listResponse(_ fixtureName: String = "initial-list") -> Response {
         Response {
             Status.ok
-            Fixture
-                .load(name: fixtureName)
-                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
+            Fixture.load(name: fixtureName)
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
                 .data
         }
     }
@@ -24,18 +23,14 @@ class HomeTests: XCTestCase {
     func slateResponse() -> Response {
         Response {
             Status.ok
-            Fixture.load(name: "slates")
-                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                .data
+            Fixture.data(name: "slates")
         }
     }
 
     func slateDetailResponse() -> Response {
         Response {
             Status.ok
-            Fixture.load(name: "slate-detail")
-                .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                .data
+            Fixture.data(name: "slate-detail")
         }
     }
 

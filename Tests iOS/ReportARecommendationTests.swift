@@ -17,9 +17,7 @@ class ReportARecommendationTests: XCTestCase {
         server.routes.post("/graphql") { _, _ in
             Response {
                 Status.ok
-                Fixture.load(name: "slates")
-                    .replacing("PARTICLE_JSON", withFixtureNamed: "particle-sample", escape: .encodeJSON)
-                    .data
+                Fixture.data(name: "slates")
             }
         }
         
