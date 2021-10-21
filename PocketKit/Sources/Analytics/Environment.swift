@@ -6,20 +6,11 @@ import SwiftUI
 import SnowplowTracker
 
 
-struct UIContextsKey: EnvironmentKey {
-    static var defaultValue: [UIContext] = []
-}
-
 struct TrackerKey: EnvironmentKey {
     static var defaultValue: Tracker = NoopTracker()
 }
 
 public extension EnvironmentValues {
-    var uiContexts: [UIContext] {
-        get { self[UIContextsKey.self] }
-        set { self[UIContextsKey.self] = newValue }
-    }
-    
     var tracker: Tracker {
         get { self[TrackerKey.self] }
         set { self[TrackerKey.self] = newValue }

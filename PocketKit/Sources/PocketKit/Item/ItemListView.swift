@@ -25,9 +25,6 @@ struct ItemListView: View {
     @Environment(\.tracker)
     private var tracker: Tracker
 
-    @Environment(\.uiContexts)
-    private var contexts: [UIContext]
-
     init(model: MainViewModel) {
         self.model = model
     }
@@ -74,7 +71,7 @@ struct ItemListView: View {
             return
         }
 
-        let contexts = self.contexts as [SnowplowContext] + [
+        let contexts: [SnowplowContext] = [
             UIContext.myList.item(index: UInt(index)),
             UIContext.button(identifier: .itemArchive),
             Content(url: url)
@@ -88,9 +85,6 @@ struct ItemListView: View {
 }
 
 private struct ItemListViewRow: View {
-    @Environment(\.uiContexts)
-    var uiContexts: [UIContext]
-    
     @Environment(\.tracker)
     var tracker: Tracker
 
@@ -103,16 +97,6 @@ private struct ItemListViewRow: View {
     private let item: SavedItem
     
     private let index: Int
-    
-    private var contexts: [SnowplowContext] {
-        guard let itemURL = item.url else {
-            return []
-        }
-        
-        let content = Content(url: itemURL)
-        let contexts: [SnowplowContext] = uiContexts + [content]
-        return contexts
-    }
 
     init(item: SavedItem, model: MainViewModel, index: Int) {
         self.item = item
@@ -122,39 +106,35 @@ private struct ItemListViewRow: View {
 
     var body: some View {
         Button(action: {
-            guard let url = item.url else {
+            guard let itemURL = item.url else {
                 return
             }
             
-            let content = Content(url: url)
-            let contexts: [SnowplowContext] = uiContexts + [content]
+            let content = Content(url: itemURL)
             let engagement = Engagement(type: .general, value: nil)
-            tracker.track(event: engagement, contexts)
+            tracker.track(event: engagement, [content])
             
             model.selectedItem = item
             
             let open = ContentOpen(destination: .internal, trigger: .click)
-            tracker.track(event: open, contexts)
+            tracker.track(event: open, [content])
         }) {
             ItemRowView(
                 model: ItemPresenter(
                     item: item,
                     index: index,
                     source: source,
-                    tracker: tracker,
-                    contexts: uiContexts
+                    tracker: tracker
                 )
-            )
-                .trackable(.myList.item(index: UInt(index)))
-                .onAppear {
-                    let contexts = contexts
-                    guard contexts.count > 1 else {
-                        return
-                    }
-                    
-                    let impression = Impression(component: .content, requirement: .instant)
-                    tracker.track(event: impression, contexts)
+            ).onAppear {
+                guard let itemURL = item.url else {
+                    return
                 }
+                
+                let content = Content(url: itemURL)
+                let impression = Impression(component: .content, requirement: .instant)
+                tracker.track(event: impression, [content])
+            }
         }.listRowBackground(Color(.ui.white1))
     }
 }

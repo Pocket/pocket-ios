@@ -25,20 +25,17 @@ class ItemPresenter: ItemRow {
 
     private let source: Source
     private let tracker: Tracker
-    private let contexts: [SnowplowContext]
 
     init(
         item: SavedItem,
         index: Int,
         source: Source,
-        tracker: Tracker,
-        contexts: [SnowplowContext]
+        tracker: Tracker
     ) {
         self.savedItem = item
         self.index = index
         self.source = source
         self.tracker = tracker
-        self.contexts = contexts
     }
 
     public var title: String {
@@ -114,7 +111,7 @@ class ItemPresenter: ItemRow {
             return
         }
 
-        let contexts: [SnowplowContext] = contexts + [
+        let contexts: [SnowplowContext] = [
             UIContext.button(identifier: identifier),
             Content(url: url)
         ]
