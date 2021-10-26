@@ -7,31 +7,31 @@ import SnowplowTracker
 
 class MockTracker: Analytics.Tracker {
     struct TrackCall {
-        let event: SnowplowEvent
-        let contexts: [SnowplowContext]?
+        let event: Analytics.Event
+        let contexts: [Context]?
     }
 
     struct AddPersistentCall {
-        let context: SnowplowContext
+        let context: Context
     }
 
     private(set) var trackCalls = Calls<TrackCall>()
     private(set) var addPersistentCalls = Calls<AddPersistentCall>()
     
-    func addPersistentContext(_ context: SnowplowContext) {
+    func addPersistentContext(_ context: Context) {
         addPersistentCalls.add(AddPersistentCall(context: context))
     }
     
-    func track<T: SnowplowEvent>(event: T, _ contexts: [SnowplowContext]?) {
+    func track<T: Analytics.Event>(event: T, _ contexts: [Context]?) {
         trackCalls.add(TrackCall(event: event, contexts: contexts))
     }
     
-    func childTracker(with contexts: [SnowplowContext]) -> Analytics.Tracker {
+    func childTracker(with contexts: [Context]) -> Analytics.Tracker {
         NoopTracker()
     }
 }
 
-class MockSnowplow: SnowplowTracking {
+class MockSnowplow: Analytics.SnowplowTracker {
     struct TrackCall {
         let event: SelfDescribing
     }
@@ -43,19 +43,19 @@ class MockSnowplow: SnowplowTracking {
     }
 }
 
-struct MockEvent: SnowplowEvent, Equatable {
+struct MockEvent: Analytics.Event, Equatable {
     static var schema = "mock-event"
     
     let value: Int
 }
 
-struct MockContext: SnowplowContext, Equatable {
+struct MockContext: Context, Equatable {
     static var schema = "mock-context"
     
     let value: String
 }
 
-struct PersistentContext: SnowplowContext {
+struct PersistentContext: Context {
     static var schema = "persistent-context"
     
     let value: String

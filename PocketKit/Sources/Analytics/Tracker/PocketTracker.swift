@@ -2,43 +2,42 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
 import SnowplowTracker
 
 
 public class PocketTracker: Tracker {
-    private let snowplow: SnowplowTracking
+    private let snowplow: SnowplowTracker
     
-    private var persistentContexts: [SnowplowContext] = []
+    private var persistentContexts: [Context] = []
     
-    public init(snowplow: SnowplowTracking) {
+    public init(snowplow: SnowplowTracker) {
         self.snowplow = snowplow
     }
     
-    public func addPersistentContext(_ context: SnowplowContext) {
+    public func addPersistentContext(_ context: Context) {
         persistentContexts.append(context)
     }
     
-    public func track<T: SnowplowEvent>(event: T, _ contexts: [SnowplowContext]?) {
-        guard let event = snowplowEvent(from: event) else {
+    public func track<T: Event>(event: T, _ contexts: [Context]?) {
+        guard let event = Event(from: event) else {
             return
         }
         
         let contexts = contexts ?? []
         let merged = contexts + persistentContexts
-        let snowplowContexts = snowplowContexts(from: merged)
-        event.contexts.addObjects(from: snowplowContexts)
+        let Contexts = Contexts(from: merged)
+        event.contexts.addObjects(from: Contexts)
         
         snowplow.track(event: event)
     }
     
-    public func childTracker(with contexts: [SnowplowContext]) -> Tracker {
+    public func childTracker(with contexts: [Context]) -> Tracker {
         return LinkedTracker(parent: self, contexts: contexts)
     }
 }
 
 extension PocketTracker {
-    private func snowplowEvent<T: SnowplowEvent>(from event: T) -> SelfDescribing? {
+    private func Event<T: Event>(from event: T) -> SelfDescribing? {
         guard let data = try? JSONEncoder().encode(event),
               let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
               let eventJSON = SelfDescribingJson(schema: type(of: event).schema, andData: deserialized as NSObject) else {
@@ -47,17 +46,17 @@ extension PocketTracker {
         return SelfDescribing(eventData: eventJSON)
     }
     
-    private func snowplowContexts(from contexts: [SnowplowContext]) -> [SelfDescribingJson] {
-        var uiHierarchy: UInt = 0
-        // UIContexts are returned outside-in, such that the parent precedes the child.
+    private func Contexts(from contexts: [Context]) -> [SelfDescribingJson] {
+        var Hierarchy: UInt = 0
+        // UIs are returned outside-in, such that the parent precedes the child.
         // However, in Snowplow, the hierarchy starts at the lowest-level of the contexts.
         // Since we don't know how deeply nested the view hierarchy will be up-front,
         // we have to reverse the contexts to go inside-out, such that the child precedes the parent,
         // and update the hierarchy appropriately.
-        let contexts = contexts.reversed().map { (context) -> SnowplowContext in
+        let contexts = contexts.reversed().map { (context) -> Context in
             if let context = context as? UIContext {
-                let context = context.with(hierarchy: uiHierarchy)
-                uiHierarchy += 1
+                let context = context.with(hierarchy: Hierarchy)
+                Hierarchy += 1
                 return context
             }
             

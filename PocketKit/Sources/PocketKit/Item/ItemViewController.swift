@@ -202,17 +202,17 @@ extension ItemViewController {
         track(identifier: .itemShare, item: item)
     }
 
-    private func track(identifier: UIIdentifier, item: SavedItem) {
+    private func track(identifier: UIContext.Identifier, item: SavedItem) {
         guard let url = item.url else {
             return
         }
 
-        let contexts: [SnowplowContext] = [
+        let contexts: [Context] = [
             UIContext.button(identifier: identifier),
-            Content(url: url)
+            ContentContext(url: url)
         ]
 
-        let event = Engagement(type: .general, value: nil)
+        let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, contexts)
     }
 }

@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import XCTest
-import Analytics
+@testable import Analytics
 @testable import PocketKit
 
 
@@ -36,7 +36,7 @@ class SceneTrackerTests: XCTestCase {
         
         XCTAssertTrue(tracker.trackCalls.wasCalled)
         
-        let event = tracker.trackCalls.last?.event as? AppOpen
+        let event = tracker.trackCalls.last?.event as? AppOpenEvent
         XCTAssertNotNil(event)
         
         XCTAssertNil(event!.secondsSinceLastOpen)
@@ -55,7 +55,7 @@ class SceneTrackerTests: XCTestCase {
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         
-        let event = tracker.trackCalls.last?.event as? AppOpen
+        let event = tracker.trackCalls.last?.event as? AppOpenEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)
         XCTAssertNotNil(event!.secondsSinceLastBackground)
@@ -67,7 +67,7 @@ class SceneTrackerTests: XCTestCase {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
         
-        let event = tracker.trackCalls.last?.event as? AppBackground
+        let event = tracker.trackCalls.last?.event as? AppBackgroundEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)
         XCTAssertNil(event!.secondsSinceLastBackground)
@@ -79,7 +79,7 @@ class SceneTrackerTests: XCTestCase {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
         
-        let event = tracker.trackCalls.last?.event as? AppBackground
+        let event = tracker.trackCalls.last?.event as? AppBackgroundEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)
         XCTAssertNotNil(event!.secondsSinceLastBackground)

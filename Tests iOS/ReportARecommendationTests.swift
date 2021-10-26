@@ -41,7 +41,7 @@ class ReportARecommendationTests: XCTestCase {
         app.terminate()
     }
     
-    func test_reportingARecommendation_asBrokenMeta_sendsSnowplowEvent() {
+    func test_reportingARecommendation_asBrokenMeta_sendsEvent() {
         let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
         var requestBody: String? = nil
         server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in

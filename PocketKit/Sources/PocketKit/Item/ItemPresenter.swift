@@ -106,17 +106,17 @@ class ItemPresenter: ItemRow {
         track(identifier: .itemShare)
     }
 
-    private func track(identifier: UIIdentifier) {
+    private func track(identifier: UIContext.Identifier) {
         guard let url = savedItem.bestURL else {
             return
         }
 
-        let contexts: [SnowplowContext] = [
+        let contexts: [Context] = [
             UIContext.button(identifier: identifier),
-            Content(url: url)
+            ContentContext(url: url)
         ]
 
-        let event = Engagement(type: .general, value: nil)
+        let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, contexts)
     }
 }

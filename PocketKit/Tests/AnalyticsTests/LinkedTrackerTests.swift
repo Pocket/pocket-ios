@@ -10,7 +10,6 @@ class LinkedTrackerTests: XCTestCase {
     func test_track_withPersistentContexts_forwardsPersistentContextsToParent() {
         let mockTracker = MockTracker()
         let context = MockContext(value: "persistent")
-        let event = MockEvent(value: 1337)
         
         let tracker = LinkedTracker(parent: mockTracker, contexts: [context])
         tracker.addPersistentContext(context)

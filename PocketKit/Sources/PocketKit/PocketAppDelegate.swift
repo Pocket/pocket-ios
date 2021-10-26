@@ -11,7 +11,7 @@ import BackgroundTasks
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let accessTokenStore: AccessTokenStore
-    private let source: Sync.Source
+    private let source: Source
     private let tracker: Tracker
     private let userDefaults: UserDefaults
     private let session: Session
@@ -98,10 +98,26 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+private extension APIUserContext {
+    init(consumerKey: String) {
+        let components = consumerKey.components(separatedBy: "-")
+        let id: UInt
+        if let identifier = components.first, let apiID = UInt(identifier) {
+            id = apiID
+        } else {
+            id = 1
+        }
+
+        let clientVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
+        
+        self.init(id: id, clientVersion: clientVersion)
+    }
+}
+
 private extension PocketAppDelegate {
     func setupTracker() {
         let key = Keys.shared.pocketApiConsumerKey
-        let apiUser = APIUser(consumerKey: key)
+        let apiUser = APIUserContext(consumerKey: key)
         tracker.addPersistentContext(apiUser)
     }
 }

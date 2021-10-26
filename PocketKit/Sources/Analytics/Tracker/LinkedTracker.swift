@@ -2,28 +2,25 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Foundation
-
-
 class LinkedTracker: Tracker {
     private let parent: Tracker
-    private let contexts: [SnowplowContext]
+    private let contexts: [Context]
     
-    init(parent: Tracker, contexts: [SnowplowContext]) {
+    init(parent: Tracker, contexts: [Context]) {
         self.parent = parent
         self.contexts = contexts
     }
     
-    func addPersistentContext(_ context: SnowplowContext) {
+    func addPersistentContext(_ context: Context) {
         parent.addPersistentContext(context)
     }
     
-    func track<T>(event: T, _ contexts: [SnowplowContext]?) where T : SnowplowEvent {
+    func track<T>(event: T, _ contexts: [Context]?) where T : Event {
         let additional = contexts ?? []
         parent.track(event: event, self.contexts + additional)
     }
     
-    func childTracker(with contexts: [SnowplowContext]) -> Tracker {
+    func childTracker(with contexts: [Context]) -> Tracker {
         LinkedTracker(parent: self, contexts: contexts)
     }
 }

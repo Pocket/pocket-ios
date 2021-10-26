@@ -44,12 +44,12 @@ class ArticleViewController: UICollectionViewController {
         item?.particle
     }
     
-    private var contexts: [SnowplowContext] {
+    private var contexts: [Context] {
         guard let item = item, let url = item.readerURL else {
             return []
         }
         
-        let content = Content(url: url)
+        let content = ContentContext(url: url)
         return [content]
     }
 
@@ -217,7 +217,7 @@ extension ArticleViewController: TextContentCellDelegate {
         _ cell: TextContentCell,
         shouldOpenURL url: URL
     ) -> Bool {
-        let contentOpen = ContentOpen(destination: .external, trigger: .click)
+        let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
         let link = UIContext.articleView.link
         let contexts = contexts + [link]
         tracker.track(event: contentOpen, contexts)

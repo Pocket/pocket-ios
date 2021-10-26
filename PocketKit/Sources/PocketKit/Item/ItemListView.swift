@@ -71,14 +71,14 @@ struct ItemListView: View {
             return
         }
 
-        let contexts: [SnowplowContext] = [
+        let contexts: [Context] = [
             UIContext.myList.item(index: UInt(index)),
             UIContext.button(identifier: .itemArchive),
-            Content(url: url)
+            ContentContext(url: url)
         ]
 
         tracker.track(
-            event: Engagement(type: .general, value: nil),
+            event: SnowplowEngagement(type: .general, value: nil),
             contexts
         )
     }
@@ -110,13 +110,13 @@ private struct ItemListViewRow: View {
                 return
             }
             
-            let content = Content(url: itemURL)
-            let engagement = Engagement(type: .general, value: nil)
+            let content = ContentContext(url: itemURL)
+            let engagement = SnowplowEngagement(type: .general, value: nil)
             tracker.track(event: engagement, [content])
             
             model.selectedItem = item
             
-            let open = ContentOpen(destination: .internal, trigger: .click)
+            let open = ContentOpenEvent(destination: .internal, trigger: .click)
             tracker.track(event: open, [content])
         }) {
             ItemRowView(
@@ -131,8 +131,8 @@ private struct ItemListViewRow: View {
                     return
                 }
                 
-                let content = Content(url: itemURL)
-                let impression = Impression(component: .content, requirement: .instant)
+                let content = ContentContext(url: itemURL)
+                let impression = ImpressionEvent(component: .content, requirement: .instant)
                 tracker.track(event: impression, [content])
             }
         }.listRowBackground(Color(.ui.white1))

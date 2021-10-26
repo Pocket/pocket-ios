@@ -81,7 +81,7 @@ class PocketSceneCoordinator: NSObject {
            let guid = session.guid,
            let userID = session.userID {
 
-            let user = SnowplowUser(guid: guid, userID: userID)
+            let user = UserContext(guid: guid, userID: userID)
             tracker.addPersistentContext(user)
             Crashlogger.setUserID(userID)
             source.refresh()

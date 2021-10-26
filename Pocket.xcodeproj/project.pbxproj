@@ -62,13 +62,6 @@
 			remoteGlobalIDString = 166A81AF2637406C0015AA1D;
 			remoteInfo = "Pocket (iOS)";
 		};
-		166F8F2A26D0641100F898E3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 16D68EAB269648510046F93D;
-			remoteInfo = ApolloCodegen;
-		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -248,7 +241,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				166F8F2B26D0641100F898E3 /* PBXTargetDependency */,
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
@@ -416,11 +408,6 @@
 			isa = PBXTargetDependency;
 			target = 166A81AF2637406C0015AA1D /* Pocket (iOS) */;
 			targetProxy = 166A81C12637406C0015AA1D /* PBXContainerItemProxy */;
-		};
-		166F8F2B26D0641100F898E3 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 16D68EAB269648510046F93D /* ApolloCodegen */;
-			targetProxy = 166F8F2A26D0641100F898E3 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

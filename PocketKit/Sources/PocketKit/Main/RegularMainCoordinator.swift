@@ -52,7 +52,7 @@ class RegularMainCoordinator: NSObject {
         
         home = HomeViewController(
             source: source,
-            tracker: tracker.childTracker(hosting: UIContext.home.screen), 
+            tracker: tracker.childTracker(hosting: UIContext.home.screen),
             model: model
         )
         home.view.backgroundColor = UIColor(.ui.white1)
@@ -251,13 +251,13 @@ class RegularMainCoordinator: NSObject {
         safariVC.delegate = self
         splitController.present(safariVC, animated: true)
 
-        let contexts: [SnowplowContext] = [
-            Content(url: url),
+        let contexts: [Context] = [
+            ContentContext(url: url),
             UIContext.articleView.screen,
             UIContext.articleView.switchToWebView
         ]
 
-        let engagement = Engagement(type: .general, value: nil)
+        let engagement = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: engagement, contexts)
     }
 
