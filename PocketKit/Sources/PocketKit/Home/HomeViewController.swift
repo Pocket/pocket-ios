@@ -198,7 +198,7 @@ extension HomeViewController {
                 tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
                     self?.source.save(recommendation: recommendation)
 
-                    let engagement = Engagement(type: .save, value: nil)
+                    let engagement = SnowplowEngagement(type: .save, value: nil)
                     self?.tracker.track(event: engagement, self?.contexts(for: indexPath))
                 }
             }
@@ -332,7 +332,7 @@ extension HomeViewController: UICollectionViewDelegate {
             return
         }
         
-        let impression = Impression(component: .content, requirement: .instant)
+        let impression = ImpressionEvent(component: .content, requirement: .instant)
         tracker.track(event: impression, contexts(for: indexPath))
     }
     
@@ -346,19 +346,19 @@ extension HomeViewController: UICollectionViewDelegate {
         case 0:
             model.selectedSlateID = slates[indexPath.item].id
         default:
-            let engagement = Engagement(type: .general, value: nil)
+            let engagement = SnowplowEngagement(type: .general, value: nil)
             tracker.track(event: engagement, contexts(for: indexPath))
             
             model.selectedRecommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
 
-            let open = ContentOpen(destination: .internal, trigger: .click)
+            let open = ContentOpenEvent(destination: .internal, trigger: .click)
             tracker.track(event: open, contexts(for: indexPath))
         }
     }
 }
 
 extension HomeViewController {
-    private func contexts(for indexPath: IndexPath) -> [SnowplowContext] {
+    private func contexts(for indexPath: IndexPath) -> [Context] {
         switch indexPath.section {
         case 0:
             return []
@@ -368,13 +368,13 @@ extension HomeViewController {
                       return []
                   }
             
-            let slateLineup = SnowplowSlateLineup(
+            let slateLineup = SlateLineupContext(
                 id: lineup.id,
                 requestID: lineup.requestID,
                 experiment: lineup.experimentID
             )
             
-            let slate = SnowplowSlate(
+            let slate = SlateContext(
                 id: visibleSlate.id,
                 requestID: visibleSlate.requestID,
                 experiment: visibleSlate.experimentID,
@@ -386,7 +386,7 @@ extension HomeViewController {
                 return []
             }
             
-            let recommendation = SnowplowRecommendation(
+            let recommendation = RecommendationContext(
                 id: recommendationID,
                 index: UIIndex(indexPath.item)
             )
@@ -395,7 +395,7 @@ extension HomeViewController {
                 return []
             }
             
-            let content = Content(url: url)
+            let content = ContentContext(url: url)
             let item = UIContext.home.item(index: UInt(indexPath.item))
             
             return [item, content, slateLineup, slate, recommendation]

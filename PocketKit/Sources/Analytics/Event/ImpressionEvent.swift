@@ -2,23 +2,20 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-import Analytics
-
-
-struct Impression: SnowplowEvent {
-    static let schema = "iglu:com.pocket/impression/jsonschema/1-0-1"
+public struct ImpressionEvent: Event {
+    public static let schema = "iglu:com.pocket/impression/jsonschema/1-0-1"
     
-    private let component: Component
-    private let requirement: Requirement
+    let component: Component
+    let requirement: Requirement
     
-    init(component: Component, requirement: Requirement) {
+    public init(component: Component, requirement: Requirement) {
         self.component = component
         self.requirement = requirement
     }
 }
 
-extension Impression {
-    enum Component: String, Encodable {
+extension ImpressionEvent {
+    public enum Component: String, Encodable {
         case ui
         case card
         case content
@@ -34,7 +31,7 @@ extension Impression {
         }
     }
     
-    enum Requirement: String, Encodable {
+    public enum Requirement: String, Encodable {
         case instant
         case viewable
     }

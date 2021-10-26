@@ -53,7 +53,7 @@ class SlateDetailViewController: UIViewController {
                 tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
                     self?.source.save(recommendation: recommendation)
 
-                    let engagement = Engagement(type: .save, value: nil)
+                    let engagement = SnowplowEngagement(type: .save, value: nil)
                     self?.tracker.track(event: engagement, self?.contexts(for: indexPath))
                 }
             }
@@ -254,7 +254,7 @@ class SlateDetailViewController: UIViewController {
 
 extension SlateDetailViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        let impression = Impression(component: .content, requirement: .instant)
+        let impression = ImpressionEvent(component: .content, requirement: .instant)
         tracker.track(event: impression, contexts(for: indexPath))
     }
  
@@ -263,23 +263,23 @@ extension SlateDetailViewController: UICollectionViewDelegate {
             return
         }
         
-        let engagement = Engagement(type: .general, value: nil)
+        let engagement = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: engagement, contexts(for: indexPath))
 
         model.selectedRecommendation = recommendation
 
-        let contentOpen = ContentOpen(destination: .internal, trigger: .click)
+        let contentOpen = ContentOpenEvent(destination: .internal, trigger: .click)
         tracker.track(event: contentOpen, contexts(for: indexPath))
     }
 }
 
 extension SlateDetailViewController {
-    private func contexts(for indexPath: IndexPath) -> [SnowplowContext] {
+    private func contexts(for indexPath: IndexPath) -> [Context] {
         guard let slate = slate else {
             return []
         }
         
-        let snowplowSlate = SnowplowSlate(
+        let snowplowSlate = SlateContext(
             id: slate.id,
             requestID: slate.requestID,
             experiment: slate.experimentID,
@@ -290,12 +290,12 @@ extension SlateDetailViewController {
         guard let recommendationID = recommendation.id else {
             return []
         }
-        let snowplowRecommendation = SnowplowRecommendation(id: recommendationID, index: UIIndex(indexPath.item))
+        let snowplowRecommendation = RecommendationContext(id: recommendationID, index: UIIndex(indexPath.item))
         
         guard let url = recommendation.readerURL else {
             return []
         }
-        let content = Content(url: url)
+        let content = ContentContext(url: url)
         
         let context = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.row))
      

@@ -29,7 +29,7 @@ struct ReportRecommendationView: View {
     private var dismiss
     
     @State
-    private var selectedReason: Report.Reason? = nil
+    private var selectedReason: ReportEvent.Reason? = nil
     
     @State
     private var reportComment = ""
@@ -49,7 +49,7 @@ struct ReportRecommendationView: View {
     var body: some View {
         List {
             Section(header: Text("Report a concern")) {
-                ForEach(Report.Reason.allCases, id: \.self) { reason in
+                ForEach(ReportEvent.Reason.allCases, id: \.self) { reason in
                     ReportReasonRow(
                         text: reason.displayString,
                         isSelected: reason == selectedReason) {
@@ -98,16 +98,16 @@ struct ReportRecommendationView: View {
         .accessibilityIdentifier("report-recommendation")
     }
     
-    private func report(_ reason: Report.Reason) {
+    private func report(_ reason: ReportEvent.Reason) {
         guard let url = recommendation.readerURL else {
             return
         }
 
         let button = UIContext.button(identifier: .submit)
-        let content = Content(url: url)
+        let content = ContentContext(url: url)
         let comment = reportComment.isEmpty ? nil : reportComment
-        let report = Report(reason: reason, comment: comment)
-        let engagement = Engagement(type: .report, value: nil)
+        let report = ReportEvent(reason: reason, comment: comment)
+        let engagement = SnowplowEngagement(type: .report, value: nil)
         tracker.track(event: engagement, [button, content, report])
         
         isReported = true
@@ -117,7 +117,7 @@ struct ReportRecommendationView: View {
         }
     }
     
-    private func selectionColor(for reason: Report.Reason) -> Color {
+    private func selectionColor(for reason: ReportEvent.Reason) -> Color {
         return reason == selectedReason ? Constants.reasonRowSelectedColor : Constants.reasonRowDeselectedColor
     }
     
@@ -197,7 +197,7 @@ private extension Style {
     static let submitButtonStyle = Style.header.sansSerif.h6.with(color: .ui.white)
 }
 
-private extension Report.Reason {
+private extension ReportEvent.Reason {
     var displayString: String {
         switch self {
         case .brokenMeta: return "The title, link, or image is broken"

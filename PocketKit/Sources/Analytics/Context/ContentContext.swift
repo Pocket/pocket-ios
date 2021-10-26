@@ -3,11 +3,14 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
-import Analytics
 
 
-struct Content: SnowplowContext {
-    static let schema = "iglu:com.pocket/content/jsonschema/1-0-0"
+public struct ContentContext: Context {
+    public static let schema = "iglu:com.pocket/content/jsonschema/1-0-0"
     
     let url: URL
+    
+    public init(url: URL) {
+        self.url = url
+    }
 }

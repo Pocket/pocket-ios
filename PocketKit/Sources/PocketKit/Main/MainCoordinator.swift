@@ -44,7 +44,7 @@ class MainCoordinator {
                     context = UIContext.myList.screen
                 }
 
-                let impression = Impression(component: .screen, requirement: .instant)
+                let impression = ImpressionEvent(component: .screen, requirement: .instant)
                 tracker.track(event: impression, [context])
             }
             .store(in: &subscriptions)

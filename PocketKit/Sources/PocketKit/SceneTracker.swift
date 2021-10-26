@@ -55,7 +55,7 @@ class SceneTracker {
             return
         }
         
-        let event = AppOpen(
+        let event = AppOpenEvent(
             secondsSinceLastOpen: secondsSince(.active),
             secondsSinceLastBackground: secondsSince(.background)
         )
@@ -70,7 +70,7 @@ class SceneTracker {
             return
         }
         
-        let event = AppBackground(
+        let event = AppBackgroundEvent(
             secondsSinceLastOpen: secondsSince(.active),
             secondsSinceLastBackground: secondsSince(.background)
         )
