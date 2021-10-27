@@ -51,6 +51,10 @@ class ArticleMetadataCell: UICollectionViewCell {
 
 extension ArticleMetadataCell {
     static func height(of attributedString: NSAttributedString, width: CGFloat, numberOfLines: Int) -> CGFloat {
+        guard !attributedString.string.isEmpty else {
+            return 0
+        }
+
         let maxHeight: CGFloat
         if let font = attributedString.attribute(.font, at: 0, effectiveRange: nil) as? UIFont {
             maxHeight = font.lineHeight * CGFloat(numberOfLines)

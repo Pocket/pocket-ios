@@ -43,7 +43,9 @@ extension Slate.Item {
             article: nil,
             excerpt: nil,
             domain: nil,
-            domainMetadata: nil
+            domainMetadata: nil,
+            authors: nil,
+            datePublished: nil
         )
     }
 }
