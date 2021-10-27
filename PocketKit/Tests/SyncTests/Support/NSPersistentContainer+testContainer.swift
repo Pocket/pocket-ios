@@ -4,6 +4,8 @@ import CoreData
 
 extension NSPersistentContainer {
     static let testContainer: NSPersistentContainer = {
+        ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
+
         let url = Bundle.sync.url(forResource: "PocketModel", withExtension: "momd")!
         let model = NSManagedObjectModel(contentsOf: url)!
         let container = NSPersistentContainer(name: "PocketModel", managedObjectModel: model)
