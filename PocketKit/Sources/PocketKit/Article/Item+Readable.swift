@@ -3,12 +3,12 @@ import Foundation
 
 
 extension SavedItem: Readable {
-    var title: String? {
-        item?.title
+    var authors: [ReadableAuthor]? {
+        item?.authors?.compactMap { $0 as? Author }
     }
 
-    var author: String? {
-        item?.authors?.compactMap { ($0 as? Author)?.name }.joined(separator: " and ")
+    var title: String? {
+        item?.title
     }
 
     var domain: String? {
@@ -20,9 +20,7 @@ extension SavedItem: Readable {
     }
 
     var components: [ArticleComponent]? {
-        item?.marticleJSON.flatMap {
-            try? JSONDecoder().decode([ArticleComponent].self, from: $0)
-        }
+        item?.article?.components
     }
 
     var readerURL: URL? {
@@ -32,4 +30,7 @@ extension SavedItem: Readable {
     func shareActivity(additionalText: String?) -> PocketActivity? {
         PocketItemActivity(item: self, additionalText: additionalText)
     }
+}
+
+extension Author: ReadableAuthor {
 }
