@@ -5,23 +5,23 @@ import Sync
 
 extension Slate.Recommendation: Readable {
     var title: String? {
-        nil
+        item.title
     }
 
     var authors: [ReadableAuthor]? {
-        nil
+        item.authors
     }
 
     var domain: String? {
-        nil
+        item.domainMetadata?.name ?? item.domain
     }
 
     var publishDate: Date? {
-        nil
+        item.datePublished
     }
 
     var components: [ArticleComponent]? {
-        []
+        item.article?.components
     }
 
     var readerURL: URL? {
@@ -35,4 +35,8 @@ extension Slate.Recommendation: Readable {
     func shareActivity(additionalText: String?) -> PocketActivity? {
         PocketItemActivity(recommendation: self, additionalText: additionalText)
     }
+}
+
+extension Slate.Author: ReadableAuthor {
+    
 }

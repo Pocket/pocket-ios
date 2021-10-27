@@ -103,13 +103,13 @@ class HomeTests: XCTestCase {
 
     func test_tappingRecommendationCell_opensItemInReader() {
         app.homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
-        app.readerView.cell(containing: "By Jacob & David").wait()
+        app.readerView.cell(containing: "by Jacob and David").wait()
     }
 
     func test_tappingRecommendationCellInSlateDetailView_opensItemInReader() {
         app.homeView.topicChip("Slate 1").wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
-        app.readerView.cell(containing: "By Jacob & David").wait()
+        app.readerView.cell(containing: "by Jacob and David").wait()
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
