@@ -7,6 +7,8 @@ import CoreData
 
 extension NSPersistentContainer {
     public static func createDefault() -> NSPersistentContainer {
+        ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
+
         let url = Bundle.module.url(forResource: "PocketModel", withExtension: "momd")!
         let model = NSManagedObjectModel(contentsOf: url)!
         let container = NSPersistentContainer(name: "PocketModel", managedObjectModel: model)

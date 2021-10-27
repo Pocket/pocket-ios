@@ -12,7 +12,7 @@
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
     </entity>
     <entity name="Item" representedClassName="Item" syncable="YES" codeGenerationType="class">
-        <attribute name="article" optional="YES" attributeType="Transformable" valueTransformerName="" customClassName=".Article"/>
+        <attribute name="article" optional="YES" attributeType="Transformable" valueTransformerName="ArticleTransformer" customClassName=".Article"/>
         <attribute name="datePublished" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="domain" optional="YES" attributeType="String"/>
         <attribute name="excerpt" optional="YES" attributeType="String"/>
