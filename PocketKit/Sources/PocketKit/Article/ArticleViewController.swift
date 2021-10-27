@@ -21,11 +21,15 @@ protocol Readable {
     var textAlignment: TextAlignment { get }
 
     var title: String? { get }
-    var author: String? { get }
+    var authors: [ReadableAuthor]? { get }
     var domain: String? { get }
     var publishDate: Date? { get }
 
     func shareActivity(additionalText: String?) -> PocketActivity?
+}
+
+protocol ReadableAuthor {
+    var name: String? { get }
 }
 
 class ArticleViewController: UICollectionViewController {
@@ -96,24 +100,14 @@ extension ArticleViewController {
     ) -> UICollectionViewCell {
         switch indexPath.item {
         case 0:
-
             let metaCell: ArticleMetadataCell = collectionView.dequeueCell(for: indexPath)
-            metaCell.titleLabel.text = item?.title
-
-
-            var authorString: String?
-            if let author = item?.author, !author.isEmpty {
-                authorString = "by \(author)"
+            guard let readable = item else {
+                return metaCell
             }
 
-            metaCell.metaLabel.text = [
-                [authorString, item?.domain].compactMap { $0 }.joined(separator: ", "),
-                item?.publishDate?.formatted()
-            ]
-                .compactMap { $0 }
-                .filter { $0.isEmpty == false }
-                .joined(separator: "\n")
-
+            let presenter = ReadablePresenter(readable: readable)
+            metaCell.titleLabel.attributedText = presenter.attributedTitle
+            metaCell.bylineLabel.attributedText = presenter.attributedByline
             return metaCell
 
         default:
@@ -125,9 +119,32 @@ extension ArticleViewController {
 
 extension ArticleViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        guard let item = item else {
+            return CGSize(width: collectionView.frame.width, height: 0)
+        }
+
+        let margins = ArticleMetadataCell.Constants.layoutMargins
+        let width = collectionView.frame.width - margins.left - margins.right
+
+        let presenter = ReadablePresenter(readable: item)
+        var height: CGFloat = 0
+        if let title = presenter.attributedTitle {
+            height += ArticleMetadataCell.height(
+                of: title,
+                width: width,
+                numberOfLines: .max
+            )
+        }
+        if let byline = presenter.attributedByline {
+            height += ArticleMetadataCell.height(
+                of: byline,
+                width: width,
+                numberOfLines: .max
+            )
+        }
         return CGSize(
             width: collectionView.frame.width,
-            height: 100
+            height: height + margins.top + ArticleMetadataCell.Constants.stackSpacing + margins.bottom
         )
     }
 }
@@ -154,47 +171,5 @@ extension ArticleViewController: TextContentCellDelegate {
         let contexts = contexts + [link]
         tracker.track(event: contentOpen, contexts)
         return true
-    }
-}
-
-
-class ArticleMetadataCell: UICollectionViewCell {
-    let titleLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        return label
-    }()
-
-    let metaLabel: UILabel = {
-        let label = UILabel()
-        label.numberOfLines = 0
-        return label
-    }()
-
-    private var labelStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        return stack
-    }()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        contentView.addSubview(labelStack)
-
-        labelStack.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: labelStack.leadingAnchor),
-            contentView.topAnchor.constraint(equalTo: labelStack.topAnchor),
-            contentView.trailingAnchor.constraint(equalTo: labelStack.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: labelStack.bottomAnchor),
-        ])
-
-        labelStack.addArrangedSubview(titleLabel)
-        labelStack.addArrangedSubview(metaLabel)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

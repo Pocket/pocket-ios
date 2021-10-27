@@ -115,8 +115,13 @@ extension NSParagraphStyle {
     static func from(_ paragraphStyle: ParagraphStyle) -> NSParagraphStyle {
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment(paragraphStyle.alignment)
+
         if let lineBreakMode = NSLineBreakMode(paragraphStyle.lineBreakMode) {
             style.lineBreakMode = lineBreakMode
+        }
+
+        if let lineSpacing = paragraphStyle.lineSpacing {
+            style.lineSpacing = lineSpacing
         }
 
         return style

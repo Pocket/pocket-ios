@@ -170,7 +170,7 @@ class Tests_iOS: XCTestCase {
             "Item 1",
             "by Jacob and David",
             "WIRED",
-            "January 1st, 2021",
+            "January 1, 2021",
         ]
 
         for expectedString in expectedStrings {

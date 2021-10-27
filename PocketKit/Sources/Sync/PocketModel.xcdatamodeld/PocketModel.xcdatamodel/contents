@@ -18,7 +18,6 @@
         <attribute name="excerpt" optional="YES" attributeType="String"/>
         <attribute name="givenURL" optional="YES" attributeType="URI"/>
         <attribute name="language" optional="YES" attributeType="String"/>
-        <attribute name="marticleJSON" optional="YES" attributeType="Binary"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="resolvedURL" optional="YES" attributeType="URI"/>
         <attribute name="timeToRead" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
@@ -40,7 +39,7 @@
     <elements>
         <element name="Author" positionX="-9" positionY="144" width="128" height="89"/>
         <element name="DomainMetadata" positionX="-63" positionY="36" width="128" height="14"/>
-        <element name="Item" positionX="-45" positionY="99" width="128" height="254"/>
+        <element name="Item" positionX="-45" positionY="99" width="128" height="239"/>
         <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="134"/>
     </elements>
 </model>

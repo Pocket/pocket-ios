@@ -8,7 +8,7 @@ extension Slate.Recommendation: Readable {
         nil
     }
 
-    var author: String? {
+    var authors: [ReadableAuthor]? {
         nil
     }
 
