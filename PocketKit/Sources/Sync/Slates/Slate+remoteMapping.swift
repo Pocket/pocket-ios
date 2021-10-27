@@ -55,7 +55,9 @@ extension Slate.Item {
             },
             excerpt: remote.excerpt,
             domain: remote.domain,
-            domainMetadata: (remote.domainMetadata?.fragments.domainMetadataParts).flatMap(Slate.DomainMetadata.init)
+            domainMetadata: (remote.domainMetadata?.fragments.domainMetadataParts).flatMap(Slate.DomainMetadata.init),
+            authors: remote.authors.flatMap { $0.compactMap { $0 }.map(Slate.Author.init) },
+            datePublished: remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         )
     }
 }
@@ -67,6 +69,18 @@ extension Slate.DomainMetadata {
         self.init(
             name: remote.name,
             logo: remote.logo.flatMap(URL.init)
+        )
+    }
+}
+
+extension Slate.Author {
+    typealias Remote = ItemParts.Author
+
+    init(remote: Remote) {
+        self.init(
+            id: remote.id,
+            name: remote.name,
+            url: remote.url.flatMap(URL.init)
         )
     }
 }

@@ -71,11 +71,17 @@ class APISlateServiceTests: XCTestCase {
             XCTAssertEqual(item.timeToRead, 3)
             XCTAssertEqual(item.excerpt, "Cursus Aenean Elit")
             XCTAssertEqual(item.domain, "slate-2-rec-1.example.com")
+            XCTAssertEqual(item.datePublished, Date(timeIntervalSinceReferenceDate: 631195261))
 
             let domain = item.domainMetadata
             XCTAssertNotNil(domain)
             XCTAssertEqual(domain?.name, "Lifehacker")
             XCTAssertEqual(domain?.logo, URL(string: "https://slate-2-rec-1.example.com/logo.png"))
+
+            let author = item.authors?[0]
+            XCTAssertEqual(author?.id, "eb-white")
+            XCTAssertEqual(author?.name, "E.B. White")
+            XCTAssertEqual(author?.url, URL(string: "http://example.com/authors/eb-white")!)
 
             switch item.article?.components[0] {
             case .blockquote(let blockquote):

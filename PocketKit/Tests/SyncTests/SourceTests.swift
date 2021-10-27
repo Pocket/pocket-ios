@@ -194,7 +194,15 @@ class SourceTests: XCTestCase {
                 domainMetadata: Slate.DomainMetadata(
                     name: "Example",
                     logo: URL(string: "https://example.com/logo.png")!
-                )
+                ),
+                authors: [
+                    Slate.Author(
+                        id: "eb-white",
+                        name: "E.B. White",
+                        url: URL(string: "http://example.com/authors/eb-white")
+                    )
+                ],
+                datePublished: Date()
             )
         )
 
@@ -220,8 +228,16 @@ class SourceTests: XCTestCase {
         XCTAssertEqual(item?.article, recommendation.item.article)
         XCTAssertEqual(item?.excerpt, recommendation.item.excerpt)
         XCTAssertEqual(item?.domain, recommendation.item.domain)
-        XCTAssertEqual(item?.domainMetadata?.name, recommendation.item.domainMetadata?.name)
-        XCTAssertEqual(item?.domainMetadata?.logo, recommendation.item.domainMetadata?.logo)
+        XCTAssertEqual(item?.datePublished, recommendation.item.datePublished)
+
+        let domainMeta = item?.domainMetadata
+        XCTAssertEqual(domainMeta?.name, recommendation.item.domainMetadata?.name)
+        XCTAssertEqual(domainMeta?.logo, recommendation.item.domainMetadata?.logo)
+
+        let author = item?.authors?[0] as? Author
+        XCTAssertEqual(author?.id, recommendation.item.authors![0].id)
+        XCTAssertEqual(author?.name, recommendation.item.authors![0].name)
+        XCTAssertEqual(author?.url, recommendation.item.authors![0].url)
     }
 
     func test_archiveRecommendation_archivesTheRespectiveItem() async throws {

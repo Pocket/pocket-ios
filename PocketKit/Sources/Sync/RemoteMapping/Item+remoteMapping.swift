@@ -4,13 +4,6 @@ import Apollo
 
 
 extension Item {
-    private static var dateFormatter: DateFormatter {
-        let formatter = DateFormatter()
-        formatter.timeZone = .init(secondsFromGMT: 0)
-        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-
-        return formatter
-    }
 
     func update(remote: ItemParts) {
         remoteID = remote.remoteId
@@ -22,7 +15,7 @@ extension Item {
         language = remote.language
         timeToRead = remote.timeToRead.flatMap(Int32.init) ?? 0
         excerpt = remote.excerpt
-        datePublished = remote.datePublished.flatMap { Self.dateFormatter.date(from: $0) }
+        datePublished = remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
 
         guard let context = managedObjectContext else {
             return

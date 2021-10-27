@@ -21,7 +21,20 @@
                         "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                         "timeToRead": 1,
                         "marticle": [],
-                        "authors": [],
+                        "authors": [
+                            {
+                                "__typename": "Author",
+                                "id": "author-1",
+                                "name": "Jacob",
+                                "url": "http://example.com/authors/author-1"
+                            },
+                            {
+                                "__typename": "Author",
+                                "id": "author-2",
+                                "name": "David",
+                                "url": "http://example.com/authors/author-2"
+                            }
+                        ],
                         "datePublished": "2021-01-01 12:01:01",
                         "images": [],
                         "excerpt": "Cursus Aenean Elit",

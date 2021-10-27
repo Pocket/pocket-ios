@@ -173,12 +173,22 @@ extension Source {
         item.excerpt = recommendation.item.excerpt
         item.domain = recommendation.item.domain
         item.article = recommendation.item.article
+        item.datePublished = recommendation.item.datePublished
+
         item.domainMetadata = recommendation.item.domainMetadata.flatMap { remote in
             let domainMeta: DomainMetadata = space.new()
             domainMeta.name = remote.name
             domainMeta.logo = remote.logo
 
             return domainMeta
+        }
+
+        recommendation.item.authors?.forEach { recAuthor in
+            let author: Author = space.new()
+            author.id = recAuthor.id
+            author.name = recAuthor.name
+            author.url = recAuthor.url
+            item.addToAuthors(author)
         }
 
         savedItem.item = item
