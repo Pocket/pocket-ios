@@ -7,10 +7,11 @@ import SwiftUI
 
 
 public struct Style {
-    var fontDescriptor: FontDescriptor
-    var colorAsset: ColorAsset
-    var underlineStyle: UnderlineStyle
-    var strike: Strike
+    let fontDescriptor: FontDescriptor
+    let colorAsset: ColorAsset
+    let underlineStyle: UnderlineStyle
+    let strike: Strike
+    let backgroundColorAsset: ColorAsset?
     public let paragraph: ParagraphStyle
 
     init(
@@ -18,23 +19,26 @@ public struct Style {
         color: ColorAsset = .ui.grey1,
         underlineStyle: UnderlineStyle = .none,
         strike: Strike = .none,
-        paragraph: ParagraphStyle = ParagraphStyle(alignment: .left)
+        paragraph: ParagraphStyle = ParagraphStyle(alignment: .left),
+        backgroundColor: ColorAsset? = nil
     ) {
         self.fontDescriptor = fontDescriptor
         self.colorAsset = color
         self.underlineStyle = underlineStyle
         self.strike = strike
         self.paragraph = paragraph
+        self.backgroundColorAsset = backgroundColor
     }
     
     init(
-        family: FontDescriptor.Family? = nil,
-        size: FontDescriptor.Size? = nil,
-        weight: FontDescriptor.Weight? = nil,
+        family: FontDescriptor.Family = .graphik,
+        size: FontDescriptor.Size = .body,
+        weight: FontDescriptor.Weight = .regular,
         color: ColorAsset = .ui.grey1,
         underlineStyle: UnderlineStyle = .none,
         strike: Strike = .none,
-        paragraph: ParagraphStyle = ParagraphStyle(alignment: .left)
+        paragraph: ParagraphStyle = ParagraphStyle(alignment: .left),
+        backgroundColor: ColorAsset? = nil
     ) {
         self.init(
             fontDescriptor: FontDescriptor(
@@ -44,43 +48,118 @@ public struct Style {
             ),
             color: color,
             underlineStyle: underlineStyle,
-            strike: strike
+            strike: strike,
+            backgroundColor: backgroundColor
         )
     }
     
     public func with(size: FontDescriptor.Size) -> Style {
-        return Style(fontDescriptor: fontDescriptor.with(size: size), color: colorAsset, underlineStyle: underlineStyle, strike: strike, paragraph: paragraph)
+        Style(
+            fontDescriptor: fontDescriptor.with(size: size),
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
     }
 
     public func with(family: FontDescriptor.Family) -> Style {
-        return Style(fontDescriptor: fontDescriptor.with(family: family), color: colorAsset, underlineStyle: underlineStyle, strike: strike, paragraph: paragraph)
+        Style(
+            fontDescriptor: fontDescriptor.with(family: family),
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
     }
 
     public func with(weight: FontDescriptor.Weight) -> Style {
-        return Style(fontDescriptor: fontDescriptor.with(weight: weight), color: colorAsset, underlineStyle: underlineStyle, strike: strike, paragraph: paragraph)
+        Style(
+            fontDescriptor: fontDescriptor.with(weight: weight),
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
     }
 
     public func with(slant: FontDescriptor.Slant) -> Style {
-        return Style(fontDescriptor: fontDescriptor.with(slant: slant), color: colorAsset, underlineStyle: underlineStyle, strike: strike, paragraph: paragraph)
+        Style(
+            fontDescriptor: fontDescriptor.with(slant: slant),
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
     }
 
     public func with(color: ColorAsset) -> Style {
-        return Style(fontDescriptor: fontDescriptor, color: color, underlineStyle: underlineStyle, strike: strike, paragraph: paragraph)
+        Style(
+            fontDescriptor: fontDescriptor,
+            color: color,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
     }
 
     public func with(underlineStyle: UnderlineStyle) -> Style {
-        return Style(fontDescriptor: fontDescriptor, color: colorAsset, underlineStyle: underlineStyle, strike: strike, paragraph: paragraph)
+        Style(
+            fontDescriptor: fontDescriptor,
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
     }
 
     public func with(strike: Strike) -> Style {
-        return Style(fontDescriptor: fontDescriptor, color: colorAsset, underlineStyle: underlineStyle, strike: strike, paragraph: paragraph)
+        Style(
+            fontDescriptor: fontDescriptor,
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
     }
 
     public func with(buildParagraph: (ParagraphStyle) -> ParagraphStyle) -> Style {
-        return Style(fontDescriptor: fontDescriptor, color: colorAsset, underlineStyle: underlineStyle, strike: strike, paragraph: buildParagraph(paragraph))
+        Style(
+            fontDescriptor: fontDescriptor,
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: buildParagraph(paragraph),
+            backgroundColor: backgroundColorAsset
+        )
+    }
+    
+    public func with(backgroundColor: ColorAsset?) -> Style {
+        Style(
+            fontDescriptor: fontDescriptor,
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColor
+        )
     }
     
     public func adjustingSize(by adjustment: Int) -> Style {
-        return Style(fontDescriptor: fontDescriptor.adjustingSize(by: adjustment), color: colorAsset, underlineStyle: underlineStyle, strike: strike)
+        Style(
+            fontDescriptor: fontDescriptor.adjustingSize(by: adjustment),
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
     }
 }

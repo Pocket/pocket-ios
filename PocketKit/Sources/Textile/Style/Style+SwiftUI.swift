@@ -27,16 +27,10 @@ public extension Font.Weight {
 
 public extension Font {
     init(_ descriptor: FontDescriptor) {
-        let size = descriptor.size.flatMap(CGFloat.init) ?? 0
+        let size = CGFloat(descriptor.size)
 
-        self = descriptor
-            .family
-            .flatMap { .custom($0.name, size: size) } ?? .system(size: size)
-
-        self = descriptor
-            .weight
-            .flatMap(Weight.init)
-            .flatMap(self.weight) ?? self
+        self = .custom(descriptor.family.name, size: size)
+            .weight(Weight(descriptor.weight))
     }
 }
 
@@ -56,6 +50,12 @@ public extension SwiftUI.TextAlignment {
         case .center:
             self = .center
         }
+    }
+}
+
+public extension SwiftUI.Image {
+    init(asset: ImageAsset) {
+        self.init(uiImage: UIImage(asset: asset))
     }
 }
 

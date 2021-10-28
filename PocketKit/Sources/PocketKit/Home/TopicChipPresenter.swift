@@ -15,6 +15,6 @@ struct TopicChipPresenter {
     }
 
     var attributedTitle: NSAttributedString {
-        NSAttributedString(slate.name ?? "", style: .title)
+        NSAttributedString(string: slate.name ?? "", style: .title)
     }
 }

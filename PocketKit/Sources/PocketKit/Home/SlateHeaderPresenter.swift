@@ -15,6 +15,6 @@ struct SlateHeaderPresenter {
     }
 
     var attributedHeaderText: NSAttributedString {
-        NSAttributedString(slate.name ?? "", style: .sectionHeader)
+        NSAttributedString(string: slate.name ?? "", style: .sectionHeader)
     }
 }

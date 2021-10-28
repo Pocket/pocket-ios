@@ -4,6 +4,7 @@
 
 import UIKit
 import SwiftUI
+import Down
 
 
 extension UIColor {
@@ -34,25 +35,20 @@ extension UIFont.Weight {
 extension UIFontDescriptor {
     convenience init(_ descriptor: FontDescriptor) {
         var traits: [UIFontDescriptor.TraitKey: Any] = [
-            .weight: descriptor.weight.flatMap(UIFont.Weight.init) ?? .regular,
+            .weight: UIFont.Weight(descriptor.weight)
         ]
 
-        if let slant = descriptor.slant {
-            switch slant {
-            case .none:
-                break
-            case .italic:
-                traits[.slant] = 1
-            }
+        switch descriptor.slant {
+        case .none:
+            break
+        case .italic:
+            traits[.slant] = 1
         }
 
-        var fontAttributes: [UIFontDescriptor.AttributeName: Any] = [
+        let fontAttributes: [UIFontDescriptor.AttributeName: Any] = [
             .traits: traits,
+            .family: descriptor.family.name
         ]
-
-        if let family = descriptor.family {
-            fontAttributes[.family] = family.name
-        }
 
         self.init(fontAttributes: fontAttributes)
     }
@@ -62,7 +58,7 @@ extension UIFont {
     convenience init(_ descriptor: FontDescriptor) {
         self.init(
             descriptor: UIFontDescriptor(descriptor),
-            size: descriptor.size.flatMap(CGFloat.init) ?? UIFont.systemFontSize
+            size: CGFloat(descriptor.size)
         )
     }
 }
@@ -131,9 +127,10 @@ extension NSParagraphStyle {
 public extension Style {
     var textAttributes: [NSAttributedString.Key: Any] {
         var attributes: [NSAttributedString.Key: Any] = [
+            .style: self,
             .font: UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor)),
             .paragraphStyle: NSParagraphStyle.from(paragraph),
-            .foregroundColor: UIColor(colorAsset)
+            .foregroundColor: UIColor(colorAsset),
         ]
 
         if let underline = NSUnderlineStyle(underlineStyle) {
@@ -142,6 +139,10 @@ public extension Style {
 
         if let strike = NSUnderlineStyle(strike) {
             attributes[.strikethroughStyle] = strike.rawValue
+        }
+        
+        if let backgroundColor = backgroundColorAsset {
+            attributes[.backgroundColor] = UIColor(backgroundColor)
         }
 
         return attributes
@@ -157,17 +158,5 @@ public extension Style {
 public extension UIImage {
     convenience init(asset: ImageAsset) {
         self.init(named: asset.name, in: .module, with: nil)!
-    }
-}
-
-public extension Image {
-    init(asset: ImageAsset) {
-        self.init(uiImage: UIImage(asset: asset))
-    }
-}
-
-public extension NSAttributedString {
-    convenience init(_ string: String, style: Style) {
-        self.init(string: string, attributes: style.textAttributes)
     }
 }

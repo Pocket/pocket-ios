@@ -1,6 +1,23 @@
-public struct HeadingComponent: Codable, Equatable, Hashable {
-    public let content: Markdown
+public struct HeadingComponent: MarkdownComponent, Codable, Equatable, Hashable {
+    private let _content: Markdown
     public let level: UInt
+
+    public var content: Markdown {
+        return [
+            String(repeating: "#", count: Int(level)),
+            _content
+        ].joined(separator: " ")
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case _content = "content"
+        case level
+    }
+
+    init(content: String, level: UInt) {
+        self._content = content
+        self.level = level
+    }
 }
 
 extension HeadingComponent {
