@@ -53,6 +53,28 @@ class ArticleComponentTests: XCTestCase {
         XCTAssertEqual(imageComponent.source, URL(string: "http://example.com/image-3.jpg")!)
     }
 
+    func test_decode_whenTypeIsImage_andURLContainsASpace_properlyParsesTheURL() throws {
+        let json = """
+        {
+            "__typename": "Image",
+            "caption": "Ligula Inceptos",
+            "credit": "Bibendum Vestibulum Mollis Sollicitudin Cursus",
+            "height": 1,
+            "width": 2,
+            "imageID": 3,
+            "src": "http://example.com/image 3.jpg"
+        }
+        """
+
+        let component = try decodeComponent(from: json)
+        guard case .image(let imageComponent) = component else {
+            XCTFail("Expected a image component but got \(component)")
+            return
+        }
+
+        XCTAssertEqual(imageComponent.source?.absoluteString, "http://example.com/image%203.jpg")
+    }
+
     func test_encode_whenImageCase_isRoundtrippable() throws {
         let component: ArticleComponent = .image(
             ImageComponent(
@@ -67,6 +89,20 @@ class ArticleComponentTests: XCTestCase {
 
         let other = try roundtrip(component)
         XCTAssertEqual(component, other)
+    }
+
+    func test_initWithMarticle_withImageParts_handlesSpacesInSourceURL() throws {
+        let parts = ImageParts(
+            caption: "hello",
+            credit: "world",
+            imageId: 1,
+            src: "http://example.com/image 3.jpg",
+            height: 0,
+            width: 0
+        )
+
+        let component = ImageComponent(parts)
+        XCTAssertEqual(component.source?.absoluteString, "http://example.com/image%203.jpg")
     }
 
     func test_decode_whenTypeIsMarticleDivider_returnsDividerComponent() throws {
@@ -134,7 +170,7 @@ class ArticleComponentTests: XCTestCase {
             return
         }
 
-        XCTAssertEqual(heading.content, "Purus Vulputate")
+        XCTAssertEqual(heading.content, "# Purus Vulputate")
         XCTAssertEqual(heading.level, 1)
     }
 

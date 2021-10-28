@@ -84,7 +84,7 @@ class SlateDetailViewController: UIViewController {
         view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
         view.attributedText = NSAttributedString(
-            "You're all caught up!\nCheck back later for more.",
+            string: "You're all caught up!\nCheck back later for more.",
             style: .overscroll
         )
         view.animation = Animation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)

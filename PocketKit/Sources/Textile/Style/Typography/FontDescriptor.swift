@@ -3,10 +3,10 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 public struct FontDescriptor {
-    let family: Family?
-    let size: Size?
-    let weight: Weight?
-    let slant: Slant?
+    let family: Family
+    let size: Size
+    let weight: Weight
+    let slant: Slant
 
     public enum Weight {
         case regular
@@ -33,10 +33,10 @@ public struct FontDescriptor {
     }
 
     public init(
-        family: Family? = nil,
-        size: Size? = nil,
-        weight: Weight? = nil,
-        slant: Slant? = nil
+        family: Family = .graphik,
+        size: Size = .body,
+        weight: Weight = .regular,
+        slant: Slant = .none
     ) {
         self.family = family
         self.size = size
@@ -61,7 +61,7 @@ public struct FontDescriptor {
     }
     
     func adjustingSize(by adjustment: Int) -> FontDescriptor {
-        return FontDescriptor(family: family, size: size?.adjusting(by: adjustment), weight: weight, slant: slant)
+        return FontDescriptor(family: family, size: size.adjusting(by: adjustment), weight: weight, slant: slant)
     }
 }
 

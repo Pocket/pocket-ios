@@ -1,4 +1,4 @@
-public struct TextComponent: Codable, Equatable, Hashable {
+public struct TextComponent: MarkdownComponent, Codable, Equatable, Hashable {
     public let content: Markdown
 }
 

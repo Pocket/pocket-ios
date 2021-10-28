@@ -26,7 +26,7 @@ class NavigationSidebarViewController: UIViewController {
     private lazy var dataSource: UICollectionViewDiffableDataSource<String, MainViewModel.AppSection> = {
         let registration = UICollectionView.CellRegistration<UICollectionViewListCell, MainViewModel.AppSection> { (cell, indexPath, appSection) in
             var content = cell.defaultContentConfiguration()
-            content.attributedText = NSAttributedString(appSection.navigationTitle, style: .title)
+            content.attributedText = NSAttributedString(string: appSection.navigationTitle, style: .title)
             cell.contentConfiguration = content
         }
         

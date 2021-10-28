@@ -1,7 +1,7 @@
 [
     {
         "__typename": "MarticleText",
-        "content": "Commodo Consectetur Dapibus"
+        "content": "**Commodo Consectetur** _Dapibus_"
     },
     {
         "__typename": "Image",
