@@ -1,22 +1,23 @@
 import UIKit
+import Sync
 
 
-protocol TextContentCellDelegate: AnyObject {
-    func textContentCell(
-        _ cell: TextContentCell,
+protocol MarkdownComponentCellDelegate: AnyObject {
+    func markdownComponentCell(
+        _ cell: MarkdownComponentCell,
         didShareSelecedText selectedText: String
     )
     
-    func textContentCell(
-        _ cell: TextContentCell,
+    func markdownComponentCell(
+        _ cell: MarkdownComponentCell,
         shouldOpenURL url: URL
     ) -> Bool
 }
 
-class TextContentCell: UICollectionViewCell {
+class MarkdownComponentCell: UICollectionViewCell {
     private let textView = TextViewWithCustomShareAction()
 
-    weak var delegate: TextContentCellDelegate?
+    weak var delegate: MarkdownComponentCellDelegate?
 
     var selectedText: String {
         (textView.text as NSString).substring(with: textView.selectedRange)
@@ -44,12 +45,12 @@ class TextContentCell: UICollectionViewCell {
         ])
     }
 
-    var attributedText: NSAttributedString? {
-        get {
-            textView.attributedText
-        }
+    var attributedContent: NSAttributedString? {
         set {
             textView.attributedText = newValue
+        }
+        get {
+            textView.attributedText
         }
     }
 
@@ -58,15 +59,15 @@ class TextContentCell: UICollectionViewCell {
     }
 }
 
-extension TextContentCell: UITextViewDelegate {
+extension MarkdownComponentCell: UITextViewDelegate {
     func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
-        return delegate?.textContentCell(self, shouldOpenURL: URL) ?? true
+        return delegate?.markdownComponentCell(self, shouldOpenURL: URL) ?? true
     }
 }
 
-extension TextContentCell: TextViewWithCustomShareActionDelegate {
+extension MarkdownComponentCell: TextViewWithCustomShareActionDelegate {
     fileprivate func textViewDidSelectShareAction(_ textView: TextViewWithCustomShareAction) {
-        delegate?.textContentCell(self, didShareSelecedText: selectedText)
+        delegate?.markdownComponentCell(self, didShareSelecedText: selectedText)
     }
 }
 

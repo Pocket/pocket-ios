@@ -6,6 +6,7 @@ public extension FontDescriptor.Family {
     static let graphik: Self = "Graphik LCG"
     static let blanco: Self = "Blanco OSF"
     static let doyle: Self = "Doyle"
+    static let monospace: Self = ".AppleSystemUIFontMonospaced"
 }
 
 public extension FontDescriptor.Size {
@@ -22,6 +23,7 @@ public extension FontDescriptor.Size {
     static let p4: Self = 14
     static let p5: Self = 12
     static let body: Self = 19
+    static let monospace: Self = 17
 }
 
 public extension Style {
@@ -89,5 +91,6 @@ public extension Style {
     struct Body {
         public let sansSerif = Style(family:  .graphik, size: .body, weight: .regular)
         public let serif = Style(family:  .blanco, size: .body, weight: .regular)
+        public let monospace = Style(family: .monospace, size: .monospace, weight: .regular)
     }
 }

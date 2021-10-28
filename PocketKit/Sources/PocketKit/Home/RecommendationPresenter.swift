@@ -30,7 +30,7 @@ struct RecommendationPresenter {
     }
 
     var attributedTitle: NSAttributedString {
-        return NSAttributedString(recommendation.item.title ?? "", style: .title)
+        return NSAttributedString(string: recommendation.item.title ?? "", style: .title)
     }
 
     var attributedTitleForMeasurement: NSAttributedString {
@@ -38,11 +38,11 @@ struct RecommendationPresenter {
             paragraph.with(lineBreakMode: .none)
         }
 
-        return NSAttributedString(recommendation.item.title ?? "", style: style)
+        return NSAttributedString(string: recommendation.item.title ?? "", style: style)
     }
 
     var attributedDetail: NSAttributedString {
-        return NSAttributedString(detail, style: .subtitle)
+        return NSAttributedString(string: detail, style: .subtitle)
     }
 
     var attributedDetailForMeasurement: NSAttributedString {
@@ -50,7 +50,7 @@ struct RecommendationPresenter {
             paragraph.with(lineBreakMode: .none)
         }
 
-        return NSAttributedString(detail, style: style)
+        return NSAttributedString(string: detail, style: style)
     }
     
     func loadImage(into imageView: UIImageView, cellWidth: CGFloat) {
@@ -87,7 +87,7 @@ struct RecommendationPresenter {
     }
 
     var attributedExcerpt: NSAttributedString {
-        return NSAttributedString(recommendation.item.excerpt ?? "", style: .excerpt)
+        return NSAttributedString(string: recommendation.item.excerpt ?? "", style: .excerpt)
     }
 
     var attributedExcerptForMeasurement: NSAttributedString {
@@ -95,7 +95,7 @@ struct RecommendationPresenter {
             paragraph.with(lineBreakMode: .none)
         }
 
-        return NSAttributedString(recommendation.item.excerpt ?? "", style: style)
+        return NSAttributedString(string: recommendation.item.excerpt ?? "", style: style)
     }
 
     private var domain: String? {

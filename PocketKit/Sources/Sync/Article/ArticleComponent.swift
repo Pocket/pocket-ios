@@ -99,6 +99,27 @@ public enum ArticleComponent: Codable, Equatable, Hashable {
     private enum TypenameCodingKeys: String, CodingKey {
         case typename = "__typename"
     }
+
+    public var isEmpty: Bool {
+        switch self {
+        case .text(let text):
+            return text.isEmpty
+        case .heading(let heading):
+            return heading.isEmpty
+        case .blockquote(let blockquote):
+            return blockquote.content.isEmpty
+        case .bulletedList(let list):
+            return list.rows.isEmpty
+        case .codeBlock(let codeBlock):
+            return codeBlock.text.isEmpty
+        case .numberedList(let list):
+            return list.rows.isEmpty
+        case .image(let image):
+            return image.source == nil
+        case .divider, .table, .video, .unsupported:
+            return false
+        }
+    }
 }
 
 extension ArticleComponent {
