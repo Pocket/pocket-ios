@@ -87,7 +87,11 @@ class ArticleViewController: UIViewController {
 
 extension ArticleViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        guard let components = components else {
+            return 0
+        }
+
+        return 1 + (components.isEmpty ? 0 : 1)
     }
     
     func collectionView(
