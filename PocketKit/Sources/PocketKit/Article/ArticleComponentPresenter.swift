@@ -79,19 +79,8 @@ class ArticleComponentPresenter {
             case .success(let retrieveResult):
                 self?.knownImageSize = retrieveResult.image.size
                 onSuccess()
-            case .failure(let error):
-                switch error {
-                case .imageSettingError(let reason):
-                    switch reason {
-                    case .notCurrentSourceTask(let newResult, _, _):
-                        self?.knownImageSize = newResult?.image.size
-                        onSuccess()
-                    default:
-                        print("something")
-                    }
-                default:
-                    print("narp")
-                }
+            case .failure:
+                break
             }
         }
     }
