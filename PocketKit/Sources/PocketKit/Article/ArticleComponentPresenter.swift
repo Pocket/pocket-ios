@@ -1,7 +1,17 @@
 import Sync
 import UIKit
 import Kingfisher
+import Textile
 
+
+private extension Style {
+    static let imageCredit: Self = .body.sansSerif
+        .with(size: .p4)
+        .with(color: .ui.grey3)
+        .with(slant: .italic)
+
+    static let imageCaption: Self = .body.sansSerif.with(size: .p3)
+}
 
 class ArticleComponentPresenter {
     let component: ArticleComponent
@@ -86,6 +96,14 @@ class ArticleComponentPresenter {
         }
     }
 
+    func attributedCaption(for string: String?) -> NSAttributedString? {
+        string.flatMap { NSAttributedString(string: $0, style: .imageCaption) }
+    }
+
+    func attributedCredit(for string: String?) -> NSAttributedString? {
+        string.flatMap { NSAttributedString(string: $0, style: .imageCredit) }
+    }
+
     private func componentSize(of component: MarkdownComponent, availableWidth: CGFloat) -> CGSize {
         guard !component.isEmpty, let text = attributedContent(for: component) else {
             return .zero
@@ -117,8 +135,17 @@ class ArticleComponentPresenter {
     }
 
     private func componentSize(of component: ImageComponent, availableWidth: CGFloat) -> CGSize {
-        return knownImageSize
-        ?? CGSize(width: availableWidth, height: availableWidth * 9/16)
+        var cellHeight = knownImageSize?.height ?? availableWidth * 9/16
+
+        if let caption = attributedCaption(for: component.caption) {
+            cellHeight += Self.height(of: caption, width: availableWidth) + 8
+        }
+
+        if let credit = attributedCredit(for: component.credit) {
+            cellHeight += Self.height(of: credit, width: availableWidth) + 8
+        }
+
+        return CGSize(width: availableWidth, height: cellHeight)
     }
 }
 
