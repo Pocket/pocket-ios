@@ -166,33 +166,23 @@ class Tests_iOS: XCTestCase {
             .wait()
             .tap()
 
-        let expectedMetadataStrings = [
+        let expectedContent = [
             "Item 1",
             "by Jacob and David",
             "WIRED",
             "January 1, 2021",
+            "Commodo Consectetur Dapibus",
+            "Purus Vulputate",
+            "Nulla vitae elit libero, a pharetra augue. Cras justo odio, dapibus ac facilisis in, egestas eget quam.",
+            "Photo by: Bibendum Vestibulum Mollis"
         ]
 
-        for expectedString in expectedMetadataStrings {
-            let cell = app
+        for expectedString in expectedContent {
+            app
                 .readerView
                 .cell(containing: expectedString)
                 .wait()
-
-            app.readerView.scrollCellToTop(cell)
         }
-        
-        var cell = app
-            .readerView
-            .cell(containing: "Commodo Consectetur Dapibus")
-            .wait()
-        app.readerView.scrollCellToTop(cell)
-        
-        cell = app
-            .readerView
-            .cell(containing: "Purus Vulputate")
-            .wait()
-        app.readerView.scrollCellToTop(cell)
     }
 
     func test_webReader_displaysWebContent() {

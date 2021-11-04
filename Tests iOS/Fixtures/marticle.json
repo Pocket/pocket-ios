@@ -5,12 +5,12 @@
     },
     {
         "__typename": "Image",
-        "caption": "Ligula Inceptos",
-        "credit": "Bibendum Vestibulum Mollis Sollicitudin Cursus",
-        "height": 1,
-        "width": 2,
+        "caption": "Nulla vitae elit libero, a pharetra augue. Cras justo odio, dapibus ac facilisis in, egestas eget quam.",
+        "credit": "Photo by: Bibendum Vestibulum Mollis",
+        "height": 0,
+        "width": 0,
         "imageID": 3,
-        "src": "http://example.com/image-3.jpg"
+        "src": "https://placekitten.com/2000/1125"
     },
     {
         "__typename": "MarticleDivider",

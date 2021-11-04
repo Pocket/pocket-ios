@@ -127,8 +127,10 @@ extension ArticleViewController: UICollectionViewDataSource {
                 let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
                 cell.attributedContent = presenter.attributedContent(for: headerComponent)
                 return cell
-            case .image:
+            case .image(let image):
                 let cell: ImageComponentCell = collectionView.dequeueCell(for: indexPath)
+                cell.attributedCaption = presenter.attributedCaption(for: image.caption)
+                cell.attributedCredit = presenter.attributedCredit(for: image.credit)
                 presenter.loadImage(into: cell.imageView, availableWidth: availableItemWidth) {
                     collectionView.collectionViewLayout.invalidateLayout()
                 }
