@@ -12,9 +12,18 @@ class ArticleViewController: UIViewController {
 
     var item: Readable? {
         didSet {
-            metadata = item.flatMap(ArticleMetadataPresenter.init)
+            metadata = item.flatMap { item -> ArticleMetadataPresenter in
+                ArticleMetadataPresenter(
+                    readable: item,
+                    readerSettings: readerSettings
+                )
+            }
+            
             components = item?.components?.map {
-                ArticleComponentPresenter(component: $0)
+                ArticleComponentPresenter(
+                    component: $0,
+                    readerSettings: readerSettings
+                )
             }.filter { !$0.isEmpty }
 
             DispatchQueue.main.async {

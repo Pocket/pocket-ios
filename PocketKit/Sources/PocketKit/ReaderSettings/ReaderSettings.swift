@@ -6,7 +6,7 @@ import Combine
 import Textile
 import SwiftUI
 
-class ReaderSettings: ObservableObject {
+class ReaderSettings: StylerModifier, ObservableObject {
     @AppStorage("readerFontSizeAdjustment")
     var fontSizeAdjustment: Int = 0
     

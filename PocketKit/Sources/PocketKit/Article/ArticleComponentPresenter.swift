@@ -14,12 +14,15 @@ private extension Style {
 }
 
 class ArticleComponentPresenter {
+    private let readerSettings: ReaderSettings
+    
     let component: ArticleComponent
     var isEmpty: Bool = false
     var knownImageSize: CGSize?
 
-    init(component: ArticleComponent) {
+    init(component: ArticleComponent, readerSettings: ReaderSettings) {
         self.component = component
+        self.readerSettings = readerSettings
         isEmpty = component.isEmpty || size(fittingWidth: .greatestFiniteMagnitude).height <= 0
     }
 
@@ -41,7 +44,10 @@ class ArticleComponentPresenter {
     }
 
     func attributedContent(for component: MarkdownComponent) -> NSAttributedString? {
-        return NSAttributedString.styled(markdown: component.content)
+        NSAttributedString.styled(
+            markdown: component.content,
+            styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
+        )
     }
 
     func loadImage(

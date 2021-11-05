@@ -20,16 +20,17 @@ public class TextileStyler: Styler {
         h5: Style,
         h6: Style,
         body: Style,
-        monospace: Style
+        monospace: Style,
+        modifier: StylerModifier
     ) {
-        self.h1 = h1
-        self.h2 = h2
-        self.h3 = h3
-        self.h4 = h4
-        self.h5 = h5
-        self.h6 = h6
-        self.body = body
-        self.monospace = monospace
+        self.h1 = h1.modified(by: modifier)
+        self.h2 = h2.modified(by: modifier)
+        self.h3 = h3.modified(by: modifier)
+        self.h4 = h4.modified(by: modifier)
+        self.h5 = h5.modified(by: modifier)
+        self.h6 = h6.modified(by: modifier)
+        self.body = body.modified(by: modifier)
+        self.monospace = monospace.adjustingSize(by: modifier.fontSizeAdjustment)
     }
     
     public func style(document str: NSMutableAttributedString) {
