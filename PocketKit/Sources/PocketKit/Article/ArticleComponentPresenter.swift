@@ -38,6 +38,8 @@ class ArticleComponentPresenter {
             return componentSize(of: text, availableWidth: availableWidth)
         case .image(let image):
             return componentSize(of: image, availableWidth: availableWidth)
+        case .divider:
+            return CGSize(width: availableWidth, height: 16)
         default:
             return .zero
         }
