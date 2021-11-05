@@ -6,7 +6,7 @@ public extension NSAttributedString {
         self.init(string: string, attributes: style.textAttributes)
     }
     
-    static func styled(markdown: String, styler: Styler = NSAttributedString.defaultStyler) -> NSAttributedString? {
+    static func styled(markdown: String, styler: Styler) -> NSAttributedString? {
         let d = Down(markdownString: markdown)
 
         do {
@@ -18,16 +18,19 @@ public extension NSAttributedString {
         return nil
     }
     
-    static let defaultStyler = TextileStyler(
-        h1: .header.sansSerif.h1,
-        h2: .header.sansSerif.h2,
-        h3: .header.sansSerif.h3,
-        h4: .header.sansSerif.h4,
-        h5: .header.sansSerif.h5,
-        h6: .header.sansSerif.h6,
-        body: .body.sansSerif,
-        monospace: .body.monospace
-    )
+    static func defaultStyler(with modifier: StylerModifier) -> Styler {
+        TextileStyler(
+            h1: .header.sansSerif.h1,
+            h2: .header.sansSerif.h2,
+            h3: .header.sansSerif.h3,
+            h4: .header.sansSerif.h4,
+            h5: .header.sansSerif.h5,
+            h6: .header.sansSerif.h6,
+            body: .body.sansSerif,
+            monospace: .body.monospace,
+            modifier: modifier
+        )
+    }
 }
 
 public extension NSMutableAttributedString {

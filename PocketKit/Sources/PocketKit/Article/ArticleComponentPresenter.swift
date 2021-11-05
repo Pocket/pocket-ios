@@ -14,12 +14,15 @@ private extension Style {
 }
 
 class ArticleComponentPresenter {
+    private let readerSettings: ReaderSettings
+    
     let component: ArticleComponent
     var isEmpty: Bool = false
     var knownImageSize: CGSize?
 
-    init(component: ArticleComponent) {
+    init(component: ArticleComponent, readerSettings: ReaderSettings) {
         self.component = component
+        self.readerSettings = readerSettings
         isEmpty = component.isEmpty || size(fittingWidth: .greatestFiniteMagnitude).height <= 0
     }
 
@@ -41,7 +44,10 @@ class ArticleComponentPresenter {
     }
 
     func attributedContent(for component: MarkdownComponent) -> NSAttributedString? {
-        return NSAttributedString.styled(markdown: component.content)
+        NSAttributedString.styled(
+            markdown: component.content,
+            styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
+        )
     }
 
     func loadImage(
@@ -86,11 +92,11 @@ class ArticleComponentPresenter {
     }
 
     func attributedCaption(for string: String?) -> NSAttributedString? {
-        string.flatMap { NSAttributedString(string: $0, style: .imageCaption) }
+        string.flatMap { NSAttributedString(string: $0, style: .imageCaption.modified(by: readerSettings)) }
     }
 
     func attributedCredit(for string: String?) -> NSAttributedString? {
-        string.flatMap { NSAttributedString(string: $0, style: .imageCredit) }
+        string.flatMap { NSAttributedString(string: $0, style: .imageCredit.modified(by: readerSettings)) }
     }
 
     private func componentSize(of component: MarkdownComponent, availableWidth: CGFloat) -> CGSize {
