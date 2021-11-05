@@ -76,6 +76,7 @@ class ArticleViewController: UIViewController {
         collectionView.register(cellClass: ImageComponentCell.self)
         collectionView.register(cellClass: EmptyCell.self)
         collectionView.register(cellClass: ArticleMetadataCell.self)
+        collectionView.register(cellClass: DividerComponentCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
         readerSettings.objectWillChange.sink { _ in
@@ -148,6 +149,9 @@ extension ArticleViewController: UICollectionViewDataSource {
                     collectionView.collectionViewLayout.invalidateLayout()
                 }
 
+                return cell
+            case .divider:
+                let cell: DividerComponentCell = collectionView.dequeueCell(for: indexPath)
                 return cell
             default:
                 let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)
