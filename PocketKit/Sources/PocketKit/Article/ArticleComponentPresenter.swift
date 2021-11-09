@@ -11,6 +11,8 @@ private extension Style {
         .with(slant: .italic)
 
     static let imageCaption: Self = .body.sansSerif.with(size: .p3)
+    
+    static let codeBlock: Self = .body.monospace
 }
 
 class ArticleComponentPresenter {
@@ -40,6 +42,8 @@ class ArticleComponentPresenter {
             return componentSize(of: image, availableWidth: availableWidth)
         case .divider:
             return CGSize(width: availableWidth, height: 16)
+        case .codeBlock(let codeBlock):
+            return CGSize(width: availableWidth, height: componentSize(of: codeBlock).height)
         default:
             return .zero
         }
@@ -92,6 +96,10 @@ class ArticleComponentPresenter {
             }
         }
     }
+    
+    func present(component: CodeBlockComponent, in textView: UITextView) {
+        textView.attributedText = attributedCodeBlock(for: component)
+    }
 
     func attributedCaption(for string: String?) -> NSAttributedString? {
         string.flatMap { NSAttributedString(string: $0, style: .imageCaption.modified(by: readerSettings)) }
@@ -100,49 +108,67 @@ class ArticleComponentPresenter {
     func attributedCredit(for string: String?) -> NSAttributedString? {
         string.flatMap { NSAttributedString(string: $0, style: .imageCredit.modified(by: readerSettings)) }
     }
+    
+    private func attributedCodeBlock(for component: CodeBlockComponent) -> NSAttributedString? {
+        NSAttributedString(string: component.text, style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment))
+    }
 
+    static func size(of attributedString: NSAttributedString, availableWidth: CGFloat = .infinity, availableHeight: CGFloat = .infinity) -> CGSize {
+        guard !attributedString.string.isEmpty else {
+            return .zero
+        }
+
+        let rect = attributedString.boundingRect(
+            with: CGSize(width: availableWidth, height: availableHeight),
+            options: [.usesFontLeading, .usesLineFragmentOrigin],
+            context: nil
+        )
+
+        return CGSize(width: min(rect.width.rounded(.up), availableWidth), height: min(rect.height.rounded(.up), availableHeight))
+    }
+}
+
+private extension ArticleComponentPresenter {
     private func componentSize(of component: MarkdownComponent, availableWidth: CGFloat) -> CGSize {
         guard !component.isEmpty, let text = attributedContent(for: component) else {
             return .zero
         }
 
-        let height = Self.height(
+        let height = Self.size(
             of: text,
-            width: availableWidth
-        )
+            availableWidth: availableWidth
+        ).height
 
         return CGSize(
             width: availableWidth,
             height: height
         )
     }
-
-    static func height(of attributedString: NSAttributedString, width: CGFloat) -> CGFloat {
-        guard !attributedString.string.isEmpty else {
-            return 0
-        }
-
-        let rect = attributedString.boundingRect(
-            with: CGSize(width: width, height: .infinity),
-            options: [.usesFontLeading, .usesLineFragmentOrigin],
-            context: nil
-        )
-
-        return rect.height.rounded(.up)
-    }
-
+    
     private func componentSize(of component: ImageComponent, availableWidth: CGFloat) -> CGSize {
         var cellHeight = knownImageSize?.height ?? availableWidth * 9/16
 
         if let caption = attributedCaption(for: component.caption) {
-            cellHeight += Self.height(of: caption, width: availableWidth) + 8
+            cellHeight += Self.size(of: caption, availableWidth: availableWidth).height + 8
         }
 
         if let credit = attributedCredit(for: component.credit) {
-            cellHeight += Self.height(of: credit, width: availableWidth) + 8
+            cellHeight += Self.size(of: credit, availableWidth: availableWidth).height + 8
         }
 
         return CGSize(width: availableWidth, height: cellHeight)
+    }
+    
+    private func componentSize(of component: CodeBlockComponent) -> CGSize {
+        guard !component.text.isEmpty, let codeBlock = attributedCodeBlock(for: component) else {
+            return .zero
+        }
+
+        var size = Self.size(of: codeBlock)
+        size.height += CodeBlockComponentCell.Constants.contentInset.top
+        + CodeBlockComponentCell.Constants.contentInset.top
+        
+        return size
     }
 }
 
