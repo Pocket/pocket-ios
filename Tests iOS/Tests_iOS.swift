@@ -174,7 +174,8 @@ class Tests_iOS: XCTestCase {
             "Commodo Consectetur Dapibus",
             "Purus Vulputate",
             "Nulla vitae elit libero, a pharetra augue. Cras justo odio, dapibus ac facilisis in, egestas eget quam.",
-            "Photo by: Bibendum Vestibulum Mollis"
+            "Photo by: Bibendum Vestibulum Mollis",
+            "<some></some><code></code>"
         ]
 
         for expectedString in expectedContent {
