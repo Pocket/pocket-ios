@@ -107,9 +107,9 @@ class RecommendationCell: UICollectionViewCell {
             textStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
 
             buttonStackTopConstraintHero,
-            buttonStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            buttonStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            buttonStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            buttonStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            buttonStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            buttonStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
 
         [titleLabel, subtitleLabel, excerptLabel].forEach(textStack.addArrangedSubview)
@@ -147,14 +147,14 @@ class RecommendationCell: UICollectionViewCell {
 extension RecommendationCell {
     struct Hero {
         static let textStackTopMargin: CGFloat = 16
-        static let buttonStackTopMargin: CGFloat = 18
+        static let buttonStackTopMargin: CGFloat = 10
         static let textStackSpacing: CGFloat = 8
         static let numberOfSubtitleLines = 1
     }
 
     struct Mini {
         static let textStackTopMargin: CGFloat = 10
-        static let buttonStackTopMargin: CGFloat = 12
+        static let buttonStackTopMargin: CGFloat = 4
         static let textStackSpacing: CGFloat = 4
         static let numberOfSubtitleLines = 2
     }
