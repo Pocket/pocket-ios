@@ -47,22 +47,22 @@
             {
                 "__typename": "BulletedListElement",
                 "content": "Pharetra Dapibus Ultricies",
-                "level": 1
+                "level": 0
             },
             {
                 "__typename": "BulletedListElement",
                 "content": "netus et malesuada",
-                "level": 2
+                "level": 1
             },
             {
                 "__typename": "BulletedListElement",
                 "content": "quis commodo odio",
-                "level": 3
+                "level": 2
             },
             {
                 "__typename": "BulletedListElement",
                 "content": "tincidunt ornare massa",
-                "level": 4
+                "level": 3
             }
         ]
     },

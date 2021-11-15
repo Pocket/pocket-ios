@@ -22,7 +22,7 @@ class ArticleComponentPresenter {
     
     let component: ArticleComponent
     var isEmpty: Bool = false
-    var knownImageSize: CGSize?
+    var knownSize: CGSize?
 
     init(component: ArticleComponent, readerSettings: ReaderSettings) {
         self.component = component
@@ -52,32 +52,23 @@ class ArticleComponentPresenter {
             return .zero
         }
     }
-
-    func attributedContent(for component: MarkdownComponent) -> NSAttributedString? {
-        NSAttributedString.styled(
-            markdown: component.content,
-            styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
-        )
+    
+    func present(component: MarkdownComponent, in cell: MarkdownComponentCell) {
+        cell.attributedContent = attributedContent(for: component)
     }
-
-    func loadImage(
-        into imageView: UIImageView,
-        availableWidth: CGFloat,
-        onSuccess: @escaping () -> Void
-    ) {
-        guard case .image(let image) = component,
-              let source = image.source else {
-            return
-        }
-
+    
+    func present(component: ImageComponent, in cell: ImageComponentCell, availableWidth: CGFloat, onSuccess: @escaping () -> Void) {
+        cell.attributedCaption = attributedCaption(for: component.caption)
+        cell.attributedCredit = attributedCredit(for: component.credit)
+        
         let size = CGSize(
             width: availableWidth,
             height: .greatestFiniteMagnitude
         )
 
-        let cachedSource = imageCacheURL(for: source)
-        imageView.kf.indicatorType = .activity
-        imageView.kf.setImage(
+        let cachedSource = imageCacheURL(for: component.source)
+        cell.imageView.kf.indicatorType = .activity
+        cell.imageView.kf.setImage(
             with: cachedSource,
             options: [
                 .scaleFactor(UIScreen.main.scale),
@@ -93,7 +84,7 @@ class ArticleComponentPresenter {
         ) { [weak self] result in
             switch result {
             case .success(let retrieveResult):
-                self?.knownImageSize = retrieveResult.image.size
+                self?.knownSize = retrieveResult.image.size
                 onSuccess()
             case .failure:
                 break
@@ -108,7 +99,30 @@ class ArticleComponentPresenter {
     func present(component: BulletedListComponent, in cell: MarkdownComponentCell) {
         cell.attributedContent = attributedContent(for: component)
     }
+}
 
+private extension ArticleComponentPresenter {
+    static func size(of attributedString: NSAttributedString, availableWidth: CGFloat = .infinity, availableHeight: CGFloat = .infinity) -> CGSize {
+        guard !attributedString.string.isEmpty else {
+            return .zero
+        }
+
+        let rect = attributedString.boundingRect(
+            with: CGSize(width: availableWidth, height: availableHeight),
+            options: [.usesFontLeading, .usesLineFragmentOrigin],
+            context: nil
+        )
+
+        return CGSize(width: min(rect.width.rounded(.up), availableWidth), height: min(rect.height.rounded(.up), availableHeight))
+    }
+    
+    func attributedContent(for component: MarkdownComponent) -> NSAttributedString? {
+        NSAttributedString.styled(
+            markdown: component.content,
+            styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
+        )
+    }
+    
     func attributedCaption(for string: String?) -> NSAttributedString? {
         string.flatMap { NSAttributedString(string: $0, style: .imageCaption.modified(by: readerSettings)) }
     }
@@ -117,16 +131,16 @@ class ArticleComponentPresenter {
         string.flatMap { NSAttributedString(string: $0, style: .imageCredit.modified(by: readerSettings)) }
     }
     
-    private func attributedCodeBlock(for component: CodeBlockComponent) -> NSAttributedString? {
+    func attributedCodeBlock(for component: CodeBlockComponent) -> NSAttributedString? {
         NSAttributedString(string: component.text, style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment))
     }
     
-    private func attributedContent(for component: BulletedListComponent) -> NSAttributedString? {
+    func attributedContent(for component: BulletedListComponent) -> NSAttributedString? {
         let attributedContent = NSMutableAttributedString()
         for row in component.rows {
             // Clamp a list element's depth to 0...3 (i.e max-depth of 4) as to allow for
             // enough room for rendering content in a readable fashion, and add the appropriate indents.
-            let depth = CGFloat(min(max(row.level - 1, 0), 3))
+            let depth = CGFloat(min(row.level, 3))
             
             let bullet: String
             switch depth {
@@ -164,24 +178,10 @@ class ArticleComponentPresenter {
         }
         return attributedContent
     }
-
-    static func size(of attributedString: NSAttributedString, availableWidth: CGFloat = .infinity, availableHeight: CGFloat = .infinity) -> CGSize {
-        guard !attributedString.string.isEmpty else {
-            return .zero
-        }
-
-        let rect = attributedString.boundingRect(
-            with: CGSize(width: availableWidth, height: availableHeight),
-            options: [.usesFontLeading, .usesLineFragmentOrigin],
-            context: nil
-        )
-
-        return CGSize(width: min(rect.width.rounded(.up), availableWidth), height: min(rect.height.rounded(.up), availableHeight))
-    }
 }
 
 private extension ArticleComponentPresenter {
-    private func componentSize(of component: MarkdownComponent, availableWidth: CGFloat) -> CGSize {
+    func componentSize(of component: MarkdownComponent, availableWidth: CGFloat) -> CGSize {
         guard !component.isEmpty, let text = attributedContent(for: component) else {
             return .zero
         }
@@ -197,8 +197,8 @@ private extension ArticleComponentPresenter {
         )
     }
     
-    private func componentSize(of component: ImageComponent, availableWidth: CGFloat) -> CGSize {
-        var cellHeight = knownImageSize?.height ?? availableWidth * 9/16
+    func componentSize(of component: ImageComponent, availableWidth: CGFloat) -> CGSize {
+        var cellHeight = knownSize?.height ?? availableWidth * 9/16
 
         if let caption = attributedCaption(for: component.caption) {
             cellHeight += Self.size(of: caption, availableWidth: availableWidth).height + 8
@@ -211,7 +211,7 @@ private extension ArticleComponentPresenter {
         return CGSize(width: availableWidth, height: cellHeight)
     }
     
-    private func componentSize(of component: CodeBlockComponent) -> CGSize {
+    func componentSize(of component: CodeBlockComponent) -> CGSize {
         guard !component.text.isEmpty, let codeBlock = attributedCodeBlock(for: component) else {
             return .zero
         }
@@ -223,7 +223,7 @@ private extension ArticleComponentPresenter {
         return size
     }
     
-    private func componentSize(of component: BulletedListComponent, availableWidth: CGFloat) -> CGSize {
+    func componentSize(of component: BulletedListComponent, availableWidth: CGFloat) -> CGSize {
         guard let content = attributedContent(for: component), !content.string.isEmpty else {
             return .zero
         }
@@ -232,7 +232,7 @@ private extension ArticleComponentPresenter {
     }
 }
 
-class OnlyResizeDownProcessor: ImageProcessor {
+private class OnlyResizeDownProcessor: ImageProcessor {
     let identifier = "com.getpocket.image-processor.only-resize-down"
 
     let resizingProcessor: ResizingImageProcessor
