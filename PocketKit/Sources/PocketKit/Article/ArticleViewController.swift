@@ -136,27 +136,24 @@ extension ArticleViewController: UICollectionViewDataSource {
             switch presenter.component {
             case .text(let textComponent):
                 let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
-                cell.attributedContent = presenter.attributedContent(for: textComponent)
+                presenter.present(component: textComponent, in: cell)
                 return cell
             case .heading(let headerComponent):
                 let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
-                cell.attributedContent = presenter.attributedContent(for: headerComponent)
+                presenter.present(component: headerComponent, in: cell)
                 return cell
             case .image(let image):
                 let cell: ImageComponentCell = collectionView.dequeueCell(for: indexPath)
-                cell.attributedCaption = presenter.attributedCaption(for: image.caption)
-                cell.attributedCredit = presenter.attributedCredit(for: image.credit)
-                presenter.loadImage(into: cell.imageView, availableWidth: availableItemWidth) {
+                presenter.present(component: image, in: cell, availableWidth: availableItemWidth) {
                     collectionView.collectionViewLayout.invalidateLayout()
                 }
-
                 return cell
             case .divider:
                 let cell: DividerComponentCell = collectionView.dequeueCell(for: indexPath)
                 return cell
             case .codeBlock(let codeBlockComponent):
                 let cell: CodeBlockComponentCell = collectionView.dequeueCell(for: indexPath)
-                presenter.present(component: codeBlockComponent, in: cell.textView)
+                presenter.present(component: codeBlockComponent, in: cell)
                 return cell
             case .bulletedList(let bulletedListComponent):
                 let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
