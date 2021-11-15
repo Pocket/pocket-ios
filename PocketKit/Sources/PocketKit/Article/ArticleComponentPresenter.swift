@@ -2,6 +2,7 @@ import Sync
 import UIKit
 import Kingfisher
 import Textile
+import Down
 
 
 private extension Style {
@@ -13,6 +14,7 @@ private extension Style {
     static let imageCaption: Self = .body.sansSerif.with(size: .p3)
     
     static let codeBlock: Self = .body.monospace
+    static let prefix: Self = .body.monospace
 }
 
 class ArticleComponentPresenter {
@@ -44,6 +46,8 @@ class ArticleComponentPresenter {
             return CGSize(width: availableWidth, height: 16)
         case .codeBlock(let codeBlock):
             return CGSize(width: availableWidth, height: componentSize(of: codeBlock).height)
+        case .bulletedList(let bulletedList):
+            return componentSize(of: bulletedList, availableWidth: availableWidth)
         default:
             return .zero
         }
@@ -100,6 +104,10 @@ class ArticleComponentPresenter {
     func present(component: CodeBlockComponent, in textView: UITextView) {
         textView.attributedText = attributedCodeBlock(for: component)
     }
+    
+    func present(component: BulletedListComponent, in cell: MarkdownComponentCell) {
+        cell.attributedContent = attributedContent(for: component)
+    }
 
     func attributedCaption(for string: String?) -> NSAttributedString? {
         string.flatMap { NSAttributedString(string: $0, style: .imageCaption.modified(by: readerSettings)) }
@@ -111,6 +119,50 @@ class ArticleComponentPresenter {
     
     private func attributedCodeBlock(for component: CodeBlockComponent) -> NSAttributedString? {
         NSAttributedString(string: component.text, style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment))
+    }
+    
+    private func attributedContent(for component: BulletedListComponent) -> NSAttributedString? {
+        let attributedContent = NSMutableAttributedString()
+        for row in component.rows {
+            // Clamp a list element's depth to 0...3 (i.e max-depth of 4) as to allow for
+            // enough room for rendering content in a readable fashion, and add the appropriate indents.
+            let depth = CGFloat(min(max(row.level - 1, 0), 3))
+            
+            let bullet: String
+            switch depth {
+            case 0:
+                bullet = "\u{2022} "
+            case 1:
+                bullet = "\u{25e6} "
+            default:
+                bullet = "\u{25AA}\u{fe0e} "
+            }
+            let prefix = NSAttributedString(string: bullet, style: .prefix.adjustingSize(by: readerSettings.fontSizeAdjustment))
+            
+            guard let markdown = NSAttributedString.styled(
+                markdown: row.content,
+                styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
+            ) else {
+                continue
+            }
+            
+            let content = NSMutableAttributedString(attributedString: prefix)
+            content.append(markdown)
+            
+            let style = NSMutableParagraphStyle()
+            style.firstLineHeadIndent = depth * 16
+            style.headIndent = depth * 16 + Self.size(of: prefix).width
+            
+            content.addAttribute(
+                .paragraphStyle,
+                value: style,
+                range: NSRange(location: 0, length: content.length)
+            )
+
+            attributedContent.append(NSAttributedString("\n"))
+            attributedContent.append(content)
+        }
+        return attributedContent
     }
 
     static func size(of attributedString: NSAttributedString, availableWidth: CGFloat = .infinity, availableHeight: CGFloat = .infinity) -> CGSize {
@@ -169,6 +221,14 @@ private extension ArticleComponentPresenter {
         + CodeBlockComponentCell.Constants.contentInset.top
         
         return size
+    }
+    
+    private func componentSize(of component: BulletedListComponent, availableWidth: CGFloat) -> CGSize {
+        guard let content = attributedContent(for: component), !content.string.isEmpty else {
+            return .zero
+        }
+
+        return Self.size(of: content, availableWidth: availableWidth)
     }
 }
 
