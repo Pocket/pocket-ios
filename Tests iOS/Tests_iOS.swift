@@ -181,10 +181,13 @@ class Tests_iOS: XCTestCase {
             
             "<some></some><code></code>",
             
-            "Pharetra Dapibus Ultricies",
-            "netus et malesuada",
-            "quis commodo odio",
-            "tincidunt ornare massa"
+            "\u{2022} Pharetra Dapibus Ultricies",
+            "\u{25e6} netus et malesuada",
+            "\u{25AA}\u{fe0e} quis commodo odio",
+            "\u{25AA}\u{fe0e} tincidunt ornare massa",
+            
+            "1. Amet Commodo Fringilla",
+            "2. nunc sed augue"
         ]
 
         for expectedString in expectedContent {

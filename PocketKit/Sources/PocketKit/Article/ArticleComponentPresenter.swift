@@ -14,7 +14,8 @@ private extension Style {
     static let imageCaption: Self = .body.sansSerif.with(size: .p3)
     
     static let codeBlock: Self = .body.monospace
-    static let prefix: Self = .body.monospace
+    static let bulletedPrefix: Self = .body.monospace
+    static let numberedPrefix: Self = .body.sansSerif
 }
 
 class ArticleComponentPresenter {
@@ -48,6 +49,8 @@ class ArticleComponentPresenter {
             return CGSize(width: availableWidth, height: componentSize(of: codeBlock).height)
         case .bulletedList(let bulletedList):
             return componentSize(of: bulletedList, availableWidth: availableWidth)
+        case .numberedList(let numberedList):
+            return componentSize(of: numberedList, availableWidth: availableWidth)
         default:
             return .zero
         }
@@ -99,6 +102,10 @@ class ArticleComponentPresenter {
     func present(component: BulletedListComponent, in cell: MarkdownComponentCell) {
         cell.attributedContent = attributedContent(for: component)
     }
+    
+    func present(component: NumberedListComponent, in cell: MarkdownComponentCell) {
+        cell.attributedContent = attributedContent(for: component)
+    }
 }
 
 private extension ArticleComponentPresenter {
@@ -137,7 +144,7 @@ private extension ArticleComponentPresenter {
     
     func attributedContent(for component: BulletedListComponent) -> NSAttributedString? {
         let attributedContent = NSMutableAttributedString()
-        for row in component.rows {
+        for (index, row) in component.rows.enumerated() {
             // Clamp a list element's depth to 0...3 (i.e max-depth of 4) as to allow for
             // enough room for rendering content in a readable fashion, and add the appropriate indents.
             let depth = CGFloat(min(row.level, 3))
@@ -151,13 +158,13 @@ private extension ArticleComponentPresenter {
             default:
                 bullet = "\u{25AA}\u{fe0e} "
             }
-            let prefix = NSAttributedString(string: bullet, style: .prefix.adjustingSize(by: readerSettings.fontSizeAdjustment))
+            let prefix = NSAttributedString(string: bullet, style: .bulletedPrefix.adjustingSize(by: readerSettings.fontSizeAdjustment))
             
             guard let markdown = NSAttributedString.styled(
                 markdown: row.content,
                 styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
             ) else {
-                continue
+                return nil
             }
             
             let content = NSMutableAttributedString(attributedString: prefix)
@@ -173,7 +180,46 @@ private extension ArticleComponentPresenter {
                 range: NSRange(location: 0, length: content.length)
             )
 
-            attributedContent.append(NSAttributedString("\n"))
+            if index > 0 {
+                attributedContent.append(NSAttributedString("\n"))
+            }
+            attributedContent.append(content)
+        }
+        return attributedContent
+    }
+    
+    func attributedContent(for component: NumberedListComponent) -> NSAttributedString? {
+        let attributedContent = NSMutableAttributedString()
+        for (index, row) in component.rows.enumerated() {
+            // Clamp a list element's depth to 0...3 (i.e max-depth of 4) as to allow for
+            // enough room for rendering content in a readable fashion, and add the appropriate indents.
+            let depth = CGFloat(min(row.level, 3))
+
+            let prefix = NSAttributedString(string: "\(row.index). ", style: .numberedPrefix.modified(by: readerSettings))
+            
+            guard let markdown = NSAttributedString.styled(
+                markdown: row.content,
+                styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
+            ) else {
+                return nil
+            }
+
+            let content = NSMutableAttributedString(attributedString: prefix)
+            content.append(markdown)
+
+            let style = NSMutableParagraphStyle()
+            style.firstLineHeadIndent = depth * 16
+            style.headIndent = depth * 16 + Self.size(of: prefix).width
+
+            content.addAttribute(
+                .paragraphStyle,
+                value: style,
+                range: NSRange(location: 0, length: content.length)
+            )
+
+            if index > 0 {
+                attributedContent.append(NSAttributedString("\n"))
+            }
             attributedContent.append(content)
         }
         return attributedContent
@@ -224,6 +270,14 @@ private extension ArticleComponentPresenter {
     }
     
     func componentSize(of component: BulletedListComponent, availableWidth: CGFloat) -> CGSize {
+        guard let content = attributedContent(for: component), !content.string.isEmpty else {
+            return .zero
+        }
+
+        return Self.size(of: content, availableWidth: availableWidth)
+    }
+    
+    func componentSize(of component: NumberedListComponent, availableWidth: CGFloat) -> CGSize {
         guard let content = attributedContent(for: component), !content.string.isEmpty else {
             return .zero
         }

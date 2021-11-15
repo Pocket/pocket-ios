@@ -159,6 +159,10 @@ extension ArticleViewController: UICollectionViewDataSource {
                 let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
                 presenter.present(component: bulletedListComponent, in: cell)
                 return cell
+            case .numberedList(let numberedListComponent):
+                let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
+                presenter.present(component: numberedListComponent, in: cell)
+                return cell
             default:
                 let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)
                 return empty

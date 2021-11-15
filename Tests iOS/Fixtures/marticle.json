@@ -72,7 +72,13 @@
             {
                 "__typename": "NumberedListElement",
                 "content": "Amet Commodo Fringilla",
-                "level": 2,
+                "level": 0,
+                "index": 0
+            },
+            {
+                "__typename": "NumberedListElement",
+                "content": "nunc sed augue",
+                "level": 1,
                 "index": 1
             }
         ]
