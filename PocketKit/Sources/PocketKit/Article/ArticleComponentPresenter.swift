@@ -15,7 +15,7 @@ private extension Style {
     
     static let codeBlock: Self = .body.monospace
     static let bulletedPrefix: Self = .body.monospace
-    static let numberedPrefix: Self = .body.sansSerif
+    static let standardPrefix: Self = .body.sansSerif
 }
 
 class ArticleComponentPresenter {
@@ -99,11 +99,7 @@ class ArticleComponentPresenter {
         cell.textView.attributedText = attributedCodeBlock(for: component)
     }
     
-    func present(component: BulletedListComponent, in cell: MarkdownComponentCell) {
-        cell.attributedContent = attributedContent(for: component)
-    }
-    
-    func present(component: NumberedListComponent, in cell: MarkdownComponentCell) {
+    func present<C: MarkdownListComponent>(component: C, in cell: MarkdownComponentCell) {
         cell.attributedContent = attributedContent(for: component)
     }
 }
@@ -142,23 +138,17 @@ private extension ArticleComponentPresenter {
         NSAttributedString(string: component.text, style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment))
     }
     
-    func attributedContent(for component: BulletedListComponent) -> NSAttributedString? {
+    func attributedContent<C: MarkdownListComponent>(for component: C) -> NSAttributedString? {
         let attributedContent = NSMutableAttributedString()
         for (index, row) in component.rows.enumerated() {
             // Clamp a list element's depth to 0...3 (i.e max-depth of 4) as to allow for
             // enough room for rendering content in a readable fashion, and add the appropriate indents.
             let depth = CGFloat(min(row.level, 3))
-            
-            let bullet: String
-            switch depth {
-            case 0:
-                bullet = "\u{2022} "
-            case 1:
-                bullet = "\u{25e6} "
-            default:
-                bullet = "\u{25AA}\u{fe0e} "
-            }
-            let prefix = NSAttributedString(string: bullet, style: .bulletedPrefix.adjustingSize(by: readerSettings.fontSizeAdjustment))
+
+            let prefixStyle: Style = component is BulletedListComponent
+            ? .bulletedPrefix.adjustingSize(by: readerSettings.fontSizeAdjustment)
+            : .standardPrefix.modified(by: readerSettings)
+            let prefix = NSAttributedString(string: row.prefix, style: prefixStyle)
             
             guard let markdown = NSAttributedString.styled(
                 markdown: row.content,
@@ -174,43 +164,6 @@ private extension ArticleComponentPresenter {
             style.firstLineHeadIndent = depth * 16
             style.headIndent = depth * 16 + Self.size(of: prefix).width
             
-            content.addAttribute(
-                .paragraphStyle,
-                value: style,
-                range: NSRange(location: 0, length: content.length)
-            )
-
-            if index > 0 {
-                attributedContent.append(NSAttributedString("\n"))
-            }
-            attributedContent.append(content)
-        }
-        return attributedContent
-    }
-    
-    func attributedContent(for component: NumberedListComponent) -> NSAttributedString? {
-        let attributedContent = NSMutableAttributedString()
-        for (index, row) in component.rows.enumerated() {
-            // Clamp a list element's depth to 0...3 (i.e max-depth of 4) as to allow for
-            // enough room for rendering content in a readable fashion, and add the appropriate indents.
-            let depth = CGFloat(min(row.level, 3))
-
-            let prefix = NSAttributedString(string: "\(row.index). ", style: .numberedPrefix.modified(by: readerSettings))
-            
-            guard let markdown = NSAttributedString.styled(
-                markdown: row.content,
-                styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
-            ) else {
-                return nil
-            }
-
-            let content = NSMutableAttributedString(attributedString: prefix)
-            content.append(markdown)
-
-            let style = NSMutableParagraphStyle()
-            style.firstLineHeadIndent = depth * 16
-            style.headIndent = depth * 16 + Self.size(of: prefix).width
-
             content.addAttribute(
                 .paragraphStyle,
                 value: style,
