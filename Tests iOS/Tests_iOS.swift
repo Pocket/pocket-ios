@@ -171,11 +171,20 @@ class Tests_iOS: XCTestCase {
             "by Jacob and David",
             "WIRED",
             "January 1, 2021",
+            
             "Commodo Consectetur Dapibus",
+            
             "Purus Vulputate",
+            
             "Nulla vitae elit libero, a pharetra augue. Cras justo odio, dapibus ac facilisis in, egestas eget quam.",
             "Photo by: Bibendum Vestibulum Mollis",
-            "<some></some><code></code>"
+            
+            "<some></some><code></code>",
+            
+            "Pharetra Dapibus Ultricies",
+            "netus et malesuada",
+            "quis commodo odio",
+            "tincidunt ornare massa"
         ]
 
         for expectedString in expectedContent {
