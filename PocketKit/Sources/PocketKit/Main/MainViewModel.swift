@@ -34,6 +34,9 @@ class MainViewModel: ObservableObject {
 
     @Published
     var sharedActivity: PocketActivity?
+    
+    @Published
+    var presentedAlert: PocketAlert?
 
     let settings: SettingsViewModel
 

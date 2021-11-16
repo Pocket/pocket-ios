@@ -75,6 +75,10 @@ struct PocketAppElement {
     var shareButton: XCUIElement {
         app.buttons["Share"]
     }
+    
+    var alert: AlertElement {
+        AlertElement(app.alerts.element(boundBy: 0))
+    }
 
     @discardableResult
     func launch(

@@ -138,6 +138,14 @@ class RegularMainCoordinator: NSObject {
                 self?.model.selectedRecommendationToReport = nil
             }
         }.store(in: &longSubscriptions)
+        
+        model.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            guard let alert = alert else {
+                return
+            }
+            
+            self?.present(alert: alert)
+        }.store(in: &longSubscriptions)
     }
 
     func setCompactViewController(_ compact: UIViewController) {
@@ -302,6 +310,19 @@ class RegularMainCoordinator: NSObject {
 
         modal.popoverPresentationController?.barButtonItem = itemVC.popoverAnchor
         splitController.present(modal, animated: true)
+    }
+    
+    private func present(alert: PocketAlert) {
+        let alertController = UIAlertController(
+            title: alert.title,
+            message: alert.message,
+            preferredStyle: alert.preferredStyle
+        )
+        
+        alert.actions.forEach { alertController.addAction($0) }
+        alertController.preferredAction = alert.preferredAction
+        
+        splitController.present(alertController, animated: true)
     }
 }
 

@@ -192,9 +192,31 @@ extension ItemViewController {
             return
         }
 
-        source.delete(item: item)
-        delegate?.itemViewControllerDidDeleteItem(self)
-        track(identifier: .itemDelete, item: item)
+        let actions = [
+            UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                self?.model.presentedAlert = nil
+            },
+            UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
+                self?.model.presentedAlert = nil
+                
+                guard let self = self else {
+                    return
+                }
+                
+                self.source.delete(item: item)
+                self.delegate?.itemViewControllerDidDeleteItem(self)
+                self.track(identifier: .itemDelete, item: item)
+            }
+        ]
+        
+        let alert = PocketAlert(
+            title: "Are you sure you want to delete this item?",
+            message: nil,
+            preferredStyle: .alert,
+            actions: actions,
+            preferredAction: nil
+        )
+        model.presentedAlert = alert
     }
 
     private func share() {

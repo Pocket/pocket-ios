@@ -78,6 +78,7 @@ class DeleteAnItemTests: XCTestCase {
         }
 
         app.deleteButton.wait().tap()
+        app.alert.yes.wait().tap()
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)
@@ -119,6 +120,7 @@ class DeleteAnItemTests: XCTestCase {
             .tap()
 
         app.deleteButton.wait().tap()
+        app.alert.yes.wait().tap()
         wait(for: [expectRequest], timeout: 1)
         guard let requestBody = deleteRequestBody else {
             XCTFail("Expected request body to not be nil")
