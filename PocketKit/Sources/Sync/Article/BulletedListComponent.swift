@@ -1,20 +1,9 @@
-public struct BulletedListComponent: MarkdownListComponent, Codable, Equatable, Hashable {
+public struct BulletedListComponent: Codable, Equatable, Hashable {
     public let rows: [Row]
 
-    public struct Row: MarkdownListComponentRow, Codable, Equatable, Hashable {
+    public struct Row: Codable, Equatable, Hashable {
         public let content: Markdown
         public let level: UInt
-        
-        public var prefix: String {
-            switch level {
-            case 0:
-                return "\u{2022} "
-            case 1:
-                return "\u{25e6} "
-            default:
-                return "\u{25AA}\u{fe0e} "
-            }
-        }
     }
 }
 

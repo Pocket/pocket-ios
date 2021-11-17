@@ -14,8 +14,6 @@ private extension Style {
     static let imageCaption: Self = .body.sansSerif.with(size: .p3)
     
     static let codeBlock: Self = .body.monospace
-    static let bulletedPrefix: Self = .body.monospace
-    static let standardPrefix: Self = .body.sansSerif
 }
 
 class ArticleComponentPresenter {
@@ -99,8 +97,14 @@ class ArticleComponentPresenter {
         cell.textView.attributedText = attributedCodeBlock(for: component)
     }
     
-    func present<C: MarkdownListComponent>(component: C, in cell: MarkdownComponentCell) {
-        cell.attributedContent = attributedContent(for: component)
+    func present(component: BulletedListComponent, in cell: MarkdownComponentCell) {
+        let presenter = ListComponentPresenter(component: component, readerSettings: readerSettings)
+        cell.attributedContent = presenter.attributedContent
+    }
+    
+    func present(component: NumberedListComponent, in cell: MarkdownComponentCell) {
+        let presenter = ListComponentPresenter(component: component, readerSettings: readerSettings)
+        cell.attributedContent = presenter.attributedContent
     }
 }
 
@@ -136,46 +140,6 @@ private extension ArticleComponentPresenter {
     
     func attributedCodeBlock(for component: CodeBlockComponent) -> NSAttributedString? {
         NSAttributedString(string: component.text, style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment))
-    }
-    
-    func attributedContent<C: MarkdownListComponent>(for component: C) -> NSAttributedString? {
-        let attributedContent = NSMutableAttributedString()
-        for (index, row) in component.rows.enumerated() {
-            // Clamp a list element's depth to 0...3 (i.e max-depth of 4) as to allow for
-            // enough room for rendering content in a readable fashion, and add the appropriate indents.
-            let depth = CGFloat(min(row.level, 3))
-
-            let prefixStyle: Style = component is BulletedListComponent
-            ? .bulletedPrefix.adjustingSize(by: readerSettings.fontSizeAdjustment)
-            : .standardPrefix.modified(by: readerSettings)
-            let prefix = NSAttributedString(string: row.prefix, style: prefixStyle)
-            
-            guard let markdown = NSAttributedString.styled(
-                markdown: row.content,
-                styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
-            ) else {
-                return nil
-            }
-            
-            let content = NSMutableAttributedString(attributedString: prefix)
-            content.append(markdown)
-            
-            let style = NSMutableParagraphStyle()
-            style.firstLineHeadIndent = depth * 16
-            style.headIndent = depth * 16 + Self.size(of: prefix).width
-            
-            content.addAttribute(
-                .paragraphStyle,
-                value: style,
-                range: NSRange(location: 0, length: content.length)
-            )
-
-            if index > 0 {
-                attributedContent.append(NSAttributedString("\n"))
-            }
-            attributedContent.append(content)
-        }
-        return attributedContent
     }
 }
 
@@ -223,7 +187,8 @@ private extension ArticleComponentPresenter {
     }
     
     func componentSize(of component: BulletedListComponent, availableWidth: CGFloat) -> CGSize {
-        guard let content = attributedContent(for: component), !content.string.isEmpty else {
+        let presenter = ListComponentPresenter(component: component, readerSettings: readerSettings)
+        guard let content = presenter.attributedContent, !content.string.isEmpty else {
             return .zero
         }
 
@@ -231,7 +196,8 @@ private extension ArticleComponentPresenter {
     }
     
     func componentSize(of component: NumberedListComponent, availableWidth: CGFloat) -> CGSize {
-        guard let content = attributedContent(for: component), !content.string.isEmpty else {
+        let presenter = ListComponentPresenter(component: component, readerSettings: readerSettings)
+        guard let content = presenter.attributedContent, !content.string.isEmpty else {
             return .zero
         }
 

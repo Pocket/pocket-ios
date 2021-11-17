@@ -1,14 +1,10 @@
-public struct NumberedListComponent: MarkdownListComponent, Codable, Equatable, Hashable {
+public struct NumberedListComponent: Codable, Equatable, Hashable {
     public let rows: [Row]
 
-    public struct Row: MarkdownListComponentRow, Codable, Equatable, Hashable {
+    public struct Row: Codable, Equatable, Hashable {
         public let content: Markdown
         public let level: UInt
         public let index: UInt
-        
-        public var prefix: String {
-            return "\(index + 1). "
-        }
     }
 }
 
