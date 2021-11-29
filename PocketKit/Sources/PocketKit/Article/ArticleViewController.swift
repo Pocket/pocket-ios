@@ -43,6 +43,7 @@ class ArticleViewController: UIViewController {
 
     private let readerSettings: ReaderSettings
     private let tracker: Tracker
+    private let viewModel: MainViewModel
 
     private var subscriptions: [AnyCancellable] = []
     
@@ -63,9 +64,10 @@ class ArticleViewController: UIViewController {
         - Constants.contentInsets.trailing
     }
 
-    init(readerSettings: ReaderSettings, tracker: Tracker) {
+    init(readerSettings: ReaderSettings, tracker: Tracker, viewModel: MainViewModel) {
         self.readerSettings = readerSettings
         self.tracker = tracker
+        self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
 
@@ -78,6 +80,7 @@ class ArticleViewController: UIViewController {
         collectionView.register(cellClass: ArticleMetadataCell.self)
         collectionView.register(cellClass: DividerComponentCell.self)
         collectionView.register(cellClass: CodeBlockComponentCell.self)
+        collectionView.register(cellClass: UnsupportedComponentCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
         readerSettings.objectWillChange.sink { _ in
@@ -162,6 +165,12 @@ extension ArticleViewController: UICollectionViewDataSource {
             case .numberedList(let numberedListComponent):
                 let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
                 presenter.present(component: numberedListComponent, in: cell)
+                return cell
+            case .table:
+                let cell: UnsupportedComponentCell = collectionView.dequeueCell(for: indexPath)
+                cell.action = { [weak self] in
+                    self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
+                }
                 return cell
             default:
                 let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)

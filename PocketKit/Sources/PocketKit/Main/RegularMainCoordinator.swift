@@ -66,7 +66,8 @@ class RegularMainCoordinator: NSObject {
 
         recommendationVC = ArticleViewController(
             readerSettings: model.readerSettings,
-            tracker: tracker.childTracker(hosting: .articleView.screen)
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            viewModel: model
         )
 
         readerRoot = UINavigationController(rootViewController: itemVC)

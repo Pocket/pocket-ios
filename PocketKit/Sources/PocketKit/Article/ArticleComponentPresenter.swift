@@ -49,6 +49,8 @@ class ArticleComponentPresenter {
             return componentSize(of: bulletedList, availableWidth: availableWidth)
         case .numberedList(let numberedList):
             return componentSize(of: numberedList, availableWidth: availableWidth)
+        case .table:
+            return CGSize(width: availableWidth, height: 84)
         default:
             return .zero
         }

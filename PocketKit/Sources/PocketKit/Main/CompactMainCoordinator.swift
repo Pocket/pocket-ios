@@ -107,7 +107,8 @@ class CompactMainCoordinator: NSObject {
     func show(recommendation: Slate.Recommendation, animated: Bool) {
         let article = ArticleViewController(
             readerSettings: model.readerSettings,
-            tracker: tracker.childTracker(hosting: .articleView.screen)
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            viewModel: model
         )
         article.hidesBottomBarWhenPushed = true
         article.item = recommendation
