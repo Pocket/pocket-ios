@@ -78,6 +78,7 @@ extension UIContext {
         case recommendation = "recommendation"
         case reportItem = "report_item"
         case submit
+        case settings
     }
 }
 
@@ -104,6 +105,10 @@ extension UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
         }
     }
+
+    public struct Settings {
+        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .settings)
+    }
     
     public struct ArticleView {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .reader)
@@ -121,6 +126,7 @@ extension UIContext {
     
     public static let home = Home()
     public static let myList = MyList()
+    public static let settings = Settings()
     public static let articleView = ArticleView()
     public static let slateDetail = SlateDetail()
     

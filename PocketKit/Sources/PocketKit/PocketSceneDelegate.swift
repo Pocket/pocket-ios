@@ -16,7 +16,16 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
         let initialState: RootViewModel.State
         if session.userID != nil, session.guid != nil, tokenStore.accessToken != nil {
             initialState = .main(MainViewModel(
-                refreshCoordinator: Services.shared.refreshCoordinator
+                refreshCoordinator: Services.shared.refreshCoordinator,
+                settings: SettingsViewModel(
+                    authClient: Services.shared.authClient,
+                    session: session,
+                    accessTokenStore: tokenStore,
+                    tracker: Services.shared.tracker,
+                    source: Services.shared.source,
+                    userDefaults: Services.shared.userDefaults,
+                    events: events
+                )
             ))
         } else {
             initialState = .signIn(
@@ -39,7 +48,9 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     authClient: Services.shared.authClient,
                     session: session,
                     accessTokenStore: tokenStore,
-                    tracker: Services.shared.tracker
+                    tracker: Services.shared.tracker,
+                    source: Services.shared.source,
+                    userDefaults: Services.shared.userDefaults
                 ),
                 source: Services.shared.source,
                 tracker: Services.shared.tracker

@@ -15,6 +15,7 @@ class RegularMainCoordinator: NSObject {
     private let navigationSidebar: UINavigationController
     private let myList: UIViewController
     private let home: HomeViewController
+    private let settings: SettingsViewController
 
     private let readerRoot: UINavigationController
     private let itemVC: ItemViewController
@@ -56,6 +57,9 @@ class RegularMainCoordinator: NSObject {
             model: model
         )
         home.view.backgroundColor = UIColor(.ui.white1)
+
+        settings = SettingsViewController(model: model.settings)
+        settings.view.backgroundColor = UIColor(.ui.white1)
 
         itemVC = ItemViewController(
             model: model,
@@ -147,6 +151,10 @@ class RegularMainCoordinator: NSObject {
         splitController.setViewController(home, for: .supplementary)
     }
 
+    func showSettings() {
+        splitController.setViewController(settings, for: .supplementary)
+    }
+
     func show(item: SavedItem) {
         itemVC.savedItem = item
         readerRoot.viewControllers = [itemVC]
@@ -202,6 +210,8 @@ class RegularMainCoordinator: NSObject {
                 self.showMyList()
             case .home:
                 self.showHome()
+            case .settings:
+                self.showSettings()
             }
         }.store(in: &subscriptions)
 

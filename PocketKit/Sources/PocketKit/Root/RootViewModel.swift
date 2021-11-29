@@ -1,6 +1,7 @@
 import Combine
 import Sync
 import Analytics
+import Foundation
 
 enum PocketEvent {
     case signedIn
@@ -24,6 +25,8 @@ class RootViewModel: ObservableObject {
     private let session: Session
     private let accessTokenStore: AccessTokenStore
     private let tracker: Tracker
+    private let source: Source
+    private let userDefaults: UserDefaults
 
     init(
         state: State,
@@ -32,7 +35,9 @@ class RootViewModel: ObservableObject {
         authClient: AuthorizationClient,
         session: Session,
         accessTokenStore: AccessTokenStore,
-        tracker: Tracker
+        tracker: Tracker,
+        source: Source,
+        userDefaults: UserDefaults
     ) {
         self.state = state
         self.events = events
@@ -42,6 +47,8 @@ class RootViewModel: ObservableObject {
         self.session = session
         self.accessTokenStore = accessTokenStore
         self.tracker = tracker
+        self.source = source
+        self.userDefaults = userDefaults
 
         events.sink { [weak self] event in
             self?.handle(event)
@@ -51,7 +58,20 @@ class RootViewModel: ObservableObject {
     private func handle(_ event: PocketEvent) {
         switch event {
         case .signedIn:
-            state = .main(MainViewModel(refreshCoordinator: refreshCoordinator))
+            state = .main(
+                MainViewModel(
+                    refreshCoordinator: refreshCoordinator,
+                    settings: SettingsViewModel(
+                        authClient: authClient,
+                        session: session,
+                        accessTokenStore: accessTokenStore,
+                        tracker: tracker,
+                        source: source,
+                        userDefaults: userDefaults,
+                        events: events
+                    )
+                )
+            )
         case .signedOut:
             state = .signIn(SignInViewModel(
                 authClient: authClient,

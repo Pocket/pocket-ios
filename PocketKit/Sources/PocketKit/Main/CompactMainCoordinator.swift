@@ -15,6 +15,8 @@ class CompactMainCoordinator: NSObject {
     private let myList: UINavigationController
     private let homeRoot: HomeViewController
     private let home: UINavigationController
+    private let settingsRoot: SettingsViewController
+    private let settings: UINavigationController
 
     private let tracker: Tracker
     private let source: Source
@@ -61,8 +63,17 @@ class CompactMainCoordinator: NSObject {
         home.tabBarItem.title = "Home"
         home.tabBarItem.image = UIImage(systemName: "house")
 
+        settingsRoot = SettingsViewController(model: model.settings)
+        settings = UINavigationController(rootViewController: settingsRoot)
+        settings.navigationBar.prefersLargeTitles = true
+        settings.navigationBar.barTintColor = UIColor(.ui.white1)
+        settings.navigationBar.tintColor = UIColor(.ui.grey1)
+        settings.tabBarItem.accessibilityIdentifier = "settings-tab-bar-button"
+        settings.tabBarItem.title = "Settings"
+        settings.tabBarItem.image = UIImage(systemName: "gearshape")
+
         tabBarController = UITabBarController()
-        tabBarController.viewControllers = [home, myList]
+        tabBarController.viewControllers = [home, myList, settings]
         tabBarController.tabBar.barTintColor = UIColor(.ui.white1)
         tabBarController.tabBar.tintColor = UIColor(.ui.grey1)
 
@@ -89,6 +100,10 @@ class CompactMainCoordinator: NSObject {
 
     func showHome() {
         tabBarController.selectedViewController = home
+    }
+
+    func showSettings() {
+        tabBarController.selectedViewController = settings
     }
 
     func show(item: SavedItem, animated: Bool) {
@@ -138,6 +153,8 @@ class CompactMainCoordinator: NSObject {
                 self.showMyList()
             case .home:
                 self.showHome()
+            case .settings:
+                self.showSettings()
             }
         }.store(in: &subscriptions)
 
