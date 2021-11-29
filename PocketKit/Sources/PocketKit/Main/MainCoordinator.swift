@@ -42,6 +42,8 @@ class MainCoordinator {
                     context = UIContext.home.screen
                 case .myList:
                     context = UIContext.myList.screen
+                case .settings:
+                    context = UIContext.settings.screen
                 }
 
                 let impression = ImpressionEvent(component: .screen, requirement: .instant)

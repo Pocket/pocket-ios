@@ -35,19 +35,26 @@ class MainViewModel: ObservableObject {
     @Published
     var sharedActivity: PocketActivity?
 
+    let settings: SettingsViewModel
+
     var refreshTasks: AnyPublisher<BGTask, Never> {
         refreshCoordinator.tasksPublisher
     }
 
     private let refreshCoordinator: RefreshCoordinator
 
-    init(refreshCoordinator: RefreshCoordinator) {
+    init(
+        refreshCoordinator: RefreshCoordinator,
+        settings: SettingsViewModel
+    ) {
         self.refreshCoordinator = refreshCoordinator
+        self.settings = settings
     }
 
     enum AppSection: CaseIterable, Identifiable {
         case home
         case myList
+        case settings
 
         var navigationTitle: String {
             switch self {
@@ -55,6 +62,8 @@ class MainViewModel: ObservableObject {
                 return "Home"
             case .myList:
                 return "My List"
+            case .settings:
+                return "Settings"
             }
         }
 

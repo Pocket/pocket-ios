@@ -24,14 +24,17 @@ struct PocketAppElement {
         return HomeViewElement(app.otherElements["home"])
     }
 
-    var slateDetailView: SlateDetailElement {
-        return SlateDetailElement(app.otherElements["slate-detail"])
-    }
-
     var userListView: UserListElement {
         return UserListElement(app.tables["user-list"])
     }
-    
+
+    var settingsView: SettingsViewElement {
+        return SettingsViewElement(app.collectionViews["settings"])
+    }
+
+    var slateDetailView: SlateDetailElement {
+        return SlateDetailElement(app.otherElements["slate-detail"])
+    }
 
     var readerView: ReaderElement {
         return ReaderElement(app)
