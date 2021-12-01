@@ -56,7 +56,12 @@ class PocketTextView: UITextView {
 }
 
 extension PocketTextView: UITextViewDelegate {
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+    func textView(
+        _ textView: UITextView,
+        shouldInteractWith URL: URL,
+        in characterRange: NSRange,
+        interaction: UITextItemInteraction
+    ) -> Bool {
         return pocketDelegate?.pocketTextView(self, shouldOpenURL: URL) ?? true
     }
 }
