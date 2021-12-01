@@ -128,6 +128,7 @@ extension ArticleViewController: UICollectionViewDataSource {
         switch indexPath.section {
         case 0:
             let metaCell: ArticleMetadataCell = collectionView.dequeueCell(for: indexPath)
+            metaCell.delegate = self
             metaCell.attributedTitle = metadata?.attributedTitle
             metaCell.attributedByline = metadata?.attributedByline
             return metaCell
@@ -157,6 +158,7 @@ extension ArticleViewController: UICollectionViewDataSource {
                 return cell
             case .codeBlock(let codeBlockComponent):
                 let cell: CodeBlockComponentCell = collectionView.dequeueCell(for: indexPath)
+                cell.delegate = self
                 presenter.present(component: codeBlockComponent, in: cell)
                 return cell
             case .bulletedList(let bulletedListComponent):
@@ -185,21 +187,20 @@ extension ArticleViewController: UICollectionViewDataSource {
     }
 }
 
-extension ArticleViewController: MarkdownComponentCellDelegate {
-    func markdownComponentCell(
-        _ cell: MarkdownComponentCell,
-        didShareSelecedText selectedText: String
+extension ArticleViewController: PocketTextCellDelegate {
+    func pocketTextCell(
+        _ cell: PocketTextCell,
+        didShareText selectedText: String?
     ) {
         guard let item = item, let activity = item.shareActivity(additionalText: selectedText) else {
             return
         }
 
-        let sheet = UIActivityViewController(activity: activity)
-        present(sheet, animated: true)
+        viewModel.sharedActivity = activity
     }
     
-    func markdownComponentCell(
-        _ cell: MarkdownComponentCell,
+    func pocketTextTell(
+        _ cell: PocketTextCell,
         shouldOpenURL url: URL
     ) -> Bool {
         let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)

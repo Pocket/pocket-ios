@@ -1,7 +1,7 @@
 import UIKit
 
 
-class CodeBlockComponentCell: UICollectionViewCell {
+class CodeBlockComponentCell: UICollectionViewCell, PocketTextCell, PocketTextViewDelegate {
     struct Constants {
         static let contentInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
     }
@@ -13,16 +13,19 @@ class CodeBlockComponentCell: UICollectionViewCell {
         return view
     }()
     
-    lazy var textView: UITextView = {
-        let view = UITextView()
+    lazy var textView: PocketTextView = {
+        let view = PocketTextView()
         view.backgroundColor = .clear
         view.textContainerInset = .zero
         view.textContainer.lineFragmentPadding = .zero
         view.isEditable = false
         view.isScrollEnabled = false
         view.dataDetectorTypes = []
+        view.pocketDelegate = self
         return view
     }()
+    
+    weak var delegate: PocketTextCellDelegate? = nil
     
     override init(frame: CGRect) {
         super.init(frame: frame)
