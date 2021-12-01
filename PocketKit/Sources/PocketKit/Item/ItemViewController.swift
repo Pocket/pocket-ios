@@ -36,7 +36,11 @@ class ItemViewController: UIViewController {
     ) {
         self.source = source
         self.tracker = tracker
-        self.itemHost = ArticleViewController(readerSettings: model.readerSettings, tracker: tracker, viewModel: model)
+        self.itemHost = ArticleViewController(
+            readerSettings: model.readerSettings,
+            tracker: tracker,
+            viewModel: model
+        )
         self.model = model
         self.moreButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "ellipsis"),
