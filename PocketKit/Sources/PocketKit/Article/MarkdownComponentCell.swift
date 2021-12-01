@@ -1,19 +1,14 @@
 import UIKit
 
 
-class MarkdownComponentCell: UICollectionViewCell, PocketTextCell, PocketTextViewDelegate {
-    lazy var textView: PocketTextView = {
-        let textView = PocketTextView()
-        textView.backgroundColor = .clear
-        textView.textContainerInset = .zero
-        textView.textContainer.lineFragmentPadding = .zero
-        textView.isEditable = false
-        textView.isScrollEnabled = false
-        textView.pocketDelegate = self
+class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
+    lazy var textView: ArticleComponentTextView = {
+        let textView = ArticleComponentTextView()
+        textView.actionDelegate = self
         return textView
     }()
 
-    weak var delegate: PocketTextCellDelegate?
+    weak var delegate: ArticleComponentTextCellDelegate?
 
     var selectedText: String {
         (textView.text as NSString).substring(with: textView.selectedRange)

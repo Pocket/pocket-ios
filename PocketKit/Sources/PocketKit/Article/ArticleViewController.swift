@@ -187,9 +187,9 @@ extension ArticleViewController: UICollectionViewDataSource {
     }
 }
 
-extension ArticleViewController: PocketTextCellDelegate {
-    func pocketTextCell(
-        _ cell: PocketTextCell,
+extension ArticleViewController: ArticleComponentTextCellDelegate {
+    func articleComponentTextCell(
+        _ cell: ArticleComponentTextCell,
         didShareText selectedText: String?
     ) {
         guard let item = item, let activity = item.shareActivity(additionalText: selectedText) else {
@@ -199,8 +199,8 @@ extension ArticleViewController: PocketTextCellDelegate {
         viewModel.sharedActivity = activity
     }
     
-    func pocketTextTell(
-        _ cell: PocketTextCell,
+    func articleComponentTextCell(
+        _ cell: ArticleComponentTextCell,
         shouldOpenURL url: URL
     ) -> Bool {
         let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)

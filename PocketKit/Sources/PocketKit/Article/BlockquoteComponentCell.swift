@@ -1,7 +1,8 @@
 import UIKit
 
 
-class BlockquoteComponentCell: UICollectionViewCell {
+class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
+    
     struct Constants {
         static let dividerWidth: CGFloat = 6
         static let stackSpacing: CGFloat = 12
@@ -12,13 +13,9 @@ class BlockquoteComponentCell: UICollectionViewCell {
         return view
     }()
     
-    private lazy var textView: UITextView = {
-        let textView = UITextView()
-        textView.backgroundColor = .clear
-        textView.textContainerInset = .zero
-        textView.textContainer.lineFragmentPadding = .zero
-        textView.isEditable = false
-        textView.isScrollEnabled = false
+    private lazy var textView: ArticleComponentTextView = {
+        let textView = ArticleComponentTextView()
+        textView.actionDelegate = self
         return textView
     }()
     
@@ -37,6 +34,8 @@ class BlockquoteComponentCell: UICollectionViewCell {
             textView.attributedText = newValue
         }
     }
+    
+    weak var delegate: ArticleComponentTextCellDelegate?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
