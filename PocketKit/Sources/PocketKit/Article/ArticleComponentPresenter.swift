@@ -14,6 +14,7 @@ private extension Style {
     static let imageCaption: Self = .body.sansSerif.with(size: .p3)
     
     static let codeBlock: Self = .body.monospace
+    static let blockquote: Self = .body.sansSerif
 }
 
 class ArticleComponentPresenter {
@@ -51,6 +52,8 @@ class ArticleComponentPresenter {
             return componentSize(of: numberedList, availableWidth: availableWidth)
         case .table:
             return CGSize(width: availableWidth, height: 84)
+        case .blockquote(let blockquote):
+            return componentSize(of: blockquote, availableWidth: availableWidth)
         default:
             return .zero
         }
@@ -108,6 +111,10 @@ class ArticleComponentPresenter {
         let presenter = ListComponentPresenter(component: component, readerSettings: readerSettings)
         cell.attributedContent = presenter.attributedContent
     }
+    
+    func present(component: BlockquoteComponent, in cell: BlockquoteComponentCell) {
+        cell.attributedBlockquote = attributedBlockquote(for: component)
+    }
 }
 
 private extension ArticleComponentPresenter {
@@ -142,6 +149,13 @@ private extension ArticleComponentPresenter {
     
     func attributedCodeBlock(for component: CodeBlockComponent) -> NSAttributedString? {
         NSAttributedString(string: component.text, style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment))
+    }
+    
+    func attributedBlockquote(for component: BlockquoteComponent) -> NSAttributedString? {
+        NSAttributedString.styled(
+            markdown: component.content,
+            styler: NSAttributedString.defaultStyler(with: readerSettings)
+        )
     }
 }
 
@@ -204,6 +218,15 @@ private extension ArticleComponentPresenter {
         }
 
         return Self.size(of: content, availableWidth: availableWidth)
+    }
+    
+    func componentSize(of component: BlockquoteComponent, availableWidth: CGFloat) -> CGSize {
+        guard !component.content.isEmpty, let blockquote = attributedBlockquote(for: component) else {
+            return .zero
+        }
+        
+        let width = availableWidth - BlockquoteComponentCell.Constants.dividerWidth - BlockquoteComponentCell.Constants.stackSpacing
+        return Self.size(of: blockquote, availableWidth: width)
     }
 }
 

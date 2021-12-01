@@ -81,6 +81,7 @@ class ArticleViewController: UIViewController {
         collectionView.register(cellClass: DividerComponentCell.self)
         collectionView.register(cellClass: CodeBlockComponentCell.self)
         collectionView.register(cellClass: UnsupportedComponentCell.self)
+        collectionView.register(cellClass: BlockquoteComponentCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
         readerSettings.objectWillChange.sink { _ in
@@ -171,6 +172,10 @@ extension ArticleViewController: UICollectionViewDataSource {
                 cell.action = { [weak self] in
                     self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
                 }
+                return cell
+            case .blockquote(let blockquoteComponent):
+                let cell: BlockquoteComponentCell = collectionView.dequeueCell(for: indexPath)
+                presenter.present(component: blockquoteComponent, in: cell)
                 return cell
             default:
                 let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)
