@@ -189,7 +189,9 @@ class Tests_iOS: XCTestCase {
             "1. Amet Commodo Fringilla",
             "2. nunc sed augue",
             
-            "This element is currently unsupported."
+            "This element is currently unsupported.",
+            
+            "Pellentesque Ridiculus Porta"
         ]
 
         for expectedString in expectedContent {
