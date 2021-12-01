@@ -1,30 +1,20 @@
 import UIKit
 
 
-class ArticleMetadataCell: UICollectionViewCell, PocketTextCell, PocketTextViewDelegate {
+class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     enum Constants {
         static let stackSpacing: CGFloat = 0
     }
 
-    private lazy var titleTextView: PocketTextView = {
-        let textView = PocketTextView()
-        textView.backgroundColor = .clear
-        textView.textContainerInset = .zero
-        textView.textContainer.lineFragmentPadding = .zero
-        textView.isEditable = false
-        textView.isScrollEnabled = false
-        textView.pocketDelegate = self
+    private lazy var titleTextView: ArticleComponentTextView = {
+        let textView = ArticleComponentTextView()
+        textView.actionDelegate = self
         return textView
     }()
 
-    private lazy var bylineTextView: PocketTextView = {
-        let textView = PocketTextView()
-        textView.backgroundColor = .clear
-        textView.textContainerInset = .zero
-        textView.textContainer.lineFragmentPadding = .zero
-        textView.isEditable = false
-        textView.isScrollEnabled = false
-        textView.pocketDelegate = self
+    private lazy var bylineTextView: ArticleComponentTextView = {
+        let textView = ArticleComponentTextView()
+        textView.actionDelegate = self
         return textView
     }()
 
@@ -53,7 +43,7 @@ class ArticleMetadataCell: UICollectionViewCell, PocketTextCell, PocketTextViewD
         }
     }
     
-    weak var delegate: PocketTextCellDelegate?
+    weak var delegate: ArticleComponentTextCellDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
