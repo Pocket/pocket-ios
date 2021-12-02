@@ -11,11 +11,8 @@ struct Services {
     static let shared = Services()
 
     let userDefaults: UserDefaults
-    let session: Session
-    let keychain: Keychain
-    let accessTokenStore: AccessTokenStore
+    let sessionController: SessionController
     let urlSession: URLSessionProtocol
-    let authClient: AuthorizationClient
     let source: Source
     let tracker: Tracker
     let sceneTracker: SceneTracker
@@ -23,15 +20,18 @@ struct Services {
 
     private init() {
         userDefaults = .standard
-        session = Session(userDefaults: userDefaults)
-        keychain = SecItemKeychain()
-        accessTokenStore = KeychainAccessTokenStore(keychain: keychain)
-
         urlSession = URLSession.shared
-        authClient = AuthorizationClient(
+
+        let session = Session(userDefaults: userDefaults)
+        let keychain = SecItemKeychain()
+        let accessTokenStore = KeychainAccessTokenStore(keychain: keychain)
+        let authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
             session: urlSession
         )
+
+        let snowplow = PocketSnowplowTracker()
+        tracker = PocketTracker(snowplow: snowplow)
 
         source = Source(
             sessionProvider: session,
@@ -40,11 +40,16 @@ struct Services {
             defaults: userDefaults
         )
 
-        let snowplow = PocketSnowplowTracker()
-        tracker = PocketTracker(snowplow: snowplow)
-        
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
         refreshCoordinator = RefreshCoordinator(taskScheduler: .shared)
+        sessionController = SessionController(
+            authClient: authClient,
+            session: session,
+            accessTokenStore: accessTokenStore,
+            tracker: tracker,
+            source: source,
+            userDefaults: userDefaults
+        )
     }
 }
 

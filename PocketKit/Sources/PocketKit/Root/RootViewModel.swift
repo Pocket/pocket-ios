@@ -20,35 +20,19 @@ class RootViewModel: ObservableObject {
     // Needed so we can build a MainViewModel or SignInViewModel
     // TODO: Use a proper dependency injection strategy to eliminate need to
     // keep track of transient dependencies
+    private let sessionController: SessionController
     private let refreshCoordinator: RefreshCoordinator
-    private let authClient: AuthorizationClient
-    private let session: Session
-    private let accessTokenStore: AccessTokenStore
-    private let tracker: Tracker
-    private let source: Source
-    private let userDefaults: UserDefaults
 
     init(
         state: State,
         events: PocketEvents,
         refreshCoordinator: RefreshCoordinator,
-        authClient: AuthorizationClient,
-        session: Session,
-        accessTokenStore: AccessTokenStore,
-        tracker: Tracker,
-        source: Source,
-        userDefaults: UserDefaults
+        sessionController: SessionController
     ) {
         self.state = state
         self.events = events
-
         self.refreshCoordinator = refreshCoordinator
-        self.authClient = authClient
-        self.session = session
-        self.accessTokenStore = accessTokenStore
-        self.tracker = tracker
-        self.source = source
-        self.userDefaults = userDefaults
+        self.sessionController = sessionController
 
         events.sink { [weak self] event in
             self?.handle(event)
@@ -62,22 +46,14 @@ class RootViewModel: ObservableObject {
                 MainViewModel(
                     refreshCoordinator: refreshCoordinator,
                     settings: SettingsViewModel(
-                        authClient: authClient,
-                        session: session,
-                        accessTokenStore: accessTokenStore,
-                        tracker: tracker,
-                        source: source,
-                        userDefaults: userDefaults,
+                        sessionController: sessionController,
                         events: events
                     )
                 )
             )
         case .signedOut:
             state = .signIn(SignInViewModel(
-                authClient: authClient,
-                session: session,
-                accessTokenStore: accessTokenStore,
-                tracker: tracker,
+                sessionController: sessionController,
                 events: events
             ))
         }
