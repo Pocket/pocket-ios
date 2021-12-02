@@ -10,30 +10,21 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     override convenience init() {
         let events = PocketEvents()
-        let session = Services.shared.session
-        let tokenStore = Services.shared.accessTokenStore
+        let sessionController = Services.shared.sessionController
 
         let initialState: RootViewModel.State
-        if session.userID != nil, session.guid != nil, tokenStore.accessToken != nil {
+        if sessionController.isSignedIn {
             initialState = .main(MainViewModel(
                 refreshCoordinator: Services.shared.refreshCoordinator,
                 settings: SettingsViewModel(
-                    authClient: Services.shared.authClient,
-                    session: session,
-                    accessTokenStore: tokenStore,
-                    tracker: Services.shared.tracker,
-                    source: Services.shared.source,
-                    userDefaults: Services.shared.userDefaults,
+                    sessionController: sessionController,
                     events: events
                 )
             ))
         } else {
             initialState = .signIn(
                 SignInViewModel(
-                    authClient: Services.shared.authClient,
-                    session: session,
-                    accessTokenStore: tokenStore,
-                    tracker: Services.shared.tracker,
+                    sessionController: sessionController,
                     events: events
                 )
             )
@@ -45,12 +36,7 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     state: initialState,
                     events: events,
                     refreshCoordinator: Services.shared.refreshCoordinator,
-                    authClient: Services.shared.authClient,
-                    session: session,
-                    accessTokenStore: tokenStore,
-                    tracker: Services.shared.tracker,
-                    source: Services.shared.source,
-                    userDefaults: Services.shared.userDefaults
+                    sessionController: sessionController
                 ),
                 source: Services.shared.source,
                 tracker: Services.shared.tracker

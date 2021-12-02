@@ -10,11 +10,10 @@ import BackgroundTasks
 
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
-    private let accessTokenStore: AccessTokenStore
     private let source: Source
     private let tracker: Tracker
     private let userDefaults: UserDefaults
-    private let session: Session
+    private let sessionController: SessionController
     private let refreshCoordinator: RefreshCoordinator
 
     convenience override init() {
@@ -22,11 +21,10 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     init(services: Services) {
-        self.accessTokenStore = services.accessTokenStore
         self.source = services.source
         self.tracker = services.tracker
         self.userDefaults = services.userDefaults
-        self.session = services.session
+        self.sessionController = services.sessionController
         self.refreshCoordinator = services.refreshCoordinator
     }
 
@@ -40,7 +38,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         SignOutOnFirstLaunch(
-            accessTokenStore: accessTokenStore,
+            sessionController: sessionController,
             userDefaults: userDefaults
         ).signOutOnFirstLaunch()
 
@@ -52,7 +50,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         staticDataCleaner.clearIfNecessary()
 
         if CommandLine.arguments.contains("clearKeychain") {
-            try? accessTokenStore.delete()
+            sessionController.signOut()
         }
 
         if CommandLine.arguments.contains("clearCoreData") {
@@ -63,17 +61,11 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             Textiles.clearImageCache()
         }
 
-        if let accessToken = ProcessInfo.processInfo.environment["accessToken"] {
-            try? accessTokenStore.save(token: accessToken)
-        }
-
-        if let guid = ProcessInfo.processInfo.environment["sessionGUID"] {
-            session.guid = guid
-        }
-
-        if let userID = ProcessInfo.processInfo.environment["sessionUserID"] {
-            session.userID = userID
-        }
+        sessionController.updateSession(
+            accessToken: ProcessInfo.processInfo.environment["accessToken"],
+            guid: ProcessInfo.processInfo.environment["sessionGUID"],
+            userID: ProcessInfo.processInfo.environment["sessionUserID"]
+        )
 
         Textiles.initialize()
         setupTracker()

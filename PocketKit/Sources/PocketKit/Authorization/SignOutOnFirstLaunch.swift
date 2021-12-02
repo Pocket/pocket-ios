@@ -3,16 +3,16 @@ import Sync
 
 
 class SignOutOnFirstLaunch {
-    private let accessTokenStore: AccessTokenStore
-    private let userDefaults: UserDefaults
-
     static let hasAppBeenLaunchedPreviouslyKey = "hasAppBeenLaunchedPreviously"
 
+    private let sessionController: SessionController
+    private let userDefaults: UserDefaults
+
     init(
-        accessTokenStore: AccessTokenStore,
+        sessionController: SessionController,
         userDefaults: UserDefaults
     ) {
-        self.accessTokenStore = accessTokenStore
+        self.sessionController = sessionController
         self.userDefaults = userDefaults
     }
 
@@ -30,12 +30,7 @@ class SignOutOnFirstLaunch {
             return
         }
 
-        do {
-            try accessTokenStore.delete()
-        } catch {
-            Crashlogger.capture(error: error)
-        }
-
+        sessionController.signOut()
         hasAppBeenLaunchedPreviously = true
     }
 }

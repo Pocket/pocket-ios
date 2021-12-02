@@ -13,45 +13,24 @@ class SignInViewModel: ObservableObject {
     @Published
     var error: SignInError?
 
-    private let authClient: AuthorizationClient
-    private let session: Session
-    private let accessTokenStore: AccessTokenStore
-    private let tracker: Tracker
-
+    private let sessionController: SessionController
     private let events: PocketEvents
 
     init(
-        authClient: AuthorizationClient,
-        session: Session,
-        accessTokenStore: AccessTokenStore,
-        tracker: Tracker,
+        sessionController: SessionController,
         events: PocketEvents
     ) {
-        self.authClient = authClient
-        self.session = session
-        self.accessTokenStore = accessTokenStore
-        self.tracker = tracker
+        self.sessionController = sessionController
         self.events = events
     }
 
     func signIn() {
         Task {
             do {
-                let guid = try await authClient.requestGUID()
-                let authResponse = try await authClient.authorize(
-                    guid: guid,
+                try await sessionController.signIn(
                     username: username,
                     password: password
                 )
-                let userID = authResponse.account.userID
-
-                session.guid = guid
-                session.userID = userID
-                try accessTokenStore.save(token: authResponse.accessToken)
-
-                let user = UserContext(guid: guid, userID: userID)
-                tracker.addPersistentContext(user)
-                Crashlogger.setUserID(userID)
 
                 events.send(.signedIn)
             } catch(let signInError) {
