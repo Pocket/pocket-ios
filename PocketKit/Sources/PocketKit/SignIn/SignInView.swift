@@ -13,37 +13,11 @@ private extension SignInView {
 }
 
 struct SignInView: View {
-    enum SignInError: Error, Identifiable {
-        case signInError(Error)
+    @ObservedObject
+    private var model: SignInViewModel
 
-        var localizedDescription: String {
-            switch self {
-            case .signInError(let error):
-                return error.localizedDescription
-            }
-        }
-
-        var id: String {
-            return "\(self)"
-        }
-    }
-
-    private var authClient: AuthorizationClient
-
-    @State
-    private var email = ""
-
-    @State
-    private var password = ""
-
-    @State
-    private var error: SignInError?
-
-    var authState: AuthorizationState
-
-    init(authClient: AuthorizationClient, state: AuthorizationState) {
-        self.authClient = authClient
-        self.authState = state
+    init(model: SignInViewModel) {
+        self.model = model
     }
 
     var body: some View {
@@ -51,7 +25,7 @@ struct SignInView: View {
             VStack(alignment: .leading, spacing: 16) {
                 Text("Pocket")
                     .style(SignInView.titleStyle)
-                TextField("Username or email", text: $email)
+                TextField("Username or email", text: $model.username)
                     .style(SignInView.textFieldStyle)
                     .padding(.all, 8)
                     .overlay(
@@ -62,7 +36,7 @@ struct SignInView: View {
                     .disableAutocorrection(true)
                     .keyboardType(.emailAddress)
                     .accessibility(identifier: "email")
-                SecureField("Password", text: $password)
+                SecureField("Password", text: $model.password)
                     .style(SignInView.textFieldStyle)
                     .padding(.all, 8)
                     .overlay(
@@ -71,16 +45,14 @@ struct SignInView: View {
                     )
                     .accessibility(identifier: "password")
             }
-            Button{
-                Task {
-                    await self.signIn()
-                }
+            Button {
+                model.signIn()
             } label: {
                 Text("Sign In")
                     .style(SignInView.textStyle)
                     .frame(maxWidth: 256)
             }
-            .alert(item: $error) { error in
+            .alert(item: $model.error) { error in
                 Alert(title: Text(error.localizedDescription))
             }
             .tint(Color(ColorAsset.ui.lapis1))
@@ -89,16 +61,5 @@ struct SignInView: View {
             .colorScheme(.light)
         }
         .padding()
-    }
-
-    func signIn() async {
-        do {
-            let guid = try await authClient.requestGUID()
-            let authorization = try await authClient.authorize(guid: guid, username: email, password: password)
-            self.authState.authorization = Authorization(guid: guid, response: authorization)
-        } catch {
-            let error = error
-            Crashlogger.capture(error: error)
-        }
     }
 }
