@@ -10,6 +10,10 @@ public struct Crashlogger {
         SentrySDK.setUser(User(userId: userID))
     }
 
+    public static func clearUser() {
+        SentrySDK.setUser(nil)
+    }
+
     public static func capture(error: Error) {
         SentrySDK.capture(error: error)
     }
