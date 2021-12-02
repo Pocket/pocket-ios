@@ -195,10 +195,12 @@ class Tests_iOS: XCTestCase {
         ]
 
         for expectedString in expectedContent {
-            app
+            let cell = app
                 .readerView
                 .cell(containing: expectedString)
                 .wait()
+
+            app.readerView.scrollCellToTop(cell)
         }
     }
 
