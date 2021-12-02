@@ -35,8 +35,12 @@ class SessionController {
         && accessTokenStore.accessToken != nil
     }
 
-    func signOut() {
+    func clearAccessToken() {
         try? accessTokenStore.delete()
+    }
+
+    func signOut() {
+        clearAccessToken()
 
         source.clear()
         userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
