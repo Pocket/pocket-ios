@@ -17,6 +17,10 @@ class MockTracker: Tracker {
     func addPersistentContext(_ context: Context) {
         
     }
+
+    func resetPersistentContexts(_ contexts: [Context]) {
+        persistentContexts = []
+    }
     
     func track<T: Event>(event: T, _ contexts: [Context]?) {
         trackCalls.add(TrackCall(event: event, contexts: contexts))

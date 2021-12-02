@@ -34,6 +34,10 @@ public class PocketTracker: Tracker {
     public func childTracker(with contexts: [Context]) -> Tracker {
         return LinkedTracker(parent: self, contexts: contexts)
     }
+
+    public func resetPersistentContexts(_ contexts: [Context]) {
+        persistentContexts = contexts
+    }
 }
 
 extension PocketTracker {
