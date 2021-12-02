@@ -17,6 +17,7 @@ class MockTracker: Analytics.Tracker {
 
     private(set) var trackCalls = Calls<TrackCall>()
     private(set) var addPersistentCalls = Calls<AddPersistentCall>()
+    private(set) var clearPersistentContextsCalls = Calls<[Context]>()
     
     func addPersistentContext(_ context: Context) {
         addPersistentCalls.add(AddPersistentCall(context: context))
@@ -24,6 +25,10 @@ class MockTracker: Analytics.Tracker {
     
     func track<T: Analytics.Event>(event: T, _ contexts: [Context]?) {
         trackCalls.add(TrackCall(event: event, contexts: contexts))
+    }
+
+    func resetPersistentContexts(_ contexts: [Context]) {
+        clearPersistentContextsCalls.add(contexts)
     }
     
     func childTracker(with contexts: [Context]) -> Analytics.Tracker {

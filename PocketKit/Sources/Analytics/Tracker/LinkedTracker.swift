@@ -23,4 +23,8 @@ class LinkedTracker: Tracker {
     func childTracker(with contexts: [Context]) -> Tracker {
         LinkedTracker(parent: self, contexts: contexts)
     }
+
+    func resetPersistentContexts(_ contexts: [Context]) {
+        parent.resetPersistentContexts(contexts)
+    }
 }

@@ -9,6 +9,7 @@ public protocol Tracker {
     func addPersistentContext(_ context: Context)
     func track<T: Event>(event: T, _ contexts: [Context]?)
     func childTracker(with contexts: [Context]) -> Tracker
+    func resetPersistentContexts(_ contexts: [Context])
 }
 
 public extension Tracker {

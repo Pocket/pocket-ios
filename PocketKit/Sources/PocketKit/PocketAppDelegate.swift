@@ -98,22 +98,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-private extension APIUserContext {
-    init(consumerKey: String) {
-        let components = consumerKey.components(separatedBy: "-")
-        let id: UInt
-        if let identifier = components.first, let apiID = UInt(identifier) {
-            id = apiID
-        } else {
-            id = 1
-        }
-
-        let clientVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
-        
-        self.init(id: id, clientVersion: clientVersion)
-    }
-}
-
 private extension PocketAppDelegate {
     func setupTracker() {
         let key = Keys.shared.pocketApiConsumerKey
