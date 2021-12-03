@@ -106,24 +106,32 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "clearCoreData"
+            argument = "clearKeychain"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "disableSnowplow"
-            isEnabled = "YES">
+            argument = "clearUserDefaults"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "disableSentry"
-            isEnabled = "YES">
+            argument = "clearFirstLaunch"
+            isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "clearImageCache"
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "clearKeychain"
+            argument = "clearCoreData"
             isEnabled = "NO">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "disableSentry"
+            isEnabled = "YES">
+         </CommandLineArgument>
+         <CommandLineArgument
+            argument = "disableSnowplow"
+            isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
       <EnvironmentVariables>
