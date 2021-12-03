@@ -44,7 +44,9 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         if CommandLine.arguments.contains("clearFirstLaunch") {
-            firstLaunchDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+            firstLaunchDefaults.removePersistentDomain(
+                forName: "\(Bundle.main.bundleIdentifier!).first-launch"
+            )
         }
 
         if CommandLine.arguments.contains("clearCoreData") {
