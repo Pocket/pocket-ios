@@ -22,7 +22,7 @@ struct Services {
     private init() {
         userDefaults = .standard
         firstLaunchDefaults = UserDefaults(
-            suiteName: "com.mozilla.pocket.next.first-launch"
+            suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
         )!
         urlSession = URLSession.shared
 
