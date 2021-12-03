@@ -11,6 +11,7 @@ struct Services {
     static let shared = Services()
 
     let userDefaults: UserDefaults
+    let firstLaunchDefaults: UserDefaults
     let sessionController: SessionController
     let urlSession: URLSessionProtocol
     let source: Source
@@ -20,6 +21,9 @@ struct Services {
 
     private init() {
         userDefaults = .standard
+        firstLaunchDefaults = UserDefaults(
+            suiteName: "com.mozilla.pocket.next.first-launch"
+        )!
         urlSession = URLSession.shared
 
         let session = Session(userDefaults: userDefaults)

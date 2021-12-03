@@ -18,9 +18,9 @@ struct LaunchEnvironment {
         clientAPIURL: String = "http://localhost:8080/graphql",
         snowplowIdentifier: String = "pocket-ios-next-dev",
         snowplowEndpoint: String = "http://localhost:8080",
-        accessToken: String? = "test-access-token",
-        sessionGUID: String? = "session-guid",
-        sessionUserID: String? = "session-user-id"
+        accessToken: String?,
+        sessionGUID: String?,
+        sessionUserID: String?
     ) {
         self.v3BaseURL = v3BaseURL
         self.clientAPIURL = clientAPIURL
@@ -51,4 +51,18 @@ struct LaunchEnvironment {
         
         return env
     }
+}
+
+extension LaunchEnvironment {
+    static let withSession = LaunchEnvironment(
+        accessToken: "test-access-token",
+        sessionGUID: "session-guid",
+        sessionUserID: "session-user-id"
+    )
+
+    static let noSession = LaunchEnvironment(
+        accessToken: nil,
+        sessionGUID: nil,
+        sessionUserID: nil
+    )
 }

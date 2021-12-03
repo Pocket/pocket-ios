@@ -77,7 +77,7 @@ class Tests_iOS: XCTestCase {
     }
 
     func test_1_signingIn_whenSigninIsSuccessful_showsUserList() {
-        app.launch(environment: LaunchEnvironment(accessToken: nil, sessionGUID: nil, sessionUserID: nil))
+        app.launch(arguments: .firstLaunch, environment: .noSession)
 
         let signInView = app.signInView.wait()
 
@@ -122,10 +122,8 @@ class Tests_iOS: XCTestCase {
         }
 
         app.launch(
-            arguments: LaunchArguments(
-                clearKeychain: false,
-                clearCoreData: false
-            )
+            arguments: .preserve,
+            environment: .noSession
         ).tabBar.myListButton.wait().tap()
         let listView = app.userListView.wait()
 
