@@ -30,8 +30,9 @@ class ReportARecommendationTests: XCTestCase {
         
         try server.start()
         
-        let args = LaunchArguments(disableSnowplow: false)
-        app.launch(arguments: args)
+        app.launch(
+            arguments: .bypassSignIn.with(disableSnowplow: false)
+        )
     }
     
     override func tearDownWithError() throws {

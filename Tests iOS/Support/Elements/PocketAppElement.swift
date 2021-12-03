@@ -78,8 +78,8 @@ struct PocketAppElement {
 
     @discardableResult
     func launch(
-        arguments: LaunchArguments = LaunchArguments(),
-        environment: LaunchEnvironment = LaunchEnvironment()
+        arguments: LaunchArguments = .bypassSignIn,
+        environment: LaunchEnvironment = .withSession
     ) -> PocketAppElement {
         app.launchArguments = arguments.toArray()
         app.launchEnvironment = environment.toDictionary()
