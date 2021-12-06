@@ -20,12 +20,13 @@ let package = Package(
         .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.0")),
         .package(name: "SnowplowTracker", url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMinor(from: "2.2.0")),
         .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", from: "3.2.1"),
-        .package(name: "Down", url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0"))
+        .package(name: "Down", url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
+        .package(name: "YouTubePlayerKit", url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5"))
     ],
     targets: [
         .target(
             name: "PocketKit",
-            dependencies: ["Sync", "Textile", "Analytics", "Lottie"],
+            dependencies: ["Sync", "Textile", "Analytics", "Lottie", "YouTubePlayerKit"],
             resources: [.copy("Assets")]
         ),
         .testTarget(name: "PocketKitTests", dependencies: ["PocketKit"]),

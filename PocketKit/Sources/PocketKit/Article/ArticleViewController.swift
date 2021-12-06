@@ -71,6 +71,7 @@ class ArticleViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
+        collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.accessibilityIdentifier = "article-view"
@@ -82,6 +83,7 @@ class ArticleViewController: UIViewController {
         collectionView.register(cellClass: CodeBlockComponentCell.self)
         collectionView.register(cellClass: UnsupportedComponentCell.self)
         collectionView.register(cellClass: BlockquoteComponentCell.self)
+        collectionView.register(cellClass: VideoComponentCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
         readerSettings.objectWillChange.sink { _ in
@@ -97,6 +99,14 @@ class ArticleViewController: UIViewController {
 
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
+    }
+}
+
+extension ArticleViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if let cell = cell as? VideoComponentCell {
+            cell.pause()
+        }
     }
 }
 
@@ -178,6 +188,18 @@ extension ArticleViewController: UICollectionViewDataSource {
             case .blockquote(let blockquoteComponent):
                 let cell: BlockquoteComponentCell = collectionView.dequeueCell(for: indexPath)
                 presenter.present(component: blockquoteComponent, in: cell)
+                return cell
+            case .video(let video):
+                if VIDExtractor(video).vid != nil {
+                    let cell: VideoComponentCell = collectionView.dequeueCell(for: indexPath)
+                    presenter.present(component: video, in: cell)
+                    return cell
+                }
+                
+                let cell: UnsupportedComponentCell = collectionView.dequeueCell(for: indexPath)
+                cell.action = { [weak self] in
+                    self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
+                }
                 return cell
             default:
                 let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)
