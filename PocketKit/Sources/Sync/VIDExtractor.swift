@@ -2,9 +2,9 @@ import Foundation
 
 
 public struct VIDExtractor {
-    let vid: String?
+    public let vid: String?
     
-    init(_ component: VideoComponent) {
+    public init(_ component: VideoComponent) {
         if let vid = component.vid, !vid.isEmpty {
             self.vid = vid
         } else {

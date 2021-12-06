@@ -54,6 +54,8 @@ class ArticleComponentPresenter {
             return CGSize(width: availableWidth, height: 84)
         case .blockquote(let blockquote):
             return componentSize(of: blockquote, availableWidth: availableWidth)
+        case .video:
+            return CGSize(width: availableWidth, height: availableWidth * 9 / 16)
         default:
             return .zero
         }
@@ -114,6 +116,11 @@ class ArticleComponentPresenter {
     
     func present(component: BlockquoteComponent, in cell: BlockquoteComponentCell) {
         cell.attributedBlockquote = attributedBlockquote(for: component)
+    }
+    
+    func present(component: VideoComponent, in cell: VideoComponentCell) {
+        let presenter = VideoComponentPresenter()
+        presenter.present(component: component, in: cell)
     }
 }
 

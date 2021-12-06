@@ -34,13 +34,15 @@
     {
         "__typename": "Video",
         "height": 1,
-        "src": "http://example.com/video-1.jpg",
+        "src": "https://www.youtube.com/watch?v=lEBoIEJxylM",
         "type": "YOUTUBE",
-        "vid": "Aenean Fusce",
+        "vid": "lEBoIEJxylM",
         "videoID": 1,
         "width": 2,
         "length": 2
     },
+
+    
     {
         "__typename": "MarticleBulletedList",
         "rows": [
