@@ -190,16 +190,8 @@ extension ArticleViewController: UICollectionViewDataSource {
                 presenter.present(component: blockquoteComponent, in: cell)
                 return cell
             case .video(let video):
-                if VIDExtractor(video).vid != nil {
-                    let cell: VideoComponentCell = collectionView.dequeueCell(for: indexPath)
-                    presenter.present(component: video, in: cell)
-                    return cell
-                }
-                
-                let cell: UnsupportedComponentCell = collectionView.dequeueCell(for: indexPath)
-                cell.action = { [weak self] in
-                    self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
-                }
+                let cell: VideoComponentCell = collectionView.dequeueCell(for: indexPath)
+                presenter.present(component: video, in: cell)
                 return cell
             default:
                 let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)

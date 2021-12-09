@@ -117,7 +117,7 @@ public enum ArticleComponent: Codable, Equatable, Hashable {
         case .image(let image):
             return image.source == nil
         case .video(let video):
-            return VIDExtractor(video).vid == nil
+            return video.source.absoluteString.isEmpty
         case .divider, .table, .unsupported:
             return false
         }
