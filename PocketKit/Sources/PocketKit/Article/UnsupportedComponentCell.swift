@@ -2,87 +2,33 @@ import UIKit
 import Textile
 
 
-private extension Style {
-    static let label: Self = .body.sansSerif.with(size: .p3)
-    static let button: Self = .body.sansSerif.with(size: .p3).with(color: .ui.white).with(weight: .semibold)
-}
-
 class UnsupportedComponentCell: UICollectionViewCell {
-    private lazy var label: UILabel = {
-        let label = UILabel()
-        label.attributedText = NSAttributedString(
-            string: "This element is currently unsupported.",
-            style: .label
-        )
-        return label
-    }()
-    
-    private lazy var button: UIButton = {
-        var config = UIButton.Configuration.filled()
-        config.baseBackgroundColor = UIColor(.ui.teal2)
-        config.attributedTitle = AttributedString(
-            NSAttributedString(
-                string: "Open in Web View",
-                style: .button
-            )
-        )
-        config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
-        
-        let button = UIButton(
-            configuration: config,
-            primaryAction: UIAction { _ in
-                self.action?()
-            }
-        )
-        return button
-    }()
-    
-    private lazy var stackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [label, button])
-        stackView.axis = .vertical
-        stackView.spacing = 8
-        stackView.alignment = .center
-        return stackView
-    }()
-    
-    private lazy var topDivider: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(.ui.grey6)
+    private lazy var unsupportedView: ArticleComponentUnavailableView = {
+        let view = ArticleComponentUnavailableView()
+        view.text = "This element is currently unsupported."
         return view
     }()
     
-    private lazy var bottomDivider: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(.ui.grey6)
-        return view
-    }()
-    
-    var action: (() -> Void)? = nil
+    var action: (() -> Void)? {
+        get {
+            return unsupportedView.action
+        }
+        set {
+            unsupportedView.action = newValue
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.addSubview(topDivider)
-        contentView.addSubview(stackView)
-        contentView.addSubview(bottomDivider)
+        contentView.addSubview(unsupportedView)
         
-        topDivider.translatesAutoresizingMaskIntoConstraints = false
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        bottomDivider.translatesAutoresizingMaskIntoConstraints = false
-        
+        unsupportedView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            topDivider.topAnchor.constraint(equalTo: contentView.topAnchor),
-            topDivider.widthAnchor.constraint(equalTo: contentView.widthAnchor),
-            topDivider.heightAnchor.constraint(equalToConstant: 1),
-            
-            stackView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            stackView.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor),
-            stackView.heightAnchor.constraint(lessThanOrEqualTo: contentView.heightAnchor),
-            
-            bottomDivider.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            bottomDivider.widthAnchor.constraint(equalTo: contentView.widthAnchor),
-            bottomDivider.heightAnchor.constraint(equalToConstant: 1),
+            unsupportedView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            unsupportedView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            unsupportedView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            unsupportedView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
         ])
     }
     

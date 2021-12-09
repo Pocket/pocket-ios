@@ -10,8 +10,10 @@ class VideoComponentCell: UICollectionViewCell {
         return spinner
     }()
     
-    private lazy var errorView: ErrorView = {
-        return ErrorView()
+    private lazy var errorView: ArticleComponentUnavailableView = {
+        let view = ArticleComponentUnavailableView()
+        view.text = "This video could not be loaded."
+        return view
     }()
     
     private lazy var youTubeView: YouTubePlayerHostingView = {
@@ -24,7 +26,7 @@ class VideoComponentCell: UICollectionViewCell {
         return webView
     }()
     
-    var player: YouTubePlayer {
+    var youTubePlayer: YouTubePlayer {
         youTubeView.player
     }
     
@@ -35,6 +37,15 @@ class VideoComponentCell: UICollectionViewCell {
     }
     
     var presenter: VideoComponentPresenter? = nil
+    
+    var onError: (() -> Void)? {
+        get {
+            errorView.action
+        }
+        set {
+            errorView.action = newValue
+        }
+    }
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -128,96 +139,5 @@ extension VideoComponentCell {
         case loading
         case loaded
         case error
-    }
-}
-
-private extension Style {
-    static let errorLabel: Self = .body.sansSerif.with(size: .p3)
-    static let errorButton: Self = .body.sansSerif.with(size: .p3).with(color: .ui.white).with(weight: .semibold)
-}
-
-extension VideoComponentCell {
-    class ErrorView: UIView {
-        private lazy var label: UILabel = {
-            let label = UILabel()
-            label.attributedText = NSAttributedString(
-                string: "This video could not be loaded.",
-                style: .errorLabel
-            )
-            return label
-        }()
-        
-        private lazy var button: UIButton = {
-            var config = UIButton.Configuration.filled()
-            config.baseBackgroundColor = UIColor(.ui.teal2)
-            config.attributedTitle = AttributedString(
-                NSAttributedString(
-                    string: "Open in Web View",
-                    style: .errorButton
-                )
-            )
-            config.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
-            
-            let button = UIButton(
-                configuration: config,
-                primaryAction: UIAction { _ in
-                    self.action?()
-                }
-            )
-            return button
-        }()
-        
-        private lazy var stackView: UIStackView = {
-            let stackView = UIStackView(arrangedSubviews: [label, button])
-            stackView.axis = .vertical
-            stackView.spacing = 8
-            stackView.alignment = .center
-            return stackView
-        }()
-        
-        private lazy var topDivider: UIView = {
-            let view = UIView()
-            view.backgroundColor = UIColor(.ui.grey6)
-            return view
-        }()
-        
-        private lazy var bottomDivider: UIView = {
-            let view = UIView()
-            view.backgroundColor = UIColor(.ui.grey6)
-            return view
-        }()
-        
-        var action: (() -> Void)? = nil
-        
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-            
-            addSubview(topDivider)
-            addSubview(stackView)
-            addSubview(bottomDivider)
-            
-            topDivider.translatesAutoresizingMaskIntoConstraints = false
-            stackView.translatesAutoresizingMaskIntoConstraints = false
-            bottomDivider.translatesAutoresizingMaskIntoConstraints = false
-            
-            NSLayoutConstraint.activate([
-                topDivider.topAnchor.constraint(equalTo: topAnchor),
-                topDivider.widthAnchor.constraint(equalTo: widthAnchor),
-                topDivider.heightAnchor.constraint(equalToConstant: 1),
-                
-                stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
-                stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
-                stackView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor),
-                stackView.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor),
-                
-                bottomDivider.bottomAnchor.constraint(equalTo: bottomAnchor),
-                bottomDivider.widthAnchor.constraint(equalTo: widthAnchor),
-                bottomDivider.heightAnchor.constraint(equalToConstant: 1),
-            ])
-        }
-        
-        required init?(coder: NSCoder) {
-            fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
-        }
     }
 }
