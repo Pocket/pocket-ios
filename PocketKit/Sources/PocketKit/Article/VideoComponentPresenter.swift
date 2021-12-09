@@ -12,15 +12,24 @@ class VideoComponentPresenter {
         statePublisher?.cancel()
         statePublisher =  cell.player.statePublisher.sink { state in
             switch state {
-            case .idle, .error:
+            case .idle:
                 cell.mode = .loading
             case .ready:
+                guard cell.player.source != nil else {
+                    return
+                }
                 cell.mode = .loaded
+            case .error:
+                cell.mode = .error
             }
         }
         
+        guard let vid = VIDExtractor(component).vid else {
+            cell.mode = .error
+            return
+        }
+        
         cell.mode = .loading
-        let vid = VIDExtractor(component).vid!
         cell.cue(vid: vid)
     }
 }
