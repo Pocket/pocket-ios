@@ -191,7 +191,9 @@ extension ArticleViewController: UICollectionViewDataSource {
                 return cell
             case .video(let video):
                 let cell: VideoComponentCell = collectionView.dequeueCell(for: indexPath)
-                presenter.present(component: video, in: cell)
+                presenter.present(component: video, in: cell) { [weak self] in
+                    self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
+                }
                 return cell
             default:
                 let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)

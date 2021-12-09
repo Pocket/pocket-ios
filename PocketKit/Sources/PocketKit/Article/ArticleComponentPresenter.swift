@@ -118,9 +118,9 @@ class ArticleComponentPresenter {
         cell.attributedBlockquote = attributedBlockquote(for: component)
     }
     
-    func present(component: VideoComponent, in cell: VideoComponentCell) {
+    func present(component: VideoComponent, in cell: VideoComponentCell, onError: @escaping () -> Void) {
         let presenter = VideoComponentPresenter()
-        presenter.present(component: component, in: cell)
+        presenter.present(component: component, in: cell, onError: onError)
     }
 }
 
