@@ -36,8 +36,6 @@ class VideoComponentCell: UICollectionViewCell {
         }
     }
     
-    var presenter: VideoComponentPresenter? = nil
-    
     var onError: (() -> Void)? {
         get {
             errorView.action
@@ -78,10 +76,6 @@ class VideoComponentCell: UICollectionViewCell {
     }
     
     func cue(vid: String) {
-        guard mode == .loading else {
-            return
-        }
-        
         youTubeView.player.cue(source: .video(id: vid))
     }
     
