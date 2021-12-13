@@ -25,12 +25,13 @@ public struct VIDExtractor {
         
         let validDomains = [
             "youtube.com",
-            "youtube-nocookies.com",
+            "youtube-nocookie.com",
+            "youtu.be"
         ]
         
         func containsDomain(_ host: String) -> Bool {
             for domain in validDomains {
-                if host.contains(domain) {
+                if host == domain || host.hasSuffix(".\(domain)") {
                     return true
                 }
             }
