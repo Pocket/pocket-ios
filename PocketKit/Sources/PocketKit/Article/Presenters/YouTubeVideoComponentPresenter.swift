@@ -7,27 +7,19 @@ import UIKit
 
 class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     private let component: VideoComponent
-    private let availableWidth: CGFloat
-    private let dequeue: (IndexPath) -> YouTubeVideoComponentCell
     
     private var cancellable: AnyCancellable? = nil
     
-    init(
-        component: VideoComponent,
-        availableWidth: CGFloat,
-        dequeue: @escaping (IndexPath) -> YouTubeVideoComponentCell
-    ) {
+    init(component: VideoComponent) {
         self.component = component
-        self.availableWidth = availableWidth
-        self.dequeue = dequeue
     }
     
-    lazy var size: CGSize = {
+    func size(for availableWidth: CGFloat) -> CGSize {
         CGSize(width: availableWidth, height: availableWidth * 9 / 16)
-    }()
+    }
     
-    func cell(for indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = dequeue(indexPath)
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+        let cell: YouTubeVideoComponentCell = collectionView.dequeueCell(for: indexPath)
         
         cancellable =  cell.player
             .statePublisher

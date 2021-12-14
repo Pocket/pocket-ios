@@ -17,8 +17,6 @@ protocol ListComponentElement {
 class ListComponentPresenter: ArticleComponentPresenter {
     private let component: ListComponent
     private let readerSettings: ReaderSettings
-    private let availableWidth: CGFloat
-    private let dequeue: (IndexPath) -> MarkdownComponentCell
     
     private lazy var attributedContent: NSAttributedString? = {
         let attributedContent = NSMutableAttributedString()
@@ -57,26 +55,19 @@ class ListComponentPresenter: ArticleComponentPresenter {
         return attributedContent
     }()
     
-    lazy var size: CGSize = {
+    init(component: ListComponent, readerSettings: ReaderSettings) {
+        self.component = component
+        self.readerSettings = readerSettings
+    }
+    
+    func size(for availableWidth: CGFloat) -> CGSize {
         attributedContent.flatMap {
             CGSize(width: availableWidth, height: $0.sizeFitting(availableWidth: availableWidth).height)
         } ?? .zero
-    }()
-    
-    init(
-        component: ListComponent,
-        readerSettings: ReaderSettings,
-        availableWidth: CGFloat,
-        dequeue: @escaping (IndexPath) -> MarkdownComponentCell
-    ) {
-        self.component = component
-        self.readerSettings = readerSettings
-        self.availableWidth = availableWidth
-        self.dequeue = dequeue
     }
     
-    func cell(for indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = dequeue(indexPath)
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+        let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedContent = attributedContent
         return cell
     }

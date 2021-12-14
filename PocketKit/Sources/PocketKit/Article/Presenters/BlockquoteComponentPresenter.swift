@@ -7,10 +7,6 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
     
     private let readerSettings: ReaderSettings
     
-    private let availableWidth: CGFloat
-    
-    private let dequeue: (IndexPath) -> BlockquoteComponentCell
-    
     private lazy var attributedBlockquote: NSAttributedString? = {
         NSAttributedString.styled(
             markdown: component.content,
@@ -18,29 +14,22 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
         )
     }()
     
-    lazy var size: CGSize = {
+    init(component: BlockquoteComponent, readerSettings: ReaderSettings) {
+        self.component = component
+        self.readerSettings = readerSettings
+    }
+    
+    func size(for availableWidth: CGFloat) -> CGSize {
         attributedBlockquote.flatMap {
             let availableWidth = availableWidth
             - BlockquoteComponentCell.Constants.dividerWidth
             - BlockquoteComponentCell.Constants.stackSpacing
             return $0.sizeFitting(availableWidth: availableWidth)
         } ?? .zero
-    }()
-    
-    init(
-        component: BlockquoteComponent,
-        readerSettings: ReaderSettings,
-        availableWidth: CGFloat,
-        dequeue: @escaping (IndexPath) -> BlockquoteComponentCell
-    ) {
-            self.component = component
-            self.readerSettings = readerSettings
-            self.availableWidth = availableWidth
-            self.dequeue = dequeue
     }
     
-    func cell(for indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = dequeue(indexPath)
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+        let cell: BlockquoteComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedBlockquote = attributedBlockquote
         return cell
     }

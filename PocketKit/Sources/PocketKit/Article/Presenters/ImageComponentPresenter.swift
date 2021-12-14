@@ -18,13 +18,11 @@ class ImageComponentPresenter: ArticleComponentPresenter {
     
     private let readerSettings: ReaderSettings
     
-    private var availableWidth: CGFloat
-    
-    private let dequeue: (IndexPath) -> ImageComponentCell
-    
     private let onUpdate: () -> Void
     
     private var lastImageSize: CGSize?
+    
+    private var lastAvailableWidth: CGFloat = 0
     
     private lazy var caption: NSAttributedString? = {
         component.caption.flatMap { NSAttributedString(string: $0, style: .imageCaption.modified(by: readerSettings)) }
@@ -34,7 +32,15 @@ class ImageComponentPresenter: ArticleComponentPresenter {
         component.credit.flatMap { NSAttributedString(string: $0, style: .imageCredit.modified(by: readerSettings)) }
     }()
     
-    lazy var size: CGSize = {
+    init(component: ImageComponent, readerSettings: ReaderSettings, onUpdate: @escaping () -> Void) {
+        self.component = component
+        self.readerSettings = readerSettings
+        self.onUpdate = onUpdate
+    }
+    
+    func size(for availableWidth: CGFloat) -> CGSize {
+        lastAvailableWidth = availableWidth
+        
         var height = lastImageSize?.height ?? availableWidth * 9 / 16
         
         if let caption = caption {
@@ -46,16 +52,16 @@ class ImageComponentPresenter: ArticleComponentPresenter {
         }
         
         return CGSize(width: availableWidth, height: height)
-    }()
+    }
     
-    func cell(for indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = dequeue(indexPath)
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+        let cell: ImageComponentCell = collectionView.dequeueCell(for: indexPath)
         
         cell.attributedCaption = caption
         cell.attributedCredit = credit
         
         let size = CGSize(
-            width: availableWidth,
+            width: lastAvailableWidth,
             height: .greatestFiniteMagnitude
         )
 
@@ -85,19 +91,6 @@ class ImageComponentPresenter: ArticleComponentPresenter {
         }
         
         return cell
-    }
-    
-    required init(component: ImageComponent,
-                  readerSettings: ReaderSettings,
-                  availableWidth: CGFloat,
-                  onUpdate: @escaping () -> Void,
-                  dequeue: @escaping (IndexPath) -> ImageComponentCell
-    ) {
-        self.component = component
-        self.readerSettings = readerSettings
-        self.availableWidth = availableWidth
-        self.onUpdate = onUpdate
-        self.dequeue = dequeue
     }
 }
 
