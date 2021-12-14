@@ -5,14 +5,18 @@ import CoreGraphics
 import UIKit
 
 
-class VideoComponentPresenter: ArticleComponentPresenter {
+class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     private let component: VideoComponent
     private let availableWidth: CGFloat
-    private let dequeue: (IndexPath) -> VideoComponentCell
+    private let dequeue: (IndexPath) -> YouTubeVideoComponentCell
     
     private var cancellable: AnyCancellable? = nil
     
-    init(component: VideoComponent, availableWidth: CGFloat, dequeue: @escaping (IndexPath) -> VideoComponentCell) {
+    init(
+        component: VideoComponent,
+        availableWidth: CGFloat,
+        dequeue: @escaping (IndexPath) -> YouTubeVideoComponentCell
+    ) {
         self.component = component
         self.availableWidth = availableWidth
         self.dequeue = dequeue
@@ -25,17 +29,20 @@ class VideoComponentPresenter: ArticleComponentPresenter {
     func cell(for indexPath: IndexPath) -> UICollectionViewCell {
         let cell = dequeue(indexPath)
         
-        cancellable =  cell.youTubePlayer.statePublisher.receive(on: DispatchQueue.main).sink { [weak cell] state in
-            switch state {
-            case .idle:
-                cell?.mode = .loading
-            case .ready:
-                guard cell?.youTubePlayer.source != nil else {
-                    return
-                }
-                cell?.mode = .loaded
-            case .error:
-                cell?.mode = .error
+        cancellable =  cell.player
+            .statePublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak cell] state in
+                switch state {
+                case .idle:
+                    cell?.mode = .loading
+                case .ready:
+                    guard cell?.player.source != nil else {
+                        return
+                    }
+                    cell?.mode = .loaded
+                case .error:
+                    cell?.mode = .error
             }
         }
         

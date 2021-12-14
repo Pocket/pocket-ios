@@ -81,7 +81,7 @@ class ArticleViewController: UIViewController {
         collectionView.register(cellClass: CodeBlockComponentCell.self)
         collectionView.register(cellClass: UnsupportedComponentCell.self)
         collectionView.register(cellClass: BlockquoteComponentCell.self)
-        collectionView.register(cellClass: VideoComponentCell.self)
+        collectionView.register(cellClass: YouTubeVideoComponentCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
         readerSettings.objectWillChange.sink { _ in
@@ -102,7 +102,7 @@ class ArticleViewController: UIViewController {
 
 extension ArticleViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if let cell = cell as? VideoComponentCell {
+        if let cell = cell as? YouTubeVideoComponentCell {
             cell.pause()
         }
     }
@@ -301,12 +301,23 @@ extension ArticleViewController {
                 return cell
             }
         case .video(let component):
-            return VideoComponentPresenter(component: component, availableWidth: availableItemWidth) { indexPath in
-                let cell: VideoComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                cell.onError = { [weak self] in
-                    self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
+            switch component.type {
+            case .youtube:
+                return YouTubeVideoComponentPresenter(component: component, availableWidth: availableItemWidth) { indexPath in
+                    let cell: YouTubeVideoComponentCell = self.collectionView.dequeueCell(for: indexPath)
+                    cell.onError = { [weak self] in
+                        self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
+                    }
+                    return cell
                 }
-                return cell
+            default:
+                return UnsupportedComponentPresenter(availableWidth: availableItemWidth) { indexPath in
+                    let cell: UnsupportedComponentCell = self.collectionView.dequeueCell(for: indexPath)
+                    cell.action = { [weak self] in
+                        self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
+                    }
+                    return cell
+                }
             }
         default:
             return UnsupportedComponentPresenter(availableWidth: availableItemWidth) { indexPath in

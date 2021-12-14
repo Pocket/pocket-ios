@@ -2,7 +2,7 @@ import UIKit
 import YouTubePlayerKit
 import Textile
 
-class VideoComponentCell: UICollectionViewCell {
+class YouTubeVideoComponentCell: UICollectionViewCell {
     private lazy var loadingView: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .large)
         spinner.color = UIColor(.ui.grey6)
@@ -16,7 +16,7 @@ class VideoComponentCell: UICollectionViewCell {
         return view
     }()
     
-    private lazy var youTubeView: YouTubePlayerHostingView = {
+    private lazy var hostingView: YouTubePlayerHostingView = {
         let webView = YouTubePlayerHostingView(
             player: YouTubePlayer(
                 source: nil,
@@ -26,8 +26,8 @@ class VideoComponentCell: UICollectionViewCell {
         return webView
     }()
     
-    var youTubePlayer: YouTubePlayer {
-        youTubeView.player
+    var player: YouTubePlayer {
+        hostingView.player
     }
     
     var mode: Mode = .loading {
@@ -50,11 +50,11 @@ class VideoComponentCell: UICollectionViewCell {
         
         contentView.addSubview(loadingView)
         contentView.addSubview(errorView)
-        contentView.addSubview(youTubeView)
+        contentView.addSubview(hostingView)
         
         loadingView.translatesAutoresizingMaskIntoConstraints = false
         errorView.translatesAutoresizingMaskIntoConstraints = false
-        youTubeView.translatesAutoresizingMaskIntoConstraints = false
+        hostingView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             loadingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             loadingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
@@ -64,10 +64,10 @@ class VideoComponentCell: UICollectionViewCell {
             errorView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             errorView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
             
-            youTubeView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            youTubeView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            youTubeView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
-            youTubeView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
+            hostingView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            hostingView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            hostingView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            hostingView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
         ])
     }
     
@@ -76,7 +76,7 @@ class VideoComponentCell: UICollectionViewCell {
     }
     
     func cue(vid: String) {
-        youTubeView.player.cue(source: .video(id: vid))
+        player.cue(source: .video(id: vid))
     }
     
     func pause() {
@@ -84,11 +84,11 @@ class VideoComponentCell: UICollectionViewCell {
             return
         }
         
-        youTubeView.player.pause()
+        player.pause()
     }
 }
 
-private extension VideoComponentCell {
+private extension YouTubeVideoComponentCell {
     func updateMode() {
         switch mode {
         case .loading:
@@ -104,7 +104,7 @@ private extension VideoComponentCell {
         loadingView.isHidden = false
         loadingView.startAnimating()
         
-        youTubeView.isHidden = true
+        hostingView.isHidden = true
         
         errorView.isHidden = true
     }
@@ -113,7 +113,7 @@ private extension VideoComponentCell {
         loadingView.stopAnimating()
         loadingView.isHidden = true
         
-        youTubeView.isHidden = false
+        hostingView.isHidden = false
         
         errorView.isHidden = true
     }
@@ -122,13 +122,13 @@ private extension VideoComponentCell {
         loadingView.stopAnimating()
         loadingView.isHidden = true
         
-        youTubeView.isHidden = true
+        hostingView.isHidden = true
         
         errorView.isHidden = false
     }
 }
 
-extension VideoComponentCell {
+extension YouTubeVideoComponentCell {
     enum Mode {
         case loading
         case loaded
