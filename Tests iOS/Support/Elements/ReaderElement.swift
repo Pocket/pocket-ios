@@ -26,7 +26,7 @@ struct ReaderElement: PocketUIElement {
 
     func scrollCellToTop(_ cell: XCUIElement) {
         let readerViewCenter = element
-            .coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+            .coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.5))
 
         let navbarHeight: CGFloat = 94
         let gracePixelsBeforeScrollingBegins: CGFloat = 10
