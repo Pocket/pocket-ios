@@ -50,7 +50,6 @@ class ArticleViewController: UIViewController {
     )
     
     private lazy var layout = UICollectionViewCompositionalLayout { [self] in
-        presenters = item?.components?.map { presenter(for: $0) }
         return self.buildSection(index: $0, environment: $1)
     }
 
@@ -141,7 +140,7 @@ extension ArticleViewController: UICollectionViewDataSource {
             metaCell.attributedByline = metadata?.attributedByline
             return metaCell
         default:
-            guard let cell = presenters?[indexPath.item].cell(for: indexPath) else {
+            guard let cell = presenters?[indexPath.item].cell(for: indexPath, in: collectionView) else {
                 let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)
                 return empty
             }
@@ -210,7 +209,7 @@ extension ArticleViewController {
         default:
             var height: CGFloat = 0
             let subitems = presenters?.compactMap { presenter -> NSCollectionLayoutItem? in
-                let size = presenter.size
+                let size = presenter.size(for: availableItemWidth)
                 height += size.height
                 let layoutSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
@@ -240,90 +239,34 @@ extension ArticleViewController {
     func presenter(for component: ArticleComponent) -> ArticleComponentPresenter {
         switch component {
         case .text(let component):
-            return MarkdownComponentPresenter(
-                component: component,
-                readerSettings: readerSettings,
-                availableWidth: availableItemWidth) { indexPath in
-                    let cell: MarkdownComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                    return cell
-                }
+            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings)
         case .heading(let component):
-            return MarkdownComponentPresenter(
-                component: component,
-                readerSettings: readerSettings,
-                availableWidth: availableItemWidth) { indexPath in
-                    let cell: MarkdownComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                    return cell
-                }
+            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings)
         case .image(let component):
-            return ImageComponentPresenter(
-                component: component,
-                readerSettings: readerSettings,
-                availableWidth: availableItemWidth
-            ) {
+            return ImageComponentPresenter(component: component, readerSettings: readerSettings) {
                 self.collectionView.collectionViewLayout.invalidateLayout()
-            } dequeue: { indexPath in
-                let cell: ImageComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                return cell
             }
         case .divider(let component):
-            return DividerComponentPresenter(component: component, readerSettings: readerSettings, availableWidth: availableItemWidth) { indexPath in
-                let cell: DividerComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                return cell
-            }
+            return DividerComponentPresenter(component: component)
         case .codeBlock(let component):
-            return CodeBlockPresenter(component: component, readerSettings: readerSettings, availableWidth: availableItemWidth) { indexPath in
-                let cell: CodeBlockComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                cell.delegate = self
-                return cell
-            }
+            return CodeBlockPresenter(component: component, readerSettings: readerSettings)
         case .bulletedList(let component):
-            return ListComponentPresenter(component: component, readerSettings: readerSettings, availableWidth: availableItemWidth) { indexPath in
-                let cell: MarkdownComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                return cell
-            }
+            return ListComponentPresenter(component: component, readerSettings: readerSettings)
         case .numberedList(let component):
-            return ListComponentPresenter(component: component, readerSettings: readerSettings, availableWidth: availableItemWidth) { indexPath in
-                let cell: MarkdownComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                return cell
-            }
+            return ListComponentPresenter(component: component, readerSettings: readerSettings)
         case .table:
-            return UnsupportedComponentPresenter(availableWidth: availableItemWidth) { indexPath in
-                let cell: UnsupportedComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                cell.action = { [weak self] in
-                    self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
-                }
-                return cell
-            }
+            return UnsupportedComponentPresenter()
         case .blockquote(let component):
-            return BlockquoteComponentPresenter(component: component, readerSettings: readerSettings, availableWidth: availableItemWidth) { indexPath in
-                let cell: BlockquoteComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                return cell
-            }
+            return BlockquoteComponentPresenter(component: component, readerSettings: readerSettings)
         case .video(let component):
             switch component.type {
             case .youtube:
-                return YouTubeVideoComponentPresenter(component: component, availableWidth: availableItemWidth) { indexPath in
-                    let cell: YouTubeVideoComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                    cell.onError = { [weak self] in
-                        self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
-                    }
-                    return cell
-                }
+                return YouTubeVideoComponentPresenter(component: component)
             default:
-                return UnsupportedComponentPresenter(availableWidth: availableItemWidth) { indexPath in
-                    let cell: UnsupportedComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                    cell.action = { [weak self] in
-                        self?.viewModel.presentedWebReaderURL = self?.item?.readerURL
-                    }
-                    return cell
-                }
+                return UnsupportedComponentPresenter()
             }
         default:
-            return UnsupportedComponentPresenter(availableWidth: availableItemWidth) { indexPath in
-                let cell: UnsupportedComponentCell = self.collectionView.dequeueCell(for: indexPath)
-                return cell
-            }
+            return UnsupportedComponentPresenter()
         }
     }
 }

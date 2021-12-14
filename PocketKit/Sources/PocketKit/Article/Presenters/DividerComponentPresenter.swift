@@ -5,27 +5,16 @@ import UIKit
 class DividerComponentPresenter: ArticleComponentPresenter {
     private let component: DividerComponent
     
-    private let availableWidth: CGFloat
-    
-    private let dequeue: (IndexPath) -> DividerComponentCell
-    
-    lazy var size: CGSize = {
-        CGSize(width: availableWidth, height: 16)
-    }()
-    
-    func cell(for indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = dequeue(indexPath)
-        return cell
+    init(component: DividerComponent) {
+        self.component = component
     }
     
-    required init(
-        component: DividerComponent,
-        readerSettings: ReaderSettings,
-        availableWidth: CGFloat,
-        dequeue: @escaping (IndexPath) -> DividerComponentCell
-    ) {
-        self.component = component
-        self.availableWidth = availableWidth
-        self.dequeue = dequeue
+    func size(for availableWidth: CGFloat) -> CGSize {
+        CGSize(width: availableWidth, height: 16)
+    }
+    
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+        let cell: DividerComponentCell = collectionView.dequeueCell(for: indexPath)
+        return cell
     }
 }
