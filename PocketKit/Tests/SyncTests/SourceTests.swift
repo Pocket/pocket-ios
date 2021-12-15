@@ -312,4 +312,24 @@ class SourceTests: XCTestCase {
 
         XCTAssertEqual(actualSlate, expectedSlate)
     }
+
+    func test_itemsController_returnsAFetchedResultsController() throws {
+        let source = subject()
+        let item1 = try space.seedSavedItem(item: space.buildItem(title: "Item 1"))
+
+        let itemResultsController = source.makeItemsController()
+        try itemResultsController.performFetch()
+        XCTAssertEqual(itemResultsController.fetchedObjects, [item1])
+
+        let expectationForUpdatedItems = expectation(description: "updated items")
+        let delegate = FetchedResultsControllerDelegate {
+            expectationForUpdatedItems.fulfill()
+        }
+        itemResultsController.delegate = delegate
+
+        let item2 = try space.seedSavedItem(item: space.buildItem(title: "Item 2"))
+
+        wait(for: [expectationForUpdatedItems], timeout: 1)
+        XCTAssertEqual(itemResultsController.fetchedObjects, [item1, item2])
+    }
 }
