@@ -125,12 +125,11 @@ class Tests_iOS: XCTestCase {
             arguments: .preserve,
             environment: .noSession
         ).tabBar.myListButton.wait().tap()
+
         let listView = app.userListView.wait()
-
-        listView
-            .itemView(withLabelStartingWith: "Item")
-            .wait()
-
+        ["Item 1", "Item 2"].forEach { label in
+            listView.itemView(withLabelStartingWith: label).wait()
+        }
         XCTAssertEqual(listView.itemCount, 2)
 
         promise?.succeed(
@@ -140,18 +139,9 @@ class Tests_iOS: XCTestCase {
             }
         )
 
-        do {
-            listView
-                .itemView(withLabelStartingWith: "Updated Item 1")
-                .wait()
+        ["Updated Item 1", "Updated Item 2"].forEach { label in
+            listView.itemView(withLabelStartingWith: label).wait()
         }
-
-        do {
-            listView
-                .itemView(withLabelStartingWith: "Updated Item 2")
-                .wait()
-        }
-
         XCTAssertEqual(listView.itemCount, 2)
     }
 
