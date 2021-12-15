@@ -71,6 +71,10 @@ public class Source {
         lastRefresh.reset()
         try? space.clear()
     }
+
+    public func makeItemsController() -> NSFetchedResultsController<SavedItem> {
+        return space.makeItemsController()
+    }
 }
 
 // MARK: - List items

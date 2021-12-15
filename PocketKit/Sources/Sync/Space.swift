@@ -59,4 +59,13 @@ class Space {
             try context.execute(deleteRequest)
         }
     }
+
+    func makeItemsController() -> NSFetchedResultsController<SavedItem> {
+        NSFetchedResultsController(
+            fetchRequest: Requests.fetchSavedItems(),
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
 }
