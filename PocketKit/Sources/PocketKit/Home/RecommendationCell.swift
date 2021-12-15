@@ -229,14 +229,21 @@ extension RecommendationCell {
         + Self.layoutMargins.bottom
     }
 
-    private static func height(of attributedString: NSAttributedString, width: CGFloat, numberOfLines: Int) -> CGFloat {
+    static func height(of attributedString: NSAttributedString, width: CGFloat, numberOfLines: Int) -> CGFloat {
         guard !attributedString.string.isEmpty else {
             return 0
         }
         
         let maxHeight: CGFloat
         if let font = attributedString.attribute(.font, at: 0, effectiveRange: nil) as? UIFont {
-            maxHeight = font.lineHeight * CGFloat(numberOfLines)
+            let lineSpacing: CGFloat
+            if let paragraphStyle = attributedString.attribute(.paragraphStyle, at: 0, effectiveRange: nil) as? NSParagraphStyle {
+                lineSpacing = paragraphStyle.lineSpacing
+            } else {
+                lineSpacing = 0
+            }
+
+            maxHeight = font.lineHeight * CGFloat(numberOfLines) + lineSpacing * CGFloat(numberOfLines - 1)
         } else {
             maxHeight = .greatestFiniteMagnitude
         }
