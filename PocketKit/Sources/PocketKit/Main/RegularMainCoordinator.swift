@@ -38,17 +38,18 @@ class RegularMainCoordinator: NSObject {
         self.tracker = tracker
         self.model = model
 
-        let listView = ItemListView(model: model)
-            .environment(\.managedObjectContext, source.mainContext)
-            .environment(\.source, source)
-            .environment(\.tracker, tracker)
-
         splitController = UISplitViewController(style: .tripleColumn)
         splitController.displayModeButtonVisibility = .always
         
         navigationSidebar = UINavigationController(rootViewController: NavigationSidebarViewController(model: model))
         
-        myList = UIHostingController(rootView: listView)
+        myList = MyListViewController(
+            model: MyListViewModel(
+                source: source,
+                tracker: tracker.childTracker(hosting: .myList.screen)
+            ),
+            mainViewModel: model
+        )
         myList.view.backgroundColor = UIColor(.ui.white1)
         
         home = HomeViewController(
