@@ -21,8 +21,12 @@ struct UserListElement: PocketUIElement {
     }
 
     func itemView(withLabelStartingWith string: String) -> ItemRowElement {
-        let predicate = NSPredicate(format: "label BEGINSWITH %@", string)
-        return ItemRowElement(element.cells.element(matching: predicate))
+        let cell = element.cells.containing(
+            .staticText,
+            identifier: string
+        ).element(boundBy: 0)
+
+        return ItemRowElement(cell)
     }
 
     func pullToRefresh() {

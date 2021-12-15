@@ -60,10 +60,8 @@ class ShareAnItemTests: XCTestCase {
         app
             .userListView
             .itemView(withLabelStartingWith: "Item 2")
-            .itemActionButton.wait()
+            .shareButton.wait()
             .tap()
-
-        app.shareButton.wait().tap()
 
         app.shareSheet.wait()
     }

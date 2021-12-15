@@ -85,11 +85,6 @@ class FavoriteAnItemTests: XCTestCase {
             .userListView
             .itemView(withLabelStartingWith: "Item 2")
 
-        itemCell
-            .itemActionButton
-            .wait()
-            .tap()
-
         let expectRequest = expectation(description: "A request to the server")
         var favoriteRequestBody: String?
         server.routes.post("/graphql") { request, loop in
@@ -102,7 +97,7 @@ class FavoriteAnItemTests: XCTestCase {
             }
         }
 
-        app.favoriteButton.wait().tap()
+        itemCell.favoriteButton.tap()
 
         wait(for: [expectRequest], timeout: 1)
         do {
@@ -115,7 +110,7 @@ class FavoriteAnItemTests: XCTestCase {
             XCTAssertTrue(requestBody.contains("item-2"))
         }
 
-        itemCell.favoriteIcon.wait()
+        XCTAssertTrue(itemCell.favoriteButton.isFilled)
 
         let expectUnfavoriteRequest = expectation(description: "A request to the server")
         var unfavoriteRequestBody: String?
@@ -129,11 +124,11 @@ class FavoriteAnItemTests: XCTestCase {
             }
         }
 
-        itemCell.itemActionButton.tap()
-        app.unfavoriteButton.wait().tap()
+        itemCell.favoriteButton.tap()
 
         wait(for: [expectUnfavoriteRequest], timeout: 1)
-        XCTAssertFalse(itemCell.favoriteIcon.exists)
+        XCTAssertFalse(itemCell.favoriteButton.isFilled)
+
         do {
             guard let requestBody = unfavoriteRequestBody else {
                 XCTFail("Expected request body to not be nil")

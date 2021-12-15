@@ -25,7 +25,7 @@ struct PocketAppElement {
     }
 
     var userListView: UserListElement {
-        return UserListElement(app.tables["user-list"])
+        return UserListElement(app.collectionViews["my-list"])
     }
 
     var settingsView: SettingsViewElement {

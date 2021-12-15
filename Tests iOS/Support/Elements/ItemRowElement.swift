@@ -13,7 +13,10 @@ struct ItemRowElement: PocketUIElement {
     }
 
     func contains(string: String) -> Bool {
-        element.label.contains(string)
+        element
+            .staticTexts
+            .matching(NSPredicate(format: "label CONTAINS %@", string))
+            .count > 0
     }
 
     func tap() {
@@ -22,11 +25,31 @@ struct ItemRowElement: PocketUIElement {
             .tap()
     }
 
-    var favoriteIcon: XCUIElement {
-        element.images["favorite"]
+    var itemActionButton: XCUIElement {
+        element.buttons["item-actions"]
     }
 
-    var itemActionButton: XCUIElement {
-        element.buttons.element(boundBy: 1)
+    var favoriteButton: FavoriteButton {
+        FavoriteButton(element.buttons["favorite"])
+    }
+
+    var shareButton: XCUIElement {
+        element.buttons["share"]
     }
 }
+
+extension ItemRowElement {
+    struct FavoriteButton: PocketUIElement {
+        let element: XCUIElement
+
+        init(_ element: XCUIElement) {
+            self.element = element
+        }
+
+        var isFilled: Bool {
+            element.label == "Unfavorite"
+        }
+    }
+}
+
+
