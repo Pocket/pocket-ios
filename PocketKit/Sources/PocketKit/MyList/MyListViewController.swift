@@ -8,22 +8,18 @@ import Kingfisher
 class MyListViewController: UIViewController {
     private let model: MyListViewModel
     private let mainViewModel: MainViewModel
-
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-
-    private lazy var layout = UICollectionViewCompositionalLayout { [weak self] _, env in
-        return MyListLayoutBuilder.buildLayout(model: self?.model, env: env)
-    }
-
-    private var registration: UICollectionView.CellRegistration<MyListItemCell, NSManagedObjectID>!
-
+    private let collectionView: UICollectionView
     private var dataSource: UICollectionViewDiffableDataSource<Int, NSManagedObjectID>!
-
     private var subscriptions: [AnyCancellable] = []
 
     init(model: MyListViewModel, mainViewModel: MainViewModel) {
         self.model = model
         self.mainViewModel = mainViewModel
+        self.collectionView = UICollectionView(
+            frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout.list(
+                using: .init(appearance: .plain)
+            )
+        )
 
         super.init(nibName: nil, bundle: nil)
 
@@ -41,7 +37,7 @@ class MyListViewController: UIViewController {
             self?.configure(cell: cell, indexPath: indexPath, itemID: itemID)
         }
 
-        dataSource = .init(collectionView: collectionView) { collectionView, indexPath, itemID in
+        self.dataSource = .init(collectionView: collectionView) { collectionView, indexPath, itemID in
             collectionView.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: itemID)
         }
 
@@ -89,12 +85,14 @@ class MyListViewController: UIViewController {
             return
         }
 
-        cell.titleLabel.attributedText = item.attributedTitle
-        cell.detailLabel.attributedText = item.attributedDetail
-        cell.favoriteButton.configuration?.background.image = item.favoriteButtonImage
-        cell.favoriteButton.accessibilityLabel = item.favoriteButtonAccessibilityLabel
-        item.loadThumbnail(into: cell)
         cell.delegate = self
+        cell.model = .init(
+            attributedTitle: item.attributedTitle,
+            attributedDetail: item.attributedDetail,
+            favoriteButtonImage: item.favoriteButtonImage,
+            favoriteButtonAccessibilityLabel: item.favoriteButtonAccessibilityLabel,
+            thumbnailURL: item.thumbnailURL
+        )
     }
 
     private func updateSnapshot() {
