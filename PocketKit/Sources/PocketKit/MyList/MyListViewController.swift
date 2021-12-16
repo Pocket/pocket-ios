@@ -7,19 +7,32 @@ import Kingfisher
 
 class MyListViewController: UIViewController {
     private let model: MyListViewModel
-    private let collectionView: UICollectionView
-    private var dataSource: UICollectionViewDiffableDataSource<String, NSManagedObjectID>!
     private var subscriptions: [AnyCancellable] = []
+    private var collectionView: UICollectionView!
+    private var dataSource: UICollectionViewDiffableDataSource<String, NSManagedObjectID>!
 
     init(model: MyListViewModel) {
         self.model = model
-        self.collectionView = UICollectionView(
-            frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout.list(
-                using: .init(appearance: .plain)
-            )
-        )
-
         super.init(nibName: nil, bundle: nil)
+
+        var config = UICollectionLayoutListConfiguration(appearance: .plain)
+        config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
+            let archiveAction = UIContextualAction(
+                style: .normal,
+                title: "Archive"
+            ) { _, _, completion in
+                self.model.item(at: indexPath)?.archive()
+                completion(true)
+            }
+            archiveAction.backgroundColor = UIColor(.ui.lapis1)
+
+            return UISwipeActionsConfiguration(actions: [archiveAction])
+        }
+
+        self.collectionView = UICollectionView(
+            frame: .zero,
+            collectionViewLayout: UICollectionViewCompositionalLayout.list(using: config)
+        )
 
         navigationItem.title = "My List"
         collectionView.delegate = self
@@ -89,10 +102,12 @@ class MyListViewController: UIViewController {
         switch event {
         case .itemUpdated(let id):
             var snapshot = dataSource.snapshot()
-            snapshot.reloadItems([id])
+            snapshot.reconfigureItems([id])
             dataSource.apply(snapshot, animatingDifferences: true)
+
         case .itemsLoaded(let snapshot):
-            dataSource.apply(snapshot)
+            dataSource.apply(snapshot, animatingDifferences: true)
+
         case .itemSelected(let selectedItem):
             deselect(selectedItem)
         }

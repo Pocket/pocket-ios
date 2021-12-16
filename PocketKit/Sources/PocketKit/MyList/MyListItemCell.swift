@@ -121,17 +121,11 @@ class MyListItemCell: UICollectionViewCell {
         return stack
     }()
 
-    private let separator: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(.ui.grey6)
-
-        return view
-    }()
-
     private var thumbnailWidthConstraint: NSLayoutConstraint!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        contentView.backgroundColor = UIColor(.ui.white1)
 
         menuButton.menu = UIMenu(
             children: [

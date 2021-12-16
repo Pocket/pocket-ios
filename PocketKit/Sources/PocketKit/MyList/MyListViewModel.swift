@@ -66,6 +66,7 @@ class MyListViewModel: NSObject {
 }
 
 extension MyListViewModel: NSFetchedResultsControllerDelegate {
+
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         let _snapshot = snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
         events.send(.itemsLoaded(_snapshot))
