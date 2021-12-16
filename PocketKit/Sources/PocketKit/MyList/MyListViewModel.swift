@@ -75,37 +75,15 @@ class MyListViewModel: NSObject {
 }
 
 extension MyListViewModel: NSFetchedResultsControllerDelegate {
-
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         let _snapshot = snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
         events.send(.itemsLoaded(_snapshot))
-    }
-
-    func controller(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
-        didChange anObject: Any,
-        at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
-    ) {
-        switch type {
-        case .update:
-            guard let id = (anObject as? NSManagedObject)?.objectID else {
-                return
-            }
-
-            events.send(.itemUpdated(id))
-        default:
-            // other changes are handled by `controller(_: didChangeContentWith:)`
-            break
-        }
     }
 }
 
 extension MyListViewModel {
     enum Event {
         case itemSelected(SavedItem?)
-        case itemUpdated(NSManagedObjectID)
         case itemsLoaded(NSDiffableDataSourceSnapshot<String, NSManagedObjectID>)
     }
 
