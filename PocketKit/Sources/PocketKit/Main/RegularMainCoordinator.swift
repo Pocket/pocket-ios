@@ -46,9 +46,9 @@ class RegularMainCoordinator: NSObject {
         myList = MyListViewController(
             model: MyListViewModel(
                 source: source,
-                tracker: tracker.childTracker(hosting: .myList.screen)
-            ),
-            mainViewModel: model
+                tracker: tracker.childTracker(hosting: .myList.screen),
+                main: model
+            )
         )
         myList.view.backgroundColor = UIColor(.ui.white1)
         
