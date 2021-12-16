@@ -100,11 +100,6 @@ class MyListViewController: UIViewController {
 
     private func handle(myListEvent event: MyListViewModel.Event) {
         switch event {
-        case .itemUpdated(let id):
-            var snapshot = dataSource.snapshot()
-            snapshot.reconfigureItems([id])
-            dataSource.apply(snapshot, animatingDifferences: true)
-
         case .itemsLoaded(let snapshot):
             dataSource.apply(snapshot, animatingDifferences: true)
 
