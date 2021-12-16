@@ -7,14 +7,12 @@ import Kingfisher
 
 class MyListViewController: UIViewController {
     private let model: MyListViewModel
-    private let mainViewModel: MainViewModel
     private let collectionView: UICollectionView
-    private var dataSource: UICollectionViewDiffableDataSource<Int, NSManagedObjectID>!
+    private var dataSource: UICollectionViewDiffableDataSource<String, NSManagedObjectID>!
     private var subscriptions: [AnyCancellable] = []
 
-    init(model: MyListViewModel, mainViewModel: MainViewModel) {
+    init(model: MyListViewModel) {
         self.model = model
-        self.mainViewModel = mainViewModel
         self.collectionView = UICollectionView(
             frame: .zero, collectionViewLayout: UICollectionViewCompositionalLayout.list(
                 using: .init(appearance: .plain)
@@ -41,16 +39,8 @@ class MyListViewController: UIViewController {
             collectionView.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: itemID)
         }
 
-        model.$items.receive(on: DispatchQueue.main).sink { [weak self] savedItems in
-            self?.updateSnapshot()
-        }.store(in: &subscriptions)
-
         model.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             self?.handle(myListEvent: event)
-        }.store(in: &subscriptions)
-
-        mainViewModel.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedItem in
-            self?.deselect(selectedItem)
         }.store(in: &subscriptions)
     }
 
@@ -81,7 +71,7 @@ class MyListViewController: UIViewController {
     }
 
     private func configure(cell: MyListItemCell, indexPath: IndexPath, itemID: NSManagedObjectID) {
-        guard let item = model.items?[indexPath.item] else {
+        guard let item = model.item(at: indexPath) else {
             return
         }
 
@@ -95,25 +85,16 @@ class MyListViewController: UIViewController {
         )
     }
 
-    private func updateSnapshot() {
-        var snapshot = NSDiffableDataSourceSnapshot<Int, NSManagedObjectID>()
-
-        guard let items = model.items, !items.isEmpty else {
-            dataSource.apply(snapshot, animatingDifferences: true)
-            return
-        }
-
-        snapshot.appendSections([0])
-        snapshot.appendItems(items.map({ $0.objectID }), toSection: 0)
-        dataSource.apply(snapshot, animatingDifferences: true)
-    }
-
     private func handle(myListEvent event: MyListViewModel.Event) {
         switch event {
         case .itemUpdated(let id):
             var snapshot = dataSource.snapshot()
             snapshot.reloadItems([id])
             dataSource.apply(snapshot, animatingDifferences: true)
+        case .itemsLoaded(let snapshot):
+            dataSource.apply(snapshot)
+        case .itemSelected(let selectedItem):
+            deselect(selectedItem)
         }
     }
 
@@ -130,11 +111,11 @@ class MyListViewController: UIViewController {
 
 extension MyListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        mainViewModel.selectedItem = model.items?[indexPath.item].savedItem
+        model.selectItem(at: indexPath)
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        model.items?[indexPath.item].trackImpression()
+        model.item(at: indexPath)?.trackImpression()
     }
 }
 
@@ -144,9 +125,11 @@ extension MyListViewController: MyListItemCellDelegate {
     }
 
     func myListItemCellDidTapShareButton(_ cell: MyListItemCell) {
-        mainViewModel.sharedActivity = item(for: cell).flatMap {
-            PocketItemActivity(item: $0.savedItem)
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
         }
+
+        model.shareItem(at: indexPath)
     }
 
     func myListItemCellDidTapDeleteButton(_ cell: MyListItemCell) {
@@ -159,6 +142,6 @@ extension MyListViewController: MyListItemCellDelegate {
 
     private func item(for cell: MyListItemCell) -> MyListItemViewModel? {
         collectionView.indexPath(for: cell)
-            .flatMap { model.items?[$0.item] }
+            .flatMap { model.item(at: $0) }
     }
 }

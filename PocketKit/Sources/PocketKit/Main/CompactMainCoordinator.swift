@@ -37,9 +37,9 @@ class CompactMainCoordinator: NSObject {
         let myListRoot = MyListViewController(
             model: MyListViewModel(
                 source: source,
-                tracker: tracker.childTracker(hosting: .myList.screen)
-            ),
-            mainViewModel: model
+                tracker: tracker.childTracker(hosting: .myList.screen),
+                main: model
+            )
         )
 
         myListRoot.view.backgroundColor = UIColor(.ui.white1)

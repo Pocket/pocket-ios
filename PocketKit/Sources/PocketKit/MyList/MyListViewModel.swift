@@ -2,56 +2,73 @@ import CoreData
 import Sync
 import Analytics
 import Combine
+import UIKit
 
 
 class MyListViewModel: NSObject {
     private let source: Source
     private let tracker: Tracker
+    private let main: MainViewModel
     private let itemsController: NSFetchedResultsController<SavedItem>
+    private var subscriptions: [AnyCancellable] = []
 
     let events = MyListEvents()
 
-    @Published
-    private(set) var items: [MyListItemViewModel]?
-
     var count: Int {
-        items?.count ?? 0
+        itemsController.fetchedObjects?.count ?? 0
     }
 
-    init(source: Source, tracker: Tracker) {
+    init(source: Source, tracker: Tracker, main: MainViewModel) {
         self.source = source
         self.tracker = tracker
+        self.main = main
         self.itemsController = source.makeItemsController()
 
         super.init()
 
         itemsController.delegate = self
+
+        self.main.$selectedItem.sink { [weak self] savedItem in
+            self?.events.send(.itemSelected(savedItem))
+        }.store(in: &subscriptions)
     }
 
     func fetch() throws {
         try itemsController.performFetch()
-        updateItems()
     }
 
     func refresh(_ completion: (() -> ())? = nil) {
         source.refresh(completion: completion)
     }
 
-    private func updateItems() {
-        items = itemsController.fetchedObjects?.enumerated().map { index, item in
+    func item(at indexPath: IndexPath) -> MyListItemViewModel? {
+        bareItem(at: indexPath).flatMap { item in
             MyListItemViewModel(
                 item: item,
-                index: index,
+                index: indexPath.item,
                 source: source,
-                tracker: tracker.childTracker(hosting: .myList.item(index: UInt(index)))
+                tracker: tracker
             )
         }
+    }
+
+    func selectItem(at indexPath: IndexPath) {
+        main.selectedItem = bareItem(at: indexPath)
+    }
+
+    func shareItem(at indexPath: IndexPath) {
+        main.sharedActivity = bareItem(at: indexPath).flatMap { PocketItemActivity(item: $0) }
+    }
+
+    private func bareItem(at indexPath: IndexPath) -> SavedItem? {
+        itemsController.fetchedObjects?[indexPath.item]
     }
 }
 
 extension MyListViewModel: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        updateItems()
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        let _snapshot = snapshot as NSDiffableDataSourceSnapshot<String, NSManagedObjectID>
+        events.send(.itemsLoaded(_snapshot))
     }
 
     func controller(
@@ -69,7 +86,7 @@ extension MyListViewModel: NSFetchedResultsControllerDelegate {
 
             events.send(.itemUpdated(id))
         default:
-            // delete, insert, move are handled by the general `controllerDidChangeContent` handler
+            // other changes are handled by `controller(_: didChangeContentWith:)`
             break
         }
     }
@@ -77,7 +94,9 @@ extension MyListViewModel: NSFetchedResultsControllerDelegate {
 
 extension MyListViewModel {
     enum Event {
+        case itemSelected(SavedItem?)
         case itemUpdated(NSManagedObjectID)
+        case itemsLoaded(NSDiffableDataSourceSnapshot<String, NSManagedObjectID>)
     }
 
     typealias MyListEvents = PassthroughSubject<Event, Never>
