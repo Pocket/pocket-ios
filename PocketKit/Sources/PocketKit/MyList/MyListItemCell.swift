@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 
 protocol MyListItemCellDelegate: AnyObject {
@@ -8,8 +9,39 @@ protocol MyListItemCellDelegate: AnyObject {
     func myListItemCellDidTapArchiveButton(_ cell: MyListItemCell)
 }
 
+private extension UIConfigurationStateCustomKey {
+    static let model = UIConfigurationStateCustomKey("com.mozilla.pocket.next.MyListItemCell.model")
+}
+
+private extension UICellConfigurationState {
+    var model: MyListItemCell.Model? {
+        set { self[.model] = newValue }
+        get { return self[.model] as? MyListItemCell.Model }
+    }
+}
+
 class MyListItemCell: UICollectionViewCell {
     weak var delegate: MyListItemCellDelegate?
+
+    var model: Model? {
+        didSet {
+            setNeedsUpdateConfiguration()
+        }
+    }
+
+    override var configurationState: UICellConfigurationState {
+        var state = super.configurationState
+        state.model = model
+        return state
+    }
+
+    private static func defaultListContentConfiguration() -> UIListContentConfiguration {
+        .cell()
+    }
+
+    private let listContentView = UIListContentView(
+        configuration: MyListItemCell.defaultListContentConfiguration()
+    )
 
     enum Constants {
         static let cornerRadius: CGFloat = 4
@@ -23,40 +55,39 @@ class MyListItemCell: UICollectionViewCell {
         static let margins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxTitleLines
 
         return label
     }()
 
-    let detailLabel: UILabel = {
+    private let detailLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxDetailLines
 
         return label
     }()
 
-    let thumbnailView: UIImageView = {
+    private let thumbnailView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = Constants.cornerRadius
         imageView.layer.masksToBounds = true
         imageView.backgroundColor = UIColor(.ui.grey6)
+        imageView.contentMode = .center
         return imageView
     }()
 
-    let favoriteButton: UIButton = {
+    private let favoriteButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
-        config.background.image = UIImage(asset: .favorite)
-            .withTintColor(UIColor(.branding.amber4), renderingMode: .alwaysOriginal)
 
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "favorite"
         return button
     }()
 
-    let shareButton: UIButton = {
+    private let shareButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
         config.background.image = UIImage(asset: .share)
@@ -67,7 +98,7 @@ class MyListItemCell: UICollectionViewCell {
         return button
     }()
 
-    let menuButton: UIButton = {
+    private let menuButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
         config.background.image = UIImage(asset: .overflow)
@@ -80,30 +111,9 @@ class MyListItemCell: UICollectionViewCell {
         return button
     }()
 
-    private let topLevelStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = Constants.topLevelStackSpacing
-        return stack
-    }()
+    private let mainContentView = UIView()
 
-    private let mainStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .horizontal
-        stack.alignment = .top
-        stack.spacing = Constants.mainStackSpacing
-
-        return stack
-    }()
-
-    private let textStack: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.spacing = Constants.textStackSpacing
-        return stack
-    }()
-
-    private let bottomStack: UIStackView = {
+    private let buttonStack: UIStackView = {
         let stack = UIStackView()
         stack.spacing = 10
         stack.axis = .horizontal
@@ -117,6 +127,8 @@ class MyListItemCell: UICollectionViewCell {
 
         return view
     }()
+
+    private var thumbnailWidthConstraint: NSLayoutConstraint!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -139,45 +151,72 @@ class MyListItemCell: UICollectionViewCell {
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = UIColor(.ui.grey6)
 
-        topLevelStack.addArrangedSubview(mainStack)
-        topLevelStack.addArrangedSubview(bottomStack)
+        buttonStack.addArrangedSubview(UIView())
+        buttonStack.addArrangedSubview(favoriteButton)
+        buttonStack.addArrangedSubview(shareButton)
+        buttonStack.addArrangedSubview(menuButton)
 
-        mainStack.addArrangedSubview(textStack)
-        mainStack.addArrangedSubview(thumbnailView)
+        mainContentView.addSubview(titleLabel)
+        mainContentView.addSubview(detailLabel)
+        mainContentView.addSubview(thumbnailView)
 
-        bottomStack.addArrangedSubview(UIView())
-        bottomStack.addArrangedSubview(favoriteButton)
-        bottomStack.addArrangedSubview(shareButton)
-        bottomStack.addArrangedSubview(menuButton)
+        listContentView.addSubview(mainContentView)
+        listContentView.addSubview(buttonStack)
 
-        textStack.addArrangedSubview(titleLabel)
-        textStack.addArrangedSubview(detailLabel)
-
-        contentView.addSubview(topLevelStack)
-        contentView.addSubview(separator)
-
+        contentView.addSubview(listContentView)
         contentView.layoutMargins = Constants.margins
 
-        let buttonConstraints = [favoriteButton, menuButton, shareButton].flatMap { button in
-            [
-                button.widthAnchor.constraint(equalToConstant: Constants.actionButtonHeight),
-                button.heightAnchor.constraint(equalTo: button.widthAnchor),
-            ]
-        }
-        NSLayoutConstraint.activate(buttonConstraints)
+        listContentView.translatesAutoresizingMaskIntoConstraints = false
+        mainContentView.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        detailLabel.translatesAutoresizingMaskIntoConstraints = false
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
+        thumbnailView.translatesAutoresizingMaskIntoConstraints = false
+        favoriteButton.translatesAutoresizingMaskIntoConstraints = false
+        menuButton.translatesAutoresizingMaskIntoConstraints = false
+        shareButton.translatesAutoresizingMaskIntoConstraints = false
 
-        topLevelStack.translatesAutoresizingMaskIntoConstraints = false
-        separator.translatesAutoresizingMaskIntoConstraints = false
+        thumbnailWidthConstraint = thumbnailView.widthAnchor.constraint(
+            equalToConstant: Constants.thumbnailSize.width
+        ).with(priority: .required)
+
+        NSLayoutConstraint.activate(
+            [favoriteButton, menuButton, shareButton].flatMap { button -> [NSLayoutConstraint] in
+                [
+                    button.widthAnchor.constraint(equalToConstant: Constants.actionButtonHeight).with(priority: .required),
+                    button.heightAnchor.constraint(equalTo: button.widthAnchor).with(priority: .required)
+                ]
+            }
+        )
+
         NSLayoutConstraint.activate([
-            thumbnailView.widthAnchor.constraint(equalToConstant: Constants.thumbnailSize.width),
-            thumbnailView.heightAnchor.constraint(equalToConstant: Constants.thumbnailSize.height),
-            topLevelStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            topLevelStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            topLevelStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            separator.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            separator.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            separator.centerYAnchor.constraint(equalTo: contentView.bottomAnchor),
-            separator.heightAnchor.constraint(equalToConstant: 0.5),
+            listContentView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            listContentView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            listContentView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            listContentView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            listContentView.bottomAnchor.constraint(equalTo: buttonStack.bottomAnchor),
+
+            mainContentView.topAnchor.constraint(equalTo: listContentView.topAnchor),
+            mainContentView.leadingAnchor.constraint(equalTo: listContentView.leadingAnchor),
+            mainContentView.trailingAnchor.constraint(equalTo: listContentView.trailingAnchor),
+            mainContentView.bottomAnchor.constraint(greaterThanOrEqualTo: thumbnailView.bottomAnchor),
+            mainContentView.bottomAnchor.constraint(greaterThanOrEqualTo: detailLabel.bottomAnchor),
+
+            titleLabel.topAnchor.constraint(equalTo: mainContentView.topAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: mainContentView.leadingAnchor),
+            detailLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            detailLabel.leadingAnchor.constraint(equalTo: titleLabel.leadingAnchor),
+            detailLabel.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor),
+
+            thumbnailView.topAnchor.constraint(equalTo: titleLabel.topAnchor),
+            thumbnailView.trailingAnchor.constraint(equalTo: mainContentView.trailingAnchor),
+            thumbnailView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 8),
+            thumbnailView.heightAnchor.constraint(equalToConstant: Constants.thumbnailSize.height).with(priority: .required),
+            thumbnailWidthConstraint!,
+
+            buttonStack.topAnchor.constraint(equalTo: mainContentView.bottomAnchor, constant: 14).with(priority: .defaultHigh),
+            buttonStack.leadingAnchor.constraint(equalTo: mainContentView.leadingAnchor),
+            buttonStack.trailingAnchor.constraint(equalTo: mainContentView.trailingAnchor),
         ])
     }
 
@@ -200,5 +239,56 @@ class MyListItemCell: UICollectionViewCell {
     private func handleDelete() {
         delegate?.myListItemCellDidTapDeleteButton(self)
     }
+}
 
+extension MyListItemCell {
+    struct Model: Hashable {
+        let attributedTitle: NSAttributedString
+        let attributedDetail: NSAttributedString
+        let favoriteButtonImage: UIImage?
+        let favoriteButtonAccessibilityLabel: String
+        let thumbnailURL: URL?
+    }
+
+    override func updateConfiguration(using state: UICellConfigurationState) {
+        let content = Self.defaultListContentConfiguration().updated(for: state)
+        listContentView.configuration = content
+
+        titleLabel.attributedText = state.model?.attributedTitle
+        detailLabel.attributedText = state.model?.attributedDetail
+        favoriteButton.configuration?.image = state.model?.favoriteButtonImage
+        favoriteButton.accessibilityLabel = state.model?.favoriteButtonAccessibilityLabel
+
+        thumbnailView.image = nil
+
+        guard let thumbnailURL = state.model?.thumbnailURL else {
+            thumbnailWidthConstraint.constant = 0
+            return
+        }
+
+        thumbnailWidthConstraint.constant = Constants.thumbnailSize.width
+        thumbnailView.kf.setImage(
+            with: thumbnailURL,
+            options: [
+                .scaleFactor(UIScreen.main.scale),
+                .processor(
+                    ResizingImageProcessor(
+                        referenceSize: Self.Constants.thumbnailSize,
+                        mode: .aspectFill
+                    ).append(
+                        another: CroppingImageProcessor(
+                            size: Self.Constants.thumbnailSize
+                        )
+                    )
+                )
+            ]
+        )
+    }
+}
+
+extension NSLayoutConstraint {
+    func with(priority: UILayoutPriority) -> NSLayoutConstraint {
+        self.priority = priority
+        return self
+    }
 }

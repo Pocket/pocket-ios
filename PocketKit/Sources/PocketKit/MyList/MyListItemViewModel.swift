@@ -28,10 +28,6 @@ private extension Style {
                 .with(lineSpacing: 4)
                 .with(lineBreakMode: .byTruncatingTail)
         }
-
-    func forMeasurement() -> Style {
-        with { $0.with(lineBreakMode: .none) }
-    }
 }
 
 class MyListItemViewModel {
@@ -65,16 +61,8 @@ class MyListItemViewModel {
         NSAttributedString(string: title, style: .title)
     }
 
-    var attributedTitleForMeasurement: NSAttributedString {
-        NSAttributedString(string: title, style: .title.forMeasurement())
-    }
-
     var attributedDetail: NSAttributedString {
         NSAttributedString(string: detail, style: .detail)
-    }
-
-    var attributedDetailForMeasurement: NSAttributedString {
-        NSAttributedString(string: detail, style: .detail.forMeasurement())
     }
 
     var thumbnailURL: URL? {
@@ -97,26 +85,6 @@ class MyListItemViewModel {
         } else {
             return "Favorite"
         }
-    }
-
-    public func loadThumbnail(into cell: MyListItemCell) {
-        cell.thumbnailView.isHidden = thumbnailURL == nil
-        cell.thumbnailView.kf.setImage(
-            with: thumbnailURL,
-            options: [
-                .scaleFactor(UIScreen.main.scale),
-                .processor(
-                    ResizingImageProcessor(
-                        referenceSize: MyListItemCell.Constants.thumbnailSize,
-                        mode: .aspectFill
-                    ).append(
-                        another: CroppingImageProcessor(
-                            size: MyListItemCell.Constants.thumbnailSize
-                        )
-                    )
-                )
-            ]
-        )
     }
 
     private var title: String {
