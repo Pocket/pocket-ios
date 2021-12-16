@@ -148,7 +148,28 @@ extension MyListViewController: MyListItemCellDelegate {
     }
 
     func myListItemCellDidTapDeleteButton(_ cell: MyListItemCell) {
-        item(for: cell)?.delete()
+        guard let item = item(for: cell) else {
+            return
+        }
+
+        let actions = [
+            UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                self?.model.presentedAlert = nil
+            },
+            UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
+                self?.model.presentedAlert = nil
+                item.delete()
+            }
+        ]
+
+        let alert = PocketAlert(
+            title: "Are you sure you want to delete this item?",
+            message: nil,
+            preferredStyle: .alert,
+            actions: actions,
+            preferredAction: nil
+        )
+        model.presentedAlert = alert
     }
 
     func myListItemCellDidTapArchiveButton(_ cell: MyListItemCell) {

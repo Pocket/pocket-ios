@@ -18,6 +18,15 @@ class MyListViewModel: NSObject {
         itemsController.fetchedObjects?.count ?? 0
     }
 
+    var presentedAlert: PocketAlert? {
+        get {
+            main.presentedAlert
+        }
+        set {
+            main.presentedAlert = newValue
+        }
+    }
+
     init(source: Source, tracker: Tracker, main: MainViewModel) {
         self.source = source
         self.tracker = tracker
