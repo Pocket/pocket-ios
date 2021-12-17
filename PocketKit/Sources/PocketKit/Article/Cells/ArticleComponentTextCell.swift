@@ -44,7 +44,7 @@ class ArticleComponentTextView: UITextView {
         
         backgroundColor = .clear
         textContainerInset = .zero
-        textContainer?.lineFragmentPadding = .zero
+        self.textContainer.lineFragmentPadding = .zero
         isEditable = false
         isScrollEnabled = false
         delegate = self
