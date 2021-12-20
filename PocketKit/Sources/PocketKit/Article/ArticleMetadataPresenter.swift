@@ -6,33 +6,32 @@ import Textile
 private extension Style {
     static func title(modifier: StylerModifier) -> Style {
         .header
-        .sansSerif
-        .h5
-        .with { $0.with(alignment: .center) }
+        .serif
+        .title
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: 44)
+        }
         .adjustingSize(by: modifier.fontSizeAdjustment)
     }
 
     static func byline(modifier: StylerModifier) -> Style {
         .header
         .sansSerif
-        .p3
-        .with {
-            $0.with(alignment: .center).with(lineSpacing: 6)
+        .p4
+        .with(weight: .medium)
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: 22)
         }
         .adjustingSize(by: modifier.fontSizeAdjustment)
     }
 
-    static func authorName(modifier: StylerModifier) -> Style {
+    static func publishedDate(modifier: StylerModifier) -> Style {
         .header
         .sansSerif
-        .h7
-        .adjustingSize(by: modifier.fontSizeAdjustment)
-    }
-    
-    static func standardText(modifier: StylerModifier) -> Style {
-        .header
-        .sansSerif
-        .p2
+        .p4
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: 22)
+        }
         .adjustingSize(by: modifier.fontSizeAdjustment)
     }
 }
@@ -55,69 +54,60 @@ struct ArticleMetadataPresenter {
     }
 
     var attributedByline: NSAttributedString? {
-        let byline = NSMutableAttributedString(string: "", style: .byline(modifier: readerSettings))
+        let byline = NSMutableAttributedString()
+        let style = Style.byline(modifier: readerSettings)
 
         if let authors = readable.authors, !authors.isEmpty {
             let authorNames = authors.compactMap { $0.name }
             let authorNamesString = ListFormatter.localizedString(byJoining: authorNames) as NSString
+            let attributedAuthorNames = NSMutableAttributedString(string: authorNamesString as String, style: style)
 
-            let attributedAuthorNames = NSMutableAttributedString(string: authorNamesString as String, style: .byline(modifier: readerSettings))
-            authorNames.forEach { name in
-                attributedAuthorNames.setAttributes(
-                    Style.authorName(modifier: readerSettings).textAttributes,
-                    range: authorNamesString.range(of: name)
-                )
-            }
-
-            byline.append(NSAttributedString(string: "by ", style: .byline(modifier: readerSettings)))
             byline.append(attributedAuthorNames)
         }
 
         if let domain = readable.domain {
             if !byline.string.isEmpty {
-                byline.append(NSAttributedString(string: ", ", style: .byline(modifier: readerSettings)))
+                byline.append(NSAttributedString(string: " • ", style: style))
             }
 
             byline.append(NSAttributedString(string: domain, style: .byline(modifier: readerSettings)))
         }
 
-        if let datePublished = readable.publishDate {
-            if !byline.string.isEmpty {
-                byline.append(NSAttributedString(string: "\n", style: .byline(modifier: readerSettings)))
-            }
-
-            let dateString = datePublished.formatted(date: .long, time: .omitted)
-            byline.append(NSAttributedString(string: dateString, style: .byline(modifier: readerSettings)))
-        }
-
         return byline
+    }
+
+    var attributedPublishedDate: NSAttributedString? {
+        readable.publishDate
+            .flatMap { $0.formatted(date: .long, time: .omitted) }
+            .flatMap { NSAttributedString(string: $0, style: .publishedDate(modifier: readerSettings)) }
     }
 
     func size(for availableItemWidth: CGFloat) -> CGSize {
         var height: CGFloat = 0
 
-        if let title = attributedTitle {
-            height += Self.height(
-                of: title,
-                width: availableItemWidth
-            )
+        if let byline = attributedByline {
+            height += Self.height(of: byline, width: availableItemWidth)
         }
 
-        if let byline = attributedByline {
-            height += Self.height(
-                of: byline,
-                width: availableItemWidth
-            )
+        if let publishedDate = attributedPublishedDate {
+            height += Self.height(of: publishedDate, width: availableItemWidth)
+        }
+
+        if let title = attributedTitle {
+            if height > 0 {
+                height += ArticleMetadataCell.Constants.stackSpacing
+            }
+
+            height += Self.height(of: title, width: availableItemWidth)
         }
 
         return CGSize(
             width: availableItemWidth,
             height: height
-            + ArticleMetadataCell.Constants.stackSpacing
         )
     }
 
-    static func height(of attributedString: NSAttributedString, width: CGFloat) -> CGFloat {
+    private static func height(of attributedString: NSAttributedString, width: CGFloat) -> CGFloat {
         guard !attributedString.string.isEmpty else {
             return 0
         }
