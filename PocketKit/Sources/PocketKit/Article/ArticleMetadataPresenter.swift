@@ -121,11 +121,3 @@ struct ArticleMetadataPresenter {
         return rect.height.rounded(.up)
     }
 }
-
-extension ArticleMetadataPresenter {
-    private var attributedDomain: NSAttributedString? {
-        readable.domain.flatMap {
-            NSAttributedString(string: $0, style: .byline(modifier: readerSettings))
-        }
-    }
-}
