@@ -10,11 +10,6 @@ import Kingfisher
 import UIKit
 #endif
 
-private extension Style {
-    static let navigationTitle: Style = .header.sansSerif.h6
-    static let largeNavigationTitle: Style = .header.sansSerif.h2
-}
-
 public class Textiles {
     public static func initialize() {
         loadFonts()
