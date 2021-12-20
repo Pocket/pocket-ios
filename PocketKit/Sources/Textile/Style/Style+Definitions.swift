@@ -10,14 +10,15 @@ public extension FontDescriptor.Family {
 }
 
 public extension FontDescriptor.Size {
-    static let h1: Self = 48
-    static let h2: Self = 40
-    static let h3: Self = 33
-    static let h4: Self = 28
-    static let h5: Self = 23
-    static let h6: Self = 19
+    static let title: Self = 36
+    static let h1: Self = 32
+    static let h2: Self = 28
+    static let h3: Self = 25
+    static let h4: Self = 22
+    static let h5: Self = 20
+    static let h6: Self = 18
     static let h7: Self = 16
-    static let p1: Self = 23
+    static let p1: Self = 20
     static let p2: Self = 19
     static let p3: Self = 16
     static let p4: Self = 14
@@ -36,6 +37,7 @@ public extension Style {
         public let display = Display()
 
         public struct SansSerif {
+            public let title = Style(family: .graphik, size: .title, weight: .semibold)
             public let h1 = Style(family: .graphik, size: .h1, weight: .semibold)
             public let h2 = Style(family: .graphik, size: .h2, weight: .semibold)
             public let h3 = Style(family: .graphik, size: .h3, weight: .semibold)
@@ -51,6 +53,7 @@ public extension Style {
         }
 
         public struct Serif {
+            public let title = Style(family: .blanco, size: .title, weight: .semibold)
             public let h1 = Style(family: .blanco, size: .h1, weight: .bold)
             public let h2 = Style(family: .blanco, size: .h2, weight: .bold)
             public let h3 = Style(family: .blanco, size: .h3, weight: .bold)
