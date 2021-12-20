@@ -3,66 +3,72 @@ import UIKit
 
 class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     enum Constants {
-        static let stackSpacing: CGFloat = 0
+        static let stackSpacing: CGFloat = 10
     }
 
-    private lazy var titleTextView: ArticleComponentTextView = {
-        let textView = ArticleComponentTextView()
-        textView.actionDelegate = self
-        return textView
-    }()
+    struct Model {
+        let byline: NSAttributedString?
+        let publishedDate: NSAttributedString?
+        let title: NSAttributedString?
+    }
 
-    private lazy var bylineTextView: ArticleComponentTextView = {
-        let textView = ArticleComponentTextView()
-        textView.actionDelegate = self
-        return textView
-    }()
+    private let bylineTextView = ArticleComponentTextView()
+    private let publishedDateTextView = ArticleComponentTextView()
+    private let titleTextView = ArticleComponentTextView()
 
-    private var labelStack: UIStackView = {
+    private var metaStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.spacing = Constants.stackSpacing
         return stack
     }()
-    
-    var attributedTitle: NSAttributedString? {
-        set {
-            titleTextView.attributedText = newValue
-        }
-        get {
-            titleTextView.attributedText
-        }
-    }
-    
-    var attributedByline: NSAttributedString? {
-        set {
-            bylineTextView.attributedText = newValue
-        }
-        get {
-            bylineTextView.attributedText
-        }
-    }
-    
+
+    private var textStack: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        return stack
+    }()
+
     weak var delegate: ArticleComponentTextCellDelegate?
 
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        contentView.addSubview(labelStack)
+        bylineTextView.actionDelegate = self
+        publishedDateTextView.actionDelegate = self
+        titleTextView.actionDelegate = self
 
-        labelStack.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(textStack)
+        textStack.addArrangedSubview(metaStack)
+        textStack.addArrangedSubview(titleTextView)
+        metaStack.addArrangedSubview(bylineTextView)
+        metaStack.addArrangedSubview(publishedDateTextView)
+
+        textStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: labelStack.leadingAnchor),
-            contentView.topAnchor.constraint(equalTo: labelStack.topAnchor),
-            contentView.trailingAnchor.constraint(equalTo: labelStack.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: labelStack.bottomAnchor),
+            contentView.leadingAnchor.constraint(equalTo: textStack.leadingAnchor),
+            contentView.topAnchor.constraint(equalTo: textStack.topAnchor),
+            contentView.trailingAnchor.constraint(equalTo: textStack.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: textStack.bottomAnchor),
         ])
-
-        labelStack.addArrangedSubview(titleTextView)
-        labelStack.addArrangedSubview(bylineTextView)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func configure(model: Model) {
+        bylineTextView.attributedText = model.byline
+        publishedDateTextView.attributedText = model.publishedDate
+        titleTextView.attributedText = model.title
+
+        bylineTextView.isHidden = model.byline == nil
+        publishedDateTextView.isHidden = model.publishedDate == nil
+        titleTextView.isHidden = model.title == nil
+
+        if model.byline == nil && model.publishedDate == nil {
+            textStack.spacing = 0
+        } else {
+            textStack.spacing = Constants.stackSpacing
+        }
     }
 }
