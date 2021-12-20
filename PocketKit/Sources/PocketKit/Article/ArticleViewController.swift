@@ -136,8 +136,13 @@ extension ArticleViewController: UICollectionViewDataSource {
         case 0:
             let metaCell: ArticleMetadataCell = collectionView.dequeueCell(for: indexPath)
             metaCell.delegate = self
-            metaCell.attributedTitle = metadata?.attributedTitle
-            metaCell.attributedByline = metadata?.attributedByline
+
+            metaCell.configure(model: .init(
+                byline: metadata?.attributedByline,
+                publishedDate: metadata?.attributedPublishedDate,
+                title: metadata?.attributedTitle
+            ))
+
             return metaCell
         default:
             guard let cell = presenters?[indexPath.item].cell(for: indexPath, in: collectionView) else {
