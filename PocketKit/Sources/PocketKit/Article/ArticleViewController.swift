@@ -83,7 +83,7 @@ class ArticleViewController: UIViewController {
         collectionView.register(cellClass: YouTubeVideoComponentCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
-        readerSettings.objectWillChange.sink { _ in
+        self.readerSettings.objectWillChange.sink { _ in
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }
