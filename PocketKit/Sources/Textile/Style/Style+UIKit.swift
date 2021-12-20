@@ -120,6 +120,11 @@ extension NSParagraphStyle {
             style.lineSpacing = lineSpacing
         }
 
+        if let lineHeight = paragraphStyle.lineHeight {
+            style.minimumLineHeight = lineHeight
+            style.maximumLineHeight = lineHeight
+        }
+
         return style
     }
 }
