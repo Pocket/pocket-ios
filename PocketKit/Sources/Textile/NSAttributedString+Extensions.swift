@@ -1,6 +1,45 @@
 import Foundation
 import Down
 
+private extension Style {
+    static let h1: Style = .header.serif.h1
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: .multiplier(1.18))
+        }
+
+    static let h2: Style = .header.serif.h2
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: .multiplier(1.18))
+        }
+
+    static let h3: Style = .header.serif.h3
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: .multiplier(1.18))
+        }
+
+    static let h4: Style = .header.serif.h4
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: .multiplier(1.18))
+        }
+
+    static let h5: Style = .header.serif.h5
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: .multiplier(1.18))
+        }
+
+    static let h6: Style = .header.serif.h6
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: .multiplier(1.18))
+        }
+
+    static let bodyText: Style = .body.serif
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: .multiplier(1.4))
+        }
+
+    static let monospace: Style = .body.monospace
+}
+
 public extension NSAttributedString {
     convenience init(string: String, style: Style) {
         self.init(string: string, attributes: style.textAttributes)
@@ -20,14 +59,14 @@ public extension NSAttributedString {
     
     static func defaultStyler(with modifier: StylerModifier) -> Styler {
         TextileStyler(
-            h1: .header.sansSerif.h1,
-            h2: .header.sansSerif.h2,
-            h3: .header.sansSerif.h3,
-            h4: .header.sansSerif.h4,
-            h5: .header.sansSerif.h5,
-            h6: .header.sansSerif.h6,
-            body: .body.sansSerif,
-            monospace: .body.monospace,
+            h1: .h1,
+            h2: .h2,
+            h3: .h3,
+            h4: .h4,
+            h5: .h5,
+            h6: .h6,
+            body: .bodyText,
+            monospace: .monospace,
             modifier: modifier
         )
     }

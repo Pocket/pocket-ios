@@ -9,7 +9,7 @@ private extension Style {
         .serif
         .title
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
-            paragraph.with(lineHeight: 44)
+            paragraph.with(lineHeight: .multiplier(1.16))
         }
         .adjustingSize(by: modifier.fontSizeAdjustment)
     }
@@ -20,7 +20,7 @@ private extension Style {
         .p4
         .with(weight: .medium)
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
-            paragraph.with(lineHeight: 22)
+            paragraph.with(lineHeight: .multiplier(1.57))
         }
         .adjustingSize(by: modifier.fontSizeAdjustment)
     }
@@ -30,7 +30,7 @@ private extension Style {
         .sansSerif
         .p4
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
-            paragraph.with(lineHeight: 22)
+            paragraph.with(lineHeight: .multiplier(1.57))
         }
         .adjustingSize(by: modifier.fontSizeAdjustment)
     }

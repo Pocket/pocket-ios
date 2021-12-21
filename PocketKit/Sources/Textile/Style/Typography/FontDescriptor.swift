@@ -79,8 +79,6 @@ extension FontDescriptor.Size: ExpressibleByIntegerLiteral {
 
 extension FontDescriptor.Size {
     public func adjusting(by adjustment: Int) -> FontDescriptor.Size {
-        let adjusted = self.size + adjustment
-        let adjustedSize = FontDescriptor.Size(size: adjusted)
-        return adjustedSize
+        return FontDescriptor.Size(size: size + adjustment)
     }
 }
