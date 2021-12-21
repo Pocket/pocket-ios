@@ -14,16 +14,16 @@ public extension FontDescriptor.Size {
     static let h1: Self = 32
     static let h2: Self = 28
     static let h3: Self = 25
-    static let h4: Self = 22
-    static let h5: Self = 20
-    static let h6: Self = 18
+    static let h4: Self = 23
+    static let h5: Self = 21
+    static let h6: Self = 20
     static let h7: Self = 16
     static let p1: Self = 20
     static let p2: Self = 19
     static let p3: Self = 16
     static let p4: Self = 14
     static let p5: Self = 12
-    static let body: Self = 19
+    static let body: Self = 20
     static let monospace: Self = 17
 }
 
