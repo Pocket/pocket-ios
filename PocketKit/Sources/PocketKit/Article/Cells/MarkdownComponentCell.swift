@@ -2,6 +2,10 @@ import UIKit
 
 
 class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
+    enum Constants {
+        static let layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
+    }
+
     lazy var textView: ArticleComponentTextView = {
         let textView = ArticleComponentTextView()
         textView.actionDelegate = self
@@ -18,13 +22,14 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
         super.init(frame: frame)
 
         contentView.addSubview(textView)
-        textView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.layoutMargins = Constants.layoutMargins
 
+        textView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            textView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            textView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            textView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            textView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            textView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            textView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            textView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            textView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
         ])
     }
 
