@@ -22,7 +22,10 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
     
     func size(for availableWidth: CGFloat) -> CGSize {
         content.flatMap {
-            CGSize(width: availableWidth, height: $0.sizeFitting(availableWidth: availableWidth).height)
+            let height = $0.sizeFitting(availableWidth: availableWidth).height
+            + MarkdownComponentCell.Constants.layoutMargins.bottom
+
+            return CGSize(width: availableWidth, height: height)
         } ?? .zero
     }
     
