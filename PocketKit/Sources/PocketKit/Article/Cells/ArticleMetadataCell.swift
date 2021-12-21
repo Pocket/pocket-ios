@@ -4,6 +4,7 @@ import UIKit
 class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     enum Constants {
         static let stackSpacing: CGFloat = 10
+        static let layoutMargins: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 24, right: 0)
     }
 
     struct Model {
@@ -43,12 +44,13 @@ class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, Artic
         metaStack.addArrangedSubview(bylineTextView)
         metaStack.addArrangedSubview(publishedDateTextView)
 
+        contentView.layoutMargins = Constants.layoutMargins
         textStack.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: textStack.leadingAnchor),
-            contentView.topAnchor.constraint(equalTo: textStack.topAnchor),
-            contentView.trailingAnchor.constraint(equalTo: textStack.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: textStack.bottomAnchor),
+            textStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            textStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            textStack.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            textStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
         ])
     }
 
