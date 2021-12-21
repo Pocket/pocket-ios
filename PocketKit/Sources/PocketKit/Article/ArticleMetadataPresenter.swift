@@ -101,6 +101,8 @@ struct ArticleMetadataPresenter {
             height += Self.height(of: title, width: availableItemWidth)
         }
 
+        height += ArticleMetadataCell.Constants.layoutMargins.bottom
+
         return CGSize(
             width: availableItemWidth,
             height: height

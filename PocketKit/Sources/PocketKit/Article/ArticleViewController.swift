@@ -53,14 +53,6 @@ class ArticleViewController: UIViewController {
         return self.buildSection(index: $0, environment: $1)
     }
 
-    private var availableItemWidth: CGFloat {
-        return collectionView.frame.width
-        - collectionView.contentInset.left
-        - collectionView.contentInset.right
-        - Constants.contentInsets.leading
-        - Constants.contentInsets.trailing
-    }
-
     init(readerSettings: ReaderSettings, tracker: Tracker, viewModel: MainViewModel) {
         self.readerSettings = readerSettings
         self.tracker = tracker
@@ -181,10 +173,17 @@ extension ArticleViewController: ArticleComponentTextCellDelegate {
 
 extension ArticleViewController {
     enum Constants {
-        static let contentInsets = NSDirectionalEdgeInsets(
+        static let metaSectionContentInsets = NSDirectionalEdgeInsets(
             top: 16,
             leading: 16,
             bottom: 0,
+            trailing: 16
+        )
+
+        static let contentSectionContentInsets = NSDirectionalEdgeInsets(
+            top: 0,
+            leading: 16,
+            bottom: 16,
             trailing: 16
         )
     }
@@ -192,6 +191,10 @@ extension ArticleViewController {
     func buildSection(index: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         switch index {
         case 0:
+            let availableItemWidth = environment.container.effectiveContentSize.width
+            - Constants.metaSectionContentInsets.leading
+            - Constants.metaSectionContentInsets.trailing
+
             let height = metadata?.size(for: availableItemWidth).height ?? 1
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
@@ -209,9 +212,13 @@ extension ArticleViewController {
             )
 
             let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = Constants.contentInsets
+            section.contentInsets = Constants.metaSectionContentInsets
             return section
         default:
+            let availableItemWidth = environment.container.effectiveContentSize.width
+            - Constants.contentSectionContentInsets.leading
+            - Constants.contentSectionContentInsets.trailing
+
             var height: CGFloat = 0
             let subitems = presenters?.compactMap { presenter -> NSCollectionLayoutItem? in
                 let size = presenter.size(for: availableItemWidth)
@@ -231,10 +238,10 @@ extension ArticleViewController {
                 ),
                 subitems: subitems ?? []
             )
-            group.interItemSpacing = .fixed(8)
+            group.interItemSpacing = .fixed(0)
 
             let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = Constants.contentInsets
+            section.contentInsets = Constants.contentSectionContentInsets
             return section
         }
     }
