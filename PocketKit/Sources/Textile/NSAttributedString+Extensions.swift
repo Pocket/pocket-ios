@@ -34,7 +34,7 @@ private extension Style {
 
     static let bodyText: Style = .body.serif
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
-            paragraph.with(lineHeight: .multiplier(1.14))
+            paragraph.with(lineHeight: .multiplier(1.1))
         }
 
     static let monospace: Style = .body.monospace
