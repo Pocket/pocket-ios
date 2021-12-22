@@ -57,7 +57,7 @@ public extension NSAttributedString {
         return nil
     }
     
-    static func defaultStyler(with modifier: StylerModifier) -> Styler {
+    static func defaultStyler(with modifier: StylerModifier, bodyStyle: Style? = nil) -> Styler {
         TextileStyler(
             h1: .h1,
             h2: .h2,
@@ -65,7 +65,7 @@ public extension NSAttributedString {
             h4: .h4,
             h5: .h5,
             h6: .h6,
-            body: .bodyText,
+            body: bodyStyle ?? .bodyText,
             monospace: .monospace,
             modifier: modifier
         )
