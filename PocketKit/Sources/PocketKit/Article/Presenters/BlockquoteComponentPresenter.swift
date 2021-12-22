@@ -1,5 +1,15 @@
 import Sync
 import UIKit
+import Textile
+
+private extension Style {
+    static let blockquote: Self = .body.serif
+        .with(slant: .italic)
+        .with(size: 28)
+        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+            paragraph.with(lineHeight: .multiplier(0.99))
+        }
+}
 
 
 class BlockquoteComponentPresenter: ArticleComponentPresenter {
@@ -10,7 +20,10 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
     private lazy var attributedBlockquote: NSAttributedString? = {
         NSAttributedString.styled(
             markdown: component.content,
-            styler: NSAttributedString.defaultStyler(with: readerSettings)
+            styler: NSAttributedString.defaultStyler(
+                with: readerSettings,
+                bodyStyle: .blockquote.modified(by: readerSettings)
+            )
         )
     }()
     
@@ -21,10 +34,12 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
     
     func size(for availableWidth: CGFloat) -> CGSize {
         attributedBlockquote.flatMap {
-            let availableWidth = availableWidth
-            - BlockquoteComponentCell.Constants.dividerWidth
-            - BlockquoteComponentCell.Constants.stackSpacing
-            return $0.sizeFitting(availableWidth: availableWidth)
+            var size = $0.sizeFitting(availableWidth: availableWidth)
+            size.height += BlockquoteComponentCell.Constants.stackSpacing
+            size.height += BlockquoteComponentCell.Constants.dividerHeight
+            size.height += BlockquoteComponentCell.Constants.layoutMargins.bottom
+
+            return size
         } ?? .zero
     }
     
