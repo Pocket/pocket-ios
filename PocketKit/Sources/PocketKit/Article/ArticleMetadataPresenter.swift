@@ -9,7 +9,7 @@ private extension Style {
         .serif
         .title
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
-            paragraph.with(lineHeight: .multiplier(0.825))
+            paragraph.with(lineHeight: .multiplier(0.925))
         }
         .adjustingSize(by: modifier.fontSizeAdjustment)
     }
