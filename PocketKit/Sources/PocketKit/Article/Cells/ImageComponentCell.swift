@@ -74,9 +74,8 @@ extension ImageComponentCell {
         imageView.kf.setImage(
             with: imageSpec.source,
             options: [
-                .scaleFactor(UIScreen.main.scale),
                 .processor(
-                    OnlyResizeDownProcessor(size: imageSpec.size, mode: .aspectFit)
+                    OnlyResizeDownProcessor(referenceSize: imageSpec.size, mode: .aspectFit)
                 )
             ]
         ) { result in
@@ -91,18 +90,19 @@ extension ImageComponentCell {
 }
 
 private class OnlyResizeDownProcessor: ImageProcessor {
-    let identifier = "com.getpocket.image-processor.only-resize-down"
+    let identifier: String
 
     let resizingProcessor: ResizingImageProcessor
 
     init(resizingProcessor: ResizingImageProcessor) {
         self.resizingProcessor = resizingProcessor
+        self.identifier = "com.mozilla.getpocket.\(Self.self)(\(resizingProcessor.identifier))"
     }
 
-    convenience init(size: CGSize, mode: ContentMode) {
+    convenience init(referenceSize: CGSize, mode: ContentMode) {
         self.init(
             resizingProcessor: ResizingImageProcessor(
-                referenceSize: size,
+                referenceSize: referenceSize,
                 mode: mode
             )
         )
@@ -111,10 +111,9 @@ private class OnlyResizeDownProcessor: ImageProcessor {
     func process(item: ImageProcessItem, options: KingfisherParsedOptionsInfo) -> KFCrossPlatformImage? {
         switch item {
         case .image(let image):
-            guard image.size.height > resizingProcessor.referenceSize.height
-                    || image.size.width > resizingProcessor.referenceSize.width else {
-                        return image
-                    }
+            guard image.size.width > resizingProcessor.referenceSize.width else {
+                return image
+            }
 
             return resizingProcessor.process(item: item, options: options)
         case .data:
