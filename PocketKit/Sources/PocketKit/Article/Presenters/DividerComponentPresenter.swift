@@ -10,7 +10,7 @@ class DividerComponentPresenter: ArticleComponentPresenter {
     }
     
     func size(for availableWidth: CGFloat) -> CGSize {
-        CGSize(width: availableWidth, height: 16)
+        CGSize(width: availableWidth, height: 32 + DividerComponentCell.Constants.dividerHeight)
     }
     
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
