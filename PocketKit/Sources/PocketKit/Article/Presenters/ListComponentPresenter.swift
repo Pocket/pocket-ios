@@ -62,13 +62,18 @@ class ListComponentPresenter: ArticleComponentPresenter {
     
     func size(for availableWidth: CGFloat) -> CGSize {
         attributedContent.flatMap {
-            CGSize(width: availableWidth, height: $0.sizeFitting(availableWidth: availableWidth).height)
+            var size = $0.sizeFitting(availableWidth: availableWidth)
+            size.height += MarkdownComponentCell.Constants.List.layoutMargins.top
+            size.height += MarkdownComponentCell.Constants.List.layoutMargins.bottom
+
+            return size
         } ?? .zero
     }
     
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedContent = attributedContent
+        cell.contentView.layoutMargins = MarkdownComponentCell.Constants.List.layoutMargins
         return cell
     }
 }
