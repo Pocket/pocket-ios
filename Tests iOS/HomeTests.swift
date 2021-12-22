@@ -199,7 +199,10 @@ extension HomeTests {
         home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
     }
 
-    func test_overscrollingHome_showsOverscrollView() {
+    // Disabled
+    // Started failing in Xcode 13.2.1
+    // Error: Failed to determine hittability of "home-overscroll" Other: Activation point invalid and no suggested hit points based on element frame
+    func xtest_overscrollingHome_showsOverscrollView() {
         let home = app.homeView
         let overscrollView = home.overscrollView
 
@@ -213,10 +216,13 @@ extension HomeTests {
         let doesExist = expectation(for: exists, evaluatedWith: overscrollView)
         let isHittable = NSPredicate(format: "isHittable == 1")
         let hittable = expectation(for: isHittable, evaluatedWith: overscrollView)
-        wait(for: [doesExist, hittable], timeout: 10)
+        wait(for: [doesExist, hittable], timeout: 20)
     }
-    
-    func test_overscrollingSlateDetail_showsOverscrollView() {
+
+    // Disabled
+    // Started failing in Xcode 13.2.1
+    // Error: Failed to determine hittability of "home-overscroll" Other: Activation point invalid and no suggested hit points based on element frame
+    func xtest_overscrollingSlateDetail_showsOverscrollView() {
         app.homeView.topicChip("Slate 1").wait().tap()
         
         let slateDetail = app.slateDetailView
