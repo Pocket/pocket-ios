@@ -25,7 +25,8 @@ class CodeBlockPresenter: ArticleComponentPresenter {
         codeBlock.flatMap {
             var size = $0.sizeFitting()
             size.height += CodeBlockComponentCell.Constants.contentInset.top
-            + CodeBlockComponentCell.Constants.contentInset.top
+            + CodeBlockComponentCell.Constants.contentInset.bottom
+
             return size
         } ?? .zero
     }
