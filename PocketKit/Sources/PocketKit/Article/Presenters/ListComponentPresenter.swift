@@ -82,14 +82,7 @@ class ListComponentPresenter: ArticleComponentPresenter {
 
 extension BulletedListComponent.Row: ListComponentElement {
     var prefix: String {
-        switch level {
-        case 0:
-            return "• "
-        case 1:
-            return "◦ "
-        default:
-            return "▪\u{fe0e} "
-        }
+        "• "
     }
     
     func prefixStyle(applying settings: ReaderSettings) -> Style {
