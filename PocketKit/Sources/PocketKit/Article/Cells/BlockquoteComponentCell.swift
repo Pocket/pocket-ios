@@ -4,14 +4,14 @@ import UIKit
 class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     
     struct Constants {
-        static let dividerHeight: CGFloat = 5
-        static let stackSpacing: CGFloat = 20
+        static let dividerWidth: CGFloat = 5
+        static let stackSpacing: CGFloat = 12
         static let layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 23, right: 0)
     }
 
     private lazy var divider: UIView = {
         let view = UIView()
-        view.backgroundColor = UIColor(.ui.grey1)
+        view.backgroundColor = UIColor(.ui.grey3)
         return view
     }()
     
@@ -19,14 +19,6 @@ class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, A
         let textView = ArticleComponentTextView()
         textView.actionDelegate = self
         return textView
-    }()
-    
-    private lazy var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .vertical
-        stackView.spacing = Constants.stackSpacing
-        stackView.alignment = .leading
-        return stackView
     }()
     
     var attributedBlockquote: NSAttributedString? {
@@ -43,20 +35,22 @@ class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, A
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.addSubview(stackView)
-        stackView.addArrangedSubview(textView)
-        stackView.addArrangedSubview(divider)
-
+        contentView.addSubview(divider)
+        contentView.addSubview(textView)
         contentView.layoutMargins = Constants.layoutMargins
-        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        divider.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            divider.widthAnchor.constraint(equalToConstant: 50),
-            divider.heightAnchor.constraint(equalToConstant: Constants.dividerHeight),
+            divider.widthAnchor.constraint(equalToConstant: Constants.dividerWidth),
+            divider.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            divider.topAnchor.constraint(equalTo: textView.topAnchor, constant: 8),
+            divider.bottomAnchor.constraint(equalTo: textView.bottomAnchor),
             
-            stackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            textView.leadingAnchor.constraint(equalTo: divider.trailingAnchor, constant: Constants.stackSpacing),
+            textView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            textView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            textView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
         ])
     }
     
