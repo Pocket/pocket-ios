@@ -175,16 +175,16 @@ extension ArticleViewController {
     enum Constants {
         static let metaSectionContentInsets = NSDirectionalEdgeInsets(
             top: 16,
-            leading: 16,
+            leading: 20,
             bottom: 0,
-            trailing: 16
+            trailing: 20
         )
 
         static let contentSectionContentInsets = NSDirectionalEdgeInsets(
             top: 0,
-            leading: 16,
+            leading: 20,
             bottom: 16,
-            trailing: 16
+            trailing: 20
         )
     }
 
