@@ -21,7 +21,7 @@ class ArticleViewController: UIViewController {
                 )
             }
             
-            presenters = item?.components?.map { presenter(for: $0) }
+            presenters = item?.components?.filter { !$0.isEmpty }.map { presenter(for: $0) }
 
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
