@@ -156,7 +156,7 @@ class Tests_iOS: XCTestCase {
 
         let expectedContent = [
             "Item 1",
-            "by Jacob and David",
+            "Jacob and David",
             "WIRED",
             "January 1, 2021",
             
@@ -170,9 +170,9 @@ class Tests_iOS: XCTestCase {
             "<some></some><code></code>",
             
             "• Pharetra Dapibus Ultricies",
-            "◦ netus et malesuada",
-            "▪\u{fe0e} quis commodo odio",
-            "▪\u{fe0e} tincidunt ornare massa",
+            "• netus et malesuada",
+            "• quis commodo odio",
+            "• tincidunt ornare massa",
             
             "1. Amet Commodo Fringilla",
             "2. nunc sed augue",
