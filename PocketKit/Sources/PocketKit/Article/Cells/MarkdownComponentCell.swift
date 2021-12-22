@@ -30,6 +30,8 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
             textView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             textView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             textView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
+            // set lower priority to avoid conflict if content turns out to be blank
+                .with(priority: .defaultLow)
         ])
     }
 

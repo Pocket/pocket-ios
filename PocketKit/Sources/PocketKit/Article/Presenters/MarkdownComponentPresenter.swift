@@ -21,12 +21,14 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
     }
     
     func size(for availableWidth: CGFloat) -> CGSize {
-        content.flatMap {
-            let height = $0.sizeFitting(availableWidth: availableWidth).height
-            + MarkdownComponentCell.Constants.layoutMargins.bottom
+        guard let content = content, !content.string.isEmpty else {
+            return .zero
+        }
 
-            return CGSize(width: availableWidth, height: height)
-        } ?? .zero
+        var size = content.sizeFitting(availableWidth: availableWidth)
+        size.height += MarkdownComponentCell.Constants.layoutMargins.bottom
+
+        return size
     }
     
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
