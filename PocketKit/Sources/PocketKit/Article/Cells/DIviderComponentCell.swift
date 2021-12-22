@@ -2,8 +2,8 @@ import UIKit
 
 
 class DividerComponentCell: UICollectionViewCell {
-    private struct Constants {
-        static let dividerHeight: CGFloat = 1
+    enum Constants {
+        static let dividerHeight: CGFloat = 2
     }
     
     private lazy var dividerView: UIView = {
@@ -22,7 +22,7 @@ class DividerComponentCell: UICollectionViewCell {
             dividerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             dividerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             dividerView.widthAnchor.constraint(equalTo: contentView.widthAnchor),
-            dividerView.heightAnchor.constraint(equalToConstant: 1)
+            dividerView.heightAnchor.constraint(equalToConstant: Constants.dividerHeight)
         ])
     }
     
