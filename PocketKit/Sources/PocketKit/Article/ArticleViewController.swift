@@ -251,9 +251,9 @@ extension ArticleViewController {
     func presenter(for component: ArticleComponent) -> ArticleComponentPresenter {
         switch component {
         case .text(let component):
-            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings)
+            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings, componentType: .body)
         case .heading(let component):
-            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings)
+            return MarkdownComponentPresenter(component: component, readerSettings: readerSettings, componentType: .heading)
         case .image(let component):
             return ImageComponentPresenter(component: component, readerSettings: readerSettings) {
                 self.collectionView.collectionViewLayout.invalidateLayout()

@@ -3,7 +3,17 @@ import UIKit
 
 class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     enum Constants {
-        static let layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
+        enum Heading {
+            static let layoutMargins = UIEdgeInsets(top: 8, left: 0, bottom: 2, right: 0)
+        }
+
+        enum Body {
+            static let layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
+        }
+
+        enum List {
+            static let layoutMargins = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
+        }
     }
 
     lazy var textView: ArticleComponentTextView = {
@@ -22,7 +32,6 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
         super.init(frame: frame)
 
         contentView.addSubview(textView)
-        contentView.layoutMargins = Constants.layoutMargins
 
         textView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
