@@ -4,7 +4,7 @@ import Kingfisher
 
 class ImageComponentCell: UICollectionViewCell {
     enum Constants {
-        static let captionSpacing: CGFloat = 8
+        static let captionSpacing: CGFloat = 4
         static let layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 24, right: 0)
     }
 
@@ -28,7 +28,7 @@ class ImageComponentCell: UICollectionViewCell {
         return imageView
     }()
 
-    private let captionTextView: UITextView = ArticleComponentTextView()
+    private let captionTextView = ArticleComponentTextView()
 
     private let stack: UIStackView = {
         let stack = UIStackView()

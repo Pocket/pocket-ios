@@ -14,7 +14,7 @@ private extension Style {
         .with(color: .ui.grey3)
 
     static let imageCredit: Self = .body.sansSerif
-        .with(size: .p4)
+        .with(size: .p5)
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
             paragraph.with(lineHeight: .multiplier(1.12))
         }
@@ -82,8 +82,8 @@ class ImageComponentPresenter: ArticleComponentPresenter {
         var height = lastImageSize?.height ?? availableWidth * 9 / 16
         
         if let caption = caption {
-            height += caption.sizeFitting(availableWidth: availableWidth).height
             height += ImageComponentCell.Constants.captionSpacing
+            height += caption.sizeFitting(availableWidth: availableWidth).height
         }
 
         height += ImageComponentCell.Constants.layoutMargins.bottom
