@@ -24,7 +24,7 @@ public extension FontDescriptor.Size {
     static let p4: Self = 14
     static let p5: Self = 12
     static let body: Self = 20
-    static let monospace: Self = 17
+    static let monospace: Self = 14
 }
 
 public extension Style {

@@ -3,11 +3,13 @@ import UIKit
 
 class CodeBlockComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     struct Constants {
-        static let contentInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+        static let contentInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
     
     private var scrollView: UIScrollView = {
         let view = UIScrollView()
+        view.layer.borderWidth = 1
+        view.layer.borderColor = UIColor(.ui.grey5).cgColor
         view.backgroundColor = UIColor(.ui.grey6)
         view.contentInset = Constants.contentInset
         return view
