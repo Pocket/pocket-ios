@@ -3,8 +3,8 @@ import UIKit
 
 class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     enum Constants {
-        static let stackSpacing: CGFloat = 10
-        static let layoutMargins: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 24, right: 0)
+        static let stackSpacing: CGFloat = 14
+        static let layoutMargins: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 14, right: 0)
     }
 
     struct Model {
