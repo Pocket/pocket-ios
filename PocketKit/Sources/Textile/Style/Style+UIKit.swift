@@ -108,7 +108,7 @@ extension NSLineBreakMode {
 }
 
 extension NSParagraphStyle {
-    static func from(_ paragraphStyle: ParagraphStyle, fontDescriptor: FontDescriptor) -> NSParagraphStyle {
+    static func from(_ paragraphStyle: ParagraphStyle) -> NSParagraphStyle {
         let style = NSMutableParagraphStyle()
         style.alignment = NSTextAlignment(paragraphStyle.alignment)
 
@@ -125,9 +125,7 @@ extension NSParagraphStyle {
             style.minimumLineHeight = lineHeight
             style.maximumLineHeight = lineHeight
         case .multiplier(let multiplier):
-            let lineHeight = CGFloat(fontDescriptor.size.size) * multiplier
-            style.minimumLineHeight = lineHeight
-            style.maximumLineHeight = lineHeight
+            style.lineHeightMultiple = multiplier
         case .none:
             break
         }
@@ -141,7 +139,7 @@ public extension Style {
         var attributes: [NSAttributedString.Key: Any] = [
             .style: self,
             .font: UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor)),
-            .paragraphStyle: NSParagraphStyle.from(paragraph, fontDescriptor: fontDescriptor),
+            .paragraphStyle: NSParagraphStyle.from(paragraph),
             .foregroundColor: UIColor(colorAsset),
         ]
 
