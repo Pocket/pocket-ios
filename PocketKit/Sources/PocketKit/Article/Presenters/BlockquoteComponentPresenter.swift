@@ -5,9 +5,9 @@ import Textile
 private extension Style {
     static let blockquote: Self = .body.serif
         .with(slant: .italic)
-        .with(size: 28)
+        .with(size: 23)
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
-            paragraph.with(lineHeight: .multiplier(0.99))
+            paragraph.with(lineHeight: .multiplier(1.1))
         }
 }
 
@@ -34,9 +34,12 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
     
     func size(for availableWidth: CGFloat) -> CGSize {
         attributedBlockquote.flatMap {
-            var size = $0.sizeFitting(availableWidth: availableWidth)
-            size.height += BlockquoteComponentCell.Constants.stackSpacing
-            size.height += BlockquoteComponentCell.Constants.dividerHeight
+            var size = $0.sizeFitting(
+                availableWidth: availableWidth
+                - BlockquoteComponentCell.Constants.dividerWidth
+                - BlockquoteComponentCell.Constants.stackSpacing
+            )
+
             size.height += BlockquoteComponentCell.Constants.layoutMargins.bottom
 
             return size
