@@ -21,10 +21,6 @@ class ImageComponentCell: UICollectionViewCell {
     let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
-        imageView.layer.cornerRadius = 4
-        imageView.clipsToBounds = true
-        imageView.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        imageView.setContentCompressionResistancePriority(.required, for: .vertical)
         return imageView
     }()
 
@@ -75,12 +71,24 @@ extension ImageComponentCell {
             with: imageSpec.source,
             options: [
                 .processor(
-                    OnlyResizeDownProcessor(referenceSize: imageSpec.size, mode: .aspectFit)
+                    OnlyResizeDownProcessor(
+                        referenceSize: imageSpec.size,
+                        mode: .aspectFit
+                    )
+                    .append(another: RoundCornerImageProcessor(radius: .point(4), backgroundColor: UIColor(.clear)))
                 )
             ]
-        ) { result in
+        ) { [weak self] result in
             switch result {
             case .success(let result):
+
+                if let idealWidth = model.image?.size.width,
+                   result.image.size.width >= idealWidth {
+                    self?.imageView.backgroundColor = UIColor(.clear)
+                } else {
+                    self?.imageView.backgroundColor = UIColor(.ui.grey7)
+                }
+
                 imageLoaded?(result.image)
             case .failure:
                 break
