@@ -89,6 +89,11 @@ class ArticleViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
     }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        collectionView.reloadData()
+    }
 }
 
 extension ArticleViewController: UICollectionViewDelegate {
