@@ -3,7 +3,7 @@ import UIKit
 
 class DividerComponentCell: UICollectionViewCell {
     enum Constants {
-        static let dividerHeight: CGFloat = 2
+        static let dividerHeight: CGFloat = 3
     }
     
     private lazy var dividerView: UIView = {
