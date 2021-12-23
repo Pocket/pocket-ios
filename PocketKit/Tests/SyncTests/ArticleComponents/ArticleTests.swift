@@ -159,7 +159,7 @@ class ArticleComponentTests: XCTestCase {
         let json = """
         {
             "__typename": "MarticleHeading",
-            "content": "Purus Vulputate",
+            "content": "# Purus Vulputate",
             "level": 1
         }
         """
