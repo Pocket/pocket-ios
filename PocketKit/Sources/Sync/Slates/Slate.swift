@@ -25,6 +25,13 @@ public struct Slate: Identifiable, Equatable, Hashable {
         public let url: URL?
     }
 
+    public struct Image: Equatable, Hashable {
+        public let height: Int?
+        public let width: Int?
+        public let src: URL?
+        public let imageID: Int?
+    }
+
     public struct Item: Equatable, Hashable {
         public let id: String
         public let givenURL: URL?
@@ -39,6 +46,7 @@ public struct Slate: Identifiable, Equatable, Hashable {
         public let domainMetadata: DomainMetadata?
         public let authors: [Author]?
         public let datePublished: Date?
+        public let images: [Image]?
     }
 }
 

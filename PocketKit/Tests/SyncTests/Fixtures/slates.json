@@ -92,7 +92,15 @@
                                         "content": "Pellentesque Ridiculus Porta"
                                     }
                                 ],
-                                "images": [],
+                                "images": [
+                                    {
+                                        "__typename": "[some-type-name]",
+                                        "height": 0,
+                                        "width": 0,
+                                        "src": "http://example.com/slate-2-rec-1/image-1.png",
+                                        "imageId": 1
+                                    }
+                                ],
                                 "excerpt": "Cursus Aenean Elit",
                                 "datePublished": "2021-01-01 12:01:01",
                                 "domain": "slate-2-rec-1.example.com",

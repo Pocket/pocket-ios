@@ -79,7 +79,10 @@ struct RecommendationPresenter {
     }
 
     private var cachedTopImageURL: URL? {
-        return imageCacheURL(for: recommendation.item.topImageURL)
+        let topImageURL = recommendation.item.topImageURL
+        ?? recommendation.item.images?.first { $0.src != nil }?.src
+
+        return imageCacheURL(for: topImageURL)
     }
 
     private var detail: String {

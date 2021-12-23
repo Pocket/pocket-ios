@@ -73,6 +73,12 @@ class APISlateServiceTests: XCTestCase {
             XCTAssertEqual(item.domain, "slate-2-rec-1.example.com")
             XCTAssertEqual(item.datePublished, Date(timeIntervalSinceReferenceDate: 631195261))
 
+            let image = item.images?[0]
+            XCTAssertEqual(image?.height, 0)
+            XCTAssertEqual(image?.width, 0)
+            XCTAssertEqual(image?.src, URL(string: "http://example.com/slate-2-rec-1/image-1.png")!)
+            XCTAssertEqual(image?.imageID, 1)
+
             let domain = item.domainMetadata
             XCTAssertNotNil(domain)
             XCTAssertEqual(domain?.name, "Lifehacker")
