@@ -11,7 +11,7 @@ private extension Style {
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
             paragraph.with(lineHeight: .multiplier(0.925))
         }
-        .adjustingSize(by: modifier.fontSizeAdjustment)
+        .modified(by: modifier)
     }
 
     static func byline(modifier: StylerModifier) -> Style {
