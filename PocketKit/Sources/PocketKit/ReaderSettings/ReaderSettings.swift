@@ -11,7 +11,7 @@ class ReaderSettings: StylerModifier, ObservableObject {
     var fontSizeAdjustment: Int = 0
     
     @AppStorage("readerFontFamily")
-    var fontFamily: FontDescriptor.Family = .graphik
+    var fontFamily: FontDescriptor.Family = .blanco
 }
 
 extension FontDescriptor.Family: RawRepresentable {
