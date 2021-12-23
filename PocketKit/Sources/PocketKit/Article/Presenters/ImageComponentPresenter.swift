@@ -81,11 +81,12 @@ class ImageComponentPresenter: ArticleComponentPresenter {
         
         var height = lastImageSize?.height ?? availableWidth * 9 / 16
         
-        if let caption = caption {
+        if let caption = caption, !caption.string.isEmpty {
             height += ImageComponentCell.Constants.captionSpacing
             height += caption.sizeFitting(availableWidth: availableWidth).height
         }
 
+        height += ImageComponentCell.Constants.layoutMargins.top
         height += ImageComponentCell.Constants.layoutMargins.bottom
         
         return CGSize(width: availableWidth, height: height)

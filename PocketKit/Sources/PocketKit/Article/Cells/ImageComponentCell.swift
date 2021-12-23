@@ -63,7 +63,7 @@ class ImageComponentCell: UICollectionViewCell {
 extension ImageComponentCell {
     func configure(model: Model, imageLoaded: ((UIImage) -> Void)? = nil) {
         captionTextView.attributedText = model.caption
-        captionTextView.isHidden = model.caption == nil
+        captionTextView.isHidden = model.caption == nil || model.caption?.string.isEmpty == true
 
         imageView.image = nil
         guard let imageSpec = model.image else {
