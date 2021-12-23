@@ -202,7 +202,8 @@ class SourceTests: XCTestCase {
                         url: URL(string: "http://example.com/authors/eb-white")
                     )
                 ],
-                datePublished: Date()
+                datePublished: Date(),
+                images: []
             )
         )
 
