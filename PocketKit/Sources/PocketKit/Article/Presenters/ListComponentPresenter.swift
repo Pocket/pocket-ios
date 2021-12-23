@@ -17,8 +17,39 @@ protocol ListComponentElement {
 class ListComponentPresenter: ArticleComponentPresenter {
     private let component: ListComponent
     private let readerSettings: ReaderSettings
+
+    private var cachedAttributedContent: NSAttributedString?
+    private var attributedContent: NSAttributedString? {
+        cachedAttributedContent ?? loadAttributedContent()
+    }
+
+    init(component: ListComponent, readerSettings: ReaderSettings) {
+        self.component = component
+        self.readerSettings = readerSettings
+    }
+
+    func size(for availableWidth: CGFloat) -> CGSize {
+        attributedContent.flatMap {
+            var size = $0.sizeFitting(availableWidth: availableWidth)
+            size.height += MarkdownComponentCell.Constants.List.layoutMargins.top
+            size.height += MarkdownComponentCell.Constants.List.layoutMargins.bottom
+
+            return size
+        } ?? .zero
+    }
     
-    private lazy var attributedContent: NSAttributedString? = {
+    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
+        let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
+        cell.attributedContent = attributedContent
+        cell.contentView.layoutMargins = MarkdownComponentCell.Constants.List.layoutMargins
+        return cell
+    }
+
+    func clearCache() {
+        cachedAttributedContent = nil
+    }
+
+    private func loadAttributedContent() -> NSAttributedString? {
         let attributedContent = NSMutableAttributedString()
         for (index, element) in component.elements.enumerated() {
             // Clamp a list element's depth to 0...3 (i.e max-depth of 4) as to allow for
@@ -53,29 +84,10 @@ class ListComponentPresenter: ArticleComponentPresenter {
             }
             attributedContent.append(content)
         }
-        return attributedContent
-    }()
-    
-    init(component: ListComponent, readerSettings: ReaderSettings) {
-        self.component = component
-        self.readerSettings = readerSettings
-    }
-    
-    func size(for availableWidth: CGFloat) -> CGSize {
-        attributedContent.flatMap {
-            var size = $0.sizeFitting(availableWidth: availableWidth)
-            size.height += MarkdownComponentCell.Constants.List.layoutMargins.top
-            size.height += MarkdownComponentCell.Constants.List.layoutMargins.bottom
 
-            return size
-        } ?? .zero
-    }
-    
-    func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
-        let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
-        cell.attributedContent = attributedContent
-        cell.contentView.layoutMargins = MarkdownComponentCell.Constants.List.layoutMargins
-        return cell
+        cachedAttributedContent = attributedContent
+
+        return cachedAttributedContent
     }
 }
 

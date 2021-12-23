@@ -11,4 +11,8 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
     func size(for availableWidth: CGFloat) -> CGSize {
         CGSize(width: availableWidth, height: 86)
     }
+
+    func clearCache() {
+        // no op
+    }
 }

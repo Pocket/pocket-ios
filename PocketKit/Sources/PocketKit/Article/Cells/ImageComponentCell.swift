@@ -33,7 +33,7 @@ class ImageComponentCell: UICollectionViewCell {
 
         return stack
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
 

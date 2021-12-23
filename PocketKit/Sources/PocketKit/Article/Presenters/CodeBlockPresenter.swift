@@ -11,11 +11,12 @@ class CodeBlockPresenter: ArticleComponentPresenter {
     private let component: CodeBlockComponent
     
     private let readerSettings: ReaderSettings
-    
-    private lazy var codeBlock: NSAttributedString? = {
-        NSAttributedString(string: component.text, style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment))
-    }()
-    
+
+    private var cachedCodeBlock: NSAttributedString?
+    private var codeBlock: NSAttributedString? {
+        cachedCodeBlock ?? loadCodeBlock()
+    }
+
     init(component: CodeBlockComponent, readerSettings: ReaderSettings) {
         self.component = component
         self.readerSettings = readerSettings
@@ -35,5 +36,18 @@ class CodeBlockPresenter: ArticleComponentPresenter {
         let cell: CodeBlockComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.textView.attributedText = codeBlock
         return cell
+    }
+
+    func clearCache() {
+        cachedCodeBlock = nil
+    }
+
+    private func loadCodeBlock() -> NSAttributedString? {
+        cachedCodeBlock = NSAttributedString(
+            string: component.text,
+            style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment)
+        )
+
+        return cachedCodeBlock
     }
 }

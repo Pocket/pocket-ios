@@ -33,25 +33,17 @@ class ImageComponentPresenter: ArticleComponentPresenter {
     private var lastImageSize: CGSize?
     
     private var lastAvailableWidth: CGFloat = 0
-    
-    private lazy var attributedCaption: NSAttributedString? = {
-        component.caption.flatMap {
-            NSAttributedString(
-                string: $0,
-                style: .imageCaption.adjustingSize(by: readerSettings.fontSizeAdjustment)
-            )
-        }
-    }()
-    
-    private lazy var attributedCredit: NSAttributedString? = {
-        component.credit.flatMap {
-            NSAttributedString(
-                string: $0,
-                style: .imageCredit.adjustingSize(by: readerSettings.fontSizeAdjustment)
-            )
-        }
-    }()
-    
+
+    private var cachedAttributedCaption: NSAttributedString?
+    private var attributedCaption: NSAttributedString? {
+        cachedAttributedCaption ?? loadAttributedCaption()
+    }
+
+    private var cachedAttributedCredit: NSAttributedString?
+    private var attributedCredit: NSAttributedString? {
+        cachedAttributedCredit ?? loadAttributedCredit()
+    }
+
     init(component: ImageComponent, readerSettings: ReaderSettings, onUpdate: @escaping () -> Void) {
         self.component = component
         self.readerSettings = readerSettings
@@ -114,5 +106,33 @@ class ImageComponentPresenter: ArticleComponentPresenter {
         }
 
         return cell
+    }
+
+    func clearCache() {
+        cachedAttributedCredit = nil
+        cachedAttributedCaption = nil
+        lastImageSize = nil
+    }
+
+    private func loadAttributedCredit() -> NSAttributedString? {
+        cachedAttributedCredit = component.credit.flatMap {
+            NSAttributedString(
+                string: $0,
+                style: .imageCredit.adjustingSize(by: readerSettings.fontSizeAdjustment)
+            )
+        }
+
+        return cachedAttributedCredit
+    }
+
+    private func loadAttributedCaption() -> NSAttributedString? {
+        cachedAttributedCaption = component.caption.flatMap {
+            NSAttributedString(
+                string: $0,
+                style: .imageCaption.adjustingSize(by: readerSettings.fontSizeAdjustment)
+            )
+        }
+
+        return cachedAttributedCaption
     }
 }

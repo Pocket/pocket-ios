@@ -16,17 +16,12 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
     private let component: BlockquoteComponent
     
     private let readerSettings: ReaderSettings
-    
-    private lazy var attributedBlockquote: NSAttributedString? = {
-        NSAttributedString.styled(
-            markdown: component.content,
-            styler: NSAttributedString.defaultStyler(
-                with: readerSettings,
-                bodyStyle: .blockquote.modified(by: readerSettings)
-            )
-        )
-    }()
-    
+
+    private var cachedAttributedBlockquote: NSAttributedString?
+    private var attributedBlockquote: NSAttributedString? {
+        cachedAttributedBlockquote ?? loadAttributedBlockquote()
+    }
+
     init(component: BlockquoteComponent, readerSettings: ReaderSettings) {
         self.component = component
         self.readerSettings = readerSettings
@@ -50,5 +45,21 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
         let cell: BlockquoteComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedBlockquote = attributedBlockquote
         return cell
+    }
+
+    func clearCache() {
+        cachedAttributedBlockquote = nil
+    }
+
+    private func loadAttributedBlockquote() -> NSAttributedString? {
+        cachedAttributedBlockquote = NSAttributedString.styled(
+            markdown: component.content,
+            styler: NSAttributedString.defaultStyler(
+                with: readerSettings,
+                bodyStyle: .blockquote.modified(by: readerSettings)
+            )
+        )
+
+        return cachedAttributedBlockquote
     }
 }
