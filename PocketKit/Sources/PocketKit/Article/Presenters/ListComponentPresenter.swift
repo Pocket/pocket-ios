@@ -40,6 +40,7 @@ class ListComponentPresenter: ArticleComponentPresenter {
             let style = NSMutableParagraphStyle()
             style.firstLineHeadIndent = depth * 16
             style.headIndent = depth * 16 + prefix.sizeFitting().width
+            style.paragraphSpacing = 8
 
             content.addAttribute(
                 .paragraphStyle,
