@@ -17,4 +17,8 @@ class DividerComponentPresenter: ArticleComponentPresenter {
         let cell: DividerComponentCell = collectionView.dequeueCell(for: indexPath)
         return cell
     }
+
+    func clearCache() {
+        // no op
+    }
 }

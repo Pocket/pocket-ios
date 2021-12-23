@@ -24,13 +24,11 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
 
     private let componentType: ComponentType
 
-    private lazy var content: NSAttributedString? = {
-        NSAttributedString.styled(
-          markdown: component.content,
-          styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
-        )
-    }()
-    
+    private var cachedContent: NSAttributedString?
+    private var content: NSAttributedString? {
+        cachedContent ?? loadContent()
+    }
+
     init(
         component: MarkdownComponent,
         readerSettings: ReaderSettings,
@@ -59,5 +57,18 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
         cell.attributedContent = content
 
         return cell
+    }
+
+    func clearCache() {
+        cachedContent = nil
+    }
+
+    private func loadContent() -> NSAttributedString? {
+        cachedContent = NSAttributedString.styled(
+            markdown: component.content,
+            styler: NSMutableAttributedString.defaultStyler(with: readerSettings)
+        )
+
+        return cachedContent
     }
 }

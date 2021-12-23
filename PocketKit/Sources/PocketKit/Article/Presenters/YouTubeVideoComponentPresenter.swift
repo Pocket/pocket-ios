@@ -48,4 +48,8 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
         
         return cell
     }
+
+    func clearCache() {
+        // no op
+    }
 }

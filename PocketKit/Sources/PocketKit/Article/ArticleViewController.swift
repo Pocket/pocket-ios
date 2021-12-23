@@ -75,9 +75,9 @@ class ArticleViewController: UIViewController {
         collectionView.register(cellClass: YouTubeVideoComponentCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
-        self.readerSettings.objectWillChange.sink { _ in
+        self.readerSettings.objectWillChange.sink { [weak self] _ in
             DispatchQueue.main.async {
-                self.collectionView.reloadData()
+                self?.reload()
             }
         }.store(in: &subscriptions)
     }
@@ -92,6 +92,11 @@ class ArticleViewController: UIViewController {
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
+        reload()
+    }
+
+    private func reload() {
+        presenters?.forEach { $0.clearCache() }
         collectionView.reloadData()
     }
 }
