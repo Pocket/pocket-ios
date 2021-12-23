@@ -4,9 +4,9 @@ import UIKit
 class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     
     struct Constants {
-        static let dividerWidth: CGFloat = 5
+        static let dividerWidth: CGFloat = 3
         static let stackSpacing: CGFloat = 12
-        static let layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 23, right: 0)
+        static let layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 12, right: 0)
     }
 
     private lazy var divider: UIView = {
