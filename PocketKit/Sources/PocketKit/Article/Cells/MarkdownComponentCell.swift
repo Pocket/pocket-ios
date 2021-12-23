@@ -4,11 +4,11 @@ import UIKit
 class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     enum Constants {
         enum Heading {
-            static let layoutMargins = UIEdgeInsets(top: 8, left: 0, bottom: 2, right: 0)
+            static let layoutMargins = UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0)
         }
 
         enum Body {
-            static let layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 8, right: 0)
+            static let layoutMargins = UIEdgeInsets(top: 6, left: 0, bottom: 6, right: 0)
         }
 
         enum List {
