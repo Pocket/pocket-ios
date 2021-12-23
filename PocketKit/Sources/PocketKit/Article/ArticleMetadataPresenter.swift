@@ -70,7 +70,7 @@ struct ArticleMetadataPresenter {
                 byline.append(NSAttributedString(string: " • ", style: style))
             }
 
-            byline.append(NSAttributedString(string: domain, style: .byline(modifier: readerSettings)))
+            byline.append(NSAttributedString(string: domain, style: style))
         }
 
         return byline
