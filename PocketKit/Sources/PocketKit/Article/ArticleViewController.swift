@@ -278,13 +278,17 @@ extension ArticleViewController {
         case .numberedList(let component):
             return ListComponentPresenter(component: component, readerSettings: readerSettings)
         case .table:
-            return UnsupportedComponentPresenter()
+            return UnsupportedComponentPresenter(mainViewModel: viewModel, readable: item)
         case .blockquote(let component):
             return BlockquoteComponentPresenter(component: component, readerSettings: readerSettings)
         case .video(let component):
             switch component.type {
             case .youtube:
-                return YouTubeVideoComponentPresenter(component: component)
+                return YouTubeVideoComponentPresenter(
+                    component: component,
+                    mainViewModel: viewModel,
+                    readable: item
+                )
             case .vimeoLink, .vimeoIframe, .vimeoMoogaloop:
                 return VimeoComponentPresenter(
                     oEmbedService: OEmbedService(session: URLSession.shared),
@@ -295,10 +299,10 @@ extension ArticleViewController {
                     self?.layout.invalidateLayout()
                 }
             default:
-                return UnsupportedComponentPresenter()
+                return UnsupportedComponentPresenter(mainViewModel: viewModel, readable: item)
             }
         default:
-            return UnsupportedComponentPresenter()
+            return UnsupportedComponentPresenter(mainViewModel: viewModel, readable: item)
         }
     }
 }
