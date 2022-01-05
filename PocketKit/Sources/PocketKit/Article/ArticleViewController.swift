@@ -73,6 +73,7 @@ class ArticleViewController: UIViewController {
         collectionView.register(cellClass: UnsupportedComponentCell.self)
         collectionView.register(cellClass: BlockquoteComponentCell.self)
         collectionView.register(cellClass: YouTubeVideoComponentCell.self)
+        collectionView.register(cellClass: VimeoComponentCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
         self.readerSettings.objectWillChange.sink { [weak self] _ in
@@ -265,8 +266,8 @@ extension ArticleViewController {
         case .heading(let component):
             return MarkdownComponentPresenter(component: component, readerSettings: readerSettings, componentType: .heading)
         case .image(let component):
-            return ImageComponentPresenter(component: component, readerSettings: readerSettings) {
-                self.collectionView.collectionViewLayout.invalidateLayout()
+            return ImageComponentPresenter(component: component, readerSettings: readerSettings) { [weak self] in
+                self?.layout.invalidateLayout()
             }
         case .divider(let component):
             return DividerComponentPresenter(component: component)
@@ -284,6 +285,15 @@ extension ArticleViewController {
             switch component.type {
             case .youtube:
                 return YouTubeVideoComponentPresenter(component: component)
+            case .vimeoLink, .vimeoIframe, .vimeoMoogaloop:
+                return VimeoComponentPresenter(
+                    oEmbedService: OEmbedService(session: URLSession.shared),
+                    readable: item,
+                    component: component,
+                    mainViewModel: viewModel
+                ) { [weak self] in
+                    self?.layout.invalidateLayout()
+                }
             default:
                 return UnsupportedComponentPresenter()
             }
