@@ -7,11 +7,19 @@ import UIKit
 
 class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     private let component: VideoComponent
+    private let mainViewModel: MainViewModel
+    private let readable: Readable?
     
     private var cancellable: AnyCancellable? = nil
     
-    init(component: VideoComponent) {
+    init(
+        component: VideoComponent,
+        mainViewModel: MainViewModel,
+        readable: Readable?
+    ) {
         self.component = component
+        self.mainViewModel = mainViewModel
+        self.readable = readable
     }
     
     func size(for availableWidth: CGFloat) -> CGSize {
@@ -20,6 +28,10 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: YouTubeVideoComponentCell = collectionView.dequeueCell(for: indexPath)
+
+        cell.onError = { [weak self] in
+            self?.handleShowInWebReaderButtonTap()
+        }
         
         cancellable =  cell.player
             .statePublisher
@@ -45,11 +57,15 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
         
         cell.mode = .loading
         cell.cue(vid: vid)
-        
+
         return cell
     }
 
     func clearCache() {
         // no op
+    }
+
+    private func handleShowInWebReaderButtonTap() {
+        mainViewModel.presentedWebReaderURL = readable?.readerURL
     }
 }
