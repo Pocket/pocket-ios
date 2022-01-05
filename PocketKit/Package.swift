@@ -29,7 +29,11 @@ let package = Package(
             dependencies: ["Sync", "Textile", "Analytics", "Lottie", "YouTubePlayerKit"],
             resources: [.copy("Assets")]
         ),
-        .testTarget(name: "PocketKitTests", dependencies: ["PocketKit"]),
+        .testTarget(
+            name: "PocketKitTests",
+            dependencies: ["PocketKit"],
+            resources: [.copy("Fixtures")]
+        ),
 
         .target(
             name: "Textile",
@@ -57,8 +61,9 @@ let package = Package(
             name: "Analytics",
             dependencies: ["SnowplowTracker"]
         ),
-        .testTarget(name: "AnalyticsTests",
-                    dependencies: ["Analytics"]
+        .testTarget(
+            name: "AnalyticsTests",
+            dependencies: ["Analytics"]
         ),
 
         .executableTarget(
