@@ -180,8 +180,8 @@ extension HomeViewController {
         switch item {
         case .topicChip(let slate):
             let cell: TopicChipCell = collectionView.dequeueCell(for: indexPath)
-            cell.accessibilityIdentifier = "topic-chip"
-            cell.titleLabel.attributedText = TopicChipPresenter(slate: slate).attributedTitle
+            cell.configure(model: TopicChipPresenter(title: slate.name))
+
             return cell
         case .recommendation(let recommendation):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)

@@ -48,6 +48,7 @@ class Space {
     }
 
     func save() throws {
+        try context.obtainPermanentIDs(for: Array(context.insertedObjects))
         try context.save()
     }
     
@@ -67,5 +68,9 @@ class Space {
             sectionNameKeyPath: nil,
             cacheName: nil
         )
+    }
+
+    func object<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
+        context.object(with: id) as? T
     }
 }

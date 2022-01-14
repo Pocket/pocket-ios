@@ -27,7 +27,8 @@
 		1613B2B12755696B0014F301 /* SignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1613B2B02755696B0014F301 /* SignOutTests.swift */; };
 		1613B2B3275571940014F301 /* SettingsViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1613B2B2275571940014F301 /* SettingsViewElement.swift */; };
 		1648D5A727024C6400F67C4B /* SlateDetailElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1648D5A627024C6400F67C4B /* SlateDetailElement.swift */; };
-		166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* Tests_iOS.swift */; };
+		164FB66E278F7ECC002959D6 /* MyListFiltersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164FB66D278F7ECC002959D6 /* MyListFiltersTests.swift */; };
+		166A81C52637406C0015AA1D /* MyListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* MyListTests.swift */; };
 		166BACF62656E34B00E401F0 /* Fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 166BACF52656E34B00E401F0 /* Fixtures */; };
 		166BACF82656E3C600E401F0 /* Fixture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BACF72656E3C600E401F0 /* Fixture.swift */; };
 		166BAD092656E76B00E401F0 /* ItemRowElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD042656E76B00E401F0 /* ItemRowElement.swift */; };
@@ -88,10 +89,11 @@
 		1613B2B2275571940014F301 /* SettingsViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewElement.swift; sourceTree = "<group>"; };
 		1624B85A268508180099B6EF /* PocketKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PocketKit; sourceTree = "<group>"; };
 		1648D5A627024C6400F67C4B /* SlateDetailElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlateDetailElement.swift; sourceTree = "<group>"; };
+		164FB66D278F7ECC002959D6 /* MyListFiltersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListFiltersTests.swift; sourceTree = "<group>"; };
 		166A81B02637406C0015AA1D /* Pocket.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pocket.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		166A81B32637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		166A81C02637406C0015AA1D /* Tests iOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests iOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		166A81C42637406C0015AA1D /* Tests_iOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_iOS.swift; sourceTree = "<group>"; };
+		166A81C42637406C0015AA1D /* MyListTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListTests.swift; sourceTree = "<group>"; };
 		166A81C62637406C0015AA1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		166BACF52656E34B00E401F0 /* Fixtures */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Fixtures; sourceTree = "<group>"; };
 		166BACF72656E3C600E401F0 /* Fixture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Fixture.swift; sourceTree = "<group>"; };
@@ -142,6 +144,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		164FB66C278F7E52002959D6 /* MyList */ = {
+			isa = PBXGroup;
+			children = (
+				166A81C42637406C0015AA1D /* MyListTests.swift */,
+				164FB66D278F7ECC002959D6 /* MyListFiltersTests.swift */,
+			);
+			path = MyList;
+			sourceTree = "<group>";
+		};
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
@@ -168,10 +179,10 @@
 		166A81C32637406C0015AA1D /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
+				164FB66C278F7E52002959D6 /* MyList */,
 				166A81C62637406C0015AA1D /* Info.plist */,
 				166BACF92656E6A500E401F0 /* Support */,
 				166BACF52656E34B00E401F0 /* Fixtures */,
-				166A81C42637406C0015AA1D /* Tests_iOS.swift */,
 				1674057626CAC35F0061434E /* DeleteAnItemTests.swift */,
 				16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */,
 				168292C726CC64C300830140 /* ShareAnItemTests.swift */,
@@ -386,12 +397,13 @@
 				166BAD0C2656E76B00E401F0 /* UserListElement.swift in Sources */,
 				F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */,
 				166BAD0D2656E76B00E401F0 /* PocketAppElement.swift in Sources */,
+				164FB66E278F7ECC002959D6 /* MyListFiltersTests.swift in Sources */,
 				F2843C1E2714D18200E03ED5 /* ReportARecommendationTests.swift in Sources */,
 				1648D5A727024C6400F67C4B /* SlateDetailElement.swift in Sources */,
 				166BAD0B2656E76B00E401F0 /* ReaderElement.swift in Sources */,
 				166F8F2726D0488900F898E3 /* XCUIElement+wait.swift in Sources */,
 				1606F21B26EBC1A200238111 /* HomeTests.swift in Sources */,
-				166A81C52637406C0015AA1D /* Tests_iOS.swift in Sources */,
+				166A81C52637406C0015AA1D /* MyListTests.swift in Sources */,
 				1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */,
 				16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */,
 				F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */,
