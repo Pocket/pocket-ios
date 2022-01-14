@@ -12,16 +12,29 @@ struct UserListElement: PocketUIElement {
         self.element = element
     }
 
+    var itemCells: XCUIElementQuery {
+        element.cells.matching(NSPredicate(format: "identifier = %@", "my-list-item"))
+    }
+
+    var favoritesButton: XCUIElement {
+        element.cells.matching(
+            NSPredicate(
+                format: "identifier = %@",
+                "topic-chip"
+            )
+        ).containing(.staticText, identifier: "Favorites").element(boundBy: 0)
+    }
+
     var itemCount: Int {
-        element.cells.count
+        itemCells.count
     }
 
     func itemView(at index: Int) -> ItemRowElement {
-        return ItemRowElement(element.cells.element(boundBy: index))
+        return ItemRowElement(itemCells.element(boundBy: index))
     }
 
     func itemView(withLabelStartingWith string: String) -> ItemRowElement {
-        let cell = element.cells.containing(
+        let cell = itemCells.containing(
             .staticText,
             identifier: string
         ).element(boundBy: 0)
@@ -32,7 +45,7 @@ struct UserListElement: PocketUIElement {
     func pullToRefresh() {
         let centerCenter = CGVector(dx: 0.5, dy: 0.8)
 
-        element.cells
+        itemCells
             .element(boundBy: 0)
             .coordinate(withNormalizedOffset: centerCenter)
             .press(

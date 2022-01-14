@@ -75,6 +75,10 @@ public class Source {
     public func makeItemsController() -> NSFetchedResultsController<SavedItem> {
         return space.makeItemsController()
     }
+
+    public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
+        space.object(with: id)
+    }
 }
 
 // MARK: - List items

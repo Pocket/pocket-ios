@@ -7,7 +7,7 @@ import Sails
 import Combine
 import NIO
 
-class Tests_iOS: XCTestCase {
+class MyListTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 

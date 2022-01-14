@@ -17,7 +17,7 @@ class HomeViewControllerSectionProvider {
         }
 
         let items = slates.map { slate -> (width: CGFloat, item: NSCollectionLayoutItem) in
-            let chip = TopicChipPresenter(slate: slate)
+            let chip = TopicChipPresenter(title: slate.name)
             let width = TopicChipCell.width(chip: chip)
 
             return (width: width, item: NSCollectionLayoutItem(

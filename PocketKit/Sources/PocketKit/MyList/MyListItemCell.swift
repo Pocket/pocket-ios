@@ -125,6 +125,7 @@ class MyListItemCell: UICollectionViewCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
+        accessibilityIdentifier = "my-list-item"
         contentView.backgroundColor = UIColor(.ui.white1)
 
         menuButton.menu = UIMenu(

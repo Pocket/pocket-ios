@@ -8,7 +8,7 @@ import CoreData
 public enum Requests {
     public static func fetchSavedItems() -> NSFetchRequest<SavedItem> {
         let request = fetchAllSavedItems()
-        request.predicate = NSPredicate(format: "isArchived = false && deletedAt = nil")
+        request.predicate = Predicates.savedItems()
 
         return request
     }
@@ -36,5 +36,12 @@ public enum Requests {
         request.predicate = NSPredicate(format: "item.remoteID = %@", remoteItemID)
         request.fetchLimit = 1
         return request
+    }
+}
+
+public enum Predicates {
+    public static func savedItems(filters: [NSPredicate] = []) -> NSPredicate {
+        let predicates = filters + [NSPredicate(format: "isArchived = false && deletedAt = nil")]
+        return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
     }
 }
