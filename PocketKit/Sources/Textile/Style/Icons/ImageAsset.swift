@@ -16,4 +16,6 @@ extension ImageAsset {
     public static let share = ImageAsset("share")
     public static let radioSelected = ImageAsset("radioSelected")
     public static let radioDeselected = ImageAsset("radioDeselected")
+    public static let myList = ImageAsset("myList")
+    public static let archive = ImageAsset("archive")
 }
