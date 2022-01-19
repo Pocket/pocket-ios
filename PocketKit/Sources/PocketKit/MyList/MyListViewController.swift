@@ -15,7 +15,18 @@ class MyListViewController: UIViewController {
         self.model = model
         super.init(nibName: nil, bundle: nil)
 
+        let titleView = MyListTitleView(selections: [
+            .init(title: "My List", image: UIImage(asset: .myList)) {
+                self.navigationItem.backButtonTitle = "My List"
+            },
+            .init(title: "Archive", image: UIImage(asset: .archive)) {
+                self.navigationItem.backButtonTitle = "Archive"
+            }
+        ])
 
+        navigationItem.titleView = titleView
+        navigationItem.largeTitleDisplayMode = .never
+        
         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env -> NSCollectionLayoutSection? in
             guard let self = self,
                   let section = self.dataSource.sectionIdentifier(for: sectionIndex) else {
@@ -53,7 +64,7 @@ class MyListViewController: UIViewController {
                 group.interItemSpacing = .fixed(spacing)
 
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16)
                 section.orthogonalScrollingBehavior = .continuous
 
                 return section
@@ -85,7 +96,6 @@ class MyListViewController: UIViewController {
             collectionViewLayout: layout
         )
 
-        navigationItem.title = "My List"
         collectionView.delegate = self
         collectionView.accessibilityIdentifier = "my-list"
         collectionView.refreshControl = UIRefreshControl(
