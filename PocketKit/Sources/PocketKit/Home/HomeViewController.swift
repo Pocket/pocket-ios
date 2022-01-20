@@ -94,6 +94,7 @@ class HomeViewController: UIViewController {
             return self.viewForSupplementaryElement(ofKind: kind, at: indexPath)
         }
 
+        collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: TopicChipCell.self)
         collectionView.register(viewClass: SlateHeaderView.self, forSupplementaryViewOfKind: SlateHeaderView.kind)

@@ -59,6 +59,7 @@ class MyListViewController: UIViewController {
                 return section
             case .items:
                 var config = UICollectionLayoutListConfiguration(appearance: .plain)
+                config.backgroundColor = UIColor(.ui.white1)
                 config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
                     let archiveAction = UIContextualAction(
                         style: .normal,
