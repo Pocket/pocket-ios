@@ -6,31 +6,37 @@ import Analytics
 import Kingfisher
 
 
+protocol ReadableViewControllerDelegate: AnyObject {
+    func readableViewController(_ controller: ReadableViewController, willOpenURL url: URL)
+    func readableViewControlled(_ controller: ReadableViewController, shareWithAdditionalText text: String?)
+}
 
-class ArticleViewController: UIViewController {
+class ReadableViewController: UIViewController {
     private var metadata: ArticleMetadataPresenter?
     
     var presenters: [ArticleComponentPresenter]?
 
-    var item: Readable? {
+    var readableViewModel: ReadableViewModel? {
         didSet {
-            metadata = item.flatMap { item -> ArticleMetadataPresenter in
+            metadata = readableViewModel.flatMap { readableViewModel -> ArticleMetadataPresenter in
                 ArticleMetadataPresenter(
-                    readable: item,
+                    readableViewModel: readableViewModel,
                     readerSettings: readerSettings
                 )
             }
             
-            presenters = item?.components?.filter { !$0.isEmpty }.map { presenter(for: $0) }
+            presenters = readableViewModel?.components?.filter { !$0.isEmpty }.map { presenter(for: $0) }
 
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }
         }
     }
+    
+    weak var delegate: ReadableViewControllerDelegate? = nil
 
     private var contexts: [Context] {
-        guard let item = item, let url = item.readerURL else {
+        guard let viewModel = readableViewModel, let url = viewModel.url else {
             return []
         }
         
@@ -102,7 +108,7 @@ class ArticleViewController: UIViewController {
     }
 }
 
-extension ArticleViewController: UICollectionViewDelegate {
+extension ReadableViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
         if let cell = cell as? YouTubeVideoComponentCell {
             cell.pause()
@@ -110,7 +116,7 @@ extension ArticleViewController: UICollectionViewDelegate {
     }
 }
 
-extension ArticleViewController: UICollectionViewDataSource {
+extension ReadableViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         guard let presenters = presenters else {
             return 0
@@ -125,7 +131,7 @@ extension ArticleViewController: UICollectionViewDataSource {
     ) -> Int {
         switch section {
         case 0:
-            return item == nil ? 0 : 1
+            return readableViewModel == nil ? 0 : 1
         default:
             return presenters?.count ?? 0
         }
@@ -158,31 +164,24 @@ extension ArticleViewController: UICollectionViewDataSource {
     }
 }
 
-extension ArticleViewController: ArticleComponentTextCellDelegate {
+extension ReadableViewController: ArticleComponentTextCellDelegate {
     func articleComponentTextCell(
         _ cell: ArticleComponentTextCell,
         didShareText selectedText: String?
     ) {
-        guard let item = item, let activity = item.shareActivity(additionalText: selectedText) else {
-            return
-        }
-
-        viewModel.sharedActivity = activity
+        delegate?.readableViewControlled(self, shareWithAdditionalText: selectedText)
     }
     
     func articleComponentTextCell(
         _ cell: ArticleComponentTextCell,
         shouldOpenURL url: URL
     ) -> Bool {
-        let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
-        let link = UIContext.articleView.link
-        let contexts = contexts + [link]
-        tracker.track(event: contentOpen, contexts)
+        delegate?.readableViewController(self, willOpenURL: url)
         return true
     }
 }
 
-extension ArticleViewController {
+extension ReadableViewController {
     enum Constants {
         static let metaSectionContentInsets = NSDirectionalEdgeInsets(
             top: 16,
@@ -258,7 +257,7 @@ extension ArticleViewController {
     }
 }
 
-extension ArticleViewController {
+extension ReadableViewController {
     func presenter(for component: ArticleComponent) -> ArticleComponentPresenter {
         switch component {
         case .text(let component):
@@ -278,7 +277,7 @@ extension ArticleViewController {
         case .numberedList(let component):
             return ListComponentPresenter(component: component, readerSettings: readerSettings)
         case .table:
-            return UnsupportedComponentPresenter(mainViewModel: viewModel, readable: item)
+            return UnsupportedComponentPresenter(mainViewModel: viewModel, readableViewModel: readableViewModel)
         case .blockquote(let component):
             return BlockquoteComponentPresenter(component: component, readerSettings: readerSettings)
         case .video(let component):
@@ -287,22 +286,22 @@ extension ArticleViewController {
                 return YouTubeVideoComponentPresenter(
                     component: component,
                     mainViewModel: viewModel,
-                    readable: item
+                    readableViewModel: readableViewModel
                 )
             case .vimeoLink, .vimeoIframe, .vimeoMoogaloop:
                 return VimeoComponentPresenter(
                     oEmbedService: OEmbedService(session: URLSession.shared),
-                    readable: item,
+                    readableViewModel: readableViewModel,
                     component: component,
                     mainViewModel: viewModel
                 ) { [weak self] in
                     self?.layout.invalidateLayout()
                 }
             default:
-                return UnsupportedComponentPresenter(mainViewModel: viewModel, readable: item)
+                return UnsupportedComponentPresenter(mainViewModel: viewModel, readableViewModel: readableViewModel)
             }
         default:
-            return UnsupportedComponentPresenter(mainViewModel: viewModel, readable: item)
+            return UnsupportedComponentPresenter(mainViewModel: viewModel, readableViewModel: readableViewModel)
         }
     }
 }

@@ -266,7 +266,8 @@ extension SlateDetailViewController: UICollectionViewDelegate {
         let engagement = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: engagement, contexts(for: indexPath))
 
-        model.selectedRecommendation = recommendation
+        let viewModel = RecommendationViewModel(recommendation: recommendation)
+        model.selectedHomeReadableViewModel = viewModel
 
         let contentOpen = ContentOpenEvent(destination: .internal, trigger: .click)
         tracker.track(event: contentOpen, contexts(for: indexPath))
@@ -292,7 +293,7 @@ extension SlateDetailViewController {
         }
         let snowplowRecommendation = RecommendationContext(id: recommendationID, index: UIIndex(indexPath.item))
         
-        guard let url = recommendation.readerURL else {
+        guard let url = url(for: recommendation) else {
             return []
         }
         let content = ContentContext(url: url)
@@ -300,6 +301,10 @@ extension SlateDetailViewController {
         let context = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.row))
      
         return [context, content, snowplowSlate, snowplowRecommendation]
+    }
+    
+    private func url(for recommendation: Slate.Recommendation) -> URL? {
+        recommendation.item.resolvedURL ?? recommendation.item.givenURL
     }
 }
 

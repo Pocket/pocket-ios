@@ -15,13 +15,9 @@ struct PocketItemActivity: PocketActivity {
     }
     
     let activityItems: [Any]
-   
-    init(item: SavedItem, additionalText: String? = nil) {
-        self.activityItems = Self.activityItems(for: item.readerURL, additionalText: additionalText)
-    }
-
-    init(recommendation: Slate.Recommendation, additionalText: String? = nil) {
-        self.activityItems = Self.activityItems(for: recommendation.readerURL, additionalText: additionalText)
+    
+    init(url: URL?, additionalText: String? = nil) {
+        self.activityItems = Self.activityItems(for: url, additionalText: additionalText)
     }
     
     private static func activityItems(for url: URL?, additionalText: String?) -> [Any] {

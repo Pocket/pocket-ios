@@ -18,8 +18,7 @@ class RegularMainCoordinator: NSObject {
     private let settings: SettingsViewController
 
     private let readerRoot: UINavigationController
-    private let itemVC: ItemViewController
-    private let recommendationVC: ArticleViewController
+//    private let readableViewController: ReadableViewController
 
     private let tracker: Tracker
     private let source: Source
@@ -53,7 +52,7 @@ class RegularMainCoordinator: NSObject {
                     )
                 ),
                 ItemsListViewController(
-                    model: ArchivedItemsListViewModel(source: source)
+                    model: ArchivedItemsListViewModel(source: source, mainViewModel: model)
                 )
             ]
         )
@@ -68,20 +67,20 @@ class RegularMainCoordinator: NSObject {
         settings = SettingsViewController(model: model.settings)
         settings.view.backgroundColor = UIColor(.ui.white1)
 
-        itemVC = ItemViewController(
-            model: model,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            source: source
-        )
-        itemVC.view.backgroundColor = UIColor(.ui.white1)
-
-        recommendationVC = ArticleViewController(
-            readerSettings: model.readerSettings,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            viewModel: model
-        )
-
-        readerRoot = UINavigationController(rootViewController: itemVC)
+//        readableHost = ReadableHostViewController(
+//            model: model,
+//            tracker: tracker.childTracker(hosting: .articleView.screen),
+//            source: source
+//        )
+//        readableHost.view.backgroundColor = UIColor(.ui.white1)
+//
+//        readableViewController = ReadableViewController(
+//            readerSettings: model.readerSettings,
+//            tracker: tracker.childTracker(hosting: .articleView.screen),
+//            viewModel: model
+//        )
+//
+        readerRoot = UINavigationController()
 
         super.init()
 
@@ -103,11 +102,11 @@ class RegularMainCoordinator: NSObject {
         home.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
         home.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
 
-        itemVC.navigationController?.navigationBar.prefersLargeTitles = true
-        itemVC.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
-        itemVC.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
+//        readableHost.navigationController?.navigationBar.prefersLargeTitles = true
+//        readableHost.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
+//        readableHost.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
 
-        itemVC.delegate = self
+//        readableHost.delegate = self
         splitController.delegate = self
         home.navigationController?.delegate = self
 
@@ -169,17 +168,27 @@ class RegularMainCoordinator: NSObject {
     func showSettings() {
         splitController.setViewController(settings, for: .supplementary)
     }
-
-    func show(item: SavedItem) {
-        itemVC.savedItem = item
-        readerRoot.viewControllers = [itemVC]
+    
+    func showMyList(viewModel: ReadableViewModel) {
+        let viewController = ReadableHostViewController(
+            mainViewModel: model,
+            readableViewModel: viewModel,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            source: source
+        )
+        readerRoot.viewControllers = [viewController]
 
         splitController.show(.secondary)
     }
-
-    func show(recommendation: Slate.Recommendation) {
-        recommendationVC.item = recommendation
-        readerRoot.viewControllers = [recommendationVC]
+    
+    func showHome(viewModel: ReadableViewModel) {
+        let viewController = ReadableHostViewController(
+            mainViewModel: model,
+            readableViewModel: viewModel,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            source: source
+        )
+        readerRoot.viewControllers = [viewController]
 
         splitController.show(.secondary)
     }
@@ -214,6 +223,19 @@ class RegularMainCoordinator: NSObject {
 
         splitController.show(.supplementary)
     }
+    
+    func show(archivedItem: ArchivedItem) {
+        let viewModel = ArchivedItemViewModel(item: archivedItem)
+        let viewController = ReadableHostViewController(
+            mainViewModel: model,
+            readableViewModel: viewModel,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            source: source
+        )
+        readerRoot.viewControllers = [viewController]
+        
+        splitController.show(.secondary)
+    }
 
     func subscribeToModelChanges() {
         var isResetting = true
@@ -229,13 +251,21 @@ class RegularMainCoordinator: NSObject {
                 self.showSettings()
             }
         }.store(in: &subscriptions)
-
-        model.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] item in
-            guard let item = item else {
+        
+        model.$selectedMyListReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
+            guard let viewModel = viewModel else {
                 return
             }
-
-            self?.show(item: item)
+            
+            self?.showMyList(viewModel: viewModel)
+        }.store(in: &subscriptions)
+        
+        model.$selectedHomeReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
+            guard let viewModel = viewModel else {
+                return
+            }
+            
+            self?.showHome(viewModel: viewModel)
         }.store(in: &subscriptions)
 
         model.$selectedSlateID.receive(on: DispatchQueue.main).sink { [weak self] slateID in
@@ -244,14 +274,6 @@ class RegularMainCoordinator: NSObject {
             }
 
             self?.showSlate(withID: slateID, animated: !isResetting)
-        }.store(in: &subscriptions)
-
-        model.$selectedRecommendation.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            guard let recommendation = recommendation else {
-                return
-            }
-
-            self?.show(recommendation: recommendation)
         }.store(in: &subscriptions)
 
         model.refreshTasks.receive(on: DispatchQueue.main).sink { [weak self] task in
@@ -314,7 +336,7 @@ class RegularMainCoordinator: NSObject {
             modal.modalPresentationStyle = .popover
         }
 
-        modal.popoverPresentationController?.barButtonItem = itemVC.popoverAnchor
+//        modal.popoverPresentationController?.barButtonItem = readableHost.popoverAnchor
         splitController.present(modal, animated: true)
     }
     
@@ -332,17 +354,17 @@ class RegularMainCoordinator: NSObject {
     }
 }
 
-extension RegularMainCoordinator: ItemViewControllerDelegate {
-    func itemViewControllerDidDeleteItem(_ itemViewController: ItemViewController) {
+extension RegularMainCoordinator: ReadableHostViewControllerDelegate {
+    func readableHostViewControllerDidDeleteItem() {
         popReader()
     }
 
-    func itemViewControllerDidArchiveItem(_ itemViewController: ItemViewController) {
+    func readableHostViewControllerDidArchiveItem() {
         popReader()
     }
 
     private func popReader() {
-        model.selectedItem = nil
+        model.selectedMyListReadableViewModel = nil
     }
 }
 
@@ -350,7 +372,7 @@ extension RegularMainCoordinator: UISplitViewControllerDelegate {
     func splitViewControllerDidExpand(_ svc: UISplitViewController) {
         model.isCollapsed = false
 
-        if model.selectedItem == nil {
+        if model.selectedMyListReadableViewModel == nil {
             splitController.show(.supplementary)
         }
     }

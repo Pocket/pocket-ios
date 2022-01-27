@@ -4,14 +4,14 @@ import UIKit
 
 class UnsupportedComponentPresenter: ArticleComponentPresenter {
     private let mainViewModel: MainViewModel
-    private let readable: Readable?
+    private let readableViewModel: ReadableViewModel?
 
     init(
         mainViewModel: MainViewModel,
-        readable: Readable?
+        readableViewModel: ReadableViewModel?
     ) {
         self.mainViewModel = mainViewModel
-        self.readable = readable
+        self.readableViewModel = readableViewModel
     }
 
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
@@ -31,6 +31,6 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
     }
 
     private func handleShowInWebReaderButtonTap() {
-        mainViewModel.presentedWebReaderURL = readable?.readerURL
+        mainViewModel.presentedWebReaderURL = readableViewModel?.url
     }
 }

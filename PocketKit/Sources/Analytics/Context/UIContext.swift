@@ -74,6 +74,7 @@ extension UIContext {
         case itemFavorite = "item_favorite"
         case itemUnfavorite = "item_unfavorite"
         case itemShare = "item_share"
+        case itemSave = "item_save"
         case slateDetail = "discover_topic"
         case recommendation = "recommendation"
         case reportItem = "report_item"

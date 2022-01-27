@@ -350,7 +350,9 @@ extension HomeViewController: UICollectionViewDelegate {
             let engagement = SnowplowEngagement(type: .general, value: nil)
             tracker.track(event: engagement, contexts(for: indexPath))
             
-            model.selectedRecommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
+            let recommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
+            let viewModel = RecommendationViewModel(recommendation: recommendation)
+            model.selectedHomeReadableViewModel = viewModel
 
             let open = ContentOpenEvent(destination: .internal, trigger: .click)
             tracker.track(event: open, contexts(for: indexPath))

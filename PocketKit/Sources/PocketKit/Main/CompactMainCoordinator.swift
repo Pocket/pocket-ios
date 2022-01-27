@@ -44,7 +44,7 @@ class CompactMainCoordinator: NSObject {
                     )
                 ),
                 ItemsListViewController(
-                    model: ArchivedItemsListViewModel(source: source)
+                    model: ArchivedItemsListViewModel(source: source, mainViewModel: model)
                 )
             ]
         )
@@ -115,28 +115,17 @@ class CompactMainCoordinator: NSObject {
     }
 
     func show(item: SavedItem, animated: Bool) {
-        let itemVC = ItemViewController(
-            model: model,
+        let viewModel = SavedItemViewModel(item: item, source: source)
+        let readableHost = ReadableHostViewController(
+            mainViewModel: model,
+            readableViewModel: viewModel,
             tracker: tracker.childTracker(hosting: .articleView.screen),
             source: source
         )
-        itemVC.savedItem = item
-        itemVC.delegate = self
-        itemVC.hidesBottomBarWhenPushed = true
+        readableHost.delegate = self
+        readableHost.hidesBottomBarWhenPushed = true
 
-        myList.pushViewController(itemVC, animated: animated)
-    }
-
-    func show(recommendation: Slate.Recommendation, animated: Bool) {
-        let article = ArticleViewController(
-            readerSettings: model.readerSettings,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            viewModel: model
-        )
-        article.hidesBottomBarWhenPushed = true
-        article.item = recommendation
-
-        home.pushViewController(article, animated: animated)
+        myList.pushViewController(readableHost, animated: animated)
     }
 
     func showSlate(withID slateID: String, animated: Bool) {
@@ -148,6 +137,30 @@ class CompactMainCoordinator: NSObject {
         )
 
         home.pushViewController(slateDetail, animated: animated)
+    }
+    
+    func showHome(viewModel: ReadableViewModel, animated: Bool) {
+        let viewController = ReadableHostViewController(
+            mainViewModel: model,
+            readableViewModel: viewModel,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            source: source
+        )
+        
+        home.pushViewController(viewController, animated: animated)
+    }
+    
+    func showMyList(viewModel: ReadableViewModel, animated: Bool) {
+        let viewController = ReadableHostViewController(
+            mainViewModel: model,
+            readableViewModel: viewModel,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            source: source
+        )
+        viewController.delegate = self
+        viewController.hidesBottomBarWhenPushed = true
+        
+        myList.pushViewController(viewController, animated: animated)
     }
 
     func subscribeToModelChanges() {
@@ -166,12 +179,20 @@ class CompactMainCoordinator: NSObject {
             }
         }.store(in: &subscriptions)
 
-        model.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] item in
-            guard let item = item else {
+        model.$selectedMyListReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
+            guard let viewModel = viewModel else {
                 return
             }
-
-            self?.show(item: item, animated: !isResetting)
+            
+            self?.showMyList(viewModel: viewModel, animated: !isResetting)
+        }.store(in: &subscriptions)
+        
+        model.$selectedHomeReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
+            guard let viewModel = viewModel else {
+                return
+            }
+            
+            self?.showHome(viewModel: viewModel, animated: !isResetting)
         }.store(in: &subscriptions)
 
         model.$selectedSlateID.receive(on: DispatchQueue.main).sink { [weak self] slateID in
@@ -180,14 +201,6 @@ class CompactMainCoordinator: NSObject {
             }
 
             self?.showSlate(withID: slateID, animated: !isResetting)
-        }.store(in: &subscriptions)
-
-        model.$selectedRecommendation.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            guard let recommendation = recommendation else {
-                return
-            }
-
-            self?.show(recommendation: recommendation, animated: !isResetting)
         }.store(in: &subscriptions)
 
         model.refreshTasks.receive(on: DispatchQueue.main).sink { [weak self] task in
@@ -200,17 +213,17 @@ class CompactMainCoordinator: NSObject {
     }
 }
 
-extension CompactMainCoordinator: ItemViewControllerDelegate {
-    func itemViewControllerDidDeleteItem(_ itemViewController: ItemViewController) {
+extension CompactMainCoordinator: ReadableHostViewControllerDelegate {
+    func readableHostViewControllerDidDeleteItem() {
         popReader()
     }
 
-    func itemViewControllerDidArchiveItem(_ itemViewController: ItemViewController) {
+    func readableHostViewControllerDidArchiveItem() {
         popReader()
     }
 
     private func popReader() {
-        model.selectedItem = nil
+        model.selectedMyListReadableViewModel = nil
         myList.popViewController(animated: true)
     }
 }
@@ -220,18 +233,18 @@ extension CompactMainCoordinator: UINavigationControllerDelegate {
         switch navigationController {
         case myList:
             if viewController === myList.viewControllers.first {
-                model.selectedItem = nil
+                model.selectedMyListReadableViewModel = nil
                 return
             }
         case home:
             if viewController === home.viewControllers.first {
                 model.selectedSlateID = nil
-                model.selectedRecommendation = nil
+                model.selectedHomeReadableViewModel = nil
                 return
             }
 
             if viewController is SlateDetailViewController {
-                model.selectedRecommendation = nil
+                model.selectedHomeReadableViewModel = nil
                 return
             }
         default:

@@ -8,18 +8,18 @@ import UIKit
 class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     private let component: VideoComponent
     private let mainViewModel: MainViewModel
-    private let readable: Readable?
+    private let readableViewModel: ReadableViewModel?
     
     private var cancellable: AnyCancellable? = nil
     
     init(
         component: VideoComponent,
         mainViewModel: MainViewModel,
-        readable: Readable?
+        readableViewModel: ReadableViewModel?
     ) {
         self.component = component
         self.mainViewModel = mainViewModel
-        self.readable = readable
+        self.readableViewModel = readableViewModel
     }
     
     func size(for availableWidth: CGFloat) -> CGSize {
@@ -66,6 +66,6 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     }
 
     private func handleShowInWebReaderButtonTap() {
-        mainViewModel.presentedWebReaderURL = readable?.readerURL
+        mainViewModel.presentedWebReaderURL = readableViewModel?.url
     }
 }

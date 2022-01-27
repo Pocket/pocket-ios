@@ -12,14 +12,16 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     let selectionItem: SelectionItem = SelectionItem(title: "Archive", image: .init(asset: .archive))
 
     private let source: Source
+    private let mainViewModel: MainViewModel
     private var archivedItems: [String: ArchivedItem] = [:]
 
     @Published
     private var selectedFilters: Set<ItemsListFilter> = .init()
     private let availableFilters: [ItemsListFilter] = ItemsListFilter.allCases
 
-    init(source: Source) {
+    init(source: Source, mainViewModel: MainViewModel) {
         self.source = source
+        self.mainViewModel = mainViewModel
         self.events = .init()
     }
 
@@ -62,8 +64,14 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         // TODO: Support pull to refresh
     }
 
-    func selectCell(with: ItemsListCell<ItemIdentifier>) {
-        // TODO: show the item in reader
+    func selectCell(with cell: ItemsListCell<ItemIdentifier>) {
+        guard case .item(let archivedItemID) = cell,
+        let archivedItem = archivedItems[archivedItemID] else {
+            return
+        }
+        
+        let viewModel = ArchivedItemViewModel(item: archivedItem)
+        mainViewModel.selectedMyListReadableViewModel = viewModel
     }
 
     func shareItem(with: ItemsListCell<ItemIdentifier>) {
