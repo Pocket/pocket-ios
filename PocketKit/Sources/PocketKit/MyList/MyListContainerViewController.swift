@@ -45,15 +45,16 @@ class MyListContainerViewController: UIViewController {
     }
     
     private func select(child: SelectableViewController?) {
-        viewControllers.forEach { $0.view.removeFromSuperview() }
-        navigationItem.backButtonTitle = child?.selectionItem.title
-
         guard let child = child else {
             return
         }
 
+        navigationItem.backButtonTitle = child.selectionItem.title
+        viewControllers
+            .compactMap(\.viewIfLoaded)
+            .forEach { $0.removeFromSuperview() }
         view.addSubview(child.view)
-        
+
         child.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             child.view.topAnchor.constraint(equalTo: view.topAnchor),

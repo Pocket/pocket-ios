@@ -2,26 +2,15 @@ import UIKit
 import Kingfisher
 
 
-protocol MyListItemCellDelegate: AnyObject {
-    func myListItemCellDidTapFavoriteButton(_ cell: MyListItemCell)
-    func myListItemCellDidTapShareButton(_ cell: MyListItemCell)
-    func myListItemCellDidTapDeleteButton(_ cell: MyListItemCell)
-    func myListItemCellDidTapArchiveButton(_ cell: MyListItemCell)
+protocol ItemsListItemCellDelegate: AnyObject {
+    func myListItemCellDidTapFavoriteButton(_ cell: ItemsListItemCell)
+    func myListItemCellDidTapShareButton(_ cell: ItemsListItemCell)
+    func myListItemCellDidTapDeleteButton(_ cell: ItemsListItemCell)
+    func myListItemCellDidTapArchiveButton(_ cell: ItemsListItemCell)
 }
 
-private extension UIConfigurationStateCustomKey {
-    static let model = UIConfigurationStateCustomKey("com.mozilla.pocket.next.MyListItemCell.model")
-}
-
-private extension UICellConfigurationState {
-    var model: MyListItemCell.Model? {
-        set { self[.model] = newValue }
-        get { return self[.model] as? MyListItemCell.Model }
-    }
-}
-
-class MyListItemCell: UICollectionViewCell {
-    weak var delegate: MyListItemCellDelegate?
+class ItemsListItemCell: UICollectionViewCell {
+    weak var delegate: ItemsListItemCellDelegate?
 
     var model: Model? {
         didSet {
@@ -40,7 +29,7 @@ class MyListItemCell: UICollectionViewCell {
     }
 
     private let listContentView = UIListContentView(
-        configuration: MyListItemCell.defaultListContentConfiguration()
+        configuration: ItemsListItemCell.defaultListContentConfiguration()
     )
 
     enum Constants {
@@ -237,7 +226,7 @@ class MyListItemCell: UICollectionViewCell {
     }
 }
 
-extension MyListItemCell {
+extension ItemsListItemCell {
     struct Model: Hashable {
         let attributedTitle: NSAttributedString
         let attributedDetail: NSAttributedString
@@ -282,9 +271,13 @@ extension MyListItemCell {
     }
 }
 
-extension NSLayoutConstraint {
-    func with(priority: UILayoutPriority) -> NSLayoutConstraint {
-        self.priority = priority
-        return self
+private extension UIConfigurationStateCustomKey {
+    static let model = UIConfigurationStateCustomKey("com.mozilla.pocket.next.MyListItemCell.model")
+}
+
+private extension UICellConfigurationState {
+    var model: ItemsListItemCell.Model? {
+        set { self[.model] = newValue }
+        get { return self[.model] as? ItemsListItemCell.Model }
     }
 }
