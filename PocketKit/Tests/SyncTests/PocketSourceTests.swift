@@ -17,6 +17,7 @@ class SourceTests: XCTestCase {
     var lastRefresh: MockLastRefresh!
     var tokenProvider: MockAccessTokenProvider!
     var slateService: MockSlateService!
+    var archiveService: MockArchiveService!
 
     override func setUpWithError() throws {
         space = Space(container: .testContainer)
@@ -25,6 +26,7 @@ class SourceTests: XCTestCase {
         lastRefresh = MockLastRefresh()
         tokenProvider = MockAccessTokenProvider()
         slateService = MockSlateService()
+        archiveService = MockArchiveService()
 
         lastRefresh.stubGetLastRefresh { nil}
     }
@@ -39,15 +41,17 @@ class SourceTests: XCTestCase {
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
         tokenProvider: AccessTokenProvider? = nil,
-        slateService: SlateService? = nil
-    ) -> Source {
-        Source(
+        slateService: SlateService? = nil,
+        archiveService: ArchiveService? = nil
+    ) -> PocketSource {
+        PocketSource(
             space: space ?? self.space,
             apollo: apollo ?? self.apollo,
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
             accessTokenProvider: tokenProvider ?? self.tokenProvider,
-            slateService: slateService ?? self.slateService
+            slateService: slateService ?? self.slateService,
+            archiveService: archiveService ?? self.archiveService
         )
     }
 
@@ -178,7 +182,7 @@ class SourceTests: XCTestCase {
 
         let recommendation = Slate.Recommendation(
             id: "recommendation-1",
-            item: Slate.Item(
+            item: UnmanagedItem(
                 id: "item-1",
                 givenURL: URL(string: "https://given.example.com/item-1")!,
                 resolvedURL: URL(string: "https://resolved.example.com/item-1")!,
@@ -191,12 +195,12 @@ class SourceTests: XCTestCase {
                 ),
                 excerpt: "This is the excerpt for Item 1",
                 domain: "example.com",
-                domainMetadata: Slate.DomainMetadata(
+                domainMetadata: .init(
                     name: "Example",
                     logo: URL(string: "https://example.com/logo.png")!
                 ),
                 authors: [
-                    Slate.Author(
+                    .init(
                         id: "eb-white",
                         name: "E.B. White",
                         url: URL(string: "http://example.com/authors/eb-white")
@@ -332,5 +336,17 @@ class SourceTests: XCTestCase {
 
         wait(for: [expectationForUpdatedItems], timeout: 1)
         XCTAssertEqual(itemResultsController.fetchedObjects, [item1, item2])
+    }
+
+    func test_fetchArchivedItems_returnsArchivedItemsFromArchiveService() async throws {
+        let archivedItems = [ArchivedItem.build()]
+        archiveService.stubFetch {
+            return archivedItems
+        }
+
+        let source = subject()
+        let actualArchivedItems = try await source.fetchArchivedItems()
+
+        XCTAssertEqual(actualArchivedItems, archivedItems)
     }
 }

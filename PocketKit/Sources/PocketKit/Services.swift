@@ -37,7 +37,7 @@ struct Services {
         let snowplow = PocketSnowplowTracker()
         tracker = PocketTracker(snowplow: snowplow)
 
-        source = Source(
+        source = PocketSource(
             sessionProvider: session,
             accessTokenProvider: accessTokenStore,
             consumerKey: Keys.shared.pocketApiConsumerKey,

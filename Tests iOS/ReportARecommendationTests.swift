@@ -14,10 +14,23 @@ class ReportARecommendationTests: XCTestCase {
         
         server = Application()
         
-        server.routes.post("/graphql") { _, _ in
-            Response {
-                Status.ok
-                Fixture.data(name: "slates")
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForSlateDetail {
+                return Response.slateDetail()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isToSaveAnItem {
+                return Response.saveItem()
+            } else if apiRequest.isToArchiveAnItem {
+                return Response.archive()
+            } else {
+                fatalError("Unexpected request")
             }
         }
         

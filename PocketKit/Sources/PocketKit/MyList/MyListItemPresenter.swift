@@ -30,31 +30,26 @@ private extension Style {
         }
 }
 
-class MyListItemViewModel {
-    let index: Int
-    let savedItem: SavedItem
+protocol MyListItemDomainMetadata {
+    var name: String? { get }
+}
 
-    private let source: Sync.Source
-    private let tracker: Tracker
+protocol MyListItem {
+    var title: String? { get }
+    var isFavorite: Bool { get }
+    var bestURL: URL? { get }
+    var topImageURL: URL? { get }
+    var domain: String? { get }
 
-    private var item: Item? {
-        savedItem.item
-    }
+    var domainMetadata: MyListItemDomainMetadata? { get }
+    var timeToRead: Int? { get }
+}
 
-    init(
-        item: SavedItem,
-        index: Int,
-        source: Sync.Source,
-        tracker: Tracker
-    ) {
-        self.savedItem = item
-        self.index = index
-        self.source = source
-        self.tracker = tracker
-    }
+class MyListItemPresenter {
+    private let item: MyListItem
 
-    var objectID: NSManagedObjectID {
-        savedItem.objectID
+    init(item: MyListItem) {
+        self.item = item
     }
 
     var attributedTitle: NSAttributedString {
@@ -66,7 +61,7 @@ class MyListItemViewModel {
     }
 
     var thumbnailURL: URL? {
-        return imageCacheURL(for: item?.topImageURL)
+        return imageCacheURL(for: item.topImageURL)
     }
 
     public var favoriteButtonImage: UIImage? {
@@ -89,8 +84,8 @@ class MyListItemViewModel {
 
     private var title: String {
         [
-            savedItem.item?.title,
-            savedItem.bestURL?.absoluteString
+            item.title,
+            item.bestURL?.absoluteString
         ]
             .compactMap { $0 }
             .first { !$0.isEmpty } ?? ""
@@ -103,62 +98,64 @@ class MyListItemViewModel {
     }
 
     private var domain: String? {
-        item?.domainMetadata?.name ?? item?.domain
+        item.domainMetadata?.name ?? item.domain
     }
 
     private var timeToRead: String? {
-        item
-            .flatMap { $0.timeToRead > 0 ? $0.timeToRead : nil }
+        item.timeToRead
+            .flatMap { $0 > 0 ? $0 : nil }
             .flatMap { "\($0) min" }
     }
 
     private var isFavorite: Bool {
-        savedItem.isFavorite
-    }
-
-    private func track(identifier: UIContext.Identifier) {
-        guard let url = savedItem.bestURL else {
-            return
-        }
-
-        let contexts: [Context] = [
-            UIContext.button(identifier: identifier),
-            ContentContext(url: url)
-        ]
-
-        let event = SnowplowEngagement(type: .general, value: nil)
-        tracker.track(event: event, contexts)
+        item.isFavorite
     }
 }
 
-extension MyListItemViewModel {
-    func toggleFavorite() {
-        if isFavorite {
-            source.unfavorite(item: savedItem)
-            track(identifier: .itemUnfavorite)
-        } else {
-            source.favorite(item: savedItem)
-            track(identifier: .itemFavorite)
-        }
+extension SavedItem: MyListItem {
+    var topImageURL: URL? {
+        item?.topImageURL
     }
 
-    func archive() {
-        source.archive(item: savedItem)
-        track(identifier: .itemArchive)
+    var timeToRead: Int? {
+        item.flatMap { Int($0.timeToRead) }
     }
 
-    func delete() {
-        source.delete(item: savedItem)
-        track(identifier: .itemDelete)
+    var domainMetadata: MyListItemDomainMetadata? {
+        return item?.domainMetadata
+    }
+}
+
+extension DomainMetadata: MyListItemDomainMetadata {
+
+}
+
+extension ArchivedItem: MyListItem {
+    var title: String? {
+        item?.title
     }
 
-    func trackImpression() {
-        guard let url = savedItem.bestURL else {
-            return
-        }
-
-        let content = ContentContext(url: url)
-        let impression = ImpressionEvent(component: .content, requirement: .instant)
-        tracker.track(event: impression, [content])
+    var bestURL: URL? {
+        item?.resolvedURL ?? item?.givenURL ?? url
     }
+
+    var topImageURL: URL? {
+        item?.topImageURL
+    }
+
+    var domain: String? {
+        item?.domain
+    }
+
+    var domainMetadata: MyListItemDomainMetadata? {
+        item?.domainMetadata
+    }
+
+    var timeToRead: Int? {
+        item?.timeToRead
+    }
+}
+
+extension UnmanagedItem.DomainMetadata: MyListItemDomainMetadata {
+
 }

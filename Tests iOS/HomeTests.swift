@@ -11,29 +11,6 @@ class HomeTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
-    func listResponse(_ fixtureName: String = "initial-list") -> Response {
-        Response {
-            Status.ok
-            Fixture.load(name: fixtureName)
-                .replacing("MARTICLE", withFixtureNamed: "marticle")
-                .data
-        }
-    }
-
-    func slateResponse() -> Response {
-        Response {
-            Status.ok
-            Fixture.data(name: "slates")
-        }
-    }
-
-    func slateDetailResponse() -> Response {
-        Response {
-            Status.ok
-            Fixture.data(name: "slate-detail")
-        }
-    }
-
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -43,24 +20,22 @@ class HomeTests: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { request, _ in
-            let requestBody = body(of: request)
+            let apiRequest = ClientAPIRequest(request)
 
-            if requestBody?.contains("upsertSavedItem") == true {
-                return Response {
-                    Status.ok
-                    Fixture.data(name: "save-item")
-                }
-            } else if requestBody?.contains("updateSavedItemArchive") == true {
-                return Response {
-                    Status.ok
-                    Fixture.data(name: "archive")
-                }
-            } else if requestBody!.contains("getSlateLineup")  {
-                return self.slateResponse()
-            } else if requestBody!.contains("getSlate(") {
-                return self.slateDetailResponse()
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForSlateDetail {
+                return Response.slateDetail()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isToSaveAnItem {
+                return Response.saveItem()
+            } else if apiRequest.isToArchiveAnItem {
+                return Response.archive()
             } else {
-                return self.listResponse()
+                fatalError("Unexpected request")
             }
         }
 
@@ -119,21 +94,25 @@ class HomeTests: XCTestCase {
         let saveRequestExpectation = expectation(description: "A save mutation request")
         let archiveRequestExpectation = expectation(description: "An archive mutation request")
         var promise: EventLoopPromise<Response>?
-        var requestBody: String?
         server.routes.post("/graphql") { request, loop in
-            requestBody = body(of: request)
+            let apiRequest = ClientAPIRequest(request)
 
-            if requestBody?.contains("upsertSavedItem") == true {
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForSlateDetail {
+                return Response.slateDetail()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isToSaveAnItem {
+                XCTAssertTrue(apiRequest.contains("https:\\/\\/example.com\\/item-1"))
                 saveRequestExpectation.fulfill()
                 promise = loop.makePromise()
                 return promise!.futureResult
-            } else if requestBody?.contains("updateSavedItemArchive") == true {
+            } else if apiRequest.isToArchiveAnItem {
                 archiveRequestExpectation.fulfill()
-
-                return Response {
-                    Status.ok
-                    Fixture.data(name: "archive")
-                }
+                return Response.archive()
             } else {
                 fatalError("Unexpected request")
             }
@@ -143,21 +122,19 @@ class HomeTests: XCTestCase {
         XCTAssertEqual(saveButton.label, "Saved")
 
         app.tabBar.myListButton.tap()
-        app.userListView.itemView(withLabelStartingWith: "Slate 1, Recommendation 1").wait()
+        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         wait(for: [saveRequestExpectation], timeout: 1)
-        XCTAssertEqual(requestBody?.contains("upsertSavedItem"), true)
-        XCTAssertEqual(requestBody?.contains("https:\\/\\/example.com\\/item-1"), true)
 
-        promise?.succeed(Response(status: .ok, content: Fixture.load(name: "save-item").data))
-        app.userListView.itemView(withLabelStartingWith: "Saved Recommendation 1").wait()
+        promise?.succeed(Response.saveItem())
+        app.myListView.itemView(matching: "Saved Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
         saveButton.tap()
 
         XCTAssertEqual(saveButton.label, "Save")
         wait(for: [archiveRequestExpectation], timeout: 1)
-        XCTAssertFalse(app.userListView.itemView(withLabelStartingWith: "Slate 1, Recommendation 1").exists)
+        XCTAssertFalse(app.myListView.itemView(matching: "Slate 1, Recommendation 1").exists)
     }
 
     func test_tappingSaveButtonInRecommendationCellinSlateDetailView_savesItemToList() {
@@ -170,7 +147,7 @@ class HomeTests: XCTestCase {
         }
 
         app.tabBar.myListButton.tap()
-        app.userListView.itemView(withLabelStartingWith: "Saved Recommendation 1").wait()
+        app.myListView.itemView(matching: "Saved Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
 
@@ -188,14 +165,10 @@ extension HomeTests {
         home.recommendationCell("Slate 1, Recommendation 1").wait()
         
         server.routes.post("/graphql") { request, _ in
-            Response {
-                Status.ok
-                Fixture.data(name: "updated-slates")
-            }
+            Response.slateLineup("updated-slates")
         }
         
         home.pullToRefresh()
-        
         home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
     }
 

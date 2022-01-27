@@ -34,16 +34,22 @@ class CompactMainCoordinator: NSObject {
         self.tracker = tracker
         self.model = model
 
-        let myListRoot = MyListViewController(
-            model: MyListViewModel(
-                source: source,
-                tracker: tracker.childTracker(hosting: .myList.screen),
-                main: model
-            )
+        let myListContainer = MyListContainerViewController(
+            viewControllers: [
+                MyListViewController(
+                    model: MyListViewModel(
+                        source: source,
+                        tracker: tracker.childTracker(hosting: .myList.screen),
+                        main: model
+                    )
+                ),
+                MyListViewController(
+                    model: ArchiveViewModel(source: source)
+                )
+            ]
         )
 
-        myListRoot.view.backgroundColor = UIColor(.ui.white1)
-        myList = UINavigationController(rootViewController: myListRoot)
+        myList = UINavigationController(rootViewController: myListContainer)
         myList.navigationBar.prefersLargeTitles = true
         myList.navigationBar.barTintColor = UIColor(.ui.white1)
         myList.navigationBar.tintColor = UIColor(.ui.grey1)

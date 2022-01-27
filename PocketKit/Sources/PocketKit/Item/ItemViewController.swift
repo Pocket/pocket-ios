@@ -81,6 +81,25 @@ class ItemViewController: UIViewController {
     }
 
     func buildOverflowMenu() {
+        let deleteAction = UIAction(
+            title: "Delete",
+            image: UIImage(systemName: "trash"),
+            handler: { [weak self] _ in
+                self?.delete()
+            }
+        )
+        deleteAction.accessibilityIdentifier = "item-action-menu-delete"
+
+        let archiveAction = UIAction(
+            title: "Archive",
+            image: UIImage(systemName: "archivebox"),
+            handler: { [weak self] _ in
+                self?.archive()
+            }
+        )
+        archiveAction.accessibilityIdentifier = "item-action-menu-archive"
+
+
         moreButtonItem.menu = UIMenu(
             image: nil,
             identifier: nil,
@@ -112,20 +131,8 @@ class ItemViewController: UIViewController {
                         )
                     }
                 }(),
-                UIAction(
-                    title: "Archive",
-                    image: UIImage(systemName: "archivebox"),
-                    handler: { [weak self] _ in
-                        self?.archive()
-                    }
-                ),
-                UIAction(
-                    title: "Delete",
-                    image: UIImage(systemName: "trash"),
-                    handler: { [weak self] _ in
-                        self?.delete()
-                    }
-                ),
+                archiveAction,
+                deleteAction,
                 UIAction(
                     title: "Share",
                     image: UIImage(systemName: "square.and.arrow.up"),

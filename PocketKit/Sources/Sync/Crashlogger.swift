@@ -25,6 +25,7 @@ public struct Crashlogger {
     public static func start(dsn: String) {
         SentrySDK.start { options in
             options.dsn = dsn
+            options.enableAutoPerformanceTracking = false
             options.debug = true
         }
     }

@@ -43,14 +43,20 @@ class RegularMainCoordinator: NSObject {
         
         navigationSidebar = UINavigationController(rootViewController: NavigationSidebarViewController(model: model))
         
-        myList = MyListViewController(
-            model: MyListViewModel(
-                source: source,
-                tracker: tracker.childTracker(hosting: .myList.screen),
-                main: model
-            )
+        myList = MyListContainerViewController(
+            viewControllers: [
+                MyListViewController(
+                    model: MyListViewModel(
+                        source: source,
+                        tracker: tracker.childTracker(hosting: .myList.screen),
+                        main: model
+                    )
+                ),
+                MyListViewController(
+                    model: ArchiveViewModel(source: source)
+                )
+            ]
         )
-        myList.view.backgroundColor = UIColor(.ui.white1)
         
         home = HomeViewController(
             source: source,

@@ -24,10 +24,10 @@ struct PocketAppElement {
         return HomeViewElement(app.otherElements["home"])
     }
 
-    var userListView: UserListElement {
-        return UserListElement(app.collectionViews["my-list"])
+    var myListView: MyListElement {
+        return MyListElement(app)
     }
-
+    
     var settingsView: SettingsViewElement {
         return SettingsViewElement(app.collectionViews["settings"])
     }
@@ -65,11 +65,11 @@ struct PocketAppElement {
     }
 
     var deleteButton: XCUIElement {
-        app.buttons["Delete"]
+        app.buttons["item-action-menu-delete"]
     }
 
     var archiveButton: XCUIElement {
-        app.buttons["Archive"]
+        app.buttons["item-action-menu-archive"]
     }
 
     var shareButton: XCUIElement {

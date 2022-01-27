@@ -37,6 +37,6 @@ extension Slate.Recommendation: Readable {
     }
 }
 
-extension Slate.Author: ReadableAuthor {
+extension UnmanagedItem.Author: ReadableAuthor {
     
 }

@@ -10,22 +10,6 @@ class ArchiveAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
-    func listResponse(_ fixtureName: String = "initial-list") -> Response {
-        Response {
-            Status.ok
-            Fixture.load(name: fixtureName)
-                .replacing("MARTICLE", withFixtureNamed: "marticle")
-                .data
-        }
-    }
-
-    func slateResponse() -> Response {
-        Response {
-            Status.ok
-            Fixture.data(name: "slates")
-        }
-    }
-
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -35,12 +19,16 @@ class ArchiveAnItemTests: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { request, _ in
-            let requestBody = body(of: request)
+            let apiRequest = ClientAPIRequest(request)
 
-            if requestBody!.contains("getSlateLineup")  {
-                return self.slateResponse()
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else {
-                return self.listResponse()
+                fatalError("Unexpected request")
             }
         }
 
@@ -58,56 +46,45 @@ class ArchiveAnItemTests: XCTestCase {
         app.tabBar.myListButton.wait().tap()
 
         let itemCell = app
-            .userListView
-            .itemView(withLabelStartingWith: "Item 2")
+            .myListView
+            .itemView(matching: "Item 2")
 
         itemCell
             .itemActionButton.wait()
             .tap()
 
         let expectRequest = expectation(description: "A request to the server")
-        var archiveRequestBody: String?
         server.routes.post("/graphql") { request, loop in
-            archiveRequestBody = body(of: request)
-            expectRequest.fulfill()
+            defer { expectRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToArchiveAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
 
-            return Response {
-                Status.ok
-                Fixture.data(name: "archive")
-            }
+            return Response.archive()
         }
 
         app.archiveButton.wait().tap()
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)
-        guard let requestBody = archiveRequestBody else {
-            XCTFail("Expected request body to not be nil")
-            return
-        }
-        XCTAssertTrue(requestBody.contains("updateSavedItemArchive"))
-        XCTAssertTrue(requestBody.contains("item-2"))
     }
 
     func test_archivingAnItemFromReader_archivesItem_andPopsBackToList() {
         app.tabBar.myListButton.wait().tap()
 
-        let listView = app.userListView
-        let itemCell = listView.itemView(withLabelStartingWith: "Item 2")
+        let listView = app.myListView
+        let itemCell = listView.itemView(matching: "Item 2")
 
         itemCell.wait().tap()
 
         let expectRequest = expectation(description: "A request to the server")
-        var archiveRequestBody: String?
         server.routes.post("/graphql") { request, loop in
-            archiveRequestBody = body(of: request)
-            expectRequest.fulfill()
+            defer { expectRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToArchiveAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
 
-            return Response {
-                Status.ok
-                Fixture.data(name: "archive")
-            }
-        }
+            return Response.archive()        }
 
         app
             .readerView
@@ -122,11 +99,5 @@ class ArchiveAnItemTests: XCTestCase {
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)
-        guard let requestBody = archiveRequestBody else {
-            XCTFail("Expected request body to not be nil")
-            return
-        }
-        XCTAssertTrue(requestBody.contains("updateSavedItemArchive"))
-        XCTAssertTrue(requestBody.contains("item-2"))
     }
 }

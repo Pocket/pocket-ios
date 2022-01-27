@@ -5,27 +5,58 @@ import Combine
 import Kingfisher
 
 
-class MyListViewController: UIViewController {
-    private let model: MyListViewModel
+enum ItemListSection: Int, CaseIterable {
+    case filters
+    case items
+}
+
+enum ItemListCell<ItemIdentifier: Hashable>: Hashable {
+    case filterButton(ItemListFilter)
+    case item(ItemIdentifier)
+}
+
+enum ItemListFilter: String, Hashable, CaseIterable {
+    case favorites = "Favorites"
+}
+
+enum ItemListEvent<ItemIdentifier: Hashable> {
+    case deselectEverythingRenameMe
+    case snapshot(NSDiffableDataSourceSnapshot<ItemListSection, ItemListCell<ItemIdentifier>>)
+}
+
+protocol ItemsListViewModel: AnyObject {
+    associatedtype ItemIdentifier: Hashable
+
+    var events: PassthroughSubject<ItemListEvent<ItemIdentifier>, Never> { get }
+    var presentedAlert: PocketAlert? { get set }
+    var selectionItem: SelectionItem { get }
+
+    func fetch() throws
+    func refresh(_ completion: (() -> ())?)
+    
+    func item(with cellID: ItemListCell<ItemIdentifier>) -> MyListItemPresenter?
+    func item(with itemID: ItemIdentifier) -> MyListItemPresenter?
+    func filterButton(with id: ItemListFilter) -> TopicChipPresenter
+    func selectCell(with: ItemListCell<ItemIdentifier>)
+    func shareItem(with: ItemListCell<ItemIdentifier>)
+    
+    func toggleFavorite(_ cell: ItemListCell<ItemIdentifier>)
+    func archive(_ cell: ItemListCell<ItemIdentifier>)
+    func delete(_ cell: ItemListCell<ItemIdentifier>)
+    func trackImpression(_ cell: ItemListCell<ItemIdentifier>)
+}
+
+
+class MyListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate {
+   
+    private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
     private var collectionView: UICollectionView!
-    private var dataSource: UICollectionViewDiffableDataSource<MyListSectionID, MyListCellID>!
+    private var dataSource: UICollectionViewDiffableDataSource<ItemListSection, ItemListCell<ViewModel.ItemIdentifier>>!
 
-    init(model: MyListViewModel) {
+    init(model: ViewModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
-
-        let titleView = MyListTitleView(selections: [
-            .init(title: "My List", image: UIImage(asset: .myList)) {
-                self.navigationItem.backButtonTitle = "My List"
-            },
-            .init(title: "Archive", image: UIImage(asset: .archive)) {
-                self.navigationItem.backButtonTitle = "Archive"
-            }
-        ])
-
-        navigationItem.titleView = titleView
-        navigationItem.largeTitleDisplayMode = .never
         
         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env -> NSCollectionLayoutSection? in
             guard let self = self,
@@ -76,10 +107,12 @@ class MyListViewController: UIViewController {
                         style: .normal,
                         title: "Archive"
                     ) { _, _, completion in
-                        self.dataSource.itemIdentifier(for: indexPath).flatMap {
-                            self.model.item(for: $0)
-                        }?.archive()
+                        guard let cell = self.dataSource.itemIdentifier(for: indexPath) else {
+                            completion(false)
+                            return
+                        }
 
+                        model.archive(cell)
                         completion(true)
                     }
                     archiveAction.backgroundColor = UIColor(.ui.lapis1)
@@ -97,7 +130,6 @@ class MyListViewController: UIViewController {
         )
 
         collectionView.delegate = self
-        collectionView.accessibilityIdentifier = "my-list"
         collectionView.refreshControl = UIRefreshControl(
             frame: .zero,
             primaryAction: UIAction(handler: { [weak self] _ in
@@ -105,11 +137,11 @@ class MyListViewController: UIViewController {
             })
         )
 
-        let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, MyListFilterID> = .init { [weak self] cell, indexPath, filterID in
+        let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemListFilter> = .init { [weak self] cell, indexPath, filterID in
             self?.configure(cell: cell, indexPath: indexPath, filterID: filterID)
         }
 
-        let itemCellRegistration: UICollectionView.CellRegistration<MyListItemCell, NSManagedObjectID> = .init { [weak self] cell, indexPath, objectID in
+        let itemCellRegistration: UICollectionView.CellRegistration<MyListItemCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
             self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
         }
 
@@ -137,7 +169,6 @@ class MyListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         try? model.fetch()
     }
 
@@ -153,7 +184,7 @@ class MyListViewController: UIViewController {
         }
     }
 
-    private func configure(cell: MyListItemCell, indexPath: IndexPath, objectID: NSManagedObjectID) {
+    private func configure(cell: MyListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
         guard let item = model.item(with: objectID) else {
             return
         }
@@ -169,26 +200,18 @@ class MyListViewController: UIViewController {
         )
     }
 
-    private func configure(cell: TopicChipCell, indexPath: IndexPath, filterID: MyListFilterID) {
+    private func configure(cell: TopicChipCell, indexPath: IndexPath, filterID: ItemListFilter) {
         cell.configure(model: model.filterButton(with: filterID))
     }
 
-    private func handle(myListEvent event: MyListViewModel.Event) {
+    private func handle(myListEvent event: ItemListEvent<ViewModel.ItemIdentifier>) {
         switch event {
         case .snapshot(let snapshot):
             dataSource.apply(snapshot, animatingDifferences: true)
 
-        case .itemSelected(let selectedItem):
-            deselect(selectedItem)
+        case .deselectEverythingRenameMe:
+            deselectAll()
         }
-    }
-
-    private func deselect(_ selectedItem: SavedItem?) {
-        guard selectedItem == nil else {
-            return
-        }
-
-        deselectAll()
     }
 
     private func deselectAll() {
@@ -196,9 +219,7 @@ class MyListViewController: UIViewController {
             collectionView.deselectItem(at: selectedIndexPath, animated: false)
         }
     }
-}
 
-extension MyListViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let itemID = dataSource.itemIdentifier(for: indexPath) else {
             return
@@ -209,60 +230,57 @@ extension MyListViewController: UICollectionViewDelegate {
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard let itemID = dataSource.itemIdentifier(for: indexPath) else {
+        guard let cell = dataSource.itemIdentifier(for: indexPath) else {
             return
         }
 
-        model.item(for: itemID)?.trackImpression()
+        model.trackImpression(cell)
     }
 }
 
 extension MyListViewController: MyListItemCellDelegate {
-    func myListItemCellDidTapFavoriteButton(_ cell: MyListItemCell) {
-        item(for: cell)?.toggleFavorite()
+    func myListItemCellDidTapFavoriteButton(_ itemCell: MyListItemCell) {
+        withCell(for: itemCell, handler: model.toggleFavorite)
     }
 
-    func myListItemCellDidTapShareButton(_ cell: MyListItemCell) {
-        guard let indexPath = collectionView.indexPath(for: cell),
-              let itemID = dataSource.itemIdentifier(for: indexPath) else {
-            return
-        }
-
-        model.shareItem(with: itemID)
+    func myListItemCellDidTapShareButton(_ itemCell: MyListItemCell) {
+        withCell(for: itemCell, handler: model.shareItem)
+    }
+    
+    func myListItemCellDidTapArchiveButton(_ itemCell: MyListItemCell) {
+        withCell(for: itemCell, handler: model.archive)
     }
 
-    func myListItemCellDidTapDeleteButton(_ cell: MyListItemCell) {
-        guard let item = item(for: cell) else {
-            return
-        }
-
-        let actions = [
-            UIAlertAction(title: "No", style: .default) { [weak self] _ in
-                self?.model.presentedAlert = nil
-            },
-            UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
-                self?.model.presentedAlert = nil
-                item.delete()
-            }
-        ]
-
-        let alert = PocketAlert(
+    func myListItemCellDidTapDeleteButton(_ itemCell: MyListItemCell) {
+        model.presentedAlert = PocketAlert(
             title: "Are you sure you want to delete this item?",
             message: nil,
             preferredStyle: .alert,
-            actions: actions,
+            actions: [
+                UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                    self?.model.presentedAlert = nil
+                },
+                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
+                    self?.model.presentedAlert = nil
+                    self?.withCell(for: itemCell, handler: self?.model.delete)
+                }
+            ],
             preferredAction: nil
         )
-        model.presentedAlert = alert
     }
 
-    func myListItemCellDidTapArchiveButton(_ cell: MyListItemCell) {
-        item(for: cell)?.archive()
+    private func withCell(for itemCell: MyListItemCell, handler: ((ItemListCell<ViewModel.ItemIdentifier>) -> Void)?) {
+        guard let indexPath = collectionView.indexPath(for: itemCell),
+              let cell = dataSource.itemIdentifier(for: indexPath) else {
+                  return
+              }
+        
+        handler?(cell)
     }
+}
 
-    private func item(for cell: MyListItemCell) -> MyListItemViewModel? {
-        collectionView.indexPath(for: cell)
-            .flatMap { dataSource.itemIdentifier(for: $0) }
-            .flatMap { model.item(for: $0) }
+extension MyListViewController: SelectableViewController {
+    var selectionItem: SelectionItem {
+        return model.selectionItem
     }
 }

@@ -6,7 +6,7 @@ import XCTest
 import Sails
 
 
-class PullToRefreshTests: XCTestCase {
+class ArchiveTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
@@ -17,7 +17,6 @@ class PullToRefreshTests: XCTestCase {
         app = PocketAppElement(app: uiApp)
 
         server = Application()
-
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
@@ -33,8 +32,6 @@ class PullToRefreshTests: XCTestCase {
         }
 
         try server.start()
-
-        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -42,27 +39,21 @@ class PullToRefreshTests: XCTestCase {
         app.terminate()
     }
 
-    func test_myList_pullToRefresh_fetchesNewContent() {
-        app.tabBar.myListButton.wait().tap()
+    func test_archiveView_displaysArchivedContent() {
+        app.launch().tabBar.myListButton.wait().tap()
+        let myList = app.myListView.wait()
+        myList.itemView(matching: "Item 1").wait()
 
-        let listView = app.myListView.wait()
-        XCTAssertEqual(listView.itemCount, 2)
+        myList.selectionSwitcher.archiveButton.wait().tap()
 
-        server.routes.post("/graphql") { _, _ in
-            return Response {
-                Status.ok
-                Fixture.data(name: "updated-list")
-            }
-        }
+        myList.itemView(matching: "Archived Item 1").wait()
+        myList.itemView(matching: "Archived Item 2").wait()
 
-        listView.pullToRefresh()
-
-        listView
-            .itemView(matching: "Updated Item 1")
-            .wait()
-
-        listView
-            .itemView(matching: "Updated Item 2")
-            .wait()
+        XCTAssertFalse(myList.itemView(matching: "Item 1").exists)
+        XCTAssertFalse(myList.itemView(matching: "Item 2").exists)
     }
+}
+
+private func requestIsForArchivedContent(_ request: Request) -> Bool {
+    body(of: request)?.contains("\"isArchived\":true") ?? false
 }
