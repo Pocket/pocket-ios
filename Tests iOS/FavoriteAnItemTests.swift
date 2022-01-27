@@ -11,22 +11,6 @@ class FavoriteAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
-    func listResponse(_ fixtureName: String = "initial-list") -> Response {
-        Response {
-            Status.ok
-            Fixture.load(name: fixtureName)
-                .replacing("MARTICLE", withFixtureNamed: "marticle")
-                .data
-        }
-    }
-
-    func slateResponse() -> Response {
-        Response {
-            Status.ok
-            Fixture.data(name: "slates")
-        }
-    }
-
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -36,12 +20,16 @@ class FavoriteAnItemTests: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { request, _ in
-            let requestBody = body(of: request)
+            let apiRequest = ClientAPIRequest(request)
 
-            if requestBody!.contains("getSlateLineup")  {
-                return self.slateResponse()
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else {
-                return self.listResponse()
+                fatalError("Unexpected request")
             }
         }
 
@@ -82,70 +70,45 @@ class FavoriteAnItemTests: XCTestCase {
         app.tabBar.myListButton.wait().tap()
 
         let itemCell = app
-            .userListView
-            .itemView(withLabelStartingWith: "Item 2")
+            .myListView
+            .itemView(matching: "Item 2")
+            .wait()
 
         let expectRequest = expectation(description: "A request to the server")
-        var favoriteRequestBody: String?
         server.routes.post("/graphql") { request, loop in
-            favoriteRequestBody = body(of: request)
-            expectRequest.fulfill()
+            defer { expectRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToFavoriteAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
 
-            return Response {
-                Status.ok
-                Fixture.data(name: "favorite")
-            }
+            return Response.delete()
         }
 
         itemCell.favoriteButton.tap()
-
         wait(for: [expectRequest], timeout: 1)
-        do {
-            guard let requestBody = favoriteRequestBody else {
-                XCTFail("Expected request body to not be nil")
-                return
-            }
-
-            XCTAssertTrue(requestBody.contains("updateSavedItemFavorite"))
-            XCTAssertTrue(requestBody.contains("item-2"))
-        }
-
         XCTAssertTrue(itemCell.favoriteButton.isFilled)
 
         let expectUnfavoriteRequest = expectation(description: "A request to the server")
-        var unfavoriteRequestBody: String?
         server.routes.post("/graphql") { request, loop in
-            unfavoriteRequestBody = body(of: request)
-            expectUnfavoriteRequest.fulfill()
+            defer { expectUnfavoriteRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToUnfavoriteAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
 
-            return Response {
-                Status.ok
-                Fixture.data(name: "unfavorite")
-            }
+            return Response.delete()
         }
 
         itemCell.favoriteButton.tap()
-
         wait(for: [expectUnfavoriteRequest], timeout: 1)
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
-
-        do {
-            guard let requestBody = unfavoriteRequestBody else {
-                XCTFail("Expected request body to not be nil")
-                return
-            }
-
-            XCTAssertTrue(requestBody.contains("updateSavedItemUnFavorite"))
-            XCTAssertTrue(requestBody.contains("item-2"))
-        }
     }
 
     func test_favoritingAndUnfavoritingAnItemFromReader_togglesMenu_andSyncsWithServer() {
         app.tabBar.myListButton.wait().tap()
 
         app
-            .userListView
-            .itemView(withLabelStartingWith: "Item 2")
+            .myListView
+            .itemView(matching: "Item 2")
             .wait()
             .tap()
 
@@ -156,61 +119,38 @@ class FavoriteAnItemTests: XCTestCase {
 
         // Favoriting
         do {
-            // Set up the request handler
             let expectRequest = expectation(description: "A request to the server")
-            var favoriteRequestBody: String?
             server.routes.post("/graphql") { request, loop in
-                favoriteRequestBody = body(of: request)
-                expectRequest.fulfill()
+                defer { expectRequest.fulfill() }
+                let apiRequest = ClientAPIRequest(request)
+                XCTAssertTrue(apiRequest.isToFavoriteAnItem)
+                XCTAssertTrue(apiRequest.contains("item-2"))
 
-                return Response {
-                    Status.ok
-                    Fixture.data(name: "favorite")
-                }
+                return Response.delete()
             }
 
             // Tap the favorite button in the overflow menu
             moreButton.wait().tap()
             app.favoriteButton.wait().tap()
-
-            // Assert request was made with correct params
             wait(for: [expectRequest], timeout: 1)
-            guard let requestBody = favoriteRequestBody else {
-                XCTFail("Expected request body to not be nil")
-                return
-            }
-
-            XCTAssertTrue(requestBody.contains("updateSavedItemFavorite"))
-            XCTAssertTrue(requestBody.contains("item-2"))
         }
 
         // Unfavoriting
         do {
-            // Set up the request handler
             let expectUnfavoriteRequest = expectation(description: "A request to the server")
-            var unfavoriteRequestBody: String?
             server.routes.post("/graphql") { request, loop in
-                unfavoriteRequestBody = body(of: request)
-                expectUnfavoriteRequest.fulfill()
+                defer { expectUnfavoriteRequest.fulfill() }
+                let apiRequest = ClientAPIRequest(request)
+                XCTAssertTrue(apiRequest.isToUnfavoriteAnItem)
+                XCTAssertTrue(apiRequest.contains("item-2"))
 
-                return Response {
-                    Status.ok
-                    Fixture.data(name: "unfavorite")
-                }
+                return Response.delete()
             }
 
             // Tap the Unfavorite button from overflow menu
             moreButton.tap()
             app.unfavoriteButton.wait().tap()
-
             wait(for: [expectUnfavoriteRequest], timeout: 1)
-            guard let requestBody = unfavoriteRequestBody else {
-                XCTFail("Expected request body to not be nil")
-                return
-            }
-
-            XCTAssertTrue(requestBody.contains("updateSavedItemUnFavorite"))
-            XCTAssertTrue(requestBody.contains("item-2"))
         }
 
         moreButton.tap()

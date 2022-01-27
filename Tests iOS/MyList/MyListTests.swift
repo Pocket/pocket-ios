@@ -11,22 +11,6 @@ class MyListTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
-    func listResponse(_ fixtureName: String = "initial-list") -> Response {
-        Response {
-            Status.ok
-            Fixture.load(name: fixtureName)
-                .replacing("MARTICLE", withFixtureNamed: "marticle")
-                .data
-        }
-    }
-
-    func slateResponse() -> Response {
-        Response {
-            Status.ok
-            Fixture.data(name: "slates")
-        }
-    }
-
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -36,12 +20,16 @@ class MyListTests: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { request, _ in
-            let requestBody = body(of: request)
+            let apiRequest = ClientAPIRequest(request)
 
-            if requestBody!.contains("getSlateLineup")  {
-                return self.slateResponse()
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else {
-                return self.listResponse()
+                fatalError("Unexpected request")
             }
         }
 
@@ -88,11 +76,11 @@ class MyListTests: XCTestCase {
         signInView.signInButton.tap()
 
         app.tabBar.myListButton.wait().tap()
-        let listView = app.userListView.wait()
+        let listView = app.myListView.wait()
 
         do {
             let item = listView
-                .itemView(withLabelStartingWith: "Item 1")
+                .itemView(matching: "Item 1")
                 .wait()
 
             XCTAssertTrue(item.contains(string: "WIRED"))
@@ -101,7 +89,7 @@ class MyListTests: XCTestCase {
 
         do {
             let item = listView
-                .itemView(withLabelStartingWith: "Item 2")
+                .itemView(matching: "Item 2")
                 .wait()
 
             XCTAssertTrue(item.contains(string: "wired.com"))
@@ -111,13 +99,17 @@ class MyListTests: XCTestCase {
     func test_2_subsequentAppLaunch_displaysCachedContent() {
         var promise: EventLoopPromise<Response>?
         server.routes.post("/graphql") { request, loop in
-            let requestBody = body(of: request)
+            let apiRequest = ClientAPIRequest(request)
 
-            if requestBody!.contains("getSlateLineup")  {
-                return self.slateResponse()
-            } else {
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isForMyListContent {
                 promise = loop.makePromise()
                 return promise!.futureResult
+            } else {
+                fatalError("Unexpected request")
             }
         }
 
@@ -126,21 +118,15 @@ class MyListTests: XCTestCase {
             environment: .noSession
         ).tabBar.myListButton.wait().tap()
 
-        let listView = app.userListView.wait()
+        let listView = app.myListView.wait()
         ["Item 1", "Item 2"].forEach { label in
-            listView.itemView(withLabelStartingWith: label).wait()
+            listView.itemView(matching: label).wait()
         }
         XCTAssertEqual(listView.itemCount, 2)
 
-        promise?.succeed(
-            Response {
-                Status.ok
-                Fixture.data(name: "updated-list")
-            }
-        )
-
+        promise?.succeed(Response.myList("updated-list"))
         ["Updated Item 1", "Updated Item 2"].forEach { label in
-            listView.itemView(withLabelStartingWith: label).wait()
+            listView.itemView(matching: label).wait()
         }
         XCTAssertEqual(listView.itemCount, 2)
     }
@@ -149,7 +135,7 @@ class MyListTests: XCTestCase {
         app.launch().tabBar.myListButton.wait().tap()
 
         app
-            .userListView
+            .myListView
             .itemView(at: 0)
             .wait()
             .tap()
@@ -196,7 +182,7 @@ class MyListTests: XCTestCase {
         app.launch().tabBar.myListButton.wait().tap()
 
         app
-            .userListView
+            .myListView
             .itemView(at: 0)
             .wait()
             .tap()
@@ -216,18 +202,22 @@ class MyListTests: XCTestCase {
 
     func test_list_excludesArchivedContent() {
         server.routes.post("/graphql") { request, _ in
-            let requestBody = body(of: request)
+            let apiRequest = ClientAPIRequest(request)
 
-            if requestBody!.contains("getSlateLineup")  {
-                return self.slateResponse()
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList("list-with-archived-item")
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else {
-                return self.listResponse("list-with-archived-item")
+                fatalError("Unexpected request")
             }
         }
 
         app.launch().tabBar.myListButton.wait().tap()
 
-        let listView = app.userListView.wait()
+        let listView = app.myListView.wait()
         listView.itemView(at: 0).wait()
 
         XCTAssertEqual(listView.itemCount, 1)

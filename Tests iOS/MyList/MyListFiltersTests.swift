@@ -21,11 +21,20 @@ class MyListFiltersTests: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { request, _ in
-            Response {
-                Status.ok
-                Fixture.load(name: "initial-list")
-                    .replacing("MARTICLE", withFixtureNamed: "marticle")
-                    .data
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isToFavoriteAnItem {
+                return Response.favorite()
+            } else if apiRequest.isToUnfavoriteAnItem {
+                return Response.unfavorite()
+            } else {
+                fatalError("Unexpected request")
             }
         }
 
@@ -39,15 +48,15 @@ class MyListFiltersTests: XCTestCase {
 
     func testTappingFavoritesPill_showsOnlyFavoritedItems() {
         app.launch().tabBar.myListButton.wait().tap()
-        XCTAssertEqual(app.userListView.wait().itemCells.count, 2)
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
 
-        app.userListView.favoritesButton.tap()
-        XCTAssertEqual(app.userListView.wait().itemCells.count, 0)
+        app.myListView.favoritesButton.tap()
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
 
-        app.userListView.favoritesButton.tap()
-        app.userListView.itemView(at: 0).favoriteButton.tap()
+        app.myListView.favoritesButton.tap()
+        app.myListView.itemView(at: 0).favoriteButton.tap()
 
-        app.userListView.favoritesButton.tap()
-        XCTAssertEqual(app.userListView.wait().itemCells.count, 1)
+        app.myListView.favoritesButton.tap()
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
     }
 }

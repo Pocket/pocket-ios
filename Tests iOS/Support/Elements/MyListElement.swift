@@ -5,19 +5,27 @@
 import XCTest
 
 
-struct UserListElement: PocketUIElement {
+struct MyListElement: PocketUIElement {
     let element: XCUIElement
 
     init(_ element: XCUIElement) {
         self.element = element
     }
 
+    var selectionSwitcher: SelectionSwitcherElement {
+        return SelectionSwitcherElement(element.otherElements["my-list-selection-switcher"])
+    }
+
+    private var collectionView: XCUIElement {
+        element.otherElements["my-list"].collectionViews.firstMatch
+    }
+
     var itemCells: XCUIElementQuery {
-        element.cells.matching(NSPredicate(format: "identifier = %@", "my-list-item"))
+        collectionView.cells.matching(NSPredicate(format: "identifier = %@", "my-list-item"))
     }
 
     var favoritesButton: XCUIElement {
-        element.cells.matching(
+        collectionView.cells.matching(
             NSPredicate(
                 format: "identifier = %@",
                 "topic-chip"
@@ -33,7 +41,7 @@ struct UserListElement: PocketUIElement {
         return ItemRowElement(itemCells.element(boundBy: index))
     }
 
-    func itemView(withLabelStartingWith string: String) -> ItemRowElement {
+    func itemView(matching string: String) -> ItemRowElement {
         let cell = itemCells.containing(
             .staticText,
             identifier: string

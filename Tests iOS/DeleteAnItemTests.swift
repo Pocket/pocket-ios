@@ -10,22 +10,6 @@ class DeleteAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
-    func listResponse(_ fixtureName: String = "initial-list") -> Response {
-        Response {
-            Status.ok
-            Fixture.load(name: fixtureName)
-                .replacing("MARTICLE", withFixtureNamed: "marticle")
-                .data
-        }
-    }
-
-    func slateResponse() -> Response {
-        Response {
-            Status.ok
-            Fixture.data(name: "slates")
-        }
-    }
-
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -33,14 +17,17 @@ class DeleteAnItemTests: XCTestCase {
         app = PocketAppElement(app: uiApp)
 
         server = Application()
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
 
-        server.routes.post("/graphql") { request, _ in
-            let requestBody = body(of: request)
-
-            if requestBody!.contains("getSlateLineup")  {
-                return self.slateResponse()
+            if apiRequest.isForSlateLineup {
+                return .slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return .myList()
+            } else if apiRequest.isForArchivedContent {
+                return .archivedContent()
             } else {
-                return self.listResponse()
+                fatalError("Unexpected request")
             }
         }
 
@@ -58,23 +45,22 @@ class DeleteAnItemTests: XCTestCase {
         app.tabBar.myListButton.wait().tap()
 
         let itemCell = app
-            .userListView
-            .itemView(withLabelStartingWith: "Item 2")
+            .myListView
+            .itemView(matching: "Item 2")
 
         itemCell
             .itemActionButton.wait()
             .tap()
 
         let expectRequest = expectation(description: "A request to the server")
-        var deleteRequestBody: String?
         server.routes.post("/graphql") { request, loop in
-            deleteRequestBody = body(of: request)
-            expectRequest.fulfill()
+            defer { expectRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertFalse(apiRequest.isEmpty)
+            XCTAssertTrue(apiRequest.isToDeleteAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
 
-            return Response {
-                Status.ok
-                Fixture.data(name: "delete")
-            }
+            return Response.delete()
         }
 
         app.deleteButton.wait().tap()
@@ -82,34 +68,27 @@ class DeleteAnItemTests: XCTestCase {
         XCTAssertFalse(itemCell.exists)
 
         wait(for: [expectRequest], timeout: 1)
-        guard let requestBody = deleteRequestBody else {
-            XCTFail("Expected request body to not be nil")
-            return
-        }
-        XCTAssertTrue(requestBody.contains("deleteSavedItem"))
-        XCTAssertTrue(requestBody.contains("item-2"))
     }
 
     func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
         app.tabBar.myListButton.wait().tap()
 
         let itemCell = app
-            .userListView
-            .itemView(withLabelStartingWith: "Item 2")
+            .myListView
+            .itemView(matching: "Item 2")
             .wait()
 
         itemCell.tap()
 
         let expectRequest = expectation(description: "A request to the server")
-        var deleteRequestBody: String?
         server.routes.post("/graphql") { request, loop in
-            deleteRequestBody = body(of: request)
-            expectRequest.fulfill()
+            defer { expectRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertFalse(apiRequest.isEmpty)
+            XCTAssertTrue(apiRequest.isToDeleteAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
 
-            return Response {
-                Status.ok
-                Fixture.data(name: "delete")
-            }
+            return Response.delete()
         }
 
         app
@@ -122,14 +101,8 @@ class DeleteAnItemTests: XCTestCase {
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
         wait(for: [expectRequest], timeout: 1)
-        guard let requestBody = deleteRequestBody else {
-            XCTFail("Expected request body to not be nil")
-            return
-        }
-        XCTAssertTrue(requestBody.contains("deleteSavedItem"))
-        XCTAssertTrue(requestBody.contains("item-2"))
 
-        app.userListView.wait()
+        app.myListView.wait()
         XCTAssertFalse(itemCell.exists)
     }
 }

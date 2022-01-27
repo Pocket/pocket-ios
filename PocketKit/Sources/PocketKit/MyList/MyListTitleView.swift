@@ -40,6 +40,8 @@ class MyListTitleView: UIView {
         
         buttons = selections.enumerated().map { offset, selection -> UIButton in
             let button = MyListSelectionButton()
+            button.accessibilityLabel = selection.title
+            
             let action = UIAction(title: selection.title, image: selection.image) { _ in
                 self.updateSelection(button)
                 selection.handler()
@@ -50,6 +52,8 @@ class MyListTitleView: UIView {
         }
         buttons.forEach(stackView.addArrangedSubview)
         updateSelection(buttons[0])
+
+        accessibilityIdentifier = "my-list-selection-switcher"
     }
     
     override func layoutSubviews() {

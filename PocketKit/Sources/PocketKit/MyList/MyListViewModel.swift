@@ -5,21 +5,9 @@ import Combine
 import UIKit
 
 
-enum MyListSectionID: Int, CaseIterable {
-    case filters
-    case items
-}
+class MyListViewModel: NSObject, ItemsListViewModel {
+    typealias ItemIdentifier = NSManagedObjectID
 
-enum MyListCellID: Hashable {
-    case filterButton(MyListFilterID)
-    case item(NSManagedObjectID)
-}
-
-enum MyListFilterID: String, Hashable, CaseIterable {
-    case favorites = "Favorites"
-}
-
-class MyListViewModel: NSObject {
     private let source: Source
     private let tracker: Tracker
     private let main: MainViewModel
@@ -27,10 +15,11 @@ class MyListViewModel: NSObject {
     private var subscriptions: [AnyCancellable] = []
 
     @Published
-    private var selectedFilters: Set<MyListFilterID>
-    private let availableFilters: [MyListFilterID]
+    private var selectedFilters: Set<ItemListFilter>
+    private let availableFilters: [ItemListFilter]
 
-    let events = MyListEvents()
+    let events: PassthroughSubject<ItemListEvent<ItemIdentifier>, Never> = .init()
+    let selectionItem: SelectionItem = SelectionItem(title: "My List", image: .init(asset: .myList))
 
     var presentedAlert: PocketAlert? {
         get {
@@ -46,7 +35,7 @@ class MyListViewModel: NSObject {
         self.tracker = tracker
         self.main = main
         self.selectedFilters = []
-        self.availableFilters = MyListFilterID.allCases
+        self.availableFilters = ItemListFilter.allCases
         self.itemsController = source.makeItemsController()
 
         super.init()
@@ -54,7 +43,8 @@ class MyListViewModel: NSObject {
         itemsController.delegate = self
 
         self.main.$selectedItem.sink { [weak self] savedItem in
-            self?.events.send(.itemSelected(savedItem))
+            // TODO: Handle deselection here
+//            self?.events.send(.itemSelected(savedItem))
         }.store(in: &subscriptions)
     }
 
@@ -81,7 +71,7 @@ class MyListViewModel: NSObject {
         source.refresh(completion: completion)
     }
 
-    func item(for cellID: MyListCellID) -> MyListItemViewModel? {
+    func item(with cellID: ItemListCell<ItemIdentifier>) -> MyListItemPresenter? {
         guard case .item(let objectID) = cellID else {
             return nil
         }
@@ -89,28 +79,23 @@ class MyListViewModel: NSObject {
         return item(with: objectID)
     }
 
-    func item(with objectID: NSManagedObjectID) -> MyListItemViewModel? {
-        guard let savedItem = bareItem(with: objectID),
+    func item(with itemID: ItemIdentifier) -> MyListItemPresenter? {
+        guard let savedItem = bareItem(with: itemID),
               let indexPath = itemsController.indexPath(forObject: savedItem) else {
                   return nil
               }
 
-        return MyListItemViewModel(
-            item: savedItem,
-            index: indexPath.item,
-            source: source,
-            tracker: tracker
-        )
+        return MyListItemPresenter(item: savedItem)
     }
 
-    func filterButton(with filterID: MyListFilterID) -> TopicChipPresenter {
+    func filterButton(with filterID: ItemListFilter) -> TopicChipPresenter {
         TopicChipPresenter(
             title: filterID.rawValue,
             isSelected: selectedFilters.contains(filterID)
         )
     }
 
-    func selectCell(with cellID: MyListCellID) {
+    func selectCell(with cellID: ItemListCell<ItemIdentifier>) {
         switch cellID {
         case .item(let objectID):
             main.selectedItem = bareItem(with: objectID)
@@ -127,7 +112,7 @@ class MyListViewModel: NSObject {
         }
     }
 
-    func shareItem(with itemID: MyListCellID) {
+    func shareItem(with itemID: ItemListCell<ItemIdentifier>) {
         guard case .item(let objectID) = itemID else {
             return
         }
@@ -143,16 +128,16 @@ class MyListViewModel: NSObject {
         send(snapshot: buildSnapshot())
     }
 
-    private func buildSnapshot() -> NSDiffableDataSourceSnapshot<MyListSectionID, MyListCellID> {
-        var snapshot: NSDiffableDataSourceSnapshot<MyListSectionID, MyListCellID> = .init()
-        snapshot.appendSections(MyListSectionID.allCases)
+    private func buildSnapshot() -> NSDiffableDataSourceSnapshot<ItemListSection, ItemListCell<ItemIdentifier>> {
+        var snapshot: NSDiffableDataSourceSnapshot<ItemListSection, ItemListCell<ItemIdentifier>> = .init()
+        snapshot.appendSections(ItemListSection.allCases)
 
         snapshot.appendItems(
-            MyListFilterID.allCases.map { MyListCellID.filterButton($0) },
+            ItemListFilter.allCases.map { ItemListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
 
-        guard let itemCellIDs = itemsController.fetchedObjects?.map({ MyListCellID.item($0.objectID) }) else {
+        guard let itemCellIDs = itemsController.fetchedObjects?.map({ ItemListCell<ItemIdentifier>.item($0.objectID) }) else {
             return snapshot
         }
 
@@ -160,8 +145,73 @@ class MyListViewModel: NSObject {
         return snapshot
     }
 
-    private func send(snapshot: NSDiffableDataSourceSnapshot<MyListSectionID, MyListCellID>) {
+    private func send(snapshot: NSDiffableDataSourceSnapshot<ItemListSection, ItemListCell<ItemIdentifier>>) {
         events.send(.snapshot(snapshot))
+    }
+    
+    func toggleFavorite(_ cell: ItemListCell<ItemIdentifier>) {
+        withSavedItem(from: cell) { item in
+            if item.isFavorite {
+                self.source.unfavorite(item: item)
+                self.track(item: item, identifier: .itemUnfavorite)
+            } else {
+                self.source.favorite(item: item)
+                self.track(item: item, identifier: .itemFavorite)
+            }
+        }
+    }
+    
+    func archive(_ cell: ItemListCell<ItemIdentifier>) {
+        withSavedItem(from: cell) { item in
+            self.source.archive(item: item)
+            self.track(item: item, identifier: .itemArchive)
+        }
+    }
+    
+    func delete(_ cell: ItemListCell<ItemIdentifier>) {
+        withSavedItem(from: cell) { item in
+            self.source.delete(item: item)
+            self.track(item: item, identifier: .itemDelete)
+        }
+    }
+    
+    func trackImpression(_ cell: ItemListCell<ItemIdentifier>) {
+        withSavedItem(from: cell) { item in
+            guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
+                return
+            }
+            
+            let contexts: [Context] = [
+                UIContext.myList.item(index: UIIndex(indexPath.item)),
+                ContentContext(url: url)
+            ]
+            
+            let event = ImpressionEvent(component: .card, requirement: .instant)
+            self.tracker.track(event: event, contexts)
+        }
+    }
+    
+    private func track(item: SavedItem, identifier: UIContext.Identifier) {
+        guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
+            return
+        }
+
+        let contexts: [Context] = [
+            UIContext.myList.item(index: UIIndex(indexPath.item)),
+            UIContext.button(identifier: identifier),
+            ContentContext(url: url)
+        ]
+
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
+    }
+    
+    private func withSavedItem(from cell: ItemListCell<ItemIdentifier>, handler: ((SavedItem) -> Void)?) {
+        guard case .item(let identifier) = cell, let item = bareItem(with: identifier) else {
+            return
+        }
+        
+        handler?(item)
     }
 }
 
@@ -178,20 +228,11 @@ extension MyListViewModel: NSFetchedResultsControllerDelegate {
         }
 
         var snapshot = buildSnapshot()
-        snapshot.reloadItems([MyListCellID.item(id)])
+        snapshot.reloadItems([ItemListCell<ItemIdentifier>.item(id)])
         send(snapshot: snapshot)
     }
 
     func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
         itemsLoaded()
     }
-}
-
-extension MyListViewModel {
-    enum Event {
-        case itemSelected(SavedItem?)
-        case snapshot(NSDiffableDataSourceSnapshot<MyListSectionID, MyListCellID>)
-    }
-
-    typealias MyListEvents = PassthroughSubject<Event, Never>
 }

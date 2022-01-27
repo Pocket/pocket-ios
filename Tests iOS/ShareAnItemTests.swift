@@ -10,22 +10,6 @@ class ShareAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
-    func listResponse(_ fixtureName: String = "initial-list") -> Response {
-        Response {
-            Status.ok
-            Fixture.load(name: fixtureName)
-                .replacing("MARTICLE", withFixtureNamed: "marticle")
-                .data
-        }
-    }
-
-    func slateResponse() -> Response {
-        Response {
-            Status.ok
-            Fixture.data(name: "slates")
-        }
-    }
-
     override func setUpWithError() throws {
         continueAfterFailure = false
 
@@ -35,12 +19,16 @@ class ShareAnItemTests: XCTestCase {
         server = Application()
 
         server.routes.post("/graphql") { request, _ in
-            let requestBody = body(of: request)
+            let apiRequest = ClientAPIRequest(request)
 
-            if requestBody!.contains("getSlateLineup")  {
-                return self.slateResponse()
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else {
-                return self.listResponse()
+                fatalError("Unexpected request")
             }
         }
 
@@ -58,8 +46,8 @@ class ShareAnItemTests: XCTestCase {
         app.tabBar.myListButton.wait().tap()
 
         app
-            .userListView
-            .itemView(withLabelStartingWith: "Item 2")
+            .myListView
+            .itemView(matching: "Item 2")
             .shareButton.wait()
             .tap()
 
@@ -70,8 +58,8 @@ class ShareAnItemTests: XCTestCase {
         app.tabBar.myListButton.wait().tap()
 
         app
-            .userListView
-            .itemView(withLabelStartingWith: "Item 2")
+            .myListView
+            .itemView(matching: "Item 2")
             .wait()
             .tap()
 

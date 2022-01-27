@@ -128,12 +128,13 @@ class MyListItemCell: UICollectionViewCell {
         accessibilityIdentifier = "my-list-item"
         contentView.backgroundColor = UIColor(.ui.white1)
 
-        menuButton.menu = UIMenu(
-            children: [
-                UIAction(title: "Archive", handler: { [weak self] _ in self?.handleArchive() }),
-                UIAction(title: "Delete", handler: { [weak self] _ in self?.handleDelete() }),
-            ]
-        )
+        let archiveAction = UIAction(title: "Archive", handler: { [weak self] _ in self?.handleArchive() })
+        archiveAction.accessibilityIdentifier = "item-action-menu-archive"
+
+        let deleteAction = UIAction(title: "Delete", handler: { [weak self] _ in self?.handleDelete() })
+        deleteAction.accessibilityIdentifier = "item-action-menu-delete"
+
+        menuButton.menu = UIMenu(children: [archiveAction, deleteAction])
 
         favoriteButton.addAction(UIAction { [weak self] _ in
             self?.handleFavorite()

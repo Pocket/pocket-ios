@@ -34,7 +34,7 @@
 		166BAD092656E76B00E401F0 /* ItemRowElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD042656E76B00E401F0 /* ItemRowElement.swift */; };
 		166BAD0A2656E76B00E401F0 /* SignInFormElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD052656E76B00E401F0 /* SignInFormElement.swift */; };
 		166BAD0B2656E76B00E401F0 /* ReaderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD062656E76B00E401F0 /* ReaderElement.swift */; };
-		166BAD0C2656E76B00E401F0 /* UserListElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD072656E76B00E401F0 /* UserListElement.swift */; };
+		166BAD0C2656E76B00E401F0 /* MyListElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD072656E76B00E401F0 /* MyListElement.swift */; };
 		166BAD0D2656E76B00E401F0 /* PocketAppElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD082656E76B00E401F0 /* PocketAppElement.swift */; };
 		166EFAE8268281F300A027CD /* ReaderToolbarElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */; };
 		166EFAEA2682821300A027CD /* WebReaderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE92682821300A027CD /* WebReaderElement.swift */; };
@@ -47,8 +47,12 @@
 		16A6808126EBC78800A64545 /* HomeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A6808026EBC78800A64545 /* HomeViewElement.swift */; };
 		16BA7D6326851513009A17C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA7D6226851513009A17C1 /* main.swift */; };
 		16BA7D6626851579009A17C1 /* PocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16BA7D6526851579009A17C1 /* PocketKit */; };
+		16BB40A8279F436100FE8650 /* SelectionSwitcherElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */; };
 		16C2B03F270CF82700D194AA /* RecommendationCellElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C2B03E270CF82700D194AA /* RecommendationCellElement.swift */; };
+		16D76883279F3C73004A3694 /* ArchiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16D76882279F3C73004A3694 /* ArchiveTests.swift */; };
 		16E32B0226851AEB000CC36D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 16D47E7F26851AB40095D5A4 /* Assets.xcassets */; };
+		16E4B16D27A31BEC00E01746 /* RequestMatchers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E4B16C27A31BEC00E01746 /* RequestMatchers.swift */; };
+		16E4B16F27A3212900E01746 /* Response+factories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E4B16E27A3212900E01746 /* Response+factories.swift */; };
 		16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */; };
 		16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */; };
 		F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20BB0382744542F00AE5E70 /* AlertElement.swift */; };
@@ -100,7 +104,7 @@
 		166BAD042656E76B00E401F0 /* ItemRowElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ItemRowElement.swift; sourceTree = "<group>"; };
 		166BAD052656E76B00E401F0 /* SignInFormElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignInFormElement.swift; sourceTree = "<group>"; };
 		166BAD062656E76B00E401F0 /* ReaderElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderElement.swift; sourceTree = "<group>"; };
-		166BAD072656E76B00E401F0 /* UserListElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserListElement.swift; sourceTree = "<group>"; };
+		166BAD072656E76B00E401F0 /* MyListElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyListElement.swift; sourceTree = "<group>"; };
 		166BAD082656E76B00E401F0 /* PocketAppElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PocketAppElement.swift; sourceTree = "<group>"; };
 		166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderToolbarElement.swift; sourceTree = "<group>"; };
 		166EFAE92682821300A027CD /* WebReaderElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebReaderElement.swift; sourceTree = "<group>"; };
@@ -112,8 +116,12 @@
 		16A6807E26EBC71300A64545 /* TabBarElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarElement.swift; sourceTree = "<group>"; };
 		16A6808026EBC78800A64545 /* HomeViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewElement.swift; sourceTree = "<group>"; };
 		16BA7D6226851513009A17C1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionSwitcherElement.swift; sourceTree = "<group>"; };
 		16C2B03E270CF82700D194AA /* RecommendationCellElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationCellElement.swift; sourceTree = "<group>"; };
 		16D47E7F26851AB40095D5A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		16D76882279F3C73004A3694 /* ArchiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveTests.swift; sourceTree = "<group>"; };
+		16E4B16C27A31BEC00E01746 /* RequestMatchers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestMatchers.swift; sourceTree = "<group>"; };
+		16E4B16E27A3212900E01746 /* Response+factories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+factories.swift"; sourceTree = "<group>"; };
 		16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefreshTests.swift; sourceTree = "<group>"; };
 		16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveAnItemTests.swift; sourceTree = "<group>"; };
 		F20BB0382744542F00AE5E70 /* AlertElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertElement.swift; sourceTree = "<group>"; };
@@ -149,6 +157,7 @@
 			children = (
 				166A81C42637406C0015AA1D /* MyListTests.swift */,
 				164FB66D278F7ECC002959D6 /* MyListFiltersTests.swift */,
+				16D76882279F3C73004A3694 /* ArchiveTests.swift */,
 			);
 			path = MyList;
 			sourceTree = "<group>";
@@ -179,10 +188,10 @@
 		166A81C32637406C0015AA1D /* Tests iOS */ = {
 			isa = PBXGroup;
 			children = (
-				164FB66C278F7E52002959D6 /* MyList */,
 				166A81C62637406C0015AA1D /* Info.plist */,
 				166BACF92656E6A500E401F0 /* Support */,
 				166BACF52656E34B00E401F0 /* Fixtures */,
+				164FB66C278F7E52002959D6 /* MyList */,
 				1674057626CAC35F0061434E /* DeleteAnItemTests.swift */,
 				16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */,
 				168292C726CC64C300830140 /* ShareAnItemTests.swift */,
@@ -203,6 +212,8 @@
 				1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */,
 				F2A5B6B3271E03B300FB8BF2 /* LaunchArguments.swift */,
 				F2A5B6B5271E03C400FB8BF2 /* LaunchEnvironment.swift */,
+				16E4B16C27A31BEC00E01746 /* RequestMatchers.swift */,
+				16E4B16E27A3212900E01746 /* Response+factories.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -216,7 +227,7 @@
 				166BAD062656E76B00E401F0 /* ReaderElement.swift */,
 				166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */,
 				166BAD052656E76B00E401F0 /* SignInFormElement.swift */,
-				166BAD072656E76B00E401F0 /* UserListElement.swift */,
+				166BAD072656E76B00E401F0 /* MyListElement.swift */,
 				166EFAE92682821300A027CD /* WebReaderElement.swift */,
 				166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */,
 				16A6807E26EBC71300A64545 /* TabBarElement.swift */,
@@ -226,6 +237,7 @@
 				F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */,
 				1613B2B2275571940014F301 /* SettingsViewElement.swift */,
 				F20BB0382744542F00AE5E70 /* AlertElement.swift */,
+				16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */,
 			);
 			path = Elements;
 			sourceTree = "<group>";
@@ -394,7 +406,8 @@
 			files = (
 				1674057726CAC35F0061434E /* DeleteAnItemTests.swift in Sources */,
 				1613B2B12755696B0014F301 /* SignOutTests.swift in Sources */,
-				166BAD0C2656E76B00E401F0 /* UserListElement.swift in Sources */,
+				16E4B16D27A31BEC00E01746 /* RequestMatchers.swift in Sources */,
+				166BAD0C2656E76B00E401F0 /* MyListElement.swift in Sources */,
 				F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */,
 				166BAD0D2656E76B00E401F0 /* PocketAppElement.swift in Sources */,
 				164FB66E278F7ECC002959D6 /* MyListFiltersTests.swift in Sources */,
@@ -408,8 +421,11 @@
 				16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */,
 				F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */,
 				166EFAE8268281F300A027CD /* ReaderToolbarElement.swift in Sources */,
+				16D76883279F3C73004A3694 /* ArchiveTests.swift in Sources */,
 				1613B2B3275571940014F301 /* SettingsViewElement.swift in Sources */,
+				16BB40A8279F436100FE8650 /* SelectionSwitcherElement.swift in Sources */,
 				F2A5B6B4271E03B300FB8BF2 /* LaunchArguments.swift in Sources */,
+				16E4B16F27A3212900E01746 /* Response+factories.swift in Sources */,
 				166EFAEA2682821300A027CD /* WebReaderElement.swift in Sources */,
 				16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */,
 				160056F326CC7FFD00700A80 /* FavoriteAnItemTests.swift in Sources */,
