@@ -30,25 +30,10 @@ private extension Style {
         }
 }
 
-protocol MyListItemDomainMetadata {
-    var name: String? { get }
-}
+class ItemsListItemPresenter {
+    private let item: ItemsListItem
 
-protocol MyListItem {
-    var title: String? { get }
-    var isFavorite: Bool { get }
-    var bestURL: URL? { get }
-    var topImageURL: URL? { get }
-    var domain: String? { get }
-
-    var domainMetadata: MyListItemDomainMetadata? { get }
-    var timeToRead: Int? { get }
-}
-
-class MyListItemPresenter {
-    private let item: MyListItem
-
-    init(item: MyListItem) {
+    init(item: ItemsListItem) {
         self.item = item
     }
 
@@ -110,52 +95,4 @@ class MyListItemPresenter {
     private var isFavorite: Bool {
         item.isFavorite
     }
-}
-
-extension SavedItem: MyListItem {
-    var topImageURL: URL? {
-        item?.topImageURL
-    }
-
-    var timeToRead: Int? {
-        item.flatMap { Int($0.timeToRead) }
-    }
-
-    var domainMetadata: MyListItemDomainMetadata? {
-        return item?.domainMetadata
-    }
-}
-
-extension DomainMetadata: MyListItemDomainMetadata {
-
-}
-
-extension ArchivedItem: MyListItem {
-    var title: String? {
-        item?.title
-    }
-
-    var bestURL: URL? {
-        item?.resolvedURL ?? item?.givenURL ?? url
-    }
-
-    var topImageURL: URL? {
-        item?.topImageURL
-    }
-
-    var domain: String? {
-        item?.domain
-    }
-
-    var domainMetadata: MyListItemDomainMetadata? {
-        item?.domainMetadata
-    }
-
-    var timeToRead: Int? {
-        item?.timeToRead
-    }
-}
-
-extension UnmanagedItem.DomainMetadata: MyListItemDomainMetadata {
-
 }

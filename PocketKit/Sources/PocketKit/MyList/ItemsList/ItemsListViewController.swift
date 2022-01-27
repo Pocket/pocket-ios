@@ -5,54 +5,11 @@ import Combine
 import Kingfisher
 
 
-enum ItemListSection: Int, CaseIterable {
-    case filters
-    case items
-}
-
-enum ItemListCell<ItemIdentifier: Hashable>: Hashable {
-    case filterButton(ItemListFilter)
-    case item(ItemIdentifier)
-}
-
-enum ItemListFilter: String, Hashable, CaseIterable {
-    case favorites = "Favorites"
-}
-
-enum ItemListEvent<ItemIdentifier: Hashable> {
-    case deselectEverythingRenameMe
-    case snapshot(NSDiffableDataSourceSnapshot<ItemListSection, ItemListCell<ItemIdentifier>>)
-}
-
-protocol ItemsListViewModel: AnyObject {
-    associatedtype ItemIdentifier: Hashable
-
-    var events: PassthroughSubject<ItemListEvent<ItemIdentifier>, Never> { get }
-    var presentedAlert: PocketAlert? { get set }
-    var selectionItem: SelectionItem { get }
-
-    func fetch() throws
-    func refresh(_ completion: (() -> ())?)
-    
-    func item(with cellID: ItemListCell<ItemIdentifier>) -> MyListItemPresenter?
-    func item(with itemID: ItemIdentifier) -> MyListItemPresenter?
-    func filterButton(with id: ItemListFilter) -> TopicChipPresenter
-    func selectCell(with: ItemListCell<ItemIdentifier>)
-    func shareItem(with: ItemListCell<ItemIdentifier>)
-    
-    func toggleFavorite(_ cell: ItemListCell<ItemIdentifier>)
-    func archive(_ cell: ItemListCell<ItemIdentifier>)
-    func delete(_ cell: ItemListCell<ItemIdentifier>)
-    func trackImpression(_ cell: ItemListCell<ItemIdentifier>)
-}
-
-
-class MyListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate {
-   
+class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate {
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
     private var collectionView: UICollectionView!
-    private var dataSource: UICollectionViewDiffableDataSource<ItemListSection, ItemListCell<ViewModel.ItemIdentifier>>!
+    private var dataSource: UICollectionViewDiffableDataSource<ItemsListSection, ItemsListCell<ViewModel.ItemIdentifier>>!
 
     init(model: ViewModel) {
         self.model = model
@@ -137,11 +94,11 @@ class MyListViewController<ViewModel: ItemsListViewModel>: UIViewController, UIC
             })
         )
 
-        let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemListFilter> = .init { [weak self] cell, indexPath, filterID in
+        let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemsListFilter> = .init { [weak self] cell, indexPath, filterID in
             self?.configure(cell: cell, indexPath: indexPath, filterID: filterID)
         }
 
-        let itemCellRegistration: UICollectionView.CellRegistration<MyListItemCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
+        let itemCellRegistration: UICollectionView.CellRegistration<ItemsListItemCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
             self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
         }
 
@@ -184,7 +141,7 @@ class MyListViewController<ViewModel: ItemsListViewModel>: UIViewController, UIC
         }
     }
 
-    private func configure(cell: MyListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
+    private func configure(cell: ItemsListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
         guard let item = model.item(with: objectID) else {
             return
         }
@@ -200,11 +157,11 @@ class MyListViewController<ViewModel: ItemsListViewModel>: UIViewController, UIC
         )
     }
 
-    private func configure(cell: TopicChipCell, indexPath: IndexPath, filterID: ItemListFilter) {
+    private func configure(cell: TopicChipCell, indexPath: IndexPath, filterID: ItemsListFilter) {
         cell.configure(model: model.filterButton(with: filterID))
     }
 
-    private func handle(myListEvent event: ItemListEvent<ViewModel.ItemIdentifier>) {
+    private func handle(myListEvent event: ItemsListEvent<ViewModel.ItemIdentifier>) {
         switch event {
         case .snapshot(let snapshot):
             dataSource.apply(snapshot, animatingDifferences: true)
@@ -238,20 +195,20 @@ class MyListViewController<ViewModel: ItemsListViewModel>: UIViewController, UIC
     }
 }
 
-extension MyListViewController: MyListItemCellDelegate {
-    func myListItemCellDidTapFavoriteButton(_ itemCell: MyListItemCell) {
+extension ItemsListViewController: ItemsListItemCellDelegate {
+    func myListItemCellDidTapFavoriteButton(_ itemCell: ItemsListItemCell) {
         withCell(for: itemCell, handler: model.toggleFavorite)
     }
 
-    func myListItemCellDidTapShareButton(_ itemCell: MyListItemCell) {
+    func myListItemCellDidTapShareButton(_ itemCell: ItemsListItemCell) {
         withCell(for: itemCell, handler: model.shareItem)
     }
     
-    func myListItemCellDidTapArchiveButton(_ itemCell: MyListItemCell) {
+    func myListItemCellDidTapArchiveButton(_ itemCell: ItemsListItemCell) {
         withCell(for: itemCell, handler: model.archive)
     }
 
-    func myListItemCellDidTapDeleteButton(_ itemCell: MyListItemCell) {
+    func myListItemCellDidTapDeleteButton(_ itemCell: ItemsListItemCell) {
         model.presentedAlert = PocketAlert(
             title: "Are you sure you want to delete this item?",
             message: nil,
@@ -269,7 +226,7 @@ extension MyListViewController: MyListItemCellDelegate {
         )
     }
 
-    private func withCell(for itemCell: MyListItemCell, handler: ((ItemListCell<ViewModel.ItemIdentifier>) -> Void)?) {
+    private func withCell(for itemCell: ItemsListItemCell, handler: ((ItemsListCell<ViewModel.ItemIdentifier>) -> Void)?) {
         guard let indexPath = collectionView.indexPath(for: itemCell),
               let cell = dataSource.itemIdentifier(for: indexPath) else {
                   return
@@ -279,7 +236,7 @@ extension MyListViewController: MyListItemCellDelegate {
     }
 }
 
-extension MyListViewController: SelectableViewController {
+extension ItemsListViewController: SelectableViewController {
     var selectionItem: SelectionItem {
         return model.selectionItem
     }

@@ -36,15 +36,15 @@ class CompactMainCoordinator: NSObject {
 
         let myListContainer = MyListContainerViewController(
             viewControllers: [
-                MyListViewController(
-                    model: MyListViewModel(
+                ItemsListViewController(
+                    model: SavedItemsListViewModel(
                         source: source,
                         tracker: tracker.childTracker(hosting: .myList.screen),
                         main: model
                     )
                 ),
-                MyListViewController(
-                    model: ArchiveViewModel(source: source)
+                ItemsListViewController(
+                    model: ArchivedItemsListViewModel(source: source)
                 )
             ]
         )
