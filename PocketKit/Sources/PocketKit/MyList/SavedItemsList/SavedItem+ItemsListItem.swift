@@ -3,6 +3,14 @@ import Foundation
 
 
 extension SavedItem: ItemsListItem {
+    var domain: String? {
+        item?.domain
+    }
+
+    var title: String? {
+        item?.title
+    }
+
     var topImageURL: URL? {
         item?.topImageURL
     }

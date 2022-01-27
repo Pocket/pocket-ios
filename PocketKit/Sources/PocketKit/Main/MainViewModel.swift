@@ -7,15 +7,15 @@ import BackgroundTasks
 class MainViewModel: ObservableObject {
     @Published
     var selectedSection: AppSection = .home
-
-    @Published
-    var selectedItem: SavedItem?
-
-    @Published
-    var selectedRecommendation: Slate.Recommendation?
     
     @Published
     var selectedRecommendationToReport: Slate.Recommendation?
+    
+    @Published
+    var selectedMyListReadableViewModel: ReadableViewModel?
+    
+    @Published
+    var selectedHomeReadableViewModel: ReadableViewModel?
 
     @Published
     var selectedSlateID: String?

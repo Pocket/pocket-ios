@@ -4,7 +4,7 @@ import UIKit
 
 class VimeoComponentPresenter: ArticleComponentPresenter {
     private let oEmbedService: OEmbedService
-    private let readable: Readable?
+    private let readableViewModel: ReadableViewModel?
     private let component: VideoComponent
     private let mainViewModel: MainViewModel
 
@@ -14,13 +14,13 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
 
     init(
         oEmbedService: OEmbedService,
-        readable: Readable?,
+        readableViewModel: ReadableViewModel?,
         component: VideoComponent,
         mainViewModel: MainViewModel,
         onContentLoaded: @escaping () -> Void
     ) {
         self.oEmbedService = oEmbedService
-        self.readable = readable
+        self.readableViewModel = readableViewModel
         self.component = component
         self.mainViewModel = mainViewModel
         self.onContentLoaded = onContentLoaded
@@ -88,7 +88,7 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
 
 extension VimeoComponentPresenter: VimeoComponentCellDelegate {
     func vimeoComponentCellDidTapOpenInWebView(_ cell: VimeoComponentCell) {
-        mainViewModel.presentedWebReaderURL = readable?.readerURL
+        mainViewModel.presentedWebReaderURL = readableViewModel?.url
     }
 
     func vimeoComponentCell(_ cell: VimeoComponentCell, didNavigateToURL url: URL) {

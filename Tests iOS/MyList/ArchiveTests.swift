@@ -52,6 +52,25 @@ class ArchiveTests: XCTestCase {
         XCTAssertFalse(myList.itemView(matching: "Item 1").exists)
         XCTAssertFalse(myList.itemView(matching: "Item 2").exists)
     }
+
+    func test_tappingItem_displaysNativeReaderView() {
+        app.launch().tabBar.myListButton.wait().tap()
+        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+        app.myListView.itemView(at: 0).wait().tap()
+
+        let expectedContent = [
+            "Archived Item 1",
+            "Socrates",
+            "January 1, 2001",
+        ]
+
+        for expectedString in expectedContent {
+            app
+                .readerView
+                .cell(containing: expectedString)
+                .wait()
+        }
+    }
 }
 
 private func requestIsForArchivedContent(_ request: Request) -> Bool {

@@ -37,16 +37,16 @@ private extension Style {
 }
 
 struct ArticleMetadataPresenter {
-    private let readable: Readable
+    private let readableViewModel: ReadableViewModel
     private let readerSettings: ReaderSettings
 
-    init(readable: Readable, readerSettings: ReaderSettings) {
-        self.readable = readable
+    init(readableViewModel: ReadableViewModel, readerSettings: ReaderSettings) {
+        self.readableViewModel = readableViewModel
         self.readerSettings = readerSettings
     }
 
     var attributedTitle: NSAttributedString? {
-        guard let title = readable.title else {
+        guard let title = readableViewModel.title else {
             return nil
         }
 
@@ -57,7 +57,7 @@ struct ArticleMetadataPresenter {
         let byline = NSMutableAttributedString()
         let style = Style.byline(modifier: readerSettings)
 
-        if let authors = readable.authors, !authors.isEmpty {
+        if let authors = readableViewModel.authors, !authors.isEmpty {
             let authorNames = authors.compactMap { $0.name }
             let authorNamesString = ListFormatter.localizedString(byJoining: authorNames) as NSString
             let attributedAuthorNames = NSMutableAttributedString(string: authorNamesString as String, style: style)
@@ -65,7 +65,7 @@ struct ArticleMetadataPresenter {
             byline.append(attributedAuthorNames)
         }
 
-        if let domain = readable.domain {
+        if let domain = readableViewModel.domain {
             if !byline.string.isEmpty {
                 byline.append(NSAttributedString(string: " • ", style: style))
             }
@@ -77,7 +77,7 @@ struct ArticleMetadataPresenter {
     }
 
     var attributedPublishedDate: NSAttributedString? {
-        readable.publishDate
+        readableViewModel.publishDate
             .flatMap { $0.formatted(date: .long, time: .omitted) }
             .flatMap { NSAttributedString(string: $0, style: .publishedDate(modifier: readerSettings)) }
     }

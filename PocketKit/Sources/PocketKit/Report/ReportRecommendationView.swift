@@ -99,7 +99,7 @@ struct ReportRecommendationView: View {
     }
     
     private func report(_ reason: ReportEvent.Reason) {
-        guard let url = recommendation.readerURL else {
+        guard let url = url(for: recommendation) else {
             return
         }
 
@@ -115,6 +115,10 @@ struct ReportRecommendationView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             dismiss()
         }
+    }
+    
+    private func url(for recommendation: Slate.Recommendation) -> URL? {
+        recommendation.item.resolvedURL ?? recommendation.item.givenURL
     }
     
     private func selectionColor(for reason: ReportEvent.Reason) -> Color {

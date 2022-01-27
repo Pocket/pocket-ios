@@ -7,7 +7,7 @@ import UIKit
 /// Wrapping items in a `UIActivityItemSource` is a signal that tells
 /// the system that we want some separation between the items being shared.
 ///
-/// See usages in ArticleViewController for more info.
+/// See usages in ReadableViewController for more info.
 ///
 class ActivityItemSource: NSObject, UIActivityItemSource {
     private let item: Any

@@ -42,7 +42,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         itemsController.delegate = self
 
-        self.main.$selectedItem.sink { _ in
+        self.main.$selectedMyListReadableViewModel.sink { _ in
             // TODO: Handle deselection here
         }.store(in: &subscriptions)
     }
@@ -92,7 +92,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func selectCell(with cellID: ItemsListCell<ItemIdentifier>) {
         switch cellID {
         case .item(let objectID):
-            main.selectedItem = bareItem(with: objectID)
+            guard let item = bareItem(with: objectID) else {
+                return 
+            }
+            let viewModel = SavedItemViewModel(item: item, source: source)
+            main.selectedMyListReadableViewModel = viewModel
         case .filterButton(let filterID):
             if selectedFilters.contains(filterID) {
                 selectedFilters.remove(filterID)
@@ -111,7 +115,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return
         }
 
-        main.sharedActivity = bareItem(with: objectID).flatMap { PocketItemActivity(item: $0) }
+        main.sharedActivity = bareItem(with: objectID).flatMap { PocketItemActivity(url: $0.url) }
     }
 
     private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
