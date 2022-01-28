@@ -64,9 +64,8 @@ class ArchiveAnItemTests: XCTestCase {
         }
 
         app.archiveButton.wait().tap()
-        XCTAssertFalse(itemCell.exists)
-
         wait(for: [expectRequest], timeout: 1)
+        waitForDisappearance(of: itemCell)
     }
 
     func test_archivingAnItemFromReader_archivesItem_andPopsBackToList() {
@@ -95,9 +94,8 @@ class ArchiveAnItemTests: XCTestCase {
 
         app.archiveButton.wait().tap()
 
-        listView.wait()
-        XCTAssertFalse(itemCell.exists)
-
         wait(for: [expectRequest], timeout: 1)
+        listView.wait()
+        waitForDisappearance(of: itemCell)
     }
 }

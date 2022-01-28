@@ -65,9 +65,8 @@ class DeleteAnItemTests: XCTestCase {
 
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
-        XCTAssertFalse(itemCell.exists)
-
         wait(for: [expectRequest], timeout: 1)
+        waitForDisappearance(of: itemCell)
     }
 
     func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
@@ -103,6 +102,6 @@ class DeleteAnItemTests: XCTestCase {
         wait(for: [expectRequest], timeout: 1)
 
         app.myListView.wait()
-        XCTAssertFalse(itemCell.exists)
+        waitForDisappearance(of: itemCell)
     }
 }
