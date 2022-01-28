@@ -13,7 +13,16 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 
     private let source: Source
     private let mainViewModel: MainViewModel
-    private var archivedItems: [String: ArchivedItem] = [:]
+
+    private var archivedItems: [ArchivedItem] = [] {
+        didSet {
+            archivedItemsByID = archivedItems.reduce(into: [:]) { dict, archivedItem in
+                dict[archivedItem.remoteID] = archivedItem
+            }
+        }
+    }
+    private var archivedItemsByID: [String: ArchivedItem] = [:]
+
 
     @Published
     private var selectedFilters: Set<ItemsListFilter> = .init()
@@ -26,10 +35,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     func fetch() async throws {
-        let items = try await source.fetchArchivedItems()
-        archivedItems = items.reduce(into: [:]) { partialResult, archivedItem in
-            partialResult[archivedItem.remoteID] = archivedItem
-        }
+        archivedItems = try await source.fetchArchivedItems()
 
         let snapshot = buildSnapshot()
         events.send(.snapshot(snapshot))
@@ -51,7 +57,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     func item(with itemID: String) -> ItemsListItemPresenter? {
-        archivedItems[itemID].flatMap(ItemsListItemPresenter.init)
+        archivedItemsByID[itemID].flatMap(ItemsListItemPresenter.init)
     }
 
     func fetch() throws {
@@ -66,7 +72,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 
     func selectCell(with cell: ItemsListCell<ItemIdentifier>) {
         guard case .item(let archivedItemID) = cell,
-        let archivedItem = archivedItems[archivedItemID] else {
+        let archivedItem = archivedItemsByID[archivedItemID] else {
             return
         }
         
@@ -87,7 +93,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             toSection: .filters
         )
 
-        let itemCellIDs = archivedItems.keys.map { ItemsListCell<ItemIdentifier>.item($0) }
+        let itemCellIDs = archivedItems.map { ItemsListCell<ItemIdentifier>.item($0.remoteID) }
         snapshot.appendItems(itemCellIDs, toSection: .items)
         return snapshot
     }

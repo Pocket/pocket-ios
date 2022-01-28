@@ -56,7 +56,7 @@ class ArchiveTests: XCTestCase {
     func test_tappingItem_displaysNativeReaderView() {
         app.launch().tabBar.myListButton.wait().tap()
         app.myListView.selectionSwitcher.archiveButton.wait().tap()
-        app.myListView.itemView(matching: "Archived Item 1").wait().tap()
+        app.myListView.itemView(at: 0).wait().tap()
 
         let expectedContent = [
             "Archived Item 1",
