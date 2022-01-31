@@ -55,4 +55,22 @@ extension ReadableAction {
             handler: handler
         )
     }
+    
+    static func displaySettings(_ handler: @escaping () -> ()) -> ReadableAction {
+        return ReadableAction(
+            title: "Display Settings",
+            accessibilityIdentifier: "item-action-menu-display-settings",
+            image: UIImage(systemName: "textformat.size"),
+            handler: handler
+        )
+    }
+    
+    static func share(_ handler: @escaping () -> ()) -> ReadableAction {
+        return ReadableAction(
+            title: "Share",
+            accessibilityIdentifier: "item-action-menu-share",
+            image: UIImage(systemName: "square.and.arrow.up"),
+            handler: handler
+        )
+    }
 }

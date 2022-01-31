@@ -95,7 +95,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             guard let item = bareItem(with: objectID) else {
                 return 
             }
-            let viewModel = SavedItemViewModel(item: item, source: source)
+            let viewModel = SavedItemViewModel(
+                item: item,
+                source: source,
+                mainViewModel: main,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
             main.selectedMyListReadableViewModel = viewModel
         case .filterButton(let filterID):
             if selectedFilters.contains(filterID) {

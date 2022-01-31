@@ -52,7 +52,7 @@ class RegularMainCoordinator: NSObject {
                     )
                 ),
                 ItemsListViewController(
-                    model: ArchivedItemsListViewModel(source: source, mainViewModel: model)
+                    model: ArchivedItemsListViewModel(source: source, mainViewModel: model, tracker: tracker.childTracker(hosting: .myList.screen))
                 )
             ]
         )
@@ -172,9 +172,7 @@ class RegularMainCoordinator: NSObject {
     func showMyList(viewModel: ReadableViewModel) {
         let viewController = ReadableHostViewController(
             mainViewModel: model,
-            readableViewModel: viewModel,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            source: source
+            readableViewModel: viewModel
         )
         readerRoot.viewControllers = [viewController]
 
@@ -184,9 +182,7 @@ class RegularMainCoordinator: NSObject {
     func showHome(viewModel: ReadableViewModel) {
         let viewController = ReadableHostViewController(
             mainViewModel: model,
-            readableViewModel: viewModel,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            source: source
+            readableViewModel: viewModel
         )
         readerRoot.viewControllers = [viewController]
 
@@ -225,12 +221,14 @@ class RegularMainCoordinator: NSObject {
     }
     
     func show(archivedItem: ArchivedItem) {
-        let viewModel = ArchivedItemViewModel(item: archivedItem)
+        let viewModel = ArchivedItemViewModel(
+            item: archivedItem,
+            mainViewModel: model,
+            tracker: tracker.childTracker(hosting: .articleView.screen)
+        )
         let viewController = ReadableHostViewController(
             mainViewModel: model,
-            readableViewModel: viewModel,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            source: source
+            readableViewModel: viewModel
         )
         readerRoot.viewControllers = [viewController]
         

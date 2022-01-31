@@ -7,8 +7,8 @@ import Kingfisher
 
 
 protocol ReadableViewControllerDelegate: AnyObject {
-    func readableViewController(_ controller: ReadableViewController, willOpenURL url: URL)
-    func readableViewControlled(_ controller: ReadableViewController, shareWithAdditionalText text: String?)
+    func readableViewController(_ controller: ReadableViewController, openURL url: URL)
+    func readableViewController(_ controller: ReadableViewController, shareWithAdditionalText text: String?)
 }
 
 class ReadableViewController: UIViewController {
@@ -45,7 +45,6 @@ class ReadableViewController: UIViewController {
     }
 
     private let readerSettings: ReaderSettings
-    private let tracker: Tracker
     private let viewModel: MainViewModel
 
     private var subscriptions: [AnyCancellable] = []
@@ -59,9 +58,8 @@ class ReadableViewController: UIViewController {
         return self.buildSection(index: $0, environment: $1)
     }
 
-    init(readerSettings: ReaderSettings, tracker: Tracker, viewModel: MainViewModel) {
+    init(readerSettings: ReaderSettings, viewModel: MainViewModel) {
         self.readerSettings = readerSettings
-        self.tracker = tracker
         self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
@@ -159,6 +157,10 @@ extension ReadableViewController: UICollectionViewDataSource {
                 return empty
             }
             
+            if let cell = cell as? ArticleComponentTextCell {
+                cell.delegate = self
+            }
+            
             return cell
         }
     }
@@ -169,15 +171,15 @@ extension ReadableViewController: ArticleComponentTextCellDelegate {
         _ cell: ArticleComponentTextCell,
         didShareText selectedText: String?
     ) {
-        delegate?.readableViewControlled(self, shareWithAdditionalText: selectedText)
+        delegate?.readableViewController(self, shareWithAdditionalText: selectedText)
     }
     
     func articleComponentTextCell(
         _ cell: ArticleComponentTextCell,
         shouldOpenURL url: URL
     ) -> Bool {
-        delegate?.readableViewController(self, willOpenURL: url)
-        return true
+        delegate?.readableViewController(self, openURL: url)
+        return false
     }
 }
 
