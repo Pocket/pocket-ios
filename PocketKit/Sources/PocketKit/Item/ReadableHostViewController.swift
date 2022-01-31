@@ -11,7 +11,6 @@ protocol ReadableHostViewControllerDelegate: AnyObject {
 }
 
 class ReadableHostViewController: UIViewController {
-    private let tracker: Tracker
     private let moreButtonItem: UIBarButtonItem
     private var subscriptions: [AnyCancellable] = []
 
@@ -22,13 +21,10 @@ class ReadableHostViewController: UIViewController {
 
     init(
         mainViewModel: MainViewModel,
-        readableViewModel: ReadableViewModel,
-        tracker: Tracker,
-        source: Source
+        readableViewModel: ReadableViewModel
     ) {
         self.mainViewModel = mainViewModel
         self.readableViewModel = readableViewModel
-        self.tracker = tracker
         self.moreButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "ellipsis"),
             menu: nil
@@ -50,9 +46,12 @@ class ReadableHostViewController: UIViewController {
             )
         ]
         
-        readableViewModel.delegate = self
         readableViewModel.actions.sink { [weak self] actions in
             self?.buildOverflowMenu(from: actions)
+        }.store(in: &subscriptions)
+        
+        readableViewModel.events.sink { [weak self] event in
+            self?.handleEvent(event)
         }.store(in: &subscriptions)
     }
 
@@ -61,11 +60,10 @@ class ReadableHostViewController: UIViewController {
         
         let readableViewController = ReadableViewController(
             readerSettings: mainViewModel.readerSettings,
-            tracker: tracker,
             viewModel: mainViewModel
         )
         readableViewController.readableViewModel = readableViewModel
-        readableViewController.delegate = self
+        readableViewController.delegate = readableViewModel
 
         readableViewController.willMove(toParent: self)
         addChild(readableViewController)
@@ -84,32 +82,11 @@ class ReadableHostViewController: UIViewController {
     func buildOverflowMenu(from actions: [ReadableAction]) {
         var menuActions: [UIAction] = []
         
-        menuActions.append(
-            UIAction(
-                title: "Display Settings",
-                image: UIImage(systemName: "textformat.size"),
-                handler: { [weak self] _ in
-                    self?.showReaderSettings()
-                }
-            )
-        )
-        
         actions.forEach { action in
             let uiAction = UIAction(title: action.title,image: action.image) { _ in action.handler?() }
             uiAction.accessibilityIdentifier = action.accessibilityIdentifier
             menuActions.append(uiAction)
         }
-        
-        menuActions.append(
-            UIAction(
-                title: "Share",
-                image: UIImage(systemName: "square.and.arrow.up"),
-                handler: { [weak self] _ in
-                    self?.share()
-                }
-            )
-        )
-        
         
         moreButtonItem.menu = UIMenu(
             image: nil,
@@ -128,11 +105,6 @@ class ReadableHostViewController: UIViewController {
         mainViewModel.presentedWebReaderURL = readableViewModel.url
     }
 
-    @objc
-    private func showReaderSettings() {
-        mainViewModel.isPresentingReaderSettings = true
-    }
-
     var popoverAnchor: UIBarButtonItem? {
         navigationItem.rightBarButtonItems?[0]
     }
@@ -140,83 +112,13 @@ class ReadableHostViewController: UIViewController {
 
 // MARK: - Item Actions
 
-extension ReadableHostViewController: ReadableViewModelDelegate {
-    func readableViewModelDidFavorite(_ readableViewModel: ReadableViewModel) {
-        track(identifier: .itemFavorite, url: readableViewModel.url)
-    }
-
-    func readableViewModelDidUnfavorite(_ readableViewModel: ReadableViewModel) {
-        track(identifier: .itemUnfavorite, url: readableViewModel.url)
-    }
-
-    func readableViewModelDidArchive(_ readableViewModel: ReadableViewModel) {
-        delegate?.readableHostViewControllerDidArchiveItem()
-        track(identifier: .itemArchive, url: readableViewModel.url)
-    }
-
-    func readableViewModelDidDelete(_ readableViewModel: ReadableViewModel) {
-        let actions = [
-            UIAlertAction(title: "No", style: .default) { [weak self] _ in
-                self?.mainViewModel.presentedAlert = nil
-            },
-            UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
-                self?.mainViewModel.presentedAlert = nil
-
-                guard let self = self else {
-                    return
-                }
-
-                self.readableViewModel.delete()
-                self.delegate?.readableHostViewControllerDidDeleteItem()
-                self.track(identifier: .itemDelete, url: self.readableViewModel.url)
-            }
-        ]
-
-        let alert = PocketAlert(
-            title: "Are you sure you want to delete this item?",
-            message: nil,
-            preferredStyle: .alert,
-            actions: actions,
-            preferredAction: nil
-        )
-        mainViewModel.presentedAlert = alert
-    }
-
-    func readableViewModelDidSave(_ readableViewModel: ReadableViewModel) {
-        track(identifier: .itemSave, url: readableViewModel.url)
-    }
-    
-    private func share(additionalText: String? = nil) {
-        mainViewModel.sharedActivity = readableViewModel.shareActivity(additionalText: additionalText)
-        track(identifier: .itemShare, url: readableViewModel.url)
-    }
-
-    private func track(identifier: UIContext.Identifier, url: URL?) {
-        guard let url = url else {
-            return
+extension ReadableHostViewController {
+    private func handleEvent(_ event: ReadableEvent) {
+        switch event {
+        case .archive:
+            delegate?.readableHostViewControllerDidArchiveItem()
+        case .delete:
+            delegate?.readableHostViewControllerDidDeleteItem()
         }
-
-        let contexts: [Context] = [
-            UIContext.button(identifier: identifier),
-            ContentContext(url: url)
-        ]
-
-        let event = SnowplowEngagement(type: .general, value: nil)
-        tracker.track(event: event, contexts)
-    }
-}
-
-extension ReadableHostViewController: ReadableViewControllerDelegate {
-    func readableViewController(_ controller: ReadableViewController, willOpenURL url: URL) {
-        let additionalContexts: [Context] = [ContentContext(url: url)]
-
-        let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
-        let link = UIContext.articleView.link
-        let contexts = additionalContexts + [link]
-        tracker.track(event: contentOpen, contexts)
-    }
-    
-    func readableViewControlled(_ controller: ReadableViewController, shareWithAdditionalText text: String?) {
-        share(additionalText: text)
     }
 }

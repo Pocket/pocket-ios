@@ -1,6 +1,7 @@
 import Sync
 import Combine
 import UIKit
+import Analytics
 
 
 class ArchivedItemsListViewModel: ItemsListViewModel {
@@ -13,6 +14,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 
     private let source: Source
     private let mainViewModel: MainViewModel
+    private let tracker: Tracker
 
     private var archivedItems: [ArchivedItem] = [] {
         didSet {
@@ -23,14 +25,14 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
     private var archivedItemsByID: [String: ArchivedItem] = [:]
 
-
     @Published
     private var selectedFilters: Set<ItemsListFilter> = .init()
     private let availableFilters: [ItemsListFilter] = ItemsListFilter.allCases
 
-    init(source: Source, mainViewModel: MainViewModel) {
+    init(source: Source, mainViewModel: MainViewModel, tracker: Tracker) {
         self.source = source
         self.mainViewModel = mainViewModel
+        self.tracker = tracker
         self.events = .init()
     }
 
@@ -76,7 +78,11 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             return
         }
         
-        let viewModel = ArchivedItemViewModel(item: archivedItem)
+        let viewModel = ArchivedItemViewModel(
+            item: archivedItem,
+            mainViewModel: mainViewModel,
+            tracker: tracker.childTracker(hosting: .articleView.screen)
+        )
         mainViewModel.selectedMyListReadableViewModel = viewModel
     }
 

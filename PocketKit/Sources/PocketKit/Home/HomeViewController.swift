@@ -351,7 +351,11 @@ extension HomeViewController: UICollectionViewDelegate {
             tracker.track(event: engagement, contexts(for: indexPath))
             
             let recommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
-            let viewModel = RecommendationViewModel(recommendation: recommendation)
+            let viewModel = RecommendationViewModel(
+                recommendation: recommendation,
+                mainViewModel: model,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
             model.selectedHomeReadableViewModel = viewModel
 
             let open = ContentOpenEvent(destination: .internal, trigger: .click)

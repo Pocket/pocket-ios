@@ -44,7 +44,11 @@ class CompactMainCoordinator: NSObject {
                     )
                 ),
                 ItemsListViewController(
-                    model: ArchivedItemsListViewModel(source: source, mainViewModel: model)
+                    model: ArchivedItemsListViewModel(
+                        source: source,
+                        mainViewModel: model,
+                        tracker: tracker.childTracker(hosting: .articleView.screen)
+                    )
                 )
             ]
         )
@@ -115,12 +119,15 @@ class CompactMainCoordinator: NSObject {
     }
 
     func show(item: SavedItem, animated: Bool) {
-        let viewModel = SavedItemViewModel(item: item, source: source)
+        let viewModel = SavedItemViewModel(
+            item: item,
+            source: source,
+            mainViewModel: model,
+            tracker: tracker.childTracker(hosting: .articleView.screen)
+        )
         let readableHost = ReadableHostViewController(
             mainViewModel: model,
-            readableViewModel: viewModel,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            source: source
+            readableViewModel: viewModel
         )
         readableHost.delegate = self
         readableHost.hidesBottomBarWhenPushed = true
@@ -142,9 +149,7 @@ class CompactMainCoordinator: NSObject {
     func showHome(viewModel: ReadableViewModel, animated: Bool) {
         let viewController = ReadableHostViewController(
             mainViewModel: model,
-            readableViewModel: viewModel,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            source: source
+            readableViewModel: viewModel
         )
         
         home.pushViewController(viewController, animated: animated)
@@ -153,9 +158,7 @@ class CompactMainCoordinator: NSObject {
     func showMyList(viewModel: ReadableViewModel, animated: Bool) {
         let viewController = ReadableHostViewController(
             mainViewModel: model,
-            readableViewModel: viewModel,
-            tracker: tracker.childTracker(hosting: .articleView.screen),
-            source: source
+            readableViewModel: viewModel
         )
         viewController.delegate = self
         viewController.hidesBottomBarWhenPushed = true

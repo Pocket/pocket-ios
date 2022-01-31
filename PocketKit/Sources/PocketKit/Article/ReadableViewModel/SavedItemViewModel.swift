@@ -2,14 +2,19 @@ import Sync
 import Combine
 import Foundation
 import Textile
+import Analytics
+import UIKit
 
 
 class SavedItemViewModel: ReadableViewModel {
-    weak var delegate: ReadableViewModelDelegate? = nil
-
     @Published
     private var _actions: [ReadableAction] = []
     var actions: Published<[ReadableAction]>.Publisher { $_actions }
+    
+    private var _events = PassthroughSubject<ReadableEvent, Never>()
+    var events: EventPublisher {
+        _events.eraseToAnyPublisher()
+    }
 
     var components: [ArticleComponent]? {
         item.item?.article?.components
@@ -40,13 +45,23 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     private var source: Source
+    let mainViewModel: MainViewModel
+    let tracker: Tracker
+    
     private var favoriteSubscription: AnyCancellable? = nil
 
     private let item: SavedItem
 
-    init(item: SavedItem, source: Source) {
+    init(
+        item: SavedItem,
+        source: Source,
+        mainViewModel: MainViewModel,
+        tracker: Tracker
+    ) {
         self.item = item
         self.source = source
+        self.mainViewModel = mainViewModel
+        self.tracker = tracker
 
         favoriteSubscription = item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -54,45 +69,46 @@ class SavedItemViewModel: ReadableViewModel {
 
         buildActions()
     }
-
-    func favorite() {
-        source.favorite(item: item)
-        delegate?.readableViewModelDidFavorite(self)
-    }
-
-    func unfavorite() {
-        source.unfavorite(item: item)
-        delegate?.readableViewModelDidUnfavorite(self)
-    }
-
-    func archive() {
-        source.archive(item: item)
-        delegate?.readableViewModelDidArchive(self)
-    }
-
+    
     func delete() {
-        source.delete(item: item)
-        delegate?.readableViewModelDidDelete(self)
-    }
-
-    func shareActivity(additionalText: String?) -> PocketItemActivity? {
-        PocketItemActivity(url: url, additionalText: additionalText)
-    }
-
-    private func buildActions() {
-        if item.isFavorite {
-            _actions = [
-                .unfavorite { [weak self] in self?.unfavorite() },
-                .archive { [weak self] in self?.archive() },
-                .delete { [weak self] in self?.delete() }
-            ]
-        } else {
-            _actions = [
-                .favorite { [weak self] in self?.favorite() },
-                .archive { [weak self] in self?.archive() },
-                .delete { [weak self] in self?.delete() }
-            ]
-        }
+        source.delete(item: self.item)
+        _events.send(.delete)
     }
 }
 
+extension SavedItemViewModel {
+    private func buildActions() {
+        if item.isFavorite {
+            _actions = [
+                .displaySettings { [weak self] in self?.displaySettings() },
+                .unfavorite { [weak self] in self?.unfavorite() },
+                .archive { [weak self] in self?.archive() },
+                .delete { [weak self] in self?.confirmDelete() },
+                .share { [weak self] in self?.share() }
+            ]
+        } else {
+            _actions = [
+                .displaySettings { [weak self] in self?.displaySettings() },
+                .favorite { [weak self] in self?.favorite() },
+                .archive { [weak self] in self?.archive() },
+                .delete { [weak self] in self?.confirmDelete() },
+                .share { [weak self] in self?.share() }
+            ]
+        }
+    }
+    
+    private func favorite() {
+        source.favorite(item: item)
+        track(identifier: .itemFavorite)
+    }
+
+    private func unfavorite() {
+        source.unfavorite(item: item)
+        track(identifier: .itemUnfavorite)
+    }
+
+    private func archive() {
+        source.archive(item: item)
+        track(identifier: .itemArchive)
+    }
+}

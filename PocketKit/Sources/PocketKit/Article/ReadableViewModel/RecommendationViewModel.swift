@@ -3,14 +3,18 @@ import Sync
 import Foundation
 import Textile
 import UIKit
+import Analytics
 
 
 class RecommendationViewModel: ReadableViewModel {
-    weak var delegate: ReadableViewModelDelegate? = nil
-
     @Published
     private var _actions: [ReadableAction] = []
     var actions: Published<[ReadableAction]>.Publisher { $_actions }
+    
+    private var _events = PassthroughSubject<ReadableEvent, Never>()
+    var events: EventPublisher {
+        _events.eraseToAnyPublisher()
+    }
 
     var components: [ArticleComponent]? {
         recommendation.item.article?.components
@@ -41,19 +45,31 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     private let recommendation: Slate.Recommendation
+    let mainViewModel: MainViewModel
+    let tracker: Tracker
 
-    init(recommendation: Slate.Recommendation) {
+    init(recommendation: Slate.Recommendation, mainViewModel: MainViewModel, tracker: Tracker) {
         self.recommendation = recommendation
+        self.mainViewModel = mainViewModel
+        self.tracker = tracker
 
         _actions = [
-            .save { self.delegate?.readableViewModelDidSave(self) },
-            .favorite { self.delegate?.readableViewModelDidFavorite(self) }
+            .displaySettings { [weak self] in self?.displaySettings() },
+            .save { [weak self] in self?.save() },
+            .favorite { [weak self] in self?.favorite() },
+            .share { [weak self] in self?.share() },
         ]
     }
-
-    func shareActivity(additionalText: String?) -> PocketItemActivity? {
-        PocketItemActivity(url: url, additionalText: additionalText)
-    }
-
+    
     func delete() { }
+}
+
+extension RecommendationViewModel {
+    private func save() {
+        track(identifier: .itemSave)
+    }
+    
+    private func favorite() {
+        track(identifier: .itemFavorite)
+    }
 }
