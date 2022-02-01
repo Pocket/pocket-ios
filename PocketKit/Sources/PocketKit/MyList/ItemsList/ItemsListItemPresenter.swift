@@ -49,24 +49,6 @@ class ItemsListItemPresenter {
         return imageCacheURL(for: item.topImageURL)
     }
 
-    public var favoriteButtonImage: UIImage? {
-        if isFavorite {
-            return UIImage(asset: .favoriteFilled)
-                .withTintColor(UIColor(.branding.amber4), renderingMode: .alwaysOriginal)
-        } else {
-            return UIImage(asset: .favorite)
-                .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
-        }
-    }
-
-    public var favoriteButtonAccessibilityLabel: String {
-        if isFavorite {
-            return "Unfavorite"
-        } else {
-            return "Favorite"
-        }
-    }
-
     private var title: String {
         [
             item.title,

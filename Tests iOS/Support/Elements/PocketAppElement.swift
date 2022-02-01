@@ -65,11 +65,11 @@ struct PocketAppElement {
     }
 
     var deleteButton: XCUIElement {
-        app.buttons["item-action-menu-delete"]
+        app.buttons["item-action-delete"]
     }
 
     var archiveButton: XCUIElement {
-        app.buttons["item-action-menu-archive"]
+        app.buttons["item-action-archive"]
     }
 
     var shareButton: XCUIElement {

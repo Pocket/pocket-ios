@@ -30,7 +30,7 @@ struct ItemRowElement: PocketUIElement {
     }
 
     var favoriteButton: FavoriteButton {
-        FavoriteButton(element.buttons["favorite"])
+        FavoriteButton(element.buttons["item-action-favorite"])
     }
 
     var shareButton: XCUIElement {

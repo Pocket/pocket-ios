@@ -12,7 +12,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var mainViewModel: MainViewModel { get }
     var tracker: Tracker { get }
     
-    var actions: Published<[ReadableAction]>.Publisher { get }
+    var actions: Published<[ItemAction]>.Publisher { get }
     var events: EventPublisher { get }
     
     var components: [ArticleComponent]? { get }
@@ -90,7 +90,6 @@ extension ReadableViewModel {
             preferredAction: nil
         )
         mainViewModel.presentedAlert = alert
-
     }
     
     func track(identifier: UIContext.Identifier) {
