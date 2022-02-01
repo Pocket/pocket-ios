@@ -35,10 +35,11 @@ protocol ItemsListViewModel: AnyObject {
     func item(with itemID: ItemIdentifier) -> ItemsListItemPresenter?
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter
     func selectCell(with: ItemsListCell<ItemIdentifier>)
-    func shareItem(with: ItemsListCell<ItemIdentifier>)
 
-    func toggleFavorite(_ cell: ItemsListCell<ItemIdentifier>)
-    func archive(_ cell: ItemsListCell<ItemIdentifier>)
-    func delete(_ cell: ItemsListCell<ItemIdentifier>)
+    func shareAction(for objectID: ItemIdentifier) -> ItemAction?
+    func favoriteAction(for objectID: ItemIdentifier) -> ItemAction?
+    func overflowActions(for objectID: ItemIdentifier) -> [ItemAction]?
+    func trailingSwipeActions(for objectID: ItemIdentifier) -> [UIContextualAction]
+
     func trackImpression(_ cell: ItemsListCell<ItemIdentifier>)
 }

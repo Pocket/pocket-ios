@@ -60,21 +60,11 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 var config = UICollectionLayoutListConfiguration(appearance: .plain)
                 config.backgroundColor = UIColor(.ui.white1)
                 config.trailingSwipeActionsConfigurationProvider = { [unowned self] indexPath in
-                    let archiveAction = UIContextualAction(
-                        style: .normal,
-                        title: "Archive"
-                    ) { _, _, completion in
-                        guard let cell = self.dataSource.itemIdentifier(for: indexPath) else {
-                            completion(false)
-                            return
-                        }
-
-                        model.archive(cell)
-                        completion(true)
+                    guard case .item(let objectID) = self.dataSource.itemIdentifier(for: indexPath) else {
+                        return nil
                     }
-                    archiveAction.backgroundColor = UIColor(.ui.lapis1)
 
-                    return UISwipeActionsConfiguration(actions: [archiveAction])
+                    return UISwipeActionsConfiguration(actions: model.trailingSwipeActions(for: objectID))
                 }
 
                 return NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
@@ -146,14 +136,13 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             return
         }
 
-
-        cell.delegate = self
         cell.model = .init(
             attributedTitle: item.attributedTitle,
             attributedDetail: item.attributedDetail,
-            favoriteButtonImage: item.favoriteButtonImage,
-            favoriteButtonAccessibilityLabel: item.favoriteButtonAccessibilityLabel,
-            thumbnailURL: item.thumbnailURL
+            thumbnailURL: item.thumbnailURL,
+            shareAction: model.shareAction(for: objectID),
+            favoriteAction: model.favoriteAction(for: objectID),
+            overflowActions: model.overflowActions(for: objectID)
         )
     }
 
@@ -192,47 +181,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
 
         model.trackImpression(cell)
-    }
-}
-
-extension ItemsListViewController: ItemsListItemCellDelegate {
-    func myListItemCellDidTapFavoriteButton(_ itemCell: ItemsListItemCell) {
-        withCell(for: itemCell, handler: model.toggleFavorite)
-    }
-
-    func myListItemCellDidTapShareButton(_ itemCell: ItemsListItemCell) {
-        withCell(for: itemCell, handler: model.shareItem)
-    }
-    
-    func myListItemCellDidTapArchiveButton(_ itemCell: ItemsListItemCell) {
-        withCell(for: itemCell, handler: model.archive)
-    }
-
-    func myListItemCellDidTapDeleteButton(_ itemCell: ItemsListItemCell) {
-        model.presentedAlert = PocketAlert(
-            title: "Are you sure you want to delete this item?",
-            message: nil,
-            preferredStyle: .alert,
-            actions: [
-                UIAlertAction(title: "No", style: .default) { [weak self] _ in
-                    self?.model.presentedAlert = nil
-                },
-                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
-                    self?.model.presentedAlert = nil
-                    self?.withCell(for: itemCell, handler: self?.model.delete)
-                }
-            ],
-            preferredAction: nil
-        )
-    }
-
-    private func withCell(for itemCell: ItemsListItemCell, handler: ((ItemsListCell<ViewModel.ItemIdentifier>) -> Void)?) {
-        guard let indexPath = collectionView.indexPath(for: itemCell),
-              let cell = dataSource.itemIdentifier(for: indexPath) else {
-                  return
-              }
-        
-        handler?(cell)
     }
 }
 

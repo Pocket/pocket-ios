@@ -86,10 +86,6 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         mainViewModel.selectedMyListReadableViewModel = viewModel
     }
 
-    func shareItem(with: ItemsListCell<ItemIdentifier>) {
-        // TODO: share the item
-    }
-
     private func buildSnapshot() -> Snapshot {
         var snapshot = Snapshot()
         snapshot.appendSections(ItemsListSection.allCases)
@@ -104,16 +100,20 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         return snapshot
     }
 
-    func toggleFavorite(_ cell: ItemsListCell<String>) {
-
+    func shareAction(for: String) -> ItemAction? {
+        return nil
     }
 
-    func archive(_ cell: ItemsListCell<String>) {
-
+    func favoriteAction(for: String) -> ItemAction? {
+        return nil
     }
 
-    func delete(_ cell: ItemsListCell<String>) {
+    func overflowActions(for: String) -> [ItemAction]? {
+        return nil
+    }
 
+    func trailingSwipeActions(for objectID: String) -> [UIContextualAction] {
+        return []
     }
 
     func trackImpression(_ cell: ItemsListCell<String>) {

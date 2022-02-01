@@ -115,12 +115,85 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
-    func shareItem(with itemID: ItemsListCell<ItemIdentifier>) {
-        guard case .item(let objectID) = itemID else {
-            return
+    func favoriteAction(for objectID: NSManagedObjectID) -> ItemAction? {
+        guard let item = bareItem(with: objectID) else {
+            return nil
         }
 
-        main.sharedActivity = bareItem(with: objectID).flatMap { PocketItemActivity(url: $0.url) }
+        if item.isFavorite {
+            return .unfavorite { [weak self] in
+                self?.source.unfavorite(item: item)
+                self?.track(item: item, identifier: .itemUnfavorite)
+            }
+        } else {
+            return .favorite { [weak self] in
+                self?.source.favorite(item: item)
+                self?.track(item: item, identifier: .itemFavorite)
+            }
+        }
+    }
+
+    func shareAction(for objectID: NSManagedObjectID) -> ItemAction? {
+        guard let item = bareItem(with: objectID) else {
+            return nil
+        }
+
+        return .share { [weak self] in
+            self?.main.sharedActivity = PocketItemActivity(url: item.url)
+        }
+    }
+
+    func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction]? {
+        guard let item = bareItem(with: objectID) else {
+            return nil
+        }
+
+        return [
+            .archive { [weak self] in
+                self?.archive(item: item)
+            },
+            .delete { [weak self] in
+                self?.confirmDelete(item: item)
+            }
+        ]
+    }
+
+    func trailingSwipeActions(for objectID: NSManagedObjectID) -> [UIContextualAction] {
+        guard let item = bareItem(with: objectID) else {
+            return []
+        }
+
+        let archiveAction = UIContextualAction(style: .normal, title: "Archive") { [weak self] _, _, completion in
+            self?.archive(item: item)
+            completion(true)
+        }
+        archiveAction.backgroundColor = UIColor(.ui.lapis1)
+
+        return [archiveAction]
+    }
+
+    private func archive(item: SavedItem) {
+        source.archive(item: item)
+        track(item: item, identifier: .itemArchive)
+    }
+
+    private func confirmDelete(item: SavedItem) {
+        main.presentedAlert = PocketAlert(
+            title: "Are you sure you want to delete this item?",
+            message: nil,
+            preferredStyle: .alert,
+            actions: [
+                UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                    self?.main.presentedAlert = nil
+                },
+                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
+                    self?.main.presentedAlert = nil
+                    self?.source.delete(item: item)
+                    self?.track(item: item, identifier: .itemDelete)
+                }
+            ],
+            preferredAction: nil
+        )
     }
 
     private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
@@ -151,33 +224,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private func send(snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>) {
         events.send(.snapshot(snapshot))
     }
-    
-    func toggleFavorite(_ cell: ItemsListCell<ItemIdentifier>) {
-        withSavedItem(from: cell) { item in
-            if item.isFavorite {
-                self.source.unfavorite(item: item)
-                self.track(item: item, identifier: .itemUnfavorite)
-            } else {
-                self.source.favorite(item: item)
-                self.track(item: item, identifier: .itemFavorite)
-            }
-        }
-    }
-    
-    func archive(_ cell: ItemsListCell<ItemIdentifier>) {
-        withSavedItem(from: cell) { item in
-            self.source.archive(item: item)
-            self.track(item: item, identifier: .itemArchive)
-        }
-    }
-    
-    func delete(_ cell: ItemsListCell<ItemIdentifier>) {
-        withSavedItem(from: cell) { item in
-            self.source.delete(item: item)
-            self.track(item: item, identifier: .itemDelete)
-        }
-    }
-    
+
     func trackImpression(_ cell: ItemsListCell<ItemIdentifier>) {
         withSavedItem(from: cell) { item in
             guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {

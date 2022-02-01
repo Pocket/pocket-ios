@@ -2,16 +2,7 @@ import UIKit
 import Kingfisher
 
 
-protocol ItemsListItemCellDelegate: AnyObject {
-    func myListItemCellDidTapFavoriteButton(_ cell: ItemsListItemCell)
-    func myListItemCellDidTapShareButton(_ cell: ItemsListItemCell)
-    func myListItemCellDidTapDeleteButton(_ cell: ItemsListItemCell)
-    func myListItemCellDidTapArchiveButton(_ cell: ItemsListItemCell)
-}
-
 class ItemsListItemCell: UICollectionViewCell {
-    weak var delegate: ItemsListItemCellDelegate?
-
     var model: Model? {
         didSet {
             setNeedsUpdateConfiguration()
@@ -117,22 +108,6 @@ class ItemsListItemCell: UICollectionViewCell {
         accessibilityIdentifier = "my-list-item"
         contentView.backgroundColor = UIColor(.ui.white1)
 
-        let archiveAction = UIAction(title: "Archive", handler: { [weak self] _ in self?.handleArchive() })
-        archiveAction.accessibilityIdentifier = "item-action-menu-archive"
-
-        let deleteAction = UIAction(title: "Delete", handler: { [weak self] _ in self?.handleDelete() })
-        deleteAction.accessibilityIdentifier = "item-action-menu-delete"
-
-        menuButton.menu = UIMenu(children: [archiveAction, deleteAction])
-
-        favoriteButton.addAction(UIAction { [weak self] _ in
-            self?.handleFavorite()
-        }, for: .primaryActionTriggered)
-
-        shareButton.addAction(UIAction { [weak self] _ in
-            self?.handleShare()
-        }, for: .primaryActionTriggered)
-
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = UIColor(.ui.grey6)
 
@@ -208,31 +183,17 @@ class ItemsListItemCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    private func handleArchive() {
-        delegate?.myListItemCellDidTapArchiveButton(self)
-    }
-
-    private func handleShare() {
-        delegate?.myListItemCellDidTapShareButton(self)
-    }
-
-    private func handleFavorite() {
-        delegate?.myListItemCellDidTapFavoriteButton(self)
-    }
-
-    private func handleDelete() {
-        delegate?.myListItemCellDidTapDeleteButton(self)
-    }
 }
 
 extension ItemsListItemCell {
     struct Model: Hashable {
         let attributedTitle: NSAttributedString
         let attributedDetail: NSAttributedString
-        let favoriteButtonImage: UIImage?
-        let favoriteButtonAccessibilityLabel: String
         let thumbnailURL: URL?
+
+        let shareAction: ItemAction?
+        let favoriteAction: ItemAction?
+        let overflowActions: [ItemAction]?
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -241,11 +202,24 @@ extension ItemsListItemCell {
 
         titleLabel.attributedText = state.model?.attributedTitle
         detailLabel.attributedText = state.model?.attributedDetail
-        favoriteButton.configuration?.image = state.model?.favoriteButtonImage
-        favoriteButton.accessibilityLabel = state.model?.favoriteButtonAccessibilityLabel
+
+        favoriteButton.accessibilityLabel = state.model?.favoriteAction?.title
+        favoriteButton.accessibilityIdentifier = state.model?.favoriteAction?.accessibilityIdentifier
+        favoriteButton.configuration?.image = state.model?.favoriteAction?.image
+
+        if let favoriteAction = UIAction(state.model?.favoriteAction) {
+            favoriteButton.addAction(favoriteAction, for: .primaryActionTriggered)
+        }
+
+        if let shareAction = UIAction(state.model?.shareAction) {
+            shareButton.addAction(shareAction, for: .primaryActionTriggered)
+        }
+
+        let menuActions = state.model.flatMap(\.overflowActions).flatMap { $0.compactMap(UIAction.init) } ?? []
+        menuButton.menu = UIMenu(children: menuActions)
+
 
         thumbnailView.image = nil
-
         guard let thumbnailURL = state.model?.thumbnailURL else {
             thumbnailWidthConstraint.constant = 0
             return

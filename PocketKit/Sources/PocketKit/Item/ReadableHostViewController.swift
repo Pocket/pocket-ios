@@ -79,20 +79,12 @@ class ReadableHostViewController: UIViewController {
         ])
     }
 
-    func buildOverflowMenu(from actions: [ReadableAction]) {
-        var menuActions: [UIAction] = []
-        
-        actions.forEach { action in
-            let uiAction = UIAction(title: action.title,image: action.image) { _ in action.handler?() }
-            uiAction.accessibilityIdentifier = action.accessibilityIdentifier
-            menuActions.append(uiAction)
-        }
-        
+    func buildOverflowMenu(from actions: [ItemAction]) {
         moreButtonItem.menu = UIMenu(
             image: nil,
             identifier: nil,
             options: [],
-            children: menuActions
+            children: actions.compactMap(UIAction.init)
         )
     }
 

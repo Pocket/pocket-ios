@@ -8,8 +8,8 @@ import UIKit
 
 class SavedItemViewModel: ReadableViewModel {
     @Published
-    private var _actions: [ReadableAction] = []
-    var actions: Published<[ReadableAction]>.Publisher { $_actions }
+    private var _actions: [ItemAction] = []
+    var actions: Published<[ItemAction]>.Publisher { $_actions }
     
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher {
