@@ -18,6 +18,10 @@ extension Response {
     static func archivedContent() -> Response {
         myList("archived-items")
     }
+    
+    static func favoritedArchivedContent() -> Response {
+        myList("archived-favorite-items")
+    }
 
     static func slateLineup(_ fixtureName: String = "slates") -> Response {
         fixture(named: fixtureName)

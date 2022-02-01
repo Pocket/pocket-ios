@@ -71,7 +71,7 @@ extension MockSource {
     }
 
 
-    func fetchArchivedItems() async throws -> [ArchivedItem] {
+    func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem] {
         guard let impl = implementations["fetchArchivedItems()"] as? FetchArchivedItemsImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

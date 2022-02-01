@@ -9,7 +9,7 @@ class MockArchiveService: ArchiveService {
         implementations["fetch"] = impl
     }
 
-    func fetch(accessToken: String?) async throws -> [ArchivedItem] {
+    func fetch(accessToken: String?, isFavorite: Bool) async throws -> [ArchivedItem] {
         guard let impl = implementations["fetch"] as? FetchImpl else {
             fatalError("\(Self.self)#\(#function) is not stubbed")
         }

@@ -15,15 +15,23 @@ class PocketArchiveServiceTests: XCTestCase {
 
     func test_fetch_usesTheCorrectQuery() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "archived-items", asResultType: UserByTokenQuery.self)
-        _ = try await subject().fetch(accessToken: "the-access-token")
-
-        let fetchCall: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
-        XCTAssertEqual(fetchCall.query.savedItemsFilter?.isArchived, true)
+        
+        _ = try await subject().fetch(accessToken: "the-access-token", isFavorite: false)
+        
+        let unfavoritedCall: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
+        XCTAssertEqual(unfavoritedCall.query.savedItemsFilter?.isArchived, true)
+        XCTAssertEqual(unfavoritedCall.query.savedItemsFilter?.isFavorite, false)
+        
+        _ = try await subject().fetch(accessToken: "the-access-token", isFavorite: true)
+        
+        let favoritedCall: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 1)
+        XCTAssertEqual(favoritedCall.query.savedItemsFilter?.isArchived, true)
+        XCTAssertEqual(favoritedCall.query.savedItemsFilter?.isFavorite, true)
     }
 
     func test_fetch_returnsMappedArchivedItems() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "archived-items", asResultType: UserByTokenQuery.self)
-        let fetchedItems = try await subject().fetch(accessToken: "the-access-token")
+        let fetchedItems = try await subject().fetch(accessToken: "the-access-token", isFavorite: false)
 
         XCTAssertEqual(fetchedItems.count, 2)
 

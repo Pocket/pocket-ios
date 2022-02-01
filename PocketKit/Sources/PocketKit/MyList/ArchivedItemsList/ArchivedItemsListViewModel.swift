@@ -37,7 +37,8 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     func fetch() async throws {
-        archivedItems = try await source.fetchArchivedItems()
+        let favorited = selectedFilters.contains(.favorites)
+        archivedItems = try await source.fetchArchivedItems(isFavorite: favorited)
 
         let snapshot = buildSnapshot()
         events.send(.snapshot(snapshot))
@@ -73,31 +74,12 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     func selectCell(with cell: ItemsListCell<ItemIdentifier>) {
-        guard case .item(let archivedItemID) = cell,
-        let archivedItem = archivedItemsByID[archivedItemID] else {
-            return
+        switch cell {
+        case .filterButton(let filter):
+            apply(filter: filter, from: cell)
+        case .item(let itemID):
+            select(item: itemID)
         }
-        
-        let viewModel = ArchivedItemViewModel(
-            item: archivedItem,
-            mainViewModel: mainViewModel,
-            tracker: tracker.childTracker(hosting: .articleView.screen)
-        )
-        mainViewModel.selectedMyListReadableViewModel = viewModel
-    }
-
-    private func buildSnapshot() -> Snapshot {
-        var snapshot = Snapshot()
-        snapshot.appendSections(ItemsListSection.allCases)
-
-        snapshot.appendItems(
-            ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
-            toSection: .filters
-        )
-
-        let itemCellIDs = archivedItems.map { ItemsListCell<ItemIdentifier>.item($0.remoteID) }
-        snapshot.appendItems(itemCellIDs, toSection: .items)
-        return snapshot
     }
 
     func shareAction(for: String) -> ItemAction? {
@@ -118,5 +100,60 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 
     func trackImpression(_ cell: ItemsListCell<String>) {
 
+    }
+}
+
+extension ArchivedItemsListViewModel {
+    private func buildSnapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections(ItemsListSection.allCases)
+
+        snapshot.appendItems(
+            ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
+            toSection: .filters
+        )
+
+        let itemCellIDs = archivedItems.map { ItemsListCell<ItemIdentifier>.item($0.remoteID) }
+        snapshot.appendItems(itemCellIDs, toSection: .items)
+        return snapshot
+    }
+    
+    private func blankSnapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections(ItemsListSection.allCases)
+        
+        snapshot.appendItems(
+            ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
+            toSection: .filters
+        )
+        
+        return snapshot
+    }
+    
+    private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
+        if selectedFilters.contains(filter) {
+            selectedFilters.remove(filter)
+        } else {
+            selectedFilters.insert(filter)
+        }
+        
+        var snapshot = blankSnapshot()
+        snapshot.reloadItems([cell])
+        events.send(.snapshot(snapshot))
+
+        try? self.fetch()
+    }
+    
+    private func select(item identifier: ItemIdentifier) {
+        guard let archivedItem = archivedItemsByID[identifier] else {
+            return
+        }
+        
+        let viewModel = ArchivedItemViewModel(
+            item: archivedItem,
+            mainViewModel: mainViewModel,
+            tracker: tracker.childTracker(hosting: .articleView.screen)
+        )
+        mainViewModel.selectedMyListReadableViewModel = viewModel
     }
 }

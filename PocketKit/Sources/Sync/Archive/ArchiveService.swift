@@ -2,7 +2,7 @@ import Apollo
 
 
 protocol ArchiveService {
-    func fetch(accessToken: String?) async throws -> [ArchivedItem]
+    func fetch(accessToken: String?, isFavorite: Bool) async throws -> [ArchivedItem]
 }
 
 class PocketArchiveService: ArchiveService {
@@ -12,12 +12,12 @@ class PocketArchiveService: ArchiveService {
         self.apollo = apollo
     }
 
-    func fetch(accessToken: String?) async throws -> [ArchivedItem] {
+    func fetch(accessToken: String?, isFavorite: Bool) async throws -> [ArchivedItem] {
         guard let accessToken = accessToken else {
             return []
         }
 
-        let filter = SavedItemsFilter(isArchived: true)
+        let filter = SavedItemsFilter(isFavorite: isFavorite, isArchived: true)
         let query = UserByTokenQuery(token: accessToken, savedItemsFilter: filter)
 
         return try await apollo.fetch(query: query)

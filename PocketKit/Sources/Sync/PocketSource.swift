@@ -228,7 +228,7 @@ extension PocketSource {
 
 // MARK: - Archived Items
 extension PocketSource {
-    public func fetchArchivedItems() async throws -> [ArchivedItem] {
-        return try await archiveService.fetch(accessToken: tokenProvider.accessToken)
+    public func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem] {
+        return try await archiveService.fetch(accessToken: tokenProvider.accessToken, isFavorite: isFavorite)
     }
 }
