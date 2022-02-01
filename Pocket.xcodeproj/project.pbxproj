@@ -61,6 +61,7 @@
 		F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */; };
 		F2A5B6B4271E03B300FB8BF2 /* LaunchArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A5B6B3271E03B300FB8BF2 /* LaunchArguments.swift */; };
 		F2A5B6B6271E03C400FB8BF2 /* LaunchEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A5B6B5271E03C400FB8BF2 /* LaunchEnvironment.swift */; };
+		F2FC070327A9B749009F8D98 /* ArchiveFiltersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2FC070227A9B749009F8D98 /* ArchiveFiltersTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -132,6 +133,7 @@
 		F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewElement.swift; sourceTree = "<group>"; };
 		F2A5B6B3271E03B300FB8BF2 /* LaunchArguments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchArguments.swift; sourceTree = "<group>"; };
 		F2A5B6B5271E03C400FB8BF2 /* LaunchEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchEnvironment.swift; sourceTree = "<group>"; };
+		F2FC070227A9B749009F8D98 /* ArchiveFiltersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveFiltersTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -160,6 +162,7 @@
 				166A81C42637406C0015AA1D /* MyListTests.swift */,
 				164FB66D278F7ECC002959D6 /* MyListFiltersTests.swift */,
 				16D76882279F3C73004A3694 /* ArchiveTests.swift */,
+				F2FC070227A9B749009F8D98 /* ArchiveFiltersTests.swift */,
 			);
 			path = MyList;
 			sourceTree = "<group>";
@@ -429,6 +432,7 @@
 				1613B2B3275571940014F301 /* SettingsViewElement.swift in Sources */,
 				16BB40A8279F436100FE8650 /* SelectionSwitcherElement.swift in Sources */,
 				F2A5B6B4271E03B300FB8BF2 /* LaunchArguments.swift in Sources */,
+				F2FC070327A9B749009F8D98 /* ArchiveFiltersTests.swift in Sources */,
 				16E4B16F27A3212900E01746 /* Response+factories.swift in Sources */,
 				166EFAEA2682821300A027CD /* WebReaderElement.swift in Sources */,
 				16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */,

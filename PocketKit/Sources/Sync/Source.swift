@@ -31,7 +31,7 @@ public protocol Source {
 
     func archive(recommendation: Slate.Recommendation)
 
-    func fetchArchivedItems() async throws -> [ArchivedItem]
+    func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem]
 }
 
 public extension Source {
@@ -41,5 +41,9 @@ public extension Source {
 
     func refresh() {
         self.refresh(maxItems: 400, completion: nil)
+    }
+    
+    func fetchArchivedItems() async throws -> [ArchivedItem] {
+        try await fetchArchivedItems(isFavorite: false)
     }
 }
