@@ -14,7 +14,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let itemsController: NSFetchedResultsController<SavedItem>
     private var subscriptions: [AnyCancellable] = []
 
-    @Published
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
 
@@ -48,22 +47,19 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func fetch() throws {
-        $selectedFilters.receive(on: DispatchQueue.main).sink { [weak self] selectedFilters in
-            guard let self = self else { return }
-            var predicates: [NSPredicate] = []
-
-            for filter in selectedFilters {
-                switch filter {
-                case .favorites:
-                    predicates.append(NSPredicate(format: "isFavorite = true", true))
-                }
+        var predicates: [NSPredicate] = []
+        
+        for filter in selectedFilters {
+            switch filter {
+            case .favorites:
+                predicates.append(NSPredicate(format: "isFavorite = true", true))
             }
-
-            self.itemsController.fetchRequest.predicate = Predicates.savedItems(filters: predicates)
-
-            try? self.itemsController.performFetch()
-            self.itemsLoaded()
-        }.store(in: &subscriptions)
+        }
+        
+        self.itemsController.fetchRequest.predicate = Predicates.savedItems(filters: predicates)
+        
+        try? self.itemsController.performFetch()
+        self.itemsLoaded()
     }
 
     func refresh(_ completion: (() -> ())? = nil) {
@@ -92,26 +88,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func selectCell(with cellID: ItemsListCell<ItemIdentifier>) {
         switch cellID {
         case .item(let objectID):
-            guard let item = bareItem(with: objectID) else {
-                return 
-            }
-            let viewModel = SavedItemViewModel(
-                item: item,
-                source: source,
-                mainViewModel: main,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
-            )
-            main.selectedMyListReadableViewModel = viewModel
+            select(item: objectID)
         case .filterButton(let filterID):
-            if selectedFilters.contains(filterID) {
-                selectedFilters.remove(filterID)
-            } else {
-                selectedFilters.insert(filterID)
-            }
-
-            var snapshot = buildSnapshot()
-            snapshot.reloadItems([cellID])
-            send(snapshot: snapshot)
+            apply(filter: filterID, from: cellID)
         }
     }
 
@@ -262,6 +241,35 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
         
         handler?(item)
+    }
+}
+
+extension SavedItemsListViewModel {
+    private func select(item itemID: ItemIdentifier) {
+        guard let item = bareItem(with: itemID) else {
+            return
+        }
+        let viewModel = SavedItemViewModel(
+            item: item,
+            source: source,
+            mainViewModel: main,
+            tracker: tracker.childTracker(hosting: .articleView.screen)
+        )
+        main.selectedMyListReadableViewModel = viewModel
+    }
+    
+    private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
+        if selectedFilters.contains(filter) {
+            selectedFilters.remove(filter)
+        } else {
+            selectedFilters.insert(filter)
+        }
+
+        var snapshot = buildSnapshot()
+        snapshot.reloadItems([cell])
+        send(snapshot: snapshot)
+        
+        try? fetch()
     }
 }
 
