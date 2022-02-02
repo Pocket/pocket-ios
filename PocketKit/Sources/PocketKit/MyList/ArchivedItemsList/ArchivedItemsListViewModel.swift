@@ -25,7 +25,6 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
     private var archivedItemsByID: [String: ArchivedItem] = [:]
 
-    @Published
     private var selectedFilters: Set<ItemsListFilter> = .init()
     private let availableFilters: [ItemsListFilter] = ItemsListFilter.allCases
 
