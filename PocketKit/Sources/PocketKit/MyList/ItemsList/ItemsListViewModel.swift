@@ -5,11 +5,13 @@ import UIKit
 enum ItemsListSection: Int, CaseIterable {
     case filters
     case items
+    case offline
 }
 
 enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
     case filterButton(ItemsListFilter)
     case item(ItemIdentifier)
+    case offline
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {

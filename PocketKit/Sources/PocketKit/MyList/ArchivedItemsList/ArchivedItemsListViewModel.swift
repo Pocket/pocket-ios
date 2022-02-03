@@ -2,6 +2,7 @@ import Sync
 import Combine
 import UIKit
 import Analytics
+import Network
 
 
 class ArchivedItemsListViewModel: ItemsListViewModel {
@@ -15,6 +16,11 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     private let source: Source
     private let mainViewModel: MainViewModel
     private let tracker: Tracker
+    
+    private let networkMonitor = NWPathMonitor()
+    private var isNetworkAvailable: Bool {
+        networkMonitor.currentPath.status == .satisfied
+    }
 
     private var archivedItems: [ArchivedItem] = [] {
         didSet {
@@ -33,14 +39,22 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         self.mainViewModel = mainViewModel
         self.tracker = tracker
         self.events = .init()
+        
+        networkMonitor.start(queue: .global())
     }
 
     func fetch() async throws {
-        let favorited = selectedFilters.contains(.favorites)
-        archivedItems = try await source.fetchArchivedItems(isFavorite: favorited)
-
-        let snapshot = buildSnapshot()
-        events.send(.snapshot(snapshot))
+        if !isNetworkAvailable {
+            events.send(.snapshot(offlineSnapshot()))
+        } else {
+            events.send(.snapshot(blankSnapshot()))
+            
+            let favorited = selectedFilters.contains(.favorites)
+            archivedItems = try await source.fetchArchivedItems(isFavorite: favorited)
+            
+            let snapshot = buildSnapshot()
+            events.send(.snapshot(snapshot))
+        }
     }
 
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter {
@@ -78,6 +92,8 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             apply(filter: filter, from: cell)
         case .item(let itemID):
             select(item: itemID)
+        case .offline:
+            return
         }
     }
 
@@ -105,7 +121,9 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 extension ArchivedItemsListViewModel {
     private func buildSnapshot() -> Snapshot {
         var snapshot = Snapshot()
-        snapshot.appendSections(ItemsListSection.allCases)
+        
+        let sections: [ItemsListSection] = [.filters, .items]
+        snapshot.appendSections(sections)
 
         snapshot.appendItems(
             ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
@@ -119,13 +137,22 @@ extension ArchivedItemsListViewModel {
     
     private func blankSnapshot() -> Snapshot {
         var snapshot = Snapshot()
-        snapshot.appendSections(ItemsListSection.allCases)
+        
+        let sections: [ItemsListSection] = [.filters, .items]
+        snapshot.appendSections(sections)
         
         snapshot.appendItems(
             ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
         
+        return snapshot
+    }
+    
+    private func offlineSnapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.offline])
+        snapshot.appendItems([.offline], toSection: .offline)
         return snapshot
     }
     
