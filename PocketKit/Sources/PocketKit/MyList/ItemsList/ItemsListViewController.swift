@@ -68,6 +68,27 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 }
 
                 return NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
+            case .offline:
+                var config = UICollectionLayoutListConfiguration(appearance: .plain)
+                config.backgroundColor = UIColor(.ui.white1)
+                config.showsSeparators = false
+                let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
+                
+                // Update the section's contentInsets to center the offline cell
+                // within the full size of the collection view
+                let layoutHeight = env.container.contentSize.height
+                let availableWidth = env.container.contentSize.width
+                - ItemsListOfflineCell.Constants.padding
+                - ItemsListOfflineCell.Constants.padding
+                let offset = self.collectionView.safeAreaInsets.top
+                section.contentInsets = NSDirectionalEdgeInsets(
+                    top: (layoutHeight - ItemsListOfflineCell.height(fitting: availableWidth)) / 2 - offset,
+                    leading: 0,
+                    bottom: 0,
+                    trailing: 0
+                )
+                
+                return section
             }
         }
 
@@ -91,6 +112,12 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         let itemCellRegistration: UICollectionView.CellRegistration<ItemsListItemCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
             self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
         }
+        
+        let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
+            cell.buttonAction = {
+                try? model.fetch()
+            }
+        }
 
         self.dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in
             switch item {
@@ -98,6 +125,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 return collectionView.dequeueConfiguredReusableCell(using: filterButtonRegistration, for: indexPath, item: filter)
             case .item(let itemID):
                 return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexPath, item: itemID)
+            case .offline:
+                return collectionView.dequeueConfiguredReusableCell(using: offlineCellRegistration, for: indexPath, item: "")
             }
         }
 

@@ -18,4 +18,5 @@ extension ImageAsset {
     public static let radioDeselected = ImageAsset("radioDeselected")
     public static let myList = ImageAsset("myList")
     public static let archive = ImageAsset("archive")
+    public static let looking = ImageAsset("looking")
 }

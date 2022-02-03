@@ -91,6 +91,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             select(item: objectID)
         case .filterButton(let filterID):
             apply(filter: filterID, from: cellID)
+        case .offline:
+            return
         }
     }
 
@@ -185,7 +187,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private func buildSnapshot() -> NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> {
         var snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> = .init()
-        snapshot.appendSections(ItemsListSection.allCases)
+        
+        let sections: [ItemsListSection] = [.filters, .items]
+        snapshot.appendSections(sections)
 
         snapshot.appendItems(
             ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
