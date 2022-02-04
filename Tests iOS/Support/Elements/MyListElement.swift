@@ -63,4 +63,20 @@ struct MyListElement: PocketUIElement {
                 )
             )
     }
+
+    @discardableResult
+    func wait(
+        timeout: TimeInterval = 1,
+        file: StaticString = #file,
+        line: UInt = #line
+    ) -> Self {
+        _ = collectionView.wait(timeout: timeout, file: file, line: line)
+        return self
+    }
+
+    @discardableResult
+    func verify() -> Self {
+        collectionView.verify()
+        return self
+    }
 }

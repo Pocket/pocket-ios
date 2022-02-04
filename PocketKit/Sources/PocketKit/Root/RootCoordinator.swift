@@ -54,9 +54,10 @@ class RootCoordinator {
             signIn = nil
             main = MainCoordinator(model: model, source: source, tracker: tracker)
 
-            transition(to: main?.viewController) { [main] in
-                self.source.refresh()
-                main?.showList()
+            transition(to: main?.viewController) { [weak self] in
+                self?.source.refresh()
+            } completion: { [weak self] in
+                self?.main?.showInitialView()
             }
         case .signIn(let model):
             main = nil
@@ -65,7 +66,11 @@ class RootCoordinator {
         }
     }
 
-    private func transition(to rootViewController: UIViewController?, animation: (() -> Void)? = nil) {
+    private func transition(
+        to rootViewController: UIViewController?,
+        animation: (() -> Void)? = nil,
+        completion: (() -> Void)? = nil
+    ) {
         UIView.transition(
             with: window!,
             duration: 0.25,
@@ -74,7 +79,9 @@ class RootCoordinator {
                 self.window?.rootViewController = rootViewController
                 animation?()
             },
-            completion: nil
+            completion: { _ in
+                completion?()
+            }
         )
     }
 }

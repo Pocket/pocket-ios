@@ -5,25 +5,12 @@ import Sync
 import Textile
 
 
-protocol ReadableHostViewControllerDelegate: AnyObject {
-    func readableHostViewControllerDidDeleteItem()
-    func readableHostViewControllerDidArchiveItem()
-}
-
 class ReadableHostViewController: UIViewController {
     private let moreButtonItem: UIBarButtonItem
     private var subscriptions: [AnyCancellable] = []
-
-    private let mainViewModel: MainViewModel
     private var readableViewModel: ReadableViewModel
-    
-    weak var delegate: ReadableHostViewControllerDelegate?
 
-    init(
-        mainViewModel: MainViewModel,
-        readableViewModel: ReadableViewModel
-    ) {
-        self.mainViewModel = mainViewModel
+    init(readableViewModel: ReadableViewModel) {
         self.readableViewModel = readableViewModel
         self.moreButtonItem = UIBarButtonItem(
             image: UIImage(systemName: "ellipsis"),
@@ -49,19 +36,12 @@ class ReadableHostViewController: UIViewController {
         readableViewModel.actions.sink { [weak self] actions in
             self?.buildOverflowMenu(from: actions)
         }.store(in: &subscriptions)
-        
-        readableViewModel.events.sink { [weak self] event in
-            self?.handleEvent(event)
-        }.store(in: &subscriptions)
     }
 
     override func loadView() {
         view = UIView()
         
-        let readableViewController = ReadableViewController(
-            readerSettings: mainViewModel.readerSettings,
-            viewModel: mainViewModel
-        )
+        let readableViewController = ReadableViewController(readerSettings: readableViewModel.readerSettings)
         readableViewController.readableViewModel = readableViewModel
         readableViewController.delegate = readableViewModel
 
@@ -94,23 +74,10 @@ class ReadableHostViewController: UIViewController {
 
     @objc
     private func showWebView() {
-        mainViewModel.presentedWebReaderURL = readableViewModel.url
+        readableViewModel.showWebReader()
     }
 
     var popoverAnchor: UIBarButtonItem? {
         navigationItem.rightBarButtonItems?[0]
-    }
-}
-
-// MARK: - Item Actions
-
-extension ReadableHostViewController {
-    private func handleEvent(_ event: ReadableEvent) {
-        switch event {
-        case .archive:
-            delegate?.readableHostViewControllerDidArchiveItem()
-        case .delete:
-            delegate?.readableHostViewControllerDidDeleteItem()
-        }
     }
 }

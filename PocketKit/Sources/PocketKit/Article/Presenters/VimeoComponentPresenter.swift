@@ -6,7 +6,6 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
     private let oEmbedService: OEmbedService
     private let readableViewModel: ReadableViewModel?
     private let component: VideoComponent
-    private let mainViewModel: MainViewModel
 
     private let onContentLoaded: () -> Void
     private var oEmbed: OEmbed?
@@ -16,13 +15,11 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
         oEmbedService: OEmbedService,
         readableViewModel: ReadableViewModel?,
         component: VideoComponent,
-        mainViewModel: MainViewModel,
         onContentLoaded: @escaping () -> Void
     ) {
         self.oEmbedService = oEmbedService
         self.readableViewModel = readableViewModel
         self.component = component
-        self.mainViewModel = mainViewModel
         self.onContentLoaded = onContentLoaded
     }
 
@@ -88,10 +85,10 @@ class VimeoComponentPresenter: ArticleComponentPresenter {
 
 extension VimeoComponentPresenter: VimeoComponentCellDelegate {
     func vimeoComponentCellDidTapOpenInWebView(_ cell: VimeoComponentCell) {
-        mainViewModel.presentedWebReaderURL = readableViewModel?.url
+        readableViewModel?.showWebReader()
     }
 
     func vimeoComponentCell(_ cell: VimeoComponentCell, didNavigateToURL url: URL) {
-        mainViewModel.presentedWebReaderURL = url
+        readableViewModel?.presentedWebReaderURL = url
     }
 }

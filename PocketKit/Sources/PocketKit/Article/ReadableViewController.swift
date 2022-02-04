@@ -45,7 +45,6 @@ class ReadableViewController: UIViewController {
     }
 
     private let readerSettings: ReaderSettings
-    private let viewModel: MainViewModel
 
     private var subscriptions: [AnyCancellable] = []
     
@@ -58,9 +57,8 @@ class ReadableViewController: UIViewController {
         return self.buildSection(index: $0, environment: $1)
     }
 
-    init(readerSettings: ReaderSettings, viewModel: MainViewModel) {
+    init(readerSettings: ReaderSettings) {
         self.readerSettings = readerSettings
-        self.viewModel = viewModel
 
         super.init(nibName: nil, bundle: nil)
 
@@ -279,7 +277,7 @@ extension ReadableViewController {
         case .numberedList(let component):
             return ListComponentPresenter(component: component, readerSettings: readerSettings)
         case .table:
-            return UnsupportedComponentPresenter(mainViewModel: viewModel, readableViewModel: readableViewModel)
+            return UnsupportedComponentPresenter(readableViewModel: readableViewModel)
         case .blockquote(let component):
             return BlockquoteComponentPresenter(component: component, readerSettings: readerSettings)
         case .video(let component):
@@ -287,23 +285,21 @@ extension ReadableViewController {
             case .youtube:
                 return YouTubeVideoComponentPresenter(
                     component: component,
-                    mainViewModel: viewModel,
                     readableViewModel: readableViewModel
                 )
             case .vimeoLink, .vimeoIframe, .vimeoMoogaloop:
                 return VimeoComponentPresenter(
                     oEmbedService: OEmbedService(session: URLSession.shared),
                     readableViewModel: readableViewModel,
-                    component: component,
-                    mainViewModel: viewModel
+                    component: component
                 ) { [weak self] in
                     self?.layout.invalidateLayout()
                 }
             default:
-                return UnsupportedComponentPresenter(mainViewModel: viewModel, readableViewModel: readableViewModel)
+                return UnsupportedComponentPresenter(readableViewModel: readableViewModel)
             }
         default:
-            return UnsupportedComponentPresenter(mainViewModel: viewModel, readableViewModel: readableViewModel)
+            return UnsupportedComponentPresenter(readableViewModel: readableViewModel)
         }
     }
 }

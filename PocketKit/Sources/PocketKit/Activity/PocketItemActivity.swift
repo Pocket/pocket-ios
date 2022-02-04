@@ -15,9 +15,11 @@ struct PocketItemActivity: PocketActivity {
     }
     
     let activityItems: [Any]
+    let sender: Any?
     
-    init(url: URL?, additionalText: String? = nil) {
+    init(url: URL?, additionalText: String? = nil, sender: Any? = nil) {
         self.activityItems = Self.activityItems(for: url, additionalText: additionalText)
+        self.sender = sender
     }
     
     private static func activityItems(for url: URL?, additionalText: String?) -> [Any] {

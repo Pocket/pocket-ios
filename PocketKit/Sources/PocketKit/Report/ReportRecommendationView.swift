@@ -17,7 +17,6 @@ struct ReportRecommendationView: View {
         static let submitButtonBackgroundColor = Color(.ui.teal2)
     }
     
-    private let model: MainViewModel
     private let recommendation: Slate.Recommendation
     private let tracker: Tracker
     
@@ -40,9 +39,8 @@ struct ReportRecommendationView: View {
     @FocusState
     private var isCommentFocused: Bool
 
-    init(recommendation: Slate.Recommendation, model: MainViewModel, tracker: Tracker) {
+    init(recommendation: Slate.Recommendation, tracker: Tracker) {
         self.recommendation = recommendation
-        self.model = model
         self.tracker = tracker
     }
     

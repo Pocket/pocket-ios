@@ -83,7 +83,8 @@ class ArchiveAnItemTests: XCTestCase {
             XCTAssertTrue(apiRequest.isToArchiveAnItem)
             XCTAssertTrue(apiRequest.contains("item-2"))
 
-            return Response.archive()        }
+            return Response.archive()
+        }
 
         app
             .readerView

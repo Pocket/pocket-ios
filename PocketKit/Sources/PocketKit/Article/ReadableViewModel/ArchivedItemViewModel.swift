@@ -10,10 +10,43 @@ class ArchivedItemViewModel: ReadableViewModel {
     @Published
     private var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
-    
+
+    @Published
+    var presentedAlert: PocketAlert?
+
+    @Published
+    var sharedActivity: PocketActivity?
+
+    @Published
+    var presentedWebReaderURL: URL?
+
+    @Published
+    var isPresentingReaderSettings: Bool?
+
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher {
         _events.eraseToAnyPublisher()
+    }
+
+    private let item: ArchivedItem
+    let tracker: Tracker
+
+    init(item: ArchivedItem, tracker: Tracker) {
+        self.item = item
+        self.tracker = tracker
+
+        _actions = [
+            .displaySettings { [weak self] _ in self?.displaySettings() },
+            .save { [weak self] _ in self?.save() },
+            .favorite { [weak self] _ in self?.favorite() },
+            .delete { [weak self] _ in self?.confirmDelete() },
+            .share { [weak self] _ in self?.share() },
+        ]
+    }
+
+    var readerSettings: ReaderSettings {
+        // TODO: inject this
+        ReaderSettings()
     }
 
     var components: [ArticleComponent]? {
@@ -41,30 +74,16 @@ class ArchivedItemViewModel: ReadableViewModel {
     }
 
     var url: URL? {
-        item.item?.resolvedURL ?? item.item?.givenURL ?? item.url
-    }
-
-    private let item: ArchivedItem
-    let mainViewModel: MainViewModel
-    let tracker: Tracker
-
-    init(item: ArchivedItem, mainViewModel: MainViewModel, tracker: Tracker) {
-        self.item = item
-        self.mainViewModel = mainViewModel
-        self.tracker = tracker
-
-        _actions = [
-            .displaySettings { [weak self] in self?.displaySettings() },
-            .save { [weak self] in self?.save() },
-            .favorite { [weak self] in self?.favorite() },
-            .delete { [weak self] in self?.confirmDelete() },
-            .share { [weak self] in self?.share() },
-        ]
+        item.bestURL
     }
     
     func delete() {
         // TODO: Delete archived item
         _events.send(.delete)
+    }
+
+    func showWebReader() {
+        presentedWebReaderURL = url
     }
 }
 

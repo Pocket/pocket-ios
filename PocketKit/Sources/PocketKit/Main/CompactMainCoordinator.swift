@@ -12,16 +12,11 @@ class CompactMainCoordinator: NSObject {
     }
 
     private let tabBarController: UITabBarController
-    private let myList: UINavigationController
-    private let homeRoot: HomeViewController
-    private let home: UINavigationController
-    private let settingsRoot: SettingsViewController
-    private let settings: UINavigationController
+    private let myList: CompactMyListContainerCoordinator
+    private let home: CompactHomeCoordinator
+    private let settings: CompactSettingsCoordinator
 
-    private let tracker: Tracker
-    private let source: Source
     private let model: MainViewModel
-
     private var subscriptions: [AnyCancellable] = []
     private var collapsedSubscription: AnyCancellable?
 
@@ -30,228 +25,72 @@ class CompactMainCoordinator: NSObject {
         tracker: Tracker,
         model: MainViewModel
     ) {
-        self.source = source
-        self.tracker = tracker
         self.model = model
 
-        let myListContainer = MyListContainerViewController(
-            viewControllers: [
-                ItemsListViewController(
-                    model: SavedItemsListViewModel(
-                        source: source,
-                        tracker: tracker.childTracker(hosting: .myList.screen),
-                        main: model
-                    )
-                ),
-                ItemsListViewController(
-                    model: ArchivedItemsListViewModel(
-                        source: source,
-                        mainViewModel: model,
-                        tracker: tracker.childTracker(hosting: .articleView.screen)
-                    )
-                )
-            ]
-        )
+        myList = CompactMyListContainerCoordinator(model: model.myList)
+        myList.viewController.tabBarItem.accessibilityIdentifier = "my-list-tab-bar-button"
+        myList.viewController.tabBarItem.title = "My List"
+        myList.viewController.tabBarItem.image = UIImage(systemName: "list.dash")
 
-        myList = UINavigationController(rootViewController: myListContainer)
-        myList.navigationBar.prefersLargeTitles = true
-        myList.navigationBar.barTintColor = UIColor(.ui.white1)
-        myList.navigationBar.tintColor = UIColor(.ui.grey1)
-        myList.tabBarItem.accessibilityIdentifier = "my-list-tab-bar-button"
-        myList.tabBarItem.title = "My List"
-        myList.tabBarItem.image = UIImage(systemName: "list.dash")
+        home = CompactHomeCoordinator(source: source, tracker: tracker, model: model.home)
+        home.viewController.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
+        home.viewController.tabBarItem.title = "Home"
+        home.viewController.tabBarItem.image = UIImage(systemName: "house")
 
-        homeRoot = HomeViewController(
-            source: source,
-            tracker: tracker.childTracker(hosting: UIContext.home.screen),
-            model: model
-        )
-        homeRoot.view.backgroundColor = UIColor(.ui.white1)
-        home = UINavigationController(rootViewController:homeRoot)
-        home.navigationBar.prefersLargeTitles = true
-        home.navigationBar.barTintColor = UIColor(.ui.white1)
-        home.navigationBar.tintColor = UIColor(.ui.grey1)
-        home.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
-        home.tabBarItem.title = "Home"
-        home.tabBarItem.image = UIImage(systemName: "house")
-
-        settingsRoot = SettingsViewController(model: model.settings)
-        settings = UINavigationController(rootViewController: settingsRoot)
-        settings.navigationBar.prefersLargeTitles = true
-        settings.navigationBar.barTintColor = UIColor(.ui.white1)
-        settings.navigationBar.tintColor = UIColor(.ui.grey1)
-        settings.tabBarItem.accessibilityIdentifier = "settings-tab-bar-button"
-        settings.tabBarItem.title = "Settings"
-        settings.tabBarItem.image = UIImage(systemName: "gearshape")
+        settings = CompactSettingsCoordinator(model: model.settings)
+        settings.viewController.tabBarItem.accessibilityIdentifier = "settings-tab-bar-button"
+        settings.viewController.tabBarItem.title = "Settings"
+        settings.viewController.tabBarItem.image = UIImage(systemName: "gearshape")
 
         tabBarController = UITabBarController()
-        tabBarController.viewControllers = [home, myList, settings]
         tabBarController.tabBar.barTintColor = UIColor(.ui.white1)
         tabBarController.tabBar.tintColor = UIColor(.ui.grey1)
+        tabBarController.viewControllers = [
+            home.viewController,
+            myList.viewController,
+            settings.viewController
+        ]
 
         super.init()
 
         tabBarController.delegate = self
-        myList.delegate = self
-        home.delegate = self
 
-        collapsedSubscription = model.$isCollapsed
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] isCollapsed in
-                if isCollapsed {
-                    self?.subscribeToModelChanges()
-                } else {
-                    self?.subscriptions = []
-                }
+        collapsedSubscription = model.$isCollapsed.receive(on: DispatchQueue.main).sink { [weak self] isCollapsed in
+            if isCollapsed {
+                self?.observeModelChanges()
+            } else {
+                self?.stopObservingModelChanges()
+            }
         }
     }
 
-    func showMyList() {
-        tabBarController.selectedViewController = myList
+    func stopObservingModelChanges() {
+        subscriptions = []
+        myList.stopObservingModelChanges()
+        home.stopObservingModelChanges()
     }
 
-    func showHome() {
-        tabBarController.selectedViewController = home
-    }
-
-    func showSettings() {
-        tabBarController.selectedViewController = settings
-    }
-
-    func show(item: SavedItem, animated: Bool) {
-        let viewModel = SavedItemViewModel(
-            item: item,
-            source: source,
-            mainViewModel: model,
-            tracker: tracker.childTracker(hosting: .articleView.screen)
-        )
-        let readableHost = ReadableHostViewController(
-            mainViewModel: model,
-            readableViewModel: viewModel
-        )
-        readableHost.delegate = self
-        readableHost.hidesBottomBarWhenPushed = true
-
-        myList.pushViewController(readableHost, animated: animated)
-    }
-
-    func showSlate(withID slateID: String, animated: Bool) {
-        let slateDetail = SlateDetailViewController(
-            source: source,
-            model: model,
-            tracker: tracker.childTracker(hosting: .slateDetail.screen),
-            slateID: slateID
-        )
-
-        home.pushViewController(slateDetail, animated: animated)
-    }
-    
-    func showHome(viewModel: ReadableViewModel, animated: Bool) {
-        let viewController = ReadableHostViewController(
-            mainViewModel: model,
-            readableViewModel: viewModel
-        )
-        
-        home.pushViewController(viewController, animated: animated)
-    }
-    
-    func showMyList(viewModel: ReadableViewModel, animated: Bool) {
-        let viewController = ReadableHostViewController(
-            mainViewModel: model,
-            readableViewModel: viewModel
-        )
-        viewController.delegate = self
-        viewController.hidesBottomBarWhenPushed = true
-        
-        myList.pushViewController(viewController, animated: animated)
-    }
-
-    func subscribeToModelChanges() {
-        var isResetting = true
-        myList.popToRootViewController(animated: false)
-        home.popToRootViewController(animated: false)
-
-        model.$selectedSection.receive(on: DispatchQueue.main).sink { section in
-            switch section {
-            case .myList:
-                self.showMyList()
-            case .home:
-                self.showHome()
-            case .settings:
-                self.showSettings()
-            }
+    func observeModelChanges() {
+        model.$selectedSection.sink { [weak self] section in
+            self?.show(section)
         }.store(in: &subscriptions)
 
-        model.$selectedMyListReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
-            guard let viewModel = viewModel else {
-                return
-            }
-            
-            self?.showMyList(viewModel: viewModel, animated: !isResetting)
-        }.store(in: &subscriptions)
-        
-        model.$selectedHomeReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
-            guard let viewModel = viewModel else {
-                return
-            }
-            
-            self?.showHome(viewModel: viewModel, animated: !isResetting)
+        model.refreshTasks.sink { [weak self] task in
+            self?.home.handleBackgroundRefresh(task: task)
         }.store(in: &subscriptions)
 
-        model.$selectedSlateID.receive(on: DispatchQueue.main).sink { [weak self] slateID in
-            guard let slateID = slateID else {
-                return
-            }
-
-            self?.showSlate(withID: slateID, animated: !isResetting)
-        }.store(in: &subscriptions)
-
-        model.refreshTasks.receive(on: DispatchQueue.main).sink { [weak self] task in
-            self?.homeRoot.handleBackgroundRefresh(task: task)
-        }.store(in: &subscriptions)
-
-        DispatchQueue.main.async {
-            isResetting = false
-        }
-    }
-}
-
-extension CompactMainCoordinator: ReadableHostViewControllerDelegate {
-    func readableHostViewControllerDidDeleteItem() {
-        popReader()
+        myList.observeModelChanges()
+        home.observeModelChanges()
     }
 
-    func readableHostViewControllerDidArchiveItem() {
-        popReader()
-    }
-
-    private func popReader() {
-        model.selectedMyListReadableViewModel = nil
-        myList.popViewController(animated: true)
-    }
-}
-
-extension CompactMainCoordinator: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        switch navigationController {
-        case myList:
-            if viewController === myList.viewControllers.first {
-                model.selectedMyListReadableViewModel = nil
-                return
-            }
-        case home:
-            if viewController === home.viewControllers.first {
-                model.selectedSlateID = nil
-                model.selectedHomeReadableViewModel = nil
-                return
-            }
-
-            if viewController is SlateDetailViewController {
-                model.selectedHomeReadableViewModel = nil
-                return
-            }
-        default:
-            break
+    private func show(_ section: MainViewModel.AppSection) {
+        switch section {
+        case .myList:
+            tabBarController.selectedViewController = myList.viewController
+        case .home:
+            tabBarController.selectedViewController = home.viewController
+        case .settings:
+            tabBarController.selectedViewController = settings.viewController
         }
     }
 }

@@ -52,7 +52,7 @@ class MainCoordinator {
             .store(in: &subscriptions)
     }
 
-    func showList() {
-        regular.showSupplementary()
+    func showInitialView() {
+        regular.showInitialView()
     }
 }
