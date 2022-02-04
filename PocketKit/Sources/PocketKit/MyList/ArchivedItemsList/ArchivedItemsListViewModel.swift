@@ -9,19 +9,29 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     typealias ItemIdentifier = String
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
 
-    var events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never>
-    var presentedAlert: PocketAlert?
+    private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
+    var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
+
     let selectionItem: SelectionItem = SelectionItem(title: "Archive", image: .init(asset: .archive))
 
+    @Published
+    var selectedReadable: ArchivedItemViewModel?
+
+    @Published
+    var sharedActivity: PocketActivity?
+
+    @Published
+    var presentedAlert: PocketAlert?
+
     private let source: Source
-    private let mainViewModel: MainViewModel
     private let tracker: Tracker
-    
+
     private let networkMonitor = NWPathMonitor()
     private var isNetworkAvailable: Bool {
         networkMonitor.currentPath.status == .satisfied
     }
 
+    private var archivedItemsByID: [String: ArchivedItem] = [:]
     private var archivedItems: [ArchivedItem] = [] {
         didSet {
             archivedItemsByID = archivedItems.reduce(into: [:]) { dict, archivedItem in
@@ -29,31 +39,31 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             }
         }
     }
-    private var archivedItemsByID: [String: ArchivedItem] = [:]
 
     private var selectedFilters: Set<ItemsListFilter> = .init()
     private let availableFilters: [ItemsListFilter] = ItemsListFilter.allCases
 
-    init(source: Source, mainViewModel: MainViewModel, tracker: Tracker) {
+    init(source: Source, tracker: Tracker) {
         self.source = source
-        self.mainViewModel = mainViewModel
         self.tracker = tracker
-        self.events = .init()
-        
+
         networkMonitor.start(queue: .global())
+//        self.main.$selectedMyListReadableViewModel.sink { _ in
+//            // TODO: Handle deselection here
+//        }.store(in: &subscriptions)
     }
 
     func fetch() async throws {
         if !isNetworkAvailable {
-            events.send(.snapshot(offlineSnapshot()))
+            _events.send(.snapshot(offlineSnapshot()))
         } else {
-            events.send(.snapshot(blankSnapshot()))
-            
+            _events.send(.snapshot(blankSnapshot()))
+
             let favorited = selectedFilters.contains(.favorites)
             archivedItems = try await source.fetchArchivedItems(isFavorite: favorited)
-            
+
             let snapshot = buildSnapshot()
-            events.send(.snapshot(snapshot))
+            _events.send(.snapshot(snapshot))
         }
     }
 
@@ -97,16 +107,30 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         }
     }
 
-    func shareAction(for: String) -> ItemAction? {
-        return nil
+    func shareAction(for itemID: String) -> ItemAction? {
+        archivedItemsByID[itemID].flatMap { $0.bestURL }.flatMap { url in
+            return .share { [weak self] sender in
+                self?.sharedActivity = PocketItemActivity(url: url, sender: sender)
+            }
+        }
     }
 
-    func favoriteAction(for: String) -> ItemAction? {
-        return nil
+    func favoriteAction(for itemID: String) -> ItemAction? {
+        archivedItemsByID[itemID].flatMap { _ in
+            return .favorite { _ in
+                // TODO: Favorite the archived item
+            }
+        }
     }
 
-    func overflowActions(for: String) -> [ItemAction]? {
-        return nil
+    func overflowActions(for itemID: String) -> [ItemAction]? {
+        return archivedItemsByID[itemID].flatMap { archivedItem in
+            return [
+                .delete { [weak self] _ in
+                    self?.confirmDelete(item: archivedItem)
+                }
+            ]
+        }
     }
 
     func trailingSwipeActions(for objectID: String) -> [UIContextualAction] {
@@ -114,14 +138,31 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     func trackImpression(_ cell: ItemsListCell<String>) {
+        // TODO: analytics for archived items
+    }
 
+    private func confirmDelete(item: ArchivedItem) {
+        presentedAlert = PocketAlert(
+            title: "Are you sure you want to delete this item?",
+            message: nil,
+            preferredStyle: .alert,
+            actions: [
+                UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                    self?.presentedAlert = nil
+                },
+                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
+                    self?.presentedAlert = nil
+                }
+            ],
+            preferredAction: nil
+        )
     }
 }
 
 extension ArchivedItemsListViewModel {
     private func buildSnapshot() -> Snapshot {
         var snapshot = Snapshot()
-        
+
         let sections: [ItemsListSection] = [.filters, .items]
         snapshot.appendSections(sections)
 
@@ -134,52 +175,48 @@ extension ArchivedItemsListViewModel {
         snapshot.appendItems(itemCellIDs, toSection: .items)
         return snapshot
     }
-    
+
     private func blankSnapshot() -> Snapshot {
         var snapshot = Snapshot()
-        
+
         let sections: [ItemsListSection] = [.filters, .items]
         snapshot.appendSections(sections)
-        
+
         snapshot.appendItems(
             ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
-        
+
         return snapshot
     }
-    
+
     private func offlineSnapshot() -> Snapshot {
         var snapshot = Snapshot()
         snapshot.appendSections([.offline])
         snapshot.appendItems([.offline], toSection: .offline)
         return snapshot
     }
-    
+
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
         if selectedFilters.contains(filter) {
             selectedFilters.remove(filter)
         } else {
             selectedFilters.insert(filter)
         }
-        
+
         var snapshot = blankSnapshot()
         snapshot.reloadItems([cell])
-        events.send(.snapshot(snapshot))
+        _events.send(.snapshot(snapshot))
 
         try? self.fetch()
     }
-    
+
     private func select(item identifier: ItemIdentifier) {
-        guard let archivedItem = archivedItemsByID[identifier] else {
-            return
+        selectedReadable = archivedItemsByID[identifier].flatMap {
+            ArchivedItemViewModel(
+                item: $0,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
         }
-        
-        let viewModel = ArchivedItemViewModel(
-            item: archivedItem,
-            mainViewModel: mainViewModel,
-            tracker: tracker.childTracker(hosting: .articleView.screen)
-        )
-        mainViewModel.selectedMyListReadableViewModel = viewModel
     }
 }

@@ -7,17 +7,48 @@ import Analytics
 
 
 class RecommendationViewModel: ReadableViewModel {
+    let tracker: Tracker
+
     @Published
     private var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
     
     private var _events = PassthroughSubject<ReadableEvent, Never>()
-    var events: EventPublisher {
-        _events.eraseToAnyPublisher()
+    var events: EventPublisher { _events.eraseToAnyPublisher() }
+
+    @Published
+    var presentedAlert: PocketAlert?
+
+    @Published
+    var sharedActivity: PocketActivity?
+
+    @Published
+    var presentedWebReaderURL: URL?
+
+    @Published
+    var isPresentingReaderSettings: Bool?
+    
+    private let recommendation: Slate.Recommendation
+
+    init(recommendation: Slate.Recommendation, tracker: Tracker) {
+        self.recommendation = recommendation
+        self.tracker = tracker
+
+        _actions = [
+            .displaySettings { [weak self] _ in self?.displaySettings() },
+            .save { [weak self] _ in self?.save() },
+            .favorite { [weak self] _ in self?.favorite() },
+            .share { [weak self] _ in self?.share() },
+        ]
     }
 
     var components: [ArticleComponent]? {
         recommendation.item.article?.components
+    }
+
+    var readerSettings: ReaderSettings {
+        // TODO: inject this
+        ReaderSettings()
     }
 
     var textAlignment: Textile.TextAlignment {
@@ -44,23 +75,6 @@ class RecommendationViewModel: ReadableViewModel {
         recommendation.item.resolvedURL ?? recommendation.item.givenURL
     }
 
-    private let recommendation: Slate.Recommendation
-    let mainViewModel: MainViewModel
-    let tracker: Tracker
-
-    init(recommendation: Slate.Recommendation, mainViewModel: MainViewModel, tracker: Tracker) {
-        self.recommendation = recommendation
-        self.mainViewModel = mainViewModel
-        self.tracker = tracker
-
-        _actions = [
-            .displaySettings { [weak self] in self?.displaySettings() },
-            .save { [weak self] in self?.save() },
-            .favorite { [weak self] in self?.favorite() },
-            .share { [weak self] in self?.share() },
-        ]
-    }
-    
     func delete() { }
 }
 
@@ -71,5 +85,9 @@ extension RecommendationViewModel {
     
     private func favorite() {
         track(identifier: .itemFavorite)
+    }
+
+    func showWebReader() {
+        presentedWebReaderURL = url
     }
 }

@@ -8,7 +8,7 @@ struct ItemAction {
     let identifier: UIAction.Identifier
     let accessibilityIdentifier: String
     let image: UIImage?
-    let handler: (() -> ())?
+    let handler: ((Any?) -> ())?
 }
 
 extension ItemAction: Hashable {
@@ -26,7 +26,7 @@ extension ItemAction: Hashable {
 }
 
 extension ItemAction {
-    static func save(_ handler: @escaping () -> ()) -> ItemAction {
+    static func save(_ handler: @escaping (Any?) -> ()) -> ItemAction {
         return ItemAction(
             title: "Save",
             identifier: .saveItem,
@@ -36,7 +36,7 @@ extension ItemAction {
         )
     }
 
-    static func archive(_ handler: @escaping () -> ()) -> ItemAction {
+    static func archive(_ handler: @escaping (Any?) -> ()) -> ItemAction {
         return ItemAction(
             title: "Archive",
             identifier: .archiveItem,
@@ -46,7 +46,7 @@ extension ItemAction {
         )
     }
 
-    static func delete(_ handler: @escaping () -> ()) -> ItemAction {
+    static func delete(_ handler: @escaping (Any?) -> ()) -> ItemAction {
         return ItemAction(
             title: "Delete",
             identifier: .deleteItem,
@@ -57,7 +57,7 @@ extension ItemAction {
         )
     }
 
-    static func favorite(_ handler: @escaping () -> ()) -> ItemAction {
+    static func favorite(_ handler: @escaping (Any?) -> ()) -> ItemAction {
         return ItemAction(
             title: "Favorite",
             identifier: .favoriteItem,
@@ -68,7 +68,7 @@ extension ItemAction {
         )
     }
 
-    static func unfavorite(_ handler: @escaping () -> ()) -> ItemAction {
+    static func unfavorite(_ handler: @escaping (Any?) -> ()) -> ItemAction {
         return ItemAction(
             title: "Unfavorite",
             // intentionally the same as `favorite()` since we want to replace
@@ -80,7 +80,7 @@ extension ItemAction {
         )
     }
 
-    static func share(_ handler: @escaping () -> ()) -> ItemAction {
+    static func share(_ handler: @escaping (Any?) -> ()) -> ItemAction {
         return ItemAction(
             title: "Share",
             identifier: .shareItem,
@@ -90,7 +90,7 @@ extension ItemAction {
         )
     }
     
-    static func displaySettings(_ handler: @escaping () -> ()) -> ItemAction {
+    static func displaySettings(_ handler: @escaping (Any?) -> ()) -> ItemAction {
         return ItemAction(
             title: "Display Settings",
             identifier: .displaySettings,
@@ -116,9 +116,10 @@ extension UIAction {
             return nil
         }
 
-        self.init(title: action.title, image: action.image, identifier: action.identifier) { _ in
-            action.handler?()
+        self.init(title: action.title, image: action.image, identifier: action.identifier) { uiAction in
+            action.handler?(uiAction.sender)
         }
+
         self.accessibilityIdentifier = action.accessibilityIdentifier
     }
 }

@@ -9,9 +9,14 @@ import Analytics
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
     
-    var mainViewModel: MainViewModel { get }
     var tracker: Tracker { get }
-    
+
+    var readerSettings: ReaderSettings { get }
+    var presentedAlert: PocketAlert? { get set }
+    var sharedActivity: PocketActivity? { get set }
+    var presentedWebReaderURL: URL? { get set }
+    var isPresentingReaderSettings: Bool? { get set }
+
     var actions: Published<[ItemAction]>.Publisher { get }
     var events: EventPublisher { get }
     
@@ -24,6 +29,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var url: URL? { get }
     
     func delete()
+    func showWebReader()
 }
 
 // MARK: - ReadableViewControllerDelegate
@@ -42,12 +48,11 @@ extension ReadableViewModel {
 
 extension ReadableViewModel {
     func displaySettings() {
-        mainViewModel.isPresentingReaderSettings = true
+        isPresentingReaderSettings = true
     }
     
     func open(url: URL) {
-        mainViewModel.presentedWebReaderURL = url
-        
+        presentedWebReaderURL = url
         let additionalContexts: [Context] = [ContentContext(url: url)]
 
         let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
@@ -57,39 +62,26 @@ extension ReadableViewModel {
     }
     
     func share(additionalText: String? = nil) {
-        guard let url = url else {
-            return
-        }
-        
-        mainViewModel.sharedActivity = PocketItemActivity(url: url, additionalText: additionalText)
-        
+        sharedActivity = PocketItemActivity(url: url, additionalText: additionalText)
         track(identifier: .itemShare)
     }
     
     func confirmDelete() {
-        let actions = [
-            UIAlertAction(title: "No", style: .default) { [weak self] _ in
-                self?.mainViewModel.presentedAlert = nil
-            },
-            UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
-                self?.mainViewModel.presentedAlert = nil
-
-                guard let self = self else {
-                    return
-                }
-                
-                self.delete()
-            }
-        ]
-
-        let alert = PocketAlert(
+        presentedAlert = PocketAlert(
             title: "Are you sure you want to delete this item?",
             message: nil,
             preferredStyle: .alert,
-            actions: actions,
+            actions: [
+                UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                    self?.presentedAlert = nil
+                },
+                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
+                    self?.presentedAlert = nil
+                    self?.delete()
+                },
+            ],
             preferredAction: nil
         )
-        mainViewModel.presentedAlert = alert
     }
     
     func track(identifier: UIContext.Identifier) {

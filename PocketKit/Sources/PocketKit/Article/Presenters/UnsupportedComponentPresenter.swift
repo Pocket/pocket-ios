@@ -3,14 +3,9 @@ import UIKit
 
 
 class UnsupportedComponentPresenter: ArticleComponentPresenter {
-    private let mainViewModel: MainViewModel
     private let readableViewModel: ReadableViewModel?
 
-    init(
-        mainViewModel: MainViewModel,
-        readableViewModel: ReadableViewModel?
-    ) {
-        self.mainViewModel = mainViewModel
+    init(readableViewModel: ReadableViewModel?) {
         self.readableViewModel = readableViewModel
     }
 
@@ -31,6 +26,6 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
     }
 
     private func handleShowInWebReaderButtonTap() {
-        mainViewModel.presentedWebReaderURL = readableViewModel?.url
+        readableViewModel?.showWebReader()
     }
 }

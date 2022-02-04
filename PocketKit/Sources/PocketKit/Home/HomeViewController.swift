@@ -1,3 +1,4 @@
+
 import UIKit
 import Sync
 import Kingfisher
@@ -27,7 +28,7 @@ class HomeViewController: UIViewController {
 
     private let source: Sync.Source
     private let tracker: Tracker
-    private let model: MainViewModel
+    private let model: HomeViewModel
     private let sectionProvider: HomeViewControllerSectionProvider
     private let savedRecommendationsService: SavedRecommendationsService
     private var subscriptions: [AnyCancellable] = []
@@ -75,7 +76,7 @@ class HomeViewController: UIViewController {
     private var overscrollTopConstraint: NSLayoutConstraint? = nil
     private var overscrollOffset = 0
 
-    init(source: Sync.Source, tracker: Tracker, model: MainViewModel) {
+    init(source: Sync.Source, tracker: Tracker, model: HomeViewModel) {
         self.source = source
         self.tracker = tracker
         self.model = model
@@ -83,8 +84,6 @@ class HomeViewController: UIViewController {
         self.sectionProvider = HomeViewControllerSectionProvider()
 
         super.init(nibName: nil, bundle: nil)
-        
-        view.accessibilityIdentifier = "home"
 
         dataSource = UICollectionViewDiffableDataSource<HomeSection, HomeItem>(collectionView: collectionView) { [unowned self] _, indexPath, item in
             return self.cellFor(item, at: indexPath)
@@ -125,6 +124,7 @@ class HomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.accessibilityIdentifier = "home"
 
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
@@ -345,18 +345,15 @@ extension HomeViewController: UICollectionViewDelegate {
 
         switch indexPath.section {
         case 0:
-            model.selectedSlateID = slates[indexPath.item].id
+            model.selectedSlateDetail = SlateDetailViewModel(slateID: slates[indexPath.item].id)
         default:
             let engagement = SnowplowEngagement(type: .general, value: nil)
             tracker.track(event: engagement, contexts(for: indexPath))
             
-            let recommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
-            let viewModel = RecommendationViewModel(
-                recommendation: recommendation,
-                mainViewModel: model,
+            model.selectedReadableViewModel = RecommendationViewModel(
+                recommendation: slates[indexPath.section - 1].recommendations[indexPath.item],
                 tracker: tracker.childTracker(hosting: .articleView.screen)
             )
-            model.selectedHomeReadableViewModel = viewModel
 
             let open = ContentOpenEvent(destination: .internal, trigger: .click)
             tracker.track(event: open, contexts(for: indexPath))

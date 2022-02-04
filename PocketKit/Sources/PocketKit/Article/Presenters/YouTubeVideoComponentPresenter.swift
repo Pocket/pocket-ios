@@ -7,18 +7,15 @@ import UIKit
 
 class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     private let component: VideoComponent
-    private let mainViewModel: MainViewModel
     private let readableViewModel: ReadableViewModel?
     
     private var cancellable: AnyCancellable? = nil
     
     init(
         component: VideoComponent,
-        mainViewModel: MainViewModel,
         readableViewModel: ReadableViewModel?
     ) {
         self.component = component
-        self.mainViewModel = mainViewModel
         self.readableViewModel = readableViewModel
     }
     
@@ -66,6 +63,6 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     }
 
     private func handleShowInWebReaderButtonTap() {
-        mainViewModel.presentedWebReaderURL = readableViewModel?.url
+        readableViewModel?.showWebReader()
     }
 }

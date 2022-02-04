@@ -26,8 +26,7 @@ enum ItemsListEvent<ItemIdentifier: Hashable> {
 protocol ItemsListViewModel: AnyObject {
     associatedtype ItemIdentifier: Hashable
 
-    var events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> { get }
-    var presentedAlert: PocketAlert? { get set }
+    var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { get }
     var selectionItem: SelectionItem { get }
 
     func fetch() throws

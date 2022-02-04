@@ -14,13 +14,26 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let initialState: RootViewModel.State
         if sessionController.isSignedIn {
-            initialState = .main(MainViewModel(
-                refreshCoordinator: Services.shared.refreshCoordinator,
-                settings: SettingsViewModel(
-                    sessionController: sessionController,
-                    events: events
+            initialState = .main(
+                MainViewModel(
+                    refreshCoordinator: Services.shared.refreshCoordinator,
+                    myList: MyListContainerViewModel(
+                        savedItemsList: SavedItemsListViewModel(
+                            source: Services.shared.source,
+                            tracker: Services.shared.tracker
+                        ),
+                        archivedItemsList: ArchivedItemsListViewModel(
+                            source: Services.shared.source,
+                            tracker: Services.shared.tracker
+                        )
+                    ),
+                    home: HomeViewModel(),
+                    settings: SettingsViewModel(
+                        sessionController: sessionController,
+                        events: events
+                    )
                 )
-            ))
+            )
         } else {
             initialState = .signIn(
                 SignInViewModel(
@@ -36,7 +49,9 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     state: initialState,
                     events: events,
                     refreshCoordinator: Services.shared.refreshCoordinator,
-                    sessionController: sessionController
+                    sessionController: sessionController,
+                    source: Services.shared.source,
+                    tracker: Services.shared.tracker
                 ),
                 source: Services.shared.source,
                 tracker: Services.shared.tracker

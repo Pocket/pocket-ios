@@ -8,31 +8,31 @@ import UIKit
 class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
 
+    private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
+    var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
+
+    let selectionItem: SelectionItem = SelectionItem(title: "My List", image: .init(asset: .myList))
+
+    @Published
+    var presentedAlert: PocketAlert?
+
+    @Published
+    var selectedReadable: SavedItemViewModel?
+
+    @Published
+    var sharedActivity: PocketActivity?
+
     private let source: Source
     private let tracker: Tracker
-    private let main: MainViewModel
     private let itemsController: NSFetchedResultsController<SavedItem>
     private var subscriptions: [AnyCancellable] = []
 
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
 
-    let events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
-    let selectionItem: SelectionItem = SelectionItem(title: "My List", image: .init(asset: .myList))
-
-    var presentedAlert: PocketAlert? {
-        get {
-            main.presentedAlert
-        }
-        set {
-            main.presentedAlert = newValue
-        }
-    }
-
-    init(source: Source, tracker: Tracker, main: MainViewModel) {
+    init(source: Source, tracker: Tracker) {
         self.source = source
         self.tracker = tracker
-        self.main = main
         self.selectedFilters = []
         self.availableFilters = ItemsListFilter.allCases
         self.itemsController = source.makeItemsController()
@@ -41,23 +41,23 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         itemsController.delegate = self
 
-        self.main.$selectedMyListReadableViewModel.sink { _ in
-            // TODO: Handle deselection here
-        }.store(in: &subscriptions)
+//        self.main.$selectedMyListReadableViewModel.sink { _ in
+//            // TODO: Handle deselection here
+//        }.store(in: &subscriptions)
     }
 
     func fetch() throws {
         var predicates: [NSPredicate] = []
-        
+
         for filter in selectedFilters {
             switch filter {
             case .favorites:
                 predicates.append(NSPredicate(format: "isFavorite = true", true))
             }
         }
-        
+
         self.itemsController.fetchRequest.predicate = Predicates.savedItems(filters: predicates)
-        
+
         try? self.itemsController.performFetch()
         self.itemsLoaded()
     }
@@ -102,12 +102,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         if item.isFavorite {
-            return .unfavorite { [weak self] in
+            return .unfavorite { [weak self] _ in
                 self?.source.unfavorite(item: item)
                 self?.track(item: item, identifier: .itemUnfavorite)
             }
         } else {
-            return .favorite { [weak self] in
+            return .favorite { [weak self] _ in
                 self?.source.favorite(item: item)
                 self?.track(item: item, identifier: .itemFavorite)
             }
@@ -119,8 +119,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
 
-        return .share { [weak self] in
-            self?.main.sharedActivity = PocketItemActivity(url: item.url)
+        return .share { [weak self] sender in
+            self?.sharedActivity = PocketItemActivity(url: item.url, sender: sender)
         }
     }
 
@@ -130,10 +130,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         return [
-            .archive { [weak self] in
+            .archive { [weak self] _ in
                 self?.archive(item: item)
             },
-            .delete { [weak self] in
+            .delete { [weak self] _ in
                 self?.confirmDelete(item: item)
             }
         ]
@@ -159,16 +159,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func confirmDelete(item: SavedItem) {
-        main.presentedAlert = PocketAlert(
+        presentedAlert = PocketAlert(
             title: "Are you sure you want to delete this item?",
             message: nil,
             preferredStyle: .alert,
             actions: [
                 UIAlertAction(title: "No", style: .default) { [weak self] _ in
-                    self?.main.presentedAlert = nil
+                    self?.presentedAlert = nil
                 },
                 UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
-                    self?.main.presentedAlert = nil
+                    self?.presentedAlert = nil
                     self?.source.delete(item: item)
                     self?.track(item: item, identifier: .itemDelete)
                 }
@@ -187,7 +187,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private func buildSnapshot() -> NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> {
         var snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> = .init()
-        
+
         let sections: [ItemsListSection] = [.filters, .items]
         snapshot.appendSections(sections)
 
@@ -205,7 +205,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func send(snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>) {
-        events.send(.snapshot(snapshot))
+        _events.send(.snapshot(snapshot))
     }
 
     func trackImpression(_ cell: ItemsListCell<ItemIdentifier>) {
@@ -213,17 +213,17 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
                 return
             }
-            
+
             let contexts: [Context] = [
                 UIContext.myList.item(index: UIIndex(indexPath.item)),
                 ContentContext(url: url)
             ]
-            
+
             let event = ImpressionEvent(component: .card, requirement: .instant)
             self.tracker.track(event: event, contexts)
         }
     }
-    
+
     private func track(item: SavedItem, identifier: UIContext.Identifier) {
         guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
             return
@@ -238,30 +238,27 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, contexts)
     }
-    
+
     private func withSavedItem(from cell: ItemsListCell<ItemIdentifier>, handler: ((SavedItem) -> Void)?) {
         guard case .item(let identifier) = cell, let item = bareItem(with: identifier) else {
             return
         }
-        
+
         handler?(item)
     }
 }
 
 extension SavedItemsListViewModel {
     private func select(item itemID: ItemIdentifier) {
-        guard let item = bareItem(with: itemID) else {
-            return
+        selectedReadable = bareItem(with: itemID).flatMap {
+            SavedItemViewModel(
+                item: $0,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
         }
-        let viewModel = SavedItemViewModel(
-            item: item,
-            source: source,
-            mainViewModel: main,
-            tracker: tracker.childTracker(hosting: .articleView.screen)
-        )
-        main.selectedMyListReadableViewModel = viewModel
     }
-    
+
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
         if selectedFilters.contains(filter) {
             selectedFilters.remove(filter)
@@ -272,7 +269,7 @@ extension SavedItemsListViewModel {
         var snapshot = buildSnapshot()
         snapshot.reloadItems([cell])
         send(snapshot: snapshot)
-        
+
         try? fetch()
     }
 }

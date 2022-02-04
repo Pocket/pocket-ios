@@ -4,53 +4,57 @@ import Foundation
 import BackgroundTasks
 
 
+class HomeViewModel {
+    @Published
+    var selectedReadableViewModel: RecommendationViewModel?
+
+    @Published
+    var selectedRecommendationToReport: Slate.Recommendation?
+
+    @Published
+    var selectedSlateDetail: SlateDetailViewModel?
+}
+
+class SlateDetailViewModel {
+    let slateID: String
+
+    @Published
+    var selectedReadableViewModel: RecommendationViewModel?
+
+    @Published
+    var selectedRecommendationToReport: Slate.Recommendation?
+
+    init(slateID: String) {
+        self.slateID = slateID
+    }
+}
+
 class MainViewModel: ObservableObject {
     @Published
     var selectedSection: AppSection = .home
-    
-    @Published
-    var selectedRecommendationToReport: Slate.Recommendation?
-    
-    @Published
-    var selectedMyListReadableViewModel: ReadableViewModel?
-    
-    @Published
-    var selectedHomeReadableViewModel: ReadableViewModel?
-
-    @Published
-    var selectedSlateID: String?
-
-    @Published
-    var readerSettings = ReaderSettings()
 
     @Published
     var isCollapsed = false
-
-    @Published
-    var isPresentingReaderSettings = false
-
-    @Published
-    var presentedWebReaderURL: URL?
-
-    @Published
-    var sharedActivity: PocketActivity?
-    
-    @Published
-    var presentedAlert: PocketAlert?
-
-    let settings: SettingsViewModel
 
     var refreshTasks: AnyPublisher<BGTask, Never> {
         refreshCoordinator.tasksPublisher
     }
 
+    let home: HomeViewModel
+    let myList: MyListContainerViewModel
+    let settings: SettingsViewModel
+
     private let refreshCoordinator: RefreshCoordinator
 
     init(
         refreshCoordinator: RefreshCoordinator,
+        myList: MyListContainerViewModel,
+        home: HomeViewModel,
         settings: SettingsViewModel
     ) {
         self.refreshCoordinator = refreshCoordinator
+        self.myList = myList
+        self.home = home
         self.settings = settings
     }
 

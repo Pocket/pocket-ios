@@ -98,9 +98,12 @@ class SlateDetailViewController: UIViewController {
     private let savedRecommendationsService: SavedRecommendationsService
     private var subscriptions: [AnyCancellable] = []
     private let tracker: Tracker
-    private let model: MainViewModel
+    private let model: SlateDetailViewModel
     
-    private let slateID: String
+    private var slateID: String {
+        model.slateID
+    }
+
     private var slate: Slate? {
         didSet {
             guard let slate = slate else {
@@ -119,14 +122,12 @@ class SlateDetailViewController: UIViewController {
     
     init(
         source: Source,
-        model: MainViewModel,
-        tracker: Tracker,
-        slateID: String
+        model: SlateDetailViewModel,
+        tracker: Tracker
     ) {
         self.source = source
         self.model = model
         self.tracker = tracker
-        self.slateID = slateID
         self.savedRecommendationsService = source.savedRecommendationsService()
     
         super.init(nibName: nil, bundle: nil)
@@ -178,7 +179,7 @@ class SlateDetailViewController: UIViewController {
             overscrollView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
             overscrollView.heightAnchor.constraint(equalToConstant: 96)
         ])
-        
+
         Task {
             self.slate = try await source.fetchSlate(slateID)
         }
@@ -266,12 +267,10 @@ extension SlateDetailViewController: UICollectionViewDelegate {
         let engagement = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: engagement, contexts(for: indexPath))
 
-        let viewModel = RecommendationViewModel(
+        model.selectedReadableViewModel = RecommendationViewModel(
             recommendation: recommendation,
-            mainViewModel: model,
             tracker: tracker.childTracker(hosting: .articleView.screen)
         )
-        model.selectedHomeReadableViewModel = viewModel
 
         let contentOpen = ContentOpenEvent(destination: .internal, trigger: .click)
         tracker.track(event: contentOpen, contexts(for: indexPath))
