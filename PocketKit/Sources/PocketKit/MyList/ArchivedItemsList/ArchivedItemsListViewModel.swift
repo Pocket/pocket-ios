@@ -157,10 +157,25 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
                 },
                 UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
+
+                    Task { [weak self] in
+                        await self?.delete(item: item)
+                    }
                 }
             ],
             preferredAction: nil
         )
+    }
+
+    private func delete(item: ArchivedItem) async {
+        try? await source.delete(item: item)
+
+        guard let index = archivedItems.firstIndex(of: item) else {
+            return
+        }
+
+        archivedItems.remove(at: index)
+        _events.send(.snapshot(buildSnapshot()))
     }
 }
 

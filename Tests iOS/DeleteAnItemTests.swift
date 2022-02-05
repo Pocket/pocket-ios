@@ -104,4 +104,31 @@ class DeleteAnItemTests: XCTestCase {
         app.myListView.wait()
         waitForDisappearance(of: itemCell)
     }
+
+    func test_deletingAnItem_fromArchive_removesItFromList_andSyncsWithServer() {
+        let expectRequest = expectation(description: "A request to the server")
+
+        app.tabBar.myListButton.wait().tap()
+        app.myListView.wait().selectionSwitcher.archiveButton.wait().tap()
+        let cell = app.myListView.itemView(matching: "Archived Item 1")
+
+        server.routes.post("/graphql") { request, loop in
+            defer { expectRequest.fulfill() }
+
+
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertFalse(apiRequest.isEmpty)
+            XCTAssertTrue(apiRequest.isToDeleteAnItem)
+            XCTAssertTrue(apiRequest.contains("archived-item-1"))
+
+            return Response.delete()
+        }
+
+        cell.itemActionButton.wait().tap()
+        app.deleteButton.wait().tap()
+        app.alert.yes.wait().tap()
+
+        wait(for: [expectRequest], timeout: 1)
+        waitForDisappearance(of: cell)
+    }
 }

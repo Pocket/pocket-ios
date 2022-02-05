@@ -231,4 +231,8 @@ extension PocketSource {
     public func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem] {
         return try await archiveService.fetch(accessToken: tokenProvider.accessToken, isFavorite: isFavorite)
     }
+
+    public func delete(item: ArchivedItem) async throws {
+        try await archiveService.delete(item: item)
+    }
 }
