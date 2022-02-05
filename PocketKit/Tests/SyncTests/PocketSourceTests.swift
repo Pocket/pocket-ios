@@ -349,4 +349,12 @@ class SourceTests: XCTestCase {
 
         XCTAssertEqual(actualArchivedItems, archivedItems)
     }
+
+    func test_deleteArchivedItem_delegatesCallToArchiveService() async throws {
+        archiveService.stubDelete { _ in }
+        let source = subject()
+
+        try await source.delete(item: .build(remoteID: "the-remote-id"))
+        XCTAssertNotNil(archiveService.deleteCall(at: 0))
+    }
 }

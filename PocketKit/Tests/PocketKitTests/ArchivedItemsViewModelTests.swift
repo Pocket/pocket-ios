@@ -69,4 +69,35 @@ class ArchivedItemsViewModelTests: XCTestCase {
             "http://example.com"
         )
     }
+
+    @MainActor
+    func test_deleteAction_delegatesToSource_andUpdatesSnapshot() async throws {
+        source.stubDelete { }
+        source.stubFetchArchivedItems {
+            [ArchivedItem.build(remoteID: "1"), ArchivedItem.build(remoteID: "2")]
+        }
+
+        let viewModel = subject()
+        try await viewModel.fetch()
+
+        viewModel.overflowActions(for: "1")?
+            .first { $0.title == "Delete" }?
+            .handler?(nil)
+
+
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                return
+            }
+
+            defer { expectSnapshot.fulfill() }
+            XCTAssertFalse(snapshot.itemIdentifiers(inSection: .items).contains(.item("1")))
+        }.store(in: &subscriptions)
+
+        viewModel.presentedAlert?.actions.first { $0.title == "Yes" }?.invoke()
+
+        wait(for: [expectSnapshot], timeout: 1)
+        XCTAssertNotNil(source.deleteArchivedItemCall(at: 0))
+    }
 }

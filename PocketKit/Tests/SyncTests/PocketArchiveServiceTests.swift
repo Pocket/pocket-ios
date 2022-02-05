@@ -82,4 +82,14 @@ class PocketArchiveServiceTests: XCTestCase {
             XCTAssertEqual(archivedItem.remoteID, "archived-saved-item-2")
         }
     }
+
+    func test_delete_sendsMutationToServer() async throws {
+        apollo.stubPerform(toReturnFixtureNamed: "delete", asResultType: DeleteItemMutation.self)
+        let archiveService = subject()
+
+        try await archiveService.delete(item: .build(remoteID: "the-item-id"))
+
+        let call = apollo.performCall(withMutationType: DeleteItemMutation.self, at: 0)
+        XCTAssertEqual(call?.mutation.itemID, "the-item-id")
+    }
 }

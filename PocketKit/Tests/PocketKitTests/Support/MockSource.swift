@@ -5,6 +5,7 @@ import CoreData
 
 class MockSource: Source {
     private var implementations: [String: Any] = [:]
+    private var calls: [String: [Any]] = [:]
 
     var mainContext: NSManagedObjectContext {
         fatalError("\(Self.self)#\(#function) is not implemented")
@@ -63,6 +64,7 @@ class MockSource: Source {
     }
 }
 
+// MARK: - Fetch Archived items
 extension MockSource {
     typealias FetchArchivedItemsImpl = () async throws -> [ArchivedItem]
 
@@ -70,12 +72,37 @@ extension MockSource {
         implementations["fetchArchivedItems()"] = impl
     }
 
-
     func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem] {
         guard let impl = implementations["fetchArchivedItems()"] as? FetchArchivedItemsImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
         return try await impl()
+    }
+}
+
+// MARK: - Delete
+extension MockSource {
+    typealias DeleteArchivedItemImpl = () -> Void
+
+    struct DeleteArchivedItemCall { }
+
+    func stubDelete(impl: @escaping DeleteArchivedItemImpl) {
+        implementations["deleteArchivedItem"] = impl
+    }
+
+    func delete(item: ArchivedItem) {
+        guard let impl = implementations["deleteArchivedItem"] as? DeleteArchivedItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls["deleteArchivedItem"] = (calls["deleteArchivedItem"] ?? [])
+        calls["deleteArchivedItem"]?.append(DeleteArchivedItemCall())
+
+        impl()
+    }
+
+    func deleteArchivedItemCall(at index: Int) -> DeleteArchivedItemCall? {
+        calls["deleteArchivedItem"]?[index] as? DeleteArchivedItemCall
     }
 }

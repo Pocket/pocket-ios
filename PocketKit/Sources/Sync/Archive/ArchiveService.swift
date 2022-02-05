@@ -3,6 +3,7 @@ import Apollo
 
 protocol ArchiveService {
     func fetch(accessToken: String?, isFavorite: Bool) async throws -> [ArchivedItem]
+    func delete(item: ArchivedItem) async throws
 }
 
 class PocketArchiveService: ArchiveService {
@@ -24,5 +25,9 @@ class PocketArchiveService: ArchiveService {
             .data?.userByToken?.savedItems?.edges?
             .compactMap { $0?.node?.fragments.savedItemParts }
             .map(ArchivedItem.init) ?? []
+    }
+
+    func delete(item: ArchivedItem) async throws {
+        _ = try await apollo.perform(mutation: DeleteItemMutation(itemID: item.remoteID))
     }
 }

@@ -32,6 +32,8 @@ public protocol Source {
     func archive(recommendation: Slate.Recommendation)
 
     func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem]
+
+    func delete(item: ArchivedItem) async throws
 }
 
 public extension Source {
