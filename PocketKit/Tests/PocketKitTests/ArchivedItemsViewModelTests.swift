@@ -35,7 +35,7 @@ class ArchivedItemsViewModelTests: XCTestCase {
         )
     }
 
-    func test_fetch_returnsArchivedItemsFromSource() async throws {
+    func test_fetch_returnsArchivedItemsFromSource() {
         let archivedItems = [
             ArchivedItem.build(remoteID: "1"),
             ArchivedItem.build(remoteID: "2")
@@ -45,24 +45,29 @@ class ArchivedItemsViewModelTests: XCTestCase {
             return archivedItems
         }
 
-        let expectEvent = expectation(description: "wait for an event")
         let viewModel = subject()
+
+        let expectEmptySnapshot = expectation(description: "expect empty snapshot")
+        let expectInitialSnapshot = expectation(description: "expect initial snapshot")
         viewModel.events.sink { event in
             guard case .snapshot(let snapshot) = event else {
-                XCTFail("Expected a snapshot event")
                 return
             }
 
-            guard !snapshot.itemIdentifiers(inSection: .items).isEmpty else {
+            if snapshot.itemIdentifiers(inSection: .items).isEmpty {
+                expectEmptySnapshot.fulfill()
                 return
             }
 
-            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item("1"), .item("2")])
-            expectEvent.fulfill()
+            if snapshot.itemIdentifiers(inSection: .items).count == 2 {
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item("1"), .item("2")])
+                expectInitialSnapshot.fulfill()
+                return
+            }
         }.store(in: &subscriptions)
 
-        try await viewModel.fetch()
-        wait(for: [expectEvent], timeout: 1)
+        viewModel.fetch()
+        wait(for: [expectEmptySnapshot, expectInitialSnapshot], timeout: 1)
 
         XCTAssertEqual(
             viewModel.item(with: "1")?.attributedTitle.string,
@@ -70,20 +75,60 @@ class ArchivedItemsViewModelTests: XCTestCase {
         )
     }
 
-    @MainActor
-    func test_deleteAction_delegatesToSource_andUpdatesSnapshot() async throws {
-        source.stubDelete { }
+    func test_deleteAction_delegatesToSource_andUpdatesSnapshot() {
+        source.stubDelete { _ in }
         source.stubFetchArchivedItems {
             [ArchivedItem.build(remoteID: "1"), ArchivedItem.build(remoteID: "2")]
         }
 
         let viewModel = subject()
-        try await viewModel.fetch()
 
+        let expectEmptySnapshot = expectation(description: "expect empty snapshot")
+        let expectInitialSnapshot = expectation(description: "expect initial snapshot")
+        let expectSnapshotWithItemRemoved = expectation(description: "expected deleted item snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                return
+            }
+
+            if snapshot.itemIdentifiers(inSection: .items).isEmpty {
+                expectEmptySnapshot.fulfill()
+                return
+            }
+
+            if snapshot.itemIdentifiers(inSection: .items).count == 2 {
+                expectInitialSnapshot.fulfill()
+                return
+            }
+
+            if snapshot.itemIdentifiers(inSection: .items).count == 1 {
+                XCTAssertEqual(
+                    snapshot.itemIdentifiers(inSection: .items),
+                    [.item("2")]
+                )
+
+                expectSnapshotWithItemRemoved.fulfill()
+                return
+            }
+
+            XCTFail("Received unexepected snapshot event: \(snapshot)")
+        }.store(in: &subscriptions)
+        viewModel.fetch()
+        wait(for: [expectEmptySnapshot, expectInitialSnapshot], timeout: 1)
+
+        // Tap delete button in overflow menu
         viewModel.overflowActions(for: "1")?
             .first { $0.title == "Delete" }?
             .handler?(nil)
 
+        // Tap "Yes" on confirmation alert
+        viewModel.presentedAlert?
+            .actions
+            .first { $0.title == "Yes" }?.invoke()
+
+        wait(for: [expectSnapshotWithItemRemoved], timeout: 1)
+        XCTAssertNotNil(source.deleteArchivedItemCall(at: 0))
+    }
 
         let expectSnapshot = expectation(description: "expect a snapshot")
         viewModel.events.sink { event in

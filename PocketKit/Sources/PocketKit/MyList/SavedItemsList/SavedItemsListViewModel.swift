@@ -46,7 +46,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 //        }.store(in: &subscriptions)
     }
 
-    func fetch() throws {
+    func fetch() {
         var predicates: [NSPredicate] = []
 
         for filter in selectedFilters {
@@ -270,7 +270,7 @@ extension SavedItemsListViewModel {
         snapshot.reloadItems([cell])
         send(snapshot: snapshot)
 
-        try? fetch()
+        fetch()
     }
 }
 
