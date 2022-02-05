@@ -1,19 +1,38 @@
 import XCTest
 import Sync
 import Combine
+import Network
+import Analytics
+
 @testable import PocketKit
 
 
 class ArchivedItemsViewModelTests: XCTestCase {
     var source: MockSource!
+    var tracker: MockTracker!
+    var networkMonitor: MockNetworkPathMonitor!
     var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
         self.source = MockSource()
+        self.tracker = MockTracker()
+        self.networkMonitor = MockNetworkPathMonitor()
     }
 
     override func tearDown() {
         subscriptions = []
+    }
+
+    func subject(
+        source: Source? = nil,
+        tracker: Tracker? = nil,
+        networkMonitor: NetworkPathMonitor? = nil
+    ) -> ArchivedItemsListViewModel {
+        ArchivedItemsListViewModel(
+            source: source ?? self.source,
+            tracker: tracker ?? self.tracker,
+            networkMonitor: networkMonitor ?? self.networkMonitor
+        )
     }
 
     func test_fetch_returnsArchivedItemsFromSource() async throws {
@@ -27,10 +46,7 @@ class ArchivedItemsViewModelTests: XCTestCase {
         }
 
         let expectEvent = expectation(description: "wait for an event")
-        let viewModel = ArchivedItemsListViewModel(
-            source: source,
-            tracker: MockTracker()
-        )
+        let viewModel = subject()
         viewModel.events.sink { event in
             guard case .snapshot(let snapshot) = event else {
                 XCTFail("Expected a snapshot event")
