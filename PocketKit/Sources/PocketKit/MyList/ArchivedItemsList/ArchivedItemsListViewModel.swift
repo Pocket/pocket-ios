@@ -26,9 +26,9 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     private let source: Source
     private let tracker: Tracker
 
-    private let networkMonitor = NWPathMonitor()
+    private let networkMonitor: NetworkPathMonitor
     private var isNetworkAvailable: Bool {
-        networkMonitor.currentPath.status == .satisfied
+        networkMonitor.currentNetworkPath.status == .satisfied
     }
 
     private var archivedItemsByID: [String: ArchivedItem] = [:]
@@ -43,9 +43,14 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     private var selectedFilters: Set<ItemsListFilter> = .init()
     private let availableFilters: [ItemsListFilter] = ItemsListFilter.allCases
 
-    init(source: Source, tracker: Tracker) {
+    init(
+        source: Source,
+        tracker: Tracker,
+        networkMonitor: NetworkPathMonitor = NWPathMonitor()
+    ) {
         self.source = source
         self.tracker = tracker
+        self.networkMonitor = networkMonitor
 
         networkMonitor.start(queue: .global())
 //        self.main.$selectedMyListReadableViewModel.sink { _ in
