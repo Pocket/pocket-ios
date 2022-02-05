@@ -29,7 +29,7 @@ protocol ItemsListViewModel: AnyObject {
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { get }
     var selectionItem: SelectionItem { get }
 
-    func fetch() throws
+    func fetch()
     func refresh(_ completion: (() -> ())?)
 
     func item(with cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?

@@ -115,7 +115,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         
         let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
             cell.buttonAction = {
-                try? model.fetch()
+                model.fetch()
             }
         }
 
@@ -145,7 +145,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        try? model.fetch()
+        model.fetch()
     }
 
     private func handleRefresh() {

@@ -58,7 +58,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 //        }.store(in: &subscriptions)
     }
 
-    func fetch() async throws {
+    private func doFetch() async throws {
         if !isNetworkAvailable {
             _events.send(.snapshot(offlineSnapshot()))
         } else {
@@ -91,9 +91,9 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         archivedItemsByID[itemID].flatMap(ItemsListItemPresenter.init)
     }
 
-    func fetch() throws {
+    func fetch() {
         Task {
-            try await self.fetch()
+            try await self.doFetch()
         }
     }
 
@@ -157,21 +157,23 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
                 },
                 UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
-
-                    Task { [weak self] in
-                        await self?.delete(item: item)
-                    }
+                    self?.delete(item: item)
                 }
             ],
             preferredAction: nil
         )
     }
 
-    private func delete(item: ArchivedItem) async {
-        try? await source.delete(item: item)
+    private func delete(item: ArchivedItem) {
+        Task {
+            try? await source.delete(item: item)
 
-        guard let index = archivedItems.firstIndex(of: item) else {
-            return
+            guard let index = archivedItems.firstIndex(of: item) else {
+                return
+            }
+
+            archivedItems.remove(at: index)
+            _events.send(.snapshot(buildSnapshot()))
         }
 
         archivedItems.remove(at: index)
@@ -228,7 +230,7 @@ extension ArchivedItemsListViewModel {
         snapshot.reloadItems([cell])
         _events.send(.snapshot(snapshot))
 
-        try? self.fetch()
+        fetch()
     }
 
     private func select(item identifier: ItemIdentifier) {
