@@ -34,6 +34,10 @@ public protocol Source {
     func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem]
 
     func delete(item: ArchivedItem) async throws
+
+    func favorite(item: ArchivedItem) async throws
+
+    func unfavorite(item: ArchivedItem) async throws
 }
 
 public extension Source {

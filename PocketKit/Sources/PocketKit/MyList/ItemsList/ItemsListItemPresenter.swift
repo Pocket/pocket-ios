@@ -73,8 +73,4 @@ class ItemsListItemPresenter {
             .flatMap { $0 > 0 ? $0 : nil }
             .flatMap { "\($0) min" }
     }
-
-    private var isFavorite: Bool {
-        item.isFavorite
-    }
 }

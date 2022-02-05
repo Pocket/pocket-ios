@@ -130,19 +130,91 @@ class ArchivedItemsViewModelTests: XCTestCase {
         XCTAssertNotNil(source.deleteArchivedItemCall(at: 0))
     }
 
-        let expectSnapshot = expectation(description: "expect a snapshot")
+    func tests_favoriteAction_delegatesToSource_andUpdatesSnapshot() throws {
+        source.stubFetchArchivedItems {
+            [ArchivedItem.build(remoteID: "1"), ArchivedItem.build(remoteID: "2")]
+        }
+
+        source.stubFavoriteArchivedItem { _ in
+
+        }
+
+        let viewModel = subject()
+
+        let expectEmptySnapshot = expectation(description: "expect empty snapshot")
+        let expectInitialSnapshot = expectation(description: "expect initial snapshot")
+        let expectSnapshotWithReloadedItem = expectation(description: "expected reloaded item snapshot")
         viewModel.events.sink { event in
             guard case .snapshot(let snapshot) = event else {
                 return
             }
 
-            defer { expectSnapshot.fulfill() }
-            XCTAssertFalse(snapshot.itemIdentifiers(inSection: .items).contains(.item("1")))
+            if snapshot.itemIdentifiers(inSection: .items).isEmpty {
+                expectEmptySnapshot.fulfill()
+                return
+            }
+
+            if snapshot.itemIdentifiers(inSection: .items).count == 2 {
+                if snapshot.reloadedItemIdentifiers.contains(.item("1")) {
+                    expectSnapshotWithReloadedItem.fulfill()
+                    return
+                } else {
+                    expectInitialSnapshot.fulfill()
+                    return
+                }
+            }
         }.store(in: &subscriptions)
+        viewModel.fetch()
+        wait(for: [expectEmptySnapshot, expectInitialSnapshot], timeout: 1)
 
-        viewModel.presentedAlert?.actions.first { $0.title == "Yes" }?.invoke()
+        viewModel.favoriteAction(for: "1")?.handler?(nil)
+        wait(for: [expectSnapshotWithReloadedItem], timeout: 1)
+        XCTAssertNotNil(source.favoriteArchivedItemCall(at: 0))
 
-        wait(for: [expectSnapshot], timeout: 1)
-        XCTAssertNotNil(source.deleteArchivedItemCall(at: 0))
+        XCTAssertEqual(viewModel.favoriteAction(for: "1")?.title, "Unfavorite")
+    }
+
+    func tests_favoriteAction_whenItemIsFavorited_delegatesToSource_andUpdatesSnapshot() throws {
+        source.stubFetchArchivedItems {
+            [ArchivedItem.build(remoteID: "1", isFavorite: true), ArchivedItem.build(remoteID: "2")]
+        }
+
+        source.stubUnfavoriteArchivedItem { _ in
+
+        }
+
+        let viewModel = subject()
+
+        let expectEmptySnapshot = expectation(description: "expect empty snapshot")
+        let expectInitialSnapshot = expectation(description: "expect initial snapshot")
+        let expectSnapshotWithReloadedItem = expectation(description: "expected reloaded item snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                return
+            }
+
+            if snapshot.itemIdentifiers(inSection: .items).isEmpty {
+                expectEmptySnapshot.fulfill()
+                return
+            }
+
+            if snapshot.itemIdentifiers(inSection: .items).count == 2 {
+                if snapshot.reloadedItemIdentifiers.contains(.item("1")) {
+                    expectSnapshotWithReloadedItem.fulfill()
+                    return
+                } else {
+                    expectInitialSnapshot.fulfill()
+                    return
+                }
+            }
+        }.store(in: &subscriptions)
+        viewModel.fetch()
+        wait(for: [expectEmptySnapshot, expectInitialSnapshot], timeout: 1)
+
+        viewModel.favoriteAction(for: "1")?.handler?(nil)
+        wait(for: [expectSnapshotWithReloadedItem], timeout: 1)
+        XCTAssertNotNil(source.unfavoriteArchivedItemCall(at: 0))
+
+        XCTAssertEqual(viewModel.favoriteAction(for: "1")?.title, "Favorite")
     }
 }

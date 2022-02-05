@@ -4,6 +4,8 @@ import Apollo
 protocol ArchiveService {
     func fetch(accessToken: String?, isFavorite: Bool) async throws -> [ArchivedItem]
     func delete(item: ArchivedItem) async throws
+    func favorite(item: ArchivedItem) async throws
+    func unfavorite(item: ArchivedItem) async throws
 }
 
 class PocketArchiveService: ArchiveService {
@@ -29,5 +31,13 @@ class PocketArchiveService: ArchiveService {
 
     func delete(item: ArchivedItem) async throws {
         _ = try await apollo.perform(mutation: DeleteItemMutation(itemID: item.remoteID))
+    }
+
+    func favorite(item: ArchivedItem) async throws {
+        _ = try await apollo.perform(mutation: FavoriteItemMutation(itemID: item.remoteID))
+    }
+
+    func unfavorite(item: ArchivedItem) async throws {
+        _ = try await apollo.perform(mutation: UnfavoriteItemMutation(itemID: item.remoteID))
     }
 }

@@ -83,26 +83,86 @@ extension MockSource {
 
 // MARK: - Delete
 extension MockSource {
-    typealias DeleteArchivedItemImpl = () -> Void
+    typealias DeleteArchivedItemImpl = (ArchivedItem) async throws -> Void
 
-    struct DeleteArchivedItemCall { }
+    struct DeleteArchivedItemCall {
+        let item: ArchivedItem
+    }
 
     func stubDelete(impl: @escaping DeleteArchivedItemImpl) {
         implementations["deleteArchivedItem"] = impl
     }
 
-    func delete(item: ArchivedItem) {
+    func delete(item: ArchivedItem) async throws {
         guard let impl = implementations["deleteArchivedItem"] as? DeleteArchivedItemImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
         calls["deleteArchivedItem"] = (calls["deleteArchivedItem"] ?? [])
-        calls["deleteArchivedItem"]?.append(DeleteArchivedItemCall())
+        calls["deleteArchivedItem"]?.append(DeleteArchivedItemCall(item: item))
 
-        impl()
+        try await impl(item)
     }
 
     func deleteArchivedItemCall(at index: Int) -> DeleteArchivedItemCall? {
         calls["deleteArchivedItem"]?[index] as? DeleteArchivedItemCall
+    }
+}
+
+// MARK: - Favorite archived item
+extension MockSource {
+    static let favoriteArchivedItem = "favoriteArchivedItem"
+    typealias FavoriteArchivedItemImpl = (ArchivedItem) async throws -> Void
+    struct FavoriteArchivedItemCall {
+        let item: ArchivedItem
+    }
+
+    func stubFavoriteArchivedItem(impl: @escaping FavoriteArchivedItemImpl) {
+        implementations[Self.favoriteArchivedItem] = impl
+    }
+
+    func favorite(item: ArchivedItem) async throws {
+        guard let impl = implementations[Self.favoriteArchivedItem] as? FavoriteArchivedItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.favoriteArchivedItem] = (calls[Self.favoriteArchivedItem] ?? []) + [
+            FavoriteArchivedItemCall(item: item)
+        ]
+
+        try await impl(item)
+    }
+
+    func favoriteArchivedItemCall(at index: Int) -> FavoriteArchivedItemCall? {
+        calls[Self.favoriteArchivedItem]?[index] as? FavoriteArchivedItemCall
+    }
+}
+
+// MARK: - Unfavorite archived item
+extension MockSource {
+    static let unfavoriteArchivedItem = "unfavoriteArchivedItem"
+    typealias UnfavoriteArchivedItemImpl = (ArchivedItem) async throws -> Void
+    struct UnfavoriteArchivedItemCall {
+        let item: ArchivedItem
+    }
+
+    func stubUnfavoriteArchivedItem(impl: @escaping UnfavoriteArchivedItemImpl) {
+        implementations[Self.unfavoriteArchivedItem] = impl
+    }
+
+    func unfavorite(item: ArchivedItem) async throws {
+        guard let impl = implementations[Self.unfavoriteArchivedItem] as? UnfavoriteArchivedItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.unfavoriteArchivedItem] = (calls[Self.unfavoriteArchivedItem] ?? []) + [
+            UnfavoriteArchivedItemCall(item: item)
+        ]
+
+        try await impl(item)
+    }
+
+    func unfavoriteArchivedItemCall(at index: Int) -> UnfavoriteArchivedItemCall? {
+        calls[Self.unfavoriteArchivedItem]?[index] as? UnfavoriteArchivedItemCall
     }
 }
