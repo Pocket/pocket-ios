@@ -121,9 +121,15 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     func favoriteAction(for itemID: String) -> ItemAction? {
-        archivedItemsByID[itemID].flatMap { _ in
-            return .favorite { _ in
-                // TODO: Favorite the archived item
+        archivedItemsByID[itemID].flatMap { archivedItem in
+            if archivedItem.isFavorite {
+                return .unfavorite { [weak self] _ in
+                    self?.unfavorite(item: archivedItem)
+                }
+            } else {
+                return .favorite { [weak self] _ in
+                    self?.favorite(item: archivedItem)
+                }
             }
         }
     }
@@ -175,9 +181,35 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             archivedItems.remove(at: index)
             _events.send(.snapshot(buildSnapshot()))
         }
+    }
 
-        archivedItems.remove(at: index)
-        _events.send(.snapshot(buildSnapshot()))
+    private func favorite(item: ArchivedItem) {
+        Task { await setIsFavorite(true, on: item) }
+    }
+
+    private func unfavorite(item: ArchivedItem) {
+        Task { await setIsFavorite(false, on: item) }
+    }
+
+    private func setIsFavorite(_ isFavorite: Bool, on item: ArchivedItem) async {
+        do {
+            if isFavorite {
+                try await source.favorite(item: item)
+            } else {
+                try await source.unfavorite(item: item)
+            }
+
+            guard let index = archivedItems.firstIndex(of: item) else {
+                return
+            }
+
+            archivedItems[index] = item.with(isFavorite: isFavorite)
+            var snapshot = buildSnapshot()
+            snapshot.reloadItems([.item(item.remoteID)])
+            _events.send(.snapshot(snapshot))
+        } catch {
+            // propagate error
+        }
     }
 }
 

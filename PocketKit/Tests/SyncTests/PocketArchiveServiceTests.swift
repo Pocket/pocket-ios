@@ -92,4 +92,24 @@ class PocketArchiveServiceTests: XCTestCase {
         let call = apollo.performCall(withMutationType: DeleteItemMutation.self, at: 0)
         XCTAssertEqual(call?.mutation.itemID, "the-item-id")
     }
+
+    func test_favorite_sendsMutationToServer() async throws {
+        apollo.stubPerform(toReturnFixtureNamed: "favorite", asResultType: FavoriteItemMutation.self)
+        let archiveService = subject()
+
+        try await archiveService.favorite(item: .build(remoteID: "the-item-id"))
+
+        let call = apollo.performCall(withMutationType: FavoriteItemMutation.self, at: 0)
+        XCTAssertEqual(call?.mutation.itemID, "the-item-id")
+    }
+
+    func test_unfavorite_sendsMutationToServer() async throws {
+        apollo.stubPerform(toReturnFixtureNamed: "unfavorite", asResultType: UnfavoriteItemMutation.self)
+        let archiveService = subject()
+
+        try await archiveService.unfavorite(item: .build(remoteID: "the-item-id"))
+
+        let call = apollo.performCall(withMutationType: UnfavoriteItemMutation.self, at: 0)
+        XCTAssertEqual(call?.mutation.itemID, "the-item-id")
+    }
 }

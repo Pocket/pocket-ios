@@ -47,3 +47,59 @@ extension MockArchiveService {
         calls["delete"]?[index] as? DeleteCall
     }
 }
+
+// MARK: - Favorite
+extension MockArchiveService {
+    static let favorite = "favorite"
+
+    typealias FavoriteImpl = (ArchivedItem) async throws -> ()
+
+    struct FavoriteCall {
+        let item: ArchivedItem
+    }
+
+    func stubFavorite(impl: @escaping FavoriteImpl) {
+        implementations[Self.favorite] = impl
+    }
+
+    func favorite(item: ArchivedItem) async throws {
+        guard let impl = implementations[Self.favorite] as? FavoriteImpl else {
+            fatalError("\(Self.self)#\(#function) is not stubbed")
+        }
+
+        calls[Self.favorite] = (calls[Self.favorite] ?? []) + [FavoriteCall(item: item)]
+        return try await impl(item)
+    }
+
+    func favoriteCall(at index: Int) -> FavoriteCall? {
+        calls[Self.favorite]?[index] as? FavoriteCall
+    }
+}
+
+// MARK: - Favorite
+extension MockArchiveService {
+    static let unfavorite = "unfavorite"
+
+    typealias UnfavoriteImpl = (ArchivedItem) async throws -> ()
+
+    struct UnfavoriteCall {
+        let item: ArchivedItem
+    }
+
+    func stubUnfavorite(impl: @escaping UnfavoriteImpl) {
+        implementations[Self.unfavorite] = impl
+    }
+
+    func unfavorite(item: ArchivedItem) async throws {
+        guard let impl = implementations[Self.unfavorite] as? UnfavoriteImpl else {
+            fatalError("\(Self.self)#\(#function) is not stubbed")
+        }
+
+        calls[Self.unfavorite] = (calls[Self.unfavorite] ?? []) + [UnfavoriteCall(item: item)]
+        return try await impl(item)
+    }
+
+    func unfavoriteCall(at index: Int) -> UnfavoriteCall? {
+        calls[Self.unfavorite]?[index] as? UnfavoriteCall
+    }
+}

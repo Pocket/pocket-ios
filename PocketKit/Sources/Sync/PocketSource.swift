@@ -235,4 +235,12 @@ extension PocketSource {
     public func delete(item: ArchivedItem) async throws {
         try await archiveService.delete(item: item)
     }
+
+    public func favorite(item: ArchivedItem) async throws {
+        try await archiveService.favorite(item: item)
+    }
+
+    public func unfavorite(item: ArchivedItem) async throws {
+        try await archiveService.unfavorite(item: item)
+    }
 }

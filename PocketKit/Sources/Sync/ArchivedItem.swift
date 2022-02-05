@@ -12,12 +12,12 @@ public struct ArchivedItem: Equatable {
 
     public init(
         remoteID: String,
-        url: URL,
+        url: URL?,
         createdAt: Date,
         deletedAt: Date?,
         isArchived: Bool,
         isFavorite: Bool,
-        item: UnmanagedItem
+        item: UnmanagedItem?
     ) {
         self.remoteID = remoteID
         self.url = url
@@ -38,5 +38,19 @@ extension ArchivedItem {
         self.isArchived = itemParts.isArchived
         self.isFavorite = itemParts.isFavorite
         self.item = itemParts.item.fragments.itemParts.flatMap { UnmanagedItem(remote: $0) }
+    }
+}
+
+extension ArchivedItem {
+    public func with(isFavorite: Bool) -> ArchivedItem {
+        ArchivedItem(
+            remoteID: remoteID,
+            url: url,
+            createdAt: createdAt,
+            deletedAt: deletedAt,
+            isArchived: isArchived,
+            isFavorite: isFavorite,
+            item: item
+        )
     }
 }

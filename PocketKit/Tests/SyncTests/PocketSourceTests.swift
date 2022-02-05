@@ -357,4 +357,22 @@ class SourceTests: XCTestCase {
         try await source.delete(item: .build(remoteID: "the-remote-id"))
         XCTAssertNotNil(archiveService.deleteCall(at: 0))
     }
+
+    func test_favoriteArchivedItem_delegatesCallToArchiveService() async throws {
+        archiveService.stubFavorite { _ in }
+        let source = subject()
+
+        let item = ArchivedItem.build(remoteID: "the-remote-id")
+        try await source.favorite(item: item)
+        XCTAssertNotNil(archiveService.favoriteCall(at: 0))
+    }
+
+    func test_unfavoriteArchivedItem_delegatesCallToArchiveService() async throws {
+        archiveService.stubUnfavorite { _ in }
+        let source = subject()
+
+        let item = ArchivedItem.build(remoteID: "the-remote-id")
+        try await source.unfavorite(item: item)
+        XCTAssertNotNil(archiveService.unfavoriteCall(at: 0))
+    }
 }
