@@ -105,7 +105,11 @@ extension MockSource {
     }
 
     func deleteArchivedItemCall(at index: Int) -> DeleteArchivedItemCall? {
-        calls["deleteArchivedItem"]?[index] as? DeleteArchivedItemCall
+        guard let calls = calls["deleteArchivedItem"], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? DeleteArchivedItemCall
     }
 }
 
@@ -134,7 +138,11 @@ extension MockSource {
     }
 
     func favoriteArchivedItemCall(at index: Int) -> FavoriteArchivedItemCall? {
-        calls[Self.favoriteArchivedItem]?[index] as? FavoriteArchivedItemCall
+        guard let calls = calls[Self.favoriteArchivedItem], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FavoriteArchivedItemCall
     }
 }
 
@@ -163,6 +171,10 @@ extension MockSource {
     }
 
     func unfavoriteArchivedItemCall(at index: Int) -> UnfavoriteArchivedItemCall? {
-        calls[Self.unfavoriteArchivedItem]?[index] as? UnfavoriteArchivedItemCall
+        guard let calls = calls[Self.unfavoriteArchivedItem], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? UnfavoriteArchivedItemCall
     }
 }
