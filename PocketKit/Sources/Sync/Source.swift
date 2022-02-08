@@ -38,6 +38,8 @@ public protocol Source {
     func favorite(item: ArchivedItem) async throws
 
     func unfavorite(item: ArchivedItem) async throws
+
+    func reAdd(item: ArchivedItem) async throws
 }
 
 public extension Source {

@@ -10,7 +10,7 @@ import Combine
 @testable import Sync
 
 
-class SourceTests: XCTestCase {
+class PocketSourceTests: XCTestCase {
     var space: Space!
     var apollo: MockApolloClient!
     var operations: MockOperationFactory!
@@ -374,5 +374,14 @@ class SourceTests: XCTestCase {
         let item = ArchivedItem.build(remoteID: "the-remote-id")
         try await source.unfavorite(item: item)
         XCTAssertNotNil(archiveService.unfavoriteCall(at: 0))
+    }
+
+    func test_reAddArchivedItem_delegatesToArchiveServiceAndRefreshes() async throws {
+        archiveService.stubReAdd { _ in }
+        let source = subject()
+
+        let item = ArchivedItem.build(remoteID: "the-remote-id")
+        try await source.reAdd(item: item)
+        XCTAssertNotNil(archiveService.reAddCall(at: 0))
     }
 }

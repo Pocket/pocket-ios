@@ -6,6 +6,7 @@ protocol ArchiveService {
     func delete(item: ArchivedItem) async throws
     func favorite(item: ArchivedItem) async throws
     func unfavorite(item: ArchivedItem) async throws
+    func reAdd(item: ArchivedItem) async throws
 }
 
 class PocketArchiveService: ArchiveService {
@@ -39,5 +40,9 @@ class PocketArchiveService: ArchiveService {
 
     func unfavorite(item: ArchivedItem) async throws {
         _ = try await apollo.perform(mutation: UnfavoriteItemMutation(itemID: item.remoteID))
+    }
+
+    func reAdd(item: ArchivedItem) async throws {
+        _ = try await apollo.perform(mutation: UnarchiveItemMutation(itemID: item.remoteID))
     }
 }

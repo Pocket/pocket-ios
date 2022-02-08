@@ -243,4 +243,8 @@ extension PocketSource {
     public func unfavorite(item: ArchivedItem) async throws {
         try await archiveService.unfavorite(item: item)
     }
+
+    public func reAdd(item: ArchivedItem) async throws {
+        try await archiveService.reAdd(item: item)
+    }
 }

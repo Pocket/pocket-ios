@@ -96,10 +96,42 @@ extension MockArchiveService {
         }
 
         calls[Self.unfavorite] = (calls[Self.unfavorite] ?? []) + [UnfavoriteCall(item: item)]
-        return try await impl(item)
+        try await impl(item)
     }
 
     func unfavoriteCall(at index: Int) -> UnfavoriteCall? {
         calls[Self.unfavorite]?[index] as? UnfavoriteCall
+    }
+}
+
+// MARK: - Re-add
+extension MockArchiveService {
+    static let reAdd = "re-add"
+    typealias ReAddImpl = (ArchivedItem) async throws -> ()
+    struct ReAddCall {
+        let item: ArchivedItem
+    }
+
+    func stubReAdd(impl: @escaping ReAddImpl) {
+        implementations[Self.reAdd] = impl
+    }
+
+    func reAdd(item: ArchivedItem) async throws {
+        guard let impl = implementations[Self.reAdd] as? ReAddImpl else {
+            fatalError("\(Self.self)#\(#function) is not stubbed")
+        }
+
+        calls[Self.reAdd] = (calls[Self.reAdd] ?? []) + [ReAddCall(item: item)]
+        try await impl(item)
+    }
+
+    func reAddCall(at index: Int) -> ReAddCall? {
+        calls[Self.reAdd].flatMap {
+            guard $0.count > index else {
+                return nil
+            }
+
+            return $0[index] as? ReAddCall
+        }
     }
 }
