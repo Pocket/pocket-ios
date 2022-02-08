@@ -1207,7 +1207,7 @@ public final class UserByTokenQuery: GraphQLQuery {
                 }
 
                 public struct Marticle: GraphQLSelectionSet {
-                  public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote"]
+                  public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote", "UnMarseable"]
 
                   public static var selections: [GraphQLSelection] {
                     return [
@@ -1224,6 +1224,10 @@ public final class UserByTokenQuery: GraphQLQuery {
 
                   public init(unsafeResultMap: ResultMap) {
                     self.resultMap = unsafeResultMap
+                  }
+
+                  public static func makeUnMarseable() -> Marticle {
+                    return Marticle(unsafeResultMap: ["__typename": "UnMarseable"])
                   }
 
                   public static func makeMarticleText(content: String) -> Marticle {
@@ -4261,7 +4265,7 @@ public final class SaveItemMutation: GraphQLMutation {
           }
 
           public struct Marticle: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote"]
+            public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote", "UnMarseable"]
 
             public static var selections: [GraphQLSelection] {
               return [
@@ -4278,6 +4282,10 @@ public final class SaveItemMutation: GraphQLMutation {
 
             public init(unsafeResultMap: ResultMap) {
               self.resultMap = unsafeResultMap
+            }
+
+            public static func makeUnMarseable() -> Marticle {
+              return Marticle(unsafeResultMap: ["__typename": "UnMarseable"])
             }
 
             public static func makeMarticleText(content: String) -> Marticle {
@@ -7022,6 +7030,101 @@ public final class ArchiveItemMutation: GraphQLMutation {
   }
 }
 
+public final class UnarchiveItemMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation UnarchiveItem($itemID: ID!) {
+      updateSavedItemUnArchive(id: $itemID) {
+        __typename
+        id
+      }
+    }
+    """
+
+  public let operationName: String = "UnarchiveItem"
+
+  public var itemID: GraphQLID
+
+  public init(itemID: GraphQLID) {
+    self.itemID = itemID
+  }
+
+  public var variables: GraphQLMap? {
+    return ["itemID": itemID]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("updateSavedItemUnArchive", arguments: ["id": GraphQLVariable("itemID")], type: .nonNull(.object(UpdateSavedItemUnArchive.selections))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(updateSavedItemUnArchive: UpdateSavedItemUnArchive) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "updateSavedItemUnArchive": updateSavedItemUnArchive.resultMap])
+    }
+
+    /// Unarchives a SavedItem
+    public var updateSavedItemUnArchive: UpdateSavedItemUnArchive {
+      get {
+        return UpdateSavedItemUnArchive(unsafeResultMap: resultMap["updateSavedItemUnArchive"]! as! ResultMap)
+      }
+      set {
+        resultMap.updateValue(newValue.resultMap, forKey: "updateSavedItemUnArchive")
+      }
+    }
+
+    public struct UpdateSavedItemUnArchive: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["SavedItem"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(id: GraphQLID) {
+        self.init(unsafeResultMap: ["__typename": "SavedItem", "id": id])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation
+      public var id: GraphQLID {
+        get {
+          return resultMap["id"]! as! GraphQLID
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "id")
+        }
+      }
+    }
+  }
+}
+
 public final class DeleteItemMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
@@ -7675,7 +7778,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
             }
 
             public struct Marticle: GraphQLSelectionSet {
-              public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote"]
+              public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote", "UnMarseable"]
 
               public static var selections: [GraphQLSelection] {
                 return [
@@ -7692,6 +7795,10 @@ public final class GetSlateLineupQuery: GraphQLQuery {
 
               public init(unsafeResultMap: ResultMap) {
                 self.resultMap = unsafeResultMap
+              }
+
+              public static func makeUnMarseable() -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "UnMarseable"])
               }
 
               public static func makeMarticleText(content: String) -> Marticle {
@@ -10569,7 +10676,7 @@ public final class GetSlateQuery: GraphQLQuery {
           }
 
           public struct Marticle: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote"]
+            public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote", "UnMarseable"]
 
             public static var selections: [GraphQLSelection] {
               return [
@@ -10586,6 +10693,10 @@ public final class GetSlateQuery: GraphQLQuery {
 
             public init(unsafeResultMap: ResultMap) {
               self.resultMap = unsafeResultMap
+            }
+
+            public static func makeUnMarseable() -> Marticle {
+              return Marticle(unsafeResultMap: ["__typename": "UnMarseable"])
             }
 
             public static func makeMarticleText(content: String) -> Marticle {
@@ -13439,7 +13550,7 @@ public struct SavedItemParts: GraphQLFragment {
       }
 
       public struct Marticle: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote"]
+        public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote", "UnMarseable"]
 
         public static var selections: [GraphQLSelection] {
           return [
@@ -13456,6 +13567,10 @@ public struct SavedItemParts: GraphQLFragment {
 
         public init(unsafeResultMap: ResultMap) {
           self.resultMap = unsafeResultMap
+        }
+
+        public static func makeUnMarseable() -> Marticle {
+          return Marticle(unsafeResultMap: ["__typename": "UnMarseable"])
         }
 
         public static func makeMarticleText(content: String) -> Marticle {
@@ -16206,7 +16321,7 @@ public struct ItemParts: GraphQLFragment {
   }
 
   public struct Marticle: GraphQLSelectionSet {
-    public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote"]
+    public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote", "UnMarseable"]
 
     public static var selections: [GraphQLSelection] {
       return [
@@ -16223,6 +16338,10 @@ public struct ItemParts: GraphQLFragment {
 
     public init(unsafeResultMap: ResultMap) {
       self.resultMap = unsafeResultMap
+    }
+
+    public static func makeUnMarseable() -> Marticle {
+      return Marticle(unsafeResultMap: ["__typename": "UnMarseable"])
     }
 
     public static func makeMarticleText(content: String) -> Marticle {
@@ -19138,7 +19257,7 @@ public struct SlateParts: GraphQLFragment {
       }
 
       public struct Marticle: GraphQLSelectionSet {
-        public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote"]
+        public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote", "UnMarseable"]
 
         public static var selections: [GraphQLSelection] {
           return [
@@ -19155,6 +19274,10 @@ public struct SlateParts: GraphQLFragment {
 
         public init(unsafeResultMap: ResultMap) {
           self.resultMap = unsafeResultMap
+        }
+
+        public static func makeUnMarseable() -> Marticle {
+          return Marticle(unsafeResultMap: ["__typename": "UnMarseable"])
         }
 
         public static func makeMarticleText(content: String) -> Marticle {
