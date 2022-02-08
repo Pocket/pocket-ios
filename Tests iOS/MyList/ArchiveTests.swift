@@ -71,6 +71,34 @@ class ArchiveTests: XCTestCase {
                 .wait()
         }
     }
+
+    func test_unarchivingAnItem_removesFromArchive_andAddsToMyList() {
+        app.launch().tabBar.myListButton.wait().tap()
+        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+
+        let itemCell = app.myListView.itemView(matching: "Archived Item 1")
+        itemCell.itemActionButton.wait().tap()
+
+
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isToUnarchiveAnItem {
+                return Response.myList("unarchive")
+            } else if apiRequest.isForMyListContent {
+                return Response.myList("list-with-unarchived-item")
+            }
+
+            fatalError("Unexpected request")
+        }
+
+
+        app.reAddButton.wait().tap()
+        waitForDisappearance(of: itemCell)
+
+        app.myListView.selectionSwitcher.myListButton.tap()
+        itemCell.wait()
+    }
 }
 
 private func requestIsForArchivedContent(_ request: Request) -> Bool {

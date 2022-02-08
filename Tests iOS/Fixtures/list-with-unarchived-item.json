@@ -1,0 +1,54 @@
+{
+    "data": {
+        "userByToken": {
+            "__typename": "[type-name-here]",
+            "savedItems": {
+                "__typename": "[type-name-here]",
+                "pageInfo": {
+                    "__typename": "[type-name-here]",
+                    "hasNextPage": false,
+                    "endCursor": "cursor-1"
+                },
+                "edges": [
+                    {
+                        "__typename": "[type-name-here]",
+                        "cursor": "cursor-1",
+                        "node": {
+                            "__typename": "[type-name-here]",
+                            "remoteID": "archived-item-1",
+                            "url": "http://example.com/items/archived-item-1",
+                            "_createdAt": 0,
+                            "_deletedAt": null,
+                            "isArchived": false,
+                            "isFavorite": false,
+                            "item": {
+                                "__typename": "Item",
+                                "remoteID": "archived-item-1",
+                                "title": "Archived Item 1",
+                                "givenUrl": "http://example.com/items/archived-item-1",
+                                "resolvedUrl": "http://example.com/items/archived-item-1",
+                                "topImageUrl": "https://example.com/archived-item-1/top-image.jpg",
+                                "domain": null,
+                                "language": "en",
+                                "timeToRead": 6,
+                                "marticle": #MARTICLE#,
+                                "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
+                                "datePublished": "2001-01-01 12:01:01",
+                                "authors": [
+                                    {
+                                        "__typename": "Author",
+                                        "id": "archived-author-1",
+                                        "name": "Socrates",
+                                        "url": "https://example.com/authors/socrates"
+                                    }
+                                ],
+                                "domainMetadata": null,
+                                "images": []
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

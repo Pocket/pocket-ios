@@ -15,10 +15,6 @@ class MockSource: Source {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
-    func refresh(maxItems: Int, completion: (() -> ())?) {
-        fatalError("\(Self.self)#\(#function) is not implemented")
-    }
-
     func makeItemsController() -> NSFetchedResultsController<SavedItem> {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
@@ -61,6 +57,41 @@ class MockSource: Source {
 
     func archive(recommendation: Slate.Recommendation) {
         fatalError("\(Self.self)#\(#function) is not implemented")
+    }
+}
+
+// MARK: - Refresh
+extension MockSource {
+    private static let refresh = "refresh"
+    typealias RefreshImpl = (Int, (() -> Void)?) -> Void
+
+    struct RefreshCall {
+        let maxItems: Int
+        let completion: (() -> Void)?
+    }
+
+    func stubRefresh(impl: @escaping RefreshImpl) {
+        implementations[Self.refresh] = impl
+    }
+
+    func refresh(maxItems: Int, completion: (() -> ())?) {
+        guard let impl = implementations[Self.refresh] as? RefreshImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.refresh] = (calls[Self.refresh] ?? []) + [
+            RefreshCall(maxItems: maxItems, completion: completion)
+        ]
+
+        impl(maxItems, completion)
+    }
+
+    func refreshCall(at index: Int) -> RefreshCall? {
+        guard let calls = calls[Self.refresh], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshCall
     }
 }
 
@@ -176,5 +207,31 @@ extension MockSource {
         }
 
         return calls[index] as? UnfavoriteArchivedItemCall
+    }
+}
+
+// Re-add an archived item
+extension MockSource {
+    static let reAddArchivedItem = "reAddArchivedItem"
+    typealias ReAddArchivedItemImpl = (ArchivedItem) async throws -> Void
+
+    struct ReAddArchivedItemCall {
+        let item: ArchivedItem
+    }
+
+    func stubReAddArchivedItem(impl: @escaping ReAddArchivedItemImpl) {
+        implementations[Self.reAddArchivedItem] = impl
+    }
+
+    func reAdd(item: ArchivedItem) async throws {
+        guard let impl = implementations[Self.reAddArchivedItem] as? ReAddArchivedItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.reAddArchivedItem] = (calls[Self.reAddArchivedItem] ?? []) + [
+            ReAddArchivedItemCall(item: item)
+        ]
+
+        try await impl(item)
     }
 }

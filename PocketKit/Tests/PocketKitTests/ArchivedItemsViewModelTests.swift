@@ -287,6 +287,49 @@ class ArchivedItemsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.favoriteAction(for: "1")?.title, "Favorite")
     }
 
+    func test_reAddAction_removeItemAndDelegatesToSource() {
+        source.stubFetchArchivedItems {
+            [ArchivedItem.build(remoteID: "1", isFavorite: true), ArchivedItem.build(remoteID: "2")]
+        }
+
+        let expectReAddCall = expectation(description: "Expect a call to source.reAdd(archivedItem:)")
+        source.stubReAddArchivedItem { _ in
+            expectReAddCall.fulfill()
+        }
+
+        let expectRefreshCall = expectation(description: "Expect a call to source.refresh()")
+        source.stubRefresh { _, _ in
+            expectRefreshCall.fulfill()
+        }
+
+        let viewModel = subject()
+        awaitInitialSnapshot(viewModel)
+
+        let expectSnapshotWithItemRemoved = expectation(description: "expected reloaded item snapshot")
+        viewModel.events.sink { event in
+            switch event {
+            case .snapshot(let snapshot):
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item("2")])
+                expectSnapshotWithItemRemoved.fulfill()
+                return
+            default:
+                break
+            }
+
+            XCTFail("Received an unexpected event: \(event)")
+        }.store(in: &subscriptions)
+
+        let action = viewModel.overflowActions(for: "1")?.first { $0.title == "Re-add" }
+        XCTAssertNotNil(action)
+
+        action?.handler?(nil)
+        wait(for: [
+            expectSnapshotWithItemRemoved,
+            expectReAddCall,
+            expectRefreshCall
+        ], timeout: 1)
+    }
+
     private func awaitInitialSnapshot(_ viewModel: ArchivedItemsListViewModel) {
         let expectEmptySnapshot = expectation(description: "expect empty snapshot")
         let expectInitialSnapshot = expectation(description: "expect initial snapshot")
