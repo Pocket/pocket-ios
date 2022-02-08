@@ -330,6 +330,48 @@ class ArchivedItemsViewModelTests: XCTestCase {
         ], timeout: 1)
     }
 
+    func test_reAddAction_whenOperationFails_addsItemBackToSnapshot() {
+        source.stubFetchArchivedItems {
+            [ArchivedItem.build(remoteID: "1", isFavorite: true), ArchivedItem.build(remoteID: "2")]
+        }
+
+        source.stubReAddArchivedItem { _ in
+            throw FakeError.error
+        }
+
+        source.stubRefresh { _, _ in
+            XCTFail("Do not refresh if the call to re-add the item fails")
+        }
+
+        let viewModel = subject()
+        awaitInitialSnapshot(viewModel)
+
+        let expectSnapshotWithItemReAdded = expectation(description: "expect the item to be re-added to the snapshot")
+        viewModel.events.sink { event in
+            switch event {
+            case .snapshot(let snapshot):
+                guard snapshot.itemIdentifiers(inSection: .items).count == 2 else {
+                    return
+                }
+
+                XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item("1"), .item("2")])
+                expectSnapshotWithItemReAdded.fulfill()
+                return
+            default:
+                break
+            }
+
+            XCTFail("Received an unexpected event: \(event)")
+        }.store(in: &subscriptions)
+
+        let action = viewModel.overflowActions(for: "1")?.first { $0.title == "Re-add" }
+        XCTAssertNotNil(action)
+
+        action?.handler?(nil)
+        wait(for: [expectSnapshotWithItemReAdded], timeout: 1)
+        XCTAssertNotNil(viewModel.presentedAlert)
+    }
+
     private func awaitInitialSnapshot(_ viewModel: ArchivedItemsListViewModel) {
         let expectEmptySnapshot = expectation(description: "expect empty snapshot")
         let expectInitialSnapshot = expectation(description: "expect initial snapshot")
