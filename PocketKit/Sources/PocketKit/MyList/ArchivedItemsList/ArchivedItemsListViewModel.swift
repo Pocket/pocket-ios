@@ -132,8 +132,8 @@ extension ArchivedItemsListViewModel {
     func overflowActions(for itemID: String) -> [ItemAction]? {
         return bareItem(with: itemID).flatMap { archivedItem in
             return [
+                .reAdd { [weak self] _ in self?.reAdd(item: archivedItem) },
                 .delete { [weak self] _ in self?.confirmDelete(item: archivedItem) },
-                .reAdd { [weak self] _ in self?.reAdd(item: archivedItem) }
             ]
         }
     }
@@ -239,8 +239,14 @@ extension ArchivedItemsListViewModel {
         archivedItems.remove(at: index)
         sendSnapshot()
 
-        try? await source.reAdd(item: item)
-        await source.refresh()
+        do {
+            try await source.reAdd(item: item)
+            await source.refresh()
+        } catch {
+            await presentGenericError()
+            archivedItems.insert(item, at: index)
+            sendSnapshot()
+        }
     }
 }
 
