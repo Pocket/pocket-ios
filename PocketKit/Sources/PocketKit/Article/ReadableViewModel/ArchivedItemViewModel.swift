@@ -10,6 +10,9 @@ class ArchivedItemViewModel: ReadableViewModel {
     @Published
     private var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
+    var currentActions: [ItemAction] {
+        _actions
+    }
 
     @Published
     var presentedAlert: PocketAlert?
@@ -28,20 +31,16 @@ class ArchivedItemViewModel: ReadableViewModel {
         _events.eraseToAnyPublisher()
     }
 
-    private let item: ArchivedItem
+    private var item: ArchivedItem
+    private let source: Source
     let tracker: Tracker
 
-    init(item: ArchivedItem, tracker: Tracker) {
+    init(item: ArchivedItem, source: Source, tracker: Tracker) {
         self.item = item
+        self.source = source
         self.tracker = tracker
 
-        _actions = [
-            .displaySettings { [weak self] _ in self?.displaySettings() },
-            .save { [weak self] _ in self?.save() },
-            .favorite { [weak self] _ in self?.favorite() },
-            .delete { [weak self] _ in self?.confirmDelete() },
-            .share { [weak self] _ in self?.share() },
-        ]
+        buildActions()
     }
 
     var readerSettings: ReaderSettings {
@@ -88,11 +87,68 @@ class ArchivedItemViewModel: ReadableViewModel {
 }
 
 extension ArchivedItemViewModel {
+    private func buildActions() {
+        let favoriteAction: ItemAction
+        if item.isFavorite {
+            favoriteAction = .unfavorite {[weak self] _ in self?.unfavorite() }
+        } else {
+            favoriteAction = .favorite { [weak self] _ in self?.favorite() }
+        }
+
+        _actions = [
+            .displaySettings { [weak self] _ in self?.displaySettings() },
+            .save { [weak self] _ in self?.save() }
+        ] + [
+            favoriteAction
+        ] + [
+            .delete { [weak self] _ in self?.confirmDelete() },
+            .share { [weak self] _ in self?.share() },
+        ]
+    }
+
     private func save() {
         track(identifier: .itemSave)
     }
     
     private func favorite() {
+        Task { await _favorite() }
+    }
+
+    private func _favorite() async {
+        item = item.with(isFavorite: true)
+        buildActions()
         track(identifier: .itemFavorite)
+
+        do {
+            try await source.favorite(item: item)
+        } catch {
+            presentedAlert = PocketAlert(error) { [weak self] in
+                self?.presentedAlert = nil
+            }
+
+            item = item.with(isFavorite: false)
+            buildActions()
+        }
+    }
+
+    private func unfavorite() {
+        Task { await _unfavorite() }
+    }
+
+    private func _unfavorite() async {
+        item = item.with(isFavorite: false)
+        buildActions()
+        track(identifier: .itemUnfavorite)
+
+        do {
+            try await source.unfavorite(item: item)
+        } catch {
+            presentedAlert = PocketAlert(error) { [weak self] in
+                self?.presentedAlert = nil
+            }
+
+            item = item.with(isFavorite: true)
+            buildActions()
+        }
     }
 }

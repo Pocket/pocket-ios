@@ -267,6 +267,7 @@ extension ArchivedItemsListViewModel {
         selectedReadable = archivedItemsByID[identifier].flatMap { $0.item }.flatMap {
             ArchivedItemViewModel(
                 item: $0,
+                source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen)
             )
         }
