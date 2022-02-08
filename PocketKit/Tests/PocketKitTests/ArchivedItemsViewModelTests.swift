@@ -79,7 +79,11 @@ class ArchivedItemsViewModelTests: XCTestCase {
     }
 
     func test_deleteAction_delegatesToSource_andUpdatesSnapshot() {
-        source.stubDelete { _ in }
+        let expectDeleteCall = expectation(description: "expect a source.delete(archivedItem:)")
+        source.stubDelete { _ in
+            expectDeleteCall.fulfill()
+        }
+
         source.stubFetchArchivedItems {
             [ArchivedItem.build(remoteID: "1"), ArchivedItem.build(remoteID: "2")]
         }
@@ -107,11 +111,10 @@ class ArchivedItemsViewModelTests: XCTestCase {
             .actions
             .first { $0.title == "Yes" }?.invoke()
 
-
-        wait(for: [expectSnapshotWithItemRemoved], timeout: 1)
-
-        let predicate = NSPredicate { _, _ in self.source.deleteArchivedItemCall(at: 0) != nil }
-        wait(for: [expectation(for: predicate, evaluatedWith: nil)], timeout: 2)
+        wait(for: [
+            expectSnapshotWithItemRemoved,
+            expectDeleteCall
+        ], timeout: 1)
     }
 
     func test_deleteAction_whenOperationFails_addsArchivedItemBackIntoSnapshot() {
@@ -171,8 +174,9 @@ class ArchivedItemsViewModelTests: XCTestCase {
             [ArchivedItem.build(remoteID: "1"), ArchivedItem.build(remoteID: "2")]
         }
 
+        let expectFavoriteCall = expectation(description: "expect a call to source.favorite(archivedItem:)")
         source.stubFavoriteArchivedItem { _ in
-
+            expectFavoriteCall.fulfill()
         }
 
         let viewModel = subject()
@@ -199,11 +203,10 @@ class ArchivedItemsViewModelTests: XCTestCase {
 
         viewModel.favoriteAction(for: "1")?.handler?(nil)
 
-        let predicate = NSPredicate { _, _ in self.source.favoriteArchivedItemCall(at: 0) != nil }
         wait(for: [
             expectSnapshotWithReloadedItem,
-            expectation(for: predicate, evaluatedWith: nil)
-        ], timeout: 2, enforceOrder: true)
+            expectFavoriteCall
+        ], timeout: 1, enforceOrder: true)
 
         XCTAssertEqual(viewModel.favoriteAction(for: "1")?.title, "Unfavorite")
     }
@@ -242,13 +245,14 @@ class ArchivedItemsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.presentedAlert)
     }
 
-    func tests_favoriteAction_whenItemIsFavorited_delegatesToSource_andUpdatesSnapshot() throws {
+    func test_favoriteAction_whenItemIsFavorited_delegatesToSource_andUpdatesSnapshot() throws {
         source.stubFetchArchivedItems {
             [ArchivedItem.build(remoteID: "1", isFavorite: true), ArchivedItem.build(remoteID: "2")]
         }
 
+        let expectUnfavoriteCall = expectation(description: "expect call to source.unfavorite(archivedItem:)")
         source.stubUnfavoriteArchivedItem { _ in
-
+            expectUnfavoriteCall.fulfill()
         }
 
         let viewModel = subject()
@@ -275,11 +279,10 @@ class ArchivedItemsViewModelTests: XCTestCase {
 
         viewModel.favoriteAction(for: "1")?.handler?(nil)
 
-        let predicate = NSPredicate { _, _ in self.source.unfavoriteArchivedItemCall(at: 0) != nil }
         wait(for: [
             expectSnapshotWithReloadedItem,
-            expectation(for: predicate, evaluatedWith: nil)
-        ], timeout: 2, enforceOrder: true)
+            expectUnfavoriteCall
+        ], timeout: 1, enforceOrder: true)
 
         XCTAssertEqual(viewModel.favoriteAction(for: "1")?.title, "Favorite")
     }
