@@ -168,25 +168,99 @@ class ArchivedItemViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.presentedAlert)
     }
 
-    func test_delete_sendsDeleteEvent() {
+    func test_delete_sendsDeleteEvent_sendsRequestToSource() {
         let viewModel = subject()
 
-        let expectation = expectation(description: "delete event")
+        let expectDeleteCall = expectation(description: "delete call")
+        source.stubDelete { _ in
+            expectDeleteCall.fulfill()
+        }
+
+        let expectDeleteEvent = expectation(description: "delete event")
         viewModel.events.sink { event in
             guard case .delete = event else {
                 XCTFail("expected delete event, got \(event) instead")
                 return
             }
 
-            expectation.fulfill()
+            expectDeleteEvent.fulfill()
         }.store(in: &subscriptions)
 
         viewModel.invokeAction(title: "Delete")
         XCTAssertNotNil(viewModel.presentedAlert)
 
         viewModel.presentedAlert?.actions.first(where: { $0.title == "Yes" })?.invoke()
+        wait(for: [expectDeleteCall, expectDeleteEvent], timeout: 1)
+    }
 
-        wait(for: [expectation], timeout: 1)
+    func test_delete_onError_doesNotSendDeleteEvent_andPresentsAnAlert() {
+        let viewModel = subject()
+
+        let expectDeleteCall = expectation(description: "delete call")
+        source.stubDelete { _ in
+            defer { expectDeleteCall.fulfill() }
+            throw FakeError.error
+        }
+
+        let expectPresentedAlert = expectation(description: "presented alert")
+        viewModel.$presentedAlert.filter({ $0 != nil }).dropFirst().sink { _ in
+            expectPresentedAlert.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.events.sink { _ in
+            XCTFail("No events should be sent")
+        }.store(in: &subscriptions)
+
+        viewModel.invokeAction(title: "Delete")
+        XCTAssertNotNil(viewModel.presentedAlert)
+
+        viewModel.presentedAlert?.actions.first(where: { $0.title == "Yes" })?.invoke()
+        wait(for: [expectDeleteCall, expectPresentedAlert], timeout: 1)
+
+        XCTAssertNotNil(viewModel.presentedAlert)
+    }
+
+    func test_reAdd_sendsRequestToSource_AndRefreshes() {
+        let viewModel = subject()
+
+        let expectReAdd = expectation(description: "re-add call")
+        source.stubReAddArchivedItem { _ in
+            expectReAdd.fulfill()
+        }
+
+        let expectRefresh = expectation(description: "refresh call")
+        source.stubRefresh { _, _ in
+            expectRefresh.fulfill()
+        }
+
+        viewModel.invokeAction(title: "Re-add")
+
+        wait(for: [expectReAdd, expectRefresh], timeout: 1)
+    }
+
+    func test_reAdd_onError_doesNotRefresh_andPresentsAlert() {
+        let viewModel = subject()
+
+        let expectReAdd = expectation(description: "re-add call")
+        source.stubReAddArchivedItem { _ in
+            defer { expectReAdd.fulfill() }
+            throw FakeError.error
+        }
+
+        let expectPresentationAlert = expectation(description: "presentation alert")
+        viewModel.$presentedAlert.dropFirst().sink { _ in
+            expectPresentationAlert.fulfill()
+        }.store(in: &subscriptions)
+
+        source.stubRefresh { _, _ in
+            XCTFail("refresh should not be called")
+        }
+
+        viewModel.invokeAction(title: "Re-add")
+
+        wait(for: [expectReAdd, expectPresentationAlert], timeout: 1)
+
+        XCTAssertNotNil(viewModel.presentedAlert)
     }
 
     func test_share_updatesSharedActivity() {
