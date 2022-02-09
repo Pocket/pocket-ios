@@ -45,28 +45,28 @@ class CompactMyListContainerCoordinator: NSObject {
         navigationController.popToRootViewController(animated: false)
 
         // My List navigation
-        model.savedItemsList.$presentedAlert.sink { [weak self] alert in
+        model.savedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$sharedActivity.sink { [weak self] activity in
+        model.savedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$selectedReadable.sink { [weak self] readable in
+        model.savedItemsList.$selectedReadable.receive(on: DispatchQueue.main).sink { [weak self] readable in
             self?.push(savedItem: readable)
         }.store(in: &subscriptions)
 
         // Archive navigation
-        model.archivedItemsList.$selectedReadable.sink { [weak self] readable in
+        model.archivedItemsList.$selectedReadable.receive(on: DispatchQueue.main).sink { [weak self] readable in
             self?.push(archivedItem: readable)
         }.store(in: &subscriptions)
 
-        model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
+        model.archivedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.archivedItemsList.$presentedAlert.sink { [weak self] alert in
+        model.archivedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
@@ -80,23 +80,23 @@ class CompactMyListContainerCoordinator: NSObject {
             return
         }
 
-        readable.$presentedAlert.sink { [weak self] alert in
+        readable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readableSubscriptions)
 
-        readable.$presentedWebReaderURL.sink { [weak self] url in
+        readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &readableSubscriptions)
 
-        readable.$sharedActivity.sink { [weak self] activity in
+        readable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readableSubscriptions)
 
-        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+        readable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readableSubscriptions)
 
-        readable.events.sink { [weak self] event in
+        readable.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             self?.navigationController.popToRootViewController(animated: true)
         }.store(in: &readableSubscriptions)
 
@@ -112,23 +112,23 @@ class CompactMyListContainerCoordinator: NSObject {
             return
         }
 
-        readable.$presentedAlert.sink { [weak self] alert in
+        readable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readableSubscriptions)
 
-        readable.$presentedWebReaderURL.sink { [weak self] url in
+        readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &readableSubscriptions)
 
-        readable.$sharedActivity.sink { [weak self] activity in
+        readable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readableSubscriptions)
 
-        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+        readable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readableSubscriptions)
 
-        readable.events.sink { [weak self] event in
+        readable.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             self?.navigationController.popToRootViewController(animated: true)
         }.store(in: &readableSubscriptions)
 

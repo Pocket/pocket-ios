@@ -43,15 +43,15 @@ class CompactHomeCoordinator: NSObject {
         navigationController.popToRootViewController(animated: false)
         isResetting = true
 
-        model.$selectedReadableViewModel.sink { [weak self] readable in
+        model.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
             self?.show(readable)
         }.store(in: &subscriptions)
 
-        model.$selectedSlateDetail.sink { [weak self] slate in
+        model.$selectedSlateDetail.receive(on: DispatchQueue.main).sink { [weak self] slate in
             self?.show(slate)
         }.store(in: &subscriptions)
 
-        model.$selectedRecommendationToReport.sink { [weak self] recommendation in
+        model.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
             self?.report(recommendation)
         }.store(in: &subscriptions)
 
@@ -84,11 +84,11 @@ class CompactHomeCoordinator: NSObject {
             animated: !isResetting
         )
 
-        slate.$selectedReadableViewModel.sink { [weak self] readable in
+        slate.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
             self?.show(readable)
         }.store(in: &slateDetailSubscriptions)
 
-        slate.$selectedRecommendationToReport.sink { [weak self] recommendation in
+        slate.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
             self?.report(recommendation)
         }.store(in: &slateDetailSubscriptions)
     }
@@ -104,15 +104,15 @@ class CompactHomeCoordinator: NSObject {
             animated: !isResetting
         )
 
-        recommendation.$sharedActivity.sink { [weak self] activity in
+        recommendation.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$presentedWebReaderURL.sink { [weak self] url in
+        recommendation.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+        recommendation.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: recommendation)
         }.store(in: &readerSubscriptions)
     }

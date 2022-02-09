@@ -33,7 +33,7 @@ class ReadableHostViewController: UIViewController {
             )
         ]
         
-        readableViewModel.actions.sink { [weak self] actions in
+        readableViewModel.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
             self?.buildOverflowMenu(from: actions)
         }.store(in: &subscriptions)
     }
