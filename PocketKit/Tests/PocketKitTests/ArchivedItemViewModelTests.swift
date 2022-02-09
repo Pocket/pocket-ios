@@ -27,7 +27,7 @@ class ArchivedItemViewModelTests: XCTestCase {
             let titles = viewModel.currentActions.map { $0.title }
             XCTAssertEqual(
                 titles,
-                ["Display Settings", "Save", "Favorite", "Delete", "Share"]
+                ["Display Settings", "Favorite", "Re-add", "Delete", "Share"]
             )
         }
 
@@ -37,7 +37,7 @@ class ArchivedItemViewModelTests: XCTestCase {
             let titles = viewModel.currentActions.map { $0.title }
             XCTAssertEqual(
                 titles,
-                ["Display Settings", "Save", "Unfavorite", "Delete", "Share"]
+                ["Display Settings", "Unfavorite", "Re-add", "Delete", "Share"]
             )
         }
     }
@@ -49,6 +49,9 @@ class ArchivedItemViewModelTests: XCTestCase {
     }
 
     func test_favorite_publishesAndUpdatesNewActions() {
+        source.stubFavoriteArchivedItem { _ in }
+
+
         let viewModel = subject() // Unfavorited item
 
         // Drop first since we build actions on `init`
@@ -124,6 +127,8 @@ class ArchivedItemViewModelTests: XCTestCase {
     }
 
     func test_unfavorite_publishesAndUpdatesNewActions() {
+        source.stubUnfavoriteArchivedItem { _ in }
+
         let viewModel = subject(item: .build(remoteID: "1", isFavorite: true)) // Favorited item
 
         // Drop first since we build actions on `init`
