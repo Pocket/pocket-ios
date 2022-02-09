@@ -77,8 +77,18 @@ class ArchivedItemViewModel: ReadableViewModel {
     }
     
     func delete() {
-        // TODO: Delete archived item
-        _events.send(.delete)
+        Task { await _delete() }
+    }
+
+    func _delete() async {
+        do {
+            try await source.delete(item: item)
+            _events.send(.delete)
+        } catch {
+            presentedAlert = PocketAlert(error) { [weak self] in
+                self?.presentedAlert = nil
+            }
+        }
     }
 
     func showWebReader() {
@@ -96,18 +106,30 @@ extension ArchivedItemViewModel {
         }
 
         _actions = [
-            .displaySettings { [weak self] _ in self?.displaySettings() },
-            .save { [weak self] _ in self?.save() }
+            .displaySettings { [weak self] _ in self?.displaySettings() }
         ] + [
             favoriteAction
         ] + [
+            .reAdd { [weak self] _ in self?.reAdd() },
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() },
         ]
     }
 
-    private func save() {
-        track(identifier: .itemSave)
+    private func reAdd() {
+        Task { await _reAdd() }
+        track(identifier: .itemSave) // TODO: Identifier
+    }
+
+    private func _reAdd() async {
+        do {
+            try await source.reAdd(item: item)
+            await source.refresh()
+        } catch {
+            presentedAlert = PocketAlert(error) { [weak self] in
+                self?.presentedAlert = nil
+            }
+        }
     }
     
     private func favorite() {
