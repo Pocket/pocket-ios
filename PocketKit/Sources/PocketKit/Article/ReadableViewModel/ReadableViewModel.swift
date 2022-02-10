@@ -49,6 +49,7 @@ extension ReadableViewModel {
 extension ReadableViewModel {
     func displaySettings() {
         isPresentingReaderSettings = true
+        track(identifier: .switchToWebView)
     }
     
     func open(url: URL) {
@@ -78,6 +79,7 @@ extension ReadableViewModel {
                 UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
                     self?.delete()
+                    self?.track(identifier: .itemDelete)
                 },
             ],
             preferredAction: nil
