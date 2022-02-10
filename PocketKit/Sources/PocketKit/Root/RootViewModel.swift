@@ -52,8 +52,14 @@ class RootViewModel: ObservableObject {
                 MainViewModel(
                     refreshCoordinator: refreshCoordinator,
                     myList: MyListContainerViewModel(
-                        savedItemsList: SavedItemsListViewModel(source: source, tracker: tracker),
-                        archivedItemsList: ArchivedItemsListViewModel(source: source, tracker: tracker)
+                        savedItemsList: SavedItemsListViewModel(
+                            source: source,
+                            tracker: tracker.childTracker(hosting: .myList.myList)
+                        ),
+                        archivedItemsList: ArchivedItemsListViewModel(
+                            source: source,
+                            tracker: tracker.childTracker(hosting: .myList.archive)
+                        )
                     ),
                     home: HomeViewModel(),
                     settings: SettingsViewModel(sessionController: sessionController, events: events)

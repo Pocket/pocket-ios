@@ -63,8 +63,10 @@ extension UIContext {
 
 extension UIContext {
     public enum Identifier: String, Encodable {
-        case home = "discover"
-        case myList = "home"
+        case home
+        case myList = "my_list"
+        case archive
+        case favorites
         case reader
         case item
         case articleLink = "article_link"
@@ -101,6 +103,9 @@ extension UIContext {
     
     public struct MyList {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .myList)
+        public let myList = UIContext(type: .list, hierarchy: 0, identifier: .myList)
+        public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
+        public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
         
         public func item(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
