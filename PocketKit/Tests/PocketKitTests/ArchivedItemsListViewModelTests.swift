@@ -23,6 +23,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         self.networkMonitor = MockNetworkPathMonitor()
 
         self.itemsController = MockSavedItemsController()
+        self.itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
         source.stubMakeItemsController { self.itemsController }
     }
 
