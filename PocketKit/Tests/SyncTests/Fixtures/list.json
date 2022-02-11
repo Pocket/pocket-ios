@@ -18,7 +18,7 @@
                             "remoteID": "saved-item-1",
                             "url": "https://example.com/item-1",
                             "_createdAt": 0,
-                            "_deletedAt": 1,
+                            "_deletedAt": null,
                             "isArchived": false,
                             "isFavorite": true,
                             "item": {

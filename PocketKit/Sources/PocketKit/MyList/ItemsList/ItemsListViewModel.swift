@@ -6,12 +6,14 @@ enum ItemsListSection: Int, CaseIterable {
     case filters
     case items
     case offline
+    case nextPage
 }
 
 enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
     case filterButton(ItemsListFilter)
     case item(ItemIdentifier)
     case offline
+    case nextPage(UUID)
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {
@@ -43,4 +45,5 @@ protocol ItemsListViewModel: AnyObject {
     func trailingSwipeActions(for objectID: ItemIdentifier) -> [UIContextualAction]
 
     func trackImpression(_ cell: ItemsListCell<ItemIdentifier>)
+    func willDisplay(_ cell: ItemsListCell<ItemIdentifier>)
 }

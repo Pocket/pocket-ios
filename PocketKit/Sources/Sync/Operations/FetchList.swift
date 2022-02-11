@@ -77,14 +77,14 @@ class FetchList: AsyncOperation {
 
         try space.context.performAndWait {
             for edge in edges {
-                guard let node = edge?.node else {
-                    continue
+                guard let edge = edge, let node = edge.node else {
+                    return
                 }
 
                 let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteId)
-                item.update(from: node.fragments.savedItemParts)
+                item.update(from: edge)
 
-                if item.deletedAt != nil, item.isArchived {
+                if item.deletedAt != nil {
                     space.delete(item)
                 }
             }

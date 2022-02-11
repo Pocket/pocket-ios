@@ -59,7 +59,7 @@ class CompactMyListContainerCoordinator: NSObject {
 
         // Archive navigation
         model.archivedItemsList.$selectedReadable.receive(on: DispatchQueue.main).sink { [weak self] readable in
-            self?.push(archivedItem: readable)
+            self?.push(savedItem: readable)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
@@ -76,38 +76,6 @@ class CompactMyListContainerCoordinator: NSObject {
 
     private func push(savedItem: SavedItemViewModel?) {
         guard let readable = savedItem else {
-            readableSubscriptions = []
-            return
-        }
-
-        readable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
-            self?.present(alert: alert)
-        }.store(in: &readableSubscriptions)
-
-        readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
-        }.store(in: &readableSubscriptions)
-
-        readable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
-            self?.present(activity: activity)
-        }.store(in: &readableSubscriptions)
-
-        readable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: readable)
-        }.store(in: &readableSubscriptions)
-
-        readable.events.receive(on: DispatchQueue.main).sink { [weak self] event in
-            self?.navigationController.popToRootViewController(animated: true)
-        }.store(in: &readableSubscriptions)
-
-        navigationController.pushViewController(
-            ReadableHostViewController(readableViewModel: readable),
-            animated: !isResetting
-        )
-    }
-
-    private func push(archivedItem: ArchivedItemViewModel?) {
-        guard let readable = archivedItem else {
             readableSubscriptions = []
             return
         }

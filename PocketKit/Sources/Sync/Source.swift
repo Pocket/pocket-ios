@@ -1,3 +1,4 @@
+import Combine
 import CoreData
 import Foundation
 
@@ -5,9 +6,11 @@ import Foundation
 public protocol Source {
     var mainContext: NSManagedObjectContext { get }
 
+    var events: AnyPublisher<SyncEvent, Never> { get }
+
     func clear()
 
-    func makeItemsController() -> NSFetchedResultsController<SavedItem>
+    func makeItemsController() -> SavedItemsController
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
@@ -21,6 +24,8 @@ public protocol Source {
 
     func archive(item: SavedItem)
 
+    func unarchive(item: SavedItem)
+
     func fetchSlateLineup(_ identifier: String) async throws -> SlateLineup?
 
     func fetchSlate(_ slateID: String) async throws -> Slate?
@@ -31,15 +36,7 @@ public protocol Source {
 
     func archive(recommendation: Slate.Recommendation)
 
-    func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem]
-
-    func delete(item: ArchivedItem) async throws
-
-    func favorite(item: ArchivedItem) async throws
-
-    func unfavorite(item: ArchivedItem) async throws
-
-    func reAdd(item: ArchivedItem) async throws
+    func fetchArchivePage(cursor: String?, isFavorite: Bool?)
 }
 
 public extension Source {
@@ -49,9 +46,5 @@ public extension Source {
 
     func refresh() {
         self.refresh(maxItems: 400, completion: nil)
-    }
-    
-    func fetchArchivedItems() async throws -> [ArchivedItem] {
-        try await fetchArchivedItems(isFavorite: false)
     }
 }

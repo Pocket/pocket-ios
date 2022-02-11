@@ -24,7 +24,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private let source: Source
     private let tracker: Tracker
-    private let itemsController: NSFetchedResultsController<SavedItem>
+    private let itemsController: SavedItemsController
     private var subscriptions: [AnyCancellable] = []
 
     private var selectedFilters: Set<ItemsListFilter>
@@ -56,7 +56,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             }
         }
 
-        self.itemsController.fetchRequest.predicate = Predicates.savedItems(filters: predicates)
+        self.itemsController.predicate = Predicates.savedItems(filters: predicates)
 
         try? self.itemsController.performFetch()
         self.itemsLoaded()
@@ -91,7 +91,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             select(item: objectID)
         case .filterButton(let filterID):
             apply(filter: filterID, from: cellID)
-        case .offline:
+        case .offline, .nextPage:
             return
         }
     }
@@ -224,6 +224,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
+    func willDisplay(_ cell: ItemsListCell<NSManagedObjectID>) {
+        
+    }
+
     private func track(item: SavedItem, identifier: UIContext.Identifier) {
         guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
             return
@@ -274,24 +278,24 @@ extension SavedItemsListViewModel {
     }
 }
 
-extension SavedItemsListViewModel: NSFetchedResultsControllerDelegate {
+extension SavedItemsListViewModel: SavedItemsControllerDelegate {
     func controller(
-        _ controller: NSFetchedResultsController<NSFetchRequestResult>,
-        didChange anObject: Any,
+        _ controller: SavedItemsController,
+        didChange savedItem: SavedItem,
         at indexPath: IndexPath?,
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
     ) {
-        guard .update == type, let id = (anObject as? SavedItem)?.objectID else {
+        guard .update == type else {
             return
         }
 
         var snapshot = buildSnapshot()
-        snapshot.reloadItems([ItemsListCell<ItemIdentifier>.item(id)])
+        snapshot.reloadItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
         send(snapshot: snapshot)
     }
 
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+    func controllerDidChangeContent(_ controller: SavedItemsController) {
         itemsLoaded()
     }
 }

@@ -3,10 +3,11 @@ import Combine
 import UIKit
 import Analytics
 import Network
+import CoreData
 
 
 class ArchivedItemsListViewModel: ItemsListViewModel {
-    typealias ItemIdentifier = String
+    typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
 
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
@@ -15,7 +16,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     let selectionItem: SelectionItem = SelectionItem(title: "Archive", image: .init(asset: .archive))
 
     @Published
-    var selectedReadable: ArchivedItemViewModel?
+    var selectedReadable: SavedItemViewModel?
 
     @Published
     var sharedActivity: PocketActivity?
@@ -31,20 +32,14 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         networkMonitor.currentNetworkPath.status == .satisfied
     }
 
-    private var archivedItemsByID: [String: (index: Int, item: ArchivedItem)] = [:]
-    private var archivedItems: [ArchivedItem] = [] {
-        didSet {
-            archivedItemsByID = archivedItems.enumerated().reduce(into: [:]) { dict, enumeratedItem in
-                dict[enumeratedItem.element.remoteID] = (
-                    index: enumeratedItem.offset,
-                    item: enumeratedItem.element
-                )
-            }
-        }
-    }
+    private let itemsController: SavedItemsController
+    private var archivedItemsByID: [NSManagedObjectID: SavedItem] = [:]
 
     private var selectedFilters: Set<ItemsListFilter> = .init()
     private let availableFilters: [ItemsListFilter] = ItemsListFilter.allCases
+
+    private var isFetching: Bool = false
+    private var subscriptions: [AnyCancellable] = []
 
     init(
         source: Source,
@@ -54,54 +49,88 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         self.source = source
         self.tracker = tracker
         self.networkMonitor = networkMonitor
+        self.itemsController = source.makeItemsController()
 
+        itemsController.delegate = self
+        itemsController.predicate = Predicates.archivedItems()
         networkMonitor.start(queue: .global())
+
+        source.events.sink { [weak self] event in
+            switch event {
+            case .loadedArchivePage:
+                self?.isFetching = false
+            case .error:
+                break
+            }
+        }.store(in: &subscriptions)
+
 //        self.main.$selectedMyListReadableViewModel.sink { _ in
 //            // TODO: Handle deselection here
 //        }.store(in: &subscriptions)
     }
 
-    func shareAction(for itemID: String) -> ItemAction? {
-        bareItem(with: itemID).flatMap { $0.bestURL }.flatMap { url in
-            return .share { [weak self] sender in
-                self?.sharedActivity = PocketItemActivity(url: url, sender: sender)
-            }
-        }
+    func shareAction(for itemID: ItemIdentifier) -> ItemAction? {
+        return nil
+//        bareItem(with: itemID).flatMap { $0.bestURL }.flatMap { url in
+//            return .share { [weak self] sender in
+//                self?.sharedActivity = PocketItemActivity(url: url, sender: sender)
+//            }
+//        }
     }
 
-    func trailingSwipeActions(for objectID: String) -> [UIContextualAction] {
+    func trailingSwipeActions(for objectID: ItemIdentifier) -> [UIContextualAction] {
         return []
     }
 
-    func trackImpression(_ cell: ItemsListCell<String>) {
+    func willDisplay(_ cell: ItemsListCell<ItemIdentifier>) {
+        if case .nextPage = cell, !isFetching {
+            isFetching = true
+            let cursor = itemsController.fetchedObjects?.last?.cursor
+            let isFavorite: Bool? = selectedFilters.contains(.favorites) ? true : nil
+            source.fetchArchivePage(cursor: cursor, isFavorite: isFavorite)
+        }
+    }
+
+    func trackImpression(_ cell: ItemsListCell<ItemIdentifier>) {
         // TODO: analytics for archived items
     }
 
-    private func bareItem(with itemID: String) -> ArchivedItem? {
-        archivedItemsByID[itemID]?.item
-    }
 }
 
 // MARK: - Fetching Items
 extension ArchivedItemsListViewModel {
     func fetch() {
-        Task { try await self._fetch() }
+        fetchLocalItems()
+//        if !isNetworkAvailable {
+//            sendSnapshot(offlineSnapshot())
+//        } else {
+//            sendSnapshot(blankSnapshot())
+//        }
     }
 
     func refresh(_ completion: (() -> ())?) {
         // TODO: Support pull to refresh
     }
 
-    private func _fetch() async throws {
-        if !isNetworkAvailable {
-            sendSnapshot(offlineSnapshot())
-        } else {
-            sendSnapshot(blankSnapshot())
-
-            let favorited = selectedFilters.contains(.favorites)
-            archivedItems = try await source.fetchArchivedItems(isFavorite: favorited)
-            sendSnapshot()
+    private func fetchLocalItems() {
+        let filters = selectedFilters.map { filter -> NSPredicate in
+            switch filter {
+            case .favorites:
+                return NSPredicate(format: "isFavorite = true")
+            }
         }
+
+        itemsController.predicate = Predicates.archivedItems(filters: filters)
+        try? itemsController.performFetch()
+        updateItems()
+    }
+
+    func updateItems() {
+        archivedItemsByID = itemsController.fetchedObjects?.reduce(into: [:]) { dict, savedItem in
+            dict[savedItem.objectID] = savedItem
+        } ?? [:]
+
+        sendSnapshot()
     }
 }
 
@@ -122,44 +151,25 @@ extension ArchivedItemsListViewModel {
         return item(with: archivedItemID)
     }
 
-    func item(with itemID: String) -> ItemsListItemPresenter? {
-        bareItem(with: itemID).flatMap(ItemsListItemPresenter.init)
+    func item(with itemID: ItemIdentifier) -> ItemsListItemPresenter? {
+        archivedItemsByID[itemID].flatMap(ItemsListItemPresenter.init)
     }
 }
 
 // MARK: - Deleting an item
 extension ArchivedItemsListViewModel {
-    func overflowActions(for itemID: String) -> [ItemAction]? {
-        return bareItem(with: itemID).flatMap { archivedItem in
-            return [
-                .reAdd { [weak self] _ in self?.reAdd(item: archivedItem) },
-                .delete { [weak self] _ in self?.confirmDelete(item: archivedItem) },
-            ]
-        }
-    }
-
-    private func delete(item: ArchivedItem) {
-        Task { await _delete(item: item) }
-    }
-
-    private func _delete(item: ArchivedItem) async {
-        guard let index = archivedItemsByID[item.remoteID]?.index else {
-            return
+    func overflowActions(for itemID: ItemIdentifier) -> [ItemAction]? {
+        guard let item = archivedItemsByID[itemID] else {
+            return nil
         }
 
-        archivedItems.remove(at: index)
-        sendSnapshot()
-
-        do {
-            try await source.delete(item: item)
-        } catch {
-            await presentGenericError()
-            archivedItems.insert(item, at: index)
-            sendSnapshot()
-        }
+        return [
+            .reAdd { [weak self] _ in self?.unarchive(item: item) },
+            .delete { [weak self] _ in self?.confirmDelete(item: item) }
+        ]
     }
 
-    private func confirmDelete(item: ArchivedItem) {
+    private func confirmDelete(item: SavedItem) {
         presentedAlert = PocketAlert(
             title: "Are you sure you want to delete this item?",
             message: nil,
@@ -176,77 +186,39 @@ extension ArchivedItemsListViewModel {
             preferredAction: nil
         )
     }
+
+    private func delete(item: SavedItem) {
+        source.delete(item: item)
+    }
 }
 
 // MARK: - Favoriting/Unfavoriting an item
 extension ArchivedItemsListViewModel {
-    func favoriteAction(for itemID: String) -> ItemAction? {
-        bareItem(with: itemID).flatMap { archivedItem in
-            if archivedItem.isFavorite {
-                return .unfavorite { [weak self] _ in
-                    self?.unfavorite(item: archivedItem)
-                }
-            } else {
-                return .favorite { [weak self] _ in
-                    self?.favorite(item: archivedItem)
-                }
-            }
+    func favoriteAction(for itemID: ItemIdentifier) -> ItemAction? {
+        guard let item = archivedItemsByID[itemID] else {
+            return nil
+        }
+
+        if item.isFavorite {
+            return .unfavorite { [weak self] _ in self?.unfavorite(item: item) }
+        } else {
+            return .favorite { [weak self] _ in self?.favorite(item: item) }
         }
     }
 
-    private func favorite(item: ArchivedItem) {
-        Task { await setIsFavorite(true, on: item) }
+    private func favorite(item: SavedItem) {
+        source.favorite(item: item)
     }
 
-    private func unfavorite(item: ArchivedItem) {
-        Task { await setIsFavorite(false, on: item) }
-    }
-
-    private func setIsFavorite(_ isFavorite: Bool, on item: ArchivedItem) async {
-        guard let index = archivedItemsByID[item.remoteID]?.index else {
-            return
-        }
-
-        archivedItems[index] = item.with(isFavorite: isFavorite)
-        sendSnapshot(snapshot(reloadingItem: item.remoteID))
-
-        do {
-            if isFavorite {
-                try await source.favorite(item: item)
-            } else {
-                try await source.unfavorite(item: item)
-            }
-        } catch {
-            await presentGenericError()
-
-            archivedItems[index] = item
-            sendSnapshot(snapshot(reloadingItem: item.remoteID))
-        }
+    private func unfavorite(item: SavedItem) {
+        source.unfavorite(item: item)
     }
 }
 
 // MARK: - Re-adding items
 extension ArchivedItemsListViewModel {
-    func reAdd(item: ArchivedItem) {
-        Task { await _reAdd(item: item) }
-    }
-
-    func _reAdd(item: ArchivedItem) async {
-        guard let index = archivedItemsByID[item.remoteID]?.index else {
-            return
-        }
-
-        archivedItems.remove(at: index)
-        sendSnapshot()
-
-        do {
-            try await source.reAdd(item: item)
-            await source.refresh()
-        } catch {
-            await presentGenericError()
-            archivedItems.insert(item, at: index)
-            sendSnapshot()
-        }
+    func unarchive(item: SavedItem) {
+        source.unarchive(item: item)
     }
 }
 
@@ -258,19 +230,21 @@ extension ArchivedItemsListViewModel {
             apply(filter: filter, from: cell)
         case .item(let itemID):
             select(item: itemID)
-        case .offline:
+        case .offline, .nextPage:
             return
         }
     }
 
     private func select(item identifier: ItemIdentifier) {
-        selectedReadable = archivedItemsByID[identifier].flatMap { $0.item }.flatMap {
-            ArchivedItemViewModel(
-                item: $0,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
-            )
+        guard let item = archivedItemsByID[identifier] else {
+            return
         }
+
+        selectedReadable = SavedItemViewModel(
+            item: item,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen)
+        )
     }
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
@@ -280,37 +254,11 @@ extension ArchivedItemsListViewModel {
             selectedFilters.insert(filter)
         }
 
-        var snapshot = blankSnapshot()
+        var snapshot = buildSnapshot()
         snapshot.reloadItems([cell])
         sendSnapshot(snapshot)
-        fetch()
-    }
-}
 
-// MARK: - Presenting alerts
-extension ArchivedItemsListViewModel {
-    @MainActor
-    private func present(alert: PocketAlert) {
-        presentedAlert = alert
-    }
-
-    private func presentGenericError() async {
-        await present(
-            alert: PocketAlert(
-                title: "Error",
-                message: "Please try again later",
-                preferredStyle: .alert,
-                actions: [
-                    UIAlertAction(
-                        title: "Ok",
-                        style: .default
-                    ) { [weak self] _ in
-                        self?.presentedAlert = nil
-                    }
-                ],
-                preferredAction: nil
-            )
-        )
+        fetchLocalItems()
     }
 }
 
@@ -319,20 +267,20 @@ extension ArchivedItemsListViewModel {
     private func buildSnapshot() -> Snapshot {
         var snapshot = Snapshot()
 
-        let sections: [ItemsListSection] = [.filters, .items]
-        snapshot.appendSections(sections)
-
+        snapshot.appendSections([.filters, .items, .nextPage])
         snapshot.appendItems(
             ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
 
-        let itemCellIDs = archivedItems.map { ItemsListCell<ItemIdentifier>.item($0.remoteID) }
+        let itemCellIDs = itemsController.fetchedObjects?.map { ItemsListCell<ItemIdentifier>.item($0.objectID) } ?? []
         snapshot.appendItems(itemCellIDs, toSection: .items)
+        snapshot.appendItems([.nextPage(UUID())], toSection: .nextPage)
+        
         return snapshot
     }
 
-    private func snapshot(reloadingItem itemID: String) -> Snapshot {
+    private func snapshot(reloadingItem itemID: ItemIdentifier) -> Snapshot {
         var snapshot = buildSnapshot()
         snapshot.reloadItems([.item(itemID)])
 
@@ -362,5 +310,16 @@ extension ArchivedItemsListViewModel {
 
     private func sendSnapshot(_ snapshot: Snapshot? = nil) {
         _events.send(.snapshot(snapshot ?? buildSnapshot()))
+    }
+}
+
+extension ArchivedItemsListViewModel: SavedItemsControllerDelegate {
+    func controller(_ controller: SavedItemsController, didChange aSavedItem: SavedItem, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        guard .update == type else { return }
+        sendSnapshot(snapshot(reloadingItem: aSavedItem.objectID))
+    }
+
+    func controllerDidChangeContent(_ controller: SavedItemsController) {
+        updateItems()
     }
 }

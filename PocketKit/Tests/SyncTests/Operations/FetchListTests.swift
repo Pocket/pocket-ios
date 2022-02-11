@@ -65,8 +65,8 @@ class FetchListTests: XCTestCase {
         performOperation()
 
         XCTAssertFalse(apollo.fetchCalls.isEmpty)
-        let call: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
-        XCTAssertEqual(call.query.token, "test-token")
+        let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.token, "test-token")
 
         XCTAssertEqual(lastRefresh.refreshedCallCount, 1)
     }
@@ -82,10 +82,11 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(savedItems.count, 2)
 
         let savedItem = savedItems[0]
+        XCTAssertEqual(savedItem.cursor, "cursor-1")
         XCTAssertEqual(savedItem.remoteID, "saved-item-1")
         XCTAssertEqual(savedItem.url, URL(string: "https://example.com/item-1")!)
         XCTAssertEqual(savedItem.createdAt?.timeIntervalSince1970, 0)
-        XCTAssertEqual(savedItem.deletedAt?.timeIntervalSince1970, 1)
+        XCTAssertEqual(savedItem.deletedAt?.timeIntervalSince1970, nil)
         XCTAssertEqual(savedItem.isArchived, false)
         XCTAssertTrue(savedItem.isFavorite)
 
@@ -225,9 +226,9 @@ class FetchListTests: XCTestCase {
 
         performOperation()
 
-        let call: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
-        XCTAssertNotNil(call.query.savedItemsFilter)
-        XCTAssertEqual(call.query.savedItemsFilter?.updatedSince, 123456789)
+        let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
+        XCTAssertNotNil(call?.query.savedItemsFilter)
+        XCTAssertEqual(call?.query.savedItemsFilter?.updatedSince, 123456789)
     }
 
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() {
@@ -237,8 +238,8 @@ class FetchListTests: XCTestCase {
 
         performOperation()
 
-        let call: MockApolloClient.FetchCall<UserByTokenQuery> = apollo.fetchCall(at: 0)
-        XCTAssertEqual(call.query.savedItemsFilter?.status, .unread)
+        let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
+        XCTAssertEqual(call?.query.savedItemsFilter?.status, .unread)
     }
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() {

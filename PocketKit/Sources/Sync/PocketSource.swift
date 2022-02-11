@@ -10,14 +10,16 @@ import Combine
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
 public class PocketSource: Source {
-    public let syncEvents: SyncEvents = PassthroughSubject()
+    private let _events: SyncEvents = PassthroughSubject()
+    public var events: AnyPublisher<SyncEvent, Never> {
+        _events.eraseToAnyPublisher()
+    }
 
     private let space: Space
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
     private let tokenProvider: AccessTokenProvider
     private let slateService: SlateService
-    private let archiveService: ArchiveService
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -44,8 +46,7 @@ public class PocketSource: Source {
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             accessTokenProvider: accessTokenProvider,
-            slateService: APISlateService(apollo: apollo),
-            archiveService: PocketArchiveService(apollo: apollo)
+            slateService: APISlateService(apollo: apollo)
         )
     }
 
@@ -55,8 +56,7 @@ public class PocketSource: Source {
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
         accessTokenProvider: AccessTokenProvider,
-        slateService: SlateService,
-        archiveService: ArchiveService
+        slateService: SlateService
     ) {
         self.space = space
         self.apollo = apollo
@@ -64,7 +64,6 @@ public class PocketSource: Source {
         self.lastRefresh = lastRefresh
         self.tokenProvider = accessTokenProvider
         self.slateService = slateService
-        self.archiveService = archiveService
     }
 
     public var mainContext: NSManagedObjectContext {
@@ -76,8 +75,10 @@ public class PocketSource: Source {
         try? space.clear()
     }
 
-    public func makeItemsController() -> NSFetchedResultsController<SavedItem> {
-        return space.makeItemsController()
+    public func makeItemsController() -> SavedItemsController {
+        FetchedSavedItemsController(
+            resultsController: space.makeItemsController()
+        )
     }
 
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
@@ -97,7 +98,7 @@ extension PocketSource {
             token: token,
             apollo: apollo,
             space: space,
-            events: syncEvents,
+            events: _events,
             maxItems: maxItems,
             lastRefresh: lastRefresh
         )
@@ -130,6 +131,12 @@ extension PocketSource {
         }
     }
 
+    public func unarchive(item: SavedItem) {
+        mutate(item, UnarchiveItemMutation.init) { item in
+            item.isArchived = false
+        }
+    }
+
     private func mutate<Mutation: GraphQLMutation>(
         _ item: SavedItem,
         _ remoteMutation: (String) -> Mutation,
@@ -144,7 +151,7 @@ extension PocketSource {
 
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
-            events: syncEvents,
+            events: _events,
             mutation: remoteMutation(remoteID)
         )
 
@@ -209,7 +216,7 @@ extension PocketSource {
         let operation = operations.saveItemOperation(
             managedItemID: savedItem.objectID,
             url: url,
-            events: syncEvents,
+            events: _events,
             apollo: apollo,
             space: space
         )
@@ -228,23 +235,23 @@ extension PocketSource {
 
 // MARK: - Archived Items
 extension PocketSource {
-    public func fetchArchivedItems(isFavorite: Bool) async throws -> [ArchivedItem] {
-        return try await archiveService.fetch(accessToken: tokenProvider.accessToken, isFavorite: isFavorite)
-    }
+    public func fetchArchivePage(cursor: String?, isFavorite: Bool?) {
+        guard let accessToken = tokenProvider.accessToken else {
+            return
+        }
 
-    public func delete(item: ArchivedItem) async throws {
-        try await archiveService.delete(item: item)
-    }
+        let operation = operations.fetchArchivePage(
+            apollo: apollo,
+            space: space,
+            accessToken: accessToken,
+            cursor: cursor,
+            isFavorite: isFavorite
+        )
 
-    public func favorite(item: ArchivedItem) async throws {
-        try await archiveService.favorite(item: item)
-    }
+        operation.completionBlock = { [weak self] in
+            self?._events.send(.loadedArchivePage)
+        }
 
-    public func unfavorite(item: ArchivedItem) async throws {
-        try await archiveService.unfavorite(item: item)
-    }
-
-    public func reAdd(item: ArchivedItem) async throws {
-        try await archiveService.reAdd(item: item)
+        syncQ.addOperation(operation)
     }
 }

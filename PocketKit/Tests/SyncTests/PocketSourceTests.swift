@@ -17,7 +17,6 @@ class PocketSourceTests: XCTestCase {
     var lastRefresh: MockLastRefresh!
     var tokenProvider: MockAccessTokenProvider!
     var slateService: MockSlateService!
-    var archiveService: MockArchiveService!
 
     override func setUpWithError() throws {
         space = Space(container: .testContainer)
@@ -26,7 +25,6 @@ class PocketSourceTests: XCTestCase {
         lastRefresh = MockLastRefresh()
         tokenProvider = MockAccessTokenProvider()
         slateService = MockSlateService()
-        archiveService = MockArchiveService()
 
         lastRefresh.stubGetLastRefresh { nil}
     }
@@ -41,8 +39,7 @@ class PocketSourceTests: XCTestCase {
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
         tokenProvider: AccessTokenProvider? = nil,
-        slateService: SlateService? = nil,
-        archiveService: ArchiveService? = nil
+        slateService: SlateService? = nil
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
@@ -50,8 +47,7 @@ class PocketSourceTests: XCTestCase {
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
             accessTokenProvider: tokenProvider ?? self.tokenProvider,
-            slateService: slateService ?? self.slateService,
-            archiveService: archiveService ?? self.archiveService
+            slateService: slateService ?? self.slateService
         )
     }
 
@@ -169,6 +165,26 @@ class PocketSourceTests: XCTestCase {
         let fetchedItem = try space.fetchSavedItem(byRemoteID: "archive-me")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
+        wait(for: [expectationToRunOperation], timeout: 1)
+    }
+
+    func test_unarchive_executesUnarchiveMutation() throws {
+        let item = try space.seedSavedItem(remoteID: "unarchive-me")
+        item.isArchived = true
+
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemMutationOperation { (_, _ , _: UnarchiveItemMutation) in
+            return BlockOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let source = subject()
+        source.unarchive(item: item)
+
+        let fetchedItem = try space.fetchSavedItem(byRemoteID: "archive-me")
+        XCTAssertNil(fetchedItem)
+        XCTAssertFalse(item.isArchived)
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
@@ -327,7 +343,7 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(itemResultsController.fetchedObjects, [item1])
 
         let expectationForUpdatedItems = expectation(description: "updated items")
-        let delegate = FetchedResultsControllerDelegate {
+        let delegate = TestSavedItemsControllerDelegate {
             expectationForUpdatedItems.fulfill()
         }
         itemResultsController.delegate = delegate
@@ -338,50 +354,29 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(itemResultsController.fetchedObjects, [item1, item2])
     }
 
-    func test_fetchArchivedItems_returnsArchivedItemsFromArchiveService() async throws {
-        let archivedItems = [ArchivedItem.build()]
-        archiveService.stubFetch {
-            return archivedItems
+    func test_fetchArchivePage_addsOperationToQueue() {
+        tokenProvider.accessToken = "the-access-token"
+        let expectCompletion = expectation(description: "expect the operation to complete")
+        operations.stubFetchArchivePage { _, _, _, _, _ in
+            return BlockOperation {
+                expectCompletion.fulfill()
+            }
         }
 
         let source = subject()
-        let actualArchivedItems = try await source.fetchArchivedItems()
 
-        XCTAssertEqual(actualArchivedItems, archivedItems)
-    }
+        let expectEvent = expectation(description: "Expect an event")
+        let sub = source.events.sink { event in
+            guard case .loadedArchivePage = event else {
+                XCTFail("Received unexpected sync event: \(event)")
+                return
+            }
 
-    func test_deleteArchivedItem_delegatesCallToArchiveService() async throws {
-        archiveService.stubDelete { _ in }
-        let source = subject()
+            expectEvent.fulfill()
+        }
 
-        try await source.delete(item: .build(remoteID: "the-remote-id"))
-        XCTAssertNotNil(archiveService.deleteCall(at: 0))
-    }
-
-    func test_favoriteArchivedItem_delegatesCallToArchiveService() async throws {
-        archiveService.stubFavorite { _ in }
-        let source = subject()
-
-        let item = ArchivedItem.build(remoteID: "the-remote-id")
-        try await source.favorite(item: item)
-        XCTAssertNotNil(archiveService.favoriteCall(at: 0))
-    }
-
-    func test_unfavoriteArchivedItem_delegatesCallToArchiveService() async throws {
-        archiveService.stubUnfavorite { _ in }
-        let source = subject()
-
-        let item = ArchivedItem.build(remoteID: "the-remote-id")
-        try await source.unfavorite(item: item)
-        XCTAssertNotNil(archiveService.unfavoriteCall(at: 0))
-    }
-
-    func test_reAddArchivedItem_delegatesToArchiveServiceAndRefreshes() async throws {
-        archiveService.stubReAdd { _ in }
-        let source = subject()
-
-        let item = ArchivedItem.build(remoteID: "the-remote-id")
-        try await source.reAdd(item: item)
-        XCTAssertNotNil(archiveService.reAddCall(at: 0))
+        source.fetchArchivePage(cursor: "the-cursor", isFavorite: true)
+        wait(for: [expectCompletion, expectEvent], timeout: 1)
+        sub.cancel()
     }
 }

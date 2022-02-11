@@ -66,9 +66,12 @@ class MockApolloClient: ApolloClientProtocol {
         fetchImpl = impl
     }
 
-    func fetchCall<Query: GraphQLQuery>(at index: Int) -> FetchCall<Query> {
-        let anyCall = fetchCalls[index]
+    func fetchCall<Query: GraphQLQuery>(at index: Int) -> FetchCall<Query>? {
+        guard index < fetchCalls.count else {
+            return nil
+        }
 
+        let anyCall = fetchCalls[index]
         guard let call = anyCall as? MockApolloClient.FetchCall<Query> else {
             fatalError("Call is incorrect type: \(anyCall)")
         }
@@ -79,7 +82,7 @@ class MockApolloClient: ApolloClientProtocol {
     func fetchCall<Query: GraphQLQuery>(
         withQueryType queryType: Query.Type,
         at index: Int
-    ) -> FetchCall<Query> {
+    ) -> FetchCall<Query>? {
         return fetchCall(at: index)
     }
 

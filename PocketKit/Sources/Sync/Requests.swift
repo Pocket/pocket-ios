@@ -13,6 +13,13 @@ public enum Requests {
         return request
     }
 
+    public static func fetchArchivedItems() -> NSFetchRequest<SavedItem> {
+        let request = fetchAllSavedItems()
+        request.predicate = Predicates.archivedItems()
+
+        return request
+    }
+
     public static func fetchAllSavedItems() -> NSFetchRequest<SavedItem> {
         let request: NSFetchRequest<SavedItem> = SavedItem.fetchRequest()
 
@@ -42,6 +49,11 @@ public enum Requests {
 public enum Predicates {
     public static func savedItems(filters: [NSPredicate] = []) -> NSPredicate {
         let predicates = filters + [NSPredicate(format: "isArchived = false && deletedAt = nil")]
+        return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+    }
+
+    public static func archivedItems(filters: [NSPredicate] = []) -> NSPredicate {
+        let predicates = filters + [NSPredicate(format: "isArchived = true && deletedAt = nil")]
         return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
     }
 }

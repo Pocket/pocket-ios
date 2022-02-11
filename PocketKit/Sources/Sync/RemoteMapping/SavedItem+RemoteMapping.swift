@@ -7,8 +7,19 @@ import CoreData
 
 
 extension SavedItem {
+    typealias SavedItemEdge = UserByTokenQuery.Data.UserByToken.SavedItem.Edge
     typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
+
+    func update(from edge: SavedItemEdge) {
+        cursor = edge.cursor
+
+        guard let savedItemParts = edge.node?.fragments.savedItemParts else {
+            return
+        }
+
+        update(from: savedItemParts)
+    }
 
     func update(from remote: RemoteSavedItem) {
         remoteID = remote.remoteId

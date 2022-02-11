@@ -7,6 +7,7 @@ import CoreData
 
 
 class MockOperationFactory: SyncOperationFactory {
+    private var implementations: [String: Any] = [:]
 
     // MARK: - fetchList
     struct FetchListCall {
@@ -91,5 +92,22 @@ class MockOperationFactory: SyncOperationFactory {
         }
 
         return impl(managedItemID, url, events, apollo, space)
+    }
+}
+
+extension MockOperationFactory {
+    static let fetchArchivePage = "fetchArchivePage"
+    typealias FetchArchivedPageImpl = (ApolloClientProtocol, Space, String, String?, Bool?) -> Operation
+
+    func stubFetchArchivePage(impl: FetchArchivedPageImpl?) {
+        implementations[Self.fetchArchivePage] = impl
+    }
+
+    func fetchArchivePage(apollo: ApolloClientProtocol, space: Space, accessToken: String, cursor: String?, isFavorite: Bool?) -> Operation {
+        guard let impl = implementations[Self.fetchArchivePage] as? FetchArchivedPageImpl else {
+            fatalError("\(Self.self).\(#function) is not stubbed")
+        }
+
+        return impl(apollo, space, accessToken, cursor, isFavorite)
     }
 }
