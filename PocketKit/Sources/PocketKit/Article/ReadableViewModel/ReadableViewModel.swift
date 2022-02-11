@@ -48,12 +48,16 @@ extension ReadableViewModel {
 
 extension ReadableViewModel {
     func displaySettings() {
-        isPresentingReaderSettings = true
         track(identifier: .switchToWebView)
+        isPresentingReaderSettings = true
     }
     
     func open(url: URL) {
+        trackOpen(url: url)
         presentedWebReaderURL = url
+    }
+
+    private func trackOpen(url: URL) {
         let additionalContexts: [Context] = [ContentContext(url: url)]
 
         let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
@@ -63,8 +67,8 @@ extension ReadableViewModel {
     }
     
     func share(additionalText: String? = nil) {
-        sharedActivity = PocketItemActivity(url: url, additionalText: additionalText)
         track(identifier: .itemShare)
+        sharedActivity = PocketItemActivity(url: url, additionalText: additionalText)
     }
     
     func confirmDelete() {
@@ -76,14 +80,16 @@ extension ReadableViewModel {
                 UIAlertAction(title: "No", style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
-                    self?.presentedAlert = nil
-                    self?.delete()
-                    self?.track(identifier: .itemDelete)
-                },
+                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in self?._delete() },
             ],
             preferredAction: nil
         )
+    }
+
+    private func _delete() {
+        track(identifier: .itemDelete)
+        presentedAlert = nil
+        delete()
     }
     
     func track(identifier: UIContext.Identifier) {

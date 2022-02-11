@@ -197,10 +197,10 @@ extension HomeViewController {
             } else {
                 cell.saveButton.mode = .save
                 tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
-                    self?.source.save(recommendation: recommendation)
-
                     let engagement = SnowplowEngagement(type: .save, value: nil)
                     self?.tracker.track(event: engagement, self?.contexts(for: indexPath))
+
+                    self?.source.save(recommendation: recommendation)
                 }
             }
             cell.saveButton.addAction(tapAction, for: .primaryActionTriggered)
