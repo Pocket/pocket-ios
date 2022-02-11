@@ -57,6 +57,27 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         XCTAssertNotNil(itemsController.performFetchCall(at: 0))
     }
 
+    func test_fetch_whenOffline_showsOfflineMessage() {
+        itemsController.stubPerformFetch { XCTFail("Should not fetch local items when offline") }
+        networkMonitor.currentNetworkPath = MockNetworkPathMonitor.Path(status: .unsatisfied)
+        let viewModel = subject()
+
+        let expectSnapshot = expectation(description: "expect snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else { return }
+            defer { expectSnapshot.fulfill() }
+
+            XCTAssertEqual(snapshot.sectionIdentifiers, [.offline])
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .offline),
+                [.offline]
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+
     func test_changedContentFromItemsController_sendsNewSnapshot() {
         let itemsController = MockSavedItemsController()
         source.stubMakeItemsController { itemsController }
@@ -326,7 +347,22 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         XCTAssertNotNil(source.fetchArchivePageCall(at:1))
     }
 
-    func tests_refresh_delegatesToSource() {
+    func test_willDisplay_whenOffline_doesNothing() {
+        let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
+        let itemsController = MockSavedItemsController()
+        itemsController.stubPerformFetch { itemsController.fetchedObjects = items }
+        source.stubMakeItemsController { itemsController }
+
+        let viewModel = subject()
+        viewModel.fetch()
+
+        networkMonitor.currentNetworkPath = MockNetworkPathMonitor.Path(status: .unsatisfied)
+        viewModel.willDisplay(.nextPage(UUID()))
+
+        XCTAssertNil(source.fetchArchivePageCall(at: 0))
+    }
+
+    func test_refresh_delegatesToSource() {
         let viewModel = subject()
 
         source.stubRefresh { _, completion in
@@ -340,5 +376,28 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         XCTAssertNotNil(source.refreshCall(at: 0))
         wait(for: [expectCompletion], timeout: 1)
+    }
+
+    func test_refresh_whenOffline_showsTheOfflineMessage() {
+        networkMonitor.currentNetworkPath = MockNetworkPathMonitor.Path(status: .unsatisfied)
+
+        let viewModel = subject()
+        let expectSnapshot = expectation(description: "expect snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else { return }
+            defer { expectSnapshot.fulfill() }
+
+            XCTAssertEqual(snapshot.sectionIdentifiers, [.offline])
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .offline),
+                [.offline]
+            )
+        }.store(in: &subscriptions)
+
+        let expectCompletion = expectation(description: "expect refresh to complete")
+        viewModel.refresh {
+            expectCompletion.fulfill()
+        }
+        wait(for: [expectCompletion, expectSnapshot], timeout: 1)
     }
 }
