@@ -41,9 +41,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         itemsController.delegate = self
 
-//        self.main.$selectedMyListReadableViewModel.sink { _ in
-//            // TODO: Handle deselection here
-//        }.store(in: &subscriptions)
+        $selectedReadable.sink { [weak self] readable in
+            guard readable == nil else { return }
+            self?._events.send(.selectionCleared)
+        }.store(in: &subscriptions)
     }
 
     func fetch() {
