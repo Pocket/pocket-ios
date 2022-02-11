@@ -111,7 +111,7 @@ extension ArchivedItemsListViewModel {
     }
 
     func refresh(_ completion: (() -> ())?) {
-        // TODO: Support pull to refresh
+        source.refresh(completion: completion)
     }
 
     private func fetchLocalItems() {
