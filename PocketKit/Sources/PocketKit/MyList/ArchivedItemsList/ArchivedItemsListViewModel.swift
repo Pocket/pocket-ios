@@ -85,7 +85,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     func willDisplay(_ cell: ItemsListCell<ItemIdentifier>) {
-        if case .nextPage = cell, !isFetching {
+        if case .nextPage = cell, !isFetching, isNetworkAvailable {
             isFetching = true
             let cursor = itemsController.fetchedObjects?.last?.cursor
             let isFavorite: Bool? = selectedFilters.contains(.favorites) ? true : nil
@@ -97,15 +97,21 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 // MARK: - Fetching Items
 extension ArchivedItemsListViewModel {
     func fetch() {
+        guard isNetworkAvailable else {
+            sendSnapshot(offlineSnapshot())
+            return
+        }
+
         fetchLocalItems()
-//        if !isNetworkAvailable {
-//            sendSnapshot(offlineSnapshot())
-//        } else {
-//            sendSnapshot(blankSnapshot())
-//        }
     }
 
     func refresh(_ completion: (() -> ())?) {
+        guard isNetworkAvailable else {
+            completion?()
+            sendSnapshot(offlineSnapshot())
+            return
+        }
+
         source.refresh(completion: completion)
     }
 
