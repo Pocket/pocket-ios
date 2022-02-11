@@ -314,7 +314,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         wait(for: [expectSnapshot], timeout: 1)
 
-        viewModel.willDisplay(.nextPage(UUID()))
+        viewModel.willDisplay(.nextPage)
 
         let call = source.fetchArchivePageCall(at: 0)
         XCTAssertNotNil(call)
@@ -333,7 +333,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites))
 
-        let nextPage = ItemsListCell<ArchivedItemsListViewModel.ItemIdentifier>.nextPage(UUID())
+        let nextPage = ItemsListCell<ArchivedItemsListViewModel.ItemIdentifier>.nextPage
         viewModel.willDisplay(nextPage)
         viewModel.willDisplay(nextPage)
 
@@ -357,7 +357,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         viewModel.fetch()
 
         networkMonitor.currentNetworkPath = MockNetworkPathMonitor.Path(status: .unsatisfied)
-        viewModel.willDisplay(.nextPage(UUID()))
+        viewModel.willDisplay(.nextPage)
 
         XCTAssertNil(source.fetchArchivePageCall(at: 0))
     }

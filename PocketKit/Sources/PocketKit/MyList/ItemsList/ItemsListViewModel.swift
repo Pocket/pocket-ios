@@ -13,7 +13,7 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
     case filterButton(ItemsListFilter)
     case item(ItemIdentifier)
     case offline
-    case nextPage(UUID)
+    case nextPage
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {

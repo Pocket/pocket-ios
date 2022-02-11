@@ -283,7 +283,7 @@ extension ArchivedItemsListViewModel {
 
         let itemCellIDs = itemsController.fetchedObjects?.map { ItemsListCell<ItemIdentifier>.item($0.objectID) } ?? []
         snapshot.appendItems(itemCellIDs, toSection: .items)
-        snapshot.appendItems([.nextPage(UUID())], toSection: .nextPage)
+        snapshot.appendItems([.nextPage], toSection: .nextPage)
         
         return snapshot
     }
