@@ -44,6 +44,5 @@ protocol ItemsListViewModel: AnyObject {
     func overflowActions(for objectID: ItemIdentifier) -> [ItemAction]?
     func trailingSwipeActions(for objectID: ItemIdentifier) -> [UIContextualAction]
 
-    func trackImpression(_ cell: ItemsListCell<ItemIdentifier>)
     func willDisplay(_ cell: ItemsListCell<ItemIdentifier>)
 }
