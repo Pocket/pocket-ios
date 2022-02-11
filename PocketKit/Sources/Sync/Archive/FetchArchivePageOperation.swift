@@ -34,7 +34,7 @@ class FetchArchivePageOperation: AsyncOperation {
     func fetch() async throws {
         let query = UserByTokenQuery(
             token: accessToken,
-            pagination: PaginationInput(after: cursor, first: 3),
+            pagination: PaginationInput(after: cursor, first: 30),
             savedItemsFilter: SavedItemsFilter(isFavorite: isFavorite, isArchived: true)
         )
 
