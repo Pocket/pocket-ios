@@ -106,10 +106,6 @@ class ItemsListItemCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         accessibilityIdentifier = "my-list-item"
-        contentView.backgroundColor = UIColor(.ui.white1)
-
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = UIColor(.ui.grey6)
 
         buttonStack.addArrangedSubview(UIView())
         buttonStack.addArrangedSubview(favoriteButton)

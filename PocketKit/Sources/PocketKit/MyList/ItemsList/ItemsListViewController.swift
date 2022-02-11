@@ -187,6 +187,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             return
         }
 
+        cell.backgroundConfiguration = .listPlainCell()
         cell.model = .init(
             attributedTitle: item.attributedTitle,
             attributedDetail: item.attributedDetail,
@@ -206,7 +207,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         case .snapshot(let snapshot):
             dataSource.apply(snapshot, animatingDifferences: true)
 
-        case .deselectEverythingRenameMe:
+        case .selectionCleared:
             deselectAll()
         }
     }
@@ -223,7 +224,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
 
         model.selectCell(with: itemID)
-        deselectAll()
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

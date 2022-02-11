@@ -21,7 +21,7 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
 }
 
 enum ItemsListEvent<ItemIdentifier: Hashable> {
-    case deselectEverythingRenameMe
+    case selectionCleared
     case snapshot(NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>)
 }
 
