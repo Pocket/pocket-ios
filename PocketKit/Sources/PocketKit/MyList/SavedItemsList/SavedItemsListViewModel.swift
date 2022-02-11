@@ -103,16 +103,20 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         if item.isFavorite {
-            return .unfavorite { [weak self] _ in
-                self?.source.unfavorite(item: item)
-                self?.track(item: item, identifier: .itemUnfavorite)
-            }
+            return .unfavorite { [weak self] _ in self?._unfavorite(item: item) }
         } else {
-            return .favorite { [weak self] _ in
-                self?.source.favorite(item: item)
-                self?.track(item: item, identifier: .itemFavorite)
-            }
+            return .favorite { [weak self] _ in self?._favorite(item: item) }
         }
+    }
+
+    private func _favorite(item: SavedItem) {
+        track(item: item, identifier: .itemFavorite)
+        source.favorite(item: item)
+    }
+
+    private func _unfavorite(item: SavedItem) {
+        track(item: item, identifier: .itemUnfavorite)
+        source.unfavorite(item: item)
     }
 
     func shareAction(for objectID: NSManagedObjectID) -> ItemAction? {
@@ -120,9 +124,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
 
-        return .share { [weak self] sender in
-            self?.sharedActivity = PocketItemActivity(url: item.url, sender: sender)
-        }
+        return .share { [weak self] sender in self?._share(item: item, sender: sender) }
+    }
+
+    func _share(item: SavedItem, sender: Any?) {
+        track(item: item, identifier: .itemShare)
+        sharedActivity = PocketItemActivity(url: item.url, sender: sender)
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction]? {
@@ -132,7 +139,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         return [
             .archive { [weak self] _ in
-                self?.archive(item: item)
+                self?._archive(item: item)
             },
             .delete { [weak self] _ in
                 self?.confirmDelete(item: item)
@@ -146,7 +153,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         let archiveAction = UIContextualAction(style: .normal, title: "Archive") { [weak self] _, _, completion in
-            self?.archive(item: item)
+            self?._archive(item: item)
             completion(true)
         }
         archiveAction.backgroundColor = UIColor(.ui.lapis1)
@@ -154,9 +161,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         return [archiveAction]
     }
 
-    private func archive(item: SavedItem) {
-        source.archive(item: item)
+    private func _archive(item: SavedItem) {
         track(item: item, identifier: .itemArchive)
+        source.archive(item: item)
     }
 
     private func confirmDelete(item: SavedItem) {
@@ -169,13 +176,17 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     self?.presentedAlert = nil
                 },
                 UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
-                    self?.presentedAlert = nil
-                    self?.source.delete(item: item)
-                    self?.track(item: item, identifier: .itemDelete)
+                    self?._delete(item: item)
                 }
             ],
             preferredAction: nil
         )
+    }
+
+    private func _delete(item: SavedItem) {
+        track(item: item, identifier: .itemDelete)
+        presentedAlert = nil
+        source.delete(item: item)
     }
 
     private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
@@ -210,18 +221,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func willDisplay(_ cell: ItemsListCell<NSManagedObjectID>) {
-        withSavedItem(from: cell) { item in
-            guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
-                return
+        if case .item = cell {
+            withSavedItem(from: cell) { item in
+                self.trackImpression(of: item)
             }
-
-            let contexts: [Context] = [
-                UIContext.myList.item(index: UIIndex(indexPath.item)),
-                ContentContext(url: url)
-            ]
-
-            let event = ImpressionEvent(component: .card, requirement: .instant)
-            self.tracker.track(event: event, contexts)
         }
     }
 
@@ -230,14 +233,36 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return
         }
 
-        let contexts: [Context] = [
+        var contexts: [Context] = [
             UIContext.myList.item(index: UIIndex(indexPath.item)),
             UIContext.button(identifier: identifier),
             ContentContext(url: url)
         ]
 
+        if selectedFilters.contains(.favorites) {
+            contexts.insert(UIContext.myList.favorites, at: 0)
+        }
+
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, contexts)
+    }
+
+    private func trackImpression(of item: SavedItem) {
+        guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
+            return
+        }
+
+        var contexts: [Context] = [
+            UIContext.myList.item(index: UIIndex(indexPath.item)),
+            ContentContext(url: url)
+        ]
+
+        if selectedFilters.contains(.favorites) {
+            contexts.insert(UIContext.myList.favorites, at: 0)
+        }
+
+        let event = ImpressionEvent(component: .card, requirement: .instant)
+        self.tracker.track(event: event, contexts)
     }
 
     private func withSavedItem(from cell: ItemsListCell<ItemIdentifier>, handler: ((SavedItem) -> Void)?) {
