@@ -75,9 +75,12 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             return nil
         }
 
-        return .share { [weak self] sender in
-            self?.sharedActivity = PocketItemActivity(url: item.bestURL, sender: sender)
-        }
+        return .share { [weak self] sender in self?.share(item: item, sender: sender) }
+    }
+
+    private func share(item: SavedItem, sender: Any?) {
+        track(item: item, identifier: .itemShare)
+        sharedActivity = PocketItemActivity(url: item.bestURL, sender: sender)
     }
 
     func trailingSwipeActions(for objectID: ItemIdentifier) -> [UIContextualAction] {
@@ -90,6 +93,12 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             let cursor = itemsController.fetchedObjects?.last?.cursor
             let isFavorite: Bool? = selectedFilters.contains(.favorites) ? true : nil
             source.fetchArchivePage(cursor: cursor, isFavorite: isFavorite)
+        } else if case .item(let identifier) = cell {
+            guard let item = archivedItemsByID[identifier] else {
+                return
+            }
+
+            trackImpression(of: item)
         }
     }
 }
@@ -196,6 +205,7 @@ extension ArchivedItemsListViewModel {
     }
 
     private func delete(item: SavedItem) {
+        track(item: item, identifier: .itemDelete)
         source.delete(item: item)
     }
 }
@@ -215,10 +225,12 @@ extension ArchivedItemsListViewModel {
     }
 
     private func favorite(item: SavedItem) {
+        track(item: item, identifier: .itemFavorite)
         source.favorite(item: item)
     }
 
     private func unfavorite(item: SavedItem) {
+        track(item: item, identifier: .itemUnfavorite)
         source.unfavorite(item: item)
     }
 }
@@ -226,6 +238,7 @@ extension ArchivedItemsListViewModel {
 // MARK: - Re-adding items
 extension ArchivedItemsListViewModel {
     func unarchive(item: SavedItem) {
+        track(item: item, identifier: .itemSave)
         source.unarchive(item: item)
     }
 }
@@ -318,6 +331,47 @@ extension ArchivedItemsListViewModel {
 
     private func sendSnapshot(_ snapshot: Snapshot? = nil) {
         _events.send(.snapshot(snapshot ?? buildSnapshot()))
+    }
+}
+
+// MARK: - Tracking
+
+extension ArchivedItemsListViewModel {
+    private func trackImpression(of item: SavedItem) {
+        guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
+            return
+        }
+
+        var contexts: [Context] = [
+            UIContext.myList.item(index: UIIndex(indexPath.item)),
+            ContentContext(url: url)
+        ]
+
+        if selectedFilters.contains(.favorites) {
+            contexts.insert(UIContext.myList.favorites, at: 0)
+        }
+
+        let event = ImpressionEvent(component: .card, requirement: .instant)
+        self.tracker.track(event: event, contexts)
+    }
+
+    private func track(item: SavedItem, identifier: UIContext.Identifier) {
+        guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
+            return
+        }
+
+        var contexts: [Context] = [
+            UIContext.myList.item(index: UIIndex(indexPath.item)),
+            UIContext.button(identifier: identifier),
+            ContentContext(url: url)
+        ]
+
+        if selectedFilters.contains(.favorites) {
+            contexts.insert(UIContext.myList.favorites, at: 0)
+        }
+
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
     }
 }
 
