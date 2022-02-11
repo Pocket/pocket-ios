@@ -209,37 +209,6 @@ class RegularMainCoordinator: NSObject {
         splitController.show(.secondary)
     }
 
-    private func show(_ readable: ArchivedItemViewModel?) {
-        guard let readable = readable else {
-            return
-        }
-
-        readerSubscriptions = []
-        model.home.selectedReadableViewModel = nil
-        model.home.selectedSlateDetail?.selectedReadableViewModel = nil
-        model.myList.savedItemsList.selectedReadable = nil
-
-        readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url)
-        }.store(in: &readerSubscriptions)
-
-        readable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: readable)
-        }.store(in: &readerSubscriptions)
-
-        readable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
-            self?.present(alert)
-        }.store(in: &readerSubscriptions)
-
-        readable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
-            self?.share(activity)
-        }.store(in: &readerSubscriptions)
-
-        let readableVC = ReadableHostViewController(readableViewModel: readable)
-        readerRoot.viewControllers = [readableVC]
-        splitController.show(.secondary)
-    }
-
     private func show(_ readable: RecommendationViewModel?) {
         guard let readable = readable else {
             return

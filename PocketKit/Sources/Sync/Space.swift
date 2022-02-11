@@ -31,6 +31,11 @@ class Space {
         return results
     }
 
+    func fetchArchivedItems() throws -> [SavedItem] {
+        let request = Requests.fetchArchivedItems()
+        return try context.fetch(request)
+    }
+
     func fetchAllSavedItems() throws -> [SavedItem] {
         return try context.fetch(Requests.fetchAllSavedItems())
     }

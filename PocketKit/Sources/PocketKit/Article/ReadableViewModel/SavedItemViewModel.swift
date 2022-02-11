@@ -10,7 +10,7 @@ class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
 
     @Published
-    private var _actions: [ItemAction] = []
+    private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
     
     private var _events = PassthroughSubject<ReadableEvent, Never>()
@@ -30,7 +30,7 @@ class SavedItemViewModel: ReadableViewModel {
 
     private let item: SavedItem
     private let source: Source
-    private var favoriteSubscription: AnyCancellable? = nil
+    private var subscriptions: [AnyCancellable] = []
 
     init(
         item: SavedItem,
@@ -41,11 +41,13 @@ class SavedItemViewModel: ReadableViewModel {
         self.source = source
         self.tracker = tracker
 
-        favoriteSubscription = item.publisher(for: \.isFavorite).sink { [weak self] _ in
+        item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
-        }
+        }.store(in: &subscriptions)
 
-        buildActions()
+        item.publisher(for: \.isArchived).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &subscriptions)
     }
 
     var readerSettings: ReaderSettings {
@@ -81,37 +83,10 @@ class SavedItemViewModel: ReadableViewModel {
         item.bestURL
     }
     
-    func delete() {
-        source.delete(item: self.item)
-        _events.send(.delete)
+    func unarchive() {
+        source.unarchive(item: item)
     }
 
-    func showWebReader() {
-        presentedWebReaderURL = url
-    }
-}
-
-extension SavedItemViewModel {
-    private func buildActions() {
-        if item.isFavorite {
-            _actions = [
-                .displaySettings { [weak self] _ in self?.displaySettings() },
-                .unfavorite { [weak self] _ in self?.unfavorite() },
-                .archive { [weak self] _ in self?.archive() },
-                .delete { [weak self] _ in self?.confirmDelete() },
-                .share { [weak self] _ in self?.share() }
-            ]
-        } else {
-            _actions = [
-                .displaySettings { [weak self] _ in self?.displaySettings() },
-                .favorite { [weak self] _ in self?.favorite() },
-                .archive { [weak self] _ in self?.archive() },
-                .delete { [weak self] _ in self?.confirmDelete() },
-                .share { [weak self] _ in self?.share() }
-            ]
-        }
-    }
-    
     private func favorite() {
         source.favorite(item: item)
         track(identifier: .itemFavorite)
@@ -126,5 +101,40 @@ extension SavedItemViewModel {
         source.archive(item: item)
         track(identifier: .itemArchive)
         _events.send(.archive)
+    }
+
+    func delete() {
+        source.delete(item: item)
+        _events.send(.delete)
+    }
+
+    func showWebReader() {
+        presentedWebReaderURL = url
+    }
+}
+
+extension SavedItemViewModel {
+    private func buildActions() {
+        let favoriteAction: ItemAction
+        if item.isFavorite {
+            favoriteAction = .unfavorite { [weak self] _ in self?.unfavorite() }
+        } else {
+            favoriteAction = .favorite { [weak self] _ in self?.favorite() }
+        }
+
+        let archiveAction: ItemAction
+        if item.isArchived {
+            archiveAction = .reAdd { [weak self] _ in self?.unarchive() }
+        } else {
+            archiveAction = .archive { [weak self] _ in self?.archive() }
+        }
+
+        _actions = [
+            .displaySettings { [weak self] _ in self?.displaySettings() },
+            favoriteAction,
+            archiveAction,
+            .delete { [weak self] _ in self?.confirmDelete() },
+            .share { [weak self] _ in self?.share() }
+        ]
     }
 }

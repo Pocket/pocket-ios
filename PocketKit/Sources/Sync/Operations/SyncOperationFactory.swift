@@ -27,6 +27,14 @@ protocol SyncOperationFactory {
         apollo: ApolloClientProtocol,
         space: Space
     ) -> Operation
+
+    func fetchArchivePage(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        accessToken: String,
+        cursor: String?,
+        isFavorite: Bool?
+    ) -> Operation
 }
 
 class OperationFactory: SyncOperationFactory {
@@ -69,6 +77,22 @@ class OperationFactory: SyncOperationFactory {
             events: events,
             apollo: apollo,
             space: space
+        )
+    }
+
+    func fetchArchivePage(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        accessToken: String,
+        cursor: String?,
+        isFavorite: Bool?
+    ) -> Operation {
+        FetchArchivePageOperation(
+            apollo: apollo,
+            space: space,
+            accessToken: accessToken,
+            cursor: cursor,
+            isFavorite: isFavorite
         )
     }
 }

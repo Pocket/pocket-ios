@@ -57,7 +57,7 @@
                             "_createdAt": 0,
                             "_deletedAt": null,
                             "isArchived": true,
-                            "isFavorite": false,
+                            "isFavorite": true,
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "archived-item-2",

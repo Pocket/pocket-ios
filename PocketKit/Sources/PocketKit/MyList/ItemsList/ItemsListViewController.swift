@@ -89,6 +89,23 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 )
                 
                 return section
+            case .nextPage:
+                return NSCollectionLayoutSection(
+                    group: .vertical(
+                        layoutSize: .init(
+                            widthDimension: .fractionalWidth(1),
+                            heightDimension: .absolute(1)
+                        ),
+                        subitems: [
+                            .init(
+                                layoutSize: .init(
+                                    widthDimension: .fractionalWidth(1),
+                                    heightDimension: .fractionalHeight(1)
+                                )
+                            )
+                        ]
+                    )
+                )
             }
         }
 
@@ -119,6 +136,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             }
         }
 
+        let nextPageCellRegistration: UICollectionView.CellRegistration<UICollectionViewCell, String> = .init { cell, _, _ in
+        }
+
         self.dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in
             switch item {
             case .filterButton(let filter):
@@ -127,6 +147,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexPath, item: itemID)
             case .offline:
                 return collectionView.dequeueConfiguredReusableCell(using: offlineCellRegistration, for: indexPath, item: "")
+            case .nextPage:
+                return collectionView.dequeueConfiguredReusableCell(using: nextPageCellRegistration, for: indexPath, item: "")
             }
         }
 
@@ -209,7 +231,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             return
         }
 
-        model.trackImpression(cell)
+        model.willDisplay(cell)
     }
 }
 

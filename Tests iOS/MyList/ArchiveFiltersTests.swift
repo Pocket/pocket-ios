@@ -51,28 +51,15 @@ class ArchiveFiltersTests: XCTestCase {
     func test_archiveView_tappingFavoritesPill_togglesDisplayingFavoritedArchivedContent() {
         app.launch().tabBar.myListButton.wait().tap()
         let myList = app.myListView.wait()
-        myList.itemView(matching: "Item 1").wait()
 
         myList.selectionSwitcher.archiveButton.wait().tap()
-
         myList.itemView(matching: "Archived Item 1").wait()
         myList.itemView(matching: "Archived Item 2").wait()
 
-        XCTAssertFalse(myList.itemView(matching: "Item 1").exists)
-        XCTAssertFalse(myList.itemView(matching: "Item 2").exists)
-        
         app.myListView.favoritesButton.tap()
-        
         waitForDisappearance(of: myList.itemView(matching: "Archived Item 1"))
-        waitForDisappearance(of: myList.itemView(matching: "Archived Item 2"))
-        
-        myList.itemView(matching: "Favorited Archived Item 1").wait()
-        myList.itemView(matching: "Favorited Archived Item 2").wait()
-        
+        myList.itemView(matching: "Archived Item 2").wait()
         app.myListView.favoritesButton.tap()
-        
-        waitForDisappearance(of: myList.itemView(matching: "Favorited Archived Item 1"))
-        waitForDisappearance(of: myList.itemView(matching: "Favorited Archived Item 2"))
         
         myList.itemView(matching: "Archived Item 1").wait()
         myList.itemView(matching: "Archived Item 2").wait()
