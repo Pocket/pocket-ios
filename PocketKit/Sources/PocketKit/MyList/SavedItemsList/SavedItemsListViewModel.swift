@@ -209,7 +209,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         _events.send(.snapshot(snapshot))
     }
 
-    func trackImpression(_ cell: ItemsListCell<ItemIdentifier>) {
+    func willDisplay(_ cell: ItemsListCell<NSManagedObjectID>) {
         withSavedItem(from: cell) { item in
             guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
                 return
@@ -223,10 +223,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             let event = ImpressionEvent(component: .card, requirement: .instant)
             self.tracker.track(event: event, contexts)
         }
-    }
-
-    func willDisplay(_ cell: ItemsListCell<NSManagedObjectID>) {
-        
     }
 
     private func track(item: SavedItem, identifier: UIContext.Identifier) {

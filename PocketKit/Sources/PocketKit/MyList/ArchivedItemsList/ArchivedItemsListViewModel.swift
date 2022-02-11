@@ -92,11 +92,6 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             source.fetchArchivePage(cursor: cursor, isFavorite: isFavorite)
         }
     }
-
-    func trackImpression(_ cell: ItemsListCell<ItemIdentifier>) {
-        // TODO: analytics for archived items
-    }
-
 }
 
 // MARK: - Fetching Items
