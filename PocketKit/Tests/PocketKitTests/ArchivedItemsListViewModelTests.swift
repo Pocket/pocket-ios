@@ -54,7 +54,6 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.fetch()
 
-        XCTAssertNotNil(source.fetchArchivePageCall(at: 0))
         XCTAssertNotNil(itemsController.performFetchCall(at: 0))
     }
 
@@ -280,10 +279,12 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             guard case .snapshot(let snapshot) = event else { return nil }
             return snapshot
         }.sink { snapshot in
-            XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: .nextPage),
-                [.nextPage(UUID())]
-            )
+            let identifiers = snapshot.itemIdentifiers(inSection: .nextPage)
+            XCTAssertEqual(identifiers.count, 1)
+            guard case .nextPage = identifiers[0] else {
+                XCTFail("received unexpected cell identifier: \(identifiers[0])")
+                return
+            }
 
             expectSnapshot.fulfill()
         }.store(in: &subscriptions)
