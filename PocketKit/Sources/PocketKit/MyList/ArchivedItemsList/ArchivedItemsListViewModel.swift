@@ -113,6 +113,11 @@ extension ArchivedItemsListViewModel {
         }
 
         source.refresh(completion: completion)
+        if itemsController.fetchedObjects == nil {
+            fetchLocalItems()
+        } else {
+            sendSnapshot()
+        }
     }
 
     private func fetchLocalItems() {

@@ -362,12 +362,19 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         XCTAssertNil(source.fetchArchivePageCall(at: 0))
     }
 
-    func test_refresh_delegatesToSource() {
+    func test_refresh_whenLocalItemsHavePreviouslyBeenFetched_delegatesToSource_andSendsASnapshot() {
+        let items: [SavedItem] = [.build()]
+        itemsController.fetchedObjects = items
+        source.stubRefresh { _, completion in completion?() }
         let viewModel = subject()
 
-        source.stubRefresh { _, completion in
-            completion?()
-        }
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else { return }
+            defer { expectSnapshot.fulfill() }
+
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item(items[0].objectID)])
+        }.store(in: &subscriptions)
 
         let expectCompletion = expectation(description: "Expect completion to be called")
         viewModel.refresh {
@@ -375,7 +382,33 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         }
 
         XCTAssertNotNil(source.refreshCall(at: 0))
-        wait(for: [expectCompletion], timeout: 1)
+        wait(for: [expectCompletion, expectSnapshot], timeout: 1)
+    }
+
+    func test_refresh_whenLocalItemsHaveNotBeenFetched_delegatesToSource_fetchesLocalItems() {
+        let items: [SavedItem] = [.build()]
+
+        source.stubRefresh { _, completion in completion?() }
+        itemsController.stubPerformFetch {
+            self.itemsController.fetchedObjects = items
+        }
+
+        let viewModel = subject()
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else { return }
+            defer { expectSnapshot.fulfill() }
+
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item(items[0].objectID)])
+        }.store(in: &subscriptions)
+
+        let expectCompletion = expectation(description: "Expect completion to be called")
+        viewModel.refresh {
+            expectCompletion.fulfill()
+        }
+
+        XCTAssertNotNil(source.refreshCall(at: 0))
+        wait(for: [expectCompletion, expectSnapshot], timeout: 1)
     }
 
     func test_refresh_whenOffline_showsTheOfflineMessage() {
