@@ -324,4 +324,20 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         viewModel.willDisplay(nextPage)
         XCTAssertNotNil(source.fetchArchivePageCall(at:1))
     }
+
+    func tests_refresh_delegatesToSource() {
+        let viewModel = subject()
+
+        source.stubRefresh { _, completion in
+            completion?()
+        }
+
+        let expectCompletion = expectation(description: "Expect completion to be called")
+        viewModel.refresh {
+            expectCompletion.fulfill()
+        }
+
+        XCTAssertNotNil(source.refreshCall(at: 0))
+        wait(for: [expectCompletion], timeout: 1)
+    }
 }
