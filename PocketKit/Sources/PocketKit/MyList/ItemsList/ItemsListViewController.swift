@@ -167,6 +167,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(.ui.white1)
         model.fetch()
     }
 

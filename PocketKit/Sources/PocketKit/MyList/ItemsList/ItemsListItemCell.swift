@@ -196,6 +196,12 @@ extension ItemsListItemCell {
         let content = Self.defaultListContentConfiguration().updated(for: state)
         listContentView.configuration = content
 
+        var bgConfig = backgroundConfiguration?.updated(for: state)
+        bgConfig?.backgroundColorTransformer = UIConfigurationColorTransformer { color in
+            state.isSelected ? UIColor(.ui.grey6) : UIColor(.ui.white1)
+        }
+        backgroundConfiguration = bgConfig
+
         titleLabel.attributedText = state.model?.attributedTitle
         detailLabel.attributedText = state.model?.attributedDetail
 
