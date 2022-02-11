@@ -71,12 +71,13 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     func shareAction(for itemID: ItemIdentifier) -> ItemAction? {
-        return nil
-//        bareItem(with: itemID).flatMap { $0.bestURL }.flatMap { url in
-//            return .share { [weak self] sender in
-//                self?.sharedActivity = PocketItemActivity(url: url, sender: sender)
-//            }
-//        }
+        guard let item = archivedItemsByID[itemID] else {
+            return nil
+        }
+
+        return .share { [weak self] sender in
+            self?.sharedActivity = PocketItemActivity(url: item.bestURL, sender: sender)
+        }
     }
 
     func trailingSwipeActions(for objectID: ItemIdentifier) -> [UIContextualAction] {

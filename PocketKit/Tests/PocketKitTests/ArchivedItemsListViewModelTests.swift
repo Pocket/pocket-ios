@@ -91,6 +91,17 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.item(with: items[0].objectID))
     }
 
+    func test_shareAction_setsSharedActivity() {
+        let viewModel = subject()
+
+        let items: [SavedItem] = [.build(), .build()]
+        itemsController.fetchedObjects = items
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        viewModel.shareAction(for: items[0].objectID)?.handler?(nil)
+        XCTAssertNotNil(viewModel.sharedActivity)
+    }
+
     func test_deleteAction_delegatesToSource_andUpdatesSnapshot() {
         let viewModel = subject()
 
