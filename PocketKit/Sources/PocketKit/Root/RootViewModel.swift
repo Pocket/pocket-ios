@@ -66,19 +66,14 @@ class RootViewModel: ObservableObject {
                 )
             )
         case .signedOut:
-            state = .signIn(
-                SignInViewModel(
-                    sessionController: sessionController,
-                    events: events
-                )
-            )
+            state = .loggedOut
         }
     }
 }
 
 extension RootViewModel {
     enum State {
-        case signIn(SignInViewModel)
+        case loggedOut
         case main(MainViewModel)
     }
 }

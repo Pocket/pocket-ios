@@ -19,4 +19,6 @@ extension ImageAsset {
     public static let myList = ImageAsset("myList")
     public static let archive = ImageAsset("archive")
     public static let looking = ImageAsset("looking")
+    public static let loggedOutInfo = ImageAsset("loggedOutInfo")
+    public static let labeledIcon = ImageAsset("labeledIcon")
 }
