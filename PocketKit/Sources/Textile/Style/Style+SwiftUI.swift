@@ -64,6 +64,7 @@ public extension Text {
         font(Font(style.fontDescriptor))
             .foregroundColor(Color(style.colorAsset))
             .multilineTextAlignment(SwiftUI.TextAlignment(style.paragraph.alignment))
+            .lineSpacing(style.paragraph.lineSpacing ?? 0)
     }
 }
 

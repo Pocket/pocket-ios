@@ -16,7 +16,7 @@ class RootCoordinator {
     private var subscriptions: [AnyCancellable] = []
 
     private var main: MainCoordinator?
-    private var signIn: SignInCoordinator?
+    private var loggedOutCoordinator: LoggedOutCoordinator?
 
     init(
         model: RootViewModel,
@@ -51,7 +51,7 @@ class RootCoordinator {
     private func handle(state: RootViewModel.State) {
         switch state {
         case .main(let model):
-            signIn = nil
+            loggedOutCoordinator = nil
             main = MainCoordinator(model: model, source: source, tracker: tracker)
 
             transition(to: main?.viewController) { [weak self] in
@@ -59,11 +59,13 @@ class RootCoordinator {
             } completion: { [weak self] in
                 self?.main?.showInitialView()
             }
-        case .signIn(let model):
+        case .loggedOut:
             main = nil
-            signIn = SignInCoordinator(model: model)
-            transition(to: signIn?.viewController)
+            loggedOutCoordinator = LoggedOutCoordinator()
+
+            transition(to: loggedOutCoordinator?.viewController)
         }
+
     }
 
     private func transition(

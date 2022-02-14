@@ -35,12 +35,7 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                 )
             )
         } else {
-            initialState = .signIn(
-                SignInViewModel(
-                    sessionController: sessionController,
-                    events: events
-                )
-            )
+            initialState = .loggedOut
         }
 
         self.init(
