@@ -5,6 +5,7 @@
 import CoreData
 import Apollo
 import Combine
+import Network
 
 
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
@@ -20,6 +21,7 @@ public class PocketSource: Source {
     private let lastRefresh: LastRefresh
     private let tokenProvider: AccessTokenProvider
     private let slateService: SlateService
+    private let networkMonitor: NetworkPathMonitor
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -46,7 +48,8 @@ public class PocketSource: Source {
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             accessTokenProvider: accessTokenProvider,
-            slateService: APISlateService(apollo: apollo)
+            slateService: APISlateService(apollo: apollo),
+            networkMonitor: NWPathMonitor()
         )
     }
 
@@ -56,7 +59,8 @@ public class PocketSource: Source {
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
         accessTokenProvider: AccessTokenProvider,
-        slateService: SlateService
+        slateService: SlateService,
+        networkMonitor: NetworkPathMonitor
     ) {
         self.space = space
         self.apollo = apollo
@@ -64,6 +68,9 @@ public class PocketSource: Source {
         self.lastRefresh = lastRefresh
         self.tokenProvider = accessTokenProvider
         self.slateService = slateService
+        self.networkMonitor = networkMonitor
+
+        observeNetworkStatus()
     }
 
     public var mainContext: NSManagedObjectContext {
@@ -83,6 +90,20 @@ public class PocketSource: Source {
 
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.object(with: id)
+    }
+
+    private func observeNetworkStatus() {
+        networkMonitor.start(queue: .main)
+        networkMonitor.updateHandler = { path in
+            switch path.status {
+            case .unsatisfied, .requiresConnection:
+                self.syncQ.isSuspended = true
+            case .satisfied:
+                self.syncQ.isSuspended = false
+            @unknown default:
+                self.syncQ.isSuspended = false
+            }
+        }
     }
 }
 

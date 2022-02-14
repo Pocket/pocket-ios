@@ -17,6 +17,7 @@ class PocketSourceTests: XCTestCase {
     var lastRefresh: MockLastRefresh!
     var tokenProvider: MockAccessTokenProvider!
     var slateService: MockSlateService!
+    var networkMonitor: MockNetworkPathMonitor!
 
     override func setUpWithError() throws {
         space = Space(container: .testContainer)
@@ -25,6 +26,7 @@ class PocketSourceTests: XCTestCase {
         lastRefresh = MockLastRefresh()
         tokenProvider = MockAccessTokenProvider()
         slateService = MockSlateService()
+        networkMonitor = MockNetworkPathMonitor()
 
         lastRefresh.stubGetLastRefresh { nil}
     }
@@ -39,7 +41,8 @@ class PocketSourceTests: XCTestCase {
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
         tokenProvider: AccessTokenProvider? = nil,
-        slateService: SlateService? = nil
+        slateService: SlateService? = nil,
+        networkMonitor: NetworkPathMonitor? = nil
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
@@ -47,7 +50,8 @@ class PocketSourceTests: XCTestCase {
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
             accessTokenProvider: tokenProvider ?? self.tokenProvider,
-            slateService: slateService ?? self.slateService
+            slateService: slateService ?? self.slateService,
+            networkMonitor: networkMonitor ?? self.networkMonitor
         )
     }
 
