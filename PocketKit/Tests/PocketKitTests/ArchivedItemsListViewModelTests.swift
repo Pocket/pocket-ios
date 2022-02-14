@@ -60,7 +60,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
     func test_fetch_whenOffline_showsOfflineMessage() {
         itemsController.stubPerformFetch { XCTFail("Should not fetch local items when offline") }
-        networkMonitor.currentNetworkPath = MockNetworkPathMonitor.Path(status: .unsatisfied)
+        networkMonitor.update(status: .unsatisfied)
         let viewModel = subject()
 
         let expectSnapshot = expectation(description: "expect snapshot")
@@ -357,7 +357,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.fetch()
 
-        networkMonitor.currentNetworkPath = MockNetworkPathMonitor.Path(status: .unsatisfied)
+        networkMonitor.update(status: .unsatisfied)
         viewModel.willDisplay(.nextPage)
 
         XCTAssertNil(source.fetchArchivePageCall(at: 0))
@@ -413,7 +413,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_refresh_whenOffline_showsTheOfflineMessage() {
-        networkMonitor.currentNetworkPath = MockNetworkPathMonitor.Path(status: .unsatisfied)
+        networkMonitor.update(status: .unsatisfied)
 
         let viewModel = subject()
         let expectSnapshot = expectation(description: "expect snapshot")
