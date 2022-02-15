@@ -4,12 +4,18 @@ import SwiftUI
 
 
 class LoggedOutViewController: UIHostingController<LoggedOutView> {
-    convenience init() {
-        self.init(rootView: LoggedOutView())
+    convenience init(viewModel: LoggedOutViewModel) {
+        self.init(rootView: LoggedOutView(viewModel: viewModel))
     }
 }
 
 struct LoggedOutView: View {
+    private let viewModel: LoggedOutViewModel
+
+    init(viewModel: LoggedOutViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         Group {
             Image(asset: .labeledIcon)
@@ -20,7 +26,7 @@ struct LoggedOutView: View {
 
             Spacer()
 
-            LoggedOutActions()
+            LoggedOutActionsView(viewModel: viewModel)
         }
         .preferredColorScheme(.light)
         .padding(16)
@@ -45,7 +51,13 @@ private struct LoggedOutInfoView: View {
     }
 }
 
-private struct LoggedOutActions: View {
+private struct LoggedOutActionsView: View {
+    private let viewModel: LoggedOutViewModel
+
+    init(viewModel: LoggedOutViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         VStack {
             Button {
@@ -57,7 +69,7 @@ private struct LoggedOutActions: View {
             }.buttonStyle(LoggedOutButtonStyle())
 
             Button {
-
+                viewModel.logIn()
             } label: {
                 Text("Log In")
                     .style(.header.sansSerif.p4)

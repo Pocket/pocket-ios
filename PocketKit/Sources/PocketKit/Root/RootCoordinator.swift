@@ -59,9 +59,9 @@ class RootCoordinator {
             } completion: { [weak self] in
                 self?.main?.showInitialView()
             }
-        case .loggedOut:
+        case .loggedOut(let viewModel):
             main = nil
-            loggedOutCoordinator = LoggedOutCoordinator()
+            loggedOutCoordinator = LoggedOutCoordinator(viewModel: viewModel)
 
             transition(to: loggedOutCoordinator?.viewController)
         }
