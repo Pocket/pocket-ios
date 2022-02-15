@@ -1,4 +1,5 @@
 import UIKit
+import AuthenticationServices
 
 
 public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -35,7 +36,12 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                 )
             )
         } else {
-            initialState = .loggedOut
+            initialState = .loggedOut(
+                PocketLoggedOutViewModel(
+                    consumerKey: Keys.shared.pocketApiConsumerKey,
+                    sessionType: ASWebAuthenticationSession.self
+                )
+            )
         }
 
         self.init(

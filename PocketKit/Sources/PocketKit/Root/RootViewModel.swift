@@ -2,6 +2,8 @@ import Combine
 import Sync
 import Analytics
 import Foundation
+import AuthenticationServices
+
 
 enum PocketEvent {
     case signedIn
@@ -66,14 +68,19 @@ class RootViewModel: ObservableObject {
                 )
             )
         case .signedOut:
-            state = .loggedOut
+            state = .loggedOut(
+                PocketLoggedOutViewModel(
+                    consumerKey: Keys.shared.pocketApiConsumerKey,
+                    sessionType: ASWebAuthenticationSession.self
+                )
+            )
         }
     }
 }
 
 extension RootViewModel {
     enum State {
-        case loggedOut
+        case loggedOut(LoggedOutViewModel)
         case main(MainViewModel)
     }
 }
