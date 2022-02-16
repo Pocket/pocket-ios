@@ -39,29 +39,28 @@ class FetchArchivePageOperation: AsyncOperation {
         )
 
         let result = try await apollo.fetch(query: query)
-        try updateLocalStorage(result: result)
+        try await updateLocalStorage(result: result)
     }
 
+    @MainActor
     private func updateLocalStorage(result: GraphQLResult<UserByTokenQuery.Data>) throws {
         guard let edges = result.data?.userByToken?.savedItems?.edges else {
             return
         }
 
-        try space.context.performAndWait {
-            for edge in edges {
-                guard let edge = edge, let node = edge.node else {
-                    return
-                }
-
-                let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteId)
-                item.update(from: edge)
-
-                if item.deletedAt != nil {
-                    space.delete(item)
-                }
+        for edge in edges {
+            guard let edge = edge, let node = edge.node else {
+                return
             }
 
-            try space.save()
+            let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteId)
+            item.update(from: edge)
+
+            if item.deletedAt != nil {
+                space.delete(item)
+            }
         }
+
+        try space.save()
     }
 }
