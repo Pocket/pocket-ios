@@ -27,6 +27,10 @@
         <relationship name="domainMetadata" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="DomainMetadata" inverseName="item" inverseEntity="DomainMetadata"/>
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="item" inverseEntity="SavedItem"/>
     </entity>
+    <entity name="PersistentSyncTask" representedClassName="PersistentSyncTask" syncable="YES" codeGenerationType="class">
+        <attribute name="createdAt" optional="YES" attributeType="Date" defaultDateTimeInterval="666643260" usesScalarValueType="NO"/>
+        <attribute name="syncTaskContainer" attributeType="Transformable" valueTransformerName="SyncTaskTransformer" customClassName="SyncTaskContainer"/>
+    </entity>
     <entity name="SavedItem" representedClassName="SavedItem" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="cursor" optional="YES" attributeType="String"/>
@@ -42,5 +46,6 @@
         <element name="DomainMetadata" positionX="-63" positionY="36" width="128" height="14"/>
         <element name="Item" positionX="-45" positionY="99" width="128" height="239"/>
         <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="149"/>
+        <element name="PersistentSyncTask" positionX="-36" positionY="144" width="128" height="59"/>
     </elements>
 </model>
