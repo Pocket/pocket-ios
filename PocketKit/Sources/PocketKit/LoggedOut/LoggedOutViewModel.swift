@@ -8,7 +8,13 @@ enum LoggedOutViewModelError: Error {
 
 enum LoggedOutViewModelEvent {
     case error(LoggedOutViewModelError)
-    case login(String)
+    case login(Authentication)
+}
+
+struct Authentication {
+    let guid: String
+    let accessToken: String
+    let userIdentifier: String
 }
 
 protocol LoggedOutViewModel {

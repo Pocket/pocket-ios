@@ -33,7 +33,8 @@ class PocketLoggedOutViewModel: LoggedOutViewModel {
 
             let (_, response) = await authorizationClient.logIn(from: contextProvider)
             if let response = response {
-                _events.send(.login(response.accessToken))
+                let auth = Authentication(guid: guid, accessToken: response.accessToken, userIdentifier: response.userIdentifier)
+                _events.send(.login(auth))
             } else {
                 _events.send(.error(.error))
             }
