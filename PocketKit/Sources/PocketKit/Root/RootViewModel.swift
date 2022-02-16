@@ -69,10 +69,7 @@ class RootViewModel: ObservableObject {
             )
         case .signedOut:
             state = .loggedOut(
-                PocketLoggedOutViewModel(
-                    consumerKey: Keys.shared.pocketApiConsumerKey,
-                    sessionType: ASWebAuthenticationSession.self
-                )
+                PocketLoggedOutViewModel(authorizationClient: Services.shared.authClient)
             )
         }
     }
