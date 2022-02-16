@@ -1,17 +1,15 @@
 @testable import PocketKit
 import Combine
+import AuthenticationServices
 
 
 struct MockLoggedOutViewModel: LoggedOutViewModel {
-    var _session = PassthroughSubject<AuthenticationSession, Never>()
-    var session: AnyPublisher<AuthenticationSession, Never> {
-        _session.eraseToAnyPublisher()
-    }
-
     var _events = PassthroughSubject<LoggedOutViewModelEvent, Never>()
     var events: AnyPublisher<LoggedOutViewModelEvent, Never> {
         _events.eraseToAnyPublisher()
     }
+
+    var contextProvider: ASWebAuthenticationPresentationContextProviding? = nil
 
     func logIn() {
         
