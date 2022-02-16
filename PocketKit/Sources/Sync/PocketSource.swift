@@ -94,14 +94,14 @@ public class PocketSource: Source {
 
     private func observeNetworkStatus() {
         networkMonitor.start(queue: .main)
-        networkMonitor.updateHandler = { path in
+        networkMonitor.updateHandler = { [weak self] path in
             switch path.status {
             case .unsatisfied, .requiresConnection:
-                self.syncQ.isSuspended = true
+                self?.syncQ.isSuspended = true
             case .satisfied:
-                self.syncQ.isSuspended = false
+                self?.syncQ.isSuspended = false
             @unknown default:
-                self.syncQ.isSuspended = false
+                self?.syncQ.isSuspended = false
             }
         }
     }
