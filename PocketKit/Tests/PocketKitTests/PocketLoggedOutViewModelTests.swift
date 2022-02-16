@@ -89,11 +89,13 @@ class PocketLoggedOutViewModelTests: XCTestCase {
 
         let eventExpectation = expectation(description: "published error event")
         viewModel.events.sink { event in
-            guard case .login(let token) = event else {
+            guard case .login(let auth) = event else {
                 XCTFail("Expected login event, but got \(event)")
                 return
             }
-            XCTAssertEqual(token, "test-access-token")
+            XCTAssertEqual(auth.guid, "sample-guid")
+            XCTAssertEqual(auth.accessToken, "test-access-token")
+            XCTAssertEqual(auth.userIdentifier, "1a2b3c4d5e6")
             eventExpectation.fulfill()
         }.store(in: &subscriptions)
 
