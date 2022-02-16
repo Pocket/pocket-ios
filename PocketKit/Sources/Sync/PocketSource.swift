@@ -222,7 +222,7 @@ extension PocketSource {
     }
 }
 
-// MARK: - Slates
+// MARK: - Slates/Recommendations
 extension PocketSource {
     public func fetchSlateLineup(_ identifier: String) async throws -> SlateLineup? {
         return try await slateService.fetchSlateLineup(identifier)
@@ -242,38 +242,7 @@ extension PocketSource {
         }
 
         let savedItem: SavedItem = space.new()
-        savedItem.url = url
-
-        let item: Item = space.new()
-        item.remoteID = recommendation.item.id
-        item.givenURL = recommendation.item.givenURL
-        item.resolvedURL = recommendation.item.resolvedURL
-        item.title = recommendation.item.title
-        item.language = recommendation.item.language
-        item.topImageURL = recommendation.item.topImageURL
-        item.timeToRead = recommendation.item.timeToRead.flatMap(Int32.init) ?? 0
-        item.excerpt = recommendation.item.excerpt
-        item.domain = recommendation.item.domain
-        item.article = recommendation.item.article
-        item.datePublished = recommendation.item.datePublished
-
-        item.domainMetadata = recommendation.item.domainMetadata.flatMap { remote in
-            let domainMeta: DomainMetadata = space.new()
-            domainMeta.name = remote.name
-            domainMeta.logo = remote.logo
-
-            return domainMeta
-        }
-
-        recommendation.item.authors?.forEach { recAuthor in
-            let author: Author = space.new()
-            author.id = recAuthor.id
-            author.name = recAuthor.name
-            author.url = recAuthor.url
-            item.addToAuthors(author)
-        }
-
-        savedItem.item = item
+        savedItem.update(from: recommendation)
         try? space.save()
 
         let operation = operations.saveItemOperation(
