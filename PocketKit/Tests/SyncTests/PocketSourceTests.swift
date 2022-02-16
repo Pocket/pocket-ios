@@ -264,7 +264,7 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(author?.url, recommendation.item.authors![0].url)
     }
 
-    func test_archiveRecommendation_archivesTheRespectiveItem() async throws {
+    func test_archiveRecommendation_archivesTheRespectiveItem() throws {
         let item = try space.seedSavedItem(
             remoteID: "saved-item-1",
             item: space.buildItem(
@@ -292,6 +292,7 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
+    @MainActor
     func test_fetchSlates_returnsResultsFromSlateService() async throws {
         let slate = Slate(
             id: "my-slate",
@@ -314,10 +315,10 @@ class PocketSourceTests: XCTestCase {
         }
 
         let actualLineup = try await subject().fetchSlateLineup("")
-
         XCTAssertEqual(actualLineup, expectedLineup)
     }
 
+    @MainActor
     func test_fetchSlate_returnsResultFromSlateService() async throws {
         let expectedSlate = Slate(
             id: "my-slate",
@@ -333,7 +334,6 @@ class PocketSourceTests: XCTestCase {
         }
 
         let actualSlate = try await subject().fetchSlate("the-slate-id")
-
         XCTAssertEqual(actualSlate, expectedSlate)
     }
 
