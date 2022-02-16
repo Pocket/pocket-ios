@@ -54,29 +54,6 @@ class SessionController {
         Textiles.clearImageCache()
     }
 
-    func signIn(username: String, password: String) async throws {
-        do {
-            let guid = try await authClient.requestGUID()
-            let authResponse = try await authClient.authorize(
-                guid: guid,
-                username: username,
-                password: password
-            )
-            let userID = authResponse.account.userID
-
-            session.guid = guid
-            session.userID = userID
-            try accessTokenStore.save(token: authResponse.accessToken)
-
-            let user = UserContext(guid: guid, userID: userID)
-            tracker.addPersistentContext(user)
-            Crashlogger.setUserID(userID)
-        } catch(let signInError) {
-            Crashlogger.capture(error: signInError)
-            throw signInError
-        }
-    }
-
     func updateSession(
         accessToken: String?,
         guid: String?,
