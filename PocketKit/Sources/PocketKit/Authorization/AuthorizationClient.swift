@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import AuthenticationServices
 
 
 private struct GUIDResponse: Decodable {
@@ -31,12 +32,18 @@ public class AuthorizationClient {
         )!
     }
 
-    private let session: URLSessionProtocol
+    private let urlSession: URLSessionProtocol
     private let consumerKey: String
+    private let authenticationSession: AuthenticationSession.Type
 
-    init(consumerKey: String, session: URLSessionProtocol) {
+    init(
+        consumerKey: String,
+        urlSession: URLSessionProtocol,
+        authenticationSession: AuthenticationSession.Type
+    ) {
         self.consumerKey = consumerKey
-        self.session = session
+        self.urlSession = urlSession
+        self.authenticationSession = authenticationSession
     }
     
     func requestGUID() async throws -> String {
@@ -51,7 +58,7 @@ public class AuthorizationClient {
         
         let (data, response): (Data, URLResponse)
         do {
-            (data, response) = try await session.data(for: request, delegate: nil)
+            (data, response) = try await urlSession.data(for: request, delegate: nil)
         } catch {
             throw Error.generic(error)
         }
@@ -118,7 +125,7 @@ public class AuthorizationClient {
         
         let (data, response): (Data, URLResponse)
         do {
-            (data, response) = try await session.data(for: request, delegate: nil)
+            (data, response) = try await urlSession.data(for: request, delegate: nil)
         } catch {
             throw Error.generic(error)
         }
@@ -151,5 +158,61 @@ public class AuthorizationClient {
         default:
             throw Error.unexpectedError
         }
+    }
+
+    @MainActor
+    func logIn(from contextProvider: ASWebAuthenticationPresentationContextProviding) async -> (Request?, Response?) {
+        guard var components = URLComponents(string: "https://getpocket.com/login") else {
+            return (nil, nil)
+        }
+
+        let requestRedirect = "pocket"
+
+        components.queryItems = [
+            URLQueryItem(name: "consumer_key", value: consumerKey),
+            URLQueryItem(name: "redirect_uri", value: "\(requestRedirect)://fxa"),
+            URLQueryItem(name: "utm_source", value: "ios")
+        ]
+
+        guard let requestURL = components.url else {
+            return (nil, nil)
+        }
+
+        return await withCheckedContinuation { continuation in
+            var session = authenticationSession.init(
+                url: requestURL,
+                callbackURLScheme: requestRedirect
+            ) { url, error in
+                let request = Request(url: requestURL, callbackURLScheme: requestRedirect)
+                if error != nil {
+                    continuation.resume(returning: (request, nil))
+                } else if let url = url {
+                    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                          let token = components.queryItems?.first(where: { $0.name == "access_token" })?.value else {
+                              continuation.resume(returning: (request, nil))
+                        return
+                    }
+
+                    let response = Response(accessToken: token)
+                    continuation.resume(returning: (request, response))
+                } else {
+                    continuation.resume(returning: (request, nil))
+                }
+            }
+            session.prefersEphemeralWebBrowserSession = true
+            session.presentationContextProvider = contextProvider
+            _ = session.start()
+        }
+    }
+}
+
+extension AuthorizationClient {
+    struct Request {
+        let url: URL
+        let callbackURLScheme: String
+    }
+
+    struct Response {
+        let accessToken: String
     }
 }

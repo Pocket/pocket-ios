@@ -5,6 +5,7 @@
 import Sync
 import Foundation
 import Analytics
+import AuthenticationServices
 
 
 struct Services {
@@ -18,6 +19,7 @@ struct Services {
     let tracker: Tracker
     let sceneTracker: SceneTracker
     let refreshCoordinator: RefreshCoordinator
+    let authClient: AuthorizationClient
 
     private init() {
         userDefaults = .standard
@@ -29,9 +31,10 @@ struct Services {
         let session = Session(userDefaults: userDefaults)
         let keychain = SecItemKeychain()
         let accessTokenStore = KeychainAccessTokenStore(keychain: keychain)
-        let authClient = AuthorizationClient(
+        authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
-            session: urlSession
+            urlSession: urlSession,
+            authenticationSession: ASWebAuthenticationSession.self
         )
 
         let snowplow = PocketSnowplowTracker()

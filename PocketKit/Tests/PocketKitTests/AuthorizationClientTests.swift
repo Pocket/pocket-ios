@@ -4,28 +4,32 @@
 
 import XCTest
 @testable import PocketKit
+import AuthenticationServices
 
 
 class AuthorizationServiceTests: XCTestCase {
-    var session: MockURLSession!
+    var urlSession: MockURLSession!
     var client: AuthorizationClient!
 
     override func setUp() {
-        session = MockURLSession()
-        client = AuthorizationClient(consumerKey: "the-consumer-key", session: session)
-
+        urlSession = MockURLSession()
+        client = AuthorizationClient(
+            consumerKey: "the-consumer-key",
+            urlSession: urlSession,
+            authenticationSession: MockAuthenticationSession.self
+        )
     }
 }
 
 // MARK: - Authorize
 extension AuthorizationServiceTests {
     func test_authorize_sendsPostRequestWithCorrectParameters() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             return (Data(), .ok!)
         }
 
         _ = try? await authorize()
-        let calls = self.session.dataTaskCalls
+        let calls = self.urlSession.dataTaskCalls
         XCTAssertEqual(calls.count, 1)
         XCTAssertEqual(calls[0].request.url?.path, "/v3/oauth/authorize")
         XCTAssertEqual(calls[0].request.httpMethod, "POST")
@@ -50,7 +54,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_whenServerRespondsWith200_invokesCompletionWithAccessToken() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -83,7 +87,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_when200AndDataIsEmpty_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -105,7 +109,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_when200AndResponseDoesNotContainAccessToken_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -127,7 +131,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_whenStatusIs300_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url, statusCode: 300)!
             return (Data(), response)
         }
@@ -143,7 +147,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_whenErrorIsNotNil_invokesCompletionWithError() async {
-        session.stubData { _ throws -> (Data, URLResponse) in
+        urlSession.stubData { _ throws -> (Data, URLResponse) in
             throw ExampleError.anError
         }
         
@@ -160,7 +164,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_whenStatusIs400_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url, statusCode: 400)!
             return (Data(), response)
         }
@@ -176,7 +180,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_whenStatusIs401_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url, statusCode: 401)!
             return (Data(), response)
         }
@@ -192,7 +196,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_whenStatusIs500_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url, statusCode: 500)!
             return (Data(), response)
         }
@@ -208,7 +212,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_whenStatusIs9001_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url!, statusCode: 9001)!
             return (Data(), response)
         }
@@ -224,7 +228,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_authorize_whenSourceHeaderIsInvalid_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -257,20 +261,20 @@ extension AuthorizationServiceTests {
 // MARK: - GUID
 extension AuthorizationServiceTests {
     func test_guid_sendsGETRequestWithCorrectParameters() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let data = "sample-guid".data(using: .utf8)!
             return (data, .ok!)
         }
 
         _ = try? await client.requestGUID()
-        let calls = self.session.dataTaskCalls
+        let calls = self.urlSession.dataTaskCalls
         XCTAssertEqual(calls.count, 1)
         XCTAssertEqual(calls[0].request.url?.path, "/v3/guid")
         XCTAssertEqual(calls[0].request.httpMethod, "GET")
     }
 
     func test_guid_whenServerRespondsWith200_invokesCompletionWithGUID() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -296,7 +300,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_when200AndDataIsEmpty_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -318,7 +322,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_when200AndResponseDoesNotContainAccessToken_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -340,7 +344,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_whenStatusIs300_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url, statusCode: 300)!
             return (Data(), response)
         }
@@ -356,7 +360,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_whenErrorIsNotNil_invokesCompletionWithError() async {
-        session.stubData { _ throws -> (Data, URLResponse) in
+        urlSession.stubData { _ throws -> (Data, URLResponse) in
             throw ExampleError.anError
         }
         
@@ -373,7 +377,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_whenStatusIs400_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url, statusCode: 400)!
             return (Data(), response)
         }
@@ -389,7 +393,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_whenStatusIs401_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url, statusCode: 401)!
             return (Data(), response)
         }
@@ -405,7 +409,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_whenStatusIs500_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url, statusCode: 500)!
             return (Data(), response)
         }
@@ -421,7 +425,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_whenStatusIs9001_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(url: request.url!, statusCode: 9001)!
             return (Data(), response)
         }
@@ -437,7 +441,7 @@ extension AuthorizationServiceTests {
     }
 
     func test_guid_whenSourceHeaderIsInvalid_invokesCompletionWithError() async {
-        session.stubData { (request) throws -> (Data, URLResponse) in
+        urlSession.stubData { (request) throws -> (Data, URLResponse) in
             let response = HTTPURLResponse(
                 url: request.url!,
                 statusCode: 200,
@@ -456,6 +460,54 @@ extension AuthorizationServiceTests {
                 return
             }
         }
+    }
+}
+
+extension AuthorizationServiceTests {
+    func test_logIn_buildsCorrectRequest() async {
+        client = AuthorizationClient(
+            consumerKey: "the-consumer-key",
+            urlSession: urlSession,
+            authenticationSession: MockAuthenticationSession.self
+        )
+
+        let (request, _) = await client.logIn(from: self)
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request?.callbackURLScheme, "pocket")
+
+        let components = URLComponents(url: request!.url, resolvingAgainstBaseURL: false)
+        XCTAssertEqual(components?.path, "/login")
+        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "consumer_key" })?.value, "the-consumer-key")
+        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "redirect_uri" })?.value, "pocket://fxa")
+        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "utm_source" })?.value, "ios")
+    }
+
+    func test_logIn_onSuccess_returnsAccessToken() async {
+        client = AuthorizationClient(
+            consumerKey: "the-consumer-key",
+            urlSession: urlSession,
+            authenticationSession: MockAuthenticationSession.self
+        )
+
+        let (_, response) = await client.logIn(from: self)
+        XCTAssertEqual(response?.accessToken, "test-access-token")
+    }
+
+    func test_logIn_onError_returnsNilResponse() async {
+        client = AuthorizationClient(
+            consumerKey: "the-consumer-key",
+            urlSession: urlSession,
+            authenticationSession: MockErrorAuthenticationSession.self
+        )
+
+        let (_, response) = await client.logIn(from: self)
+        XCTAssertNil(response)
+    }
+}
+
+extension AuthorizationServiceTests: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        UIWindow()
     }
 }
 

@@ -16,11 +16,4 @@ class LoggedOutCoordinatorTests: XCTestCase {
         viewModel = MockLoggedOutViewModel()
         coordinator = LoggedOutCoordinator(viewModel: viewModel)
     }
-
-    func test_authenticationSession_onReceiveValue_updatesAndStartsSession() {
-        viewModel._session.send(authenticationSession)
-
-        XCTAssertTrue(authenticationSession.presentationContextProvider === coordinator)
-        XCTAssertEqual(authenticationSession.startCalls, 1)
-    }
 }
