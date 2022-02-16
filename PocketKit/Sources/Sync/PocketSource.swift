@@ -148,7 +148,7 @@ extension PocketSource {
 
     public func archive(item: SavedItem) {
         mutate(item, ArchiveItemMutation.init) { item in
-            space.delete(item)
+            item.isArchived = true
         }
     }
 

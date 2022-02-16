@@ -37,7 +37,7 @@ public class SavedRecommendationsService {
         request.propertiesToFetch = ["item.remoteID"]
 
         let recommendedItemIDs = slates.flatMap { $0.recommendations.map(\.item.id) }
-        let predicate = NSPredicate(format: "%@ CONTAINS item.remoteID", recommendedItemIDs)
+        let predicate = NSPredicate(format: "%@ CONTAINS item.remoteID && isArchived = 0", recommendedItemIDs)
         request.predicate = predicate
 
         let results = try? space.context.fetch(request)

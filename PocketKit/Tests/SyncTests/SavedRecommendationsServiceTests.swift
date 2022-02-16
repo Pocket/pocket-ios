@@ -30,6 +30,16 @@ class SavedRecommendationServiceTests: XCTestCase {
                 title: "Item 2"
             )
         )
+
+        try space.seedSavedItem(
+            remoteID: "saved-item-3",
+            url: "http://example.com/item-3",
+            isArchived: true,
+            item: space.buildItem(
+                remoteID: "item-3",
+                title: "Archived Item"
+            )
+        )
     }
 
     override func tearDownWithError() throws {
@@ -98,14 +108,14 @@ class SavedRecommendationServiceTests: XCTestCase {
         }.store(in: &subscriptions)
 
         try space.seedSavedItem(
-            remoteID: "saved-item-3",
+            remoteID: "saved-item-4",
             item: space.buildItem(
-                remoteID: "item-3",
-                title: "Item 3"
+                remoteID: "item-4",
+                title: "Item 4"
             )
         )
 
         wait(for: [expectationToUpdateItemIDs], timeout: 1)
-        XCTAssertEqual(service.itemIDs, ["item-1", "item-3"])
+        XCTAssertEqual(service.itemIDs, ["item-1", "item-4"])
     }
 }
