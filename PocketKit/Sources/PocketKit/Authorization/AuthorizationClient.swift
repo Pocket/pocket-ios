@@ -126,7 +126,7 @@ public class AuthorizationClient {
                         return
                     }
 
-                    let response = Response(accessToken: token)
+                    let response = Response(accessToken: token, userIdentifier: "1a2b3c4d5e6")
                     continuation.resume(returning: (request, response))
                 } else {
                     continuation.resume(returning: (request, nil))
@@ -147,5 +147,6 @@ extension AuthorizationClient {
 
     struct Response {
         let accessToken: String
+        let userIdentifier: String
     }
 }

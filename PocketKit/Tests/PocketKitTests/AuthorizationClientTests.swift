@@ -245,7 +245,7 @@ extension AuthorizationServiceTests {
         XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "utm_source" })?.value, "ios")
     }
 
-    func test_logIn_onSuccess_returnsAccessToken() async {
+    func test_logIn_onSuccess_returnsAccessTokenAndUserIdentifier() async {
         client = AuthorizationClient(
             consumerKey: "the-consumer-key",
             urlSession: urlSession,
@@ -254,6 +254,7 @@ extension AuthorizationServiceTests {
 
         let (_, response) = await client.logIn(from: self)
         XCTAssertEqual(response?.accessToken, "test-access-token")
+        XCTAssertEqual(response?.userIdentifier, "1a2b3c4d5e6")
     }
 
     func test_logIn_onError_returnsNilResponse() async {
