@@ -7,6 +7,7 @@ extension Space {
         remoteID: String = "saved-item-1",
         url: String = "http://example.com/item-1",
         isFavorite: Bool = false,
+        isArchived: Bool = false,
         item: Item? = nil
     ) throws -> SavedItem {
         var savedItem: SavedItem?
@@ -15,6 +16,7 @@ extension Space {
             savedItem = new()
             savedItem?.remoteID = remoteID
             savedItem?.isFavorite = isFavorite
+            savedItem?.isArchived = isArchived
             savedItem?.url = URL(string: url)!
             savedItem?.item = item ?? new()
 

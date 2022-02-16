@@ -154,7 +154,7 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
-    func test_archive_removesItemFromLocalStorage_andExecutesArchiveMutation() throws {
+    func test_archive_archivesLocally_andExecutesArchiveMutation() throws {
         let item = try space.seedSavedItem(remoteID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
@@ -166,8 +166,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         source.archive(item: item)
 
-        let fetchedItem = try space.fetchSavedItem(byRemoteID: "archive-me")
-        XCTAssertNil(fetchedItem)
+        XCTAssertTrue(item.isArchived)
         XCTAssertFalse(item.hasChanges)
         wait(for: [expectationToRunOperation], timeout: 1)
     }
@@ -266,7 +265,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_archiveRecommendation_archivesTheRespectiveItem() async throws {
-        try space.seedSavedItem(
+        let item = try space.seedSavedItem(
             remoteID: "saved-item-1",
             item: space.buildItem(
                 remoteID: "item-1"
@@ -287,10 +286,10 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.archive(recommendation: recommendation)
+        XCTAssertTrue(item.isArchived)
+        XCTAssertFalse(item.hasChanges)
 
         wait(for: [expectationToRunOperation], timeout: 1)
-
-        try XCTAssertNil(space.fetchSavedItem(byRemoteID: "saved-item-1"))
     }
 
     func test_fetchSlates_returnsResultsFromSlateService() async throws {
