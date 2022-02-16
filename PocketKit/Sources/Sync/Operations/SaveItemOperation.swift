@@ -33,7 +33,7 @@ class SaveItemOperation: AsyncOperation {
         Task {
             do {
                 let result = try await apollo.perform(mutation: mutation)
-                handle(result: result)
+                await handle(result: result)
             } catch {
                 events.send(.error(error))
             }
@@ -42,6 +42,7 @@ class SaveItemOperation: AsyncOperation {
         }
     }
 
+    @MainActor
     private func handle(result: GraphQLResult<SaveItemMutation.Data>) {
         guard let remote = result.data?.upsertSavedItem.fragments.savedItemParts,
               let savedItem: SavedItem = space.context.object(with: managedItemID) as? SavedItem else {
