@@ -44,6 +44,13 @@ public enum Requests {
         request.fetchLimit = 1
         return request
     }
+
+    public static func fetchPersistentSyncTasks() -> NSFetchRequest<PersistentSyncTask> {
+        let request = PersistentSyncTask.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \PersistentSyncTask.createdAt, ascending: true)]
+
+        return request
+    }
 }
 
 public enum Predicates {
