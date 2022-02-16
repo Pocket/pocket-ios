@@ -15,6 +15,10 @@ class Space {
         self.container = container
     }
 
+    func managedObjectID(forURL url: URL) -> NSManagedObjectID? {
+        container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: url)
+    }
+
     func fetchSavedItem(byRemoteID remoteID: String) throws -> SavedItem? {
         let request = Requests.fetchSavedItem(byRemoteID: remoteID)
         return try context.fetch(request).first
@@ -42,6 +46,10 @@ class Space {
     
     func fetchOrCreateSavedItem(byRemoteID itemID: String) throws -> SavedItem {
         try fetchSavedItem(byRemoteID: itemID) ?? new()
+    }
+
+    func fetchPersistentSyncTasks() throws -> [PersistentSyncTask] {
+        return try context.fetch(Requests.fetchPersistentSyncTasks())
     }
 
     func new<T: NSManagedObject>() -> T {

@@ -71,6 +71,7 @@ public class PocketSource: Source {
         self.networkMonitor = networkMonitor
 
         observeNetworkStatus()
+        restore()
     }
 
     public var mainContext: NSManagedObjectContext {
@@ -105,9 +106,18 @@ public class PocketSource: Source {
             }
         }
     }
+
+    // Exposed to tests to facilitate waiting for all operations to finish
+    // Should not be used outside of a testing context
+    func drain(_ completion: @escaping () -> Void) {
+        DispatchQueue.global(qos: .background).async {
+            self.syncQ.waitUntilAllOperationsAreFinished()
+            completion()
+        }
+    }
 }
 
-// MARK: - List items
+// MARK: - MyList/Archive items
 extension PocketSource {
     public func refresh(maxItems: Int = 400, completion: (() -> ())? = nil) {
         guard let token = tokenProvider.accessToken else {
@@ -123,60 +133,92 @@ extension PocketSource {
             maxItems: maxItems,
             lastRefresh: lastRefresh
         )
-
         operation.completionBlock = completion
-        syncQ.addOperation(operation)
+        enqueue(operation: operation, task: .fetchList(maxItems: maxItems))
     }
 
     public func favorite(item: SavedItem) {
-        mutate(item, FavoriteItemMutation.init) { item in
-            item.isFavorite = true
-        }
-    }
-
-    public func unfavorite(item: SavedItem) {
-        mutate(item, UnfavoriteItemMutation.init) { item in
-            item.isFavorite = false
-        }
-    }
-
-    public func delete(item: SavedItem) {
-        mutate(item, DeleteItemMutation.init) { item in
-            space.delete(item)
-        }
-    }
-
-    public func archive(item: SavedItem) {
-        mutate(item, ArchiveItemMutation.init) { item in
-            item.isArchived = true
-        }
-    }
-
-    public func unarchive(item: SavedItem) {
-        mutate(item, UnarchiveItemMutation.init) { item in
-            item.isArchived = false
-        }
-    }
-
-    private func mutate<Mutation: GraphQLMutation>(
-        _ item: SavedItem,
-        _ remoteMutation: (String) -> Mutation,
-        localMutation: (SavedItem) -> ()
-    ) {
         guard let remoteID = item.remoteID else {
             return
         }
 
-        localMutation(item)
+        item.isFavorite = true
         try? space.save()
 
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: remoteMutation(remoteID)
+            mutation: FavoriteItemMutation(itemID: remoteID)
         )
 
-        syncQ.addOperation(operation)
+        enqueue(operation: operation, task: .favorite(remoteID: remoteID))
+    }
+
+    public func unfavorite(item: SavedItem) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+
+        item.isFavorite = false
+        try? space.save()
+
+        let operation = operations.savedItemMutationOperation(
+            apollo: apollo,
+            events: _events,
+            mutation: UnfavoriteItemMutation(itemID: remoteID)
+        )
+        enqueue(operation: operation, task: .unfavorite(remoteID: remoteID))
+    }
+
+    public func delete(item: SavedItem) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+
+        space.delete(item)
+        try? space.save()
+
+        let operation = operations.savedItemMutationOperation(
+            apollo: apollo,
+            events: _events,
+            mutation: DeleteItemMutation(itemID: remoteID)
+        )
+
+        enqueue(operation: operation, task: .delete(remoteID: remoteID))
+    }
+
+    public func archive(item: SavedItem) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+
+        item.isArchived = true
+        try? space.save()
+
+        let operation = operations.savedItemMutationOperation(
+            apollo: apollo,
+            events: _events,
+            mutation: ArchiveItemMutation(itemID: remoteID)
+        )
+
+        enqueue(operation: operation, task: .archive(remoteID: remoteID))
+    }
+
+    public func unarchive(item: SavedItem) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+
+        item.isArchived = false
+        try? space.save()
+
+        let operation = operations.savedItemMutationOperation(
+            apollo: apollo,
+            events: _events,
+            mutation: UnarchiveItemMutation(itemID: remoteID)
+        )
+
+        enqueue(operation: operation, task: .unarchive(remoteID: remoteID))
     }
 }
 
@@ -242,7 +284,8 @@ extension PocketSource {
             space: space
         )
 
-        syncQ.addOperation(operation)
+        let task = SyncTask.save(localID: savedItem.objectID.uriRepresentation(), url: url)
+        enqueue(operation: operation, task: task)
     }
 
     public func archive(recommendation: Slate.Recommendation) {
@@ -273,6 +316,107 @@ extension PocketSource {
             self?._events.send(.loadedArchivePage)
         }
 
+        enqueue(operation: operation, task: .fetchArchivePage(cursor: cursor, isFavorite: isFavorite))
+    }
+}
+
+// MARK: - Enqueueing and Restoring offline operations
+extension PocketSource {
+    private func enqueue(operation: Operation, task: SyncTask) {
+        let persistentTask: PersistentSyncTask = space.new()
+        persistentTask.createdAt = Date()
+        persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
+        try? space.save()
+
+        enqueue(operation: operation, persistentTask: persistentTask)
+    }
+
+    private func enqueue(operation: Operation, persistentTask: PersistentSyncTask) {
         syncQ.addOperation(operation)
+        syncQ.addBarrierBlock { [weak self] in
+            self?.space.context.performAndWait { [weak self] in
+                self?.space.delete(persistentTask)
+                try? self?.space.save()
+            }
+        }
+    }
+
+    private func restore() {
+        guard let persistentTasks = try? space.fetchPersistentSyncTasks() else { return }
+
+        for persistentTask in persistentTasks {
+            switch persistentTask.syncTaskContainer?.task {
+            case .none:
+                break
+            case .favorite(let remoteID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: FavoriteItemMutation(itemID: remoteID)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .fetchList(let maxItems):
+                guard let token = tokenProvider.accessToken else { return }
+                let operation = operations.fetchList(
+                    token: token,
+                    apollo: apollo,
+                    space: space,
+                    events: _events,
+                    maxItems: maxItems,
+                    lastRefresh: lastRefresh
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .archive(let remoteID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: ArchiveItemMutation(itemID: remoteID)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .unarchive(let remoteID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: UnarchiveItemMutation(itemID: remoteID)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .delete(let remoteID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: DeleteItemMutation(itemID: remoteID)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .unfavorite(let remoteID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: UnfavoriteItemMutation(itemID: remoteID)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case let .save(localID, itemURL):
+                guard let managedID = space.managedObjectID(forURL: localID) else { return }
+
+                let operation = operations.saveItemOperation(
+                    managedItemID: managedID,
+                    url: itemURL,
+                    events: _events,
+                    apollo: apollo,
+                    space: space
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case let .fetchArchivePage(cursor, isFavorite):
+                guard let token = tokenProvider.accessToken else { return }
+
+                let operation = operations.fetchArchivePage(
+                    apollo: apollo,
+                    space: space,
+                    accessToken: token,
+                    cursor: cursor,
+                    isFavorite: isFavorite
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            }
+        }
     }
 }
