@@ -9,7 +9,7 @@ class SavedRecommendationServiceTests: XCTestCase {
     var space: Space!
     var subscriptions: [AnyCancellable]!
 
-    override func setUp() async throws {
+    override func setUpWithError() throws {
         space = Space(container: .testContainer)
         subscriptions = []
 
