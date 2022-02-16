@@ -8,7 +8,7 @@ class LoggedOutCoordinator: NSObject {
         LoggedOutViewController(viewModel: viewModel)
     }()
 
-    private let viewModel: LoggedOutViewModel
+    private var viewModel: LoggedOutViewModel
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -16,13 +16,9 @@ class LoggedOutCoordinator: NSObject {
         self.viewModel = viewModel
         super.init()
 
-        viewModel.session.sink { session in
-            var session = session
-            session.presentationContextProvider = self
-            _ = session.start()
-        }.store(in: &subscriptions)
+        self.viewModel.contextProvider = self
 
-        viewModel.events.sink { event in
+        self.viewModel.events.sink { event in
             switch event {
             case .login(let token):
                 print(token)

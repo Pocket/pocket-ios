@@ -37,10 +37,7 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
             )
         } else {
             initialState = .loggedOut(
-                PocketLoggedOutViewModel(
-                    consumerKey: Keys.shared.pocketApiConsumerKey,
-                    sessionType: ASWebAuthenticationSession.self
-                )
+                PocketLoggedOutViewModel(authorizationClient: Services.shared.authClient)
             )
         }
 

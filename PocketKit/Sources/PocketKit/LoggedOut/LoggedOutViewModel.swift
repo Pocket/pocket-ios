@@ -1,14 +1,19 @@
 import Combine
+import AuthenticationServices
 
+
+enum LoggedOutViewModelError: Error {
+    case error
+}
 
 enum LoggedOutViewModelEvent {
-    case error(Error)
+    case error(LoggedOutViewModelError)
     case login(String)
 }
 
 protocol LoggedOutViewModel {
-    var session: AnyPublisher<AuthenticationSession, Never> { get }
     var events: AnyPublisher<LoggedOutViewModelEvent, Never> { get }
+    var contextProvider: ASWebAuthenticationPresentationContextProviding? { get set }
 
     func logIn()
 }

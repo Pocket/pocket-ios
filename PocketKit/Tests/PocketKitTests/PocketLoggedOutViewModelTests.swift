@@ -1,6 +1,7 @@
 import XCTest
 @testable import PocketKit
 import Combine
+import AuthenticationServices
 
 
 class PocketLoggedOutViewModelTests: XCTestCase {
@@ -18,38 +19,14 @@ class PocketLoggedOutViewModelTests: XCTestCase {
         subscriptions = []
     }
 
-    func test_logIn_publishesNewSessionWithCorrectURL() {
-        viewModel = PocketLoggedOutViewModel(consumerKey: "test-consumer-key", sessionType: MockAuthenticationSession.self)
-
-        let sessionExpectation = expectation(description: "published new session")
-        viewModel.session.sink { session in
-            let session = session as? MockAuthenticationSession
-            XCTAssertNotNil(session)
-            XCTAssertNotNil(session?.url)
-            XCTAssertEqual(session?.scheme, "pocket")
-            XCTAssertEqual(session?.prefersEphemeralWebBrowserSession, true)
-
-            let components = URLComponents(url: session!.url, resolvingAgainstBaseURL: false)
-            XCTAssertEqual(components?.path, "/login")
-            XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "consumer_key" })?.value, "test-consumer-key")
-            XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "redirect_uri" })?.value, "pocket://fxa")
-            XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "utm_source" })?.value, "ios")
-
-            sessionExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.logIn()
-        wait(for: [sessionExpectation], timeout: 1)
-    }
-
-    func test_logIn_whenErrorOccurs_sendsErrorEvent() {
-        viewModel = PocketLoggedOutViewModel(consumerKey: "test-consumer-key", sessionType: MockErrorAuthenticationSession.self)
-
-        let sessionExpectation = expectation(description: "published new session")
-        viewModel.session.sink { session in
-            _ = session.start()
-            sessionExpectation.fulfill()
-        }.store(in: &subscriptions)
+    func test_logIn_onError_sendsErrorEvent() {
+        let client = AuthorizationClient(
+            consumerKey: "test-consumer-key",
+            urlSession: MockURLSession(),
+            authenticationSession: MockErrorAuthenticationSession.self
+        )
+        viewModel = PocketLoggedOutViewModel(authorizationClient: client)
+        viewModel.contextProvider = self
 
         let eventExpectation = expectation(description: "published error event")
         viewModel.events.sink { event in
@@ -61,30 +38,35 @@ class PocketLoggedOutViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.logIn()
-        wait(for: [sessionExpectation, eventExpectation], timeout: 1)
+        wait(for: [eventExpectation], timeout: 1)
     }
 
     func test_logIn_onSuccess_sendsLoginEvent() {
-        viewModel = PocketLoggedOutViewModel(consumerKey: "test-consumer-key", sessionType: MockAuthenticationSession.self)
-
-        let sessionExpectation = expectation(description: "published new session")
-        viewModel.session.sink { session in
-            _ = session.start()
-            sessionExpectation.fulfill()
-        }.store(in: &subscriptions)
+        let client = AuthorizationClient(
+            consumerKey: "test-consumer-key",
+            urlSession: MockURLSession(),
+            authenticationSession: MockAuthenticationSession.self
+        )
+        viewModel = PocketLoggedOutViewModel(authorizationClient: client)
+        viewModel.contextProvider = self
 
         let eventExpectation = expectation(description: "published error event")
         viewModel.events.sink { event in
             guard case .login(let token) = event else {
-                XCTFail("Expected login event, but got \(event) instead")
+                XCTFail("Expected login event, but got \(event)")
                 return
             }
-
             XCTAssertEqual(token, "test-access-token")
             eventExpectation.fulfill()
         }.store(in: &subscriptions)
 
         viewModel.logIn()
-        wait(for: [sessionExpectation, eventExpectation], timeout: 1)
+        wait(for: [eventExpectation], timeout: 1)
+    }
+}
+
+extension PocketLoggedOutViewModelTests: ASWebAuthenticationPresentationContextProviding {
+    func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
+        UIWindow()
     }
 }
