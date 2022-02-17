@@ -9,7 +9,7 @@ extension PocketSourceTests {
     }
 
     func test_enqueueingOperations_whenNetworkPathIsUnsatisfied_doesNotExecuteOperations() {
-        tokenProvider.accessToken = "test-token"
+        sessionProvider.session = MockSession()
         operations.stubFetchArchivePage { _, _, _, _, _ in
             TestSyncOperation {
                 XCTFail("Operation should not be executed while network path is unsatisfied")
@@ -23,7 +23,7 @@ extension PocketSourceTests {
     }
 
     func test_enqueueingOperations_whenNetworkBecomesSatisfied_executesPendingOperations() {
-        tokenProvider.accessToken = "test-token"
+        sessionProvider.session = MockSession()
 
 
         let expectFetchArchive = expectation(description: "execute the fetch archive operation")
