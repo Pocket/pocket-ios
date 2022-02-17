@@ -30,7 +30,7 @@ class SignOutOnFirstLaunch {
             return
         }
 
-        sessionController.clearAccessToken()
+        sessionController.clearSession()
         hasAppBeenLaunchedPreviously = true
     }
 }

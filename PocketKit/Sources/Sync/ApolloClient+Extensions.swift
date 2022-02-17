@@ -9,7 +9,6 @@ import Foundation
 extension ApolloClient {
     public static func createDefault(
         sessionProvider: SessionProvider,
-        accessTokenProvider: AccessTokenProvider,
         consumerKey: String
     ) -> ApolloClient {
         let urlStringFromEnvironment = ProcessInfo.processInfo.environment["POCKET_CLIENT_API_URL"]
@@ -23,7 +22,6 @@ extension ApolloClient {
                 interceptorProvider: PrependingInterceptorProvider(
                     prepend: AuthParamsInterceptor(
                         sessionProvider: sessionProvider,
-                        tokenProvider: accessTokenProvider,
                         consumerKey: consumerKey
                     ),
                     base: DefaultInterceptorProvider(store: store)
@@ -35,8 +33,13 @@ extension ApolloClient {
     }
 }
 
+public protocol Session {
+    var guid: String { get }
+    var accessToken: String { get }
+}
+
 public protocol SessionProvider {
-    var guid: String? { get }
+    var session: Session? { get }
 }
 
 public protocol AccessTokenProvider {
@@ -45,16 +48,13 @@ public protocol AccessTokenProvider {
 
 private class AuthParamsInterceptor: ApolloInterceptor {
     private let sessionProvider: SessionProvider
-    private let tokenProvider: AccessTokenProvider
     private let consumerKey: String
 
     init(
         sessionProvider: SessionProvider,
-        tokenProvider: AccessTokenProvider,
         consumerKey: String
     ) {
         self.sessionProvider = sessionProvider
-        self.tokenProvider = tokenProvider
         self.consumerKey = consumerKey
     }
 
@@ -76,10 +76,12 @@ private class AuthParamsInterceptor: ApolloInterceptor {
         var items = components.queryItems ?? []
         items.append(contentsOf: [
             URLQueryItem(name: "consumer_key", value: consumerKey),
-            URLQueryItem(name: "access_token", value: tokenProvider.accessToken),
         ])
-        if let guid = sessionProvider.guid {
+        if let guid = sessionProvider.session?.guid {
             items.append(URLQueryItem(name: "guid", value: guid))
+        }
+        if let accessToken = sessionProvider.session?.accessToken {
+            items.append(URLQueryItem(name: "access_token", value: accessToken))
         }
         components.queryItems = items
 
