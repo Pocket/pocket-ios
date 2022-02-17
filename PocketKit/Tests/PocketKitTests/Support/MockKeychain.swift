@@ -12,6 +12,11 @@ class MockKeychain: Keychain {
         let result: UnsafeMutablePointer<CFTypeRef?>?
     }
 
+    struct UpdateCall {
+        let query: CFDictionary
+        let attributes: CFDictionary
+    }
+
     struct DeleteCall {
         let query: CFDictionary
     }
@@ -22,6 +27,7 @@ class MockKeychain: Keychain {
     }
 
     private(set) var addCalls = Calls<AddCall>()
+    private(set) var updateCalls = Calls<UpdateCall>()
     private(set) var deleteCalls = Calls<DeleteCall>()
     private(set) var copyMatchingCalls = Calls<CopyMatchingCall>()
 
@@ -29,6 +35,12 @@ class MockKeychain: Keychain {
     func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
         addCalls.add(AddCall(query: query, result: result))
         return addReturnVal
+    }
+
+    var updateReturnVal: OSStatus = 0
+    func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus {
+        updateCalls.add(UpdateCall(query: query, attributes: attributes))
+        return updateReturnVal
     }
 
     var copyMatchingReturnVal: OSStatus = 0

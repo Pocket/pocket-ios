@@ -28,9 +28,7 @@ struct Services {
         )!
         urlSession = URLSession.shared
 
-        let session = Session(userDefaults: userDefaults)
-        let keychain = SecItemKeychain()
-        let accessTokenStore = KeychainAccessTokenStore(keychain: keychain)
+        let session = AppSession()
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
             urlSession: urlSession,
@@ -42,7 +40,6 @@ struct Services {
 
         source = PocketSource(
             sessionProvider: session,
-            accessTokenProvider: accessTokenStore,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults
         )
@@ -52,7 +49,6 @@ struct Services {
         sessionController = SessionController(
             authClient: authClient,
             session: session,
-            accessTokenStore: accessTokenStore,
             tracker: tracker,
             source: source,
             userDefaults: userDefaults
@@ -60,4 +56,10 @@ struct Services {
     }
 }
 
-extension Session: SessionProvider { }
+extension AppSession: SessionProvider {
+    var session: Sync.Session? {
+        currentSession
+    }
+}
+
+extension Session: Sync.Session { }

@@ -15,18 +15,18 @@ class PocketSourceTests: XCTestCase {
     var apollo: MockApolloClient!
     var operations: MockOperationFactory!
     var lastRefresh: MockLastRefresh!
-    var tokenProvider: MockAccessTokenProvider!
     var slateService: MockSlateService!
     var networkMonitor: MockNetworkPathMonitor!
+    var sessionProvider: MockSessionProvider!
 
     override func setUpWithError() throws {
         space = Space(container: .testContainer)
         apollo = MockApolloClient()
         operations = MockOperationFactory()
         lastRefresh = MockLastRefresh()
-        tokenProvider = MockAccessTokenProvider()
         slateService = MockSlateService()
         networkMonitor = MockNetworkPathMonitor()
+        sessionProvider = MockSessionProvider(session: nil)
 
         lastRefresh.stubGetLastRefresh { nil}
     }
@@ -40,23 +40,24 @@ class PocketSourceTests: XCTestCase {
         apollo: ApolloClientProtocol? = nil,
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
-        tokenProvider: AccessTokenProvider? = nil,
         slateService: SlateService? = nil,
-        networkMonitor: NetworkPathMonitor? = nil
+        networkMonitor: NetworkPathMonitor? = nil,
+        sessionProvider: SessionProvider? = nil
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
             apollo: apollo ?? self.apollo,
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
-            accessTokenProvider: tokenProvider ?? self.tokenProvider,
             slateService: slateService ?? self.slateService,
-            networkMonitor: networkMonitor ?? self.networkMonitor
+            networkMonitor: networkMonitor ?? self.networkMonitor,
+            sessionProvider: sessionProvider ?? self.sessionProvider
         )
     }
 
     func test_refresh_addsFetchListOperationToQueue() {
-        tokenProvider.accessToken = "test-token"
+        let session = MockSession()
+        sessionProvider.session = session
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubFetchList { _, _, _, _, _ in
             return BlockOperation {
@@ -69,11 +70,11 @@ class PocketSourceTests: XCTestCase {
         source.refresh()
         waitForExpectations(timeout: 1)
 
-        XCTAssertEqual(operations.fetchListCall(at: 0)?.token, "test-token")
+        XCTAssertEqual(operations.fetchListCall(at: 0)?.token, session.accessToken)
     }
 
     func test_refreshWithCompletion_callsCompletionWhenFinished() {
-        tokenProvider.accessToken = "test-token"
+        sessionProvider.session = MockSession()
         operations.stubFetchList { _, _, _, _, _ in
             return BlockOperation { }
         }
@@ -89,7 +90,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_refresh_whenTokenIsNil_callsCompletion() {
-        tokenProvider.accessToken = nil
+        sessionProvider.session = nil
         operations.stubFetchList { _, _, _, _, _ in
             return BlockOperation { }
         }
@@ -358,7 +359,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_fetchArchivePage_addsOperationToQueue() {
-        tokenProvider.accessToken = "the-access-token"
+        sessionProvider.session = MockSession()
         let expectCompletion = expectation(description: "expect the operation to complete")
         operations.stubFetchArchivePage { _, _, _, _, _ in
             return BlockOperation {
