@@ -8,23 +8,20 @@ class LoggedOutCoordinator: NSObject {
         LoggedOutViewController(viewModel: viewModel)
     }()
 
-    private var viewModel: LoggedOutViewModel
+    private var viewModel: PocketLoggedOutViewModel
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: LoggedOutViewModel) {
+    init(viewModel: PocketLoggedOutViewModel) {
         self.viewModel = viewModel
         super.init()
 
         self.viewModel.contextProvider = self
-
-        self.viewModel.events.sink { event in
-            switch event {
-            case .login(let token):
-                print(token)
-            case .error(let error):
-                print(error.localizedDescription)
+        self.viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            guard let alert = alert else {
+                return
             }
+            self?.viewController.present(UIAlertController(alert), animated: true)
         }.store(in: &subscriptions)
     }
 }

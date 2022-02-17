@@ -4,7 +4,14 @@ import Foundation
 import Textile
 
 
-class SessionController {
+protocol SessionController {
+    var isSignedIn: Bool { get }
+
+    func signOut()
+    func updateSession(_ session: Session?)
+    func clearSession()
+}
+class PocketSessionController: SessionController {
     private let authClient: AuthorizationClient
     private let session: AppSession
     private let tracker: Tracker
