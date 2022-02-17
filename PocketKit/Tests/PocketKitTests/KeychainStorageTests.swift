@@ -15,7 +15,8 @@ class KeychainStorageTests: XCTestCase {
 
         _ = storage.wrappedValue
 
-        XCTAssertEqual(keychain.copyMatchingCalls.count, 1)
+        // One read on init, one read if the current cached value is nil
+        XCTAssertEqual(keychain.copyMatchingCalls.count, 2)
     }
 
     func test_set_whenInitialValue_callsAdd() {
@@ -61,8 +62,9 @@ class KeychainStorageTests: XCTestCase {
         let account = "MockAccount"
         let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account)
 
+        // One read on init, one read if the current cached value is nil
         _ = storage.wrappedValue
-        XCTAssertEqual(keychain.copyMatchingCalls.count, 1)
+        XCTAssertEqual(keychain.copyMatchingCalls.count, 2)
 
         let value = Test(value: "test")
         storage.wrappedValue = value
@@ -71,6 +73,12 @@ class KeychainStorageTests: XCTestCase {
         _ = storage.wrappedValue
         _ = storage.wrappedValue
         _ = storage.wrappedValue
-        XCTAssertEqual(keychain.copyMatchingCalls.count, 1)
+
+        // The cached value is preferred over the keychain, so we shouldn't see another read unless we delete
+        XCTAssertEqual(keychain.copyMatchingCalls.count, 2)
+
+        storage.wrappedValue = nil
+        _ = storage.wrappedValue
+        XCTAssertEqual(keychain.copyMatchingCalls.count, 3)
     }
 }
