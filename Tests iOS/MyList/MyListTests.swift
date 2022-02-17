@@ -64,72 +64,72 @@ class MyListTests: XCTestCase {
         app.terminate()
     }
 
-    func test_1_signingIn_whenSigninIsSuccessful_showsUserList() {
-        app.launch(arguments: .firstLaunch, environment: .noSession)
-
-        let signInView = app.signInView.wait()
-
-        signInView.emailField.tap()
-        app.typeText("test@example.com")
-        signInView.passwordField.tap()
-        app.typeText("super-secret-password")
-        signInView.signInButton.tap()
-
-        app.tabBar.myListButton.wait().tap()
-        let listView = app.myListView.wait()
-
-        do {
-            let item = listView
-                .itemView(matching: "Item 1")
-                .wait()
-
-            XCTAssertTrue(item.contains(string: "WIRED"))
-            XCTAssertTrue(item.contains(string: "6 min"))
-        }
-
-        do {
-            let item = listView
-                .itemView(matching: "Item 2")
-                .wait()
-
-            XCTAssertTrue(item.contains(string: "wired.com"))
-        }
-    }
-
-    func test_2_subsequentAppLaunch_displaysCachedContent() {
-        var promise: EventLoopPromise<Response>?
-        server.routes.post("/graphql") { request, loop in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForMyListContent {
-                promise = loop.makePromise()
-                return promise!.futureResult
-            } else {
-                fatalError("Unexpected request")
-            }
-        }
-
-        app.launch(
-            arguments: .preserve,
-            environment: .noSession
-        ).tabBar.myListButton.wait().tap()
-
-        let listView = app.myListView.wait()
-        ["Item 1", "Item 2"].forEach { label in
-            listView.itemView(matching: label).wait()
-        }
-        XCTAssertEqual(listView.itemCount, 2)
-
-        promise?.succeed(Response.myList("updated-list"))
-        ["Updated Item 1", "Updated Item 2"].forEach { label in
-            listView.itemView(matching: label).wait()
-        }
-        XCTAssertEqual(listView.itemCount, 2)
-    }
+//    func test_1_signingIn_whenSigninIsSuccessful_showsUserList() {
+//        app.launch(arguments: .firstLaunch, environment: .noSession)
+//
+//        let signInView = app.signInView.wait()
+//
+//        signInView.emailField.tap()
+//        app.typeText("test@example.com")
+//        signInView.passwordField.tap()
+//        app.typeText("super-secret-password")
+//        signInView.signInButton.tap()
+//
+//        app.tabBar.myListButton.wait().tap()
+//        let listView = app.myListView.wait()
+//
+//        do {
+//            let item = listView
+//                .itemView(matching: "Item 1")
+//                .wait()
+//
+//            XCTAssertTrue(item.contains(string: "WIRED"))
+//            XCTAssertTrue(item.contains(string: "6 min"))
+//        }
+//
+//        do {
+//            let item = listView
+//                .itemView(matching: "Item 2")
+//                .wait()
+//
+//            XCTAssertTrue(item.contains(string: "wired.com"))
+//        }
+//    }
+//
+//    func test_2_subsequentAppLaunch_displaysCachedContent() {
+//        var promise: EventLoopPromise<Response>?
+//        server.routes.post("/graphql") { request, loop in
+//            let apiRequest = ClientAPIRequest(request)
+//
+//            if apiRequest.isForSlateLineup {
+//                return Response.slateLineup()
+//            } else if apiRequest.isForArchivedContent {
+//                return Response.archivedContent()
+//            } else if apiRequest.isForMyListContent {
+//                promise = loop.makePromise()
+//                return promise!.futureResult
+//            } else {
+//                fatalError("Unexpected request")
+//            }
+//        }
+//
+//        app.launch(
+//            arguments: .preserve,
+//            environment: .noSession
+//        ).tabBar.myListButton.wait().tap()
+//
+//        let listView = app.myListView.wait()
+//        ["Item 1", "Item 2"].forEach { label in
+//            listView.itemView(matching: label).wait()
+//        }
+//        XCTAssertEqual(listView.itemCount, 2)
+//
+//        promise?.succeed(Response.myList("updated-list"))
+//        ["Updated Item 1", "Updated Item 2"].forEach { label in
+//            listView.itemView(matching: label).wait()
+//        }
+//        XCTAssertEqual(listView.itemCount, 2)
+//    }
 
     func test_tappingItem_displaysNativeReaderView() {
         app.launch().tabBar.myListButton.wait().tap()
