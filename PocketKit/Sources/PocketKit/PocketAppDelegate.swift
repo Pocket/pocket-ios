@@ -36,7 +36,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         if CommandLine.arguments.contains("clearKeychain") {
-            sessionController.clearAccessToken()
+            sessionController.clearSession()
         }
 
         if CommandLine.arguments.contains("clearUserDefaults") {
@@ -68,11 +68,11 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             userDefaults: userDefaults
         ).clearIfNecessary()
 
-        sessionController.updateSession(
-            accessToken: ProcessInfo.processInfo.environment["accessToken"],
-            guid: ProcessInfo.processInfo.environment["sessionGUID"],
-            userID: ProcessInfo.processInfo.environment["sessionUserID"]
-        )
+        if let guid = ProcessInfo.processInfo.environment["accessToken"],
+           let accessToken = ProcessInfo.processInfo.environment["sessionGUID"],
+           let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
+            sessionController.updateSession(Session(guid: guid, accessToken: accessToken, userIdentifier: userIdentifier))
+        }
 
         Textiles.initialize()
         setupTracker()

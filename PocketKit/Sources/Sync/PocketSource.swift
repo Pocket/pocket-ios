@@ -19,10 +19,10 @@ public class PocketSource: Source {
     private let space: Space
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
-    private let tokenProvider: AccessTokenProvider
     private let slateService: SlateService
     private let networkMonitor: NetworkPathMonitor
     private let retrySignal: PassthroughSubject<Void, Never>
+    private let sessionProvider: SessionProvider
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -33,13 +33,11 @@ public class PocketSource: Source {
 
     public convenience init(
         sessionProvider: SessionProvider,
-        accessTokenProvider: AccessTokenProvider,
         consumerKey: String,
         defaults: UserDefaults
     ) {
         let apollo = ApolloClient.createDefault(
             sessionProvider: sessionProvider,
-            accessTokenProvider: accessTokenProvider,
             consumerKey: consumerKey
         )
 
@@ -48,9 +46,9 @@ public class PocketSource: Source {
             apollo: apollo,
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
-            accessTokenProvider: accessTokenProvider,
             slateService: APISlateService(apollo: apollo),
-            networkMonitor: NWPathMonitor()
+            networkMonitor: NWPathMonitor(),
+            sessionProvider: sessionProvider
         )
     }
 
@@ -59,18 +57,18 @@ public class PocketSource: Source {
         apollo: ApolloClientProtocol,
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
-        accessTokenProvider: AccessTokenProvider,
         slateService: SlateService,
-        networkMonitor: NetworkPathMonitor
+        networkMonitor: NetworkPathMonitor,
+        sessionProvider: SessionProvider
     ) {
         self.space = space
         self.apollo = apollo
         self.operations = operations
         self.lastRefresh = lastRefresh
-        self.tokenProvider = accessTokenProvider
         self.slateService = slateService
         self.networkMonitor = networkMonitor
         self.retrySignal = .init()
+        self.sessionProvider = sessionProvider
 
         observeNetworkStatus()
         restore()
@@ -123,7 +121,7 @@ public class PocketSource: Source {
 // MARK: - MyList/Archive items
 extension PocketSource {
     public func refresh(maxItems: Int = 400, completion: (() -> ())? = nil) {
-        guard let token = tokenProvider.accessToken else {
+        guard let token = sessionProvider.session?.accessToken else {
             completion?()
             return
         }
@@ -272,7 +270,7 @@ extension PocketSource {
 // MARK: - Archived Items
 extension PocketSource {
     public func fetchArchivePage(cursor: String?, isFavorite: Bool?) {
-        guard let accessToken = tokenProvider.accessToken else {
+        guard let accessToken = sessionProvider.session?.accessToken else {
             return
         }
 
@@ -336,7 +334,7 @@ extension PocketSource {
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             case .fetchList(let maxItems):
-                guard let token = tokenProvider.accessToken else { return }
+                guard let token = sessionProvider.session?.accessToken else { return }
                 let operation = operations.fetchList(
                     token: token,
                     apollo: apollo,
@@ -386,7 +384,7 @@ extension PocketSource {
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             case let .fetchArchivePage(cursor, isFavorite):
-                guard let token = tokenProvider.accessToken else { return }
+                guard let token = sessionProvider.session?.accessToken else { return }
 
                 let operation = operations.fetchArchivePage(
                     apollo: apollo,

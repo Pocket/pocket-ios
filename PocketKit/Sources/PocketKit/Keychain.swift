@@ -7,6 +7,7 @@ import Foundation
 
 protocol Keychain {
     func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus
+    func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus
 
     func delete(query: CFDictionary) -> OSStatus
 
@@ -16,6 +17,10 @@ protocol Keychain {
 struct SecItemKeychain: Keychain {
     func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
         return SecItemAdd(query, result)
+    }
+
+    func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus {
+        return SecItemUpdate(query, attributes)
     }
 
     func delete(query: CFDictionary) -> OSStatus {
