@@ -46,7 +46,7 @@ struct Services {
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
         refreshCoordinator = RefreshCoordinator(taskScheduler: .shared)
-        sessionController = SessionController(
+        sessionController = PocketSessionController(
             authClient: authClient,
             session: session,
             tracker: tracker,

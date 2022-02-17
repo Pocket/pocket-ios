@@ -6,12 +6,15 @@ import AuthenticationServices
 
 class PocketLoggedOutViewModelTests: XCTestCase {
     private var viewModel: PocketLoggedOutViewModel!
+    private var sessionController: MockSessionController!
     private var subscriptions: Set<AnyCancellable>!
+    private let events = PocketEvents()
 
     @Published
     var foo: String = ""
 
     override func setUp() {
+        sessionController = MockSessionController()
         subscriptions = []
     }
 
@@ -19,7 +22,7 @@ class PocketLoggedOutViewModelTests: XCTestCase {
         subscriptions = []
     }
 
-    func test_logIn_onGUIDError_sendsErrorEvent() {
+    func test_logIn_onGUIDError_setsPresentedAlert() {
         let urlSession = MockURLSession()
         urlSession.stubData { _ in
             throw FakeError.error
@@ -30,23 +33,25 @@ class PocketLoggedOutViewModelTests: XCTestCase {
             urlSession: urlSession,
             authenticationSession: MockErrorAuthenticationSession.self
         )
-        viewModel = PocketLoggedOutViewModel(authorizationClient: client)
+
+        viewModel = PocketLoggedOutViewModel(
+            authorizationClient: client,
+            sessionController: sessionController,
+            events: events
+        )
         viewModel.contextProvider = self
 
-        let eventExpectation = expectation(description: "published error event")
-        viewModel.events.sink { event in
-            guard case .error = event else {
-                XCTFail("Expected error event, but got \(event)")
-                return
-            }
-            eventExpectation.fulfill()
+        let alertExpectation = expectation(description: "set presented alert")
+        viewModel.$presentedAlert.dropFirst().sink { alert in
+            XCTAssertNotNil(alert)
+            alertExpectation.fulfill()
         }.store(in: &subscriptions)
 
         viewModel.logIn()
-        wait(for: [eventExpectation], timeout: 1)
+        wait(for: [alertExpectation], timeout: 1)
     }
 
-    func test_logIn_onFxAError_sendsErrorEvent() {
+    func test_logIn_onFxAError_setsPresentedAlert() {
         let urlSession = MockURLSession()
         urlSession.stubData { request in
             self.validGUIDResponse(for: request)
@@ -57,20 +62,22 @@ class PocketLoggedOutViewModelTests: XCTestCase {
             urlSession: urlSession,
             authenticationSession: MockErrorAuthenticationSession.self
         )
-        viewModel = PocketLoggedOutViewModel(authorizationClient: client)
+        viewModel = PocketLoggedOutViewModel(
+            authorizationClient: client,
+            sessionController: sessionController,
+            events: events
+        )
+
         viewModel.contextProvider = self
 
-        let eventExpectation = expectation(description: "published error event")
-        viewModel.events.sink { event in
-            guard case .error = event else {
-                XCTFail("Expected error event, but got \(event)")
-                return
-            }
-            eventExpectation.fulfill()
+        let alertExpectation = expectation(description: "set presented alert")
+        viewModel.$presentedAlert.dropFirst().sink { alert in
+            XCTAssertNotNil(alert)
+            alertExpectation.fulfill()
         }.store(in: &subscriptions)
 
         viewModel.logIn()
-        wait(for: [eventExpectation], timeout: 1)
+        wait(for: [alertExpectation], timeout: 1)
     }
 
     func test_logIn_onFxASuccess_sendsLoginEvent() {
@@ -84,18 +91,51 @@ class PocketLoggedOutViewModelTests: XCTestCase {
             urlSession: urlSession,
             authenticationSession: MockAuthenticationSession.self
         )
-        viewModel = PocketLoggedOutViewModel(authorizationClient: client)
+        viewModel = PocketLoggedOutViewModel(
+            authorizationClient: client,
+            sessionController: sessionController,
+            events: events
+        )
         viewModel.contextProvider = self
 
         let eventExpectation = expectation(description: "published error event")
-        viewModel.events.sink { event in
-            guard case .login(let auth) = event else {
+        events.sink { event in
+            guard case .signedIn = event else {
                 XCTFail("Expected login event, but got \(event)")
                 return
             }
-            XCTAssertEqual(auth.guid, "sample-guid")
-            XCTAssertEqual(auth.accessToken, "test-access-token")
-            XCTAssertEqual(auth.userIdentifier, "1a2b3c4d5e6")
+            eventExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.logIn()
+        wait(for: [eventExpectation], timeout: 1)
+    }
+
+    func test_logIn_onFxASuccess_updatesSession() {
+        let urlSession = MockURLSession()
+        urlSession.stubData { request in
+            self.validGUIDResponse(for: request)
+        }
+
+        let client = AuthorizationClient(
+            consumerKey: "test-consumer-key",
+            urlSession: urlSession,
+            authenticationSession: MockAuthenticationSession.self
+        )
+        viewModel = PocketLoggedOutViewModel(
+            authorizationClient: client,
+            sessionController: sessionController,
+            events: events
+        )
+        viewModel.contextProvider = self
+
+        let eventExpectation = expectation(description: "published error event")
+        events.sink { event in
+            XCTAssertEqual(self.sessionController.updateCalls.count, 1)
+            let lastSession = self.sessionController.updateCalls.last?.session
+            XCTAssertEqual(lastSession?.guid, "sample-guid")
+            XCTAssertEqual(lastSession?.accessToken, "test-access-token")
+            XCTAssertEqual(lastSession?.userIdentifier, "")
             eventExpectation.fulfill()
         }.store(in: &subscriptions)
 

@@ -254,7 +254,7 @@ extension AuthorizationServiceTests {
 
         let (_, response) = await client.logIn(from: self)
         XCTAssertEqual(response?.accessToken, "test-access-token")
-        XCTAssertEqual(response?.userIdentifier, "1a2b3c4d5e6")
+        XCTAssertEqual(response?.userIdentifier, "")
     }
 
     func test_logIn_onError_returnsNilResponse() async {

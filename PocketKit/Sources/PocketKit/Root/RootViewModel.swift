@@ -69,7 +69,11 @@ class RootViewModel: ObservableObject {
             )
         case .signedOut:
             state = .loggedOut(
-                PocketLoggedOutViewModel(authorizationClient: Services.shared.authClient)
+                PocketLoggedOutViewModel(
+                    authorizationClient: Services.shared.authClient,
+                    sessionController: sessionController,
+                    events: events
+                )
             )
         }
     }
@@ -77,7 +81,7 @@ class RootViewModel: ObservableObject {
 
 extension RootViewModel {
     enum State {
-        case loggedOut(LoggedOutViewModel)
+        case loggedOut(PocketLoggedOutViewModel)
         case main(MainViewModel)
     }
 }

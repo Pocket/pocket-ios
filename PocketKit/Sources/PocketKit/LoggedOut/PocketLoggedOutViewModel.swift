@@ -3,18 +3,27 @@ import Combine
 import AuthenticationServices
 
 
-class PocketLoggedOutViewModel: LoggedOutViewModel {
-    private var _events = PassthroughSubject<LoggedOutViewModelEvent, Never>()
-    var events: AnyPublisher<LoggedOutViewModelEvent, Never> {
-        _events.eraseToAnyPublisher()
-    }
-
+enum LoggedOutError: Error {
+    case error
+}
+class PocketLoggedOutViewModel {
     weak var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
-    private let authorizationClient: AuthorizationClient
+    @Published
+    var presentedAlert: PocketAlert? = nil
 
-    init(authorizationClient: AuthorizationClient) {
+    private let authorizationClient: AuthorizationClient
+    private let sessionController: SessionController
+    private let events: PocketEvents
+
+    init(
+        authorizationClient: AuthorizationClient,
+        sessionController: SessionController,
+        events: PocketEvents
+    ) {
         self.authorizationClient = authorizationClient
+        self.sessionController = sessionController
+        self.events = events
     }
 
     func logIn() {
@@ -23,23 +32,27 @@ class PocketLoggedOutViewModel: LoggedOutViewModel {
 
     private func _login() async {
         guard let contextProvider = contextProvider else {
-            _events.send(.error(.error))
+            presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
             return
         }
-
 
         do {
             let guid = try await authorizationClient.requestGUID()
 
             let (_, response) = await authorizationClient.logIn(from: contextProvider)
             if let response = response {
-                let auth = Authentication(guid: guid, accessToken: response.accessToken, userIdentifier: response.userIdentifier)
-                _events.send(.login(auth))
+                let session = Session(
+                    guid: guid,
+                    accessToken: response.accessToken,
+                    userIdentifier: response.userIdentifier
+                )
+                sessionController.updateSession(session)
+                events.send(.signedIn)
             } else {
-                _events.send(.error(.error))
+                presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
             }
         } catch {
-            _events.send(.error(.error))
+            presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
         }
     }
 }

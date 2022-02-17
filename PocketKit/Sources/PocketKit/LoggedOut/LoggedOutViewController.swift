@@ -4,15 +4,15 @@ import SwiftUI
 
 
 class LoggedOutViewController: UIHostingController<LoggedOutView> {
-    convenience init(viewModel: LoggedOutViewModel) {
+    convenience init(viewModel: PocketLoggedOutViewModel) {
         self.init(rootView: LoggedOutView(viewModel: viewModel))
     }
 }
 
 struct LoggedOutView: View {
-    private let viewModel: LoggedOutViewModel
+    private let viewModel: PocketLoggedOutViewModel
 
-    init(viewModel: LoggedOutViewModel) {
+    init(viewModel: PocketLoggedOutViewModel) {
         self.viewModel = viewModel
     }
 
@@ -52,9 +52,9 @@ private struct LoggedOutInfoView: View {
 }
 
 private struct LoggedOutActionsView: View {
-    private let viewModel: LoggedOutViewModel
+    private let viewModel: PocketLoggedOutViewModel
 
-    init(viewModel: LoggedOutViewModel) {
+    init(viewModel: PocketLoggedOutViewModel) {
         self.viewModel = viewModel
     }
 
