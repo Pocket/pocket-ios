@@ -126,7 +126,7 @@ public class AuthorizationClient {
                         return
                     }
 
-                    let response = Response(accessToken: token, userIdentifier: "1a2b3c4d5e6")
+                    let response = Response(accessToken: token, userIdentifier: "")
                     continuation.resume(returning: (request, response))
                 } else {
                     continuation.resume(returning: (request, nil))
