@@ -1,4 +1,5 @@
 import Foundation
+import Combine
 
 
 @propertyWrapper
@@ -7,35 +8,40 @@ class KeychainStorage<T: Codable> {
     private let service: String
     private let account: String
 
-    private var cachedValue: T?
+    private var subject: CurrentValueSubject<T?, Never>!
 
     var wrappedValue: T? {
         get {
-            if let value = cachedValue {
+            if let value = subject.value {
                 return value
             } else {
-                cachedValue = read()
-                return cachedValue
+                subject.value = read()
+                return subject.value
             }
         }
         set {
-            if let newValue = newValue {
-                cachedValue = upsert(value: newValue)
+            if let newValue = newValue, let upserted = upsert(value: newValue) {
+                subject.value = upserted
             } else {
                 delete()
-                cachedValue = nil
             }
         }
+    }
+
+    var projectedValue: AnyPublisher<T?, Never> {
+        subject.eraseToAnyPublisher()
     }
 
     init(keychain: Keychain = SecItemKeychain(), service: String = Bundle.main.bundleIdentifier!, account: String) {
         self.keychain = keychain
         self.service = service
         self.account = account
+
+        subject = CurrentValueSubject(read())
     }
 
     private func upsert(value: T?) -> T? {
-        if cachedValue == nil {
+        if subject.value == nil {
             return add(value: value)
         } else {
             return update(value: value)
@@ -98,7 +104,7 @@ class KeychainStorage<T: Codable> {
         return decoded
     }
 
-    private func delete() {
+    private func _delete() {
         let query: [CFString: Any] = [
             kSecClass: kSecClassGenericPassword,
             kSecAttrService: service,
@@ -106,6 +112,11 @@ class KeychainStorage<T: Codable> {
         ]
 
         _ = keychain.delete(query: query as CFDictionary)
+    }
+
+    private func delete() {
+        _delete()
+        subject.value = nil
     }
 }
 

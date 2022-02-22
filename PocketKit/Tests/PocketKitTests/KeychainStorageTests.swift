@@ -11,7 +11,7 @@ class KeychainStorageTests: XCTestCase {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account)
+        let storage = KeychainStorage<Test?>(keychain: keychain, service: service, account: account)
 
         _ = storage.wrappedValue
 
