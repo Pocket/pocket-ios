@@ -95,12 +95,23 @@ public class AuthorizationClient {
 
     @MainActor
     func logIn(from contextProvider: ASWebAuthenticationPresentationContextProviding) async -> (Request?, Response?) {
-        guard var components = URLComponents(string: "https://getpocket.com/login") else {
+        return await authenticate(with: "/login", contextProvider: contextProvider)
+    }
+
+    @MainActor
+    func signUp(from contextProvider: ASWebAuthenticationPresentationContextProviding) async -> (Request?, Response?) {
+        return await authenticate(with: "/signup", contextProvider: contextProvider)
+    }
+
+    @MainActor
+    private func authenticate(with path: String, contextProvider: ASWebAuthenticationPresentationContextProviding) async -> (Request?, Response?) {
+        guard var components = URLComponents(string: "https://getpocket.com") else {
             return (nil, nil)
         }
 
         let requestRedirect = "pocket"
 
+        components.path = path
         components.queryItems = [
             URLQueryItem(name: "consumer_key", value: consumerKey),
             URLQueryItem(name: "redirect_uri", value: "\(requestRedirect)://fxa"),
