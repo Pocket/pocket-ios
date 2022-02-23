@@ -2,6 +2,7 @@ import Combine
 import Sync
 import Foundation
 import BackgroundTasks
+import UIKit
 
 
 class HomeViewModel {
@@ -34,7 +35,7 @@ class MainViewModel: ObservableObject {
     var selectedSection: AppSection = .home
 
     @Published
-    var isCollapsed = false
+    var isCollapsed = UIDevice.current.userInterfaceIdiom == .phone
 
     var refreshTasks: AnyPublisher<BGTask, Never> {
         refreshCoordinator.tasksPublisher

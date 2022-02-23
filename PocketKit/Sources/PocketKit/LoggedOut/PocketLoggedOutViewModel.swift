@@ -13,17 +13,14 @@ class PocketLoggedOutViewModel {
     var presentedAlert: PocketAlert? = nil
 
     private let authorizationClient: AuthorizationClient
-    private let sessionController: SessionController
-    private let events: PocketEvents
+    private let appSession: AppSession
 
     init(
         authorizationClient: AuthorizationClient,
-        sessionController: SessionController,
-        events: PocketEvents
+        appSession: AppSession
     ) {
         self.authorizationClient = authorizationClient
-        self.sessionController = sessionController
-        self.events = events
+        self.appSession = appSession
     }
 
     func logIn() {
@@ -41,13 +38,11 @@ class PocketLoggedOutViewModel {
 
             let (_, response) = await authorizationClient.logIn(from: contextProvider)
             if let response = response {
-                let session = Session(
+                appSession.currentSession = Session(
                     guid: guid,
                     accessToken: response.accessToken,
                     userIdentifier: response.userIdentifier
                 )
-                sessionController.updateSession(session)
-                events.send(.signedIn)
             } else {
                 presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
             }

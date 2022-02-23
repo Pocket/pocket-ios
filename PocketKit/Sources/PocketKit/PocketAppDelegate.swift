@@ -11,11 +11,10 @@ import BackgroundTasks
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let source: Source
-    private let tracker: Tracker
     private let userDefaults: UserDefaults
     private let firstLaunchDefaults: UserDefaults
-    private let sessionController: SessionController
     private let refreshCoordinator: RefreshCoordinator
+    private let appSession: AppSession
 
     convenience override init() {
         self.init(services: Services.shared)
@@ -23,11 +22,10 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
     init(services: Services) {
         self.source = services.source
-        self.tracker = services.tracker
         self.userDefaults = services.userDefaults
         self.firstLaunchDefaults = services.firstLaunchDefaults
-        self.sessionController = services.sessionController
         self.refreshCoordinator = services.refreshCoordinator
+        self.appSession = services.appSession
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
@@ -36,7 +34,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         if CommandLine.arguments.contains("clearKeychain") {
-            sessionController.clearSession()
+            appSession.currentSession = nil
         }
 
         if CommandLine.arguments.contains("clearUserDefaults") {
@@ -58,7 +56,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         SignOutOnFirstLaunch(
-            sessionController: sessionController,
+            appSession: appSession,
             userDefaults: firstLaunchDefaults
         ).signOutOnFirstLaunch()
 
@@ -71,11 +69,14 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         if let guid = ProcessInfo.processInfo.environment["accessToken"],
            let accessToken = ProcessInfo.processInfo.environment["sessionGUID"],
            let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
-            sessionController.updateSession(Session(guid: guid, accessToken: accessToken, userIdentifier: userIdentifier))
+            appSession.currentSession = Session(
+                guid: guid,
+                accessToken: accessToken,
+                userIdentifier: userIdentifier
+            )
         }
 
         Textiles.initialize()
-        setupTracker()
         refreshCoordinator.initialize()
 
         return true
@@ -94,13 +95,5 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         config.delegateClass = PocketSceneDelegate.self
 
         return config
-    }
-}
-
-private extension PocketAppDelegate {
-    func setupTracker() {
-        let key = Keys.shared.pocketApiConsumerKey
-        let apiUser = APIUserContext(consumerKey: key)
-        tracker.addPersistentContext(apiUser)
     }
 }
