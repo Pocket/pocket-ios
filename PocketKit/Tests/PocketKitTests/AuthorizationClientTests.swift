@@ -269,6 +269,49 @@ extension AuthorizationServiceTests {
     }
 }
 
+extension AuthorizationServiceTests {
+    func test_signUp_buildsCorrectRequest() async {
+        client = AuthorizationClient(
+            consumerKey: "the-consumer-key",
+            urlSession: urlSession,
+            authenticationSession: MockAuthenticationSession.self
+        )
+
+        let (request, _) = await client.signUp(from: self)
+        XCTAssertNotNil(request)
+        XCTAssertEqual(request?.callbackURLScheme, "pocket")
+
+        let components = URLComponents(url: request!.url, resolvingAgainstBaseURL: false)
+        XCTAssertEqual(components?.path, "/signup")
+        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "consumer_key" })?.value, "the-consumer-key")
+        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "redirect_uri" })?.value, "pocket://fxa")
+        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "utm_source" })?.value, "ios")
+    }
+
+    func test_signUp_onSuccess_returnsAccessTokenAndUserIdentifier() async {
+        client = AuthorizationClient(
+            consumerKey: "the-consumer-key",
+            urlSession: urlSession,
+            authenticationSession: MockAuthenticationSession.self
+        )
+
+        let (_, response) = await client.signUp(from: self)
+        XCTAssertEqual(response?.accessToken, "test-access-token")
+        XCTAssertEqual(response?.userIdentifier, "")
+    }
+
+    func test_signUp_onError_returnsNilResponse() async {
+        client = AuthorizationClient(
+            consumerKey: "the-consumer-key",
+            urlSession: urlSession,
+            authenticationSession: MockErrorAuthenticationSession.self
+        )
+
+        let (_, response) = await client.signUp(from: self)
+        XCTAssertNil(response)
+    }
+}
+
 extension AuthorizationServiceTests: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         UIWindow()
