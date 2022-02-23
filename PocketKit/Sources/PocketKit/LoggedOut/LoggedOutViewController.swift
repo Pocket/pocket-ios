@@ -61,7 +61,7 @@ private struct LoggedOutActionsView: View {
     var body: some View {
         VStack {
             Button {
-
+                viewModel.signUp()
             } label: {
                 Text("Sign Up").style(.header.sansSerif.h7.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))

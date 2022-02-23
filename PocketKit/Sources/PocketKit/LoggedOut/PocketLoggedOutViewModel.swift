@@ -24,10 +24,18 @@ class PocketLoggedOutViewModel {
     }
 
     func logIn() {
-        Task { [weak self] in await self?._login() }
+        Task { [weak self] in
+            await self?.authenticate(authorizationClient.logIn)
+        }
     }
 
-    private func _login() async {
+    func signUp() {
+        Task { [weak self] in
+            await self?.authenticate(authorizationClient.signUp)
+        }
+    }
+
+    private func authenticate(_ authentication: (ASWebAuthenticationPresentationContextProviding) async -> (AuthorizationClient.Request?, AuthorizationClient.Response?)) async {
         guard let contextProvider = contextProvider else {
             presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
             return
@@ -36,7 +44,7 @@ class PocketLoggedOutViewModel {
         do {
             let guid = try await authorizationClient.requestGUID()
 
-            let (_, response) = await authorizationClient.logIn(from: contextProvider)
+            let (_, response) = await authentication(contextProvider)
             if let response = response {
                 appSession.currentSession = Session(
                     guid: guid,
