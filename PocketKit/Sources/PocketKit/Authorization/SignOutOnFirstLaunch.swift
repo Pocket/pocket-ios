@@ -5,14 +5,14 @@ import Sync
 class SignOutOnFirstLaunch {
     static let hasAppBeenLaunchedPreviouslyKey = "hasAppBeenLaunchedPreviously"
 
-    private let sessionController: SessionController
+    private let appSession: AppSession
     private let userDefaults: UserDefaults
 
     init(
-        sessionController: SessionController,
+        appSession: AppSession,
         userDefaults: UserDefaults
     ) {
-        self.sessionController = sessionController
+        self.appSession = appSession
         self.userDefaults = userDefaults
     }
 
@@ -30,7 +30,7 @@ class SignOutOnFirstLaunch {
             return
         }
 
-        sessionController.clearSession()
+        appSession.currentSession = nil
         hasAppBeenLaunchedPreviously = true
     }
 }
