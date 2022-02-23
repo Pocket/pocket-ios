@@ -5,19 +5,13 @@ import Foundation
 
 
 class SettingsViewModel {
-    private let sessionController: SessionController
-    private let events: PocketEvents
+    private let appSession: AppSession
 
-    init(
-        sessionController: SessionController,
-        events: PocketEvents
-    ) {
-        self.sessionController = sessionController
-        self.events = events
+    init(appSession: AppSession) {
+        self.appSession = appSession
     }
 
     func signOut() {
-        sessionController.signOut()
-        events.send(.signedOut)
+        appSession.currentSession = nil
     }
 }

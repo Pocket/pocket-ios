@@ -6,15 +6,14 @@ import AuthenticationServices
 
 class PocketLoggedOutViewModelTests: XCTestCase {
     private var viewModel: PocketLoggedOutViewModel!
-    private var sessionController: MockSessionController!
     private var subscriptions: Set<AnyCancellable>!
-    private let events = PocketEvents()
+    private var appSession: AppSession!
 
     @Published
     var foo: String = ""
 
     override func setUp() {
-        sessionController = MockSessionController()
+        appSession = AppSession(keychain: MockKeychain())
         subscriptions = []
     }
 
@@ -36,8 +35,7 @@ class PocketLoggedOutViewModelTests: XCTestCase {
 
         viewModel = PocketLoggedOutViewModel(
             authorizationClient: client,
-            sessionController: sessionController,
-            events: events
+            appSession: appSession
         )
         viewModel.contextProvider = self
 
@@ -64,8 +62,7 @@ class PocketLoggedOutViewModelTests: XCTestCase {
         )
         viewModel = PocketLoggedOutViewModel(
             authorizationClient: client,
-            sessionController: sessionController,
-            events: events
+            appSession: appSession
         )
 
         viewModel.contextProvider = self
@@ -78,37 +75,6 @@ class PocketLoggedOutViewModelTests: XCTestCase {
 
         viewModel.logIn()
         wait(for: [alertExpectation], timeout: 1)
-    }
-
-    func test_logIn_onFxASuccess_sendsLoginEvent() {
-        let urlSession = MockURLSession()
-        urlSession.stubData { request in
-            self.validGUIDResponse(for: request)
-        }
-
-        let client = AuthorizationClient(
-            consumerKey: "test-consumer-key",
-            urlSession: urlSession,
-            authenticationSession: MockAuthenticationSession.self
-        )
-        viewModel = PocketLoggedOutViewModel(
-            authorizationClient: client,
-            sessionController: sessionController,
-            events: events
-        )
-        viewModel.contextProvider = self
-
-        let eventExpectation = expectation(description: "published error event")
-        events.sink { event in
-            guard case .signedIn = event else {
-                XCTFail("Expected login event, but got \(event)")
-                return
-            }
-            eventExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.logIn()
-        wait(for: [eventExpectation], timeout: 1)
     }
 
     func test_logIn_onFxASuccess_updatesSession() {
@@ -124,23 +90,20 @@ class PocketLoggedOutViewModelTests: XCTestCase {
         )
         viewModel = PocketLoggedOutViewModel(
             authorizationClient: client,
-            sessionController: sessionController,
-            events: events
+            appSession: appSession
         )
         viewModel.contextProvider = self
 
-        let eventExpectation = expectation(description: "published error event")
-        events.sink { event in
-            XCTAssertEqual(self.sessionController.updateCalls.count, 1)
-            let lastSession = self.sessionController.updateCalls.last?.session
-            XCTAssertEqual(lastSession?.guid, "sample-guid")
-            XCTAssertEqual(lastSession?.accessToken, "test-access-token")
-            XCTAssertEqual(lastSession?.userIdentifier, "")
-            eventExpectation.fulfill()
+        let sessionExpectation = expectation(description: "published error event")
+        appSession.$currentSession.dropFirst().sink { session in
+            XCTAssertEqual(session?.guid, "sample-guid")
+            XCTAssertEqual(session?.accessToken, "test-access-token")
+            XCTAssertEqual(session?.userIdentifier, "")
+            sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 
         viewModel.logIn()
-        wait(for: [eventExpectation], timeout: 1)
+        wait(for: [sessionExpectation], timeout: 1)
     }
 }
 

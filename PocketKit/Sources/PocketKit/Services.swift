@@ -13,13 +13,14 @@ struct Services {
 
     let userDefaults: UserDefaults
     let firstLaunchDefaults: UserDefaults
-    let sessionController: SessionController
+    let appSession: AppSession
     let urlSession: URLSessionProtocol
     let source: Source
     let tracker: Tracker
     let sceneTracker: SceneTracker
     let refreshCoordinator: RefreshCoordinator
     let authClient: AuthorizationClient
+    let sessionListener: SessionListener
 
     private init() {
         userDefaults = .standard
@@ -28,7 +29,7 @@ struct Services {
         )!
         urlSession = URLSession.shared
 
-        let session = AppSession()
+        appSession = AppSession()
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
             urlSession: urlSession,
@@ -39,16 +40,17 @@ struct Services {
         tracker = PocketTracker(snowplow: snowplow)
 
         source = PocketSource(
-            sessionProvider: session,
+            sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults
         )
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
         refreshCoordinator = RefreshCoordinator(taskScheduler: .shared)
-        sessionController = PocketSessionController(
+
+        sessionListener = SessionListener(
+            appSession: appSession,
             authClient: authClient,
-            session: session,
             tracker: tracker,
             source: source,
             userDefaults: userDefaults
