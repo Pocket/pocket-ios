@@ -40,10 +40,18 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
             )
         }
 
+        func rootViewModel() -> RootViewModel {
+            RootViewModel(
+                appSession: Services.shared.appSession,
+                tracker: Services.shared.tracker,
+                source: Services.shared.source,
+                userDefaults: Services.shared.userDefaults
+            )
+        }
+
         self.init(
             coordinator: RootCoordinator(
-                appSession: Services.shared.appSession,
-                source: Services.shared.source,
+                rootViewModel: rootViewModel(),
                 mainCoordinatorFactory: mainCoordinator,
                 loggedOutCoordinatorFactory: loggedOutCoordinator
             )

@@ -20,7 +20,6 @@ struct Services {
     let sceneTracker: SceneTracker
     let refreshCoordinator: RefreshCoordinator
     let authClient: AuthorizationClient
-    let sessionListener: SessionListener
 
     private init() {
         userDefaults = .standard
@@ -47,14 +46,6 @@ struct Services {
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
         refreshCoordinator = RefreshCoordinator(taskScheduler: .shared)
-
-        sessionListener = SessionListener(
-            appSession: appSession,
-            authClient: authClient,
-            tracker: tracker,
-            source: source,
-            userDefaults: userDefaults
-        )
     }
 }
 

@@ -15,19 +15,16 @@ class RootCoordinator {
 
     private var subscriptions: [AnyCancellable] = []
 
-    private let appSession: AppSession
-    private let source: Source
+    private let rootViewModel: RootViewModel
     private let mainCoordinatorFactory: () -> MainCoordinator
     private let loggedOutCoordinatorFactory: () -> LoggedOutCoordinator
 
     init(
-        appSession: AppSession,
-        source: Source,
+        rootViewModel: RootViewModel,
         mainCoordinatorFactory: @escaping () -> MainCoordinator,
         loggedOutCoordinatorFactory: @escaping () -> LoggedOutCoordinator
     ) {
-        self.appSession = appSession
-        self.source = source
+        self.rootViewModel = rootViewModel
         self.mainCoordinatorFactory = mainCoordinatorFactory
         self.loggedOutCoordinatorFactory = loggedOutCoordinatorFactory
     }
@@ -39,20 +36,19 @@ class RootCoordinator {
 
         window = UIWindow(windowScene: windowScene)
 
-        appSession.$currentSession.receive(on: DispatchQueue.main).sink { [weak self] session in
-            self?.handle(session)
+        rootViewModel.$isLoggedIn.receive(on: DispatchQueue.main).sink { isLoggedIn in
+            self.updateState(isLoggedIn)
         }.store(in: &subscriptions)
 
         window?.makeKeyAndVisible()
     }
 
-    private func handle(_ session: Session?) {
-        if session != nil {
+    private func updateState(_ isLoggedIn: Bool) {
+        if isLoggedIn {
             loggedOutCoordinator = nil
             main = mainCoordinatorFactory()
 
             transition(to: main?.viewController) { [weak self] in
-                self?.source.refresh()
                 self?.main?.showInitialView()
             }
         } else {
