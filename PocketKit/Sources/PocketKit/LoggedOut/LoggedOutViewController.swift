@@ -22,7 +22,7 @@ struct LoggedOutView: View {
 
             Spacer()
 
-            LoggedOutInfoView().padding(EdgeInsets(top: 0, leading: 24, bottom: 0, trailing: 24))
+            LoggedOutCarouselView()
 
             Spacer()
 
@@ -33,20 +33,58 @@ struct LoggedOutView: View {
     }
 }
 
-private struct LoggedOutInfoView: View {
+private struct LoggedOutCarouselView: View {
+    var body: some View {
+        TabView {
+            LoggedOutCarouselPageView(
+                imageAsset: .loggedOutCarousel1,
+                text: "Save what really interests you",
+                detailText: "Collect articles, videos or any online content you like."
+            )
+
+            LoggedOutCarouselPageView(
+                imageAsset: .loggedOutCarousel2,
+                text: "Make the most of any moment",
+                detailText: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket"
+            )
+
+            LoggedOutCarouselPageView(
+                imageAsset: .loggedOutCarousel3,
+                text: "Your quiet corner of the Internet",
+                detailText: "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise."
+            )
+        }
+        .tabViewStyle(.page)
+        .indexViewStyle(.page(backgroundDisplayMode: .always))
+    }
+}
+
+private struct LoggedOutCarouselPageView: View {
+    static let maxWidth: CGFloat = 320
+
+    private let imageAsset: ImageAsset
+    private let text: String
+    private let detailText: String
+
+    init(imageAsset: ImageAsset, text: String, detailText: String) {
+        self.imageAsset = imageAsset
+        self.text = text
+        self.detailText = detailText
+    }
+
     var body: some View {
         VStack(spacing: 16) {
-            Image(asset: .loggedOutInfo)
+            Image(asset: imageAsset)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: 320)
+                .frame(maxWidth: Self.maxWidth)
 
-            Text("Save what really interests you")
+            Text(text)
                 .style(.header.sansSerif.h7)
 
-            Text("Collect articles, videos or any online content you like.")
+            Text(detailText)
                 .style(.header.sansSerif.p4.with(color: .ui.grey5).with { $0.with(lineSpacing: 6).with(alignment: .center) })
-                .frame(maxWidth: 240)
+                .frame(maxWidth: Self.maxWidth)
         }
     }
 }
