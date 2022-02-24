@@ -9,16 +9,27 @@ import Analytics
 class RootCoordinator {
     private var window: UIWindow?
 
-    private let services: Services
-
     private var main: MainCoordinator?
     private var loggedOutCoordinator: LoggedOutCoordinator?
     private var shouldAnimateTransition = false
 
     private var subscriptions: [AnyCancellable] = []
 
-    init(services: Services) {
-        self.services = services
+    private let appSession: AppSession
+    private let source: Source
+    private let mainCoordinatorFactory: () -> MainCoordinator
+    private let loggedOutCoordinatorFactory: () -> LoggedOutCoordinator
+
+    init(
+        appSession: AppSession,
+        source: Source,
+        mainCoordinatorFactory: @escaping () -> MainCoordinator,
+        loggedOutCoordinatorFactory: @escaping () -> LoggedOutCoordinator
+    ) {
+        self.appSession = appSession
+        self.source = source
+        self.mainCoordinatorFactory = mainCoordinatorFactory
+        self.loggedOutCoordinatorFactory = loggedOutCoordinatorFactory
     }
 
     func setup(scene: UIScene) {
@@ -28,7 +39,7 @@ class RootCoordinator {
 
         window = UIWindow(windowScene: windowScene)
 
-        services.appSession.$currentSession.receive(on: DispatchQueue.main).sink { [weak self] session in
+        appSession.$currentSession.receive(on: DispatchQueue.main).sink { [weak self] session in
             self?.handle(session)
         }.store(in: &subscriptions)
 
@@ -38,38 +49,15 @@ class RootCoordinator {
     private func handle(_ session: Session?) {
         if session != nil {
             loggedOutCoordinator = nil
-            main = MainCoordinator(
-                model: MainViewModel(
-                    refreshCoordinator: services.refreshCoordinator,
-                    myList: MyListContainerViewModel(
-                        savedItemsList: SavedItemsListViewModel(
-                            source: services.source,
-                            tracker: services.tracker.childTracker(hosting: .myList.myList)
-                        ),
-                        archivedItemsList: ArchivedItemsListViewModel(
-                            source: services.source,
-                            tracker: services.tracker.childTracker(hosting: .myList.archive)
-                        )
-                    ),
-                    home: HomeViewModel(),
-                    settings: SettingsViewModel(appSession: services.appSession)
-                ),
-                source: services.source,
-                tracker: services.tracker
-            )
+            main = mainCoordinatorFactory()
 
             transition(to: main?.viewController) { [weak self] in
-                self?.services.source.refresh()
+                self?.source.refresh()
                 self?.main?.showInitialView()
             }
         } else {
             main = nil
-            loggedOutCoordinator = LoggedOutCoordinator(
-                viewModel: PocketLoggedOutViewModel(
-                    authorizationClient: services.authClient,
-                    appSession: services.appSession
-                )
-            )
+            loggedOutCoordinator = loggedOutCoordinatorFactory()
 
             transition(to: loggedOutCoordinator?.viewController)
         }
