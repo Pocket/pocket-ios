@@ -10,7 +10,44 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     override convenience init() {
-        self.init(coordinator: RootCoordinator(services: Services.shared))
+        func mainCoordinator() -> MainCoordinator {
+            MainCoordinator(
+                model: MainViewModel(
+                    myList: MyListContainerViewModel(
+                        savedItemsList: SavedItemsListViewModel(
+                            source: Services.shared.source,
+                            tracker: Services.shared.tracker.childTracker(hosting: .myList.myList)
+                        ),
+                        archivedItemsList: ArchivedItemsListViewModel(
+                            source: Services.shared.source,
+                            tracker: Services.shared.tracker.childTracker(hosting: .myList.archive)
+                        )
+                    ),
+                    home: HomeViewModel(),
+                    settings: SettingsViewModel(appSession: Services.shared.appSession)
+                ),
+                source: Services.shared.source,
+                tracker: Services.shared.tracker
+            )
+        }
+
+        func loggedOutCoordinator() -> LoggedOutCoordinator {
+            LoggedOutCoordinator(
+                viewModel: PocketLoggedOutViewModel(
+                    authorizationClient: Services.shared.authClient,
+                    appSession: Services.shared.appSession
+                )
+            )
+        }
+
+        self.init(
+            coordinator: RootCoordinator(
+                appSession: Services.shared.appSession,
+                source: Services.shared.source,
+                mainCoordinatorFactory: mainCoordinator,
+                loggedOutCoordinatorFactory: loggedOutCoordinator
+            )
+        )
     }
 
     public func scene(
