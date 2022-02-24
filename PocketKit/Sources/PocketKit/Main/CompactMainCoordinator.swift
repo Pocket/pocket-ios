@@ -75,10 +75,6 @@ class CompactMainCoordinator: NSObject {
             self?.show(section)
         }.store(in: &subscriptions)
 
-        model.refreshTasks.sink { [weak self] task in
-            self?.home.handleBackgroundRefresh(task: task)
-        }.store(in: &subscriptions)
-
         myList.observeModelChanges()
         home.observeModelChanges()
     }

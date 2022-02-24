@@ -108,10 +108,6 @@ class RegularMainCoordinator: NSObject {
             self?.show(section)
         }.store(in: &subscriptions)
 
-        model.refreshTasks.sink { [weak self] task in
-            self?.home.handleBackgroundRefresh(task: task)
-        }.store(in: &subscriptions)
-
         // My List - Saved Items
         model.myList.savedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert)

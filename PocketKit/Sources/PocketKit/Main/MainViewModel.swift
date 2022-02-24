@@ -37,23 +37,15 @@ class MainViewModel: ObservableObject {
     @Published
     var isCollapsed = UIDevice.current.userInterfaceIdiom == .phone
 
-    var refreshTasks: AnyPublisher<BGTask, Never> {
-        refreshCoordinator.tasksPublisher
-    }
-
     let home: HomeViewModel
     let myList: MyListContainerViewModel
     let settings: SettingsViewModel
 
-    private let refreshCoordinator: RefreshCoordinator
-
     init(
-        refreshCoordinator: RefreshCoordinator,
         myList: MyListContainerViewModel,
         home: HomeViewModel,
         settings: SettingsViewModel
     ) {
-        self.refreshCoordinator = refreshCoordinator
         self.myList = myList
         self.home = home
         self.settings = settings
