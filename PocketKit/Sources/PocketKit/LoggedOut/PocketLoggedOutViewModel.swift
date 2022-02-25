@@ -41,20 +41,14 @@ class PocketLoggedOutViewModel {
             return
         }
 
-        do {
-            let guid = try await authorizationClient.requestGUID()
-
-            let (_, response) = await authentication(contextProvider)
-            if let response = response {
-                appSession.currentSession = Session(
-                    guid: guid,
-                    accessToken: response.accessToken,
-                    userIdentifier: response.userIdentifier
-                )
-            } else {
-                presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
-            }
-        } catch {
+        let (_, response) = await authentication(contextProvider)
+        if let response = response {
+            appSession.currentSession = Session(
+                guid: response.guid,
+                accessToken: response.accessToken,
+                userIdentifier: response.userIdentifier
+            )
+        } else {
             presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
         }
     }
