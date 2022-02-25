@@ -3,7 +3,7 @@ import Apollo
 import Combine
 
 
-class FetchList: AsyncOperation {
+class FetchList: SyncOperation {
     private let token: String
     private let apollo: ApolloClientProtocol
     private let space: Space
@@ -25,21 +25,29 @@ class FetchList: AsyncOperation {
         self.events = events
         self.maxItems = maxItems
         self.lastRefresh = lastRefresh
-
-        super.init()
     }
 
-    override func main() {
-        Task {
-            do {
-                try await fetchList()
+    func execute() async -> SyncOperationResult {
+        do {
+            try await fetchList()
 
-                lastRefresh.refreshed()
-                finishOperation()
-            } catch {
+            lastRefresh.refreshed()
+            return .success
+        } catch {
+            switch error {
+            case is URLSessionClient.URLSessionClientError:
+                return .retry
+            case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
+                switch response?.statusCode {
+                case .some((500...)):
+                    return .retry
+                default:
+                    return .failure(error)
+                }
+            default:
                 Crashlogger.capture(error: error)
                 events.send(.error(error))
-                finishOperation()
+                return .failure(error)
             }
         }
     }

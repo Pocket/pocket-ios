@@ -2,7 +2,7 @@ import Combine
 import Apollo
 
 
-class SavedItemMutationOperation<Mutation: GraphQLMutation>: AsyncOperation {
+class SavedItemMutationOperation<Mutation: GraphQLMutation>: SyncOperation {
     private let apollo: ApolloClientProtocol
     private let events: SyncEvents
     private let mutation: Mutation
@@ -17,17 +17,26 @@ class SavedItemMutationOperation<Mutation: GraphQLMutation>: AsyncOperation {
         self.mutation = mutation
     }
 
-    override func main() {
-        _ = apollo.perform(
-            mutation: mutation,
-            publishResultToStore: false,
-            queue: .main
-        ) { [weak self] result in
-            if case .failure(let error) = result {
-                self?.events.send(.error(error))
+    func execute() async -> SyncOperationResult {
+        do {
+            _ = try await apollo.perform(mutation: mutation)
+            return .success
+        } catch {
+            switch error {
+            case is URLSessionClient.URLSessionClientError:
+                return .retry
+            case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
+                switch response?.statusCode {
+                case .some((500...)):
+                    return .retry
+                default:
+                    return .failure(error)
+                }
+            default:
+                Crashlogger.capture(error: error)
+                events.send(.error(error))
+                return .failure(error)
             }
-
-            self?.finishOperation()
         }
     }
 }

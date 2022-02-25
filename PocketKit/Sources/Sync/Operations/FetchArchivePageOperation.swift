@@ -1,7 +1,7 @@
 import Apollo
 
 
-class FetchArchivePageOperation: AsyncOperation {
+class FetchArchivePageOperation: SyncOperation {
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let accessToken: String
@@ -22,24 +22,33 @@ class FetchArchivePageOperation: AsyncOperation {
         self.isFavorite = isFavorite
     }
 
-    override func main() {
-        Task { await _main() }
-    }
+    func execute() async -> SyncOperationResult {
+        do {
+            let query = UserByTokenQuery(
+                token: accessToken,
+                pagination: PaginationInput(after: cursor, first: 30),
+                savedItemsFilter: SavedItemsFilter(isFavorite: isFavorite, isArchived: true)
+            )
 
-    func _main() async {
-        try? await fetch()
-        finishOperation()
-    }
-
-    func fetch() async throws {
-        let query = UserByTokenQuery(
-            token: accessToken,
-            pagination: PaginationInput(after: cursor, first: 30),
-            savedItemsFilter: SavedItemsFilter(isFavorite: isFavorite, isArchived: true)
-        )
-
-        let result = try await apollo.fetch(query: query)
-        try await updateLocalStorage(result: result)
+            let result = try await apollo.fetch(query: query)
+            try await updateLocalStorage(result: result)
+            return .success
+        } catch {
+            switch error {
+            case is URLSessionClient.URLSessionClientError:
+                return .retry
+            case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
+                switch response?.statusCode {
+                case .some((500...)):
+                    return .retry
+                default:
+                    return .failure(error)
+                }
+            default:
+                Crashlogger.capture(error: error)
+                return .failure(error)
+            }
+        }
     }
 
     @MainActor

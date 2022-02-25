@@ -22,6 +22,7 @@ public class PocketSource: Source {
     private let tokenProvider: AccessTokenProvider
     private let slateService: SlateService
     private let networkMonitor: NetworkPathMonitor
+    private let retrySignal: PassthroughSubject<Void, Never>
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -69,6 +70,7 @@ public class PocketSource: Source {
         self.tokenProvider = accessTokenProvider
         self.slateService = slateService
         self.networkMonitor = networkMonitor
+        self.retrySignal = .init()
 
         observeNetworkStatus()
         restore()
@@ -101,6 +103,7 @@ public class PocketSource: Source {
                 self?.syncQ.isSuspended = true
             case .satisfied:
                 self?.syncQ.isSuspended = false
+                self?.retrySignal.send()
             @unknown default:
                 self?.syncQ.isSuspended = false
             }
@@ -133,8 +136,8 @@ extension PocketSource {
             maxItems: maxItems,
             lastRefresh: lastRefresh
         )
-        operation.completionBlock = completion
-        enqueue(operation: operation, task: .fetchList(maxItems: maxItems))
+
+        enqueue(operation: operation, task: .fetchList(maxItems: maxItems), completion: completion)
     }
 
     public func favorite(item: SavedItem) {
@@ -281,32 +284,40 @@ extension PocketSource {
             isFavorite: isFavorite
         )
 
-        operation.completionBlock = { [weak self] in
+        enqueue(operation: operation, task: .fetchArchivePage(cursor: cursor, isFavorite: isFavorite)) { [weak self] in
             self?._events.send(.loadedArchivePage)
         }
-
-        enqueue(operation: operation, task: .fetchArchivePage(cursor: cursor, isFavorite: isFavorite))
     }
 }
 
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
-    private func enqueue(operation: Operation, task: SyncTask) {
+    private func enqueue(operation: SyncOperation, task: SyncTask, completion: (() -> Void)? = nil) {
         let persistentTask: PersistentSyncTask = space.new()
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
         try? space.save()
 
-        enqueue(operation: operation, persistentTask: persistentTask)
+        enqueue(operation: operation, persistentTask: persistentTask, completion: completion)
     }
 
-    private func enqueue(operation: Operation, persistentTask: PersistentSyncTask) {
-        syncQ.addOperation(operation)
+    private func enqueue(operation: SyncOperation, persistentTask: PersistentSyncTask, completion: (() -> Void)? = nil) {
+        let _operation = RetriableOperation(
+            retrySignal: retrySignal.eraseToAnyPublisher(),
+            operation: operation
+        )
+
+        _operation.completionBlock = completion
+        syncQ.addOperation(_operation)
         syncQ.addBarrierBlock { [weak self] in
             self?.space.context.performAndWait { [weak self] in
                 self?.space.delete(persistentTask)
                 try? self?.space.save()
             }
+        }
+
+        if networkMonitor.currentNetworkPath.status == .satisfied {
+            retrySignal.send()
         }
     }
 

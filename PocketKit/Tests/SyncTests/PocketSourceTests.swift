@@ -59,7 +59,7 @@ class PocketSourceTests: XCTestCase {
         tokenProvider.accessToken = "test-token"
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubFetchList { _, _, _, _, _ in
-            return BlockOperation {
+            TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
         }
@@ -75,7 +75,7 @@ class PocketSourceTests: XCTestCase {
     func test_refreshWithCompletion_callsCompletionWhenFinished() {
         tokenProvider.accessToken = "test-token"
         operations.stubFetchList { _, _, _, _, _ in
-            return BlockOperation { }
+            TestSyncOperation { }
         }
 
         let source = subject()
@@ -91,7 +91,7 @@ class PocketSourceTests: XCTestCase {
     func test_refresh_whenTokenIsNil_callsCompletion() {
         tokenProvider.accessToken = nil
         operations.stubFetchList { _, _, _, _, _ in
-            return BlockOperation { }
+            TestSyncOperation { }
         }
 
         let source = subject()
@@ -108,7 +108,7 @@ class PocketSourceTests: XCTestCase {
         let item = try space.seedSavedItem(remoteID: "test-item-id")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: FavoriteItemMutation) in
-            return BlockOperation {
+            TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
         }
@@ -124,7 +124,7 @@ class PocketSourceTests: XCTestCase {
         let item = try space.seedSavedItem()
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: UnfavoriteItemMutation) in
-            return BlockOperation {
+            TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
         }
@@ -140,7 +140,7 @@ class PocketSourceTests: XCTestCase {
         let item = try space.seedSavedItem(remoteID: "delete-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
-            return BlockOperation {
+            TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
         }
@@ -158,7 +158,7 @@ class PocketSourceTests: XCTestCase {
         let item = try space.seedSavedItem(remoteID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
-            return BlockOperation {
+            TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
         }
@@ -177,7 +177,7 @@ class PocketSourceTests: XCTestCase {
 
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: UnarchiveItemMutation) in
-            return BlockOperation {
+            TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
         }
@@ -193,8 +193,8 @@ class PocketSourceTests: XCTestCase {
 
     func test_saveRecommendation_createsPendingItem_andExecutesSaveItemOperation() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubSaveItemOperation { (_, _, _ , _, _) in
-            return BlockOperation {
+        operations.stubSaveItemOperation { _, _, _ , _, _ in
+            return TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
         }
@@ -274,7 +274,7 @@ class PocketSourceTests: XCTestCase {
 
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
-            return BlockOperation {
+            TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
         }
@@ -361,7 +361,7 @@ class PocketSourceTests: XCTestCase {
         tokenProvider.accessToken = "the-access-token"
         let expectCompletion = expectation(description: "expect the operation to complete")
         operations.stubFetchArchivePage { _, _, _, _, _ in
-            return BlockOperation {
+            TestSyncOperation {
                 expectCompletion.fulfill()
             }
         }
