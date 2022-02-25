@@ -330,11 +330,15 @@ class RegularMainCoordinator: NSObject {
 
 extension RegularMainCoordinator: UISplitViewControllerDelegate {
     func splitViewControllerDidExpand(_ svc: UISplitViewController) {
-        model.isCollapsed = false
+        if model.isCollapsed {
+            model.isCollapsed = false
+        }
     }
 
     func splitViewControllerDidCollapse(_ svc: UISplitViewController) {
-        model.isCollapsed = true
+        if !model.isCollapsed {
+            model.isCollapsed = true
+        }
     }
 }
 

@@ -3,8 +3,8 @@ import XCTest
 
 
 extension PocketSourceTests {
-    func test_itDoesTheThing() throws {
-        tokenProvider.accessToken = "test-token"
+    func test_restoresOperationsInCorrectOrder() throws {
+        sessionProvider.session = MockSession()
 
         let fetchList = expectation(description: "fetchList operation executed")
         operations.stubFetchList { _, _, _, _, _ in
