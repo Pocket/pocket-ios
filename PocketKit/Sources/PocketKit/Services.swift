@@ -31,7 +31,6 @@ struct Services {
         appSession = AppSession()
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
-            urlSession: urlSession,
             authenticationSession: ASWebAuthenticationSession.self
         )
 

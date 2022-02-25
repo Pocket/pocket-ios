@@ -23,34 +23,6 @@ class PocketLoggedOutViewModelTests: XCTestCase {
 }
 
 extension PocketLoggedOutViewModelTests {
-    func test_logIn_onGUIDError_setsPresentedAlert() {
-        let urlSession = MockURLSession()
-        urlSession.stubData { _ in
-            throw FakeError.error
-        }
-
-        let client = AuthorizationClient(
-            consumerKey: "test-consumer-key",
-            urlSession: urlSession,
-            authenticationSession: MockErrorAuthenticationSession.self
-        )
-
-        viewModel = PocketLoggedOutViewModel(
-            authorizationClient: client,
-            appSession: appSession
-        )
-        viewModel.contextProvider = self
-
-        let alertExpectation = expectation(description: "set presented alert")
-        viewModel.$presentedAlert.dropFirst().sink { alert in
-            XCTAssertNotNil(alert)
-            alertExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.logIn()
-        wait(for: [alertExpectation], timeout: 1)
-    }
-
     func test_logIn_onFxAError_setsPresentedAlert() {
         let urlSession = MockURLSession()
         urlSession.stubData { request in
@@ -59,7 +31,6 @@ extension PocketLoggedOutViewModelTests {
 
         let client = AuthorizationClient(
             consumerKey: "test-consumer-key",
-            urlSession: urlSession,
             authenticationSession: MockErrorAuthenticationSession.self
         )
         viewModel = PocketLoggedOutViewModel(
@@ -87,7 +58,6 @@ extension PocketLoggedOutViewModelTests {
 
         let client = AuthorizationClient(
             consumerKey: "test-consumer-key",
-            urlSession: urlSession,
             authenticationSession: MockAuthenticationSession.self
         )
         viewModel = PocketLoggedOutViewModel(
@@ -98,9 +68,9 @@ extension PocketLoggedOutViewModelTests {
 
         let sessionExpectation = expectation(description: "published error event")
         appSession.$currentSession.dropFirst().sink { session in
-            XCTAssertEqual(session?.guid, "sample-guid")
+            XCTAssertEqual(session?.guid, "test-guid")
             XCTAssertEqual(session?.accessToken, "test-access-token")
-            XCTAssertEqual(session?.userIdentifier, "")
+            XCTAssertEqual(session?.userIdentifier, "test-id")
             sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -110,34 +80,6 @@ extension PocketLoggedOutViewModelTests {
 }
 
 extension PocketLoggedOutViewModelTests {
-    func test_signUp_onGUIDError_setsPresentedAlert() {
-        let urlSession = MockURLSession()
-        urlSession.stubData { _ in
-            throw FakeError.error
-        }
-
-        let client = AuthorizationClient(
-            consumerKey: "test-consumer-key",
-            urlSession: urlSession,
-            authenticationSession: MockErrorAuthenticationSession.self
-        )
-
-        viewModel = PocketLoggedOutViewModel(
-            authorizationClient: client,
-            appSession: appSession
-        )
-        viewModel.contextProvider = self
-
-        let alertExpectation = expectation(description: "set presented alert")
-        viewModel.$presentedAlert.dropFirst().sink { alert in
-            XCTAssertNotNil(alert)
-            alertExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.signUp()
-        wait(for: [alertExpectation], timeout: 1)
-    }
-
     func test_signUp_onFxAError_setsPresentedAlert() {
         let urlSession = MockURLSession()
         urlSession.stubData { request in
@@ -146,7 +88,6 @@ extension PocketLoggedOutViewModelTests {
 
         let client = AuthorizationClient(
             consumerKey: "test-consumer-key",
-            urlSession: urlSession,
             authenticationSession: MockErrorAuthenticationSession.self
         )
         viewModel = PocketLoggedOutViewModel(
@@ -174,7 +115,6 @@ extension PocketLoggedOutViewModelTests {
 
         let client = AuthorizationClient(
             consumerKey: "test-consumer-key",
-            urlSession: urlSession,
             authenticationSession: MockAuthenticationSession.self
         )
         viewModel = PocketLoggedOutViewModel(
@@ -185,9 +125,9 @@ extension PocketLoggedOutViewModelTests {
 
         let sessionExpectation = expectation(description: "published error event")
         appSession.$currentSession.dropFirst().sink { session in
-            XCTAssertEqual(session?.guid, "sample-guid")
+            XCTAssertEqual(session?.guid, "test-guid")
             XCTAssertEqual(session?.accessToken, "test-access-token")
-            XCTAssertEqual(session?.userIdentifier, "")
+            XCTAssertEqual(session?.userIdentifier, "test-id")
             sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 

@@ -32,65 +32,15 @@ public class AuthorizationClient {
         )!
     }
 
-    private let urlSession: URLSessionProtocol
     private let consumerKey: String
     private let authenticationSession: AuthenticationSession.Type
 
     init(
         consumerKey: String,
-        urlSession: URLSessionProtocol,
         authenticationSession: AuthenticationSession.Type
     ) {
         self.consumerKey = consumerKey
-        self.urlSession = urlSession
         self.authenticationSession = authenticationSession
-    }
-    
-    func requestGUID() async throws -> String {
-        guard let url = URL(
-            string: "/v3/guid",
-            relativeTo: AuthorizationClient.Constants.baseURL
-        ) else {
-            fatalError("Unable to construct guid URL")
-        }
-        
-        let request = URLRequest(url: url)
-        
-        let (data, response): (Data, URLResponse)
-        do {
-            (data, response) = try await urlSession.data(for: request, delegate: nil)
-        } catch {
-            throw Error.generic(error)
-        }
-        
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw Error.unexpectedError
-        }
-
-        switch httpResponse.statusCode {
-        case 200...299:
-            guard let source = httpResponse.value(forHTTPHeaderField: "X-Source"),
-                  source == "Pocket" else {
-                      throw Error.invalidSource
-            }
-
-            let decoder = JSONDecoder()
-            guard let response = try? decoder.decode(GUIDResponse.self, from: data) else {
-                throw Error.invalidResponse
-            }
-
-            return response.guid
-        case 300...399:
-            throw Error.unexpectedRedirect
-        case 400:
-            throw Error.badRequest
-        case 401...499:
-            throw Error.invalidCredentials
-        case 500...599:
-            throw Error.serverError
-        default:
-            throw Error.unexpectedError
-        }
     }
 
     @MainActor
@@ -132,12 +82,14 @@ public class AuthorizationClient {
                     continuation.resume(returning: (request, nil))
                 } else if let url = url {
                     guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                          let token = components.queryItems?.first(where: { $0.name == "access_token" })?.value else {
+                          let guid = components.queryItems?.first(where: {$0.name == "guid" })?.value,
+                          let token = components.queryItems?.first(where: { $0.name == "access_token" })?.value,
+                          let userID = components.queryItems?.first(where: { $0.name == "id" })?.value else {
                               continuation.resume(returning: (request, nil))
                         return
                     }
 
-                    let response = Response(accessToken: token, userIdentifier: "")
+                    let response = Response(guid: guid, accessToken: token, userIdentifier: userID)
                     continuation.resume(returning: (request, response))
                 } else {
                     continuation.resume(returning: (request, nil))
@@ -157,6 +109,7 @@ extension AuthorizationClient {
     }
 
     struct Response {
+        let guid: String
         let accessToken: String
         let userIdentifier: String
     }
