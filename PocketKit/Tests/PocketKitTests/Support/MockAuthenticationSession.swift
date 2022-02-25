@@ -19,7 +19,7 @@ class MockAuthenticationSession: AuthenticationSession {
     var startCalls = 0
     func start() -> Bool {
         startCalls += 1
-        completionHandler?(URL(string: "\(scheme!)://fxa?access_token=test-access-token")!, nil)
+        completionHandler?(URL(string: "\(scheme!)://fxa?guid=test-guid&access_token=test-access-token&id=test-id")!, nil)
         return true
     }
 }
