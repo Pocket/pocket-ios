@@ -43,11 +43,4 @@ class SignOutTests: XCTestCase {
         try server.stop()
         app.terminate()
     }
-
-//    func test_tappingSignOutButton_sendsUserBackToSignInScreen() {
-//        app.tabBar.settingsButton.wait().tap()
-//        app.settingsView.signOutButton.wait().tap()
-//
-//        app.signInView.emailField.wait()
-//    }
 }
