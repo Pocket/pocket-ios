@@ -3,7 +3,7 @@ import Apollo
 import CoreData
 
 
-class SaveItemOperation: AsyncOperation {
+class SaveItemOperation: SyncOperation {
     private let managedItemID: NSManagedObjectID
     private let url: URL
     private let events: SyncEvents
@@ -22,23 +22,34 @@ class SaveItemOperation: AsyncOperation {
         self.events = events
         self.apollo = apollo
         self.space = space
-
-        super.init()
     }
 
-    override func main() {
+    func execute() async -> SyncOperationResult {
         let input = SavedItemUpsertInput(url: url.absoluteString)
         let mutation = SaveItemMutation(input: input)
 
-        Task {
-            do {
-                let result = try await apollo.perform(mutation: mutation)
-                await handle(result: result)
-            } catch {
+        do {
+            let result = try await apollo.perform(mutation: mutation)
+            await handle(result: result)
+            return .success
+        } catch {
+            switch error {
+            case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
+                switch response?.statusCode {
+                case .some((500...)):
+                    return .retry
+                default:
+                    return .failure(error)
+                }
+            case is URLSessionClient.URLSessionClientError:
+                // An error occurred with the client-side networking stack
+                // either the request timed out or it couldn't be sent for some other reason
+                // retry
+                return .retry
+            default:
                 events.send(.error(error))
+                return .failure(error)
             }
-
-            finishOperation()
         }
     }
 

@@ -29,7 +29,8 @@ extension Space {
     @discardableResult
     func buildItem(
         remoteID: String = "item-1",
-        title: String = "Item 1"
+        title: String = "Item 1",
+        givenURL: URL? = URL(string: "https://example.com/items/item-1")
     ) throws -> Item {
         var item: Item?
 
@@ -37,6 +38,7 @@ extension Space {
             item = new()
             item?.remoteID = remoteID
             item?.title = title
+            item?.givenURL = givenURL
         }
 
         return item!

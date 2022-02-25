@@ -12,13 +12,13 @@ protocol SyncOperationFactory {
         events: SyncEvents,
         maxItems: Int,
         lastRefresh: LastRefresh
-    ) -> Operation
+    ) -> SyncOperation
 
     func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
         events: SyncEvents,
         mutation: Mutation
-    ) -> Operation
+    ) -> SyncOperation
 
     func saveItemOperation(
         managedItemID: NSManagedObjectID,
@@ -26,7 +26,7 @@ protocol SyncOperationFactory {
         events: SyncEvents,
         apollo: ApolloClientProtocol,
         space: Space
-    ) -> Operation
+    ) -> SyncOperation
 
     func fetchArchivePage(
         apollo: ApolloClientProtocol,
@@ -34,7 +34,7 @@ protocol SyncOperationFactory {
         accessToken: String,
         cursor: String?,
         isFavorite: Bool?
-    ) -> Operation
+    ) -> SyncOperation
 }
 
 class OperationFactory: SyncOperationFactory {
@@ -45,7 +45,7 @@ class OperationFactory: SyncOperationFactory {
         events: SyncEvents,
         maxItems: Int,
         lastRefresh: LastRefresh
-    ) -> Operation {
+    ) -> SyncOperation {
         return FetchList(
             token: token,
             apollo: apollo,
@@ -60,7 +60,7 @@ class OperationFactory: SyncOperationFactory {
         apollo: ApolloClientProtocol,
         events: SyncEvents,
         mutation: Mutation
-    ) -> Operation {
+    ) -> SyncOperation {
         SavedItemMutationOperation(apollo: apollo, events: events, mutation: mutation)
     }
 
@@ -70,7 +70,7 @@ class OperationFactory: SyncOperationFactory {
         events: SyncEvents,
         apollo: ApolloClientProtocol,
         space: Space
-    ) -> Operation {
+    ) -> SyncOperation {
         SaveItemOperation(
             managedItemID: managedItemID,
             url: url,
@@ -86,7 +86,7 @@ class OperationFactory: SyncOperationFactory {
         accessToken: String,
         cursor: String?,
         isFavorite: Bool?
-    ) -> Operation {
+    ) -> SyncOperation {
         FetchArchivePageOperation(
             apollo: apollo,
             space: space,

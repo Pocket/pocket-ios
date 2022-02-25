@@ -9,14 +9,13 @@ extension MockApolloClient {
         handler: (() -> ())? = nil
     ) {
         stubPerform { (mutation: T, _, queue, completion) in
-            defer { handler?() }
-
-            let data = Fixture
-                .load(name: fixtureName)
-                .asGraphQLResult(from: mutation)
-
             queue.async {
+                let data = Fixture
+                    .load(name: fixtureName)
+                    .asGraphQLResult(from: mutation)
+
                 completion?(.success(data))
+                handler?()
             }
 
             return MockCancellable()
@@ -29,10 +28,9 @@ extension MockApolloClient {
         handler: (() -> ())? = nil
     ) {
         stubPerform { (mutation: T, _, queue, completion) -> Apollo.Cancellable in
-            defer { handler?() }
-
             queue.async {
                 completion?(.failure(error))
+                handler?()
             }
 
             return MockCancellable()
@@ -57,10 +55,9 @@ extension MockApolloClient {
         handler: (() -> ())? = nil
     ) {
         stubFetch { (query: T, _, _, queue, completion) -> Apollo.Cancellable in
-            defer { handler?() }
-
             queue.async {
                 completion?(.success(fixture.asGraphQLResult(from: query)))
+                handler?()
             }
 
             return MockCancellable()
@@ -73,10 +70,9 @@ extension MockApolloClient {
         handler: (() -> ())? = nil
     ) {
         stubFetch { (query: T, _, _, queue, completion) -> Apollo.Cancellable in
-            defer { handler?() }
-
             queue.async {
                 completion?(.failure(error))
+                handler?()
             }
 
             return MockCancellable()

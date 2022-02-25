@@ -8,8 +8,13 @@ import CoreData
 
 class MockOperationFactory: SyncOperationFactory {
     private var implementations: [String: Any] = [:]
+    private var calls: [String: [Any]] = [:]
+}
 
-    // MARK: - fetchList
+// MARK: - fetchList
+extension MockOperationFactory {
+    typealias FetchListImpl = (String, ApolloClientProtocol, Space, SyncEvents, Int) -> SyncOperation
+
     struct FetchListCall {
         let token: String
         let apollo: ApolloClientProtocol
@@ -18,20 +23,9 @@ class MockOperationFactory: SyncOperationFactory {
         let maxItems: Int
         let lastRefresh: LastRefresh
     }
-    private var fetchListCalls: [FetchListCall] = []
-    func fetchListCall(at index: Int) -> FetchListCall? {
-        guard index < fetchListCalls.count else {
-            return nil
-        }
-
-        return fetchListCalls[index]
-    }
-
-    typealias FetchListImpl = (String, ApolloClientProtocol, Space, SyncEvents, Int) -> Operation
-    private var fetchListImpl: FetchListImpl?
 
     func stubFetchList(impl: @escaping FetchListImpl) {
-        fetchListImpl = impl
+        implementations["fetchList"] = impl
     }
 
     func fetchList(
@@ -41,53 +35,78 @@ class MockOperationFactory: SyncOperationFactory {
         events: SyncEvents,
         maxItems: Int,
         lastRefresh: LastRefresh
-    ) -> Operation {
-        fetchListCalls.append(FetchListCall(token: token, apollo: apollo, space: space, events: events, maxItems: maxItems, lastRefresh: lastRefresh))
-        guard let impl = fetchListImpl else {
+    ) -> SyncOperation {
+        guard let impl = implementations["fetchList"] as? FetchListImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
+
+        calls["fetchList"] = (calls["fetchList"] ?? []) + [
+            FetchListCall(
+                token: token,
+                apollo: apollo,
+                space: space,
+                events: events,
+                maxItems: maxItems,
+                lastRefresh: lastRefresh
+            )
+        ]
 
         return impl(token, apollo, space, events, maxItems)
     }
 
-    // MARK: - itemMutationOperation
-    typealias ItemMutationOperationImpl<Mutation: GraphQLMutation> =
-        (ApolloClientProtocol, SyncEvents, Mutation) -> Operation
 
-    private var itemMutationOperationImpls: [String: Any] = [:]
+    func fetchListCall(at index: Int) -> FetchListCall? {
+        guard let fetchListCalls = calls["fetchList"], index < fetchListCalls.count else {
+            return nil
+        }
+
+        return fetchListCalls[index] as? FetchListCall
+    }
+}
+
+// MARK: - itemMutationOperation
+extension MockOperationFactory {
+    typealias ItemMutationOperationImpl<Mutation: GraphQLMutation> = (
+        ApolloClientProtocol,
+        SyncEvents,
+        Mutation
+    ) -> SyncOperation
 
     func stubItemMutationOperation<Mutation: GraphQLMutation>(
         impl: @escaping ItemMutationOperationImpl<Mutation>
     ) {
-        itemMutationOperationImpls["\(Mutation.self)"] = impl
+        implementations["itemMutationOperation<\(Mutation.self)>"] = impl
     }
 
-    func savedItemMutationOperation<Mutation>(
+    func savedItemMutationOperation<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
         events: SyncEvents,
         mutation: Mutation
-    ) -> Operation where Mutation : GraphQLMutation {
-        guard let impl = itemMutationOperationImpls["\(Mutation.self)"] else {
+    ) -> SyncOperation {
+        guard let impl = implementations["itemMutationOperation<\(Mutation.self)>"] as? ItemMutationOperationImpl<Mutation> else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        guard let typedImpl = impl as? ItemMutationOperationImpl<Mutation> else {
-            fatalError("Stub implementation for \(Self.self).\(#function) is incorrect type")
-        }
-
-        return typedImpl(apollo, events, mutation)
+        return impl(apollo, events, mutation)
     }
+}
 
-    // MARK: - saveItemOperation
-    typealias SaveItemOperationImpl = (NSManagedObjectID, URL, SyncEvents, ApolloClientProtocol, Space) -> Operation
-    private var saveItemOperationImpl: SaveItemOperationImpl?
+// MARK: - saveItemOperation
+extension MockOperationFactory {
+    typealias SaveItemOperationImpl = (NSManagedObjectID, URL, SyncEvents, ApolloClientProtocol, Space) -> SyncOperation
 
     func stubSaveItemOperation(_ impl: @escaping SaveItemOperationImpl) {
-        saveItemOperationImpl = impl
+        implementations["saveItemOperation"] = impl
     }
 
-    func saveItemOperation(managedItemID: NSManagedObjectID, url: URL, events: SyncEvents, apollo: ApolloClientProtocol, space: Space) -> Operation {
-        guard let impl = saveItemOperationImpl else {
+    func saveItemOperation(
+        managedItemID: NSManagedObjectID,
+        url: URL,
+        events: SyncEvents,
+        apollo: ApolloClientProtocol,
+        space: Space
+    ) -> SyncOperation {
+        guard let impl = implementations["saveItemOperation"] as? SaveItemOperationImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
@@ -95,15 +114,22 @@ class MockOperationFactory: SyncOperationFactory {
     }
 }
 
+// MARK: fetchArchivePage
 extension MockOperationFactory {
     static let fetchArchivePage = "fetchArchivePage"
-    typealias FetchArchivedPageImpl = (ApolloClientProtocol, Space, String, String?, Bool?) -> Operation
+    typealias FetchArchivedPageImpl = (ApolloClientProtocol, Space, String, String?, Bool?) -> SyncOperation
 
     func stubFetchArchivePage(impl: FetchArchivedPageImpl?) {
         implementations[Self.fetchArchivePage] = impl
     }
 
-    func fetchArchivePage(apollo: ApolloClientProtocol, space: Space, accessToken: String, cursor: String?, isFavorite: Bool?) -> Operation {
+    func fetchArchivePage(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        accessToken: String,
+        cursor: String?,
+        isFavorite: Bool?
+    ) -> SyncOperation {
         guard let impl = implementations[Self.fetchArchivePage] as? FetchArchivedPageImpl else {
             fatalError("\(Self.self).\(#function) is not stubbed")
         }

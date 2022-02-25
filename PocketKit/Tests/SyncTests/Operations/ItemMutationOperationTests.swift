@@ -24,31 +24,19 @@ class ItemMutationOperationTests: XCTestCase {
         try space.clear()
     }
 
-    func performOperation<Mutation: GraphQLMutation>(
+    func subject<Mutation: GraphQLMutation>(
         mutation: Mutation,
         apollo: ApolloClientProtocol? = nil,
         events: SyncEvents? = nil
-    ) {
-        let operation = SavedItemMutationOperation(
+    ) -> SavedItemMutationOperation<Mutation> {
+        SavedItemMutationOperation(
             apollo: apollo ?? self.apollo,
             events: events ?? self.events,
             mutation: mutation
         )
-
-        let expectationToCompleteOperation = expectation(
-            description: "Expect operation to complete"
-        )
-
-        operation.completionBlock = {
-            expectationToCompleteOperation.fulfill()
-        }
-
-        queue.addOperation(operation)
-
-        wait(for: [expectationToCompleteOperation], timeout: 1)
     }
 
-    func test_operation_performsGivenMutation() throws {
+    func test_operation_performsGivenMutation() async throws {
         try space.seedSavedItem(remoteID: "test-item-id")
 
         apollo.stubPerform(
@@ -57,7 +45,8 @@ class ItemMutationOperationTests: XCTestCase {
         )
 
         let mutation = ArchiveItemMutation(itemID: "test-item-id")
-        performOperation(mutation: mutation)
+        let service = subject(mutation: mutation)
+        _ = await service.execute()
 
         let call = apollo.performCall(
             withMutationType: ArchiveItemMutation.self,
@@ -67,7 +56,7 @@ class ItemMutationOperationTests: XCTestCase {
         XCTAssertEqual(call?.mutation.itemID, "test-item-id")
     }
 
-    func test_operation_whenMutationFails_propagatesError() throws {
+    func test_operation_whenMutationFails_propagatesError() async throws {
         try space.seedSavedItem()
 
         apollo.stubPerform(
@@ -85,9 +74,43 @@ class ItemMutationOperationTests: XCTestCase {
         }.store(in: &subscriptions)
 
         let mutation = ArchiveItemMutation(itemID: "test-item-id")
-        performOperation(mutation: mutation)
+        let service = subject(mutation: mutation)
+        _ = await service.execute()
 
         XCTAssertNotNil(error)
         XCTAssertEqual(error as? TestError, .anError)
+    }
+
+    func test_execute_whenMutationFailsWithHTTP5XX_retries() async throws {
+        let initialError = ResponseCodeInterceptor.ResponseCodeError.withStatusCode(500)
+        apollo.stubPerform(ofMutationType: ArchiveItemMutation.self, toReturnError: initialError)
+
+        let mutation = ArchiveItemMutation(itemID: "test-item-id")
+        let service = subject(mutation: mutation)
+        let result = await service.execute()
+
+        guard case .retry = result else {
+            XCTFail("Expected retry result but got \(result)")
+            return
+        }
+    }
+
+    func test_execute_whenClientSideNetworkFails_retries() async throws {
+        let initialError = URLSessionClient.URLSessionClientError.networkError(
+            data: Data(),
+            response: nil,
+            underlying: TestError.anError
+        )
+
+        apollo.stubPerform(ofMutationType: ArchiveItemMutation.self, toReturnError: initialError)
+
+        let mutation = ArchiveItemMutation(itemID: "test-item-id")
+        let service = subject(mutation: mutation)
+        let result = await service.execute()
+
+        guard case .retry = result else {
+            XCTFail("Expected retry result but got \(result)")
+            return
+        }
     }
 }

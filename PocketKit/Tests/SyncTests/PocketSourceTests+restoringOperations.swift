@@ -8,17 +8,17 @@ extension PocketSourceTests {
 
         let fetchList = expectation(description: "fetchList operation executed")
         operations.stubFetchList { _, _, _, _, _ in
-            BlockOperation { fetchList.fulfill() }
+            TestSyncOperation { fetchList.fulfill() }
         }
 
         let favoriteItem = expectation(description: "favorite operation executed")
         operations.stubItemMutationOperation { (_, _, _: FavoriteItemMutation) in
-            BlockOperation { favoriteItem.fulfill() }
+            TestSyncOperation { favoriteItem.fulfill() }
         }
 
         let archiveItem = expectation(description: "archive operation executed")
         operations.stubItemMutationOperation { (_, _, _: ArchiveItemMutation) in
-            BlockOperation { archiveItem.fulfill() }
+            TestSyncOperation { archiveItem.fulfill() }
         }
 
         let item = try space.seedSavedItem()
@@ -42,15 +42,15 @@ extension PocketSourceTests {
 
         operations.stubFetchList { _, _, _, _, _ in
             XCTFail("Operation should not be re-created after succeeding")
-            return BlockOperation { }
+            return TestSyncOperation { }
         }
         operations.stubItemMutationOperation { (_, _, _: FavoriteItemMutation) in
             XCTFail("Operation should not be re-created after succeeding")
-            return BlockOperation { }
+            return TestSyncOperation { }
         }
         operations.stubItemMutationOperation { (_, _, _: ArchiveItemMutation) in
             XCTFail("Operation should not be re-created after succeeding")
-            return BlockOperation { }
+            return TestSyncOperation { }
         }
 
         source = nil

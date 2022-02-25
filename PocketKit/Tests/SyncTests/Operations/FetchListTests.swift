@@ -27,15 +27,15 @@ class FetchListTests: XCTestCase {
         try space.clear()
     }
 
-    func performOperation(
+    func subject(
         token: String = "test-token",
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil,
         events: SyncEvents? = nil,
         maxItems: Int = 400,
         lastRefresh: LastRefresh? = nil
-    ) {
-        let operation = FetchList(
+    ) -> FetchList {
+        FetchList(
             token: token,
             apollo: apollo ?? self.apollo,
             space: space ?? self.space,
@@ -43,26 +43,15 @@ class FetchListTests: XCTestCase {
             maxItems: maxItems,
             lastRefresh: lastRefresh ?? self.lastRefresh
         )
-
-        let expectationToCompleteOperation = expectation(
-            description: "Expect the FetchList operation to complete"
-        )
-
-        operation.completionBlock = {
-            expectationToCompleteOperation.fulfill()
-        }
-
-        queue.addOperation(operation)
-
-        wait(for: [expectationToCompleteOperation], timeout: 1)
     }
 
-    func test_refresh_fetchesUserByTokenQueryWithGivenToken() {
+    func test_refresh_fetchesUserByTokenQueryWithGivenToken() async {
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
         apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
 
         XCTAssertFalse(apollo.fetchCalls.isEmpty)
         let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
@@ -71,12 +60,13 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(lastRefresh.refreshedCallCount, 1)
     }
 
-    func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() throws {
+    func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() async throws {
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
         apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
 
         let savedItems = try space.fetchAllSavedItems()
         XCTAssertEqual(savedItems.count, 2)
@@ -115,29 +105,31 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(domain?.logo, URL(string: "http://example.com/item-1/domain-logo.jpg")!)
     }
 
-    func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() throws {
+    func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "duplicate-list", asResultType: UserByTokenQuery.self)
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
 
         let items = try space.fetchSavedItems()
         XCTAssertEqual(items.count, 1)
     }
 
-    func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() throws {
+    func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "updated-item", asResultType: UserByTokenQuery.self)
         try space.seedSavedItem(
             remoteID: "saved-item-1",
             item: space.buildItem(title: "Item 1")
         )
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
 
         let item = try space.fetchSavedItem(byRemoteID: "saved-item-1")
         XCTAssertEqual(item?.item?.title, "Updated Item 1")
     }
 
-    func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() throws {
+    func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() async throws {
         apollo.stubFetch(ofQueryType: UserByTokenQuery.self, toReturnError: TestError.anError)
 
         var error: Error?
@@ -149,13 +141,14 @@ class FetchListTests: XCTestCase {
             error = actualError
         }.store(in: &cancellables)
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
 
         XCTAssertEqual(error as? TestError, .anError)
         XCTAssertEqual(lastRefresh.refreshedCallCount, 0)
     }
 
-    func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() throws {
+    func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() async throws {
         var fetches = 0
         apollo.stubFetch { (query: UserByTokenQuery, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
@@ -178,13 +171,14 @@ class FetchListTests: XCTestCase {
             return MockCancellable()
         }
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
 
         let items = try space.fetchSavedItems()
         XCTAssertEqual(items.count, 2)
     }
 
-    func test_refresh_whenItemCountExceedsMax_fetchesMaxNumberOfItems() throws {
+    func test_refresh_whenItemCountExceedsMax_fetchesMaxNumberOfItems() async throws {
         var fetches = 0
         apollo.stubFetch { (query: UserByTokenQuery, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
@@ -211,44 +205,80 @@ class FetchListTests: XCTestCase {
             return MockCancellable()
         }
 
-        performOperation(maxItems: 3)
+        let service = subject(maxItems: 3)
+        _ = await service.execute()
 
         let items = try space.fetchSavedItems()
         XCTAssertEqual(items.count, 3)
     }
 
-    func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() {
+    func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() async {
         lastRefresh.stubGetLastRefresh { 123456789 }
 
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
         apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
 
         let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(call?.query.savedItemsFilter)
         XCTAssertEqual(call?.query.savedItemsFilter?.updatedSince, 123456789)
     }
 
-    func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() {
+    func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
         apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
 
         let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.savedItemsFilter?.status, .unread)
     }
 
-    func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() {
+    func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {
         apollo.stubFetch(
             toReturnFixturedNamed: "empty-list",
             asResultType: UserByTokenQuery.self
         )
 
-        performOperation()
+        let service = subject()
+        _ = await service.execute()
+
         XCTAssertEqual(lastRefresh.refreshedCallCount, 1)
+    }
+
+    func test_execute_whenClientSideNetworkFails_retries() async {
+        let initialError = URLSessionClient.URLSessionClientError.networkError(
+            data: Data(),
+            response: nil,
+            underlying: TestError.anError
+        )
+
+        apollo.stubFetch(ofQueryType: UserByTokenQuery.self, toReturnError: initialError)
+
+        let service = subject()
+        let result = await service.execute()
+
+        guard case .retry = result else {
+            XCTFail("Expected retry result but got \(result)")
+            return
+        }
+    }
+
+    func test_execute_whenResponseIs5XX_retries() async {
+        let initialError = ResponseCodeInterceptor.ResponseCodeError.withStatusCode(500)
+        apollo.stubFetch(ofQueryType: UserByTokenQuery.self, toReturnError: initialError)
+
+        let service = subject()
+        let result = await service.execute()
+
+        guard case .retry = result else {
+            XCTFail("Expected retry result but got \(result)")
+            return
+        }
     }
 }
