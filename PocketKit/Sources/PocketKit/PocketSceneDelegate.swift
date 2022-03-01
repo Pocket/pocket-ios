@@ -1,5 +1,6 @@
 import UIKit
 import AuthenticationServices
+import Network
 
 
 public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -35,7 +36,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
             LoggedOutCoordinator(
                 viewModel: PocketLoggedOutViewModel(
                     authorizationClient: Services.shared.authClient,
-                    appSession: Services.shared.appSession
+                    appSession: Services.shared.appSession,
+                    networkPathMonitor: NWPathMonitor()
                 )
             )
         }

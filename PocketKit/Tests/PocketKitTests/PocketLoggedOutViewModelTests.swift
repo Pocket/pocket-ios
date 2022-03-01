@@ -2,11 +2,13 @@ import XCTest
 @testable import PocketKit
 import Combine
 import AuthenticationServices
+import Sync
 
 
 class PocketLoggedOutViewModelTests: XCTestCase {
     private var authorizationClient: AuthorizationClient!
     private var appSession: AppSession!
+    private var networkPathMonitor: MockNetworkPathMonitor!
     private var subscriptions: Set<AnyCancellable>!
 
     @Published
@@ -18,6 +20,7 @@ class PocketLoggedOutViewModelTests: XCTestCase {
             authenticationSession: MockAuthenticationSession.self
         )
         appSession = AppSession(keychain: MockKeychain())
+        networkPathMonitor = MockNetworkPathMonitor()
         subscriptions = []
     }
 
@@ -27,11 +30,13 @@ class PocketLoggedOutViewModelTests: XCTestCase {
 
     func subject(
         authorizationClient: AuthorizationClient? = nil,
-        appSession: AppSession? = nil
+        appSession: AppSession? = nil,
+        networkPathMonitor: NetworkPathMonitor? = nil
     ) -> PocketLoggedOutViewModel {
         let viewModel = PocketLoggedOutViewModel(
             authorizationClient: authorizationClient ?? self.authorizationClient,
-            appSession: appSession ?? self.appSession
+            appSession: appSession ?? self.appSession,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
         )
         viewModel.contextProvider = self
         return viewModel
@@ -103,6 +108,36 @@ extension PocketLoggedOutViewModelTests {
 
         viewModel.signUp()
         wait(for: [sessionExpectation], timeout: 1)
+    }
+}
+
+extension PocketLoggedOutViewModelTests {
+    func test_logIn_whenOffline_setsPresentOfflineView() {
+        let viewModel = subject()
+        networkPathMonitor.update(status: .unsatisfied)
+
+        let offlineExpectation = expectation(description: "update presentOfflineView")
+        viewModel.$presentOfflineView.dropFirst().sink { present in
+            XCTAssertTrue(present)
+            offlineExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.logIn()
+        wait(for: [offlineExpectation], timeout: 1)
+    }
+
+    func test_signUp_whenOffline_setsPresentOfflineView() {
+        let viewModel = subject()
+        networkPathMonitor.update(status: .unsatisfied)
+
+        let offlineExpectation = expectation(description: "update presentOfflineView")
+        viewModel.$presentOfflineView.dropFirst().sink { present in
+            XCTAssertTrue(present)
+            offlineExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.signUp()
+        wait(for: [offlineExpectation], timeout: 1)
     }
 }
 
