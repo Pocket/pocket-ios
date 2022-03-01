@@ -39,6 +39,9 @@ class RootViewModel {
     }
 
     private func setUpSession(_ session: Session) {
+        tracker.resetPersistentContexts([
+            APIUserContext(consumerKey: Keys.shared.pocketApiConsumerKey)
+        ])
         tracker.addPersistentContext(UserContext(guid: session.guid, userID: session.userIdentifier))
         source.refresh()
     }
