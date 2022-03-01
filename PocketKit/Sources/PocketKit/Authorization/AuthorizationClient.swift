@@ -82,13 +82,12 @@ public class AuthorizationClient {
                     continuation.resume(returning: (request, nil))
                 } else if let url = url {
                     guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                          let token = components.queryItems?.first(where: { $0.name == "access_token" })?.value else {
+                          let guid = components.queryItems?.first(where: {$0.name == "guid" })?.value,
+                          let token = components.queryItems?.first(where: { $0.name == "access_token" })?.value,
+                          let userID = components.queryItems?.first(where: { $0.name == "id" })?.value else {
                               continuation.resume(returning: (request, nil))
                         return
                     }
-
-                    let guid = components.queryItems?.first(where: {$0.name == "guid" })?.value ?? ""
-                    let userID = components.queryItems?.first(where: { $0.name == "id" })?.value ?? ""
 
                     let response = Response(guid: guid, accessToken: token, userIdentifier: userID)
                     continuation.resume(returning: (request, response))
