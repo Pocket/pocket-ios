@@ -10,7 +10,8 @@ class LoggedOutViewController: UIHostingController<LoggedOutView> {
 }
 
 struct LoggedOutView: View {
-    private let viewModel: PocketLoggedOutViewModel
+    @ObservedObject
+    private var viewModel: PocketLoggedOutViewModel
 
     init(viewModel: PocketLoggedOutViewModel) {
         self.viewModel = viewModel
@@ -30,6 +31,9 @@ struct LoggedOutView: View {
         }
         .preferredColorScheme(.light)
         .padding(16)
+        .sheet(isPresented: $viewModel.presentOfflineView) {
+            LoggedOutOfflineView(isPresented: $viewModel.presentOfflineView)
+        }
     }
 }
 
