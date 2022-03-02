@@ -82,6 +82,9 @@ extension UIContext {
         case reportItem = "report_item"
         case submit
         case settings
+        case loggedOut = "logged_out"
+        case logIn = "log_in"
+        case signUp = "sign_up"
     }
 }
 
@@ -93,6 +96,10 @@ extension UIContext {
 }
 
 extension UIContext {
+    public struct LoggedOut {
+        public let screen = UIContext(type: .screen, identifier: .loggedOut)
+    }
+
     public struct Home {
         public let screen = UIContext(type: .screen, identifier: .home)
         
@@ -129,7 +136,8 @@ extension UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .recommendation, componentDetail: .homeCard, index: index)
         }
     }
-    
+
+    public static let loggedOut = LoggedOut()
     public static let home = Home()
     public static let myList = MyList()
     public static let settings = Settings()

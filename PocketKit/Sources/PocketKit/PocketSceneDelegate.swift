@@ -37,7 +37,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                 viewModel: LoggedOutViewModel(
                     authorizationClient: Services.shared.authClient,
                     appSession: Services.shared.appSession,
-                    networkPathMonitor: NWPathMonitor()
+                    networkPathMonitor: NWPathMonitor(),
+                    tracker: Services.shared.tracker.childTracker(hosting: .loggedOut.screen)
                 )
             )
         }

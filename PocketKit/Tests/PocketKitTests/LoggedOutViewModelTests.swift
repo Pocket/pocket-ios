@@ -3,12 +3,14 @@ import XCTest
 import Combine
 import AuthenticationServices
 import Sync
+import Analytics
 
 
 class LoggedOutViewModelTests: XCTestCase {
     private var authorizationClient: AuthorizationClient!
     private var appSession: AppSession!
     private var networkPathMonitor: MockNetworkPathMonitor!
+    private var tracker: MockTracker!
     private var subscriptions: Set<AnyCancellable>!
 
     override func setUp() {
@@ -18,6 +20,7 @@ class LoggedOutViewModelTests: XCTestCase {
         )
         appSession = AppSession(keychain: MockKeychain())
         networkPathMonitor = MockNetworkPathMonitor()
+        tracker = MockTracker()
         subscriptions = []
     }
 
@@ -28,12 +31,14 @@ class LoggedOutViewModelTests: XCTestCase {
     func subject(
         authorizationClient: AuthorizationClient? = nil,
         appSession: AppSession? = nil,
-        networkPathMonitor: NetworkPathMonitor? = nil
+        networkPathMonitor: NetworkPathMonitor? = nil,
+        tracker: Tracker? = nil
     ) -> LoggedOutViewModel {
         let viewModel = LoggedOutViewModel(
             authorizationClient: authorizationClient ?? self.authorizationClient,
             appSession: appSession ?? self.appSession,
-            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
+            tracker: tracker ?? self.tracker
         )
         viewModel.contextProvider = self
         return viewModel
