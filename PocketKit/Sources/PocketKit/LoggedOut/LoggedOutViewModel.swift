@@ -3,6 +3,7 @@ import Combine
 import AuthenticationServices
 import Sync
 import SwiftUI
+import Network
 
 
 enum LoggedOutError: Error {
@@ -12,10 +13,6 @@ enum LoggedOutError: Error {
 class LoggedOutViewModel: ObservableObject {
     weak var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
-    private var isOffline: Bool {
-        networkPathMonitor.currentNetworkPath.status == .unsatisfied
-    }
-
     @Published
     var presentedAlert: PocketAlert? = nil
 
@@ -24,7 +21,12 @@ class LoggedOutViewModel: ObservableObject {
 
     private let authorizationClient: AuthorizationClient
     private let appSession: AppSession
+
     private let networkPathMonitor: NetworkPathMonitor
+    private var currentNetworkStatus: NWPath.Status
+    private var isOffline: Bool {
+        currentNetworkStatus == .unsatisfied
+    }
 
     init(
         authorizationClient: AuthorizationClient,
@@ -36,6 +38,23 @@ class LoggedOutViewModel: ObservableObject {
         self.networkPathMonitor = networkPathMonitor
 
         networkPathMonitor.start(queue: DispatchQueue.global())
+        currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
+        networkPathMonitor.updateHandler = { [weak self] path in
+            DispatchQueue.main.async {
+                self?.updateStatus(path.status)
+            }
+        }
+    }
+
+    private func updateStatus(_ status: NWPath.Status) {
+        guard status != currentNetworkStatus else {
+            return
+        }
+
+        if currentNetworkStatus == .unsatisfied, status == .satisfied, presentOfflineView == true {
+            presentOfflineView = false
+        }
+        currentNetworkStatus = status
     }
 
     func logIn() {

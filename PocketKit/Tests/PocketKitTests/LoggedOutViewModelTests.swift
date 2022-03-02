@@ -109,7 +109,7 @@ extension LoggedOutViewModelTests {
 }
 
 extension LoggedOutViewModelTests {
-    func test_logIn_whenOffline_setsPresentOfflineView() {
+    func test_logIn_whenOffline_setsPresentOfflineViewToTrue() {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
 
@@ -123,7 +123,30 @@ extension LoggedOutViewModelTests {
         wait(for: [offlineExpectation], timeout: 1)
     }
 
-    func test_signUp_whenOffline_setsPresentOfflineView() {
+    func test_logIn_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() {
+        let viewModel = subject()
+        networkPathMonitor.update(status: .unsatisfied)
+
+        let offlineExpectation = expectation(description: "set presentOfflineView to true")
+        let onlineExpectation = expectation(description: "set presentOfflineView to false")
+        var count = 0
+        viewModel.$presentOfflineView.dropFirst().sink { present in
+            count += 1
+            if count == 1 {
+                XCTAssertTrue(present)
+                offlineExpectation.fulfill()
+            } else if count == 2 {
+                XCTAssertFalse(present)
+                onlineExpectation.fulfill()
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.logIn()
+        networkPathMonitor.update(status: .satisfied)
+        wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
+    }
+
+    func test_signUp_whenOffline_setsPresentOfflineViewToTrue() {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
 
@@ -135,6 +158,29 @@ extension LoggedOutViewModelTests {
 
         viewModel.signUp()
         wait(for: [offlineExpectation], timeout: 1)
+    }
+
+    func test_signUp_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() {
+        let viewModel = subject()
+        networkPathMonitor.update(status: .unsatisfied)
+
+        let offlineExpectation = expectation(description: "set presentOfflineView to true")
+        let onlineExpectation = expectation(description: "set presentOfflineView to false")
+        var count = 0
+        viewModel.$presentOfflineView.dropFirst().sink { present in
+            count += 1
+            if count == 1 {
+                XCTAssertTrue(present)
+                offlineExpectation.fulfill()
+            } else if count == 2 {
+                XCTAssertFalse(present)
+                onlineExpectation.fulfill()
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.signUp()
+        networkPathMonitor.update(status: .satisfied)
+        wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
     }
 }
 
