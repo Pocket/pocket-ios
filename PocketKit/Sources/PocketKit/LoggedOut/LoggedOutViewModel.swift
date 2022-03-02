@@ -10,6 +10,11 @@ enum LoggedOutError: Error {
     case error
 }
 
+enum LoggedOutAction {
+    case logIn
+    case signUp
+}
+
 class LoggedOutViewModel: ObservableObject {
     weak var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
@@ -18,12 +23,14 @@ class LoggedOutViewModel: ObservableObject {
 
     @Published
     var presentOfflineView: Bool = false
+    private(set) var automaticallyDismissed = false
+    private(set) var lastAction: LoggedOutAction? = nil
 
     private let authorizationClient: AuthorizationClient
     private let appSession: AppSession
 
     private let networkPathMonitor: NetworkPathMonitor
-    private var currentNetworkStatus: NWPath.Status
+    private(set) var currentNetworkStatus: NWPath.Status
     private var isOffline: Bool {
         currentNetworkStatus == .unsatisfied
     }
@@ -52,13 +59,18 @@ class LoggedOutViewModel: ObservableObject {
         }
 
         if currentNetworkStatus == .unsatisfied, status == .satisfied, presentOfflineView == true {
+            automaticallyDismissed = true
             presentOfflineView = false
         }
         currentNetworkStatus = status
     }
 
+    @MainActor
     func logIn() {
+        lastAction = .logIn
+
         guard !isOffline else {
+            automaticallyDismissed = false
             presentOfflineView = true
             return
         }
@@ -68,8 +80,12 @@ class LoggedOutViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     func signUp() {
+        lastAction = .signUp
+
         guard !isOffline else {
+            automaticallyDismissed = false
             presentOfflineView = true
             return
         }
@@ -82,6 +98,7 @@ class LoggedOutViewModel: ObservableObject {
     private func authenticate(_ authentication: (ASWebAuthenticationPresentationContextProviding) async -> (AuthorizationClient.Request?, AuthorizationClient.Response?)) async {
         guard let contextProvider = contextProvider else {
             presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
+            lastAction = nil
             return
         }
 
@@ -95,5 +112,7 @@ class LoggedOutViewModel: ObservableObject {
         } else {
             presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
         }
+
+        lastAction = nil
     }
 }
