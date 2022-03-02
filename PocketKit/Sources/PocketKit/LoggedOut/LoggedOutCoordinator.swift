@@ -8,11 +8,11 @@ class LoggedOutCoordinator: NSObject {
         LoggedOutViewController(viewModel: viewModel)
     }()
 
-    private var viewModel: PocketLoggedOutViewModel
+    private var viewModel: LoggedOutViewModel
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(viewModel: PocketLoggedOutViewModel) {
+    init(viewModel: LoggedOutViewModel) {
         self.viewModel = viewModel
         super.init()
 

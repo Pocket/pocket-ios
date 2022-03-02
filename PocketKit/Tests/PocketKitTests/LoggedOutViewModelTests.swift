@@ -5,14 +5,11 @@ import AuthenticationServices
 import Sync
 
 
-class PocketLoggedOutViewModelTests: XCTestCase {
+class LoggedOutViewModelTests: XCTestCase {
     private var authorizationClient: AuthorizationClient!
     private var appSession: AppSession!
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var subscriptions: Set<AnyCancellable>!
-
-    @Published
-    var foo: String = ""
 
     override func setUp() {
         authorizationClient = AuthorizationClient(
@@ -32,8 +29,8 @@ class PocketLoggedOutViewModelTests: XCTestCase {
         authorizationClient: AuthorizationClient? = nil,
         appSession: AppSession? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil
-    ) -> PocketLoggedOutViewModel {
-        let viewModel = PocketLoggedOutViewModel(
+    ) -> LoggedOutViewModel {
+        let viewModel = LoggedOutViewModel(
             authorizationClient: authorizationClient ?? self.authorizationClient,
             appSession: appSession ?? self.appSession,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
@@ -43,7 +40,7 @@ class PocketLoggedOutViewModelTests: XCTestCase {
     }
 }
 
-extension PocketLoggedOutViewModelTests {
+extension LoggedOutViewModelTests {
     func test_logIn_onFxAError_setsPresentedAlert() {
         let failingClient = AuthorizationClient(
             consumerKey: "test-consumer-key",
@@ -77,7 +74,7 @@ extension PocketLoggedOutViewModelTests {
     }
 }
 
-extension PocketLoggedOutViewModelTests {
+extension LoggedOutViewModelTests {
     func test_signUp_onFxAError_setsPresentedAlert() {
         let failingClient = AuthorizationClient(
             consumerKey: "test-consumer-key",
@@ -111,7 +108,7 @@ extension PocketLoggedOutViewModelTests {
     }
 }
 
-extension PocketLoggedOutViewModelTests {
+extension LoggedOutViewModelTests {
     func test_logIn_whenOffline_setsPresentOfflineView() {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
@@ -141,7 +138,7 @@ extension PocketLoggedOutViewModelTests {
     }
 }
 
-extension PocketLoggedOutViewModelTests: ASWebAuthenticationPresentationContextProviding {
+extension LoggedOutViewModelTests: ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
         UIWindow()
     }

@@ -4,16 +4,16 @@ import SwiftUI
 
 
 class LoggedOutViewController: UIHostingController<LoggedOutView> {
-    convenience init(viewModel: PocketLoggedOutViewModel) {
+    convenience init(viewModel: LoggedOutViewModel) {
         self.init(rootView: LoggedOutView(viewModel: viewModel))
     }
 }
 
 struct LoggedOutView: View {
     @ObservedObject
-    private var viewModel: PocketLoggedOutViewModel
+    private var viewModel: LoggedOutViewModel
 
-    init(viewModel: PocketLoggedOutViewModel) {
+    init(viewModel: LoggedOutViewModel) {
         self.viewModel = viewModel
     }
 
@@ -94,9 +94,9 @@ private struct LoggedOutCarouselPageView: View {
 }
 
 private struct LoggedOutActionsView: View {
-    private let viewModel: PocketLoggedOutViewModel
+    private let viewModel: LoggedOutViewModel
 
-    init(viewModel: PocketLoggedOutViewModel) {
+    init(viewModel: LoggedOutViewModel) {
         self.viewModel = viewModel
     }
 
