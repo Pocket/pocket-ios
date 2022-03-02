@@ -34,7 +34,7 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         func loggedOutCoordinator() -> LoggedOutCoordinator {
             LoggedOutCoordinator(
-                viewModel: PocketLoggedOutViewModel(
+                viewModel: LoggedOutViewModel(
                     authorizationClient: Services.shared.authClient,
                     appSession: Services.shared.appSession,
                     networkPathMonitor: NWPathMonitor()
