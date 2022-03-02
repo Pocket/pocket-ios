@@ -32,6 +32,8 @@ struct LoggedOutView: View {
         .preferredColorScheme(.light)
         .padding(16)
         .sheet(isPresented: $viewModel.presentOfflineView) {
+            
+        } content: {
             LoggedOutOfflineView(isPresented: $viewModel.presentOfflineView)
         }
     }
