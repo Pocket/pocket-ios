@@ -41,7 +41,7 @@ class LoggedOutViewModelTests: XCTestCase {
 }
 
 extension LoggedOutViewModelTests {
-    func test_logIn_onFxAError_setsPresentedAlert() {
+    func test_logIn_onFxAError_setsPresentedAlert() async {
         let failingClient = AuthorizationClient(
             consumerKey: "test-consumer-key",
             authenticationSession: MockErrorAuthenticationSession.self
@@ -54,11 +54,11 @@ extension LoggedOutViewModelTests {
             alertExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.logIn()
+        await viewModel.logIn()
         wait(for: [alertExpectation], timeout: 1)
     }
 
-    func test_logIn_onFxASuccess_updatesSession() {
+    func test_logIn_onFxASuccess_updatesSession() async {
         let viewModel = subject()
 
         let sessionExpectation = expectation(description: "published error event")
@@ -69,13 +69,13 @@ extension LoggedOutViewModelTests {
             sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.logIn()
+        await viewModel.logIn()
         wait(for: [sessionExpectation], timeout: 1)
     }
 }
 
 extension LoggedOutViewModelTests {
-    func test_signUp_onFxAError_setsPresentedAlert() {
+    func test_signUp_onFxAError_setsPresentedAlert() async {
         let failingClient = AuthorizationClient(
             consumerKey: "test-consumer-key",
             authenticationSession: MockErrorAuthenticationSession.self
@@ -88,11 +88,11 @@ extension LoggedOutViewModelTests {
             alertExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.signUp()
+        await viewModel.signUp()
         wait(for: [alertExpectation], timeout: 1)
     }
 
-    func test_signUp_onFxASuccess_updatesSession() {
+    func test_signUp_onFxASuccess_updatesSession() async {
         let viewModel = subject()
 
         let sessionExpectation = expectation(description: "published error event")
@@ -103,13 +103,13 @@ extension LoggedOutViewModelTests {
             sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.signUp()
+        await viewModel.signUp()
         wait(for: [sessionExpectation], timeout: 1)
     }
 }
 
 extension LoggedOutViewModelTests {
-    func test_logIn_whenOffline_setsPresentOfflineViewToTrue() {
+    func test_logIn_whenOffline_setsPresentOfflineViewToTrue() async {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
 
@@ -119,11 +119,11 @@ extension LoggedOutViewModelTests {
             offlineExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.logIn()
+        await viewModel.logIn()
         wait(for: [offlineExpectation], timeout: 1)
     }
 
-    func test_logIn_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() {
+    func test_logIn_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() async {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
 
@@ -141,12 +141,12 @@ extension LoggedOutViewModelTests {
             }
         }.store(in: &subscriptions)
 
-        viewModel.logIn()
+        await viewModel.logIn()
         networkPathMonitor.update(status: .satisfied)
         wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
     }
 
-    func test_signUp_whenOffline_setsPresentOfflineViewToTrue() {
+    func test_signUp_whenOffline_setsPresentOfflineViewToTrue() async {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
 
@@ -156,11 +156,11 @@ extension LoggedOutViewModelTests {
             offlineExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.signUp()
+        await viewModel.signUp()
         wait(for: [offlineExpectation], timeout: 1)
     }
 
-    func test_signUp_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() {
+    func test_signUp_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() async {
         let viewModel = subject()
         networkPathMonitor.update(status: .unsatisfied)
 
@@ -178,7 +178,7 @@ extension LoggedOutViewModelTests {
             }
         }.store(in: &subscriptions)
 
-        viewModel.signUp()
+        await viewModel.signUp()
         networkPathMonitor.update(status: .satisfied)
         wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
     }
