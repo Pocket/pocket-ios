@@ -11,6 +11,7 @@ private struct GUIDResponse: Decodable {
 }
 
 public class AuthorizationClient {
+    typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession
     enum Error: Swift.Error {
         case invalidResponse
         case invalidSource
@@ -33,14 +34,14 @@ public class AuthorizationClient {
     }
 
     private let consumerKey: String
-    private let authenticationSession: AuthenticationSession.Type
+    private let authenticationSessionFactory: AuthenticationSessionFactory
 
     init(
         consumerKey: String,
-        authenticationSession: AuthenticationSession.Type
+        authenticationSessionFactory: @escaping AuthenticationSessionFactory
     ) {
         self.consumerKey = consumerKey
-        self.authenticationSession = authenticationSession
+        self.authenticationSessionFactory = authenticationSessionFactory
     }
 
     @MainActor
@@ -73,10 +74,7 @@ public class AuthorizationClient {
         }
 
         return await withCheckedContinuation { continuation in
-            var session = authenticationSession.init(
-                url: requestURL,
-                callbackURLScheme: requestRedirect
-            ) { url, error in
+            var session = authenticationSessionFactory(requestURL, requestRedirect) { url, error in
                 let request = Request(url: requestURL, callbackURLScheme: requestRedirect)
                 if error != nil {
                     continuation.resume(returning: (request, nil))

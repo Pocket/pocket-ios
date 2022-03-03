@@ -13,9 +13,6 @@ struct LoggedOutView: View {
     @ObservedObject
     private var viewModel: LoggedOutViewModel
 
-    @State
-    private var didDismissSheet = false
-
     init(viewModel: LoggedOutViewModel) {
         self.viewModel = viewModel
     }
@@ -34,23 +31,9 @@ struct LoggedOutView: View {
         }
         .preferredColorScheme(.light)
         .padding(16)
-        .sheet(isPresented: $viewModel.presentOfflineView) {
-            didDismissSheet = true
-        } content: {
-            LoggedOutOfflineView(isPresented: $viewModel.presentOfflineView).onDisappear {
-                if viewModel.automaticallyDismissed {
-                    switch viewModel.lastAction {
-                    case .logIn:
-                        viewModel.logIn()
-                    case .signUp:
-                        viewModel.signUp()
-                    default:
-                        return
-                    }
-                }
-
-                didDismissSheet = false
-            }
+        .sheet(isPresented: $viewModel.isPresentingOfflineView) {
+            LoggedOutOfflineView(isPresented: $viewModel.isPresentingOfflineView)
+                .onDisappear { viewModel.offlineViewDidDisappear() }
         }
     }
 }

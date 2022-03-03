@@ -11,16 +11,18 @@ class LoggedOutViewModelTests: XCTestCase {
     private var appSession: AppSession!
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var tracker: MockTracker!
+    private var mockAuthenticationSession: MockAuthenticationSession!
     private var subscriptions: Set<AnyCancellable>!
 
     override func setUp() {
-        authorizationClient = AuthorizationClient(
-            consumerKey: "test-consumer-key",
-            authenticationSession: MockAuthenticationSession.self
-        )
+        authorizationClient = AuthorizationClient(consumerKey: "the-consumer-key") { (_, _, completion) in
+            self.mockAuthenticationSession.completionHandler = completion
+            return self.mockAuthenticationSession
+        }
         appSession = AppSession(keychain: MockKeychain())
         networkPathMonitor = MockNetworkPathMonitor()
         tracker = MockTracker()
+        mockAuthenticationSession = MockAuthenticationSession()
         subscriptions = []
     }
 
@@ -47,11 +49,8 @@ class LoggedOutViewModelTests: XCTestCase {
 
 extension LoggedOutViewModelTests {
     func test_logIn_onFxAError_setsPresentedAlert() async {
-        let failingClient = AuthorizationClient(
-            consumerKey: "test-consumer-key",
-            authenticationSession: MockErrorAuthenticationSession.self
-        )
-        let viewModel = subject(authorizationClient: failingClient)
+        mockAuthenticationSession.error = FakeError.error
+        let viewModel = subject()
 
         let alertExpectation = expectation(description: "set presented alert")
         viewModel.$presentedAlert.dropFirst().sink { alert in
@@ -64,6 +63,7 @@ extension LoggedOutViewModelTests {
     }
 
     func test_logIn_onFxASuccess_updatesSession() async {
+        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")!
         let viewModel = subject()
 
         let sessionExpectation = expectation(description: "published error event")
@@ -81,11 +81,8 @@ extension LoggedOutViewModelTests {
 
 extension LoggedOutViewModelTests {
     func test_signUp_onFxAError_setsPresentedAlert() async {
-        let failingClient = AuthorizationClient(
-            consumerKey: "test-consumer-key",
-            authenticationSession: MockErrorAuthenticationSession.self
-        )
-        let viewModel = subject(authorizationClient: failingClient)
+        mockAuthenticationSession.error = FakeError.error
+        let viewModel = subject()
 
         let alertExpectation = expectation(description: "set presented alert")
         viewModel.$presentedAlert.dropFirst().sink { alert in
@@ -98,6 +95,7 @@ extension LoggedOutViewModelTests {
     }
 
     func test_signUp_onFxASuccess_updatesSession() async {
+        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")!
         let viewModel = subject()
 
         let sessionExpectation = expectation(description: "published error event")
@@ -119,7 +117,7 @@ extension LoggedOutViewModelTests {
         networkPathMonitor.update(status: .unsatisfied)
 
         let offlineExpectation = expectation(description: "update presentOfflineView")
-        viewModel.$presentOfflineView.dropFirst().sink { present in
+        viewModel.$isPresentingOfflineView.dropFirst().sink { present in
             XCTAssertTrue(present)
             offlineExpectation.fulfill()
         }.store(in: &subscriptions)
@@ -135,7 +133,7 @@ extension LoggedOutViewModelTests {
         let offlineExpectation = expectation(description: "set presentOfflineView to true")
         let onlineExpectation = expectation(description: "set presentOfflineView to false")
         var count = 0
-        viewModel.$presentOfflineView.dropFirst().sink { present in
+        viewModel.$isPresentingOfflineView.dropFirst().sink { present in
             count += 1
             if count == 1 {
                 XCTAssertTrue(present)
@@ -156,7 +154,7 @@ extension LoggedOutViewModelTests {
         networkPathMonitor.update(status: .unsatisfied)
 
         let offlineExpectation = expectation(description: "update presentOfflineView")
-        viewModel.$presentOfflineView.dropFirst().sink { present in
+        viewModel.$isPresentingOfflineView.dropFirst().sink { present in
             XCTAssertTrue(present)
             offlineExpectation.fulfill()
         }.store(in: &subscriptions)
@@ -172,7 +170,7 @@ extension LoggedOutViewModelTests {
         let offlineExpectation = expectation(description: "set presentOfflineView to true")
         let onlineExpectation = expectation(description: "set presentOfflineView to false")
         var count = 0
-        viewModel.$presentOfflineView.dropFirst().sink { present in
+        viewModel.$isPresentingOfflineView.dropFirst().sink { present in
             count += 1
             if count == 1 {
                 XCTAssertTrue(present)
