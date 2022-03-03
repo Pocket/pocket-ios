@@ -7,10 +7,6 @@ import Network
 import Analytics
 
 
-enum LoggedOutError: Error {
-    case error
-}
-
 enum LoggedOutAction {
     case logIn
     case signUp
@@ -122,22 +118,46 @@ class LoggedOutViewModel: ObservableObject {
         }
     }
 
-    private func authenticate(_ authentication: (ASWebAuthenticationPresentationContextProviding) async -> (AuthorizationClient.Request?, AuthorizationClient.Response?)) async {
-        guard let contextProvider = contextProvider else {
-            presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
-            lastAction = nil
-            return
-        }
-
-        let (_, response) = await authentication(contextProvider)
-        if let response = response {
+    private func authenticate(_ authentication: (ASWebAuthenticationPresentationContextProviding?) async throws -> AuthorizationClient.Response) async {
+        do {
+            let response = try await authentication(contextProvider)
             appSession.currentSession = Session(
                 guid: response.guid,
                 accessToken: response.accessToken,
                 userIdentifier: response.userIdentifier
             )
-        } else {
-            presentedAlert = PocketAlert(LoggedOutError.error) { [weak self] in self?.presentedAlert = nil }
+        } catch {
+            // AuthorizationClient should only ever throw an AuthorizationClient.error
+            guard let error = error as? AuthorizationClient.Error else {
+                Crashlogger.capture(error: error)
+                return
+            }
+
+            switch error {
+            case .invalidRedirect, .invalidComponents:
+                // If component generation failed, we should alert the user (to hopefully reach out),
+                // as well as capture the error
+                presentedAlert = PocketAlert(error) { [weak self] in
+                    self?.presentedAlert = nil
+                }
+                Crashlogger.capture(error: error)
+            case .other(let nested):
+                // All other errors will be throws by the AuthenticationSession,
+                // which in production will be ASWebAuthenticationSessionError.
+                // However, capture any other errors (if one exists)
+                if let nested = nested as? ASWebAuthenticationSessionError {
+                    // We can ignore the "error" if a user has cancelled authentication,
+                    // but the other errors should never occur, so they should be captured.
+                    switch nested.code {
+                    case .presentationContextInvalid, .presentationContextNotProvided:
+                        Crashlogger.capture(error: nested)
+                    default:
+                        return
+                    }
+                } else {
+                    Crashlogger.capture(error: error)
+                }
+            }
         }
 
         lastAction = nil
