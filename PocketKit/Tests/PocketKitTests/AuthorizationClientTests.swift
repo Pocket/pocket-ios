@@ -21,58 +21,66 @@ class AuthorizationClientTests: XCTestCase {
 }
 
 extension AuthorizationClientTests {
-    func test_logIn_buildsCorrectRequest() async {
-        let (request, _) = await client.logIn(from: self)
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request?.callbackURLScheme, "pocket")
-
-        let components = URLComponents(url: request!.url, resolvingAgainstBaseURL: false)
-        XCTAssertEqual(components?.path, "/login")
-        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "consumer_key" })?.value, "the-consumer-key")
-        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "redirect_uri" })?.value, "pocket://fxa")
-        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "utm_source" })?.value, "ios")
-    }
-
-    func test_logIn_onSuccess_returnsAccessTokenAndUserIdentifier() async {
+    func test_logIn_onSuccess_returnsAccessTokenAndUserIdentifier() async throws {
         mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
-        let (_, response) = await client.logIn(from: self)
-        XCTAssertEqual(response?.guid, "test-guid")
-        XCTAssertEqual(response?.accessToken, "test-access-token")
-        XCTAssertEqual(response?.userIdentifier, "test-id")
+        let response = try await client.logIn(from: self)
+        XCTAssertEqual(response.guid, "test-guid")
+        XCTAssertEqual(response.accessToken, "test-access-token")
+        XCTAssertEqual(response.userIdentifier, "test-id")
     }
 
-    func test_logIn_onError_returnsNilResponse() async {
+    func test_logIn_onSessionError_throwsErrorFromAuthenticationSession() async {
         mockAuthenticationSession.error = FakeError.error
-        let (_, response) = await client.logIn(from: self)
-        XCTAssertNil(response)
+        do {
+            _ = try await client.logIn(from: self)
+            XCTFail("Expected to throw error, but didn't")
+        } catch {
+            XCTAssertTrue(error is AuthorizationClient.Error)
+            XCTAssertEqual(error as? AuthorizationClient.Error, .other(FakeError.error))
+        }
+    }
+
+    func test_logIn_onInvalidRedirect_throwsInvalidRedirectError() async {
+        mockAuthenticationSession.url = URL(string: "pocket://fxa")!
+        do {
+            _ = try await client.logIn(from: self)
+            XCTFail("Expected to throw error, but didn't")
+        } catch {
+            XCTAssertTrue(error is AuthorizationClient.Error)
+            XCTAssertEqual(error as? AuthorizationClient.Error, .invalidRedirect)
+        }
     }
 }
 
 extension AuthorizationClientTests {
-    func test_signUp_buildsCorrectRequest() async {
-        let (request, _) = await client.signUp(from: self)
-        XCTAssertNotNil(request)
-        XCTAssertEqual(request?.callbackURLScheme, "pocket")
-
-        let components = URLComponents(url: request!.url, resolvingAgainstBaseURL: false)
-        XCTAssertEqual(components?.path, "/signup")
-        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "consumer_key" })?.value, "the-consumer-key")
-        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "redirect_uri" })?.value, "pocket://fxa")
-        XCTAssertEqual(components?.queryItems?.first(where: { $0.name == "utm_source" })?.value, "ios")
-    }
-
-    func test_signUp_onSuccess_returnsAccessTokenAndUserIdentifier() async {
+    func test_signUp_onSuccess_returnsAccessTokenAndUserIdentifier() async throws {
         mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
-        let (_, response) = await client.signUp(from: self)
-        XCTAssertEqual(response?.guid, "test-guid")
-        XCTAssertEqual(response?.accessToken, "test-access-token")
-        XCTAssertEqual(response?.userIdentifier, "test-id")
+        let response = try await client.signUp(from: self)
+        XCTAssertEqual(response.guid, "test-guid")
+        XCTAssertEqual(response.accessToken, "test-access-token")
+        XCTAssertEqual(response.userIdentifier, "test-id")
     }
 
-    func test_signUp_onError_returnsNilResponse() async {
+    func test_signUp_onSessionError_throwsErrorFromAuthenticationSession() async {
         mockAuthenticationSession.error = FakeError.error
-        let (_, response) = await client.signUp(from: self)
-        XCTAssertNil(response)
+        do {
+            _ = try await client.signUp(from: self)
+            XCTFail("Expected to throw error, but didn't")
+        } catch {
+            XCTAssertTrue(error is AuthorizationClient.Error)
+            XCTAssertEqual(error as? AuthorizationClient.Error, .other(FakeError.error))
+        }
+    }
+
+    func test_signUp_onInvalidRedirect_throwsInvalidRedirectError() async {
+        mockAuthenticationSession.url = URL(string: "pocket://fxa")!
+        do {
+            _ = try await client.signUp(from: self)
+            XCTFail("Expected to throw error, but didn't")
+        } catch {
+            XCTAssertTrue(error is AuthorizationClient.Error)
+            XCTAssertEqual(error as? AuthorizationClient.Error, .invalidRedirect)
+        }
     }
 }
 

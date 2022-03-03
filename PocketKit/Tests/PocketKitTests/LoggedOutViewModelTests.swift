@@ -49,7 +49,7 @@ class LoggedOutViewModelTests: XCTestCase {
 
 extension LoggedOutViewModelTests {
     func test_logIn_onFxAError_setsPresentedAlert() async {
-        mockAuthenticationSession.error = FakeError.error
+        mockAuthenticationSession.url = URL(string: "pocket://fxa")!
         let viewModel = subject()
 
         let alertExpectation = expectation(description: "set presented alert")
@@ -59,6 +59,7 @@ extension LoggedOutViewModelTests {
         }.store(in: &subscriptions)
 
         await viewModel.logIn()
+
         wait(for: [alertExpectation], timeout: 1)
     }
 
@@ -81,7 +82,7 @@ extension LoggedOutViewModelTests {
 
 extension LoggedOutViewModelTests {
     func test_signUp_onFxAError_setsPresentedAlert() async {
-        mockAuthenticationSession.error = FakeError.error
+        mockAuthenticationSession.url = URL(string: "pocket://fxa")!
         let viewModel = subject()
 
         let alertExpectation = expectation(description: "set presented alert")

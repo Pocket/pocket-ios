@@ -6,32 +6,8 @@ import Foundation
 import AuthenticationServices
 
 
-private struct GUIDResponse: Decodable {
-    let guid: String
-}
-
 public class AuthorizationClient {
     typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession
-    enum Error: Swift.Error {
-        case invalidResponse
-        case invalidSource
-        case unexpectedRedirect
-        case badRequest
-        case invalidCredentials
-        case serverError
-        case unexpectedError
-        case generic(Swift.Error)
-
-        var localizedDescription: String {
-            "Invalid email or password"
-        }
-    }
-
-    enum Constants {
-        static let baseURL = URL(
-            string: ProcessInfo.processInfo.environment["POCKET_V3_BASE_URL"] ?? "https://getpocket.com"
-        )!
-    }
 
     private let consumerKey: String
     private let authenticationSessionFactory: AuthenticationSessionFactory
@@ -45,19 +21,19 @@ public class AuthorizationClient {
     }
 
     @MainActor
-    func logIn(from contextProvider: ASWebAuthenticationPresentationContextProviding) async -> (Request?, Response?) {
-        return await authenticate(with: "/login", contextProvider: contextProvider)
+    func logIn(from contextProvider: ASWebAuthenticationPresentationContextProviding?) async throws -> Response {
+        return try await authenticate(with: "/login", contextProvider: contextProvider)
     }
 
     @MainActor
-    func signUp(from contextProvider: ASWebAuthenticationPresentationContextProviding) async -> (Request?, Response?) {
-        return await authenticate(with: "/signup", contextProvider: contextProvider)
+    func signUp(from contextProvider: ASWebAuthenticationPresentationContextProviding?) async throws -> Response {
+        return try await authenticate(with: "/signup", contextProvider: contextProvider)
     }
 
     @MainActor
-    private func authenticate(with path: String, contextProvider: ASWebAuthenticationPresentationContextProviding) async -> (Request?, Response?) {
+    private func authenticate(with path: String, contextProvider: ASWebAuthenticationPresentationContextProviding?) async throws -> Response {
         guard var components = URLComponents(string: "https://getpocket.com") else {
-            return (nil, nil)
+            throw AuthorizationClient.Error.invalidComponents
         }
 
         let requestRedirect = "pocket"
@@ -70,27 +46,26 @@ public class AuthorizationClient {
         ]
 
         guard let requestURL = components.url else {
-            return (nil, nil)
+            throw AuthorizationClient.Error.invalidComponents
         }
 
-        return await withCheckedContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             var session = authenticationSessionFactory(requestURL, requestRedirect) { url, error in
-                let request = Request(url: requestURL, callbackURLScheme: requestRedirect)
-                if error != nil {
-                    continuation.resume(returning: (request, nil))
+                if let error = error {
+                    continuation.resume(throwing: AuthorizationClient.Error.other(error))
                 } else if let url = url {
                     guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                           let guid = components.queryItems?.first(where: {$0.name == "guid" })?.value,
                           let token = components.queryItems?.first(where: { $0.name == "access_token" })?.value,
                           let userID = components.queryItems?.first(where: { $0.name == "id" })?.value else {
-                              continuation.resume(returning: (request, nil))
+                              continuation.resume(throwing: AuthorizationClient.Error.invalidRedirect)
                         return
                     }
 
                     let response = Response(guid: guid, accessToken: token, userIdentifier: userID)
-                    continuation.resume(returning: (request, response))
+                    continuation.resume(returning: response)
                 } else {
-                    continuation.resume(returning: (request, nil))
+                    continuation.resume(throwing: AuthorizationClient.Error.invalidRedirect)
                 }
             }
             session.prefersEphemeralWebBrowserSession = true
@@ -101,9 +76,32 @@ public class AuthorizationClient {
 }
 
 extension AuthorizationClient {
-    struct Request {
-        let url: URL
-        let callbackURLScheme: String
+    enum Error: Swift.Error, Equatable {
+        static func ==(lhs: AuthorizationClient.Error, rhs: AuthorizationClient.Error) -> Bool {
+            switch (lhs, rhs) {
+            case (.invalidRedirect, .invalidRedirect):
+                return true
+            case (.other(let lhsError), .other(let rhsError)):
+                return lhsError.localizedDescription == rhsError.localizedDescription
+            default:
+                return false
+            }
+        }
+
+        case invalidRedirect
+        case invalidComponents
+        case other(Swift.Error)
+
+        var localizedDescription: String {
+            switch self {
+            case .invalidRedirect:
+                return "Could not successfully handle the server redirect."
+            case .invalidComponents:
+                return "Could not generate correct URL for authentication."
+            case .other(let error):
+                return error.localizedDescription
+            }
+        }
     }
 
     struct Response {
