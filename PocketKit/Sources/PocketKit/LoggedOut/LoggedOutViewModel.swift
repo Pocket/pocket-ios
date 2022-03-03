@@ -23,7 +23,7 @@ class LoggedOutViewModel: ObservableObject {
     var presentedAlert: PocketAlert? = nil
 
     @Published
-    var presentOfflineView: Bool = false
+    var isPresentingOfflineView: Bool = false
     private(set) var automaticallyDismissed = false
     private(set) var lastAction: LoggedOutAction? = nil
 
@@ -62,9 +62,9 @@ class LoggedOutViewModel: ObservableObject {
             return
         }
 
-        if currentNetworkStatus == .unsatisfied, status == .satisfied, presentOfflineView == true {
+        if currentNetworkStatus == .unsatisfied, status == .satisfied, isPresentingOfflineView == true {
             automaticallyDismissed = true
-            presentOfflineView = false
+            isPresentingOfflineView = false
         }
         currentNetworkStatus = status
     }
@@ -80,7 +80,7 @@ class LoggedOutViewModel: ObservableObject {
 
         guard !isOffline else {
             automaticallyDismissed = false
-            presentOfflineView = true
+            isPresentingOfflineView = true
             return
         }
 
@@ -100,12 +100,25 @@ class LoggedOutViewModel: ObservableObject {
 
         guard !isOffline else {
             automaticallyDismissed = false
-            presentOfflineView = true
+            isPresentingOfflineView = true
             return
         }
 
         Task { [weak self] in
             await self?.authenticate(authorizationClient.signUp)
+        }
+    }
+
+    func offlineViewDidDisappear() {
+        if automaticallyDismissed {
+            switch lastAction {
+            case .logIn:
+                Task { await logIn() }
+            case .signUp:
+                Task { await signUp() }
+            default:
+                return
+            }
         }
     }
 

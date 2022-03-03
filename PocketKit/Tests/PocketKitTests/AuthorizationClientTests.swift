@@ -8,25 +8,20 @@ import AuthenticationServices
 
 
 class AuthorizationClientTests: XCTestCase {
-    var urlSession: MockURLSession!
     var client: AuthorizationClient!
+    var mockAuthenticationSession: MockAuthenticationSession!
 
     override func setUp() {
-        urlSession = MockURLSession()
-        client = AuthorizationClient(
-            consumerKey: "the-consumer-key",
-            authenticationSession: MockAuthenticationSession.self
-        )
+        mockAuthenticationSession = MockAuthenticationSession()
+        client = AuthorizationClient(consumerKey: "the-consumer-key") { (_, _, completion) in
+            self.mockAuthenticationSession.completionHandler = completion
+            return self.mockAuthenticationSession
+        }
     }
 }
 
 extension AuthorizationClientTests {
     func test_logIn_buildsCorrectRequest() async {
-        client = AuthorizationClient(
-            consumerKey: "the-consumer-key",
-            authenticationSession: MockAuthenticationSession.self
-        )
-
         let (request, _) = await client.logIn(from: self)
         XCTAssertNotNil(request)
         XCTAssertEqual(request?.callbackURLScheme, "pocket")
@@ -39,11 +34,7 @@ extension AuthorizationClientTests {
     }
 
     func test_logIn_onSuccess_returnsAccessTokenAndUserIdentifier() async {
-        client = AuthorizationClient(
-            consumerKey: "the-consumer-key",
-            authenticationSession: MockAuthenticationSession.self
-        )
-
+        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
         let (_, response) = await client.logIn(from: self)
         XCTAssertEqual(response?.guid, "test-guid")
         XCTAssertEqual(response?.accessToken, "test-access-token")
@@ -51,11 +42,7 @@ extension AuthorizationClientTests {
     }
 
     func test_logIn_onError_returnsNilResponse() async {
-        client = AuthorizationClient(
-            consumerKey: "the-consumer-key",
-            authenticationSession: MockErrorAuthenticationSession.self
-        )
-
+        mockAuthenticationSession.error = FakeError.error
         let (_, response) = await client.logIn(from: self)
         XCTAssertNil(response)
     }
@@ -63,11 +50,6 @@ extension AuthorizationClientTests {
 
 extension AuthorizationClientTests {
     func test_signUp_buildsCorrectRequest() async {
-        client = AuthorizationClient(
-            consumerKey: "the-consumer-key",
-            authenticationSession: MockAuthenticationSession.self
-        )
-
         let (request, _) = await client.signUp(from: self)
         XCTAssertNotNil(request)
         XCTAssertEqual(request?.callbackURLScheme, "pocket")
@@ -80,11 +62,7 @@ extension AuthorizationClientTests {
     }
 
     func test_signUp_onSuccess_returnsAccessTokenAndUserIdentifier() async {
-        client = AuthorizationClient(
-            consumerKey: "the-consumer-key",
-            authenticationSession: MockAuthenticationSession.self
-        )
-
+        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
         let (_, response) = await client.signUp(from: self)
         XCTAssertEqual(response?.guid, "test-guid")
         XCTAssertEqual(response?.accessToken, "test-access-token")
@@ -92,11 +70,7 @@ extension AuthorizationClientTests {
     }
 
     func test_signUp_onError_returnsNilResponse() async {
-        client = AuthorizationClient(
-            consumerKey: "the-consumer-key",
-            authenticationSession: MockErrorAuthenticationSession.self
-        )
-
+        mockAuthenticationSession.error = FakeError.error
         let (_, response) = await client.signUp(from: self)
         XCTAssertNil(response)
     }

@@ -31,7 +31,7 @@ struct Services {
         appSession = AppSession()
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
-            authenticationSession: ASWebAuthenticationSession.self
+            authenticationSessionFactory: ASWebAuthenticationSession.init
         )
 
         let snowplow = PocketSnowplowTracker()
