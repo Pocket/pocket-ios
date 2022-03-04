@@ -76,7 +76,7 @@ public class AuthorizationClient {
 }
 
 extension AuthorizationClient {
-    enum Error: Swift.Error, Equatable {
+    enum Error: LocalizedError, Equatable {
         static func ==(lhs: AuthorizationClient.Error, rhs: AuthorizationClient.Error) -> Bool {
             switch (lhs, rhs) {
             case (.invalidRedirect, .invalidRedirect):
@@ -92,7 +92,7 @@ extension AuthorizationClient {
         case invalidComponents
         case other(Swift.Error)
 
-        var localizedDescription: String {
+        var errorDescription: String? {
             switch self {
             case .invalidRedirect:
                 return "Could not successfully handle the server redirect."
