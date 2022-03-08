@@ -60,7 +60,8 @@
                                         "src": "http://example.com/item-1/image-1.jpg",
                                         "imageId": 1
                                     }
-                                ]
+                                ],
+                                "isArticle": true
                             }
                         }
                     },
@@ -90,7 +91,8 @@
                                 "authors": [],
                                 "datePublished": "1999-01-01 12:01:01",
                                 "excerpt": "Vehicula Nibh Ligula Porta Magna",
-                                "images": []
+                                "images": [],
+                                "isArticle": true
                             }
                         }
                     }

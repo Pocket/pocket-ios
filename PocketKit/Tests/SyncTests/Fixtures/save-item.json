@@ -35,7 +35,8 @@
                         "src": "http://example.com/item-1/image-1.jpg",
                         "imageId": 1
                     }
-                ]
+                ],
+                "isArticle": true
             }
         }
     }

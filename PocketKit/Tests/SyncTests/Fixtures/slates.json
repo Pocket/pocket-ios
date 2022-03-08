@@ -36,7 +36,8 @@
                                     "__typename": "[some-type-name]",
                                     "name": "Lifehacker",
                                     "logo": "https://slate-1-rec-1.example.com/logo.png"
-                                }
+                                },
+                                "isArticle": true
                             }
                         },
                         {
@@ -61,7 +62,8 @@
                                     "__typename": "[some-type-name]",
                                     "name": "Lifehacker",
                                     "logo": "https://slate-1-rec-2.example.com/logo.png"
-                                }
+                                },
+                                "isArticle": true
                             }
                         }
                     ],
@@ -116,7 +118,8 @@
                                     "__typename": "[some-type-name]",
                                     "name": "Lifehacker",
                                     "logo": "https://slate-2-rec-1.example.com/logo.png"
-                                }
+                                },
+                                "isArticle": true
                             }
                         }
                     ],

@@ -43,7 +43,8 @@
                                     }
                                 ],
                                 "domainMetadata": null,
-                                "images": []
+                                "images": [],
+                                "isArticle": true
                             }
                         }
                     },
@@ -73,7 +74,8 @@
                                 "authors": [],
                                 "datePublished": "1999-01-01 12:01:01",
                                 "excerpt": "Vehicula Nibh Ligula Porta Magna",
-                                "images": []
+                                "images": [],
+                                "isArticle": true
                             }
                         }
                     }
