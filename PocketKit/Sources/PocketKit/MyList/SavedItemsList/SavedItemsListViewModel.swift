@@ -17,6 +17,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     var presentedAlert: PocketAlert?
 
     @Published
+    var presentedWebReaderURL: URL?
+
+    @Published
     var selectedReadable: SavedItemViewModel?
 
     @Published
@@ -276,12 +279,20 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
 extension SavedItemsListViewModel {
     private func select(item itemID: ItemIdentifier) {
-        selectedReadable = bareItem(with: itemID).flatMap {
-            SavedItemViewModel(
-                item: $0,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
-            )
+        guard let item = bareItem(with: itemID) else {
+            return
+        }
+
+        if let isArticle = item.item?.isArticle, isArticle == false {
+            presentedWebReaderURL = item.bestURL
+        } else {
+            selectedReadable = bareItem(with: itemID).flatMap {
+                SavedItemViewModel(
+                    item: $0,
+                    source: source,
+                    tracker: tracker.childTracker(hosting: .articleView.screen)
+                )
+            }
         }
     }
 

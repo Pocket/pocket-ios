@@ -14,6 +14,9 @@ class HomeViewModel {
 
     @Published
     var selectedSlateDetail: SlateDetailViewModel?
+
+    @Published
+    var presentedWebReaderURL: URL?
 }
 
 class SlateDetailViewModel {
@@ -24,6 +27,9 @@ class SlateDetailViewModel {
 
     @Published
     var selectedRecommendationToReport: Slate.Recommendation?
+
+    @Published
+    var presentedWebReaderURL: URL?
 
     init(slateID: String) {
         self.slateID = slateID

@@ -267,10 +267,14 @@ extension SlateDetailViewController: UICollectionViewDelegate {
         let engagement = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: engagement, contexts(for: indexPath))
 
-        model.selectedReadableViewModel = RecommendationViewModel(
-            recommendation: recommendation,
-            tracker: tracker.childTracker(hosting: .articleView.screen)
-        )
+        if recommendation.item.isArticle == false {
+            model.presentedWebReaderURL = recommendation.item.bestURL
+        } else {
+            model.selectedReadableViewModel = RecommendationViewModel(
+                recommendation: recommendation,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
+        }
 
         let contentOpen = ContentOpenEvent(destination: .internal, trigger: .click)
         tracker.track(event: contentOpen, contexts(for: indexPath))

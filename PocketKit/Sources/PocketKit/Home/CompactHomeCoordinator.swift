@@ -55,6 +55,10 @@ class CompactHomeCoordinator: NSObject {
             self?.report(recommendation)
         }.store(in: &subscriptions)
 
+        model.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &subscriptions)
+
         isResetting = false
         navigationController.delegate = self
     }
@@ -91,6 +95,10 @@ class CompactHomeCoordinator: NSObject {
         slate.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
             self?.report(recommendation)
         }.store(in: &slateDetailSubscriptions)
+
+        slate.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &subscriptions)
     }
 
     func show(_ recommendation: RecommendationViewModel?) {

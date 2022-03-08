@@ -49,6 +49,10 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &subscriptions)
+
         model.savedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)
@@ -68,6 +72,10 @@ class CompactMyListContainerCoordinator: NSObject {
 
         model.archivedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
         }.store(in: &subscriptions)
 
         isResetting = false
