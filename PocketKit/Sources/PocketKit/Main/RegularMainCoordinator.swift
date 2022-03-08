@@ -113,6 +113,10 @@ class RegularMainCoordinator: NSObject {
             self?.present(alert)
         }.store(in: &subscriptions)
 
+        model.myList.savedItemsList.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &subscriptions)
+
         model.myList.savedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &subscriptions)
@@ -123,6 +127,10 @@ class RegularMainCoordinator: NSObject {
 
         // My List - Archived Items
         model.myList.archivedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &subscriptions)
+
+        model.myList.archivedItemsList.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)
 
@@ -151,6 +159,10 @@ class RegularMainCoordinator: NSObject {
 
         model.home.$selectedSlateDetail.receive(on: DispatchQueue.main).sink { [weak self] slateDetail in
             self?.show(slateDetail)
+        }.store(in: &subscriptions)
+
+        model.home.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url)
         }.store(in: &subscriptions)
 
         isResetting = false
@@ -247,6 +259,10 @@ class RegularMainCoordinator: NSObject {
 
             self?.show(readable)
         }.store(in: &slateDetailSubscriptions)
+
+        slate.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &subscriptions)
 
         let slateDetailVC = SlateDetailViewController(source: source, model: slate, tracker: tracker)
         home.navigationController?.pushViewController(slateDetailVC, animated: !isResetting)
