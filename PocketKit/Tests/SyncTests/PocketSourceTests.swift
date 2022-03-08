@@ -227,7 +227,8 @@ class PocketSourceTests: XCTestCase {
                     )
                 ],
                 datePublished: Date(),
-                images: []
+                images: [],
+                isArticle: false
             )
         )
 

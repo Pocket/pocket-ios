@@ -17,7 +17,8 @@ extension UnmanagedItem {
             domainMetadata: nil,
             authors: nil,
             datePublished: nil,
-            images: nil
+            images: nil,
+            isArticle: false
         )
     }
 }

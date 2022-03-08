@@ -30,6 +30,7 @@ extension Item {
         let item = Item(context: space.context)
         item.remoteID = remoteID
         item.title = title
+        item.isArticle = true
 
         return item
     }

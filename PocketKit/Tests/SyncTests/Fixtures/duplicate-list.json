@@ -48,7 +48,8 @@
                                         "src": "http://example.com/item-1",
                                         "imageId": 1
                                     }
-                                ]
+                                ],
+                                "isArticle": true
                             }
                         }
                     },
@@ -90,7 +91,8 @@
                                         "src": "http://example.com/item-1",
                                         "imageId": 1
                                     }
-                                ]
+                                ],
+                                "isArticle": true
                             }
                         }
                     }
