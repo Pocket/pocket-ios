@@ -16,6 +16,7 @@ public struct UnmanagedItem: Equatable, Hashable {
     public let authors: [Author]?
     public let datePublished: Date?
     public let images: [Image]?
+    public let isArticle: Bool
 
     public struct DomainMetadata: Equatable, Hashable {
         public let name: String?

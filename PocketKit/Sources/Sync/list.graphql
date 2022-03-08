@@ -21,6 +21,7 @@ fragment ItemParts on Item {
   timeToRead
   domain
   datePublished
+  isArticle
   authors {
     id
     name

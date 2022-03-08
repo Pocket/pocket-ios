@@ -16,6 +16,7 @@ extension Item {
         timeToRead = remote.timeToRead.flatMap(Int32.init) ?? 0
         excerpt = remote.excerpt
         datePublished = remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
+        isArticle = remote.isArticle ?? false
 
         guard let context = managedObjectContext else {
             return
