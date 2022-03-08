@@ -349,11 +349,17 @@ extension HomeViewController: UICollectionViewDelegate {
         default:
             let engagement = SnowplowEngagement(type: .general, value: nil)
             tracker.track(event: engagement, contexts(for: indexPath))
-            
-            model.selectedReadableViewModel = RecommendationViewModel(
-                recommendation: slates[indexPath.section - 1].recommendations[indexPath.item],
-                tracker: tracker.childTracker(hosting: .articleView.screen)
-            )
+
+            let recommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
+
+            if recommendation.item.isArticle == false {
+                model.presentedWebReaderURL = recommendation.item.bestURL
+            } else {
+                model.selectedReadableViewModel = RecommendationViewModel(
+                    recommendation: slates[indexPath.section - 1].recommendations[indexPath.item],
+                    tracker: tracker.childTracker(hosting: .articleView.screen)
+                )
+            }
 
             let open = ContentOpenEvent(destination: .internal, trigger: .click)
             tracker.track(event: open, contexts(for: indexPath))

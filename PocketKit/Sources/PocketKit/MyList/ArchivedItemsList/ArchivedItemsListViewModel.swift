@@ -24,6 +24,9 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     @Published
     var presentedAlert: PocketAlert?
 
+    @Published
+    var presentedWebReaderURL: URL?
+
     private let source: Source
     private let tracker: Tracker
 
@@ -261,11 +264,15 @@ extension ArchivedItemsListViewModel {
             return
         }
 
-        selectedReadable = SavedItemViewModel(
-            item: item,
-            source: source,
-            tracker: tracker.childTracker(hosting: .articleView.screen)
-        )
+        if let isArticle = item.item?.isArticle, isArticle == false {
+            presentedWebReaderURL = item.bestURL
+        } else {
+            selectedReadable = SavedItemViewModel(
+                item: item,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
+        }
     }
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
