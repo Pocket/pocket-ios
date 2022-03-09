@@ -283,7 +283,9 @@ extension SavedItemsListViewModel {
             return
         }
 
-        if let isArticle = item.item?.isArticle, isArticle == false {
+        if let isArticle = item.item?.isArticle, isArticle == false
+            || item.item?.hasImage == .isImage
+            || item.item?.hasVideo == .isVideo {
             presentedWebReaderURL = item.bestURL
         } else {
             selectedReadable = bareItem(with: itemID).flatMap {
