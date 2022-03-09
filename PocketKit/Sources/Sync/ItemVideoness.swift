@@ -2,26 +2,9 @@ import Foundation
 
 
 public enum ItemVideoness: String, Equatable, Hashable {
-    case noVideos
-    case hasVideos
-    case isVideo
-}
-
-extension ItemVideoness {
-    typealias Remote = Videoness
-
-    init?(remote: Remote) {
-        switch remote {
-        case .noVideos:
-            self = .noVideos
-        case .hasVideos:
-            self = .hasVideos
-        case .isVideo:
-            self = .isVideo
-        default:
-            return nil
-        }
-    }
+    case noVideos = "NO_VIDEOS"
+    case hasVideos = "HAS_VIDEOS"
+    case isVideo = "IS_VIDEO"
 }
 
 extension Videoness {

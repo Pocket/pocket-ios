@@ -267,7 +267,9 @@ extension SlateDetailViewController: UICollectionViewDelegate {
         let engagement = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: engagement, contexts(for: indexPath))
 
-        if recommendation.item.isArticle == false {
+        if recommendation.item.isArticle == false
+            || recommendation.item.hasImage == .isImage
+            || recommendation.item.hasVideo == .isVideo {
             model.presentedWebReaderURL = recommendation.item.bestURL
         } else {
             model.selectedReadableViewModel = RecommendationViewModel(

@@ -2,11 +2,11 @@ import Foundation
 
 
 extension Item {
-    var hasImage: ItemImageness? {
+    public var hasImage: ItemImageness? {
         imageness.flatMap(ItemImageness.init)
     }
 
-    var hasVideo: ItemVideoness? {
+    public var hasVideo: ItemVideoness? {
         videoness.flatMap(ItemVideoness.init)
     }
 }

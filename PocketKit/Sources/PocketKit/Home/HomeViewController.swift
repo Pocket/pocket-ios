@@ -352,7 +352,9 @@ extension HomeViewController: UICollectionViewDelegate {
 
             let recommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
 
-            if recommendation.item.isArticle == false {
+            if recommendation.item.isArticle == false
+                || recommendation.item.hasImage == .isImage
+                || recommendation.item.hasVideo == .isVideo {
                 model.presentedWebReaderURL = recommendation.item.bestURL
             } else {
                 model.selectedReadableViewModel = RecommendationViewModel(
