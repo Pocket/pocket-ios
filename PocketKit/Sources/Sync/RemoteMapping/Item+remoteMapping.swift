@@ -17,6 +17,8 @@ extension Item {
         excerpt = remote.excerpt
         datePublished = remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         isArticle = remote.isArticle ?? false
+        imageness = remote.hasImage?.rawValue
+        videoness = remote.hasVideo?.rawValue
 
         guard let context = managedObjectContext else {
             return
@@ -56,6 +58,8 @@ extension Item {
         domain = unmanagedItem.domain
         article = unmanagedItem.article
         datePublished = unmanagedItem.datePublished
+        imageness = unmanagedItem.hasImage.flatMap(Imageness.init)?.rawValue
+        videoness = unmanagedItem.hasVideo.flatMap(Videoness.init)?.rawValue
 
         guard let context = managedObjectContext else {
             return

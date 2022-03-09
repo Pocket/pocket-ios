@@ -22,6 +22,8 @@ fragment ItemParts on Item {
   domain
   datePublished
   isArticle
+  hasImage
+  hasVideo
   authors {
     id
     name
