@@ -31,6 +31,13 @@ class ArchiveTests: XCTestCase {
             }
         }
 
+        server.routes.get("/hello") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         try server.start()
     }
 
@@ -98,6 +105,45 @@ class ArchiveTests: XCTestCase {
 
         app.myListView.selectionSwitcher.myListButton.tap()
         itemCell.wait()
+    }
+}
+
+extension ArchiveTests {
+    func test_archive_showsWebViewWhenItemIsImage() {
+        test_archive_showsWebView(at: 0)
+    }
+
+    func test_archive_showsWebViewWhenItemIsVideo() {
+        test_archive_showsWebView(at: 1)
+    }
+
+    func test_archive_showsWebViewWhenItemIsNotAnArticle() {
+        test_archive_showsWebView(at: 2)
+    }
+
+    func test_archive_showsWebView(at index: Int) {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList("list-for-web-view")
+            } else if apiRequest.isForArchivedContent {
+                return Response.myList("archived-web-view")
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        app.launch().tabBar.myListButton.wait().tap()
+        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+        app.myListView.itemView(at: index).wait().tap()
+
+        app
+            .webReaderView
+            .staticText(matching: "Hello, world")
+            .wait()
     }
 }
 
