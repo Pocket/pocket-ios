@@ -18,7 +18,9 @@ extension UnmanagedItem {
             authors: nil,
             datePublished: nil,
             images: nil,
-            isArticle: false
+            isArticle: false,
+            imageness: "HAS_IMAGES",
+            videoness: "HAS_VIDEOS"
         )
     }
 }

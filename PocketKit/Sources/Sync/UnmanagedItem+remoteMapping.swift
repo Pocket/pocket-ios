@@ -22,7 +22,9 @@ extension UnmanagedItem {
             authors: remote.authors.flatMap { $0.compactMap { $0 }.map(Author.init) },
             datePublished: remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) },
             images: remote.images.flatMap { $0.compactMap { $0 }.map(Image.init) },
-            isArticle: remote.isArticle ?? false
+            isArticle: remote.isArticle ?? false,
+            imageness: remote.hasImage?.rawValue,
+            videoness: remote.hasVideo?.rawValue
         )
     }
 }

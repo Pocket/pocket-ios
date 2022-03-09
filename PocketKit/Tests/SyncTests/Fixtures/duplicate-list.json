@@ -49,7 +49,9 @@
                                         "imageId": 1
                                     }
                                 ],
-                                "isArticle": true
+                                "isArticle": true,
+                                "hasImage": "HAS_IMAGES",
+                                "hasVideo": "HAS_VIDEOS",
                             }
                         }
                     },
@@ -92,7 +94,9 @@
                                         "imageId": 1
                                     }
                                 ],
-                                "isArticle": true
+                                "isArticle": true,
+                                "hasImage": "HAS_IMAGES",
+                                "hasVideo": "HAS_VIDEOS",
                             }
                         }
                     }

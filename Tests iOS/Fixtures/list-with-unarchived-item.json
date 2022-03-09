@@ -44,7 +44,9 @@
                                 ],
                                 "domainMetadata": null,
                                 "images": [],
-                                "isArticle": true
+                                "isArticle": true,
+                                "hasImage": "HAS_IMAGES",
+                                "hasVideo": "HAS_VIDEOS",
                             }
                         }
                     }

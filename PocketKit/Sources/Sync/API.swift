@@ -306,6 +306,102 @@ public struct SavedItemUpsertInput: GraphQLMapConvertible {
   }
 }
 
+public enum Imageness: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  /// No images (v3 value is 0)
+  case noImages
+  /// Contains images (v3 value is 1)
+  case hasImages
+  /// Is an image (v3 value is 2)
+  case isImage
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "NO_IMAGES": self = .noImages
+      case "HAS_IMAGES": self = .hasImages
+      case "IS_IMAGE": self = .isImage
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .noImages: return "NO_IMAGES"
+      case .hasImages: return "HAS_IMAGES"
+      case .isImage: return "IS_IMAGE"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: Imageness, rhs: Imageness) -> Bool {
+    switch (lhs, rhs) {
+      case (.noImages, .noImages): return true
+      case (.hasImages, .hasImages): return true
+      case (.isImage, .isImage): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [Imageness] {
+    return [
+      .noImages,
+      .hasImages,
+      .isImage,
+    ]
+  }
+}
+
+public enum Videoness: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  /// No videos (v3 value is 0)
+  case noVideos
+  /// Contains videos (v3 value is 1)
+  case hasVideos
+  /// Is a video (v3 value is 2)
+  case isVideo
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "NO_VIDEOS": self = .noVideos
+      case "HAS_VIDEOS": self = .hasVideos
+      case "IS_VIDEO": self = .isVideo
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .noVideos: return "NO_VIDEOS"
+      case .hasVideos: return "HAS_VIDEOS"
+      case .isVideo: return "IS_VIDEO"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: Videoness, rhs: Videoness) -> Bool {
+    switch (lhs, rhs) {
+      case (.noVideos, .noVideos): return true
+      case (.hasVideos, .hasVideos): return true
+      case (.isVideo, .isVideo): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [Videoness] {
+    return [
+      .noVideos,
+      .hasVideos,
+      .isVideo,
+    ]
+  }
+}
+
 public enum PendingItemStatus: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case resolved
@@ -857,8 +953,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-                return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+              public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
+                return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
               }
 
               public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -941,6 +1037,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                     GraphQLField("domain", type: .scalar(String.self)),
                     GraphQLField("datePublished", type: .scalar(String.self)),
                     GraphQLField("isArticle", type: .scalar(Bool.self)),
+                    GraphQLField("hasImage", type: .scalar(Imageness.self)),
+                    GraphQLField("hasVideo", type: .scalar(Videoness.self)),
                     GraphQLField("authors", type: .list(.object(Author.selections))),
                     GraphQLField("marticle", type: .list(.nonNull(.object(Marticle.selections)))),
                     GraphQLField("excerpt", type: .scalar(String.self)),
@@ -955,8 +1053,8 @@ public final class UserByTokenQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+                public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
                 }
 
                 public var __typename: String {
@@ -1065,6 +1163,26 @@ public final class UserByTokenQuery: GraphQLQuery {
                   }
                   set {
                     resultMap.updateValue(newValue, forKey: "isArticle")
+                  }
+                }
+
+                /// 0=no images, 1=contains images, 2=is an image
+                public var hasImage: Imageness? {
+                  get {
+                    return resultMap["hasImage"] as? Imageness
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "hasImage")
+                  }
+                }
+
+                /// 0=no videos, 1=contains video, 2=is a video
+                public var hasVideo: Videoness? {
+                  get {
+                    return resultMap["hasVideo"] as? Videoness
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "hasVideo")
                   }
                 }
 
@@ -3926,8 +4044,8 @@ public final class SaveItemMutation: GraphQLMutation {
           self.resultMap = unsafeResultMap
         }
 
-        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
+          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
         }
 
         public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -4010,6 +4128,8 @@ public final class SaveItemMutation: GraphQLMutation {
               GraphQLField("domain", type: .scalar(String.self)),
               GraphQLField("datePublished", type: .scalar(String.self)),
               GraphQLField("isArticle", type: .scalar(Bool.self)),
+              GraphQLField("hasImage", type: .scalar(Imageness.self)),
+              GraphQLField("hasVideo", type: .scalar(Videoness.self)),
               GraphQLField("authors", type: .list(.object(Author.selections))),
               GraphQLField("marticle", type: .list(.nonNull(.object(Marticle.selections)))),
               GraphQLField("excerpt", type: .scalar(String.self)),
@@ -4024,8 +4144,8 @@ public final class SaveItemMutation: GraphQLMutation {
             self.resultMap = unsafeResultMap
           }
 
-          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
           }
 
           public var __typename: String {
@@ -4134,6 +4254,26 @@ public final class SaveItemMutation: GraphQLMutation {
             }
             set {
               resultMap.updateValue(newValue, forKey: "isArticle")
+            }
+          }
+
+          /// 0=no images, 1=contains images, 2=is an image
+          public var hasImage: Imageness? {
+            get {
+              return resultMap["hasImage"] as? Imageness
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "hasImage")
+            }
+          }
+
+          /// 0=no videos, 1=contains video, 2=is a video
+          public var hasVideo: Videoness? {
+            get {
+              return resultMap["hasVideo"] as? Videoness
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "hasVideo")
             }
           }
 
@@ -7545,6 +7685,8 @@ public final class GetSlateLineupQuery: GraphQLQuery {
                 GraphQLField("domain", type: .scalar(String.self)),
                 GraphQLField("datePublished", type: .scalar(String.self)),
                 GraphQLField("isArticle", type: .scalar(Bool.self)),
+                GraphQLField("hasImage", type: .scalar(Imageness.self)),
+                GraphQLField("hasVideo", type: .scalar(Videoness.self)),
                 GraphQLField("authors", type: .list(.object(Author.selections))),
                 GraphQLField("marticle", type: .list(.nonNull(.object(Marticle.selections)))),
                 GraphQLField("excerpt", type: .scalar(String.self)),
@@ -7559,8 +7701,8 @@ public final class GetSlateLineupQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-              self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+            public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+              self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
             }
 
             public var __typename: String {
@@ -7669,6 +7811,26 @@ public final class GetSlateLineupQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "isArticle")
+              }
+            }
+
+            /// 0=no images, 1=contains images, 2=is an image
+            public var hasImage: Imageness? {
+              get {
+                return resultMap["hasImage"] as? Imageness
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "hasImage")
+              }
+            }
+
+            /// 0=no videos, 1=contains video, 2=is a video
+            public var hasVideo: Videoness? {
+              get {
+                return resultMap["hasVideo"] as? Videoness
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "hasVideo")
               }
             }
 
@@ -10454,6 +10616,8 @@ public final class GetSlateQuery: GraphQLQuery {
               GraphQLField("domain", type: .scalar(String.self)),
               GraphQLField("datePublished", type: .scalar(String.self)),
               GraphQLField("isArticle", type: .scalar(Bool.self)),
+              GraphQLField("hasImage", type: .scalar(Imageness.self)),
+              GraphQLField("hasVideo", type: .scalar(Videoness.self)),
               GraphQLField("authors", type: .list(.object(Author.selections))),
               GraphQLField("marticle", type: .list(.nonNull(.object(Marticle.selections)))),
               GraphQLField("excerpt", type: .scalar(String.self)),
@@ -10468,8 +10632,8 @@ public final class GetSlateQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
           }
 
           public var __typename: String {
@@ -10578,6 +10742,26 @@ public final class GetSlateQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "isArticle")
+            }
+          }
+
+          /// 0=no images, 1=contains images, 2=is an image
+          public var hasImage: Imageness? {
+            get {
+              return resultMap["hasImage"] as? Imageness
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "hasImage")
+            }
+          }
+
+          /// 0=no videos, 1=contains video, 2=is a video
+          public var hasVideo: Videoness? {
+            get {
+              return resultMap["hasVideo"] as? Videoness
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "hasVideo")
             }
           }
 
@@ -13244,8 +13428,8 @@ public struct SavedItemParts: GraphQLFragment {
       self.resultMap = unsafeResultMap
     }
 
-    public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-      return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+    public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
+      return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
     }
 
     public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -13328,6 +13512,8 @@ public struct SavedItemParts: GraphQLFragment {
           GraphQLField("domain", type: .scalar(String.self)),
           GraphQLField("datePublished", type: .scalar(String.self)),
           GraphQLField("isArticle", type: .scalar(Bool.self)),
+          GraphQLField("hasImage", type: .scalar(Imageness.self)),
+          GraphQLField("hasVideo", type: .scalar(Videoness.self)),
           GraphQLField("authors", type: .list(.object(Author.selections))),
           GraphQLField("marticle", type: .list(.nonNull(.object(Marticle.selections)))),
           GraphQLField("excerpt", type: .scalar(String.self)),
@@ -13342,8 +13528,8 @@ public struct SavedItemParts: GraphQLFragment {
         self.resultMap = unsafeResultMap
       }
 
-      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
       }
 
       public var __typename: String {
@@ -13452,6 +13638,26 @@ public struct SavedItemParts: GraphQLFragment {
         }
         set {
           resultMap.updateValue(newValue, forKey: "isArticle")
+        }
+      }
+
+      /// 0=no images, 1=contains images, 2=is an image
+      public var hasImage: Imageness? {
+        get {
+          return resultMap["hasImage"] as? Imageness
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "hasImage")
+        }
+      }
+
+      /// 0=no videos, 1=contains video, 2=is a video
+      public var hasVideo: Videoness? {
+        get {
+          return resultMap["hasVideo"] as? Videoness
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "hasVideo")
         }
       }
 
@@ -16099,6 +16305,8 @@ public struct ItemParts: GraphQLFragment {
       domain
       datePublished
       isArticle
+      hasImage
+      hasVideo
       authors {
         __typename
         id
@@ -16148,6 +16356,8 @@ public struct ItemParts: GraphQLFragment {
       GraphQLField("domain", type: .scalar(String.self)),
       GraphQLField("datePublished", type: .scalar(String.self)),
       GraphQLField("isArticle", type: .scalar(Bool.self)),
+      GraphQLField("hasImage", type: .scalar(Imageness.self)),
+      GraphQLField("hasVideo", type: .scalar(Videoness.self)),
       GraphQLField("authors", type: .list(.object(Author.selections))),
       GraphQLField("marticle", type: .list(.nonNull(.object(Marticle.selections)))),
       GraphQLField("excerpt", type: .scalar(String.self)),
@@ -16162,8 +16372,8 @@ public struct ItemParts: GraphQLFragment {
     self.resultMap = unsafeResultMap
   }
 
-  public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-    self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+  public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+    self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
   }
 
   public var __typename: String {
@@ -16272,6 +16482,26 @@ public struct ItemParts: GraphQLFragment {
     }
     set {
       resultMap.updateValue(newValue, forKey: "isArticle")
+    }
+  }
+
+  /// 0=no images, 1=contains images, 2=is an image
+  public var hasImage: Imageness? {
+    get {
+      return resultMap["hasImage"] as? Imageness
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "hasImage")
+    }
+  }
+
+  /// 0=no videos, 1=contains video, 2=is a video
+  public var hasVideo: Videoness? {
+    get {
+      return resultMap["hasVideo"] as? Videoness
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "hasVideo")
     }
   }
 
@@ -19069,6 +19299,8 @@ public struct SlateParts: GraphQLFragment {
           GraphQLField("domain", type: .scalar(String.self)),
           GraphQLField("datePublished", type: .scalar(String.self)),
           GraphQLField("isArticle", type: .scalar(Bool.self)),
+          GraphQLField("hasImage", type: .scalar(Imageness.self)),
+          GraphQLField("hasVideo", type: .scalar(Videoness.self)),
           GraphQLField("authors", type: .list(.object(Author.selections))),
           GraphQLField("marticle", type: .list(.nonNull(.object(Marticle.selections)))),
           GraphQLField("excerpt", type: .scalar(String.self)),
@@ -19083,8 +19315,8 @@ public struct SlateParts: GraphQLFragment {
         self.resultMap = unsafeResultMap
       }
 
-      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
       }
 
       public var __typename: String {
@@ -19193,6 +19425,26 @@ public struct SlateParts: GraphQLFragment {
         }
         set {
           resultMap.updateValue(newValue, forKey: "isArticle")
+        }
+      }
+
+      /// 0=no images, 1=contains images, 2=is an image
+      public var hasImage: Imageness? {
+        get {
+          return resultMap["hasImage"] as? Imageness
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "hasImage")
+        }
+      }
+
+      /// 0=no videos, 1=contains video, 2=is a video
+      public var hasVideo: Videoness? {
+        get {
+          return resultMap["hasVideo"] as? Videoness
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "hasVideo")
         }
       }
 

@@ -61,7 +61,9 @@
                                         "imageId": 1
                                     }
                                 ],
-                                "isArticle": true
+                                "isArticle": true,
+                                "hasImage": "HAS_IMAGES",
+                                "hasVideo": "HAS_VIDEOS",
                             }
                         }
                     },
@@ -92,7 +94,9 @@
                                 "datePublished": "1999-01-01 12:01:01",
                                 "excerpt": "Vehicula Nibh Ligula Porta Magna",
                                 "images": [],
-                                "isArticle": true
+                                "isArticle": true,
+                                "hasImage": "HAS_IMAGES",
+                                "hasVideo": "HAS_VIDEOS",
                             }
                         }
                     }
