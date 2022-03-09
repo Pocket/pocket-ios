@@ -223,4 +223,51 @@ class MyListTests: XCTestCase {
         XCTAssertEqual(listView.itemCount, 1)
         XCTAssertTrue(listView.itemView(at: 0).contains(string: "Item 2"))
     }
+
+
+}
+
+// MARK: - Web View
+
+extension MyListTests {
+    func test_list_showsWebViewWhenItemIsImage() {
+        test_list_showsWebView(at: 0)
+    }
+
+    func test_list_showsWebViewWhenItemIsVideo() {
+        test_list_showsWebView(at: 1)
+    }
+
+    func test_list_showsWebViewWhenItemIsNotAnArticle() {
+        test_list_showsWebView(at: 2)
+    }
+
+    func test_list_showsWebView(at index: Int) {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList("list-for-web-view")
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        app.launch().tabBar.myListButton.wait().tap()
+
+        app
+            .myListView
+            .itemView(at: index)
+            .wait()
+            .tap()
+
+        app
+            .webReaderView
+            .staticText(matching: "Hello, world")
+            .wait()
+    }
 }
