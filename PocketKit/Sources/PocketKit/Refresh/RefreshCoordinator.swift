@@ -5,7 +5,7 @@ import Combine
 
 
 class RefreshCoordinator {
-    static let taskID = "com.mozilla.pocket.next.fetch-slate-lineup"
+    static let taskID = "com.mozilla.pocket.next.refresh"
 
     private let notificationCenter: NotificationCenter
     private let taskScheduler: BGTaskSchedulerProtocol
