@@ -10,20 +10,17 @@ class RefreshCoordinator {
     private let notificationCenter: NotificationCenter
     private let taskScheduler: BGTaskSchedulerProtocol
     private let source: Source
-    private let backgroundTaskManager: BackgroundTaskManager
 
     private var subscriptions: [AnyCancellable] = []
 
     init(
         notificationCenter: NotificationCenter,
         taskScheduler: BGTaskSchedulerProtocol,
-        source: Source,
-        backgroundTaskManager: BackgroundTaskManager
+        source: Source
     ) {
         self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
         self.source = source
-        self.backgroundTaskManager = backgroundTaskManager
     }
 
     func initialize() {
@@ -43,7 +40,9 @@ class RefreshCoordinator {
 
     private func submitRequest() {
         do {
-            let request = BGAppRefreshTaskRequest(identifier: Self.taskID)
+            let request = BGAppRefreshTaskRequest(identifier: "com.mozilla.pocket.next.refresh")
+            request.earliestBeginDate = Date() + 60 * 5
+
             try taskScheduler.submit(request)
         } catch {
             print(error)
@@ -51,16 +50,12 @@ class RefreshCoordinator {
     }
 
     private func refresh(_ task: BGTaskProtocol) {
-        let taskID = backgroundTaskManager.beginTask()
-
-        task.expirationHandler = { [backgroundTaskManager] in
+        task.expirationHandler = {
             task.setTaskCompleted(success: false)
-            backgroundTaskManager.endTask(taskID)
         }
 
-        source.refresh() { [backgroundTaskManager] in
+        source.refresh() {
             task.setTaskCompleted(success: true)
-            backgroundTaskManager.endTask(taskID)
         }
     }
 }

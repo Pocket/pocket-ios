@@ -1,5 +1,4 @@
-@testable import PocketKit
-import UIKit
+@testable import Sync
 
 
 class MockBackgroundTaskManager: BackgroundTaskManager {
@@ -7,12 +6,11 @@ class MockBackgroundTaskManager: BackgroundTaskManager {
     private var calls: [String: [Any]] = [:]
 }
 
-
 // MARK: - beginTask
 extension MockBackgroundTaskManager {
     private static let beginTask = "beginTask"
 
-    typealias BeginTaskImpl = (String?, (() -> Void)?) -> UIBackgroundTaskIdentifier
+    typealias BeginTaskImpl = (String?, (() -> Void)?) -> Int
 
     struct BeginTaskCall {
         let name: String?
@@ -23,7 +21,7 @@ extension MockBackgroundTaskManager {
         implementations[Self.beginTask] = impl
     }
 
-    func beginTask(withName name: String?, expirationHandler: (() -> Void)?) -> UIBackgroundTaskIdentifier {
+    func beginTask(withName name: String?, expirationHandler: (() -> Void)?) -> Int {
         guard let impl = implementations[Self.beginTask] as? BeginTaskImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -48,17 +46,17 @@ extension MockBackgroundTaskManager {
 extension MockBackgroundTaskManager {
     private static let endTask = "endTask"
 
-    typealias EndTaskImpl = (UIBackgroundTaskIdentifier) -> Void
+    typealias EndTaskImpl = (Int) -> Void
 
     struct EndTaskCall {
-        let identifier: UIBackgroundTaskIdentifier
+        let identifier: Int
     }
 
     func stubEndTask(impl: @escaping EndTaskImpl) {
         implementations[Self.endTask] = impl
     }
 
-    func endTask(_ identifier: UIBackgroundTaskIdentifier) {
+    func endTask(_ identifier: Int) {
         guard let impl = implementations[Self.endTask] as? EndTaskImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

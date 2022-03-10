@@ -18,6 +18,7 @@ class PocketSourceTests: XCTestCase {
     var slateService: MockSlateService!
     var networkMonitor: MockNetworkPathMonitor!
     var sessionProvider: MockSessionProvider!
+    var backgroundTaskManager: MockBackgroundTaskManager!
 
     override func setUpWithError() throws {
         space = Space(container: .testContainer)
@@ -27,8 +28,12 @@ class PocketSourceTests: XCTestCase {
         slateService = MockSlateService()
         networkMonitor = MockNetworkPathMonitor()
         sessionProvider = MockSessionProvider(session: nil)
+        backgroundTaskManager = MockBackgroundTaskManager()
 
         lastRefresh.stubGetLastRefresh { nil}
+
+        backgroundTaskManager.stubBeginTask { _, _ in return 0 }
+        backgroundTaskManager.stubEndTask { _ in }
     }
 
     override func tearDownWithError() throws {
@@ -51,7 +56,8 @@ class PocketSourceTests: XCTestCase {
             lastRefresh: lastRefresh ?? self.lastRefresh,
             slateService: slateService ?? self.slateService,
             networkMonitor: networkMonitor ?? self.networkMonitor,
-            sessionProvider: sessionProvider ?? self.sessionProvider
+            sessionProvider: sessionProvider ?? self.sessionProvider,
+            backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager
         )
     }
 

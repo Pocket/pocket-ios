@@ -22,19 +22,23 @@ class RetriableOperation: AsyncOperation {
 
     private let operation: SyncOperation
     private let retrySignal: RetrySignal
+    private let backgroundTaskManager: BackgroundTaskManager
     private var retries = 0
     private var subscription: AnyCancellable?
 
     init(
         retrySignal: RetrySignal,
+        backgroundTaskManager: BackgroundTaskManager,
         operation: SyncOperation
     ) {
         self.retrySignal = retrySignal
+        self.backgroundTaskManager = backgroundTaskManager
         self.operation = operation
     }
 
     override func main() {
         Task {
+            let taskID = backgroundTaskManager.beginTask()
             switch await operation.execute() {
             case .retry:
                 retry()
@@ -43,6 +47,7 @@ class RetriableOperation: AsyncOperation {
             case .success:
                 finishOperation()
             }
+            backgroundTaskManager.endTask(taskID)
         }
     }
 
