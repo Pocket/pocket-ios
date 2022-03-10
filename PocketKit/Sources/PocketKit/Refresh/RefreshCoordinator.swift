@@ -1,38 +1,56 @@
-import Combine
 import BackgroundTasks
+import Sync
+import UIKit
+import Combine
 
 
 class RefreshCoordinator {
-    private static let taskID = "com.mozilla.pocket.next.fetch-slate-lineup"
+    static let taskID = "com.mozilla.pocket.next.fetch-slate-lineup"
 
-    var tasksPublisher: AnyPublisher<BGTask, Never> {
-        return tasks.eraseToAnyPublisher()
-    }
+    private let notificationCenter: NotificationCenter
+    private let taskScheduler: BGTaskSchedulerProtocol
+    private let source: Source
+    private let backgroundTaskManager: BackgroundTaskManager
 
-    private var tasks: PassthroughSubject<BGTask, Never> = PassthroughSubject()
-    private let taskScheduler: BGTaskScheduler
+    private var subscriptions: [AnyCancellable] = []
 
-    init(taskScheduler: BGTaskScheduler) {
+    init(
+        notificationCenter: NotificationCenter,
+        taskScheduler: BGTaskSchedulerProtocol,
+        source: Source,
+        backgroundTaskManager: BackgroundTaskManager
+    ) {
+        self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
+        self.source = source
+        self.backgroundTaskManager = backgroundTaskManager
     }
 
     func initialize() {
-        taskScheduler.register(forTaskWithIdentifier: Self.taskID, using: .main) { [weak self] task in
+        _ = taskScheduler.registerHandler(forTaskWithIdentifier: Self.taskID, using: .main) { [weak self] task in
+            self?.refresh(task)
             self?.submitRequest()
-            self?.tasks.send(task)
-            task.setTaskCompleted(success: true)
         }
 
-        submitRequest()
+        notificationCenter.publisher(for: UIApplication.didEnterBackgroundNotification, object: nil).sink { [weak self] _ in
+            self?.submitRequest()
+        }.store(in: &subscriptions)
     }
 
-    func submitRequest() {
-        let request = BGAppRefreshTaskRequest(identifier: Self.taskID)
-
+    private func submitRequest() {
         do {
+            let request = BGAppRefreshTaskRequest(identifier: Self.taskID)
             try taskScheduler.submit(request)
         } catch {
             print(error)
+        }
+    }
+
+    private func refresh(_ task: BGTaskProtocol) {
+        let taskID = backgroundTaskManager.beginTask()
+        source.refresh() { [weak self] in
+            task.setTaskCompleted(success: true)
+            self?.backgroundTaskManager.endTask(taskID)
         }
     }
 }
