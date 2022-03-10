@@ -48,9 +48,15 @@ class RefreshCoordinator {
 
     private func refresh(_ task: BGTaskProtocol) {
         let taskID = backgroundTaskManager.beginTask()
-        source.refresh() { [weak self] in
+
+        task.expirationHandler = { [backgroundTaskManager] in
+            task.setTaskCompleted(success: false)
+            backgroundTaskManager.endTask(taskID)
+        }
+
+        source.refresh() { [backgroundTaskManager] in
             task.setTaskCompleted(success: true)
-            self?.backgroundTaskManager.endTask(taskID)
+            backgroundTaskManager.endTask(taskID)
         }
     }
 }
