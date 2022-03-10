@@ -49,7 +49,7 @@ class RefreshCoordinatorTests: XCTestCase {
 
         let coordinator = subject()
         coordinator.initialize()
-        notificationCenter?.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+        notificationCenter?.post(name: UIScene.didEnterBackgroundNotification, object: nil)
 
         let submitCall = taskScheduler.submitCall(at: 0)
         XCTAssertNotNil(submitCall)
