@@ -87,6 +87,8 @@ extension MockBGTaskScheduler {
 
 
 class MockBGTask: BGTaskProtocol {
+    var expirationHandler: (() -> Void)?
+
     var implementations: [String: Any] = [:]
     var calls: [String: [Any]] = [:]
 }

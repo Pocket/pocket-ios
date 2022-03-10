@@ -1,7 +1,9 @@
 import BackgroundTasks
 
 
-protocol BGTaskProtocol {
+protocol BGTaskProtocol: AnyObject {
+    var expirationHandler: (() -> Void)? { get set }
+
     func setTaskCompleted(success: Bool)
 }
 
