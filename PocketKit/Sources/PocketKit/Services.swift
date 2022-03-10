@@ -6,6 +6,7 @@ import Sync
 import Foundation
 import Analytics
 import AuthenticationServices
+import BackgroundTasks
 
 
 struct Services {
@@ -44,7 +45,12 @@ struct Services {
         )
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
-        refreshCoordinator = RefreshCoordinator(taskScheduler: .shared)
+        refreshCoordinator = RefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            source: source,
+            backgroundTaskManager: UIApplication.shared
+        )
     }
 }
 
