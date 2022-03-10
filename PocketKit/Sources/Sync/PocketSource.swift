@@ -23,6 +23,7 @@ public class PocketSource: Source {
     private let networkMonitor: NetworkPathMonitor
     private let retrySignal: PassthroughSubject<Void, Never>
     private let sessionProvider: SessionProvider
+    private let backgroundTaskManager: BackgroundTaskManager
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -34,7 +35,8 @@ public class PocketSource: Source {
     public convenience init(
         sessionProvider: SessionProvider,
         consumerKey: String,
-        defaults: UserDefaults
+        defaults: UserDefaults,
+        backgroundTaskManager: BackgroundTaskManager
     ) {
         let apollo = ApolloClient.createDefault(
             sessionProvider: sessionProvider,
@@ -48,7 +50,8 @@ public class PocketSource: Source {
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo),
             networkMonitor: NWPathMonitor(),
-            sessionProvider: sessionProvider
+            sessionProvider: sessionProvider,
+            backgroundTaskManager: backgroundTaskManager
         )
     }
 
@@ -59,7 +62,8 @@ public class PocketSource: Source {
         lastRefresh: LastRefresh,
         slateService: SlateService,
         networkMonitor: NetworkPathMonitor,
-        sessionProvider: SessionProvider
+        sessionProvider: SessionProvider,
+        backgroundTaskManager: BackgroundTaskManager
     ) {
         self.space = space
         self.apollo = apollo
@@ -69,6 +73,7 @@ public class PocketSource: Source {
         self.networkMonitor = networkMonitor
         self.retrySignal = .init()
         self.sessionProvider = sessionProvider
+        self.backgroundTaskManager = backgroundTaskManager
 
         observeNetworkStatus()
         restore()
@@ -302,6 +307,7 @@ extension PocketSource {
     private func enqueue(operation: SyncOperation, persistentTask: PersistentSyncTask, completion: (() -> Void)? = nil) {
         let _operation = RetriableOperation(
             retrySignal: retrySignal.eraseToAnyPublisher(),
+            backgroundTaskManager: backgroundTaskManager,
             operation: operation
         )
 

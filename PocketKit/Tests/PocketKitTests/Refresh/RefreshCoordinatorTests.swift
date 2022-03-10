@@ -9,26 +9,22 @@ class RefreshCoordinatorTests: XCTestCase {
     var notificationCenter: NotificationCenter!
     var taskScheduler: MockBGTaskScheduler!
     var source: MockSource!
-    var backgroundTaskManager: MockBackgroundTaskManager!
 
     override func setUp() {
         notificationCenter = NotificationCenter()
         taskScheduler = MockBGTaskScheduler()
         source = MockSource()
-        backgroundTaskManager = MockBackgroundTaskManager()
     }
 
     func subject(
         notificationCenter: NotificationCenter? = nil,
         taskScheduler: BGTaskSchedulerProtocol? = nil,
-        source: Source? = nil,
-        backgroundTaskManager: BackgroundTaskManager? = nil
+        source: Source? = nil
     ) -> RefreshCoordinator {
         RefreshCoordinator(
             notificationCenter: notificationCenter ?? self.notificationCenter,
             taskScheduler: taskScheduler ?? self.taskScheduler,
-            source: source ?? self.source,
-            backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager
+            source: source ?? self.source
         )
     }
 
@@ -58,9 +54,6 @@ class RefreshCoordinatorTests: XCTestCase {
     }
 
     func test_backgroundTaskHandler_beginsBackgroundtask_callsRefresh_completsBackgroundTask_completesRefreshTask() {
-        backgroundTaskManager.stubBeginTask { _, _ in return .init(rawValue: 1) }
-        backgroundTaskManager.stubEndTask { _ in }
-
         // Setup task scheduler to capture the task handler so we can invoke it later
         var handler: ((BGTaskProtocol) -> Void)?
         taskScheduler.stubRegisterHandler { handler = $2; return true }
@@ -78,16 +71,11 @@ class RefreshCoordinatorTests: XCTestCase {
         task.stubSetTaskCompleted { _ in }
         handler?(task)
 
-        XCTAssertNotNil(backgroundTaskManager.beginTaskCall(at:0))
         XCTAssertNotNil(source.refreshCall(at:0))
         XCTAssertNotNil(task.setTaskCompletedCall(at:0))
-        XCTAssertNotNil(backgroundTaskManager.endTaskCall(at:0))
     }
 
     func test_backgroundTaskHandler_whenExpirationHappens_completesTask() {
-        backgroundTaskManager.stubBeginTask { _, _ in return .init(rawValue: 1) }
-        backgroundTaskManager.stubEndTask { _ in }
-
         // Setup task scheduler to capture the task handler so we can invoke it later
         var handler: ((BGTaskProtocol) -> Void)?
         taskScheduler.stubRegisterHandler { handler = $2; return true }
@@ -107,11 +95,9 @@ class RefreshCoordinatorTests: XCTestCase {
 
         task.expirationHandler?()
 
-        XCTAssertNotNil(backgroundTaskManager.beginTaskCall(at:0))
         XCTAssertNotNil(source.refreshCall(at:0))
         XCTAssertNotNil(task.setTaskCompletedCall(at:0))
         XCTAssertEqual(task.setTaskCompletedCall(at:0)?.success, false)
-        XCTAssertNotNil(backgroundTaskManager.endTaskCall(at:0))
     }
 
     func test_receivingAppWillEnterForegroundNotification() {

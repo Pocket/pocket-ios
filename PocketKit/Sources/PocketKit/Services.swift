@@ -41,15 +41,15 @@ struct Services {
         source = PocketSource(
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
-            defaults: userDefaults
+            defaults: userDefaults,
+            backgroundTaskManager: UIApplication.shared
         )
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
         refreshCoordinator = RefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            source: source,
-            backgroundTaskManager: UIApplication.shared
+            source: source
         )
     }
 }

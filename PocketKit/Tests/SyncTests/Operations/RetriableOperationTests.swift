@@ -1,12 +1,35 @@
 import XCTest
 import Combine
+
 @testable import Sync
 
 
 class RetriableOperationTests: XCTestCase {
+    var retrySignal: PassthroughSubject<Void, Never>!
+    var backgroundTaskManager: MockBackgroundTaskManager!
+
+    override func setUp() {
+        retrySignal = .init()
+        backgroundTaskManager = MockBackgroundTaskManager()
+
+        backgroundTaskManager.stubBeginTask { _, _ in return 0 }
+        backgroundTaskManager.stubEndTask { _ in }
+    }
+
+    func subject(
+        retrySignal: AnyPublisher<Void, Never>? = nil,
+        backgroundTaskManager: BackgroundTaskManager? = nil,
+        operation: SyncOperation
+    ) -> RetriableOperation {
+        RetriableOperation(
+            retrySignal: retrySignal ?? self.retrySignal.eraseToAnyPublisher(),
+            backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager,
+            operation: operation
+        )
+    }
+
     func test_retry_retriesOnSignal() {
         var calls = 0
-        let retrySignal: PassthroughSubject<Void, Never> = PassthroughSubject()
         let firstAttempt = expectation(description: "first attempt")
         let secondAttempt = expectation(description: "second attempt")
 
@@ -26,10 +49,7 @@ class RetriableOperationTests: XCTestCase {
             }
         }
 
-        let executor = RetriableOperation(
-            retrySignal: retrySignal.eraseToAnyPublisher(),
-            operation: operation
-        )
+        let executor = subject(operation: operation)
 
         let completed = expectation(description: "it completed")
         let queue = OperationQueue()
@@ -45,7 +65,6 @@ class RetriableOperationTests: XCTestCase {
 
     func test_retry_whenMaxRetriesAreExceeded_doesNotRetry() {
         var calls = 0
-        let retrySignal: PassthroughSubject<Void, Never> = PassthroughSubject()
 
         let expectations = [
             expectation(description: "first attempt"),
@@ -64,11 +83,7 @@ class RetriableOperationTests: XCTestCase {
             return .retry
         }
 
-        let executor = RetriableOperation(
-            retrySignal: retrySignal.eraseToAnyPublisher(),
-            operation: operation
-        )
-
+        let executor = subject(operation: operation)
         let completed = expectation(description: "it completed")
         let queue = OperationQueue()
         queue.addOperation(executor)
@@ -82,5 +97,23 @@ class RetriableOperationTests: XCTestCase {
         }
 
         wait(for: [completed], timeout: 1, enforceOrder: true)
+    }
+
+    func test_main_protectsOperationWithBackgroundTask() {
+        let beganOperation = expectation(description: "began operation")
+        let operation = TestSyncOperation {
+            beganOperation.fulfill()
+        }
+
+        let executor = subject(operation: operation)
+
+        let queue = OperationQueue()
+        queue.addOperation(executor)
+
+        wait(for: [beganOperation], timeout: 1)
+        XCTAssertNotNil(backgroundTaskManager.beginTaskCall(at: 0))
+
+        queue.waitUntilAllOperationsAreFinished()
+        XCTAssertEqual(backgroundTaskManager.endTaskCall(at: 0)?.identifier, 0)
     }
 }
