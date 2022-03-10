@@ -35,6 +35,10 @@ class RefreshCoordinator {
         notificationCenter.publisher(for: UIScene.didEnterBackgroundNotification, object: nil).sink { [weak self] _ in
             self?.submitRequest()
         }.store(in: &subscriptions)
+
+        notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
+            self?.source.refresh()
+        }.store(in: &subscriptions)
     }
 
     private func submitRequest() {
