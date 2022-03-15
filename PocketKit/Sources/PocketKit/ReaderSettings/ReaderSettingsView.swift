@@ -27,9 +27,9 @@ struct ReaderSettingsView: View {
             Form {
                 Section(header: Text("Display Settings")) {
                     Picker("Font", selection: settings.$fontFamily) {
-                        ForEach(0..<Constants.allowedFontFamilies.count) {
-                            Text(Constants.allowedFontFamilies[$0].name)
-                                .tag(Constants.allowedFontFamilies[$0])
+                        ForEach(Constants.allowedFontFamilies, id: \.name) { family in
+                            Text(family.name)
+                                .tag(family)
                         }
                     }
                     
