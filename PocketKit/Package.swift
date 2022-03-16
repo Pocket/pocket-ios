@@ -8,6 +8,7 @@ let package = Package(
     platforms: [.iOS("15"), .macOS("11")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
+        .library(name: "SaveToPocketKit", targets: ["SaveToPocketKit"]),
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
         .library(name: "Analytics", targets: ["Analytics"]),
@@ -33,6 +34,12 @@ let package = Package(
             name: "PocketKitTests",
             dependencies: ["PocketKit"],
             resources: [.copy("Fixtures")]
+        ),
+
+        .target(name: "SaveToPocketKit"),
+        .testTarget(
+            name: "SaveToPocketKitTests",
+            dependencies: ["SaveToPocketKit"]
         ),
 
         .target(
