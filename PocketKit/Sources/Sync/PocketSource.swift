@@ -121,6 +121,18 @@ public class PocketSource: Source {
             completion()
         }
     }
+
+    public func saveFromExtension(url: URL) {
+        let x: ExtensionSaveRequest = space.new()
+        x.url = url
+
+        try! space.save()
+    }
+
+    public func checkForNewThings() {
+        let saveRequests = try! space.context.fetch(ExtensionSaveRequest.fetchRequest())
+        print(saveRequests)
+    }
 }
 
 // MARK: - MyList/Archive items

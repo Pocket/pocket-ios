@@ -12,7 +12,7 @@ extension NSPersistentContainer {
 
         let url = Bundle.module.url(forResource: "PocketModel", withExtension: "momd")!
         let model = NSManagedObjectModel(contentsOf: url)!
-        let container = NSPersistentContainer(name: "PocketModel", managedObjectModel: model)
+        let container = SharedContainer(name: "PocketModel", managedObjectModel: model)
 
         container.loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
@@ -21,5 +21,13 @@ extension NSPersistentContainer {
         }
 
         return container
+    }
+}
+
+private class SharedContainer: NSPersistentContainer {
+    override class func defaultDirectoryURL() -> URL {
+        FileManager.default
+            .containerURL(forSecurityApplicationGroupIdentifier: "group.com.mozilla.pocket")!
+            .appendingPathComponent("pocket.sqlite")
     }
 }
