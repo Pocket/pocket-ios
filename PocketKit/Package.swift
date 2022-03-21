@@ -36,7 +36,10 @@ let package = Package(
             resources: [.copy("Fixtures")]
         ),
 
-        .target(name: "SaveToPocketKit"),
+        .target(
+            name: "SaveToPocketKit",
+            dependencies: ["Textile"]
+        ),
         .testTarget(
             name: "SaveToPocketKitTests",
             dependencies: ["SaveToPocketKit"]

@@ -23,4 +23,6 @@ extension ImageAsset {
     public static let loggedOutCarousel2 = ImageAsset("loggedOutCarousel2")
     public static let loggedOutCarousel3 = ImageAsset("loggedOutCarousel3")
     public static let labeledIcon = ImageAsset("labeledIcon")
+    public static let logo = ImageAsset("logo")
+    public static let circleChecked = ImageAsset("circleChecked")
 }
