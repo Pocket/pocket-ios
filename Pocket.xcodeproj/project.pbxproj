@@ -37,6 +37,7 @@
 		166BAD0B2656E76B00E401F0 /* ReaderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD062656E76B00E401F0 /* ReaderElement.swift */; };
 		166BAD0C2656E76B00E401F0 /* MyListElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD072656E76B00E401F0 /* MyListElement.swift */; };
 		166BAD0D2656E76B00E401F0 /* PocketAppElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166BAD082656E76B00E401F0 /* PocketAppElement.swift */; };
+		166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F204A76027E22EC50010E155 /* SaveToPocket.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		166EFAE8268281F300A027CD /* ReaderToolbarElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */; };
 		166EFAEA2682821300A027CD /* WebReaderElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166EFAE92682821300A027CD /* WebReaderElement.swift */; };
 		166F8F2726D0488900F898E3 /* XCUIElement+wait.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */; };
@@ -59,7 +60,6 @@
 		F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20BB0382744542F00AE5E70 /* AlertElement.swift */; };
 		F2675EAB27D9424B0016769E /* HomeWebViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2675EAA27D9424B0016769E /* HomeWebViewTests.swift */; };
 		F2687E7327E28F0F00E43F09 /* SaveToPocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = F2687E7227E28F0F00E43F09 /* SaveToPocketKit */; };
-		F2687E9F27E2978100E43F09 /* SaveToPocket.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = F204A76027E22EC50010E155 /* SaveToPocket.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F2843C1E2714D18200E03ED5 /* ReportARecommendationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2843C1D2714D18200E03ED5 /* ReportARecommendationTests.swift */; };
 		F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */; };
 		F2A5B6B4271E03B300FB8BF2 /* LaunchArguments.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2A5B6B3271E03B300FB8BF2 /* LaunchArguments.swift */; };
@@ -75,7 +75,7 @@
 			remoteGlobalIDString = 166A81AF2637406C0015AA1D;
 			remoteInfo = "Pocket (iOS)";
 		};
-		F2687EA027E2978100E43F09 /* PBXContainerItemProxy */ = {
+		166DF27527E9160A00C03BF4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 166A81A42637406B0015AA1D /* Project object */;
 			proxyType = 1;
@@ -85,6 +85,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		166DF27727E9160A00C03BF4 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				166DF27427E9160A00C03BF4 /* SaveToPocket.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F220F2B0264DC0DE0064D272 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -93,17 +104,6 @@
 			files = (
 			);
 			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		F2687EA227E2978100E43F09 /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				F2687E9F27E2978100E43F09 /* SaveToPocket.appex in Embed App Extensions */,
-			);
-			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -318,12 +318,12 @@
 				166A81AD2637406C0015AA1D /* Frameworks */,
 				166A81AE2637406C0015AA1D /* Resources */,
 				F220F2B0264DC0DE0064D272 /* Embed Frameworks */,
-				F2687EA227E2978100E43F09 /* Embed App Extensions */,
+				166DF27727E9160A00C03BF4 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				F2687EA127E2978100E43F09 /* PBXTargetDependency */,
+				166DF27627E9160A00C03BF4 /* PBXTargetDependency */,
 			);
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
@@ -541,10 +541,10 @@
 			target = 166A81AF2637406C0015AA1D /* Pocket (iOS) */;
 			targetProxy = 166A81C12637406C0015AA1D /* PBXContainerItemProxy */;
 		};
-		F2687EA127E2978100E43F09 /* PBXTargetDependency */ = {
+		166DF27627E9160A00C03BF4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F204A75F27E22EC50010E155 /* SaveToPocket */;
-			targetProxy = F2687EA027E2978100E43F09 /* PBXContainerItemProxy */;
+			targetProxy = 166DF27527E9160A00C03BF4 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -680,7 +680,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next;
 				PRODUCT_NAME = Pocket;
-				PROVISIONING_PROFILE_SPECIFIER = "Pocket Development Profile";
+				PROVISIONING_PROFILE_SPECIFIER = "Pocket Next Development";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -706,7 +706,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next;
 				PRODUCT_NAME = Pocket;
-				PROVISIONING_PROFILE_SPECIFIER = "com.mozilla.pocket.next 2021-08-12";
+				PROVISIONING_PROFILE_SPECIFIER = "Pocket Distribution";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -773,10 +773,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 43AQ936H96;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Save to Pocket";
@@ -790,7 +790,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next.SaveToPocket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Save to Pocket Development";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -803,10 +803,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Mozilla Corporation (43AQ936H96)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 43AQ936H96;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Save to Pocket";
@@ -820,7 +820,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next.SaveToPocket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = "Save to Pocket Distribution";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
