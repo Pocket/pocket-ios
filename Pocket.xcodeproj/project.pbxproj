@@ -116,6 +116,8 @@
 		166BAD062656E76B00E401F0 /* ReaderElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderElement.swift; sourceTree = "<group>"; };
 		166BAD072656E76B00E401F0 /* MyListElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyListElement.swift; sourceTree = "<group>"; };
 		166BAD082656E76B00E401F0 /* PocketAppElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PocketAppElement.swift; sourceTree = "<group>"; };
+		166DF27827E9172800C03BF4 /* Pocket (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Pocket (iOS).entitlements"; sourceTree = "<group>"; };
+		166DF27927E9173500C03BF4 /* SaveToPocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaveToPocket.entitlements; sourceTree = "<group>"; };
 		166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderToolbarElement.swift; sourceTree = "<group>"; };
 		166EFAE92682821300A027CD /* WebReaderElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebReaderElement.swift; sourceTree = "<group>"; };
 		166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+wait.swift"; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
+				166DF27827E9172800C03BF4 /* Pocket (iOS).entitlements */,
 				1624B85A268508180099B6EF /* PocketKit */,
 				16BA7D6226851513009A17C1 /* main.swift */,
 				16D47E7F26851AB40095D5A4 /* Assets.xcassets */,
@@ -280,6 +283,7 @@
 		F204A76127E22EC50010E155 /* SaveToPocket */ = {
 			isa = PBXGroup;
 			children = (
+				166DF27927E9173500C03BF4 /* SaveToPocket.entitlements */,
 				F204A76727E22EC50010E155 /* Info.plist */,
 			);
 			path = SaveToPocket;
@@ -630,6 +634,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Pocket (iOS).entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 43AQ936H96;
@@ -656,6 +661,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "Pocket (iOS).entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Mozilla Corporation (43AQ936H96)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 43AQ936H96;
@@ -735,6 +741,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
@@ -765,6 +772,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Mozilla Corporation (43AQ936H96)";
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 1;
