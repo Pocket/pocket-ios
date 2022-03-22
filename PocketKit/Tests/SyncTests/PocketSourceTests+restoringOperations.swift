@@ -32,6 +32,7 @@ extension PocketSourceTests {
 
         source = nil
         source = subject()
+        source.restore()
         networkMonitor.update(status: .satisfied)
 
         wait(for: [fetchList, favoriteItem, archiveItem], timeout: 1, enforceOrder: true)
@@ -55,5 +56,6 @@ extension PocketSourceTests {
 
         source = nil
         source = subject()
+        source.restore()
     }
 }
