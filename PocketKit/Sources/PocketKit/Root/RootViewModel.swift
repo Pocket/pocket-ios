@@ -3,6 +3,7 @@ import Analytics
 import Sync
 import Combine
 import Textile
+import SharedPocketKit
 
 
 class RootViewModel {
@@ -38,7 +39,7 @@ class RootViewModel {
         }.store(in: &subscriptions)
     }
 
-    private func setUpSession(_ session: Session) {
+    private func setUpSession(_ session: SharedPocketKit.Session) {
         tracker.resetPersistentContexts([
             APIUserContext(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])

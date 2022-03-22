@@ -5,6 +5,7 @@ import Sync
 import SwiftUI
 import Network
 import Analytics
+import SharedPocketKit
 
 
 enum LoggedOutAction {

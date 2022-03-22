@@ -9,6 +9,7 @@ let package = Package(
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
         .library(name: "SaveToPocketKit", targets: ["SaveToPocketKit"]),
+        .library(name: "SharedPocketKit", targets: ["SharedPocketKit"]),
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
         .library(name: "Analytics", targets: ["Analytics"]),
@@ -27,22 +28,30 @@ let package = Package(
     targets: [
         .target(
             name: "PocketKit",
-            dependencies: ["Sync", "Textile", "Analytics", "Lottie", "YouTubePlayerKit"],
+            dependencies: ["Sync", "Textile", "Analytics", "Lottie", "YouTubePlayerKit", "SharedPocketKit"],
             resources: [.copy("Assets")]
         ),
         .testTarget(
             name: "PocketKitTests",
-            dependencies: ["PocketKit"],
+            dependencies: ["PocketKit", "SharedPocketKit"],
             resources: [.copy("Fixtures")]
         ),
 
         .target(
             name: "SaveToPocketKit",
-            dependencies: ["Textile"]
+            dependencies: ["SharedPocketKit", "Textile"]
         ),
         .testTarget(
             name: "SaveToPocketKitTests",
             dependencies: ["SaveToPocketKit"]
+        ),
+
+        .target(
+            name: "SharedPocketKit"
+        ),
+        .testTarget(
+            name: "SharedPocketKitTests",
+            dependencies: ["SharedPocketKit"]
         ),
 
         .target(
