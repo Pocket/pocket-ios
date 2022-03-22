@@ -44,6 +44,10 @@ class MockSource: Source {
     func archive(recommendation: Slate.Recommendation) {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
+
+    func restore() {
+        fatalError("\(Self.self).\(#function) is not implemented")
+    }
 }
 
 // MARK: - Refresh
