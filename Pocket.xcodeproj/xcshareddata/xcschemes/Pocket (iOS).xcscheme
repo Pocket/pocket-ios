@@ -66,20 +66,30 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "166A81BF2637406C0015AA1D"
-               BuildableName = "Tests iOS.xctest"
-               BlueprintName = "Tests iOS"
-               ReferencedContainer = "container:Pocket.xcodeproj">
+               BlueprintIdentifier = "AnalyticsTests"
+               BuildableName = "AnalyticsTests"
+               BlueprintName = "AnalyticsTests"
+               ReferencedContainer = "container:PocketKit">
             </BuildableReference>
          </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AnalyticsTests"
-               BuildableName = "AnalyticsTests"
-               BlueprintName = "AnalyticsTests"
+               BlueprintIdentifier = "SharedPocketKitTests"
+               BuildableName = "SharedPocketKitTests"
+               BlueprintName = "SharedPocketKitTests"
                ReferencedContainer = "container:PocketKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "166A81BF2637406C0015AA1D"
+               BuildableName = "Tests iOS.xctest"
+               BlueprintName = "Tests iOS"
+               ReferencedContainer = "container:Pocket.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

@@ -1,5 +1,6 @@
 import Foundation
 import Sync
+import SharedPocketKit
 
 
 class SignOutOnFirstLaunch {

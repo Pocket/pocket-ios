@@ -3,14 +3,15 @@ import Combine
 
 
 @propertyWrapper
-class KeychainStorage<T: Codable> {
+public class KeychainStorage<T: Codable> {
     private let keychain: Keychain
     private let service: String
     private let account: String
+    private let accessGroup: String
 
     private var subject: CurrentValueSubject<T?, Never>!
 
-    var wrappedValue: T? {
+    public var wrappedValue: T? {
         get {
             if let value = subject.value {
                 return value
@@ -28,14 +29,20 @@ class KeychainStorage<T: Codable> {
         }
     }
 
-    var projectedValue: AnyPublisher<T?, Never> {
+    public var projectedValue: AnyPublisher<T?, Never> {
         subject.eraseToAnyPublisher()
     }
 
-    init(keychain: Keychain = SecItemKeychain(), service: String = Bundle.main.bundleIdentifier!, account: String) {
+    init(
+        keychain: Keychain = SecItemKeychain(),
+        service: String = "pocket",
+        account: String,
+        accessGroup: String = "group.com.mozilla.pocket"
+    ) {
         self.keychain = keychain
         self.service = service
         self.account = account
+        self.accessGroup = accessGroup
 
         subject = CurrentValueSubject(read())
     }
@@ -53,13 +60,10 @@ class KeychainStorage<T: Codable> {
             return nil
         }
 
-        let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
+        let query = makeQuery([
             kSecValueData: data,
-            kSecAttrService: service,
-            kSecAttrAccount: account,
             kSecAttrAccessible: kSecAttrAccessibleAfterFirstUnlock
-        ]
+        ])
 
         let status = keychain.add(query: query as CFDictionary, result: nil)
         return status == errSecSuccess ? value : nil
@@ -70,30 +74,19 @@ class KeychainStorage<T: Codable> {
             return nil
         }
 
-        let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account
-        ]
+        let status = keychain.update(
+            query: makeQuery(),
+            attributes: [kSecValueData: data] as CFDictionary
+        )
 
-        let attributes: [CFString: Any] = [
-            kSecValueData: data
-        ]
-
-        let status = keychain.update(query: query as CFDictionary, attributes: attributes as CFDictionary)
         return status == errSecSuccess ? value : nil
     }
 
     private func read() -> T? {
-        let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account,
-            kSecReturnData: true
-        ]
+        let query = makeQuery([kSecReturnData: true])
 
         var result: AnyObject?
-        let status = keychain.copyMatching(query: query as CFDictionary, result: &result)
+        let status = keychain.copyMatching(query: query, result: &result)
 
         guard status == errSecSuccess,
               let data = result as? Data,
@@ -104,19 +97,18 @@ class KeychainStorage<T: Codable> {
         return decoded
     }
 
-    private func _delete() {
-        let query: [CFString: Any] = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: service,
-            kSecAttrAccount: account
-        ]
-
-        _ = keychain.delete(query: query as CFDictionary)
+    private func delete() {
+        _ = keychain.delete(query: makeQuery())
+        subject.value = nil
     }
 
-    private func delete() {
-        _delete()
-        subject.value = nil
+    private func makeQuery(_ additionalProperties: [CFString: Any] = [:]) -> CFDictionary {
+        [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: service,
+            kSecAttrAccount: account,
+            kSecAttrAccessGroup: accessGroup
+        ].merging(additionalProperties) { _, new in new } as CFDictionary
     }
 }
 
