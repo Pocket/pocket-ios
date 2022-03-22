@@ -5,21 +5,39 @@
 import CoreData
 
 
-extension NSPersistentContainer {
-    public static func createDefault() -> NSPersistentContainer {
+class PersistentContainer: NSPersistentContainer {
+    enum Storage {
+        case inMemory
+        case shared
+    }
+
+    public init(storage: Storage = .shared) {
         ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
         ValueTransformer.setValueTransformer(SyncTaskTransformer(), forName: .syncTaskTransformer)
 
         let url = Bundle.module.url(forResource: "PocketModel", withExtension: "momd")!
         let model = NSManagedObjectModel(contentsOf: url)!
-        let container = NSPersistentContainer(name: "PocketModel", managedObjectModel: model)
+        super.init(name: "PocketModel", managedObjectModel: model)
 
-        container.loadPersistentStores { storeDescription, error in
+        switch storage {
+        case .inMemory:
+            persistentStoreDescriptions = [
+                NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
+            ]
+        case .shared:
+            let sharedContainerURL = FileManager.default
+                .containerURL(forSecurityApplicationGroupIdentifier: "group.com.mozilla.pocket")!
+                .appendingPathComponent("PocketModel.sqlite")
+
+            persistentStoreDescriptions = [
+                NSPersistentStoreDescription(url: sharedContainerURL)
+            ]
+        }
+
+        loadPersistentStores { storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         }
-
-        return container
     }
 }
