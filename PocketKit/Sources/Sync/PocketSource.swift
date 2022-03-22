@@ -44,7 +44,7 @@ public class PocketSource: Source {
         )
 
         self.init(
-            space: Space(container: .createDefault()),
+            space: Space(container: .init()),
             apollo: apollo,
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
