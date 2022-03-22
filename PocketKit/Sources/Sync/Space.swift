@@ -5,13 +5,13 @@
 import CoreData
 
 class Space {
-    private let container: NSPersistentContainer
+    private let container: PersistentContainer
 
     var context: NSManagedObjectContext {
         container.viewContext
     }
     
-    required init(container: NSPersistentContainer) {
+    required init(container: PersistentContainer) {
         self.container = container
     }
 
