@@ -76,7 +76,6 @@ public class PocketSource: Source {
         self.backgroundTaskManager = backgroundTaskManager
 
         observeNetworkStatus()
-        restore()
     }
 
     public var mainContext: NSManagedObjectContext {
@@ -325,7 +324,7 @@ extension PocketSource {
         }
     }
 
-    private func restore() {
+    public func restore() {
         guard let persistentTasks = try? space.fetchPersistentSyncTasks() else { return }
 
         for persistentTask in persistentTasks {

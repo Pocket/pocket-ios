@@ -77,6 +77,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             )
         }
 
+        source.restore()
         Textiles.initialize()
         refreshCoordinator.initialize()
 
