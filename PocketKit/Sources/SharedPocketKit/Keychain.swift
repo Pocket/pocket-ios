@@ -5,7 +5,7 @@
 import Foundation
 
 
-protocol Keychain {
+public protocol Keychain {
     func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus
     func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus
 
@@ -14,20 +14,22 @@ protocol Keychain {
     func copyMatching(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus
 }
 
-struct SecItemKeychain: Keychain {
-    func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
+public struct SecItemKeychain: Keychain {
+    public init() { }
+
+    public func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
         return SecItemAdd(query, result)
     }
 
-    func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus {
+    public func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus {
         return SecItemUpdate(query, attributes)
     }
 
-    func delete(query: CFDictionary) -> OSStatus {
+    public func delete(query: CFDictionary) -> OSStatus {
         return SecItemDelete(query)
     }
 
-    func copyMatching(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
+    public func copyMatching(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
         return SecItemCopyMatching(query, result)
     }
 }

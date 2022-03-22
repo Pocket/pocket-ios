@@ -7,6 +7,7 @@ import Foundation
 import Analytics
 import AuthenticationServices
 import BackgroundTasks
+import SharedPocketKit
 
 
 struct Services {
@@ -55,9 +56,9 @@ struct Services {
 }
 
 extension AppSession: SessionProvider {
-    var session: Sync.Session? {
+    public var session: Sync.Session? {
         currentSession
     }
 }
 
-extension Session: Sync.Session { }
+extension SharedPocketKit.Session: Sync.Session { }

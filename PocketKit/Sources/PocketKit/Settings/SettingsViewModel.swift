@@ -2,6 +2,7 @@ import Sync
 import Analytics
 import Textile
 import Foundation
+import SharedPocketKit
 
 
 class SettingsViewModel {
