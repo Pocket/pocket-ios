@@ -1,10 +1,10 @@
 import Foundation
 
-class AppSession {
+public class AppSession {
     @KeychainStorage
-    var currentSession: Session?
+    public var currentSession: Session?
 
-    init(keychain: Keychain = SecItemKeychain()) {
+    public init(keychain: Keychain = SecItemKeychain()) {
         _currentSession = KeychainStorage(keychain: keychain, account: "session")
     }
 }

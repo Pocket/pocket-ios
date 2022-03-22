@@ -1,5 +1,5 @@
 import XCTest
-@testable import PocketKit
+@testable import SharedPocketKit
 
 
 class KeychainStorageTests: XCTestCase {
@@ -17,9 +17,16 @@ class KeychainStorageTests: XCTestCase {
 
         // One read on init, one read if the current cached value is nil
         XCTAssertEqual(keychain.copyMatchingCalls.count, 2)
+
+        let query = keychain.copyMatchingCalls[0].query as! [String: Any]
+        XCTAssertEqual(query[kSecClass as String] as? String, kSecClassGenericPassword as String)
+        XCTAssertEqual(query[kSecAttrService as String] as? String, service)
+        XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
+        XCTAssertEqual(query[kSecReturnData as String] as? Bool, true)
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.mozilla.pocket")
     }
 
-    func test_set_whenInitialValue_callsAdd() {
+    func test_set_whenInitialValue_callsAdd_withCorrectQuery() {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
@@ -27,10 +34,16 @@ class KeychainStorageTests: XCTestCase {
 
         storage.wrappedValue = Test(value: "test")
 
-        XCTAssertEqual(keychain.addCalls.count, 1)
+        let query = keychain.addCalls[0].query as! [String: Any]
+
+        XCTAssertEqual(query[kSecClass as String] as? String, kSecClassGenericPassword as String)
+        XCTAssertEqual(query[kSecAttrService as String] as? String, service)
+        XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
+        XCTAssertEqual(query[kSecAttrAccessible as String] as? String, kSecAttrAccessibleAfterFirstUnlock as String)
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.mozilla.pocket")
     }
 
-    func test_set_whenValueExists_callsUpdate() {
+    func test_set_whenValueExists_callsUpdate_withCorrectQuery() {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
@@ -43,9 +56,16 @@ class KeychainStorageTests: XCTestCase {
 
         XCTAssertEqual(keychain.addCalls.count, 1)
         XCTAssertEqual(keychain.updateCalls.count, 1)
+
+        let query = keychain.updateCalls[0].query as! [String: Any]
+
+        XCTAssertEqual(query[kSecClass as String] as? String, kSecClassGenericPassword as String)
+        XCTAssertEqual(query[kSecAttrService as String] as? String, service)
+        XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.mozilla.pocket")
     }
 
-    func test_set_whenNil_callsDelete() {
+    func test_set_whenNil_callsDelete_withCorrectQuery() {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
@@ -54,6 +74,13 @@ class KeychainStorageTests: XCTestCase {
         storage.wrappedValue = nil
 
         XCTAssertEqual(keychain.deleteCalls.count, 1)
+
+        let query = keychain.deleteCalls[0].query as! [String: Any]
+
+        XCTAssertEqual(query[kSecClass as String] as? String, kSecClassGenericPassword as String)
+        XCTAssertEqual(query[kSecAttrService as String] as? String, service)
+        XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.mozilla.pocket")
     }
 
     func test_read_usesCachedValue() {

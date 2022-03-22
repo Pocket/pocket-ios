@@ -4,6 +4,7 @@ import Combine
 import AuthenticationServices
 import Sync
 import Analytics
+import SharedPocketKit
 
 
 class LoggedOutViewModelTests: XCTestCase {

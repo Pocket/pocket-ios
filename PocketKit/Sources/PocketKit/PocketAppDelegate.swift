@@ -7,6 +7,7 @@ import Sync
 import Textile
 import Analytics
 import BackgroundTasks
+import SharedPocketKit
 
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
