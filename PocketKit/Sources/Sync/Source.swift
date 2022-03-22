@@ -39,6 +39,8 @@ public protocol Source {
     func archive(recommendation: Slate.Recommendation)
 
     func fetchArchivePage(cursor: String?, isFavorite: Bool?)
+
+    func restore()
 }
 
 public extension Source {
