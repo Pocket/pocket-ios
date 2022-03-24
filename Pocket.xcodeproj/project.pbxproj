@@ -44,6 +44,7 @@
 		16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */; };
 		16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */; };
 		F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20BB0382744542F00AE5E70 /* AlertElement.swift */; };
+		F24B1E1C27ECB55600C75487 /* SaveToPocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24B1E1B27ECB55600C75487 /* SaveToPocket.swift */; };
 		F2675EAB27D9424B0016769E /* HomeWebViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2675EAA27D9424B0016769E /* HomeWebViewTests.swift */; };
 		F2687E7327E28F0F00E43F09 /* SaveToPocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = F2687E7227E28F0F00E43F09 /* SaveToPocketKit */; };
 		F2843C1E2714D18200E03ED5 /* ReportARecommendationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2843C1D2714D18200E03ED5 /* ReportARecommendationTests.swift */; };
@@ -140,6 +141,7 @@
 		F204A76727E22EC50010E155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F20BB0382744542F00AE5E70 /* AlertElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertElement.swift; sourceTree = "<group>"; };
 		F227F0C3265E96290031F985 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.5.sdk/System/Library/Frameworks/CoreText.framework; sourceTree = DEVELOPER_DIR; };
+		F24B1E1B27ECB55600C75487 /* SaveToPocket.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveToPocket.swift; sourceTree = "<group>"; };
 		F2675EAA27D9424B0016769E /* HomeWebViewTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HomeWebViewTests.swift; sourceTree = "<group>"; };
 		F2843C1D2714D18200E03ED5 /* ReportARecommendationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportARecommendationTests.swift; sourceTree = "<group>"; };
 		F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportViewElement.swift; sourceTree = "<group>"; };
@@ -283,6 +285,7 @@
 		F204A76127E22EC50010E155 /* SaveToPocket */ = {
 			isa = PBXGroup;
 			children = (
+				F24B1E1B27ECB55600C75487 /* SaveToPocket.swift */,
 				166DF27927E9173500C03BF4 /* SaveToPocket.entitlements */,
 				F204A76727E22EC50010E155 /* Info.plist */,
 			);
@@ -386,6 +389,7 @@
 					};
 					F204A75F27E22EC50010E155 = {
 						CreatedOnToolsVersion = 13.3;
+						LastSwiftMigration = 1330;
 					};
 				};
 			};
@@ -496,6 +500,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F24B1E1C27ECB55600C75487 /* SaveToPocket.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -631,6 +636,7 @@
 		166A81DB2637406C0015AA1D /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
@@ -658,6 +664,7 @@
 		166A81DC2637406C0015AA1D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
@@ -741,6 +748,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
 				CODE_SIGN_STYLE = Manual;
@@ -763,6 +771,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -772,6 +781,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Mozilla Corporation (43AQ936H96)";
 				CODE_SIGN_STYLE = Manual;
