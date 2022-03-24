@@ -9,8 +9,14 @@ class MainViewController: UIViewController {
 
     private let dismissLabel = UILabel()
 
+    private let viewModel: MainViewModel
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         Textiles.initialize()
+
+        let saveService = PocketSaveService()
+        self.viewModel = MainViewModel(saveService: saveService)
+
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
 
