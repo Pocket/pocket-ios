@@ -23,7 +23,7 @@ class MainViewModel {
                 break
             }
 
-            await saveService.save(url: url)
+            saveService.save(url: url)
             break
         }
 

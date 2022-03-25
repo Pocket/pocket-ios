@@ -1,5 +1,8 @@
 import UIKit
 import Textile
+import Apollo
+import SharedPocketKit
+import Sync
 
 
 class MainViewController: UIViewController {
@@ -11,13 +14,26 @@ class MainViewController: UIViewController {
 
     private let viewModel: MainViewModel
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    convenience init() {
         Textiles.initialize()
 
-        let saveService = PocketSaveService()
-        self.viewModel = MainViewModel(saveService: saveService)
+        self.init(
+            viewModel: MainViewModel(
+                saveService: PocketSaveService(
+                    apollo: ApolloClient.createDefault(
+                        sessionProvider: AppSession(),
+                        consumerKey: Keys.shared.pocketApiConsumerKey
+                    ),
+                    backgroundActivityPerformer: ProcessInfo.processInfo
+                )
+            )
+        )
+    }
 
-        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    init(viewModel: MainViewModel) {
+        self.viewModel = viewModel
+
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -65,6 +81,10 @@ class MainViewController: UIViewController {
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(finish))
         view.addGestureRecognizer(tap)
+
+        Task {
+            await viewModel.save(from: extensionContext)
+        }
     }
 
     @objc
