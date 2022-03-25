@@ -39,11 +39,12 @@ let package = Package(
 
         .target(
             name: "SaveToPocketKit",
-            dependencies: ["SharedPocketKit", "Textile"]
+            dependencies: ["SharedPocketKit", "Textile", "Sync"]
         ),
         .testTarget(
             name: "SaveToPocketKitTests",
-            dependencies: ["SaveToPocketKit"]
+            dependencies: ["SaveToPocketKit"],
+            resources: [.copy("Fixtures")]
         ),
 
         .target(

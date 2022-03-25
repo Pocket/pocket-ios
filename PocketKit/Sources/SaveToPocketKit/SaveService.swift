@@ -1,5 +1,5 @@
 import Foundation
 
 protocol SaveService {
-    func save(url: URL) async
+    func save(url: URL)
 }
