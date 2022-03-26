@@ -5,8 +5,8 @@
 import CoreData
 
 
-class PersistentContainer: NSPersistentContainer {
-    enum Storage {
+public class PersistentContainer: NSPersistentContainer {
+    public enum Storage {
         case inMemory
         case shared
     }

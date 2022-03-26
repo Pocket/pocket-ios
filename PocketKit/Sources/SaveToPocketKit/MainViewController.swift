@@ -24,7 +24,8 @@ class MainViewController: UIViewController {
                         sessionProvider: AppSession(),
                         consumerKey: Keys.shared.pocketApiConsumerKey
                     ),
-                    backgroundActivityPerformer: ProcessInfo.processInfo
+                    backgroundActivityPerformer: ProcessInfo.processInfo,
+                    space: Space(container: .init(storage: .shared))
                 )
             )
         )
