@@ -50,6 +50,13 @@ public enum Requests {
         return request
     }
 
+    public static func fetchSavedItem(byURL url: URL) -> NSFetchRequest<SavedItem> {
+        let request = SavedItem.fetchRequest()
+        request.predicate = NSPredicate(format: "url.absoluteString = %@", url.absoluteString)
+        request.fetchLimit = 1
+        return request
+    }
+
     public static func fetchPersistentSyncTasks() -> NSFetchRequest<PersistentSyncTask> {
         let request = PersistentSyncTask.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \PersistentSyncTask.createdAt, ascending: true)]

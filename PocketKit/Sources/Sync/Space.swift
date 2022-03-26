@@ -4,14 +4,14 @@
 
 import CoreData
 
-class Space {
+public class Space {
     private let container: PersistentContainer
 
     var context: NSManagedObjectContext {
         container.viewContext
     }
     
-    required init(container: PersistentContainer) {
+    public required init(container: PersistentContainer) {
         self.container = container
     }
 
@@ -26,6 +26,11 @@ class Space {
 
     func fetchSavedItem(byRemoteItemID remoteItemID: String) throws -> SavedItem? {
         let request = Requests.fetchSavedItem(byRemoteItemID: remoteItemID)
+        return try context.fetch(request).first
+    }
+
+    func fetchSavedItem(byURL url: URL) throws -> SavedItem? {
+        let request = Requests.fetchSavedItem(byURL: url)
         return try context.fetch(request).first
     }
 
@@ -52,7 +57,7 @@ class Space {
         return try context.fetch(Requests.fetchPersistentSyncTasks())
     }
 
-    func new<T: NSManagedObject>() -> T {
+    public func new<T: NSManagedObject>() -> T {
         return T(context: context)
     }
 
@@ -60,7 +65,7 @@ class Space {
         context.delete(object)
     }
 
-    func save() throws {
+    public func save() throws {
         try context.obtainPermanentIDs(for: Array(context.insertedObjects))
         try context.save()
     }

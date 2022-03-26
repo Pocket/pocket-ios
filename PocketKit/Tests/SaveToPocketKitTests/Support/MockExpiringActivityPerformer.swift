@@ -8,7 +8,7 @@ class MockExpiringActivityPerformer: ExpiringActivityPerformer {
 
 extension MockExpiringActivityPerformer {
     static let performImpl = "performImpl"
-    typealias PerformImpl = (String, (Bool) -> Void) -> Void
+    typealias PerformImpl = (String, @escaping (Bool) -> Void) -> Void
 
     struct PerformCall {
         let reason: String
