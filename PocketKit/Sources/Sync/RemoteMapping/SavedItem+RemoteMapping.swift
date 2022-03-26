@@ -8,7 +8,7 @@ import CoreData
 
 extension SavedItem {
     typealias SavedItemEdge = UserByTokenQuery.Data.UserByToken.SavedItem.Edge
-    typealias RemoteSavedItem = SavedItemParts
+    public typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
 
     func update(from edge: SavedItemEdge) {
@@ -21,7 +21,7 @@ extension SavedItem {
         update(from: savedItemParts)
     }
 
-    func update(from remote: RemoteSavedItem) {
+    public func update(from remote: RemoteSavedItem) {
         remoteID = remote.remoteId
         url = URL(string: remote.url)
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))

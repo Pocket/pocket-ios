@@ -1,13 +1,13 @@
 import Foundation
 
 
-class AsyncOperation: Operation {
-    override var isAsynchronous: Bool {
+open class AsyncOperation: Operation {
+    override public var isAsynchronous: Bool {
         true
     }
 
     private var _isFinished = false
-    override var isFinished: Bool {
+    override public var isFinished: Bool {
         get {
             return _isFinished
         }
@@ -23,7 +23,7 @@ class AsyncOperation: Operation {
     }
 
     private var _isExecuting = false
-    override var isExecuting: Bool {
+    override public  var isExecuting: Bool {
         get {
             return _isExecuting
         }
@@ -38,7 +38,7 @@ class AsyncOperation: Operation {
         }
     }
 
-    func finishOperation() {
+    public func finishOperation() {
         isExecuting = false
         isFinished = true
     }

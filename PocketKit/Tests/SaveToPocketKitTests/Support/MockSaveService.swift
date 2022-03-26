@@ -23,7 +23,7 @@ extension MockSaveService {
         calls[Self.saveImpl]?[index] as? SaveCall
     }
 
-    func save(url: URL) async {
+    func save(url: URL) {
         guard let impl = implementations[Self.saveImpl] as? SaveImpl else {
             fatalError("\(Self.self).\(#function) is not stubbed")
         }
