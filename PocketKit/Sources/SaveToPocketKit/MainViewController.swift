@@ -101,7 +101,7 @@ private class MainCapsuleView: UIView {
 
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [imageView, textLabel])
-        stackView.spacing = 28
+        stackView.spacing = 12
         stackView.axis = .horizontal
         return stackView
     }()
@@ -118,6 +118,9 @@ private class MainCapsuleView: UIView {
 
         addSubview(stackView)
 
+        imageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        imageView.setContentCompressionResistancePriority(.required, for: .vertical)
+        textLabel.adjustsFontSizeToFitWidth = true
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             stackView.topAnchor.constraint(equalTo: topAnchor, constant: 5),
