@@ -10,15 +10,11 @@ struct DownloadSchema: ParsableCommand {
     )
 
     mutating func run() throws {
-        let endpoint = URL(string: "https://client-api.getpocket.com/")!
-        let schemaDownloadOptions = ApolloSchemaOptions(
-            downloadMethod: .introspection(endpointURL: endpoint),
-            outputFolderURL: FileStructure.schemaDir
-        )
-
-        try ApolloSchemaDownloader.run(
-            with: FileStructure.tmpDir,
-            options: schemaDownloadOptions
+        try ApolloSchemaDownloader.fetch(
+            with: ApolloSchemaDownloadConfiguration(
+                using: .introspection(endpointURL: URL(string: "https://client-api.getpocket.com/")!),
+                outputFolderURL: FileStructure.schemaDir
+            )
         )
     }
 }
