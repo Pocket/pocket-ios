@@ -24,7 +24,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         self.itemsController = MockSavedItemsController()
         self.itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
-        source.stubMakeItemsController { self.itemsController }
+        source.stubMakeArchivedItemsController { self.itemsController }
     }
 
     override func tearDown() {
@@ -41,11 +41,6 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             tracker: tracker ?? self.tracker,
             networkMonitor: networkMonitor ?? self.networkMonitor
         )
-    }
-
-    func test_initializing_configuresTheItemsController() {
-        _ = subject()
-        XCTAssertEqual(itemsController.predicate, Predicates.archivedItems())
     }
 
     func test_fetch_delegatesToSource() {
@@ -80,9 +75,6 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_changedContentFromItemsController_sendsNewSnapshot() {
-        let itemsController = MockSavedItemsController()
-        source.stubMakeItemsController { itemsController }
-
         let items: [SavedItem] = [.build(), .build()]
 
         let expectSnapshot = expectation(description: "expect a snapshot")
@@ -288,9 +280,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
     func test_receivedSnapshots_includeNextPageItem() {
         let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
-        let itemsController = MockSavedItemsController()
         itemsController.fetchedObjects = items
-        source.stubMakeItemsController { itemsController }
 
         source.stubFetchArchivePage { cursor, isFavorite in }
 
@@ -325,9 +315,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
     func test_willDisplay_whenFavoritesFilterIsOn_includesFilterArgument() {
         let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
-        let itemsController = MockSavedItemsController()
-        itemsController.stubPerformFetch { itemsController.fetchedObjects = items }
-        source.stubMakeItemsController { itemsController }
+        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = items }
 
         source.stubFetchArchivePage { cursor, isFavorite in }
 
@@ -350,9 +338,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
     func test_willDisplay_whenOffline_doesNothing() {
         let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
-        let itemsController = MockSavedItemsController()
-        itemsController.stubPerformFetch { itemsController.fetchedObjects = items }
-        source.stubMakeItemsController { itemsController }
+        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = items }
 
         let viewModel = subject()
         viewModel.fetch()

@@ -94,6 +94,12 @@ public class PocketSource: Source {
         )
     }
 
+    public func makeArchivedItemsController() -> SavedItemsController {
+        FetchedSavedItemsController(
+            resultsController: space.makeArchivedItemsController()
+        )
+    }
+
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.object(with: id)
     }

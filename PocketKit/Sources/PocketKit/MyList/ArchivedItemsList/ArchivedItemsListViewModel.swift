@@ -52,10 +52,9 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         self.source = source
         self.tracker = tracker
         self.networkMonitor = networkMonitor
-        self.itemsController = source.makeItemsController()
+        self.itemsController = source.makeArchivedItemsController()
 
         itemsController.delegate = self
-        itemsController.predicate = Predicates.archivedItems()
         networkMonitor.start(queue: .global())
 
         source.events.sink { [weak self] event in

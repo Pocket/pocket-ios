@@ -12,6 +12,8 @@ public protocol Source {
 
     func makeItemsController() -> SavedItemsController
 
+    func makeArchivedItemsController() -> SavedItemsController
+
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refresh(maxItems: Int, completion: (() -> ())?)
