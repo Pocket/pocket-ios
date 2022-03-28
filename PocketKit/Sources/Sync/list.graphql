@@ -5,6 +5,7 @@ fragment SavedItemParts on SavedItem {
   isFavorite
   _deletedAt
   _createdAt
+  archivedAt
   item {
     ...ItemParts
     ...PendingItemParts

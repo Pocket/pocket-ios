@@ -25,7 +25,8 @@ extension SavedItem {
         remoteID = remote.remoteId
         url = URL(string: remote.url)
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
-        deletedAt = remote._deletedAt.flatMap { Date(timeIntervalSince1970: TimeInterval($0)) }
+        deletedAt = remote._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
+        archivedAt = remote.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         isArchived = remote.isArchived
         isFavorite = remote.isFavorite
 

@@ -54,8 +54,17 @@ class FetchArchivePageOperationTests: XCTestCase {
 
         let archivedItems = try space.fetchArchivedItems()
         XCTAssertEqual(archivedItems.count, 2)
-        XCTAssertEqual(archivedItems[0].remoteID, "archived-saved-item-1")
-        XCTAssertEqual(archivedItems[1].remoteID, "archived-saved-item-2")
+
+        do {
+            let archivedItem = archivedItems[0]
+            XCTAssertEqual(archivedItem.remoteID, "archived-saved-item-1")
+            XCTAssertEqual(archivedItem.archivedAt, Date())
+        }
+
+        do {
+            let archivedItem = archivedItems[1]
+            XCTAssertEqual(archivedItem.remoteID, "archived-saved-item-2")
+        }
     }
 
     func test_theOperation_whenCursorIsPresent_usesTheCursorForPagination() async {
