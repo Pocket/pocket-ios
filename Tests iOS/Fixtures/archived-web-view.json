@@ -19,6 +19,7 @@
                             "url": "http://localhost:8080/hello",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": 3,
                             "isArchived": true,
                             "isFavorite": false,
                             "item": {
@@ -59,6 +60,7 @@
                             "url": "http://localhost:8080/hello",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": 2,
                             "isArchived": true,
                             "isFavorite": true,
                             "item": {
@@ -92,6 +94,7 @@
                             "url": "http://localhost:8080/hello",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": 1,
                             "isArchived": true,
                             "isFavorite": true,
                             "item": {

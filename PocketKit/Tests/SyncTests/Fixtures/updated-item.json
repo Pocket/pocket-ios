@@ -19,6 +19,7 @@
                             "url": "http://example.com/item-1",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
                             "item": {

@@ -814,6 +814,7 @@ public final class UserByTokenQuery: GraphQLQuery {
                 GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
                 GraphQLField("_deletedAt", type: .scalar(Int.self)),
                 GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
+                GraphQLField("archivedAt", type: .scalar(Int.self)),
                 GraphQLField("item", type: .nonNull(.object(Item.selections))),
               ]
             }
@@ -824,8 +825,8 @@ public final class UserByTokenQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, item: Item) {
-              self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "item": item.resultMap])
+            public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, archivedAt: Int? = nil, item: Item) {
+              self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "archivedAt": archivedAt, "item": item.resultMap])
             }
 
             public var __typename: String {
@@ -894,6 +895,16 @@ public final class UserByTokenQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "_createdAt")
+              }
+            }
+
+            /// Timestamp that the SavedItem became archied, null if not archived
+            public var archivedAt: Int? {
+              get {
+                return resultMap["archivedAt"] as? Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "archivedAt")
               }
             }
 
@@ -3905,6 +3916,7 @@ public final class SaveItemMutation: GraphQLMutation {
           GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
           GraphQLField("_deletedAt", type: .scalar(Int.self)),
           GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
+          GraphQLField("archivedAt", type: .scalar(Int.self)),
           GraphQLField("item", type: .nonNull(.object(Item.selections))),
         ]
       }
@@ -3915,8 +3927,8 @@ public final class SaveItemMutation: GraphQLMutation {
         self.resultMap = unsafeResultMap
       }
 
-      public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, item: Item) {
-        self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "item": item.resultMap])
+      public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, archivedAt: Int? = nil, item: Item) {
+        self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "archivedAt": archivedAt, "item": item.resultMap])
       }
 
       public var __typename: String {
@@ -3985,6 +3997,16 @@ public final class SaveItemMutation: GraphQLMutation {
         }
         set {
           resultMap.updateValue(newValue, forKey: "_createdAt")
+        }
+      }
+
+      /// Timestamp that the SavedItem became archied, null if not archived
+      public var archivedAt: Int? {
+        get {
+          return resultMap["archivedAt"] as? Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "archivedAt")
         }
       }
 
@@ -13296,6 +13318,7 @@ public struct SavedItemParts: GraphQLFragment {
       isFavorite
       _deletedAt
       _createdAt
+      archivedAt
       item {
         __typename
         ...ItemParts
@@ -13315,6 +13338,7 @@ public struct SavedItemParts: GraphQLFragment {
       GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
       GraphQLField("_deletedAt", type: .scalar(Int.self)),
       GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
+      GraphQLField("archivedAt", type: .scalar(Int.self)),
       GraphQLField("item", type: .nonNull(.object(Item.selections))),
     ]
   }
@@ -13325,8 +13349,8 @@ public struct SavedItemParts: GraphQLFragment {
     self.resultMap = unsafeResultMap
   }
 
-  public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, item: Item) {
-    self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "item": item.resultMap])
+  public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, archivedAt: Int? = nil, item: Item) {
+    self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "archivedAt": archivedAt, "item": item.resultMap])
   }
 
   public var __typename: String {
@@ -13395,6 +13419,16 @@ public struct SavedItemParts: GraphQLFragment {
     }
     set {
       resultMap.updateValue(newValue, forKey: "_createdAt")
+    }
+  }
+
+  /// Timestamp that the SavedItem became archied, null if not archived
+  public var archivedAt: Int? {
+    get {
+      return resultMap["archivedAt"] as? Int
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "archivedAt")
     }
   }
 

@@ -19,6 +19,7 @@
                             "url": "http://localhost:8080/hello",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": 1648493207,
                             "isArchived": true,
                             "isFavorite": false,
                             "item": {
@@ -64,6 +65,7 @@
                             "url": "https://example.com/item-2",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
                             "item": {
@@ -105,6 +107,7 @@
                             "url": "https://example.com/item-3",
                             "_createdAt": 0,
                             "_deletedAt": 1,
+                            "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
                             "item": {

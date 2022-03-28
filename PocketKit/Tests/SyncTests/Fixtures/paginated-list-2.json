@@ -19,6 +19,7 @@
                             "url": "https://example.com/item-2",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
                             "item": {

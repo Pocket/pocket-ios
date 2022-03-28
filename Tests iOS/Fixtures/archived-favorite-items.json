@@ -19,6 +19,7 @@
                             "url": "http://example.com/items/favorited-archived-item-1",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": 1648493207,
                             "isArchived": true,
                             "isFavorite": false,
                             "item": {
@@ -59,6 +60,7 @@
                             "url": "https://example.com/items/favorited-archived-item-2",
                             "_createdAt": 0,
                             "_deletedAt": null,
+                            "archivedAt": 1648493207,
                             "isArchived": true,
                             "isFavorite": false,
                             "item": {
