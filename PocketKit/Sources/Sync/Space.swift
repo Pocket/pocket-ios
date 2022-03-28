@@ -83,6 +83,15 @@ class Space {
         )
     }
 
+    func makeArchivedItemsController() -> NSFetchedResultsController<SavedItem> {
+        NSFetchedResultsController(
+            fetchRequest: Requests.fetchArchivedItems(),
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
+
     func object<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
         context.object(with: id) as? T
     }

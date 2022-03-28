@@ -53,8 +53,8 @@ class ArchiveTests: XCTestCase {
 
         myList.selectionSwitcher.archiveButton.wait().tap()
 
-        myList.itemView(matching: "Archived Item 1").wait()
-        myList.itemView(matching: "Archived Item 2").wait()
+        XCTAssertTrue(myList.itemView(at: 0).contains(string: "Archived Item 1"))
+        XCTAssertTrue(myList.itemView(at: 1).contains(string: "Archived Item 2"))
 
         XCTAssertFalse(myList.itemView(matching: "Item 1").exists)
         XCTAssertFalse(myList.itemView(matching: "Item 2").exists)

@@ -19,7 +19,7 @@
                             "url": "http://example.com/items/archived-item-1",
                             "_createdAt": 0,
                             "_deletedAt": null,
-                            "archivedAt": 1648493207,
+                            "archivedAt": 100,
                             "isArchived": true,
                             "isFavorite": false,
                             "item": {
@@ -58,9 +58,9 @@
                             "__typename": "[type-name-here]",
                             "remoteID": "archived-item-2",
                             "url": "https://example.com/items/archived-item-2",
-                            "_createdAt": 0,
+                            "_createdAt": 1,
                             "_deletedAt": null,
-                            "archivedAt": 1648493207,
+                            "archivedAt": 0,
                             "isArchived": true,
                             "isFavorite": true,
                             "item": {

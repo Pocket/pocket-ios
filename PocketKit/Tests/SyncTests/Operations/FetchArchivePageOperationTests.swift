@@ -58,7 +58,7 @@ class FetchArchivePageOperationTests: XCTestCase {
         do {
             let archivedItem = archivedItems[0]
             XCTAssertEqual(archivedItem.remoteID, "archived-saved-item-1")
-            XCTAssertEqual(archivedItem.archivedAt, Date())
+            XCTAssertEqual(archivedItem.archivedAt, Date(timeIntervalSince1970: 1648493207))
         }
 
         do {

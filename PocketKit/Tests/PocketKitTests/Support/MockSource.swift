@@ -103,6 +103,29 @@ extension MockSource {
     }
 }
 
+// MARK: - Make archived items controller
+extension MockSource {
+    static let makeArchivedItemsController = "makeArchivedItemsController"
+    typealias MakeArchivedItemsControllerImpl = () -> SavedItemsController
+
+    struct MakeArchivedItemsControllerCall { }
+
+    func stubMakeArchivedItemsController(impl: @escaping MakeArchivedItemsControllerImpl) {
+        implementations[Self.makeArchivedItemsController] = impl
+    }
+
+    func makeArchivedItemsController() -> SavedItemsController {
+        guard let impl = implementations[Self.makeArchivedItemsController] as? MakeArchivedItemsControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeArchivedItemsController] = (calls[Self.makeArchivedItemsController] ?? []) + [MakeArchivedItemsControllerCall()]
+
+        return impl()
+    }
+}
+
+
 // MARK: - Fetch Archived content
 extension MockSource {
     static let fetchArchivePage = "fetchArchivePage"
