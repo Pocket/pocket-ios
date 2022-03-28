@@ -6,20 +6,6 @@
 	objectVersion = 52;
 	objects = {
 
-/* Begin PBXAggregateTarget section */
-		16D68EAB269648510046F93D /* ApolloCodegen */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = 16D68EAC269648510046F93D /* Build configuration list for PBXAggregateTarget "ApolloCodegen" */;
-			buildPhases = (
-				16D68EAF269648640046F93D /* Generate API.swift */,
-			);
-			dependencies = (
-			);
-			name = ApolloCodegen;
-			productName = ApolloCodegen;
-		};
-/* End PBXAggregateTarget section */
-
 /* Begin PBXBuildFile section */
 		160056F326CC7FFD00700A80 /* FavoriteAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 160056F226CC7FFD00700A80 /* FavoriteAnItemTests.swift */; };
 		1605237E27A4627F00E09FD2 /* XCTestCase+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1605237D27A4627F00E09FD2 /* XCTestCase+extensions.swift */; };
@@ -329,9 +315,6 @@
 						CreatedOnToolsVersion = 12.5;
 						TestTargetID = 166A81AF2637406C0015AA1D;
 					};
-					16D68EAB269648510046F93D = {
-						CreatedOnToolsVersion = 12.5;
-					};
 				};
 			};
 			buildConfigurationList = 166A81A72637406B0015AA1D /* Build configuration list for PBXProject "Pocket" */;
@@ -352,7 +335,6 @@
 			targets = (
 				166A81AF2637406C0015AA1D /* Pocket (iOS) */,
 				166A81BF2637406C0015AA1D /* Tests iOS */,
-				16D68EAB269648510046F93D /* ApolloCodegen */,
 			);
 		};
 /* End PBXProject section */
@@ -375,30 +357,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		16D68EAF269648640046F93D /* Generate API.swift */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/PocketKit/Sources/Sync/list.graphql",
-				"$(SRCROOT)/PocketKit/Sources/Sync/schema.graphql",
-			);
-			name = "Generate API.swift";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/PocketKit/Sources/Sync/API.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [[ -z ${SKIP_APOLLO_CODEGEN} ]]; then\n  echo Running Apollo Codegen\n  cd \"${SRCROOT}\"/PocketKit\n  xcrun -sdk macosx swift run ApolloCodegen generate\nelse\n  echo Skipping Apollo Codegen\nfi\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		166A81AC2637406C0015AA1D /* Sources */ = {
@@ -672,18 +630,6 @@
 			};
 			name = Release;
 		};
-		16D68EAD269648510046F93D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		16D68EAE269648510046F93D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -710,15 +656,6 @@
 			buildConfigurations = (
 				166A81E12637406C0015AA1D /* Debug */,
 				166A81E22637406C0015AA1D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		16D68EAC269648510046F93D /* Build configuration list for PBXAggregateTarget "ApolloCodegen" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				16D68EAD269648510046F93D /* Debug */,
-				16D68EAE269648510046F93D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
