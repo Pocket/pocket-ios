@@ -121,3 +121,5 @@ Config/secrets.xcconfig
 **/*.otf
 **/.swiftpm
 **/.tmp
+schema.graphqls
+introspection_response.json
