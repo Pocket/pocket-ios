@@ -3,10 +3,30 @@ import Foundation
 
 
 class MockExtensionContext: ExtensionContext {
+    private var implementations: [String: Any] = [:]
+
     let extensionItems: [ExtensionItem]
 
     init(extensionItems: [ExtensionItem]) {
         self.extensionItems = extensionItems
+    }
+}
+
+extension MockExtensionContext {
+    static let completeRequestImpl = "completeRequestImpl"
+
+    typealias CompleteRequestImpl = ([Any]?, ((Bool) -> Void)?) -> Void
+
+    func stubCompleteRequest(_ impl: @escaping CompleteRequestImpl) {
+        implementations[Self.completeRequestImpl] = impl
+    }
+
+    func completeRequest(returningItems items: [Any]?, completionHandler: ((Bool) -> Void)?) {
+        guard let impl = implementations[Self.completeRequestImpl] as? CompleteRequestImpl else {
+            fatalError("\(Self.self).\(#function) is not stubbed")
+        }
+
+        impl(items, completionHandler)
     }
 }
 
