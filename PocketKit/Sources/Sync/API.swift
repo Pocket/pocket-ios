@@ -86,9 +86,10 @@ public struct SavedItemsFilter: GraphQLMapConvertible {
   /// To get untagged items, include the string '_untagged_'.
   ///   - isHighlighted: Optional, filter to get SavedItems with highlights
   ///   - contentType: Optional, filter to get SavedItems based on content type
-  ///   - status: Optional, filter to get user items based on status.
-  public init(updatedSince: Swift.Optional<Int?> = nil, isFavorite: Swift.Optional<Bool?> = nil, isArchived: Swift.Optional<Bool?> = nil, tagIds: Swift.Optional<[GraphQLID]?> = nil, tagNames: Swift.Optional<[String]?> = nil, isHighlighted: Swift.Optional<Bool?> = nil, contentType: Swift.Optional<SavedItemsContentType?> = nil, status: Swift.Optional<SavedItemStatusFilter?> = nil) {
-    graphQLMap = ["updatedSince": updatedSince, "isFavorite": isFavorite, "isArchived": isArchived, "tagIds": tagIds, "tagNames": tagNames, "isHighlighted": isHighlighted, "contentType": contentType, "status": status]
+  ///   - status: Optional, filter to get user items based on status. Deprecated: use statuses instead.
+  ///   - statuses: Optional, filters to get user items based on multiple statuses (OR operator)
+  public init(updatedSince: Swift.Optional<Int?> = nil, isFavorite: Swift.Optional<Bool?> = nil, isArchived: Swift.Optional<Bool?> = nil, tagIds: Swift.Optional<[GraphQLID]?> = nil, tagNames: Swift.Optional<[String]?> = nil, isHighlighted: Swift.Optional<Bool?> = nil, contentType: Swift.Optional<SavedItemsContentType?> = nil, status: Swift.Optional<SavedItemStatusFilter?> = nil, statuses: Swift.Optional<[SavedItemStatusFilter?]?> = nil) {
+    graphQLMap = ["updatedSince": updatedSince, "isFavorite": isFavorite, "isArchived": isArchived, "tagIds": tagIds, "tagNames": tagNames, "isHighlighted": isHighlighted, "contentType": contentType, "status": status, "statuses": statuses]
   }
 
   /// Optional, filter to get SavedItems updated since a unix timestamp
@@ -165,7 +166,7 @@ public struct SavedItemsFilter: GraphQLMapConvertible {
     }
   }
 
-  /// Optional, filter to get user items based on status.
+  /// Optional, filter to get user items based on status. Deprecated: use statuses instead.
   public var status: Swift.Optional<SavedItemStatusFilter?> {
     get {
       return graphQLMap["status"] as? Swift.Optional<SavedItemStatusFilter?> ?? Swift.Optional<SavedItemStatusFilter?>.none
@@ -174,13 +175,37 @@ public struct SavedItemsFilter: GraphQLMapConvertible {
       graphQLMap.updateValue(newValue, forKey: "status")
     }
   }
+
+  /// Optional, filters to get user items based on multiple statuses (OR operator)
+  public var statuses: Swift.Optional<[SavedItemStatusFilter?]?> {
+    get {
+      return graphQLMap["statuses"] as? Swift.Optional<[SavedItemStatusFilter?]?> ?? Swift.Optional<[SavedItemStatusFilter?]?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "statuses")
+    }
+  }
 }
 
 /// A SavedItem can be one of these content types
 public enum SavedItemsContentType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
+  /// Item is a parsed article that contains videos
+  @available(*, deprecated, message: "Use `HAS_VIDEO`.")
   case video
+  /// Item is a parsed page can be opened in reader view
+  @available(*, deprecated, message: "Use `IS_READABLE`.")
   case article
+  /// Item is an image
+  case isImage
+  /// Item is a video
+  case isVideo
+  /// Item is a parsed article that contains videos
+  case hasVideo
+  /// Item is a parsed page can be opened in reader view
+  case isReadable
+  /// Item is an un-parsable page and will be opened externally
+  case isExternal
   /// Auto generated constant for unknown enum values
   case __unknown(RawValue)
 
@@ -188,6 +213,11 @@ public enum SavedItemsContentType: RawRepresentable, Equatable, Hashable, CaseIt
     switch rawValue {
       case "VIDEO": self = .video
       case "ARTICLE": self = .article
+      case "IS_IMAGE": self = .isImage
+      case "IS_VIDEO": self = .isVideo
+      case "HAS_VIDEO": self = .hasVideo
+      case "IS_READABLE": self = .isReadable
+      case "IS_EXTERNAL": self = .isExternal
       default: self = .__unknown(rawValue)
     }
   }
@@ -196,6 +226,11 @@ public enum SavedItemsContentType: RawRepresentable, Equatable, Hashable, CaseIt
     switch self {
       case .video: return "VIDEO"
       case .article: return "ARTICLE"
+      case .isImage: return "IS_IMAGE"
+      case .isVideo: return "IS_VIDEO"
+      case .hasVideo: return "HAS_VIDEO"
+      case .isReadable: return "IS_READABLE"
+      case .isExternal: return "IS_EXTERNAL"
       case .__unknown(let value): return value
     }
   }
@@ -204,6 +239,11 @@ public enum SavedItemsContentType: RawRepresentable, Equatable, Hashable, CaseIt
     switch (lhs, rhs) {
       case (.video, .video): return true
       case (.article, .article): return true
+      case (.isImage, .isImage): return true
+      case (.isVideo, .isVideo): return true
+      case (.hasVideo, .hasVideo): return true
+      case (.isReadable, .isReadable): return true
+      case (.isExternal, .isExternal): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
       default: return false
     }
@@ -213,6 +253,11 @@ public enum SavedItemsContentType: RawRepresentable, Equatable, Hashable, CaseIt
     return [
       .video,
       .article,
+      .isImage,
+      .isVideo,
+      .hasVideo,
+      .isReadable,
+      .isExternal,
     ]
   }
 }
@@ -7173,101 +7218,6 @@ public final class ArchiveItemMutation: GraphQLMutation {
     }
 
     public struct UpdateSavedItemArchive: GraphQLSelectionSet {
-      public static let possibleTypes: [String] = ["SavedItem"]
-
-      public static var selections: [GraphQLSelection] {
-        return [
-          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
-          GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
-        ]
-      }
-
-      public private(set) var resultMap: ResultMap
-
-      public init(unsafeResultMap: ResultMap) {
-        self.resultMap = unsafeResultMap
-      }
-
-      public init(id: GraphQLID) {
-        self.init(unsafeResultMap: ["__typename": "SavedItem", "id": id])
-      }
-
-      public var __typename: String {
-        get {
-          return resultMap["__typename"]! as! String
-        }
-        set {
-          resultMap.updateValue(newValue, forKey: "__typename")
-        }
-      }
-
-      /// Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation
-      public var id: GraphQLID {
-        get {
-          return resultMap["id"]! as! GraphQLID
-        }
-        set {
-          resultMap.updateValue(newValue, forKey: "id")
-        }
-      }
-    }
-  }
-}
-
-public final class UnarchiveItemMutation: GraphQLMutation {
-  /// The raw GraphQL definition of this operation.
-  public let operationDefinition: String =
-    """
-    mutation UnarchiveItem($itemID: ID!) {
-      updateSavedItemUnArchive(id: $itemID) {
-        __typename
-        id
-      }
-    }
-    """
-
-  public let operationName: String = "UnarchiveItem"
-
-  public var itemID: GraphQLID
-
-  public init(itemID: GraphQLID) {
-    self.itemID = itemID
-  }
-
-  public var variables: GraphQLMap? {
-    return ["itemID": itemID]
-  }
-
-  public struct Data: GraphQLSelectionSet {
-    public static let possibleTypes: [String] = ["Mutation"]
-
-    public static var selections: [GraphQLSelection] {
-      return [
-        GraphQLField("updateSavedItemUnArchive", arguments: ["id": GraphQLVariable("itemID")], type: .nonNull(.object(UpdateSavedItemUnArchive.selections))),
-      ]
-    }
-
-    public private(set) var resultMap: ResultMap
-
-    public init(unsafeResultMap: ResultMap) {
-      self.resultMap = unsafeResultMap
-    }
-
-    public init(updateSavedItemUnArchive: UpdateSavedItemUnArchive) {
-      self.init(unsafeResultMap: ["__typename": "Mutation", "updateSavedItemUnArchive": updateSavedItemUnArchive.resultMap])
-    }
-
-    /// Unarchives a SavedItem
-    public var updateSavedItemUnArchive: UpdateSavedItemUnArchive {
-      get {
-        return UpdateSavedItemUnArchive(unsafeResultMap: resultMap["updateSavedItemUnArchive"]! as! ResultMap)
-      }
-      set {
-        resultMap.updateValue(newValue.resultMap, forKey: "updateSavedItemUnArchive")
-      }
-    }
-
-    public struct UpdateSavedItemUnArchive: GraphQLSelectionSet {
       public static let possibleTypes: [String] = ["SavedItem"]
 
       public static var selections: [GraphQLSelection] {

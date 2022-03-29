@@ -119,12 +119,6 @@ mutation ArchiveItem($itemID: ID!) {
   }
 }
 
-mutation UnarchiveItem($itemID: ID!) {
-    updateSavedItemUnArchive(id: $itemID) {
-      id
-    }
-}
-
 mutation DeleteItem($itemID: ID!) {
   deleteSavedItem(id: $itemID)
 }
