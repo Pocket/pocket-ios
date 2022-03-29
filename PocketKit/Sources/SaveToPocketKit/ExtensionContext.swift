@@ -3,6 +3,8 @@ import Foundation
 
 protocol ExtensionContext {
     var extensionItems: [ExtensionItem] { get }
+
+    func completeRequest(returningItems items: [Any]?, completionHandler: ((Bool) -> Void)?)
 }
 extension NSExtensionContext: ExtensionContext {
     var extensionItems: [ExtensionItem] {

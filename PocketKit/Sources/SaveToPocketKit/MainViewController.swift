@@ -29,7 +29,8 @@ class MainViewController: UIViewController {
                     ),
                     backgroundActivityPerformer: ProcessInfo.processInfo,
                     space: Space(container: .init(storage: .shared))
-                )
+                ),
+                dismissTimer: Timer.TimerPublisher(interval: 2, runLoop: .main, mode: .default)
             )
         )
     }
@@ -86,6 +87,10 @@ class MainViewController: UIViewController {
         view.addGestureRecognizer(tap)
 
         updateUI()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
         Task {
             await viewModel.save(from: extensionContext)
@@ -100,7 +105,7 @@ class MainViewController: UIViewController {
 
     @objc
     private func finish() {
-        extensionContext?.completeRequest(returningItems: nil)
+        viewModel.finish(context: extensionContext)
     }
 }
 
