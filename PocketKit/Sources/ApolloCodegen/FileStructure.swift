@@ -9,7 +9,7 @@ struct FileStructure {
 
     static let operationsDir = syncRoot
 
-    static let schemaURL = URL(fileURLWithPath: "schema.json", relativeTo: syncRoot).absoluteURL
+    static let schemaURL = URL(fileURLWithPath: "schema.graphqls", relativeTo: syncRoot).absoluteURL
 
     static let schemaDir = schemaURL.deletingLastPathComponent()
 
