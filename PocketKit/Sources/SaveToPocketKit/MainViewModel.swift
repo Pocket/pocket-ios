@@ -1,19 +1,24 @@
 import Foundation
 import SharedPocketKit
 import Textile
+import Combine
 
 
 class MainViewModel {
     private let appSession: AppSession
     private let saveService: SaveService
+    private let dismissTimer: Timer.TimerPublisher
+
+    private var dismissTimerCancellable: AnyCancellable? = nil
 
     let style: MainViewStyle
     let attributedText: NSAttributedString
     let attributedDetailText: NSAttributedString?
 
-    init(appSession: AppSession, saveService: SaveService) {
+    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher) {
         self.appSession = appSession
         self.saveService = saveService
+        self.dismissTimer = dismissTimer
 
         if appSession.currentSession != nil {
             style = .default
@@ -27,11 +32,14 @@ class MainViewModel {
     }
 
     func save(from context: ExtensionContext?) async {
-        guard let context = context, !context.extensionItems.isEmpty else {
+        guard appSession.currentSession != nil else {
+            autodismiss(from: context)
             return
         }
 
-        for item in context.extensionItems {
+        let extensionItems = context?.extensionItems ?? []
+
+        for item in extensionItems {
             let urlUTI = "public.url"
             guard let url = try? await item.itemProviders?
                 .first(where: { $0.hasItemConformingToTypeIdentifier(urlUTI) })?
@@ -44,7 +52,17 @@ class MainViewModel {
             break
         }
 
-        return
+        autodismiss(from: context)
+    }
+
+    func finish(context: ExtensionContext?) {
+        context?.completeRequest(returningItems: nil, completionHandler: nil)
+    }
+
+    private func autodismiss(from context: ExtensionContext?) {
+        dismissTimerCancellable = dismissTimer.autoconnect().sink { [weak self] _ in
+            self?.finish(context: context)
+        }
     }
 }
 
