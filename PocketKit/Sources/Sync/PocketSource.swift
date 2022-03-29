@@ -217,20 +217,20 @@ extension PocketSource {
     }
 
     public func unarchive(item: SavedItem) {
-        guard let remoteID = item.remoteID else {
-            return
-        }
+        guard let url = item.url else { return }
 
         item.isArchived = false
         try? space.save()
 
-        let operation = operations.savedItemMutationOperation(
-            apollo: apollo,
+        let operation = operations.saveItemOperation(
+            managedItemID: item.objectID,
+            url: url,
             events: _events,
-            mutation: UnarchiveItemMutation(itemID: remoteID)
+            apollo: apollo,
+            space: space
         )
 
-        enqueue(operation: operation, task: .unarchive(remoteID: remoteID))
+        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
     }
 }
 
@@ -361,13 +361,6 @@ extension PocketSource {
                     apollo: apollo,
                     events: _events,
                     mutation: ArchiveItemMutation(itemID: remoteID)
-                )
-                enqueue(operation: operation, persistentTask: persistentTask)
-            case .unarchive(let remoteID):
-                let operation = operations.savedItemMutationOperation(
-                    apollo: apollo,
-                    events: _events,
-                    mutation: UnarchiveItemMutation(itemID: remoteID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             case .delete(let remoteID):

@@ -90,7 +90,7 @@ class ArchiveTests: XCTestCase {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isToUnarchiveAnItem {
+            if apiRequest.isToSaveAnItem {
                 return Response.myList("unarchive")
             } else if apiRequest.isForMyListContent {
                 return Response.myList("list-with-unarchived-item")
