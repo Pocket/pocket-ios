@@ -161,7 +161,7 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
-    func test_archive_archivesLocally_andExecutesArchiveMutation() throws {
+    func test_archive_archivesLocally_andExecutesArchiveMutation_andUpdatesArchivedAt() throws {
         let item = try space.seedSavedItem(remoteID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
@@ -175,6 +175,7 @@ class PocketSourceTests: XCTestCase {
 
         XCTAssertTrue(item.isArchived)
         XCTAssertFalse(item.hasChanges)
+        XCTAssertNotNil(item.archivedAt)
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 

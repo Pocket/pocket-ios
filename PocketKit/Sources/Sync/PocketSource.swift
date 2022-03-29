@@ -205,6 +205,7 @@ extension PocketSource {
         }
 
         item.isArchived = true
+        item.archivedAt = Date()
         try? space.save()
 
         let operation = operations.savedItemMutationOperation(
