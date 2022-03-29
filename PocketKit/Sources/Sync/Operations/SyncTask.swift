@@ -6,7 +6,6 @@ enum SyncTask: Codable {
     case unfavorite(remoteID: String)
     case delete(remoteID: String)
     case archive(remoteID: String)
-    case unarchive(remoteID: String)
     case save(localID: URL, url: URL)
     case fetchArchivePage(cursor: String?, isFavorite: Bool?)
 }

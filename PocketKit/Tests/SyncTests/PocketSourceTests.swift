@@ -178,12 +178,12 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
-    func test_unarchive_executesUnarchiveMutation() throws {
+    func test_unarchive_executesSaveItemMutation() throws {
         let item = try space.seedSavedItem(remoteID: "unarchive-me")
         item.isArchived = true
 
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemMutationOperation { (_, _ , _: UnarchiveItemMutation) in
+        operations.stubSaveItemOperation { _, _, _, _, _ in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }

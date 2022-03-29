@@ -51,10 +51,6 @@ struct ClientAPIRequest {
         contains("updateSavedItemUnFavorite")
     }
 
-    var isToUnarchiveAnItem: Bool {
-        contains("updateSavedItemUnArchive")
-    }
-
     var isForSlateDetail: Bool {
         contains("getSlate(")
     }
