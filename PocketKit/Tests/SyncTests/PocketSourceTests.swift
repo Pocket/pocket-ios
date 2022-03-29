@@ -178,7 +178,7 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
-    func test_unarchive_executesSaveItemMutation() throws {
+    func test_unarchive_executesSaveItemMutation_andUpdatesCreatedAtField() throws {
         let item = try space.seedSavedItem(remoteID: "unarchive-me")
         item.isArchived = true
 
@@ -195,6 +195,7 @@ class PocketSourceTests: XCTestCase {
         let fetchedItem = try space.fetchSavedItem(byRemoteID: "archive-me")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.isArchived)
+        XCTAssertNotNil(item.createdAt)
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
