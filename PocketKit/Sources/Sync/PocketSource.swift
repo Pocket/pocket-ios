@@ -220,6 +220,7 @@ extension PocketSource {
         guard let url = item.url else { return }
 
         item.isArchived = false
+        item.createdAt = Date()
         try? space.save()
 
         let operation = operations.saveItemOperation(
