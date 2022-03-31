@@ -24,6 +24,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             switch section {
             case .filters:
                 var totalWidth: CGFloat = 0
+                var maxHeight: CGFloat = 0
                 let layoutItems = self.dataSource.snapshot(for: .filters).items.compactMap { cellID -> NSCollectionLayoutItem? in
                     guard case .filterButton(let filterID) = cellID else {
                         return nil
@@ -31,12 +32,14 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
                     let model = self.model.filterButton(with: filterID)
                     let width = TopicChipCell.width(chip: model)
+                    let height = TopicChipCell.height(chip: model)
+                    maxHeight = max(height, maxHeight)
 
                     totalWidth += width
                     return NSCollectionLayoutItem(
                         layoutSize: .init(
                             widthDimension: .absolute(width),
-                            heightDimension: .absolute(TopicChipCell.height)
+                            heightDimension: .absolute(height)
                         )
                     )
                 }
@@ -45,7 +48,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 let group = NSCollectionLayoutGroup.horizontal(
                     layoutSize: .init(
                         widthDimension: .absolute(totalWidth + ((CGFloat(layoutItems.count) - 1) * spacing)),
-                        heightDimension: .absolute(TopicChipCell.height)
+                        heightDimension: .absolute(maxHeight)
                     ),
                     subitems: layoutItems
                 )

@@ -16,14 +16,17 @@ class HomeViewControllerSectionProvider {
             )
         }
 
+        var maxHeight: CGFloat = 0
         let items = slates.map { slate -> (width: CGFloat, item: NSCollectionLayoutItem) in
             let chip = TopicChipPresenter(title: slate.name)
             let width = TopicChipCell.width(chip: chip)
+            let height = TopicChipCell.height(chip: chip)
+            maxHeight = max(height, maxHeight)
 
             return (width: width, item: NSCollectionLayoutItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .absolute(width),
-                    heightDimension: .absolute(TopicChipCell.height)
+                    heightDimension: .absolute(height)
                 )
             ))
         }
@@ -33,7 +36,7 @@ class HomeViewControllerSectionProvider {
         let group = NSCollectionLayoutGroup.horizontal(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .absolute(totalWidth),
-                heightDimension: .absolute(TopicChipCell.height)
+                heightDimension: .absolute(maxHeight)
             ),
             subitems: items.map { $0.item }
         )

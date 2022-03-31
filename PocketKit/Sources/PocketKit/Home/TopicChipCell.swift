@@ -24,7 +24,7 @@ class TopicChipCell: UICollectionViewCell {
         contentView.addSubview(toggledBackground)
         contentView.addSubview(titleLabel)
 
-        let cornerRadius = TopicChipCell.height / 2
+        let cornerRadius = frame.size.height / 2
         selectedBackgroundView = UIView()
         selectedBackgroundView?.layer.cornerRadius = cornerRadius
         selectedBackgroundView?.backgroundColor = UIColor(.ui.grey1).withAlphaComponent(0.1)
@@ -64,15 +64,13 @@ class TopicChipCell: UICollectionViewCell {
 }
 
 extension TopicChipCell {
-    static let height: CGFloat = 40
+    static func height(chip: TopicChipPresenter) -> CGFloat {
+        let size = chip.attributedTitle?.sizeFitting() ?? .zero
+        return size.height.rounded(.up) + 20
+    }
 
     static func width(chip: TopicChipPresenter) -> CGFloat {
-        let rect = chip.attributedTitle?.boundingRect(
-            with: CGSize(width: .greatestFiniteMagnitude, height: Self.height),
-            options: [.usesLineFragmentOrigin],
-            context: nil
-        ) ?? .zero
-
-        return rect.width.rounded(.up) + 24
+        let size = chip.attributedTitle?.sizeFitting() ?? .zero
+        return size.width.rounded(.up) + 24
     }
 }
