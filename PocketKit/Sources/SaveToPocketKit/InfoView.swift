@@ -2,13 +2,13 @@ import UIKit
 import Textile
 
 
-enum MainViewStyle {
+enum InfoViewStyle {
     case `default`
     case error
 }
 
-class MainInfoView: UIView {
-    private let capsuleView = MainCapsuleView()
+class InfoView: UIView {
+    private let capsuleView = CapsuleView()
 
     private let detailTextLabel: UILabel = {
         let label = UILabel()
@@ -24,18 +24,26 @@ class MainInfoView: UIView {
         return stackView
     }()
 
-    var attributedText: NSAttributedString? {
+    private var attributedText: NSAttributedString? {
         get { capsuleView.attributedText }
         set { capsuleView.attributedText = newValue }
     }
 
-    var attributedDetailText: NSAttributedString? {
+    private var attributedDetailText: NSAttributedString? {
         get { detailTextLabel.attributedText }
         set { detailTextLabel.attributedText = newValue }
     }
 
-    var style: MainViewStyle = .default {
+    private var style: InfoViewStyle = .default {
         didSet { capsuleView.style = style }
+    }
+
+    var model: Model? = nil {
+        didSet {
+            style = model?.style ?? .default
+            attributedText = model?.attributedText ?? nil
+            attributedDetailText = model?.attributedDetailText ?? nil
+        }
     }
 
     init() {
@@ -57,7 +65,7 @@ class MainInfoView: UIView {
     }
 }
 
-private class MainCapsuleView: UIView {
+private class CapsuleView: UIView {
     private let imageView = UIImageView()
 
     private let textLabel: UILabel = {
@@ -71,7 +79,7 @@ private class MainCapsuleView: UIView {
         set { textLabel.attributedText = newValue }
     }
 
-    var style: MainViewStyle = .default {
+    var style: InfoViewStyle = .default {
         didSet { updateStyle() }
     }
 
@@ -118,5 +126,13 @@ private class MainCapsuleView: UIView {
             backgroundColor = UIColor(.ui.coral5)
             imageView.image = UIImage(asset: .error)
         }
+    }
+}
+
+extension InfoView {
+    struct Model {
+        let style: InfoViewStyle
+        let attributedText: NSAttributedString
+        let attributedDetailText: NSAttributedString?
     }
 }
