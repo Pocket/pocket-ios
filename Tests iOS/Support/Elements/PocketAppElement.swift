@@ -16,8 +16,8 @@ struct PocketAppElement {
         app.state == .runningForeground
     }
 
-    var signInView: SignInFormElement {
-        return SignInFormElement(app)
+    var loggedOutView: XCUIElement {
+        return app.collectionViews["logged-out"]
     }
 
     var homeView: HomeViewElement {

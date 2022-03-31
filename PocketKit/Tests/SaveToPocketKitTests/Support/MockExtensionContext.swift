@@ -4,6 +4,7 @@ import Foundation
 
 class MockExtensionContext: ExtensionContext {
     private var implementations: [String: Any] = [:]
+    private var calls: [String: [Any]] = [:]
 
     let extensionItems: [ExtensionItem]
 
