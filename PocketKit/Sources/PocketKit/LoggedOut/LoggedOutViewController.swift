@@ -35,6 +35,7 @@ struct LoggedOutView: View {
             LoggedOutOfflineView(isPresented: $viewModel.isPresentingOfflineView)
                 .onDisappear { viewModel.offlineViewDidDisappear() }
         }
+        .accessibilityIdentifier("logged-out")
     }
 }
 
