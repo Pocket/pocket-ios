@@ -184,15 +184,15 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     }
 
     private func configure(cell: ItemsListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
-        guard let item = model.item(with: objectID) else {
+        guard let presenter = model.presenter(for: objectID) else {
             return
         }
 
         cell.backgroundConfiguration = .listPlainCell()
         cell.model = .init(
-            attributedTitle: item.attributedTitle,
-            attributedDetail: item.attributedDetail,
-            thumbnailURL: item.thumbnailURL,
+            attributedTitle: presenter.attributedTitle,
+            attributedDetail: presenter.attributedDetail,
+            thumbnailURL: presenter.thumbnailURL,
             shareAction: model.shareAction(for: objectID),
             favoriteAction: model.favoriteAction(for: objectID),
             overflowActions: model.overflowActions(for: objectID)
@@ -233,6 +233,14 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
 
         model.willDisplay(cell)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        guard let cell = dataSource.itemIdentifier(for: indexPath) else {
+            return false
+        }
+
+        return model.shouldSelectCell(with: cell)
     }
 }
 

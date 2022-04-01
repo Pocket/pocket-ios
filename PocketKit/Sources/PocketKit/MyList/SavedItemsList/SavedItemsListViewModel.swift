@@ -70,15 +70,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.refresh(completion: completion)
     }
 
-    func item(with cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
+    func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
         guard case .item(let objectID) = cellID else {
             return nil
         }
 
-        return item(with: objectID)
+        return presenter(for: objectID)
     }
 
-    func item(with itemID: ItemIdentifier) -> ItemsListItemPresenter? {
+    func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter? {
         bareItem(with: itemID).flatMap(ItemsListItemPresenter.init)
     }
 
@@ -87,6 +87,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             title: filterID.rawValue,
             isSelected: selectedFilters.contains(filterID)
         )
+    }
+
+    func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool {
+        switch cell {
+        case .filterButton: return true
+        case .item(let objectID): return !(bareItem(with: objectID)?.isPending ?? true)
+        case .nextPage: return false
+        case .offline: return false
+        }
     }
 
     func selectCell(with cellID: ItemsListCell<ItemIdentifier>) {
