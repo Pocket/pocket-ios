@@ -64,7 +64,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var domain: String? {
-        recommendation.item.domainMetadata?.name ?? recommendation.item.domain
+        recommendation.item.domainMetadata?.name ?? recommendation.item.domain ?? recommendation.item.bestURL?.host
     }
 
     var publishDate: Date? {

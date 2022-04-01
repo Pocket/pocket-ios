@@ -72,7 +72,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     var domain: String? {
-        item.item?.domainMetadata?.name ?? item.item?.domain
+        item.item?.domainMetadata?.name ?? item.item?.domain ?? item.host
     }
 
     var publishDate: Date? {

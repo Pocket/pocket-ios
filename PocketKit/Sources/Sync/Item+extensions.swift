@@ -2,6 +2,10 @@ import Foundation
 
 
 extension Item {
+    public var bestURL: URL? {
+        resolvedURL ?? givenURL
+    }
+
     public var hasImage: ItemImageness? {
         imageness.flatMap(ItemImageness.init)
     }

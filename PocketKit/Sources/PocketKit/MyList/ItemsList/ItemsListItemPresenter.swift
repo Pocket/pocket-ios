@@ -20,6 +20,7 @@ private extension Style {
                 .with(lineSpacing: 4)
                 .with(lineBreakMode: .byTruncatingTail)
         }
+    static let pendingTitle: Style = title.with(color: .ui.grey5)
 
     static let detail: Style = .header.sansSerif.p4
         .with(color: .ui.grey4)
@@ -28,6 +29,7 @@ private extension Style {
                 .with(lineSpacing: 4)
                 .with(lineBreakMode: .byTruncatingTail)
         }
+    static let pendingDetail: Style = .detail.with(color: .ui.grey5)
 }
 
 class ItemsListItemPresenter {
@@ -38,11 +40,11 @@ class ItemsListItemPresenter {
     }
 
     var attributedTitle: NSAttributedString {
-        NSAttributedString(string: title, style: .title)
+        NSAttributedString(string: title, style: item.isPending ? .pendingTitle : .title)
     }
 
     var attributedDetail: NSAttributedString {
-        NSAttributedString(string: detail, style: .detail)
+        NSAttributedString(string: detail, style: item.isPending ? .pendingDetail : .detail)
     }
 
     var thumbnailURL: URL? {
@@ -65,7 +67,7 @@ class ItemsListItemPresenter {
     }
 
     private var domain: String? {
-        item.domainMetadata?.name ?? item.domain
+        item.domainMetadata?.name ?? item.domain ?? item.host
     }
 
     private var timeToRead: String? {
