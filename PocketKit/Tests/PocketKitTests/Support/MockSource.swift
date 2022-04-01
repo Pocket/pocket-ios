@@ -21,10 +21,6 @@ class MockSource: Source {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
-    func object<T>(id: NSManagedObjectID) -> T? where T : NSManagedObject {
-        fatalError("\(Self.self)#\(#function) is not implemented")
-    }
-
     func fetchSlateLineup(_ identifier: String) async throws -> SlateLineup? {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
@@ -47,6 +43,23 @@ class MockSource: Source {
 
     func restore() {
         fatalError("\(Self.self).\(#function) is not implemented")
+    }
+}
+
+extension MockSource {
+    private static let object = "object"
+    typealias ObjectImpl<T> = (NSManagedObjectID) -> T
+
+    func stubObject<T: NSManagedObject>(_ impl: @escaping ObjectImpl<T>) {
+        implementations[Self.object] = impl
+    }
+
+    func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
+        guard let impl = implementations[Self.object] as? ObjectImpl<T> else {
+            fatalError("\(Self.self)#\(#function) is not implemented")
+        }
+
+        return impl(id)
     }
 }
 

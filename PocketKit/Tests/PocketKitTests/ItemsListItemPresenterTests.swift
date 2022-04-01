@@ -56,7 +56,7 @@ extension ItemsListItemPresenterTests {
         XCTAssertEqual(presenter.attributedDetail.string, "getpocket.com")
     }
 
-    func test_attributedDetail_noDomainMetadataOrName_usesHot() {
+    func test_attributedDetail_noDomainMetadataOrName_usesHost() {
         let item = MockItemsListItem.build(host: "getpocket.com")
         let presenter = ItemsListItemPresenter(item: item)
 
