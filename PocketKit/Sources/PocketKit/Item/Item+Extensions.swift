@@ -12,6 +12,10 @@ public extension SavedItem {
     }
 
     var bestURL: URL? {
-        item?.resolvedURL ?? item?.givenURL ?? url
+        item?.bestURL ?? url
+    }
+
+    var isPending: Bool {
+        item == nil
     }
 }

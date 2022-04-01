@@ -34,9 +34,10 @@ protocol ItemsListViewModel: AnyObject {
     func fetch()
     func refresh(_ completion: (() -> ())?)
 
-    func item(with cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
-    func item(with itemID: ItemIdentifier) -> ItemsListItemPresenter?
+    func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
+    func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter
+    func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool
     func selectCell(with: ItemsListCell<ItemIdentifier>)
 
     func shareAction(for objectID: ItemIdentifier) -> ItemAction?

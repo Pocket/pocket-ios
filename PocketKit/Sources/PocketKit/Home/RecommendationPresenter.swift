@@ -102,7 +102,7 @@ struct RecommendationPresenter {
     }
 
     private var domain: String? {
-        recommendation.item.domainMetadata?.name ?? recommendation.item.domain
+        recommendation.item.domainMetadata?.name ?? recommendation.item.domain ?? recommendation.item.bestURL?.host
     }
 
     private var timeToRead: String? {

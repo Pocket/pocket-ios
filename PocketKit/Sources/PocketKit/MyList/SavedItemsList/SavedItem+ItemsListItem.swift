@@ -22,6 +22,10 @@ extension SavedItem: ItemsListItem {
     var domainMetadata: ItemsListItemDomainMetadata? {
         return item?.domainMetadata
     }
+
+    var host: String? {
+        bestURL?.host
+    }
 }
 
 extension DomainMetadata: ItemsListItemDomainMetadata {
