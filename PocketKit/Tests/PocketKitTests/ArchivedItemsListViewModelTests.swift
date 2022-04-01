@@ -101,7 +101,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
         wait(for: [expectSnapshot], timeout: 1)
-        XCTAssertNotNil(viewModel.item(with: items[0].objectID))
+        XCTAssertNotNil(viewModel.presenter(for: items[0].objectID))
     }
 
     func test_shareAction_setsSharedActivity() {

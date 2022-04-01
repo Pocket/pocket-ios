@@ -158,15 +158,15 @@ extension ArchivedItemsListViewModel {
         )
     }
 
-    func item(with cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
+    func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
         guard case .item(let archivedItemID) = cellID else {
             return nil
         }
 
-        return item(with: archivedItemID)
+        return presenter(for: archivedItemID)
     }
 
-    func item(with itemID: ItemIdentifier) -> ItemsListItemPresenter? {
+    func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter? {
         archivedItemsByID[itemID].flatMap(ItemsListItemPresenter.init)
     }
 }
@@ -256,6 +256,15 @@ extension ArchivedItemsListViewModel {
 
 // MARK: - Selecting cells
 extension ArchivedItemsListViewModel {
+    func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool {
+        switch cell {
+        case .filterButton: return true
+        case .item(let objectID): return !(archivedItemsByID[objectID]?.isPending ?? true)
+        case .nextPage: return false
+        case .offline: return false
+        }
+    }
+
     func selectCell(with cell: ItemsListCell<ItemIdentifier>) {
         switch cell {
         case .filterButton(let filter):
