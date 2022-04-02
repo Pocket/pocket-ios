@@ -57,12 +57,20 @@ public class Space {
         return try context.fetch(Requests.fetchPersistentSyncTasks())
     }
 
+    func fetchSavedItemUpdatedNotifications() throws -> [SavedItemUpdatedNotification] {
+        return try context.fetch(Requests.fetchSavedItemUpdatedNotifications())
+    }
+
     public func new<T: NSManagedObject>() -> T {
         return T(context: context)
     }
 
     func delete(_ object: NSManagedObject) {
         context.delete(object)
+    }
+
+    func delete(_ objects: [NSManagedObject]) {
+        objects.forEach(context.delete(_:))
     }
 
     public func save() throws {
