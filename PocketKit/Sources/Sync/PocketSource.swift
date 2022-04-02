@@ -24,6 +24,8 @@ public class PocketSource: Source {
     private let retrySignal: PassthroughSubject<Void, Never>
     private let sessionProvider: SessionProvider
     private let backgroundTaskManager: BackgroundTaskManager
+    private let osNotificationCenter: OSNotificationCenter
+    private let notificationObserver = UUID()
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -51,7 +53,10 @@ public class PocketSource: Source {
             slateService: APISlateService(apollo: apollo),
             networkMonitor: NWPathMonitor(),
             sessionProvider: sessionProvider,
-            backgroundTaskManager: backgroundTaskManager
+            backgroundTaskManager: backgroundTaskManager,
+            osNotificationCenter: OSNotificationCenter(
+                notifications: CFNotificationCenterGetDarwinNotifyCenter()
+            )
         )
     }
 
@@ -63,7 +68,8 @@ public class PocketSource: Source {
         slateService: SlateService,
         networkMonitor: NetworkPathMonitor,
         sessionProvider: SessionProvider,
-        backgroundTaskManager: BackgroundTaskManager
+        backgroundTaskManager: BackgroundTaskManager,
+        osNotificationCenter: OSNotificationCenter
     ) {
         self.space = space
         self.apollo = apollo
@@ -74,8 +80,22 @@ public class PocketSource: Source {
         self.retrySignal = .init()
         self.sessionProvider = sessionProvider
         self.backgroundTaskManager = backgroundTaskManager
+        self.osNotificationCenter = osNotificationCenter
+
+        osNotificationCenter.add(observer: notificationObserver, name: .savedItemCreated) { [weak self] in
+            self?.handleSavedItemCreatedNotification()
+        }
+
+        osNotificationCenter.add(observer: notificationObserver, name: .savedItemUpdated) { [weak self] in
+            self?.handleSavedItemsUpdatedNotification()
+        }
 
         observeNetworkStatus()
+    }
+
+    deinit {
+        osNotificationCenter.remove(observer: notificationObserver, name: .savedItemCreated)
+        osNotificationCenter.remove(observer: notificationObserver, name: .savedItemUpdated)
     }
 
     public var mainContext: NSManagedObjectContext {
@@ -401,5 +421,24 @@ extension PocketSource {
                 enqueue(operation: operation, persistentTask: persistentTask)
             }
         }
+    }
+}
+
+// MARK: - Interprocess notifications
+extension PocketSource {
+    func handleSavedItemsUpdatedNotification() {
+        guard let notifications = try? space.fetchSavedItemUpdatedNotifications() else {
+            return
+        }
+
+        let updatedSavedItems = notifications.compactMap(\.savedItem)
+        space.delete(notifications)
+        try? space.save()
+
+        _events.send(.savedItemsUpdated(updatedSavedItems))
+    }
+
+    func handleSavedItemCreatedNotification() {
+        _events.send(.savedItemCreated)
     }
 }
