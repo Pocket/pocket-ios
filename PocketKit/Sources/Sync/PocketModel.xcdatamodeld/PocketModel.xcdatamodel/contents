@@ -45,11 +45,15 @@
         <attribute name="url" optional="YES" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Item" inverseName="savedItem" inverseEntity="Item"/>
     </entity>
+    <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES" codeGenerationType="class">
+        <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem"/>
+    </entity>
     <elements>
         <element name="Author" positionX="-9" positionY="144" width="128" height="89"/>
         <element name="DomainMetadata" positionX="-63" positionY="36" width="128" height="14"/>
         <element name="Item" positionX="-45" positionY="99" width="128" height="239"/>
         <element name="PersistentSyncTask" positionX="-36" positionY="144" width="128" height="59"/>
-        <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="164"/>
+        <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="149"/>
+        <element name="SavedItemUpdatedNotification" positionX="-36" positionY="144" width="128" height="44"/>
     </elements>
 </model>
