@@ -61,7 +61,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             switch event {
             case .loadedArchivePage:
                 self?.isFetching = false
-            case .error:
+            case .error, .savedItemCreated, .savedItemsUpdated:
                 break
             }
         }.store(in: &subscriptions)

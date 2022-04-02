@@ -19,6 +19,8 @@ class PocketSourceTests: XCTestCase {
     var networkMonitor: MockNetworkPathMonitor!
     var sessionProvider: MockSessionProvider!
     var backgroundTaskManager: MockBackgroundTaskManager!
+    var osNotificationCenter: OSNotificationCenter!
+    var subscriptions: [AnyCancellable]!
 
     override func setUpWithError() throws {
         space = Space(container: .testContainer)
@@ -29,6 +31,8 @@ class PocketSourceTests: XCTestCase {
         networkMonitor = MockNetworkPathMonitor()
         sessionProvider = MockSessionProvider(session: nil)
         backgroundTaskManager = MockBackgroundTaskManager()
+        osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
+        subscriptions = []
 
         lastRefresh.stubGetLastRefresh { nil}
 
@@ -38,6 +42,7 @@ class PocketSourceTests: XCTestCase {
 
     override func tearDownWithError() throws {
         try space.clear()
+        subscriptions = []
     }
 
     func subject(
@@ -47,7 +52,8 @@ class PocketSourceTests: XCTestCase {
         lastRefresh: LastRefresh? = nil,
         slateService: SlateService? = nil,
         networkMonitor: NetworkPathMonitor? = nil,
-        sessionProvider: SessionProvider? = nil
+        sessionProvider: SessionProvider? = nil,
+        osNotificationCenter: OSNotificationCenter? = nil
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
@@ -57,7 +63,8 @@ class PocketSourceTests: XCTestCase {
             slateService: slateService ?? self.slateService,
             networkMonitor: networkMonitor ?? self.networkMonitor,
             sessionProvider: sessionProvider ?? self.sessionProvider,
-            backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager
+            backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager,
+            osNotificationCenter: osNotificationCenter ?? self.osNotificationCenter
         )
     }
 
