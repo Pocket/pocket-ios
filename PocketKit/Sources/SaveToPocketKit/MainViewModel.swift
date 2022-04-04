@@ -1,5 +1,6 @@
 import Foundation
 import SharedPocketKit
+import Sync
 import Textile
 import Combine
 

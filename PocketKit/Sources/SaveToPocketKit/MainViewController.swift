@@ -23,12 +23,9 @@ class MainViewController: UIViewController {
             viewModel: MainViewModel(
                 appSession: appSession,
                 saveService: PocketSaveService(
-                    apollo: ApolloClient.createDefault(
-                        sessionProvider: appSession,
-                        consumerKey: Keys.shared.pocketApiConsumerKey
-                    ),
-                    backgroundActivityPerformer: ProcessInfo.processInfo,
-                    space: Space(container: .init(storage: .shared))
+                    sessionProvider: appSession,
+                    consumerKey: Keys.shared.pocketApiConsumerKey,
+                    expiringActivityPerformer: ProcessInfo.processInfo
                 ),
                 dismissTimer: Timer.TimerPublisher(interval: 2, runLoop: .main, mode: .default)
             )

@@ -2,7 +2,6 @@ import XCTest
 import Apollo
 import Sync
 
-@testable import SaveToPocketKit
 @testable import Sync
 
 
@@ -24,7 +23,7 @@ class PocketSaveServiceTests: XCTestCase {
     ) -> PocketSaveService {
         PocketSaveService(
             apollo: client ?? self.client,
-            backgroundActivityPerformer: backgroundActivityPerformer ?? self.backgroundActivityPerformer,
+            expiringActivityPerformer: backgroundActivityPerformer ?? self.backgroundActivityPerformer,
             space: space ?? self.space
         )
     }

@@ -22,4 +22,3 @@ struct Keys {
         self.pocketApiConsumerKey = pocketApiConsumerKey
     }
 }
-
