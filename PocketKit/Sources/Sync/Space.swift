@@ -4,14 +4,14 @@
 
 import CoreData
 
-public class Space {
+class Space {
     private let container: PersistentContainer
 
     var context: NSManagedObjectContext {
         container.viewContext
     }
     
-    public required init(container: PersistentContainer) {
+    required init(container: PersistentContainer) {
         self.container = container
     }
 
@@ -61,7 +61,7 @@ public class Space {
         return try context.fetch(Requests.fetchSavedItemUpdatedNotifications())
     }
 
-    public func new<T: NSManagedObject>() -> T {
+    func new<T: NSManagedObject>() -> T {
         return T(context: context)
     }
 
@@ -73,7 +73,7 @@ public class Space {
         objects.forEach(context.delete(_:))
     }
 
-    public func save() throws {
+    func save() throws {
         try context.obtainPermanentIDs(for: Array(context.insertedObjects))
         try context.save()
     }

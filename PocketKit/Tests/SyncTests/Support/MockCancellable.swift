@@ -5,5 +5,35 @@
 import Apollo
 
 public class MockCancellable: Cancellable {
-    public func cancel() { }
+    private var implementations: [String: Any] = [:]
+    private var calls: [String: [Any]] = [:]
+}
+
+extension MockCancellable {
+    private static let cancel = "cancel"
+    public typealias CancelImpl = () -> Void
+    public struct CancelCall { }
+
+    public func stubCancel(impl: @escaping CancelImpl) {
+        implementations[Self.cancel] = impl
+    }
+
+    public func cancelCall(at index: Int) -> CancelCall? {
+        guard let calls = calls[Self.cancel],
+                calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? CancelCall
+    }
+
+    public func cancel() {
+        calls[Self.cancel] = (calls[Self.cancel] ?? []) + [CancelCall()]
+
+        guard let impl = implementations[Self.cancel] as? CancelImpl else {
+            return
+        }
+
+        impl()
+    }
 }
