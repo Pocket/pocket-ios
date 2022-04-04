@@ -1,5 +1,6 @@
 import Foundation
 
-protocol SaveService {
+
+public protocol SaveService {
     func save(url: URL)
 }

@@ -1,28 +1,42 @@
 import Foundation
 import Apollo
-import Sync
 
 
-class PocketSaveService: SaveService {
+public class PocketSaveService: SaveService {
     private let apollo: ApolloClientProtocol
-    private let backgroundActivityPerformer: ExpiringActivityPerformer
+    private let expiringActivityPerformer: ExpiringActivityPerformer
     private let queue: OperationQueue
     private let space: Space
 
+    public convenience init(
+        sessionProvider: SessionProvider,
+        consumerKey: String,
+        expiringActivityPerformer: ExpiringActivityPerformer
+    ) {
+        self.init(
+            apollo: ApolloClient.createDefault(
+                sessionProvider: sessionProvider,
+                consumerKey: consumerKey
+            ),
+            expiringActivityPerformer: expiringActivityPerformer,
+            space: Space(container: .init(storage: .shared))
+        )
+    }
+
     init(
         apollo: ApolloClientProtocol,
-        backgroundActivityPerformer: ExpiringActivityPerformer,
+        expiringActivityPerformer: ExpiringActivityPerformer,
         space: Space
     ) {
         self.apollo = apollo
-        self.backgroundActivityPerformer = backgroundActivityPerformer
+        self.expiringActivityPerformer = expiringActivityPerformer
         self.space = space
 
         self.queue = OperationQueue()
     }
 
-    func save(url: URL) {
-        backgroundActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.save") { [weak self] expiring in
+    public func save(url: URL) {
+        expiringActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.save") { [weak self] expiring in
             self?._save(expiring: expiring, url: url)
         }
     }
@@ -89,6 +103,7 @@ class SaveOperation: AsyncOperation {
 
         savedItem?.update(from: savedItemParts)
         try? space.save()
+        
         finishOperation()
     }
 }
