@@ -30,9 +30,9 @@ struct ReaderSettingsView: View {
                         ForEach(Constants.allowedFontFamilies, id: \.name) { family in
                             Text(family.name)
                                 .tag(family)
-                        }
+                        }.navigationBarTitleDisplayMode(.inline)
                     }
-                    
+
                     Stepper(
                         "Font Size",
                         value: settings.$fontSizeAdjustment,
@@ -41,6 +41,7 @@ struct ReaderSettingsView: View {
                     )
                 }
             }
-        }.navigationViewStyle(.stack)
+            .navigationBarHidden(true)
+        }
     }
 }
