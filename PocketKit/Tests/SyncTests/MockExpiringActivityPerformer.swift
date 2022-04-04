@@ -1,4 +1,4 @@
-@testable import SaveToPocketKit
+@testable import Sync
 
 
 class MockExpiringActivityPerformer: ExpiringActivityPerformer {
