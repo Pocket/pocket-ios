@@ -48,6 +48,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             guard readable == nil else { return }
             self?._events.send(.selectionCleared)
         }.store(in: &subscriptions)
+
+        source.events.sink { [weak self] event in
+            self?.handle(syncEvent: event)
+        }.store(in: &subscriptions)
     }
 
     func fetch() {
@@ -341,5 +345,25 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {
         itemsLoaded()
+    }
+}
+
+// MARK: - handling sync events
+extension SavedItemsListViewModel {
+    private func handle(syncEvent: SyncEvent) {
+        switch syncEvent {
+        case .error, .loadedArchivePage:
+            break
+        case .savedItemCreated:
+            fetch()
+        case .savedItemsUpdated(let updatedSavedItems):
+            try? itemsController.performFetch()
+            updatedSavedItems.forEach {
+                source.refresh($0, mergeChanges: true)
+            }
+            var snapshot = buildSnapshot()
+            snapshot.reloadItems(updatedSavedItems.map { .item($0.objectID) })
+            send(snapshot: snapshot)
+        }
     }
 }
