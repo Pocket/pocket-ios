@@ -13,9 +13,7 @@ public class OSNotificationCenter {
     }
 
     deinit {
-        storage.forEach { observer, notificationName, handler in
-            CFNotificationCenterRemoveObserver(center, handler.pointer, notificationName, nil)
-        }
+        removeAllObservers()
     }
 
     public func add(observer: Observer, name: CFNotificationName, handler: @escaping () -> Void) {
@@ -44,6 +42,14 @@ public class OSNotificationCenter {
 
     public func post(name: CFNotificationName) {
         CFNotificationCenterPostNotification(center, name, nil, nil, true)
+    }
+
+    public func removeAllObservers() {
+        storage.forEach { observer, notificationName, handler in
+            CFNotificationCenterRemoveObserver(center, handler.pointer, notificationName, nil)
+        }
+
+        storage.clear()
     }
 
     private class Storage {
@@ -78,6 +84,10 @@ public class OSNotificationCenter {
                     closure(key.observer, key.notificationName, handler)
                 }
             }
+        }
+
+        func clear() {
+            _handlers = [:]
         }
     }
 
