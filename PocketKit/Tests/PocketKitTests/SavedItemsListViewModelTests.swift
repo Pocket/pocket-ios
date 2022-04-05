@@ -1,6 +1,7 @@
 import XCTest
 import Analytics
 import Sync
+import Combine
 @testable import PocketKit
 
 
@@ -8,14 +9,20 @@ class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
     var itemsController: MockSavedItemsController!
+    var subscriptions: [AnyCancellable]!
 
     override func setUp() {
-        self.source = MockSource()
-        self.tracker = MockTracker()
+        source = MockSource()
+        tracker = MockTracker()
+        subscriptions = []
+        itemsController = MockSavedItemsController()
 
-        self.itemsController = MockSavedItemsController()
-        self.itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
+        itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
         source.stubMakeItemsController { self.itemsController }
+    }
+
+    override func tearDown() {
+        subscriptions = []
     }
 
     func subject(
@@ -48,5 +55,56 @@ class SavedItemsListViewModelTests: XCTestCase {
         source.stubObject { _ in item }
 
         XCTAssertTrue(viewModel.shouldSelectCell(with: .item(item.objectID)))
+    }
+
+    func test_sourceEvents_whenEventIsSavedItemCreated_sendsSnapshotWithNewItem() {
+        let savedItem: SavedItem = .build()
+        itemsController.stubPerformFetch {
+            self.itemsController.fetchedObjects = [savedItem]
+        }
+
+        let viewModel = subject()
+
+        let snapshotSent = expectation(description: "snapshotSent")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+
+            let itemIDs = snapshot.itemIdentifiers(inSection: .items)
+            XCTAssertEqual(itemIDs, [.item(savedItem.objectID)])
+            snapshotSent.fulfill()
+        }.store(in: &subscriptions)
+
+        source._events.send(.savedItemCreated)
+
+        wait(for: [snapshotSent], timeout: 1)
+    }
+
+    func test_sourceEvents_whenEventIsSavedItemUpdated_sendsSnapshotWithUpdatedItem() {
+        let savedItem: SavedItem = .build()
+        itemsController.stubPerformFetch {
+            self.itemsController.fetchedObjects = [savedItem]
+        }
+        source.stubRefreshObject { _, _ in }
+
+        let viewModel = subject()
+
+        let snapshotSent = expectation(description: "snapshotSent")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+
+            XCTAssertEqual(self.source.refreshObjectCall(at: 0)?.object, savedItem)
+            XCTAssertEqual(snapshot.reloadedItemIdentifiers, [.item(savedItem.objectID)])
+            snapshotSent.fulfill()
+        }.store(in: &subscriptions)
+
+        source._events.send(.savedItemsUpdated([savedItem]))
+
+        wait(for: [snapshotSent], timeout: 1)
     }
 }

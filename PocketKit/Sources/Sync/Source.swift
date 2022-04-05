@@ -41,6 +41,8 @@ public protocol Source {
     func fetchArchivePage(cursor: String?, isFavorite: Bool?)
 
     func restore()
+
+    func refresh(_ object: NSManagedObject, mergeChanges: Bool)
 }
 
 public extension Source {
