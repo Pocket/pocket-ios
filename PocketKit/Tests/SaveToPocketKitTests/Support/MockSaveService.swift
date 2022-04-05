@@ -1,5 +1,5 @@
 import Foundation
-@testable import SaveToPocketKit
+import Sync
 
 
 class MockSaveService: SaveService {

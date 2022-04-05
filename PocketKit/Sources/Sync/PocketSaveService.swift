@@ -7,6 +7,7 @@ public class PocketSaveService: SaveService {
     private let expiringActivityPerformer: ExpiringActivityPerformer
     private let queue: OperationQueue
     private let space: Space
+    private let osNotifications: OSNotificationCenter
 
     public convenience init(
         sessionProvider: SessionProvider,
@@ -19,18 +20,23 @@ public class PocketSaveService: SaveService {
                 consumerKey: consumerKey
             ),
             expiringActivityPerformer: expiringActivityPerformer,
-            space: Space(container: .init(storage: .shared))
+            space: Space(container: .init(storage: .shared)),
+            osNotifications: OSNotificationCenter(
+                notifications: CFNotificationCenterGetDarwinNotifyCenter()
+            )
         )
     }
 
     init(
         apollo: ApolloClientProtocol,
         expiringActivityPerformer: ExpiringActivityPerformer,
-        space: Space
+        space: Space,
+        osNotifications: OSNotificationCenter
     ) {
         self.apollo = apollo
         self.expiringActivityPerformer = expiringActivityPerformer
         self.space = space
+        self.osNotifications = osNotifications
 
         self.queue = OperationQueue()
     }
@@ -48,21 +54,35 @@ public class PocketSaveService: SaveService {
             return
         }
 
-        queue.addOperation(SaveOperation(apollo: apollo, space: space, url: url))
+        let operation = SaveOperation(
+            apollo: apollo,
+            osNotifications: osNotifications,
+            space: space,
+            url: url
+        )
+
+        queue.addOperation(operation)
         queue.waitUntilAllOperationsAreFinished()
     }
 }
 
 class SaveOperation: AsyncOperation {
     private let apollo: ApolloClientProtocol
+    private let osNotifications: OSNotificationCenter
     private let space: Space
     private let url: URL
 
     private var task: Cancellable?
     private var savedItem: SavedItem?
 
-    init(apollo: ApolloClientProtocol, space: Space, url: URL) {
+    init(
+        apollo: ApolloClientProtocol,
+        osNotifications: OSNotificationCenter,
+        space: Space,
+        url: URL
+    ) {
         self.apollo = apollo
+        self.osNotifications = osNotifications
         self.space = space
         self.url = url
     }
@@ -85,6 +105,8 @@ class SaveOperation: AsyncOperation {
         savedItem = space.new()
         savedItem?.url = url
         try? space.save()
+
+        osNotifications.post(name: .savedItemCreated)
     }
 
     private func performMutation() {
@@ -102,8 +124,11 @@ class SaveOperation: AsyncOperation {
         }
 
         savedItem?.update(from: savedItemParts)
+        let notification: SavedItemUpdatedNotification = space.new()
+        notification.savedItem = savedItem
         try? space.save()
-        
+
+        osNotifications.post(name: .savedItemUpdated)
         finishOperation()
     }
 }
