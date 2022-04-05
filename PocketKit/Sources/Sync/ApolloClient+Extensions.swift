@@ -7,12 +7,13 @@ import Foundation
 
 
 extension ApolloClient {
-    public static func createDefault(
+    static func createDefault(
         sessionProvider: SessionProvider,
         consumerKey: String
     ) -> ApolloClient {
         let urlStringFromEnvironment = ProcessInfo.processInfo.environment["POCKET_CLIENT_API_URL"]
-        let urlString = urlStringFromEnvironment ?? "https://getpocket.com/graphql"
+        let urlStringFromBundle = Bundle.main.infoDictionary?["PocketAPIBaseURL"] as? String
+        let urlString = urlStringFromEnvironment ?? urlStringFromBundle ?? "https://getpocket.com/graphql"
         let url = URL(string: urlString)!
 
         let store = ApolloStore()
