@@ -131,6 +131,52 @@ class MyListTests: XCTestCase {
 //        XCTAssertEqual(listView.itemCount, 2)
 //    }
 
+    func test_savingAnItemFromShareExtension_addsItemToList() {
+        app.launch().tabBar.myListButton.wait().tap()
+        app.myListView.itemView(at: 0).wait()
+
+        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+        safari.launch()
+
+        safari.textFields["Address"].tap()
+        safari.typeText("http://localhost:8080/hello\n")
+        safari.staticTexts["Hello, world"].wait()
+        safari.toolbars.buttons["ShareButton"].tap()
+        let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
+
+        var promise: EventLoopPromise<Response>?
+        server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isToSaveAnItem {
+                promise = eventLoop.makePromise()
+                return promise!.futureResult
+            } else if apiRequest.isForMyListContent {
+                return Response.myList()
+            }
+            else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        // Sadly this is the only way I could devise to find the Pocket Beta button
+        // This will likely be very brittle
+        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
+        safari.staticTexts["Saved to Pocket"].wait()
+
+        let x = expectation(description: "ya")
+        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 1) {
+            x.fulfill()
+        }
+        wait(for: [x], timeout: 4)
+
+        app.activate()
+        app.myListView.itemView(matching: "http://localhost:8080/hello").wait()
+
+        promise?.succeed(.saveItemFromExtension())
+        app.myListView.itemView(matching: "Item 3").wait(timeout: 10000)
+    }
+
     func test_tappingItem_displaysNativeReaderView() {
         app.launch().tabBar.myListButton.wait().tap()
 
