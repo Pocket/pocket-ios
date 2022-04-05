@@ -1,6 +1,8 @@
 import XCTest
-@testable import SaveToPocketKit
 import SharedPocketKit
+import Sync
+
+@testable import SaveToPocketKit
 
 
 class MainViewModelTests: XCTestCase {
@@ -16,7 +18,7 @@ class MainViewModelTests: XCTestCase {
         MainViewModel(
             appSession: appSession ?? self.appSession,
             saveService: saveService ?? self.saveService,
-            timer: timer ?? self.timer
+            dismissTimer: timer ?? self.timer
         )
     }
 
