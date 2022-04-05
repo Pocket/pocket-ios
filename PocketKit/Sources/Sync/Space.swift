@@ -99,4 +99,8 @@ class Space {
     func object<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
         context.object(with: id) as? T
     }
+
+    func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
+        context.refresh(object, mergeChanges: mergeChanges)
+    }
 }
