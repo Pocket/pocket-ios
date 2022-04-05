@@ -33,6 +33,8 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
+	<key>PocketAPIBaseURL</key>
+	<string>$(POCKET_API_BASE_URL)</string>
 	<key>PocketAPIConsumerKey</key>
 	<string>$(POCKET_API_CONSUMER_KEY)</string>
 	<key>SentryDSN</key>
