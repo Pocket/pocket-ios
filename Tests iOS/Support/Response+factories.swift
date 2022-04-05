@@ -51,6 +51,10 @@ extension Response {
         fixture(named: "unfavorite")
     }
 
+    static func saveItemFromExtension() -> Response {
+        fixture(named: "save-item-from-extension")
+    }
+
     private static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok

@@ -104,4 +104,8 @@ struct PocketAppElement {
     func typeText(_ text: String) {
         app.typeText(text)
     }
+
+    func activate() {
+        app.activate()
+    }
 }
