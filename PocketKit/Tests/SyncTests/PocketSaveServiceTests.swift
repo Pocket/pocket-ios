@@ -9,22 +9,30 @@ class PocketSaveServiceTests: XCTestCase {
     private var client: MockApolloClient!
     private var backgroundActivityPerformer: MockExpiringActivityPerformer!
     private var space: Space!
+    private var osNotificationCenter: OSNotificationCenter!
 
     override func setUp() async throws {
         backgroundActivityPerformer = MockExpiringActivityPerformer()
         client = MockApolloClient()
         space = Space(container: .testContainer)
+        osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
+    }
+
+    override func tearDown() {
+        osNotificationCenter.removeAllObservers()
     }
 
     func subject(
         client: ApolloClientProtocol? = nil,
         backgroundActivityPerformer: ExpiringActivityPerformer? = nil,
-        space: Space? = nil
+        space: Space? = nil,
+        osNotifications: OSNotificationCenter? = nil
     ) -> PocketSaveService {
         PocketSaveService(
             apollo: client ?? self.client,
             expiringActivityPerformer: backgroundActivityPerformer ?? self.backgroundActivityPerformer,
-            space: space ?? self.space
+            space: space ?? self.space,
+            osNotifications: osNotificationCenter ?? self.osNotificationCenter
         )
     }
 
@@ -124,5 +132,42 @@ class PocketSaveServiceTests: XCTestCase {
         wait(for: [finishedActivity, finishedCancellingActivity], timeout: 1)
     }
 
+    func test_save_sendsANotificationAfterCreatingSkeletonSavedItem_andAfterUpdatingTheItem() {
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, block in
+            DispatchQueue.global(qos: .background).async { block(false) }
+        }
 
+        let performCalled = expectation(description: "performCalled")
+
+        var mutation: SaveItemMutation?
+        var mutationCompletion: ((Result<GraphQLResult<SaveItemMutation.Data>, Error>) -> Void)?
+        client.stubPerform { (_mutation: SaveItemMutation, _, queue, completion) in
+            defer { performCalled.fulfill() }
+            mutation = _mutation
+            mutationCompletion = completion
+            return MockCancellable()
+        }
+
+        let savedItemCreated = expectation(description: "savedItemCreated")
+        osNotificationCenter.add(observer: self, name: .savedItemCreated) {
+            savedItemCreated.fulfill()
+        }
+
+        let savedItemUpdated = expectation(description: "savedItemUpdated")
+        osNotificationCenter.add(observer: self, name: .savedItemUpdated) {
+            savedItemUpdated.fulfill()
+        }
+
+        let service = subject()
+        service.save(url: URL(string: "https://getpocket.com")!)
+        wait(for: [performCalled, savedItemCreated], timeout: 1)
+
+        DispatchQueue.main.async {
+            mutationCompletion?(.success(Fixture.load(name: "save-item").asGraphQLResult(from: mutation!)))
+        }
+
+        wait(for: [savedItemUpdated], timeout: 1)
+        let notifications = try? space.fetchSavedItemUpdatedNotifications()
+        XCTAssertEqual(notifications?.isEmpty, false)
+    }
 }

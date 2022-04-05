@@ -43,6 +43,7 @@ class PocketSourceTests: XCTestCase {
     override func tearDownWithError() throws {
         try space.clear()
         subscriptions = []
+        osNotificationCenter.removeAllObservers()
     }
 
     func subject(
