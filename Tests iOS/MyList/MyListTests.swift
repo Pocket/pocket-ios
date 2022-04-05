@@ -164,12 +164,6 @@ class MyListTests: XCTestCase {
         activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
         safari.staticTexts["Saved to Pocket"].wait()
 
-        let x = expectation(description: "ya")
-        DispatchQueue.global(qos: .background).asyncAfter(deadline: .now() + 1) {
-            x.fulfill()
-        }
-        wait(for: [x], timeout: 4)
-
         app.activate()
         app.myListView.itemView(matching: "http://localhost:8080/hello").wait()
 
