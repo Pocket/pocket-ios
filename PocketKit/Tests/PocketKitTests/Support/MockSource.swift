@@ -329,3 +329,37 @@ extension MockSource {
         impl(item)
     }
 }
+
+// MARK: - Refresh an object
+extension MockSource {
+    static let refreshObject = "refreshObject"
+    typealias RefreshObjectImpl = (NSManagedObject, Bool) -> Void
+    struct RefreshObjectCall {
+        let object: NSManagedObject
+        let mergeChanges: Bool
+    }
+
+    func stubRefreshObject(impl: @escaping RefreshObjectImpl) {
+        implementations[Self.refreshObject] = impl
+    }
+
+    func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
+        guard let impl = implementations[Self.refreshObject] as? RefreshObjectImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.refreshObject] = (calls[Self.refreshObject] ?? []) + [
+            RefreshObjectCall(object: object, mergeChanges: mergeChanges)
+        ]
+
+        impl(object, mergeChanges)
+    }
+
+    func refreshObjectCall(at index: Int) -> RefreshObjectCall? {
+        guard let calls = calls[Self.refreshObject], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshObjectCall
+    }
+}

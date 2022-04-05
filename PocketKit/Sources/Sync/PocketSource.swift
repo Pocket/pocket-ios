@@ -123,6 +123,10 @@ public class PocketSource: Source {
         space.object(with: id)
     }
 
+    public func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
+        space.refresh(object, mergeChanges: mergeChanges)
+    }
+
     private func observeNetworkStatus() {
         networkMonitor.start(queue: .main)
         networkMonitor.updateHandler = { [weak self] path in
