@@ -111,8 +111,3 @@ public class OSNotificationCenter {
         }
     }
 }
-
-public extension CFNotificationName {
-    static let savedItemCreated = CFNotificationName("com.mozilla.pocket.savedItemCreated" as CFString)
-    static let savedItemUpdated = CFNotificationName("com.mozilla.pocket.savedItemUpdated" as CFString)
-}

@@ -46,4 +46,26 @@ extension PocketSourceTests {
         XCTAssertEqual(notifications, [])
         XCTAssertFalse(space.context.hasChanges)
     }
+
+    func test_events_whenOSNotificationCenterPostsUnresolvedItemCreatedNotification_enqueuesASaveItemOperation() throws {
+        let operationStarted = expectation(description: "operationStarted")
+        operations.stubSaveItemOperation { _, _, _, _, _ in
+            return TestSyncOperation {
+                operationStarted.fulfill()
+            }
+        }
+
+        let source = subject()
+
+        let savedItem = try! space.seedSavedItem()
+        let unresolved: UnresolvedSavedItem = space.new()
+        unresolved.savedItem = savedItem
+        try space.save()
+
+        osNotificationCenter.post(name: .unresolvedSavedItemCreated)
+
+        wait(for: [operationStarted], timeout: 1)
+
+        try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
+    }
 }

@@ -100,9 +100,10 @@ class RefreshCoordinatorTests: XCTestCase {
         XCTAssertEqual(task.setTaskCompletedCall(at:0)?.success, false)
     }
 
-    func test_receivingAppWillEnterForegroundNotification() {
+    func test_receivingAppWillEnterForegroundNotification_refreshesSource_andResolvesUnresolvedSavedItems() {
         taskScheduler.stubRegisterHandler { _, _, _ in true }
         source.stubRefresh { _, _ in }
+        source.stubResolveUnresolvedSavedItems { }
 
         let coordinator = subject()
         coordinator.initialize()
@@ -110,5 +111,6 @@ class RefreshCoordinatorTests: XCTestCase {
         notificationCenter?.post(name: UIScene.willEnterForegroundNotification, object: nil)
 
         XCTAssertNotNil(source.refreshCall(at:0))
+        XCTAssertNotNil(source.resolveUnresolvedSavedItemsCall(at:0))
     }
 }

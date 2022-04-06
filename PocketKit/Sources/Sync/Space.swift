@@ -41,12 +41,11 @@ class Space {
     }
 
     func fetchArchivedItems() throws -> [SavedItem] {
-        let request = Requests.fetchArchivedItems()
-        return try context.fetch(request)
+        return try fetch(Requests.fetchArchivedItems())
     }
 
     func fetchAllSavedItems() throws -> [SavedItem] {
-        return try context.fetch(Requests.fetchAllSavedItems())
+        return try fetch(Requests.fetchAllSavedItems())
     }
     
     func fetchOrCreateSavedItem(byRemoteID itemID: String) throws -> SavedItem {
@@ -54,11 +53,19 @@ class Space {
     }
 
     func fetchPersistentSyncTasks() throws -> [PersistentSyncTask] {
-        return try context.fetch(Requests.fetchPersistentSyncTasks())
+        return try fetch(Requests.fetchPersistentSyncTasks())
     }
 
     func fetchSavedItemUpdatedNotifications() throws -> [SavedItemUpdatedNotification] {
-        return try context.fetch(Requests.fetchSavedItemUpdatedNotifications())
+        return try fetch(Requests.fetchSavedItemUpdatedNotifications())
+    }
+
+    func fetchUnresolvedSavedItems() throws -> [UnresolvedSavedItem] {
+        return try fetch(Requests.fetchUnresolvedSavedItems())
+    }
+
+    func fetch<T>(_ request: NSFetchRequest<T>) throws -> [T] {
+        try context.fetch(request)
     }
 
     func new<T: NSManagedObject>() -> T {
