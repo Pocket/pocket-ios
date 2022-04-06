@@ -31,6 +31,8 @@ public struct UIPalette {
     
     public let white = ColorAsset.ui("white")
     public let white1 = ColorAsset.ui("white1")
+
+    public let black = ColorAsset.ui("black")
 }
 
 public struct BrandingPalette {

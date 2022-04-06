@@ -79,15 +79,14 @@ class SlateDetailViewController: UIViewController {
         return collectionView
     }()
     
-    private lazy var overscrollView: HomeOverscrollView = {
-        let view = HomeOverscrollView(frame: .zero)
+    private lazy var overscrollView: EndOfFeedAnimationView = {
+        let view = EndOfFeedAnimationView(frame: .zero)
         view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
         view.attributedText = NSAttributedString(
             string: "You're all caught up!\nCheck back later for more.",
             style: .overscroll
         )
-        view.animation = Animation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
         return view
     }()
     
