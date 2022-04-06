@@ -340,3 +340,35 @@ extension MockSource {
         return calls[index] as? RefreshObjectCall
     }
 }
+
+// MARK: - Resolved unresolved saved items
+extension MockSource {
+    static let resolveUnresolvedSavedItems = "resolveUnresolvedSavedItems"
+    typealias ResolveUnresolvedSavedItemsImpl = () -> Void
+    struct ResolveUnresolvedSavedItemsCall { }
+
+    func stubResolveUnresolvedSavedItems(impl: @escaping ResolveUnresolvedSavedItemsImpl) {
+        implementations[Self.resolveUnresolvedSavedItems] = impl
+    }
+
+    func resolveUnresolvedSavedItems() {
+        guard let impl = implementations[Self.resolveUnresolvedSavedItems] as? ResolveUnresolvedSavedItemsImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.resolveUnresolvedSavedItems] = (calls[Self.resolveUnresolvedSavedItems] ?? []) + [
+            ResolveUnresolvedSavedItemsCall()
+        ]
+
+        impl()
+    }
+
+    func resolveUnresolvedSavedItemsCall(at index: Int) -> ResolveUnresolvedSavedItemsCall? {
+        guard let calls = calls[Self.resolveUnresolvedSavedItems],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? ResolveUnresolvedSavedItemsCall
+    }
+}

@@ -400,4 +400,25 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectCompletion, expectEvent], timeout: 1)
         sub.cancel()
     }
+
+    func test_resolveUnresolvedSavedItems_enqueuesSaveItemOperation() throws {
+        let operationStarted = expectation(description: "operationStarted")
+        operations.stubSaveItemOperation { _, _, _, _, _ in
+            return TestSyncOperation {
+                operationStarted.fulfill()
+            }
+        }
+
+        let source = subject()
+
+        let savedItem = try! space.seedSavedItem()
+        let unresolved: UnresolvedSavedItem = space.new()
+        unresolved.savedItem = savedItem
+        try space.save()
+
+        source.resolveUnresolvedSavedItems()
+
+        wait(for: [operationStarted], timeout: 1)
+        try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
+    }
 }

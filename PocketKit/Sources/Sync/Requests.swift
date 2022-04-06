@@ -62,6 +62,10 @@ public enum Requests {
     public static func fetchSavedItemUpdatedNotifications() -> NSFetchRequest<SavedItemUpdatedNotification> {
         return SavedItemUpdatedNotification.fetchRequest()
     }
+
+    public static func fetchUnresolvedSavedItems() -> NSFetchRequest<UnresolvedSavedItem> {
+        UnresolvedSavedItem.fetchRequest()
+    }
 }
 
 public enum Predicates {

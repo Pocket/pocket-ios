@@ -41,6 +41,8 @@ public protocol Source {
     func restore()
 
     func refresh(_ object: NSManagedObject, mergeChanges: Bool)
+
+    func resolveUnresolvedSavedItems()
 }
 
 public extension Source {

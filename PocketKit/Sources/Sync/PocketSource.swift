@@ -90,12 +90,17 @@ public class PocketSource: Source {
             self?.handleSavedItemsUpdatedNotification()
         }
 
+        osNotificationCenter.add(observer: notificationObserver, name: .unresolvedSavedItemCreated) { [weak self] in
+            self?.handleUnresolvedSavedItemCreatedNotification()
+        }
+
         observeNetworkStatus()
     }
 
     deinit {
         osNotificationCenter.remove(observer: notificationObserver, name: .savedItemCreated)
         osNotificationCenter.remove(observer: notificationObserver, name: .savedItemUpdated)
+        osNotificationCenter.remove(observer: notificationObserver, name:.unresolvedSavedItemCreated)
     }
 
     public var mainContext: NSManagedObjectContext {
@@ -248,6 +253,21 @@ extension PocketSource {
         )
 
         enqueue(operation: operation, task: .unarchive(remoteID: remoteID))
+    }
+
+    public func save(item: SavedItem) {
+        guard let url = item.url else {
+            return
+        }
+
+        let operation = operations.saveItemOperation(
+            managedItemID: item.objectID,
+            url: url,
+            events: _events,
+            apollo: apollo,
+            space: space
+        )
+        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
     }
 }
 
@@ -426,6 +446,15 @@ extension PocketSource {
             }
         }
     }
+
+    public func resolveUnresolvedSavedItems() {
+        guard let unresolved = try? space.fetchUnresolvedSavedItems() else {
+            return
+        }
+
+        unresolved.compactMap(\.savedItem).forEach(save(item:))
+        space.delete(unresolved)
+    }
 }
 
 // MARK: - Interprocess notifications
@@ -444,5 +473,9 @@ extension PocketSource {
 
     func handleSavedItemCreatedNotification() {
         _events.send(.savedItemCreated)
+    }
+
+    func handleUnresolvedSavedItemCreatedNotification() {
+        resolveUnresolvedSavedItems()
     }
 }
