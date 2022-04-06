@@ -243,4 +243,12 @@ extension ItemsListViewController: SelectableViewController {
     var selectionItem: SelectionItem {
         return model.selectionItem
     }
+
+    func didBecomeSelected(by parent: MyListContainerViewController) {
+        // Fixes an issue where the navigation bar state could be out-of-sync
+        // with the expected state based on the current visible
+        // collection view's content offset after toggling list selection.
+        collectionView.contentOffset.y += 1
+        collectionView.contentOffset.y -= 1
+    }
 }
