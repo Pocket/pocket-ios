@@ -98,12 +98,14 @@ class SaveOperation: AsyncOperation {
         task?.cancel()
         finishOperation()
 
+        storeUnresolvedSavedItem()
         super.cancel()
     }
 
     private func storeLocalSkeletonItem() {
         savedItem = space.new()
         savedItem?.url = url
+        savedItem?.createdAt = Date()
         try? space.save()
 
         osNotifications.post(name: .savedItemCreated)
@@ -119,6 +121,7 @@ class SaveOperation: AsyncOperation {
     private func handle(result: Result<GraphQLResult<SaveItemMutation.Data>, Error>) {
         guard case .success(let graphQLResult) = result,
               let savedItemParts = graphQLResult.data?.upsertSavedItem.fragments.savedItemParts else {
+            storeUnresolvedSavedItem()
             finishOperation()
             return
         }
@@ -131,4 +134,18 @@ class SaveOperation: AsyncOperation {
         osNotifications.post(name: .savedItemUpdated)
         finishOperation()
     }
+
+    private func storeUnresolvedSavedItem() {
+        let unresolved: UnresolvedSavedItem = space.new()
+        unresolved.savedItem = savedItem
+        try? space.save()
+
+        osNotifications.post(name: .unresolvedSavedItemCreated)
+    }
+}
+
+public extension CFNotificationName {
+    static let savedItemCreated = CFNotificationName("com.mozilla.pocket.savedItemCreated" as CFString)
+    static let savedItemUpdated = CFNotificationName("com.mozilla.pocket.savedItemUpdated" as CFString)
+    static let unresolvedSavedItemCreated = CFNotificationName("com.mozilla.pocket.unresolvedSavedItemCreated" as CFString)
 }

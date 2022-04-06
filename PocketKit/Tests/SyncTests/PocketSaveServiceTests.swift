@@ -97,6 +97,36 @@ class PocketSaveServiceTests: XCTestCase {
         }
     }
 
+    func test_save_whenApolloRequestFails_storesUnresolvedSavedItemAndPostsNotification() throws {
+        var expiringActivity: ((Bool) -> Void)?
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
+            expiringActivity = _expiringActivity
+        }
+
+        let performMutationCalled = expectation(description: "perform called")
+        client.stubPerform(ofMutationType: SaveItemMutation.self, toReturnError: TestError.anError) {
+            performMutationCalled.fulfill()
+        }
+
+        let url = URL(string: "https://getpocket.com")!
+        let service = self.subject()
+        service.save(url: url)
+
+        let notificationReceived = expectation(description: "notificationReceived")
+        osNotificationCenter.add(observer: self, name: .unresolvedSavedItemCreated) {
+            notificationReceived.fulfill()
+        }
+
+        DispatchQueue(label: "start task").async {
+            expiringActivity?(false)
+        }
+        wait(for: [performMutationCalled, notificationReceived], timeout: 1)
+
+        let unresolved = try space.fetchUnresolvedSavedItems()
+        XCTAssertEqual(unresolved[0].savedItem?.url, url)
+        XCTAssertEqual(unresolved[0].hasChanges, false)
+    }
+
     func test_cancellationOfExpiringActivity_cancelsAllOperationsAndReturnsImmediately() {
         var expiringActivity: ((Bool) -> Void)?
         backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
@@ -130,6 +160,43 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         wait(for: [finishedActivity, finishedCancellingActivity], timeout: 1)
+    }
+
+    func test_cancellationOfExpiringActivity_setsSkeletonItemAsUnresolved_andPostsNotification() throws {
+        var expiringActivity: ((Bool) -> Void)?
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
+            expiringActivity = _expiringActivity
+        }
+
+        let performMutationCalled = expectation(description: "perform called")
+        client.stubPerform { (_: SaveItemMutation, _, _, _) in
+            performMutationCalled.fulfill()
+            return MockCancellable()
+        }
+
+        let url = URL(string: "https://getpocket.com")!
+        let service = self.subject()
+        service.save(url: url)
+
+
+        let notificationReceived = expectation(description: "notificationReceived")
+        osNotificationCenter.add(observer: self, name: .unresolvedSavedItemCreated) {
+            notificationReceived.fulfill()
+        }
+
+        DispatchQueue(label: "start task").async {
+            expiringActivity?(false)
+        }
+        wait(for: [performMutationCalled], timeout: 1)
+
+        DispatchQueue(label: "cancel task").async {
+            expiringActivity?(true)
+        }
+        wait(for: [notificationReceived], timeout: 1)
+
+        let unresolved = try space.fetchUnresolvedSavedItems()
+        XCTAssertEqual(unresolved[0].savedItem?.url, url)
+        XCTAssertEqual(unresolved[0].hasChanges, false)
     }
 
     func test_save_sendsANotificationAfterCreatingSkeletonSavedItem_andAfterUpdatingTheItem() {

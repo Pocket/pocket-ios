@@ -35,6 +35,7 @@ class RefreshCoordinator {
 
         notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
             self?.source.refresh()
+            self?.source.resolveUnresolvedSavedItems()
         }.store(in: &subscriptions)
     }
 
