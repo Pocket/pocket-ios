@@ -60,16 +60,14 @@ class HomeViewController: UIViewController {
         collectionViewLayout: layout
     )
     
-    private lazy var overscrollView: HomeOverscrollView = {
-        let view = HomeOverscrollView(frame: .zero)
-        view.accessibilityIdentifier = "home-overscroll"
+    private lazy var overscrollView: EndOfFeedAnimationView = {
+        let view = EndOfFeedAnimationView(frame: .zero)
+        view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
-        view.isHidden = true
         view.attributedText = NSAttributedString(
             string: "You're all caught up!\nCheck back later for more.",
             style: .overscroll
         )
-        view.animation = Animation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
         return view
     }()
     

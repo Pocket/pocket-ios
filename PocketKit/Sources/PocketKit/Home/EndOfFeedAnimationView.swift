@@ -1,8 +1,9 @@
 import UIKit
 import Lottie
+import Textile
 
 
-class HomeOverscrollView: UIView {
+class EndOfFeedAnimationView: UIView {
     private lazy var textLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.numberOfLines = 0
@@ -17,13 +18,9 @@ class HomeOverscrollView: UIView {
     
     private lazy var animationView: AnimationView = {
         let view = AnimationView(animation: nil)
+        view.animation = Animation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
         return view
     }()
-    
-    var animation: Animation? {
-        get { animationView.animation }
-        set { animationView.animation = newValue }
-    }
     
     var isAnimating: Bool {
         get { animationView.isAnimationPlaying }
@@ -67,9 +64,48 @@ class HomeOverscrollView: UIView {
             stackView.heightAnchor.constraint(lessThanOrEqualTo: heightAnchor, constant: -16),
             stackView.widthAnchor.constraint(lessThanOrEqualTo: widthAnchor, constant: -16)
         ])
+
+        updatePageColors()
     }
     
     required init?(coder: NSCoder) {
         fatalError()
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        updatePageColors()
+    }
+
+    private func updatePageColors() {
+        let colorValueProvider: ColorValueProvider?
+        switch traitCollection.userInterfaceStyle {
+        case .light:
+            colorValueProvider = ColorValueProvider(Color(.ui.black))
+        case .dark:
+            colorValueProvider = ColorValueProvider(Color(.ui.white))
+        case .unspecified:
+            colorValueProvider = nil
+        @unknown default:
+            colorValueProvider = nil
+        }
+
+        let keypath = AnimationKeypath(keys: ["Book Animation - DYNAMIC", "PAGE_COLOR", "Group 1", "Stroke 1", "Color"])
+        if let colorValueProvider = colorValueProvider {
+            animationView.setValueProvider(colorValueProvider, keypath: keypath)
+        } else {
+            // Resets the value providers since there is no explicit "remove" API
+            animationView.animation = animationView.animation
+        }
+    }
+}
+
+private extension Lottie.Color {
+    init(_ colorAsset: ColorAsset) {
+        let color = UIColor(colorAsset)
+        var r: CGFloat = 0
+        var g: CGFloat = 0
+        var b: CGFloat = 0
+        color.getRed(&r, green: &g, blue: &b, alpha: nil)
+        self.init(r: r, g: g, b: b, a: 1)
     }
 }
