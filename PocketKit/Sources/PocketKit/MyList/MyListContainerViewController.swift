@@ -8,6 +8,8 @@ struct SelectionItem {
 
 protocol SelectableViewController: UIViewController {
     var selectionItem: SelectionItem { get }
+
+    func didBecomeSelected(by parent: MyListContainerViewController)
 }
 
 class MyListContainerViewController: UIViewController {
@@ -62,5 +64,7 @@ class MyListContainerViewController: UIViewController {
             child.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             child.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+
+        child.didBecomeSelected(by: self)
     }
 }
