@@ -17,7 +17,7 @@ class MainViewController: UIViewController {
         if appSession.currentSession == nil {
             child = LoggedOutViewController(
                 viewModel: LoggedOutViewModel(
-                    dismissTimer: Timer.TimerPublisher(interval: 2, runLoop: .main, mode: .default)
+                    dismissTimer: Timer.TimerPublisher(interval: 2.1, runLoop: .main, mode: .default)
                 )
             )
         } else {
@@ -29,7 +29,7 @@ class MainViewController: UIViewController {
                         consumerKey: Keys.shared.pocketApiConsumerKey,
                         expiringActivityPerformer: ProcessInfo.processInfo
                     ),
-                    dismissTimer: Timer.TimerPublisher(interval: 2, runLoop: .main, mode: .default)
+                    dismissTimer: Timer.TimerPublisher(interval: 2.1, runLoop: .main, mode: .default)
                 )
             )
         }
