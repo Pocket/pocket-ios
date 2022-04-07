@@ -61,11 +61,7 @@ class SavedItemViewController: UIViewController {
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(finish))
         view.addGestureRecognizer(tap)
-    }
 
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
         Task {
             await viewModel.save(from: extensionContext)
         }
