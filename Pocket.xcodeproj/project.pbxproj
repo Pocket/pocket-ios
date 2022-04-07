@@ -387,9 +387,6 @@
 						CreatedOnToolsVersion = 12.5;
 						TestTargetID = 166A81AF2637406C0015AA1D;
 					};
-					16D68EAB269648510046F93D = {
-						CreatedOnToolsVersion = 12.5;
-					};
 					F204A75F27E22EC50010E155 = {
 						CreatedOnToolsVersion = 13.3;
 						LastSwiftMigration = 1330;
@@ -414,7 +411,6 @@
 			targets = (
 				166A81AF2637406C0015AA1D /* Pocket (iOS) */,
 				166A81BF2637406C0015AA1D /* Tests iOS */,
-				16D68EAB269648510046F93D /* ApolloCodegen */,
 				F204A75F27E22EC50010E155 /* SaveToPocket */,
 			);
 		};
@@ -687,7 +683,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next;
 				PRODUCT_NAME = Pocket;
-				PROVISIONING_PROFILE_SPECIFIER = "Pocket Distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "Pocket Next Distribution";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -848,12 +844,6 @@
 			};
 			name = Debug_Test;
 		};
-		1676E5AA27FBC89A00F9283A /* Debug_Test */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Debug_Test;
-		};
 		1676E5AB27FBC89A00F9283A /* Debug_Test */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -886,18 +876,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug_Test;
-		};
-		16D68EAD269648510046F93D /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Debug;
-		};
-		16D68EAE269648510046F93D /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-			};
-			name = Release;
 		};
 		F204A76C27E22EC50010E155 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -998,16 +976,6 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		16D68EAC269648510046F93D /* Build configuration list for PBXAggregateTarget "ApolloCodegen" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				16D68EAD269648510046F93D /* Debug */,
-				1676E5AA27FBC89A00F9283A /* Debug_Test */,
-				16D68EAE269648510046F93D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		F204A76E27E22EC50010E155 /* Build configuration list for PBXNativeTarget "SaveToPocket" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1018,6 +986,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+/* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
 		167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */ = {
