@@ -18,7 +18,8 @@ class PocketSaveServiceTests: XCTestCase {
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
+        try space.clear()
         osNotificationCenter.removeAllObservers()
     }
 
@@ -49,13 +50,36 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = subject()
-        service.save(url: URL(string: "https://getpocket.com")!)
+        let result = service.save(url: URL(string: "https://getpocket.com")!)
 
+        XCTAssertEqual(result, .newItem)
         XCTAssertNotNil(backgroundActivityPerformer.performCall(at:0))
 
         wait(for: [performCalled], timeout: 1)
         let performCall: MockApolloClient.PerformCall<SaveItemMutation>? = client.performCall(at: 0)
         XCTAssertEqual(performCall?.mutation.input.url, "https://getpocket.com")
+    }
+
+    func test_save_whenSavedItemExistsWithGivenURL_returnsExistingItemStatus_postsItemUpdatedNotification() throws {
+        let url = URL(string: "http://example.com/item-1")!
+        let existingSavedItem = try space.seedSavedItem(url: url.absoluteString)
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, _ in }
+
+        let savedItemUpdated = expectation(description: "savedItemUpdated")
+        osNotificationCenter.add(observer: self, name: .savedItemUpdated) {
+            savedItemUpdated.fulfill()
+        }
+
+        let service = subject()
+        let result = service.save(url: url)
+
+        XCTAssertEqual(result, .existingItem)
+        wait(for: [savedItemUpdated], timeout: 1)
+
+        let notifications = try? space.fetchSavedItemUpdatedNotifications()
+        XCTAssertEqual(notifications?.isEmpty, false)
+        XCTAssertEqual(notifications?[0].savedItem, existingSavedItem)
+        XCTAssertNotNil(notifications?[0].savedItem?.createdAt)
     }
 
     func test_save_createsAnEmptyItemLocally_andUpdatesFromResponse() throws {
@@ -82,12 +106,13 @@ class PocketSaveServiceTests: XCTestCase {
 
         let url = URL(string: "https://example.com/a-new-item")!
         let service = subject()
-        service.save(url: url)
+        _ = service.save(url: url)
 
         do {
             wait(for: [performMutationWasCalled], timeout: 1)
             let savedItem = try space.fetchSavedItem(byURL: url)
             XCTAssertNotNil(savedItem)
+            XCTAssertFalse(savedItem!.hasChanges)
         }
 
         do {
@@ -110,7 +135,7 @@ class PocketSaveServiceTests: XCTestCase {
 
         let url = URL(string: "https://getpocket.com")!
         let service = self.subject()
-        service.save(url: url)
+        _ = service.save(url: url)
 
         let notificationReceived = expectation(description: "notificationReceived")
         osNotificationCenter.add(observer: self, name: .unresolvedSavedItemCreated) {
@@ -142,7 +167,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = self.subject()
-        service.save(url: URL(string: "https://getpocket.com")!)
+        _ = service.save(url: URL(string: "https://getpocket.com")!)
 
         let finishedActivity = expectation(description: "finished the original call to perform an activity")
         queue.async {
@@ -176,8 +201,7 @@ class PocketSaveServiceTests: XCTestCase {
 
         let url = URL(string: "https://getpocket.com")!
         let service = self.subject()
-        service.save(url: url)
-
+        _ = service.save(url: url)
 
         let notificationReceived = expectation(description: "notificationReceived")
         osNotificationCenter.add(observer: self, name: .unresolvedSavedItemCreated) {
@@ -226,7 +250,7 @@ class PocketSaveServiceTests: XCTestCase {
         }
 
         let service = subject()
-        service.save(url: URL(string: "https://getpocket.com")!)
+        _ = service.save(url: URL(string: "https://getpocket.com")!)
         wait(for: [performCalled, savedItemCreated], timeout: 1)
 
         DispatchQueue.main.async {
