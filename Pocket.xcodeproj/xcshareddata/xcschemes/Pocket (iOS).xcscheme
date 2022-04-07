@@ -86,6 +86,16 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "SaveToPocketKitTests"
+               BuildableName = "SaveToPocketKitTests"
+               BlueprintName = "SaveToPocketKitTests"
+               ReferencedContainer = "container:PocketKit">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "166A81BF2637406C0015AA1D"
                BuildableName = "Tests iOS.xctest"
                BlueprintName = "Tests iOS"
