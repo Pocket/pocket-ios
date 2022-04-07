@@ -11,14 +11,8 @@ class SavedItemViewModel {
 
     private var dismissTimerCancellable: AnyCancellable? = nil
 
-    let infoViewModel = InfoView.Model(
-        style: .default,
-        attributedText: NSAttributedString(
-            string: "Saved to Pocket",
-            style: .mainText
-        ),
-        attributedDetailText: nil
-    )
+    @Published
+    var infoViewModel: InfoView.Model = .empty
 
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
@@ -45,7 +39,13 @@ class SavedItemViewModel {
                 break
             }
 
-            saveService.save(url: url)
+            switch saveService.save(url: url) {
+            case .existingItem:
+                infoViewModel = .existingItem
+            case .newItem:
+                infoViewModel = .newItem
+            }
+
             break
         }
 
@@ -63,4 +63,33 @@ extension SavedItemViewModel {
             self?.finish(context: context)
         }
     }
+}
+
+private extension InfoView.Model {
+    static let empty = InfoView.Model(
+        style: .default,
+        attributedText: NSAttributedString(string: ""),
+        attributedDetailText: NSAttributedString(string: "")
+    )
+
+    static let newItem = InfoView.Model(
+        style: .default,
+        attributedText: NSAttributedString(
+            string: "Saved to Pocket",
+            style: .mainText
+        ),
+        attributedDetailText: nil
+    )
+
+    static let existingItem = InfoView.Model(
+        style: .default,
+        attributedText: NSAttributedString(
+            string: "You’ve already saved this before",
+            style: .mainText
+        ),
+        attributedDetailText: NSAttributedString(
+            string: "We’ll move it to the top of your list.",
+            style: .detailText
+        )
+    )
 }

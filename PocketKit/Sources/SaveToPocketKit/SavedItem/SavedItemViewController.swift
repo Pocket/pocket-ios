@@ -1,4 +1,5 @@
 import UIKit
+import Combine
 import Textile
 
 
@@ -11,9 +12,16 @@ class SavedItemViewController: UIViewController {
 
     private let viewModel: SavedItemViewModel
 
+    private var infoViewModelSubscription: AnyCancellable?
+
     init(viewModel: SavedItemViewModel) {
         self.viewModel = viewModel
+
         super.init(nibName: nil, bundle: nil)
+
+        infoViewModelSubscription = viewModel.$infoViewModel.receive(on: DispatchQueue.main).sink { [weak self] infoViewModel in
+            self?.infoView.model = infoViewModel
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -56,7 +64,6 @@ class SavedItemViewController: UIViewController {
             dismissLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
 
-        infoView.model = viewModel.infoViewModel
         dismissLabel.attributedText = viewModel.dismissAttributedText
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(finish))
