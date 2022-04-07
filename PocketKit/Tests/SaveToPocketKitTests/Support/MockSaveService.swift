@@ -9,7 +9,7 @@ class MockSaveService: SaveService {
 
 extension MockSaveService {
     private static let saveImpl = "CallImpl"
-    typealias SaveImpl = (URL) -> Void
+    typealias SaveImpl = (URL) -> SaveServiceStatus
 
     struct SaveCall {
         let url: URL
@@ -23,12 +23,12 @@ extension MockSaveService {
         calls[Self.saveImpl]?[index] as? SaveCall
     }
 
-    func save(url: URL) {
+    func save(url: URL) -> SaveServiceStatus {
         guard let impl = implementations[Self.saveImpl] as? SaveImpl else {
             fatalError("\(Self.self).\(#function) is not stubbed")
         }
 
         calls[Self.saveImpl] = (calls[Self.saveImpl] ?? []) + [SaveCall(url: url)]
-        impl(url)
+        return impl(url)
     }
 }

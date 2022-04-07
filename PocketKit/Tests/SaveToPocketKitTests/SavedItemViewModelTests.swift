@@ -25,11 +25,11 @@ class SavedItemViewModelTests: XCTestCase {
     override func setUp() {
         self.continueAfterFailure = false
 
-        appSession = AppSession()
+        appSession = AppSession(keychain: MockKeychain())
         saveService = MockSaveService()
         dismissTimer = Timer.TimerPublisher(interval: 0, runLoop: .main, mode: .default)
 
-        saveService.stubSave { _ in }
+        saveService.stubSave { _ in .newItem }
     }
 }
 
@@ -132,6 +132,41 @@ extension SavedItemViewModelTests {
         await viewModel.save(from: context)
 
         wait(for: [completeRequestExpectation], timeout: 1)
+    }
+
+    func test_save_whenResavingExistingItem_updatesInfoViewModel() async {
+        appSession.currentSession = Session(
+            guid: "mock-guid",
+            accessToken: "mock-access-token",
+            userIdentifier: "mock-user-identifier"
+        )
+
+        saveService.stubSave { _ in .existingItem }
+
+        let provider = MockItemProvider()
+        provider.stubHasItemConformingToTypeIdentifier { _ in
+            return true
+        }
+        provider.stubLoadItem { _, _ in
+            URL(string: "https://getpocket.com")! as NSSecureCoding
+        }
+
+        let viewModel = subject()
+
+        let infoViewModelChanged = expectation(description: "infoViewModelChanged")
+        let subscription = viewModel.$infoViewModel.dropFirst().sink { model in
+            defer { infoViewModelChanged.fulfill() }
+            XCTAssertEqual(model.attributedText.string, "You’ve already saved this before")
+            XCTAssertEqual(model.attributedDetailText?.string, "We’ll move it to the top of your list.")
+        }
+
+        let extensionItem = MockExtensionItem(itemProviders: [provider])
+        let context = MockExtensionContext(extensionItems: [extensionItem])
+        context.stubCompleteRequest { _, _ in }
+
+        await viewModel.save(from: context)
+        wait(for: [infoViewModelChanged], timeout: 1)
+        subscription.cancel()
     }
 }
 
