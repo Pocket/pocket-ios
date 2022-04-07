@@ -189,7 +189,7 @@ extension ItemsListItemCell {
 
         let shareAction: ItemAction?
         let favoriteAction: ItemAction?
-        let overflowActions: [ItemAction]?
+        let overflowActions: [ItemAction]
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -217,7 +217,7 @@ extension ItemsListItemCell {
             shareButton.addAction(shareAction, for: .primaryActionTriggered)
         }
 
-        let menuActions = state.model.flatMap(\.overflowActions).flatMap { $0.compactMap(UIAction.init) } ?? []
+        let menuActions = state.model?.overflowActions.compactMap(UIAction.init) ?? []
         menuButton.menu = UIMenu(children: menuActions)
 
 

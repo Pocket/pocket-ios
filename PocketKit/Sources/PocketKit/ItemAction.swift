@@ -57,11 +57,11 @@ extension ItemAction {
         )
     }
 
-    static func reAdd(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func moveToMyList(_ handler: @escaping (Any?) -> ()) -> ItemAction {
         return ItemAction(
-            title: "Re-add",
-            identifier: .reAddItem,
-            accessibilityIdentifier: "item-action-re-add",
+            title: "Move to My List",
+            identifier: .moveToMyListItem,
+            accessibilityIdentifier: "item-action-move-to-my-list",
             image: UIImage(asset: .save),
             handler: handler
         )
@@ -115,7 +115,7 @@ extension UIAction.Identifier {
     static let saveItem = UIAction.Identifier(rawValue: "save-item")
     static let archiveItem = UIAction.Identifier(rawValue: "archive-item")
     static let deleteItem = UIAction.Identifier(rawValue: "delete-item")
-    static let reAddItem = UIAction.Identifier(rawValue: "re-add-item")
+    static let moveToMyListItem = UIAction.Identifier(rawValue: "move-to-my-list-item")
     static let favoriteItem = UIAction.Identifier(rawValue: "favorite-item")
     static let shareItem = UIAction.Identifier(rawValue: "share-item")
     static let displaySettings = UIAction.Identifier(rawValue: "display-settings")

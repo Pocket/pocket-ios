@@ -85,10 +85,6 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
         sharedActivity = PocketItemActivity(url: item.bestURL, sender: sender)
     }
 
-    func trailingSwipeActions(for objectID: ItemIdentifier) -> [UIContextualAction] {
-        return []
-    }
-
     func willDisplay(_ cell: ItemsListCell<ItemIdentifier>) {
         if case .nextPage = cell, !isFetching, isNetworkAvailable {
             isFetching = true
@@ -177,14 +173,27 @@ extension ArchivedItemsListViewModel {
 
 // MARK: - Deleting an item
 extension ArchivedItemsListViewModel {
-    func overflowActions(for itemID: ItemIdentifier) -> [ItemAction]? {
+    func overflowActions(for itemID: ItemIdentifier) -> [ItemAction] {
         guard let item = archivedItemsByID[itemID] else {
-            return nil
+            return []
         }
 
         return [
-            .reAdd { [weak self] _ in self?.unarchive(item: item) },
+            .moveToMyList { [weak self] _ in self?.moveToMyList(item: item) },
             .delete { [weak self] _ in self?.confirmDelete(item: item) }
+        ]
+    }
+
+    func trailingSwipeActions(for objectID: ItemIdentifier) -> [ItemContextualAction] {
+        guard let item = archivedItemsByID[objectID] else {
+            return []
+        }
+
+        return [
+            .moveToMyList { [weak self] completion in
+                self?.moveToMyList(item: item)
+                completion(true)
+            }
         ]
     }
 
@@ -237,9 +246,9 @@ extension ArchivedItemsListViewModel {
     }
 }
 
-// MARK: - Re-adding items
+// MARK: - Move to My List
 extension ArchivedItemsListViewModel {
-    func unarchive(item: SavedItem) {
+    func moveToMyList(item: SavedItem) {
         track(item: item, identifier: .itemSave)
         source.unarchive(item: item)
     }

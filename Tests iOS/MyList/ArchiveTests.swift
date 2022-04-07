@@ -106,6 +106,32 @@ class ArchiveTests: XCTestCase {
         app.myListView.selectionSwitcher.myListButton.tap()
         itemCell.wait()
     }
+
+    func test_unarchivingAnItem_bySwiping_removesFromArchive_andAddsToMyList() {
+        app.launch().tabBar.myListButton.wait().tap()
+        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+
+        let itemCell = app.myListView.itemView(matching: "Archived Item 1")
+        itemCell.element.swipeLeft()
+
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isToSaveAnItem {
+                return Response.myList("unarchive")
+            } else if apiRequest.isForMyListContent {
+                return Response.myList("list-with-unarchived-item")
+            }
+
+            fatalError("Unexpected request")
+        }
+
+        app.myListView.readdSwipeButton.wait().tap()
+        waitForDisappearance(of: itemCell)
+
+        app.myListView.selectionSwitcher.myListButton.tap()
+        itemCell.wait()
+    }
 }
 
 extension ArchiveTests {

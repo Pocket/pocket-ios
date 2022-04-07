@@ -135,9 +135,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         sharedActivity = PocketItemActivity(url: item.url, sender: sender)
     }
 
-    func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction]? {
+    func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
         guard let item = bareItem(with: objectID) else {
-            return nil
+            return []
         }
 
         return [
@@ -150,18 +150,17 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         ]
     }
 
-    func trailingSwipeActions(for objectID: NSManagedObjectID) -> [UIContextualAction] {
+    func trailingSwipeActions(for objectID: NSManagedObjectID) -> [ItemContextualAction] {
         guard let item = bareItem(with: objectID) else {
             return []
         }
 
-        let archiveAction = UIContextualAction(style: .normal, title: "Archive") { [weak self] _, _, completion in
-            self?._archive(item: item)
-            completion(true)
-        }
-        archiveAction.backgroundColor = UIColor(.ui.lapis1)
-
-        return [archiveAction]
+        return [
+            .archive { [weak self] completion in
+                self?._archive(item: item)
+                completion(true)
+            }
+        ]
     }
 
     private func _archive(item: SavedItem) {
