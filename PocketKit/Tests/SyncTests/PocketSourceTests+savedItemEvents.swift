@@ -68,4 +68,38 @@ extension PocketSourceTests {
 
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
     }
+
+
+    func test_events_whenOSNotificationCenterPostsUnresolvedItemCreatedNotification_whenSavedItemIsDuplicated_includesSavedItemOnlyOnce() throws {
+        operations.stubSaveItemOperation { _, _, _, _, _ in
+            TestSyncOperation { }
+        }
+
+        let source = subject()
+
+        let savedItem = try! space.seedSavedItem()
+        let notification1: SavedItemUpdatedNotification = space.new()
+        notification1.savedItem = savedItem
+        try! space.save()
+
+        let notification2: SavedItemUpdatedNotification = space.new()
+        notification2.savedItem = savedItem
+        try space.save()
+
+        let expectEvent = expectation(description: "expectEvent")
+        let sub = source.events.sink { event in
+            guard case .savedItemsUpdated(let savedItems) = event else {
+                XCTFail("Received unexpected sync event: \(event)")
+                return
+            }
+
+            XCTAssertEqual(Array(savedItems), [savedItem])
+            expectEvent.fulfill()
+        }
+
+        osNotificationCenter.post(name: .savedItemUpdated)
+
+        wait(for: [expectEvent], timeout: 1)
+        sub.cancel()
+    }
 }

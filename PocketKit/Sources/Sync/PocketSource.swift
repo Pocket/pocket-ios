@@ -465,7 +465,7 @@ extension PocketSource {
             return
         }
 
-        let updatedSavedItems = notifications.compactMap(\.savedItem)
+        let updatedSavedItems = Set(notifications.compactMap(\.savedItem))
         space.delete(notifications)
         try? space.save()
 
