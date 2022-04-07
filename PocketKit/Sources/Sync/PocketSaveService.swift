@@ -41,13 +41,38 @@ public class PocketSaveService: SaveService {
         self.queue = OperationQueue()
     }
 
-    public func save(url: URL) {
+    public func save(url: URL) -> SaveServiceStatus {
+        let result = fetchOrCreateSavedItem(url: url)
+
         expiringActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.save") { [weak self] expiring in
-            self?._save(expiring: expiring, url: url)
+            self?._save(expiring: expiring, savedItem: result.savedItem)
+        }
+
+        return result.status
+    }
+
+    private func fetchOrCreateSavedItem(url: URL) -> (savedItem: SavedItem, status: SaveServiceStatus) {
+        if let existingItem = try! space.fetchSavedItem(byURL: url) {
+            existingItem.createdAt = Date()
+
+            let notification: SavedItemUpdatedNotification = space.new()
+            notification.savedItem = existingItem
+            try? space.save()
+
+            osNotifications.post(name: .savedItemUpdated)
+            return (existingItem, .existingItem)
+        } else {
+            let savedItem: SavedItem = space.new()
+            savedItem.url = url
+            savedItem.createdAt = Date()
+            try? space.save()
+
+            osNotifications.post(name: .savedItemCreated)
+            return (savedItem, .newItem)
         }
     }
 
-    private func _save(expiring: Bool, url: URL) {
+    private func _save(expiring: Bool, savedItem: SavedItem) {
         guard !expiring else {
             queue.cancelAllOperations()
             queue.waitUntilAllOperationsAreFinished()
@@ -58,7 +83,7 @@ public class PocketSaveService: SaveService {
             apollo: apollo,
             osNotifications: osNotifications,
             space: space,
-            url: url
+            savedItem: savedItem
         )
 
         queue.addOperation(operation)
@@ -70,27 +95,24 @@ class SaveOperation: AsyncOperation {
     private let apollo: ApolloClientProtocol
     private let osNotifications: OSNotificationCenter
     private let space: Space
-    private let url: URL
+    private let savedItem: SavedItem
 
     private var task: Cancellable?
-    private var savedItem: SavedItem?
 
     init(
         apollo: ApolloClientProtocol,
         osNotifications: OSNotificationCenter,
         space: Space,
-        url: URL
+        savedItem: SavedItem
     ) {
         self.apollo = apollo
         self.osNotifications = osNotifications
         self.space = space
-        self.url = url
+        self.savedItem = savedItem
     }
 
     override func start() {
         guard !isCancelled else { return }
-
-        storeLocalSkeletonItem()
         performMutation()
     }
 
@@ -102,16 +124,9 @@ class SaveOperation: AsyncOperation {
         super.cancel()
     }
 
-    private func storeLocalSkeletonItem() {
-        savedItem = space.new()
-        savedItem?.url = url
-        savedItem?.createdAt = Date()
-        try? space.save()
-
-        osNotifications.post(name: .savedItemCreated)
-    }
-
     private func performMutation() {
+        guard let url = savedItem.url else { return }
+
         let mutation = SaveItemMutation(input: SavedItemUpsertInput(url: url.absoluteString))
         task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .main) { [weak self] result in
             self?.handle(result: result)
@@ -126,7 +141,7 @@ class SaveOperation: AsyncOperation {
             return
         }
 
-        savedItem?.update(from: savedItemParts)
+        savedItem.update(from: savedItemParts)
         let notification: SavedItemUpdatedNotification = space.new()
         notification.savedItem = savedItem
         try? space.save()
