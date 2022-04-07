@@ -67,7 +67,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                         return nil
                     }
 
-                    return UISwipeActionsConfiguration(actions: model.trailingSwipeActions(for: objectID))
+                    let actions = model.trailingSwipeActions(for: objectID)
+                    .compactMap(UIContextualAction.init)
+
+                    return UISwipeActionsConfiguration(actions: actions)
                 }
 
                 return NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)

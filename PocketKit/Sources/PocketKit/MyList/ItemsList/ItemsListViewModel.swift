@@ -41,8 +41,8 @@ protocol ItemsListViewModel: AnyObject {
 
     func shareAction(for objectID: ItemIdentifier) -> ItemAction?
     func favoriteAction(for objectID: ItemIdentifier) -> ItemAction?
-    func overflowActions(for objectID: ItemIdentifier) -> [ItemAction]?
-    func trailingSwipeActions(for objectID: ItemIdentifier) -> [UIContextualAction]
+    func overflowActions(for objectID: ItemIdentifier) -> [ItemAction]
+    func trailingSwipeActions(for objectID: ItemIdentifier) -> [ItemContextualAction]
 
     func willDisplay(_ cell: ItemsListCell<ItemIdentifier>)
 }

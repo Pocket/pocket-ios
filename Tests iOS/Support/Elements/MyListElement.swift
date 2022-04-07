@@ -33,6 +33,14 @@ struct MyListElement: PocketUIElement {
         ).containing(.staticText, identifier: "Favorites").element(boundBy: 0)
     }
 
+    var archiveSwipeButton: XCUIElement {
+        collectionView.buttons["Archive"]
+    }
+
+    var readdSwipeButton: XCUIElement {
+        collectionView.buttons["Move to My List"]
+    }
+
     var itemCount: Int {
         itemCells.count
     }

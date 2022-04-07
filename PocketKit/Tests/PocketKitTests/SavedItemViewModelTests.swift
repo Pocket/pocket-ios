@@ -44,7 +44,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: .build(isFavorite: true, isArchived: true))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Re-add", "Delete", "Share"]
+                ["Display Settings", "Unfavorite", "Move to My List", "Delete", "Share"]
             )
         }
     }
@@ -56,7 +56,7 @@ class SavedItemViewModelTests: XCTestCase {
         item.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Re-add", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Move to My List", "Delete", "Share"]
         )
 
         item.isArchived = false
@@ -163,7 +163,7 @@ class SavedItemViewModelTests: XCTestCase {
         }
 
         let viewModel = subject(item: item)
-        viewModel.invokeAction(title: "Re-add")
+        viewModel.invokeAction(title: "Move to My List")
 
         wait(for: [expectUnarchive], timeout: 1)
     }

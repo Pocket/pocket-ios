@@ -140,7 +140,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         // Tap delete button in overflow menu
-        viewModel.overflowActions(for: items[0].objectID)?
+        viewModel.overflowActions(for: items[0].objectID)
             .first { $0.title == "Delete" }?
             .handler?(nil)
 
@@ -261,8 +261,8 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             )
         }.store(in: &subscriptions)
 
-        viewModel.overflowActions(for: items[0].objectID)?
-            .first { $0.title == "Re-add" }?
+        viewModel.overflowActions(for: items[0].objectID)
+            .first { $0.title == "Move to My List" }?
             .handler?(nil)
 
         wait(for: [expectUnarchiveCall, expectSnapshotWithItemRemoved], timeout: 1)

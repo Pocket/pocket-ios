@@ -83,7 +83,7 @@ class SavedItemViewModel: ReadableViewModel {
         item.bestURL
     }
     
-    func unarchive() {
+    func moveToMyList() {
         source.unarchive(item: item)
     }
 
@@ -124,7 +124,7 @@ extension SavedItemViewModel {
 
         let archiveAction: ItemAction
         if item.isArchived {
-            archiveAction = .reAdd { [weak self] _ in self?.unarchive() }
+            archiveAction = .moveToMyList { [weak self] _ in self?.moveToMyList() }
         } else {
             archiveAction = .archive { [weak self] _ in self?.archive() }
         }

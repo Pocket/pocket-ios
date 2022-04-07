@@ -68,6 +68,34 @@ class ArchiveAnItemTests: XCTestCase {
         waitForDisappearance(of: itemCell)
     }
 
+    func test_archivingAnItemFromList_bySwipe_removesItFromList_andSyncWithServer() {
+        app.tabBar.myListButton.wait().tap()
+
+        let itemCell = app
+            .myListView
+            .itemView(matching: "Item 2")
+
+        itemCell.element.swipeLeft()
+
+        let expectRequest = expectation(description: "A request to the server")
+        server.routes.post("/graphql") { request, loop in
+            defer { expectRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToArchiveAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
+
+            return Response.archive()
+        }
+
+        app
+            .myListView
+            .archiveSwipeButton.wait()
+            .tap()
+
+        wait(for: [expectRequest], timeout: 1)
+        waitForDisappearance(of: itemCell)
+    }
+
     func test_archivingAnItemFromReader_archivesItem_andPopsBackToList() {
         app.tabBar.myListButton.wait().tap()
 
