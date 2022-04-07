@@ -47,6 +47,13 @@ class MyListTests: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
+
+        server.routes.get("/new-item") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
         
         server.routes.get("/v3/guid") { _, _ in
             Response(
@@ -139,7 +146,7 @@ class MyListTests: XCTestCase {
         safari.launch()
 
         safari.textFields["Address"].tap()
-        safari.typeText("http://localhost:8080/hello\n")
+        safari.typeText("http://localhost:8080/new-item\n")
         safari.staticTexts["Hello, world"].wait()
         safari.toolbars.buttons["ShareButton"].tap()
         let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
@@ -165,7 +172,7 @@ class MyListTests: XCTestCase {
         safari.staticTexts["Saved to Pocket"].wait()
 
         app.activate()
-        app.myListView.itemView(matching: "http://localhost:8080/hello").wait()
+        app.myListView.itemView(matching: "http://localhost:8080/new-item").wait()
 
         promise?.succeed(.saveItemFromExtension())
         app.myListView.itemView(matching: "Item 3").wait(timeout: 10000)
