@@ -1,1 +1,3 @@
 # Pocket iOS
+
+To build the app in XCode you'll need a copy `secrets.xcconfig`. This can be obtained from...
