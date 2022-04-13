@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21D62" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19574" systemVersion="21A559" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Author" representedClassName="Author" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -34,6 +34,12 @@
         <attribute name="createdAt" optional="YES" attributeType="Date" defaultDateTimeInterval="666643260" usesScalarValueType="NO"/>
         <attribute name="syncTaskContainer" attributeType="Transformable" valueTransformerName="SyncTaskTransformer" customClassName="SyncTaskContainer"/>
     </entity>
+    <entity name="Recommendation" representedClassName="Recommendation" syncable="YES" codeGenerationType="class">
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item"/>
+        <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="recommendation" inverseEntity="SavedItem"/>
+        <relationship name="slate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slate" inverseName="recommendations" inverseEntity="Slate"/>
+    </entity>
     <entity name="SavedItem" representedClassName="SavedItem" syncable="YES" codeGenerationType="class">
         <attribute name="archivedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -44,9 +50,25 @@
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Item" inverseName="savedItem" inverseEntity="Item"/>
+        <relationship name="recommendation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recommendation" inverseName="savedItem" inverseEntity="Recommendation"/>
     </entity>
     <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES" codeGenerationType="class">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem"/>
+    </entity>
+    <entity name="Slate" representedClassName="Slate" syncable="YES" codeGenerationType="class">
+        <attribute name="experimentID" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="requestID" optional="YES" attributeType="String"/>
+        <attribute name="slateDescription" optional="YES" attributeType="String"/>
+        <relationship name="recommendations" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Recommendation" inverseName="slate" inverseEntity="Recommendation"/>
+        <relationship name="slateLineup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SlateLineup" inverseName="slates" inverseEntity="SlateLineup"/>
+    </entity>
+    <entity name="SlateLineup" representedClassName="SlateLineup" syncable="YES" codeGenerationType="class">
+        <attribute name="experimentID" optional="YES" attributeType="String"/>
+        <attribute name="id" optional="YES" attributeType="String"/>
+        <attribute name="requestID" optional="YES" attributeType="String"/>
+        <relationship name="slates" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Slate" inverseName="slateLineup" inverseEntity="Slate"/>
     </entity>
     <entity name="UnresolvedSavedItem" representedClassName="UnresolvedSavedItem" syncable="YES" codeGenerationType="class">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem"/>
@@ -54,10 +76,13 @@
     <elements>
         <element name="Author" positionX="-9" positionY="144" width="128" height="89"/>
         <element name="DomainMetadata" positionX="-63" positionY="36" width="128" height="14"/>
-        <element name="Item" positionX="-45" positionY="99" width="128" height="239"/>
+        <element name="Item" positionX="-45" positionY="99" width="128" height="284"/>
         <element name="PersistentSyncTask" positionX="-36" positionY="144" width="128" height="59"/>
-        <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="149"/>
+        <element name="Recommendation" positionX="-18" positionY="162" width="128" height="89"/>
+        <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="179"/>
         <element name="SavedItemUpdatedNotification" positionX="-36" positionY="144" width="128" height="44"/>
+        <element name="Slate" positionX="-27" positionY="153" width="128" height="134"/>
+        <element name="SlateLineup" positionX="-36" positionY="144" width="128" height="89"/>
         <element name="UnresolvedSavedItem" positionX="-36" positionY="144" width="128" height="44"/>
     </elements>
 </model>
