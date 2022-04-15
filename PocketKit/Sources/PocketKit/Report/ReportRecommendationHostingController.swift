@@ -5,7 +5,7 @@ import Sync
 
 class ReportRecommendationHostingController: OnDismissHostingController<ReportRecommendationView> {
     init(
-        recommendation: Slate.Recommendation,
+        recommendation: UnmanagedSlate.UnmanagedRecommendation,
         tracker: Tracker,
         onDismiss: @escaping () -> Void
     ) {

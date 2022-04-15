@@ -28,9 +28,9 @@ class RecommendationViewModel: ReadableViewModel {
     @Published
     var isPresentingReaderSettings: Bool?
     
-    private let recommendation: Slate.Recommendation
+    private let recommendation: UnmanagedSlate.UnmanagedRecommendation
 
-    init(recommendation: Slate.Recommendation, tracker: Tracker) {
+    init(recommendation: UnmanagedSlate.UnmanagedRecommendation, tracker: Tracker) {
         self.recommendation = recommendation
         self.tracker = tracker
 

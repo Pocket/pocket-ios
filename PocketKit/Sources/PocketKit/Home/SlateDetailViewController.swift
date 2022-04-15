@@ -32,8 +32,8 @@ class SlateDetailViewController: UIViewController {
         return layout
     }()
 
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Slate, Slate.Recommendation> = {
-        let registration = UICollectionView.CellRegistration<RecommendationCell, Slate.Recommendation> { cell, indexPath, recommendation in
+    private lazy var dataSource: UICollectionViewDiffableDataSource<UnmanagedSlate, UnmanagedSlate.UnmanagedRecommendation> = {
+        let registration = UICollectionView.CellRegistration<RecommendationCell, UnmanagedSlate.UnmanagedRecommendation> { cell, indexPath, recommendation in
             cell.mode = .hero
             
             let presenter = RecommendationPresenter(recommendation: recommendation)
@@ -65,7 +65,7 @@ class SlateDetailViewController: UIViewController {
             cell.overflowButton.addAction(reportAction, for: .primaryActionTriggered)
         }
         
-        let dataSource = UICollectionViewDiffableDataSource<Slate, Slate.Recommendation>(
+        let dataSource = UICollectionViewDiffableDataSource<UnmanagedSlate, UnmanagedSlate.UnmanagedRecommendation>(
             collectionView: collectionView
         ) { (collectionView, indexPath, recommendation) -> UICollectionViewCell? in
             return collectionView.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: recommendation)
@@ -103,14 +103,14 @@ class SlateDetailViewController: UIViewController {
         model.slateID
     }
 
-    private var slate: Slate? {
+    private var slate: UnmanagedSlate? {
         didSet {
             guard let slate = slate else {
                 dataSource.apply(NSDiffableDataSourceSnapshot())
                 return
             }
             
-            var snapshot = NSDiffableDataSourceSnapshot<Slate, Slate.Recommendation>()
+            var snapshot = NSDiffableDataSourceSnapshot<UnmanagedSlate, UnmanagedSlate.UnmanagedRecommendation>()
             snapshot.appendSections([slate])
             snapshot.appendItems(slate.recommendations, toSection: slate)
             
@@ -208,11 +208,11 @@ class SlateDetailViewController: UIViewController {
         }
     }
 
-    private func isRecommendationSaved(_ recommendation: Slate.Recommendation) -> Bool {
+    private func isRecommendationSaved(_ recommendation: UnmanagedSlate.UnmanagedRecommendation) -> Bool {
         return savedRecommendationsService.itemIDs.contains(recommendation.item.id)
     }
     
-    private func report(_ recommendation: Slate.Recommendation) {
+    private func report(_ recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         model.selectedRecommendationToReport = recommendation
     }
     
@@ -311,7 +311,7 @@ extension SlateDetailViewController {
         return [context, content, snowplowSlate, snowplowRecommendation]
     }
     
-    private func url(for recommendation: Slate.Recommendation) -> URL? {
+    private func url(for recommendation: UnmanagedSlate.UnmanagedRecommendation) -> URL? {
         recommendation.item.resolvedURL ?? recommendation.item.givenURL
     }
 }
