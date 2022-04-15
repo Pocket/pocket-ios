@@ -45,12 +45,14 @@ public class PocketSource: Source {
             consumerKey: consumerKey
         )
 
+        let space = Space(container: .init())
+
         self.init(
-            space: Space(container: .init()),
+            space: space,
             apollo: apollo,
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
-            slateService: APISlateService(apollo: apollo),
+            slateService: APISlateService(apollo: apollo, space: space),
             networkMonitor: NWPathMonitor(),
             sessionProvider: sessionProvider,
             backgroundTaskManager: backgroundTaskManager,
@@ -281,19 +283,19 @@ extension PocketSource {
 
 // MARK: - Slates/Recommendations
 extension PocketSource {
-    public func fetchSlateLineup(_ identifier: String) async throws -> SlateLineup? {
-        return try await slateService.fetchSlateLineup(identifier)
+    public func fetchSlateLineup(_ identifier: String) async throws {
+        try await slateService.fetchSlateLineup(identifier)
     }
 
-    public func fetchSlate(_ slateID: String) async throws -> Slate? {
-        return try await slateService.fetchSlate(slateID)
+    public func fetchSlate(_ slateID: String) async throws {
+        try await slateService.fetchSlate(slateID)
     }
 
     public func savedRecommendationsService() -> SavedRecommendationsService {
         SavedRecommendationsService(space: space)
     }
 
-    public func save(recommendation: Slate.Recommendation) {
+    public func save(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         guard let url = recommendation.item.resolvedURL ?? recommendation.item.givenURL else {
             return
         }
@@ -314,7 +316,7 @@ extension PocketSource {
         enqueue(operation: operation, task: task)
     }
 
-    public func archive(recommendation: Slate.Recommendation) {
+    public func archive(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         guard let savedItem = try? space.fetchSavedItem(byRemoteItemID: recommendation.item.id) else {
             return
         }

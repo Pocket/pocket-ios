@@ -326,7 +326,7 @@ class RegularMainCoordinator: NSObject {
         splitController.present(activityVC, animated: !isResetting)
     }
 
-    private func report(_ recommendation: Slate.Recommendation?) {
+    private func report(_ recommendation: UnmanagedSlate.UnmanagedRecommendation?) {
         guard !isResetting, let recommendation = recommendation else {
             return
         }

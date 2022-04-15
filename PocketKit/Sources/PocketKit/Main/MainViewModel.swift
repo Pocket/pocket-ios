@@ -10,7 +10,7 @@ class HomeViewModel {
     var selectedReadableViewModel: RecommendationViewModel?
 
     @Published
-    var selectedRecommendationToReport: Slate.Recommendation?
+    var selectedRecommendationToReport: UnmanagedSlate.UnmanagedRecommendation?
 
     @Published
     var selectedSlateDetail: SlateDetailViewModel?
@@ -26,7 +26,7 @@ class SlateDetailViewModel {
     var selectedReadableViewModel: RecommendationViewModel?
 
     @Published
-    var selectedRecommendationToReport: Slate.Recommendation?
+    var selectedRecommendationToReport: UnmanagedSlate.UnmanagedRecommendation?
 
     @Published
     var presentedWebReaderURL: URL?

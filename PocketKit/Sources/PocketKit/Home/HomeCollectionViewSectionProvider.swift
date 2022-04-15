@@ -3,7 +3,7 @@ import Sync
 
 
 class HomeViewControllerSectionProvider {
-    func topicCarouselSection(slates: [Slate]?) -> NSCollectionLayoutSection {
+    func topicCarouselSection(slates: [UnmanagedSlate]?) -> NSCollectionLayoutSection {
         guard let slates = slates, !slates.isEmpty else {
             return NSCollectionLayoutSection(
                 group: .horizontal(
@@ -52,7 +52,7 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func section(for slate: Slate?, width: CGFloat) -> NSCollectionLayoutSection {
+    func section(for slate: UnmanagedSlate?, width: CGFloat) -> NSCollectionLayoutSection {
         let dividerHeight: CGFloat = 17
         let margin: CGFloat = 8
         let spacing: CGFloat = margin * 2
@@ -132,7 +132,7 @@ class HomeViewControllerSectionProvider {
     }
 
     func twoUpGroup(
-        slate: Slate,
+        slate: UnmanagedSlate,
         width: CGFloat,
         spacing: CGFloat,
         dividerHeight: CGFloat

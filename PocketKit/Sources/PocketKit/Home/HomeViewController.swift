@@ -12,12 +12,12 @@ import Lottie
 
 enum HomeSection: Hashable {
     case topicCarousel
-    case slate(Slate)
+    case slate(UnmanagedSlate)
 }
 
 enum HomeItem: Hashable {
-    case topicChip(Slate)
-    case recommendation(Slate.Recommendation)
+    case topicChip(UnmanagedSlate)
+    case recommendation(UnmanagedSlate.UnmanagedRecommendation)
 }
 
 class HomeViewController: UIViewController {
@@ -33,14 +33,14 @@ class HomeViewController: UIViewController {
     private let savedRecommendationsService: SavedRecommendationsService
     private var subscriptions: [AnyCancellable] = []
 
-    private var slateLineup: SlateLineup? {
+    private var slateLineup: UnmanagedSlateLineup? {
         didSet {
             applySnapshot()
             savedRecommendationsService.slates = slates
         }
     }
     
-    private var slates: [Slate]? {
+    private var slates: [UnmanagedSlate]? {
         return slateLineup?.slates
     }
 
@@ -281,11 +281,11 @@ extension HomeViewController {
         }
     }
 
-    private func isRecommendationSaved(_ recommendation: Slate.Recommendation) -> Bool {
+    private func isRecommendationSaved(_ recommendation: UnmanagedSlate.UnmanagedRecommendation) -> Bool {
         return savedRecommendationsService.itemIDs.contains(recommendation.item.id)
     }
     
-    private func report(_ recommendation: Slate.Recommendation) {
+    private func report(_ recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         model.selectedRecommendationToReport = recommendation
     }
     

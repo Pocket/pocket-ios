@@ -39,7 +39,7 @@ extension SavedItem {
         item?.update(remote: itemParts)
     }
 
-    func update(from recommendation: Slate.Recommendation) {
+    func update(from recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         self.url = recommendation.item.resolvedURL ?? recommendation.item.givenURL
 
         guard let context = managedObjectContext else {
