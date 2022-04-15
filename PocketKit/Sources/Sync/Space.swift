@@ -64,6 +64,42 @@ class Space {
         return try fetch(Requests.fetchUnresolvedSavedItems())
     }
 
+    func fetchSlateLineups() throws -> [SlateLineup] {
+        return try fetch(Requests.fetchSlateLineups())
+    }
+
+    func fetchSlateLineup(byID id: String) throws -> SlateLineup? {
+        return try fetch(Requests.fetchSlateLineup(byID: id)).first
+    }
+
+    func fetchOrCreateSlateLineup(byID id: String) throws -> SlateLineup {
+        try fetchSlateLineup(byID: id) ?? new()
+    }
+
+    func fetchSlates() throws -> [Slate] {
+        return try fetch(Requests.fetchSlates())
+    }
+
+    func fetchRecommendations() throws -> [Recommendation] {
+        return try fetch(Requests.fetchRecommendations())
+    }
+
+    func fetchItems() throws -> [Item] {
+        return try fetch(Requests.fetchItems())
+    }
+
+    func fetchItem(byRemoteID id: String) throws -> Item? {
+        return try fetch(Requests.fetchItem(byRemoteID: id)).first
+    }
+
+    func fetchOrCreateItem(byRemoteID id: String) throws -> Item {
+        return try fetchItem(byRemoteID: id) ?? new()
+    }
+
+    func fetchUnsavedItems() throws -> [Item] {
+        return try fetch(Requests.fetchUnsavedItems())
+    }
+
     func fetch<T>(_ request: NSFetchRequest<T>) throws -> [T] {
         try context.fetch(request)
     }
@@ -78,6 +114,10 @@ class Space {
 
     func delete(_ objects: [NSManagedObject]) {
         objects.forEach(context.delete(_:))
+    }
+
+    func deleteUnsavedItems() throws {
+        try delete(fetchUnsavedItems())
     }
 
     func save() throws {
