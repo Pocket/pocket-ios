@@ -125,7 +125,7 @@ class CompactHomeCoordinator: NSObject {
         }.store(in: &readerSubscriptions)
     }
 
-    func report(_ recommendation: Slate.Recommendation?) {
+    func report(_ recommendation: UnmanagedSlate.UnmanagedRecommendation?) {
         guard !isResetting, let recommendation = recommendation else {
             return
         }

@@ -1,18 +1,18 @@
 import Foundation
 
 
-public extension SlateLineup {
+public extension UnmanagedSlateLineup {
     typealias Remote = GetSlateLineupQuery.Data.GetSlateLineup
     
     init(remote: Remote) {
         id = remote.id
         requestID = remote.requestId
         experimentID = remote.experimentId
-        slates = remote.slates.map { $0.fragments.slateParts }.map(Slate.init)
+        slates = remote.slates.map { $0.fragments.slateParts }.map(UnmanagedSlate.init)
     }
 }
 
-extension Slate {
+extension UnmanagedSlate {
     typealias Remote = SlateParts
 
     init(remote: Remote) {
@@ -22,12 +22,12 @@ extension Slate {
             experimentID: remote.experimentId,
             name: remote.displayName,
             description: remote.description,
-            recommendations: remote.recommendations.map(Slate.Recommendation.init)
+            recommendations: remote.recommendations.map(UnmanagedSlate.UnmanagedRecommendation.init)
         )
     }
 }
 
-extension Slate.Recommendation {
+extension UnmanagedSlate.UnmanagedRecommendation {
     typealias Remote = SlateParts.Recommendation
 
     init(remote: Remote) {

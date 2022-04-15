@@ -1,21 +1,21 @@
 import Foundation
 
 
-public struct Slate: Identifiable, Equatable, Hashable {
+public struct UnmanagedSlate: Identifiable, Equatable, Hashable {
     public let id: String
     public let requestID: String
     public let experimentID: String
     public let name: String?
     public let description: String?
-    public let recommendations: [Recommendation]
+    public let recommendations: [UnmanagedRecommendation]
 
-    public struct Recommendation: Identifiable, Equatable, Hashable {
+    public struct UnmanagedRecommendation: Identifiable, Equatable, Hashable {
         public let id: String?
         public let item: UnmanagedItem
     }
 }
 
-private extension Slate {
+private extension UnmanagedSlate {
     enum CodingKeys: String, CodingKey {
         case id
         case requestID = "requestId"
@@ -26,9 +26,9 @@ private extension Slate {
     }
 }
 
-public struct SlateLineup: Identifiable, Equatable, Hashable {
+public struct UnmanagedSlateLineup: Identifiable, Equatable, Hashable {
     public let id: String
     public let requestID: String
     public let experimentID: String
-    public let slates: [Slate]
+    public let slates: [UnmanagedSlate]
 }
