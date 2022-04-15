@@ -1,16 +1,16 @@
 @testable import Sync
 
 
-extension Slate {
+extension UnmanagedSlate {
     static func build(
         id: String = "slate-1",
         requestID: String = "slate-1-request",
         experimentID: String = "slate-1-experiment",
         name: String = "A slate",
         description: String = "For use in tests",
-        recommendations: [Slate.Recommendation] = []
-    ) -> Slate {
-        Slate(
+        recommendations: [UnmanagedSlate.UnmanagedRecommendation] = []
+    ) -> UnmanagedSlate {
+        UnmanagedSlate(
             id: id,
             requestID: requestID,
             experimentID: experimentID,
@@ -21,11 +21,11 @@ extension Slate {
     }
 }
 
-extension Slate.Recommendation {
+extension UnmanagedSlate.UnmanagedRecommendation {
     static func build(
         id: String? = "recommendation-1",
         item: UnmanagedItem = .build()
-    ) -> Slate.Recommendation {
-        return Slate.Recommendation(id: id, item: item)
+    ) -> UnmanagedSlate.UnmanagedRecommendation {
+        return UnmanagedSlate.UnmanagedRecommendation(id: id, item: item)
     }
 }

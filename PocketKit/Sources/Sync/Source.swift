@@ -28,15 +28,15 @@ public protocol Source {
 
     func unarchive(item: SavedItem)
 
-    func fetchSlateLineup(_ identifier: String) async throws -> SlateLineup?
+    func fetchSlateLineup(_ identifier: String) async throws
 
-    func fetchSlate(_ slateID: String) async throws -> Slate?
+    func fetchSlate(_ slateID: String) async throws
 
     func savedRecommendationsService() -> SavedRecommendationsService
 
-    func save(recommendation: Slate.Recommendation)
+    func save(recommendation: UnmanagedSlate.UnmanagedRecommendation)
 
-    func archive(recommendation: Slate.Recommendation)
+    func archive(recommendation: UnmanagedSlate.UnmanagedRecommendation)
 
     func fetchArchivePage(cursor: String?, isFavorite: Bool?)
 

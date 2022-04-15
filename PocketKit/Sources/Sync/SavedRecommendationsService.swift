@@ -7,7 +7,7 @@ public class SavedRecommendationsService {
     @Published
     private(set) public var itemIDs: [String] = []
 
-    public var slates: [Slate]? = [] {
+    public var slates: [UnmanagedSlate]? = [] {
         didSet {
             update()
         }
