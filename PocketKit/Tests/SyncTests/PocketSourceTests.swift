@@ -312,49 +312,20 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
-    @MainActor
-    func test_fetchSlates_returnsResultsFromSlateService() async throws {
-        let slate = Slate(
-            id: "my-slate",
-            requestID: "request-id",
-            experimentID: "experiment-id",
-            name: "My Slate",
-            description: "slate-description",
-            recommendations: []
-        )
-        
-        let expectedLineup = SlateLineup(
-            id: "lineup-id",
-            requestID: "lineup-request-id",
-            experimentID: "experiment-id",
-            slates: [slate]
-        )
-        
-        slateService.stubFetchSlateLineup {
-            expectedLineup
-        }
+    func test_fetchSlateLineup_forwardsToSlateService() async throws {
+        slateService.stubFetchSlateLineup { _ in }
 
-        let actualLineup = try await subject().fetchSlateLineup("")
-        XCTAssertEqual(actualLineup, expectedLineup)
+        let source = subject()
+        try await source.fetchSlateLineup("slate-lineup-identifier")
+        XCTAssertEqual(slateService.fetchSlateLineupCall(at: 0)?.identifier, "slate-lineup-identifier")
     }
 
-    @MainActor
-    func test_fetchSlate_returnsResultFromSlateService() async throws {
-        let expectedSlate = Slate(
-            id: "my-slate",
-            requestID: "request-id",
-            experimentID: "experiment-id",
-            name: "My Slate",
-            description: "slate-description",
-            recommendations: []
-        )
-        
-        slateService.stubFetchSlate { _ in
-            return expectedSlate
-        }
+    func test_fetchSlate_forwardsToSlateService() async throws {
+        slateService.stubFetchSlate { _ in }
 
-        let actualSlate = try await subject().fetchSlate("the-slate-id")
-        XCTAssertEqual(actualSlate, expectedSlate)
+        let source = subject()
+        try await source.fetchSlate("slate-identifier")
+        XCTAssertEqual(slateService.fetchSlateCall(at: 0)?.identifier, "slate-identifier")
     }
 
     func test_itemsController_returnsAFetchedResultsController() throws {

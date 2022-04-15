@@ -71,6 +71,42 @@ public enum Requests {
     public static func fetchUnresolvedSavedItems() -> NSFetchRequest<UnresolvedSavedItem> {
         UnresolvedSavedItem.fetchRequest()
     }
+
+    public static func fetchSlateLineups() -> NSFetchRequest<SlateLineup> {
+        SlateLineup.fetchRequest()
+    }
+
+    public static func fetchSlateLineup(byID id: String) -> NSFetchRequest<SlateLineup> {
+        let request = Self.fetchSlateLineups()
+        request.predicate = NSPredicate(format: "id = %@", id)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchSlates() -> NSFetchRequest<Slate> {
+        Slate.fetchRequest()
+    }
+
+    public static func fetchRecommendations() -> NSFetchRequest<Recommendation> {
+        Recommendation.fetchRequest()
+    }
+
+    public static func fetchItems() -> NSFetchRequest<Item> {
+        Item.fetchRequest()
+    }
+
+    public static func fetchItem(byRemoteID id: String) -> NSFetchRequest<Item> {
+        let request = self.fetchItems()
+        request.predicate = NSPredicate(format: "remoteID = %@", id)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchUnsavedItems() -> NSFetchRequest<Item> {
+        let request = self.fetchItems()
+        request.predicate = NSPredicate(format: "savedItem = nil")
+        return request
+    }
 }
 
 public enum Predicates {
