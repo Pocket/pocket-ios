@@ -21,11 +21,11 @@ class MockSource: Source {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
-    func fetchSlateLineup(_ identifier: String) async throws -> SlateLineup? {
+    func fetchSlateLineup(_ identifier: String) async throws {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
-    func fetchSlate(_ slateID: String) async throws -> Slate? {
+    func fetchSlate(_ slateID: String) async throws {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
@@ -33,11 +33,11 @@ class MockSource: Source {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
-    func save(recommendation: Slate.Recommendation) {
+    func save(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
-    func archive(recommendation: Slate.Recommendation) {
+    func archive(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
