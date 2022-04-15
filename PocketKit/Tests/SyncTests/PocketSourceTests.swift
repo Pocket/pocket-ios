@@ -216,7 +216,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let recommendation = Slate.Recommendation(
+        let recommendation = UnmanagedSlate.UnmanagedRecommendation(
             id: "recommendation-1",
             item: UnmanagedItem(
                 id: "item-1",
@@ -299,7 +299,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let recommendation: Slate.Recommendation = .build(
+        let recommendation: UnmanagedSlate.UnmanagedRecommendation = .build(
             id: "recommendation-1",
             item: .build(id: "item-1")
         )

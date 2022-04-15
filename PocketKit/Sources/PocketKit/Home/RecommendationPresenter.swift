@@ -23,9 +23,9 @@ private extension Style {
 }
 
 struct RecommendationPresenter {
-    private let recommendation: Slate.Recommendation
+    private let recommendation: UnmanagedSlate.UnmanagedRecommendation
 
-    init(recommendation: Slate.Recommendation) {
+    init(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         self.recommendation = recommendation
     }
 
