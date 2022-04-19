@@ -683,7 +683,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next;
 				PRODUCT_NAME = Pocket;
-				PROVISIONING_PROFILE_SPECIFIER = "Pocket Next Distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "bitrise com.mozilla.pocket.next";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -927,7 +927,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next.SaveToPocket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Save to Pocket Distribution";
+				PROVISIONING_PROFILE_SPECIFIER = "bitrise com.mozilla.pocket.next.SaveToPocket";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
