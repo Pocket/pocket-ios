@@ -15,14 +15,14 @@ extension SlateLineup {
         }
         remote.slates.forEach { remote in
             let slate: Slate = space.new()
-            slate.update(from: remote, in: space)
+            slate.update(from: remote.fragments.slateParts, in: space)
             addToSlates(slate)
         }
     }
 }
 
 extension Slate {
-    public typealias RemoteSlate = SlateLineup.RemoteSlateLineup.Slate
+    public typealias RemoteSlate = SlateParts
 
     func update(from remote: RemoteSlate, in space: Space) {
         experimentID = remote.experimentId
@@ -31,11 +31,10 @@ extension Slate {
         requestID = remote.requestId
         slateDescription = remote.description
 
-        if let recommendations = recommendations {
-            removeFromRecommendations(recommendations)
-        }
         remote.recommendations.forEach { remote in
-            let recommendation: Recommendation = space.new()
+            guard let recommendation = try? space.fetchOrCreateRecommendation(byRemoteID: remote.id!) else {
+                return
+            }
             recommendation.update(from: remote, in: space)
             addToRecommendations(recommendation)
         }
@@ -43,14 +42,10 @@ extension Slate {
 }
 
 extension Recommendation {
-    public typealias RemoteRecommendation = Slate.RemoteSlate.Recommendation
+    public typealias RemoteRecommendation = SlateParts.Recommendation
 
     func update(from remote: RemoteRecommendation, in space: Space) {
         remoteID = remote.id
-
-        if item != nil {
-            item = nil
-        }
 
         let recommendationItem = try? space.fetchOrCreateItem(byRemoteID: remote.item.remoteId)
         recommendationItem?.update(remote: remote.item.fragments.itemParts)
