@@ -78,7 +78,7 @@ public enum Requests {
 
     public static func fetchSlateLineup(byID id: String) -> NSFetchRequest<SlateLineup> {
         let request = Self.fetchSlateLineups()
-        request.predicate = NSPredicate(format: "id = %@", id)
+        request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1
         return request
     }
