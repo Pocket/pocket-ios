@@ -68,20 +68,42 @@ class Space {
         return try fetch(Requests.fetchSlateLineups())
     }
 
-    func fetchSlateLineup(byID id: String) throws -> SlateLineup? {
+    func fetchSlateLineup(byRemoteID id: String) throws -> SlateLineup? {
         return try fetch(Requests.fetchSlateLineup(byID: id)).first
     }
 
-    func fetchOrCreateSlateLineup(byID id: String) throws -> SlateLineup {
-        try fetchSlateLineup(byID: id) ?? new()
+    func fetchOrCreateSlateLineup(byRemoteID id: String) throws -> SlateLineup {
+        try fetchSlateLineup(byRemoteID: id) ?? new()
     }
 
     func fetchSlates() throws -> [Slate] {
         return try fetch(Requests.fetchSlates())
     }
 
+    func fetchSlate(byRemoteID id: String) throws -> Slate? {
+        let request = Requests.fetchSlates()
+        request.predicate = NSPredicate(format: "remoteID = %@", id)
+        request.fetchLimit = 1
+        return try fetch(request).first
+    }
+
+    func fetchOrCreateSlate(byRemoteID id: String) throws -> Slate {
+        return try fetchSlate(byRemoteID: id) ?? new()
+    }
+
     func fetchRecommendations() throws -> [Recommendation] {
         return try fetch(Requests.fetchRecommendations())
+    }
+
+    func fetchRecommendation(byRemoteID id: String) throws -> Recommendation? {
+        let request = Requests.fetchRecommendations()
+        request.predicate = NSPredicate(format: "remoteID = %@", id)
+        request.fetchLimit = 1
+        return try fetch(request).first
+    }
+
+    func fetchOrCreateRecommendation(byRemoteID id: String) throws -> Recommendation {
+        return try fetchRecommendation(byRemoteID: id) ?? new()
     }
 
     func fetchItems() throws -> [Item] {
