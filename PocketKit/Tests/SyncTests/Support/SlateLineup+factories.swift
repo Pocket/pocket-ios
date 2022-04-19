@@ -5,13 +5,13 @@ extension SlateLineup {
     @discardableResult
     static func build(
         in space: Space = Space(container: .testContainer),
-        id: String = "slate-lineup-1",
+        remoteID: String = "slate-lineup-1",
         requestID: String = "slate-lineup-1-request",
         experimentID: String = "slate-lineup-1-experiment",
         slates: [Slate] = []
     ) -> SlateLineup {
         let lineup: SlateLineup = space.new()
-        lineup.id = id
+        lineup.remoteID = remoteID
         lineup.requestID = requestID
         lineup.experimentID = experimentID
 
@@ -28,7 +28,7 @@ extension Slate {
     static func build(
         in space: Space = Space(container: .testContainer),
         experimentID: String = "slate-1-experiment",
-        id: String = "slate-1",
+        remoteID: String = "slate-1",
         name: String = "Slate 1",
         requestID: String = "slate-1-request",
         slateDescription: String = "The description of slate 1",
@@ -36,7 +36,7 @@ extension Slate {
     ) -> Slate {
         let slate: Slate = space.new()
         slate.experimentID = experimentID
-        slate.id = id
+        slate.remoteID = remoteID
         slate.name = name
         slate.requestID = requestID
         slate.slateDescription = slateDescription
@@ -53,10 +53,11 @@ extension Recommendation {
     @discardableResult
     static func build(
         in space: Space = Space(container: .testContainer),
-        id: String = "slate-1-rec-1",
+        remoteID: String = "slate-1-rec-1",
         item: Item? = nil
     ) -> Recommendation {
         let recommendation: Recommendation = space.new()
+        recommendation.remoteID = remoteID
         recommendation.item = item
         return recommendation
     }
