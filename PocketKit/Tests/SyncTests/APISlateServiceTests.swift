@@ -14,7 +14,10 @@ class APISlateServiceTests: XCTestCase {
 
         apollo = MockApolloClient()
         space = Space(container: .testContainer)
-        try space.clear()
+        try space.context.performAndWait {
+            try space.clear()
+            try space.save()
+        }
     }
 
     func subject(
@@ -29,6 +32,7 @@ class APISlateServiceTests: XCTestCase {
 }
 
 extension APISlateServiceTests {
+    @MainActor
     func test_fetchSlateLineup_performsCorrectQuery() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
@@ -41,6 +45,7 @@ extension APISlateServiceTests {
         XCTAssertEqual(fetchCall?.query.maxRecommendations, 5)
     }
 
+    @MainActor
     func test_fetchSlateLineup_emptySpace_savesLineupInSpace() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
@@ -118,6 +123,7 @@ extension APISlateServiceTests {
         }
     }
 
+    @MainActor
     func test_fetchSlateLineup_existingSlateLineup_updatesExistingSpace() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
@@ -125,9 +131,7 @@ extension APISlateServiceTests {
         let recommendation = Recommendation.build(remoteID: "slate-1-recommendation-1-seed", item: item)
         let slate = Slate.build(remoteID: "slate-1-seed", recommendations: [recommendation])
         SlateLineup.build(slates: [slate])
-        try await space.context.perform {
-            try self.space.save()
-        }
+        try self.space.save()
 
         let service = subject()
         try await service.fetchSlateLineup("slate-lineup-identifier")
@@ -155,6 +159,7 @@ extension APISlateServiceTests {
         XCTAssertEqual(Set(itemIDs), ["item-1", "item-2", "item-3"])
     }
 
+    @MainActor
     func test_fetchSlateLineup_existingSlateLineup_hasSavedItems_keepsItems() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
@@ -163,9 +168,7 @@ extension APISlateServiceTests {
         let recommendation = Recommendation.build(remoteID: "slate-1-recommendation-seed", item: item)
         let slate = Slate.build(remoteID: "slate-1-seed", recommendations: [recommendation])
         SlateLineup.build(slates: [slate])
-        try await space.context.perform {
-            try self.space.save()
-        }
+        try self.space.save()
 
         let service = subject()
         try await service.fetchSlateLineup("slate-lineup-identifier")
@@ -174,6 +177,7 @@ extension APISlateServiceTests {
         XCTAssertEqual(items.count, 4)
     }
 
+    @MainActor
     func test_fetchSlateLineup_existingItem_updatesExistingItem() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
@@ -181,9 +185,7 @@ extension APISlateServiceTests {
         // so we have to fake a saved item for the item to update
         let item = Item.build(title: "Item 1 Seed")
         SavedItem.build(item: item)
-        try await space.context.perform {
-            try self.space.save()
-        }
+        try self.space.save()
 
         let service = subject()
         try await service.fetchSlateLineup("slate-lineup-identifier")
@@ -193,6 +195,7 @@ extension APISlateServiceTests {
 }
 
 extension APISlateServiceTests {
+    @MainActor
     func test_fetchSlate_performsCorrectQuery() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slate-detail", asResultType: GetSlateQuery.self)
 
@@ -205,6 +208,7 @@ extension APISlateServiceTests {
         XCTAssertEqual(fetchCall?.query.recommendationCount, 25)
     }
 
+    @MainActor
     func test_fetchSlate_emptySpace_savesSlate() async throws {
         apollo.stubFetch(toReturnFixturedNamed: "slate-detail", asResultType: GetSlateQuery.self)
 
@@ -261,45 +265,60 @@ extension APISlateServiceTests {
         }
     }
 
+    @MainActor
+    func test_fetchSlate_existingSlate_updatesRecommendations_withNoDuplicates() async throws {
+        apollo.stubFetch(toReturnFixturedNamed: "slate-detail", asResultType: GetSlateQuery.self)
 
-//    func test_fetchSlate_existingSlate_updatesRecommendations_withNoDuplicates() async throws {
-//        apollo.stubFetch(toReturnFixturedNamed: "slate-detail", asResultType: GetSlateQuery.self)
-//
-//        Slate.build(
-//            remoteID: "slate-1",
-//            recommendations: [
-//                .build(remoteID: "seed-1"),
-//                .build(remoteID: "1")
-//            ]
-//        )
-//        try await space.context.perform {
-//            try self.space.save()
-//        }
-//
-//        let service = subject()
-//        try await service.fetchSlate("slate-lineup-identifier")
-//
-//        let slates = try space.fetchSlates()
-//        XCTAssertEqual(slates.count, 1)
-//
-//        let recommendations = slates[0].recommendations?.compactMap { $0 as? Recommendation } ?? []
-//        XCTAssertEqual(recommendations.count, 4)
-//    }
+        Slate.build(
+            remoteID: "slate-1",
+            recommendations: [
+                .build(remoteID: "seed-1"),
+                .build(remoteID: "1")
+            ]
+        )
+        try self.space.save()
 
-//    func test_fetchSlate_existingItem_updatesExistingItem() async throws {
-//        apollo.stubFetch(toReturnFixturedNamed: "slate-detail", asResultType: GetSlateQuery.self)
-//
-//        let item = Item.build(title: "Item 1 Seed")
-//        let recommendation = Recommendation.build(remoteID: "slate-1-recommendation-1-seed", item: item)
-//        let slate = Slate.build(remoteID: "slate-1-seed", recommendations: [recommendation])
-//        SlateLineup.build(slates: [slate])
-//        try space.context.performAndWait {
-//            try space.save()
-//        }
-//
-//        let service = subject()
-//        try await service.fetchSlate("slate-lineup-identifier")
-//
-//        XCTAssertEqual(item.title, "Slate 1, Recommendation 1")
-//    }
+        let service = subject()
+        try await service.fetchSlate("slate-lineup-identifier")
+
+        let slates = try space.fetchSlates()
+        XCTAssertEqual(slates.count, 1)
+
+        let recommendations = slates[0].recommendations?.compactMap { $0 as? Recommendation } ?? []
+        XCTAssertEqual(recommendations.count, 4)
+    }
+
+    @MainActor
+    func test_fetchSlate_existingItem_updatesExistingItem() async throws {
+        apollo.stubFetch(toReturnFixturedNamed: "slate-detail", asResultType: GetSlateQuery.self)
+
+        let item = Item.build(title: "Item 1 Seed")
+        SavedItem.build(item: item)
+        let recommendation = Recommendation.build(remoteID: "slate-1-recommendation-1-seed", item: item)
+        Slate.build(remoteID: "slate-1-seed", recommendations: [recommendation])
+        try space.save()
+
+        let service = subject()
+        try await service.fetchSlate("slate-lineup-identifier")
+
+        XCTAssertEqual(item.title, "Slate 1, Recommendation 1")
+    }
+
+    @MainActor
+    func test_fetchSlate_existingSlate_hasSavedItems_keepsItems() async throws {
+        apollo.stubFetch(toReturnFixturedNamed: "slate-detail", asResultType: GetSlateQuery.self)
+
+        let item = Item.build(remoteID: "item-1-seed")
+        SavedItem.build(item: item)
+        let recommendation = Recommendation.build(remoteID: "slate-1-recommendation-seed", item: item)
+        let slate = Slate.build(remoteID: "slate-1-seed", recommendations: [recommendation])
+        SlateLineup.build(slates: [slate])
+        try self.space.save()
+
+        let service = subject()
+        try await service.fetchSlate("slate-lineup-identifier")
+
+        let items = try space.fetchItems()
+        XCTAssertEqual(items.count, 4)
+    }
 }
