@@ -6,7 +6,7 @@ extension SlateLineup {
     public typealias RemoteSlateLineup = GetSlateLineupQuery.Data.GetSlateLineup
 
     func update(from remote: RemoteSlateLineup, in space: Space) {
-        id = remote.id
+        remoteID = remote.id
         requestID = remote.requestId
         experimentID = remote.experimentId
 
@@ -26,7 +26,7 @@ extension Slate {
 
     func update(from remote: RemoteSlate, in space: Space) {
         experimentID = remote.experimentId
-        id = remote.id
+        remoteID = remote.id
         name = remote.displayName
         requestID = remote.requestId
         slateDescription = remote.description
@@ -46,7 +46,7 @@ extension Recommendation {
     public typealias RemoteRecommendation = Slate.RemoteSlate.Recommendation
 
     func update(from remote: RemoteRecommendation, in space: Space) {
-        id = remote.id
+        remoteID = remote.id
 
         if item != nil {
             item = nil
