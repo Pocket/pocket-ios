@@ -1,6 +1,7 @@
 import UIKit
 import AuthenticationServices
 import Network
+import Sync
 
 
 public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
@@ -24,7 +25,10 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                             tracker: Services.shared.tracker.childTracker(hosting: .myList.archive)
                         )
                     ),
-                    home: HomeViewModel(),
+                    home: HomeViewModel(
+                        source: Services.shared.source,
+                        tracker: Services.shared.tracker.childTracker(hosting: .home.screen)
+                    ),
                     settings: SettingsViewModel(appSession: Services.shared.appSession)
                 ),
                 source: Services.shared.source,

@@ -26,11 +26,16 @@ extension SavedItem {
 }
 
 extension Item {
-    static func build(remoteID: String = "item-1", title: String = "Item 1") -> Item {
+    static func build(
+        remoteID: String = "item-1",
+        title: String = "Item 1",
+        resolvedURL: URL? = URL(string: "https://getpocket.com")!
+    ) -> Item {
         let item = Item(context: space.context)
         item.remoteID = remoteID
         item.title = title
         item.isArticle = true
+        item.resolvedURL = resolvedURL
 
         return item
     }

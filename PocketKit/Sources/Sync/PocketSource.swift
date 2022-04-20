@@ -126,6 +126,12 @@ public class PocketSource: Source {
         )
     }
 
+    public func makeSlateLineupController() -> SlateLineupController {
+        PocketSlateLineupController(
+            resultsController: space.makeSlateLineupController()
+        )
+    }
+
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.object(with: id)
     }
@@ -290,39 +296,6 @@ extension PocketSource {
     public func fetchSlate(_ slateID: String) async throws {
         try await slateService.fetchSlate(slateID)
     }
-
-    public func savedRecommendationsService() -> SavedRecommendationsService {
-        SavedRecommendationsService(space: space)
-    }
-
-    public func save(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
-        guard let url = recommendation.item.resolvedURL ?? recommendation.item.givenURL else {
-            return
-        }
-
-        let savedItem: SavedItem = space.new()
-        savedItem.update(from: recommendation)
-        try? space.save()
-
-        let operation = operations.saveItemOperation(
-            managedItemID: savedItem.objectID,
-            url: url,
-            events: _events,
-            apollo: apollo,
-            space: space
-        )
-
-        let task = SyncTask.save(localID: savedItem.objectID.uriRepresentation(), url: url)
-        enqueue(operation: operation, task: task)
-    }
-
-    public func archive(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
-        guard let savedItem = try? space.fetchSavedItem(byRemoteItemID: recommendation.item.id) else {
-            return
-        }
-
-        archive(item: savedItem)
-    }
 }
 
 // MARK: - Archived Items
@@ -480,5 +453,32 @@ extension PocketSource {
 
     func handleUnresolvedSavedItemCreatedNotification() {
         resolveUnresolvedSavedItems()
+    }
+}
+
+// MARK: - Recommendations
+extension PocketSource {
+    public func save(recommendation: Recommendation) {
+        guard let item = recommendation.item, item.bestURL != nil else {
+            return
+        }
+
+        if let savedItem = recommendation.item?.savedItem {
+            unarchive(item: savedItem)
+        } else {
+            let savedItem: SavedItem = space.new()
+            savedItem.update(from: recommendation)
+            try? space.save()
+
+            save(item: savedItem)
+        }
+    }
+
+    public func archive(recommendation: Recommendation) {
+        guard let savedItem = recommendation.item?.savedItem, savedItem.isArchived == false else {
+            return
+        }
+
+        archive(item: savedItem)
     }
 }

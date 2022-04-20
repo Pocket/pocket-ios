@@ -17,7 +17,7 @@ struct ReportRecommendationView: View {
         static let submitButtonBackgroundColor = Color(.ui.teal2)
     }
     
-    private let recommendation: UnmanagedSlate.UnmanagedRecommendation
+    private let recommendation: Recommendation
     private let tracker: Tracker
     
     private var submitAccessibilityIdentifier: String {
@@ -39,7 +39,7 @@ struct ReportRecommendationView: View {
     @FocusState
     private var isCommentFocused: Bool
 
-    init(recommendation: UnmanagedSlate.UnmanagedRecommendation, tracker: Tracker) {
+    init(recommendation: Recommendation, tracker: Tracker) {
         self.recommendation = recommendation
         self.tracker = tracker
     }
@@ -115,8 +115,8 @@ struct ReportRecommendationView: View {
         }
     }
     
-    private func url(for recommendation: UnmanagedSlate.UnmanagedRecommendation) -> URL? {
-        recommendation.item.resolvedURL ?? recommendation.item.givenURL
+    private func url(for recommendation: Recommendation) -> URL? {
+        recommendation.item?.resolvedURL ?? recommendation.item?.givenURL
     }
     
     private func selectionColor(for reason: ReportEvent.Reason) -> Color {

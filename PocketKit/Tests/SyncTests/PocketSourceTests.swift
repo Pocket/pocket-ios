@@ -208,110 +208,6 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
-    func test_saveRecommendation_createsPendingItem_andExecutesSaveItemOperation() throws {
-        let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubSaveItemOperation { _, _, _ , _, _ in
-            return TestSyncOperation {
-                expectationToRunOperation.fulfill()
-            }
-        }
-
-        let recommendation = UnmanagedSlate.UnmanagedRecommendation(
-            id: "recommendation-1",
-            item: UnmanagedItem(
-                id: "item-1",
-                givenURL: URL(string: "https://given.example.com/item-1")!,
-                resolvedURL: URL(string: "https://resolved.example.com/item-1")!,
-                title: "Item 1",
-                language: "en",
-                topImageURL: URL(string: "https://example.com/item-1/top-image.png")!,
-                timeToRead: 1,
-                article: Article(
-                    components: [.heading(HeadingComponent(content: "# Hello", level: 1))]
-                ),
-                excerpt: "This is the excerpt for Item 1",
-                domain: "example.com",
-                domainMetadata: .init(
-                    name: "Example",
-                    logo: URL(string: "https://example.com/logo.png")!
-                ),
-                authors: [
-                    .init(
-                        id: "eb-white",
-                        name: "E.B. White",
-                        url: URL(string: "http://example.com/authors/eb-white")
-                    )
-                ],
-                datePublished: Date(),
-                images: [],
-                isArticle: false,
-                imageness: "HAS_IMAGES",
-                videoness: "HAS_VIDEOS"
-            )
-        )
-
-        let source = subject()
-        source.save(recommendation: recommendation)
-        wait(for: [expectationToRunOperation], timeout: 1)
-
-        let savedItems = try space.fetchSavedItems()
-        XCTAssertEqual(savedItems.count, 1)
-
-        let savedItem = savedItems[0]
-        XCTAssertEqual(savedItem.url, URL(string: "https://resolved.example.com/item-1")!)
-
-        let item = savedItem.item
-        XCTAssertNotNil(item)
-        XCTAssertEqual(item?.remoteID, recommendation.item.id)
-        XCTAssertEqual(item?.givenURL, recommendation.item.givenURL)
-        XCTAssertEqual(item?.resolvedURL, recommendation.item.resolvedURL)
-        XCTAssertEqual(item?.title, recommendation.item.title)
-        XCTAssertEqual(item?.language, recommendation.item.language)
-        XCTAssertEqual(item?.topImageURL, recommendation.item.topImageURL)
-        XCTAssertEqual(item.flatMap { Int($0.timeToRead) }, recommendation.item.timeToRead)
-        XCTAssertEqual(item?.article, recommendation.item.article)
-        XCTAssertEqual(item?.excerpt, recommendation.item.excerpt)
-        XCTAssertEqual(item?.domain, recommendation.item.domain)
-        XCTAssertEqual(item?.datePublished, recommendation.item.datePublished)
-
-        let domainMeta = item?.domainMetadata
-        XCTAssertEqual(domainMeta?.name, recommendation.item.domainMetadata?.name)
-        XCTAssertEqual(domainMeta?.logo, recommendation.item.domainMetadata?.logo)
-
-        let author = item?.authors?[0] as? Author
-        XCTAssertEqual(author?.id, recommendation.item.authors![0].id)
-        XCTAssertEqual(author?.name, recommendation.item.authors![0].name)
-        XCTAssertEqual(author?.url, recommendation.item.authors![0].url)
-    }
-
-    func test_archiveRecommendation_archivesTheRespectiveItem() throws {
-        let item = try space.seedSavedItem(
-            remoteID: "saved-item-1",
-            item: space.buildItem(
-                remoteID: "item-1"
-            )
-        )
-
-        let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
-            TestSyncOperation {
-                expectationToRunOperation.fulfill()
-            }
-        }
-
-        let recommendation: UnmanagedSlate.UnmanagedRecommendation = .build(
-            id: "recommendation-1",
-            item: .build(id: "item-1")
-        )
-
-        let source = subject()
-        source.archive(recommendation: recommendation)
-        XCTAssertTrue(item.isArchived)
-        XCTAssertFalse(item.hasChanges)
-
-        wait(for: [expectationToRunOperation], timeout: 1)
-    }
-
     func test_fetchSlateLineup_forwardsToSlateService() async throws {
         slateService.stubFetchSlateLineup { _ in }
 
@@ -393,5 +289,104 @@ class PocketSourceTests: XCTestCase {
 
         wait(for: [operationStarted], timeout: 1)
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
+    }
+
+    func test_saveRecommendation_createsPendingItem_andExecutesSaveItemOperation() throws {
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubSaveItemOperation { _, _, _ , _, _ in
+            return TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let seededItem = Item.build()
+        let recommendation = Recommendation.build(item: seededItem)
+
+        let source = subject()
+        source.save(recommendation: recommendation)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        let savedItems = try space.fetchSavedItems()
+        XCTAssertEqual(savedItems.count, 1)
+
+        let savedItem = savedItems[0]
+        XCTAssertEqual(savedItem.url, URL(string: "https://getpocket.com")!)
+
+        XCTAssertEqual(savedItem.item, seededItem)
+    }
+
+    func test_saveRecommendation_createsSavedItem_andExecutesSaveItemOperation() throws {
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubSaveItemOperation { _, _, _ , _, _ in
+            return TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let seededItem = Item.build()
+        let recommendation = Recommendation.build(item: seededItem)
+
+        let source = subject()
+        source.save(recommendation: recommendation)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        let savedItems = try space.fetchSavedItems()
+        XCTAssertEqual(savedItems.count, 1)
+
+        let savedItem = savedItems[0]
+        XCTAssertEqual(savedItem.url, URL(string: "https://getpocket.com")!)
+
+        XCTAssertEqual(savedItem.item, seededItem)
+    }
+
+    func test_saveRecommendation_withArchivedItem_unarchivesItem_andExecutesUnarchiveOperation() throws {
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubSaveItemOperation { _, _, _ , _, _ in
+            return TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let seededItem = Item.build()
+        let seededSavedItem = SavedItem.build(isArchived: true)
+        seededItem.savedItem = seededSavedItem
+        let recommendation = Recommendation.build(item: seededItem)
+
+        let source = subject()
+        source.save(recommendation: recommendation)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        let savedItems = try space.fetchSavedItems()
+        XCTAssertEqual(savedItems.count, 1)
+
+        let savedItem = savedItems[0]
+        XCTAssertEqual(savedItem, seededSavedItem)
+        XCTAssertEqual(savedItem.item, seededItem)
+        XCTAssertFalse(savedItem.isArchived)
+    }
+
+    func test_archiveRecommendation_createsPendingItem_andExecutesSaveItemOperation() throws {
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemMutationOperation { (_, _, _: ArchiveItemMutation) in
+            return TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let seededItem = Item.build()
+        seededItem.savedItem = .build()
+        let recommendation = Recommendation.build(item: seededItem)
+
+        let source = subject()
+        source.archive(recommendation: recommendation)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        let archivedItems = try space.fetchArchivedItems()
+        XCTAssertEqual(archivedItems.count, 1)
+
+        let archivedItem = archivedItems[0]
+        XCTAssertEqual(archivedItem.item, seededItem)
+        XCTAssertFalse(archivedItem.hasChanges)
+        XCTAssertNotNil(archivedItem.archivedAt)
     }
 }

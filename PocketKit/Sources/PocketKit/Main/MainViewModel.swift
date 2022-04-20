@@ -5,28 +5,11 @@ import BackgroundTasks
 import UIKit
 
 
-class HomeViewModel {
-    @Published
-    var selectedReadableViewModel: RecommendationViewModel?
-
-    @Published
-    var selectedRecommendationToReport: UnmanagedSlate.UnmanagedRecommendation?
-
-    @Published
-    var selectedSlateDetail: SlateDetailViewModel?
-
-    @Published
-    var presentedWebReaderURL: URL?
-}
-
 class SlateDetailViewModel {
     let slateID: String
 
     @Published
     var selectedReadableViewModel: RecommendationViewModel?
-
-    @Published
-    var selectedRecommendationToReport: UnmanagedSlate.UnmanagedRecommendation?
 
     @Published
     var presentedWebReaderURL: URL?

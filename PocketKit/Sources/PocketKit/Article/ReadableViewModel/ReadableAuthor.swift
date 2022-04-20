@@ -6,4 +6,3 @@ protocol ReadableAuthor {
 }
 
 extension Author: ReadableAuthor { }
-extension UnmanagedItem.Author : ReadableAuthor { }
