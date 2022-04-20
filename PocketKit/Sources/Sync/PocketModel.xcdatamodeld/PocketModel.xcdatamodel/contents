@@ -38,7 +38,6 @@
     <entity name="Recommendation" representedClassName="Recommendation" syncable="YES" codeGenerationType="class">
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="recommendation" inverseEntity="Item"/>
-        <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="recommendation" inverseEntity="SavedItem"/>
         <relationship name="slate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slate" inverseName="recommendations" inverseEntity="Slate"/>
     </entity>
     <entity name="SavedItem" representedClassName="SavedItem" syncable="YES" codeGenerationType="class">
@@ -51,7 +50,6 @@
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="url" optional="YES" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Item" inverseName="savedItem" inverseEntity="Item"/>
-        <relationship name="recommendation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recommendation" inverseName="savedItem" inverseEntity="Recommendation"/>
     </entity>
     <entity name="SavedItemUpdatedNotification" representedClassName="SavedItemUpdatedNotification" syncable="YES" codeGenerationType="class">
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem"/>
@@ -79,8 +77,8 @@
         <element name="DomainMetadata" positionX="-63" positionY="36" width="128" height="14"/>
         <element name="Item" positionX="-45" positionY="99" width="128" height="299"/>
         <element name="PersistentSyncTask" positionX="-36" positionY="144" width="128" height="59"/>
-        <element name="Recommendation" positionX="-18" positionY="162" width="128" height="89"/>
-        <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="179"/>
+        <element name="Recommendation" positionX="-18" positionY="162" width="128" height="74"/>
+        <element name="SavedItem" positionX="-63" positionY="-18" width="128" height="164"/>
         <element name="SavedItemUpdatedNotification" positionX="-36" positionY="144" width="128" height="44"/>
         <element name="Slate" positionX="-27" positionY="153" width="128" height="134"/>
         <element name="SlateLineup" positionX="-36" positionY="144" width="128" height="89"/>
