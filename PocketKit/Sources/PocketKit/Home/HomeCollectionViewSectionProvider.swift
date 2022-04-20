@@ -3,7 +3,7 @@ import Sync
 
 
 class HomeViewControllerSectionProvider {
-    func topicCarouselSection(slates: [UnmanagedSlate]?) -> NSCollectionLayoutSection {
+    func topicCarouselSection(slates: [Slate]?) -> NSCollectionLayoutSection {
         guard let slates = slates, !slates.isEmpty else {
             return NSCollectionLayoutSection(
                 group: .horizontal(
@@ -52,12 +52,14 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func section(for slate: UnmanagedSlate?, width: CGFloat) -> NSCollectionLayoutSection {
+    func section(for slate: Slate?, width: CGFloat) -> NSCollectionLayoutSection {
         let dividerHeight: CGFloat = 17
         let margin: CGFloat = 8
         let spacing: CGFloat = margin * 2
 
-        guard let slate = slate, !slate.recommendations.isEmpty else {
+        let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
+
+        guard let slate = slate, !recommendations.isEmpty else {
             return NSCollectionLayoutSection(
                 group: .vertical(
                     layoutSize: NSCollectionLayoutSize(
@@ -69,7 +71,7 @@ class HomeViewControllerSectionProvider {
             )
         }
 
-        let hero = RecommendationPresenter(recommendation: slate.recommendations[0])
+        let hero = RecommendationPresenter(recommendation: recommendations[0])
         let heroHeight = RecommendationCell.fullHeight(width: width - spacing, recommendation: hero)
         let heroItem = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
@@ -132,12 +134,14 @@ class HomeViewControllerSectionProvider {
     }
 
     func twoUpGroup(
-        slate: UnmanagedSlate,
+        slate: Slate,
         width: CGFloat,
         spacing: CGFloat,
         dividerHeight: CGFloat
     ) -> (group: NSCollectionLayoutGroup, height: CGFloat) {
-        guard slate.recommendations.count > 1 else {
+        let recommendations: [Recommendation] = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+
+        guard recommendations.count > 1 else {
             return (
                 group: NSCollectionLayoutGroup.vertical(
                     layoutSize: NSCollectionLayoutSize(
@@ -150,12 +154,12 @@ class HomeViewControllerSectionProvider {
             )
         }
 
-        let endIndex = slate.recommendations.index(
+        let endIndex = recommendations.index(
             1,
             offsetBy: 3,
-            limitedBy: slate.recommendations.endIndex - 1
-        ) ?? slate.recommendations.endIndex - 1
-        let recommendationsToShow = slate.recommendations[1...endIndex]
+            limitedBy: recommendations.endIndex - 1
+        ) ?? recommendations.endIndex - 1
+        let recommendationsToShow = recommendations[1...endIndex]
 
         let miniCardHeight = recommendationsToShow.map {
             RecommendationCell.miniHeight(

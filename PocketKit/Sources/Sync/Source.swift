@@ -14,6 +14,8 @@ public protocol Source {
 
     func makeArchivedItemsController() -> SavedItemsController
 
+    func makeSlateLineupController() -> SlateLineupController
+
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refresh(maxItems: Int, completion: (() -> ())?)
@@ -32,12 +34,6 @@ public protocol Source {
 
     func fetchSlate(_ slateID: String) async throws
 
-    func savedRecommendationsService() -> SavedRecommendationsService
-
-    func save(recommendation: UnmanagedSlate.UnmanagedRecommendation)
-
-    func archive(recommendation: UnmanagedSlate.UnmanagedRecommendation)
-
     func fetchArchivePage(cursor: String?, isFavorite: Bool?)
 
     func restore()
@@ -45,6 +41,10 @@ public protocol Source {
     func refresh(_ object: NSManagedObject, mergeChanges: Bool)
 
     func resolveUnresolvedSavedItems()
+
+    func save(recommendation: Recommendation)
+
+    func archive(recommendation: Recommendation)
 }
 
 public extension Source {

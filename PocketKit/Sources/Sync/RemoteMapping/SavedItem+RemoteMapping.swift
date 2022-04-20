@@ -35,18 +35,17 @@ extension SavedItem {
             return
         }
 
-        item = Item(context: context)
-        item?.update(remote: itemParts)
+        let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteId)
+        fetchRequest.fetchLimit = 1
+        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
+        itemToUpdate?.update(remote: itemParts)
+        item = itemToUpdate
     }
 
-    func update(from recommendation: UnmanagedSlate.UnmanagedRecommendation) {
-        self.url = recommendation.item.resolvedURL ?? recommendation.item.givenURL
+    public func update(from recommendation: Recommendation) {
+        self.url = recommendation.item?.bestURL
+        self.createdAt = Date()
 
-        guard let context = managedObjectContext else {
-            return
-        }
-
-        item = Item(context: context)
-        item?.update(from: recommendation.item)
+        item = recommendation.item
     }
 }

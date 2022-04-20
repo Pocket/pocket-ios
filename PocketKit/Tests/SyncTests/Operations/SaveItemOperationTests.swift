@@ -55,6 +55,12 @@ class SaveItemOperationTests: XCTestCase {
 
         let service = subject(managedItemID: savedItem.objectID, url: url)
         _ = await service.execute()
+        _ = await service.execute()
+        _ = await service.execute()
+        _ = await service.execute()
+
+        let items = try? space.fetchItems()
+        XCTAssertEqual(items?.count, 1)
 
         let performCall: MockApolloClient.PerformCall<SaveItemMutation>? = apollo.performCall(at: 0)
         XCTAssertNotNil(performCall)

@@ -28,9 +28,9 @@ class RecommendationViewModel: ReadableViewModel {
     @Published
     var isPresentingReaderSettings: Bool?
     
-    private let recommendation: UnmanagedSlate.UnmanagedRecommendation
+    private let recommendation: Recommendation
 
-    init(recommendation: UnmanagedSlate.UnmanagedRecommendation, tracker: Tracker) {
+    init(recommendation: Recommendation, tracker: Tracker) {
         self.recommendation = recommendation
         self.tracker = tracker
 
@@ -43,7 +43,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var components: [ArticleComponent]? {
-        recommendation.item.article?.components
+        recommendation.item?.article?.components
     }
 
     var readerSettings: ReaderSettings {
@@ -52,27 +52,27 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var textAlignment: Textile.TextAlignment {
-        TextAlignment(language: recommendation.item.language)
+        TextAlignment(language: recommendation.item?.language)
     }
 
     var title: String? {
-        recommendation.item.title
+        recommendation.item?.title
     }
 
     var authors: [ReadableAuthor]? {
-        recommendation.item.authors
+        recommendation.item?.authors?.compactMap { $0 as? Author}
     }
 
     var domain: String? {
-        recommendation.item.domainMetadata?.name ?? recommendation.item.domain ?? recommendation.item.bestURL?.host
+        recommendation.item?.domainMetadata?.name ?? recommendation.item?.domain ?? recommendation.item?.bestURL?.host
     }
 
     var publishDate: Date? {
-        recommendation.item.datePublished
+        recommendation.item?.datePublished
     }
 
     var url: URL? {
-        recommendation.item.resolvedURL ?? recommendation.item.givenURL
+        recommendation.item?.resolvedURL ?? recommendation.item?.givenURL
     }
 
     func delete() { }
