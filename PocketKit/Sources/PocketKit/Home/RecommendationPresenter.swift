@@ -23,14 +23,14 @@ private extension Style {
 }
 
 struct RecommendationPresenter {
-    private let recommendation: UnmanagedSlate.UnmanagedRecommendation
+    private let recommendation: Recommendation
 
-    init(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
+    init(recommendation: Recommendation) {
         self.recommendation = recommendation
     }
 
     var attributedTitle: NSAttributedString {
-        return NSAttributedString(string: recommendation.item.title ?? "", style: .title)
+        return NSAttributedString(string: recommendation.item?.title ?? "", style: .title)
     }
 
     var attributedTitleForMeasurement: NSAttributedString {
@@ -38,7 +38,7 @@ struct RecommendationPresenter {
             paragraph.with(lineBreakMode: .none)
         }
 
-        return NSAttributedString(string: recommendation.item.title ?? "", style: style)
+        return NSAttributedString(string: recommendation.item?.title ?? "", style: style)
     }
 
     var attributedDetail: NSAttributedString {
@@ -79,9 +79,7 @@ struct RecommendationPresenter {
     }
 
     private var cachedTopImageURL: URL? {
-        let topImageURL = recommendation.item.topImageURL
-        ?? recommendation.item.images?.first { $0.src != nil }?.src
-
+        let topImageURL = recommendation.item?.topImageURL
         return imageCacheURL(for: topImageURL)
     }
 
@@ -90,7 +88,7 @@ struct RecommendationPresenter {
     }
 
     var attributedExcerpt: NSAttributedString {
-        return NSAttributedString(string: recommendation.item.excerpt ?? "", style: .excerpt)
+        return NSAttributedString(string: recommendation.item?.excerpt ?? "", style: .excerpt)
     }
 
     var attributedExcerptForMeasurement: NSAttributedString {
@@ -98,15 +96,15 @@ struct RecommendationPresenter {
             paragraph.with(lineBreakMode: .none)
         }
 
-        return NSAttributedString(string: recommendation.item.excerpt ?? "", style: style)
+        return NSAttributedString(string: recommendation.item?.excerpt ?? "", style: style)
     }
 
     private var domain: String? {
-        recommendation.item.domainMetadata?.name ?? recommendation.item.domain ?? recommendation.item.bestURL?.host
+        recommendation.item?.domainMetadata?.name ?? recommendation.item?.domain ?? recommendation.item?.bestURL?.host
     }
 
     private var timeToRead: String? {
-        guard let timeToRead = recommendation.item.timeToRead,
+        guard let timeToRead = recommendation.item?.timeToRead,
               timeToRead > 0 else {
             return nil
         }

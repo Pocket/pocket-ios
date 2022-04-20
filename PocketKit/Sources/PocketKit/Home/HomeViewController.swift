@@ -10,19 +10,7 @@ import BackgroundTasks
 import Lottie
 
 
-enum HomeSection: Hashable {
-    case topicCarousel
-    case slate(UnmanagedSlate)
-}
-
-enum HomeItem: Hashable {
-    case topicChip(UnmanagedSlate)
-    case recommendation(UnmanagedSlate.UnmanagedRecommendation)
-}
-
 class HomeViewController: UIViewController {
-    private static let lineupID = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
-    
     static let dividerElementKind: String = "divider"
     static let twoUpDividerElementKind: String = "twoup-divider"
 
@@ -30,30 +18,31 @@ class HomeViewController: UIViewController {
     private let tracker: Tracker
     private let model: HomeViewModel
     private let sectionProvider: HomeViewControllerSectionProvider
-    private let savedRecommendationsService: SavedRecommendationsService
     private var subscriptions: [AnyCancellable] = []
 
-    private var slateLineup: UnmanagedSlateLineup? {
-        didSet {
-            applySnapshot()
-            savedRecommendationsService.slates = slates
+    private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
+        guard let self = self,
+              let section = self.dataSource.sectionIdentifier(for: sectionIndex) else {
+                  return nil
+              }
+
+        switch section {
+        case .topics:
+            let slates = self.dataSource.snapshot(for: section).items.compactMap { cell -> Slate? in
+                guard case .topic(let slate) = cell else {
+                    return nil
+                }
+
+                return slate
+            }
+
+            return self.sectionProvider.topicCarouselSection(slates: slates)
+        case .slate(let slate):
+            return self.sectionProvider.section(for: slate, width: env.container.effectiveContentSize.width)
         }
     }
-    
-    private var slates: [UnmanagedSlate]? {
-        return slateLineup?.slates
-    }
 
-    private lazy var layout = UICollectionViewCompositionalLayout { [self] index, env in
-        switch index {
-        case 0:
-            return sectionProvider.topicCarouselSection(slates: slates)
-        default:
-            return sectionProvider.section(for: slates?[index - 1], width: env.container.effectiveContentSize.width)
-        }
-    }
-
-    private var dataSource: UICollectionViewDiffableDataSource<HomeSection, HomeItem>!
+    private var dataSource: UICollectionViewDiffableDataSource<HomeViewModel.Section, HomeViewModel.Cell>!
 
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
@@ -78,12 +67,12 @@ class HomeViewController: UIViewController {
         self.source = source
         self.tracker = tracker
         self.model = model
-        self.savedRecommendationsService = source.savedRecommendationsService()
+
         self.sectionProvider = HomeViewControllerSectionProvider()
 
         super.init(nibName: nil, bundle: nil)
 
-        dataSource = UICollectionViewDiffableDataSource<HomeSection, HomeItem>(collectionView: collectionView) { [unowned self] _, indexPath, item in
+        dataSource = UICollectionViewDiffableDataSource<HomeViewModel.Section, HomeViewModel.Cell>(collectionView: collectionView) { [unowned self] _, indexPath, item in
             return self.cellFor(item, at: indexPath)
         }
 
@@ -106,10 +95,6 @@ class HomeViewController: UIViewController {
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
         navigationItem.title = "Home"
-
-        savedRecommendationsService.$itemIDs.sink { [weak self] savedItemIDs in
-            self?.updateRecommendationSaveButtons(savedItemIDs: savedItemIDs)
-        }.store(in: &subscriptions)
         
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
             self?.setupOverflowView(contentSize: contentSize)
@@ -117,6 +102,10 @@ class HomeViewController: UIViewController {
         
         collectionView.publisher(for: \.contentOffset, options: [.new]).sink { [weak self] contentOffset in
             self?.updateOverflowView(contentOffset: contentOffset)
+        }.store(in: &subscriptions)
+
+        model.$snapshot.receive(on: DispatchQueue.main).sink { [weak self] snapshot in
+            self?.dataSource.apply(snapshot)
         }.store(in: &subscriptions)
     }
 
@@ -143,28 +132,22 @@ class HomeViewController: UIViewController {
             overscrollView.heightAnchor.constraint(equalToConstant: 96)
         ])
 
-        Task {
-            let lineup = try? await source.fetchSlateLineup(Self.lineupID)
-            slateLineup = lineup
-        }
+        model.fetch()
+        handleRefresh()
     }
 
     private func handleRefresh() {
-        Task {
-            let lineup = try? await source.fetchSlateLineup(Self.lineupID)
-            slateLineup = lineup
-
-            if self.collectionView.refreshControl?.isRefreshing == true {
-                self.collectionView.refreshControl?.endRefreshing()
+        model.refresh { [weak self] in
+            DispatchQueue.main.async {
+                if self?.collectionView.refreshControl?.isRefreshing == true {
+                    self?.collectionView.refreshControl?.endRefreshing()
+                }
             }
         }
     }
 
     func handleBackgroundRefresh(task: BGTask) {
-        Task {
-            let lineup = try? await source.fetchSlateLineup(Self.lineupID)
-            slateLineup = lineup
-
+        model.refresh {
             task.setTaskCompleted(success: true)
         }
     }
@@ -175,44 +158,31 @@ class HomeViewController: UIViewController {
 }
 
 extension HomeViewController {
-    func cellFor(_ item: HomeItem, at indexPath: IndexPath) -> UICollectionViewCell {
+    func cellFor(_ item: HomeViewModel.Cell, at indexPath: IndexPath) -> UICollectionViewCell {
         switch item {
-        case .topicChip(let slate):
+        case .topic(let slate):
             let cell: TopicChipCell = collectionView.dequeueCell(for: indexPath)
             cell.configure(model: TopicChipPresenter(title: slate.name, image: nil))
 
             return cell
-        case .recommendation(let recommendation):
+        case .recommendation(let viewModel):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
             cell.mode = indexPath.item == 0 ? .hero : .mini
 
-            let tapAction: UIAction
-            if isRecommendationSaved(recommendation) {
-                cell.saveButton.mode = .saved
-                tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
-                    self?.source.archive(recommendation: recommendation)
-                }
-            } else {
-                cell.saveButton.mode = .save
-                tapAction = UIAction(identifier: .saveRecommendation) { [weak self] _ in
-                    let engagement = SnowplowEngagement(type: .save, value: nil)
-                    self?.tracker.track(event: engagement, self?.contexts(for: indexPath))
-
-                    self?.source.save(recommendation: recommendation)
-                }
-            }
-            cell.saveButton.addAction(tapAction, for: .primaryActionTriggered)
-            
-            let reportAction = UIAction(identifier: .recommendationOverflow) { [weak self] _ in
-                self?.report(recommendation)
-            }
-            cell.overflowButton.addAction(reportAction, for: .primaryActionTriggered)
-
-            let presenter = RecommendationPresenter(recommendation: recommendation)
+            let presenter = RecommendationPresenter(recommendation: viewModel.recommendation)
             presenter.loadImage(into: cell.thumbnailImageView, cellWidth: cell.frame.width)
             cell.titleLabel.attributedText = presenter.attributedTitle
             cell.subtitleLabel.attributedText = presenter.attributedDetail
             cell.excerptLabel.attributedText = presenter.attributedExcerpt
+
+            cell.saveButton.mode = viewModel.isSaved ? .saved : .save
+            if let action = model.saveAction(for: item, at: indexPath), let uiAction = UIAction(action) {
+                cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
+            }
+
+            if let action = model.reportAction(for: item, at: indexPath), let uiAction = UIAction(action) {
+                cell.overflowButton.addAction(uiAction, for: .primaryActionTriggered)
+            }
 
             return cell
         }
@@ -222,7 +192,7 @@ extension HomeViewController {
         switch kind {
         case SlateHeaderView.kind:
             let header: SlateHeaderView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
-            guard let slate = slates?[indexPath.section - 1] else {
+            guard case .slate(let slate) = dataSource.sectionIdentifier(for: indexPath.section) else {
                 return header
             }
 
@@ -236,57 +206,6 @@ extension HomeViewController {
         default:
             fatalError("Unknown supplementary view kind: \(kind)")
         }
-    }
-
-    private func applySnapshot() {
-        guard let slates = slates else {
-            return
-        }
-
-        var snapshot = NSDiffableDataSourceSnapshot<HomeSection, HomeItem>()
-        snapshot.appendSections([.topicCarousel] + slates.map { HomeSection.slate($0) })
-        snapshot.appendItems(slates.map { HomeItem.topicChip($0) }, toSection: .topicCarousel)
-
-        for slate in slates {
-            snapshot.appendItems(
-                slate.recommendations.map { .recommendation($0) },
-                toSection: .slate(slate)
-            )
-        }
-
-        dataSource.apply(snapshot)
-    }
-
-    private func updateRecommendationSaveButtons(savedItemIDs: [String]) {
-        guard let slates = slates else {
-            return
-        }
-
-        let difference = savedRecommendationsService.itemIDs.difference(from: savedItemIDs)
-        let changed = difference.map { change -> String in
-            switch change {
-            case let .insert(_, element, _), let .remove(_, element, _):
-                return element
-            }
-        }
-
-        let needsReconfigured: [HomeItem] = slates.flatMap { slate in
-            slate.recommendations.filter { changed.contains($0.item.id) }
-        }.map { .recommendation($0) }
-
-        DispatchQueue.main.async {
-            var snapshot = self.dataSource.snapshot()
-            snapshot.reconfigureItems(needsReconfigured)
-            self.dataSource.apply(snapshot)
-        }
-    }
-
-    private func isRecommendationSaved(_ recommendation: UnmanagedSlate.UnmanagedRecommendation) -> Bool {
-        return savedRecommendationsService.itemIDs.contains(recommendation.item.id)
-    }
-    
-    private func report(_ recommendation: UnmanagedSlate.UnmanagedRecommendation) {
-        model.selectedRecommendationToReport = recommendation
     }
     
     private func setupOverflowView(contentSize: CGSize) {
@@ -327,95 +246,16 @@ extension HomeViewController {
 
 extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        guard indexPath.section != 0 else {
+        guard let cell = dataSource.itemIdentifier(for: indexPath) else {
             return
         }
-        
-        let impression = ImpressionEvent(component: .content, requirement: .instant)
-        tracker.track(event: impression, contexts(for: indexPath))
+
+        model.willDisplay(cell, at: indexPath)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: false)
-        guard let slates = slates else {
-            return
-        }
-
-        switch indexPath.section {
-        case 0:
-            model.selectedSlateDetail = SlateDetailViewModel(slateID: slates[indexPath.item].id)
-        default:
-            let engagement = SnowplowEngagement(type: .general, value: nil)
-            tracker.track(event: engagement, contexts(for: indexPath))
-
-            let recommendation = slates[indexPath.section - 1].recommendations[indexPath.item]
-
-            if recommendation.item.isArticle == false
-                || recommendation.item.hasImage == .isImage
-                || recommendation.item.hasVideo == .isVideo {
-                model.presentedWebReaderURL = recommendation.item.bestURL
-            } else {
-                model.selectedReadableViewModel = RecommendationViewModel(
-                    recommendation: slates[indexPath.section - 1].recommendations[indexPath.item],
-                    tracker: tracker.childTracker(hosting: .articleView.screen)
-                )
-            }
-
-            let open = ContentOpenEvent(destination: .internal, trigger: .click)
-            tracker.track(event: open, contexts(for: indexPath))
-        }
     }
-}
-
-extension HomeViewController {
-    private func contexts(for indexPath: IndexPath) -> [Context] {
-        switch indexPath.section {
-        case 0:
-            return []
-        default:
-            guard let lineup = slateLineup,
-                  let visibleSlate = slates?[indexPath.section - 1] else {
-                      return []
-                  }
-            
-            let slateLineup = SlateLineupContext(
-                id: lineup.id,
-                requestID: lineup.requestID,
-                experiment: lineup.experimentID
-            )
-            
-            let slate = SlateContext(
-                id: visibleSlate.id,
-                requestID: visibleSlate.requestID,
-                experiment: visibleSlate.experimentID,
-                index: UIIndex(indexPath.section - 1)
-            )
-            
-            let visibleRecommendation = visibleSlate.recommendations[indexPath.item]
-            guard let recommendationID = visibleRecommendation.id else {
-                return []
-            }
-            
-            let recommendation = RecommendationContext(
-                id: recommendationID,
-                index: UIIndex(indexPath.item)
-            )
-            
-            guard let url = visibleRecommendation.item.resolvedURL ?? visibleRecommendation.item.givenURL else {
-                return []
-            }
-            
-            let content = ContentContext(url: url)
-            let item = UIContext.home.item(index: UInt(indexPath.item))
-            
-            return [item, content, slateLineup, slate, recommendation]
-        }
-    }
-}
-
-extension UIAction.Identifier {
-    static let saveRecommendation = UIAction.Identifier(rawValue: "save-recommendation-action")
-    static let recommendationOverflow = UIAction.Identifier(rawValue: "recommendation-overflow")
 }
 
 private extension Style {

@@ -45,40 +45,4 @@ extension Item {
             addToAuthors(Author(remote: remoteAuthor, context: context))
         }
     }
-
-    func update(from unmanagedItem: UnmanagedItem) {
-        remoteID = unmanagedItem.id
-        givenURL = unmanagedItem.givenURL
-        resolvedURL = unmanagedItem.resolvedURL
-        title = unmanagedItem.title
-        language = unmanagedItem.language
-        topImageURL = unmanagedItem.topImageURL
-        timeToRead = unmanagedItem.timeToRead.flatMap(Int32.init) ?? 0
-        excerpt = unmanagedItem.excerpt
-        domain = unmanagedItem.domain
-        article = unmanagedItem.article
-        datePublished = unmanagedItem.datePublished
-        imageness = unmanagedItem.hasImage.flatMap(Imageness.init)?.rawValue
-        videoness = unmanagedItem.hasVideo.flatMap(Videoness.init)?.rawValue
-
-        guard let context = managedObjectContext else {
-            return
-        }
-
-        domainMetadata = unmanagedItem.domainMetadata.flatMap { remote in
-            let domainMeta = DomainMetadata(context: context)
-            domainMeta.name = remote.name
-            domainMeta.logo = remote.logo
-
-            return domainMeta
-        }
-
-        unmanagedItem.authors?.forEach { recAuthor in
-            let author = Author(context: context)
-            author.id = recAuthor.id
-            author.name = recAuthor.name
-            author.url = recAuthor.url
-            addToAuthors(author)
-        }
-    }
 }

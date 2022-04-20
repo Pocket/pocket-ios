@@ -125,7 +125,7 @@
                             "isFavorite": false,
                             "item": {
                                 "__typename": "Item",
-                                "remoteID": "item-2",
+                                "remoteID": "item-3",
                                 "givenUrl": "http://localhost:8080/hello",
                                 "resolvedUrl": "http://localhost:8080/hello",
                                 "title": "Item 3",

@@ -174,6 +174,18 @@ class Space {
         )
     }
 
+    func makeSlateLineupController() -> NSFetchedResultsController<SlateLineup> {
+        let request = Requests.fetchSlateLineups()
+        request.fetchLimit = 1
+        request.sortDescriptors = [NSSortDescriptor(key: "requestID", ascending: true)]
+        return NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
+
     func object<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
         context.object(with: id) as? T
     }
