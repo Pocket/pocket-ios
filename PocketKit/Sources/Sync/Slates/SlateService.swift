@@ -18,6 +18,7 @@ class APISlateService: SlateService {
         self.space = space
     }
 
+    @MainActor
     func fetchSlateLineup(_ identifier: String) async throws {
         let query = GetSlateLineupQuery(lineupID: identifier, maxRecommendations: 5)
 
@@ -37,6 +38,7 @@ class APISlateService: SlateService {
         try self.space.save()
     }
 
+    @MainActor
     func fetchSlate(_ slateID: String) async throws {
         let query = GetSlateQuery(slateID: slateID, recommendationCount: 25)
 

@@ -1,6 +1,7 @@
 import Foundation
 import Textile
 import UIKit
+import SwiftUI
 
 
 struct ItemAction {
@@ -109,6 +110,16 @@ extension ItemAction {
             handler: handler
         )
     }
+
+    static func report(_ handler: @escaping (Any?) ->()) -> ItemAction {
+        return ItemAction(
+            title: "Report",
+            identifier: .report,
+            accessibilityIdentifier: "item-action-report",
+            image: UIImage(asset: .alert),
+            handler: handler
+        )
+    }
 }
 
 extension UIAction.Identifier {
@@ -119,6 +130,7 @@ extension UIAction.Identifier {
     static let favoriteItem = UIAction.Identifier(rawValue: "favorite-item")
     static let shareItem = UIAction.Identifier(rawValue: "share-item")
     static let displaySettings = UIAction.Identifier(rawValue: "display-settings")
+    static let report = UIAction.Identifier(rawValue: "report")
 }
 
 extension UIAction {

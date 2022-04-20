@@ -8,9 +8,9 @@ private extension Style {
 }
 
 struct SlateHeaderPresenter {
-    private let slate: UnmanagedSlate
+    private let slate: Slate
 
-    init(slate: UnmanagedSlate) {
+    init(slate: Slate) {
         self.slate = slate
     }
 

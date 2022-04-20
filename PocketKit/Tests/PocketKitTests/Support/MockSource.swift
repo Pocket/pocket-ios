@@ -21,23 +21,7 @@ class MockSource: Source {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
-    func fetchSlateLineup(_ identifier: String) async throws {
-        fatalError("\(Self.self)#\(#function) is not implemented")
-    }
-
     func fetchSlate(_ slateID: String) async throws {
-        fatalError("\(Self.self)#\(#function) is not implemented")
-    }
-
-    func savedRecommendationsService() -> SavedRecommendationsService {
-        fatalError("\(Self.self)#\(#function) is not implemented")
-    }
-
-    func save(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
-        fatalError("\(Self.self)#\(#function) is not implemented")
-    }
-
-    func archive(recommendation: UnmanagedSlate.UnmanagedRecommendation) {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
@@ -137,6 +121,28 @@ extension MockSource {
         }
 
         calls[Self.makeArchivedItemsController] = (calls[Self.makeArchivedItemsController] ?? []) + [MakeArchivedItemsControllerCall()]
+
+        return impl()
+    }
+}
+
+// MARK: - Make slate lineup controller
+extension MockSource {
+    static let makeSlateLineupController = "makeSlateLineupController"
+    typealias MakeSlateLineupControllerImpl = () -> SlateLineupController
+
+    struct MakeSlateLineupControllerCall { }
+
+    func stubMakeSlateLineupController(impl: @escaping MakeSlateLineupControllerImpl) {
+        implementations[Self.makeSlateLineupController] = impl
+    }
+
+    func makeSlateLineupController() -> SlateLineupController {
+        guard let impl = implementations[Self.makeSlateLineupController] as? MakeSlateLineupControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeSlateLineupController] = (calls[Self.makeSlateLineupController] ?? []) + [MakeSlateLineupControllerCall()]
 
         return impl()
     }
@@ -393,5 +399,108 @@ extension MockSource {
         }
 
         return calls[index] as? ResolveUnresolvedSavedItemsCall
+    }
+}
+
+// MARK: - Slate(Lineup)
+
+extension MockSource {
+    static let fetchSlateLineup = "fetchSlateLineup"
+    typealias FetchSlateLineupImpl = (String) -> Void
+    struct FetchSlateLineupCall {
+        let identifier: String
+    }
+
+    func stubFetchSlateLineup(_ impl: @escaping FetchSlateLineupImpl) {
+        implementations[Self.fetchSlateLineup] = impl
+    }
+
+    func fetchSlateLineupCall(at index: Int) -> FetchSlateLineupCall? {
+        guard let calls = calls[Self.fetchSlateLineup],
+              index < calls.count,
+              let call = calls[index] as? FetchSlateLineupCall else {
+                  return nil
+              }
+
+        return call
+    }
+
+    func fetchSlateLineup(_ identifier: String) async throws {
+        guard let impl = implementations[Self.fetchSlateLineup] as? FetchSlateLineupImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchSlateLineup] = (calls[Self.fetchSlateLineup] ?? []) + [
+            FetchSlateLineupCall(identifier: identifier)
+        ]
+
+        impl(identifier)
+    }
+}
+
+// MARK: - Recommendations
+extension MockSource {
+    static let saveRecommendation = "saveRecommendation"
+    typealias SaveRecommendationImpl = (Recommendation) -> Void
+    struct SaveRecommendationCall {
+        let recommendation: Recommendation
+    }
+
+    static let archiveRecommendation = "archiveRecommendation"
+    typealias ArchiveRecommendationImpl = (Recommendation) -> Void
+    struct ArchiveRecommendationCall {
+        let recommendation: Recommendation
+    }
+
+    func stubSaveRecommendation(_ impl: @escaping SaveRecommendationImpl) {
+        implementations[Self.saveRecommendation] = impl
+    }
+
+    func saveRecommendationCall(at index: Int) -> SaveRecommendationCall? {
+        guard let calls = calls[Self.saveRecommendation],
+              index < calls.count,
+              let call = calls[index] as? SaveRecommendationCall else {
+                  return nil
+              }
+
+        return call
+    }
+
+    func save(recommendation: Recommendation) {
+        guard let impl = implementations[Self.saveRecommendation] as? SaveRecommendationImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.saveRecommendation] = (calls[Self.saveRecommendation] ?? []) + [
+            SaveRecommendationCall(recommendation: recommendation)
+        ]
+
+        impl(recommendation)
+    }
+
+    func stubArchiveRecommendation(_ impl: @escaping ArchiveRecommendationImpl) {
+        implementations[Self.archiveRecommendation] = impl
+    }
+
+    func archiveRecommendationCall(at index: Int) -> ArchiveRecommendationCall? {
+        guard let calls = calls[Self.archiveRecommendation],
+              index < calls.count,
+              let call = calls[index] as? ArchiveRecommendationCall else {
+                  return nil
+              }
+
+        return call
+    }
+
+    func archive(recommendation: Recommendation) {
+        guard let impl = implementations[Self.archiveRecommendation] as? ArchiveRecommendationImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.archiveRecommendation] = (calls[Self.archiveRecommendation] ?? []) + [
+            ArchiveRecommendationCall(recommendation: recommendation)
+        ]
+
+        impl(recommendation)
     }
 }
