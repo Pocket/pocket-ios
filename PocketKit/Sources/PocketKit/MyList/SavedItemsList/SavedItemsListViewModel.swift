@@ -86,6 +86,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func filterButton(with filterID: ItemsListFilter) -> TopicChipPresenter {
         TopicChipPresenter(
             title: filterID.rawValue,
+            image: UIImage(asset: .favorite),
             isSelected: selectedFilters.contains(filterID)
         )
     }
