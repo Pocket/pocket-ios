@@ -179,7 +179,7 @@ extension HomeViewController {
         switch item {
         case .topicChip(let slate):
             let cell: TopicChipCell = collectionView.dequeueCell(for: indexPath)
-            cell.configure(model: TopicChipPresenter(title: slate.name))
+            cell.configure(model: TopicChipPresenter(title: slate.name, image: nil))
 
             return cell
         case .recommendation(let recommendation):

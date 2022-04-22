@@ -18,7 +18,7 @@ class HomeViewControllerSectionProvider {
 
         var maxHeight: CGFloat = 0
         let items = slates.map { slate -> (width: CGFloat, item: NSCollectionLayoutItem) in
-            let chip = TopicChipPresenter(title: slate.name)
+            let chip = TopicChipPresenter(title: slate.name, image: nil)
             let width = TopicChipCell.width(chip: chip)
             let height = TopicChipCell.height(chip: chip)
             maxHeight = max(height, maxHeight)

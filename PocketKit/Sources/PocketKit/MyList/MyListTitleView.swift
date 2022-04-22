@@ -1,6 +1,5 @@
 import UIKit
 
-
 class MyListTitleView: UIView {
     private let stackView: UIStackView = {
        let stackView = UIStackView()
@@ -58,10 +57,11 @@ class MyListTitleView: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
+        selection.backgroundColor = UIColor(.ui.teal6)
         selection.frame = lastSelectedButton?.frame ?? .zero
         selection.layer.cornerRadius = selection.frame.height / 2
-        selection.layer.borderColor = UIColor(.ui.grey1).cgColor
+        selection.layer.borderColor = UIColor.clear.cgColor
     }
     
     required init?(coder: NSCoder) {
@@ -94,7 +94,7 @@ private class MyListSelectionButton: UIButton {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 4
+        stackView.spacing = 8
         stackView.isUserInteractionEnabled = false
         return stackView
     }()
@@ -104,6 +104,8 @@ private class MyListSelectionButton: UIButton {
             UIView.animate(withDuration: 0.3, delay: 0, options: .transitionCrossDissolve) {
                 self.actionLabel.alpha = self.isSelected ? 1 : 0
                 self.actionLabel.isHidden = !self.isSelected
+                self.actionLabel.textColor = self.isSelected ? UIColor(.ui.teal1) : UIColor(.ui.grey1)
+                self.actionImageView.tintColor = self.isSelected ? UIColor(.ui.teal1) : UIColor(.ui.grey1)
             }
         }
     }

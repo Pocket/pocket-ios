@@ -1,22 +1,25 @@
 import Foundation
 import Sync
 import Textile
-
+import UIKit
 
 private extension Style {
     static let title: Style = .header.sansSerif.h7
-    static let toggled: Style = .title.with(color: .ui.white1)
+    static let toggled: Style = .title.with(color: .ui.teal1)
 }
 
 struct TopicChipPresenter {
     private let title: String?
+    private let image: UIImage?
     let isSelected: Bool
 
     init(
         title: String?,
+        image: UIImage?,
         isSelected: Bool = false
     ) {
         self.title = title
+        self.image = image
         self.isSelected = isSelected
     }
 
@@ -29,6 +32,10 @@ struct TopicChipPresenter {
         }
 
         return NSAttributedString(string: title ?? "", style: style)
+    }
+
+    var iconImage: UIImage? {
+        return image
     }
 }
 

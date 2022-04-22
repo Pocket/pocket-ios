@@ -4,6 +4,7 @@ import Sync
 
 protocol TopicChipCellModel {
     var attributedTitle: NSAttributedString? { get }
+    var iconImage: UIImage? { get }
     var isSelected: Bool { get }
 }
 
@@ -15,6 +16,16 @@ class TopicChipCell: UICollectionViewCell {
         return label
     }()
 
+    private let stackView: UIStackView = {
+       let stackView = UIStackView()
+        stackView.axis = .horizontal
+        stackView.alignment = .center
+        stackView.spacing = 7.5
+        return stackView
+    }()
+
+    private let iconImageView = UIImageView()
+
     private let toggledBackground = UIView()
 
     override init(frame: CGRect) {
@@ -22,29 +33,30 @@ class TopicChipCell: UICollectionViewCell {
         accessibilityIdentifier = "topic-chip"
 
         contentView.addSubview(toggledBackground)
-        contentView.addSubview(titleLabel)
+        contentView.addSubview(stackView)
+        stackView.addArrangedSubview(iconImageView)
+        stackView.addArrangedSubview(titleLabel)
 
         let cornerRadius = frame.size.height / 2
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.layer.cornerRadius = cornerRadius
-        selectedBackgroundView?.backgroundColor = UIColor(.ui.grey1).withAlphaComponent(0.1)
-
-        layer.borderColor = UIColor(.ui.grey5).cgColor
+        layer.borderColor = UIColor(.clear).cgColor
         layer.borderWidth = 1
         layer.cornerRadius = cornerRadius
 
         toggledBackground.isHidden = true
-        toggledBackground.backgroundColor = UIColor(.ui.grey5)
+        toggledBackground.backgroundColor = UIColor(.ui.teal6)
         toggledBackground.layer.cornerRadius = cornerRadius
+        toggledBackground.translatesAutoresizingMaskIntoConstraints = false
+
+        stackView.backgroundColor = UIColor(.clear)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
 
         contentView.layoutMargins = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        toggledBackground.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            titleLabel.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
 
             toggledBackground.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             toggledBackground.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -59,7 +71,12 @@ class TopicChipCell: UICollectionViewCell {
 
     func configure(model: TopicChipCellModel) {
         titleLabel.attributedText = model.attributedTitle
+        iconImageView.image = model.iconImage
         toggledBackground.isHidden = !model.isSelected
+
+        if model.isSelected {
+            iconImageView.tintColor = UIColor(.ui.teal1)
+        }
     }
 }
 
@@ -71,6 +88,7 @@ extension TopicChipCell {
 
     static func width(chip: TopicChipPresenter) -> CGFloat {
         let size = chip.attributedTitle?.sizeFitting() ?? .zero
-        return size.width.rounded(.up) + 24
+        let imageSize = chip.iconImage?.size.width ?? .zero
+        return size.width.rounded(.up) + imageSize + 28
     }
 }

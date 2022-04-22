@@ -151,6 +151,7 @@ extension ArchivedItemsListViewModel {
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter {
         TopicChipPresenter(
             title: id.rawValue,
+            image: UIImage(asset: .favorite),
             isSelected: selectedFilters.contains(id)
         )
     }
