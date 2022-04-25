@@ -38,8 +38,6 @@ class TopicChipCell: UICollectionViewCell {
         stackView.addArrangedSubview(titleLabel)
 
         let cornerRadius = frame.size.height / 2
-        layer.borderColor = UIColor(.clear).cgColor
-        layer.borderWidth = 1
         layer.cornerRadius = cornerRadius
 
         toggledBackground.isHidden = true
@@ -88,7 +86,7 @@ extension TopicChipCell {
 
     static func width(chip: TopicChipPresenter) -> CGFloat {
         let size = chip.attributedTitle?.sizeFitting() ?? .zero
-        let imageSize = chip.iconImage?.size.width ?? .zero
+        let imageSize = chip.iconImage?.size.width ?? 24
         return size.width.rounded(.up) + imageSize + 28
     }
 }

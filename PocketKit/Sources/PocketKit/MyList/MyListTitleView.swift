@@ -11,8 +11,6 @@ class MyListTitleView: UIView {
     
     private var selection: UIView = {
         let view = UIView()
-        view.layer.borderColor = UIColor(.ui.grey1).cgColor
-        view.layer.borderWidth = 1
         return view
     }()
     
@@ -61,7 +59,6 @@ class MyListTitleView: UIView {
         selection.backgroundColor = UIColor(.ui.teal6)
         selection.frame = lastSelectedButton?.frame ?? .zero
         selection.layer.cornerRadius = selection.frame.height / 2
-        selection.layer.borderColor = UIColor.clear.cgColor
     }
     
     required init?(coder: NSCoder) {
