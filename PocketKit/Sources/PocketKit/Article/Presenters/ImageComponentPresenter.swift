@@ -23,7 +23,7 @@ private extension Style {
 
 }
 
-class ImageComponentPresenter: ArticleComponentPresenter {
+class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellModel {
     private let component: ImageComponent
     
     private let readerSettings: ReaderSettings
@@ -49,7 +49,7 @@ class ImageComponentPresenter: ArticleComponentPresenter {
         self.readerSettings = readerSettings
         self.onUpdate = onUpdate
     }
-
+    
     var caption: NSAttributedString? {
         let base = NSMutableAttributedString()
 
@@ -66,6 +66,32 @@ class ImageComponentPresenter: ArticleComponentPresenter {
         }
 
         return base
+    }
+    
+    var image: ImageComponentCell.ImageSpec? {
+        return imageCacheURL(for: component.source).flatMap {
+            ImageComponentCell.ImageSpec(
+                source: $0,
+                size: CGSize(
+                    width: lastAvailableWidth,
+                    height: .greatestFiniteMagnitude
+                )
+            )
+        }
+    }
+    
+    var shouldHideCaption: Bool {
+        return caption == nil || caption?.string.trimmingCharacters(in: .whitespaces).isEmpty == true
+    }
+    
+    func imageViewBackgroundColor(imageSize: CGSize) -> UIColor {
+        guard let idealWidth = image?.size.width else { return UIColor(.clear) }
+        
+        if imageSize.width >= idealWidth || shouldHideCaption {
+            return UIColor(.clear)
+        } else {
+            return UIColor(.ui.grey7)
+        }
     }
     
     func size(for availableWidth: CGFloat) -> CGSize {
@@ -87,20 +113,7 @@ class ImageComponentPresenter: ArticleComponentPresenter {
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: ImageComponentCell = collectionView.dequeueCell(for: indexPath)
 
-        cell.configure(
-            model: .init(
-                caption: caption,
-                image: imageCacheURL(for: component.source).flatMap {
-                    ImageComponentCell.ImageSpec(
-                        source: $0,
-                        size: CGSize(
-                            width: lastAvailableWidth,
-                            height: .greatestFiniteMagnitude
-                        )
-                    )
-                }
-            )
-        ) { [weak self] image in
+        cell.configure(model: self) { [weak self] image in
             self?.lastImageSize = image.size
             self?.onUpdate()
         }
