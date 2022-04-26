@@ -1,6 +1,12 @@
 import UIKit
 import Kingfisher
 
+protocol ImageComponentCellModel {
+    var caption: NSAttributedString? { get }
+    var image: ImageComponentCell.ImageSpec? { get }
+    var shouldHideCaption: Bool { get }
+    func imageViewBackgroundColor(imageSize: CGSize) -> UIColor
+}
 
 class ImageComponentCell: UICollectionViewCell {
     enum Constants {
@@ -12,12 +18,7 @@ class ImageComponentCell: UICollectionViewCell {
         let source: URL
         let size: CGSize
     }
-
-    struct Model {
-        let caption: NSAttributedString?
-        let image: ImageSpec?
-    }
-
+    
     let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
@@ -57,9 +58,9 @@ class ImageComponentCell: UICollectionViewCell {
 }
 
 extension ImageComponentCell {
-    func configure(model: Model, imageLoaded: ((UIImage) -> Void)? = nil) {
+    func configure(model: ImageComponentCellModel, imageLoaded: ((UIImage) -> Void)? = nil) {
         captionTextView.attributedText = model.caption
-        captionTextView.isHidden = model.caption == nil || model.caption?.string.isEmpty == true
+        captionTextView.isHidden = model.shouldHideCaption
 
         imageView.image = nil
         guard let imageSpec = model.image else {
@@ -81,14 +82,7 @@ extension ImageComponentCell {
         ) { [weak self] result in
             switch result {
             case .success(let result):
-
-                if let idealWidth = model.image?.size.width,
-                   result.image.size.width >= idealWidth {
-                    self?.imageView.backgroundColor = UIColor(.clear)
-                } else {
-                    self?.imageView.backgroundColor = UIColor(.ui.grey7)
-                }
-
+                self?.imageView.backgroundColor = model.imageViewBackgroundColor(imageSize: result.image.size)
                 imageLoaded?(result.image)
             case .failure:
                 break
