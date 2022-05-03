@@ -657,9 +657,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				POCKET_PROVISIONING_PROFILE_IDENTIFIER = "Pocket Next Development";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next;
 				PRODUCT_NAME = Pocket;
-				PROVISIONING_PROFILE_SPECIFIER = "Pocket Next Development";
+				PROVISIONING_PROFILE_SPECIFIER = $POCKET_PROVISIONING_PROFILE_IDENTIFIER;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -685,9 +686,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				POCKET_PROVISIONING_PROFILE_IDENTIFIER = "bitrise com.mozilla.pocket.next";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next;
 				PRODUCT_NAME = Pocket;
-				PROVISIONING_PROFILE_SPECIFIER = "bitrise com.mozilla.pocket.next";
+				PROVISIONING_PROFILE_SPECIFIER = $POCKET_PROVISIONING_PROFILE_IDENTIFIER;
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -819,9 +821,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				POCKET_PROVISIONING_PROFILE_IDENTIFIER = "Pocket Next Development";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next;
 				PRODUCT_NAME = Pocket;
-				PROVISIONING_PROFILE_SPECIFIER = "Pocket Next Development";
+				PROVISIONING_PROFILE_SPECIFIER = $POCKET_PROVISIONING_PROFILE_IDENTIFIER;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -871,7 +874,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next.SaveToPocket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Save to Pocket Development";
+				PROVISIONING_PROFILE_SPECIFIER = $SAVE_TO_POCKET_PROVISIONING_PROFILE_IDENTIFIER;
+				SAVE_TO_POCKET_PROVISIONING_PROFILE_IDENTIFIER = "Save to Pocket Development";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -902,7 +906,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next.SaveToPocket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "Save to Pocket Development";
+				PROVISIONING_PROFILE_SPECIFIER = $SAVE_TO_POCKET_PROVISIONING_PROFILE_IDENTIFIER;
+				SAVE_TO_POCKET_PROVISIONING_PROFILE_IDENTIFIER = "Save to Pocket Development";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -933,7 +938,8 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mozilla.pocket.next.SaveToPocket;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "bitrise com.mozilla.pocket.next.SaveToPocket";
+				PROVISIONING_PROFILE_SPECIFIER = $SAVE_TO_POCKET_PROVISIONING_PROFILE_IDENTIFIER;
+				SAVE_TO_POCKET_PROVISIONING_PROFILE_IDENTIFIER = "bitrise com.mozilla.pocket.next.SaveToPocket";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
