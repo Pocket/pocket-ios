@@ -647,7 +647,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Pocket (iOS).entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
+				CODE_SIGN_IDENTITY = "Apple Development: Jacob Morris (W6NRVULLCG)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 43AQ936H96;
 				ENABLE_PREVIEWS = YES;
@@ -809,7 +809,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = "Pocket (iOS).entitlements";
-				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
+				CODE_SIGN_IDENTITY = "Apple Development: Jacob Morris (W6NRVULLCG)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 43AQ936H96;
 				ENABLE_PREVIEWS = YES;
@@ -856,7 +856,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
+				CODE_SIGN_IDENTITY = "Apple Development: Jacob Morris (W6NRVULLCG)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 43AQ936H96;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -887,7 +887,7 @@
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer: Mozilla Release Engineering (2FA397B66F)";
+				CODE_SIGN_IDENTITY = "Apple Development: Jacob Morris (W6NRVULLCG)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 43AQ936H96;
 				GENERATE_INFOPLIST_FILE = YES;
