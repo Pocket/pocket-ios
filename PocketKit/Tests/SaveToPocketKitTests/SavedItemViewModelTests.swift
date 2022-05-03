@@ -194,5 +194,34 @@ extension SavedItemViewModelTests {
         wait(for: [infoViewModelChanged], timeout: 1)
         subscription.cancel()
     }
+
+    func test_save_onError_updatesInfoViewModel() async {
+        appSession.currentSession = Session(
+            guid: "mock-guid",
+            accessToken: "mock-access-token",
+            userIdentifier: "mock-user-identifier"
+        )
+
+        let provider = MockItemProvider()
+        provider.stubHasItemConformingToTypeIdentifier { identifier in
+            return false
+        }
+
+        let viewModel = subject()
+
+        let infoViewModelChanged = expectation(description: "infoViewModelChanged")
+        let subscription = viewModel.$infoViewModel.dropFirst().sink { model in
+            defer { infoViewModelChanged.fulfill() }
+            XCTAssertEqual(model.attributedText.string, "Pocket couldn't save this link")
+        }
+
+        let extensionItem = MockExtensionItem(itemProviders: [provider])
+        let context = MockExtensionContext(extensionItems: [extensionItem])
+        context.stubCompleteRequest { _, _ in }
+
+        await viewModel.save(from: context)
+        wait(for: [infoViewModelChanged], timeout: 1)
+        subscription.cancel()
+    }
 }
 
