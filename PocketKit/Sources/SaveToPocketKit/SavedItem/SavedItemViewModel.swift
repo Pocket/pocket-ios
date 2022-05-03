@@ -84,11 +84,11 @@ private extension InfoView.Model {
     static let existingItem = InfoView.Model(
         style: .default,
         attributedText: NSAttributedString(
-            string: "You’ve already saved this before",
+            string: "Saved to Pocket",
             style: .mainText
         ),
         attributedDetailText: NSAttributedString(
-            string: "We’ll move it to the top of your list.",
+            string: "You've already saved this before. We'll move it to the top of your list.",
             style: .detailText
         )
     )

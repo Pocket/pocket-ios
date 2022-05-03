@@ -50,13 +50,22 @@ class LoggedOutViewController: UIViewController {
             imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 36),
 
             capsuleTopConstraint,
-            infoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            infoView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
-            infoView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24),
 
             dismissLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            dismissLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            dismissLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
+
+        if traitCollection.userInterfaceIdiom == .pad {
+            NSLayoutConstraint.activate([
+                infoView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                infoView.widthAnchor.constraint(equalToConstant: 379)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                infoView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 24),
+                infoView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -24)
+            ])
+        }
 
         infoView.model = viewModel.infoViewModel
         dismissLabel.attributedText = viewModel.dismissAttributedText

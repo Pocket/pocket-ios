@@ -98,8 +98,8 @@ private class CapsuleView: UIView {
             imageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor, multiplier: 1),
 
-            textLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 12),
-            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -24),
+            textLabel.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 28),
+            textLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
 
             textLabel.topAnchor.constraint(equalTo: topAnchor, constant: 5),
             textLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
