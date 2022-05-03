@@ -32,7 +32,7 @@ class SavedItemViewModel {
 
         for item in extensionItems {
             guard let url = try? await url(from: item) else {
-                // TODO: Throw an error?
+                infoViewModel = .error
                 break
             }
 
@@ -118,5 +118,14 @@ private extension InfoView.Model {
             string: "You've already saved this before. We'll move it to the top of your list.",
             style: .detailText
         )
+    )
+
+    static let error = InfoView.Model(
+        style: .error,
+        attributedText: NSAttributedString(
+            string: "Pocket couldn't save this link",
+            style: .mainTextError
+        ),
+        attributedDetailText: nil
     )
 }
