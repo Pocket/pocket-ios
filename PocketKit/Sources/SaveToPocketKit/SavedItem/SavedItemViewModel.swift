@@ -31,10 +31,7 @@ class SavedItemViewModel {
         let extensionItems = context?.extensionItems ?? []
 
         for item in extensionItems {
-            let urlUTI = "public.url"
-            guard let url = try? await item.itemProviders?
-                .first(where: { $0.hasItemConformingToTypeIdentifier(urlUTI) })?
-                .loadItem(forTypeIdentifier: urlUTI, options: nil) as? URL else {
+            guard let url = try? await url(from: item) else {
                 // TODO: Throw an error?
                 break
             }
@@ -62,6 +59,36 @@ extension SavedItemViewModel {
         dismissTimerCancellable = dismissTimer.autoconnect().first().sink { [weak self] _ in
             self?.finish(context: context)
         }
+    }
+
+    private func url(from item: ExtensionItem) async throws -> URL? {
+        guard let providers = item.itemProviders else {
+            return nil
+        }
+
+        for provider in providers {
+            let plainTextUTI = "public.plain-text"
+            let urlUTI = "public.url"
+
+            if provider.hasItemConformingToTypeIdentifier(plainTextUTI) {
+                guard let string = try? await provider.loadItem(forTypeIdentifier: plainTextUTI, options: nil) as? String,
+                      let url = URL(string: string) else {
+                    continue
+                }
+
+                return url
+            } else if provider.hasItemConformingToTypeIdentifier(urlUTI) {
+                guard let url = try? await provider.loadItem(forTypeIdentifier: urlUTI, options: nil) as? URL else {
+                    continue
+                }
+
+                return url
+            } else {
+                continue
+            }
+        }
+
+        return nil
     }
 }
 

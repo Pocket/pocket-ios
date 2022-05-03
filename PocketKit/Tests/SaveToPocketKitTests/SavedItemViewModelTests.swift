@@ -88,11 +88,37 @@ extension SavedItemViewModelTests {
         let viewModel = subject(appSession: appSession)
 
         let provider = MockItemProvider()
-        provider.stubHasItemConformingToTypeIdentifier { _ in
-            return true
+        provider.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "public.url"
         }
         provider.stubLoadItem { _, _ in
             URL(string: "https://getpocket.com")! as NSSecureCoding
+        }
+
+        let extensionItem = MockExtensionItem(itemProviders: [provider])
+
+        let context = MockExtensionContext(extensionItems: [extensionItem])
+        context.stubCompleteRequest { _, _ in }
+
+        await viewModel.save(from: context)
+        XCTAssertEqual(saveService.saveCall(at: 0)?.url, URL(string: "https://getpocket.com")!)
+    }
+
+    func test_save_ifValidSessionAndURLString_sendsCorrectURLToService() async {
+        let appSession = AppSession(keychain: MockKeychain())
+        appSession.currentSession = Session(
+            guid: "mock-guid",
+            accessToken: "mock-access-token",
+            userIdentifier: "mock-user-identifier"
+        )
+        let viewModel = subject(appSession: appSession)
+
+        let provider = MockItemProvider()
+        provider.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "public.plain-text"
+        }
+        provider.stubLoadItem { _, _ in
+            "https://getpocket.com" as NSSecureCoding
         }
 
         let extensionItem = MockExtensionItem(itemProviders: [provider])
@@ -144,8 +170,8 @@ extension SavedItemViewModelTests {
         saveService.stubSave { _ in .existingItem }
 
         let provider = MockItemProvider()
-        provider.stubHasItemConformingToTypeIdentifier { _ in
-            return true
+        provider.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "public.url"
         }
         provider.stubLoadItem { _, _ in
             URL(string: "https://getpocket.com")! as NSSecureCoding
