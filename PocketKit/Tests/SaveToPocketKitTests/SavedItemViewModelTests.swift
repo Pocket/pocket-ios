@@ -156,8 +156,8 @@ extension SavedItemViewModelTests {
         let infoViewModelChanged = expectation(description: "infoViewModelChanged")
         let subscription = viewModel.$infoViewModel.dropFirst().sink { model in
             defer { infoViewModelChanged.fulfill() }
-            XCTAssertEqual(model.attributedText.string, "You’ve already saved this before")
-            XCTAssertEqual(model.attributedDetailText?.string, "We’ll move it to the top of your list.")
+            XCTAssertEqual(model.attributedText.string, "Saved to Pocket")
+            XCTAssertEqual(model.attributedDetailText?.string, "You've already saved this before. We'll move it to the top of your list.")
         }
 
         let extensionItem = MockExtensionItem(itemProviders: [provider])
