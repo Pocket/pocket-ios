@@ -389,4 +389,15 @@ class PocketSourceTests: XCTestCase {
         XCTAssertFalse(archivedItem.hasChanges)
         XCTAssertNotNil(archivedItem.archivedAt)
     }
+
+    func test_removeRecommendation_removesRecommendationFromSpace() throws {
+        let recommendation1 = Recommendation.build()
+        let recommendation2 = Recommendation.build()
+
+        let source = subject()
+        source.remove(recommendation: recommendation1)
+
+        let fetched = try space.fetchRecommendations()
+        XCTAssertEqual(fetched, [recommendation2])
+    }
 }

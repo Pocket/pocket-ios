@@ -1,18 +1,21 @@
+import Foundation
 import Sync
-import Combine
 import UIKit
 import CoreData
+import Combine
 import Analytics
 
 
-class HomeViewModel {
+class SlateDetailViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
-    static let lineupIdentifier = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
-
+    private let slateID: String
     private let source: Source
-    private let slateLineupController: SlateLineupController
     private let tracker: Tracker
+    private let slateController: SlateController
+
+    private var viewModels: [NSManagedObjectID: HomeRecommendationCellViewModel] = [:]
+    private var viewModelSubscriptions: Set<AnyCancellable> = []
 
     @Published
     var snapshot = Snapshot()
@@ -21,55 +24,44 @@ class HomeViewModel {
     var selectedReadableViewModel: RecommendationViewModel? = nil
 
     @Published
-    var selectedRecommendationToReport: Recommendation? = nil
-
-    @Published
-    var selectedSlateDetailViewModel: SlateDetailViewModel? = nil
-
-    @Published
     var presentedWebReaderURL: URL? = nil
 
-    private var viewModels: [NSManagedObjectID: HomeRecommendationCellViewModel] = [:]
-    private var viewModelSubscriptions: Set<AnyCancellable> = []
+    @Published
+    var selectedRecommendationToReport: Recommendation? = nil
 
-    init(
-        source: Source,
-        tracker: Tracker
-    ) {
+    init(slateID: String, source: Source, tracker: Tracker) {
+        self.slateID = slateID
         self.source = source
         self.tracker = tracker
-        self.slateLineupController = source.makeSlateLineupController()
-
-        self.slateLineupController.delegate = self
+        self.slateController = source.makeSlateController(byID: slateID)
+        self.slateController.delegate = self
     }
 
     func fetch() {
-        try? slateLineupController.performFetch()
+        try? slateController.performFetch()
     }
 
     func refresh(_ completion: @escaping () -> Void) {
         Task {
-            try await source.fetchSlateLineup(Self.lineupIdentifier)
+            try await source.fetchSlate(slateID)
             completion()
         }
     }
 
-    func select(cell: HomeViewModel.Cell, at indexPath: IndexPath) {
+    func select(cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .topic:
-            select(topic: cell)
         case .recommendation:
             select(recommendation: cell, at: indexPath)
         }
     }
 
-    func reportAction(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
+    func reportAction(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
         return .report { [weak self] _ in
             self?.report(cell, at: indexPath)
         }
     }
 
-    func saveAction(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
+    func saveAction(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
         guard case .recommendation(let objectID) = cell,
               let viewModel = viewModel(for: objectID) else {
             return nil
@@ -86,10 +78,8 @@ class HomeViewModel {
         }
     }
 
-    func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
+    func willDisplay(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .topic:
-            return
         case .recommendation:
             tracker.track(
                 event: ImpressionEvent(component: .content, requirement: .instant),
@@ -98,54 +88,54 @@ class HomeViewModel {
         }
     }
 
+    func resetSlate(keeping count: Int) {
+        let recommendations = slateController.slate?.recommendations?.compactMap { $0 as? Recommendation} ?? []
+        let toRemove = recommendations.dropFirst(count)
+        toRemove.forEach {
+            source.remove(recommendation: $0)
+        }
+    }
+
     func viewModel(for objectID: NSManagedObjectID) -> HomeRecommendationCellViewModel? {
         return viewModels[objectID]
     }
 }
 
-extension HomeViewModel {
-    private func buildSnapshot() -> Snapshot {
+private extension SlateDetailViewModel {
+    func buildSnapshot() -> Snapshot {
         viewModels = [:]
         viewModelSubscriptions = []
+
+        let recommendations = slateController.slate?.recommendations?
+            .compactMap { $0 as? Recommendation }
+        ?? []
+
         var snapshot = Snapshot()
 
-        let slates = slateLineupController.slateLineup?.slates?.compactMap { $0 as? Slate } ?? []
-
-        if slates.count > 0 {
-            snapshot.appendSections([.topics])
+        guard let slate = slateController.slate else {
+            return snapshot
         }
 
-        slates.forEach { slate in
-            snapshot.appendItems([.topic(slate)], toSection: .topics)
+        let section: SlateDetailViewModel.Section = .slate(slate)
+        snapshot.appendSections([section])
+        recommendations.forEach { recommendation in
+            let viewModel = HomeRecommendationCellViewModel(recommendation: recommendation)
+            viewModels[recommendation.objectID] = viewModel
+            snapshot.appendItems(
+                [.recommendation(recommendation.objectID)],
+                toSection: section
+            )
 
-            let slateSection: HomeViewModel.Section = .slate(slate)
-            snapshot.appendSections([slateSection])
-
-            let recs = slate.recommendations?
-                .compactMap { $0 as? Recommendation }
-            ?? []
-
-            recs.forEach { rec in
-                let viewModel = HomeRecommendationCellViewModel(recommendation: rec)
-                viewModels[rec.objectID] = viewModel
-
-                viewModel.$isSaved.dropFirst().sink { [weak self] isSaved in
-                    snapshot.reloadItems([.recommendation(rec.objectID)])
-                    self?.snapshot = snapshot
-                }.store(in: &viewModelSubscriptions)
-            }
-
-            let items = recs.map {
-                HomeViewModel.Cell.recommendation($0.objectID)
-            }
-
-            snapshot.appendItems(items, toSection: slateSection)
+            viewModel.$isSaved.dropFirst().sink { [weak self] isSaved in
+                snapshot.reloadItems([.recommendation(recommendation.objectID)])
+                self?.snapshot = snapshot
+            }.store(in: &viewModelSubscriptions)
         }
 
         return snapshot
     }
 
-    private func select(recommendation cell: HomeViewModel.Cell, at indexPath: IndexPath) {
+    private func select(recommendation cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         guard case .recommendation(let objectID) = cell,
               let viewModel = viewModel(for: objectID) else {
             return
@@ -179,20 +169,7 @@ extension HomeViewModel {
         }
     }
 
-    private func select(topic cell: HomeViewModel.Cell) {
-        guard case .topic(let slate) = cell,
-              let slateID = slate.remoteID else {
-                  return
-              }
-
-        selectedSlateDetailViewModel = SlateDetailViewModel(
-            slateID: slateID,
-            source: source,
-            tracker: tracker.childTracker(hosting: .slateDetail.screen)
-        )
-    }
-
-    private func report(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
+    private func report(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         guard case .recommendation(let objectID) = cell,
               let viewModel = viewModel(for: objectID) else {
             return
@@ -205,7 +182,7 @@ extension HomeViewModel {
         selectedRecommendationToReport = viewModel.recommendation
     }
 
-    private func save(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
+    private func save(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         guard case .recommendation(let objectID) = cell,
               let viewModel = viewModel(for: objectID) else {
             return
@@ -220,7 +197,7 @@ extension HomeViewModel {
         source.save(recommendation: viewModel.recommendation)
     }
 
-    private func archive(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
+    private func archive(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         guard case .recommendation(let objectID) = cell,
               let viewModel = viewModel(for: objectID) else {
             return
@@ -235,30 +212,20 @@ extension HomeViewModel {
         source.archive(recommendation: viewModel.recommendation)
     }
 
-    private func contexts(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> [Context] {
+    private func contexts(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> [Context] {
         switch cell {
-        case .topic:
-            return []
         case .recommendation(let objectID):
             guard let viewModel = viewModel(for: objectID),
-                  case .slate(let slate) = snapshot.sectionIdentifier(containingItem: cell),
-                  let slateLineup = slateLineupController.slateLineup,
-                  let slateIndex = snapshot.indexOfSection(.slate(slate)),
+                  let slate = slateController.slate,
                   let recommendationURL = viewModel.recommendation.item?.bestURL else {
                 return []
             }
-
-            let lineupContext = SlateLineupContext(
-                id: Self.lineupIdentifier,
-                requestID: slateLineup.requestID!,
-                experiment: slateLineup.experimentID!
-            )
 
             let slateContext = SlateContext(
                 id: slate.remoteID!,
                 requestID: slate.requestID!,
                 experiment: slate.experimentID!,
-                index: UIIndex(slateIndex)
+                index: UIIndex(0)
             )
 
             let recommendationContext = RecommendationContext(
@@ -267,37 +234,35 @@ extension HomeViewModel {
             )
 
             let contentContext = ContentContext(url: recommendationURL)
-            let itemContext = UIContext.home.item(index: UIIndex(indexPath.item))
+            let itemContext = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.item))
 
-            return [lineupContext, slateContext, recommendationContext, contentContext, itemContext]
+            return [slateContext, recommendationContext, contentContext, itemContext]
         }
     }
 }
 
-extension HomeViewModel {
-    enum Section: Hashable {
-        case topics
-        case slate(Slate)
+extension SlateDetailViewModel: SlateControllerDelegate {
+    func controllerDidChangeContent(_ controller: SlateController) {
+        snapshot = buildSnapshot()
     }
 
-    enum Cell: Hashable {
-        case topic(Slate)
-        case recommendation(NSManagedObjectID)
-    }
-}
-
-extension HomeViewModel: SlateLineupControllerDelegate {
     func controller(
-        _ controller: SlateLineupController,
-        didChange slateLineup: SlateLineup,
+        _ controller: SlateController,
+        didChange slate: Slate,
         at indexPath: IndexPath?,
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
     ) {
+        snapshot = buildSnapshot()
+    }
+}
 
+extension SlateDetailViewModel {
+    enum Section: Hashable {
+        case slate(Slate)
     }
 
-    func controllerDidChangeContent(_ controller: SlateLineupController) {
-        snapshot = buildSnapshot()
+    enum Cell: Hashable {
+        case recommendation(NSManagedObjectID)
     }
 }

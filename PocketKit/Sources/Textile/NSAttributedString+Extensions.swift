@@ -82,6 +82,6 @@ public extension NSMutableAttributedString {
     }
 }
 
-extension NSAttributedString.Key {
+public extension NSAttributedString.Key {
     static let style: Self = NSAttributedString.Key(rawValue: "textile.style")
 }

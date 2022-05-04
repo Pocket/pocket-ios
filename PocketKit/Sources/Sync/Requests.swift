@@ -87,6 +87,13 @@ public enum Requests {
         Slate.fetchRequest()
     }
 
+    public static func fetchSlate(byID id: String) -> NSFetchRequest<Slate> {
+        let request = Self.fetchSlates()
+        request.predicate = NSPredicate(format: "remoteID = %@", id)
+        request.fetchLimit = 1
+        return request
+    }
+
     public static func fetchRecommendations() -> NSFetchRequest<Recommendation> {
         Recommendation.fetchRequest()
     }

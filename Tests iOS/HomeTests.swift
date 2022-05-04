@@ -70,7 +70,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_selectingChipInTopicCarousel_showsSlateDetailView() {
-        app.homeView.topicChip("Slate 2").wait().tap()
+        app.homeView.topicChip("Slate 1").wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").verify()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").verify()
@@ -127,7 +127,7 @@ class HomeTests: XCTestCase {
         wait(for: [saveRequestExpectation], timeout: 1)
 
         promise?.succeed(Response.saveItem())
-        app.myListView.itemView(matching: "Saved Recommendation 1").wait()
+        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
         saveButton.tap()
@@ -147,7 +147,7 @@ class HomeTests: XCTestCase {
         }
 
         app.tabBar.myListButton.tap()
-        app.myListView.itemView(matching: "Saved Recommendation 1").wait()
+        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
 
