@@ -59,7 +59,8 @@ class ReportARecommendationTests: XCTestCase {
         server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
             requestBody = body(of: request)
             if requestBody?.contains("engagement") == true
-                && requestBody?.contains("report") == true {
+                && requestBody?.contains("report") == true
+                && requestBody?.contains("reason") == true {
                 reportExpectation.fulfill()
             }
 

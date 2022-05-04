@@ -43,21 +43,21 @@ class CompactHomeCoordinator: NSObject {
         navigationController.popToRootViewController(animated: false)
         isResetting = true
 
-//        model.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
-//            self?.show(readable)
-//        }.store(in: &subscriptions)
+        model.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
+            self?.show(readable)
+        }.store(in: &subscriptions)
 
-//        model.$selectedSlateDetail.receive(on: DispatchQueue.main).sink { [weak self] slate in
-//            self?.show(slate)
-//        }.store(in: &subscriptions)
+        model.$selectedSlateDetailViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
+            self?.show(viewModel)
+        }.store(in: &subscriptions)
 
         model.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
             self?.report(recommendation)
         }.store(in: &subscriptions)
 
-//        model.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-//            self?.present(url: url)
-//        }.store(in: &subscriptions)
+        model.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &subscriptions)
 
         isResetting = false
         navigationController.delegate = self
@@ -73,33 +73,29 @@ class CompactHomeCoordinator: NSObject {
         homeViewController.handleBackgroundRefresh(task: task)
     }
 
-//    func show(_ slate: SlateDetailViewModel?) {
-//        guard let slate = slate else {
-//            slateDetailSubscriptions = []
-//            return
-//        }
-//
-//        navigationController.pushViewController(
-//            SlateDetailViewController(
-//                source: source,
-//                model: slate,
-//                tracker: tracker.childTracker(hosting: .slateDetail.screen)
-//            ),
-//            animated: !isResetting
-//        )
-//
-//        slate.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
-//            self?.show(readable)
-//        }.store(in: &slateDetailSubscriptions)
-//
-//        slate.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-//            self?.report(recommendation)
-//        }.store(in: &slateDetailSubscriptions)
-//
-//        slate.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-//            self?.present(url: url)
-//        }.store(in: &subscriptions)
-//    }
+    func show(_ viewModel: SlateDetailViewModel?) {
+        guard let viewModel = viewModel else {
+            slateDetailSubscriptions = []
+            return
+        }
+
+        navigationController.pushViewController(
+            SlateDetailViewController(model: viewModel),
+            animated: !isResetting
+        )
+
+        viewModel.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
+            self?.show(readable)
+        }.store(in: &slateDetailSubscriptions)
+
+        viewModel.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+            self?.report(recommendation)
+        }.store(in: &slateDetailSubscriptions)
+
+        viewModel.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &subscriptions)
+    }
 
     func show(_ recommendation: RecommendationViewModel?) {
         guard let recommendation = recommendation else {
@@ -135,7 +131,7 @@ class CompactHomeCoordinator: NSObject {
             tracker: tracker.childTracker(hosting: .reportDialog)
         ) { [weak self] in
             self?.model.selectedRecommendationToReport = nil
-//            self?.model.selectedSlateDetail?.selectedRecommendationToReport = nil
+            self?.model.selectedSlateDetailViewModel?.selectedRecommendationToReport = nil
         }
 
         host.modalPresentationStyle = .formSheet
@@ -152,7 +148,7 @@ class CompactHomeCoordinator: NSObject {
 
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
             self?.model.selectedReadableViewModel?.sharedActivity = nil
-//            self?.model.selectedSlateDetail?.selectedReadableViewModel?.sharedActivity = nil
+            self?.model.selectedSlateDetailViewModel?.selectedReadableViewModel?.sharedActivity = nil
         }
 
         viewController.present(activityVC, animated: !isResetting)
@@ -191,21 +187,23 @@ class CompactHomeCoordinator: NSObject {
 extension CompactHomeCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === homeViewController {
+            model.selectedSlateDetailViewModel?.resetSlate(keeping: 5)
+
             model.selectedReadableViewModel = nil
             model.selectedRecommendationToReport = nil
-//            model.selectedSlateDetail = nil
+            model.selectedSlateDetailViewModel = nil
         }
 
-//        if viewController is SlateDetailViewController {
-//            model.selectedSlateDetail?.selectedReadableViewModel = nil
-//            model.selectedSlateDetail?.selectedRecommendationToReport = nil
-//        }
+        if viewController is SlateDetailViewController {
+            model.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
+            model.selectedSlateDetailViewModel?.selectedRecommendationToReport = nil
+        }
     }
 }
 
 extension CompactHomeCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.selectedReadableViewModel?.presentedWebReaderURL = nil
-//        model.selectedSlateDetail?.selectedReadableViewModel?.presentedWebReaderURL = nil
+        model.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
     }
 }

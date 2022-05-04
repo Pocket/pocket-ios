@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 import Analytics
+import CoreData
 @testable import Sync
 @testable import PocketKit
 
@@ -8,6 +9,7 @@ import Analytics
 class HomeViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
+    var slateLineupController: MockSlateLineupController!
 
     var subscriptions: Set<AnyCancellable> = []
 
@@ -16,11 +18,15 @@ class HomeViewModelTests: XCTestCase {
 
         source = MockSource()
         tracker = MockTracker()
+        slateLineupController = MockSlateLineupController()
+        slateLineupController.stubPerformFetch { }
 
         source.stubMakeSlateLineupController {
-            let controller = MockSlateLineupController()
-            controller.stubPerformFetch { }
-            return controller
+            return self.slateLineupController
+        }
+
+        source.stubMakeSlateController { _ in
+            MockSlateController()
         }
 
         continueAfterFailure = false
@@ -92,45 +98,45 @@ class HomeViewModelTests: XCTestCase {
             )
 
             let firstSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1])
-            let firstSlateRecommendations = firstSlate.compactMap { cell -> Recommendation? in
+            let firstSlateRecommendations = firstSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
                 case .topic:
                     return nil
-                case .recommendation(let viewModel):
-                    return viewModel.recommendation
+                case .recommendation(let objectID):
+                    return objectID
                 }
             }
             XCTAssertEqual(
                 firstSlateRecommendations,
-                [recommendations[0], recommendations[1]]
+                [recommendations[0].objectID, recommendations[1].objectID]
             )
 
             let secondSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[2])
-            let secondSlateRecommendations = secondSlate.compactMap { cell -> Recommendation? in
+            let secondSlateRecommendations = secondSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
                 case .topic:
                     return nil
-                case .recommendation(let viewModel):
-                    return viewModel.recommendation
+                case .recommendation(let objectID):
+                    return objectID
                 }
             }
             XCTAssertEqual(
                 secondSlateRecommendations,
-                [recommendations[2]]
+                [recommendations[2].objectID]
             )
 
             let thirdSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[3])
-            let thirdSlateRecommendations = thirdSlate.compactMap { cell -> Recommendation? in
+            let thirdSlateRecommendations = thirdSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
                 case .topic:
                     return nil
-                case .recommendation(let viewModel):
-                    return viewModel.recommendation
+                case .recommendation(let objectID):
+                    return objectID
                 }
             }
             XCTAssertEqual(
                 thirdSlateRecommendations,
-                [recommendations[3]]
+                [recommendations[3].objectID]
             )
 
             snapshotExpectation.fulfill()
@@ -155,15 +161,15 @@ class HomeViewModelTests: XCTestCase {
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.$snapshot.dropFirst().sink { snapshot in
-            let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> Recommendation? in
+            let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
                 case .topic:
                     return nil
-                case .recommendation(let viewModel):
-                    return viewModel.recommendation
+                case .recommendation(let objectID):
+                    return objectID
                 }
             }
-            XCTAssertEqual(reloaded, recommendations)
+            XCTAssertEqual(reloaded, recommendations.map { $0.objectID })
 
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
@@ -176,13 +182,18 @@ class HomeViewModelTests: XCTestCase {
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() {
         let viewModel = subject()
 
+        let recommendation = Recommendation.build()
+        slateLineupController.slateLineup = .build(
+            slates: [.build(recommendations: [recommendation])]
+        )
+        viewModel.controllerDidChangeContent(slateLineupController)
+
         let readableExpectation = expectation(description: "expected to update selected readable")
         viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        let cellViewModel = HomeRecommendationCellViewModel(recommendation: .build())
-        let cell = HomeViewModel.Cell.recommendation(cellViewModel)
+        let cell = HomeViewModel.Cell.recommendation(recommendation.objectID)
         viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
 
         wait(for: [readableExpectation], timeout: 1)
@@ -190,6 +201,12 @@ class HomeViewModelTests: XCTestCase {
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsNotReadable_updatesPresentedWebReaderURL() {
         let viewModel = subject()
+        let item = Item.build()
+        let recommendation = Recommendation.build(item: item)
+        slateLineupController.slateLineup = .build(
+            slates: [.build(recommendations: [recommendation])]
+        )
+        viewModel.controllerDidChangeContent(slateLineupController)
 
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
@@ -198,29 +215,26 @@ class HomeViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         do {
-            let item: Item = .build()
             item.isArticle = false
 
-            let cellViewModel = HomeRecommendationCellViewModel(recommendation: .build(item: item))
-            let cell = HomeViewModel.Cell.recommendation(cellViewModel)
+            let cell = HomeViewModel.Cell.recommendation(recommendation.objectID)
             viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
         }
 
         do {
-            let item: Item = .build()
+            item.isArticle = true
             item.imageness = Imageness.isImage.rawValue
 
-            let cellViewModel = HomeRecommendationCellViewModel(recommendation: .build(item: item))
-            let cell = HomeViewModel.Cell.recommendation(cellViewModel)
+            let cell = HomeViewModel.Cell.recommendation(recommendation.objectID)
             viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
         }
 
         do {
-            let item: Item = .build()
+            item.isArticle = true
+            item.imageness = nil
             item.videoness = Videoness.isVideo.rawValue
 
-            let cellViewModel = HomeRecommendationCellViewModel(recommendation: .build(item: item))
-            let cell = HomeViewModel.Cell.recommendation(cellViewModel)
+            let cell = HomeViewModel.Cell.recommendation(recommendation.objectID)
             viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
         }
 
@@ -229,6 +243,11 @@ class HomeViewModelTests: XCTestCase {
 
     func test_selectCell_whenSelectingTopic_updatesSelectedSlateDetailViewModel() {
         let viewModel = subject()
+        let recommendation = Recommendation.build()
+        slateLineupController.slateLineup = .build(
+            slates: [.build(recommendations: [recommendation])]
+        )
+        viewModel.controllerDidChangeContent(slateLineupController)
 
         let detailExpectation = expectation(description: "expected selected slate detail to be updated")
         viewModel.$selectedSlateDetailViewModel.dropFirst().sink { viewModel in
@@ -243,9 +262,14 @@ class HomeViewModelTests: XCTestCase {
 
     func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() {
         let viewModel = subject()
+        let recommendation = Recommendation.build()
+        slateLineupController.slateLineup = .build(
+            slates: [.build(recommendations: [recommendation])]
+        )
+        viewModel.controllerDidChangeContent(slateLineupController)
 
-        let cellViewModel = HomeRecommendationCellViewModel(recommendation: .build())
-        let action = viewModel.reportAction(for: .recommendation(cellViewModel), at: IndexPath(item: 0, section: 0))
+        let cell = HomeViewModel.Cell.recommendation(recommendation.objectID)
+        let action = viewModel.reportAction(for: cell, at: IndexPath(item: 0, section: 0))
         XCTAssertNotNil(action)
 
         let reportExpectation = expectation(description: "expected to update selected recommendation to report")
@@ -261,9 +285,17 @@ class HomeViewModelTests: XCTestCase {
     func test_saveAction_whenRecommendationIsNotSaved_savesWithSource() {
         source.stubSaveRecommendation { _ in }
 
-        let recommendation = Recommendation.build()
         let viewModel = subject()
-        let action = viewModel.saveAction(for: .recommendation(.init(recommendation: recommendation)), at: IndexPath(item: 0, section: 0))
+        let recommendation = Recommendation.build()
+        slateLineupController.slateLineup = .build(
+            slates: [.build(recommendations: [recommendation])]
+        )
+        viewModel.controllerDidChangeContent(slateLineupController)
+
+        let action = viewModel.saveAction(
+            for: .recommendation(recommendation.objectID),
+            at: IndexPath(item: 0, section: 0)
+        )
         XCTAssertNotNil(action)
 
         action?.handler?(nil)
@@ -276,8 +308,17 @@ class HomeViewModelTests: XCTestCase {
         let item = Item.build()
         item.savedItem = .build()
         let recommendation = Recommendation.build(item: item)
+
         let viewModel = subject()
-        let action = viewModel.saveAction(for: .recommendation(.init(recommendation: recommendation)), at: IndexPath(item: 0, section: 0))
+        slateLineupController.slateLineup = .build(
+            slates: [.build(recommendations: [recommendation])]
+        )
+        viewModel.controllerDidChangeContent(slateLineupController)
+
+        let action = viewModel.saveAction(
+            for: .recommendation(recommendation.objectID),
+            at: IndexPath(item: 0, section: 0)
+        )
         XCTAssertNotNil(action)
 
         action?.handler?(nil)

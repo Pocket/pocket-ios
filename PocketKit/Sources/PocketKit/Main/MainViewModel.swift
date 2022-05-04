@@ -5,20 +5,6 @@ import BackgroundTasks
 import UIKit
 
 
-class SlateDetailViewModel {
-    let slateID: String
-
-    @Published
-    var selectedReadableViewModel: RecommendationViewModel?
-
-    @Published
-    var presentedWebReaderURL: URL?
-
-    init(slateID: String) {
-        self.slateID = slateID
-    }
-}
-
 class MainViewModel: ObservableObject {
     @Published
     var selectedSection: AppSection = .home

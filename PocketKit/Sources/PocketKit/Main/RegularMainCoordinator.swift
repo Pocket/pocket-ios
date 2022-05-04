@@ -141,7 +141,7 @@ class RegularMainCoordinator: NSObject {
         // HOME
         model.home.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
             if readable != nil {
-                self?.model.home.selectedSlateDetail?.selectedReadableViewModel = nil
+                self?.model.home.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
                 self?.model.myList.savedItemsList.selectedItem = nil
                 self?.model.myList.archivedItemsList.selectedItem = nil
             }
@@ -153,13 +153,13 @@ class RegularMainCoordinator: NSObject {
             self?.report(recommendation)
         }.store(in: &subscriptions)
 
-//        model.home.$selectedSlateDetail.receive(on: DispatchQueue.main).sink { [weak self] slateDetail in
-//            self?.show(slateDetail)
-//        }.store(in: &subscriptions)
+        model.home.$selectedSlateDetailViewModel.receive(on: DispatchQueue.main).sink { [weak self] slateDetail in
+            self?.show(slateDetail)
+        }.store(in: &subscriptions)
 
-//        model.home.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-//            self?.present(url)
-//        }.store(in: &subscriptions)
+        model.home.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url)
+        }.store(in: &subscriptions)
 
         isResetting = false
     }
@@ -198,7 +198,7 @@ class RegularMainCoordinator: NSObject {
 
         readerSubscriptions = []
         model.home.selectedReadableViewModel = nil
-        model.home.selectedSlateDetail?.selectedReadableViewModel = nil
+        model.home.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
 
         readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url)
@@ -268,7 +268,7 @@ class RegularMainCoordinator: NSObject {
             self?.present(alert)
         }.store(in: &subscriptions)
 
-        let slateDetailVC = SlateDetailViewController(source: source, model: slate, tracker: tracker)
+        let slateDetailVC = SlateDetailViewController(model: slate)
         home.navigationController?.pushViewController(slateDetailVC, animated: !isResetting)
     }
 
@@ -340,7 +340,7 @@ class RegularMainCoordinator: NSObject {
             tracker: tracker.childTracker(hosting: .reportDialog)
         ) { [weak self] in
             self?.model.home.selectedRecommendationToReport = nil
-//            self?.model.home.selectedSlateDetail?.selectedRecommendationToReport = nil
+            self?.model.home.selectedSlateDetailViewModel?.selectedRecommendationToReport = nil
         }
 
         host.modalPresentationStyle = .formSheet
@@ -367,14 +367,15 @@ extension RegularMainCoordinator: SFSafariViewControllerDelegate {
         model.myList.savedItemsList.selectedItem?.clearPresentedWebReaderURL()
         model.myList.archivedItemsList.selectedItem?.clearPresentedWebReaderURL()
         model.home.selectedReadableViewModel?.presentedWebReaderURL = nil
-//        model.home.selectedSlateDetail?.selectedReadableViewModel?.presentedWebReaderURL = nil
+        model.home.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
     }
 }
 
 extension RegularMainCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === home {
-//            model.home.selectedSlateDetail = nil
+            model.home.selectedSlateDetailViewModel?.resetSlate(keeping: 5)
+            model.home.selectedSlateDetailViewModel = nil
         }
     }
 }
