@@ -38,7 +38,7 @@ class HomeViewController: UIViewController {
 
             return self.sectionProvider.topicCarouselSection(slates: slates)
         case .slate(let slate):
-            return self.sectionProvider.section(for: slate, width: env.container.effectiveContentSize.width)
+            return self.sectionProvider.section(for: slate, in: self.model, width: env.container.effectiveContentSize.width)
         }
     }
 
@@ -165,17 +165,16 @@ extension HomeViewController {
             cell.configure(model: TopicChipPresenter(title: slate.name))
 
             return cell
-        case .recommendation(let viewModel):
+        case .recommendation(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
             cell.mode = indexPath.item == 0 ? .hero : .mini
 
-            let presenter = RecommendationPresenter(recommendation: viewModel.recommendation)
-            presenter.loadImage(into: cell.thumbnailImageView, cellWidth: cell.frame.width)
-            cell.titleLabel.attributedText = presenter.attributedTitle
-            cell.subtitleLabel.attributedText = presenter.attributedDetail
-            cell.excerptLabel.attributedText = presenter.attributedExcerpt
+            guard let viewModel = model.viewModel(for: objectID) else {
+                return cell
+            }
 
-            cell.saveButton.mode = viewModel.isSaved ? .saved : .save
+            cell.configure(model: viewModel)
+
             if let action = model.saveAction(for: item, at: indexPath), let uiAction = UIAction(action) {
                 cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
             }
@@ -254,7 +253,13 @@ extension HomeViewController: UICollectionViewDelegate {
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: false)
+        collectionView.deselectItem(at: indexPath, animated: true)
+
+        guard let cell = dataSource.itemIdentifier(for: indexPath) else {
+            return
+        }
+
+        model.select(cell: cell, at: indexPath)
     }
 }
 

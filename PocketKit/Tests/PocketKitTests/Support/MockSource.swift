@@ -21,10 +21,6 @@ class MockSource: Source {
         fatalError("\(Self.self)#\(#function) is not implemented")
     }
 
-    func fetchSlate(_ slateID: String) async throws {
-        fatalError("\(Self.self)#\(#function) is not implemented")
-    }
-
     func restore() {
         fatalError("\(Self.self).\(#function) is not implemented")
     }
@@ -145,6 +141,30 @@ extension MockSource {
         calls[Self.makeSlateLineupController] = (calls[Self.makeSlateLineupController] ?? []) + [MakeSlateLineupControllerCall()]
 
         return impl()
+    }
+}
+
+// MARK: - Make slate lineup controller
+extension MockSource {
+    static let makeSlateController = "makeSlateController"
+    typealias MakeSlateControllerImpl = (String) -> SlateController
+
+    struct MakeSlateControllerCall {
+        let identifier: String
+    }
+
+    func stubMakeSlateController(impl: @escaping MakeSlateControllerImpl) {
+        implementations[Self.makeSlateController] = impl
+    }
+
+    func makeSlateController(byID id: String) -> SlateController {
+        guard let impl = implementations[Self.makeSlateController] as? MakeSlateControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeSlateController] = (calls[Self.makeSlateController] ?? []) + [MakeSlateControllerCall(identifier: id)]
+
+        return impl(id)
     }
 }
 
@@ -411,6 +431,12 @@ extension MockSource {
         let identifier: String
     }
 
+    static let fetchSlate = "fetchSlate"
+    typealias FetchSlateImpl = (String) -> Void
+    struct FetchSlateCall {
+        let identifier: String
+    }
+
     func stubFetchSlateLineup(_ impl: @escaping FetchSlateLineupImpl) {
         implementations[Self.fetchSlateLineup] = impl
     }
@@ -436,6 +462,32 @@ extension MockSource {
 
         impl(identifier)
     }
+
+    func stubFetchSlate(_ impl: @escaping FetchSlateImpl) {
+        implementations[Self.fetchSlate] = impl
+    }
+
+    func fetchSlateCall(at index: Int) -> FetchSlateCall? {
+        guard let calls = calls[Self.fetchSlate],
+              index < calls.count,
+              let call = calls[index] as? FetchSlateCall else {
+                  return nil
+              }
+
+        return call
+    }
+
+    func fetchSlate(_ identifier: String) async throws {
+        guard let impl = implementations[Self.fetchSlate] as? FetchSlateImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchSlate] = (calls[Self.fetchSlate] ?? []) + [
+            FetchSlateCall(identifier: identifier)
+        ]
+
+        impl(identifier)
+    }
 }
 
 // MARK: - Recommendations
@@ -449,6 +501,12 @@ extension MockSource {
     static let archiveRecommendation = "archiveRecommendation"
     typealias ArchiveRecommendationImpl = (Recommendation) -> Void
     struct ArchiveRecommendationCall {
+        let recommendation: Recommendation
+    }
+
+    static let removeRecommendation = "removeRecommendation"
+    typealias RemoveRecommendationImpl = (Recommendation) -> Void
+    struct RemoveRecommendationCall {
         let recommendation: Recommendation
     }
 
@@ -499,6 +557,32 @@ extension MockSource {
 
         calls[Self.archiveRecommendation] = (calls[Self.archiveRecommendation] ?? []) + [
             ArchiveRecommendationCall(recommendation: recommendation)
+        ]
+
+        impl(recommendation)
+    }
+
+    func stubRemoveRecommendation(_ impl: @escaping RemoveRecommendationImpl) {
+        implementations[Self.removeRecommendation] = impl
+    }
+
+    func removeRecommendationCall(at index: Int) -> RemoveRecommendationCall? {
+        guard let calls = calls[Self.removeRecommendation],
+              index < calls.count,
+              let call = calls[index] as? RemoveRecommendationCall else {
+                  return nil
+              }
+
+        return call
+    }
+
+    func remove(recommendation: Recommendation) {
+        guard let impl = implementations[Self.removeRecommendation] as? RemoveRecommendationImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.removeRecommendation] = (calls[Self.removeRecommendation] ?? []) + [
+            RemoveRecommendationCall(recommendation: recommendation)
         ]
 
         impl(recommendation)

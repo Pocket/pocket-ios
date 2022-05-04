@@ -8,8 +8,8 @@ class HomeViewControllerSectionProvider {
             return NSCollectionLayoutSection(
                 group: .horizontal(
                     layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .absolute(0),
-                        heightDimension: .absolute(0)
+                        widthDimension: .absolute(1),
+                        heightDimension: .absolute(1)
                     ),
                     subitems: []
                 )
@@ -52,7 +52,7 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func section(for slate: Slate?, width: CGFloat) -> NSCollectionLayoutSection {
+    func section(for slate: Slate?, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection {
         let dividerHeight: CGFloat = 17
         let margin: CGFloat = 8
         let spacing: CGFloat = margin * 2
@@ -63,16 +63,27 @@ class HomeViewControllerSectionProvider {
             return NSCollectionLayoutSection(
                 group: .vertical(
                     layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .absolute(0),
-                        heightDimension: .absolute(0)
+                        widthDimension: .absolute(1),
+                        heightDimension: .absolute(1)
                     ),
                     subitems: []
                 )
             )
         }
 
-        let hero = RecommendationPresenter(recommendation: recommendations[0])
-        let heroHeight = RecommendationCell.fullHeight(width: width - spacing, recommendation: hero)
+        guard let hero = viewModel.viewModel(for: recommendations[0].objectID) else {
+            return NSCollectionLayoutSection(
+                group: .vertical(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .absolute(1),
+                        heightDimension: .absolute(1)
+                    ),
+                    subitems: []
+                )
+            )
+        }
+
+        let heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - spacing)
         let heroItem = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1),
@@ -99,7 +110,7 @@ class HomeViewControllerSectionProvider {
             )
         ]
 
-        let twoUp = twoUpGroup(slate: slate, width: width, spacing: spacing, dividerHeight: dividerHeight)
+        let twoUp = twoUpGroup(slate: slate, viewModel: viewModel, width: width, spacing: spacing, dividerHeight: dividerHeight)
 
         let topLevelGroup = NSCollectionLayoutGroup.vertical(
             layoutSize: NSCollectionLayoutSize(
@@ -135,6 +146,7 @@ class HomeViewControllerSectionProvider {
 
     func twoUpGroup(
         slate: Slate,
+        viewModel: HomeViewModel,
         width: CGFloat,
         spacing: CGFloat,
         dividerHeight: CGFloat
@@ -145,8 +157,8 @@ class HomeViewControllerSectionProvider {
             return (
                 group: NSCollectionLayoutGroup.vertical(
                     layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .absolute(0),
-                        heightDimension: .absolute(0)
+                        widthDimension: .absolute(1),
+                        heightDimension: .absolute(1)
                     ),
                     subitems: []
                 ),
@@ -161,10 +173,14 @@ class HomeViewControllerSectionProvider {
         ) ?? recommendations.endIndex - 1
         let recommendationsToShow = recommendations[1...endIndex]
 
-        let miniCardHeight = recommendationsToShow.map {
-            RecommendationCell.miniHeight(
-                width: width - spacing,
-                recommendation: RecommendationPresenter(recommendation: $0)
+        let miniCardHeight = recommendationsToShow.map { recommendation -> CGFloat in
+            guard let viewModel = viewModel.viewModel(for: recommendation.objectID) else {
+                return 0
+            }
+
+            return RecommendationCell.miniHeight(
+                viewModel: viewModel,
+                availableWidth: width - spacing
             )
         }.max() ?? 0
 

@@ -143,27 +143,27 @@ class RegularMainCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         // HOME
-//        model.home.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
-//            if readable != nil {
-////                self?.model.home.selectedSlateDetail?.selectedReadableViewModel = nil
-//                self?.model.myList.savedItemsList.selectedReadable = nil
-//                self?.model.myList.archivedItemsList.selectedReadable = nil
-//            }
-//
-//            self?.show(readable)
-//        }.store(in: &subscriptions)
+        model.home.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
+            if readable != nil {
+                self?.model.home.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
+                self?.model.myList.savedItemsList.selectedReadable = nil
+                self?.model.myList.archivedItemsList.selectedReadable = nil
+            }
+
+            self?.show(readable)
+        }.store(in: &subscriptions)
 
         model.home.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
             self?.report(recommendation)
         }.store(in: &subscriptions)
 
-//        model.home.$selectedSlateDetail.receive(on: DispatchQueue.main).sink { [weak self] slateDetail in
-//            self?.show(slateDetail)
-//        }.store(in: &subscriptions)
+        model.home.$selectedSlateDetailViewModel.receive(on: DispatchQueue.main).sink { [weak self] slateDetail in
+            self?.show(slateDetail)
+        }.store(in: &subscriptions)
 
-//        model.home.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-//            self?.present(url)
-//        }.store(in: &subscriptions)
+        model.home.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url)
+        }.store(in: &subscriptions)
 
         isResetting = false
     }
@@ -193,7 +193,7 @@ class RegularMainCoordinator: NSObject {
 
         readerSubscriptions = []
         model.home.selectedReadableViewModel = nil
-//        model.home.selectedSlateDetail?.selectedReadableViewModel = nil
+        model.home.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
         model.myList.archivedItemsList.selectedReadable = nil
 
         readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
@@ -240,33 +240,33 @@ class RegularMainCoordinator: NSObject {
         splitController.show(.secondary)
     }
 
-//    private func show(_ slate: SlateDetailViewModel?) {
-//        guard let slate = slate else {
-//            slateDetailSubscriptions = []
-//            return
-//        }
-//
-//        slate.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-//            self?.report(recommendation)
-//        }.store(in: &slateDetailSubscriptions)
-//
-//        slate.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
-//            if readable != nil {
-//                self?.model.home.selectedReadableViewModel = nil
-//                self?.model.myList.savedItemsList.selectedReadable = nil
-//                self?.model.myList.archivedItemsList.selectedReadable = nil
-//            }
-//
-//            self?.show(readable)
-//        }.store(in: &slateDetailSubscriptions)
-//
-//        slate.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] alert in
-//            self?.present(alert)
-//        }.store(in: &subscriptions)
-//
-//        let slateDetailVC = SlateDetailViewController(source: source, model: slate, tracker: tracker)
-//        home.navigationController?.pushViewController(slateDetailVC, animated: !isResetting)
-//    }
+    private func show(_ viewModel: SlateDetailViewModel?) {
+        guard let viewModel = viewModel else {
+            slateDetailSubscriptions = []
+            return
+        }
+
+        viewModel.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+            self?.report(recommendation)
+        }.store(in: &slateDetailSubscriptions)
+
+        viewModel.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
+            if readable != nil {
+                self?.model.home.selectedReadableViewModel = nil
+                self?.model.myList.savedItemsList.selectedReadable = nil
+                self?.model.myList.archivedItemsList.selectedReadable = nil
+            }
+
+            self?.show(readable)
+        }.store(in: &slateDetailSubscriptions)
+
+        viewModel.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &subscriptions)
+
+        let slateDetailVC = SlateDetailViewController(model: viewModel)
+        home.navigationController?.pushViewController(slateDetailVC, animated: !isResetting)
+    }
 
     private func present(_ alert: PocketAlert?) {
         guard !isResetting, let alert = alert else { return }
@@ -336,7 +336,7 @@ class RegularMainCoordinator: NSObject {
             tracker: tracker.childTracker(hosting: .reportDialog)
         ) { [weak self] in
             self?.model.home.selectedRecommendationToReport = nil
-//            self?.model.home.selectedSlateDetail?.selectedRecommendationToReport = nil
+            self?.model.home.selectedSlateDetailViewModel?.selectedRecommendationToReport = nil
         }
 
         host.modalPresentationStyle = .formSheet
@@ -363,14 +363,15 @@ extension RegularMainCoordinator: SFSafariViewControllerDelegate {
         model.myList.archivedItemsList.selectedReadable?.presentedWebReaderURL = nil
         model.myList.savedItemsList.selectedReadable?.presentedWebReaderURL = nil
         model.home.selectedReadableViewModel?.presentedWebReaderURL = nil
-//        model.home.selectedSlateDetail?.selectedReadableViewModel?.presentedWebReaderURL = nil
+        model.home.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
     }
 }
 
 extension RegularMainCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === home {
-//            model.home.selectedSlateDetail = nil
+            model.home.selectedSlateDetailViewModel?.resetSlate(keeping: 5)
+            model.home.selectedSlateDetailViewModel = nil
         }
     }
 }

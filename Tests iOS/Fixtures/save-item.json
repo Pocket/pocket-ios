@@ -14,7 +14,7 @@
                 "remoteID": "recommended-item-1",
                 "givenUrl": "https://given.example.com/item-1",
                 "resolvedUrl": "https://resolved.example.com/item-1",
-                "title": "Saved Recommendation 1",
+                "title": "Slate 1, Recommendation 1",
                 "topImageUrl": "https://example.com/item-1/top-image.jpg",
                 "domain": null,
                 "language": "en",
