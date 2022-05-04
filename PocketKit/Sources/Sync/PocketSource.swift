@@ -132,6 +132,12 @@ public class PocketSource: Source {
         )
     }
 
+    public func makeSlateController(byID id: String) -> SlateController {
+        PocketSlateController(
+            resultsController: space.makeSlateController(byID: id)
+        )
+    }
+
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.object(with: id)
     }
@@ -480,5 +486,10 @@ extension PocketSource {
         }
 
         archive(item: savedItem)
+    }
+
+    public func remove(recommendation: Recommendation) {
+        space.delete(recommendation)
+        try? space.save()
     }
 }

@@ -186,6 +186,17 @@ class Space {
         )
     }
 
+    func makeSlateController(byID id: String) -> NSFetchedResultsController<Slate> {
+        let request = Requests.fetchSlate(byID: id)
+        request.sortDescriptors = [NSSortDescriptor(key: "remoteID", ascending: true)]
+        return NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
+
     func object<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
         context.object(with: id) as? T
     }

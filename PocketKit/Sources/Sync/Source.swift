@@ -16,6 +16,8 @@ public protocol Source {
 
     func makeSlateLineupController() -> SlateLineupController
 
+    func makeSlateController(byID id: String) -> SlateController
+
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refresh(maxItems: Int, completion: (() -> ())?)
@@ -45,6 +47,8 @@ public protocol Source {
     func save(recommendation: Recommendation)
 
     func archive(recommendation: Recommendation)
+
+    func remove(recommendation: Recommendation)
 }
 
 public extension Source {

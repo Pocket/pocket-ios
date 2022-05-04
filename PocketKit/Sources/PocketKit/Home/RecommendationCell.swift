@@ -1,5 +1,15 @@
 import UIKit
+import Kingfisher
+import Textile
 
+
+protocol RecommendationCellViewModel {
+    var attributedTitle: NSAttributedString { get }
+    var attributedDetail: NSAttributedString { get }
+    var attributedExcerpt: NSAttributedString { get }
+    var imageURL: URL? { get }
+    var saveButtonMode: RecommendationSaveButton.Mode { get }
+}
 
 class RecommendationCell: UICollectionViewCell {
     enum Mode {
@@ -13,7 +23,7 @@ class RecommendationCell: UICollectionViewCell {
         }
     }
 
-    let thumbnailImageView: UIImageView = {
+    private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.layer.cornerRadius = 4
         imageView.clipsToBounds = true
@@ -21,20 +31,20 @@ class RecommendationCell: UICollectionViewCell {
         return imageView
     }()
 
-    let titleLabel: UILabel = {
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = RecommendationCell.numberOfTitleLines
         label.setContentHuggingPriority(.required, for: .vertical)
         return label
     }()
 
-    let subtitleLabel: UILabel = {
+    private let subtitleLabel: UILabel = {
         let label = UILabel()
         label.setContentHuggingPriority(.required, for: .vertical)
         return label
     }()
 
-    let excerptLabel: UILabel = {
+    private let excerptLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = RecommendationCell.numberOfExcerptLines
         label.setContentHuggingPriority(.required, for: .vertical)
@@ -120,6 +130,39 @@ class RecommendationCell: UICollectionViewCell {
         fatalError()
     }
 
+    func configure(model: RecommendationCellViewModel) {
+        titleLabel.attributedText = model.attributedTitle
+        subtitleLabel.attributedText = model.attributedDetail
+        excerptLabel.attributedText = model.attributedExcerpt
+
+        saveButton.mode = model.saveButtonMode
+
+        let imageWidth = bounds.width
+        - RecommendationCell.layoutMargins.left
+        - RecommendationCell.layoutMargins.right
+
+        let imageSize = CGSize(
+            width: imageWidth,
+            height: imageWidth * RecommendationCell.imageAspectRatio
+        )
+
+        thumbnailImageView.kf.indicatorType = .activity
+        thumbnailImageView.kf.setImage(
+            with: model.imageURL,
+            options: [
+                .scaleFactor(UIScreen.main.scale),
+                .processor(ResizingImageProcessor(
+                    referenceSize: imageSize,
+                    mode: .aspectFill
+                ).append(
+                    another: CroppingImageProcessor(size: imageSize)
+                )),
+            ]
+        )
+    }
+}
+
+extension RecommendationCell {
     private func adjustLayoutForMode() {
         switch mode {
         case .hero:
@@ -167,20 +210,20 @@ extension RecommendationCell {
 }
 
 extension RecommendationCell {
-    static func miniHeight(width: CGFloat, recommendation: RecommendationPresenter) -> CGFloat {
-        let adjustedWidth = (width / 2).rounded(.down) - Self.layoutMargins.left - Self.layoutMargins.right
+    static func miniHeight(viewModel: RecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
+        let adjustedWidth = (availableWidth / 2).rounded(.down) - Self.layoutMargins.left - Self.layoutMargins.right
         let imageHeight = adjustedWidth * Self.imageAspectRatio
 
-        let titleHeight = height(
-            of: recommendation.attributedTitleForMeasurement,
-            width: adjustedWidth,
+        let titleHeight = adjustedHeight(
+            of: viewModel.attributedTitle,
+            availableWidth: adjustedWidth,
             numberOfLines: numberOfTitleLines
         )
 
-        let subtitleHeight = height(
-            of: recommendation.attributedDetailForMeasurement,
-            width: adjustedWidth,
-            numberOfLines: Mini.numberOfSubtitleLines
+        let detailHeight = adjustedHeight(
+            of: viewModel.attributedDetail,
+            availableWidth: adjustedWidth,
+            numberOfLines: Hero.numberOfSubtitleLines
         )
 
         return Self.layoutMargins.top
@@ -188,32 +231,30 @@ extension RecommendationCell {
         + Mini.textStackTopMargin
         + titleHeight
         + Mini.textStackSpacing
-        + subtitleHeight
+        + detailHeight
         + Mini.buttonStackTopMargin
         + Self.saveButtonHeight
         + Self.layoutMargins.bottom
     }
 
-    static func fullHeight(width: CGFloat, recommendation: RecommendationPresenter) -> CGFloat {
-        let adjustedWidth = width - Self.layoutMargins.left - Self.layoutMargins.right
+    static func fullHeight(viewModel: RecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
+        let adjustedWidth = availableWidth - Self.layoutMargins.left - Self.layoutMargins.right
         let imageHeight = (adjustedWidth * Self.imageAspectRatio).rounded(.up)
 
-        let titleHeight = height(
-            of: recommendation.attributedTitleForMeasurement,
-            width: adjustedWidth,
-            numberOfLines: RecommendationCell.numberOfTitleLines
+        let titleHeight = adjustedHeight(
+            of: viewModel.attributedTitle,
+            availableWidth: adjustedWidth,
+            numberOfLines: numberOfTitleLines
         )
-
-        let subtitleHeight = height(
-            of: recommendation.attributedDetailForMeasurement,
-            width: adjustedWidth,
+        let detailHeight = adjustedHeight(
+            of: viewModel.attributedDetail,
+            availableWidth: adjustedWidth,
             numberOfLines: Hero.numberOfSubtitleLines
         )
-
-        let excerptHeight = height(
-            of: recommendation.attributedExcerptForMeasurement,
-            width: adjustedWidth,
-            numberOfLines: RecommendationCell.numberOfExcerptLines
+        let excerptHeight = adjustedHeight(
+            of: viewModel.attributedExcerpt,
+            availableWidth: adjustedWidth,
+            numberOfLines: numberOfExcerptLines
         )
 
         return Self.layoutMargins.top
@@ -221,7 +262,7 @@ extension RecommendationCell {
         + Hero.textStackTopMargin
         + titleHeight
         + Hero.textStackSpacing
-        + subtitleHeight
+        + detailHeight
         + Hero.textStackSpacing
         + excerptHeight
         + Hero.buttonStackTopMargin
@@ -255,5 +296,29 @@ extension RecommendationCell {
         )
 
         return rect.height.rounded(.up)
+    }
+
+    private static func adjustedHeight(
+        of string: NSAttributedString,
+        availableWidth: CGFloat,
+        numberOfLines: Int
+    ) -> CGFloat {
+        guard !string.string.isEmpty else {
+            return 0
+        }
+
+        let stringForMeasurement: NSAttributedString
+        if let style = string.attribute(.style, at: 0, effectiveRange: nil) as? Style {
+            let measurementStyle = style.with { $0.with(lineBreakMode: .none) }
+            stringForMeasurement = NSAttributedString(string: string.string, style: measurementStyle)
+        } else {
+            stringForMeasurement = string
+        }
+
+        return height(
+            of: stringForMeasurement,
+            width: availableWidth,
+            numberOfLines: numberOfLines
+        )
     }
 }
