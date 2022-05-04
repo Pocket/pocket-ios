@@ -56,6 +56,93 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.shouldSelectCell(with: .item(item.objectID)))
     }
+    
+    func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
+        let viewModel = subject()
+        let item = SavedItem.build()
+        
+        source.stubObject { _ in item }
+        
+        viewModel.selectCell(with: .item(item.objectID))
+        
+        guard let selectedItem = viewModel.selectedItem else {
+            XCTFail("Received nil for selectedItem")
+            return
+        }
+        
+        guard case .readable(let item) = selectedItem else {
+            XCTFail("Received unexpected selectedItem: \(selectedItem)")
+            return
+        }
+        
+        XCTAssertNotNil(item)
+    }
+    
+    func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() {
+        let viewModel = subject()
+        let item = SavedItem.build()
+        item.item?.isArticle = false
+        
+        source.stubObject { _ in item }
+        
+        viewModel.selectCell(with: .item(item.objectID))
+        guard let selectedItem = viewModel.selectedItem else {
+            XCTFail("Received nil for selectedItem")
+            return
+        }
+        
+        guard case .webView(let url) = selectedItem else {
+            XCTFail("Received unexpected selectedItem: \(selectedItem)")
+            return
+        }
+        
+        XCTAssertNotNil(url)
+    }
+
+
+    func test_selectedItem_whenNil_sendsSelectionCleared() {
+        let viewModel = subject()
+
+        let eventSent = expectation(description: "selectionClearedSent")
+        viewModel.events.sink { event in
+            guard case .selectionCleared = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+            eventSent.fulfill()
+        }.store(in: &subscriptions)
+        
+        viewModel.selectedItem = nil
+        wait(for: [eventSent], timeout: 1)
+    }
+    
+    func test_selectedItem_whenReaderView_doesNotSendSelectionCleared() {
+        let viewModel = subject()
+
+        let eventSent = expectation(description: "selectionClearedSent")
+        eventSent.isInverted = true
+        viewModel.events.sink { event in
+            XCTFail("Received unexpected event call: \(event)")
+            eventSent.fulfill()
+        }.store(in: &subscriptions)
+        
+        viewModel.selectedItem = .readable(nil)
+        wait(for: [eventSent], timeout: 1)
+    }
+    
+    func test_selectedItem_whenWebView_doesNotSendSelectionCleared() {
+        let viewModel = subject()
+
+        let eventSent = expectation(description: "selectionClearedSent")
+        eventSent.isInverted = true
+        viewModel.events.sink { event in
+            XCTFail("Received unexpected event call: \(event)")
+            eventSent.fulfill()
+        }.store(in: &subscriptions)
+        
+        viewModel.selectedItem = .webView(nil)
+        wait(for: [eventSent], timeout: 1)
+    }
 
     func test_sourceEvents_whenEventIsSavedItemCreated_sendsSnapshotWithNewItem() {
         let savedItem: SavedItem = .build()

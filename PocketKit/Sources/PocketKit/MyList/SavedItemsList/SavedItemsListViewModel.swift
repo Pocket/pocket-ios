@@ -17,10 +17,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     var presentedAlert: PocketAlert?
 
     @Published
-    var presentedWebReaderURL: URL?
-
-    @Published
-    var selectedReadable: SavedItemViewModel?
+    var selectedItem: SelectedItem?
 
     @Published
     var sharedActivity: PocketActivity?
@@ -44,8 +41,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         itemsController.delegate = self
 
-        $selectedReadable.sink { [weak self] readable in
-            guard readable == nil else { return }
+        $selectedItem.sink { [weak self] itemSelected in
+            guard itemSelected == nil else { return }
             self?._events.send(.selectionCleared)
         }.store(in: &subscriptions)
 
@@ -298,15 +295,16 @@ extension SavedItemsListViewModel {
         if let isArticle = item.item?.isArticle, isArticle == false
             || item.item?.hasImage == .isImage
             || item.item?.hasVideo == .isVideo {
-            presentedWebReaderURL = item.bestURL
+            selectedItem = .webView(item.bestURL)
         } else {
-            selectedReadable = bareItem(with: itemID).flatMap {
+            let selectedReadable = bareItem(with: itemID).flatMap {
                 SavedItemViewModel(
                     item: $0,
                     source: source,
                     tracker: tracker.childTracker(hosting: .articleView.screen)
                 )
             }
+            selectedItem = .readable(selectedReadable)
         }
     }
 

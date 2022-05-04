@@ -49,21 +49,21 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
-        }.store(in: &subscriptions)
-
         model.savedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$selectedReadable.receive(on: DispatchQueue.main).sink { [weak self] readable in
-            self?.push(savedItem: readable)
+        model.savedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedSavedItem in
+            guard let selectedSavedItem = selectedSavedItem else { return }
+            self?.model.archivedItemsList.selectedItem = nil
+            self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
 
         // Archive navigation
-        model.archivedItemsList.$selectedReadable.receive(on: DispatchQueue.main).sink { [weak self] readable in
-            self?.push(savedItem: readable)
+        model.archivedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedArchivedItem in
+            guard let selectedArchivedItem = selectedArchivedItem else { return }
+            self?.model.savedItemsList.selectedItem = nil
+            self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
@@ -74,12 +74,17 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
-        model.archivedItemsList.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
-            self?.present(url: url)
-        }.store(in: &subscriptions)
-
         isResetting = false
         navigationController.delegate = self
+    }
+    
+    private func navigate(selectedItem: SelectedItem) {
+        switch selectedItem {
+        case .readable(let readable):
+            self.push(savedItem: readable)
+        case .webView(let url):
+            self.present(url: url)
+        }
     }
 
     private func push(savedItem: SavedItemViewModel?) {
@@ -128,9 +133,9 @@ class CompactMyListContainerCoordinator: NSObject {
 
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
             self?.model.archivedItemsList.sharedActivity = nil
-            self?.model.archivedItemsList.selectedReadable?.sharedActivity = nil
+            self?.model.archivedItemsList.selectedItem?.clearSharedActivity()
             self?.model.savedItemsList.sharedActivity = nil
-            self?.model.archivedItemsList.sharedActivity = nil
+            self?.model.savedItemsList.selectedItem?.clearSharedActivity()
         }
 
         viewController.present(activityVC, animated: !isResetting)
@@ -167,19 +172,27 @@ class CompactMyListContainerCoordinator: NSObject {
 }
 
 extension CompactMyListContainerCoordinator: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         guard viewController == containerViewController else {
             return
         }
 
-        model.archivedItemsList.selectedReadable = nil
-        model.savedItemsList.selectedReadable = nil
+        model.archivedItemsList.selectedItem = nil
+        model.savedItemsList.selectedItem = nil
     }
 }
 
 extension CompactMyListContainerCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        model.archivedItemsList.selectedReadable?.presentedWebReaderURL = nil
-        model.savedItemsList.selectedReadable?.presentedWebReaderURL = nil
+        model.archivedItemsList.selectedItem?.clearPresentedWebReaderURL()
+        model.savedItemsList.selectedItem?.clearPresentedWebReaderURL()
+        
+        if case .webView = model.archivedItemsList.selectedItem {
+            model.archivedItemsList.selectedItem = nil
+        }
+        
+        if case .webView = model.savedItemsList.selectedItem {
+            model.savedItemsList.selectedItem = nil
+        }
     }
 }
