@@ -113,16 +113,14 @@ class RegularMainCoordinator: NSObject {
             self?.present(alert)
         }.store(in: &subscriptions)
 
-        model.myList.savedItemsList.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] alert in
-            self?.present(alert)
-        }.store(in: &subscriptions)
-
         model.myList.savedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &subscriptions)
 
-        model.myList.savedItemsList.$selectedReadable.receive(on: DispatchQueue.main).sink { [weak self] readable in
-            self?.show(readable)
+        model.myList.savedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedSavedItem in
+            guard let selectedSavedItem = selectedSavedItem else { return }
+            self?.model.myList.archivedItemsList.selectedItem = nil
+            self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
 
         // My List - Archived Items
@@ -130,24 +128,22 @@ class RegularMainCoordinator: NSObject {
             self?.present(alert)
         }.store(in: &subscriptions)
 
-        model.myList.archivedItemsList.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] alert in
-            self?.present(alert)
-        }.store(in: &subscriptions)
-
         model.myList.archivedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &subscriptions)
 
-        model.myList.archivedItemsList.$selectedReadable.receive(on: DispatchQueue.main).sink { [weak self] readable in
-            self?.show(readable)
+        model.myList.archivedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedArchivedItem in
+            guard let selectedArchivedItem = selectedArchivedItem else { return }
+            self?.model.myList.savedItemsList.selectedItem = nil
+            self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
 
         // HOME
         model.home.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
             if readable != nil {
                 self?.model.home.selectedSlateDetail?.selectedReadableViewModel = nil
-                self?.model.myList.savedItemsList.selectedReadable = nil
-                self?.model.myList.archivedItemsList.selectedReadable = nil
+                self?.model.myList.savedItemsList.selectedItem = nil
+                self?.model.myList.archivedItemsList.selectedItem = nil
             }
 
             self?.show(readable)
@@ -166,6 +162,15 @@ class RegularMainCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         isResetting = false
+    }
+    
+    private func navigate(selectedItem: SelectedItem) {
+        switch selectedItem {
+        case .readable(let readable):
+            self.show(readable)
+        case .webView(let url):
+            self.present(url)
+        }
     }
 
     private func stopObservingModelChanges() {
@@ -194,7 +199,6 @@ class RegularMainCoordinator: NSObject {
         readerSubscriptions = []
         model.home.selectedReadableViewModel = nil
         model.home.selectedSlateDetail?.selectedReadableViewModel = nil
-        model.myList.archivedItemsList.selectedReadable = nil
 
         readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url)
@@ -253,8 +257,8 @@ class RegularMainCoordinator: NSObject {
         slate.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
             if readable != nil {
                 self?.model.home.selectedReadableViewModel = nil
-                self?.model.myList.savedItemsList.selectedReadable = nil
-                self?.model.myList.archivedItemsList.selectedReadable = nil
+                self?.model.myList.savedItemsList.selectedItem = nil
+                self?.model.myList.archivedItemsList.selectedItem = nil
             }
 
             self?.show(readable)
@@ -306,7 +310,7 @@ class RegularMainCoordinator: NSObject {
         let activityVC = UIActivityViewController(activity: activity)
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
             self?.model.myList.archivedItemsList.sharedActivity = nil
-            self?.model.myList.archivedItemsList.selectedReadable?.sharedActivity = nil
+            self?.model.myList.archivedItemsList.selectedItem?.clearSharedActivity()
             self?.model.myList.savedItemsList.sharedActivity = nil
             self?.model.myList.archivedItemsList.sharedActivity = nil
         }
@@ -360,8 +364,8 @@ extension RegularMainCoordinator: UISplitViewControllerDelegate {
 
 extension RegularMainCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        model.myList.archivedItemsList.selectedReadable?.presentedWebReaderURL = nil
-        model.myList.savedItemsList.selectedReadable?.presentedWebReaderURL = nil
+        model.myList.savedItemsList.selectedItem?.clearPresentedWebReaderURL()
+        model.myList.archivedItemsList.selectedItem?.clearPresentedWebReaderURL()
         model.home.selectedReadableViewModel?.presentedWebReaderURL = nil
         model.home.selectedSlateDetail?.selectedReadableViewModel?.presentedWebReaderURL = nil
     }

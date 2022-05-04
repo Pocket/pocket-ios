@@ -16,16 +16,13 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     let selectionItem: SelectionItem = SelectionItem(title: "Archive", image: .init(asset: .archive))
 
     @Published
-    var selectedReadable: SavedItemViewModel?
-
-    @Published
     var sharedActivity: PocketActivity?
 
     @Published
     var presentedAlert: PocketAlert?
 
     @Published
-    var presentedWebReaderURL: URL?
+    var selectedItem: SelectedItem?
 
     private let source: Source
     private let tracker: Tracker
@@ -66,8 +63,8 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             }
         }.store(in: &subscriptions)
 
-        $selectedReadable.sink { [weak self] readable in
-            guard readable == nil else { return }
+        $selectedItem.sink { [weak self] itemSelected in
+            guard itemSelected == nil else { return }
             self?._events.send(.selectionCleared)
         }.store(in: &subscriptions)
     }
@@ -284,12 +281,14 @@ extension ArchivedItemsListViewModel {
         if let isArticle = item.item?.isArticle, isArticle == false
             || item.item?.hasImage == .isImage
             || item.item?.hasVideo == .isVideo {
-            presentedWebReaderURL = item.bestURL
+            selectedItem = .webView(item.bestURL)
         } else {
-            selectedReadable = SavedItemViewModel(
-                item: item,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
+            selectedItem = .readable(
+                SavedItemViewModel(
+                    item: item,
+                    source: source,
+                    tracker: tracker.childTracker(hosting: .articleView.screen)
+                )
             )
         }
     }

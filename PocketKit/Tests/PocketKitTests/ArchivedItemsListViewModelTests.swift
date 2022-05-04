@@ -268,16 +268,112 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         wait(for: [expectUnarchiveCall, expectSnapshotWithItemRemoved], timeout: 1)
     }
 
-    func test_selectCell_setsSelectedReadableToCorrespondingItem() {
+    func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
+        let viewModel = subject()
+        let items: [SavedItem] = [.build(item: nil), .build()]
+        itemsController.fetchedObjects = items
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        XCTAssertFalse(viewModel.shouldSelectCell(with: .item(items[0].objectID)))
+    }
+
+    func test_shouldSelectCell_whenItemIsNotPending_returnsFalse() {
+        let viewModel = subject()
+        let items: [SavedItem] = [.build(isFavorite: true), .build()]
+        itemsController.fetchedObjects = items
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        XCTAssertTrue(viewModel.shouldSelectCell(with: .item(items[0].objectID)))
+    }
+    
+    func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
         let viewModel = subject()
         let items: [SavedItem] = [.build(isFavorite: true), .build()]
         itemsController.fetchedObjects = items
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
         viewModel.selectCell(with: .item(items[0].objectID))
-        XCTAssertNotNil(viewModel.selectedReadable)
+        
+        guard let selectedItem = viewModel.selectedItem else {
+            XCTFail("Received nil for selectedItem")
+            return
+        }
+        
+        guard case .readable(let item) = selectedItem else {
+            XCTFail("Received unexpected selectedItem: \(selectedItem)")
+            return
+        }
+        
+        XCTAssertNotNil(item)
+    }
+    
+    func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() {
+        let viewModel = subject()
+        let items: [SavedItem] = [.build(isFavorite: true), .build()]
+        items[0].item?.isArticle = false
+        
+        itemsController.fetchedObjects = items
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        viewModel.selectCell(with: .item(items[0].objectID))
+        
+        guard let selectedItem = viewModel.selectedItem else {
+            XCTFail("Received nil for selectedItem")
+            return
+        }
+        
+        guard case .webView(let url) = selectedItem else {
+            XCTFail("Received unexpected selectedItem: \(selectedItem)")
+            return
+        }
+        
+        XCTAssertNotNil(url)
     }
 
+    func test_selectedItem_whenNil_sendsSelectionCleared() {
+        let viewModel = subject()
+
+        let eventSent = expectation(description: "selectionClearedSent")
+        viewModel.events.sink { event in
+            guard case .selectionCleared = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+            eventSent.fulfill()
+        }.store(in: &subscriptions)
+        
+        viewModel.selectedItem = nil
+        wait(for: [eventSent], timeout: 1)
+    }
+    
+    func test_selectedItem_whenReaderView_doesNotSendSelectionCleared() {
+        let viewModel = subject()
+
+        let eventSent = expectation(description: "selectionClearedSent")
+        eventSent.isInverted = true
+        viewModel.events.sink { event in
+            XCTFail("Received unexpected event call: \(event)")
+            eventSent.fulfill()
+        }.store(in: &subscriptions)
+        
+        viewModel.selectedItem = .readable(nil)
+        wait(for: [eventSent], timeout: 1)
+    }
+    
+    func test_selectedItem_whenWebView_doesNotSendSelectionCleared() {
+        let viewModel = subject()
+
+        let eventSent = expectation(description: "selectionClearedSent")
+        eventSent.isInverted = true
+        viewModel.events.sink { event in
+            XCTFail("Received unexpected event call: \(event)")
+            eventSent.fulfill()
+        }.store(in: &subscriptions)
+        
+        viewModel.selectedItem = .webView(nil)
+        wait(for: [eventSent], timeout: 1)
+    }
+    
     func test_receivedSnapshots_includeNextPageItem() {
         let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
         itemsController.fetchedObjects = items

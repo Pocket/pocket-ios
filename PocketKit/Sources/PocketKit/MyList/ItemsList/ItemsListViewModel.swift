@@ -1,6 +1,28 @@
 import Combine
 import UIKit
 
+enum SelectedItem {
+    case readable(SavedItemViewModel?)
+    case webView(URL?)
+    
+    func clearPresentedWebReaderURL() {
+        switch self {
+        case .readable(let viewModel):
+            viewModel?.presentedWebReaderURL = nil
+        default:
+            break
+        }
+    }
+    
+    func clearSharedActivity() {
+        switch self {
+        case .readable(let viewModel):
+            viewModel?.sharedActivity = nil
+        default:
+            break
+        }
+    }
+}
 
 enum ItemsListSection: Int, CaseIterable {
     case filters
