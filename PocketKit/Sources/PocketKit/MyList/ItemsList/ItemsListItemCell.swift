@@ -31,6 +31,7 @@ class ItemsListItemCell: UICollectionViewCell {
         static let textStackSpacing: CGFloat = 8
         static let topLevelStackSpacing: CGFloat = 14
         static let actionButtonHeight: CGFloat = 28
+        static let actionButtonImageSize = CGSize(width: 20, height: 20)
         static let mainStackSpacing: CGFloat = 8
         static let margins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
@@ -70,8 +71,9 @@ class ItemsListItemCell: UICollectionViewCell {
     private let shareButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
-        config.background.image = UIImage(asset: .share)
+        config.image = UIImage(asset: .share)
             .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
+            .resized(to: Constants.actionButtonImageSize)
 
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "share"
@@ -81,9 +83,10 @@ class ItemsListItemCell: UICollectionViewCell {
     private let menuButton: UIButton = {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
-        config.background.image = UIImage(asset: .overflow)
+        config.image = UIImage(asset: .overflow)
             .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
-
+            .resized(to: Constants.actionButtonImageSize)
+        
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "item-actions"
         button.showsMenuAsPrimaryAction = true
@@ -207,7 +210,7 @@ extension ItemsListItemCell {
 
         favoriteButton.accessibilityLabel = state.model?.favoriteAction?.title
         favoriteButton.accessibilityIdentifier = state.model?.favoriteAction?.accessibilityIdentifier
-        favoriteButton.configuration?.image = state.model?.favoriteAction?.image
+        favoriteButton.configuration?.image = state.model?.favoriteAction?.image?.resized(to: Constants.actionButtonImageSize)
 
         if let favoriteAction = UIAction(state.model?.favoriteAction) {
             favoriteButton.addAction(favoriteAction, for: .primaryActionTriggered)
