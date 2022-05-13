@@ -158,7 +158,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             }
         }
 
-        model.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+        model.events.sink { [weak self] event in
             self?.handle(myListEvent: event)
         }.store(in: &subscriptions)
     }
