@@ -17,7 +17,8 @@ public extension FontDescriptor.Size {
     static let h4: Self = 23
     static let h5: Self = 21
     static let h6: Self = 20
-    static let h7: Self = 16
+    static let h7: Self = 17
+    static let h8: Self = 16
     static let p1: Self = 20
     static let p2: Self = 19
     static let p3: Self = 16
@@ -45,6 +46,7 @@ public extension Style {
             public let h5 = Style(family: .graphik, size: .h5, weight: .semibold)
             public let h6 = Style(family: .graphik, size: .h6, weight: .semibold)
             public let h7 = Style(family: .graphik, size: .h7, weight: .semibold)
+            public let h8 = Style(family: .graphik, size: .h8, weight: .semibold)
             public let p1 = Style(family: .graphik, size: .p1, weight: .regular)
             public let p2 = Style(family: .graphik, size: .p2, weight: .regular)
             public let p3 = Style(family: .graphik, size: .p3, weight: .regular)

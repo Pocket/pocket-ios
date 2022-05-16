@@ -81,7 +81,7 @@ extension ItemsListItemPresenterTests {
 }
 
 private extension Style {
-    static let title: Style = .header.sansSerif.h7
+    static let title: Style = .header.sansSerif.h8
         .with { paragraph in
             paragraph
                 .with(lineSpacing: 4)

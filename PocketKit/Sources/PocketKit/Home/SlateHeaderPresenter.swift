@@ -4,7 +4,7 @@ import Textile
 
 
 private extension Style {
-    static let sectionHeader: Style = .header.sansSerif.h7
+    static let sectionHeader: Style = .header.sansSerif.h8
 }
 
 struct SlateHeaderPresenter {

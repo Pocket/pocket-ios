@@ -9,7 +9,7 @@ private extension Style {
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
 
-    static let miniTitle: Style = .header.sansSerif.h7.with { paragraph in
+    static let miniTitle: Style = .header.sansSerif.h8.with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
 
