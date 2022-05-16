@@ -4,7 +4,7 @@ import Textile
 
 
 private extension Style {
-    static let title: Style = .header.sansSerif.h7
+    static let title: Style = .header.sansSerif.h8
 }
 
 class NavigationSidebarViewController: UIViewController {

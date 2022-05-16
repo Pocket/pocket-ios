@@ -91,7 +91,7 @@ private struct LoggedOutCarouselPageView: View {
                 .frame(maxWidth: Self.maxWidth)
 
             Text(text)
-                .style(.header.sansSerif.h7)
+                .style(.header.sansSerif.h8)
 
             Text(detailText)
                 .style(.header.sansSerif.p4.with(color: .ui.grey5).with { $0.with(lineSpacing: 6).with(alignment: .center) })
@@ -112,7 +112,7 @@ private struct LoggedOutActionsView: View {
             Button {
                 viewModel.signUp()
             } label: {
-                Text("Sign Up").style(.header.sansSerif.h7.with(color: .ui.white))
+                Text("Sign Up").style(.header.sansSerif.h8.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                     .frame(maxWidth: 320)
             }.buttonStyle(LoggedOutButtonStyle())

@@ -2,7 +2,7 @@ import Textile
 
 
 extension Style {
-    static let logIn: Self = .header.sansSerif.h7.with(color: .ui.white)
+    static let logIn: Self = .header.sansSerif.h8.with(color: .ui.white)
 
     static func coloredMainText(color: ColorAsset) -> Style {
         .header.sansSerif.h2.with(color: color).with { $0.with(lineSpacing: 4) }
