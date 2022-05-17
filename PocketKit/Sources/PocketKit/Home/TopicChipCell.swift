@@ -10,6 +10,11 @@ protocol TopicChipCellModel {
 
 class TopicChipCell: UICollectionViewCell {
 
+    enum Constants {
+        static let imagePadding: CGFloat = 8
+        static let padding: CGFloat = 12
+    }
+
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
@@ -20,7 +25,7 @@ class TopicChipCell: UICollectionViewCell {
        let stackView = UIStackView()
         stackView.axis = .horizontal
         stackView.alignment = .center
-        stackView.spacing = 7.5
+        stackView.spacing = Constants.imagePadding
         return stackView
     }()
 
@@ -48,13 +53,18 @@ class TopicChipCell: UICollectionViewCell {
         stackView.backgroundColor = UIColor(.clear)
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        contentView.layoutMargins = UIEdgeInsets(top: 12, left: 12, bottom: 12, right: 12)
+        contentView.layoutMargins = UIEdgeInsets(
+            top: Constants.padding,
+            left: Constants.padding,
+            bottom: Constants.padding,
+            right: Constants.padding
+        )
 
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
 
             toggledBackground.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             toggledBackground.topAnchor.constraint(equalTo: contentView.topAnchor),
@@ -69,7 +79,10 @@ class TopicChipCell: UICollectionViewCell {
 
     func configure(model: TopicChipCellModel) {
         titleLabel.attributedText = model.attributedTitle
+
+        iconImageView.isHidden = model.iconImage == nil
         iconImageView.image = model.iconImage
+
         toggledBackground.isHidden = !model.isSelected
 
         if model.isSelected {
@@ -80,13 +93,15 @@ class TopicChipCell: UICollectionViewCell {
 
 extension TopicChipCell {
     static func height(chip: TopicChipPresenter) -> CGFloat {
-        let size = chip.attributedTitle?.sizeFitting() ?? .zero
-        return size.height.rounded(.up) + 20
+        let textHeight = chip.attributedTitle?.sizeFitting().height.rounded(.up) ?? .zero
+        return Constants.padding + textHeight + Constants.padding
     }
 
     static func width(chip: TopicChipPresenter) -> CGFloat {
-        let size = chip.attributedTitle?.sizeFitting() ?? .zero
-        let imageSize = chip.iconImage?.size.width ?? 24
-        return size.width.rounded(.up) + imageSize + 28
+        let textWidth = chip.attributedTitle?.sizeFitting().width.rounded(.up) ?? .zero
+        let imageSize = chip.iconImage?.size.width ?? 0
+        let imagePadding: CGFloat = imageSize > 0 ? 8 : Constants.imagePadding
+
+        return Constants.padding + imageSize + imagePadding + textWidth + Constants.padding
     }
 }

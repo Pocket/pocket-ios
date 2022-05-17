@@ -55,7 +55,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 group.interItemSpacing = .fixed(spacing)
 
                 let section = NSCollectionLayoutSection(group: group)
-                section.contentInsets = NSDirectionalEdgeInsets(top: 16, leading: 16, bottom: 0, trailing: 16)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
                 section.orthogonalScrollingBehavior = .continuous
 
                 return section
