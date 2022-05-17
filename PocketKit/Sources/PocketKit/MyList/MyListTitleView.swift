@@ -1,29 +1,37 @@
 import UIKit
+import Textile
+
+
+struct MyListSelection {
+    let title: String
+    let image: UIImage?
+    let handler: () -> ()
+}
 
 class MyListTitleView: UIView {
     private let stackView: UIStackView = {
-       let stackView = UIStackView()
+        let stackView = UIStackView()
         stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.spacing = 16
         return stackView
     }()
     
     private var selection: UIView = {
         let view = UIView()
+        view.backgroundColor = UIColor(.ui.teal6)
+
         return view
     }()
-    
-    private var selections: [MyListSelection]
 
+    private let selections: [MyListSelection]
     private var buttons: [UIButton] = []
-    private var lastSelectedButton: UIButton? = nil
 
     init(selections: [MyListSelection]) {
         self.selections = selections
         
         super.init(frame: .zero)
-        
+
+        accessibilityIdentifier = "my-list-selection-switcher"
+
         addSubview(selection)
         addSubview(stackView)
         
@@ -34,106 +42,107 @@ class MyListTitleView: UIView {
             stackView.topAnchor.constraint(equalTo: topAnchor),
             stackView.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
-        
-        buttons = selections.enumerated().map { offset, selection -> UIButton in
-            let button = MyListSelectionButton()
-            button.accessibilityLabel = selection.title
-            
-            let action = UIAction(title: selection.title, image: selection.image) { _ in
-                self.updateSelection(button)
-                selection.handler()
-            }
-            button.addAction(action, for: .touchUpInside)
 
-            return button
+        buttons = selections.map { selection in
+            MyListSelectionButton(
+                selection: selection,
+                action: UIAction(title: selection.title, image: selection.image) { [weak self] action in
+                    selection.handler()
+
+                    guard let selectedButton = action.sender as? UIButton else {
+                        return
+                    }
+
+                    self?.select(selectedButton)
+                }
+            )
         }
-        buttons.forEach(stackView.addArrangedSubview)
-        updateSelection(buttons[0])
 
-        accessibilityIdentifier = "my-list-selection-switcher"
+        buttons.forEach { button in
+            stackView.addArrangedSubview(button)
+
+            // Avoid a weird layout issue when a button's label is rendered for the first time
+            // We need to know button's full size (and thus the label's size)
+            // So we temporarily set it as selected before doing a layout pass.
+            button.isSelected = true
+            button.setNeedsLayout()
+            button.layoutIfNeeded()
+            button.isSelected = false
+        }
+
+        buttons.first?.isSelected = true
     }
-    
+
+    private func select(_ selectedButton: UIButton) {
+        UIView.animate(withDuration: 0.3) { [weak self] in
+            self?._select(selectedButton)
+        }
+    }
+
+    private func _select(_ selectedButton: UIButton) {
+        buttons.forEach { button in
+            button.isSelected = button === selectedButton
+            button.setNeedsLayout()
+            button.layoutIfNeeded()
+        }
+
+        stackView.setNeedsLayout()
+        stackView.layoutIfNeeded()
+        selection.frame = selectedButton.frame
+    }
+
     override func layoutSubviews() {
         super.layoutSubviews()
 
-        selection.backgroundColor = UIColor(.ui.teal6)
-        selection.frame = lastSelectedButton?.frame ?? .zero
+        if selection.frame == .zero,
+           let selectedButton = buttons.first(where: \.isSelected) {
+            selection.frame = selectedButton.frame
+        }
+
         selection.layer.cornerRadius = selection.frame.height / 2
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not implemented")
     }
-
-    private func updateSelection(_ button: UIButton) {
-        lastSelectedButton?.isSelected = false
-
-        button.isSelected = true
-        lastSelectedButton = button
-
-        UIView.animate(withDuration: 0.3) {
-            self.selection.frame = button.frame
-        }
-    }
-}
-
-struct MyListSelection {
-    let title: String
-    let image: UIImage?
-    let handler: () -> ()
 }
 
 private class MyListSelectionButton: UIButton {
-    private let actionImageView = UIImageView()
-    private let actionLabel = UILabel()
-    
-    private let stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.alignment = .center
-        stackView.spacing = 8
-        stackView.isUserInteractionEnabled = false
-        return stackView
-    }()
-    
-    override var isSelected: Bool {
-        didSet {
-            UIView.animate(withDuration: 0.3, delay: 0, options: .transitionCrossDissolve) {
-                self.actionLabel.alpha = self.isSelected ? 1 : 0
-                self.actionLabel.isHidden = !self.isSelected
-                self.actionLabel.textColor = self.isSelected ? UIColor(.ui.teal1) : UIColor(.ui.grey1)
-                self.actionImageView.tintColor = self.isSelected ? UIColor(.ui.teal1) : UIColor(.ui.grey1)
-            }
-        }
-    }
-    
-    override func addAction(_ action: UIAction, for controlEvents: UIControl.Event) {
-        super.addAction(action, for: controlEvents)
-        
-        actionLabel.text = action.title
-        actionImageView.tintColor = UIColor(.ui.grey1)
-        actionImageView.image = action.image
-    }
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private let selection: MyListSelection
 
-        stackView.addArrangedSubview(actionImageView)
-        stackView.addArrangedSubview(actionLabel)
-        addSubview(stackView)
-        
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            stackView.topAnchor.constraint(equalTo: topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor),
-        ])
-        
-        actionLabel.isHidden = true
+    init(selection: MyListSelection, action: UIAction) {
+        self.selection = selection
+        super.init(frame: .zero)
+
+        configuration = UIButton.Configuration.plain()
+        configuration?.image = selection.image
+        configuration?.imagePadding = 8
+        configuration?.background = .clear()
+        configuration?.background.backgroundColor = .clear
+        configuration?.background.backgroundColorTransformer = .none
+
+        addAction(action, for: .primaryActionTriggered)
+        clipsToBounds = true
     }
-    
+
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) is not implemented")
+        fatalError("init(coder:) has not been implemented")
     }
+
+    override func updateConfiguration() {
+        guard isSelected else {
+            configuration?.attributedTitle = nil
+            return
+        }
+
+        configuration?.attributedTitle = AttributedString(
+            selection.title,
+            attributes: Style.selected.attributes
+        )
+    }
+}
+
+private extension Style {
+    static let title: Style = .header.sansSerif.h8
+    static let selected: Style = .title.with(color: .ui.teal1)
 }
