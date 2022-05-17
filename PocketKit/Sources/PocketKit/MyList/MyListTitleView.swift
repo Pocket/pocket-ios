@@ -114,6 +114,8 @@ private class MyListSelectionButton: UIButton {
         self.selection = selection
         super.init(frame: .zero)
 
+        accessibilityLabel = selection.title
+
         configuration = UIButton.Configuration.plain()
         configuration?.image = selection.image
         configuration?.imagePadding = 8
