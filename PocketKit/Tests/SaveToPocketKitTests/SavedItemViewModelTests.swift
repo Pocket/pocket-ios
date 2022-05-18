@@ -53,8 +53,7 @@ extension SavedItemViewModelTests {
         XCTAssertNil(saveService.saveCall(at: 0))
     }
 
-
-    func test_save_ifValidSessionAndNoURL_automaticallyCompletesRequest() async {
+    func test_save_ifValidSessionAndNoURL_doesNotAutomaticallyCompleteRequest() async {
         let appSession = AppSession(keychain: MockKeychain())
         appSession.currentSession = Session(
             guid: "mock-guid",
@@ -63,15 +62,16 @@ extension SavedItemViewModelTests {
         )
         let viewModel = subject(appSession: appSession)
 
-        let completeRequestExpectation = expectation(description: "expected completeRequest to be called")
+        let extensionItem = MockExtensionItem(itemProviders: [])
 
-        let context = MockExtensionContext(extensionItems: [])
+        let context = MockExtensionContext(extensionItems: [extensionItem])
+        let completeRequestExpectation = expectation(description: "expected completeRequest to be called")
+        completeRequestExpectation.isInverted = true
         context.stubCompleteRequest { _, _ in
             completeRequestExpectation.fulfill()
         }
 
         await viewModel.save(from: context)
-
         wait(for: [completeRequestExpectation], timeout: 1)
     }
 }
@@ -140,8 +140,8 @@ extension SavedItemViewModelTests {
         let viewModel = subject(appSession: appSession)
 
         let provider = MockItemProvider()
-        provider.stubHasItemConformingToTypeIdentifier { _ in
-            return true
+        provider.stubHasItemConformingToTypeIdentifier { identifier in
+            return identifier == "public.url"
         }
         provider.stubLoadItem { _, _ in
             URL(string: "https://getpocket.com")! as NSSecureCoding

@@ -43,10 +43,9 @@ class SavedItemViewModel {
                 infoViewModel = .newItem
             }
 
+            autodismiss(from: context)
             break
         }
-
-        autodismiss(from: context)
     }
 
     func finish(context: ExtensionContext?, completionHandler: ((Bool) -> Void)? = nil) {

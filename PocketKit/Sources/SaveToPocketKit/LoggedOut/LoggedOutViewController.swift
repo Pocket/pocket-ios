@@ -85,12 +85,6 @@ class LoggedOutViewController: UIViewController {
 
         viewModel.viewWillAppear(context: extensionContext, origin: self)
     }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        viewModel.viewDidAppear(context: extensionContext)
-    }
 }
 
 private extension LoggedOutViewController {

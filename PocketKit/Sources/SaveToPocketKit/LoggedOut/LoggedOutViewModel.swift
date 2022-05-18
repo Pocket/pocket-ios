@@ -4,10 +4,6 @@ import Combine
 
 
 class LoggedOutViewModel {
-    private let dismissTimer: Timer.TimerPublisher
-
-    private var dismissTimerCancellable: AnyCancellable? = nil
-
     let infoViewModel = InfoView.Model(
         style: .error,
         attributedText: NSAttributedString(
@@ -25,10 +21,6 @@ class LoggedOutViewModel {
     @Published
     var actionButtonConfiguration: UIButton.Configuration? = nil
 
-    init(dismissTimer: Timer.TimerPublisher) {
-        self.dismissTimer = dismissTimer
-    }
-
     func viewWillAppear(context: ExtensionContext?, origin: Any) {
         if responder(from: origin) != nil {
             var configuration: UIButton.Configuration = .filled()
@@ -38,10 +30,6 @@ class LoggedOutViewModel {
             configuration.attributedTitle = AttributedString(NSAttributedString(string: "Log in to Pocket", style: .logIn))
             actionButtonConfiguration = configuration
         }
-    }
-
-    func viewDidAppear(context: ExtensionContext?) {
-        autodismiss(from: context)
     }
 
     func finish(context: ExtensionContext?, completionHandler: ((Bool) -> Void)? = nil) {
@@ -77,12 +65,6 @@ extension LoggedOutViewModel {
     private func open(url: URL, using responder: UIResponder) {
         let selector = sel_registerName("openURL:")
         responder.perform(selector, with: url)
-    }
-
-    private func autodismiss(from context: ExtensionContext?) {
-        dismissTimerCancellable = dismissTimer.autoconnect().first().sink(receiveCompletion:{ [weak self] _ in
-            self?.finish(context: context)
-        }, receiveValue: { _ in })
     }
 
     private func handleLoggedOut(context: ExtensionContext?, origin: Any) {

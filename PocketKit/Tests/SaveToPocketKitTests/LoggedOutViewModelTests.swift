@@ -3,20 +3,8 @@ import XCTest
 
 
 class LoggedOutViewModelTests: XCTestCase {
-    private var dismissTimer: Timer.TimerPublisher!
-
-    private func subject(
-        dismissTimer: Timer.TimerPublisher? = nil
-    ) -> LoggedOutViewModel {
-        LoggedOutViewModel(
-            dismissTimer: dismissTimer ?? self.dismissTimer
-        )
-    }
-
-    override func setUp() {
-        self.continueAfterFailure = false
-
-        dismissTimer = Timer.TimerPublisher(interval: 0, runLoop: .main, mode: .default)
+    private func subject() -> LoggedOutViewModel {
+        LoggedOutViewModel()
     }
 }
 
@@ -27,11 +15,12 @@ extension LoggedOutViewModelTests {
         let viewModel = subject()
 
         let completeRequestExpectation = expectation(description: "expected completeRequest to be called")
+        completeRequestExpectation.isInverted = true
         context.stubCompleteRequest { _, _ in
             completeRequestExpectation.fulfill()
         }
 
-        viewModel.viewDidAppear(context: context)
+        viewModel.viewWillAppear(context: context, origin: self)
 
         wait(for: [completeRequestExpectation], timeout: 1)
     }
