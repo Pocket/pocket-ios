@@ -16,9 +16,7 @@ class MainViewController: UIViewController {
 
         if appSession.currentSession == nil {
             child = LoggedOutViewController(
-                viewModel: LoggedOutViewModel(
-                    dismissTimer: Timer.TimerPublisher(interval: 2.1, runLoop: .main, mode: .default)
-                )
+                viewModel: LoggedOutViewModel()
             )
         } else {
             child = SavedItemViewController(
