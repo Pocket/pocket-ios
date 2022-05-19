@@ -3,7 +3,7 @@ import Combine
 
 
 @propertyWrapper
-public class KeychainStorage<T: Codable> {
+public class KeychainStorage<T: Codable & Equatable> {
     private let keychain: Keychain
     private let service: String
     private let account: String
@@ -30,7 +30,7 @@ public class KeychainStorage<T: Codable> {
     }
 
     public var projectedValue: AnyPublisher<T?, Never> {
-        subject.eraseToAnyPublisher()
+        subject.removeDuplicates().eraseToAnyPublisher()
     }
 
     init(

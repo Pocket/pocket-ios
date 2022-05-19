@@ -3,7 +3,7 @@ import XCTest
 
 
 class KeychainStorageTests: XCTestCase {
-    struct Test: Codable {
+    struct Test: Codable, Equatable {
         let value: String
     }
 
@@ -107,5 +107,25 @@ class KeychainStorageTests: XCTestCase {
         storage.wrappedValue = nil
         _ = storage.wrappedValue
         XCTAssertEqual(keychain.copyMatchingCalls.count, 3)
+    }
+
+    func test_projectedValue_removesDuplicates() {
+        let keychain = MockKeychain()
+        let service = "MockService"
+        let account = "MockAccount"
+        let storage = KeychainStorage<Test?>(keychain: keychain, service: service, account: account)
+
+        let publishedExpectation = expectation(description: "expected new value to be published")
+        publishedExpectation.expectedFulfillmentCount = 2
+        let cancellable = storage.projectedValue.sink { value in
+            publishedExpectation.fulfill()
+        }
+
+        storage.wrappedValue = Test(value: "123456")
+        storage.wrappedValue = Test(value: "123456")
+
+        wait(for: [publishedExpectation], timeout: 1)
+
+        cancellable.cancel()
     }
 }
