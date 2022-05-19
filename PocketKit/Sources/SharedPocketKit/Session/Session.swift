@@ -1,7 +1,7 @@
 import Foundation
 
 
-public struct Session: Codable {
+public struct Session: Codable, Equatable {
     public let guid: String
     public let accessToken: String
     public let userIdentifier: String
