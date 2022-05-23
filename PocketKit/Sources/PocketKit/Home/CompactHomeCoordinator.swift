@@ -108,6 +108,10 @@ class CompactHomeCoordinator: NSObject {
             animated: !isResetting
         )
 
+        recommendation.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
         recommendation.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readerSubscriptions)
@@ -181,6 +185,11 @@ class CompactHomeCoordinator: NSObject {
         readerSettingsVC.sheetPresentationController?.widthFollowsPreferredContentSizeWhenEdgeAttached = true
 
         viewController.present(readerSettingsVC, animated: !isResetting)
+    }
+
+    private func present(alert: PocketAlert?) {
+        guard !isResetting, let alert = alert else { return }
+        viewController.present(UIAlertController(alert), animated: !isResetting)
     }
 }
 
