@@ -235,6 +235,10 @@ class RegularMainCoordinator: NSObject {
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readerSubscriptions)
 
+        readable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &readerSubscriptions)
+
         readable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &readerSubscriptions)

@@ -169,6 +169,7 @@ extension HomeViewModel {
         } else {
             selectedReadableViewModel = RecommendationViewModel(
                 recommendation: viewModel.recommendation,
+                source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen)
             )
 

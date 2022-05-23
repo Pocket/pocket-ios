@@ -7,10 +7,8 @@ import Analytics
 
 
 class RecommendationViewModel: ReadableViewModel {
-    let tracker: Tracker
-
     @Published
-    private var _actions: [ItemAction] = []
+    private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
     
     private var _events = PassthroughSubject<ReadableEvent, Never>()
@@ -29,17 +27,23 @@ class RecommendationViewModel: ReadableViewModel {
     var isPresentingReaderSettings: Bool?
     
     private let recommendation: Recommendation
+    private let source: Source
+    let tracker: Tracker
 
-    init(recommendation: Recommendation, tracker: Tracker) {
+    private var subscriptions: Set<AnyCancellable> = []
+
+    init(recommendation: Recommendation, source: Source, tracker: Tracker) {
         self.recommendation = recommendation
+        self.source = source
         self.tracker = tracker
 
-        _actions = [
-            .displaySettings { [weak self] _ in self?.displaySettings() },
-            .save { [weak self] _ in self?.save() },
-            .favorite { [weak self] _ in self?.favorite() },
-            .share { [weak self] _ in self?.share() },
-        ]
+        recommendation.item?.savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &subscriptions)
+
+        recommendation.item?.savedItem?.publisher(for: \.isArchived).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &subscriptions)
     }
 
     var components: [ArticleComponent]? {
@@ -72,22 +76,90 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var url: URL? {
-        recommendation.item?.resolvedURL ?? recommendation.item?.givenURL
+        recommendation.item?.bestURL
     }
 
-    func delete() { }
-}
+    func moveToMyList() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
 
-extension RecommendationViewModel {
-    private func save() {
-        track(identifier: .itemSave)
+        source.unarchive(item: savedItem)
     }
-    
+
     private func favorite() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
+
+        source.favorite(item: savedItem)
         track(identifier: .itemFavorite)
+    }
+
+    private func unfavorite() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
+
+        source.unfavorite(item: savedItem)
+        track(identifier: .itemUnfavorite)
+    }
+
+    private func archive() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
+
+        source.archive(item: savedItem)
+        track(identifier: .itemArchive)
+        _events.send(.archive)
+    }
+
+    func delete() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
+
+        source.delete(item: savedItem)
+        _events.send(.delete)
     }
 
     func showWebReader() {
         presentedWebReaderURL = url
+    }
+}
+
+extension RecommendationViewModel {
+    private func buildActions() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            _actions = [
+                .displaySettings { [weak self] _ in self?.displaySettings() },
+                .share { [weak self] _ in self?.share() }
+            ]
+
+            return
+        }
+
+        let favoriteAction: ItemAction
+        if savedItem.isFavorite {
+            favoriteAction = .unfavorite { [weak self] _ in self?.unfavorite() }
+        } else {
+            favoriteAction = .favorite { [weak self] _ in self?.favorite() }
+        }
+
+        let archiveAction: ItemAction
+        if savedItem.isArchived {
+            archiveAction = .moveToMyList { [weak self] _ in self?.moveToMyList() }
+        } else {
+            archiveAction = .archive { [weak self] _ in self?.archive() }
+        }
+
+        _actions = [
+            .displaySettings { [weak self] _ in self?.displaySettings() },
+            favoriteAction,
+            archiveAction,
+            .delete { [weak self] _ in self?.confirmDelete() },
+            .share { [weak self] _ in self?.share() }
+        ]
     }
 }

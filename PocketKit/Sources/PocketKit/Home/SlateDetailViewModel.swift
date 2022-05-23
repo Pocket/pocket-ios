@@ -159,6 +159,7 @@ private extension SlateDetailViewModel {
         } else {
             selectedReadableViewModel = RecommendationViewModel(
                 recommendation: viewModel.recommendation,
+                source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen)
             )
 
