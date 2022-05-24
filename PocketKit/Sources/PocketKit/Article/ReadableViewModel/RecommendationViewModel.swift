@@ -37,12 +37,13 @@ class RecommendationViewModel: ReadableViewModel {
         self.source = source
         self.tracker = tracker
 
-        recommendation.item?.savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
-            self?.buildActions()
-        }.store(in: &subscriptions)
+        recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
+            if savedItem == nil {
+                self?.subscriptions = []
+            }
 
-        recommendation.item?.savedItem?.publisher(for: \.isArchived).sink { [weak self] _ in
             self?.buildActions()
+            self?.subscribe(to: savedItem)
         }.store(in: &subscriptions)
     }
 
@@ -115,6 +116,11 @@ class RecommendationViewModel: ReadableViewModel {
         _events.send(.archive)
     }
 
+    private func save() {
+        source.save(recommendation: recommendation)
+        track(identifier: .itemSave)
+    }
+
     func delete() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
@@ -134,6 +140,7 @@ extension RecommendationViewModel {
         guard let savedItem = recommendation.item?.savedItem else {
             _actions = [
                 .displaySettings { [weak self] _ in self?.displaySettings() },
+                .save { [weak self] _ in self?.save() },
                 .share { [weak self] _ in self?.share() }
             ]
 
@@ -161,5 +168,15 @@ extension RecommendationViewModel {
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
+    }
+
+    private func subscribe(to savedItem: SavedItem?) {
+        savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &subscriptions)
+
+        savedItem?.publisher(for: \.isArchived).sink { [weak self] _ in
+            self?.buildActions()
+        }.store(in: &subscriptions)
     }
 }
