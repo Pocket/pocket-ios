@@ -224,12 +224,19 @@ extension PocketSource {
         enqueue(operation: operation, task: .unfavorite(remoteID: remoteID))
     }
 
-    public func delete(item: SavedItem) {
-        guard let remoteID = item.remoteID else {
+    public func delete(item savedItem: SavedItem) {
+        guard let remoteID = savedItem.remoteID else {
             return
         }
 
-        space.delete(item)
+        let item = savedItem.item
+
+        space.delete(savedItem)
+
+        if let item = item, item.recommendation == nil {
+            space.delete(item)
+        }
+
         try? space.save()
 
         let operation = operations.savedItemMutationOperation(
