@@ -30,21 +30,17 @@ class RecommendationViewModel: ReadableViewModel {
     private let source: Source
     let tracker: Tracker
 
-    private var subscriptions: Set<AnyCancellable> = []
+    private var savedItemCancellable: AnyCancellable? = nil
+    private var savedItemSubscriptions: Set<AnyCancellable> = []
 
     init(recommendation: Recommendation, source: Source, tracker: Tracker) {
         self.recommendation = recommendation
         self.source = source
         self.tracker = tracker
 
-        recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
-            if savedItem == nil {
-                self?.subscriptions = []
-            }
-
-            self?.buildActions()
-            self?.subscribe(to: savedItem)
-        }.store(in: &subscriptions)
+        self.savedItemCancellable = recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
+            self?.update(for: savedItem)
+        }
     }
 
     var components: [ArticleComponent]? {
@@ -173,10 +169,19 @@ extension RecommendationViewModel {
     private func subscribe(to savedItem: SavedItem?) {
         savedItem?.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
-        }.store(in: &subscriptions)
+        }.store(in: &savedItemSubscriptions)
 
         savedItem?.publisher(for: \.isArchived).sink { [weak self] _ in
             self?.buildActions()
-        }.store(in: &subscriptions)
+        }.store(in: &savedItemSubscriptions)
+    }
+
+    private func update(for savedItem: SavedItem?) {
+        if savedItem == nil {
+            savedItemSubscriptions = []
+        }
+
+        buildActions()
+        subscribe(to: savedItem)
     }
 }
