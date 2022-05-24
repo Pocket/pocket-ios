@@ -36,6 +36,16 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_init_buildsCorrectActions() {
+        // not saved
+        do {
+            let recommendation: Recommendation = .build(item: .build())
+            let viewModel = subject(recommendation: recommendation)
+            XCTAssertEqual(
+                viewModel._actions.map(\.title),
+                ["Display Settings", "Save", "Share"]
+            )
+        }
+
         // not-favorited, not-archived
         do {
             let item: Item = .build()
@@ -65,10 +75,16 @@ class RecommendationViewModelTests: XCTestCase {
 
     func test_whenItemChanges_rebuildsActions() {
         let item: Item = .build()
-        let savedItem: SavedItem = .build(isFavorite: false, isArchived: true, item: item)
-        savedItem.item = item
         let recommendation: Recommendation = .build(item: item)
         let viewModel = subject(recommendation: recommendation)
+
+        let savedItem: SavedItem = .build(isFavorite: false, isArchived: true, item: item)
+        savedItem.item = item
+
+        XCTAssertEqual(
+            viewModel._actions.map(\.title),
+            ["Display Settings", "Favorite", "Move to My List", "Delete", "Share"]
+        )
 
         savedItem.isFavorite = true
         XCTAssertEqual(
@@ -229,6 +245,22 @@ class RecommendationViewModelTests: XCTestCase {
         viewModel.showWebReader()
 
         XCTAssertEqual(viewModel.presentedWebReaderURL, item.bestURL)
+    }
+
+    func test_save_delegatesToSource() {
+        let recommendation: Recommendation = .build(item: .build())
+
+        let expectSave = expectation(description: "expect source.save(_:)")
+        source.stubSaveRecommendation { saved in
+            defer { expectSave.fulfill() }
+            XCTAssertTrue(saved === recommendation)
+        }
+
+        let viewModel = subject(recommendation: recommendation)
+
+        viewModel.invokeAction(title: "Save")
+
+        wait(for: [expectSave], timeout: 1)
     }
 }
 
