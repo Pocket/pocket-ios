@@ -169,6 +169,41 @@ class PocketSourceTests: XCTestCase {
         wait(for: [expectationToRunOperation], timeout: 1)
     }
 
+    func test_delete_ifSavedItemItemHasRecommendation_doesNotDeleteSavedItemItem() throws {
+        operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
+            TestSyncOperation { }
+        }
+
+        let savedItem = try space.seedSavedItem(item: .build())
+        let item = savedItem.item!
+        item.recommendation = .build()
+
+        let remoteItemID = item.remoteID!
+
+        let source = subject()
+        source.delete(item: savedItem)
+
+        let fetchedItem = try space.fetchItem(byRemoteID: remoteItemID)
+        XCTAssertNotNil(fetchedItem)
+    }
+
+    func test_delete_ifSavedItemItemHasNoRecommendation_doesNotDeleteSavedItemItem() throws {
+        operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
+            TestSyncOperation { }
+        }
+
+        let savedItem = try space.seedSavedItem(item: .build())
+        let item = savedItem.item!
+
+        let remoteItemID = item.remoteID!
+
+        let source = subject()
+        source.delete(item: savedItem)
+
+        let fetchedItem = try space.fetchItem(byRemoteID: remoteItemID)
+        XCTAssertNil(fetchedItem)
+    }
+
     func test_archive_archivesLocally_andExecutesArchiveMutation_andUpdatesArchivedAt() throws {
         let item = try space.seedSavedItem(remoteID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
