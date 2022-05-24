@@ -97,6 +97,18 @@ class RecommendationViewModelTests: XCTestCase {
             viewModel._actions.map(\.title),
             ["Display Settings", "Unfavorite", "Archive", "Delete", "Share"]
         )
+
+        item.savedItem = nil
+        XCTAssertEqual(
+            viewModel._actions.map(\.title),
+            ["Display Settings", "Save", "Share"]
+        )
+
+        item.savedItem = savedItem
+        XCTAssertEqual(
+            viewModel._actions.map(\.title),
+            ["Display Settings", "Unfavorite", "Archive", "Delete", "Share"]
+        )
     }
 
     func test_displaySettings_updatesIsPresentingReaderSettings() {
