@@ -25,6 +25,14 @@ class LoggedOutViewModelTests: XCTestCase {
         tracker = MockTracker()
         mockAuthenticationSession = MockAuthenticationSession()
         subscriptions = []
+
+        mockAuthenticationSession.stubStart {
+            self.mockAuthenticationSession.completionHandler?(
+                self.mockAuthenticationSession.url,
+                self.mockAuthenticationSession.error
+            )
+            return true
+        }
     }
 
     override func tearDown() {
@@ -49,6 +57,26 @@ class LoggedOutViewModelTests: XCTestCase {
 }
 
 extension LoggedOutViewModelTests {
+    func test_logIn_withExistingSession_doesNotAttemptAuthentication() async {
+        appSession.currentSession = Session(
+            guid: "mock-guid",
+            accessToken: "mock-access-token",
+            userIdentifier: "mock-user-identifier"
+        )
+
+        let startExpectation = expectation(description: "expected start to not be called")
+        startExpectation.isInverted = true
+        mockAuthenticationSession.stubStart {
+            startExpectation.fulfill()
+            return true
+        }
+
+        let viewModel = subject()
+        await viewModel.logIn()
+
+        wait(for: [startExpectation], timeout: 1)
+    }
+
     func test_logIn_onFxAError_setsPresentedAlert() async {
         mockAuthenticationSession.url = URL(string: "pocket://fxa")!
         let viewModel = subject()
@@ -82,6 +110,26 @@ extension LoggedOutViewModelTests {
 }
 
 extension LoggedOutViewModelTests {
+    func test_signUp_withExistingSession_doesNotAttemptAuthentication() async {
+        appSession.currentSession = Session(
+            guid: "mock-guid",
+            accessToken: "mock-access-token",
+            userIdentifier: "mock-user-identifier"
+        )
+
+        let startExpectation = expectation(description: "expected start to not be called")
+        startExpectation.isInverted = true
+        mockAuthenticationSession.stubStart {
+            startExpectation.fulfill()
+            return true
+        }
+
+        let viewModel = subject()
+        await viewModel.signUp()
+
+        wait(for: [startExpectation], timeout: 1)
+    }
+
     func test_signUp_onFxAError_setsPresentedAlert() async {
         mockAuthenticationSession.url = URL(string: "pocket://fxa")!
         let viewModel = subject()

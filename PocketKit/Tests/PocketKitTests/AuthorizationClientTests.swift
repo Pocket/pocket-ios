@@ -17,6 +17,13 @@ class AuthorizationClientTests: XCTestCase {
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }
+
+        mockAuthenticationSession.stubStart {
+            let url = self.mockAuthenticationSession.url
+            let error = self.mockAuthenticationSession.error
+            self.mockAuthenticationSession.completionHandler?(url, error)
+            return true
+        }
     }
 }
 
@@ -50,6 +57,28 @@ extension AuthorizationClientTests {
             XCTAssertEqual(error as? AuthorizationClient.Error, .invalidRedirect)
         }
     }
+
+    func test_logIn_startsOnlyOneSession() throws {
+        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
+
+        let expectSessionStart = expectation(description: "expected session start")
+        expectSessionStart.expectedFulfillmentCount = 2
+        expectSessionStart.isInverted = true
+        mockAuthenticationSession.stubStart {
+            expectSessionStart.fulfill()
+            return true
+        }
+
+        Task {
+            _ = try await self.client.logIn(from: self)
+        }
+
+        Task {
+            _ = try await self.client.logIn(from: self)
+        }
+
+        wait(for: [expectSessionStart], timeout: 1)
+    }
 }
 
 extension AuthorizationClientTests {
@@ -81,6 +110,28 @@ extension AuthorizationClientTests {
             XCTAssertTrue(error is AuthorizationClient.Error)
             XCTAssertEqual(error as? AuthorizationClient.Error, .invalidRedirect)
         }
+    }
+
+    func test_signUp_startsOnlyOneSession() throws {
+        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")
+
+        let expectSessionStart = expectation(description: "expected session start")
+        expectSessionStart.expectedFulfillmentCount = 2
+        expectSessionStart.isInverted = true
+        mockAuthenticationSession.stubStart {
+            expectSessionStart.fulfill()
+            return true
+        }
+
+        Task {
+            _ = try await self.client.signUp(from: self)
+        }
+
+        Task {
+            _ = try await self.client.signUp(from: self)
+        }
+
+        wait(for: [expectSessionStart], timeout: 1)
     }
 }
 
