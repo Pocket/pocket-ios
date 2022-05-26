@@ -68,6 +68,10 @@ class LoggedOutViewModel: ObservableObject {
 
     @MainActor
     func logIn() {
+        guard appSession.currentSession == nil else {
+            return
+        }
+
         lastAction = .logIn
 
         tracker.track(
@@ -88,6 +92,10 @@ class LoggedOutViewModel: ObservableObject {
 
     @MainActor
     func signUp() {
+        guard appSession.currentSession == nil else {
+            return
+        }
+
         lastAction = .signUp
 
         tracker.track(
@@ -141,6 +149,8 @@ class LoggedOutViewModel: ObservableObject {
                 presentedAlert = PocketAlert(error) { [weak self] in
                     self?.presentedAlert = nil
                 }
+                Crashlogger.capture(error: error)
+            case .alreadyAuthenticating:
                 Crashlogger.capture(error: error)
             case .other(let nested):
                 // All other errors will be throws by the AuthenticationSession,

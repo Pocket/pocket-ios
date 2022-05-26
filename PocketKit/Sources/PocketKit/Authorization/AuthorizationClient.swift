@@ -9,6 +9,8 @@ import AuthenticationServices
 public class AuthorizationClient {
     typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession
 
+    private var isAuthenticating = false
+
     private let consumerKey: String
     private let authenticationSessionFactory: AuthenticationSessionFactory
 
@@ -22,11 +24,25 @@ public class AuthorizationClient {
 
     @MainActor
     func logIn(from contextProvider: ASWebAuthenticationPresentationContextProviding?) async throws -> Response {
+        defer { isAuthenticating = false }
+
+        guard isAuthenticating == false else {
+            throw AuthorizationClient.Error.alreadyAuthenticating
+        }
+
+        isAuthenticating = true
         return try await authenticate(with: "/login", contextProvider: contextProvider)
     }
 
     @MainActor
     func signUp(from contextProvider: ASWebAuthenticationPresentationContextProviding?) async throws -> Response {
+        guard isAuthenticating == false else {
+            throw AuthorizationClient.Error.alreadyAuthenticating
+        }
+
+        defer { isAuthenticating = false }
+
+        isAuthenticating = true
         return try await authenticate(with: "/signup", contextProvider: contextProvider)
     }
 
@@ -81,6 +97,8 @@ extension AuthorizationClient {
             switch (lhs, rhs) {
             case (.invalidRedirect, .invalidRedirect):
                 return true
+            case (.alreadyAuthenticating, .alreadyAuthenticating):
+                return true
             case (.other(let lhsError), .other(let rhsError)):
                 return lhsError.localizedDescription == rhsError.localizedDescription
             default:
@@ -90,6 +108,7 @@ extension AuthorizationClient {
 
         case invalidRedirect
         case invalidComponents
+        case alreadyAuthenticating
         case other(Swift.Error)
 
         var errorDescription: String? {
@@ -98,6 +117,8 @@ extension AuthorizationClient {
                 return "Could not successfully handle the server redirect."
             case .invalidComponents:
                 return "Could not generate correct URL for authentication."
+            case .alreadyAuthenticating:
+                return "AuthorizationClient is already authenticating"
             case .other(let error):
                 return error.localizedDescription
             }
