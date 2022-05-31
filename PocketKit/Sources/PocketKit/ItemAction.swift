@@ -120,6 +120,16 @@ extension ItemAction {
             handler: handler
         )
     }
+
+    static func recommendationPrimary(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+        return ItemAction(
+            title: "",
+            identifier: .recommendationPrimary,
+            accessibilityIdentifier: "item-action-recommendation-primary",
+            image: nil,
+            handler: handler
+        )
+    }
 }
 
 extension UIAction.Identifier {
@@ -131,6 +141,7 @@ extension UIAction.Identifier {
     static let shareItem = UIAction.Identifier(rawValue: "share-item")
     static let displaySettings = UIAction.Identifier(rawValue: "display-settings")
     static let report = UIAction.Identifier(rawValue: "report")
+    static let recommendationPrimary = UIAction.Identifier(rawValue: "recommendation-primary")
 }
 
 extension UIAction {
