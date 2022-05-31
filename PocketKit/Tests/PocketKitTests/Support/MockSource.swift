@@ -168,6 +168,30 @@ extension MockSource {
     }
 }
 
+// MARK: - Make images controller
+extension MockSource {
+    static let makeImagesController = "makeImagesController"
+    typealias MakeImagesControllerImpl = () -> ImagesController
+
+    struct MakeImagesControllerCall {
+
+    }
+
+    func stubMakeImagesController(impl: @escaping MakeImagesControllerImpl) {
+        implementations[Self.makeImagesController] = impl
+    }
+
+    func makeImagesController() -> ImagesController {
+        guard let impl = implementations[Self.makeImagesController] as? MakeImagesControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeImagesController] = (calls[Self.makeImagesController] ?? []) + [MakeImagesControllerCall()]
+
+        return impl()
+    }
+}
+
 
 // MARK: - Fetch Archived content
 extension MockSource {

@@ -197,6 +197,17 @@ class Space {
         )
     }
 
+    func makeImagesController() -> NSFetchedResultsController<Image> {
+        let request = Requests.fetchImages()
+        request.sortDescriptors = [NSSortDescriptor(key: "source.absoluteString", ascending: true)]
+        return NSFetchedResultsController(
+            fetchRequest: request,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
+
     func object<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
         context.object(with: id) as? T
     }

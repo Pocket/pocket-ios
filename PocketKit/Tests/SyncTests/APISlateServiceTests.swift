@@ -96,6 +96,9 @@ extension APISlateServiceTests {
                 XCTAssertEqual(item!.isArticle, true)
                 XCTAssertEqual(item!.hasImage, .hasImages)
                 XCTAssertEqual(item!.hasVideo, .hasVideos)
+
+                let images = item!.images?.compactMap { $0 as? Image } ?? []
+                XCTAssertEqual(images[0].source, URL(string: "http://example.com/rec-1/image-1.jpg"))
             }
 
             do {

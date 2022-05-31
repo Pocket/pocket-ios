@@ -8,6 +8,7 @@ import Analytics
 import AuthenticationServices
 import BackgroundTasks
 import SharedPocketKit
+import Kingfisher
 
 
 struct Services {
@@ -17,11 +18,12 @@ struct Services {
     let firstLaunchDefaults: UserDefaults
     let appSession: AppSession
     let urlSession: URLSessionProtocol
-    let source: Source
+    let source: Sync.Source
     let tracker: Tracker
     let sceneTracker: SceneTracker
     let refreshCoordinator: RefreshCoordinator
     let authClient: AuthorizationClient
+    let imageManager: ImageManager
 
     private init() {
         userDefaults = .standard
@@ -51,6 +53,11 @@ struct Services {
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
             source: source
+        )
+
+        imageManager = ImageManager(
+            imagesController: source.makeImagesController(),
+            imageRetriever: KingfisherManager.shared
         )
     }
 }
