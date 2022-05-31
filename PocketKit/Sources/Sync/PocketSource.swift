@@ -138,6 +138,10 @@ public class PocketSource: Source {
         )
     }
 
+    public func makeImagesController() -> ImagesController {
+        FetchedImagesController(resultsController: space.makeImagesController())
+    }
+
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.object(with: id)
     }

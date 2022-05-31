@@ -27,7 +27,15 @@
                                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                                 "timeToRead": 1,
                                 "marticle": [],
-                                "images": [],
+                                "images": [
+                                    {
+                                        "__typename": "[type-name-here]",
+                                        "height": 1,
+                                        "width": 2,
+                                        "src": "http://example.com/rec-1/image-1.jpg",
+                                        "imageId": 1
+                                    }
+                                ],
                                 "excerpt": "Cursus Aenean Elit",
                                 "datePublished": "2021-01-01 12:01:01",
                                 "domain": "slate-1-rec-1.example.com",

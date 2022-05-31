@@ -103,6 +103,9 @@ class FetchListTests: XCTestCase {
         let domain = item?.domainMetadata
         XCTAssertEqual(domain?.name, "WIRED")
         XCTAssertEqual(domain?.logo, URL(string: "http://example.com/item-1/domain-logo.jpg")!)
+
+        let images = item?.images?.compactMap { $0 as? Image } ?? []
+        XCTAssertEqual(images[0].source, URL(string: "http://example.com/item-1/image-1.jpg"))
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {

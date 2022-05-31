@@ -114,6 +114,10 @@ public enum Requests {
         request.predicate = NSPredicate(format: "savedItem = nil")
         return request
     }
+
+    public static func fetchImages() -> NSFetchRequest<Image> {
+        Image.fetchRequest()
+    }
 }
 
 public enum Predicates {

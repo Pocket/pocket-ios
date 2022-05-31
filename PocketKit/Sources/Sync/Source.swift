@@ -18,6 +18,8 @@ public protocol Source {
 
     func makeSlateController(byID id: String) -> SlateController
 
+    func makeImagesController() -> ImagesController
+
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refresh(maxItems: Int, completion: (() -> ())?)
