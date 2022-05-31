@@ -75,12 +75,10 @@ class HomeViewModel {
             return nil
         }
 
-        if viewModel.isSaved {
-            return .archive { [weak self] _ in
+        return .recommendationPrimary { [weak self] _ in
+            if viewModel.isSaved {
                 self?.archive(cell, at: indexPath)
-            }
-        } else {
-            return .save { [weak self] _ in
+            } else {
                 self?.save(cell, at: indexPath)
             }
         }
