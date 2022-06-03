@@ -122,6 +122,10 @@ class ItemsListItemCell: UICollectionViewCell {
         listContentView.addSubview(mainContentView)
         listContentView.addSubview(buttonStack)
 
+        self.backgroundColor = .blue
+        contentView.backgroundColor = .red
+        listContentView.backgroundColor = .green
+        
         contentView.addSubview(listContentView)
         contentView.layoutMargins = Constants.margins
 
@@ -181,6 +185,14 @@ class ItemsListItemCell: UICollectionViewCell {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        if let _ = subviews.first(where: { view in "\(type(of: view))".contains("_UIVisualEffectBackdropView") }) {
+            print("it has a backdrop view")
+        }
     }
 }
 

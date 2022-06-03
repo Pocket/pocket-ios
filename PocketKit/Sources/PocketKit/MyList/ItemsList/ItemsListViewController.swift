@@ -66,11 +66,19 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                     guard case .item(let objectID) = self.dataSource.itemIdentifier(for: indexPath) else {
                         return nil
                     }
+                    
+                    let action = UIContextualAction(style: .destructive, title: "Archive") { [weak self] _, _, completion in
+                        
+                        var snapshot = self?.dataSource.snapshot()
+                        snapshot?.deleteItems([ItemsListCell<ViewModel.ItemIdentifier>.item(objectID)])
+                        self?.dataSource.apply(snapshot!)
 
-                    let actions = model.trailingSwipeActions(for: objectID)
-                    .compactMap(UIContextualAction.init)
-
-                    return UISwipeActionsConfiguration(actions: actions)
+                        completion(true)
+                    }
+//                    let actions = model.trailingSwipeActions(for: objectID)
+//                    .compactMap(UIContextualAction.init)
+                    
+                    return UISwipeActionsConfiguration(actions: [action])
                 }
 
                 return NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
@@ -212,6 +220,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     private func handle(myListEvent event: ItemsListEvent<ViewModel.ItemIdentifier>) {
         switch event {
         case .snapshot(let snapshot):
+            // no issue when animating
             dataSource.apply(snapshot, animatingDifferences: true)
 
         case .selectionCleared:

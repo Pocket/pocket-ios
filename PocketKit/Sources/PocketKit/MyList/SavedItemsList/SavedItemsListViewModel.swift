@@ -332,17 +332,23 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
     ) {
-        guard .update == type else {
-            return
+        
+        switch type {
+        case .delete:
+            var snapshot = buildSnapshot()
+            snapshot.deleteItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
+            send(snapshot: snapshot)
+        case .update:
+            var snapshot = buildSnapshot()
+            snapshot.reloadItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
+            send(snapshot: snapshot)
+        default:
+            break
         }
-
-        var snapshot = buildSnapshot()
-        snapshot.reloadItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
-        send(snapshot: snapshot)
     }
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {
-        itemsLoaded()
+//        itemsLoaded()
     }
 }
 
