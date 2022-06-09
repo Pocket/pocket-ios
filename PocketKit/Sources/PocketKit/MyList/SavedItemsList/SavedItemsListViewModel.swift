@@ -9,7 +9,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
 
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
-    var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
+    // get new publisher everytime access
+    lazy var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> = { _events.eraseToAnyPublisher() }()
 
     let selectionItem: SelectionItem = SelectionItem(title: "My List", image: .init(asset: .myList))
 
@@ -169,6 +170,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         return [
             .archive { [weak self] completion in
                 self?._archive(item: item)
+                print("☺️ Calling completion \(Date().timeIntervalSinceReferenceDate)")
                 completion(true)
             }
         ]
@@ -207,6 +209,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func itemsLoaded() {
+        print("☺️ Calling send \(Date().timeIntervalSinceReferenceDate)")
         send(snapshot: buildSnapshot())
     }
 
@@ -332,13 +335,17 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
     ) {
-        
+        print("☺️ Calling \(type) \(Date().timeIntervalSinceReferenceDate)")
+
         switch type {
-        case .delete:
-            var snapshot = buildSnapshot()
-            snapshot.deleteItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
-            send(snapshot: snapshot)
+        case .move:
+            print("☺️ Calling move \(Date().timeIntervalSinceReferenceDate)")
+//        case .delete:
+//            var snapshot = buildSnapshot()
+//            snapshot.deleteItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
+//            send(snapshot: snapshot)
         case .update:
+            print("☺️ Calling update \(Date().timeIntervalSinceReferenceDate)")
             var snapshot = buildSnapshot()
             snapshot.reloadItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
             send(snapshot: snapshot)
@@ -348,7 +355,8 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
     }
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {
-//        itemsLoaded()
+        print("☺️ Calling itemsLoaded \(Date().timeIntervalSinceReferenceDate)")
+        itemsLoaded()
     }
 }
 

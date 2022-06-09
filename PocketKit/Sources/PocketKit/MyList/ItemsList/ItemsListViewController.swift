@@ -67,18 +67,18 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                         return nil
                     }
                     
-                    let action = UIContextualAction(style: .destructive, title: "Archive") { [weak self] _, _, completion in
-                        
-                        var snapshot = self?.dataSource.snapshot()
-                        snapshot?.deleteItems([ItemsListCell<ViewModel.ItemIdentifier>.item(objectID)])
-                        self?.dataSource.apply(snapshot!)
-
-                        completion(true)
-                    }
-//                    let actions = model.trailingSwipeActions(for: objectID)
-//                    .compactMap(UIContextualAction.init)
+//                    let action = UIContextualAction(style: .destructive, title: "Archive") { [weak self] _, _, completion in
+//
+//                        var snapshot = self?.dataSource.snapshot()
+//                        snapshot?.deleteItems([ItemsListCell<ViewModel.ItemIdentifier>.item(objectID)])
+//                        self?.dataSource.apply(snapshot!)
+//
+//                        completion(true)
+//                    }
+                    let actions = model.trailingSwipeActions(for: objectID)
+                    .compactMap(UIContextualAction.init)
                     
-                    return UISwipeActionsConfiguration(actions: [action])
+                    return UISwipeActionsConfiguration(actions: actions)
                 }
 
                 return NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
@@ -167,6 +167,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
 
         model.events.sink { [weak self] event in
+            print("☺️ Calling handle \(model) \(Date().timeIntervalSinceReferenceDate)")
             self?.handle(myListEvent: event)
         }.store(in: &subscriptions)
     }
