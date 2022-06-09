@@ -14,7 +14,7 @@ struct ItemContextualAction {
 extension ItemContextualAction {
     static func moveToMyList(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
         ItemContextualAction(
-            style: .normal,
+            style: .destructive,
             title: "Move to My List",
             image: UIImage(asset: .save),
             backgroundColor: UIColor(.ui.teal2),
@@ -24,7 +24,7 @@ extension ItemContextualAction {
 
     static func archive(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
         ItemContextualAction(
-            style: .normal,
+            style: .destructive,
             title: "Archive",
             image: UIImage(asset: .archive),
             backgroundColor: UIColor(.ui.teal2),
