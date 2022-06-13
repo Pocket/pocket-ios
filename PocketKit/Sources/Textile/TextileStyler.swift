@@ -3,34 +3,15 @@ import Down
 
 
 public class TextileStyler: Styler {
-    private let h1: Style
-    private let h2: Style
-    private let h3: Style
-    private let h4: Style
-    private let h5: Style
-    private let h6: Style
-    private let body: Style
-    private let monospace: Style
-    
+    private let styling: FontStyling
+    private let modifier: StylerModifier
+
     public init(
-        h1: Style,
-        h2: Style,
-        h3: Style,
-        h4: Style,
-        h5: Style,
-        h6: Style,
-        body: Style,
-        monospace: Style,
+        styling: FontStyling,
         modifier: StylerModifier
     ) {
-        self.h1 = h1.modified(by: modifier)
-        self.h2 = h2.modified(by: modifier)
-        self.h3 = h3.modified(by: modifier)
-        self.h4 = h4.modified(by: modifier)
-        self.h5 = h5.modified(by: modifier)
-        self.h6 = h6.modified(by: modifier)
-        self.body = body.modified(by: modifier)
-        self.monospace = monospace.adjustingSize(by: modifier.fontSizeAdjustment)
+        self.styling = styling
+        self.modifier = modifier
     }
     
     public func style(document str: NSMutableAttributedString) {
@@ -72,13 +53,13 @@ public class TextileStyler: Styler {
     public func style(heading str: NSMutableAttributedString, level: Int) {
         var headingStyle: Style
         switch level {
-        case 1: headingStyle = h1
-        case 2: headingStyle = h2
-        case 3: headingStyle = h3
-        case 4: headingStyle = h4
-        case 5: headingStyle = h5
-        case 6: headingStyle = h6
-        default: headingStyle = body
+        case 1: headingStyle = styling.h1
+        case 2: headingStyle = styling.h2
+        case 3: headingStyle = styling.h3
+        case 4: headingStyle = styling.h4
+        case 5: headingStyle = styling.h5
+        case 6: headingStyle = styling.h6
+        default: headingStyle = styling.bolding(style: styling.body)
         }
         
         str.updateStyle { existingStyle in
@@ -88,7 +69,7 @@ public class TextileStyler: Styler {
 
             headingStyle = headingStyle.with(slant: existingStyle.fontDescriptor.slant)
             
-            if existingStyle.fontDescriptor.family == monospace.fontDescriptor.family {
+            if existingStyle.fontDescriptor.family == styling.monospace.fontDescriptor.family {
                 headingStyle = headingStyle
                     .with(family: existingStyle.fontDescriptor.family)
                     .with(backgroundColor: .ui.grey6)
@@ -104,7 +85,7 @@ public class TextileStyler: Styler {
     
     public func style(text str: NSMutableAttributedString) {
         str.updateStyle { _ in
-            body
+            styling.body
         }
     }
     
@@ -118,7 +99,7 @@ public class TextileStyler: Styler {
     
     public func style(code str: NSMutableAttributedString) {
         str.updateStyle { existingStyle in
-            monospace.with(backgroundColor: .ui.grey6)
+            styling.monospace.with(backgroundColor: .ui.grey6)
         }
     }
     
@@ -132,19 +113,20 @@ public class TextileStyler: Styler {
     
     public func style(emphasis str: NSMutableAttributedString) {
         str.updateStyle { existingStyle in
-            (existingStyle ?? body).with(slant: .italic)
+            (existingStyle ?? styling.body).with(slant: .italic)
         }
     }
     
     public func style(strong str: NSMutableAttributedString) {
         str.updateStyle { existingStyle in
-            (existingStyle ?? body).with(weight: .bold)
+            let style = existingStyle ?? styling.body
+            return styling.bolding(style: style)
         }
     }
     
     public func style(link str: NSMutableAttributedString, title: String?, url: String?) {
         str.updateStyle { existingStyle in
-            (existingStyle ?? body).with(underlineStyle: .single)
+            (existingStyle ?? styling.body).with(underlineStyle: .single)
         }
         
         if let urlString = url, let url = URL(string: urlString) {

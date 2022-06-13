@@ -38,15 +38,15 @@ public extension Style {
         public let display = Display()
 
         public struct SansSerif {
-            public let title = Style(family: .graphik, size: .title, weight: .semibold)
-            public let h1 = Style(family: .graphik, size: .h1, weight: .semibold)
-            public let h2 = Style(family: .graphik, size: .h2, weight: .semibold)
-            public let h3 = Style(family: .graphik, size: .h3, weight: .semibold)
-            public let h4 = Style(family: .graphik, size: .h4, weight: .semibold)
-            public let h5 = Style(family: .graphik, size: .h5, weight: .semibold)
-            public let h6 = Style(family: .graphik, size: .h6, weight: .semibold)
-            public let h7 = Style(family: .graphik, size: .h7, weight: .semibold)
-            public let h8 = Style(family: .graphik, size: .h8, weight: .semibold)
+            public let title = Style(family: .graphik, size: .title, weight: .medium)
+            public let h1 = Style(family: .graphik, size: .h1, weight: .medium)
+            public let h2 = Style(family: .graphik, size: .h2, weight: .medium)
+            public let h3 = Style(family: .graphik, size: .h3, weight: .medium)
+            public let h4 = Style(family: .graphik, size: .h4, weight: .medium)
+            public let h5 = Style(family: .graphik, size: .h5, weight: .medium)
+            public let h6 = Style(family: .graphik, size: .h6, weight: .medium)
+            public let h7 = Style(family: .graphik, size: .h7, weight: .medium)
+            public let h8 = Style(family: .graphik, size: .h8, weight: .medium)
             public let p1 = Style(family: .graphik, size: .p1, weight: .regular)
             public let p2 = Style(family: .graphik, size: .p2, weight: .regular)
             public let p3 = Style(family: .graphik, size: .p3, weight: .regular)
@@ -55,7 +55,7 @@ public extension Style {
         }
 
         public struct Serif {
-            public let title = Style(family: .blanco, size: .title, weight: .semibold)
+            public let title = Style(family: .blanco, size: .title, weight: .bold)
             public let h1 = Style(family: .blanco, size: .h1, weight: .bold)
             public let h2 = Style(family: .blanco, size: .h2, weight: .bold)
             public let h3 = Style(family: .blanco, size: .h3, weight: .bold)

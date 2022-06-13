@@ -1,6 +1,8 @@
 public protocol StylerModifier {
     var fontSizeAdjustment: Int { get }
     var fontFamily: FontDescriptor.Family { get }
+
+    var currentStyling: FontStyling { get }
 }
 
 public extension Style {

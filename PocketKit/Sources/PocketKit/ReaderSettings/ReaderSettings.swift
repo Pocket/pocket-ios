@@ -12,6 +12,14 @@ class ReaderSettings: StylerModifier, ObservableObject {
     
     @AppStorage("readerFontFamily")
     var fontFamily: FontDescriptor.Family = .blanco
+
+    var currentStyling: FontStyling {
+        if fontFamily == .graphik {
+            return GraphikLCGStyling()
+        } else {
+            return BlancoOSFStyling()
+        }
+    }
 }
 
 extension FontDescriptor.Family: RawRepresentable {
