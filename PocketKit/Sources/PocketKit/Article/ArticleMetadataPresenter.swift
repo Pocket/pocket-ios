@@ -5,13 +5,19 @@ import Textile
 
 private extension Style {
     static func title(modifier: StylerModifier) -> Style {
-        .header
-        .serif
-        .title
-        .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
-            paragraph.with(lineHeight: .multiplier(0.925))
+        var style: Style = .header
+            .serif
+            .title
+            .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
+                paragraph.with(lineHeight: .multiplier(0.925))
+            }
+            .modified(by: modifier)
+
+        if modifier.fontFamily == .graphik {
+            style = style.with(weight: .medium)
         }
-        .modified(by: modifier)
+
+        return style
     }
 
     static func byline(modifier: StylerModifier) -> Style {
