@@ -155,6 +155,30 @@ public extension Style {
             attributes[.backgroundColor] = UIColor(backgroundColor)
         }
 
+        switch paragraph.verticalAlignment {
+        case .center:
+            guard let lineHeight = paragraph.lineHeight else {
+                break
+            }
+
+            // Thinking of a line of text as a container, NSAttributedStrings by default render their text
+            // against the bottom of the container. CSS's "line-height" property aligns the center of text
+            // to the center of the container. We can mimic this behavior by offsetting the baseline by
+            // a fraction of the difference between the font's line height and the requested line height.
+            let font = attributes[.font] as! UIFont
+            let styleLineHeight: CGFloat
+            switch lineHeight {
+            case .explicit(let value):
+                styleLineHeight = value
+            case .multiplier(let value):
+                styleLineHeight = font.lineHeight * value
+            }
+
+            attributes[.baselineOffset] = (styleLineHeight - font.lineHeight) / 4
+        default:
+            break
+        }
+
         return attributes
     }
 }

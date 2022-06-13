@@ -18,3 +18,8 @@ public enum TextAlignment {
         }
     }
 }
+
+public enum VerticalTextAlignment {
+    case `default`
+    case center
+}
