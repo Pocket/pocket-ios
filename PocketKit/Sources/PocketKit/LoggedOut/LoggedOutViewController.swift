@@ -115,7 +115,7 @@ private struct LoggedOutActionsView: View {
                 Text("Sign Up").style(.header.sansSerif.h8.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                     .frame(maxWidth: 320)
-            }.buttonStyle(LoggedOutButtonStyle())
+            }.buttonStyle(ActionsPrimaryButtonStyle())
 
             Button {
                 viewModel.logIn()
@@ -128,7 +128,7 @@ private struct LoggedOutActionsView: View {
     }
 }
 
-private struct LoggedOutButtonStyle: ButtonStyle {
+struct ActionsPrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .background(configuration.isPressed ? Color(.ui.teal1) : Color(.ui.teal2))

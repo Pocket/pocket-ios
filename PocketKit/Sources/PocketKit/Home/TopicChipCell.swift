@@ -82,6 +82,7 @@ class TopicChipCell: UICollectionViewCell {
 
         iconImageView.isHidden = model.iconImage == nil
         iconImageView.image = model.iconImage
+        iconImageView.contentMode = .center
 
         toggledBackground.isHidden = !model.isSelected
 

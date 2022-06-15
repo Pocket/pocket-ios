@@ -258,6 +258,7 @@ extension ArchivedItemsListViewModel {
         switch cell {
         case .filterButton: return true
         case .item(let objectID): return !(archivedItemsByID[objectID]?.isPending ?? true)
+        case .emptyState: return false
         case .nextPage: return false
         case .offline: return false
         }
@@ -269,7 +270,7 @@ extension ArchivedItemsListViewModel {
             apply(filter: filter, from: cell)
         case .item(let itemID):
             select(item: itemID)
-        case .offline, .nextPage:
+        case .emptyState, .offline, .nextPage:
             return
         }
     }
@@ -301,11 +302,11 @@ extension ArchivedItemsListViewModel {
             selectedFilters.insert(filter)
         }
 
+        fetchLocalItems()
+        
         var snapshot = buildSnapshot()
         snapshot.reloadItems([cell])
         sendSnapshot(snapshot)
-
-        fetchLocalItems()
     }
 }
 
@@ -321,9 +322,20 @@ extension ArchivedItemsListViewModel {
         )
 
         let itemCellIDs = itemsController.fetchedObjects?.map { ItemsListCell<ItemIdentifier>.item($0.objectID) } ?? []
+
+        if itemCellIDs.isEmpty {
+            snapshot.appendSections([.emptyState])
+            if let selectedFilter = ItemsEmptyState(rawValue: selectedFilters.first?.rawValue ?? ItemsEmptyState.archive.rawValue) {
+                snapshot.appendItems([
+                    ItemsListCell<ItemIdentifier>.emptyState(selectedFilter)],
+                                     toSection: .emptyState
+                )
+            }
+        }
+
         snapshot.appendItems(itemCellIDs, toSection: .items)
         snapshot.appendItems([.nextPage], toSection: .nextPage)
-        
+    
         return snapshot
     }
 

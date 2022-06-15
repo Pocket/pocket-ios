@@ -27,6 +27,7 @@ enum SelectedItem {
 enum ItemsListSection: Int, CaseIterable {
     case filters
     case items
+    case emptyState
     case offline
     case nextPage
 }
@@ -34,8 +35,15 @@ enum ItemsListSection: Int, CaseIterable {
 enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
     case filterButton(ItemsListFilter)
     case item(ItemIdentifier)
+    case emptyState(ItemsEmptyState)
     case offline
     case nextPage
+}
+
+enum ItemsEmptyState: String, Hashable, CaseIterable {
+    case myList = "MyList"
+    case archive = "Archive"
+    case favorites = "Favorites"
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {

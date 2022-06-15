@@ -194,4 +194,100 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [snapshotSent], timeout: 1)
     }
+    
+    func test_receivedSnapshots_withNoItems_includesMyListEmptyState() {
+        let viewModel = subject()
+
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+            let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
+            XCTAssertEqual(identifiers.count, 1)
+            guard case .emptyState(let state) = identifiers[0] else {
+                XCTFail("received unexpected cell identifier: \(identifiers[0])")
+                return
+            }
+            XCTAssertEqual(state, .myList)
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+    
+    func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
+        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [] }
+        let viewModel = subject()
+        viewModel.selectCell(with: .filterButton(.favorites))
+        
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+            let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
+            XCTAssertEqual(identifiers.count, 1)
+            guard case .emptyState(let state) = identifiers[0] else {
+                XCTFail("received unexpected cell identifier: \(identifiers[0])")
+                return
+            }
+            XCTAssertEqual(state, .favorites)
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+    
+    func test_receivedSnapshots_withItems_doesNotIncludeMyListEmptyState() {
+        let savedItem: SavedItem = .build()
+        itemsController.fetchedObjects = [savedItem]
+
+        let viewModel = subject()
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+            let identifiers = snapshot.itemIdentifiers(inSection: .items)
+            XCTAssertEqual(identifiers.count, 1)
+            XCTAssertNil(snapshot.indexOfSection(.emptyState))
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+        
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+    
+    func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
+        let savedItem: SavedItem = .build()
+        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [savedItem] }
+        
+        let viewModel = subject()
+        viewModel.selectCell(with: .filterButton(.favorites))
+        
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.sink { event in
+            guard case .snapshot(let snapshot) = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+            let identifiers = snapshot.itemIdentifiers(inSection: .items)
+            XCTAssertEqual(identifiers.count, 1)
+            XCTAssertNil(snapshot.indexOfSection(.emptyState))
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [expectSnapshot], timeout: 1)
+    }
 }
