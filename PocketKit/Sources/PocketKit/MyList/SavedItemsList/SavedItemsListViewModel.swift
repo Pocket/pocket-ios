@@ -97,6 +97,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         case .item(let objectID): return !(bareItem(with: objectID)?.isPending ?? true)
         case .nextPage: return false
         case .offline: return false
+        case .emptyState: return false
         }
     }
 
@@ -106,7 +107,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             select(item: objectID)
         case .filterButton(let filterID):
             apply(filter: filterID, from: cellID)
-        case .offline, .nextPage:
+        case .offline, .nextPage, .emptyState:
             return
         }
     }
@@ -212,20 +213,30 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private func buildSnapshot() -> NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> {
         var snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> = .init()
-
-        let sections: [ItemsListSection] = [.filters, .items]
+        let sections: [ItemsListSection] = [.filters]
         snapshot.appendSections(sections)
 
         snapshot.appendItems(
             ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
-
-        guard let itemCellIDs = itemsController.fetchedObjects?.map({ ItemsListCell<ItemIdentifier>.item($0.objectID) }) else {
+        
+        guard let itemCellIDs = itemsController.fetchedObjects?.map({ ItemsListCell<ItemIdentifier>.item($0.objectID) }), !itemCellIDs.isEmpty else {
+            
+            snapshot.appendSections([.emptyState])
+            if let selectedFilter = ItemsEmptyState(rawValue: selectedFilters.first?.rawValue ?? ItemsEmptyState.myList.rawValue) {
+                snapshot.appendItems([
+                    ItemsListCell<ItemIdentifier>.emptyState(selectedFilter)],
+                    toSection: .emptyState
+                )
+            }
+            
             return snapshot
         }
-
+        
+        snapshot.appendSections([.items])
         snapshot.appendItems(itemCellIDs, toSection: .items)
+        
         return snapshot
     }
 
@@ -316,11 +327,11 @@ extension SavedItemsListViewModel {
             selectedFilters.insert(filter)
         }
 
+        fetch()
+        
         var snapshot = buildSnapshot()
         snapshot.reloadItems([cell])
         send(snapshot: snapshot)
-
-        fetch()
     }
 }
 

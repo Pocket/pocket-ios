@@ -26,4 +26,6 @@ extension ImageAsset {
     public static let logo = ImageAsset("logo")
     public static let circleChecked = ImageAsset("circleChecked")
     public static let error = ImageAsset("error")
+    public static let chest = ImageAsset("chest")
+    public static let welcomeShelf = ImageAsset("welcomeShelf")
 }

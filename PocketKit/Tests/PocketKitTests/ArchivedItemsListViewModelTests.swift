@@ -408,7 +408,103 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         XCTAssertNil(call?.isFavorite)
         XCTAssertEqual(call?.cursor, "cursor-2")
     }
+    
+    func test_receivedSnapshots_withNoItems_includesArchiveEmptyState() {
+        itemsController.fetchedObjects = []
 
+        let viewModel = subject()
+
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
+            guard case .snapshot(let snapshot) = event else { return nil }
+            return snapshot
+        }.sink { snapshot in
+            let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
+            XCTAssertEqual(identifiers.count, 1)
+            guard case .emptyState(let state) = identifiers[0] else {
+                XCTFail("received unexpected cell identifier: \(identifiers[0])")
+                return
+            }
+            XCTAssertEqual(state, .archive)
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+    
+    func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
+        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [] }
+
+        let viewModel = subject()
+        viewModel.selectCell(with: .filterButton(.favorites))
+
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
+            guard case .snapshot(let snapshot) = event else { return nil }
+            return snapshot
+        }.sink { snapshot in
+            let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
+            XCTAssertEqual(identifiers.count, 1)
+            guard case .emptyState(let state) = identifiers[0] else {
+                XCTFail("received unexpected cell identifier: \(identifiers[0])")
+                return
+            }
+            XCTAssertEqual(state, .favorites)
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+
+    func test_receivedSnapshots_withItems_doesNotIncludeArchiveEmptyState() {
+        let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
+        itemsController.fetchedObjects = items
+
+        let viewModel = subject()
+
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
+            guard case .snapshot(let snapshot) = event else { return nil }
+            return snapshot
+        }.sink { snapshot in
+            let identifiers = snapshot.itemIdentifiers(inSection: .items)
+            XCTAssertEqual(identifiers.count, 2)
+            XCTAssertNil(snapshot.indexOfSection(.emptyState))
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+    
+    func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
+        let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
+        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = items }
+
+        let viewModel = subject()
+        viewModel.selectCell(with: .filterButton(.favorites))
+
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
+            guard case .snapshot(let snapshot) = event else { return nil }
+            return snapshot
+        }.sink { snapshot in
+            let identifiers = snapshot.itemIdentifiers(inSection: .items)
+            XCTAssertEqual(identifiers.count, 2)
+            XCTAssertNil(snapshot.indexOfSection(.emptyState))
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+    
     func test_willDisplay_whenFavoritesFilterIsOn_includesFilterArgument() {
         let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
         itemsController.stubPerformFetch { self.itemsController.fetchedObjects = items }

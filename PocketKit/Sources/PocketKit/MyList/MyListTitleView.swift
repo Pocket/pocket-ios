@@ -134,6 +134,9 @@ private class MyListSelectionButton: UIButton {
     override func updateConfiguration() {
         guard isSelected else {
             configuration?.attributedTitle = nil
+            configuration?.imageColorTransformer = UIConfigurationColorTransformer { _ in
+                UIColor(.ui.grey1)
+            }
             return
         }
 
@@ -141,6 +144,10 @@ private class MyListSelectionButton: UIButton {
             selection.title,
             attributes: Style.selected.attributes
         )
+        
+        configuration?.imageColorTransformer = UIConfigurationColorTransformer { _ in
+            UIColor(.ui.teal1)
+        }
     }
 }
 
