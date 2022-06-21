@@ -115,8 +115,10 @@ public enum Requests {
         return request
     }
 
-    public static func fetchImages() -> NSFetchRequest<Image> {
-        Image.fetchRequest()
+    public static func fetchUndownloadedImages() -> NSFetchRequest<Image> {
+        let request = Image.fetchRequest()
+        request.predicate = NSPredicate(format: "isDownloaded = NO")
+        return request
     }
 }
 

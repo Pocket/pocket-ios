@@ -138,8 +138,8 @@ public class PocketSource: Source {
         )
     }
 
-    public func makeImagesController() -> ImagesController {
-        FetchedImagesController(resultsController: space.makeImagesController())
+    public func makeUndownloadedImagesController() -> ImagesController {
+        FetchedImagesController(resultsController: space.makeUndownloadedImagesController())
     }
 
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
@@ -501,6 +501,14 @@ extension PocketSource {
 
     public func remove(recommendation: Recommendation) {
         space.delete(recommendation)
+        try? space.save()
+    }
+}
+
+// MARK: - Image
+extension PocketSource {
+    public func download(image: Image) {
+        image.isDownloaded = true
         try? space.save()
     }
 }

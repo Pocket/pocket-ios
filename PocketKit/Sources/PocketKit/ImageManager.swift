@@ -37,13 +37,16 @@ extension KingfisherManager: ImageRetriever {
 class ImageManager {
     private let imagesController: ImagesController
     private let imageRetriever: ImageRetriever
+    private let source: Sync.Source
 
     init(
         imagesController: ImagesController,
-        imageRetriever: ImageRetriever
+        imageRetriever: ImageRetriever,
+        source: Sync.Source
     ) {
         self.imagesController = imagesController
         self.imageRetriever = imageRetriever
+        self.source = source
 
         imagesController.delegate = self
         try? imagesController.performFetch()
@@ -60,9 +63,14 @@ private extension ImageManager {
             with: cachedSource,
             options: nil,
             progressBlock: nil,
-            downloadTaskUpdated: nil,
-            completionHandler: nil
-        )
+            downloadTaskUpdated: nil) { [weak self] result in
+                switch result {
+                case .success:
+                    self?.source.download(image: image)
+                default:
+                    return
+                }
+            }
     }
 
     func delete(image: Image) {
