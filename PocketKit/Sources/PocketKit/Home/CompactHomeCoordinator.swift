@@ -52,7 +52,9 @@ class CompactHomeCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         model.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation) {
+                self?.model.selectedRecommendationToReport = nil
+            }
         }.store(in: &subscriptions)
 
         model.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
@@ -89,7 +91,9 @@ class CompactHomeCoordinator: NSObject {
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation) {
+                viewModel.selectedRecommendationToReport = nil
+            }
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
@@ -123,20 +127,24 @@ class CompactHomeCoordinator: NSObject {
         recommendation.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: recommendation)
         }.store(in: &readerSubscriptions)
+
+        recommendation.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
+            self?.report(selected) {
+                recommendation.selectedRecommendationToReport = nil
+            }
+        }.store(in: &readerSubscriptions)
     }
 
-    func report(_ recommendation: Recommendation?) {
+    func report(_ recommendation: Recommendation?, _ completion: @escaping () -> Void) {
         guard !isResetting, let recommendation = recommendation else {
             return
         }
 
         let host = ReportRecommendationHostingController(
             recommendation: recommendation,
-            tracker: tracker.childTracker(hosting: .reportDialog)
-        ) { [weak self] in
-            self?.model.selectedRecommendationToReport = nil
-            self?.model.selectedSlateDetailViewModel?.selectedRecommendationToReport = nil
-        }
+            tracker: tracker.childTracker(hosting: .reportDialog),
+            onDismiss: completion
+        )
 
         host.modalPresentationStyle = .formSheet
         viewController.present(host, animated: !isResetting)

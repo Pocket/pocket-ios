@@ -42,7 +42,7 @@ class RecommendationViewModelTests: XCTestCase {
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Save", "Share"]
+                ["Display Settings", "Save", "Share", "Report"]
             )
         }
 
@@ -101,7 +101,7 @@ class RecommendationViewModelTests: XCTestCase {
         item.savedItem = nil
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Save", "Share"]
+            ["Display Settings", "Save", "Share", "Report"]
         )
 
         item.savedItem = savedItem
@@ -273,6 +273,21 @@ class RecommendationViewModelTests: XCTestCase {
         viewModel.invokeAction(title: "Save")
 
         wait(for: [expectSave], timeout: 1)
+    }
+
+    func test_report_updatesSelectedRecommendationToReport() {
+        let recommendation = Recommendation.build(item: .build())
+
+        let viewModel = subject(recommendation: recommendation)
+
+        let reportExpectation = expectation(description: "expected recommendation to be reported")
+        viewModel.$selectedRecommendationToReport.dropFirst().sink { recommendation in
+            XCTAssertNotNil(recommendation)
+            reportExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.invokeAction(title: "Report")
+        wait(for: [reportExpectation], timeout: 1)
     }
 }
 

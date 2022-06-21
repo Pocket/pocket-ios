@@ -92,4 +92,16 @@ class ReportARecommendationTests: XCTestCase {
         
         XCTAssertTrue(requestBody.contains("reason"))
     }
+
+    func test_reportingARecommendation_fromReader_showsReportView() {
+        app.homeView
+            .recommendationCell("Slate 1, Recommendation 1")
+            .wait()
+            .tap()
+
+        app.readerView.readerToolbar.moreButton.tap()
+        app.reportButton.wait().tap()
+
+        app.reportView.wait()
+    }
 }
