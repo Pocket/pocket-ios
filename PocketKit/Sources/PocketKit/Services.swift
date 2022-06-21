@@ -60,6 +60,7 @@ struct Services {
             imageRetriever: KingfisherManager.shared,
             source: source
         )
+        imageManager.start()
     }
 }
 

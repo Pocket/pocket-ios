@@ -440,7 +440,7 @@ class PocketSourceTests: XCTestCase {
         let image: Image = space.new()
 
         let source = subject()
-        source.download(image: image)
+        source.download(images: [image])
 
         XCTAssertTrue(image.isDownloaded)
     }

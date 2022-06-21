@@ -21,7 +21,7 @@ class ImageManagerTests: XCTestCase {
         imagesController.stubPerformFetch { }
         imageCache.stubRemoveImage { _, _, _, _, _, _ in }
         imageRetriever.stubRetrieveImage { _, _, _, _, _ in return nil }
-        source.stubDownloadImage { _ in }
+        source.stubDownloadImages { _ in }
     }
 
     private func subject(
@@ -49,6 +49,7 @@ class ImageManagerTests: XCTestCase {
         }
 
         let prefetcher = subject()
+        prefetcher.start()
 
         let images: [Image] = [
             .build(source: URL(string: "https://example.com/image-1.png")),
@@ -61,9 +62,9 @@ class ImageManagerTests: XCTestCase {
         imagesController.delegate?.controllerDidChangeContent(imagesController)
 
         XCTAssertEqual(imageRetriever.retrieveImageCall(at: 0)?.resource as? URL, imageCacheURL(for: images[0].source))
-        XCTAssertEqual(source.downloadImageCall(at: 0)?.image, images[0])
+        XCTAssertEqual(source.downloadImagesCall(at: 0)?.images.first, images[0])
         XCTAssertEqual(imageRetriever.retrieveImageCall(at: 1)?.resource as? URL, imageCacheURL(for: images[1].source))
-        XCTAssertEqual(source.downloadImageCall(at: 1)?.image, images[1])
+        XCTAssertEqual(source.downloadImagesCall(at: 0)?.images, imagesController.images)
 
         imagesController.delegate?.controller(
             imagesController,
@@ -74,7 +75,7 @@ class ImageManagerTests: XCTestCase {
         )
 
         XCTAssertEqual(imageRetriever.retrieveImageCall(at: 2)?.resource as? URL, imageCacheURL(for: images[2].source))
-        XCTAssertEqual(source.downloadImageCall(at: 2)?.image, images[2])
+        XCTAssertEqual(source.downloadImagesCall(at: 1)?.images, [images[2]])
 
         imagesController.delegate?.controller(
             imagesController,
@@ -85,11 +86,12 @@ class ImageManagerTests: XCTestCase {
         )
 
         XCTAssertEqual(imageRetriever.retrieveImageCall(at: 3)?.resource as? URL, imageCacheURL(for: images[3].source))
-        XCTAssertEqual(source.downloadImageCall(at: 3)?.image, images[3])
+        XCTAssertEqual(source.downloadImagesCall(at: 2)?.images, [images[3]])
     }
 
     func test_whenImagesAreMoved_doesNothing() {
         let prefetcher = subject()
+        prefetcher.start()
 
         let images: [Image] = [
             .build(source: URL(string: "https://example.com/image-1.png")),
@@ -105,11 +107,12 @@ class ImageManagerTests: XCTestCase {
         )
 
         XCTAssertNil(imageRetriever.retrieveImageCall(at: 0))
-        XCTAssertNil(source.downloadImageCall(at: 0))
+        XCTAssertNil(source.downloadImagesCall(at: 0))
     }
 
     func test_whenImagesAreDeleted_removesImageFromCache() {
         let prefetcher = subject()
+        prefetcher.start()
 
         let images: [Image] = [
             .build(source: URL(string: "https://example.com/image-1.png")),

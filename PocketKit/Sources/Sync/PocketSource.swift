@@ -507,8 +507,11 @@ extension PocketSource {
 
 // MARK: - Image
 extension PocketSource {
-    public func download(image: Image) {
-        image.isDownloaded = true
+    public func download(images: [Image]) {
+        images.forEach {
+            $0.isDownloaded = true
+        }
+
         try? space.save()
     }
 }

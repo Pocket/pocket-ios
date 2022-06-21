@@ -608,35 +608,35 @@ extension MockSource {
 }
 
 extension MockSource {
-    private static let downloadImage = "downloadImage"
-    typealias DownloadImageImpl = (Image) -> Void
-    struct DownloadImageCall {
-        let image: Image
+    private static let downloadImages = "downloadImages"
+    typealias DownloadImagesImpl = ([Image]) -> Void
+    struct DownloadImagesCall {
+        let images: [Image]
     }
 
-    func stubDownloadImage(_ impl: @escaping DownloadImageImpl) {
-        implementations[Self.downloadImage] = impl
+    func stubDownloadImages(_ impl: @escaping DownloadImagesImpl) {
+        implementations[Self.downloadImages] = impl
     }
 
-    func downloadImageCall(at index: Int) -> DownloadImageCall? {
-        guard let calls = calls[Self.downloadImage],
+    func downloadImagesCall(at index: Int) -> DownloadImagesCall? {
+        guard let calls = calls[Self.downloadImages],
               index < calls.count,
-              let call = calls[index] as? DownloadImageCall else {
+              let call = calls[index] as? DownloadImagesCall else {
             return nil
         }
 
         return call
     }
 
-    func download(image: Image) {
-        guard let impl = implementations[Self.downloadImage] as? DownloadImageImpl else {
+    func download(images: [Image]) {
+        guard let impl = implementations[Self.downloadImages] as? DownloadImagesImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.downloadImage] = (calls[Self.downloadImage] ?? []) + [
-            DownloadImageCall(image: image)
+        calls[Self.downloadImages] = (calls[Self.downloadImages] ?? []) + [
+            DownloadImagesCall(images: images)
         ]
 
-        impl(image)
+        impl(images)
     }
 }

@@ -47,14 +47,18 @@ class ImageManager {
         self.imagesController = imagesController
         self.imageRetriever = imageRetriever
         self.source = source
+    }
 
+    func start() {
         imagesController.delegate = self
         try? imagesController.performFetch()
+
+        imagesController.images?.forEach { download(image: $0) }
     }
 }
 
 private extension ImageManager {
-    func download(image: Image) {
+    func download(image: Image, _ completion: ((Bool) -> Void)? = nil) {
         guard let source = image.source, let cachedSource = imageCacheURL(for: source) else {
             return
         }
@@ -63,12 +67,12 @@ private extension ImageManager {
             with: cachedSource,
             options: nil,
             progressBlock: nil,
-            downloadTaskUpdated: nil) { [weak self] result in
+            downloadTaskUpdated: nil) { result in
                 switch result {
                 case .success:
-                    self?.source.download(image: image)
+                    completion?(true)
                 default:
-                    return
+                    completion?(false)
                 }
             }
     }
@@ -99,7 +103,11 @@ extension ImageManager: ImagesControllerDelegate {
     ) {
         switch type {
         case .insert, .update:
-            download(image: image)
+            download(image: image) { [weak self] success in
+                if success {
+                    self?.source.download(images: [image])
+                }
+            }
         case .delete:
             delete(image: image)
         case .move:
@@ -114,6 +122,7 @@ extension ImageManager: ImagesControllerDelegate {
             return
         }
 
-        images.forEach(download)
+        images.forEach { download(image: $0) }
+        source.download(images: images)
     }
 }
