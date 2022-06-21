@@ -12,6 +12,7 @@
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="domainMetadata" inverseEntity="Item"/>
     </entity>
     <entity name="Image" representedClassName="Image" syncable="YES" codeGenerationType="class">
+        <attribute name="isDownloaded" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="source" optional="YES" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="images" inverseEntity="Item"/>
     </entity>
@@ -80,7 +81,7 @@
     <elements>
         <element name="Author" positionX="-9" positionY="144" width="128" height="89"/>
         <element name="DomainMetadata" positionX="-63" positionY="36" width="128" height="14"/>
-        <element name="Image" positionX="-36" positionY="144" width="128" height="59"/>
+        <element name="Image" positionX="-36" positionY="144" width="128" height="74"/>
         <element name="Item" positionX="-45" positionY="99" width="128" height="314"/>
         <element name="PersistentSyncTask" positionX="-36" positionY="144" width="128" height="59"/>
         <element name="Recommendation" positionX="-18" positionY="162" width="128" height="74"/>

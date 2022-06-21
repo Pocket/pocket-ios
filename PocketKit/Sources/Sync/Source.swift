@@ -18,7 +18,7 @@ public protocol Source {
 
     func makeSlateController(byID id: String) -> SlateController
 
-    func makeImagesController() -> ImagesController
+    func makeUndownloadedImagesController() -> ImagesController
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
@@ -51,6 +51,8 @@ public protocol Source {
     func archive(recommendation: Recommendation)
 
     func remove(recommendation: Recommendation)
+
+    func download(image: Image)
 }
 
 public extension Source {

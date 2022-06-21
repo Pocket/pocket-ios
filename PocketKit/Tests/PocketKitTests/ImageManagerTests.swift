@@ -1,12 +1,14 @@
 import XCTest
 import Sync
+@testable import Kingfisher
 @testable import PocketKit
 
 
-class ImagePrefetcherTests: XCTestCase {
+class ImageManagerTests: XCTestCase {
     var imagesController: MockImagesController!
     var imageCache: MockImageCache!
     var imageRetriever: MockImageRetriever!
+    var source: MockSource!
 
     override func setUp() {
         continueAfterFailure = false
@@ -14,23 +16,38 @@ class ImagePrefetcherTests: XCTestCase {
         imagesController = MockImagesController()
         imageCache = MockImageCache()
         imageRetriever = MockImageRetriever(imageCache: imageCache)
+        source = MockSource()
 
         imagesController.stubPerformFetch { }
         imageCache.stubRemoveImage { _, _, _, _, _, _ in }
         imageRetriever.stubRetrieveImage { _, _, _, _, _ in return nil }
+        source.stubDownloadImage { _ in }
     }
 
     private func subject(
         imagesController: ImagesController? = nil,
-        imageRetriever: ImageRetriever? = nil
+        imageRetriever: ImageRetriever? = nil,
+        source: Sync.Source? = nil
     ) -> ImageManager {
         ImageManager(
             imagesController: imagesController ?? self.imagesController,
-            imageRetriever: imageRetriever ?? self.imageRetriever
+            imageRetriever: imageRetriever ?? self.imageRetriever,
+            source: source ?? self.source
         )
     }
 
     func test_whenImagesInsertedOrUpdated_downloadsEachImage() {
+        imageRetriever.stubRetrieveImage { _, _, _, _, completion in
+            let result = RetrieveImageResult(
+                image: UIImage(),
+                cacheType: .memory,
+                source: .network(URL(string: "https://getpocket.com/example-image.png")!),
+                originalSource: .network(URL(string: "https://getpocket.com/example-image.png")!)
+            )
+            completion?(.success(result))
+            return nil
+        }
+
         let prefetcher = subject()
 
         let images: [Image] = [
@@ -44,7 +61,9 @@ class ImagePrefetcherTests: XCTestCase {
         imagesController.delegate?.controllerDidChangeContent(imagesController)
 
         XCTAssertEqual(imageRetriever.retrieveImageCall(at: 0)?.resource as? URL, imageCacheURL(for: images[0].source))
+        XCTAssertEqual(source.downloadImageCall(at: 0)?.image, images[0])
         XCTAssertEqual(imageRetriever.retrieveImageCall(at: 1)?.resource as? URL, imageCacheURL(for: images[1].source))
+        XCTAssertEqual(source.downloadImageCall(at: 1)?.image, images[1])
 
         imagesController.delegate?.controller(
             imagesController,
@@ -55,6 +74,7 @@ class ImagePrefetcherTests: XCTestCase {
         )
 
         XCTAssertEqual(imageRetriever.retrieveImageCall(at: 2)?.resource as? URL, imageCacheURL(for: images[2].source))
+        XCTAssertEqual(source.downloadImageCall(at: 2)?.image, images[2])
 
         imagesController.delegate?.controller(
             imagesController,
@@ -65,6 +85,7 @@ class ImagePrefetcherTests: XCTestCase {
         )
 
         XCTAssertEqual(imageRetriever.retrieveImageCall(at: 3)?.resource as? URL, imageCacheURL(for: images[3].source))
+        XCTAssertEqual(source.downloadImageCall(at: 3)?.image, images[3])
     }
 
     func test_whenImagesAreMoved_doesNothing() {
@@ -84,6 +105,7 @@ class ImagePrefetcherTests: XCTestCase {
         )
 
         XCTAssertNil(imageRetriever.retrieveImageCall(at: 0))
+        XCTAssertNil(source.downloadImageCall(at: 0))
     }
 
     func test_whenImagesAreDeleted_removesImageFromCache() {

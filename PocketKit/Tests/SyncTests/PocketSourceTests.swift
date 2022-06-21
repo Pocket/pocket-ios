@@ -435,4 +435,13 @@ class PocketSourceTests: XCTestCase {
         let fetched = try space.fetchRecommendations()
         XCTAssertEqual(fetched, [recommendation2])
     }
+
+    func test_downloadImage_updatesIsDownloadedProperty() throws {
+        let image: Image = space.new()
+
+        let source = subject()
+        source.download(image: image)
+
+        XCTAssertTrue(image.isDownloaded)
+    }
 }
