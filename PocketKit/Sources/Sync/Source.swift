@@ -52,7 +52,7 @@ public protocol Source {
 
     func remove(recommendation: Recommendation)
 
-    func download(image: Image)
+    func download(images: [Image])
 }
 
 public extension Source {
