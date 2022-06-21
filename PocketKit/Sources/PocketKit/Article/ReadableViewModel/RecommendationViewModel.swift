@@ -25,6 +25,9 @@ class RecommendationViewModel: ReadableViewModel {
 
     @Published
     var isPresentingReaderSettings: Bool?
+
+    @Published
+    var selectedRecommendationToReport: Recommendation?
     
     private let recommendation: Recommendation
     private let source: Source
@@ -137,7 +140,8 @@ extension RecommendationViewModel {
             _actions = [
                 .displaySettings { [weak self] _ in self?.displaySettings() },
                 .save { [weak self] _ in self?.save() },
-                .share { [weak self] _ in self?.share() }
+                .share { [weak self] _ in self?.share() },
+                .report { [weak self] _ in self?.report() }
             ]
 
             return
@@ -183,5 +187,9 @@ extension RecommendationViewModel {
 
         buildActions()
         subscribe(to: savedItem)
+    }
+
+    private func report() {
+        selectedRecommendationToReport = recommendation
     }
 }

@@ -150,7 +150,9 @@ class RegularMainCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         model.home.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation) {
+                self?.model.home.selectedRecommendationToReport = nil
+            }
         }.store(in: &subscriptions)
 
         model.home.$selectedSlateDetailViewModel.receive(on: DispatchQueue.main).sink { [weak self] slateDetail in
@@ -243,6 +245,12 @@ class RegularMainCoordinator: NSObject {
             self?.share(activity)
         }.store(in: &readerSubscriptions)
 
+        readable.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+            self?.report(recommendation) {
+                readable.selectedRecommendationToReport = nil
+            }
+        }.store(in: &readerSubscriptions)
+
         let readableVC = ReadableHostViewController(readableViewModel: readable)
         readerRoot.viewControllers = [readableVC]
         splitController.show(.secondary)
@@ -255,7 +263,9 @@ class RegularMainCoordinator: NSObject {
         }
 
         slate.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
-            self?.report(recommendation)
+            self?.report(recommendation) {
+                slate.selectedRecommendationToReport = nil
+            }
         }.store(in: &slateDetailSubscriptions)
 
         slate.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
@@ -334,18 +344,16 @@ class RegularMainCoordinator: NSObject {
         splitController.present(activityVC, animated: !isResetting)
     }
 
-    private func report(_ recommendation: Recommendation?) {
+    private func report(_ recommendation: Recommendation?, _ completion: @escaping () -> Void) {
         guard !isResetting, let recommendation = recommendation else {
             return
         }
 
         let host = ReportRecommendationHostingController(
             recommendation: recommendation,
-            tracker: tracker.childTracker(hosting: .reportDialog)
-        ) { [weak self] in
-            self?.model.home.selectedRecommendationToReport = nil
-            self?.model.home.selectedSlateDetailViewModel?.selectedRecommendationToReport = nil
-        }
+            tracker: tracker.childTracker(hosting: .reportDialog),
+            onDismiss: completion
+        )
 
         host.modalPresentationStyle = .formSheet
         splitController.present(host, animated: !isResetting)

@@ -79,6 +79,10 @@ struct PocketAppElement {
     var shareButton: XCUIElement {
         app.buttons["Share"]
     }
+
+    var reportButton: XCUIElement {
+        app.buttons["Report"]
+    }
     
     var alert: AlertElement {
         AlertElement(app.alerts.element(boundBy: 0))
