@@ -7,12 +7,17 @@ import UIKit
 
 class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
+    typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
 
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
 
     let selectionItem: SelectionItem = SelectionItem(title: "My List", image: .init(asset: .myList))
 
+    @Published
+    private var _snapshot = Snapshot()
+    var snapshot: Published<Snapshot>.Publisher { $_snapshot }
+    
     @Published
     var presentedAlert: PocketAlert?
 
@@ -21,6 +26,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published
     var sharedActivity: PocketActivity?
+    
+    var emptyState: EmptyStateViewModel? {
+        let items = itemsController.fetchedObjects ?? []
+        guard items.isEmpty else {
+            return nil
+        }
+        
+        return selectedFilters.contains(.favorites) ? FavoritesEmptyStateViewModel() : MyListEmptyStateViewModel()
+    }
 
     private let source: Source
     private let tracker: Tracker
@@ -208,7 +222,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func itemsLoaded() {
-        send(snapshot: buildSnapshot())
+        _snapshot = buildSnapshot()
     }
 
     private func buildSnapshot() -> NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> {
@@ -222,26 +236,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         )
         
         guard let itemCellIDs = itemsController.fetchedObjects?.map({ ItemsListCell<ItemIdentifier>.item($0.objectID) }), !itemCellIDs.isEmpty else {
-            
             snapshot.appendSections([.emptyState])
-            if let selectedFilter = ItemsEmptyState(rawValue: selectedFilters.first?.rawValue ?? ItemsEmptyState.myList.rawValue) {
-                snapshot.appendItems([
-                    ItemsListCell<ItemIdentifier>.emptyState(selectedFilter)],
-                    toSection: .emptyState
-                )
-            }
-            
+            snapshot.appendItems([ItemsListCell<ItemIdentifier>.emptyState], toSection: .emptyState)
             return snapshot
         }
         
         snapshot.appendSections([.items])
         snapshot.appendItems(itemCellIDs, toSection: .items)
-        
         return snapshot
-    }
-
-    private func send(snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>) {
-        _events.send(.snapshot(snapshot))
     }
 
     func willDisplay(_ cell: ItemsListCell<NSManagedObjectID>) {
@@ -330,8 +332,11 @@ extension SavedItemsListViewModel {
         fetch()
         
         var snapshot = buildSnapshot()
+        if snapshot.sectionIdentifiers.contains(.emptyState) {
+            snapshot.reloadSections([.emptyState])
+        }
         snapshot.reloadItems([cell])
-        send(snapshot: snapshot)
+        _snapshot = snapshot
     }
 }
 
@@ -349,7 +354,7 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
 
         var snapshot = buildSnapshot()
         snapshot.reloadItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
-        send(snapshot: snapshot)
+        _snapshot = snapshot
     }
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {
@@ -372,7 +377,7 @@ extension SavedItemsListViewModel {
             }
             var snapshot = buildSnapshot()
             snapshot.reloadItems(updatedSavedItems.map { .item($0.objectID) })
-            send(snapshot: snapshot)
+            _snapshot = snapshot
         }
     }
 }

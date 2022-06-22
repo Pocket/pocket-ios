@@ -32,12 +32,16 @@ struct MyListElement: PocketUIElement {
             )
         ).containing(.staticText, identifier: "Favorites").element(boundBy: 0)
     }
-
+    
+    func emptyStateView(for type: String) -> XCUIElement {
+        element.otherElements["\(type)-empty-state"]
+    }
+    
     var archiveSwipeButton: XCUIElement {
         collectionView.buttons["Archive"]
     }
 
-    var readdSwipeButton: XCUIElement {
+    var readSwipeButton: XCUIElement {
         collectionView.buttons["Move to My List"]
     }
 

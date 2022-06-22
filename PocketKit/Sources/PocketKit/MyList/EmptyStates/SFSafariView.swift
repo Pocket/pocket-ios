@@ -1,6 +1,7 @@
 import SwiftUI
 import SafariServices
 
+
 struct SFSafariView: UIViewControllerRepresentable {
     typealias UIViewControllerType = SFSafariViewController
     

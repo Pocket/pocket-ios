@@ -153,12 +153,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotSent = expectation(description: "snapshotSent")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                XCTFail("Received unexpected event: \(event)")
-                return
-            }
-
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let itemIDs = snapshot.itemIdentifiers(inSection: .items)
             XCTAssertEqual(itemIDs, [.item(savedItem.objectID)])
             snapshotSent.fulfill()
@@ -179,12 +174,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotSent = expectation(description: "snapshotSent")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                XCTFail("Received unexpected event: \(event)")
-                return
-            }
-
+        viewModel.snapshot.dropFirst().sink { snapshot in
             XCTAssertEqual(self.source.refreshObjectCall(at: 0)?.object, savedItem)
             XCTAssertEqual(snapshot.reloadedItemIdentifiers, [.item(savedItem.objectID)])
             snapshotSent.fulfill()
@@ -196,27 +186,22 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
     
     func test_receivedSnapshots_withNoItems_includesMyListEmptyState() {
+        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [] }
         let viewModel = subject()
 
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                XCTFail("Received unexpected event: \(event)")
-                return
-            }
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
             XCTAssertEqual(identifiers.count, 1)
-            guard case .emptyState(let state) = identifiers[0] else {
-                XCTFail("received unexpected cell identifier: \(identifiers[0])")
-                return
-            }
-            XCTAssertEqual(state, .myList)
-            expectSnapshot.fulfill()
+            XCTAssertTrue(snapshot.sectionIdentifiers.contains(.emptyState))
+            XCTAssertNotNil(viewModel.emptyState)
+            XCTAssertTrue(viewModel.emptyState is MyListEmptyStateViewModel)
+            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
-        wait(for: [expectSnapshot], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 1)
     }
     
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
@@ -224,25 +209,19 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites))
         
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                XCTFail("Received unexpected event: \(event)")
-                return
-            }
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
             XCTAssertEqual(identifiers.count, 1)
-            guard case .emptyState(let state) = identifiers[0] else {
-                XCTFail("received unexpected cell identifier: \(identifiers[0])")
-                return
-            }
-            XCTAssertEqual(state, .favorites)
-            expectSnapshot.fulfill()
+            XCTAssertTrue(snapshot.sectionIdentifiers.contains(.emptyState))
+            XCTAssertNotNil(viewModel.emptyState)
+            XCTAssertTrue(viewModel.emptyState is FavoritesEmptyStateViewModel)
+            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
-        wait(for: [expectSnapshot], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 1)
     }
     
     func test_receivedSnapshots_withItems_doesNotIncludeMyListEmptyState() {
@@ -250,21 +229,18 @@ class SavedItemsListViewModelTests: XCTestCase {
         itemsController.fetchedObjects = [savedItem]
 
         let viewModel = subject()
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                XCTFail("Received unexpected event: \(event)")
-                return
-            }
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .items)
             XCTAssertEqual(identifiers.count, 1)
             XCTAssertNil(snapshot.indexOfSection(.emptyState))
-            expectSnapshot.fulfill()
+            XCTAssertNil(viewModel.emptyState)
+            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
         
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
-        wait(for: [expectSnapshot], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 1)
     }
     
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
@@ -274,20 +250,17 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites))
         
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                XCTFail("Received unexpected event: \(event)")
-                return
-            }
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .items)
             XCTAssertEqual(identifiers.count, 1)
             XCTAssertNil(snapshot.indexOfSection(.emptyState))
-            expectSnapshot.fulfill()
+            XCTAssertNil(viewModel.emptyState)
+            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
-        wait(for: [expectSnapshot], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 1)
     }
 }

@@ -28,15 +28,15 @@ open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Conten
 
 class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView> {
     
-    func configure(parent: UIViewController, _ emptyState: ItemsEmptyState) {
-        embed(in: parent, withView: EmptyStateView(viewModel: EmptyStateViewModel(emptyState: emptyState)))
+    func configure(parent: UIViewController, _ viewModel: EmptyStateViewModel) {
+        embed(in: parent, withView: EmptyStateView(viewModel: viewModel))
         host?.view.frame = self.contentView.bounds
         host?.view.backgroundColor = .clear
+        host?.view.accessibilityIdentifier = viewModel.accessibilityIdentifier
     }
 }
 
 struct EmptyStateView: View {
-    @ObservedObject
     private var viewModel: EmptyStateViewModel
     
     @State
@@ -58,28 +58,27 @@ struct EmptyStateView: View {
             VStack(alignment: .center, spacing: 20) {
                 Text(viewModel.headline).style(.main)
                 
-                if viewModel.hasSubtitle, let icon = viewModel.icon {
+                if let subtitle = viewModel.detailText, let icon = viewModel.icon {
                     VStack(alignment: .center, spacing: 5) {
                         Image(asset: icon)
-                        Text(viewModel.detailText).style(.detail)
+                        Text(subtitle).style(.detail)
                     }
                 }
                 
-                if viewModel.hasButton {
+                if let buttonText = viewModel.buttonText, let webURL = viewModel.webURL {
                     Button(action: {
                         self.showSafariView = true
                     }, label: {
-                        Text(viewModel.buttonText).style(.buttonLabel)
+                        Text(buttonText).style(.buttonLabel)
                             .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                             .frame(maxWidth: 320)
                     }).buttonStyle(ActionsPrimaryButtonStyle())
                     .sheet(isPresented: self.$showSafariView) {
-                        SFSafariView(url: URL(string: viewModel.webURL)!)
+                        SFSafariView(url: webURL)
                     }
                 }
             }
         }
-        .accessibilityIdentifier("empty-state")
     }
 }
 
