@@ -35,15 +35,9 @@ enum ItemsListSection: Int, CaseIterable {
 enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
     case filterButton(ItemsListFilter)
     case item(ItemIdentifier)
-    case emptyState(ItemsEmptyState)
+    case emptyState
     case offline
     case nextPage
-}
-
-enum ItemsEmptyState: String, Hashable, CaseIterable {
-    case myList = "MyList"
-    case archive = "Archive"
-    case favorites = "Favorites"
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {
@@ -52,14 +46,16 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
 
 enum ItemsListEvent<ItemIdentifier: Hashable> {
     case selectionCleared
-    case snapshot(NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>)
 }
 
 protocol ItemsListViewModel: AnyObject {
     associatedtype ItemIdentifier: Hashable
-
+    typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
+    
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { get }
     var selectionItem: SelectionItem { get }
+    var emptyState: EmptyStateViewModel? { get }
+    var snapshot: Published<Snapshot>.Publisher { get }
 
     func fetch()
     func refresh(_ completion: (() -> ())?)

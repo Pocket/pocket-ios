@@ -16,6 +16,10 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     let selectionItem: SelectionItem = SelectionItem(title: "Archive", image: .init(asset: .archive))
 
     @Published
+    private var _snapshot = Snapshot()
+    var snapshot: Published<Snapshot>.Publisher { $_snapshot }
+    
+    @Published
     var sharedActivity: PocketActivity?
 
     @Published
@@ -23,6 +27,14 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 
     @Published
     var selectedItem: SelectedItem?
+    
+    var emptyState: EmptyStateViewModel? {
+        let items = itemsController.fetchedObjects ?? []
+        guard items.isEmpty else {
+            return nil
+        }
+        return selectedFilters.contains(.favorites) ? FavoritesEmptyStateViewModel() : ArchiveEmptyStateViewModel()
+    }
 
     private let source: Source
     private let tracker: Tracker
@@ -102,7 +114,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 extension ArchivedItemsListViewModel {
     func fetch() {
         guard isNetworkAvailable else {
-            sendSnapshot(offlineSnapshot())
+            _snapshot = offlineSnapshot()
             return
         }
 
@@ -112,7 +124,7 @@ extension ArchivedItemsListViewModel {
     func refresh(_ completion: (() -> ())?) {
         guard isNetworkAvailable else {
             completion?()
-            sendSnapshot(offlineSnapshot())
+            _snapshot = offlineSnapshot()
             return
         }
 
@@ -120,7 +132,7 @@ extension ArchivedItemsListViewModel {
         if itemsController.fetchedObjects == nil {
             fetchLocalItems()
         } else {
-            sendSnapshot()
+            _snapshot = buildSnapshot()
         }
     }
 
@@ -142,7 +154,7 @@ extension ArchivedItemsListViewModel {
             dict[savedItem.objectID] = savedItem
         } ?? [:]
 
-        sendSnapshot()
+        _snapshot = buildSnapshot()
     }
 }
 
@@ -305,8 +317,11 @@ extension ArchivedItemsListViewModel {
         fetchLocalItems()
         
         var snapshot = buildSnapshot()
+        if snapshot.sectionIdentifiers.contains(.emptyState) {
+            snapshot.reloadSections([.emptyState])
+        }
         snapshot.reloadItems([cell])
-        sendSnapshot(snapshot)
+        _snapshot = snapshot
     }
 }
 
@@ -325,17 +340,11 @@ extension ArchivedItemsListViewModel {
 
         if itemCellIDs.isEmpty {
             snapshot.appendSections([.emptyState])
-            if let selectedFilter = ItemsEmptyState(rawValue: selectedFilters.first?.rawValue ?? ItemsEmptyState.archive.rawValue) {
-                snapshot.appendItems([
-                    ItemsListCell<ItemIdentifier>.emptyState(selectedFilter)],
-                                     toSection: .emptyState
-                )
-            }
+            snapshot.appendItems([ItemsListCell<ItemIdentifier>.emptyState], toSection: .emptyState)
         }
 
         snapshot.appendItems(itemCellIDs, toSection: .items)
         snapshot.appendItems([.nextPage], toSection: .nextPage)
-    
         return snapshot
     }
 
@@ -365,10 +374,6 @@ extension ArchivedItemsListViewModel {
         snapshot.appendSections([.offline])
         snapshot.appendItems([.offline], toSection: .offline)
         return snapshot
-    }
-
-    private func sendSnapshot(_ snapshot: Snapshot? = nil) {
-        _events.send(.snapshot(snapshot ?? buildSnapshot()))
     }
 }
 
@@ -416,7 +421,7 @@ extension ArchivedItemsListViewModel {
 extension ArchivedItemsListViewModel: SavedItemsControllerDelegate {
     func controller(_ controller: SavedItemsController, didChange aSavedItem: SavedItem, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         guard .update == type else { return }
-        sendSnapshot(snapshot(reloadingItem: aSavedItem.objectID))
+        _snapshot = snapshot(reloadingItem: aSavedItem.objectID)
     }
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {

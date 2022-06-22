@@ -117,7 +117,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                     group: .vertical(
                         layoutSize: .init(
                             widthDimension: .fractionalWidth(1),
-                            heightDimension: .absolute(500)
+                            heightDimension: .fractionalHeight(0.65)
                         ),
                         subitems: [
                             .init(
@@ -155,8 +155,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
         }
         
-        let emptyCellRegistration: UICollectionView.CellRegistration<EmptyStateCollectionViewCell, ItemsEmptyState> = .init { [weak self] cell, _, emptyState in
-            self?.configure(cell: cell, emptyState: emptyState)
+        let emptyCellRegistration: UICollectionView.CellRegistration<EmptyStateCollectionViewCell, String> = .init { [weak self] cell, _, _ in
+            self?.configure(cell: cell)
         }
         
         let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
@@ -174,8 +174,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 return collectionView.dequeueConfiguredReusableCell(using: filterButtonRegistration, for: indexPath, item: filter)
             case .item(let itemID):
                 return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexPath, item: itemID)
-            case .emptyState(let state):
-                return collectionView.dequeueConfiguredReusableCell(using: emptyCellRegistration, for: indexPath, item: state)
+            case .emptyState:
+                return collectionView.dequeueConfiguredReusableCell(using: emptyCellRegistration, for: indexPath, item: "")
             case .offline:
                 return collectionView.dequeueConfiguredReusableCell(using: offlineCellRegistration, for: indexPath, item: "")
             case .nextPage:
@@ -185,6 +185,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
         model.events.sink { [weak self] event in
             self?.handle(myListEvent: event)
+        }.store(in: &subscriptions)
+        
+        model.snapshot.sink { [weak self] snapshot in
+            self?.dataSource.apply(snapshot, animatingDifferences: true)
         }.store(in: &subscriptions)
     }
 
@@ -234,15 +238,15 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         cell.configure(model: model.filterButton(with: filterID))
     }
     
-    private func configure(cell: EmptyStateCollectionViewCell, emptyState: ItemsEmptyState) {
-        cell.configure(parent: self, emptyState)
+    private func configure(cell: EmptyStateCollectionViewCell) {
+        guard let viewModel = model.emptyState else {
+            return
+        }
+        cell.configure(parent: self, viewModel)
     }
 
     private func handle(myListEvent event: ItemsListEvent<ViewModel.ItemIdentifier>) {
         switch event {
-        case .snapshot(let snapshot):
-            dataSource.apply(snapshot, animatingDifferences: true)
-
         case .selectionCleared:
             deselectAll()
         }

@@ -59,10 +59,8 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let expectSnapshot = expectation(description: "expect snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else { return }
+        viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshot.fulfill() }
-
             XCTAssertEqual(snapshot.sectionIdentifiers, [.offline])
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .offline),
@@ -79,13 +77,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let expectSnapshot = expectation(description: "expect a snapshot")
         let viewModel = subject()
-        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
-            guard case .snapshot(let snapshot) = event else {
-                return nil
-            }
-
-            return snapshot
-        }.sink { snapshot in
+        viewModel.snapshot.dropFirst().sink { snapshot in
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .items),
                 [
@@ -130,11 +122,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         }
 
         let expectSnapshotWithItemRemoved = expectation(description: "expected deleted item snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                return
-            }
-
+        viewModel.snapshot.dropFirst().sink { snapshot in
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item(items[1].objectID)])
             expectSnapshotWithItemRemoved.fulfill()
         }.store(in: &subscriptions)
@@ -177,11 +165,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         }
 
         let expectSnapshotWithItemReloaded = expectation(description: "expected reloaded item in snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                return
-            }
-
+        viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshotWithItemReloaded.fulfill() }
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [
                 .item(items[0].objectID), .item(items[1].objectID)
@@ -216,10 +200,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         }
 
         let expectSnapshotWithItemReloaded = expectation(description: "expected reloaded item in snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                return
-            }
+        viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshotWithItemReloaded.fulfill() }
 
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [
@@ -249,10 +230,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         }
 
         let expectSnapshotWithItemRemoved = expectation(description: "expected reloaded item snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else {
-                return
-            }
+        viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshotWithItemRemoved.fulfill() }
 
             XCTAssertEqual(
@@ -383,10 +361,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
-            guard case .snapshot(let snapshot) = event else { return nil }
-            return snapshot
-        }.sink { snapshot in
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .nextPage)
             XCTAssertEqual(identifiers.count, 1)
             guard case .nextPage = identifiers[0] else {
@@ -414,24 +389,19 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let viewModel = subject()
 
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
-            guard case .snapshot(let snapshot) = event else { return nil }
-            return snapshot
-        }.sink { snapshot in
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
             XCTAssertEqual(identifiers.count, 1)
-            guard case .emptyState(let state) = identifiers[0] else {
-                XCTFail("received unexpected cell identifier: \(identifiers[0])")
-                return
-            }
-            XCTAssertEqual(state, .archive)
-            expectSnapshot.fulfill()
+            XCTAssertTrue(snapshot.sectionIdentifiers.contains(.emptyState))
+            XCTAssertNotNil(viewModel.emptyState)
+            XCTAssertTrue(viewModel.emptyState is ArchiveEmptyStateViewModel)
+            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
-        wait(for: [expectSnapshot], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 1)
     }
     
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
@@ -440,24 +410,19 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites))
 
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
-            guard case .snapshot(let snapshot) = event else { return nil }
-            return snapshot
-        }.sink { snapshot in
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
             XCTAssertEqual(identifiers.count, 1)
-            guard case .emptyState(let state) = identifiers[0] else {
-                XCTFail("received unexpected cell identifier: \(identifiers[0])")
-                return
-            }
-            XCTAssertEqual(state, .favorites)
-            expectSnapshot.fulfill()
+            XCTAssertTrue(snapshot.sectionIdentifiers.contains(.emptyState))
+            XCTAssertNotNil(viewModel.emptyState)
+            XCTAssertTrue(viewModel.emptyState is FavoritesEmptyStateViewModel)
+            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
-        wait(for: [expectSnapshot], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 1)
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeArchiveEmptyState() {
@@ -466,20 +431,18 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let viewModel = subject()
 
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
-            guard case .snapshot(let snapshot) = event else { return nil }
-            return snapshot
-        }.sink { snapshot in
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .items)
             XCTAssertEqual(identifiers.count, 2)
             XCTAssertNil(snapshot.indexOfSection(.emptyState))
-            expectSnapshot.fulfill()
+            XCTAssertNil(viewModel.emptyState)
+            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
-        wait(for: [expectSnapshot], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 1)
     }
     
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
@@ -489,20 +452,18 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites))
 
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.compactMap { event -> ArchivedItemsListViewModel.Snapshot? in
-            guard case .snapshot(let snapshot) = event else { return nil }
-            return snapshot
-        }.sink { snapshot in
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .items)
             XCTAssertEqual(identifiers.count, 2)
             XCTAssertNil(snapshot.indexOfSection(.emptyState))
-            expectSnapshot.fulfill()
+            XCTAssertNil(viewModel.emptyState)
+            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
-        wait(for: [expectSnapshot], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 1)
     }
     
     func test_willDisplay_whenFavoritesFilterIsOn_includesFilterArgument() {
@@ -548,10 +509,8 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else { return }
+        viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshot.fulfill() }
-
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item(items[0].objectID)])
         }.store(in: &subscriptions)
 
@@ -574,8 +533,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let viewModel = subject()
         let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else { return }
+        viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshot.fulfill() }
 
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item(items[0].objectID)])
@@ -595,8 +553,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let viewModel = subject()
         let expectSnapshot = expectation(description: "expect snapshot")
-        viewModel.events.sink { event in
-            guard case .snapshot(let snapshot) = event else { return }
+        viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshot.fulfill() }
 
             XCTAssertEqual(snapshot.sectionIdentifiers, [.offline])
