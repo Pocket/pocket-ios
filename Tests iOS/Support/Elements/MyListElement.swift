@@ -41,7 +41,7 @@ struct MyListElement: PocketUIElement {
         collectionView.buttons["Archive"]
     }
 
-    var readSwipeButton: XCUIElement {
+    var moveToMyListSwipeButton: XCUIElement {
         collectionView.buttons["Move to My List"]
     }
 

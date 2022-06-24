@@ -126,7 +126,7 @@ class ArchiveTests: XCTestCase {
             fatalError("Unexpected request")
         }
 
-        app.myListView.readSwipeButton.wait().tap()
+        app.myListView.moveToMyListSwipeButton.wait().tap()
         waitForDisappearance(of: itemCell)
 
         app.myListView.selectionSwitcher.myListButton.tap()
