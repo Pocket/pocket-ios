@@ -162,11 +162,11 @@ extension ArchivedItemsListViewModel {
 
 // MARK: - Getting items for presentation
 extension ArchivedItemsListViewModel {
-    func filterButton(with id: ItemsListFilter) -> TopicChipPresenter {
+    func filterButton(with filter: ItemsListFilter) -> TopicChipPresenter {
         TopicChipPresenter(
-            title: id.rawValue,
-            image: id.image,
-            isSelected: selectedFilters.contains(id)
+            title: filter.rawValue,
+            image: filter.image,
+            isSelected: selectedFilters.contains(filter)
         )
     }
 

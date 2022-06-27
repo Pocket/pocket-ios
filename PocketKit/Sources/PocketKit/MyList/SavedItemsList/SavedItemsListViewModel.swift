@@ -66,18 +66,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func fetch() {
-        var predicates: [NSPredicate] = []
-
-        for filter in selectedFilters {
+        let filters = selectedFilters.compactMap { filter -> NSPredicate? in
             switch filter {
             case .favorites:
-                predicates.append(NSPredicate(format: "isFavorite = true", true))
+                return NSPredicate(format: "isFavorite = true")
             case .all:
-                break
+                return nil
             }
         }
-
-        self.itemsController.predicate = Predicates.savedItems(filters: predicates)
+        
+        self.itemsController.predicate = Predicates.savedItems(filters: filters)
 
         try? self.itemsController.performFetch()
         self.itemsLoaded()
@@ -99,11 +97,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         bareItem(with: itemID).flatMap(ItemsListItemPresenter.init)
     }
 
-    func filterButton(with filterID: ItemsListFilter) -> TopicChipPresenter {
+    func filterButton(with filter: ItemsListFilter) -> TopicChipPresenter {
         return TopicChipPresenter(
-            title: filterID.rawValue,
-            image: filterID.image,
-            isSelected: selectedFilters.contains(filterID)
+            title: filter.rawValue,
+            image: filter.image,
+            isSelected: selectedFilters.contains(filter)
         )
     }
 
