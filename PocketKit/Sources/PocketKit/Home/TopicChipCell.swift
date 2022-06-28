@@ -79,6 +79,7 @@ class TopicChipCell: UICollectionViewCell {
 
     func configure(model: TopicChipCellModel) {
         titleLabel.attributedText = model.attributedTitle
+        titleLabel.textAlignment = .center
 
         iconImageView.isHidden = model.iconImage == nil
         iconImageView.image = model.iconImage
@@ -86,9 +87,7 @@ class TopicChipCell: UICollectionViewCell {
 
         toggledBackground.isHidden = !model.isSelected
 
-        if model.isSelected {
-            iconImageView.tintColor = UIColor(.ui.teal1)
-        }
+        iconImageView.tintColor = model.isSelected ? UIColor(.ui.teal1) : UIColor(.ui.grey1)
     }
 }
 

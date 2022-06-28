@@ -47,7 +47,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     init(source: Source, tracker: Tracker) {
         self.source = source
         self.tracker = tracker
-        self.selectedFilters = []
+        self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
         self.itemsController = source.makeItemsController()
 
@@ -72,6 +72,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             switch filter {
             case .favorites:
                 predicates.append(NSPredicate(format: "isFavorite = true", true))
+            case .all:
+                break
             }
         }
 
@@ -98,9 +100,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func filterButton(with filterID: ItemsListFilter) -> TopicChipPresenter {
-        TopicChipPresenter(
+        return TopicChipPresenter(
             title: filterID.rawValue,
-            image: UIImage(asset: .favorite),
+            image: filterID.image,
             isSelected: selectedFilters.contains(filterID)
         )
     }
@@ -323,20 +325,34 @@ extension SavedItemsListViewModel {
     }
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
-        if selectedFilters.contains(filter) {
-            selectedFilters.remove(filter)
-        } else {
-            selectedFilters.insert(filter)
-        }
-
+        handleFilterSelection(with: filter)
+        
         fetch()
         
         var snapshot = buildSnapshot()
         if snapshot.sectionIdentifiers.contains(.emptyState) {
             snapshot.reloadSections([.emptyState])
         }
-        snapshot.reloadItems([cell])
+        
+        let cells = snapshot.itemIdentifiers(inSection: .filters)
+        snapshot.reloadItems(cells)
         _snapshot = snapshot
+    }
+    
+    private func handleFilterSelection(with filter: ItemsListFilter) {
+        if filter == .all {
+            selectedFilters.removeAll()
+            selectedFilters.insert(.all)
+        } else if selectedFilters.contains(filter) {
+            selectedFilters.remove(filter)
+        } else {
+            selectedFilters.insert(filter)
+            selectedFilters.remove(.all)
+        }
+        
+        if selectedFilters.isEmpty {
+            selectedFilters.insert(.all)
+        }
     }
 }
 
