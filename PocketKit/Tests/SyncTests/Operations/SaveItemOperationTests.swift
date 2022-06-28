@@ -15,7 +15,7 @@ class SaveItemOperationTests: XCTestCase {
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
-        space = Space(container: .testContainer)
+        space = .testSpace()
         queue = OperationQueue()
         events = PassthroughSubject()
     }

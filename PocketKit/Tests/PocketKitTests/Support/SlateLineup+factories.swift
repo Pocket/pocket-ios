@@ -4,7 +4,7 @@
 extension SlateLineup {
     @discardableResult
     static func build(
-        in space: Space = Space(container: .testContainer),
+        in space: Space = .testSpace(),
         remoteID: String = "slate-lineup-1",
         requestID: String = "slate-lineup-1-request",
         experimentID: String = "slate-lineup-1-experiment",
@@ -26,7 +26,7 @@ extension SlateLineup {
 extension Slate {
     @discardableResult
     static func build(
-        in space: Space = Space(container: .testContainer),
+        in space: Space = .testSpace(),
         experimentID: String = "slate-1-experiment",
         remoteID: String = "slate-1",
         name: String = "Slate 1",
@@ -52,7 +52,7 @@ extension Slate {
 extension Recommendation {
     @discardableResult
     static func build(
-        in space: Space = Space(container: .testContainer),
+        in space: Space = .testSpace(),
         remoteID: String = "slate-1-rec-1",
         item: Item? = nil
     ) -> Recommendation {

@@ -16,7 +16,7 @@ class FetchArchivePageOperationTests: XCTestCase {
             asResultType: UserByTokenQuery.self
         )
 
-        space = Space(container: .testContainer)
+        space = .testSpace()
         queue = OperationQueue()
     }
 

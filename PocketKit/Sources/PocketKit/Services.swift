@@ -25,7 +25,11 @@ struct Services {
     let authClient: AuthorizationClient
     let imageManager: ImageManager
 
+    private let persistentContainer: PersistentContainer
+
     private init() {
+        persistentContainer = .init(storage: .shared)
+
         userDefaults = .standard
         firstLaunchDefaults = UserDefaults(
             suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
@@ -42,6 +46,7 @@ struct Services {
         tracker = PocketTracker(snowplow: snowplow)
 
         source = PocketSource(
+            space: persistentContainer.rootSpace,
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults,

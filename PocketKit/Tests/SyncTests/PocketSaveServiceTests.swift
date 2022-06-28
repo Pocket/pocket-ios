@@ -14,7 +14,7 @@ class PocketSaveServiceTests: XCTestCase {
     override func setUp() async throws {
         backgroundActivityPerformer = MockExpiringActivityPerformer()
         client = MockApolloClient()
-        space = Space(container: .testContainer)
+        space = .testSpace()
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
     }
 

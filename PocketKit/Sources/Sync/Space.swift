@@ -4,19 +4,15 @@
 
 import CoreData
 
-class Space {
-    private let container: PersistentContainer
+public class Space {
+    let context: NSManagedObjectContext
 
-    var context: NSManagedObjectContext {
-        container.viewContext
-    }
-    
-    required init(container: PersistentContainer) {
-        self.container = container
+    required public init(context: NSManagedObjectContext) {
+        self.context = context
     }
 
     func managedObjectID(forURL url: URL) -> NSManagedObjectID? {
-        container.persistentStoreCoordinator.managedObjectID(forURIRepresentation: url)
+        context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)
     }
 
     func fetchSavedItem(byRemoteID remoteID: String) throws -> SavedItem? {
@@ -148,9 +144,11 @@ class Space {
     }
 
     func clear() throws {
-        let context = container.viewContext
-
         try context.performAndWait {
+            guard let objectModel = context.persistentStoreCoordinator?.managedObjectModel else {
+                return
+            }
+
             for entity in container.managedObjectModel.entities {
                 let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
                 let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)

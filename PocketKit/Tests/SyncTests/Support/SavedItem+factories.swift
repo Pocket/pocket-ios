@@ -5,7 +5,7 @@ import Foundation
 extension SavedItem {
     @discardableResult
     static func build(
-        in space: Space = Space(container: .testContainer),
+        in space: Space = .testSpace(),
         remoteID: String = "saved-item-1",
         url: String = "http://example.com/item-1",
         isFavorite: Bool = false,

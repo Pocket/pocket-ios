@@ -13,7 +13,7 @@ class APISlateServiceTests: XCTestCase {
         continueAfterFailure = false
 
         apollo = MockApolloClient()
-        space = Space(container: .testContainer)
+        space = .testSpace()
         try space.context.performAndWait {
             try space.clear()
             try space.save()

@@ -4,7 +4,7 @@ import Foundation
 
 extension Item {
     static func build(
-        in space: Space = Space(container: .testContainer),
+        in space: Space = .testSpace(),
         remoteID: String? = "item-1",
         title: String? = "Item 1 Title",
         resolvedURL: URL? = URL(string: "https://getpocket.com")!

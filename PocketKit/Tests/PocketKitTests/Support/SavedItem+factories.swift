@@ -2,7 +2,7 @@ import Foundation
 @testable import Sync
 import CoreData
 
-private let space = Space(container: .testContainer)
+private let space: Space = .testSpace()
 
 extension SavedItem {
     static func build(

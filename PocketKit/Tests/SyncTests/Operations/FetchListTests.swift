@@ -19,7 +19,7 @@ class FetchListTests: XCTestCase {
         events = PassthroughSubject()
         queue = OperationQueue()
         lastRefresh = MockLastRefresh()
-        space = Space(container: .testContainer)
+        space = .testSpace()
     }
 
     override func tearDownWithError() throws {
