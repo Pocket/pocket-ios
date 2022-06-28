@@ -15,7 +15,7 @@ class HomeViewModel {
     private let tracker: Tracker
 
     @Published
-    var snapshot = Snapshot()
+    var snapshot: Snapshot
 
     @Published
     var selectedReadableViewModel: RecommendationViewModel? = nil
@@ -39,6 +39,7 @@ class HomeViewModel {
         self.source = source
         self.tracker = tracker
         self.slateLineupController = source.makeSlateLineupController()
+        self.snapshot = Self.loadingSnapshot()
 
         self.slateLineupController.delegate = self
     }
@@ -56,6 +57,8 @@ class HomeViewModel {
 
     func select(cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
+        case .loading:
+            return
         case .topic:
             select(topic: cell)
         case .recommendation:
@@ -86,6 +89,8 @@ class HomeViewModel {
 
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
+        case .loading:
+            return
         case .topic:
             return
         case .recommendation:
@@ -102,6 +107,13 @@ class HomeViewModel {
 }
 
 extension HomeViewModel {
+    private static func loadingSnapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.loading])
+        snapshot.appendItems([.loading], toSection: .loading)
+        return snapshot
+    }
+
     private func buildSnapshot() -> Snapshot {
         viewModels = [:]
         viewModelSubscriptions = []
@@ -236,6 +248,8 @@ extension HomeViewModel {
 
     private func contexts(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> [Context] {
         switch cell {
+        case .loading:
+            return []
         case .topic:
             return []
         case .recommendation(let objectID):
@@ -275,11 +289,13 @@ extension HomeViewModel {
 
 extension HomeViewModel {
     enum Section: Hashable {
+        case loading
         case topics
         case slate(Slate)
     }
 
     enum Cell: Hashable {
+        case loading
         case topic(Slate)
         case recommendation(NSManagedObjectID)
     }

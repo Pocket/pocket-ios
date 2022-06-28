@@ -46,6 +46,21 @@ class HomeViewModelTests: XCTestCase {
         )
     }
 
+    func test_init_createsLoadingSnapshot() {
+        source.stubFetchSlateLineup { _ in }
+
+        let viewModel = subject()
+
+        let snapshotExpectation = expectation(description: "expected to receive updated snapshot")
+        viewModel.$snapshot.sink { snapshot in
+            XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .loading), [.loading])
+            snapshotExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
     func test_refresh_delegatesToSource() {
         let fetchExpectation = expectation(description: "expected to fetch slate lineup")
         source.stubFetchSlateLineup { _ in fetchExpectation.fulfill() }
@@ -100,7 +115,7 @@ class HomeViewModelTests: XCTestCase {
             let firstSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1])
             let firstSlateRecommendations = firstSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic:
+                case .topic, .loading:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -114,7 +129,7 @@ class HomeViewModelTests: XCTestCase {
             let secondSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[2])
             let secondSlateRecommendations = secondSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic:
+                case .topic, .loading:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -128,7 +143,7 @@ class HomeViewModelTests: XCTestCase {
             let thirdSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[3])
             let thirdSlateRecommendations = thirdSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic:
+                case .topic, .loading:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -163,7 +178,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.$snapshot.dropFirst().sink { snapshot in
             let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic:
+                case .topic, .loading:
                     return nil
                 case .recommendation(let objectID):
                     return objectID

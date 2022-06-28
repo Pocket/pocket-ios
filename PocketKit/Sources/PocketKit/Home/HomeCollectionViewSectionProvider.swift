@@ -3,6 +3,25 @@ import Sync
 
 
 class HomeViewControllerSectionProvider {
+    func loadingSection() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .fractionalHeight(1)
+            )
+        )
+
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .fractionalHeight(0.65)
+            ),
+            subitems: [item]
+        )
+
+        return NSCollectionLayoutSection(group: group)
+    }
+
     func topicCarouselSection(slates: [Slate]?) -> NSCollectionLayoutSection {
         guard let slates = slates, !slates.isEmpty else {
             return NSCollectionLayoutSection(
@@ -143,8 +162,10 @@ class HomeViewControllerSectionProvider {
 
         return section
     }
+}
 
-    func twoUpGroup(
+extension HomeViewControllerSectionProvider {
+    private func twoUpGroup(
         slate: Slate,
         viewModel: HomeViewModel,
         width: CGFloat,
@@ -223,4 +244,5 @@ class HomeViewControllerSectionProvider {
             height: miniCardHeight
         )
     }
+
 }
