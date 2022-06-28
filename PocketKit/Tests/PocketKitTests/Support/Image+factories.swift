@@ -5,7 +5,7 @@ import Foundation
 extension Image {
     @discardableResult
     static func build(
-        in space: Space = Space(container: .testContainer),
+        in space: Space = .testSpace(),
         source: URL?,
         isDownloaded: Bool = false
     ) -> Image {

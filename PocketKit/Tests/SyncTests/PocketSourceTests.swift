@@ -23,7 +23,7 @@ class PocketSourceTests: XCTestCase {
     var subscriptions: [AnyCancellable]!
 
     override func setUpWithError() throws {
-        space = Space(container: .testContainer)
+        space = .testSpace()
         apollo = MockApolloClient()
         operations = MockOperationFactory()
         lastRefresh = MockLastRefresh()

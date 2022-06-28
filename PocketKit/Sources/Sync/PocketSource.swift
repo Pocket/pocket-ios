@@ -35,6 +35,7 @@ public class PocketSource: Source {
     }()
 
     public convenience init(
+        space: Space,
         sessionProvider: SessionProvider,
         consumerKey: String,
         defaults: UserDefaults,
@@ -44,8 +45,6 @@ public class PocketSource: Source {
             sessionProvider: sessionProvider,
             consumerKey: consumerKey
         )
-
-        let space = Space(container: .init())
 
         self.init(
             space: space,

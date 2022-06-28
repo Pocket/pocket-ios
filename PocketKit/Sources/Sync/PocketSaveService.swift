@@ -10,6 +10,7 @@ public class PocketSaveService: SaveService {
     private let osNotifications: OSNotificationCenter
 
     public convenience init(
+        space: Space,
         sessionProvider: SessionProvider,
         consumerKey: String,
         expiringActivityPerformer: ExpiringActivityPerformer
@@ -20,7 +21,7 @@ public class PocketSaveService: SaveService {
                 consumerKey: consumerKey
             ),
             expiringActivityPerformer: expiringActivityPerformer,
-            space: Space(container: .init(storage: .shared)),
+            space: space,
             osNotifications: OSNotificationCenter(
                 notifications: CFNotificationCenterGetDarwinNotifyCenter()
             )

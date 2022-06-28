@@ -9,9 +9,13 @@ class MainViewController: UIViewController {
     private let childViewController: UIViewController
 
     convenience init() {
+        self.init(services: .shared)
+    }
+
+    convenience init(services: Services) {
         Textiles.initialize()
 
-        let appSession = AppSession()
+        let appSession = services.appSession
         let child: UIViewController
 
         if appSession.currentSession == nil {
@@ -22,11 +26,7 @@ class MainViewController: UIViewController {
             child = SavedItemViewController(
                 viewModel: SavedItemViewModel(
                     appSession: appSession,
-                    saveService: PocketSaveService(
-                        sessionProvider: appSession,
-                        consumerKey: Keys.shared.pocketApiConsumerKey,
-                        expiringActivityPerformer: ProcessInfo.processInfo
-                    ),
+                    saveService: services.saveService,
                     dismissTimer: Timer.TimerPublisher(interval: 2.1, runLoop: .main, mode: .default)
                 )
             )
