@@ -27,6 +27,8 @@ class HomeViewController: UIViewController {
               }
 
         switch section {
+        case .loading:
+            return self.sectionProvider.loadingSection()
         case .topics:
             let slates = self.dataSource.snapshot(for: section).items.compactMap { cell -> Slate? in
                 guard case .topic(let slate) = cell else {
@@ -81,6 +83,7 @@ class HomeViewController: UIViewController {
         }
 
         collectionView.backgroundColor = UIColor(.ui.white1)
+        collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: TopicChipCell.self)
         collectionView.register(viewClass: SlateHeaderView.self, forSupplementaryViewOfKind: SlateHeaderView.kind)
@@ -160,6 +163,9 @@ class HomeViewController: UIViewController {
 extension HomeViewController {
     func cellFor(_ item: HomeViewModel.Cell, at indexPath: IndexPath) -> UICollectionViewCell {
         switch item {
+        case .loading:
+            let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
+            return cell
         case .topic(let slate):
             let cell: TopicChipCell = collectionView.dequeueCell(for: indexPath)
             cell.configure(model: TopicChipPresenter(title: slate.name, image: nil))
