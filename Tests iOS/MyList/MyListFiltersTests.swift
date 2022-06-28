@@ -46,17 +46,32 @@ class MyListFiltersTests: XCTestCase {
         app.terminate()
     }
 
-    func testTappingFavoritesPill_showsOnlyFavoritedItems() {
+    func test_myListView_tappingFavoritesPill_showsOnlyFavoritedItems() {
         app.launch().tabBar.myListButton.wait().tap()
         XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
 
-        app.myListView.favoritesButton.tap()
+        app.myListView.filterButton(for: "Favorites").tap()
         XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
 
-        app.myListView.favoritesButton.tap()
+        app.myListView.filterButton(for: "Favorites").tap()
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
         app.myListView.itemView(at: 0).favoriteButton.tap()
 
-        app.myListView.favoritesButton.tap()
+        app.myListView.filterButton(for: "Favorites").tap()
         XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
+    }
+    
+    func test_myListView_tappingAllPill_showsAllItems() {
+        app.launch().tabBar.myListButton.wait().tap()
+        app.myListView.itemView(at: 0).favoriteButton.tap()
+        
+        app.myListView.filterButton(for: "All").tap()
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
+        
+        app.myListView.filterButton(for: "Favorites").tap()
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
+        
+        app.myListView.filterButton(for: "All").tap()
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
     }
 }

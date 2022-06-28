@@ -23,14 +23,14 @@ struct MyListElement: PocketUIElement {
     var itemCells: XCUIElementQuery {
         collectionView.cells.matching(NSPredicate(format: "identifier = %@", "my-list-item"))
     }
-
-    var favoritesButton: XCUIElement {
+    
+    func filterButton(for type: String) -> XCUIElement {
         collectionView.cells.matching(
             NSPredicate(
                 format: "identifier = %@",
                 "topic-chip"
             )
-        ).containing(.staticText, identifier: "Favorites").element(boundBy: 0)
+        ).containing(.staticText, identifier: type).element(boundBy: 0)
     }
     
     func emptyStateView(for type: String) -> XCUIElement {

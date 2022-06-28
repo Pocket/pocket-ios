@@ -47,7 +47,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     private let itemsController: SavedItemsController
     private var archivedItemsByID: [NSManagedObjectID: SavedItem] = [:]
 
-    private var selectedFilters: Set<ItemsListFilter> = .init()
+    private var selectedFilters: Set<ItemsListFilter> = .init([.all])
     private let availableFilters: [ItemsListFilter] = ItemsListFilter.allCases
 
     private var isFetching: Bool = false
@@ -137,10 +137,12 @@ extension ArchivedItemsListViewModel {
     }
 
     private func fetchLocalItems() {
-        let filters = selectedFilters.map { filter -> NSPredicate in
+        let filters = selectedFilters.compactMap { filter -> NSPredicate? in
             switch filter {
             case .favorites:
                 return NSPredicate(format: "isFavorite = true")
+            case .all:
+                return nil
             }
         }
 
@@ -163,7 +165,7 @@ extension ArchivedItemsListViewModel {
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter {
         TopicChipPresenter(
             title: id.rawValue,
-            image: UIImage(asset: .favorite),
+            image: id.image,
             isSelected: selectedFilters.contains(id)
         )
     }
@@ -308,11 +310,7 @@ extension ArchivedItemsListViewModel {
     }
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
-        if selectedFilters.contains(filter) {
-            selectedFilters.remove(filter)
-        } else {
-            selectedFilters.insert(filter)
-        }
+        handleFilterSelection(with: filter)
 
         fetchLocalItems()
         
@@ -320,8 +318,26 @@ extension ArchivedItemsListViewModel {
         if snapshot.sectionIdentifiers.contains(.emptyState) {
             snapshot.reloadSections([.emptyState])
         }
-        snapshot.reloadItems([cell])
+        
+        let cells = snapshot.itemIdentifiers(inSection: .filters)
+        snapshot.reloadItems(cells)
         _snapshot = snapshot
+    }
+    
+    private func handleFilterSelection(with filter: ItemsListFilter) {
+        if filter == .all {
+            selectedFilters.removeAll()
+            selectedFilters.insert(.all)
+        } else if selectedFilters.contains(filter) {
+            selectedFilters.remove(filter)
+        } else {
+            selectedFilters.insert(filter)
+            selectedFilters.remove(.all)
+        }
+        
+        if selectedFilters.isEmpty {
+            selectedFilters.insert(.all)
+        }
     }
 }
 

@@ -41,7 +41,17 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {
+    case all = "All"
     case favorites = "Favorites"
+    
+    var image: UIImage? {
+        switch self {
+        case .all:
+            return nil
+        case .favorites:
+            return UIImage(asset: .favorite)
+        }
+    }
 }
 
 enum ItemsListEvent<ItemIdentifier: Hashable> {

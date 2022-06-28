@@ -56,11 +56,29 @@ class ArchiveFiltersTests: XCTestCase {
         myList.itemView(matching: "Archived Item 1").wait()
         myList.itemView(matching: "Archived Item 2").wait()
 
-        app.myListView.favoritesButton.tap()
+        app.myListView.filterButton(for: "Favorites").tap()
         waitForDisappearance(of: myList.itemView(matching: "Archived Item 1"))
         myList.itemView(matching: "Archived Item 2").wait()
-        app.myListView.favoritesButton.tap()
+        app.myListView.filterButton(for: "Favorites").tap()
         
+        myList.itemView(matching: "Archived Item 1").wait()
+        myList.itemView(matching: "Archived Item 2").wait()
+    }
+    
+    func test_archiveView_tappingAllPill_togglesDisplayingAllArchivedContent() {
+        app.launch().tabBar.myListButton.wait().tap()
+        let myList = app.myListView.wait()
+
+        myList.selectionSwitcher.archiveButton.wait().tap()
+
+        app.myListView.filterButton(for: "All").tap()
+        myList.itemView(matching: "Archived Item 1").wait()
+        myList.itemView(matching: "Archived Item 2").wait()
+        
+        app.myListView.filterButton(for: "Favorites").tap()
+        myList.itemView(matching: "Archived Item 2").wait()
+        
+        app.myListView.filterButton(for: "All").tap()
         myList.itemView(matching: "Archived Item 1").wait()
         myList.itemView(matching: "Archived Item 2").wait()
     }
