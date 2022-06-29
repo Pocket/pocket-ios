@@ -1,27 +1,29 @@
 import UIKit
 
-enum SettingsSection {
+enum AccountSection {
     case main
 }
 
-enum SettingsItem {
+enum AccountItem {
     case signOut
 }
 
-class SettingsViewController: UIViewController {
-    private let model: SettingsViewModel
+class AccountViewController: UIViewController {
+    private let model: AccountViewModel
     private let collectionView: UICollectionView
-    private let dataSource: UICollectionViewDiffableDataSource<SettingsSection, SettingsItem>
+    private let dataSource: UICollectionViewDiffableDataSource<AccountSection, AccountItem>
 
-    init(model: SettingsViewModel) {
+    init(model: AccountViewModel) {
         self.model = model
 
-        let layoutConfig = UICollectionLayoutListConfiguration(appearance: .plain)
+        var layoutConfig = UICollectionLayoutListConfiguration(appearance: .plain)
+        layoutConfig.backgroundColor = UIColor(.ui.white1)
+        layoutConfig.separatorConfiguration.color = UIColor(.ui.grey6)
         let layout = UICollectionViewCompositionalLayout.list(using: layoutConfig)
         collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.accessibilityIdentifier = "settings"
+        collectionView.accessibilityIdentifier = "account"
 
-        let registration: UICollectionView.CellRegistration<UICollectionViewListCell, SettingsItem> = .init { cell, _, item in
+        let registration: UICollectionView.CellRegistration<UICollectionViewListCell, AccountItem> = .init { cell, _, item in
             switch item {
             case .signOut:
                 var content = cell.defaultContentConfiguration()
@@ -29,6 +31,7 @@ class SettingsViewController: UIViewController {
                 content.text = "Sign Out"
 
                 cell.contentConfiguration = content
+                cell.backgroundConfiguration?.backgroundColor = UIColor(.ui.white1)
             }
         }
 
@@ -38,7 +41,7 @@ class SettingsViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        navigationItem.title = "Settings"
+        navigationItem.title = "Account"
         collectionView.delegate = self
     }
 
@@ -49,7 +52,7 @@ class SettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var snapshot = NSDiffableDataSourceSnapshot<SettingsSection, SettingsItem>()
+        var snapshot = NSDiffableDataSourceSnapshot<AccountSection, AccountItem>()
         snapshot.appendSections([.main])
         snapshot.appendItems([.signOut], toSection: .main)
 
@@ -61,7 +64,7 @@ class SettingsViewController: UIViewController {
     }
 }
 
-extension SettingsViewController: UICollectionViewDelegate {
+extension AccountViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .signOut:

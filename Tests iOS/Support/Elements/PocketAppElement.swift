@@ -28,8 +28,8 @@ struct PocketAppElement {
         return MyListElement(app)
     }
     
-    var settingsView: SettingsViewElement {
-        return SettingsViewElement(app.collectionViews["settings"])
+    var accountView: AccountViewElement {
+        return AccountViewElement(app.collectionViews["account"])
     }
 
     var slateDetailView: SlateDetailElement {

@@ -5,7 +5,7 @@
 import XCTest
 
 
-struct SettingsViewElement: PocketUIElement {
+struct AccountViewElement: PocketUIElement {
     var element: XCUIElement
 
     init(_ element: XCUIElement) {

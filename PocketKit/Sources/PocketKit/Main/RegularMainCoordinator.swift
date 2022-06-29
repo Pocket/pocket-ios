@@ -16,7 +16,7 @@ class RegularMainCoordinator: NSObject {
 
     private let myList: UIViewController
     private let home: HomeViewController
-    private let settings: SettingsViewController
+    private let account: AccountViewController
     private let readerRoot: UINavigationController
 
     private let tracker: Tracker
@@ -57,7 +57,7 @@ class RegularMainCoordinator: NSObject {
             model: model.home
         )
 
-        settings = SettingsViewController(model: model.settings)
+        account = AccountViewController(model: model.account)
         readerRoot = UINavigationController(rootViewController: UIViewController())
 
         super.init()
@@ -186,8 +186,8 @@ class RegularMainCoordinator: NSObject {
             splitController.setViewController(myList, for: .supplementary)
         case .home:
             splitController.setViewController(home, for: .supplementary)
-        case .settings:
-            splitController.setViewController(settings, for: .supplementary)
+        case .account:
+            splitController.setViewController(account, for: .supplementary)
         }
 
         splitController.show(.supplementary)

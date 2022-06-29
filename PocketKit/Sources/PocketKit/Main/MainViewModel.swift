@@ -14,22 +14,22 @@ class MainViewModel: ObservableObject {
 
     let home: HomeViewModel
     let myList: MyListContainerViewModel
-    let settings: SettingsViewModel
+    let account: AccountViewModel
 
     init(
         myList: MyListContainerViewModel,
         home: HomeViewModel,
-        settings: SettingsViewModel
+        account: AccountViewModel
     ) {
         self.myList = myList
         self.home = home
-        self.settings = settings
+        self.account = account
     }
 
     enum AppSection: CaseIterable, Identifiable {
         case home
         case myList
-        case settings
+        case account
 
         var navigationTitle: String {
             switch self {
@@ -37,8 +37,8 @@ class MainViewModel: ObservableObject {
                 return "Home"
             case .myList:
                 return "My List"
-            case .settings:
-                return "Settings"
+            case .account:
+                return "Account"
             }
         }
 
