@@ -81,7 +81,7 @@ extension UIContext {
         case recommendation = "recommendation"
         case reportItem = "report_item"
         case submit
-        case settings
+        case account
         case loggedOut = "logged_out"
         case logIn = "log_in"
         case signUp = "sign_up"
@@ -119,8 +119,8 @@ extension UIContext {
         }
     }
 
-    public struct Settings {
-        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .settings)
+    public struct Account {
+        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .account)
     }
     
     public struct ArticleView {
@@ -140,7 +140,7 @@ extension UIContext {
     public static let loggedOut = LoggedOut()
     public static let home = Home()
     public static let myList = MyList()
-    public static let settings = Settings()
+    public static let account = Account()
     public static let articleView = ArticleView()
     public static let slateDetail = SlateDetail()
     

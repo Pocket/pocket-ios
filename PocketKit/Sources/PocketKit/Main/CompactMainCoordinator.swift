@@ -15,7 +15,7 @@ class CompactMainCoordinator: NSObject {
     private let tabBarController: UITabBarController
     private let myList: CompactMyListContainerCoordinator
     private let home: CompactHomeCoordinator
-    private let settings: CompactSettingsCoordinator
+    private let account: CompactAccountCoordinator
 
     private let model: MainViewModel
     private var subscriptions: [AnyCancellable] = []
@@ -40,11 +40,11 @@ class CompactMainCoordinator: NSObject {
         home.viewController.tabBarItem.image = UIImage(asset: .tabHomeDeselected)
         home.viewController.tabBarItem.selectedImage = UIImage(asset: .tabHomeSelected)
 
-        settings = CompactSettingsCoordinator(model: model.settings)
-        settings.viewController.tabBarItem.accessibilityIdentifier = "settings-tab-bar-button"
-        settings.viewController.tabBarItem.title = "Settings"
-        settings.viewController.tabBarItem.image = UIImage(asset: .tabAccountDeselected)
-        settings.viewController.tabBarItem.selectedImage = UIImage(asset: .tabAccountSelected)
+        account = CompactAccountCoordinator(model: model.account)
+        account.viewController.tabBarItem.accessibilityIdentifier = "account-tab-bar-button"
+        account.viewController.tabBarItem.title = "Account"
+        account.viewController.tabBarItem.image = UIImage(asset: .tabAccountDeselected)
+        account.viewController.tabBarItem.selectedImage = UIImage(asset: .tabAccountSelected)
 
         tabBarController = UITabBarController()
         tabBarController.tabBar.barTintColor = UIColor(.ui.white1)
@@ -53,7 +53,7 @@ class CompactMainCoordinator: NSObject {
         tabBarController.viewControllers = [
             home.viewController,
             myList.viewController,
-            settings.viewController
+            account.viewController
         ]
 
         super.init()
@@ -90,8 +90,8 @@ class CompactMainCoordinator: NSObject {
             tabBarController.selectedViewController = myList.viewController
         case .home:
             tabBarController.selectedViewController = home.viewController
-        case .settings:
-            tabBarController.selectedViewController = settings.viewController
+        case .account:
+            tabBarController.selectedViewController = account.viewController
         }
     }
 }

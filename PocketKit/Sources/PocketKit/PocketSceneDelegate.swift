@@ -29,7 +29,7 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         source: Services.shared.source,
                         tracker: Services.shared.tracker.childTracker(hosting: .home.screen)
                     ),
-                    settings: SettingsViewModel(appSession: Services.shared.appSession)
+                    account: AccountViewModel(appSession: Services.shared.appSession)
                 ),
                 source: Services.shared.source,
                 tracker: Services.shared.tracker

@@ -1,20 +1,20 @@
 import UIKit
 
 
-class CompactSettingsCoordinator {
+class CompactAccountCoordinator {
     var viewController: UIViewController {
         navigationController
     }
 
     private let navigationController: UINavigationController
-    private let settingsViewController: UIViewController
-    private let model: SettingsViewModel
+    private let accountViewController: UIViewController
+    private let model: AccountViewModel
 
-    init(model: SettingsViewModel) {
+    init(model: AccountViewModel) {
         self.model = model
 
-        settingsViewController = SettingsViewController(model: model)
-        navigationController = UINavigationController(rootViewController: settingsViewController)
+        accountViewController = AccountViewController(model: model)
+        navigationController = UINavigationController(rootViewController: accountViewController)
 
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)

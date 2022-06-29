@@ -12,7 +12,7 @@
 		1606F21B26EBC1A200238111 /* HomeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1606F21A26EBC1A200238111 /* HomeTests.swift */; };
 		1612D7E426C32321009A5BFD /* ByteBuffer+read.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */; };
 		1613B2B12755696B0014F301 /* SignOutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1613B2B02755696B0014F301 /* SignOutTests.swift */; };
-		1613B2B3275571940014F301 /* SettingsViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1613B2B2275571940014F301 /* SettingsViewElement.swift */; };
+		1613B2B3275571940014F301 /* AccountViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1613B2B2275571940014F301 /* AccountViewElement.swift */; };
 		1648D5A727024C6400F67C4B /* SlateDetailElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1648D5A627024C6400F67C4B /* SlateDetailElement.swift */; };
 		164FB66E278F7ECC002959D6 /* MyListFiltersTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 164FB66D278F7ECC002959D6 /* MyListFiltersTests.swift */; };
 		166A81C52637406C0015AA1D /* MyListTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166A81C42637406C0015AA1D /* MyListTests.swift */; };
@@ -103,7 +103,7 @@
 		1606F21A26EBC1A200238111 /* HomeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTests.swift; sourceTree = "<group>"; };
 		1612D7E326C32321009A5BFD /* ByteBuffer+read.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ByteBuffer+read.swift"; sourceTree = "<group>"; };
 		1613B2B02755696B0014F301 /* SignOutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignOutTests.swift; sourceTree = "<group>"; };
-		1613B2B2275571940014F301 /* SettingsViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewElement.swift; sourceTree = "<group>"; };
+		1613B2B2275571940014F301 /* AccountViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountViewElement.swift; sourceTree = "<group>"; };
 		1624B85A268508180099B6EF /* PocketKit */ = {isa = PBXFileReference; lastKnownFileType = folder; path = PocketKit; sourceTree = "<group>"; };
 		1648D5A627024C6400F67C4B /* SlateDetailElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlateDetailElement.swift; sourceTree = "<group>"; };
 		164FB66D278F7ECC002959D6 /* MyListFiltersTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyListFiltersTests.swift; sourceTree = "<group>"; };
@@ -273,7 +273,7 @@
 				1648D5A627024C6400F67C4B /* SlateDetailElement.swift */,
 				16C2B03E270CF82700D194AA /* RecommendationCellElement.swift */,
 				F2843C1F2714D97000E03ED5 /* ReportViewElement.swift */,
-				1613B2B2275571940014F301 /* SettingsViewElement.swift */,
+				1613B2B2275571940014F301 /* AccountViewElement.swift */,
 				F20BB0382744542F00AE5E70 /* AlertElement.swift */,
 				16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */,
 			);
@@ -480,7 +480,7 @@
 				F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */,
 				166EFAE8268281F300A027CD /* ReaderToolbarElement.swift in Sources */,
 				16D76883279F3C73004A3694 /* ArchiveTests.swift in Sources */,
-				1613B2B3275571940014F301 /* SettingsViewElement.swift in Sources */,
+				1613B2B3275571940014F301 /* AccountViewElement.swift in Sources */,
 				16BB40A8279F436100FE8650 /* SelectionSwitcherElement.swift in Sources */,
 				F2A5B6B4271E03B300FB8BF2 /* LaunchArguments.swift in Sources */,
 				F2FC070327A9B749009F8D98 /* ArchiveFiltersTests.swift in Sources */,

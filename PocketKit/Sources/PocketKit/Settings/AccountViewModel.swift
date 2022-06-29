@@ -5,7 +5,7 @@ import Foundation
 import SharedPocketKit
 
 
-class SettingsViewModel {
+class AccountViewModel {
     private let appSession: AppSession
 
     init(appSession: AppSession) {
