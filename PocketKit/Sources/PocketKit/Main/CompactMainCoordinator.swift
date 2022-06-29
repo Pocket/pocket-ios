@@ -4,6 +4,7 @@ import SafariServices
 import Analytics
 import Sync
 import Combine
+import Textile
 
 
 class CompactMainCoordinator: NSObject {
@@ -30,21 +31,25 @@ class CompactMainCoordinator: NSObject {
         myList = CompactMyListContainerCoordinator(model: model.myList)
         myList.viewController.tabBarItem.accessibilityIdentifier = "my-list-tab-bar-button"
         myList.viewController.tabBarItem.title = "My List"
-        myList.viewController.tabBarItem.image = UIImage(systemName: "list.dash")
+        myList.viewController.tabBarItem.image = UIImage(asset: .tabMyListDeselected)
+        myList.viewController.tabBarItem.selectedImage = UIImage(asset: .tabMyListSelected)
 
         home = CompactHomeCoordinator(source: source, tracker: tracker, model: model.home)
         home.viewController.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
         home.viewController.tabBarItem.title = "Home"
-        home.viewController.tabBarItem.image = UIImage(systemName: "house")
+        home.viewController.tabBarItem.image = UIImage(asset: .tabHomeDeselected)
+        home.viewController.tabBarItem.selectedImage = UIImage(asset: .tabHomeSelected)
 
         settings = CompactSettingsCoordinator(model: model.settings)
         settings.viewController.tabBarItem.accessibilityIdentifier = "settings-tab-bar-button"
         settings.viewController.tabBarItem.title = "Settings"
-        settings.viewController.tabBarItem.image = UIImage(systemName: "gearshape")
+        settings.viewController.tabBarItem.image = UIImage(asset: .tabAccountDeselected)
+        settings.viewController.tabBarItem.selectedImage = UIImage(asset: .tabAccountSelected)
 
         tabBarController = UITabBarController()
         tabBarController.tabBar.barTintColor = UIColor(.ui.white1)
         tabBarController.tabBar.tintColor = UIColor(.ui.grey1)
+        tabBarController.tabBar.unselectedItemTintColor = UIColor(.ui.grey1)
         tabBarController.viewControllers = [
             home.viewController,
             myList.viewController,

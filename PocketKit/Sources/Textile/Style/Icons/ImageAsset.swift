@@ -28,4 +28,10 @@ extension ImageAsset {
     public static let error = ImageAsset("error")
     public static let chest = ImageAsset("chest")
     public static let welcomeShelf = ImageAsset("welcomeShelf")
+    public static let tabAccountDeselected = ImageAsset("tab.account.deselected")
+    public static let tabAccountSelected = ImageAsset("tab.account.selected")
+    public static let tabHomeDeselected = ImageAsset("tab.home.deselected")
+    public static let tabHomeSelected = ImageAsset("tab.home.selected")
+    public static let tabMyListDeselected = ImageAsset("tab.my-list.deselected")
+    public static let tabMyListSelected = ImageAsset("tab.my-list.selected")
 }
