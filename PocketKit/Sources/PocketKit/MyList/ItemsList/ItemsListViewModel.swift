@@ -37,7 +37,6 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
     case item(ItemIdentifier)
     case emptyState
     case offline
-    case nextPage
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {

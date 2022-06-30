@@ -109,7 +109,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         switch cell {
         case .filterButton: return true
         case .item(let objectID): return !(bareItem(with: objectID)?.isPending ?? true)
-        case .nextPage: return false
         case .offline: return false
         case .emptyState: return false
         }
@@ -121,7 +120,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             select(item: objectID)
         case .filterButton(let filterID):
             apply(filter: filterID, from: cellID)
-        case .offline, .nextPage, .emptyState:
+        case .offline, .emptyState:
             return
         }
     }

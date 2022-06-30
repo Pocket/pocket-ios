@@ -119,10 +119,8 @@ public class PocketSource: Source {
         )
     }
 
-    public func makeArchivedItemsController() -> SavedItemsController {
-        FetchedSavedItemsController(
-            resultsController: space.makeArchivedItemsController()
-        )
+    public func makeArchiveService() -> ArchiveService {
+        PocketArchiveService(apollo: apollo, space: space)
     }
 
     public func makeSlateLineupController() -> SlateLineupController {
@@ -304,6 +302,21 @@ extension PocketSource {
             space: space
         )
         enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
+    }
+
+    public func fetchDetails(for savedItem: SavedItem) async throws {
+        guard let remoteID = savedItem.remoteID else {
+            return
+        }
+
+        guard let remoteSavedItem = try await apollo
+            .fetch(query: SavedItemByIdQuery(id: remoteID))
+            .data?.user?.savedItemById else {
+            return
+        }
+
+        savedItem.update(from: remoteSavedItem.fragments.savedItemParts)
+        try space.save()
     }
 }
 

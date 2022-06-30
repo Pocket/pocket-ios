@@ -30,6 +30,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     
     func delete()
     func showWebReader()
+    func fetchDetailsIfNeeded()
 }
 
 // MARK: - ReadableViewControllerDelegate

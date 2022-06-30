@@ -56,4 +56,42 @@ extension Item {
             addToImages(Image(remote: remoteImage, context: context))
         }
     }
+
+    func update(from summary: ItemSummary) {
+        remoteID = summary.remoteId
+        givenURL = URL(string: summary.givenUrl)
+        resolvedURL = summary.resolvedUrl.flatMap(URL.init)
+        title = summary.title
+        topImageURL = summary.topImageUrl.flatMap(URL.init)
+        domain = summary.domain
+        language = summary.language
+        timeToRead = summary.timeToRead.flatMap(Int32.init) ?? 0
+        excerpt = summary.excerpt
+        datePublished = summary.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
+        isArticle = summary.isArticle ?? false
+        imageness = summary.hasImage?.rawValue
+        videoness = summary.hasVideo?.rawValue
+
+        guard let context = managedObjectContext else {
+            return
+        }
+
+        if let metaParts = summary.domainMetadata?.fragments.domainMetadataParts {
+            domainMetadata = domainMetadata ?? DomainMetadata(context: context)
+            domainMetadata?.update(remote: metaParts)
+        }
+
+        if let authors = authors {
+            removeFromAuthors(authors)
+        }
+
+        summary.authors?.forEach { remoteAuthor in
+            guard let remoteAuthor = remoteAuthor else {
+                return
+            }
+
+            addToAuthors(Author(remote: remoteAuthor, context: context))
+        }
+
+    }
 }

@@ -24,7 +24,6 @@ struct Services {
     let refreshCoordinator: RefreshCoordinator
     let authClient: AuthorizationClient
     let imageManager: ImageManager
-
     private let persistentContainer: PersistentContainer
 
     private init() {

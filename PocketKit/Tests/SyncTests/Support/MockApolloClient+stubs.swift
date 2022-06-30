@@ -38,7 +38,7 @@ extension MockApolloClient {
     }
 
     func stubFetch<T: GraphQLQuery>(
-        toReturnFixturedNamed fixtureName: String,
+        toReturnFixtureNamed fixtureName: String,
         asResultType resultType: T.Type,
         handler: (() -> ())? = nil
     ) {

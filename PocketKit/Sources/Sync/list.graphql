@@ -139,3 +139,11 @@ query GetSlate($slateID: String!, $recommendationCount: Int!) {
     ...SlateParts
   }
 }
+
+query SavedItemByID($id: ID!) {
+  user {
+    savedItemById(id: $id) {
+      ...SavedItemParts
+    }
+  }
+}

@@ -31,12 +31,13 @@ extension Item {
     static func build(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        resolvedURL: URL? = URL(string: "https://getpocket.com")!
+        resolvedURL: URL? = URL(string: "https://getpocket.com")!,
+        isArticle: Bool = true
     ) -> Item {
         let item = Item(context: space.context)
         item.remoteID = remoteID
         item.title = title
-        item.isArticle = true
+        item.isArticle = isArticle
         item.resolvedURL = resolvedURL
 
         return item

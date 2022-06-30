@@ -15,9 +15,9 @@ public enum Requests {
         return request
     }
 
-    public static func fetchArchivedItems() -> NSFetchRequest<SavedItem> {
+    public static func fetchArchivedItems(filters: [NSPredicate] = []) -> NSFetchRequest<SavedItem> {
         let request: NSFetchRequest<SavedItem> = SavedItem.fetchRequest()
-        request.predicate = Predicates.archivedItems()
+        request.predicate = Predicates.archivedItems(filters: filters)
 
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \SavedItem.archivedAt, ascending: false),

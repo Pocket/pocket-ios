@@ -132,6 +132,10 @@ class RecommendationViewModel: ReadableViewModel {
     func showWebReader() {
         presentedWebReaderURL = url
     }
+
+    func fetchDetailsIfNeeded() {
+        // no op
+    }
 }
 
 extension RecommendationViewModel {

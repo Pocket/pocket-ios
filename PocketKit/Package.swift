@@ -61,7 +61,7 @@ let package = Package(
             resources: [
                 .copy("Style/Typography/Fonts"),
                 .process("Style/Colors/Colors.xcassets"),
-                .process("Style/Icons/Icons.xcassets"),
+                .process("Style/Images/Images.xcassets"),
             ]
         ),
 

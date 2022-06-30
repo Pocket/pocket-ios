@@ -109,23 +109,23 @@ extension MockSource {
     }
 }
 
-// MARK: - Make archived items controller
+// MARK: - Make archive service
 extension MockSource {
-    static let makeArchivedItemsController = "makeArchivedItemsController"
-    typealias MakeArchivedItemsControllerImpl = () -> SavedItemsController
+    static let makeArchiveService = "makeArchiveService"
+    typealias MakeArchiveServiceImpl = () -> ArchiveService
 
-    struct MakeArchivedItemsControllerCall { }
+    struct MakeArchivedServiceCall { }
 
-    func stubMakeArchivedItemsController(impl: @escaping MakeArchivedItemsControllerImpl) {
-        implementations[Self.makeArchivedItemsController] = impl
+    func stubMakeArchiveService(impl: @escaping MakeArchiveServiceImpl) {
+        implementations[Self.makeArchiveService] = impl
     }
 
-    func makeArchivedItemsController() -> SavedItemsController {
-        guard let impl = implementations[Self.makeArchivedItemsController] as? MakeArchivedItemsControllerImpl else {
+    func makeArchiveService() -> ArchiveService {
+        guard let impl = implementations[Self.makeArchiveService] as? MakeArchiveServiceImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.makeArchivedItemsController] = (calls[Self.makeArchivedItemsController] ?? []) + [MakeArchivedItemsControllerCall()]
+        calls[Self.makeArchiveService] = (calls[Self.makeArchiveService] ?? []) + [MakeArchivedServiceCall()]
 
         return impl()
     }
@@ -664,5 +664,38 @@ extension MockSource {
         ]
 
         impl(images)
+    }
+}
+
+// MARK: - Fetch details
+extension MockSource {
+    static let fetchDetails = "makeArchiveService"
+    typealias FetchDetailsImpl = (SavedItem) async throws -> Void
+
+    struct FetchDetailsCall {
+        let savedItem: SavedItem
+    }
+
+    func stubFetchDetails(impl: @escaping FetchDetailsImpl) {
+        implementations[Self.fetchDetails] = impl
+    }
+
+    func fetchDetails(for savedItem: SavedItem) async throws {
+        guard let impl = implementations[Self.fetchDetails] as? FetchDetailsImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchDetails] = (calls[Self.fetchDetails] ?? []) + [FetchDetailsCall(savedItem: savedItem)]
+        print("Calling impl: \(Date().timeIntervalSince1970)")
+        return try await impl(savedItem)
+    }
+
+    func fetchDetailsCall(at index: Int) -> FetchDetailsCall? {
+        guard let calls = calls[Self.fetchDetails],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchDetailsCall
     }
 }

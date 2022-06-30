@@ -111,6 +111,15 @@ class SavedItemViewModel: ReadableViewModel {
     func showWebReader() {
         presentedWebReaderURL = url
     }
+
+    func fetchDetailsIfNeeded() {
+        guard item.item?.article == nil else { return }
+
+        Task {
+            try? await self.source.fetchDetails(for: self.item)
+            _events.send(.contentUpdated)
+        }
+    }
 }
 
 extension SavedItemViewModel {

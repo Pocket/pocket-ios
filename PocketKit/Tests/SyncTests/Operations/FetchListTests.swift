@@ -109,7 +109,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
-        apollo.stubFetch(toReturnFixturedNamed: "duplicate-list", asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "duplicate-list", asResultType: UserByTokenQuery.self)
 
         let service = subject()
         _ = await service.execute()
@@ -119,7 +119,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() async throws {
-        apollo.stubFetch(toReturnFixturedNamed: "updated-item", asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "updated-item", asResultType: UserByTokenQuery.self)
         try space.seedSavedItem(
             remoteID: "saved-item-1",
             item: space.buildItem(title: "Item 1")
@@ -244,7 +244,7 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {
         apollo.stubFetch(
-            toReturnFixturedNamed: "empty-list",
+            toReturnFixtureNamed: "empty-list",
             asResultType: UserByTokenQuery.self
         )
 

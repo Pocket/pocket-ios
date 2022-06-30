@@ -24,11 +24,11 @@ struct ClientAPIRequest {
     }
 
     var isForArchivedContent: Bool {
-        contains("userByToken") && contains(#""isArchived":true"#)
+        contains("savedItems(") && contains(#""isArchived":true"#)
     }
     
     var isForFavoritedArchivedContent: Bool {
-        contains("userByToken") && contains(#""isArchived":true"#) && contains(#""isFavorite":true"#)
+        contains("savedItems(") && contains(#""isArchived":true"#) && contains(#""isFavorite":true"#)
     }
 
     var isForSlateLineup: Bool {
@@ -57,6 +57,10 @@ struct ClientAPIRequest {
 
     var isToSaveAnItem: Bool {
         contains("upsertSavedItem")
+    }
+
+    var isForItemDetail: Bool {
+        contains("savedItemById(")
     }
 
     func contains(_ string: String) -> Bool {

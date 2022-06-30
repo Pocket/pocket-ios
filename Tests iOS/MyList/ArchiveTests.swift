@@ -26,6 +26,8 @@ class ArchiveTests: XCTestCase {
                 return Response.myList()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
+            } else if apiRequest.isForItemDetail {
+                return Response.itemDetail()
             } else {
                 fatalError("Unexpected request")
             }
