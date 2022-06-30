@@ -5,7 +5,7 @@ import Combine
 import Kingfisher
 
 
-class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate {
+class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
     private var collectionView: UICollectionView!
@@ -165,9 +165,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             }
         }
 
-        let nextPageCellRegistration: UICollectionView.CellRegistration<UICollectionViewCell, String> = .init { cell, _, _ in
-        }
-
         self.dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in
             switch item {
             case .filterButton(let filter):
@@ -178,8 +175,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 return collectionView.dequeueConfiguredReusableCell(using: emptyCellRegistration, for: indexPath, item: "")
             case .offline:
                 return collectionView.dequeueConfiguredReusableCell(using: offlineCellRegistration, for: indexPath, item: "")
-            case .nextPage:
-                return collectionView.dequeueConfiguredReusableCell(using: nextPageCellRegistration, for: indexPath, item: "")
             }
         }
 
@@ -190,6 +185,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         model.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot, animatingDifferences: true)
         }.store(in: &subscriptions)
+
+        collectionView.prefetchDataSource = self
     }
 
     required init?(coder: NSCoder) {
@@ -219,11 +216,23 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     }
 
     private func configure(cell: ItemsListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
+        (model as? ArchivedItemsListViewModel)?.prefetch(itemsAt: [indexPath])
+
+        cell.backgroundConfiguration = .listPlainCell()
+
         guard let presenter = model.presenter(for: objectID) else {
+            cell.model = .init(
+                attributedTitle: NSAttributedString(string: "\(objectID)"),
+                attributedDetail: NSAttributedString(string: ""),
+                thumbnailURL: nil,
+                shareAction: nil,
+                favoriteAction: nil,
+                overflowActions: []
+            )
+
             return
         }
 
-        cell.backgroundConfiguration = .listPlainCell()
         cell.model = .init(
             attributedTitle: presenter.attributedTitle,
             attributedDetail: presenter.attributedDetail,
@@ -280,6 +289,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
 
         return model.shouldSelectCell(with: cell)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
+        (model as? ArchivedItemsListViewModel)?.prefetch(itemsAt: indexPaths)
     }
 }
 

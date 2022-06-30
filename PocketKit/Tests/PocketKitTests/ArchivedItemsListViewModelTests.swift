@@ -14,17 +14,16 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
     var networkMonitor: MockNetworkPathMonitor!
-    var itemsController: MockSavedItemsController!
+    var archiveService: MockArchiveService!
     var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
         self.source = MockSource()
         self.tracker = MockTracker()
         self.networkMonitor = MockNetworkPathMonitor()
+        self.archiveService = MockArchiveService()
 
-        self.itemsController = MockSavedItemsController()
-        self.itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
-        source.stubMakeArchivedItemsController { self.itemsController }
+        source.stubMakeArchiveService { self.archiveService }
     }
 
     override func tearDown() {
@@ -34,28 +33,35 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     func subject(
         source: Source? = nil,
         tracker: Tracker? = nil,
-        networkMonitor: NetworkPathMonitor? = nil
+        networkMonitor: NetworkPathMonitor? = nil,
+        archiveService: ArchiveService? = nil
     ) -> ArchivedItemsListViewModel {
         ArchivedItemsListViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            networkMonitor: networkMonitor ?? self.networkMonitor
+            networkMonitor: networkMonitor ?? self.networkMonitor,
+            archiveService: archiveService ?? self.archiveService
         )
     }
 
-    func test_fetch_delegatesToSource() {
-        itemsController.stubPerformFetch { }
-        source.stubFetchArchivePage { _, _ in }
+    func test_fetch_delegatesToArchiveService() {
+        archiveService.stubFetch { _ in }
 
         let viewModel = subject()
         viewModel.fetch()
 
-        XCTAssertNotNil(itemsController.performFetchCall(at: 0))
+        let call = archiveService.fetchCall(at: 0)
+        XCTAssertNotNil(call)
+        XCTAssertNil(call?.indexes)
     }
 
     func test_fetch_whenOffline_showsOfflineMessage() {
-        itemsController.stubPerformFetch { XCTFail("Should not fetch local items when offline") }
         networkMonitor.update(status: .unsatisfied)
+
+        archiveService.stubFetch { _ in
+            XCTFail("Should not fetch archive when offline")
+        }
+
         let viewModel = subject()
 
         let expectSnapshot = expectation(description: "expect snapshot")
@@ -72,63 +78,61 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         wait(for: [expectSnapshot], timeout: 1)
     }
 
-    func test_changedContentFromItemsController_sendsNewSnapshot() {
+    func test_changedContentFromArchiveService_sendsNewSnapshot() {
         let items: [SavedItem] = [.build(), .build()]
 
-        let expectSnapshot = expectation(description: "expect a snapshot")
         let viewModel = subject()
+
+        let expectSnapshot = expectation(description: "expect a snapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .items),
                 [
-                    .item(items[0].objectID),
-                    .item(items[1].objectID),
+                    .item(.loaded(items[0].objectID)),
+                    .item(.loaded(items[1].objectID)),
                 ]
             )
 
             expectSnapshot.fulfill()
         }.store(in: &subscriptions)
 
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
-
+        archiveService._results = [.loaded(items[0]), .loaded(items[1])]
         wait(for: [expectSnapshot], timeout: 1)
-        XCTAssertNotNil(viewModel.presenter(for: items[0].objectID))
     }
 
     func test_shareAction_setsSharedActivity() {
+        let items: [SavedItem] = [.build(), .build()]
+
         let viewModel = subject()
 
-        let items: [SavedItem] = [.build(), .build()]
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
-
-        viewModel.shareAction(for: items[0].objectID)?.handler?(nil)
+        archiveService._results = items.map { .loaded($0) }
+        viewModel.shareAction(for: .loaded(items[0].objectID))?.handler?(nil)
         XCTAssertNotNil(viewModel.sharedActivity)
     }
 
     func test_deleteAction_delegatesToSource_andUpdatesSnapshot() {
-        let viewModel = subject()
-
         let items: [SavedItem] = [.build(), .build()]
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        archiveService._results = items.map { .loaded($0) }
 
         let expectDeleteCall = expectation(description: "expect source.delete(_:)")
         source.stubDeleteSavedItem { item in
             defer { expectDeleteCall.fulfill() }
-            self.itemsController.fetchedObjects = [items[1]]
-            self.itemsController.delegate?.controllerDidChangeContent(self.itemsController)
+            self.archiveService._results = [.loaded(items[1])]
         }
 
+        let viewModel = subject()
         let expectSnapshotWithItemRemoved = expectation(description: "expected deleted item snapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in
-            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item(items[1].objectID)])
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .items),
+                [.item(.loaded(items[1].objectID))]
+            )
+
             expectSnapshotWithItemRemoved.fulfill()
         }.store(in: &subscriptions)
 
         // Tap delete button in overflow menu
-        viewModel.overflowActions(for: items[0].objectID)
+        viewModel.overflowActions(for: .loaded(items[0].objectID))
             .first { $0.title == "Delete" }?
             .handler?(nil)
 
@@ -137,96 +141,104 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             .actions
             .first { $0.title == "Yes" }?.invoke()
 
-        wait(for: [
-            expectSnapshotWithItemRemoved,
-            expectDeleteCall
-        ], timeout: 1)
+        wait(
+            for: [
+                expectSnapshotWithItemRemoved,
+                expectDeleteCall
+            ],
+            timeout: 1
+        )
 
         XCTAssertEqual(source.deleteSavedItemCall(at: 0)?.item, items[0])
     }
 
     func tests_favoriteAction_delegatesToSource_andUpdatesSnapshot() throws {
-        let viewModel = subject()
-
         let items: [SavedItem] = [.build(), .build()]
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        archiveService._results = items.map { .loaded($0) }
+
+        let viewModel = subject()
 
         let expectFavoriteCall = expectation(description: "expect source.favorite(_:)")
         source.stubFavoriteSavedItem { item in
             defer { expectFavoriteCall.fulfill() }
-            self.itemsController.delegate?.controller(
-                self.itemsController,
-                didChange: item,
-                at: [0, 0],
-                for: .update,
-                newIndexPath: nil
-            )
+            item.isFavorite = true
+            self.archiveService._itemUpdated.send(item)
         }
 
         let expectSnapshotWithItemReloaded = expectation(description: "expected reloaded item in snapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshotWithItemReloaded.fulfill() }
-            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [
-                .item(items[0].objectID), .item(items[1].objectID)
-            ])
-            XCTAssertEqual(snapshot.reloadedItemIdentifiers, [
-                .item(items[0].objectID)
-            ])
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .items),
+                [
+                    .item(.loaded(items[0].objectID)),
+                    .item(.loaded(items[1].objectID))
+                ]
+            )
+
+            XCTAssertEqual(
+                snapshot.reloadedItemIdentifiers,
+                [
+                    .item(.loaded(items[0].objectID))
+                ]
+            )
         }.store(in: &subscriptions)
 
-        viewModel.favoriteAction(for: items[0].objectID)?.handler?(nil)
+        viewModel.favoriteAction(for: .loaded(items[0].objectID))?.handler?(nil)
         wait(for: [expectFavoriteCall, expectSnapshotWithItemReloaded], timeout: 1)
         XCTAssertEqual(source.favoriteSavedItemCall(at: 0)?.item, items[0])
     }
 
     func test_favoriteAction_whenItemIsFavorited_delegatesToSource_andUpdatesSnapshot() throws {
-        let viewModel = subject()
-
         let items: [SavedItem] = [.build(isFavorite: true), .build()]
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        archiveService._results = items.map { .loaded($0) }
+
+        let viewModel = subject()
 
         let expectUnfavoriteCall = expectation(description: "expect source.favorite(_:)")
         source.stubUnfavoriteSavedItem { item in
             defer { expectUnfavoriteCall.fulfill() }
-            self.itemsController.delegate?.controller(
-                self.itemsController,
-                didChange: item,
-                at: [0, 0],
-                for: .update,
-                newIndexPath: nil
-            )
+            item.isFavorite = false
+
+            self.archiveService._itemUpdated.send(item)
         }
 
         let expectSnapshotWithItemReloaded = expectation(description: "expected reloaded item in snapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshotWithItemReloaded.fulfill() }
 
-            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [
-                .item(items[0].objectID), .item(items[1].objectID)
-            ])
-            XCTAssertEqual(snapshot.reloadedItemIdentifiers, [
-                .item(items[0].objectID)
-            ])
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .items),
+                [
+                    .item(.loaded(items[0].objectID)),
+                    .item(.loaded(items[1].objectID))
+                ]
+            )
+
+            XCTAssertEqual(
+                snapshot.reloadedItemIdentifiers,
+                [
+                    .item(.loaded(items[0].objectID))
+                ]
+            )
         }.store(in: &subscriptions)
 
-        viewModel.favoriteAction(for: items[0].objectID)?.handler?(nil)
+        viewModel.favoriteAction(for: .loaded(items[0].objectID))?.handler?(nil)
         wait(for: [expectUnfavoriteCall, expectSnapshotWithItemReloaded], timeout: 1)
         XCTAssertEqual(source.unfavoriteSavedItemCall(at: 0)?.item, items[0])
     }
 
     func test_reAddAction_removeItemAndDelegatesToSource() {
-        let viewModel = subject()
         let items: [SavedItem] = [.build(isFavorite: true), .build()]
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        archiveService._results = items.map { .loaded($0) }
+
+        let viewModel = subject()
 
         let expectUnarchiveCall = expectation(description: "Expect a call to source.unarchive(_:)")
         source.stubUnarchiveSavedItem { _ in
             defer { expectUnarchiveCall.fulfill() }
-            self.itemsController.fetchedObjects = [items[1]]
-            self.itemsController.delegate?.controllerDidChangeContent(self.itemsController)
+            self.archiveService._results = [.loaded(items[1])]
         }
 
         let expectSnapshotWithItemRemoved = expectation(description: "expected reloaded item snapshot")
@@ -235,11 +247,11 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .items),
-                [.item(items[1].objectID)]
+                [.item(.loaded(items[1].objectID))]
             )
         }.store(in: &subscriptions)
 
-        viewModel.overflowActions(for: items[0].objectID)
+        viewModel.overflowActions(for: .loaded(items[0].objectID))
             .first { $0.title == "Move to My List" }?
             .handler?(nil)
 
@@ -247,30 +259,29 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
-        let viewModel = subject()
         let items: [SavedItem] = [.build(item: nil), .build()]
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        archiveService._results = items.map { .loaded($0) }
 
-        XCTAssertFalse(viewModel.shouldSelectCell(with: .item(items[0].objectID)))
+        let viewModel = subject()
+
+        XCTAssertFalse(viewModel.shouldSelectCell(with: .item(.loaded(items[0].objectID))))
     }
 
     func test_shouldSelectCell_whenItemIsNotPending_returnsFalse() {
-        let viewModel = subject()
-        let items: [SavedItem] = [.build(isFavorite: true), .build()]
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        let items: [SavedItem] = [.build(), .build()]
+        archiveService._results = items.map { .loaded($0) }
 
-        XCTAssertTrue(viewModel.shouldSelectCell(with: .item(items[0].objectID)))
+        let viewModel = subject()
+
+        XCTAssertTrue(viewModel.shouldSelectCell(with: .item(.loaded(items[0].objectID))))
     }
     
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
-        let viewModel = subject()
-        let items: [SavedItem] = [.build(isFavorite: true), .build()]
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        let items: [SavedItem] = [.build(), .build()]
+        archiveService._results = items.map { .loaded($0) }
 
-        viewModel.selectCell(with: .item(items[0].objectID))
+        let viewModel = subject()
+        viewModel.selectCell(with: .item(.loaded(items[0].objectID)))
         
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -286,14 +297,12 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
     
     func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() {
-        let viewModel = subject()
-        let items: [SavedItem] = [.build(isFavorite: true), .build()]
-        items[0].item?.isArticle = false
-        
-        itemsController.fetchedObjects = items
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        let items: [SavedItem] = [.build(item: .build(isArticle: false)), .build()]
+        archiveService._results = items.map { .loaded($0) }
 
-        viewModel.selectCell(with: .item(items[0].objectID))
+        let viewModel = subject()
+
+        viewModel.selectCell(with: .item(.loaded(items[0].objectID)))
         
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -352,206 +361,92 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         wait(for: [eventSent], timeout: 1)
     }
     
-    func test_receivedSnapshots_includeNextPageItem() {
-        let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
-        itemsController.fetchedObjects = items
-
-        source.stubFetchArchivePage { cursor, isFavorite in }
-
-        let viewModel = subject()
-
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            let identifiers = snapshot.itemIdentifiers(inSection: .nextPage)
-            XCTAssertEqual(identifiers.count, 1)
-            guard case .nextPage = identifiers[0] else {
-                XCTFail("received unexpected cell identifier: \(identifiers[0])")
-                return
-            }
-
-            expectSnapshot.fulfill()
-        }.store(in: &subscriptions)
-
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
-
-        wait(for: [expectSnapshot], timeout: 1)
-
-        viewModel.willDisplay(.nextPage)
-
-        let call = source.fetchArchivePageCall(at: 0)
-        XCTAssertNotNil(call)
-        XCTAssertNil(call?.isFavorite)
-        XCTAssertEqual(call?.cursor, "cursor-2")
-    }
-    
     func test_receivedSnapshots_withNoItems_includesArchiveEmptyState() {
-        itemsController.fetchedObjects = []
+        archiveService._results = []
 
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
-            XCTAssertEqual(identifiers.count, 1)
-            XCTAssertTrue(snapshot.sectionIdentifiers.contains(.emptyState))
-            XCTAssertNotNil(viewModel.emptyState)
+        viewModel.snapshot.sink { snapshot in
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .emptyState),
+                [.emptyState]
+            )
+
             XCTAssertTrue(viewModel.emptyState is ArchiveEmptyStateViewModel)
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
-
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
     
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
-        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [] }
+        archiveService._results = []
 
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites))
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
-            XCTAssertEqual(identifiers.count, 1)
-            XCTAssertTrue(snapshot.sectionIdentifiers.contains(.emptyState))
-            XCTAssertNotNil(viewModel.emptyState)
+        viewModel.snapshot.sink { snapshot in
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .emptyState),
+                [.emptyState]
+            )
+
             XCTAssertTrue(viewModel.emptyState is FavoritesEmptyStateViewModel)
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
-
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeArchiveEmptyState() {
-        let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
-        itemsController.fetchedObjects = items
+        let items: [SavedItem] = [.build(), .build()]
+        archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            let identifiers = snapshot.itemIdentifiers(inSection: .items)
-            XCTAssertEqual(identifiers.count, 2)
+        viewModel.snapshot.sink { snapshot in
             XCTAssertNil(snapshot.indexOfSection(.emptyState))
-            XCTAssertNil(viewModel.emptyState)
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
-
         wait(for: [snapshotExpectation], timeout: 1)
     }
-    
-    func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
-        let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
-        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = items }
 
-        let viewModel = subject()
-        viewModel.selectCell(with: .filterButton(.favorites))
-
-        let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            let identifiers = snapshot.itemIdentifiers(inSection: .items)
-            XCTAssertEqual(identifiers.count, 2)
-            XCTAssertNil(snapshot.indexOfSection(.emptyState))
-            XCTAssertNil(viewModel.emptyState)
-            snapshotExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
-
-        wait(for: [snapshotExpectation], timeout: 1)
-    }
-    
-    func test_willDisplay_whenFavoritesFilterIsOn_includesFilterArgument() {
-        let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
-        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = items }
-
-        source.stubFetchArchivePage { cursor, isFavorite in }
-
-        let viewModel = subject()
-        viewModel.selectCell(with: .filterButton(.favorites))
-
-        let nextPage = ItemsListCell<ArchivedItemsListViewModel.ItemIdentifier>.nextPage
-        viewModel.willDisplay(nextPage)
-        viewModel.willDisplay(nextPage)
-
-        let call = source.fetchArchivePageCall(at: 0)
-        XCTAssertEqual(call?.isFavorite, true)
-        XCTAssertNil(source.fetchArchivePageCall(at:1))
-
-        source._events.send(.loadedArchivePage)
-
-        viewModel.willDisplay(nextPage)
-        XCTAssertNotNil(source.fetchArchivePageCall(at:1))
-    }
-
-    func test_willDisplay_whenOffline_doesNothing() {
-        let items: [SavedItem] = [.build(cursor: "cursor-1"), .build(cursor: "cursor-2")]
-        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = items }
-
-        let viewModel = subject()
-        viewModel.fetch()
-
+    func test_prefetch_whenOffline_doesNothing() {
+        archiveService.stubFetch { _ in }
+        archiveService._results = [.loaded(.build()), .notLoaded]
         networkMonitor.update(status: .unsatisfied)
-        viewModel.willDisplay(.nextPage)
+
+        let viewModel = subject()
+        viewModel.prefetch(itemsAt: [[0, 1]])
 
         XCTAssertNil(source.fetchArchivePageCall(at: 0))
     }
 
-    func test_refresh_whenLocalItemsHavePreviouslyBeenFetched_delegatesToSource_andSendsASnapshot() {
-        let items: [SavedItem] = [.build()]
-        itemsController.fetchedObjects = items
-        source.stubRefresh { _, completion in completion?() }
-        let viewModel = subject()
-
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            defer { expectSnapshot.fulfill() }
-            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item(items[0].objectID)])
-        }.store(in: &subscriptions)
-
-        let expectCompletion = expectation(description: "Expect completion to be called")
-        viewModel.refresh {
-            expectCompletion.fulfill()
-        }
-
-        XCTAssertNotNil(source.refreshCall(at: 0))
-        wait(for: [expectCompletion, expectSnapshot], timeout: 1)
-    }
-
-    func test_refresh_whenLocalItemsHaveNotBeenFetched_delegatesToSource_fetchesLocalItems() {
-        let items: [SavedItem] = [.build()]
-
-        source.stubRefresh { _, completion in completion?() }
-        itemsController.stubPerformFetch {
-            self.itemsController.fetchedObjects = items
+    func test_refresh_delegatesToArchiveService() {
+        archiveService.stubRefresh { completion in
+            completion?()
         }
 
         let viewModel = subject()
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        viewModel.snapshot.dropFirst().sink { snapshot in
-            defer { expectSnapshot.fulfill() }
 
-            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items), [.item(items[0].objectID)])
-        }.store(in: &subscriptions)
-
-        let expectCompletion = expectation(description: "Expect completion to be called")
+        let completionInvoked = expectation(description: "completionInvoked")
         viewModel.refresh {
-            expectCompletion.fulfill()
+            completionInvoked.fulfill()
         }
 
-        XCTAssertNotNil(source.refreshCall(at: 0))
-        wait(for: [expectCompletion, expectSnapshot], timeout: 1)
+        wait(for: [completionInvoked], timeout: 1)
+        XCTAssertNotNil(archiveService.refreshCall(at:0))
     }
 
     func test_refresh_whenOffline_showsTheOfflineMessage() {
         networkMonitor.update(status: .unsatisfied)
 
         let viewModel = subject()
+
         let expectSnapshot = expectation(description: "expect snapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in
             defer { expectSnapshot.fulfill() }

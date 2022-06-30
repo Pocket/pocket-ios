@@ -48,4 +48,25 @@ extension SavedItem {
 
         item = recommendation.item
     }
+
+    public func update(from summary: SavedItemSummary) {
+        remoteID = summary.remoteId
+        url = URL(string: summary.url)
+        createdAt = Date(timeIntervalSince1970: TimeInterval(summary._createdAt))
+        deletedAt = summary._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
+        archivedAt = summary.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
+        isArchived = summary.isArchived
+        isFavorite = summary.isFavorite
+
+        guard let context = managedObjectContext,
+              let itemSummary = summary.item.fragments.itemSummary else {
+            return
+        }
+
+        let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteId)
+        fetchRequest.fetchLimit = 1
+        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
+        itemToUpdate?.update(from: itemSummary)
+        item = itemToUpdate
+    }
 }

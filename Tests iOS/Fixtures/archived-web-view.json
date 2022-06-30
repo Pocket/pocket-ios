@@ -1,9 +1,10 @@
 {
     "data": {
-        "userByToken": {
+        "user": {
             "__typename": "[type-name-here]",
             "savedItems": {
                 "__typename": "[type-name-here]",
+                "totalCount": 3,
                 "pageInfo": {
                     "__typename": "[type-name-here]",
                     "hasNextPage": false,
@@ -32,7 +33,6 @@
                                 "domain": null,
                                 "language": "en",
                                 "timeToRead": 6,
-                                "marticle": #MARTICLE#,
                                 "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
                                 "datePublished": "2001-01-01 12:01:01",
                                 "authors": [
@@ -74,7 +74,6 @@
                                 "language": "en",
                                 "timeToRead": 6,
                                 "domainMetadata": null,
-                                "marticle": [],
                                 "authors": [],
                                 "datePublished": "1999-01-01 12:01:01",
                                 "excerpt": "Vehicula Nibh Ligula Porta Magna",
@@ -108,7 +107,6 @@
                                 "language": "en",
                                 "timeToRead": 6,
                                 "domainMetadata": null,
-                                "marticle": [],
                                 "authors": [],
                                 "datePublished": "1999-01-01 12:01:01",
                                 "excerpt": "Vehicula Nibh Ligula Porta Magna",

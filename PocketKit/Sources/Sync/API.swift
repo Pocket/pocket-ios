@@ -308,6 +308,130 @@ public enum SavedItemStatusFilter: RawRepresentable, Equatable, Hashable, CaseIt
   }
 }
 
+/// Input to sort fetched SavedItems. If unspecified, defaults to CREATED_AT, ASC.
+public struct SavedItemsSort: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - sortBy: The field by which to sort SavedItems
+  ///   - sortOrder: The order in which to sort SavedItems
+  public init(sortBy: SavedItemsSortBy, sortOrder: SavedItemsSortOrder) {
+    graphQLMap = ["sortBy": sortBy, "sortOrder": sortOrder]
+  }
+
+  /// The field by which to sort SavedItems
+  public var sortBy: SavedItemsSortBy {
+    get {
+      return graphQLMap["sortBy"] as! SavedItemsSortBy
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "sortBy")
+    }
+  }
+
+  /// The order in which to sort SavedItems
+  public var sortOrder: SavedItemsSortOrder {
+    get {
+      return graphQLMap["sortOrder"] as! SavedItemsSortOrder
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "sortOrder")
+    }
+  }
+}
+
+/// Enum to specify the sort by field (these are the current options, we could add more in the future)
+public enum SavedItemsSortBy: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case createdAt
+  case updatedAt
+  case favoritedAt
+  case archivedAt
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "CREATED_AT": self = .createdAt
+      case "UPDATED_AT": self = .updatedAt
+      case "FAVORITED_AT": self = .favoritedAt
+      case "ARCHIVED_AT": self = .archivedAt
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .createdAt: return "CREATED_AT"
+      case .updatedAt: return "UPDATED_AT"
+      case .favoritedAt: return "FAVORITED_AT"
+      case .archivedAt: return "ARCHIVED_AT"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: SavedItemsSortBy, rhs: SavedItemsSortBy) -> Bool {
+    switch (lhs, rhs) {
+      case (.createdAt, .createdAt): return true
+      case (.updatedAt, .updatedAt): return true
+      case (.favoritedAt, .favoritedAt): return true
+      case (.archivedAt, .archivedAt): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [SavedItemsSortBy] {
+    return [
+      .createdAt,
+      .updatedAt,
+      .favoritedAt,
+      .archivedAt,
+    ]
+  }
+}
+
+/// Enum to specify the sort order of SavedItems fetched
+public enum SavedItemsSortOrder: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case asc
+  case desc
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "ASC": self = .asc
+      case "DESC": self = .desc
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .asc: return "ASC"
+      case .desc: return "DESC"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: SavedItemsSortOrder, rhs: SavedItemsSortOrder) -> Bool {
+    switch (lhs, rhs) {
+      case (.asc, .asc): return true
+      case (.desc, .desc): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [SavedItemsSortOrder] {
+    return [
+      .asc,
+      .desc,
+    ]
+  }
+}
+
 /// Input field for upserting a SavedItem
 public struct SavedItemUpsertInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
@@ -562,6 +686,961 @@ public enum VideoType: RawRepresentable, Equatable, Hashable, CaseIterable, Apol
       .iframe,
       .brightcove,
     ]
+  }
+}
+
+public final class SavedItemSummariesQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query SavedItemSummaries($pagination: PaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) {
+      user {
+        __typename
+        savedItems(pagination: $pagination, filter: $filter, sort: $sort) {
+          __typename
+          totalCount
+          pageInfo {
+            __typename
+            hasNextPage
+            endCursor
+          }
+          edges {
+            __typename
+            cursor
+            node {
+              __typename
+              ...SavedItemSummary
+            }
+          }
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "SavedItemSummaries"
+
+  public var queryDocument: String {
+    var document: String = operationDefinition
+    document.append("\n" + SavedItemSummary.fragmentDefinition)
+    document.append("\n" + ItemSummary.fragmentDefinition)
+    document.append("\n" + DomainMetadataParts.fragmentDefinition)
+    return document
+  }
+
+  public var pagination: PaginationInput?
+  public var filter: SavedItemsFilter?
+  public var sort: SavedItemsSort?
+
+  public init(pagination: PaginationInput? = nil, filter: SavedItemsFilter? = nil, sort: SavedItemsSort? = nil) {
+    self.pagination = pagination
+    self.filter = filter
+    self.sort = sort
+  }
+
+  public var variables: GraphQLMap? {
+    return ["pagination": pagination, "filter": filter, "sort": sort]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("user", type: .object(User.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(user: User? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "user": user.flatMap { (value: User) -> ResultMap in value.resultMap }])
+    }
+
+    /// Get a user entity for an authenticated client
+    public var user: User? {
+      get {
+        return (resultMap["user"] as? ResultMap).flatMap { User(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "user")
+      }
+    }
+
+    public struct User: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["User"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("savedItems", arguments: ["pagination": GraphQLVariable("pagination"), "filter": GraphQLVariable("filter"), "sort": GraphQLVariable("sort")], type: .object(SavedItem.selections)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(savedItems: SavedItem? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "savedItems": savedItems.flatMap { (value: SavedItem) -> ResultMap in value.resultMap }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// Get a general paginated listing of all SavedItems for the user
+      public var savedItems: SavedItem? {
+        get {
+          return (resultMap["savedItems"] as? ResultMap).flatMap { SavedItem(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "savedItems")
+        }
+      }
+
+      public struct SavedItem: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["SavedItemConnection"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
+            GraphQLField("pageInfo", type: .nonNull(.object(PageInfo.selections))),
+            GraphQLField("edges", type: .list(.object(Edge.selections))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(totalCount: Int, pageInfo: PageInfo, edges: [Edge?]? = nil) {
+          self.init(unsafeResultMap: ["__typename": "SavedItemConnection", "totalCount": totalCount, "pageInfo": pageInfo.resultMap, "edges": edges.flatMap { (value: [Edge?]) -> [ResultMap?] in value.map { (value: Edge?) -> ResultMap? in value.flatMap { (value: Edge) -> ResultMap in value.resultMap } } }])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// Identifies the total count of SavedItems in the connection.
+        public var totalCount: Int {
+          get {
+            return resultMap["totalCount"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "totalCount")
+          }
+        }
+
+        /// Information to aid in pagination.
+        public var pageInfo: PageInfo {
+          get {
+            return PageInfo(unsafeResultMap: resultMap["pageInfo"]! as! ResultMap)
+          }
+          set {
+            resultMap.updateValue(newValue.resultMap, forKey: "pageInfo")
+          }
+        }
+
+        /// A list of edges.
+        public var edges: [Edge?]? {
+          get {
+            return (resultMap["edges"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Edge?] in value.map { (value: ResultMap?) -> Edge? in value.flatMap { (value: ResultMap) -> Edge in Edge(unsafeResultMap: value) } } }
+          }
+          set {
+            resultMap.updateValue(newValue.flatMap { (value: [Edge?]) -> [ResultMap?] in value.map { (value: Edge?) -> ResultMap? in value.flatMap { (value: Edge) -> ResultMap in value.resultMap } } }, forKey: "edges")
+          }
+        }
+
+        public struct PageInfo: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PageInfo"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("hasNextPage", type: .nonNull(.scalar(Bool.self))),
+              GraphQLField("endCursor", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(hasNextPage: Bool, endCursor: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PageInfo", "hasNextPage": hasNextPage, "endCursor": endCursor])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// When paginating forwards, are there more items?
+          public var hasNextPage: Bool {
+            get {
+              return resultMap["hasNextPage"]! as! Bool
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "hasNextPage")
+            }
+          }
+
+          /// When paginating forwards, the cursor to continue.
+          public var endCursor: String? {
+            get {
+              return resultMap["endCursor"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "endCursor")
+            }
+          }
+        }
+
+        public struct Edge: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["SavedItemEdge"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("cursor", type: .nonNull(.scalar(String.self))),
+              GraphQLField("node", type: .object(Node.selections)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(cursor: String, node: Node? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SavedItemEdge", "cursor": cursor, "node": node.flatMap { (value: Node) -> ResultMap in value.resultMap }])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// A cursor for use in pagination.
+          public var cursor: String {
+            get {
+              return resultMap["cursor"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "cursor")
+            }
+          }
+
+          /// The SavedItem at the end of the edge.
+          public var node: Node? {
+            get {
+              return (resultMap["node"] as? ResultMap).flatMap { Node(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "node")
+            }
+          }
+
+          public struct Node: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SavedItem"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("url", type: .nonNull(.scalar(String.self))),
+                GraphQLField("id", alias: "remoteID", type: .nonNull(.scalar(GraphQLID.self))),
+                GraphQLField("isArchived", type: .nonNull(.scalar(Bool.self))),
+                GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
+                GraphQLField("_deletedAt", type: .scalar(Int.self)),
+                GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
+                GraphQLField("archivedAt", type: .scalar(Int.self)),
+                GraphQLField("item", type: .nonNull(.object(Item.selections))),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, archivedAt: Int? = nil, item: Item) {
+              self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "archivedAt": archivedAt, "item": item.resultMap])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The url the user saved to their list
+            public var url: String {
+              get {
+                return resultMap["url"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "url")
+              }
+            }
+
+            /// Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation
+            public var remoteId: GraphQLID {
+              get {
+                return resultMap["remoteID"]! as! GraphQLID
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "remoteID")
+              }
+            }
+
+            /// Helper property to indicate if the SavedItem is archived
+            public var isArchived: Bool {
+              get {
+                return resultMap["isArchived"]! as! Bool
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "isArchived")
+              }
+            }
+
+            /// Helper property to indicate if the SavedItem is favorited
+            public var isFavorite: Bool {
+              get {
+                return resultMap["isFavorite"]! as! Bool
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "isFavorite")
+              }
+            }
+
+            /// Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
+            public var _deletedAt: Int? {
+              get {
+                return resultMap["_deletedAt"] as? Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "_deletedAt")
+              }
+            }
+
+            /// Unix timestamp of when the entity was created
+            public var _createdAt: Int {
+              get {
+                return resultMap["_createdAt"]! as! Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "_createdAt")
+              }
+            }
+
+            /// Timestamp that the SavedItem became archied, null if not archived
+            public var archivedAt: Int? {
+              get {
+                return resultMap["archivedAt"] as? Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "archivedAt")
+              }
+            }
+
+            /// Link to the underlying Pocket Item for the URL
+            public var item: Item {
+              get {
+                return Item(unsafeResultMap: resultMap["item"]! as! ResultMap)
+              }
+              set {
+                resultMap.updateValue(newValue.resultMap, forKey: "item")
+              }
+            }
+
+            public var fragments: Fragments {
+              get {
+                return Fragments(unsafeResultMap: resultMap)
+              }
+              set {
+                resultMap += newValue.resultMap
+              }
+            }
+
+            public struct Fragments {
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public var savedItemSummary: SavedItemSummary {
+                get {
+                  return SavedItemSummary(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+            }
+
+            public struct Item: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["PendingItem", "Item"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLTypeCase(
+                    variants: ["Item": AsItem.selections],
+                    default: [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    ]
+                  )
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public static func makePendingItem() -> Item {
+                return Item(unsafeResultMap: ["__typename": "PendingItem"])
+              }
+
+              public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
+                return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var fragments: Fragments {
+                get {
+                  return Fragments(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+
+              public struct Fragments {
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public var itemSummary: ItemSummary? {
+                  get {
+                    if !ItemSummary.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return ItemSummary(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+              }
+
+              public var asItem: AsItem? {
+                get {
+                  if !AsItem.possibleTypes.contains(__typename) { return nil }
+                  return AsItem(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsItem: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["Item"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("itemId", alias: "remoteID", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("givenUrl", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("resolvedUrl", type: .scalar(String.self)),
+                    GraphQLField("title", type: .scalar(String.self)),
+                    GraphQLField("language", type: .scalar(String.self)),
+                    GraphQLField("topImageUrl", type: .scalar(String.self)),
+                    GraphQLField("timeToRead", type: .scalar(Int.self)),
+                    GraphQLField("domain", type: .scalar(String.self)),
+                    GraphQLField("datePublished", type: .scalar(String.self)),
+                    GraphQLField("isArticle", type: .scalar(Bool.self)),
+                    GraphQLField("hasImage", type: .scalar(Imageness.self)),
+                    GraphQLField("hasVideo", type: .scalar(Videoness.self)),
+                    GraphQLField("authors", type: .list(.object(Author.selections))),
+                    GraphQLField("excerpt", type: .scalar(String.self)),
+                    GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
+                    GraphQLField("images", type: .list(.object(Image.selections))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// The Item entity is owned by the Parser service.
+                /// We only extend it in this service to make this service's schema valid.
+                /// The key for this entity is the 'itemId'
+                public var remoteId: String {
+                  get {
+                    return resultMap["remoteID"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "remoteID")
+                  }
+                }
+
+                /// key field to identify the Item entity in the Parser service
+                public var givenUrl: String {
+                  get {
+                    return resultMap["givenUrl"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "givenUrl")
+                  }
+                }
+
+                /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
+                public var resolvedUrl: String? {
+                  get {
+                    return resultMap["resolvedUrl"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "resolvedUrl")
+                  }
+                }
+
+                /// The title as determined by the parser.
+                public var title: String? {
+                  get {
+                    return resultMap["title"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "title")
+                  }
+                }
+
+                /// The detected language of the article
+                public var language: String? {
+                  get {
+                    return resultMap["language"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "language")
+                  }
+                }
+
+                /// The page's / publisher's preferred thumbnail image
+                public var topImageUrl: String? {
+                  get {
+                    return resultMap["topImageUrl"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "topImageUrl")
+                  }
+                }
+
+                /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
+                public var timeToRead: Int? {
+                  get {
+                    return resultMap["timeToRead"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "timeToRead")
+                  }
+                }
+
+                /// The domain, such as 'getpocket.com' of the {.resolved_url}
+                public var domain: String? {
+                  get {
+                    return resultMap["domain"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "domain")
+                  }
+                }
+
+                /// The date the article was published
+                public var datePublished: String? {
+                  get {
+                    return resultMap["datePublished"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "datePublished")
+                  }
+                }
+
+                /// true if the item is an article
+                public var isArticle: Bool? {
+                  get {
+                    return resultMap["isArticle"] as? Bool
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "isArticle")
+                  }
+                }
+
+                /// 0=no images, 1=contains images, 2=is an image
+                public var hasImage: Imageness? {
+                  get {
+                    return resultMap["hasImage"] as? Imageness
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "hasImage")
+                  }
+                }
+
+                /// 0=no videos, 1=contains video, 2=is a video
+                public var hasVideo: Videoness? {
+                  get {
+                    return resultMap["hasVideo"] as? Videoness
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "hasVideo")
+                  }
+                }
+
+                /// List of Authors involved with this article
+                public var authors: [Author?]? {
+                  get {
+                    return (resultMap["authors"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Author?] in value.map { (value: ResultMap?) -> Author? in value.flatMap { (value: ResultMap) -> Author in Author(unsafeResultMap: value) } } }
+                  }
+                  set {
+                    resultMap.updateValue(newValue.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, forKey: "authors")
+                  }
+                }
+
+                /// A snippet of text from the article
+                public var excerpt: String? {
+                  get {
+                    return resultMap["excerpt"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "excerpt")
+                  }
+                }
+
+                /// Additional information about the item domain, when present, use this for displaying the domain name
+                public var domainMetadata: DomainMetadatum? {
+                  get {
+                    return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
+                  }
+                }
+
+                /// Array of images within an article
+                public var images: [Image?]? {
+                  get {
+                    return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
+                  }
+                  set {
+                    resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var itemSummary: ItemSummary {
+                    get {
+                      return ItemSummary(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+
+                public struct Author: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["Author"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+                      GraphQLField("name", type: .scalar(String.self)),
+                      GraphQLField("url", type: .scalar(String.self)),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(id: GraphQLID, name: String? = nil, url: String? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "Author", "id": id, "name": name, "url": url])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  /// Unique id for that Author
+                  public var id: GraphQLID {
+                    get {
+                      return resultMap["id"]! as! GraphQLID
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "id")
+                    }
+                  }
+
+                  /// Display name
+                  public var name: String? {
+                    get {
+                      return resultMap["name"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "name")
+                    }
+                  }
+
+                  /// A url to that Author's site
+                  public var url: String? {
+                    get {
+                      return resultMap["url"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "url")
+                    }
+                  }
+                }
+
+                public struct DomainMetadatum: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["DomainMetadata"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("name", type: .scalar(String.self)),
+                      GraphQLField("logo", type: .scalar(String.self)),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(name: String? = nil, logo: String? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "DomainMetadata", "name": name, "logo": logo])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  /// The name of the domain (e.g., The New York Times)
+                  public var name: String? {
+                    get {
+                      return resultMap["name"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "name")
+                    }
+                  }
+
+                  /// Url for the logo image
+                  public var logo: String? {
+                    get {
+                      return resultMap["logo"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "logo")
+                    }
+                  }
+
+                  public var fragments: Fragments {
+                    get {
+                      return Fragments(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public struct Fragments {
+                    public private(set) var resultMap: ResultMap
+
+                    public init(unsafeResultMap: ResultMap) {
+                      self.resultMap = unsafeResultMap
+                    }
+
+                    public var domainMetadataParts: DomainMetadataParts {
+                      get {
+                        return DomainMetadataParts(unsafeResultMap: resultMap)
+                      }
+                      set {
+                        resultMap += newValue.resultMap
+                      }
+                    }
+                  }
+                }
+
+                public struct Image: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["Image"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("height", type: .scalar(Int.self)),
+                      GraphQLField("width", type: .scalar(Int.self)),
+                      GraphQLField("src", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("imageId", type: .nonNull(.scalar(Int.self))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(height: Int? = nil, width: Int? = nil, src: String, imageId: Int) {
+                    self.init(unsafeResultMap: ["__typename": "Image", "height": height, "width": width, "src": src, "imageId": imageId])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  /// If known, the height of the image in px
+                  public var height: Int? {
+                    get {
+                      return resultMap["height"] as? Int
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "height")
+                    }
+                  }
+
+                  /// If known, the width of the image in px
+                  public var width: Int? {
+                    get {
+                      return resultMap["width"] as? Int
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "width")
+                    }
+                  }
+
+                  /// Absolute url to the image
+                  public var src: String {
+                    get {
+                      return resultMap["src"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "src")
+                    }
+                  }
+
+                  /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+                  public var imageId: Int {
+                    get {
+                      return resultMap["imageId"]! as! Int
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "imageId")
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -1122,7 +2201,9 @@ public final class UserByTokenQuery: GraphQLQuery {
                   }
                 }
 
-                /// A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps.
+                /// The Item entity is owned by the Parser service.
+                /// We only extend it in this service to make this service's schema valid.
+                /// The key for this entity is the 'itemId'
                 public var remoteId: String {
                   get {
                     return resultMap["remoteID"]! as! String
@@ -1132,7 +2213,7 @@ public final class UserByTokenQuery: GraphQLQuery {
                   }
                 }
 
-                /// The url as provided by the user when saving. Only http or https schemes allowed.
+                /// key field to identify the Item entity in the Parser service
                 public var givenUrl: String {
                   get {
                     return resultMap["givenUrl"]! as! String
@@ -4224,7 +5305,9 @@ public final class SaveItemMutation: GraphQLMutation {
             }
           }
 
-          /// A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps.
+          /// The Item entity is owned by the Parser service.
+          /// We only extend it in this service to make this service's schema valid.
+          /// The key for this entity is the 'itemId'
           public var remoteId: String {
             get {
               return resultMap["remoteID"]! as! String
@@ -4234,7 +5317,7 @@ public final class SaveItemMutation: GraphQLMutation {
             }
           }
 
-          /// The url as provided by the user when saving. Only http or https schemes allowed.
+          /// key field to identify the Item entity in the Parser service
           public var givenUrl: String {
             get {
               return resultMap["givenUrl"]! as! String
@@ -7630,7 +8713,9 @@ public final class GetSlateLineupQuery: GraphQLQuery {
             }
           }
 
-          /// The Item that is resolved by apollo federation using the itemId
+          /// The Recommendation entity is owned by the Recommendation API service.
+          /// We extend it in this service to add an extra field ('curationInfo') to the Recommendation entity.
+          /// The key for this entity is the 'itemId' found within the Item entity which is owned by the Parser service.
           public var item: Item {
             get {
               return Item(unsafeResultMap: resultMap["item"]! as! ResultMap)
@@ -7686,7 +8771,9 @@ public final class GetSlateLineupQuery: GraphQLQuery {
               }
             }
 
-            /// A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps.
+            /// The Item entity is owned by the Parser service.
+            /// We only extend it in this service to make this service's schema valid.
+            /// The key for this entity is the 'itemId'
             public var remoteId: String {
               get {
                 return resultMap["remoteID"]! as! String
@@ -7696,7 +8783,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
               }
             }
 
-            /// The url as provided by the user when saving. Only http or https schemes allowed.
+            /// key field to identify the Item entity in the Parser service
             public var givenUrl: String {
               get {
                 return resultMap["givenUrl"]! as! String
@@ -10561,7 +11648,9 @@ public final class GetSlateQuery: GraphQLQuery {
           }
         }
 
-        /// The Item that is resolved by apollo federation using the itemId
+        /// The Recommendation entity is owned by the Recommendation API service.
+        /// We extend it in this service to add an extra field ('curationInfo') to the Recommendation entity.
+        /// The key for this entity is the 'itemId' found within the Item entity which is owned by the Parser service.
         public var item: Item {
           get {
             return Item(unsafeResultMap: resultMap["item"]! as! ResultMap)
@@ -10617,7 +11706,9 @@ public final class GetSlateQuery: GraphQLQuery {
             }
           }
 
-          /// A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps.
+          /// The Item entity is owned by the Parser service.
+          /// We only extend it in this service to make this service's schema valid.
+          /// The key for this entity is the 'itemId'
           public var remoteId: String {
             get {
               return resultMap["remoteID"]! as! String
@@ -10627,7 +11718,7 @@ public final class GetSlateQuery: GraphQLQuery {
             }
           }
 
-          /// The url as provided by the user when saving. Only http or https schemes allowed.
+          /// key field to identify the Item entity in the Parser service
           public var givenUrl: String {
             get {
               return resultMap["givenUrl"]! as! String
@@ -13256,6 +14347,4267 @@ public final class GetSlateQuery: GraphQLQuery {
   }
 }
 
+public final class SavedItemByIdQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query SavedItemByID($id: ID!) {
+      user {
+        __typename
+        savedItemById(id: $id) {
+          __typename
+          ...SavedItemParts
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "SavedItemByID"
+
+  public var queryDocument: String {
+    var document: String = operationDefinition
+    document.append("\n" + SavedItemParts.fragmentDefinition)
+    document.append("\n" + ItemParts.fragmentDefinition)
+    document.append("\n" + MarticleTextParts.fragmentDefinition)
+    document.append("\n" + ImageParts.fragmentDefinition)
+    document.append("\n" + MarticleDividerParts.fragmentDefinition)
+    document.append("\n" + MarticleTableParts.fragmentDefinition)
+    document.append("\n" + MarticleHeadingParts.fragmentDefinition)
+    document.append("\n" + MarticleCodeBlockParts.fragmentDefinition)
+    document.append("\n" + VideoParts.fragmentDefinition)
+    document.append("\n" + MarticleBulletedListParts.fragmentDefinition)
+    document.append("\n" + MarticleNumberedListParts.fragmentDefinition)
+    document.append("\n" + MarticleBlockquoteParts.fragmentDefinition)
+    document.append("\n" + DomainMetadataParts.fragmentDefinition)
+    document.append("\n" + PendingItemParts.fragmentDefinition)
+    return document
+  }
+
+  public var id: GraphQLID
+
+  public init(id: GraphQLID) {
+    self.id = id
+  }
+
+  public var variables: GraphQLMap? {
+    return ["id": id]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("user", type: .object(User.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(user: User? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "user": user.flatMap { (value: User) -> ResultMap in value.resultMap }])
+    }
+
+    /// Get a user entity for an authenticated client
+    public var user: User? {
+      get {
+        return (resultMap["user"] as? ResultMap).flatMap { User(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "user")
+      }
+    }
+
+    public struct User: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["User"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("savedItemById", arguments: ["id": GraphQLVariable("id")], type: .object(SavedItemById.selections)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(savedItemById: SavedItemById? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "savedItemById": savedItemById.flatMap { (value: SavedItemById) -> ResultMap in value.resultMap }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// Get a SavedItem by its id
+      public var savedItemById: SavedItemById? {
+        get {
+          return (resultMap["savedItemById"] as? ResultMap).flatMap { SavedItemById(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "savedItemById")
+        }
+      }
+
+      public struct SavedItemById: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["SavedItem"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("url", type: .nonNull(.scalar(String.self))),
+            GraphQLField("id", alias: "remoteID", type: .nonNull(.scalar(GraphQLID.self))),
+            GraphQLField("isArchived", type: .nonNull(.scalar(Bool.self))),
+            GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
+            GraphQLField("_deletedAt", type: .scalar(Int.self)),
+            GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
+            GraphQLField("archivedAt", type: .scalar(Int.self)),
+            GraphQLField("item", type: .nonNull(.object(Item.selections))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, archivedAt: Int? = nil, item: Item) {
+          self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "archivedAt": archivedAt, "item": item.resultMap])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// The url the user saved to their list
+        public var url: String {
+          get {
+            return resultMap["url"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "url")
+          }
+        }
+
+        /// Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation
+        public var remoteId: GraphQLID {
+          get {
+            return resultMap["remoteID"]! as! GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "remoteID")
+          }
+        }
+
+        /// Helper property to indicate if the SavedItem is archived
+        public var isArchived: Bool {
+          get {
+            return resultMap["isArchived"]! as! Bool
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "isArchived")
+          }
+        }
+
+        /// Helper property to indicate if the SavedItem is favorited
+        public var isFavorite: Bool {
+          get {
+            return resultMap["isFavorite"]! as! Bool
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "isFavorite")
+          }
+        }
+
+        /// Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
+        public var _deletedAt: Int? {
+          get {
+            return resultMap["_deletedAt"] as? Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "_deletedAt")
+          }
+        }
+
+        /// Unix timestamp of when the entity was created
+        public var _createdAt: Int {
+          get {
+            return resultMap["_createdAt"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "_createdAt")
+          }
+        }
+
+        /// Timestamp that the SavedItem became archied, null if not archived
+        public var archivedAt: Int? {
+          get {
+            return resultMap["archivedAt"] as? Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "archivedAt")
+          }
+        }
+
+        /// Link to the underlying Pocket Item for the URL
+        public var item: Item {
+          get {
+            return Item(unsafeResultMap: resultMap["item"]! as! ResultMap)
+          }
+          set {
+            resultMap.updateValue(newValue.resultMap, forKey: "item")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(unsafeResultMap: resultMap)
+          }
+          set {
+            resultMap += newValue.resultMap
+          }
+        }
+
+        public struct Fragments {
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public var savedItemParts: SavedItemParts {
+            get {
+              return SavedItemParts(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
+          }
+        }
+
+        public struct Item: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PendingItem", "Item"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLTypeCase(
+                variants: ["Item": AsItem.selections, "PendingItem": AsPendingItem.selections],
+                default: [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                ]
+              )
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
+            return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+          }
+
+          public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
+            return Item(unsafeResultMap: ["__typename": "PendingItem", "url": url, "status": status])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var fragments: Fragments {
+            get {
+              return Fragments(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
+          }
+
+          public struct Fragments {
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public var itemParts: ItemParts? {
+              get {
+                if !ItemParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                return ItemParts(unsafeResultMap: resultMap)
+              }
+              set {
+                guard let newValue = newValue else { return }
+                resultMap += newValue.resultMap
+              }
+            }
+
+            public var pendingItemParts: PendingItemParts? {
+              get {
+                if !PendingItemParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                return PendingItemParts(unsafeResultMap: resultMap)
+              }
+              set {
+                guard let newValue = newValue else { return }
+                resultMap += newValue.resultMap
+              }
+            }
+          }
+
+          public var asItem: AsItem? {
+            get {
+              if !AsItem.possibleTypes.contains(__typename) { return nil }
+              return AsItem(unsafeResultMap: resultMap)
+            }
+            set {
+              guard let newValue = newValue else { return }
+              resultMap = newValue.resultMap
+            }
+          }
+
+          public struct AsItem: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["Item"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("itemId", alias: "remoteID", type: .nonNull(.scalar(String.self))),
+                GraphQLField("givenUrl", type: .nonNull(.scalar(String.self))),
+                GraphQLField("resolvedUrl", type: .scalar(String.self)),
+                GraphQLField("title", type: .scalar(String.self)),
+                GraphQLField("language", type: .scalar(String.self)),
+                GraphQLField("topImageUrl", type: .scalar(String.self)),
+                GraphQLField("timeToRead", type: .scalar(Int.self)),
+                GraphQLField("domain", type: .scalar(String.self)),
+                GraphQLField("datePublished", type: .scalar(String.self)),
+                GraphQLField("isArticle", type: .scalar(Bool.self)),
+                GraphQLField("hasImage", type: .scalar(Imageness.self)),
+                GraphQLField("hasVideo", type: .scalar(Videoness.self)),
+                GraphQLField("authors", type: .list(.object(Author.selections))),
+                GraphQLField("marticle", type: .list(.nonNull(.object(Marticle.selections)))),
+                GraphQLField("excerpt", type: .scalar(String.self)),
+                GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
+                GraphQLField("images", type: .list(.object(Image.selections))),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+              self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The Item entity is owned by the Parser service.
+            /// We only extend it in this service to make this service's schema valid.
+            /// The key for this entity is the 'itemId'
+            public var remoteId: String {
+              get {
+                return resultMap["remoteID"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "remoteID")
+              }
+            }
+
+            /// key field to identify the Item entity in the Parser service
+            public var givenUrl: String {
+              get {
+                return resultMap["givenUrl"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "givenUrl")
+              }
+            }
+
+            /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
+            public var resolvedUrl: String? {
+              get {
+                return resultMap["resolvedUrl"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "resolvedUrl")
+              }
+            }
+
+            /// The title as determined by the parser.
+            public var title: String? {
+              get {
+                return resultMap["title"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "title")
+              }
+            }
+
+            /// The detected language of the article
+            public var language: String? {
+              get {
+                return resultMap["language"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "language")
+              }
+            }
+
+            /// The page's / publisher's preferred thumbnail image
+            public var topImageUrl: String? {
+              get {
+                return resultMap["topImageUrl"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "topImageUrl")
+              }
+            }
+
+            /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
+            public var timeToRead: Int? {
+              get {
+                return resultMap["timeToRead"] as? Int
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "timeToRead")
+              }
+            }
+
+            /// The domain, such as 'getpocket.com' of the {.resolved_url}
+            public var domain: String? {
+              get {
+                return resultMap["domain"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "domain")
+              }
+            }
+
+            /// The date the article was published
+            public var datePublished: String? {
+              get {
+                return resultMap["datePublished"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "datePublished")
+              }
+            }
+
+            /// true if the item is an article
+            public var isArticle: Bool? {
+              get {
+                return resultMap["isArticle"] as? Bool
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "isArticle")
+              }
+            }
+
+            /// 0=no images, 1=contains images, 2=is an image
+            public var hasImage: Imageness? {
+              get {
+                return resultMap["hasImage"] as? Imageness
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "hasImage")
+              }
+            }
+
+            /// 0=no videos, 1=contains video, 2=is a video
+            public var hasVideo: Videoness? {
+              get {
+                return resultMap["hasVideo"] as? Videoness
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "hasVideo")
+              }
+            }
+
+            /// List of Authors involved with this article
+            public var authors: [Author?]? {
+              get {
+                return (resultMap["authors"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Author?] in value.map { (value: ResultMap?) -> Author? in value.flatMap { (value: ResultMap) -> Author in Author(unsafeResultMap: value) } } }
+              }
+              set {
+                resultMap.updateValue(newValue.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, forKey: "authors")
+              }
+            }
+
+            /// The Marticle format of the article, used by clients for native article view.
+            public var marticle: [Marticle]? {
+              get {
+                return (resultMap["marticle"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Marticle] in value.map { (value: ResultMap) -> Marticle in Marticle(unsafeResultMap: value) } }
+              }
+              set {
+                resultMap.updateValue(newValue.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, forKey: "marticle")
+              }
+            }
+
+            /// A snippet of text from the article
+            public var excerpt: String? {
+              get {
+                return resultMap["excerpt"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "excerpt")
+              }
+            }
+
+            /// Additional information about the item domain, when present, use this for displaying the domain name
+            public var domainMetadata: DomainMetadatum? {
+              get {
+                return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
+              }
+            }
+
+            /// Array of images within an article
+            public var images: [Image?]? {
+              get {
+                return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
+              }
+              set {
+                resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+              }
+            }
+
+            public var fragments: Fragments {
+              get {
+                return Fragments(unsafeResultMap: resultMap)
+              }
+              set {
+                resultMap += newValue.resultMap
+              }
+            }
+
+            public struct Fragments {
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public var itemParts: ItemParts {
+                get {
+                  return ItemParts(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+
+              public var pendingItemParts: PendingItemParts? {
+                get {
+                  if !PendingItemParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                  return PendingItemParts(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap += newValue.resultMap
+                }
+              }
+            }
+
+            public struct Author: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["Author"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+                  GraphQLField("name", type: .scalar(String.self)),
+                  GraphQLField("url", type: .scalar(String.self)),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(id: GraphQLID, name: String? = nil, url: String? = nil) {
+                self.init(unsafeResultMap: ["__typename": "Author", "id": id, "name": name, "url": url])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              /// Unique id for that Author
+              public var id: GraphQLID {
+                get {
+                  return resultMap["id"]! as! GraphQLID
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "id")
+                }
+              }
+
+              /// Display name
+              public var name: String? {
+                get {
+                  return resultMap["name"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "name")
+                }
+              }
+
+              /// A url to that Author's site
+              public var url: String? {
+                get {
+                  return resultMap["url"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "url")
+                }
+              }
+            }
+
+            public struct Marticle: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["MarticleText", "Image", "MarticleDivider", "MarticleTable", "MarticleHeading", "MarticleCodeBlock", "Video", "MarticleBulletedList", "MarticleNumberedList", "MarticleBlockquote", "UnMarseable"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLTypeCase(
+                    variants: ["MarticleText": AsMarticleText.selections, "Image": AsImage.selections, "MarticleDivider": AsMarticleDivider.selections, "MarticleTable": AsMarticleTable.selections, "MarticleHeading": AsMarticleHeading.selections, "MarticleCodeBlock": AsMarticleCodeBlock.selections, "Video": AsVideo.selections, "MarticleBulletedList": AsMarticleBulletedList.selections, "MarticleNumberedList": AsMarticleNumberedList.selections, "MarticleBlockquote": AsMarticleBlockquote.selections],
+                    default: [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    ]
+                  )
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public static func makeUnMarseable() -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "UnMarseable"])
+              }
+
+              public static func makeMarticleText(content: String) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "MarticleText", "content": content])
+              }
+
+              public static func makeImage(caption: String? = nil, credit: String? = nil, imageId: Int, src: String, height: Int? = nil, width: Int? = nil) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "Image", "caption": caption, "credit": credit, "imageID": imageId, "src": src, "height": height, "width": width])
+              }
+
+              public static func makeMarticleDivider(content: String) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "MarticleDivider", "content": content])
+              }
+
+              public static func makeMarticleTable(html: String) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "MarticleTable", "html": html])
+              }
+
+              public static func makeMarticleHeading(content: String, level: Int) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "MarticleHeading", "content": content, "level": level])
+              }
+
+              public static func makeMarticleCodeBlock(text: String, language: Int? = nil) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "MarticleCodeBlock", "text": text, "language": language])
+              }
+
+              public static func makeVideo(height: Int? = nil, src: String, type: VideoType, vid: String? = nil, videoId: Int, width: Int? = nil, length: Int? = nil) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "Video", "height": height, "src": src, "type": type, "vid": vid, "videoID": videoId, "width": width, "length": length])
+              }
+
+              public static func makeMarticleBulletedList(rows: [AsMarticleBulletedList.Row]) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "MarticleBulletedList", "rows": rows.map { (value: AsMarticleBulletedList.Row) -> ResultMap in value.resultMap }])
+              }
+
+              public static func makeMarticleNumberedList(rows: [AsMarticleNumberedList.Row]) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "MarticleNumberedList", "rows": rows.map { (value: AsMarticleNumberedList.Row) -> ResultMap in value.resultMap }])
+              }
+
+              public static func makeMarticleBlockquote(content: String) -> Marticle {
+                return Marticle(unsafeResultMap: ["__typename": "MarticleBlockquote", "content": content])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var fragments: Fragments {
+                get {
+                  return Fragments(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+
+              public struct Fragments {
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public var marticleTextParts: MarticleTextParts? {
+                  get {
+                    if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return MarticleTextParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var imageParts: ImageParts? {
+                  get {
+                    if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return ImageParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var marticleDividerParts: MarticleDividerParts? {
+                  get {
+                    if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return MarticleDividerParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var marticleTableParts: MarticleTableParts? {
+                  get {
+                    if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return MarticleTableParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var marticleHeadingParts: MarticleHeadingParts? {
+                  get {
+                    if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return MarticleHeadingParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                  get {
+                    if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var videoParts: VideoParts? {
+                  get {
+                    if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return VideoParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var marticleBulletedListParts: MarticleBulletedListParts? {
+                  get {
+                    if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var marticleNumberedListParts: MarticleNumberedListParts? {
+                  get {
+                    if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                  get {
+                    if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                    return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    guard let newValue = newValue else { return }
+                    resultMap += newValue.resultMap
+                  }
+                }
+              }
+
+              public var asMarticleText: AsMarticleText? {
+                get {
+                  if !AsMarticleText.possibleTypes.contains(__typename) { return nil }
+                  return AsMarticleText(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsMarticleText: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["MarticleText"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("content", type: .nonNull(.scalar(String.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(content: String) {
+                  self.init(unsafeResultMap: ["__typename": "MarticleText", "content": content])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// Markdown text content. Typically, a paragraph.
+                public var content: String {
+                  get {
+                    return resultMap["content"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "content")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts {
+                    get {
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+              }
+
+              public var asImage: AsImage? {
+                get {
+                  if !AsImage.possibleTypes.contains(__typename) { return nil }
+                  return AsImage(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsImage: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["Image"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("caption", type: .scalar(String.self)),
+                    GraphQLField("credit", type: .scalar(String.self)),
+                    GraphQLField("imageId", alias: "imageID", type: .nonNull(.scalar(Int.self))),
+                    GraphQLField("src", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("height", type: .scalar(Int.self)),
+                    GraphQLField("width", type: .scalar(Int.self)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(caption: String? = nil, credit: String? = nil, imageId: Int, src: String, height: Int? = nil, width: Int? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Image", "caption": caption, "credit": credit, "imageID": imageId, "src": src, "height": height, "width": width])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// A caption or description of the image
+                public var caption: String? {
+                  get {
+                    return resultMap["caption"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "caption")
+                  }
+                }
+
+                /// A credit for the image, typically who the image belongs to / created by
+                public var credit: String? {
+                  get {
+                    return resultMap["credit"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "credit")
+                  }
+                }
+
+                /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+                public var imageId: Int {
+                  get {
+                    return resultMap["imageID"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "imageID")
+                  }
+                }
+
+                /// Absolute url to the image
+                public var src: String {
+                  get {
+                    return resultMap["src"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "src")
+                  }
+                }
+
+                /// If known, the height of the image in px
+                public var height: Int? {
+                  get {
+                    return resultMap["height"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "height")
+                  }
+                }
+
+                /// If known, the width of the image in px
+                public var width: Int? {
+                  get {
+                    return resultMap["width"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "width")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts {
+                    get {
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+              }
+
+              public var asMarticleDivider: AsMarticleDivider? {
+                get {
+                  if !AsMarticleDivider.possibleTypes.contains(__typename) { return nil }
+                  return AsMarticleDivider(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsMarticleDivider: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["MarticleDivider"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("content", type: .nonNull(.scalar(String.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(content: String) {
+                  self.init(unsafeResultMap: ["__typename": "MarticleDivider", "content": content])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// Always '---'; provided for convenience if building a markdown string
+                public var content: String {
+                  get {
+                    return resultMap["content"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "content")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts {
+                    get {
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+              }
+
+              public var asMarticleTable: AsMarticleTable? {
+                get {
+                  if !AsMarticleTable.possibleTypes.contains(__typename) { return nil }
+                  return AsMarticleTable(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsMarticleTable: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["MarticleTable"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("html", type: .nonNull(.scalar(String.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(html: String) {
+                  self.init(unsafeResultMap: ["__typename": "MarticleTable", "html": html])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// Raw HTML representation of the table.
+                public var html: String {
+                  get {
+                    return resultMap["html"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "html")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts {
+                    get {
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+              }
+
+              public var asMarticleHeading: AsMarticleHeading? {
+                get {
+                  if !AsMarticleHeading.possibleTypes.contains(__typename) { return nil }
+                  return AsMarticleHeading(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsMarticleHeading: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["MarticleHeading"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("content", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("level", type: .nonNull(.scalar(Int.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(content: String, level: Int) {
+                  self.init(unsafeResultMap: ["__typename": "MarticleHeading", "content": content, "level": level])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// Heading text, in markdown.
+                public var content: String {
+                  get {
+                    return resultMap["content"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "content")
+                  }
+                }
+
+                /// Heading level. Restricted to values 1-6.
+                public var level: Int {
+                  get {
+                    return resultMap["level"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "level")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts {
+                    get {
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+              }
+
+              public var asMarticleCodeBlock: AsMarticleCodeBlock? {
+                get {
+                  if !AsMarticleCodeBlock.possibleTypes.contains(__typename) { return nil }
+                  return AsMarticleCodeBlock(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsMarticleCodeBlock: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["MarticleCodeBlock"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("text", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("language", type: .scalar(Int.self)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(text: String, language: Int? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "MarticleCodeBlock", "text": text, "language": language])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// Content of a pre tag
+                public var text: String {
+                  get {
+                    return resultMap["text"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "text")
+                  }
+                }
+
+                /// Assuming the codeblock was a programming language, this field is used to identify it.
+                public var language: Int? {
+                  get {
+                    return resultMap["language"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "language")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts {
+                    get {
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+              }
+
+              public var asVideo: AsVideo? {
+                get {
+                  if !AsVideo.possibleTypes.contains(__typename) { return nil }
+                  return AsVideo(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsVideo: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["Video"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("height", type: .scalar(Int.self)),
+                    GraphQLField("src", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("type", type: .nonNull(.scalar(VideoType.self))),
+                    GraphQLField("vid", type: .scalar(String.self)),
+                    GraphQLField("videoId", alias: "videoID", type: .nonNull(.scalar(Int.self))),
+                    GraphQLField("width", type: .scalar(Int.self)),
+                    GraphQLField("length", type: .scalar(Int.self)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(height: Int? = nil, src: String, type: VideoType, vid: String? = nil, videoId: Int, width: Int? = nil, length: Int? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Video", "height": height, "src": src, "type": type, "vid": vid, "videoID": videoId, "width": width, "length": length])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// If known, the height of the video in px
+                public var height: Int? {
+                  get {
+                    return resultMap["height"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "height")
+                  }
+                }
+
+                /// Absolute url to the video
+                public var src: String {
+                  get {
+                    return resultMap["src"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "src")
+                  }
+                }
+
+                /// The type of video
+                public var type: VideoType {
+                  get {
+                    return resultMap["type"]! as! VideoType
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "type")
+                  }
+                }
+
+                /// The video's id within the service defined by type
+                public var vid: String? {
+                  get {
+                    return resultMap["vid"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "vid")
+                  }
+                }
+
+                /// The id of the video within Article View. {articleView.article} will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+                public var videoId: Int {
+                  get {
+                    return resultMap["videoID"]! as! Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "videoID")
+                  }
+                }
+
+                /// If known, the width of the video in px
+                public var width: Int? {
+                  get {
+                    return resultMap["width"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "width")
+                  }
+                }
+
+                /// If known, the length of the video in seconds
+                public var length: Int? {
+                  get {
+                    return resultMap["length"] as? Int
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "length")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts {
+                    get {
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+              }
+
+              public var asMarticleBulletedList: AsMarticleBulletedList? {
+                get {
+                  if !AsMarticleBulletedList.possibleTypes.contains(__typename) { return nil }
+                  return AsMarticleBulletedList(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsMarticleBulletedList: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["MarticleBulletedList"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("rows", type: .nonNull(.list(.nonNull(.object(Row.selections))))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(rows: [Row]) {
+                  self.init(unsafeResultMap: ["__typename": "MarticleBulletedList", "rows": rows.map { (value: Row) -> ResultMap in value.resultMap }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var rows: [Row] {
+                  get {
+                    return (resultMap["rows"] as! [ResultMap]).map { (value: ResultMap) -> Row in Row(unsafeResultMap: value) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue.map { (value: Row) -> ResultMap in value.resultMap }, forKey: "rows")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts {
+                    get {
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+
+                public struct Row: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["BulletedListElement"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("content", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("level", type: .nonNull(.scalar(Int.self))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(content: String, level: Int) {
+                    self.init(unsafeResultMap: ["__typename": "BulletedListElement", "content": content, "level": level])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  /// Row in a list.
+                  public var content: String {
+                    get {
+                      return resultMap["content"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "content")
+                    }
+                  }
+
+                  /// Zero-indexed level, for handling nested lists.
+                  public var level: Int {
+                    get {
+                      return resultMap["level"]! as! Int
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "level")
+                    }
+                  }
+                }
+              }
+
+              public var asMarticleNumberedList: AsMarticleNumberedList? {
+                get {
+                  if !AsMarticleNumberedList.possibleTypes.contains(__typename) { return nil }
+                  return AsMarticleNumberedList(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsMarticleNumberedList: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["MarticleNumberedList"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("rows", type: .nonNull(.list(.nonNull(.object(Row.selections))))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(rows: [Row]) {
+                  self.init(unsafeResultMap: ["__typename": "MarticleNumberedList", "rows": rows.map { (value: Row) -> ResultMap in value.resultMap }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var rows: [Row] {
+                  get {
+                    return (resultMap["rows"] as! [ResultMap]).map { (value: ResultMap) -> Row in Row(unsafeResultMap: value) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue.map { (value: Row) -> ResultMap in value.resultMap }, forKey: "rows")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts {
+                    get {
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts? {
+                    get {
+                      if !MarticleBlockquoteParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+
+                public struct Row: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["NumberedListElement"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("content", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("level", type: .nonNull(.scalar(Int.self))),
+                      GraphQLField("index", type: .nonNull(.scalar(Int.self))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(content: String, level: Int, index: Int) {
+                    self.init(unsafeResultMap: ["__typename": "NumberedListElement", "content": content, "level": level, "index": index])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  /// Row in a list
+                  public var content: String {
+                    get {
+                      return resultMap["content"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "content")
+                    }
+                  }
+
+                  /// Zero-indexed level, for handling nexted lists.
+                  public var level: Int {
+                    get {
+                      return resultMap["level"]! as! Int
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "level")
+                    }
+                  }
+
+                  /// Numeric index. If a nested item, the index is zero-indexed from the first child.
+                  public var index: Int {
+                    get {
+                      return resultMap["index"]! as! Int
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "index")
+                    }
+                  }
+                }
+              }
+
+              public var asMarticleBlockquote: AsMarticleBlockquote? {
+                get {
+                  if !AsMarticleBlockquote.possibleTypes.contains(__typename) { return nil }
+                  return AsMarticleBlockquote(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsMarticleBlockquote: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["MarticleBlockquote"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("content", type: .nonNull(.scalar(String.self))),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(content: String) {
+                  self.init(unsafeResultMap: ["__typename": "MarticleBlockquote", "content": content])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                /// Markdown text content.
+                public var content: String {
+                  get {
+                    return resultMap["content"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "content")
+                  }
+                }
+
+                public var fragments: Fragments {
+                  get {
+                    return Fragments(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+
+                public struct Fragments {
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public var marticleTextParts: MarticleTextParts? {
+                    get {
+                      if !MarticleTextParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTextParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var imageParts: ImageParts? {
+                    get {
+                      if !ImageParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return ImageParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleDividerParts: MarticleDividerParts? {
+                    get {
+                      if !MarticleDividerParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleDividerParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleTableParts: MarticleTableParts? {
+                    get {
+                      if !MarticleTableParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleTableParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleHeadingParts: MarticleHeadingParts? {
+                    get {
+                      if !MarticleHeadingParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleHeadingParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleCodeBlockParts: MarticleCodeBlockParts? {
+                    get {
+                      if !MarticleCodeBlockParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleCodeBlockParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var videoParts: VideoParts? {
+                    get {
+                      if !VideoParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return VideoParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBulletedListParts: MarticleBulletedListParts? {
+                    get {
+                      if !MarticleBulletedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleBulletedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleNumberedListParts: MarticleNumberedListParts? {
+                    get {
+                      if !MarticleNumberedListParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                      return MarticleNumberedListParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap += newValue.resultMap
+                    }
+                  }
+
+                  public var marticleBlockquoteParts: MarticleBlockquoteParts {
+                    get {
+                      return MarticleBlockquoteParts(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      resultMap += newValue.resultMap
+                    }
+                  }
+                }
+              }
+            }
+
+            public struct DomainMetadatum: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["DomainMetadata"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("name", type: .scalar(String.self)),
+                  GraphQLField("logo", type: .scalar(String.self)),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(name: String? = nil, logo: String? = nil) {
+                self.init(unsafeResultMap: ["__typename": "DomainMetadata", "name": name, "logo": logo])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              /// The name of the domain (e.g., The New York Times)
+              public var name: String? {
+                get {
+                  return resultMap["name"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "name")
+                }
+              }
+
+              /// Url for the logo image
+              public var logo: String? {
+                get {
+                  return resultMap["logo"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "logo")
+                }
+              }
+
+              public var fragments: Fragments {
+                get {
+                  return Fragments(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+
+              public struct Fragments {
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public var domainMetadataParts: DomainMetadataParts {
+                  get {
+                    return DomainMetadataParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
+                }
+              }
+            }
+
+            public struct Image: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["Image"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("height", type: .scalar(Int.self)),
+                  GraphQLField("width", type: .scalar(Int.self)),
+                  GraphQLField("src", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("imageId", type: .nonNull(.scalar(Int.self))),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(height: Int? = nil, width: Int? = nil, src: String, imageId: Int) {
+                self.init(unsafeResultMap: ["__typename": "Image", "height": height, "width": width, "src": src, "imageId": imageId])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              /// If known, the height of the image in px
+              public var height: Int? {
+                get {
+                  return resultMap["height"] as? Int
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "height")
+                }
+              }
+
+              /// If known, the width of the image in px
+              public var width: Int? {
+                get {
+                  return resultMap["width"] as? Int
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "width")
+                }
+              }
+
+              /// Absolute url to the image
+              public var src: String {
+                get {
+                  return resultMap["src"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "src")
+                }
+              }
+
+              /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+              public var imageId: Int {
+                get {
+                  return resultMap["imageId"]! as! Int
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "imageId")
+                }
+              }
+            }
+          }
+
+          public var asPendingItem: AsPendingItem? {
+            get {
+              if !AsPendingItem.possibleTypes.contains(__typename) { return nil }
+              return AsPendingItem(unsafeResultMap: resultMap)
+            }
+            set {
+              guard let newValue = newValue else { return }
+              resultMap = newValue.resultMap
+            }
+          }
+
+          public struct AsPendingItem: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["PendingItem"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("url", type: .nonNull(.scalar(String.self))),
+                GraphQLField("status", type: .scalar(PendingItemStatus.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(url: String, status: PendingItemStatus? = nil) {
+              self.init(unsafeResultMap: ["__typename": "PendingItem", "url": url, "status": status])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// URL of the item that the user gave for the SavedItem
+            /// that is pending processing by parser
+            public var url: String {
+              get {
+                return resultMap["url"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "url")
+              }
+            }
+
+            public var status: PendingItemStatus? {
+              get {
+                return resultMap["status"] as? PendingItemStatus
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "status")
+              }
+            }
+
+            public var fragments: Fragments {
+              get {
+                return Fragments(unsafeResultMap: resultMap)
+              }
+              set {
+                resultMap += newValue.resultMap
+              }
+            }
+
+            public struct Fragments {
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public var itemParts: ItemParts? {
+                get {
+                  if !ItemParts.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+                  return ItemParts(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap += newValue.resultMap
+                }
+              }
+
+              public var pendingItemParts: PendingItemParts {
+                get {
+                  return PendingItemParts(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+public struct SavedItemSummary: GraphQLFragment {
+  /// The raw GraphQL definition of this fragment.
+  public static let fragmentDefinition: String =
+    """
+    fragment SavedItemSummary on SavedItem {
+      __typename
+      url
+      remoteID: id
+      isArchived
+      isFavorite
+      _deletedAt
+      _createdAt
+      archivedAt
+      item {
+        __typename
+        ...ItemSummary
+      }
+    }
+    """
+
+  public static let possibleTypes: [String] = ["SavedItem"]
+
+  public static var selections: [GraphQLSelection] {
+    return [
+      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+      GraphQLField("url", type: .nonNull(.scalar(String.self))),
+      GraphQLField("id", alias: "remoteID", type: .nonNull(.scalar(GraphQLID.self))),
+      GraphQLField("isArchived", type: .nonNull(.scalar(Bool.self))),
+      GraphQLField("isFavorite", type: .nonNull(.scalar(Bool.self))),
+      GraphQLField("_deletedAt", type: .scalar(Int.self)),
+      GraphQLField("_createdAt", type: .nonNull(.scalar(Int.self))),
+      GraphQLField("archivedAt", type: .scalar(Int.self)),
+      GraphQLField("item", type: .nonNull(.object(Item.selections))),
+    ]
+  }
+
+  public private(set) var resultMap: ResultMap
+
+  public init(unsafeResultMap: ResultMap) {
+    self.resultMap = unsafeResultMap
+  }
+
+  public init(url: String, remoteId: GraphQLID, isArchived: Bool, isFavorite: Bool, _deletedAt: Int? = nil, _createdAt: Int, archivedAt: Int? = nil, item: Item) {
+    self.init(unsafeResultMap: ["__typename": "SavedItem", "url": url, "remoteID": remoteId, "isArchived": isArchived, "isFavorite": isFavorite, "_deletedAt": _deletedAt, "_createdAt": _createdAt, "archivedAt": archivedAt, "item": item.resultMap])
+  }
+
+  public var __typename: String {
+    get {
+      return resultMap["__typename"]! as! String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "__typename")
+    }
+  }
+
+  /// The url the user saved to their list
+  public var url: String {
+    get {
+      return resultMap["url"]! as! String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "url")
+    }
+  }
+
+  /// Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation
+  public var remoteId: GraphQLID {
+    get {
+      return resultMap["remoteID"]! as! GraphQLID
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "remoteID")
+    }
+  }
+
+  /// Helper property to indicate if the SavedItem is archived
+  public var isArchived: Bool {
+    get {
+      return resultMap["isArchived"]! as! Bool
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "isArchived")
+    }
+  }
+
+  /// Helper property to indicate if the SavedItem is favorited
+  public var isFavorite: Bool {
+    get {
+      return resultMap["isFavorite"]! as! Bool
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "isFavorite")
+    }
+  }
+
+  /// Unix timestamp of when the entity was deleted, 30 days after this date this entity will be HARD deleted from the database and no longer exist
+  public var _deletedAt: Int? {
+    get {
+      return resultMap["_deletedAt"] as? Int
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "_deletedAt")
+    }
+  }
+
+  /// Unix timestamp of when the entity was created
+  public var _createdAt: Int {
+    get {
+      return resultMap["_createdAt"]! as! Int
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "_createdAt")
+    }
+  }
+
+  /// Timestamp that the SavedItem became archied, null if not archived
+  public var archivedAt: Int? {
+    get {
+      return resultMap["archivedAt"] as? Int
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "archivedAt")
+    }
+  }
+
+  /// Link to the underlying Pocket Item for the URL
+  public var item: Item {
+    get {
+      return Item(unsafeResultMap: resultMap["item"]! as! ResultMap)
+    }
+    set {
+      resultMap.updateValue(newValue.resultMap, forKey: "item")
+    }
+  }
+
+  public struct Item: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["PendingItem", "Item"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLTypeCase(
+          variants: ["Item": AsItem.selections],
+          default: [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          ]
+        )
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public static func makePendingItem() -> Item {
+      return Item(unsafeResultMap: ["__typename": "PendingItem"])
+    }
+
+    public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
+      return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+    }
+
+    public var __typename: String {
+      get {
+        return resultMap["__typename"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "__typename")
+      }
+    }
+
+    public var fragments: Fragments {
+      get {
+        return Fragments(unsafeResultMap: resultMap)
+      }
+      set {
+        resultMap += newValue.resultMap
+      }
+    }
+
+    public struct Fragments {
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public var itemSummary: ItemSummary? {
+        get {
+          if !ItemSummary.possibleTypes.contains(resultMap["__typename"]! as! String) { return nil }
+          return ItemSummary(unsafeResultMap: resultMap)
+        }
+        set {
+          guard let newValue = newValue else { return }
+          resultMap += newValue.resultMap
+        }
+      }
+    }
+
+    public var asItem: AsItem? {
+      get {
+        if !AsItem.possibleTypes.contains(__typename) { return nil }
+        return AsItem(unsafeResultMap: resultMap)
+      }
+      set {
+        guard let newValue = newValue else { return }
+        resultMap = newValue.resultMap
+      }
+    }
+
+    public struct AsItem: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["Item"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("itemId", alias: "remoteID", type: .nonNull(.scalar(String.self))),
+          GraphQLField("givenUrl", type: .nonNull(.scalar(String.self))),
+          GraphQLField("resolvedUrl", type: .scalar(String.self)),
+          GraphQLField("title", type: .scalar(String.self)),
+          GraphQLField("language", type: .scalar(String.self)),
+          GraphQLField("topImageUrl", type: .scalar(String.self)),
+          GraphQLField("timeToRead", type: .scalar(Int.self)),
+          GraphQLField("domain", type: .scalar(String.self)),
+          GraphQLField("datePublished", type: .scalar(String.self)),
+          GraphQLField("isArticle", type: .scalar(Bool.self)),
+          GraphQLField("hasImage", type: .scalar(Imageness.self)),
+          GraphQLField("hasVideo", type: .scalar(Videoness.self)),
+          GraphQLField("authors", type: .list(.object(Author.selections))),
+          GraphQLField("excerpt", type: .scalar(String.self)),
+          GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
+          GraphQLField("images", type: .list(.object(Image.selections))),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// The Item entity is owned by the Parser service.
+      /// We only extend it in this service to make this service's schema valid.
+      /// The key for this entity is the 'itemId'
+      public var remoteId: String {
+        get {
+          return resultMap["remoteID"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "remoteID")
+        }
+      }
+
+      /// key field to identify the Item entity in the Parser service
+      public var givenUrl: String {
+        get {
+          return resultMap["givenUrl"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "givenUrl")
+        }
+      }
+
+      /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
+      public var resolvedUrl: String? {
+        get {
+          return resultMap["resolvedUrl"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "resolvedUrl")
+        }
+      }
+
+      /// The title as determined by the parser.
+      public var title: String? {
+        get {
+          return resultMap["title"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "title")
+        }
+      }
+
+      /// The detected language of the article
+      public var language: String? {
+        get {
+          return resultMap["language"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "language")
+        }
+      }
+
+      /// The page's / publisher's preferred thumbnail image
+      public var topImageUrl: String? {
+        get {
+          return resultMap["topImageUrl"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "topImageUrl")
+        }
+      }
+
+      /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
+      public var timeToRead: Int? {
+        get {
+          return resultMap["timeToRead"] as? Int
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "timeToRead")
+        }
+      }
+
+      /// The domain, such as 'getpocket.com' of the {.resolved_url}
+      public var domain: String? {
+        get {
+          return resultMap["domain"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "domain")
+        }
+      }
+
+      /// The date the article was published
+      public var datePublished: String? {
+        get {
+          return resultMap["datePublished"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "datePublished")
+        }
+      }
+
+      /// true if the item is an article
+      public var isArticle: Bool? {
+        get {
+          return resultMap["isArticle"] as? Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "isArticle")
+        }
+      }
+
+      /// 0=no images, 1=contains images, 2=is an image
+      public var hasImage: Imageness? {
+        get {
+          return resultMap["hasImage"] as? Imageness
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "hasImage")
+        }
+      }
+
+      /// 0=no videos, 1=contains video, 2=is a video
+      public var hasVideo: Videoness? {
+        get {
+          return resultMap["hasVideo"] as? Videoness
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "hasVideo")
+        }
+      }
+
+      /// List of Authors involved with this article
+      public var authors: [Author?]? {
+        get {
+          return (resultMap["authors"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Author?] in value.map { (value: ResultMap?) -> Author? in value.flatMap { (value: ResultMap) -> Author in Author(unsafeResultMap: value) } } }
+        }
+        set {
+          resultMap.updateValue(newValue.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, forKey: "authors")
+        }
+      }
+
+      /// A snippet of text from the article
+      public var excerpt: String? {
+        get {
+          return resultMap["excerpt"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "excerpt")
+        }
+      }
+
+      /// Additional information about the item domain, when present, use this for displaying the domain name
+      public var domainMetadata: DomainMetadatum? {
+        get {
+          return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
+        }
+      }
+
+      /// Array of images within an article
+      public var images: [Image?]? {
+        get {
+          return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
+        }
+        set {
+          resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+        }
+      }
+
+      public var fragments: Fragments {
+        get {
+          return Fragments(unsafeResultMap: resultMap)
+        }
+        set {
+          resultMap += newValue.resultMap
+        }
+      }
+
+      public struct Fragments {
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public var itemSummary: ItemSummary {
+          get {
+            return ItemSummary(unsafeResultMap: resultMap)
+          }
+          set {
+            resultMap += newValue.resultMap
+          }
+        }
+      }
+
+      public struct Author: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["Author"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+            GraphQLField("name", type: .scalar(String.self)),
+            GraphQLField("url", type: .scalar(String.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(id: GraphQLID, name: String? = nil, url: String? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Author", "id": id, "name": name, "url": url])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// Unique id for that Author
+        public var id: GraphQLID {
+          get {
+            return resultMap["id"]! as! GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        /// Display name
+        public var name: String? {
+          get {
+            return resultMap["name"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "name")
+          }
+        }
+
+        /// A url to that Author's site
+        public var url: String? {
+          get {
+            return resultMap["url"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "url")
+          }
+        }
+      }
+
+      public struct DomainMetadatum: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["DomainMetadata"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("name", type: .scalar(String.self)),
+            GraphQLField("logo", type: .scalar(String.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(name: String? = nil, logo: String? = nil) {
+          self.init(unsafeResultMap: ["__typename": "DomainMetadata", "name": name, "logo": logo])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// The name of the domain (e.g., The New York Times)
+        public var name: String? {
+          get {
+            return resultMap["name"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "name")
+          }
+        }
+
+        /// Url for the logo image
+        public var logo: String? {
+          get {
+            return resultMap["logo"] as? String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "logo")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(unsafeResultMap: resultMap)
+          }
+          set {
+            resultMap += newValue.resultMap
+          }
+        }
+
+        public struct Fragments {
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public var domainMetadataParts: DomainMetadataParts {
+            get {
+              return DomainMetadataParts(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
+          }
+        }
+      }
+
+      public struct Image: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["Image"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("height", type: .scalar(Int.self)),
+            GraphQLField("width", type: .scalar(Int.self)),
+            GraphQLField("src", type: .nonNull(.scalar(String.self))),
+            GraphQLField("imageId", type: .nonNull(.scalar(Int.self))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(height: Int? = nil, width: Int? = nil, src: String, imageId: Int) {
+          self.init(unsafeResultMap: ["__typename": "Image", "height": height, "width": width, "src": src, "imageId": imageId])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// If known, the height of the image in px
+        public var height: Int? {
+          get {
+            return resultMap["height"] as? Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "height")
+          }
+        }
+
+        /// If known, the width of the image in px
+        public var width: Int? {
+          get {
+            return resultMap["width"] as? Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "width")
+          }
+        }
+
+        /// Absolute url to the image
+        public var src: String {
+          get {
+            return resultMap["src"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "src")
+          }
+        }
+
+        /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+        public var imageId: Int {
+          get {
+            return resultMap["imageId"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "imageId")
+          }
+        }
+      }
+    }
+  }
+}
+
+public struct ItemSummary: GraphQLFragment {
+  /// The raw GraphQL definition of this fragment.
+  public static let fragmentDefinition: String =
+    """
+    fragment ItemSummary on Item {
+      __typename
+      remoteID: itemId
+      givenUrl
+      resolvedUrl
+      title
+      language
+      topImageUrl
+      timeToRead
+      domain
+      datePublished
+      isArticle
+      hasImage
+      hasVideo
+      authors {
+        __typename
+        id
+        name
+        url
+      }
+      excerpt
+      domainMetadata {
+        __typename
+        ...DomainMetadataParts
+      }
+      images {
+        __typename
+        height
+        width
+        src
+        imageId
+      }
+    }
+    """
+
+  public static let possibleTypes: [String] = ["Item"]
+
+  public static var selections: [GraphQLSelection] {
+    return [
+      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+      GraphQLField("itemId", alias: "remoteID", type: .nonNull(.scalar(String.self))),
+      GraphQLField("givenUrl", type: .nonNull(.scalar(String.self))),
+      GraphQLField("resolvedUrl", type: .scalar(String.self)),
+      GraphQLField("title", type: .scalar(String.self)),
+      GraphQLField("language", type: .scalar(String.self)),
+      GraphQLField("topImageUrl", type: .scalar(String.self)),
+      GraphQLField("timeToRead", type: .scalar(Int.self)),
+      GraphQLField("domain", type: .scalar(String.self)),
+      GraphQLField("datePublished", type: .scalar(String.self)),
+      GraphQLField("isArticle", type: .scalar(Bool.self)),
+      GraphQLField("hasImage", type: .scalar(Imageness.self)),
+      GraphQLField("hasVideo", type: .scalar(Videoness.self)),
+      GraphQLField("authors", type: .list(.object(Author.selections))),
+      GraphQLField("excerpt", type: .scalar(String.self)),
+      GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
+      GraphQLField("images", type: .list(.object(Image.selections))),
+    ]
+  }
+
+  public private(set) var resultMap: ResultMap
+
+  public init(unsafeResultMap: ResultMap) {
+    self.resultMap = unsafeResultMap
+  }
+
+  public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
+    self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+  }
+
+  public var __typename: String {
+    get {
+      return resultMap["__typename"]! as! String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "__typename")
+    }
+  }
+
+  /// The Item entity is owned by the Parser service.
+  /// We only extend it in this service to make this service's schema valid.
+  /// The key for this entity is the 'itemId'
+  public var remoteId: String {
+    get {
+      return resultMap["remoteID"]! as! String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "remoteID")
+    }
+  }
+
+  /// key field to identify the Item entity in the Parser service
+  public var givenUrl: String {
+    get {
+      return resultMap["givenUrl"]! as! String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "givenUrl")
+    }
+  }
+
+  /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
+  public var resolvedUrl: String? {
+    get {
+      return resultMap["resolvedUrl"] as? String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "resolvedUrl")
+    }
+  }
+
+  /// The title as determined by the parser.
+  public var title: String? {
+    get {
+      return resultMap["title"] as? String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "title")
+    }
+  }
+
+  /// The detected language of the article
+  public var language: String? {
+    get {
+      return resultMap["language"] as? String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "language")
+    }
+  }
+
+  /// The page's / publisher's preferred thumbnail image
+  public var topImageUrl: String? {
+    get {
+      return resultMap["topImageUrl"] as? String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "topImageUrl")
+    }
+  }
+
+  /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
+  public var timeToRead: Int? {
+    get {
+      return resultMap["timeToRead"] as? Int
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "timeToRead")
+    }
+  }
+
+  /// The domain, such as 'getpocket.com' of the {.resolved_url}
+  public var domain: String? {
+    get {
+      return resultMap["domain"] as? String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "domain")
+    }
+  }
+
+  /// The date the article was published
+  public var datePublished: String? {
+    get {
+      return resultMap["datePublished"] as? String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "datePublished")
+    }
+  }
+
+  /// true if the item is an article
+  public var isArticle: Bool? {
+    get {
+      return resultMap["isArticle"] as? Bool
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "isArticle")
+    }
+  }
+
+  /// 0=no images, 1=contains images, 2=is an image
+  public var hasImage: Imageness? {
+    get {
+      return resultMap["hasImage"] as? Imageness
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "hasImage")
+    }
+  }
+
+  /// 0=no videos, 1=contains video, 2=is a video
+  public var hasVideo: Videoness? {
+    get {
+      return resultMap["hasVideo"] as? Videoness
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "hasVideo")
+    }
+  }
+
+  /// List of Authors involved with this article
+  public var authors: [Author?]? {
+    get {
+      return (resultMap["authors"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Author?] in value.map { (value: ResultMap?) -> Author? in value.flatMap { (value: ResultMap) -> Author in Author(unsafeResultMap: value) } } }
+    }
+    set {
+      resultMap.updateValue(newValue.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, forKey: "authors")
+    }
+  }
+
+  /// A snippet of text from the article
+  public var excerpt: String? {
+    get {
+      return resultMap["excerpt"] as? String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "excerpt")
+    }
+  }
+
+  /// Additional information about the item domain, when present, use this for displaying the domain name
+  public var domainMetadata: DomainMetadatum? {
+    get {
+      return (resultMap["domainMetadata"] as? ResultMap).flatMap { DomainMetadatum(unsafeResultMap: $0) }
+    }
+    set {
+      resultMap.updateValue(newValue?.resultMap, forKey: "domainMetadata")
+    }
+  }
+
+  /// Array of images within an article
+  public var images: [Image?]? {
+    get {
+      return (resultMap["images"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Image?] in value.map { (value: ResultMap?) -> Image? in value.flatMap { (value: ResultMap) -> Image in Image(unsafeResultMap: value) } } }
+    }
+    set {
+      resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+    }
+  }
+
+  public struct Author: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Author"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+        GraphQLField("name", type: .scalar(String.self)),
+        GraphQLField("url", type: .scalar(String.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(id: GraphQLID, name: String? = nil, url: String? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Author", "id": id, "name": name, "url": url])
+    }
+
+    public var __typename: String {
+      get {
+        return resultMap["__typename"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "__typename")
+      }
+    }
+
+    /// Unique id for that Author
+    public var id: GraphQLID {
+      get {
+        return resultMap["id"]! as! GraphQLID
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "id")
+      }
+    }
+
+    /// Display name
+    public var name: String? {
+      get {
+        return resultMap["name"] as? String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "name")
+      }
+    }
+
+    /// A url to that Author's site
+    public var url: String? {
+      get {
+        return resultMap["url"] as? String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "url")
+      }
+    }
+  }
+
+  public struct DomainMetadatum: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["DomainMetadata"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("name", type: .scalar(String.self)),
+        GraphQLField("logo", type: .scalar(String.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(name: String? = nil, logo: String? = nil) {
+      self.init(unsafeResultMap: ["__typename": "DomainMetadata", "name": name, "logo": logo])
+    }
+
+    public var __typename: String {
+      get {
+        return resultMap["__typename"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "__typename")
+      }
+    }
+
+    /// The name of the domain (e.g., The New York Times)
+    public var name: String? {
+      get {
+        return resultMap["name"] as? String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "name")
+      }
+    }
+
+    /// Url for the logo image
+    public var logo: String? {
+      get {
+        return resultMap["logo"] as? String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "logo")
+      }
+    }
+
+    public var fragments: Fragments {
+      get {
+        return Fragments(unsafeResultMap: resultMap)
+      }
+      set {
+        resultMap += newValue.resultMap
+      }
+    }
+
+    public struct Fragments {
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public var domainMetadataParts: DomainMetadataParts {
+        get {
+          return DomainMetadataParts(unsafeResultMap: resultMap)
+        }
+        set {
+          resultMap += newValue.resultMap
+        }
+      }
+    }
+  }
+
+  public struct Image: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Image"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("height", type: .scalar(Int.self)),
+        GraphQLField("width", type: .scalar(Int.self)),
+        GraphQLField("src", type: .nonNull(.scalar(String.self))),
+        GraphQLField("imageId", type: .nonNull(.scalar(Int.self))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(height: Int? = nil, width: Int? = nil, src: String, imageId: Int) {
+      self.init(unsafeResultMap: ["__typename": "Image", "height": height, "width": width, "src": src, "imageId": imageId])
+    }
+
+    public var __typename: String {
+      get {
+        return resultMap["__typename"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "__typename")
+      }
+    }
+
+    /// If known, the height of the image in px
+    public var height: Int? {
+      get {
+        return resultMap["height"] as? Int
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "height")
+      }
+    }
+
+    /// If known, the width of the image in px
+    public var width: Int? {
+      get {
+        return resultMap["width"] as? Int
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "width")
+      }
+    }
+
+    /// Absolute url to the image
+    public var src: String {
+      get {
+        return resultMap["src"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "src")
+      }
+    }
+
+    /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
+    public var imageId: Int {
+      get {
+        return resultMap["imageId"]! as! Int
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "imageId")
+      }
+    }
+  }
+}
+
 public struct SavedItemParts: GraphQLFragment {
   /// The raw GraphQL definition of this fragment.
   public static let fragmentDefinition: String =
@@ -13525,7 +18877,9 @@ public struct SavedItemParts: GraphQLFragment {
         }
       }
 
-      /// A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps.
+      /// The Item entity is owned by the Parser service.
+      /// We only extend it in this service to make this service's schema valid.
+      /// The key for this entity is the 'itemId'
       public var remoteId: String {
         get {
           return resultMap["remoteID"]! as! String
@@ -13535,7 +18889,7 @@ public struct SavedItemParts: GraphQLFragment {
         }
       }
 
-      /// The url as provided by the user when saving. Only http or https schemes allowed.
+      /// key field to identify the Item entity in the Parser service
       public var givenUrl: String {
         get {
           return resultMap["givenUrl"]! as! String
@@ -16369,7 +21723,9 @@ public struct ItemParts: GraphQLFragment {
     }
   }
 
-  /// A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps.
+  /// The Item entity is owned by the Parser service.
+  /// We only extend it in this service to make this service's schema valid.
+  /// The key for this entity is the 'itemId'
   public var remoteId: String {
     get {
       return resultMap["remoteID"]! as! String
@@ -16379,7 +21735,7 @@ public struct ItemParts: GraphQLFragment {
     }
   }
 
-  /// The url as provided by the user when saving. Only http or https schemes allowed.
+  /// key field to identify the Item entity in the Parser service
   public var givenUrl: String {
     get {
       return resultMap["givenUrl"]! as! String
@@ -19256,7 +24612,9 @@ public struct SlateParts: GraphQLFragment {
       }
     }
 
-    /// The Item that is resolved by apollo federation using the itemId
+    /// The Recommendation entity is owned by the Recommendation API service.
+    /// We extend it in this service to add an extra field ('curationInfo') to the Recommendation entity.
+    /// The key for this entity is the 'itemId' found within the Item entity which is owned by the Parser service.
     public var item: Item {
       get {
         return Item(unsafeResultMap: resultMap["item"]! as! ResultMap)
@@ -19312,7 +24670,9 @@ public struct SlateParts: GraphQLFragment {
         }
       }
 
-      /// A server generated unique id for this item. Item's whose {.normalUrl} are the same will have the same item_id. Most likely numeric, but to ensure future proofing this can be treated as a String in apps.
+      /// The Item entity is owned by the Parser service.
+      /// We only extend it in this service to make this service's schema valid.
+      /// The key for this entity is the 'itemId'
       public var remoteId: String {
         get {
           return resultMap["remoteID"]! as! String
@@ -19322,7 +24682,7 @@ public struct SlateParts: GraphQLFragment {
         }
       }
 
-      /// The url as provided by the user when saving. Only http or https schemes allowed.
+      /// key field to identify the Item entity in the Parser service
       public var givenUrl: String {
         get {
           return resultMap["givenUrl"]! as! String

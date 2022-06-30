@@ -41,8 +41,10 @@ class ReadableHostViewController: UIViewController {
     override func loadView() {
         view = UIView()
         
-        let readableViewController = ReadableViewController(readerSettings: readableViewModel.readerSettings)
-        readableViewController.readableViewModel = readableViewModel
+        let readableViewController = ReadableViewController(
+            readable: readableViewModel,
+            readerSettings: readableViewModel.readerSettings
+        )
         readableViewController.delegate = readableViewModel
 
         readableViewController.willMove(toParent: self)

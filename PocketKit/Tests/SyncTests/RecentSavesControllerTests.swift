@@ -10,7 +10,7 @@ class RecentSavesControllerTests: XCTestCase {
 
     override func setUp() async throws {
         subscriptions = []
-        space = Space(container: .testContainer)
+        space = Space.testSpace()
     }
 
     override func tearDown() async throws {

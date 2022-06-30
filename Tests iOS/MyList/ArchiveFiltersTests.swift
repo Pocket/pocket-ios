@@ -58,7 +58,7 @@ class ArchiveFiltersTests: XCTestCase {
 
         app.myListView.filterButton(for: "Favorites").tap()
         waitForDisappearance(of: myList.itemView(matching: "Archived Item 1"))
-        myList.itemView(matching: "Archived Item 2").wait()
+        myList.itemView(matching: "Favorited Archived Item 1").wait()
         app.myListView.filterButton(for: "Favorites").tap()
         
         myList.itemView(matching: "Archived Item 1").wait()
@@ -76,7 +76,7 @@ class ArchiveFiltersTests: XCTestCase {
         myList.itemView(matching: "Archived Item 2").wait()
         
         app.myListView.filterButton(for: "Favorites").tap()
-        myList.itemView(matching: "Archived Item 2").wait()
+        myList.itemView(matching: "Favorited Archived Item 1").wait()
         
         app.myListView.filterButton(for: "All").tap()
         myList.itemView(matching: "Archived Item 1").wait()

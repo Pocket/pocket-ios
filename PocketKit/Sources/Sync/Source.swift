@@ -12,7 +12,7 @@ public protocol Source {
 
     func makeItemsController() -> SavedItemsController
 
-    func makeArchivedItemsController() -> SavedItemsController
+    func makeArchiveService() -> ArchiveService
 
     func makeSlateLineupController() -> SlateLineupController
 
@@ -55,6 +55,8 @@ public protocol Source {
     func remove(recommendation: Recommendation)
 
     func download(images: [Image])
+
+    func fetchDetails(for savedItem: SavedItem) async throws
 }
 
 public extension Source {

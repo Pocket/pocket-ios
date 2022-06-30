@@ -17,7 +17,7 @@ class HomeViewModelTests: XCTestCase {
 
     override func setUp() async throws {
         subscriptions = []
-        space = Space(container: .testContainer)
+        space = .testSpace()
 
         source = MockSource()
         tracker = MockTracker()

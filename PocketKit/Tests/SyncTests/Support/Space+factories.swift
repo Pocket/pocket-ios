@@ -9,6 +9,8 @@ extension Space {
         isFavorite: Bool = false,
         isArchived: Bool = false,
         createdAt: Date = Date(),
+        archivedAt: Date? = nil,
+        cursor: String? = nil,
         item: Item? = nil
     ) throws -> SavedItem {
         var savedItem: SavedItem?
@@ -19,7 +21,9 @@ extension Space {
             savedItem?.isFavorite = isFavorite
             savedItem?.isArchived = isArchived
             savedItem?.createdAt = createdAt
+            savedItem?.archivedAt = archivedAt
             savedItem?.url = URL(string: url)!
+            savedItem?.cursor = cursor
             savedItem?.item = item ?? new()
 
             try save()

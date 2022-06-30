@@ -16,27 +16,16 @@ class ReadableViewController: UIViewController {
     
     var presenters: [ArticleComponentPresenter]?
 
-    var readableViewModel: ReadableViewModel? {
+    var readableViewModel: ReadableViewModel {
         didSet {
-            metadata = readableViewModel.flatMap { readableViewModel -> ArticleMetadataPresenter in
-                ArticleMetadataPresenter(
-                    readableViewModel: readableViewModel,
-                    readerSettings: readerSettings
-                )
-            }
-            
-            presenters = readableViewModel?.components?.filter { !$0.isEmpty }.map { presenter(for: $0) }
-
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
+            updateContent()
         }
     }
-    
+
     weak var delegate: ReadableViewControllerDelegate? = nil
 
     private var contexts: [Context] {
-        guard let viewModel = readableViewModel, let url = viewModel.url else {
+        guard let url = readableViewModel.url else {
             return []
         }
         
@@ -57,9 +46,13 @@ class ReadableViewController: UIViewController {
         return self.buildSection(index: $0, environment: $1)
     }
 
-    init(readerSettings: ReaderSettings) {
+    init(
+        readable: ReadableViewModel,
+        readerSettings: ReaderSettings
+    ) {
         self.readerSettings = readerSettings
-
+        self.readableViewModel = readable
+        
         super.init(nibName: nil, bundle: nil)
 
         collectionView.delegate = self
@@ -83,10 +76,22 @@ class ReadableViewController: UIViewController {
                 self?.reload()
             }
         }.store(in: &subscriptions)
+
+        readableViewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            guard case .contentUpdated = event else { return }
+            self?.updateContent()
+        }.store(in: &subscriptions)
+
+        updateContent()
     }
     
     override func loadView() {
         view = collectionView
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        readableViewModel.fetchDetailsIfNeeded()
     }
 
     required init?(coder: NSCoder) {
@@ -101,6 +106,21 @@ class ReadableViewController: UIViewController {
     private func reload() {
         presenters?.forEach { $0.clearCache() }
         collectionView.reloadData()
+    }
+
+    private func updateContent() {
+        metadata = ArticleMetadataPresenter(
+            readableViewModel: readableViewModel,
+            readerSettings: readerSettings
+        )
+
+        presenters = readableViewModel
+            .components?
+            .filter { !$0.isEmpty }.map { presenter(for: $0) }
+
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
     }
 }
 
@@ -127,7 +147,7 @@ extension ReadableViewController: UICollectionViewDataSource {
     ) -> Int {
         switch section {
         case 0:
-            return readableViewModel == nil ? 0 : 1
+            return metadata == nil ? 0 : 1
         default:
             return presenters?.count ?? 0
         }

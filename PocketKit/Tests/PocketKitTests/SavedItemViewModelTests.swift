@@ -1,24 +1,27 @@
 import XCTest
-import Sync
 import Analytics
 import Combine
 
+@testable import Sync
 @testable import PocketKit
 
 
 class SavedItemViewModelTests: XCTestCase {
     private var source: MockSource!
     private var tracker: MockTracker!
+    private var space: Space!
 
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
+        space = .testSpace()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         subscriptions = []
+        try space.clear()
     }
 
     func subject(item: SavedItem, source: Source? = nil, tracker: Tracker? = nil) -> SavedItemViewModel {
@@ -64,6 +67,49 @@ class SavedItemViewModelTests: XCTestCase {
             viewModel._actions.map(\.title),
             ["Display Settings", "Unfavorite", "Archive", "Delete", "Share"]
         )
+    }
+
+    func test_fetchDetailsIfNeeded_whenItemDetailsAreNotAvailable_fetchesItemDetails_andSendsEvent() throws {
+        source.stubFetchDetails { _ in }
+
+        let savedItem: SavedItem = .build()
+        savedItem.item?.article = nil
+        try space.save()
+
+        let viewModel = subject(item: savedItem)
+
+        let eventSent = expectation(description: "eventSent")
+        viewModel.events.sink { event in
+            defer { eventSent.fulfill() }
+
+            guard case .contentUpdated = event else {
+                XCTFail("Expected contentUpdated event but got \(event)")
+                return
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.fetchDetailsIfNeeded()
+        wait(for: [eventSent], timeout: 2)
+
+        let call = source.fetchDetailsCall(at: 0)
+        XCTAssertNotNil(call)
+        XCTAssertEqual(call?.savedItem, savedItem)
+    }
+
+    func test_fetchDetailsIfNeeded_whenItemDetailsAreAlreadyAvailable_doesNothing() {
+        let fetchedDetails = expectation(description: "fetchedDetails")
+        fetchedDetails.isInverted = true
+        source.stubFetchDetails { _ in
+            fetchedDetails.fulfill()
+        }
+
+        let savedItem: SavedItem = .build()
+        savedItem.item?.article = Article(components: [])
+        let viewModel = subject(item: savedItem)
+        viewModel.fetchDetailsIfNeeded()
+
+        wait(for: [fetchedDetails], timeout: 1)
+        XCTAssertNil(source.fetchDetailsCall(at: 0))
     }
 
     func test_displaySettings_updatesIsPresentingReaderSettings() {

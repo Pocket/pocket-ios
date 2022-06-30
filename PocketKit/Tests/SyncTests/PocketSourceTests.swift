@@ -444,4 +444,22 @@ class PocketSourceTests: XCTestCase {
 
         XCTAssertTrue(image.isDownloaded)
     }
+
+    func test_fetchOfflineContent_fetchesOfflineContent() async throws {
+        apollo.stubFetch(
+            toReturnFixtureNamed: "single-item-details",
+            asResultType: SavedItemByIdQuery.self
+        )
+
+        let savedItem = try space.seedSavedItem(remoteID: "a-saved-item")
+        savedItem.item = nil
+        try space.save()
+
+        let source = subject()
+        try await source.fetchDetails(for: savedItem)
+
+        space.refresh(savedItem, mergeChanges: true)
+        XCTAssertNotNil(savedItem.item)
+        XCTAssertFalse(savedItem.hasChanges)
+    }
 }

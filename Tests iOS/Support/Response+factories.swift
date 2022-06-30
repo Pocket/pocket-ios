@@ -55,6 +55,14 @@ extension Response {
         fixture(named: "save-item-from-extension")
     }
 
+    static func emptyList() -> Response {
+        fixture(named: "empty-list")
+    }
+
+    static func itemDetail() -> Response {
+        fixture(named: "item-detail")
+    }
+
     private static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok

@@ -110,7 +110,12 @@ class CompactMyListContainerCoordinator: NSObject {
         }.store(in: &readableSubscriptions)
 
         readable.events.receive(on: DispatchQueue.main).sink { [weak self] event in
-            self?.navigationController.popToRootViewController(animated: true)
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.navigationController.popToRootViewController(animated: true)
+            }
         }.store(in: &readableSubscriptions)
 
         navigationController.pushViewController(

@@ -1,0 +1,68 @@
+query SavedItemSummaries(
+    $pagination: PaginationInput,
+    $filter: SavedItemsFilter,
+    $sort: SavedItemsSort
+) {
+  user {
+    savedItems(
+        pagination: $pagination,
+        filter: $filter,
+        sort: $sort
+    ) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          ...SavedItemSummary
+        }
+      }
+    }
+  }
+}
+
+fragment SavedItemSummary on SavedItem {
+  url
+  remoteID: id
+  isArchived
+  isFavorite
+  _deletedAt
+  _createdAt
+  archivedAt
+  item {
+    ...ItemSummary
+  }
+}
+
+fragment ItemSummary on Item {
+  remoteID: itemId
+  givenUrl
+  resolvedUrl
+  title
+  language
+  topImageUrl
+  timeToRead
+  domain
+  datePublished
+  isArticle
+  hasImage
+  hasVideo
+  authors {
+    id
+    name
+    url
+  }
+  excerpt
+  domainMetadata {
+    ...DomainMetadataParts
+  }
+  images {
+    height
+    width
+    src
+    imageId
+  }
+}

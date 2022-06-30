@@ -87,12 +87,6 @@ class OperationFactory: SyncOperationFactory {
         cursor: String?,
         isFavorite: Bool?
     ) -> SyncOperation {
-        FetchArchivePageOperation(
-            apollo: apollo,
-            space: space,
-            accessToken: accessToken,
-            cursor: cursor,
-            isFavorite: isFavorite
-        )
+        fatalError("narp")
     }
 }

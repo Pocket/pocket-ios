@@ -1,12 +1,13 @@
 {
     "data": {
-        "userByToken": {
+        "user": {
             "__typename": "[type-name-here]",
             "savedItems": {
                 "__typename": "[type-name-here]",
+                "totalCount": 5,
                 "pageInfo": {
                     "__typename": "[type-name-here]",
-                    "hasNextPage": false,
+                    "hasNextPage": true,
                     "endCursor": "cursor-2"
                 },
                 "edges": [
@@ -15,11 +16,44 @@
                         "cursor": "cursor-1",
                         "node": {
                             "__typename": "[type-name-here]",
+                            "remoteID": "archived-saved-item-2",
+                            "url": "https://example.com/items/archived-item-2",
+                            "_createdAt": 0,
+                            "_deletedAt": null,
+                            "archivedAt": 5,
+                            "isArchived": true,
+                            "isFavorite": false,
+                            "item": {
+                                "__typename": "Item",
+                                "remoteID": "archived-item-2",
+                                "givenUrl": "https://example.com/items/archived-item-2",
+                                "resolvedUrl": "https://example.com/items/archived-item-2",
+                                "title": "Archived Item 2",
+                                "topImageUrl": "https://example.com/items/archived-item-2/images/top-image.jpg",
+                                "domain": "wired.com",
+                                "language": "en",
+                                "timeToRead": 6,
+                                "domainMetadata": null,
+                                "authors": [],
+                                "datePublished": "1999-01-01 12:01:01",
+                                "excerpt": "Vehicula Nibh Ligula Porta Magna",
+                                "images": [],
+                                "isArticle": true,
+                                "hasImage": "HAS_IMAGES",
+                                "hasVideo": "HAS_VIDEOS",
+                            }
+                        }
+                    },
+                    {
+                        "__typename": "[type-name-here]",
+                        "cursor": "cursor-2",
+                        "node": {
+                            "__typename": "[type-name-here]",
                             "remoteID": "archived-saved-item-1",
                             "url": "http://example.com/items/archived-item-1",
                             "_createdAt": 0,
                             "_deletedAt": null,
-                            "archivedAt": 1648493207,
+                            "archivedAt": 4,
                             "isArchived": true,
                             "isFavorite": false,
                             "item": {
@@ -32,12 +66,6 @@
                                 "domain": "wired.com",
                                 "language": "en",
                                 "timeToRead": 6,
-                                "marticle": [
-                                    {
-                                        "__typename": "MarticleText",
-                                        "content": "**Commodo Consectetur** _Dapibus_"
-                                    }
-                                ],
                                 "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
                                 "datePublished": "2001-01-01 12:01:01",
                                 "authors": [
@@ -62,40 +90,6 @@
                                         "imageId": 1
                                     }
                                 ],
-                                "isArticle": true,
-                                "hasImage": "HAS_IMAGES",
-                                "hasVideo": "HAS_VIDEOS",
-                            }
-                        }
-                    },
-                    {
-                        "__typename": "[type-name-here]",
-                        "cursor": "cursor-2",
-                        "node": {
-                            "__typename": "[type-name-here]",
-                            "remoteID": "archived-saved-item-2",
-                            "url": "https://example.com/items/archived-item-2",
-                            "_createdAt": 0,
-                            "_deletedAt": null,
-                            "archivedAt": 1648493207,
-                            "isArchived": true,
-                            "isFavorite": false,
-                            "item": {
-                                "__typename": "Item",
-                                "remoteID": "archived-item-2",
-                                "givenUrl": "https://example.com/items/archived-item-2",
-                                "resolvedUrl": "https://example.com/items/archived-item-2",
-                                "title": "Archived Item 2",
-                                "topImageUrl": "https://example.com/items/archived-item-2/images/top-image.jpg",
-                                "domain": "wired.com",
-                                "language": "en",
-                                "timeToRead": 6,
-                                "domainMetadata": null,
-                                "marticle": [],
-                                "authors": [],
-                                "datePublished": "1999-01-01 12:01:01",
-                                "excerpt": "Vehicula Nibh Ligula Porta Magna",
-                                "images": [],
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",

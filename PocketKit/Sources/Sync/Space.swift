@@ -9,6 +9,7 @@ public class Space {
 
     required public init(context: NSManagedObjectContext) {
         self.context = context
+        context.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
     }
 
     func managedObjectID(forURL url: URL) -> NSManagedObjectID? {
@@ -149,7 +150,7 @@ public class Space {
                 return
             }
 
-            for entity in container.managedObjectModel.entities {
+            for entity in objectModel.entities {
                 let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
                 let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
                 try context.execute(deleteRequest)
@@ -168,9 +169,9 @@ public class Space {
         )
     }
 
-    func makeArchivedItemsController() -> NSFetchedResultsController<SavedItem> {
+    func makeArchivedItemsController(filters: [NSPredicate] = []) -> NSFetchedResultsController<SavedItem> {
         NSFetchedResultsController(
-            fetchRequest: Requests.fetchArchivedItems(),
+            fetchRequest: Requests.fetchArchivedItems(filters: filters),
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil
@@ -217,5 +218,21 @@ public class Space {
 
     func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
         context.refresh(object, mergeChanges: mergeChanges)
+    }
+
+    func batchDeleteArchivedItems() throws {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SavedItem.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "isArchived = 1")
+
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+        deleteRequest.resultType = .resultTypeObjectIDs
+
+        let deleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
+        if let deletedItemIDs = deleteResult?.result as? [NSManagedObjectID] {
+            NSManagedObjectContext.mergeChanges(
+                fromRemoteContextSave: [NSDeletedObjectsKey: deletedItemIDs],
+                into: [context]
+            )
+        }
     }
 }
