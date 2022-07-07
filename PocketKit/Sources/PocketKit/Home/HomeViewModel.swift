@@ -70,6 +70,15 @@ class HomeViewModel {
     }
 
     func refresh(_ completion: @escaping () -> Void) {
+        // By emptying out our view models and their subscriptions,
+        // we are ensuring that no previously existing view models
+        // publish changes when source.fetchSlateLineup cascades and deletes any
+        // unsaved items (see HomeRecommendationCellViewModel.init(recommendation:)).
+        // This would cause an erroneous snapshot to be published
+        // (potentially while another snapshot was still being applied).
+        viewModels = [:]
+        viewModelSubscriptions = []
+
         Task {
             try await source.fetchSlateLineup(Self.lineupIdentifier)
             completion()
@@ -252,14 +261,20 @@ extension HomeViewModel {
         }
         
         slates.forEach { slate in
+            // Create a topic and slate section _only_ if any
+            // recommendations exist for the given slate
+            let recs = slate.recommendations?
+                .compactMap { $0 as? Recommendation }
+            ?? []
+
+            guard recs.isEmpty == false else {
+                return
+            }
+
             snapshot.appendItems([.topic(slate)], toSection: .topics)
 
             let slateSection: HomeViewModel.Section = .slate(slate)
             snapshot.appendSections([slateSection])
-
-            let recs = slate.recommendations?
-                .compactMap { $0 as? Recommendation }
-            ?? []
 
             recs.forEach { rec in
                 let viewModel = HomeRecommendationCellViewModel(recommendation: rec)
