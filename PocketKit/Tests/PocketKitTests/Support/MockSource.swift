@@ -83,7 +83,8 @@ extension MockSource {
     static let makeItemsController = "makeItemsController"
     typealias MakeItemsControllerImpl = () -> SavedItemsController
 
-    struct MakeItemsControllerCall { }
+    struct MakeItemsControllerCall {
+    }
 
     func stubMakeItemsController(impl: @escaping MakeItemsControllerImpl) {
         implementations[Self.makeItemsController] = impl
@@ -97,6 +98,14 @@ extension MockSource {
         calls[Self.makeItemsController] = (calls[Self.makeItemsController] ?? []) + [MakeItemsControllerCall()]
 
         return impl()
+    }
+    
+    func makeItemsControllerCall(at index: Int) -> MakeItemsControllerCall? {
+        guard let calls = calls[Self.makeItemsController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeItemsControllerCall
     }
 }
 
@@ -144,7 +153,7 @@ extension MockSource {
     }
 }
 
-// MARK: - Make slate lineup controller
+// MARK: - Make slate controller
 extension MockSource {
     static let makeSlateController = "makeSlateController"
     typealias MakeSlateControllerImpl = (String) -> SlateController
@@ -186,6 +195,23 @@ extension MockSource {
     }
 }
 
+// MARK: - Make recent saves controller
+extension MockSource {
+    static let makeRecentSavesController = "makeRecentSavesController"
+    typealias MakeRecentSavesControllerControllerImpl = () -> RecentSavesController
+
+    func stubMakeRecentSavesController(impl: @escaping MakeRecentSavesControllerControllerImpl) {
+        implementations[Self.makeRecentSavesController] = impl
+    }
+
+    func makeRecentSavesController() -> RecentSavesController {
+        guard let impl = implementations[Self.makeRecentSavesController] as? MakeRecentSavesControllerControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        return impl()
+    }
+}
 
 // MARK: - Fetch Archived content
 extension MockSource {

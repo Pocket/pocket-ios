@@ -27,13 +27,19 @@ class HomeTests: XCTestCase {
             } else if apiRequest.isForSlateDetail {
                 return Response.slateDetail()
             } else if apiRequest.isForMyListContent {
-                return Response.myList()
+                return Response.myList("initial-list-recent-saves")
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToSaveAnItem {
                 return Response.saveItem()
             } else if apiRequest.isToArchiveAnItem {
                 return Response.archive()
+            } else if apiRequest.isToFavoriteAnItem {
+                return Response.favorite()
+            } else if apiRequest.isToUnfavoriteAnItem {
+                return Response.unfavorite()
+            } else if apiRequest.isToDeleteAnItem {
+                return Response.delete()
             } else {
                 fatalError("Unexpected request")
             }
@@ -68,7 +74,84 @@ class HomeTests: XCTestCase {
         home.slateHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
     }
+    
+    func test_navigatingToHomeTab_showsRecentlySavedItems() {
+        let home = app.homeView.wait()
+        
+        home.savedItemCell("Item 1").wait()
+        home.savedItemCell("Item 2").wait()
+        
+        home.savedItemCell("Item 2").swipeLeft(velocity: .fast)
+        home.savedItemCell("Item 4").swipeLeft(velocity: .fast)
+        waitForDisappearance(of: home.savedItemCell("Item 6"))
+    }
+    
+    func test_savingItems_showsAdditionalRecentlySavedItem() {
+        let home = app.homeView.wait()
+        app.homeView.topicChip("Slate 1").wait().tap()
 
+        let saveButton = app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait()
+        saveButton.tap()
+        app.tabBar.homeButton.tap()
+        
+        home.savedItemCell("Slate 1, Recommendation 1").wait()
+    }
+    
+    func test_favoritingRecentSavesItem_shouldShowFavoriteInMyList() {
+        let home = app.homeView.wait()
+        home.savedItemCell("Item 1").wait()
+        home.recentSavesView(matching: "Item 1").favoriteButton.tap()
+        XCTAssertTrue(home.recentSavesView(matching: "Item 1").favoriteButton.isFilled)
+
+        app.tabBar.myListButton.tap()
+        app.myListView.filterButton(for: "Favorites").tap()
+        XCTAssertTrue(app.myListView.itemView(matching: "Item 1").favoriteButton.isFilled)
+    }
+    
+    func test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInMyList() {
+        let home = app.homeView.wait()
+        home.savedItemCell("Item 2").wait()
+        XCTAssertTrue(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
+        home.recentSavesView(matching: "Item 2").favoriteButton.tap()
+        XCTAssertFalse(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
+        
+        app.tabBar.myListButton.tap()
+        app.myListView.filterButton(for: "Favorites").tap()
+        waitForDisappearance(of: app.myListView.itemView(matching: "Item 2"))
+    }
+
+    func test_archivingRecentSavesItem_removesItemFromRecentSaves() {
+        let home = app.homeView.wait()
+        home.savedItemCell("Item 1").wait()
+        home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
+        app.archiveButton.wait().tap()
+        waitForDisappearance(of: home.savedItemCell("Item 1"))
+        
+        app.tabBar.myListButton.tap()
+        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+        app.myListView.itemView(matching: "Item 1").wait()
+    }
+    
+    func test_deletingRecentSavesItem_removesItemFromRecentSaves() {
+        let home = app.homeView.wait()
+        home.savedItemCell("Item 1").wait()
+        home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
+        app.deleteButton.wait().tap()
+        app.alert.yes.wait().tap()
+        waitForDisappearance(of: home.savedItemCell("Item 1"))
+        
+        app.tabBar.myListButton.tap()
+        waitForDisappearance(of: app.myListView.itemView(matching: "Item 1"))
+    }
+    
+    func test_sharingRecentSavesItem_removesItemFromRecentSaves() {
+        let home = app.homeView.wait()
+        home.savedItemCell("Item 1").wait()
+        home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
+        app.shareButton.wait().tap()
+        app.shareSheet.wait()
+    }
+    
     func test_selectingChipInTopicCarousel_showsSlateDetailView() {
         app.homeView.topicChip("Slate 1").wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()

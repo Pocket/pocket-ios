@@ -20,6 +20,8 @@ public protocol Source {
 
     func makeUndownloadedImagesController() -> ImagesController
 
+    func makeRecentSavesController() -> RecentSavesController
+
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refresh(maxItems: Int, completion: (() -> ())?)

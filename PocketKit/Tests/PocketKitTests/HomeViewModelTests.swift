@@ -10,14 +10,19 @@ class HomeViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
     var slateLineupController: MockSlateLineupController!
+    var recentSavesController: RecentSavesController!
+    var space: Space!
 
     var subscriptions: Set<AnyCancellable> = []
 
-    override func setUp() {
+    override func setUp() async throws {
         subscriptions = []
+        space = Space(container: .testContainer)
 
         source = MockSource()
         tracker = MockTracker()
+        recentSavesController = RecentSavesController(space: space)
+
         slateLineupController = MockSlateLineupController()
         slateLineupController.stubPerformFetch { }
 
@@ -29,11 +34,16 @@ class HomeViewModelTests: XCTestCase {
             MockSlateController()
         }
 
+        source.stubMakeRecentSavesController {
+            return self.recentSavesController
+        }
+
         continueAfterFailure = false
     }
 
-    override func tearDownWithError() throws {
-        try Space(container: .testContainer).clear()
+    override func tearDown() async throws {
+        subscriptions = []
+        try space.clear()
     }
 
     func subject(
@@ -115,7 +125,7 @@ class HomeViewModelTests: XCTestCase {
             let firstSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1])
             let firstSlateRecommendations = firstSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic, .loading:
+                case .topic, .loading, .recentSaves:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -129,7 +139,7 @@ class HomeViewModelTests: XCTestCase {
             let secondSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[2])
             let secondSlateRecommendations = secondSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic, .loading:
+                case .topic, .loading, .recentSaves:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -143,7 +153,7 @@ class HomeViewModelTests: XCTestCase {
             let thirdSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[3])
             let thirdSlateRecommendations = thirdSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic, .loading:
+                case .topic, .loading, .recentSaves:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -178,7 +188,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.$snapshot.dropFirst().sink { snapshot in
             let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic, .loading:
+                case .topic, .loading, .recentSaves:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -338,5 +348,39 @@ class HomeViewModelTests: XCTestCase {
 
         action?.handler?(nil)
         XCTAssertEqual(source.archiveRecommendationCall(at: 0)?.recommendation, recommendation)
+    }
+    
+    func test_snapshot_withSavedItems_fetchesRecentSavedItemsSections() throws {
+        let items: [SavedItem] = [.build(createdAt: .init(timeIntervalSince1970: TimeInterval(1))), .build(createdAt: .init(timeIntervalSince1970: TimeInterval(0)))]
+        try space.save()
+        
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        let viewModel = subject()
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .recentSaves),
+                [
+                    .recentSaves(items[0].objectID),
+                    .recentSaves(items[1].objectID)
+                ]
+            )
+
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+        wait(for: [expectSnapshot], timeout: 1)
+    }
+    
+    func test_snapshot_withNoSavedItems_doesNotHaveRecentSavedItemsSection() {
+        let expectSnapshot = expectation(description: "expect a snapshot")
+        let viewModel = subject()
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            XCTAssertNil(snapshot.indexOfSection(.recentSaves))
+            expectSnapshot.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+        wait(for: [expectSnapshot], timeout: 1)
     }
 }

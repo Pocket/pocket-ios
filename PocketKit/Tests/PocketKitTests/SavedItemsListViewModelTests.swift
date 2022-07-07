@@ -18,7 +18,9 @@ class SavedItemsListViewModelTests: XCTestCase {
         itemsController = MockSavedItemsController()
 
         itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
-        source.stubMakeItemsController { self.itemsController }
+        source.stubMakeItemsController {
+            self.itemsController
+        }
     }
 
     override func tearDown() {

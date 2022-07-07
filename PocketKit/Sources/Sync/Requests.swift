@@ -6,10 +6,12 @@ import CoreData
 
 
 public enum Requests {
-    public static func fetchSavedItems() -> NSFetchRequest<SavedItem> {
+    public static func fetchSavedItems(limit: Int? = nil) -> NSFetchRequest<SavedItem> {
         let request = fetchAllSavedItems()
         request.predicate = Predicates.savedItems()
-
+        if let limit = limit {
+            request.fetchLimit = limit
+        }
         return request
     }
 

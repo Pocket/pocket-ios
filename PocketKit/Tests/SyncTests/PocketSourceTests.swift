@@ -261,7 +261,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_itemsController_returnsAFetchedResultsController() throws {
         let source = subject()
-        let item1 = try space.seedSavedItem(item: space.buildItem(title: "Item 1"))
+        let item1 = try space.seedSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
 
         let itemResultsController = source.makeItemsController()
         try itemResultsController.performFetch()
@@ -273,7 +273,7 @@ class PocketSourceTests: XCTestCase {
         }
         itemResultsController.delegate = delegate
 
-        let item2 = try space.seedSavedItem(item: space.buildItem(title: "Item 2"))
+        let item2 = try space.seedSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(title: "Item 2"))
 
         wait(for: [expectationForUpdatedItems], timeout: 1)
         XCTAssertEqual(itemResultsController.fetchedObjects, [item1, item2])
