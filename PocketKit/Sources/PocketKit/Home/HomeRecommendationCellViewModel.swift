@@ -17,6 +17,8 @@ class HomeRecommendationCellViewModel {
         isSaved = recommendation.item?.savedItem != nil
         || recommendation.item?.savedItem?.isArchived == false
 
+        // Triggered when an item is explicitly deleted by the user,
+        // or when SlateService.fetchSlateLineup(_:) is called
         recommendation.publisher(for: \.item?.savedItem)
             .removeDuplicates()
             .sink { [weak self] savedItem in
