@@ -8,6 +8,7 @@ extension Space {
         url: String = "http://example.com/item-1",
         isFavorite: Bool = false,
         isArchived: Bool = false,
+        createdAt: Date = Date(),
         item: Item? = nil
     ) throws -> SavedItem {
         var savedItem: SavedItem?
@@ -17,6 +18,7 @@ extension Space {
             savedItem?.remoteID = remoteID
             savedItem?.isFavorite = isFavorite
             savedItem?.isArchived = isArchived
+            savedItem?.createdAt = createdAt
             savedItem?.url = URL(string: url)!
             savedItem?.item = item ?? new()
 

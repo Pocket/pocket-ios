@@ -8,13 +8,20 @@ private extension Style {
 }
 
 struct SlateHeaderPresenter {
-    private let slate: Slate
+    private let slate: Slate?
+    private let name: String?
 
     init(slate: Slate) {
         self.slate = slate
+        self.name = slate.name
+    }
+    
+    init(name: String) {
+        self.slate = nil
+        self.name = name
     }
 
     var attributedHeaderText: NSAttributedString {
-        NSAttributedString(string: slate.name ?? "", style: .sectionHeader)
+        NSAttributedString(string: name ?? "", style: .sectionHeader)
     }
 }

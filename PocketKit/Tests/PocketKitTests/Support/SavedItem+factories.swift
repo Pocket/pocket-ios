@@ -11,6 +11,7 @@ extension SavedItem {
         isFavorite: Bool = false,
         isArchived: Bool = false,
         cursor: String? = nil,
+        createdAt: Date = Date(),
         item: Item? = .build()
     ) -> SavedItem {
         let savedItem: SavedItem = SavedItem(context: space.context)
@@ -18,6 +19,7 @@ extension SavedItem {
         savedItem.remoteID = remoteID
         savedItem.isFavorite = isFavorite
         savedItem.isArchived = isArchived
+        savedItem.createdAt = createdAt
         savedItem.url = URL(string: url)!
         savedItem.item = item
 

@@ -142,6 +142,10 @@ public class PocketSource: Source {
         FetchedImagesController(resultsController: space.makeUndownloadedImagesController())
     }
 
+    public func makeRecentSavesController() -> RecentSavesController {
+        RecentSavesController(space: space)
+    }
+
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.object(with: id)
     }

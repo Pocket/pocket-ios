@@ -39,6 +39,8 @@ class HomeViewController: UIViewController {
             }
 
             return self.sectionProvider.topicCarouselSection(slates: slates)
+        case .recentSaves:
+            return self.sectionProvider.recentSavesSection(width: env.container.effectiveContentSize.width)
         case .slate(let slate):
             return self.sectionProvider.section(for: slate, in: self.model, width: env.container.effectiveContentSize.width)
         }
@@ -86,6 +88,7 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: TopicChipCell.self)
+        collectionView.register(cellClass: ItemsListItemCell.self)
         collectionView.register(viewClass: SlateHeaderView.self, forSupplementaryViewOfKind: SlateHeaderView.kind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.dividerElementKind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.twoUpDividerElementKind)
@@ -171,6 +174,28 @@ extension HomeViewController {
             cell.configure(model: TopicChipPresenter(title: slate.name, image: nil))
 
             return cell
+        case .recentSaves(let objectID):
+            let cell: ItemsListItemCell = collectionView.dequeueCell(for: indexPath)
+            
+            guard let presenter = model.presenter(for: objectID) else {
+                return cell
+            }
+
+            cell.backgroundConfiguration = .listPlainCell()
+            cell.layer.borderWidth = 0.5
+            cell.layer.borderColor = UIColor(.ui.grey6).cgColor
+            cell.layer.cornerRadius = 16
+            
+            cell.model = .init(
+                attributedTitle: presenter.attributedTitle,
+                attributedDetail: presenter.attributedDetail,
+                thumbnailURL: presenter.thumbnailURL,
+                shareAction: nil,
+                favoriteAction: model.favoriteAction(for: item),
+                overflowActions: model.overflowActions(for: item)
+            )
+
+            return cell
         case .recommendation(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
             cell.mode = indexPath.item == 0 ? .hero : .mini
@@ -197,12 +222,18 @@ extension HomeViewController {
         switch kind {
         case SlateHeaderView.kind:
             let header: SlateHeaderView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
-            guard case .slate(let slate) = dataSource.sectionIdentifier(for: indexPath.section) else {
-                return header
+            let section = dataSource.sectionIdentifier(for: indexPath.section)
+            
+            switch section {
+            case .recentSaves:
+                let presenter = SlateHeaderPresenter(name: "Recent Saves")
+                header.attributedHeaderText = presenter.attributedHeaderText
+            case .slate(let slate):
+                let presenter = SlateHeaderPresenter(slate: slate)
+                header.attributedHeaderText = presenter.attributedHeaderText
+            default:
+                break
             }
-
-            let presenter = SlateHeaderPresenter(slate: slate)
-            header.attributedHeaderText = presenter.attributedHeaderText
 
             return header
         case Self.dividerElementKind, Self.twoUpDividerElementKind:

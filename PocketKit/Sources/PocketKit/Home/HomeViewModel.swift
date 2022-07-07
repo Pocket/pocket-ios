@@ -7,15 +7,22 @@ import Analytics
 
 class HomeViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
-
+    typealias ItemIdentifier = NSManagedObjectID
+    
     static let lineupIdentifier = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
-
+    
     private let source: Source
     private let slateLineupController: SlateLineupController
     private let tracker: Tracker
 
     @Published
     var snapshot: Snapshot
+    
+    @Published
+    var sharedActivity: PocketActivity?
+    
+    @Published
+    var presentedAlert: PocketAlert?
 
     @Published
     var selectedReadableViewModel: RecommendationViewModel? = nil
@@ -31,6 +38,8 @@ class HomeViewModel {
 
     private var viewModels: [NSManagedObjectID: HomeRecommendationCellViewModel] = [:]
     private var viewModelSubscriptions: Set<AnyCancellable> = []
+    private let recentSavesController: RecentSavesController
+    private var subscriptions: [AnyCancellable] = []
 
     init(
         source: Source,
@@ -39,9 +48,21 @@ class HomeViewModel {
         self.source = source
         self.tracker = tracker
         self.slateLineupController = source.makeSlateLineupController()
-        self.snapshot = Self.loadingSnapshot()
+        self.recentSavesController = source.makeRecentSavesController()
 
+        self.snapshot = Self.loadingSnapshot()
+        
         self.slateLineupController.delegate = self
+        
+        recentSavesController.$recentSaves.receive(on: DispatchQueue.main).sink { [weak self] _ in
+            self?.itemsLoaded()
+        }.store(in: &subscriptions)
+        
+        recentSavesController.itemChanged.receive(on: DispatchQueue.main).sink { [weak self] savedItem in
+            guard var snapshot = self?.buildSnapshot() else { return }
+            snapshot.reloadItems([.recentSaves(savedItem.objectID)])
+            self?.snapshot = snapshot
+        }.store(in: &subscriptions)
     }
 
     func fetch() {
@@ -55,9 +76,21 @@ class HomeViewModel {
         }
     }
 
+    func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
+        guard case .item(let objectID) = cellID else {
+            return nil
+        }
+
+        return presenter(for: objectID)
+    }
+    
+    func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter? {
+        bareItem(with: itemID).flatMap(ItemsListItemPresenter.init)
+    }
+    
     func select(cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading:
+        case .loading, .recentSaves:
             return
         case .topic:
             select(topic: cell)
@@ -65,7 +98,86 @@ class HomeViewModel {
             select(recommendation: cell, at: indexPath)
         }
     }
+    
+    func favoriteAction(for cell: Cell) -> ItemAction? {
+        switch cell {
+        case .recentSaves(let objectID):
+            guard let item = bareItem(with: objectID) else {
+                return nil
+            }
 
+            if item.isFavorite {
+                return .unfavorite { [weak self] _ in self?._unfavorite(item: item) }
+            } else {
+                return .favorite { [weak self] _ in self?._favorite(item: item) }
+            }
+        case .loading, .topic, .recommendation:
+            return nil
+        }
+    }
+    
+    private func _favorite(item: SavedItem) {
+        source.favorite(item: item)
+    }
+
+    private func _unfavorite(item: SavedItem) {
+        source.unfavorite(item: item)
+    }
+    
+    func overflowActions(for cell: Cell) -> [ItemAction] {
+        switch cell {
+        case .recentSaves(let objectID):
+            guard let item = bareItem(with: objectID) else {
+                return []
+            }
+
+            return [
+                .share { [weak self] sender in
+                    self?._share(item: item, sender: sender)
+                },
+                .archive { [weak self] _ in
+                    self?._archive(item: item)
+                },
+                .delete { [weak self] _ in
+                    self?.confirmDelete(item: item)
+                }
+            ]
+        case .loading, .topic, .recommendation:
+            return []
+        }
+    }
+
+    private func _archive(item: SavedItem) {
+        source.archive(item: item)
+    }
+
+    private func confirmDelete(item: SavedItem) {
+        presentedAlert = PocketAlert(
+            title: "Are you sure you want to delete this item?",
+            message: nil,
+            preferredStyle: .alert,
+            actions: [
+                UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                    self?.presentedAlert = nil
+                },
+                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
+                    self?.presentedAlert = nil
+                    self?._delete(item: item)
+                }
+            ],
+            preferredAction: nil
+        )
+    }
+    
+    private func _delete(item: SavedItem) {
+        presentedAlert = nil
+        source.delete(item: item)
+    }
+
+    func _share(item: SavedItem, sender: Any?) {
+        sharedActivity = PocketItemActivity(url: item.url, sender: sender)
+    }
+    
     func reportAction(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
         return .report { [weak self] _ in
             self?.report(cell, at: indexPath)
@@ -89,9 +201,7 @@ class HomeViewModel {
 
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading:
-            return
-        case .topic:
+        case .loading, .topic, .recentSaves:
             return
         case .recommendation:
             tracker.track(
@@ -114,17 +224,33 @@ extension HomeViewModel {
         return snapshot
     }
 
+    private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
+        source.object(id: id)
+    }
+    
+    private func itemsLoaded() {
+        snapshot = buildSnapshot()
+    }
+    
     private func buildSnapshot() -> Snapshot {
         viewModels = [:]
         viewModelSubscriptions = []
         var snapshot = Snapshot()
 
         let slates = slateLineupController.slateLineup?.slates?.compactMap { $0 as? Slate } ?? []
-
+        
+        let recentSavesItemIDs = recentSavesController.recentSaves
+            .map({ HomeViewModel.Cell.recentSaves($0.objectID)}) 
+        
         if slates.count > 0 {
             snapshot.appendSections([.topics])
         }
-
+        
+        if !recentSavesItemIDs.isEmpty {
+            snapshot.appendSections([.recentSaves])
+            snapshot.appendItems(recentSavesItemIDs, toSection: .recentSaves)
+        }
+        
         slates.forEach { slate in
             snapshot.appendItems([.topic(slate)], toSection: .topics)
 
@@ -248,9 +374,7 @@ extension HomeViewModel {
 
     private func contexts(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> [Context] {
         switch cell {
-        case .loading:
-            return []
-        case .topic:
+        case .loading, .topic, .recentSaves:
             return []
         case .recommendation(let objectID):
             guard let viewModel = viewModel(for: objectID),
@@ -291,12 +415,14 @@ extension HomeViewModel {
     enum Section: Hashable {
         case loading
         case topics
+        case recentSaves
         case slate(Slate)
     }
 
     enum Cell: Hashable {
         case loading
         case topic(Slate)
+        case recentSaves(NSManagedObjectID)
         case recommendation(NSManagedObjectID)
     }
 }
@@ -313,6 +439,6 @@ extension HomeViewModel: SlateLineupControllerDelegate {
     }
 
     func controllerDidChangeContent(_ controller: SlateLineupController) {
-        snapshot = buildSnapshot()
+        itemsLoaded()
     }
 }

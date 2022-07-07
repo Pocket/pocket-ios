@@ -14,7 +14,20 @@ struct HomeViewElement: PocketUIElement {
     var overscrollView: XCUIElement {
         element.otherElements["home-overscroll"]
     }
-
+    
+    func savedItemCell(_ title: String) -> XCUIElement {
+        let predicate = NSPredicate(format: "label = %@", title)
+        return savedItemCells.containing(predicate).element(boundBy: 0)
+    }
+    
+    var savedItemCells: XCUIElementQuery {
+        return element.cells.matching(identifier: "my-list-item")
+    }
+    
+    func recentSavesView(matching string: String) -> ItemRowElement {
+        return ItemRowElement(savedItemCell(string))
+    }
+    
     func topicChip(_ title: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label = %@", title)
         return element.cells

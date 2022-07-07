@@ -60,6 +60,14 @@ class CompactHomeCoordinator: NSObject {
         model.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &subscriptions)
+        
+        model.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &subscriptions)
+        
+        model.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptions)
 
         isResetting = false
         navigationController.delegate = self

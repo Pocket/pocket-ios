@@ -169,7 +169,7 @@ class ItemsListItemCell: UICollectionViewCell {
 
             thumbnailView.topAnchor.constraint(equalTo: titleLabel.topAnchor),
             thumbnailView.trailingAnchor.constraint(equalTo: mainContentView.trailingAnchor),
-            thumbnailView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 8),
+            thumbnailView.leadingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: 20),
             thumbnailView.heightAnchor.constraint(equalToConstant: Constants.thumbnailSize.height).with(priority: .required),
             thumbnailWidthConstraint!,
 
@@ -218,6 +218,8 @@ extension ItemsListItemCell {
 
         if let shareAction = UIAction(state.model?.shareAction) {
             shareButton.addAction(shareAction, for: .primaryActionTriggered)
+        } else {
+            shareButton.isHidden = true
         }
 
         let menuActions = state.model?.overflowActions.compactMap(UIAction.init) ?? []

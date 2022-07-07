@@ -146,13 +146,18 @@ class Space {
         try context.obtainPermanentIDs(for: Array(context.insertedObjects))
         try context.save()
     }
-    
+
     func clear() throws {
         let context = container.viewContext
-        for entity in container.managedObjectModel.entities {
-            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
-            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-            try context.execute(deleteRequest)
+
+        try context.performAndWait {
+            for entity in container.managedObjectModel.entities {
+                let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
+                let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+                try context.execute(deleteRequest)
+            }
+
+            context.reset()
         }
     }
 

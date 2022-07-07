@@ -22,17 +22,9 @@ class HomeViewControllerSectionProvider {
         return NSCollectionLayoutSection(group: group)
     }
 
-    func topicCarouselSection(slates: [Slate]?) -> NSCollectionLayoutSection {
+    func topicCarouselSection(slates: [Slate]?) -> NSCollectionLayoutSection? {
         guard let slates = slates, !slates.isEmpty else {
-            return NSCollectionLayoutSection(
-                group: .horizontal(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .absolute(1),
-                        heightDimension: .absolute(1)
-                    ),
-                    subitems: []
-                )
-            )
+            return nil
         }
 
         var maxHeight: CGFloat = 0
@@ -70,8 +62,37 @@ class HomeViewControllerSectionProvider {
         section.orthogonalScrollingBehavior = .continuous
         return section
     }
+    
+    func recentSavesSection(width: CGFloat) -> NSCollectionLayoutSection {
+        let groupHeight: CGFloat = 152
+        let margin: CGFloat = 8
 
-    func section(for slate: Slate?, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection {
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        item.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: margin, bottom: 0, trailing: margin)
+        
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.80), heightDimension: .absolute(groupHeight))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(top: margin, leading: margin, bottom: margin, trailing: margin)
+        section.orthogonalScrollingBehavior = .continuous
+        
+        let slatePresenter = SlateHeaderPresenter(name: "Recent Saves")
+        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1.0),
+                    heightDimension: .absolute(SlateHeaderView.height(width: width, slate: slatePresenter))
+                ),
+                elementKind: SlateHeaderView.kind,
+                alignment: .top
+            )
+        
+        section.boundarySupplementaryItems = [headerItem]
+        return section
+    }
+
+    func section(for slate: Slate?, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
         let dividerHeight: CGFloat = 17
         let margin: CGFloat = 8
         let spacing: CGFloat = margin * 2
@@ -79,27 +100,11 @@ class HomeViewControllerSectionProvider {
         let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
 
         guard let slate = slate, !recommendations.isEmpty else {
-            return NSCollectionLayoutSection(
-                group: .vertical(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .absolute(1),
-                        heightDimension: .absolute(1)
-                    ),
-                    subitems: []
-                )
-            )
+            return nil
         }
 
         guard let hero = viewModel.viewModel(for: recommendations[0].objectID) else {
-            return NSCollectionLayoutSection(
-                group: .vertical(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .absolute(1),
-                        heightDimension: .absolute(1)
-                    ),
-                    subitems: []
-                )
-            )
+            return nil
         }
 
         let heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - spacing)
