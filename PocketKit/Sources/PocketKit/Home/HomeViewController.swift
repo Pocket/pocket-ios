@@ -181,18 +181,14 @@ extension HomeViewController {
                 return cell
             }
 
-            cell.backgroundConfiguration = .listPlainCell()
-            cell.layer.borderWidth = 0.5
-            cell.layer.borderColor = UIColor(.ui.grey6).cgColor
-            cell.layer.cornerRadius = 16
-            
             cell.model = .init(
                 attributedTitle: presenter.attributedTitle,
                 attributedDetail: presenter.attributedDetail,
                 thumbnailURL: presenter.thumbnailURL,
                 shareAction: nil,
                 favoriteAction: model.favoriteAction(for: item),
-                overflowActions: model.overflowActions(for: item)
+                overflowActions: model.overflowActions(for: item),
+                style: .bordered
             )
 
             return cell
