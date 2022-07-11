@@ -7,88 +7,13 @@ import Textile
 
 
 class SlateDetailViewController: UIViewController {
-    private lazy var layoutConfiguration = UICollectionViewCompositionalLayout { index, env in
-        let section = self.dataSource.sectionIdentifier(for: index)
-        switch section {
-        case .slate(let slate):
-            let width = env.container.effectiveContentSize.width
-            let dividerHeight: CGFloat = 17
-            let margin: CGFloat = 8
-            let spacing: CGFloat = margin * 2
-
-            let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
-            let components = recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in
-                guard let viewModel = self.model.viewModel(for: recommendation.objectID) else {
-                    return result
-                }
-
-                var currentHeight = result.0
-                let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - spacing) + dividerHeight
-                var items = result.1
-                items.append(
-                    NSCollectionLayoutItem(
-                        layoutSize: NSCollectionLayoutSize(
-                            widthDimension: .fractionalWidth(1),
-                            heightDimension: .absolute(height)
-                        )
-                    )
-                )
-
-                return (currentHeight + height, items)
-            }
-
-            let heroGroup = NSCollectionLayoutGroup.vertical(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(components.0 + dividerHeight)
-                ),
-                subitems: components.1
-            )
-
-            heroGroup.supplementaryItems = [
-                NSCollectionLayoutSupplementaryItem(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(dividerHeight)
-                    ),
-                    elementKind: "divider",
-                    containerAnchor: NSCollectionLayoutAnchor(edges: .bottom)
-                )
-            ]
-
-            let section = NSCollectionLayoutSection(group: heroGroup)
-
-            section.contentInsets = NSDirectionalEdgeInsets(
-                top: 0,
-                leading: margin,
-                bottom: 0,
-                trailing: margin
-            )
-
-            return section
-        default:
-            return nil
-        }
+    private lazy var layoutConfiguration = UICollectionViewCompositionalLayout { [weak self] index, env in
+        return self?.section(for: index, environment: env)
     }
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<SlateDetailViewModel.Section, SlateDetailViewModel.Cell> = {
-        let registration = UICollectionView.CellRegistration<RecommendationCell, SlateDetailViewModel.Cell> { cell, indexPath, viewModelCell in
-            cell.mode = .hero
-
-            guard case .recommendation(let objectID) = viewModelCell,
-                  let viewModel = self.model.viewModel(for: objectID) else {
-                return
-            }
-
-            cell.configure(model: viewModel)
-
-            if let action = self.model.saveAction(for: viewModelCell, at: indexPath), let uiAction = UIAction(action) {
-                cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
-            }
-
-            if let action = self.model.reportAction(for: viewModelCell, at: indexPath), let uiAction = UIAction(action) {
-                cell.overflowButton.addAction(uiAction, for: .primaryActionTriggered)
-            }
+        let registration = UICollectionView.CellRegistration<RecommendationCell, SlateDetailViewModel.Cell> { [weak self] cell, indexPath, cellViewModel in
+            self?.configure(cell, at: indexPath, viewModel: cellViewModel)
         }
 
         let dataSource = UICollectionViewDiffableDataSource<SlateDetailViewModel.Section, SlateDetailViewModel.Cell>(
@@ -189,13 +114,15 @@ class SlateDetailViewController: UIViewController {
         model.fetch()
         model.refresh { }
     }
+}
 
-    private func setupOverflowView(contentSize: CGSize) {
+private extension SlateDetailViewController {
+    func setupOverflowView(contentSize: CGSize) {
         let shouldHide = contentSize.height <= collectionView.frame.height
         overscrollView.isHidden = shouldHide
     }
 
-    private func updateOverflowView(contentOffset: CGPoint) {
+    func updateOverflowView(contentOffset: CGPoint) {
         guard collectionView.contentSize.height > collectionView.frame.height else {
             return
         }
@@ -222,6 +149,93 @@ class SlateDetailViewController: UIViewController {
             if overscrollView.didFinishPreviousAnimation {
                 overscrollView.isAnimating = false
             }
+        }
+    }
+
+    func section(for index: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+        let section = self.dataSource.sectionIdentifier(for: index)
+        switch section {
+        case .slate(let slate):
+            let width = environment.container.effectiveContentSize.width
+            let dividerHeight: CGFloat = 17
+            let margin: CGFloat = 8
+            let spacing: CGFloat = margin * 2
+
+            let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+            let components = recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in
+                guard let viewModel = self.model.viewModel(for: recommendation.objectID) else {
+                    return result
+                }
+
+                let currentHeight = result.0
+                let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - spacing) + dividerHeight
+                var items = result.1
+                items.append(
+                    NSCollectionLayoutItem(
+                        layoutSize: NSCollectionLayoutSize(
+                            widthDimension: .fractionalWidth(1),
+                            heightDimension: .absolute(height)
+                        )
+                    )
+                )
+
+                return (currentHeight + height, items)
+            }
+
+            let heroGroup = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(components.0 + dividerHeight)
+                ),
+                subitems: components.1
+            )
+
+            heroGroup.supplementaryItems = [
+                NSCollectionLayoutSupplementaryItem(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(dividerHeight)
+                    ),
+                    elementKind: "divider",
+                    containerAnchor: NSCollectionLayoutAnchor(edges: .bottom)
+                )
+            ]
+
+            let section = NSCollectionLayoutSection(group: heroGroup)
+
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 0,
+                leading: margin,
+                bottom: 0,
+                trailing: margin
+            )
+
+            return section
+        default:
+            return nil
+        }
+    }
+
+    func configure(
+        _ cell: RecommendationCell,
+        at indexPath: IndexPath,
+        viewModel cellViewModel: SlateDetailViewModel.Cell
+    ) {
+        cell.mode = .hero
+
+        guard case .recommendation(let objectID) = cellViewModel,
+              let viewModel = model.viewModel(for: objectID) else {
+            return
+        }
+
+        cell.configure(model: viewModel)
+
+        if let action = model.saveAction(for: cellViewModel, at: indexPath), let uiAction = UIAction(action) {
+            cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
+        }
+
+        if let action = model.reportAction(for: cellViewModel, at: indexPath), let uiAction = UIAction(action) {
+            cell.overflowButton.addAction(uiAction, for: .primaryActionTriggered)
         }
     }
 }
