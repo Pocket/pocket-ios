@@ -162,6 +162,14 @@ class RegularMainCoordinator: NSObject {
         model.home.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url)
         }.store(in: &subscriptions)
+        
+        model.home.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &subscriptions)
+
+        model.home.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.share(activity)
+        }.store(in: &subscriptions)
 
         isResetting = false
     }
