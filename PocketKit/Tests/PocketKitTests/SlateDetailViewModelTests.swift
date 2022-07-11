@@ -108,6 +108,8 @@ class SlateDetailViewModelTests: XCTestCase {
         viewModel.$snapshot.dropFirst().sink { snapshot in
             let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
+                case .loading:
+                    return nil
                 case .recommendation(let objectID):
                     return objectID
                 }

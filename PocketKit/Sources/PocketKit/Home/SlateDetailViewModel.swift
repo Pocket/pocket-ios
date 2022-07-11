@@ -18,7 +18,7 @@ class SlateDetailViewModel {
     private var viewModelSubscriptions: Set<AnyCancellable> = []
 
     @Published
-    var snapshot = Snapshot()
+    var snapshot: Snapshot
 
     @Published
     var selectedReadableViewModel: RecommendationViewModel? = nil
@@ -34,6 +34,8 @@ class SlateDetailViewModel {
         self.source = source
         self.tracker = tracker
         self.slateController = source.makeSlateController(byID: slateID)
+        self.snapshot = Self.loadingSnapshot()
+
         self.slateController.delegate = self
     }
 
@@ -50,6 +52,8 @@ class SlateDetailViewModel {
 
     func select(cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
+        case .loading:
+            return
         case .recommendation:
             select(recommendation: cell, at: indexPath)
         }
@@ -80,6 +84,8 @@ class SlateDetailViewModel {
 
     func willDisplay(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
+        case .loading:
+            return
         case .recommendation:
             tracker.track(
                 event: ImpressionEvent(component: .content, requirement: .instant),
@@ -102,6 +108,13 @@ class SlateDetailViewModel {
 }
 
 private extension SlateDetailViewModel {
+    static func loadingSnapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.loading])
+        snapshot.appendItems([.loading], toSection: .loading)
+        return snapshot
+    }
+
     func buildSnapshot() -> Snapshot {
         viewModels = [:]
         viewModelSubscriptions = []
@@ -215,6 +228,8 @@ private extension SlateDetailViewModel {
 
     private func contexts(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> [Context] {
         switch cell {
+        case .loading:
+            return []
         case .recommendation(let objectID):
             guard let viewModel = viewModel(for: objectID),
                   let slate = slateController.slate,
@@ -260,10 +275,12 @@ extension SlateDetailViewModel: SlateControllerDelegate {
 
 extension SlateDetailViewModel {
     enum Section: Hashable {
+        case loading
         case slate(Slate)
     }
 
     enum Cell: Hashable {
+        case loading
         case recommendation(NSManagedObjectID)
     }
 }

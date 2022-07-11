@@ -12,17 +12,11 @@ class SlateDetailViewController: UIViewController {
     }
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<SlateDetailViewModel.Section, SlateDetailViewModel.Cell> = {
-        let registration = UICollectionView.CellRegistration<RecommendationCell, SlateDetailViewModel.Cell> { [weak self] cell, indexPath, cellViewModel in
-            self?.configure(cell, at: indexPath, viewModel: cellViewModel)
-        }
-
-        let dataSource = UICollectionViewDiffableDataSource<SlateDetailViewModel.Section, SlateDetailViewModel.Cell>(
+        UICollectionViewDiffableDataSource<SlateDetailViewModel.Section, SlateDetailViewModel.Cell>(
             collectionView: collectionView
-        ) { (collectionView, indexPath, recommendation) -> UICollectionViewCell? in
-            return collectionView.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: recommendation)
+        ) { [weak self] (collectionView, indexPath, viewModelCell) -> UICollectionViewCell? in
+            return self?.cell(for: viewModelCell, at: indexPath)
         }
-
-        return dataSource
     }()
 
     private lazy var collectionView: UICollectionView = {
@@ -69,6 +63,7 @@ class SlateDetailViewController: UIViewController {
         collectionView.dataSource = dataSource
         collectionView.delegate = self
 
+        collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: "divider")
 
@@ -155,6 +150,23 @@ private extension SlateDetailViewController {
     func section(for index: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let section = self.dataSource.sectionIdentifier(for: index)
         switch section {
+        case .loading:
+            let item = NSCollectionLayoutItem(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .fractionalHeight(1)
+                )
+            )
+
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .fractionalHeight(0.8)
+                ),
+                subitems: [item]
+            )
+
+            return NSCollectionLayoutSection(group: group)
         case .slate(let slate):
             let width = environment.container.effectiveContentSize.width
             let dividerHeight: CGFloat = 17
@@ -216,26 +228,35 @@ private extension SlateDetailViewController {
         }
     }
 
-    func configure(
-        _ cell: RecommendationCell,
-        at indexPath: IndexPath,
-        viewModel cellViewModel: SlateDetailViewModel.Cell
-    ) {
-        cell.mode = .hero
+    func cell(
+        for viewModelCell: SlateDetailViewModel.Cell,
+        at indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        switch viewModelCell {
+        case .loading:
+            let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
+            return cell
+        case .recommendation(let objectID):
+            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+            cell.mode = .hero
 
-        guard case .recommendation(let objectID) = cellViewModel,
-              let viewModel = model.viewModel(for: objectID) else {
-            return
-        }
+            guard let viewModel = self.model.viewModel(for: objectID) else {
+                return cell
+            }
 
-        cell.configure(model: viewModel)
+            cell.configure(model: viewModel)
 
-        if let action = model.saveAction(for: cellViewModel, at: indexPath), let uiAction = UIAction(action) {
-            cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
-        }
+            if let action = self.model.saveAction(for: viewModelCell, at: indexPath),
+               let uiAction = UIAction(action) {
+                cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
+            }
 
-        if let action = model.reportAction(for: cellViewModel, at: indexPath), let uiAction = UIAction(action) {
-            cell.overflowButton.addAction(uiAction, for: .primaryActionTriggered)
+            if let action = self.model.reportAction(for: viewModelCell, at: indexPath),
+               let uiAction = UIAction(action) {
+                cell.overflowButton.addAction(uiAction, for: .primaryActionTriggered)
+            }
+
+            return cell
         }
     }
 }
