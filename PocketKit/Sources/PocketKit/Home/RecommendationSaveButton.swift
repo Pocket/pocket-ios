@@ -48,10 +48,10 @@ class RecommendationSaveButton: UIButton {
         super.init(frame: .zero)
         configuration = .plain()
         configuration?.contentInsets = NSDirectionalEdgeInsets(
-            top: 8,
+            top: 16,
             leading: 8,
-            bottom: 8,
-            trailing: 8
+            bottom: 16,
+            trailing: 16
         )
 
         configuration?.imagePadding = 4
