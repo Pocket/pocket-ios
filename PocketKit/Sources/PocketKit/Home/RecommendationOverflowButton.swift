@@ -8,9 +8,9 @@ class RecommendationOverflowButton: UIButton {
 
         configuration = .plain()
         configuration?.contentInsets = NSDirectionalEdgeInsets(
-            top: 8,
-            leading: 8,
-            bottom: 8,
+            top: 16,
+            leading: 16,
+            bottom: 16,
             trailing: 8
         )
         configuration?.image = UIImage(asset: .alert)
