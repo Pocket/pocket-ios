@@ -87,8 +87,8 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .items),
                 [
-                    .item(.loaded(items[0].objectID)),
-                    .item(.loaded(items[1].objectID)),
+                    .item(items[0].objectID),
+                    .item(items[1].objectID),
                 ]
             )
 
@@ -105,7 +105,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         archiveService._results = items.map { .loaded($0) }
-        viewModel.shareAction(for: .loaded(items[0].objectID))?.handler?(nil)
+        viewModel.shareAction(for: items[0].objectID)?.handler?(nil)
         XCTAssertNotNil(viewModel.sharedActivity)
     }
 
@@ -124,14 +124,14 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         viewModel.snapshot.dropFirst().sink { snapshot in
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .items),
-                [.item(.loaded(items[1].objectID))]
+                [.item(items[1].objectID)]
             )
 
             expectSnapshotWithItemRemoved.fulfill()
         }.store(in: &subscriptions)
 
         // Tap delete button in overflow menu
-        viewModel.overflowActions(for: .loaded(items[0].objectID))
+        viewModel.overflowActions(for: items[0].objectID)
             .first { $0.title == "Delete" }?
             .handler?(nil)
 
@@ -171,20 +171,20 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .items),
                 [
-                    .item(.loaded(items[0].objectID)),
-                    .item(.loaded(items[1].objectID))
+                    .item(items[0].objectID),
+                    .item(items[1].objectID)
                 ]
             )
 
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
                 [
-                    .item(.loaded(items[0].objectID))
+                    .item(items[0].objectID)
                 ]
             )
         }.store(in: &subscriptions)
 
-        viewModel.favoriteAction(for: .loaded(items[0].objectID))?.handler?(nil)
+        viewModel.favoriteAction(for: items[0].objectID)?.handler?(nil)
         wait(for: [expectFavoriteCall, expectSnapshotWithItemReloaded], timeout: 1)
         XCTAssertEqual(source.favoriteSavedItemCall(at: 0)?.item, items[0])
     }
@@ -210,20 +210,20 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .items),
                 [
-                    .item(.loaded(items[0].objectID)),
-                    .item(.loaded(items[1].objectID))
+                    .item(items[0].objectID),
+                    .item(items[1].objectID)
                 ]
             )
 
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
                 [
-                    .item(.loaded(items[0].objectID))
+                    .item(items[0].objectID)
                 ]
             )
         }.store(in: &subscriptions)
 
-        viewModel.favoriteAction(for: .loaded(items[0].objectID))?.handler?(nil)
+        viewModel.favoriteAction(for: items[0].objectID)?.handler?(nil)
         wait(for: [expectUnfavoriteCall, expectSnapshotWithItemReloaded], timeout: 1)
         XCTAssertEqual(source.unfavoriteSavedItemCall(at: 0)?.item, items[0])
     }
@@ -246,11 +246,11 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
             XCTAssertEqual(
                 snapshot.itemIdentifiers(inSection: .items),
-                [.item(.loaded(items[1].objectID))]
+                [.item(items[1].objectID)]
             )
         }.store(in: &subscriptions)
 
-        viewModel.overflowActions(for: .loaded(items[0].objectID))
+        viewModel.overflowActions(for: items[0].objectID)
             .first { $0.title == "Move to My List" }?
             .handler?(nil)
 
@@ -263,7 +263,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let viewModel = subject()
 
-        XCTAssertFalse(viewModel.shouldSelectCell(with: .item(.loaded(items[0].objectID))))
+        XCTAssertFalse(viewModel.shouldSelectCell(with: .item(items[0].objectID)))
     }
 
     func test_shouldSelectCell_whenItemIsNotPending_returnsFalse() {
@@ -272,7 +272,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let viewModel = subject()
 
-        XCTAssertTrue(viewModel.shouldSelectCell(with: .item(.loaded(items[0].objectID))))
+        XCTAssertTrue(viewModel.shouldSelectCell(with: .item(items[0].objectID)))
     }
     
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
@@ -280,7 +280,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
-        viewModel.selectCell(with: .item(.loaded(items[0].objectID)))
+        viewModel.selectCell(with: .item(items[0].objectID))
         
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -301,7 +301,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let viewModel = subject()
 
-        viewModel.selectCell(with: .item(.loaded(items[0].objectID)))
+        viewModel.selectCell(with: .item(items[0].objectID))
         
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -409,6 +409,24 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         viewModel.snapshot.sink { snapshot in
             XCTAssertNil(snapshot.indexOfSection(.emptyState))
             snapshotExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+    func test_receivedSnapshots_withNotLoadedItems_includesPlaceholderCells() {
+        archiveService._results = [.notLoaded, .notLoaded]
+
+        let viewModel = subject()
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.sink { snapshot in
+            defer { snapshotExpectation.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .items),
+                [.placeholder(0), .placeholder(1)]
+            )
         }.store(in: &subscriptions)
 
         wait(for: [snapshotExpectation], timeout: 1)

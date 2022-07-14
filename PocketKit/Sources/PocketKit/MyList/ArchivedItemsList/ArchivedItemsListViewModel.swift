@@ -7,13 +7,8 @@ import CoreData
 
 
 class ArchivedItemsListViewModel: ItemsListViewModel {
-    typealias ItemIdentifier = ArchivedItem
+    typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
-
-    enum ArchivedItem: Hashable {
-        case loaded(NSManagedObjectID)
-        case placeholder(Int)
-    }
 
     let selectionItem: SelectionItem = SelectionItem(title: "Archive", image: .init(asset: .archive))
 
@@ -91,11 +86,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     }
 
     private func savedItem(_ itemID: ItemIdentifier) -> SavedItem? {
-        guard case .loaded(let objectID) = itemID else {
-            return nil
-        }
-
-        return archiveService.object(id: objectID)
+        return archiveService.object(id: itemID)
     }
 }
 
@@ -125,7 +116,7 @@ extension ArchivedItemsListViewModel {
     }
 
     func handleUpdatedItem(_ updatedItem: SavedItem) {
-        _snapshot.reloadItems([.item(.loaded(updatedItem.objectID))])
+        _snapshot.reloadItems([.item(updatedItem.objectID)])
     }
 }
 
@@ -262,9 +253,7 @@ extension ArchivedItemsListViewModel {
             return true
         case .item(let objectID):
             return !(savedItem(objectID)?.isPending ?? true)
-        case .emptyState:
-            return false
-        case .offline:
+        case .emptyState, .offline, .placeholder:
             return false
         }
     }
@@ -275,7 +264,7 @@ extension ArchivedItemsListViewModel {
             apply(filter: filter, from: cell)
         case .item(let itemID):
             select(item: itemID)
-        case .emptyState, .offline:
+        case .emptyState, .offline, .placeholder:
             return
         }
     }
@@ -401,9 +390,9 @@ extension ArchivedItemsListViewModel {
         let itemCellIDs: [ItemsListCell<ItemIdentifier>] = results.enumerated().map { (index, result) in
             switch result {
             case .loaded(let savedItem):
-                return .item(.loaded(savedItem.objectID))
+                return .item(savedItem.objectID)
             case .notLoaded:
-                return .item(.placeholder(index))
+                return .placeholder(index)
             }
         }
 

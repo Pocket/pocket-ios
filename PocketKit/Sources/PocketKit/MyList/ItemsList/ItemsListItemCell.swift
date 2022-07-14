@@ -2,7 +2,7 @@ import UIKit
 import Kingfisher
 
 
-class ItemsListItemCell: UICollectionViewCell {
+class ItemsListItemCell: UICollectionViewListCell {
     var model: Model? {
         didSet {
             setNeedsUpdateConfiguration()
