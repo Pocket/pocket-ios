@@ -68,7 +68,13 @@ let package = Package(
         .target(
             name: "Sync",
             dependencies: ["Apollo", "Sentry"],
-            exclude: ["list.graphql", "marticle.graphql", "schema.graphqls", "introspection_response.json"],
+            exclude: [
+                "list.graphql",
+                "marticle.graphql",
+                "archive.graphql",
+                "schema.graphqls",
+                "introspection_response.json"
+            ],
             resources: [.process("PocketModel.xcdatamodeld")]
         ),
         .testTarget(
