@@ -350,42 +350,40 @@ extension ArchivedItemsListViewModel {
 // MARK: - Tracking
 extension ArchivedItemsListViewModel {
     private func trackImpression(of item: SavedItem) {
-        // TODO: Track the index of this item
-//        guard let url = item.bestURL, let indexPath = archiveService.indexPath(forObject: item) else {
-//            return
-//        }
-//
-//        var contexts: [Context] = [
-//            UIContext.myList.item(index: UIIndex(indexPath.item)),
-//            ContentContext(url: url)
-//        ]
-//
-//        if selectedFilters.contains(.favorites) {
-//            contexts.insert(UIContext.myList.favorites, at: 0)
-//        }
-//
-//        let event = ImpressionEvent(component: .card, requirement: .instant)
-//        self.tracker.track(event: event, contexts)
+        guard let url = item.bestURL, let index = archiveService.index(of: item) else {
+            return
+        }
+
+        var contexts: [Context] = [
+            UIContext.myList.item(index: UIIndex(index)),
+            ContentContext(url: url)
+        ]
+
+        if selectedFilters.contains(.favorites) {
+            contexts.insert(UIContext.myList.favorites, at: 0)
+        }
+
+        let event = ImpressionEvent(component: .card, requirement: .instant)
+        self.tracker.track(event: event, contexts)
     }
 
     private func track(item: SavedItem, identifier: UIContext.Identifier) {
-        // TODO: Track index of the given item
-//        guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
-//            return
-//        }
-//
-//        var contexts: [Context] = [
-//            UIContext.myList.item(index: UIIndex(indexPath.item)),
-//            UIContext.button(identifier: identifier),
-//            ContentContext(url: url)
-//        ]
-//
-//        if selectedFilters.contains(.favorites) {
-//            contexts.insert(UIContext.myList.favorites, at: 0)
-//        }
-//
-//        let event = SnowplowEngagement(type: .general, value: nil)
-//        tracker.track(event: event, contexts)
+        guard let url = item.bestURL, let index = archiveService.index(of: item) else {
+            return
+        }
+
+        var contexts: [Context] = [
+            UIContext.myList.item(index: UIIndex(index)),
+            UIContext.button(identifier: identifier),
+            ContentContext(url: url)
+        ]
+
+        if selectedFilters.contains(.favorites) {
+            contexts.insert(UIContext.myList.favorites, at: 0)
+        }
+
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
     }
 }
 

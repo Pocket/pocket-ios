@@ -30,6 +30,10 @@ class MockArchiveService: ArchiveService {
 
         return nil
     }
+
+    func index(of savedItem: SavedItem) -> Int? {
+        _results.firstIndex(of: .loaded(savedItem))
+    }
 }
 
 extension MockArchiveService {

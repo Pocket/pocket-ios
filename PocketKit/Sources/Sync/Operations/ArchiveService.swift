@@ -12,6 +12,7 @@ public protocol ArchiveService: AnyObject {
     func refresh(completion: (() -> Void)?)
 
     func object(id: NSManagedObjectID) -> SavedItem?
+    func index(of savedItem: SavedItem) -> Int?
 }
 
 public extension ArchiveService {
@@ -111,6 +112,10 @@ class PocketArchiveService: NSObject, ArchiveService {
 
     public func refresh(completion: (() -> Void)? = nil) {
         Task { await _refresh(completion: completion) }
+    }
+
+    public func index(of savedItem: SavedItem) -> Int? {
+        archivedItemsController.indexPath(forObject: savedItem)?.last
     }
 
     @MainActor
