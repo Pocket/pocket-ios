@@ -34,4 +34,8 @@ extension ImageAsset {
     public static let tabHomeSelected = ImageAsset("tab.home.selected")
     public static let tabMyListDeselected = ImageAsset("tab.my-list.deselected")
     public static let tabMyListSelected = ImageAsset("tab.my-list.selected")
+    public static let itemSkeletonActions = ImageAsset("item-skeleton.actions")
+    public static let itemSkeletonTags = ImageAsset("item-skeleton.tags")
+    public static let itemSkeletonThumbnail = ImageAsset("item-skeleton.thumbnail")
+    public static let itemSkeletonTitle = ImageAsset("item-skeleton.title")
 }
