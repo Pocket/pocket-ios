@@ -216,7 +216,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     }
 
     private func configure(cell: ItemsListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
-        (model as? ArchivedItemsListViewModel)?.prefetch(itemsAt: [indexPath])
+        model.prefetch(itemsAt: [indexPath])
 
         cell.backgroundConfiguration = .listPlainCell()
 
@@ -292,7 +292,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     }
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
-        (model as? ArchivedItemsListViewModel)?.prefetch(itemsAt: indexPaths)
+        model.prefetch(itemsAt: indexPaths)
     }
 }
 

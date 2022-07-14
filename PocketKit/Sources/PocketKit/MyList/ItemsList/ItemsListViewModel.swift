@@ -81,4 +81,5 @@ protocol ItemsListViewModel: AnyObject {
     func trailingSwipeActions(for objectID: ItemIdentifier) -> [ItemContextualAction]
 
     func willDisplay(_ cell: ItemsListCell<ItemIdentifier>)
+    func prefetch(itemsAt: [IndexPath])
 }
