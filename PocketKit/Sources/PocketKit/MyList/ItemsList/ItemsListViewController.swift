@@ -165,6 +165,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             }
         }
 
+        let placeholderCellRegistration: UICollectionView.CellRegistration<ItemPlaceholderCell, Int> = .init { cell, indexPath, itemIndex in
+            // no op
+        }
+
         self.dataSource = .init(collectionView: collectionView) { collectionView, indexPath, item in
             switch item {
             case .filterButton(let filter):
@@ -175,6 +179,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 return collectionView.dequeueConfiguredReusableCell(using: emptyCellRegistration, for: indexPath, item: "")
             case .offline:
                 return collectionView.dequeueConfiguredReusableCell(using: offlineCellRegistration, for: indexPath, item: "")
+            case .placeholder(let index):
+                return collectionView.dequeueConfiguredReusableCell(using: placeholderCellRegistration, for: indexPath, item: index)
             }
         }
 

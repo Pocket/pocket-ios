@@ -107,10 +107,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool {
         switch cell {
-        case .filterButton: return true
-        case .item(let objectID): return !(bareItem(with: objectID)?.isPending ?? true)
-        case .offline: return false
-        case .emptyState: return false
+        case .filterButton:
+            return true
+        case .item(let objectID):
+            return !(bareItem(with: objectID)?.isPending ?? true)
+        case .offline, .emptyState, .placeholder:
+            return false
         }
     }
 
@@ -120,7 +122,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             select(item: objectID)
         case .filterButton(let filterID):
             apply(filter: filterID, from: cellID)
-        case .offline, .emptyState:
+        case .offline, .emptyState, .placeholder:
             return
         }
     }
