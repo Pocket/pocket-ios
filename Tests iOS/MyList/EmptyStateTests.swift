@@ -29,6 +29,10 @@ class EmptyStateTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isToUnfavoriteAnItem {
                 return Response.unfavorite()
+            } else if apiRequest.isToArchiveAnItem {
+                return Response.archive()
+            } else if apiRequest.isToSaveAnItem {
+                return Response.saveItem()
             } else {
                 fatalError("Unexpected request")
             }
@@ -47,23 +51,29 @@ class EmptyStateTests: XCTestCase {
         app.tabBar.myListButton.wait().tap()
         
         XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
-        
-        let itemCell2 = app.myListView.itemView(matching: "Item 2")
-        let itemCell1 = app.myListView.itemView(matching: "Item 1")
-        
-        swipeItemToArchive(with: itemCell1)
-        swipeItemToArchive(with: itemCell2)
+
+        do {
+            let itemCell2 = app.myListView.itemView(matching: "Item 2")
+            let itemCell1 = app.myListView.itemView(matching: "Item 1")
+
+            swipeItemToArchive(with: itemCell1)
+            swipeItemToArchive(with: itemCell2)
+        }
         
         XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
         XCTAssertTrue(app.myListView.emptyStateView(for: "my-list").exists)
-        
+
         app.myListView.selectionSwitcher.archiveButton.wait().tap()
-        
         XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
-        
-        swipeItemToMyList(with: itemCell2)
-        swipeItemToMyList(with: itemCell1)
-        
+
+        do {
+            let itemCell2 = app.myListView.itemView(matching: "Archived Item 2")
+            let itemCell1 = app.myListView.itemView(matching: "Archived Item 1")
+
+            swipeItemToMyList(with: itemCell2)
+            swipeItemToMyList(with: itemCell1)
+        }
+
         XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
         XCTAssertTrue(app.myListView.emptyStateView(for: "archive").exists)
     }
@@ -86,21 +96,12 @@ class EmptyStateTests: XCTestCase {
     private func swipeItemToArchive(with itemCell: ItemRowElement) {
         itemCell.element.swipeLeft()
 
-        server.routes.post("/graphql") { request, loop in
-            return Response.archive()
-        }
-
         app.myListView.archiveSwipeButton.wait().tap()
-
         waitForDisappearance(of: itemCell)
     }
     
     private func swipeItemToMyList(with itemCell: ItemRowElement) {
         itemCell.element.swipeLeft()
-
-        server.routes.post("/graphql") { request, _ in
-            return Response.myList()
-        }
 
         app.myListView.moveToMyListSwipeButton.wait().tap()
         waitForDisappearance(of: itemCell)

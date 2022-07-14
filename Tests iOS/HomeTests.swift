@@ -125,11 +125,8 @@ class HomeTests: XCTestCase {
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
         app.archiveButton.wait().tap()
+
         waitForDisappearance(of: home.savedItemCell("Item 1"))
-        
-        app.tabBar.myListButton.tap()
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
-        app.myListView.itemView(matching: "Item 1").wait()
     }
     
     func test_deletingRecentSavesItem_removesItemFromRecentSaves() {

@@ -445,6 +445,7 @@ class PocketSourceTests: XCTestCase {
         XCTAssertTrue(image.isDownloaded)
     }
 
+    @MainActor
     func test_fetchOfflineContent_fetchesOfflineContent() async throws {
         apollo.stubFetch(
             toReturnFixtureNamed: "single-item-details",

@@ -45,14 +45,13 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_fetch_delegatesToArchiveService() {
-        archiveService.stubFetch { _ in }
+        archiveService.stubRefresh { _ in }
 
         let viewModel = subject()
         viewModel.fetch()
 
-        let call = archiveService.fetchCall(at: 0)
+        let call = archiveService.refreshCall(at: 0)
         XCTAssertNotNil(call)
-        XCTAssertNil(call?.indexes)
     }
 
     func test_fetch_whenOffline_showsOfflineMessage() {
