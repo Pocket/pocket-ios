@@ -43,7 +43,7 @@ class HomeViewModelTests: XCTestCase {
 
     override func tearDown() async throws {
         subscriptions = []
-        try Space.testSpace().clear()
+        try space.clear()
     }
 
     func subject(

@@ -27,14 +27,6 @@ protocol SyncOperationFactory {
         apollo: ApolloClientProtocol,
         space: Space
     ) -> SyncOperation
-
-    func fetchArchivePage(
-        apollo: ApolloClientProtocol,
-        space: Space,
-        accessToken: String,
-        cursor: String?,
-        isFavorite: Bool?
-    ) -> SyncOperation
 }
 
 class OperationFactory: SyncOperationFactory {
@@ -78,15 +70,5 @@ class OperationFactory: SyncOperationFactory {
             apollo: apollo,
             space: space
         )
-    }
-
-    func fetchArchivePage(
-        apollo: ApolloClientProtocol,
-        space: Space,
-        accessToken: String,
-        cursor: String?,
-        isFavorite: Bool?
-    ) -> SyncOperation {
-        fatalError("narp")
     }
 }

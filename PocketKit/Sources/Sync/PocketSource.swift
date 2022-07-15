@@ -331,27 +331,6 @@ extension PocketSource {
     }
 }
 
-// MARK: - Archived Items
-extension PocketSource {
-    public func fetchArchivePage(cursor: String?, isFavorite: Bool?) {
-        guard let accessToken = sessionProvider.session?.accessToken else {
-            return
-        }
-
-        let operation = operations.fetchArchivePage(
-            apollo: apollo,
-            space: space,
-            accessToken: accessToken,
-            cursor: cursor,
-            isFavorite: isFavorite
-        )
-
-        enqueue(operation: operation, task: .fetchArchivePage(cursor: cursor, isFavorite: isFavorite)) { [weak self] in
-            self?._events.send(.loadedArchivePage)
-        }
-    }
-}
-
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
     private func enqueue(operation: SyncOperation, task: SyncTask, completion: (() -> Void)? = nil) {
@@ -439,17 +418,6 @@ extension PocketSource {
                     events: _events,
                     apollo: apollo,
                     space: space
-                )
-                enqueue(operation: operation, persistentTask: persistentTask)
-            case let .fetchArchivePage(cursor, isFavorite):
-                guard let token = sessionProvider.session?.accessToken else { return }
-
-                let operation = operations.fetchArchivePage(
-                    apollo: apollo,
-                    space: space,
-                    accessToken: token,
-                    cursor: cursor,
-                    isFavorite: isFavorite
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             }

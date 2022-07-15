@@ -52,13 +52,12 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     init(
         source: Source,
         tracker: Tracker,
-        networkMonitor: NetworkPathMonitor = NWPathMonitor(),
-        archiveService: ArchiveService
+        networkMonitor: NetworkPathMonitor = NWPathMonitor()
     ) {
         self.source = source
         self.tracker = tracker
         self.networkMonitor = networkMonitor
-        self.archiveService = archiveService
+        self.archiveService = source.makeArchiveService()
 
         networkMonitor.start(queue: .global())
 
