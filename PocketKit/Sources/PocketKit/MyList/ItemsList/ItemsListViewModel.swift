@@ -29,7 +29,6 @@ enum ItemsListSection: Int, CaseIterable {
     case items
     case emptyState
     case offline
-    case nextPage
 }
 
 enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {

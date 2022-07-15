@@ -380,7 +380,7 @@ extension ArchivedItemsListViewModel {
     private func buildSnapshot(results: [SavedItemResult]) -> Snapshot {
         var snapshot = Snapshot()
 
-        snapshot.appendSections([.filters, .items, .nextPage])
+        snapshot.appendSections([.filters, .items])
         snapshot.appendItems(
             ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
