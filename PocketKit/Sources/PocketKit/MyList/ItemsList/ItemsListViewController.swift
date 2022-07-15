@@ -95,23 +95,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 )
                 
                 return section
-            case .nextPage:
-                return NSCollectionLayoutSection(
-                    group: .vertical(
-                        layoutSize: .init(
-                            widthDimension: .fractionalWidth(1),
-                            heightDimension: .absolute(1)
-                        ),
-                        subitems: [
-                            .init(
-                                layoutSize: .init(
-                                    widthDimension: .fractionalWidth(1),
-                                    heightDimension: .fractionalHeight(1)
-                                )
-                            )
-                        ]
-                    )
-                )
             case .emptyState:
                 let section = NSCollectionLayoutSection(
                     group: .vertical(
