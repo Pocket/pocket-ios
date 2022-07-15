@@ -10,7 +10,7 @@ extension PocketSourceTests {
 
     func test_enqueueingOperations_whenNetworkPathIsUnsatisfied_doesNotExecuteOperations() {
         sessionProvider.session = MockSession()
-        operations.stubFetchArchivePage { _, _, _, _, _ in
+        operations.stubFetchList { _, _, _, _, _ in
             TestSyncOperation {
                 XCTFail("Operation should not be executed while network path is unsatisfied")
             }
@@ -19,17 +19,17 @@ extension PocketSourceTests {
         let source = subject()
         networkMonitor.update(status: .unsatisfied)
 
-        source.fetchArchivePage(cursor: "", isFavorite: nil)
+        source.refresh()
     }
 
     func test_enqueueingOperations_whenNetworkBecomesSatisfied_executesPendingOperations() {
         sessionProvider.session = MockSession()
 
 
-        let expectFetchArchive = expectation(description: "execute the fetch archive operation")
-        operations.stubFetchArchivePage { _, _, _, _, _ in
+        let expectSaveItem = expectation(description: "execute the save item operation")
+        operations.stubSaveItemOperation { _, _, _, _, _ in
             TestSyncOperation {
-                expectFetchArchive.fulfill()
+                expectSaveItem.fulfill()
             }
         }
 
@@ -43,11 +43,11 @@ extension PocketSourceTests {
         let source = subject()
         networkMonitor.update(status: .unsatisfied)
 
-        source.fetchArchivePage(cursor: "", isFavorite: nil)
+        source.save(item: .build())
         source.refresh()
 
         networkMonitor.update(status: .satisfied)
-        wait(for: [expectFetchArchive, expectFetchList], timeout: 1, enforceOrder: true)
+        wait(for: [expectSaveItem, expectFetchList], timeout: 1, enforceOrder: true)
     }
 
     func test_whenNetworkBecomesSatisified_retriesOperationsThatAreWaitingForSignal() throws {

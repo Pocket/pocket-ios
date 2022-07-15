@@ -40,8 +40,6 @@ public protocol Source {
 
     func fetchSlate(_ slateID: String) async throws
 
-    func fetchArchivePage(cursor: String?, isFavorite: Bool?)
-
     func restore()
 
     func refresh(_ object: NSManagedObject, mergeChanges: Bool)

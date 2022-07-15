@@ -279,32 +279,6 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(itemResultsController.fetchedObjects, [item1, item2])
     }
 
-    func test_fetchArchivePage_addsOperationToQueue() {
-        sessionProvider.session = MockSession()
-        let expectCompletion = expectation(description: "expect the operation to complete")
-        operations.stubFetchArchivePage { _, _, _, _, _ in
-            TestSyncOperation {
-                expectCompletion.fulfill()
-            }
-        }
-
-        let source = subject()
-
-        let expectEvent = expectation(description: "Expect an event")
-        let sub = source.events.sink { event in
-            guard case .loadedArchivePage = event else {
-                XCTFail("Received unexpected sync event: \(event)")
-                return
-            }
-
-            expectEvent.fulfill()
-        }
-
-        source.fetchArchivePage(cursor: "the-cursor", isFavorite: true)
-        wait(for: [expectCompletion, expectEvent], timeout: 1)
-        sub.cancel()
-    }
-
     func test_resolveUnresolvedSavedItems_enqueuesSaveItemOperation() throws {
         let operationStarted = expectation(description: "operationStarted")
         operations.stubSaveItemOperation { _, _, _, _, _ in

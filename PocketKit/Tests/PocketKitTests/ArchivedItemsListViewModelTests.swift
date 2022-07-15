@@ -33,14 +33,12 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     func subject(
         source: Source? = nil,
         tracker: Tracker? = nil,
-        networkMonitor: NetworkPathMonitor? = nil,
-        archiveService: ArchiveService? = nil
+        networkMonitor: NetworkPathMonitor? = nil
     ) -> ArchivedItemsListViewModel {
         ArchivedItemsListViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            networkMonitor: networkMonitor ?? self.networkMonitor,
-            archiveService: archiveService ?? self.archiveService
+            networkMonitor: networkMonitor ?? self.networkMonitor
         )
     }
 

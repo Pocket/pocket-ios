@@ -113,27 +113,3 @@ extension MockOperationFactory {
         return impl(managedItemID, url, events, apollo, space)
     }
 }
-
-// MARK: fetchArchivePage
-extension MockOperationFactory {
-    static let fetchArchivePage = "fetchArchivePage"
-    typealias FetchArchivedPageImpl = (ApolloClientProtocol, Space, String, String?, Bool?) -> SyncOperation
-
-    func stubFetchArchivePage(impl: FetchArchivedPageImpl?) {
-        implementations[Self.fetchArchivePage] = impl
-    }
-
-    func fetchArchivePage(
-        apollo: ApolloClientProtocol,
-        space: Space,
-        accessToken: String,
-        cursor: String?,
-        isFavorite: Bool?
-    ) -> SyncOperation {
-        guard let impl = implementations[Self.fetchArchivePage] as? FetchArchivedPageImpl else {
-            fatalError("\(Self.self).\(#function) is not stubbed")
-        }
-
-        return impl(apollo, space, accessToken, cursor, isFavorite)
-    }
-}

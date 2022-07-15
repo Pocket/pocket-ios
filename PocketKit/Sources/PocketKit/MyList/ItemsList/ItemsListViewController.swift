@@ -222,13 +222,11 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     }
 
     private func configure(cell: ItemsListItemCell, indexPath: IndexPath, objectID: ViewModel.ItemIdentifier) {
-        model.prefetch(itemsAt: [indexPath])
-
         cell.backgroundConfiguration = .listPlainCell()
 
         guard let presenter = model.presenter(for: objectID) else {
             cell.model = .init(
-                attributedTitle: NSAttributedString(string: "\(objectID)"),
+                attributedTitle: NSAttributedString(string: ""),
                 attributedDetail: NSAttributedString(string: ""),
                 thumbnailURL: nil,
                 shareAction: nil,

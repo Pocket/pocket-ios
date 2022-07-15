@@ -296,26 +296,15 @@ private class FetchArchivePagesOperation: AsyncOperation {
     }
 
     private func fetch() async throws {
-        guard let delegate = delegate else {
-            return
-        }
+        guard let delegate = delegate else { return }
 
         let pagesToFetch = try await delegate.numberOfPagesToFetch(for: indexes)
-        guard !isCancelled else {
-            return
-        }
-
-        guard pagesToFetch > 0 else {
-            return
-        }
+        guard !isCancelled, pagesToFetch > 0 else { return }
 
 
         for _ in (0..<pagesToFetch) {
             let cursor = try await delegate.currentCursor()
-
-            guard !isCancelled else {
-                return
-            }
+            guard !isCancelled else { return }
 
             let result = try await apollo.fetch(
                 query: SavedItemSummariesQuery(
@@ -327,16 +316,10 @@ private class FetchArchivePagesOperation: AsyncOperation {
                     sort: SavedItemsSort(sortBy: .archivedAt, sortOrder: .desc)
                 )
             )
-
-            guard !isCancelled else {
-                return
-            }
+            guard !isCancelled else { return }
 
             try await delegate.fetchArchivePagesOperationDidFetch(data: result.data)
-
-            guard !isCancelled else {
-                return
-            }
+            guard !isCancelled else { return }
 
             await invokeFirstPageReceived()
         }
