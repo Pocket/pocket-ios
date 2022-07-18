@@ -1653,6 +1653,7 @@ public final class UserByTokenQuery: GraphQLQuery {
         __typename
         savedItems(pagination: $pagination, filter: $savedItemsFilter) {
           __typename
+          totalCount
           pageInfo {
             __typename
             hasNextPage
@@ -1780,6 +1781,7 @@ public final class UserByTokenQuery: GraphQLQuery {
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
             GraphQLField("pageInfo", type: .nonNull(.object(PageInfo.selections))),
             GraphQLField("edges", type: .list(.object(Edge.selections))),
           ]
@@ -1791,8 +1793,8 @@ public final class UserByTokenQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(pageInfo: PageInfo, edges: [Edge?]? = nil) {
-          self.init(unsafeResultMap: ["__typename": "SavedItemConnection", "pageInfo": pageInfo.resultMap, "edges": edges.flatMap { (value: [Edge?]) -> [ResultMap?] in value.map { (value: Edge?) -> ResultMap? in value.flatMap { (value: Edge) -> ResultMap in value.resultMap } } }])
+        public init(totalCount: Int, pageInfo: PageInfo, edges: [Edge?]? = nil) {
+          self.init(unsafeResultMap: ["__typename": "SavedItemConnection", "totalCount": totalCount, "pageInfo": pageInfo.resultMap, "edges": edges.flatMap { (value: [Edge?]) -> [ResultMap?] in value.map { (value: Edge?) -> ResultMap? in value.flatMap { (value: Edge) -> ResultMap in value.resultMap } } }])
         }
 
         public var __typename: String {
@@ -1801,6 +1803,16 @@ public final class UserByTokenQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// Identifies the total count of SavedItems in the connection.
+        public var totalCount: Int {
+          get {
+            return resultMap["totalCount"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "totalCount")
           }
         }
 
