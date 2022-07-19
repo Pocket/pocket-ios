@@ -14,7 +14,7 @@ class RegularMainCoordinator: NSObject {
     private let splitController: UISplitViewController
     private let navigationSidebar: UINavigationController
 
-    private let myList: UIViewController
+    private let myList: MyListContainerViewController
     private let home: HomeViewController
     private let account: AccountViewController
     private let readerRoot: UINavigationController
@@ -116,6 +116,15 @@ class RegularMainCoordinator: NSObject {
         model.myList.savedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &subscriptions)
+        
+        model.myList.$selection.receive(on: DispatchQueue.main).sink { [weak self] selection in
+            switch selection {
+            case .myList:
+                self?.myList.selectedIndex = 0
+            case .archive:
+                self?.myList.selectedIndex = 1
+            }
+        }.store(in: &subscriptions)
 
         model.myList.savedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedSavedItem in
             guard let selectedSavedItem = selectedSavedItem else { return }
@@ -171,6 +180,17 @@ class RegularMainCoordinator: NSObject {
             self?.share(activity)
         }.store(in: &subscriptions)
 
+        model.home.$tappedSeeAll.dropFirst().receive(on: DispatchQueue.main).sink { [weak self] section in
+            switch section {
+            case .recentSaves:
+                self?.model.selectedSection = .myList(.myList)
+            case .slate(let slate):
+                self?.model.home.select(slate: slate)
+            default:
+                return
+            }
+        }.store(in: &subscriptions)
+
         isResetting = false
     }
     
@@ -190,7 +210,11 @@ class RegularMainCoordinator: NSObject {
 
     private func show(_ section: MainViewModel.AppSection) {
         switch section {
-        case .myList:
+        case .myList(let subsection):
+            if subsection == .myList {
+                model.selectedSection = .myList(nil)
+                model.myList.selection = .myList
+            }
             splitController.setViewController(myList, for: .supplementary)
         case .home:
             splitController.setViewController(home, for: .supplementary)

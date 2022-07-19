@@ -24,8 +24,10 @@ class HomeTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail {
+            } else if apiRequest.isForSlateDetail() {
                 return Response.slateDetail()
+            } else if apiRequest.isForSlateDetail(2) {
+                return Response.slateDetail(2)
             } else if apiRequest.isForMyListContent {
                 return Response.myList("initial-list-recent-saves")
             } else if apiRequest.isForArchivedContent {
@@ -65,13 +67,13 @@ class HomeTests: XCTestCase {
     func test_navigatingToHomeTab_showsASectionForEachSlate() {
         let home = app.homeView
 
-        home.slateHeader("Slate 1").wait()
+        home.sectionHeader("Slate 1").wait()
         home.recommendationCell("Slate 1, Recommendation 1").verify()
         home.recommendationCell("Slate 1, Recommendation 2").verify()
 
         home.element.swipeUp()
 
-        home.slateHeader("Slate 2").verify()
+        home.sectionHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
     }
     
@@ -156,6 +158,36 @@ class HomeTests: XCTestCase {
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").verify()
     }
 
+    func test_tappingRecentSavesMyListButton_opensMyListView() {
+        app.homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
+        app.myListView.itemView(matching: "Item 1").wait()
+        XCTAssertTrue(app.myListView.selectionSwitcher.myListButton.isSelected)
+    }
+    
+    func test_tappingRecentSavesMyListButton_whenPreviouslyArchiveView_opensMyListView() {
+        app.tabBar.myListButton.wait().tap()
+        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+        app.tabBar.homeButton.wait().tap()
+        app.homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
+        app.myListView.itemView(matching: "Item 1").wait()
+        XCTAssertTrue(app.myListView.selectionSwitcher.myListButton.isSelected)
+    }
+    
+    func test_tappingSlatesSeeAllButton_showsSlateDetailView() {
+        let home = app.homeView
+        
+        home.sectionHeader("Slate 1").seeAllButton.wait().tap()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").verify()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").verify()
+
+        app.tabBar.homeButton.wait().tap()
+        home.element.swipeUp()
+
+        home.sectionHeader("Slate 2").seeAllButton.wait().tap()
+        app.slateDetailView.recommendationCell("Slate 2, Recommendation 1").wait()
+    }
+    
     func test_tappingRecommendationCell_opensItemInReader() {
         app.homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
         app.readerView.cell(containing: "Jacob and David").wait()
@@ -179,7 +211,7 @@ class HomeTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail {
+            } else if apiRequest.isForSlateDetail() {
                 return Response.slateDetail()
             } else if apiRequest.isForMyListContent {
                 return Response.myList()
@@ -259,7 +291,7 @@ extension HomeTests {
         let home = app.homeView
         let overscrollView = home.overscrollView
 
-        home.slateHeader("Slate 1").wait()
+        home.sectionHeader("Slate 1").wait()
         
         DispatchQueue.main.async {
             home.overscroll()

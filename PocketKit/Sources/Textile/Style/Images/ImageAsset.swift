@@ -38,4 +38,5 @@ extension ImageAsset {
     public static let itemSkeletonTags = ImageAsset("item-skeleton.tags")
     public static let itemSkeletonThumbnail = ImageAsset("item-skeleton.thumbnail")
     public static let itemSkeletonTitle = ImageAsset("item-skeleton.title")
+    public static let chevronRight = ImageAsset("chevronRight")
 }

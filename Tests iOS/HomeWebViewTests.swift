@@ -24,7 +24,7 @@ class HomeWebViewTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup("slates-web-view")
-            } else if apiRequest.isForSlateDetail {
+            } else if apiRequest.isForSlateDetail() {
                 return Response.slateLineup("slate-detail-web-view")
             } else if apiRequest.isForMyListContent {
                 return Response.myList()
@@ -69,7 +69,7 @@ class HomeWebViewTests: XCTestCase {
     }
 
     func test_home_showsWebView(from name: String) {
-        app.homeView.slateHeader("Slate 1").wait()
+        app.homeView.sectionHeader("Slate 1").wait()
         app.homeView.recommendationCell(name).wait().tap()
 
         app

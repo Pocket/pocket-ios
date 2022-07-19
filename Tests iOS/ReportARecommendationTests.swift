@@ -19,7 +19,7 @@ class ReportARecommendationTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail {
+            } else if apiRequest.isForSlateDetail() {
                 return Response.slateDetail()
             } else if apiRequest.isForMyListContent {
                 return Response.myList()
