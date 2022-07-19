@@ -699,3 +699,37 @@ extension MockSource {
         return calls[index] as? FetchDetailsCall
     }
 }
+
+extension MockSource {
+    private static let saveURL = "saveURL"
+    typealias SaveURLImpl = (URL) -> Void
+    struct SaveURLCall {
+        let url: URL
+    }
+
+    func stubSaveURL(_ impl: @escaping SaveURLImpl) {
+        implementations[Self.saveURL] = impl
+    }
+
+    func saveURLCall(at index: Int) -> SaveURLCall? {
+        guard let calls = calls[Self.saveURL],
+              index < calls.count,
+              let call = calls[index] as? SaveURLCall else {
+            return nil
+        }
+
+        return call
+    }
+
+    func save(url: URL) {
+        guard let impl = implementations[Self.saveURL] as? SaveURLImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.saveURL] = (calls[Self.saveURL] ?? []) + [
+            SaveURLCall(url: url)
+        ]
+
+        impl(url)
+    }
+}

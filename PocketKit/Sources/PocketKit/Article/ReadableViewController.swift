@@ -4,6 +4,7 @@ import Textile
 import Combine
 import Analytics
 import Kingfisher
+import SafariServices
 
 
 protocol ReadableViewControllerDelegate: AnyObject {
@@ -198,6 +199,25 @@ extension ReadableViewController: ArticleComponentTextCellDelegate {
     ) -> Bool {
         delegate?.readableViewController(self, openURL: url)
         return false
+    }
+
+    func articleComponentTextCell(
+        _ cell: ArticleComponentTextCell,
+        contextMenuConfigurationForURL url: URL
+    ) -> UIContextMenuConfiguration? {
+        return UIContextMenuConfiguration(
+            identifier: nil,
+            previewProvider: {
+                SFSafariViewController(url: url)
+            }
+        ) { [weak self] _ in
+            let actions = self?.readableViewModel.externalActions(for: url).compactMap { UIAction($0) }
+            ?? []
+            return UIMenu(
+                title: url.host ?? "",
+                children: actions
+            )
+        }
     }
 }
 

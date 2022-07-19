@@ -87,39 +87,6 @@ class RecommendationViewModel: ReadableViewModel {
         source.unarchive(item: savedItem)
     }
 
-    private func favorite() {
-        guard let savedItem = recommendation.item?.savedItem else {
-            return
-        }
-
-        source.favorite(item: savedItem)
-        track(identifier: .itemFavorite)
-    }
-
-    private func unfavorite() {
-        guard let savedItem = recommendation.item?.savedItem else {
-            return
-        }
-
-        source.unfavorite(item: savedItem)
-        track(identifier: .itemUnfavorite)
-    }
-
-    private func archive() {
-        guard let savedItem = recommendation.item?.savedItem else {
-            return
-        }
-
-        source.archive(item: savedItem)
-        track(identifier: .itemArchive)
-        _events.send(.archive)
-    }
-
-    private func save() {
-        source.save(recommendation: recommendation)
-        track(identifier: .itemSave)
-    }
-
     func delete() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
@@ -135,6 +102,15 @@ class RecommendationViewModel: ReadableViewModel {
 
     func fetchDetailsIfNeeded() {
         // no op
+    }
+    
+    func externalActions(for url: URL) -> [ItemAction] {
+        [
+            .save { [weak self] _ in self?.saveExternalURL(url) },
+            .open { [weak self] _ in self?.openExternalURL(url) },
+            .copyLink { [weak self] _ in self?.copyExternalURL(url) },
+            .share { [weak self] _ in self?.shareExternalURL(url) }
+        ]
     }
 }
 
@@ -195,5 +171,54 @@ extension RecommendationViewModel {
 
     private func report() {
         selectedRecommendationToReport = recommendation
+    }
+
+    private func favorite() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
+
+        source.favorite(item: savedItem)
+        track(identifier: .itemFavorite)
+    }
+
+    private func unfavorite() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
+
+        source.unfavorite(item: savedItem)
+        track(identifier: .itemUnfavorite)
+    }
+
+    private func archive() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
+
+        source.archive(item: savedItem)
+        track(identifier: .itemArchive)
+        _events.send(.archive)
+    }
+
+    private func save() {
+        source.save(recommendation: recommendation)
+        track(identifier: .itemSave)
+    }
+
+    private func saveExternalURL(_ url: URL) {
+        source.save(url: url)
+    }
+
+    private func copyExternalURL(_ url: URL) {
+        UIPasteboard.general.url = url
+    }
+
+    private func shareExternalURL(_ url: URL) {
+        sharedActivity = PocketItemActivity(url: url)
+    }
+
+    private func openExternalURL(_ url: URL) {
+        presentedWebReaderURL = url
     }
 }
