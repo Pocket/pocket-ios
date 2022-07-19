@@ -289,10 +289,48 @@ class RecommendationViewModelTests: XCTestCase {
         viewModel.invokeAction(title: "Report")
         wait(for: [reportExpectation], timeout: 1)
     }
+
+    func test_externalSave_forwardsToSource() {
+        source.stubSaveURL { _ in }
+
+        let viewModel = subject(recommendation: .build())
+        let url = URL(string: "https://getpocket.com")!
+        let actions = viewModel.externalActions(for: url)
+        viewModel.invokeAction(from: actions, title: "Save")
+        XCTAssertEqual(source.saveURLCall(at: 0)?.url, url)
+    }
+
+    func test_externalCopy_copiesToClipboard() {
+        let viewModel = subject(recommendation: .build())
+        let url = URL(string: "https://getpocket.com")!
+        let actions = viewModel.externalActions(for: url)
+        viewModel.invokeAction(from: actions, title: "Copy link")
+        XCTAssertEqual(UIPasteboard.general.url, url)
+    }
+
+    func test_externalShare_updatesSharedActivity() {
+        let viewModel = subject(recommendation: .build())
+        let url = URL(string: "https://getpocket.com")!
+        let actions = viewModel.externalActions(for: url)
+        viewModel.invokeAction(from: actions, title: "Share")
+        XCTAssertNotNil(viewModel.sharedActivity)
+    }
+
+    func test_externalOpen_updatesPresentedWebReaderURL() {
+        let viewModel = subject(recommendation: .build())
+        let url = URL(string: "https://getpocket.com")!
+        let actions = viewModel.externalActions(for: url)
+        viewModel.invokeAction(from: actions, title: "Open")
+        XCTAssertEqual(viewModel.presentedWebReaderURL, url)
+    }
 }
 
 extension RecommendationViewModel {
     func invokeAction(title: String) {
-        _actions.first(where: { $0.title == title })?.handler?(nil)
+        invokeAction(from: _actions, title: title)
+    }
+
+    func invokeAction(from actions: [ItemAction], title: String) {
+        actions.first(where: { $0.title == title })?.handler?(nil)
     }
 }

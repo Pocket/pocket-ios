@@ -437,4 +437,67 @@ class PocketSourceTests: XCTestCase {
         XCTAssertNotNil(savedItem.item)
         XCTAssertFalse(savedItem.hasChanges)
     }
+    
+    func test_saveURL_insertsSavedItem_andExecutesSaveItemOperation() throws {
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubSaveItemOperation { _, _, _ , _, _ in
+            return TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let url = URL(string: "https://getpocket.com")!
+
+        let source = subject()
+        source.save(url: url)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        let savedItems = try space.fetchSavedItems()
+        XCTAssertEqual(savedItems.first?.url, url)
+    }
+
+    func test_saveURL_withExistingSavedItem_updatesSavedItem_andExecutesSaveItemOperation() throws {
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubSaveItemOperation { _, _, _ , _, _ in
+            return TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let url = URL(string: "https://getpocket.com")!
+        let seed: SavedItem = .build(url: url.absoluteString)
+        let seedDate = Date()
+        seed.createdAt = seedDate
+        try? space.save()
+
+        let source = subject()
+        source.save(url: url)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        let savedItems = try space.fetchSavedItems()
+        XCTAssertEqual(savedItems.count, 1)
+        XCTAssertEqual(savedItems[0].url, url)
+        XCTAssertGreaterThan(savedItems[0].createdAt!, seedDate)
+    }
+
+    func test_saveURL_withArchivedSavedItem_unarchivesItem_andExecutesSaveItemOperation() throws {
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubSaveItemOperation { _, _, _ , _, _ in
+            return TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let url = URL(string: "https://getpocket.com")!
+        _ = SavedItem.build(url: "https://getpocket.com", isArchived: true)
+        try? space.save()
+
+        let source = subject()
+        source.save(url: url)
+        wait(for: [expectationToRunOperation], timeout: 1)
+
+        let savedItems = try space.fetchSavedItems()
+        XCTAssertEqual(savedItems.count, 1)
+        XCTAssertFalse(savedItems[0].isArchived)
+    }
 }

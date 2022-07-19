@@ -31,6 +31,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func delete()
     func showWebReader()
     func fetchDetailsIfNeeded()
+    func externalActions(for url: URL) -> [ItemAction]
 }
 
 // MARK: - ReadableViewControllerDelegate

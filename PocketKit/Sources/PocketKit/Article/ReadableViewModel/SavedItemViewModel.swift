@@ -87,22 +87,6 @@ class SavedItemViewModel: ReadableViewModel {
         source.unarchive(item: item)
     }
 
-    private func favorite() {
-        source.favorite(item: item)
-        track(identifier: .itemFavorite)
-    }
-
-    private func unfavorite() {
-        source.unfavorite(item: item)
-        track(identifier: .itemUnfavorite)
-    }
-
-    private func archive() {
-        source.archive(item: item)
-        track(identifier: .itemArchive)
-        _events.send(.archive)
-    }
-
     func delete() {
         source.delete(item: item)
         _events.send(.delete)
@@ -119,6 +103,15 @@ class SavedItemViewModel: ReadableViewModel {
             try? await self.source.fetchDetails(for: self.item)
             _events.send(.contentUpdated)
         }
+    }
+    
+    func externalActions(for url: URL) -> [ItemAction] {
+        [
+            .save { [weak self] _ in self?.saveExternalURL(url) },
+            .open { [weak self] _ in self?.openExternalURL(url) },
+            .copyLink { [weak self] _ in self?.copyExternalURL(url) },
+            .share { [weak self] _ in self?.shareExternalURL(url) }
+        ]
     }
 }
 
@@ -145,5 +138,37 @@ extension SavedItemViewModel {
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
+    }
+
+    private func favorite() {
+        source.favorite(item: item)
+        track(identifier: .itemFavorite)
+    }
+
+    private func unfavorite() {
+        source.unfavorite(item: item)
+        track(identifier: .itemUnfavorite)
+    }
+
+    private func archive() {
+        source.archive(item: item)
+        track(identifier: .itemArchive)
+        _events.send(.archive)
+    }
+
+    private func saveExternalURL(_ url: URL) {
+        source.save(url: url)
+    }
+
+    private func copyExternalURL(_ url: URL) {
+        UIPasteboard.general.url = url
+    }
+
+    private func shareExternalURL(_ url: URL) {
+        sharedActivity = PocketItemActivity(url: url)
+    }
+
+    private func openExternalURL(_ url: URL) {
+        presentedWebReaderURL = url
     }
 }

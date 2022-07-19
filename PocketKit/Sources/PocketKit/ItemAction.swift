@@ -130,6 +130,26 @@ extension ItemAction {
             handler: handler
         )
     }
+
+    static func copyLink(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+        return ItemAction(
+            title: "Copy link",
+            identifier: .copyLink,
+            accessibilityIdentifier: "item-action-copy-link",
+            image: UIImage(systemName: "link"),
+            handler: handler
+        )
+    }
+
+    static func open(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+        return ItemAction(
+            title: "Open",
+            identifier: .open,
+            accessibilityIdentifier: "item-action-open",
+            image: UIImage(systemName: "safari"),
+            handler: handler
+        )
+    }
 }
 
 extension UIAction.Identifier {
@@ -143,6 +163,8 @@ extension UIAction.Identifier {
     static let report = UIAction.Identifier(rawValue: "report")
     static let recommendationPrimary = UIAction.Identifier(rawValue: "recommendation-primary")
     static let seeAllPrimary = UIAction.Identifier(rawValue: "see-all-primary")
+    static let copyLink = UIAction.Identifier(rawValue: "copy-link")
+    static let open = UIAction.Identifier(rawValue: "open")
 }
 
 extension UIAction {

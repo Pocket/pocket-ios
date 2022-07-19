@@ -499,3 +499,19 @@ extension PocketSource {
         try? space.save()
     }
 }
+
+// MARK: - URL
+extension PocketSource {
+    public func save(url: URL) {
+        if let savedItem = try? space.fetchSavedItem(byURL: url) {
+            unarchive(item: savedItem)
+        } else {
+            let savedItem: SavedItem = space.new()
+            savedItem.url = url
+            savedItem.createdAt = Date()
+            try? space.save()
+
+            save(item: savedItem)
+        }
+    }
+}
