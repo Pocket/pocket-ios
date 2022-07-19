@@ -1,4 +1,5 @@
 import UIKit
+import Sync
 import Textile
 
 class SectionHeaderView: UICollectionReusableView {
@@ -9,6 +10,7 @@ class SectionHeaderView: UICollectionReusableView {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = UIColor(.ui.lapis1)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
     
@@ -60,14 +62,22 @@ class SectionHeaderView: UICollectionReusableView {
 
 extension SectionHeaderView {
     struct Model {
-        var attributedHeaderText: NSAttributedString?
-        var buttonHeaderText: String?
+        let name: String
+        let buttonTitle: String
         var buttonAction: (() -> ())? = nil
+        
+        var attributedHeaderText: NSAttributedString {
+            NSAttributedString(string: name, style: .sectionHeader)
+        }
+        
+        func height(width: CGFloat) -> CGFloat {
+            attributedHeaderText.sizeFitting(availableWidth: width).height + 16
+        }
     }
     
     func configure(model: Model) {
         headerLabel.attributedText = model.attributedHeaderText
-        updateButtonConfiguration(with: model.buttonHeaderText, and: model.buttonAction)
+        updateButtonConfiguration(with: model.buttonTitle, and: model.buttonAction)
     }
     
     private func updateButtonConfiguration(with text: String?, and action: (() -> ())?) {
@@ -84,20 +94,7 @@ extension SectionHeaderView {
     }
 }
 
-extension SectionHeaderView {
-    static func height(width: CGFloat, slate: SectionHeaderPresenter) -> CGFloat {
-        let adjustedWidth = width - 16
-
-        let rect = slate.attributedHeaderText.boundingRect(
-            with: CGSize(width: adjustedWidth, height: .greatestFiniteMagnitude),
-            options: [.usesLineFragmentOrigin],
-            context: nil
-        )
-
-        return rect.height.rounded(.up) + 16
-    }
-}
-
 private extension Style {
+    static let sectionHeader: Style = .header.sansSerif.h6.with(weight: .semibold)
     static let buttonText: Style = .header.sansSerif.p4.with(color: .ui.lapis1)
 }
