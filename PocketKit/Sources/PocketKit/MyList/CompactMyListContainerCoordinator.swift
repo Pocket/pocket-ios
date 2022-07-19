@@ -43,6 +43,15 @@ class CompactMyListContainerCoordinator: NSObject {
         isResetting = true
 
         navigationController.popToRootViewController(animated: false)
+        
+        model.$selection.receive(on: DispatchQueue.main).sink { [weak self] selection in
+            switch selection {
+            case .myList:
+                self?.containerViewController.selectedIndex = 0
+            case .archive:
+                self?.containerViewController.selectedIndex = 1
+            }
+        }.store(in: &subscriptions)
 
         // My List navigation
         model.savedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in

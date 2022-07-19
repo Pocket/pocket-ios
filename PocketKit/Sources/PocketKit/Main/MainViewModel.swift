@@ -25,10 +25,19 @@ class MainViewModel: ObservableObject {
         self.home = home
         self.account = account
     }
-
-    enum AppSection: CaseIterable, Identifiable {
-        case home
+    
+    enum Subsection {
         case myList
+        case archive
+    }
+
+    enum AppSection: CaseIterable, Identifiable, Hashable {
+        static var allCases: [MainViewModel.AppSection] {
+            return [.home, .myList(nil), .account]
+        }
+        
+        case home
+        case myList(Subsection?)
         case account
 
         var navigationTitle: String {

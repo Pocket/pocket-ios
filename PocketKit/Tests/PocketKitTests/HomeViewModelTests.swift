@@ -284,6 +284,25 @@ class HomeViewModelTests: XCTestCase {
 
         wait(for: [detailExpectation], timeout: 1)
     }
+    
+    func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() {
+        let viewModel = subject()
+        let recommendation = Recommendation.build()
+        slateLineupController.slateLineup = .build(
+            slates: [.build(recommendations: [recommendation])]
+        )
+        viewModel.controllerDidChangeContent(slateLineupController)
+
+        let detailExpectation = expectation(description: "expected selected slate detail to be updated")
+        viewModel.$selectedSlateDetailViewModel.dropFirst().sink { viewModel in
+            XCTAssertNotNil(viewModel)
+            detailExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.select(slate: .build())
+
+        wait(for: [detailExpectation], timeout: 1)
+    }
 
     func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() {
         let viewModel = subject()

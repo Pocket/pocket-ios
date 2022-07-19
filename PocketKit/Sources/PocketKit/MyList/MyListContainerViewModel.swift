@@ -1,4 +1,15 @@
+import Combine
+
+
 class MyListContainerViewModel {
+    enum Selection {
+        case myList
+        case archive
+    }
+
+    @Published
+    var selection: Selection = .myList
+    
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: ArchivedItemsListViewModel
 

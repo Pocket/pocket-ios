@@ -142,6 +142,7 @@ extension UIAction.Identifier {
     static let displaySettings = UIAction.Identifier(rawValue: "display-settings")
     static let report = UIAction.Identifier(rawValue: "report")
     static let recommendationPrimary = UIAction.Identifier(rawValue: "recommendation-primary")
+    static let seeAllPrimary = UIAction.Identifier(rawValue: "see-all-primary")
 }
 
 extension UIAction {

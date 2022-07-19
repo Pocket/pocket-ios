@@ -78,13 +78,13 @@ class HomeViewControllerSectionProvider {
         section.contentInsets = NSDirectionalEdgeInsets(top: margin, leading: margin, bottom: margin, trailing: margin)
         section.orthogonalScrollingBehavior = .continuous
         
-        let slatePresenter = SlateHeaderPresenter(name: "Recent Saves")
+        let slatePresenter = SectionHeaderPresenter(name: "Recent Saves", buttonTitle: "My List")
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .absolute(SlateHeaderView.height(width: width, slate: slatePresenter))
+                    heightDimension: .absolute(SectionHeaderView.height(width: width, slate: slatePresenter))
                 ),
-                elementKind: SlateHeaderView.kind,
+                elementKind: SectionHeaderView.kind,
                 alignment: .top
             )
         
@@ -145,15 +145,15 @@ class HomeViewControllerSectionProvider {
         )
 
         let section = NSCollectionLayoutSection(group: topLevelGroup)
-        let slatePresenter = SlateHeaderPresenter(slate: slate)
+        let slatePresenter = SectionHeaderPresenter(slate: slate)
 
         section.boundarySupplementaryItems = [
             NSCollectionLayoutBoundarySupplementaryItem(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1.0),
-                    heightDimension: .absolute(SlateHeaderView.height(width: width, slate: slatePresenter))
+                    heightDimension: .absolute(SectionHeaderView.height(width: width, slate: slatePresenter))
                 ),
-                elementKind: SlateHeaderView.kind,
+                elementKind: SectionHeaderView.kind,
                 alignment: .top
             )
         ]

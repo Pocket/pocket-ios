@@ -35,6 +35,9 @@ class HomeViewModel {
 
     @Published
     var presentedWebReaderURL: URL? = nil
+    
+    @Published
+    var tappedSeeAll: Section? = nil
 
     private var viewModels: [NSManagedObjectID: HomeRecommendationCellViewModel] = [:]
     private var viewModelSubscriptions: Set<AnyCancellable> = []
@@ -102,10 +105,21 @@ class HomeViewModel {
         case .loading, .recentSaves:
             return
         case .topic:
-            select(topic: cell)
+            guard case .topic(let slate) = cell else { return }
+            select(slate: slate)
         case .recommendation:
             select(recommendation: cell, at: indexPath)
         }
+    }
+    
+    func select(slate: Slate) {
+        guard let slateID = slate.remoteID else { return }
+        
+        selectedSlateDetailViewModel = SlateDetailViewModel(
+            slateID: slateID,
+            source: source,
+            tracker: tracker.childTracker(hosting: .slateDetail.screen)
+        )
     }
     
     func favoriteAction(for cell: Cell) -> ItemAction? {
@@ -329,19 +343,6 @@ extension HomeViewModel {
                 contexts(for: cell, at: indexPath)
             )
         }
-    }
-
-    private func select(topic cell: HomeViewModel.Cell) {
-        guard case .topic(let slate) = cell,
-              let slateID = slate.remoteID else {
-                  return
-              }
-
-        selectedSlateDetailViewModel = SlateDetailViewModel(
-            slateID: slateID,
-            source: source,
-            tracker: tracker.childTracker(hosting: .slateDetail.screen)
-        )
     }
 
     private func report(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {

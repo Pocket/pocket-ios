@@ -67,6 +67,18 @@ class CompactMainCoordinator: NSObject {
                 self?.stopObservingModelChanges()
             }
         }
+        
+        model.home.$tappedSeeAll.dropFirst().receive(on: DispatchQueue.main)
+            .sink { [weak self] section in
+                switch section {
+                case .recentSaves:
+                    self?.model.selectedSection = .myList(.myList)
+                case .slate(let slate):
+                    self?.model.home.select(slate: slate)
+                default:
+                    return
+                }
+            }.store(in: &subscriptions)
     }
 
     func stopObservingModelChanges() {
@@ -86,7 +98,10 @@ class CompactMainCoordinator: NSObject {
 
     private func show(_ section: MainViewModel.AppSection) {
         switch section {
-        case .myList:
+        case .myList(let subsection):
+            if subsection == .myList {
+                model.myList.selection = .myList
+            }
             tabBarController.selectedViewController = myList.viewController
         case .home:
             tabBarController.selectedViewController = home.viewController

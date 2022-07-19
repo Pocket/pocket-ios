@@ -51,8 +51,8 @@ struct ClientAPIRequest {
         contains("updateSavedItemUnFavorite")
     }
 
-    var isForSlateDetail: Bool {
-        contains("getSlate(")
+    func isForSlateDetail(_ number: Int = 1) -> Bool {
+        contains("getSlate(") && contains("slate-\(number)")
     }
 
     var isToSaveAnItem: Bool {

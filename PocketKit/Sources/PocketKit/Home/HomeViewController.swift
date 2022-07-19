@@ -89,7 +89,7 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: TopicChipCell.self)
         collectionView.register(cellClass: ItemsListItemCell.self)
-        collectionView.register(viewClass: SlateHeaderView.self, forSupplementaryViewOfKind: SlateHeaderView.kind)
+        collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.dividerElementKind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.twoUpDividerElementKind)
         collectionView.delegate = self
@@ -216,17 +216,22 @@ extension HomeViewController {
 
     func viewForSupplementaryElement(ofKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
-        case SlateHeaderView.kind:
-            let header: SlateHeaderView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
+        case SectionHeaderView.kind:
+            let header: SectionHeaderView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
             let section = dataSource.sectionIdentifier(for: indexPath.section)
-            
             switch section {
             case .recentSaves:
-                let presenter = SlateHeaderPresenter(name: "Recent Saves")
-                header.attributedHeaderText = presenter.attributedHeaderText
+                let presenter = SectionHeaderPresenter(name: "Recent Saves", buttonTitle: "My List")
+                header.configure(model: .init(attributedHeaderText: presenter.attributedHeaderText,
+                                              buttonHeaderText: presenter.buttonHeaderText) { [weak self] in
+                    self?.model.tappedSeeAll = .recentSaves
+                })
             case .slate(let slate):
-                let presenter = SlateHeaderPresenter(slate: slate)
-                header.attributedHeaderText = presenter.attributedHeaderText
+                let presenter = SectionHeaderPresenter(slate: slate)
+                header.configure(model: .init(attributedHeaderText: presenter.attributedHeaderText,
+                                              buttonHeaderText: presenter.buttonHeaderText) { [weak self] in
+                    self?.model.tappedSeeAll = .slate(slate)
+                })
             default:
                 break
             }

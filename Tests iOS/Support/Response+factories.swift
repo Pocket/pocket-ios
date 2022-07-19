@@ -27,8 +27,8 @@ extension Response {
         fixture(named: fixtureName)
     }
 
-    static func slateDetail() -> Response {
-        fixture(named: "slate-detail")
+    static func slateDetail(_ number: Int = 1) -> Response {
+        fixture(named: "slate-detail-\(number)")
     }
 
     static func saveItem() -> Response {
