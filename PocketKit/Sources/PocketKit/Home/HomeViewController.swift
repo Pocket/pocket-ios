@@ -221,15 +221,11 @@ extension HomeViewController {
             let section = dataSource.sectionIdentifier(for: indexPath.section)
             switch section {
             case .recentSaves:
-                let presenter = SectionHeaderPresenter(name: "Recent Saves", buttonTitle: "My List")
-                header.configure(model: .init(attributedHeaderText: presenter.attributedHeaderText,
-                                              buttonHeaderText: presenter.buttonHeaderText) { [weak self] in
+                header.configure(model: .init(name: "Recent Saves", buttonTitle: "My List") { [weak self] in
                     self?.model.tappedSeeAll = .recentSaves
                 })
             case .slate(let slate):
-                let presenter = SectionHeaderPresenter(slate: slate)
-                header.configure(model: .init(attributedHeaderText: presenter.attributedHeaderText,
-                                              buttonHeaderText: presenter.buttonHeaderText) { [weak self] in
+                header.configure(model: .init(name: slate.name ?? "", buttonTitle: "See All") { [weak self] in
                     self?.model.tappedSeeAll = .slate(slate)
                 })
             default:
