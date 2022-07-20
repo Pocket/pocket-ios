@@ -155,4 +155,35 @@ extension PocketSourceTests {
         networkMonitor.update(status: .unsatisfied)
         source.favorite(item: item)
     }
+
+    func test_retryImmediately_sendsRetrySignal() throws {
+        var attempts = 0
+        let firstAttempt = expectation(description: "first attempt")
+        let retrySignalSent = expectation(description: "send retry signal")
+        operations.stubItemMutationOperation { (_, _, _: ArchiveItemMutation) in
+            TestSyncOperation { () -> SyncOperationResult in
+                defer { attempts += 1 }
+
+                switch attempts {
+                case 0:
+                    firstAttempt.fulfill()
+                    return .retry(TestError.anError)
+                case 1:
+                    retrySignalSent.fulfill()
+                    return .success
+                default:
+                    XCTFail("Unexpected number of attempts: \(attempts)")
+                    return .failure(TestError.anError)
+                }
+            }
+        }
+
+        let item = try space.seedSavedItem()
+        let source = subject()
+        source.archive(item: item)
+        wait(for: [firstAttempt], timeout: 1)
+
+        source.retryImmediately()
+        wait(for: [retrySignalSent], timeout: 1)
+    }
 }

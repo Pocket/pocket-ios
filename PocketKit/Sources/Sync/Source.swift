@@ -26,6 +26,8 @@ public protocol Source {
 
     func refresh(maxItems: Int, completion: (() -> ())?)
 
+    func retryImmediately() 
+
     func favorite(item: SavedItem)
 
     func unfavorite(item: SavedItem)
