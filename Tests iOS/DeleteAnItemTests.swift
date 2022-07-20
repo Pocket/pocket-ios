@@ -106,29 +106,37 @@ class DeleteAnItemTests: XCTestCase {
     }
 
     func test_deletingAnItem_fromArchive_removesItFromList_andSyncsWithServer() {
-        let expectRequest = expectation(description: "A request to the server")
-
         app.tabBar.myListButton.wait().tap()
         app.myListView.wait().selectionSwitcher.archiveButton.wait().tap()
         let cell = app.myListView.itemView(matching: "Archived Item 1")
 
-        server.routes.post("/graphql") { request, loop in
-            defer { expectRequest.fulfill() }
-
-
+        let receivedDeleteRequest = expectation(description: "receivedDeleteRequest")
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-            XCTAssertFalse(apiRequest.isEmpty)
-            XCTAssertTrue(apiRequest.isToDeleteAnItem)
-            XCTAssertTrue(apiRequest.contains("archived-item-1"))
 
-            return Response.delete()
+            if apiRequest.isForSlateLineup {
+                return .slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return .myList()
+            } else if apiRequest.isForArchivedContent {
+                return .archivedContent()
+            } else if apiRequest.isToDeleteAnItem {
+                receivedDeleteRequest.fulfill()
+                XCTAssertFalse(apiRequest.isEmpty)
+                XCTAssertTrue(apiRequest.isToDeleteAnItem)
+                XCTAssertTrue(apiRequest.contains("archived-item-1"))
+
+                return .delete()
+            } else {
+                fatalError("Unexpected request")
+            }
         }
 
         cell.itemActionButton.wait().tap()
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
 
-        wait(for: [expectRequest], timeout: 1)
+        wait(for: [receivedDeleteRequest], timeout: 1)
         waitForDisappearance(of: cell)
     }
 }
