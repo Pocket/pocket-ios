@@ -2,7 +2,7 @@ import Combine
 
 
 enum SyncOperationResult {
-    case retry
+    case retry(Error)
     case success
     case failure(Error)
 }
@@ -40,9 +40,11 @@ class RetriableOperation: AsyncOperation {
         Task {
             let taskID = backgroundTaskManager.beginTask()
             switch await operation.execute() {
-            case .retry:
-                retry()
-            case .failure(_):
+            case .retry(let error):
+                retry(error)
+            case .failure(let error):
+                Crashlogger.capture(message: "Retriable operation \"\(operation)\" failed")
+                Crashlogger.capture(error: error)
                 finishOperation()
             case .success:
                 finishOperation()
@@ -51,14 +53,19 @@ class RetriableOperation: AsyncOperation {
         }
     }
 
-    private func retry() {
+    private func retry(_ error: Error?) {
         subscription = retrySignal.sink { [weak self] in
-            self?._retry()
+            self?._retry(error)
         }
     }
 
-    private func _retry() {
+    private func _retry(_ error: Error?) {
         guard retries < 2 else {
+            Crashlogger.capture(message: "Retriable operation \"\(operation)\" exceeded maximum number of retries")
+            if let error = error {
+                Crashlogger.capture(error: error)
+            }
+
             finishOperation()
             return
         }
