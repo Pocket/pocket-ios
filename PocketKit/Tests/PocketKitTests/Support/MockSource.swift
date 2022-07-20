@@ -669,7 +669,7 @@ extension MockSource {
 
 // MARK: - Fetch details
 extension MockSource {
-    static let fetchDetails = "makeArchiveService"
+    static let fetchDetails = "fetchDetails"
     typealias FetchDetailsImpl = (SavedItem) async throws -> Void
 
     struct FetchDetailsCall {
