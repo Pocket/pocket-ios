@@ -21,47 +21,6 @@ class HomeViewControllerSectionProvider {
 
         return NSCollectionLayoutSection(group: group)
     }
-
-    func topicCarouselSection(slates: [Slate]?) -> NSCollectionLayoutSection? {
-        guard let slates = slates, !slates.isEmpty else {
-            return nil
-        }
-
-        var maxHeight: CGFloat = 0
-        let items = slates.map { slate -> (width: CGFloat, item: NSCollectionLayoutItem) in
-            let chip = TopicChipPresenter(title: slate.name, image: nil)
-            let width = TopicChipCell.width(chip: chip)
-            let height = TopicChipCell.height(chip: chip)
-            maxHeight = max(height, maxHeight)
-
-            return (width: width, item: NSCollectionLayoutItem(
-                layoutSize: NSCollectionLayoutSize(
-                    widthDimension: .absolute(width),
-                    heightDimension: .absolute(height)
-                )
-            ))
-        }
-
-        let spacing: CGFloat = 12
-        let totalWidth = items.reduce(0) { $0 + $1.width } + (spacing * CGFloat(slates.count) - 1)
-        let group = NSCollectionLayoutGroup.horizontal(
-            layoutSize: NSCollectionLayoutSize(
-                widthDimension: .absolute(totalWidth),
-                heightDimension: .absolute(maxHeight)
-            ),
-            subitems: items.map { $0.item }
-        )
-        group.interItemSpacing = .fixed(spacing)
-
-
-        let section = NSCollectionLayoutSection(
-            group: group
-        )
-        section.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 8, bottom: 0, trailing: 8)
-
-        section.orthogonalScrollingBehavior = .continuous
-        return section
-    }
     
     func recentSavesSection(width: CGFloat) -> NSCollectionLayoutSection {
         let groupHeight: CGFloat = 152

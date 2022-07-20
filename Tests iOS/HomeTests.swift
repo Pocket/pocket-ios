@@ -88,17 +88,6 @@ class HomeTests: XCTestCase {
         waitForDisappearance(of: home.savedItemCell("Item 6"))
     }
     
-    func test_savingItems_showsAdditionalRecentlySavedItem() {
-        let home = app.homeView.wait()
-        app.homeView.topicChip("Slate 1").wait().tap()
-
-        let saveButton = app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait()
-        saveButton.tap()
-        app.tabBar.homeButton.tap()
-        
-        home.savedItemCell("Slate 1, Recommendation 1").wait()
-    }
-    
     func test_favoritingRecentSavesItem_shouldShowFavoriteInMyList() {
         let home = app.homeView.wait()
         home.savedItemCell("Item 1").wait()
@@ -150,13 +139,6 @@ class HomeTests: XCTestCase {
         app.shareButton.wait().tap()
         app.shareSheet.wait()
     }
-    
-    func test_selectingChipInTopicCarousel_showsSlateDetailView() {
-        app.homeView.topicChip("Slate 1").wait().tap()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").verify()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").verify()
-    }
 
     func test_tappingRecentSavesMyListButton_opensMyListView() {
         app.homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
@@ -190,12 +172,6 @@ class HomeTests: XCTestCase {
     
     func test_tappingRecommendationCell_opensItemInReader() {
         app.homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
-        app.readerView.cell(containing: "Jacob and David").wait()
-    }
-
-    func test_tappingRecommendationCellInSlateDetailView_opensItemInReader() {
-        app.homeView.topicChip("Slate 1").wait().tap()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
         app.readerView.cell(containing: "Jacob and David").wait()
     }
 
@@ -248,27 +224,6 @@ class HomeTests: XCTestCase {
         wait(for: [archiveRequestExpectation], timeout: 1)
         XCTAssertFalse(app.myListView.itemView(matching: "Slate 1, Recommendation 1").exists)
     }
-
-    func test_tappingSaveButtonInRecommendationCellinSlateDetailView_savesItemToList() {
-        app.homeView.topicChip("Slate 1").wait().tap()
-
-        do {
-            let saveButton = app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait()
-            saveButton.tap()
-            XCTAssertEqual(saveButton.label, "Saved")
-        }
-
-        app.tabBar.myListButton.tap()
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
-
-        app.tabBar.homeButton.tap()
-
-        do {
-            let saveButton = app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").saveButton.wait()
-            saveButton.tap()
-            XCTAssertEqual(saveButton.label, "Save")
-        }
-    }
 }
 
 extension HomeTests {
@@ -302,27 +257,5 @@ extension HomeTests {
         let isHittable = NSPredicate(format: "isHittable == 1")
         let hittable = expectation(for: isHittable, evaluatedWith: overscrollView)
         wait(for: [doesExist, hittable], timeout: 20)
-    }
-
-    // Disabled
-    // Started failing in Xcode 13.2.1
-    // Error: Failed to determine hittability of "home-overscroll" Other: Activation point invalid and no suggested hit points based on element frame
-    func xtest_overscrollingSlateDetail_showsOverscrollView() {
-        app.homeView.topicChip("Slate 1").wait().tap()
-        
-        let slateDetail = app.slateDetailView
-        let overscrollView = slateDetail.overscrollView
-        slateDetail.recommendationCell("Slate 1, Recommendation 1").wait()
-
-        
-        DispatchQueue.main.async {
-            slateDetail.overscroll()
-        }
-        
-        let exists = NSPredicate(format: "exists == 1")
-        let doesExist = expectation(for: exists, evaluatedWith: overscrollView)
-        let isHittable = NSPredicate(format: "isHittable == 1")
-        let hittable = expectation(for: isHittable, evaluatedWith: overscrollView)
-        wait(for: [doesExist, hittable], timeout: 10)
     }
 }

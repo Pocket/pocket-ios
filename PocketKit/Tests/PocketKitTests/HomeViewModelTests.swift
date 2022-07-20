@@ -115,17 +115,12 @@ class HomeViewModelTests: XCTestCase {
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.$snapshot.sink { snapshot in
-            XCTAssertEqual(snapshot.sectionIdentifiers, [.topics, .slate(slates[0]), .slate(slates[1]), .slate(slates[2])])
+            XCTAssertEqual(snapshot.sectionIdentifiers, [.slate(slates[0]), .slate(slates[1]), .slate(slates[2])])
 
-            XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[0]),
-                [.topic(slates[0]), .topic(slates[1]), .topic(slates[2])]
-            )
-
-            let firstSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1])
+            let firstSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[0])
             let firstSlateRecommendations = firstSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic, .loading, .recentSaves:
+                case .loading, .recentSaves:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -136,10 +131,10 @@ class HomeViewModelTests: XCTestCase {
                 [recommendations[0].objectID, recommendations[1].objectID]
             )
 
-            let secondSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[2])
+            let secondSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1])
             let secondSlateRecommendations = secondSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic, .loading, .recentSaves:
+                case .loading, .recentSaves:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -150,10 +145,10 @@ class HomeViewModelTests: XCTestCase {
                 [recommendations[2].objectID]
             )
 
-            let thirdSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[3])
+            let thirdSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[2])
             let thirdSlateRecommendations = thirdSlate.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic, .loading, .recentSaves:
+                case .loading, .recentSaves:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -188,7 +183,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.$snapshot.dropFirst().sink { snapshot in
             let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
-                case .topic, .loading, .recentSaves:
+                case .loading, .recentSaves:
                     return nil
                 case .recommendation(let objectID):
                     return objectID
@@ -264,25 +259,6 @@ class HomeViewModelTests: XCTestCase {
         }
 
         wait(for: [urlExpectation], timeout: 1)
-    }
-
-    func test_selectCell_whenSelectingTopic_updatesSelectedSlateDetailViewModel() {
-        let viewModel = subject()
-        let recommendation = Recommendation.build()
-        slateLineupController.slateLineup = .build(
-            slates: [.build(recommendations: [recommendation])]
-        )
-        viewModel.controllerDidChangeContent(slateLineupController)
-
-        let detailExpectation = expectation(description: "expected selected slate detail to be updated")
-        viewModel.$selectedSlateDetailViewModel.dropFirst().sink { viewModel in
-            XCTAssertNotNil(viewModel)
-            detailExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.select(cell: .topic(.build()), at: IndexPath(item: 0, section: 0))
-
-        wait(for: [detailExpectation], timeout: 1)
     }
     
     func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() {

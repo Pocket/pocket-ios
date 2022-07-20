@@ -29,16 +29,6 @@ class HomeViewController: UIViewController {
         switch section {
         case .loading:
             return self.sectionProvider.loadingSection()
-        case .topics:
-            let slates = self.dataSource.snapshot(for: section).items.compactMap { cell -> Slate? in
-                guard case .topic(let slate) = cell else {
-                    return nil
-                }
-
-                return slate
-            }
-
-            return self.sectionProvider.topicCarouselSection(slates: slates)
         case .recentSaves:
             return self.sectionProvider.recentSavesSection(width: env.container.effectiveContentSize.width)
         case .slate(let slate):
@@ -87,7 +77,6 @@ class HomeViewController: UIViewController {
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
-        collectionView.register(cellClass: TopicChipCell.self)
         collectionView.register(cellClass: ItemsListItemCell.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.dividerElementKind)
@@ -168,11 +157,6 @@ extension HomeViewController {
         switch item {
         case .loading:
             let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
-            return cell
-        case .topic(let slate):
-            let cell: TopicChipCell = collectionView.dequeueCell(for: indexPath)
-            cell.configure(model: TopicChipPresenter(title: slate.name, image: nil))
-
             return cell
         case .recentSaves(let objectID):
             let cell: ItemsListItemCell = collectionView.dequeueCell(for: indexPath)
