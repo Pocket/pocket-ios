@@ -10,7 +10,7 @@ extension PocketSourceTests {
 
     func test_enqueueingOperations_whenNetworkPathIsUnsatisfied_doesNotExecuteOperations() {
         sessionProvider.session = MockSession()
-        operations.stubFetchList { _, _, _, _, _ in
+        operations.stubFetchList { _, _, _, _, _, _ in
             TestSyncOperation {
                 XCTFail("Operation should not be executed while network path is unsatisfied")
             }
@@ -34,7 +34,7 @@ extension PocketSourceTests {
         }
 
         let expectFetchList = expectation(description: "execute the fetch list operation")
-        operations.stubFetchList { _, _, _, _, _ in
+        operations.stubFetchList { _, _, _, _, _, _ in
             TestSyncOperation {
                 expectFetchList.fulfill()
             }

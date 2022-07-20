@@ -4,6 +4,7 @@
             "__typename": "[type-name-here]",
             "savedItems": {
                 "__typename": "[type-name-here]",
+                "totalCount": 2,
                 "pageInfo": {
                     "__typename": "[type-name-here]",
                     "hasNextPage": true,

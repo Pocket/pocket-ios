@@ -13,13 +13,21 @@ class MockOperationFactory: SyncOperationFactory {
 
 // MARK: - fetchList
 extension MockOperationFactory {
-    typealias FetchListImpl = (String, ApolloClientProtocol, Space, SyncEvents, Int) -> SyncOperation
+    typealias FetchListImpl = (
+        String,
+        ApolloClientProtocol,
+        Space,
+        SyncEvents,
+        CurrentValueSubject<InitialDownloadState, Never>,
+        Int
+    ) -> SyncOperation
 
     struct FetchListCall {
         let token: String
         let apollo: ApolloClientProtocol
         let space: Space
         let events: SyncEvents
+        let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
         let maxItems: Int
         let lastRefresh: LastRefresh
     }
@@ -33,6 +41,7 @@ extension MockOperationFactory {
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
         maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
@@ -46,12 +55,13 @@ extension MockOperationFactory {
                 apollo: apollo,
                 space: space,
                 events: events,
+                initialDownloadState: initialDownloadState,
                 maxItems: maxItems,
                 lastRefresh: lastRefresh
             )
         ]
 
-        return impl(token, apollo, space, events, maxItems)
+        return impl(token, apollo, space, events, initialDownloadState, maxItems)
     }
 
 

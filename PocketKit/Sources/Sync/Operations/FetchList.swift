@@ -8,6 +8,7 @@ class FetchList: SyncOperation {
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let events: SyncEvents
+    private let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
     private let maxItems: Int
     private let lastRefresh: LastRefresh
 
@@ -16,6 +17,7 @@ class FetchList: SyncOperation {
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
         maxItems: Int,
         lastRefresh: LastRefresh
     ) {
@@ -25,6 +27,7 @@ class FetchList: SyncOperation {
         self.events = events
         self.maxItems = maxItems
         self.lastRefresh = lastRefresh
+        self.initialDownloadState = initialDownloadState
     }
 
     func execute() async -> SyncOperationResult {
@@ -56,18 +59,27 @@ class FetchList: SyncOperation {
         var pagination = PaginationSpec(maxItems: maxItems)
 
         repeat {
-            let result = try await fetchPage(cursor: pagination.cursor)
+            let result = try await fetchPage(pagination)
+
+            if case .started = initialDownloadState.value,
+               let totalCount = result.data?.userByToken?.savedItems?.totalCount,
+               pagination.cursor == nil {
+                initialDownloadState.send(.paginating(totalCount: totalCount))
+            }
+
             try await updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result)
         } while pagination.shouldFetchNextPage
+
+        initialDownloadState.send(.completed)
     }
 
-    private func fetchPage(cursor: String?) async throws -> GraphQLResult<UserByTokenQuery.Data> {
+    private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<UserByTokenQuery.Data> {
         let query = UserByTokenQuery(token: token)
-
-        if let after = cursor {
-            query.pagination = PaginationInput(after: after, first: 30)
-        }
+        query.pagination = PaginationInput(
+            after: pagination.cursor,
+            first: pagination.maxItems
+        )
 
         if let updatedSince = lastRefresh.lastRefresh {
             query.savedItemsFilter = SavedItemsFilter(updatedSince: updatedSince)

@@ -10,6 +10,8 @@ class MockSource: Source {
         _events.eraseToAnyPublisher()
     }
 
+    var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never> = .init(.unknown)
+
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 

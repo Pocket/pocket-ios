@@ -2,11 +2,19 @@ import Combine
 import CoreData
 import Foundation
 
+public enum InitialDownloadState {
+    case unknown
+    case started
+    case paginating(totalCount: Int)
+    case completed
+}
 
 public protocol Source {
     var mainContext: NSManagedObjectContext { get }
 
     var events: AnyPublisher<SyncEvent, Never> { get }
+
+    var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
 
     func clear()
 

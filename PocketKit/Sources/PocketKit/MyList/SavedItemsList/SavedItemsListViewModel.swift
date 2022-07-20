@@ -236,8 +236,29 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
+
+        let itemCellIDs: [ItemsListCell<ItemIdentifier>]
+
+
+        switch source.initialDownloadState.value {
+        case .unknown, .completed:
+            itemCellIDs = itemsController
+                .fetchedObjects?
+                .map { .item($0.objectID) } ?? []
+        case .started:
+            itemCellIDs = (0..<4).map { .placeholder($0) }
+        case .paginating(let totalCount):
+            itemCellIDs = (0..<totalCount).compactMap { index in
+                guard let fetchedObjects = itemsController.fetchedObjects,
+                      fetchedObjects.count > index else {
+                    return .placeholder(index)
+                      }
+
+                return .item(fetchedObjects[index].objectID)
+            }
+        }
         
-        guard let itemCellIDs = itemsController.fetchedObjects?.map({ ItemsListCell<ItemIdentifier>.item($0.objectID) }), !itemCellIDs.isEmpty else {
+        guard !itemCellIDs.isEmpty else {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([ItemsListCell<ItemIdentifier>.emptyState], toSection: .emptyState)
             return snapshot

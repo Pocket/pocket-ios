@@ -10,6 +10,7 @@ class FetchListTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!
     var events: SyncEvents!
+    var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>!
     var queue: OperationQueue!
     var lastRefresh: MockLastRefresh!
     var cancellables: Set<AnyCancellable> = []
@@ -17,6 +18,7 @@ class FetchListTests: XCTestCase {
     override func setUpWithError() throws {
         apollo = MockApolloClient()
         events = PassthroughSubject()
+        initialDownloadState = .init(.unknown)
         queue = OperationQueue()
         lastRefresh = MockLastRefresh()
         space = .testSpace()
@@ -32,6 +34,7 @@ class FetchListTests: XCTestCase {
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil,
         events: SyncEvents? = nil,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>? = nil,
         maxItems: Int = 400,
         lastRefresh: LastRefresh? = nil
     ) -> FetchList {
@@ -40,6 +43,7 @@ class FetchListTests: XCTestCase {
             apollo: apollo ?? self.apollo,
             space: space ?? self.space,
             events: events ?? self.events,
+            initialDownloadState: initialDownloadState ?? self.initialDownloadState,
             maxItems: maxItems,
             lastRefresh: lastRefresh ?? self.lastRefresh
         )
@@ -189,12 +193,18 @@ class FetchListTests: XCTestCase {
             let result: Fixture
             switch fetches {
             case 0:
+                XCTAssertEqual(query.pagination?.first, 3)
+
                 result = Fixture.load(name: "large-list-1")
             case 1:
                 XCTAssertEqual(query.pagination?.after, "cursor-1")
+                XCTAssertEqual(query.pagination?.first, 2)
+
                 result = Fixture.load(name: "large-list-2")
             case 2:
                 XCTAssertEqual(query.pagination?.after, "cursor-2")
+                XCTAssertEqual(query.pagination?.first, 1)
+
                 result = Fixture.load(name: "large-list-3")
             default:
                 XCTFail("Unexpected number of fetches: \(fetches)")
@@ -230,6 +240,31 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(call?.query.savedItemsFilter?.updatedSince, 123456789)
     }
 
+    func test_refresh_whenUpdatedSinceIsPresent_doesNotSendInitialDownloadFetchedFirstPageEvent() async {
+        initialDownloadState.send(.completed)
+
+        let fixture = Fixture.load(name: "list")
+            .replacing("MARTICLE", withFixtureNamed: "marticle")
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
+
+        let receivedEvent = expectation(description: "receivedEvent")
+        receivedEvent.isInverted = true
+        initialDownloadState.sink { state in
+            switch state {
+            case .unknown, .completed, .started:
+                break
+            case .paginating:
+                XCTFail("Should not change state to paginating if initial download has completed")
+                receivedEvent.fulfill()
+            }
+        }.store(in: &cancellables)
+
+        let service = subject()
+        _ = await service.execute()
+
+        wait(for: [receivedEvent], timeout: 1)
+    }
+
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
@@ -240,6 +275,33 @@ class FetchListTests: XCTestCase {
 
         let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.savedItemsFilter?.status, .unread)
+    }
+
+    func test_refresh_whenIsInitialDownload_sendsAppropriateEvents() async {
+        initialDownloadState.send(.started)
+
+        let fixture = Fixture.load(name: "list")
+            .replacing("MARTICLE", withFixtureNamed: "marticle")
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
+
+        let receivedFirstPageEvent = expectation(description: "receivedFirstPageEvent")
+        let receivedCompletedEvent = expectation(description: "receivedCompletedEvent")
+        initialDownloadState.sink { state in
+            switch state {
+            case .unknown, .started:
+                break
+            case .paginating(let totalCount):
+                XCTAssertEqual(2, totalCount)
+                receivedFirstPageEvent.fulfill()
+            case .completed:
+                receivedCompletedEvent.fulfill()
+            }
+        }.store(in: &cancellables)
+
+        let service = subject()
+        _ = await service.execute()
+
+        wait(for: [receivedFirstPageEvent, receivedCompletedEvent], timeout: 1)
     }
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {
