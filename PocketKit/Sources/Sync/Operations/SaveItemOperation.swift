@@ -37,7 +37,7 @@ class SaveItemOperation: SyncOperation {
             case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
                 switch response?.statusCode {
                 case .some((500...)):
-                    return .retry
+                    return .retry(error)
                 default:
                     return .failure(error)
                 }
@@ -45,7 +45,7 @@ class SaveItemOperation: SyncOperation {
                 // An error occurred with the client-side networking stack
                 // either the request timed out or it couldn't be sent for some other reason
                 // retry
-                return .retry
+                return .retry(error)
             default:
                 events.send(.error(error))
                 return .failure(error)

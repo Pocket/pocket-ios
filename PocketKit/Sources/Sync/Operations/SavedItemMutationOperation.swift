@@ -24,11 +24,11 @@ class SavedItemMutationOperation<Mutation: GraphQLMutation>: SyncOperation {
         } catch {
             switch error {
             case is URLSessionClient.URLSessionClientError:
-                return .retry
+                return .retry(error)
             case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
                 switch response?.statusCode {
                 case .some((500...)):
-                    return .retry
+                    return .retry(error)
                 default:
                     return .failure(error)
                 }

@@ -39,7 +39,7 @@ class RetriableOperationTests: XCTestCase {
             switch calls {
             case 0:
                 firstAttempt.fulfill()
-                return .retry
+                return .retry(TestError.anError)
             case 1:
                 secondAttempt.fulfill()
                 return .success
@@ -80,7 +80,7 @@ class RetriableOperationTests: XCTestCase {
 
             expectations[calls].fulfill()
             calls += 1
-            return .retry
+            return .retry(TestError.anError)
         }
 
         let executor = subject(operation: operation)

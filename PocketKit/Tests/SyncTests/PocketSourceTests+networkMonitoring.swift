@@ -63,7 +63,7 @@ extension PocketSourceTests {
                 switch attempts {
                 case 0:
                     firstAttempt.fulfill()
-                    return .retry
+                    return .retry(TestError.anError)
                 case 1:
                     retrySignalSent.fulfill()
                     return .success
@@ -96,7 +96,7 @@ extension PocketSourceTests {
                 switch attempts {
                 case 0:
                     firstAttempt.fulfill()
-                    return .retry
+                    return .retry(TestError.anError)
                 case 1:
                     retrySignalSent.fulfill()
                     return .success
@@ -135,7 +135,7 @@ extension PocketSourceTests {
                 switch attempts {
                 case 0:
                     firstAttempt.fulfill()
-                    return .retry
+                    return .retry(TestError.anError)
                 default:
                     XCTFail("Unexpected number of attempts: \(attempts)")
                     return .failure(TestError.anError)
