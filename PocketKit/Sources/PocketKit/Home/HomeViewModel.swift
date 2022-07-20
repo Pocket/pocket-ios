@@ -104,9 +104,6 @@ class HomeViewModel {
         switch cell {
         case .loading, .recentSaves:
             return
-        case .topic:
-            guard case .topic(let slate) = cell else { return }
-            select(slate: slate)
         case .recommendation:
             select(recommendation: cell, at: indexPath)
         }
@@ -134,7 +131,7 @@ class HomeViewModel {
             } else {
                 return .favorite { [weak self] _ in self?._favorite(item: item) }
             }
-        case .loading, .topic, .recommendation:
+        case .loading, .recommendation:
             return nil
         }
     }
@@ -165,7 +162,7 @@ class HomeViewModel {
                     self?.confirmDelete(item: item)
                 }
             ]
-        case .loading, .topic, .recommendation:
+        case .loading, .recommendation:
             return []
         }
     }
@@ -224,7 +221,7 @@ class HomeViewModel {
 
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading, .topic, .recentSaves:
+        case .loading, .recentSaves:
             return
         case .recommendation:
             tracker.track(
@@ -263,11 +260,7 @@ extension HomeViewModel {
         let slates = slateLineupController.slateLineup?.slates?.compactMap { $0 as? Slate } ?? []
         
         let recentSavesItemIDs = recentSavesController.recentSaves
-            .map({ HomeViewModel.Cell.recentSaves($0.objectID)}) 
-        
-        if slates.count > 0 {
-            snapshot.appendSections([.topics])
-        }
+            .map({ HomeViewModel.Cell.recentSaves($0.objectID)})
         
         if !recentSavesItemIDs.isEmpty {
             snapshot.appendSections([.recentSaves])
@@ -284,8 +277,6 @@ extension HomeViewModel {
             guard recs.isEmpty == false else {
                 return
             }
-
-            snapshot.appendItems([.topic(slate)], toSection: .topics)
 
             let slateSection: HomeViewModel.Section = .slate(slate)
             snapshot.appendSections([slateSection])
@@ -390,7 +381,7 @@ extension HomeViewModel {
 
     private func contexts(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> [Context] {
         switch cell {
-        case .loading, .topic, .recentSaves:
+        case .loading, .recentSaves:
             return []
         case .recommendation(let objectID):
             guard let viewModel = viewModel(for: objectID),
@@ -430,14 +421,12 @@ extension HomeViewModel {
 extension HomeViewModel {
     enum Section: Hashable {
         case loading
-        case topics
         case recentSaves
         case slate(Slate)
     }
 
     enum Cell: Hashable {
         case loading
-        case topic(Slate)
         case recentSaves(NSManagedObjectID)
         case recommendation(NSManagedObjectID)
     }

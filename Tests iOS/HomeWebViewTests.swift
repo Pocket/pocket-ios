@@ -78,28 +78,3 @@ class HomeWebViewTests: XCTestCase {
             .wait()
     }
 }
-
-// MARK: - Slate Detail
-extension HomeWebViewTests {
-    func test_slateDetail_showsWebViewWhenItemIsImage() {
-        test_slateDetail_showsWebView(from: "Slate 1, Recommendation 1")
-    }
-
-    func test_slateDetail_showsWebViewWhenItemIsVideo() {
-        test_slateDetail_showsWebView(from: "Slate 1, Recommendation 2")
-    }
-
-    func test_slateDetail_showsWebViewWhenItemIsNotAnArticle() {
-        test_slateDetail_showsWebView(from: "Slate 1, Recommendation 3")
-    }
-
-    func test_slateDetail_showsWebView(from name: String) {
-        app.homeView.topicChip("Slate 1").wait().tap()
-        app.slateDetailView.recommendationCell(name).wait().tap()
-
-        app
-            .webReaderView
-            .staticText(matching: "Hello, world")
-            .wait()
-    }
-}
