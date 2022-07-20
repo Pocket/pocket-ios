@@ -83,6 +83,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     func refresh(_ completion: (() -> ())? = nil) {
         source.refresh(completion: completion)
+        source.retryImmediately()
     }
 
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {

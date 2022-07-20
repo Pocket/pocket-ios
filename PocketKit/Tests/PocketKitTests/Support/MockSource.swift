@@ -700,6 +700,7 @@ extension MockSource {
     }
 }
 
+// MARK: - Save URL
 extension MockSource {
     private static let saveURL = "saveURL"
     typealias SaveURLImpl = (URL) -> Void
@@ -731,5 +732,36 @@ extension MockSource {
         ]
 
         impl(url)
+    }
+}
+
+// MARK: - Retry Immediately
+extension MockSource {
+    static let retryImmediately = "retryImmediately"
+    typealias RetryImmediatelyImpl = () -> Void
+
+    struct RetryImmediatelyCall { }
+
+    func stubRetryImmediately(impl: @escaping RetryImmediatelyImpl) {
+        implementations[Self.retryImmediately] = impl
+    }
+
+    func retryImmediately() {
+        guard let impl = implementations[Self.retryImmediately] as? RetryImmediatelyImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.retryImmediately] = (calls[Self.retryImmediately] ?? []) + [RetryImmediatelyCall()]
+        print("Calling impl: \(Date().timeIntervalSince1970)")
+        return impl()
+    }
+
+    func retryImmediatelyCall(at index: Int) -> RetryImmediatelyCall? {
+        guard let calls = calls[Self.retryImmediately],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RetryImmediatelyCall
     }
 }

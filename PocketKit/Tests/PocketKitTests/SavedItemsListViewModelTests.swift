@@ -265,4 +265,14 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
+
+    func test_refresh_callsRetryImmediatelyOnSource() {
+        source.stubRefresh { _, _ in }
+        source.stubRetryImmediately { }
+
+        let viewModel = subject()
+        viewModel.refresh()
+
+        XCTAssertNotNil(source.retryImmediatelyCall(at:0))
+    }
 }

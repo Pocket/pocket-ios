@@ -151,6 +151,10 @@ public class PocketSource: Source {
         space.refresh(object, mergeChanges: mergeChanges)
     }
 
+    public func retryImmediately() {
+        retrySignal.send()
+    }
+
     private func observeNetworkStatus() {
         networkMonitor.start(queue: .main)
         networkMonitor.updateHandler = { [weak self] path in
