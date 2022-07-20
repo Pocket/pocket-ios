@@ -16,6 +16,8 @@ public class PocketSource: Source {
         _events.eraseToAnyPublisher()
     }
 
+    public var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
+
     private let space: Space
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
@@ -82,6 +84,11 @@ public class PocketSource: Source {
         self.sessionProvider = sessionProvider
         self.backgroundTaskManager = backgroundTaskManager
         self.osNotificationCenter = osNotificationCenter
+        self.initialDownloadState = .init(.unknown)
+
+        if lastRefresh.lastRefresh != nil {
+            initialDownloadState.send(.completed)
+        }
 
         osNotificationCenter.add(observer: notificationObserver, name: .savedItemCreated) { [weak self] in
             self?.handleSavedItemCreatedNotification()
@@ -183,6 +190,10 @@ public class PocketSource: Source {
 // MARK: - MyList/Archive items
 extension PocketSource {
     public func refresh(maxItems: Int = 400, completion: (() -> ())? = nil) {
+        if lastRefresh.lastRefresh == nil {
+            initialDownloadState.send(.started)
+        }
+
         guard let token = sessionProvider.session?.accessToken else {
             completion?()
             return
@@ -193,6 +204,7 @@ extension PocketSource {
             apollo: apollo,
             space: space,
             events: _events,
+            initialDownloadState: initialDownloadState,
             maxItems: maxItems,
             lastRefresh: lastRefresh
         )
@@ -388,6 +400,7 @@ extension PocketSource {
                     apollo: apollo,
                     space: space,
                     events: _events,
+                    initialDownloadState: initialDownloadState,
                     maxItems: maxItems,
                     lastRefresh: lastRefresh
                 )

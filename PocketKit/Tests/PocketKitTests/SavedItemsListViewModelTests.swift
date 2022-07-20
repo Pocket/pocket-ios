@@ -275,4 +275,50 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         XCTAssertNotNil(source.retryImmediatelyCall(at:0))
     }
+
+    func test_receivedSnapshots_whenInitialDownloadIsInProgress_insertsPlaceholderCells() throws {
+        let savedItem: SavedItem = .build()
+        itemsController.stubPerformFetch {
+            self.itemsController.fetchedObjects = [savedItem]
+        }
+
+        let viewModel = subject()
+        viewModel.fetch()
+
+        let receivedSnapshot = expectation(description: "receivedSnapshot")
+        viewModel.snapshot.dropFirst().sink { snapshot in
+            defer { receivedSnapshot.fulfill() }
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .items),
+                [.item(savedItem.objectID), .placeholder(1)]
+            )
+        }.store(in: &subscriptions)
+
+        source.initialDownloadState.send(.paginating(totalCount: 2))
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [receivedSnapshot], timeout: 1)
+    }
+
+    func test_receivedSnapshots_whenInitialDownloadIsStarted_insertsPlaceholderCells() throws {
+        source.initialDownloadState.send(.started)
+        itemsController.stubPerformFetch {
+            self.itemsController.fetchedObjects = []
+        }
+
+        let viewModel = subject()
+
+        let receivedSnapshot = expectation(description: "receivedSnapshot")
+        viewModel.snapshot.dropFirst().sink { snapshot in
+            defer { receivedSnapshot.fulfill() }
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .items),
+                (0...3).map { .placeholder($0) }
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedSnapshot], timeout: 1)
+    }
 }

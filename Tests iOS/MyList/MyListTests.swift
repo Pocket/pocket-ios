@@ -271,7 +271,40 @@ class MyListTests: XCTestCase {
         XCTAssertTrue(listView.itemView(at: 0).contains(string: "Item 2"))
     }
 
+    func test_list_showsSkeletonCellsDuringInitialFetch() {
+        continueAfterFailure = true
+        var promises: [EventLoopPromise<Response>] = []
 
+        server.routes.post("/graphql") { request, eventLoop in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                let promise = eventLoop.makePromise(of: Response.self)
+                promises.append(promise)
+                return promise.futureResult
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        app.launch().tabBar.myListButton.wait().tap()
+
+        let listView = app.myListView.wait()
+        XCTAssertEqual(listView.itemCount, 0)
+        XCTAssertEqual(listView.skeletonCellCount, 4)
+        promises[0].completeWith(.success(Response.myList("my-list-loading-page-1")))
+
+        XCTAssertEqual(listView.itemCount, 2)
+        XCTAssertEqual(listView.skeletonCellCount, 1)
+
+        promises[1].completeWith(.success(Response.myList("my-list-loading-page-2")))
+        XCTAssertEqual(listView.itemCount, 3)
+        XCTAssertEqual(listView.skeletonCellCount, 0)
+    }
 }
 
 // MARK: - Web View

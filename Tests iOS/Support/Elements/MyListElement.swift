@@ -49,6 +49,10 @@ struct MyListElement: PocketUIElement {
         itemCells.count
     }
 
+    var skeletonCellCount: Int {
+        element.cells.matching(identifier: "my-list-item-skeleton").count
+    }
+
     func itemView(at index: Int) -> ItemRowElement {
         return ItemRowElement(itemCells.element(boundBy: index))
     }

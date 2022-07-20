@@ -10,6 +10,7 @@ protocol SyncOperationFactory {
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
         maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation
@@ -35,6 +36,7 @@ class OperationFactory: SyncOperationFactory {
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
         maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
@@ -43,6 +45,7 @@ class OperationFactory: SyncOperationFactory {
             apollo: apollo,
             space: space,
             events: events,
+            initialDownloadState: initialDownloadState,
             maxItems: maxItems,
             lastRefresh: lastRefresh
         )

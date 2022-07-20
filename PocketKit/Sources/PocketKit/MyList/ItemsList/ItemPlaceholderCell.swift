@@ -29,7 +29,7 @@ class ItemPlaceholderCell: UICollectionViewListCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-
+        accessibilityIdentifier = "my-list-item-skeleton"
 
         contentView.addSubview(actionsImageView)
         contentView.addSubview(tagsImageView)
