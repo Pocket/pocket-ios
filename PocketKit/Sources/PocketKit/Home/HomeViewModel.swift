@@ -5,6 +5,11 @@ import CoreData
 import Analytics
 
 
+enum ReadableType {
+    case recommendation(RecommendationViewModel)
+    case savedItem(SavedItemViewModel)
+}
+
 class HomeViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
     typealias ItemIdentifier = NSManagedObjectID
@@ -25,7 +30,7 @@ class HomeViewModel {
     var presentedAlert: PocketAlert?
 
     @Published
-    var selectedReadableViewModel: RecommendationViewModel? = nil
+    var selectedReadableType: ReadableType? = nil
 
     @Published
     var selectedRecommendationToReport: Recommendation? = nil
@@ -103,8 +108,10 @@ class HomeViewModel {
     
     func select(cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading, .recentSaves:
+        case .loading:
             return
+        case .recentSaves:
+            select(recentSave: cell, at: indexPath)
         case .recommendation:
             select(recommendation: cell, at: indexPath)
         }
@@ -326,11 +333,48 @@ extension HomeViewModel {
                 contexts(for: cell, at: indexPath)
             )
         } else {
-            selectedReadableViewModel = RecommendationViewModel(
+            let viewModel = RecommendationViewModel(
                 recommendation: viewModel.recommendation,
                 source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen)
             )
+            selectedReadableType = .recommendation(viewModel)
+
+            tracker.track(
+                event: ContentOpenEvent(destination: .internal, trigger: .click),
+                contexts(for: cell, at: indexPath)
+            )
+        }
+    }
+
+    private func select(recentSave cell: HomeViewModel.Cell, at indexPath: IndexPath) {
+        guard case .recentSaves(let objectID) = cell,
+        let savedItem = bareItem(with: objectID) else {
+            return
+        }
+
+        tracker.track(
+            event: SnowplowEngagement(type: .general, value: nil),
+            contexts(for: cell, at: indexPath)
+        )
+
+        let item = savedItem.item
+        if let isArticle = item?.isArticle, isArticle == false
+            || item?.hasImage == .isImage
+            || item?.hasVideo == .isVideo {
+            presentedWebReaderURL = item?.bestURL
+
+            tracker.track(
+                event: ContentOpenEvent(destination: .external, trigger: .click),
+                contexts(for: cell, at: indexPath)
+            )
+        } else {
+            let viewModel = SavedItemViewModel(
+                item: savedItem,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
+            selectedReadableType = .savedItem(viewModel)
 
             tracker.track(
                 event: ContentOpenEvent(destination: .internal, trigger: .click),
@@ -384,8 +428,18 @@ extension HomeViewModel {
 
     private func contexts(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> [Context] {
         switch cell {
-        case .loading, .recentSaves:
+        case .loading:
             return []
+        case .recentSaves:
+            guard case .recentSaves(let objectID) = cell,
+                  let savedItem = bareItem(with: objectID),
+                  let contextURL = savedItem.bestURL else {
+                return []
+            }
+
+            let contentContext = ContentContext(url: contextURL)
+            let itemContext = UIContext.home.recentSave(index: UIIndex(indexPath.item))
+            return [itemContext, contentContext]
         case .recommendation(let objectID):
             guard let viewModel = viewModel(for: objectID),
                   case .slate(let slate) = snapshot.sectionIdentifier(containingItem: cell),

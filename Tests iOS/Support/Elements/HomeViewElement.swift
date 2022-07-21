@@ -19,6 +19,10 @@ struct HomeViewElement: PocketUIElement {
         let predicate = NSPredicate(format: "label = %@", title)
         return savedItemCells.containing(predicate).element(boundBy: 0)
     }
+
+    func savedItemCell(at index: Int) -> XCUIElement {
+        return savedItemCells.element(boundBy: index)
+    }
     
     var savedItemCells: XCUIElementQuery {
         return element.cells.matching(identifier: "my-list-item")

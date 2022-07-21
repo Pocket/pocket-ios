@@ -148,14 +148,16 @@ class RegularMainCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         // HOME
-        model.home.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
-            if readable != nil {
-                self?.model.home.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
-                self?.model.myList.savedItemsList.selectedItem = nil
-                self?.model.myList.archivedItemsList.selectedItem = nil
+        model.home.$selectedReadableType.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+            switch readableType {
+            case .recommendation(let viewModel):
+                self?.show(viewModel)
+            case .savedItem(let viewModel):
+                self?.show(viewModel)
+            case .none:
+                return
             }
-
-            self?.show(readable)
+            return
         }.store(in: &subscriptions)
 
         model.home.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
@@ -197,6 +199,10 @@ class RegularMainCoordinator: NSObject {
     private func navigate(selectedItem: SelectedItem) {
         switch selectedItem {
         case .readable(let readable):
+            readerSubscriptions = []
+            model.home.selectedReadableType = nil
+            model.home.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
+
             self.show(readable)
         case .webView(let url):
             self.present(url)
@@ -229,10 +235,6 @@ class RegularMainCoordinator: NSObject {
         guard let readable = readable else {
             return
         }
-
-        readerSubscriptions = []
-        model.home.selectedReadableViewModel = nil
-        model.home.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
 
         readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url)
@@ -302,7 +304,7 @@ class RegularMainCoordinator: NSObject {
 
         slate.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
             if readable != nil {
-                self?.model.home.selectedReadableViewModel = nil
+//                self?.model.home.selectedReadableViewModel = nil
                 self?.model.myList.savedItemsList.selectedItem = nil
                 self?.model.myList.archivedItemsList.selectedItem = nil
             }
@@ -410,7 +412,7 @@ extension RegularMainCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.myList.savedItemsList.selectedItem?.clearPresentedWebReaderURL()
         model.myList.archivedItemsList.selectedItem?.clearPresentedWebReaderURL()
-        model.home.selectedReadableViewModel?.presentedWebReaderURL = nil
+//        model.home.selectedReadableViewModel?.presentedWebReaderURL = nil
         model.home.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
     }
 }

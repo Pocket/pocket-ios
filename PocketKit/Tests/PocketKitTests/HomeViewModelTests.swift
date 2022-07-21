@@ -209,8 +209,13 @@ class HomeViewModelTests: XCTestCase {
         viewModel.controllerDidChangeContent(slateLineupController)
 
         let readableExpectation = expectation(description: "expected to update selected readable")
-        viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
-            readableExpectation.fulfill()
+        viewModel.$selectedReadableType.dropFirst().sink { readableType in
+            switch readableType {
+            case .recommendation:
+                readableExpectation.fulfill()
+            case .savedItem, .none:
+                XCTFail("Expected recommendation, but got \(String(describing: readableType))")
+            }
         }.store(in: &subscriptions)
 
         let cell = HomeViewModel.Cell.recommendation(recommendation.objectID)
@@ -260,6 +265,81 @@ class HomeViewModelTests: XCTestCase {
 
         wait(for: [urlExpectation], timeout: 1)
     }
+
+    func test_selectCell_whenSelectingRecentSave_recentSaveIsReadable_updatesSelectedReadable() throws {
+        let viewModel = subject()
+
+        let savedItem = SavedItem.build(
+            item: .build(
+                resolvedURL: URL(string: "https://getpocket.com")!
+            )
+        )
+        try space.save()
+
+        source.stubObject { _ in
+            return savedItem
+        }
+
+        let readableExpectation = expectation(description: "expected to update selected readable")
+        viewModel.$selectedReadableType.dropFirst().sink { readableType in
+            switch readableType {
+            case .savedItem:
+                readableExpectation.fulfill()
+            case .recommendation, .none:
+                XCTFail("Expected recommendation, but got \(String(describing: readableType))")
+            }
+        }.store(in: &subscriptions)
+
+        let cell = HomeViewModel.Cell.recentSaves(savedItem.objectID)
+        viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+
+        wait(for: [readableExpectation], timeout: 1)
+    }
+
+    func test_selectCell_whenSelectingRecentSave_recentSaveIsNotReadable_updatesPresentedWebReaderURL() throws {
+        let viewModel = subject()
+
+        let item = Item.build()
+        let savedItem = SavedItem.build(item: item)
+        try space.save()
+
+        source.stubObject { _ in
+            return savedItem
+        }
+
+        let urlExpectation = expectation(description: "expected to update presented URL")
+        urlExpectation.expectedFulfillmentCount = 3
+        viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
+            urlExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        do {
+            item.isArticle = false
+
+            let cell = HomeViewModel.Cell.recentSaves(savedItem.objectID)
+            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+        }
+
+        do {
+            item.isArticle = true
+            item.imageness = Imageness.isImage.rawValue
+
+            let cell = HomeViewModel.Cell.recentSaves(savedItem.objectID)
+            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+        }
+
+        do {
+            item.isArticle = true
+            item.imageness = nil
+            item.videoness = Videoness.isVideo.rawValue
+
+            let cell = HomeViewModel.Cell.recentSaves(savedItem.objectID)
+            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+        }
+
+        wait(for: [urlExpectation], timeout: 1)
+    }
+
     
     func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() {
         let viewModel = subject()
