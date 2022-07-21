@@ -1,7 +1,7 @@
 import UIKit
 
 
-class CompactAccountCoordinator {
+class CompactAccountCoordinator: NSObject {
     var viewController: UIViewController {
         navigationController
     }
@@ -16,8 +16,18 @@ class CompactAccountCoordinator {
         accountViewController = AccountViewController(model: model)
         navigationController = UINavigationController(rootViewController: accountViewController)
 
+        super.init()
+
+        navigationController.delegate = self
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
         navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
+    }
+}
+
+extension CompactAccountCoordinator: UINavigationControllerDelegate {
+    func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+        guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
     }
 }
