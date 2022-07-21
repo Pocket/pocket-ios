@@ -315,6 +315,11 @@ extension RegularMainCoordinator: UISplitViewControllerDelegate {
             model.isCollapsed = true
         }
     }
+
+    func splitViewControllerSupportedInterfaceOrientations(_ splitViewController: UISplitViewController) -> UIInterfaceOrientationMask {
+        guard splitViewController.traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return splitViewController.viewController(for: .compact)?.supportedInterfaceOrientations ?? .portrait
+    }
 }
 
 // MARK: - SFSafariViewControllerDelegate
