@@ -43,8 +43,16 @@ class CompactHomeCoordinator: NSObject {
         navigationController.popToRootViewController(animated: false)
         isResetting = true
 
-        model.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
-            self?.show(readable)
+        model.$selectedReadableType.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+            switch readableType {
+            case .savedItem(let viewModel):
+                self?.show(viewModel)
+            case .recommendation(let viewModel):
+                self?.show(viewModel)
+            case .none:
+                self?.readerSubscriptions = []
+            }
+            return
         }.store(in: &subscriptions)
 
         model.$selectedSlateDetailViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
@@ -143,6 +151,29 @@ class CompactHomeCoordinator: NSObject {
         }.store(in: &readerSubscriptions)
     }
 
+    func show(_ savedItem: SavedItemViewModel) {
+        navigationController.pushViewController(
+            ReadableHostViewController(readableViewModel: savedItem),
+            animated: !isResetting
+        )
+
+        savedItem.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
+            self?.presentReaderSettings(isPresenting, on: savedItem)
+        }.store(in: &readerSubscriptions)
+    }
+
     func report(_ recommendation: Recommendation?, _ completion: @escaping () -> Void) {
         guard !isResetting, let recommendation = recommendation else {
             return
@@ -167,7 +198,7 @@ class CompactHomeCoordinator: NSObject {
         activityVC.popoverPresentationController?.sourceView = navigationController.splitViewController?.view
 
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
-            self?.model.selectedReadableViewModel?.sharedActivity = nil
+//            self?.model.selectedReadableViewModel?.sharedActivity = nil
             self?.model.selectedSlateDetailViewModel?.selectedReadableViewModel?.sharedActivity = nil
         }
 
@@ -182,13 +213,13 @@ class CompactHomeCoordinator: NSObject {
         viewController.present(safariVC, animated: !isResetting)
     }
 
-    private func presentReaderSettings(_ isPresenting: Bool?, on recommendation: RecommendationViewModel?) {
-        guard !isResetting, isPresenting == true, let recommendation = recommendation else {
+    private func presentReaderSettings(_ isPresenting: Bool?, on readable: ReadableViewModel?) {
+        guard !isResetting, isPresenting == true, let readable = readable else {
             return
         }
 
-        let readerSettingsVC = ReaderSettingsViewController(settings: recommendation.readerSettings) {
-            recommendation.isPresentingReaderSettings = false
+        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) {
+            readable.isPresentingReaderSettings = false
         }
 
         // iPhone (Portrait): defaults to .medium(); iPhone (Landscape): defaults to .large(); iPad (All): Menu
@@ -214,7 +245,7 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
         if viewController === homeViewController {
             model.selectedSlateDetailViewModel?.resetSlate(keeping: 5)
 
-            model.selectedReadableViewModel = nil
+//            model.selectedReadableViewModel = nil
             model.selectedRecommendationToReport = nil
             model.selectedSlateDetailViewModel = nil
         }
@@ -228,7 +259,7 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
 
 extension CompactHomeCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        model.selectedReadableViewModel?.presentedWebReaderURL = nil
+//        model.selectedReadableViewModel?.presentedWebReaderURL = nil
         model.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
     }
 }

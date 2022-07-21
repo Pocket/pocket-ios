@@ -104,7 +104,23 @@ extension UIContext {
         public let screen = UIContext(type: .screen, identifier: .home)
         
         public func item(index: UIIndex) -> UIContext {
-            UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .homeCard, index: index)
+            UIContext(
+                type: .card,
+                hierarchy: 0,
+                identifier: .item,
+                componentDetail: .homeCard,
+                index: index
+            )
+        }
+
+        public func recentSave(index: UIIndex) -> UIContext {
+            UIContext(
+                type: .card,
+                hierarchy: 0,
+                identifier: .item,
+                componentDetail: .itemRow,
+                index: index
+            )
         }
     }
     

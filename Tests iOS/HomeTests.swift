@@ -55,8 +55,6 @@ class HomeTests: XCTestCase {
         }
 
         try server.start()
-
-        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -65,7 +63,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_navigatingToHomeTab_showsASectionForEachSlate() {
-        let home = app.homeView
+        let home = app.launch().homeView
 
         home.sectionHeader("Slate 1").wait()
         home.recommendationCell("Slate 1, Recommendation 1").verify()
@@ -78,7 +76,7 @@ class HomeTests: XCTestCase {
     }
     
     func test_navigatingToHomeTab_showsRecentlySavedItems() {
-        let home = app.homeView.wait()
+        let home = app.launch().homeView.wait()
         
         home.savedItemCell("Item 1").wait()
         home.savedItemCell("Item 2").wait()
@@ -87,9 +85,28 @@ class HomeTests: XCTestCase {
         home.savedItemCell("Item 4").swipeLeft(velocity: .fast)
         waitForDisappearance(of: home.savedItemCell("Item 6"))
     }
+
+    func test_tappingRecentSavesItem_showsReader() {
+        let home = app.launch().homeView.wait()
+        home.savedItemCell("Item 1").wait().tap()
+        app.readerView.wait()
+        app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
+    }
+
+    func test_tappingRecentSavesItem_showsWebViewWhenItemIsImage() {
+        test_tappingRecentSavesItem_showsWebView("Item 1")
+    }
+
+    func test_tappingRecentSavesItem_showsWebViewWhenItemIsVideo() {
+        test_tappingRecentSavesItem_showsWebView("Item 2")
+    }
+
+    func test_tappingRecentSavesItem_showsWebViewWhenItemIsNotAnArticle() {
+        test_tappingRecentSavesItem_showsWebView("Item 3")
+    }
     
     func test_favoritingRecentSavesItem_shouldShowFavoriteInMyList() {
-        let home = app.homeView.wait()
+        let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").favoriteButton.tap()
         XCTAssertTrue(home.recentSavesView(matching: "Item 1").favoriteButton.isFilled)
@@ -100,7 +117,7 @@ class HomeTests: XCTestCase {
     }
     
     func test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInMyList() {
-        let home = app.homeView.wait()
+        let home = app.launch().homeView.wait()
         home.savedItemCell("Item 2").wait()
         XCTAssertTrue(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
         home.recentSavesView(matching: "Item 2").favoriteButton.tap()
@@ -112,7 +129,7 @@ class HomeTests: XCTestCase {
     }
 
     func test_archivingRecentSavesItem_removesItemFromRecentSaves() {
-        let home = app.homeView.wait()
+        let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
         app.archiveButton.wait().tap()
@@ -121,7 +138,7 @@ class HomeTests: XCTestCase {
     }
     
     func test_deletingRecentSavesItem_removesItemFromRecentSaves() {
-        let home = app.homeView.wait()
+        let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
         app.deleteButton.wait().tap()
@@ -133,7 +150,7 @@ class HomeTests: XCTestCase {
     }
     
     func test_sharingRecentSavesItem_removesItemFromRecentSaves() {
-        let home = app.homeView.wait()
+        let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
         app.shareButton.wait().tap()
@@ -141,13 +158,13 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingRecentSavesMyListButton_opensMyListView() {
-        app.homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
+        app.launch().homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
         app.myListView.itemView(matching: "Item 1").wait()
         XCTAssertTrue(app.myListView.selectionSwitcher.myListButton.isSelected)
     }
     
     func test_tappingRecentSavesMyListButton_whenPreviouslyArchiveView_opensMyListView() {
-        app.tabBar.myListButton.wait().tap()
+        app.launch().tabBar.myListButton.wait().tap()
         app.myListView.selectionSwitcher.archiveButton.wait().tap()
         app.tabBar.homeButton.wait().tap()
         app.homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
@@ -156,7 +173,7 @@ class HomeTests: XCTestCase {
     }
     
     func test_tappingSlatesSeeAllButton_showsSlateDetailView() {
-        let home = app.homeView
+        let home = app.launch().homeView
         
         home.sectionHeader("Slate 1").seeAllButton.wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
@@ -171,12 +188,12 @@ class HomeTests: XCTestCase {
     }
     
     func test_tappingRecommendationCell_opensItemInReader() {
-        app.homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
+        app.launch().homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
         app.readerView.cell(containing: "Jacob and David").wait()
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
-        let cell = app.homeView.recommendationCell("Slate 1, Recommendation 1")
+        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
         let saveButton = cell.saveButton.wait()
 
         let saveRequestExpectation = expectation(description: "A save mutation request")
@@ -228,7 +245,7 @@ class HomeTests: XCTestCase {
 
 extension HomeTests {
     func test_pullToRefresh_fetchesUpdatedContent() {
-        let home = app.homeView
+        let home = app.launch().homeView
         home.recommendationCell("Slate 1, Recommendation 1").wait()
         
         server.routes.post("/graphql") { request, _ in
@@ -257,5 +274,41 @@ extension HomeTests {
         let isHittable = NSPredicate(format: "isHittable == 1")
         let hittable = expectation(for: isHittable, evaluatedWith: overscrollView)
         wait(for: [doesExist, hittable], timeout: 20)
+    }
+}
+
+extension HomeTests {
+    private func test_tappingRecentSavesItem_showsWebView(_ item: String) {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForMyListContent {
+                return Response.myList("list-for-web-view")
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        app.launch().homeView.wait()
+
+        // If an item isn't initially visible (e.g "Item 3"),
+        // take the first cell and swipe left so that it becomes visible.
+        // This works because the fixture for "My List" contains 3 items.
+        // The first two tests for "Item 1" and "Item 2" work because
+        // they are on-screen, but we have to scroll for "Item 3".
+        if !app.homeView.savedItemCell(item).exists {
+            app.homeView.savedItemCell(at: 0).swipeLeft()
+        }
+
+        app.homeView.savedItemCell(item).wait().tap()
+
+        app
+            .webReaderView
+            .staticText(matching: "Hello, world")
+            .wait()
     }
 }
