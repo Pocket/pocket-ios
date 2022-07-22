@@ -122,6 +122,13 @@ public enum Requests {
         request.predicate = NSPredicate(format: "isDownloaded = NO")
         return request
     }
+
+    public static func fetchSavedItem(for item: Item) -> NSFetchRequest<SavedItem> {
+        let request = fetchAllSavedItems()
+        request.predicate = Predicates.savedItems(filters: [NSPredicate(format: "item = %@", item)])
+
+        return request
+    }
 }
 
 public enum Predicates {
