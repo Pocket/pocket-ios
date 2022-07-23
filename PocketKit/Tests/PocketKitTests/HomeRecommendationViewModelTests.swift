@@ -1,14 +1,22 @@
 import XCTest
 import Sync
 import Combine
+
 @testable import PocketKit
+@testable import Sync
 
 
 class HomeRecommendationCellViewModelTests: XCTestCase {
     var subscriptions: Set<AnyCancellable> = []
+    var space: Space!
 
-    override func tearDown() {
+    override func setUp() {
+        space = .testSpace()
+    }
+
+    override func tearDownWithError() throws {
         subscriptions = []
+        try space.clear()
     }
 
     func subject(
@@ -17,71 +25,80 @@ class HomeRecommendationCellViewModelTests: XCTestCase {
         HomeRecommendationCellViewModel(recommendation: recommendation ?? .build())
     }
 
-    func test_isSaved_updatesWhenItemIsSaved() {
+    func test_isSaved_updatesWhenItemIsSaved() throws {
         let item = Item.build()
         let viewModel = subject(recommendation: Recommendation.build(item: item))
 
         XCTAssertFalse(viewModel.isSaved)
 
         let isSavedExpectation = expectation(description: "expected isSaved to be updated")
-        viewModel.$isSaved.dropFirst().sink { isSaved in
-            XCTAssertTrue(isSaved)
-            isSavedExpectation.fulfill()
+        viewModel.updated.sink {
+            defer { isSavedExpectation.fulfill() }
+            XCTAssertTrue(viewModel.isSaved)
         }.store(in: &subscriptions)
 
         item.savedItem = SavedItem.build()
+        try space.save()
 
         wait(for: [isSavedExpectation], timeout: 1)
     }
 
-    func test_isSaved_updatesWhenItemIsDeleted() {
-        let item = Item.build()
-        item.savedItem = SavedItem.build()
-        let viewModel = subject(recommendation: Recommendation.build(item: item))
+    func test_isSaved_updatesWhenItemIsDeleted() throws {
+        let savedItem = SavedItem.build()
+        let rec = Recommendation.build(item: savedItem.item)
+        try space.save()
 
+        let viewModel = subject(recommendation: rec)
         XCTAssertTrue(viewModel.isSaved)
 
         let isSavedExpectation = expectation(description: "expected isSaved to be updated")
-        viewModel.$isSaved.dropFirst().sink { isSaved in
-            XCTAssertFalse(isSaved)
-            isSavedExpectation.fulfill()
+        viewModel.updated.sink {
+            defer { isSavedExpectation.fulfill() }
+            XCTAssertFalse(viewModel.isSaved)
         }.store(in: &subscriptions)
 
-        item.savedItem = nil
+        space.delete(savedItem)
+        try space.save()
 
         wait(for: [isSavedExpectation], timeout: 1)
     }
 
-    func test_isSaved_updatesWhenItemIsArchived() {
-        let item = Item.build()
+    func test_isSaved_updatesWhenItemIsArchived() throws {
         let savedItem = SavedItem.build()
-        item.savedItem = savedItem
-        let viewModel = subject(recommendation: Recommendation.build(item: item))
+        let rec = Recommendation.build(item: savedItem.item)
+        try space.save()
+
+        let viewModel = subject(recommendation: rec)
+        XCTAssertTrue(viewModel.isSaved)
 
         let isSavedExpectation = expectation(description: "expected isSaved to be updated")
-        viewModel.$isSaved.dropFirst(1).sink { isSaved in
-            XCTAssertFalse(isSaved)
-            isSavedExpectation.fulfill()
+        viewModel.updated.sink {
+            defer { isSavedExpectation.fulfill() }
+            XCTAssertFalse(viewModel.isSaved)
         }.store(in: &subscriptions)
 
-        item.savedItem?.isArchived = true
+        savedItem.isArchived = true
+        try space.save()
 
         wait(for: [isSavedExpectation], timeout: 1)
     }
 
-    func test_isSaved_updatesWhenItemIsUnarchived() {
-        let item = Item.build()
+    func test_isSaved_updatesWhenItemIsUnarchived() throws {
         let savedItem = SavedItem.build(isArchived: true)
-        item.savedItem = savedItem
-        let viewModel = subject(recommendation: Recommendation.build(item: item))
+        let rec = Recommendation.build(item: savedItem.item)
+        try space.save()
+
+        let viewModel = subject(recommendation: rec)
+        XCTAssertFalse(viewModel.isSaved)
 
         let isSavedExpectation = expectation(description: "expected isSaved to be updated")
-        viewModel.$isSaved.dropFirst(1).sink { isSaved in
-            XCTAssertTrue(isSaved)
-            isSavedExpectation.fulfill()
+        viewModel.updated.sink {
+            defer { isSavedExpectation.fulfill() }
+            XCTAssertTrue(viewModel.isSaved)
         }.store(in: &subscriptions)
 
-        item.savedItem?.isArchived = false
+        savedItem.isArchived = false
+        try space.save()
 
         wait(for: [isSavedExpectation], timeout: 1)
     }

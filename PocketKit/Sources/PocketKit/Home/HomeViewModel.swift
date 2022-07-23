@@ -62,9 +62,10 @@ class HomeViewModel {
         }.store(in: &subscriptions)
         
         recentSavesController.itemChanged.receive(on: DispatchQueue.main).sink { [weak self] savedItem in
-            guard var snapshot = self?.buildSnapshot() else { return }
-            snapshot.reloadItems([.recentSaves(savedItem.objectID)])
-            self?.snapshot = snapshot
+            let item = Cell.recentSaves(savedItem.objectID)
+            if self?.snapshot.indexOfItem(item) != nil {
+                self?.snapshot.reloadItems([item])
+            }
         }.store(in: &subscriptions)
     }
 
@@ -285,9 +286,11 @@ extension HomeViewModel {
                 let viewModel = HomeRecommendationCellViewModel(recommendation: rec)
                 viewModels[rec.objectID] = viewModel
 
-                viewModel.$isSaved.dropFirst().sink { [weak self] isSaved in
-                    snapshot.reloadItems([.recommendation(rec.objectID)])
-                    self?.snapshot = snapshot
+                viewModel.updated.sink { [weak self] isSaved in
+                    let item = Cell.recommendation(rec.objectID)
+                    if self?.snapshot.indexOfItem(item) != nil {
+                        self?.snapshot.reloadItems([item])
+                    }
                 }.store(in: &viewModelSubscriptions)
             }
 

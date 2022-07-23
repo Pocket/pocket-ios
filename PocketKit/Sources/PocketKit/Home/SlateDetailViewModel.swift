@@ -139,9 +139,11 @@ private extension SlateDetailViewModel {
                 toSection: section
             )
 
-            viewModel.$isSaved.dropFirst().sink { [weak self] isSaved in
-                snapshot.reloadItems([.recommendation(recommendation.objectID)])
-                self?.snapshot = snapshot
+            viewModel.updated.sink { [weak self] in
+                let item: SlateDetailViewModel.Cell = .recommendation(recommendation.objectID)
+                if self?.snapshot.indexOfItem(item) != nil {
+                    self?.snapshot.reloadItems([item])
+                }
             }.store(in: &viewModelSubscriptions)
         }
 
