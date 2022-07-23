@@ -2,45 +2,39 @@ import Foundation
 import Sync
 import Combine
 import Textile
+import CoreData
 
 
-class HomeRecommendationCellViewModel {
-    @Published
-    private(set) var isSaved: Bool
-
-    private var subscriptions: Set<AnyCancellable> = []
-
+class HomeRecommendationCellViewModel: NSObject {
+    let updated: PassthroughSubject<Void, Never> = .init()
     let recommendation: Recommendation
+
+    var isSaved: Bool {
+        resultsController?.fetchedObjects?.first != nil
+    }
+
+    private var resultsController: NSFetchedResultsController<SavedItem>?
 
     init(recommendation: Recommendation) {
         self.recommendation = recommendation
-        isSaved = recommendation.item?.savedItem != nil
-        || recommendation.item?.savedItem?.isArchived == false
 
-        // Triggered when an item is explicitly deleted by the user,
-        // or when SlateService.fetchSlateLineup(_:) is called
-        recommendation.publisher(for: \.item?.savedItem)
-            .removeDuplicates()
-            .sink { [weak self] savedItem in
-                self?.updateIsSaved(with: savedItem != nil)
-            }.store(in: &subscriptions)
-
-        recommendation.publisher(for: \.item?.savedItem?.isArchived)
-            .compactMap({ $0 })
-            .removeDuplicates()
-            .sink { [weak self] isArchived in
-                self?.updateIsSaved(with: isArchived == false)
-            }.store(in: &subscriptions)
-    }
-}
-
-extension HomeRecommendationCellViewModel {
-    func updateIsSaved(with isSaved: Bool) {
-        guard isSaved != self.isSaved else {
+        guard let item = recommendation.item,
+              let context = recommendation.managedObjectContext else {
+            super.init()
             return
         }
 
-        self.isSaved = isSaved
+        resultsController = .init(
+            fetchRequest: Requests.fetchSavedItem(for: item),
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+
+        super.init()
+
+        try? resultsController?.performFetch()
+        resultsController?.delegate = self
     }
 }
 
@@ -99,5 +93,11 @@ private extension Style {
 
     static let excerpt: Style = .header.sansSerif.p4.with(color: .ui.grey4).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
+    }
+}
+
+extension HomeRecommendationCellViewModel: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        updated.send()
     }
 }

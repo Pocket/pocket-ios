@@ -115,7 +115,9 @@ extension ArchivedItemsListViewModel {
     }
 
     func handleUpdatedItem(_ updatedItem: SavedItem) {
-        _snapshot.reloadItems([.item(updatedItem.objectID)])
+        if _snapshot.indexOfItem(.item(updatedItem.objectID)) != nil {
+            _snapshot.reloadItems([.item(updatedItem.objectID)])
+        }
     }
 }
 
