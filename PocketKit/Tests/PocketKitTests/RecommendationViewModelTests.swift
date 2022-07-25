@@ -321,6 +321,50 @@ class RecommendationViewModelTests: XCTestCase {
         viewModel.invokeAction(from: actions, title: "Open")
         XCTAssertEqual(viewModel.presentedWebReaderURL, url)
     }
+
+    func test_fetchDetailsIfNeeded_whenMarticleIsNil_fetchesDetailsForRecommendation() {
+        let recommendation = space.buildRecommendation(
+            item: space.buildItem()
+        )
+        source.stubFetchDetailsForRecommendation { rec in
+            rec.item?.article = .some(Article(components: []))
+        }
+
+        let viewModel = subject(recommendation: recommendation)
+        let receivedEvent = expectation(description: "receivedEvent")
+        viewModel.events.sink { event in
+            defer { receivedEvent.fulfill() }
+            guard case .contentUpdated = event else {
+                XCTFail("Expected .contentUpdated event but received \(event)")
+                return
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.fetchDetailsIfNeeded()
+        wait(for: [receivedEvent], timeout: 1)
+        XCTAssertNotNil(recommendation.item?.article)
+    }
+
+    func test_fetchDetailsIfNeeded_whenMarticleIsPresent_doesNothing() {
+        let recommendation = space.buildRecommendation(
+            item: space.buildItem(article: .init(components: []))
+        )
+
+        source.stubFetchDetailsForRecommendation { rec in
+            XCTFail("Should not fetch details when article content is already available")
+        }
+
+        let viewModel = subject(recommendation: recommendation)
+        let receivedEvent = expectation(description: "receivedEvent")
+        receivedEvent.isInverted = true
+
+        viewModel.events.sink { event in
+            receivedEvent.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetchDetailsIfNeeded()
+        wait(for: [receivedEvent], timeout: 1)
+    }
 }
 
 extension RecommendationViewModel {

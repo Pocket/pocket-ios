@@ -101,7 +101,14 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     func fetchDetailsIfNeeded() {
-        // no op
+        guard recommendation.item?.article == nil else {
+            return
+        }
+
+        Task {
+            try await source.fetchDetails(for: recommendation)
+            _events.send(.contentUpdated)
+        }
     }
     
     func externalActions(for url: URL) -> [ItemAction] {

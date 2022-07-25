@@ -712,3 +712,38 @@ extension MockSource {
         return calls[index] as? RetryImmediatelyCall
     }
 }
+
+// MARK: - Retry Immediately
+extension MockSource {
+    static let fetchDetailsForRecommendation = "fetchDetailsForRecommendation"
+    typealias FetchDetailsForRecommendationImpl = (Recommendation) async throws -> Void
+
+    struct FetchDetailsForRecommendationCall {
+        let recommendation: Recommendation
+    }
+
+    func stubFetchDetailsForRecommendation(impl: @escaping FetchDetailsForRecommendationImpl) {
+        implementations[Self.fetchDetailsForRecommendation] = impl
+    }
+
+    func fetchDetails(for recommendation: Recommendation) async throws {
+        guard let impl = implementations[Self.fetchDetailsForRecommendation] as? FetchDetailsForRecommendationImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchDetailsForRecommendation] = (calls[Self.fetchDetailsForRecommendation] ?? []) + [
+            FetchDetailsForRecommendationCall(recommendation: recommendation)
+        ]
+
+        return try await impl(recommendation)
+    }
+
+    func fetchDetailsForRecommendationCall(at index: Int) -> FetchDetailsForRecommendationCall? {
+        guard let calls = calls[Self.fetchDetailsForRecommendation],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchDetailsForRecommendationCall
+    }
+}

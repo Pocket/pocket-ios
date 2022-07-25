@@ -29,6 +29,8 @@ class ReportARecommendationTests: XCTestCase {
                 return Response.saveItem()
             } else if apiRequest.isToArchiveAnItem {
                 return Response.archive()
+            } else if apiRequest.isForRecommendationDetail {
+                return Response.recommendationDetail()
             } else {
                 fatalError("Unexpected request")
             }

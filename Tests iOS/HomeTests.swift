@@ -42,6 +42,8 @@ class HomeTests: XCTestCase {
                 return Response.unfavorite()
             } else if apiRequest.isToDeleteAnItem {
                 return Response.delete()
+            } else if apiRequest.isForRecommendationDetail {
+                return Response.recommendationDetail()
             } else {
                 fatalError("Unexpected request")
             }
