@@ -52,7 +52,6 @@ class CompactHomeCoordinator: NSObject {
             case .none:
                 self?.readerSubscriptions = []
             }
-            return
         }.store(in: &subscriptions)
 
         model.$selectedSlateDetailViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
@@ -198,7 +197,6 @@ class CompactHomeCoordinator: NSObject {
         activityVC.popoverPresentationController?.sourceView = navigationController.splitViewController?.view
 
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
-//            self?.model.selectedReadableViewModel?.sharedActivity = nil
             self?.model.selectedSlateDetailViewModel?.selectedReadableViewModel?.sharedActivity = nil
         }
 
@@ -245,7 +243,6 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
         if viewController === homeViewController {
             model.selectedSlateDetailViewModel?.resetSlate(keeping: 5)
 
-//            model.selectedReadableViewModel = nil
             model.selectedRecommendationToReport = nil
             model.selectedSlateDetailViewModel = nil
         }
@@ -259,7 +256,6 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
 
 extension CompactHomeCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-//        model.selectedReadableViewModel?.presentedWebReaderURL = nil
         model.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
     }
 }
