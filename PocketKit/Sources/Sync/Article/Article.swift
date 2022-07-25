@@ -6,7 +6,7 @@ public class Article: NSObject, Codable {
 
     public let components: [ArticleComponent]
 
-    init(components: [ArticleComponent]) {
+    public init(components: [ArticleComponent]) {
         self.components = components
     }
 }
