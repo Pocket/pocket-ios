@@ -148,3 +148,9 @@ query SavedItemByID($id: ID!) {
     }
   }
 }
+
+query ItemByID($id: ID!) {
+  itemByItemId(id: $id) {
+    ...ItemParts
+  }
+}
