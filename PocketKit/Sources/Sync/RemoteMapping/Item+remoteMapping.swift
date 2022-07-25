@@ -93,5 +93,16 @@ extension Item {
             addToAuthors(Author(remote: remoteAuthor, context: context))
         }
 
+        if let images = images {
+            removeFromImages(images)
+        }
+
+        summary.images?.forEach { remoteImage in
+            guard let remoteImage = remoteImage else {
+                return
+            }
+
+            addToImages(Image(remote: remoteImage, context: context))
+        }
     }
 }

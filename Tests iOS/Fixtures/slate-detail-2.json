@@ -20,7 +20,6 @@
                         "language": "en",
                         "topImageUrl": "http://example.com/slate-2-rec-1/top-image.png",
                         "timeToRead": 1,
-                        "marticle": [],
                         "authors": [
                             {
                                 "__typename": "Author",
