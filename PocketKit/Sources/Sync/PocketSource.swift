@@ -315,8 +315,10 @@ extension PocketSource {
             return
         }
 
-        savedItem.update(from: remoteSavedItem.fragments.savedItemParts)
-        try space.save()
+        try space.context.performAndWait {
+            savedItem.update(from: remoteSavedItem.fragments.savedItemParts)
+            try space.save()
+        }
     }
 }
 

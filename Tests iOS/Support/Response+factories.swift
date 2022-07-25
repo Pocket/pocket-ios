@@ -63,6 +63,10 @@ extension Response {
         fixture(named: "item-detail")
     }
 
+    static func recommendationDetail() -> Response {
+        fixture(named: "recommendation-detail")
+    }
+
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok

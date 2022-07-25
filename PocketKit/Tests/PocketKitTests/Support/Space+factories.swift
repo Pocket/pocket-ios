@@ -73,14 +73,16 @@ extension Space {
         remoteID: String = "item-1",
         title: String = "Item 1",
         givenURL: URL? = URL(string: "https://example.com/items/item-1"),
-        isArticle: Bool = true
+        isArticle: Bool = true,
+        article: Article? = nil
     ) throws -> Item {
         try context.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
                 title: title,
                 givenURL: givenURL,
-                isArticle: isArticle
+                isArticle: isArticle,
+                article: article
             )
             try save()
 
@@ -94,7 +96,8 @@ extension Space {
         title: String = "Item 1",
         givenURL: URL? = URL(string: "https://example.com/items/item-1"),
         resolvedURL: URL? = nil,
-        isArticle: Bool = true
+        isArticle: Bool = true,
+        article: Article? = nil
     ) -> Item {
         context.performAndWait {
             let item: Item = new()
@@ -103,6 +106,7 @@ extension Space {
             item.givenURL = givenURL
             item.resolvedURL = resolvedURL
             item.isArticle = isArticle
+            item.article = article
 
             return item
         }
