@@ -437,6 +437,26 @@ class PocketSourceTests: XCTestCase {
         XCTAssertNotNil(savedItem.item)
         XCTAssertFalse(savedItem.hasChanges)
     }
+
+    @MainActor
+    func test_fetchDetailsForRecommendation_fetchesOfflineContent() async throws {
+        let recommendation = try space.createRecommendation(
+            item: .build(remoteID: "remote-item-id")
+        )
+
+        apollo.stubFetch(
+            toReturnFixtureNamed: "recommendation-detail",
+            asResultType: ItemByIdQuery.self
+        )
+
+        let source = subject()
+        try await source.fetchDetails(for: recommendation)
+
+        space.refresh(recommendation, mergeChanges: true)
+        XCTAssertNotNil(recommendation.item?.article)
+        XCTAssertFalse(recommendation.hasChanges)
+    }
+
     
     func test_saveURL_insertsSavedItem_andExecutesSaveItemOperation() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
