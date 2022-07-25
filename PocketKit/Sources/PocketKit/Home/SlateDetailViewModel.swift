@@ -161,11 +161,8 @@ private extension SlateDetailViewModel {
             contexts(for: cell, at: indexPath)
         )
 
-        let item = viewModel.recommendation.item
-        if let isArticle = item?.isArticle, isArticle == false
-            || item?.hasImage == .isImage
-            || item?.hasVideo == .isVideo {
-            presentedWebReaderURL = item?.bestURL
+        if let item = viewModel.recommendation.item, item.shouldOpenInWebView {
+            presentedWebReaderURL = item.bestURL
 
             tracker.track(
                 event: ContentOpenEvent(destination: .external, trigger: .click),

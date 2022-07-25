@@ -19,3 +19,11 @@ public extension SavedItem {
         item == nil
     }
 }
+
+public extension Item {
+    var shouldOpenInWebView: Bool {
+        return isArticle == false
+        || hasImage == .isImage
+        || hasVideo == .isVideo
+    }
+}

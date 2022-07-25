@@ -155,9 +155,8 @@ class RegularMainCoordinator: NSObject {
             case .savedItem(let viewModel):
                 self?.show(viewModel)
             case .none:
-                return
+                self?.readerSubscriptions = []
             }
-            return
         }.store(in: &subscriptions)
 
         model.home.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
@@ -236,6 +235,7 @@ class RegularMainCoordinator: NSObject {
             return
         }
 
+        readerSubscriptions = []
         readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url)
         }.store(in: &readerSubscriptions)
@@ -304,7 +304,6 @@ class RegularMainCoordinator: NSObject {
 
         slate.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
             if readable != nil {
-//                self?.model.home.selectedReadableViewModel = nil
                 self?.model.myList.savedItemsList.selectedItem = nil
                 self?.model.myList.archivedItemsList.selectedItem = nil
             }
@@ -412,7 +411,6 @@ extension RegularMainCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.myList.savedItemsList.selectedItem?.clearPresentedWebReaderURL()
         model.myList.archivedItemsList.selectedItem?.clearPresentedWebReaderURL()
-//        model.home.selectedReadableViewModel?.presentedWebReaderURL = nil
         model.home.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
     }
 }

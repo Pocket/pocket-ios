@@ -358,11 +358,8 @@ extension HomeViewModel {
             contexts(for: cell, at: indexPath)
         )
 
-        let item = savedItem.item
-        if let isArticle = item?.isArticle, isArticle == false
-            || item?.hasImage == .isImage
-            || item?.hasVideo == .isVideo {
-            presentedWebReaderURL = item?.bestURL
+        if let item = savedItem.item, item.shouldOpenInWebView {
+            presentedWebReaderURL = item.bestURL
 
             tracker.track(
                 event: ContentOpenEvent(destination: .external, trigger: .click),

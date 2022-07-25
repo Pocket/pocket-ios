@@ -329,9 +329,7 @@ extension SavedItemsListViewModel {
             return
         }
 
-        if let isArticle = item.item?.isArticle, isArticle == false
-            || item.item?.hasImage == .isImage
-            || item.item?.hasVideo == .isVideo {
+        if let item = item.item, item.shouldOpenInWebView {
             selectedItem = .webView(item.bestURL)
         } else {
             let selectedReadable = bareItem(with: itemID).flatMap {
