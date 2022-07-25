@@ -73,7 +73,7 @@ fragment SlateParts on Slate {
   recommendations {
     id
     item {
-      ...ItemParts
+      ...ItemSummary
     }
   }
 }

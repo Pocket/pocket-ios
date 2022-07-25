@@ -26,7 +26,6 @@
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                                 "timeToRead": 1,
-                                "marticle": [],
                                 "authors": [
                                     {
                                         "__typename": "Author",
@@ -67,7 +66,6 @@
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
                                 "timeToRead": 2,
-                                "marticle": [],
                                 "authors": [],
                                 "datePublished": "2021-01-01 12:01:01",
                                 "images": [],
@@ -95,7 +93,6 @@
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-3/top-image.png",
                                 "timeToRead": 2,
-                                "marticle": [],
                                 "authors": [],
                                 "datePublished": "2021-01-01 12:01:01",
                                 "images": [],
