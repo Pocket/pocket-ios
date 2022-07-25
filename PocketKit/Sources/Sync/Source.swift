@@ -59,6 +59,8 @@ public protocol Source {
     func download(images: [Image])
 
     func fetchDetails(for savedItem: SavedItem) async throws
+
+    func fetchDetails(for recommendation: Recommendation) async throws
     
     func save(url: URL)
 }

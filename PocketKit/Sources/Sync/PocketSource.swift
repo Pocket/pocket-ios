@@ -329,6 +329,22 @@ extension PocketSource {
     public func fetchSlate(_ slateID: String) async throws {
         try await slateService.fetchSlate(slateID)
     }
+
+    public func fetchDetails(for recommendation: Recommendation) async throws {
+        guard let item = recommendation.item,
+              let remoteID = item.remoteID else {
+                  return
+              }
+
+        guard let remoteItem = try await apollo
+            .fetch(query: ItemByIdQuery(id: remoteID))
+            .data?.itemByItemId?.fragments.itemParts else {
+            return
+        }
+
+        item.update(remote: remoteItem)
+        try space.save()
+    }
 }
 
 // MARK: - Enqueueing and Restoring offline operations
