@@ -119,4 +119,9 @@ extension CompactMainCoordinator: UITabBarControllerDelegate {
 
         model.selectedSection = MainViewModel.AppSection.allCases[index]
     }
+
+    func tabBarControllerSupportedInterfaceOrientations(_ tabBarController: UITabBarController) -> UIInterfaceOrientationMask {
+        guard tabBarController.traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return tabBarController.selectedViewController?.supportedInterfaceOrientations ?? .portrait
+    }
 }

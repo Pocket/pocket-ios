@@ -34,6 +34,7 @@ class CompactHomeCoordinator: NSObject {
 
         super.init()
 
+        navigationController.delegate = self
         navigationController.navigationBar.prefersLargeTitles = true
         navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
         navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
@@ -239,6 +240,17 @@ class CompactHomeCoordinator: NSObject {
 }
 
 extension CompactHomeCoordinator: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        // By default, when pushing the reader, switching to landscape, and popping,
+        // the list will remain in landscape despite only supporting portrait.
+        // We have to programatically force the device orientation back to portrait,
+        // if the view controller we want to show _only_ supports portrait
+        // (e.g when popping from the reader).
+        if viewController.supportedInterfaceOrientations == .portrait, UIDevice.current.orientation.isLandscape {
+            UIDevice.current.setValue(UIDeviceOrientation.portrait.rawValue, forKey: "orientation")
+        }
+    }
+
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === homeViewController {
             model.selectedSlateDetailViewModel?.resetSlate(keeping: 5)
@@ -251,6 +263,11 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
             model.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
             model.selectedSlateDetailViewModel?.selectedRecommendationToReport = nil
         }
+    }
+
+    func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+        guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
     }
 }
 

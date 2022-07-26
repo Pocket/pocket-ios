@@ -62,6 +62,11 @@ class AccountViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        guard traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return .portrait
+    }
 }
 
 extension AccountViewController: UICollectionViewDelegate {

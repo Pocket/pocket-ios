@@ -47,6 +47,11 @@ class MyListContainerViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError()
     }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        guard traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return .portrait
+    }
     
     private func resetTitleView() {
         let selections = viewControllers.map { vc in
