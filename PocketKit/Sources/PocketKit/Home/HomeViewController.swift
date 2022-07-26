@@ -186,7 +186,7 @@ extension HomeViewController {
 
             cell.configure(model: viewModel)
 
-            if let action = model.saveAction(for: item, at: indexPath), let uiAction = UIAction(action) {
+            if let action = model.primaryAction(for: item, at: indexPath), let uiAction = UIAction(action) {
                 cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
             }
 

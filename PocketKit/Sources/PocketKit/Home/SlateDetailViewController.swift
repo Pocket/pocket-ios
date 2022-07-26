@@ -246,7 +246,7 @@ private extension SlateDetailViewController {
 
             cell.configure(model: viewModel)
 
-            if let action = self.model.saveAction(for: viewModelCell, at: indexPath),
+            if let action = self.model.primaryAction(for: viewModelCell, at: indexPath),
                let uiAction = UIAction(action) {
                 cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
             }

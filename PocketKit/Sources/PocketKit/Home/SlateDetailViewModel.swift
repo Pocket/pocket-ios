@@ -65,20 +65,22 @@ class SlateDetailViewModel {
         }
     }
 
-    func saveAction(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
+    func primaryAction(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
+        return .recommendationPrimary { [weak self] _ in
+            self?.handlePrimaryAction(for: cell, at: indexPath)
+        }
+    }
+
+    private func handlePrimaryAction(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         guard case .recommendation(let objectID) = cell,
               let viewModel = viewModel(for: objectID) else {
-            return nil
+            return
         }
 
         if viewModel.isSaved {
-            return .archive { [weak self] _ in
-                self?.archive(cell, at: indexPath)
-            }
+            archive(cell, at: indexPath)
         } else {
-            return .save { [weak self] _ in
-                self?.save(cell, at: indexPath)
-            }
+            save(cell, at: indexPath)
         }
     }
 

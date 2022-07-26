@@ -13,10 +13,26 @@ struct RecommendationCellElement: PocketUIElement {
     }
 
     var saveButton: XCUIElement {
-        element.buttons["save-button"]
+        element.buttons["Save"]
+    }
+
+    var savedButton: XCUIElement {
+        element.buttons["Saved"]
     }
     
     var reportButton: XCUIElement {
         element.buttons["report-button"]
+    }
+
+    struct SaveButton: PocketUIElement {
+        let element: XCUIElement
+
+        init(_ element: XCUIElement) {
+            self.element = element
+        }
+
+        var isSaved: Bool {
+            element.label == "Saved"
+        }
     }
 }
