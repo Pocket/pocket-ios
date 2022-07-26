@@ -33,7 +33,7 @@ class ItemsListItemCell: UICollectionViewListCell {
         static let actionButtonHeight: CGFloat = 28
         static let actionButtonImageSize = CGSize(width: 20, height: 20)
         static let mainStackSpacing: CGFloat = 8
-        static let margins = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        static let margins = UIEdgeInsets(top: Margins.normal.rawValue, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
     }
 
     private let titleLabel: UILabel = {
@@ -72,9 +72,9 @@ class ItemsListItemCell: UICollectionViewListCell {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
         config.image = UIImage(asset: .share)
-            .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
             .resized(to: Constants.actionButtonImageSize)
-
+            .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
+           
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "share"
         return button
@@ -84,8 +84,8 @@ class ItemsListItemCell: UICollectionViewListCell {
         var config = UIButton.Configuration.plain()
         config.contentInsets = .zero
         config.image = UIImage(asset: .overflow)
-            .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
             .resized(to: Constants.actionButtonImageSize)
+            .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
         
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "item-actions"
@@ -197,7 +197,6 @@ extension ItemsListItemCell {
         let shareAction: ItemAction?
         let favoriteAction: ItemAction?
         let overflowActions: [ItemAction]
-        var style: CellStyle = .plain
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -209,10 +208,6 @@ extension ItemsListItemCell {
             state.isSelected ? UIColor(.ui.grey6) : UIColor(.ui.white1)
         }
         backgroundConfiguration = bgConfig
-        
-        if state.model?.style == .bordered {
-            styleBorder()
-        }
         
         titleLabel.attributedText = state.model?.attributedTitle
         detailLabel.attributedText = state.model?.attributedDetail
@@ -233,7 +228,6 @@ extension ItemsListItemCell {
 
         let menuActions = state.model?.overflowActions.compactMap(UIAction.init) ?? []
         menuButton.menu = UIMenu(children: menuActions)
-
 
         thumbnailView.image = nil
         guard let thumbnailURL = state.model?.thumbnailURL else {
@@ -258,12 +252,6 @@ extension ItemsListItemCell {
                 )
             ]
         )
-    }
-    
-    private func styleBorder() {
-        layer.borderWidth = 0.5
-        layer.borderColor = UIColor(.ui.grey6).cgColor
-        layer.cornerRadius = 16
     }
 }
 

@@ -3,8 +3,8 @@ import Textile
 
 
 private extension Style {
-    static let saveTitle: Style = .header.sansSerif.p3.with(color: .ui.grey4).with(weight: .medium)
-    static let saveTitleHighlighted: Style = .header.sansSerif.p3.with(color: .ui.grey1).with(weight: .medium)
+    static let saveTitle: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium)
+    static let saveTitleHighlighted: Style = .header.sansSerif.p4.with(color: .ui.grey1).with(weight: .medium)
 }
 
 class RecommendationSaveButton: UIButton {
@@ -51,13 +51,13 @@ class RecommendationSaveButton: UIButton {
             top: 16,
             leading: 8,
             bottom: 16,
-            trailing: 16
+            trailing: 8
         )
 
-        configuration?.imagePadding = 4
+        configuration?.imagePadding = 6
 
         configuration?.imageColorTransformer = UIConfigurationColorTransformer { [weak self] _ in
-            return self?.imageColor() ?? UIColor(.ui.grey1)
+            return self?.imageColor() ?? UIColor(.ui.coral2)
         }
 
         configuration?.titleTextAttributesTransformer = UIConfigurationTextAttributesTransformer { [weak self] _ in
@@ -84,14 +84,14 @@ class RecommendationSaveButton: UIButton {
             case .highlighted, .selected:
                 switch mode {
                 case .save:
-                    return .ui.grey1
+                    return .ui.coral1
                 case .saved:
                     return .ui.coral1
                 }
             default:
                 switch mode {
                 case .save:
-                    return .ui.grey4
+                    return .ui.coral2
                 case .saved:
                     return .ui.coral2
                 }
@@ -102,10 +102,6 @@ class RecommendationSaveButton: UIButton {
     }
 
     private func updateTitle() {
-        if isTitleHidden {
-            configuration?.title = ""
-        } else {
-            configuration?.title = mode.title
-        }
+        configuration?.title = mode.title
     }
 }

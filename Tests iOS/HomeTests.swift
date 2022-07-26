@@ -66,6 +66,8 @@ class HomeTests: XCTestCase {
         let home = app.launch().homeView
 
         home.sectionHeader("Slate 1").wait()
+        home.element.swipeUp()
+        
         home.recommendationCell("Slate 1, Recommendation 1").verify()
         home.recommendationCell("Slate 1, Recommendation 2").verify()
 
@@ -81,8 +83,8 @@ class HomeTests: XCTestCase {
         home.savedItemCell("Item 1").wait()
         home.savedItemCell("Item 2").wait()
         
-        home.savedItemCell("Item 2").swipeLeft(velocity: .fast)
-        home.savedItemCell("Item 4").swipeLeft(velocity: .fast)
+        home.savedItemCell("Item 1").swipeLeft(velocity: .fast)
+        home.savedItemCell("Item 3").swipeLeft(velocity: .fast)
         waitForDisappearance(of: home.savedItemCell("Item 6"))
     }
 
@@ -131,7 +133,7 @@ class HomeTests: XCTestCase {
     func test_archivingRecentSavesItem_removesItemFromRecentSaves() {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
-        home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
+        home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
         app.archiveButton.wait().tap()
 
         waitForDisappearance(of: home.savedItemCell("Item 1"))
@@ -140,7 +142,7 @@ class HomeTests: XCTestCase {
     func test_deletingRecentSavesItem_removesItemFromRecentSaves() {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
-        home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
+        home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
         waitForDisappearance(of: home.savedItemCell("Item 1"))
@@ -152,7 +154,7 @@ class HomeTests: XCTestCase {
     func test_sharingRecentSavesItem_removesItemFromRecentSaves() {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
-        home.recentSavesView(matching: "Item 1").itemActionButton.wait().tap()
+        home.recentSavesView(matching: "Item 1").overflowButton.wait().tap()
         app.shareButton.wait().tap()
         app.shareSheet.wait()
     }
@@ -178,6 +180,7 @@ class HomeTests: XCTestCase {
         home.sectionHeader("Slate 1").seeAllButton.wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").verify()
+        app.slateDetailView.element.swipeUp()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").verify()
 
         app.tabBar.homeButton.wait().tap()
@@ -191,7 +194,7 @@ class HomeTests: XCTestCase {
         app.launch().homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
         app.readerView.cell(containing: "Jacob and David").wait()
     }
-
+    
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
         let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
         let saveButton = cell.saveButton.wait()

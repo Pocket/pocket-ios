@@ -30,13 +30,15 @@ class MockSource: Source {
 
 extension MockSource {
     private static let object = "object"
-    typealias ObjectImpl<T> = (NSManagedObjectID) -> T
+    typealias ObjectImpl<T> = (NSManagedObjectID) -> T?
 
     func stubObject<T: NSManagedObject>(_ impl: @escaping ObjectImpl<T>) {
         implementations[Self.object] = impl
     }
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
+        print(T.self)        
+        
         guard let impl = implementations[Self.object] as? ObjectImpl<T> else {
             fatalError("\(Self.self)#\(#function) is not implemented")
         }
