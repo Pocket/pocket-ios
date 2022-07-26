@@ -5,25 +5,33 @@ import Textile
 class ItemPlaceholderCell: UICollectionViewListCell {
     private let actionsImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.grey6)
         imageView.image = UIImage(asset: .itemSkeletonActions)
+
         return imageView
     }()
 
     private let tagsImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .itemSkeletonTags)
+
         return imageView
     }()
 
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .itemSkeletonThumbnail)
+
         return imageView
     }()
 
     private let titleImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .itemSkeletonTitle)
+
         return imageView
     }()
 
@@ -31,6 +39,7 @@ class ItemPlaceholderCell: UICollectionViewListCell {
         super.init(frame: frame)
         accessibilityIdentifier = "my-list-item-skeleton"
 
+        contentView.backgroundColor = UIColor(.ui.white1)
         contentView.addSubview(actionsImageView)
         contentView.addSubview(tagsImageView)
         contentView.addSubview(thumbnailImageView)
