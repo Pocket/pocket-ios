@@ -11,9 +11,6 @@ import Lottie
 
 
 class HomeViewController: UIViewController {
-    static let dividerElementKind: String = "divider"
-    static let twoUpDividerElementKind: String = "twoup-divider"
-
     private let source: Sync.Source
     private let tracker: Tracker
     private let model: HomeViewModel
@@ -30,18 +27,19 @@ class HomeViewController: UIViewController {
         case .loading:
             return self.sectionProvider.loadingSection()
         case .recentSaves:
-            return self.sectionProvider.recentSavesSection(width: env.container.effectiveContentSize.width)
-        case .slate(let slate):
-            return self.sectionProvider.section(for: slate, in: self.model, width: env.container.effectiveContentSize.width)
+            return self.sectionProvider.recentSavesSection(in: self.model, width: env.container.effectiveContentSize.width)
+        case .slateHero(let slateID):
+            return self.sectionProvider.heroSection(for: slateID, in: self.model, width: env.container.effectiveContentSize.width)
+        case .slateCarousel(let slateID):
+            return self.sectionProvider.carouselSection(for: slateID, in: self.model, width: env.container.effectiveContentSize.width)
         }
     }
 
     private var dataSource: UICollectionViewDiffableDataSource<HomeViewModel.Section, HomeViewModel.Cell>!
 
-    private lazy var collectionView: UICollectionView = UICollectionView(
-        frame: .zero,
-        collectionViewLayout: layout
-    )
+    private lazy var collectionView: UICollectionView = {
+        return UICollectionView(frame: .zero, collectionViewLayout: layout)
+    }()
     
     private lazy var overscrollView: EndOfFeedAnimationView = {
         let view = EndOfFeedAnimationView(frame: .zero)
@@ -77,10 +75,8 @@ class HomeViewController: UIViewController {
         collectionView.backgroundColor = UIColor(.ui.white1)
         collectionView.register(cellClass: LoadingCell.self)
         collectionView.register(cellClass: RecommendationCell.self)
-        collectionView.register(cellClass: ItemsListItemCell.self)
+        collectionView.register(cellClass: HomeCarouselItemCell.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
-        collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.dividerElementKind)
-        collectionView.register(viewClass: DividerView.self, forSupplementaryViewOfKind: Self.twoUpDividerElementKind)
         collectionView.delegate = self
 
         let action = UIAction { [weak self] _ in
@@ -90,7 +86,6 @@ class HomeViewController: UIViewController {
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
         navigationItem.title = "Home"
-        
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
             self?.setupOverflowView(contentSize: contentSize)
         }.store(in: &subscriptions)
@@ -159,27 +154,20 @@ extension HomeViewController {
             let cell: LoadingCell = collectionView.dequeueCell(for: indexPath)
             return cell
         case .recentSaves(let objectID):
-            let cell: ItemsListItemCell = collectionView.dequeueCell(for: indexPath)
-            
-            guard let presenter = model.presenter(for: objectID) else {
+            let cell: HomeCarouselItemCell = collectionView.dequeueCell(for: indexPath)
+
+            guard let viewModel = model.recentSavesViewModel(for: objectID) else {
+                cell.model = nil
                 return cell
             }
-
-            cell.model = .init(
-                attributedTitle: presenter.attributedTitle,
-                attributedDetail: presenter.attributedDetail,
-                thumbnailURL: presenter.thumbnailURL,
-                shareAction: nil,
-                favoriteAction: model.favoriteAction(for: item),
-                overflowActions: model.overflowActions(for: item),
-                style: .bordered
-            )
-
+            cell.model = viewModel
+            cell.model?.favoriteAction = model.favoriteAction(for: item)
+            cell.model?.overflowActions = model.overflowActions(for: item, at: indexPath)
+            
             return cell
-        case .recommendation(let objectID):
+        case .recommendationHero(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-            cell.mode = indexPath.item == 0 ? .hero : .mini
-
+ 
             guard let viewModel = model.viewModel(for: objectID) else {
                 return cell
             }
@@ -190,10 +178,26 @@ extension HomeViewController {
                 cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
             }
 
-            if let action = model.reportAction(for: item, at: indexPath), let uiAction = UIAction(action) {
-                cell.overflowButton.addAction(uiAction, for: .primaryActionTriggered)
+            let menuActions = model.overflowActions(for: item, at: indexPath)
+            cell.overflowButton.menu = UIMenu(children: menuActions.compactMap(UIAction.init))
+    
+            return cell
+        case .recommendationCarousel(let objectID):
+            let cell: HomeCarouselItemCell = collectionView.dequeueCell(for: indexPath)
+            
+            guard let viewModel = model.recommendationCarouselViewModel(for: objectID) else {
+                cell.model = nil
+                return cell
+            }
+            
+            cell.model = viewModel
+            
+            if let action = model.saveAction(for: item, at: indexPath), let uiAction = UIAction(action) {
+                cell.saveButton.addAction(uiAction, for: .primaryActionTriggered)
             }
 
+            cell.model?.overflowActions = model.overflowActions(for: item, at: indexPath)
+            
             return cell
         }
     }
@@ -208,18 +212,15 @@ extension HomeViewController {
                 header.configure(model: .init(name: "Recent Saves", buttonTitle: "My List") { [weak self] in
                     self?.model.tappedSeeAll = .recentSaves
                 })
-            case .slate(let slate):
-                header.configure(model: .init(name: slate.name ?? "", buttonTitle: "See All") { [weak self] in
-                    self?.model.tappedSeeAll = .slate(slate)
+            case .slateHero(let objectID):
+                header.configure(model: .init(name: model.slateName(with: objectID) ?? "", buttonTitle: "See All") { [weak self] in
+                    self?.model.tappedSeeAll = .slateHero(objectID)
                 })
             default:
                 break
             }
 
             return header
-        case Self.dividerElementKind, Self.twoUpDividerElementKind:
-            let divider: DividerView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
-            return divider
         default:
             fatalError("Unknown supplementary view kind: \(kind)")
         }

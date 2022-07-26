@@ -50,10 +50,8 @@ class SlateDetailViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
 
         view.accessibilityIdentifier = "slate-detail"
-
-        title = nil
-        navigationItem.largeTitleDisplayMode = .never
-
+        navigationItem.title = model.slateName
+        navigationItem.setValue(true, forKey: "__largeTitleTwoLineMode")
         dataSource.supplementaryViewProvider = { [unowned self] _, kind, indexPath in
             let divider: DividerView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
             return divider
@@ -168,50 +166,22 @@ private extension SlateDetailViewController {
 
             return NSCollectionLayoutSection(group: group)
         case .slate(let slate):
-            let width = environment.container.effectiveContentSize.width
-            let dividerHeight: CGFloat = 17
-            let margin: CGFloat = 8
-            let spacing: CGFloat = margin * 2
-
+            let margin: CGFloat = 25
             let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
-            let components = recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in
-                guard let viewModel = self.model.viewModel(for: recommendation.objectID) else {
-                    return result
-                }
-
-                let currentHeight = result.0
-                let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - spacing) + dividerHeight
-                var items = result.1
-                items.append(
-                    NSCollectionLayoutItem(
-                        layoutSize: NSCollectionLayoutSize(
-                            widthDimension: .fractionalWidth(1),
-                            heightDimension: .absolute(height)
-                        )
-                    )
-                )
-
-                return (currentHeight + height, items)
-            }
-
+            let count = recommendations.count
+            let height: CGFloat = 380
+            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(height))
+            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            
             let heroGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(components.0 + dividerHeight)
+                    heightDimension: .absolute(height*Double(count))
                 ),
-                subitems: components.1
+                subitem: item,
+                count: count
             )
-
-            heroGroup.supplementaryItems = [
-                NSCollectionLayoutSupplementaryItem(
-                    layoutSize: NSCollectionLayoutSize(
-                        widthDimension: .fractionalWidth(1),
-                        heightDimension: .absolute(dividerHeight)
-                    ),
-                    elementKind: "divider",
-                    containerAnchor: NSCollectionLayoutAnchor(edges: .bottom)
-                )
-            ]
+            heroGroup.interItemSpacing = .fixed(16)
 
             let section = NSCollectionLayoutSection(group: heroGroup)
 
@@ -238,7 +208,6 @@ private extension SlateDetailViewController {
             return cell
         case .recommendation(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-            cell.mode = .hero
 
             guard let viewModel = self.model.viewModel(for: objectID) else {
                 return cell
@@ -253,7 +222,7 @@ private extension SlateDetailViewController {
 
             if let action = self.model.reportAction(for: viewModelCell, at: indexPath),
                let uiAction = UIAction(action) {
-                cell.overflowButton.addAction(uiAction, for: .primaryActionTriggered)
+                cell.overflowButton.menu = UIMenu(children: [uiAction])
             }
 
             return cell

@@ -197,7 +197,6 @@ extension ItemsListItemCell {
         let shareAction: ItemAction?
         let favoriteAction: ItemAction?
         let overflowActions: [ItemAction]
-        var style: CellStyle = .plain
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -209,10 +208,6 @@ extension ItemsListItemCell {
             state.isSelected ? UIColor(.ui.grey6) : UIColor(.ui.white1)
         }
         backgroundConfiguration = bgConfig
-        
-        if state.model?.style == .bordered {
-            styleBorder()
-        }
         
         titleLabel.attributedText = state.model?.attributedTitle
         detailLabel.attributedText = state.model?.attributedDetail
@@ -233,7 +228,6 @@ extension ItemsListItemCell {
 
         let menuActions = state.model?.overflowActions.compactMap(UIAction.init) ?? []
         menuButton.menu = UIMenu(children: menuActions)
-
 
         thumbnailView.image = nil
         guard let thumbnailURL = state.model?.thumbnailURL else {
@@ -258,12 +252,6 @@ extension ItemsListItemCell {
                 )
             ]
         )
-    }
-    
-    private func styleBorder() {
-        layer.borderWidth = 0.5
-        layer.borderColor = UIColor(.ui.grey6).cgColor
-        layer.cornerRadius = 16
     }
 }
 

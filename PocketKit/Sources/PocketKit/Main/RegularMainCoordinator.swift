@@ -184,7 +184,8 @@ class RegularMainCoordinator: NSObject {
             switch section {
             case .recentSaves:
                 self?.model.selectedSection = .myList(.myList)
-            case .slate(let slate):
+            case .slateHero(let slateID):
+                guard let slate = self?.model.home.slate(with: slateID) else { return }
                 self?.model.home.select(slate: slate)
             default:
                 return

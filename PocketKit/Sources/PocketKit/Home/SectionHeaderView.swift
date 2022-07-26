@@ -5,34 +5,39 @@ import Textile
 class SectionHeaderView: UICollectionReusableView {
     static let kind = "SectionHeader"
     static let buttonImageSize = CGSize(width: 6.75, height: 12)
+    static let stackSpacing: CGFloat = 10
     
     private let headerLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
         label.textColor = UIColor(.ui.lapis1)
-        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        label.lineBreakMode = .byWordWrapping
         return label
     }()
     
     private let myListButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
         configuration.image = UIImage(asset: .chevronRight)
-            .withTintColor(UIColor(.ui.lapis1), renderingMode: .alwaysTemplate)
+            .withTintColor(UIColor(.ui.lapis1), renderingMode: .alwaysOriginal)
             .resized(to: buttonImageSize)
         configuration.imagePadding = 10
+        
         configuration.imagePlacement = .trailing
+        configuration.contentInsets.leading = 0
+        configuration.contentInsets.trailing = 0
         
         let button = UIButton(configuration: configuration, primaryAction: nil)
         button.accessibilityIdentifier = "see-all-button"
         button.isHidden = true
+        button.setContentHuggingPriority(.required, for: .horizontal)
         return button
     }()
     
     private let headerStack: UIStackView = {
         let stack = UIStackView()
-        stack.distribution = .equalCentering
+        stack.distribution = .fill
         stack.axis = .horizontal
-
+        stack.spacing = stackSpacing
         return stack
     }()
 
@@ -48,10 +53,10 @@ class SectionHeaderView: UICollectionReusableView {
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
-            headerStack.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            headerStack.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
-            headerStack.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            headerStack.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+            headerStack.topAnchor.constraint(equalTo: topAnchor),
+            headerStack.bottomAnchor.constraint(equalTo: bottomAnchor),
+            headerStack.leadingAnchor.constraint(equalTo: leadingAnchor),
+            headerStack.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
     }
 
@@ -69,15 +74,27 @@ extension SectionHeaderView {
         var attributedHeaderText: NSAttributedString {
             NSAttributedString(string: name, style: .sectionHeader)
         }
-        
+
         func height(width: CGFloat) -> CGFloat {
-            attributedHeaderText.sizeFitting(availableWidth: width).height + 16
+            let buttonWidth = NSAttributedString(string: buttonTitle, style: .buttonText).sizeFitting().width + buttonImageSize.width
+            return attributedHeaderText.sizeFitting(availableWidth: width - stackSpacing - buttonWidth).height + 16
         }
     }
     
     func configure(model: Model) {
         headerLabel.attributedText = model.attributedHeaderText
         updateButtonConfiguration(with: model.buttonTitle, and: model.buttonAction)
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        myListButton.configurationUpdateHandler = { button in
+            var config = button.configuration
+            config?.image = UIImage(asset: .chevronRight)
+                .withTintColor(UIColor(.ui.lapis1), renderingMode: .alwaysOriginal)
+                .resized(to: SectionHeaderView.buttonImageSize)
+            button.configuration = config
+        }
     }
     
     private func updateButtonConfiguration(with text: String?, and action: (() -> ())?) {

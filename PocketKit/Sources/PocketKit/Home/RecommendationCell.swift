@@ -5,28 +5,18 @@ import Textile
 
 protocol RecommendationCellViewModel {
     var attributedTitle: NSAttributedString { get }
-    var attributedDetail: NSAttributedString { get }
-    var attributedExcerpt: NSAttributedString { get }
+    var attributedDomain: NSAttributedString { get }
+    var attributedTimeToRead: NSAttributedString { get }
     var imageURL: URL? { get }
     var saveButtonMode: RecommendationSaveButton.Mode { get }
 }
 
 class RecommendationCell: UICollectionViewCell {
-    enum Mode {
-        case hero
-        case mini
-    }
-
-    var mode: Mode = .hero {
-        didSet {
-            adjustLayoutForMode()
-        }
-    }
-
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = 4
+        imageView.layer.cornerRadius = 16
         imageView.clipsToBounds = true
+        imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         imageView.backgroundColor = UIColor(.ui.grey6)
         return imageView
     }()
@@ -34,96 +24,87 @@ class RecommendationCell: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = RecommendationCell.numberOfTitleLines
-        label.setContentHuggingPriority(.required, for: .vertical)
+        label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
     }()
 
-    private let subtitleLabel: UILabel = {
+    private let domainLabel: UILabel = {
         let label = UILabel()
-        label.setContentHuggingPriority(.required, for: .vertical)
+        label.numberOfLines = RecommendationCell.numberOfSubtitleLines
         return label
     }()
-
-    private let excerptLabel: UILabel = {
+    
+    private let timeToReadLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = RecommendationCell.numberOfExcerptLines
-        label.setContentHuggingPriority(.required, for: .vertical)
+        label.numberOfLines = RecommendationCell.numberOfSubtitleLines
         return label
     }()
 
     let saveButton: RecommendationSaveButton = {
         let button = RecommendationSaveButton()
         button.accessibilityIdentifier = "save-button"
-
         return button
     }()
 
     let overflowButton: RecommendationOverflowButton = {
         let button = RecommendationOverflowButton()
-        button.accessibilityIdentifier = "report-button"
+        button.accessibilityIdentifier = "overflow-button"
+        button.showsMenuAsPrimaryAction = true
         return button
     }()
 
-    private let textStack: UIStackView = {
+    private let subtitleStack: UIStackView = {
         let stack = UIStackView()
+        stack.distribution = .fillProportionally
         stack.axis = .vertical
-        stack.distribution = .fill
-        stack.setContentHuggingPriority(.required, for: .vertical)
+        stack.spacing = 4
         return stack
     }()
 
     private let buttonStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
+        stack.spacing = 0
+        return stack
+    }()
+    
+    private let bottomStack: UIStackView = {
+        let stack = UIStackView()
+        stack.distribution = .equalSpacing
+        stack.axis = .horizontal
         return stack
     }()
 
-    private var textStackTopConstraint: NSLayoutConstraint
-    private var buttonStackTopConstraintHero: NSLayoutConstraint
-    private var buttonStackTopConstraintMini: NSLayoutConstraint
-
     override init(frame: CGRect) {
-        textStackTopConstraint = textStack.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: 0)
-
-        buttonStackTopConstraintHero = buttonStack.topAnchor.constraint(
-            equalTo: textStack.bottomAnchor,
-            constant: Hero.buttonStackTopMargin
-        )
-
-        buttonStackTopConstraintMini = buttonStack.topAnchor.constraint(
-            greaterThanOrEqualTo: textStack.bottomAnchor,
-            constant: Mini.buttonStackTopMargin
-        )
-
         super.init(frame: frame)
-
+        
         contentView.addSubview(thumbnailImageView)
-        contentView.addSubview(textStack)
-        contentView.addSubview(buttonStack)
-
+        contentView.addSubview(titleLabel)
+        contentView.addSubview(bottomStack)
         contentView.layoutMargins = Self.layoutMargins
 
         thumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
-        textStack.translatesAutoresizingMaskIntoConstraints = false
-        buttonStack.translatesAutoresizingMaskIntoConstraints = false
+        titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        bottomStack.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
             thumbnailImageView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
-            thumbnailImageView.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            thumbnailImageView.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            thumbnailImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            thumbnailImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             thumbnailImageView.heightAnchor.constraint(equalTo: thumbnailImageView.widthAnchor, multiplier: Self.imageAspectRatio),
 
-            textStackTopConstraint,
-            textStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            textStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-
-            buttonStackTopConstraintHero,
-            buttonStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            buttonStack.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            buttonStack.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            titleLabel.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: RecommendationCell.textStackTopMargin),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            
+            bottomStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
+            bottomStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
+            bottomStack.bottomAnchor.constraint(equalTo:  contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
         ])
 
-        [titleLabel, subtitleLabel, excerptLabel].forEach(textStack.addArrangedSubview)
-        [saveButton, UIView(), overflowButton].forEach(buttonStack.addArrangedSubview)
+        [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
+        [saveButton, overflowButton].forEach(buttonStack.addArrangedSubview)
+        [subtitleStack, UIView(), buttonStack].forEach(bottomStack.addArrangedSubview)
     }
 
     required init?(coder: NSCoder) {
@@ -132,111 +113,65 @@ class RecommendationCell: UICollectionViewCell {
 
     func configure(model: RecommendationCellViewModel) {
         titleLabel.attributedText = model.attributedTitle
-        subtitleLabel.attributedText = model.attributedDetail
-        excerptLabel.attributedText = model.attributedExcerpt
+        domainLabel.attributedText = model.attributedDomain
+        timeToReadLabel.attributedText = model.attributedTimeToRead
 
         saveButton.mode = model.saveButtonMode
-
+        
+        if model.attributedTimeToRead.string == "" {
+            timeToReadLabel.isHidden = true
+        } else {
+            timeToReadLabel.isHidden = false
+        }
         let imageWidth = bounds.width
-        - RecommendationCell.layoutMargins.left
-        - RecommendationCell.layoutMargins.right
+                - RecommendationCell.layoutMargins.left
+                - RecommendationCell.layoutMargins.right
 
         let imageSize = CGSize(
             width: imageWidth,
             height: imageWidth * RecommendationCell.imageAspectRatio
         )
-
         thumbnailImageView.kf.indicatorType = .activity
         thumbnailImageView.kf.setImage(
             with: model.imageURL,
             options: [
                 .scaleFactor(UIScreen.main.scale),
-                .processor(ResizingImageProcessor(
-                    referenceSize: imageSize,
-                    mode: .aspectFill
-                ).append(
-                    another: CroppingImageProcessor(size: imageSize)
-                )),
+                .processor(
+                    ResizingImageProcessor(
+                        referenceSize: imageSize,
+                        mode: .aspectFill
+                    ).append(
+                        another: CroppingImageProcessor(
+                            size: imageSize
+                        )
+                    )
+                )
             ]
         )
     }
-}
-
-extension RecommendationCell {
-    private func adjustLayoutForMode() {
-        switch mode {
-        case .hero:
-            textStackTopConstraint.constant = Hero.textStackTopMargin
-            textStack.spacing = Hero.textStackSpacing
-            excerptLabel.isHidden = false
-            saveButton.isTitleHidden = false
-            subtitleLabel.numberOfLines = Hero.numberOfSubtitleLines
-
-            buttonStackTopConstraintHero.isActive = true
-            buttonStackTopConstraintMini.isActive = false
-        case .mini:
-            textStackTopConstraint.constant = Mini.textStackTopMargin
-            textStack.spacing = Mini.textStackSpacing
-            excerptLabel.isHidden = true
-            saveButton.isTitleHidden = true
-            subtitleLabel.numberOfLines = Mini.numberOfSubtitleLines
-
-            buttonStackTopConstraintHero.isActive = false
-            buttonStackTopConstraintMini.isActive = true
-        }
+    
+    override func layoutSubviews() {
+        contentView.layer.masksToBounds = false
+        layer.cornerRadius = 16
+        contentView.layer.cornerRadius = 16
+        contentView.layer.shadowColor = UIColor(.ui.border).cgColor
+        contentView.layer.shadowOffset = .zero
+        contentView.layer.shadowOpacity = 1.0
+        contentView.layer.shadowRadius = 6
+        contentView.layer.shadowPath = UIBezierPath(roundedRect: contentView.layer.bounds, cornerRadius: contentView.layer.cornerRadius).cgPath
+        contentView.layer.backgroundColor = UIColor(.ui.white1).cgColor
     }
 }
 
 extension RecommendationCell {
-    struct Hero {
-        static let textStackTopMargin: CGFloat = 16
-        static let buttonStackTopMargin: CGFloat = 10
-        static let textStackSpacing: CGFloat = 8
-        static let numberOfSubtitleLines = 1
-    }
-
-    struct Mini {
-        static let textStackTopMargin: CGFloat = 10
-        static let buttonStackTopMargin: CGFloat = 4
-        static let textStackSpacing: CGFloat = 4
-        static let numberOfSubtitleLines = 2
-    }
-
-    static let layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    static let textStackTopMargin: CGFloat = 16
+    static let layoutMargins = UIEdgeInsets(top: 0, left: 16, bottom: 16, right: 16)
     static let imageAspectRatio: CGFloat = 9/16
     static let numberOfTitleLines = 3
-    static let numberOfExcerptLines = 3
-    static let saveButtonHeight: CGFloat = 21
+    static let numberOfSubtitleLines = 2
 }
 
 extension RecommendationCell {
-    static func miniHeight(viewModel: RecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
-        let adjustedWidth = (availableWidth / 2).rounded(.down) - Self.layoutMargins.left - Self.layoutMargins.right
-        let imageHeight = adjustedWidth * Self.imageAspectRatio
-
-        let titleHeight = adjustedHeight(
-            of: viewModel.attributedTitle,
-            availableWidth: adjustedWidth,
-            numberOfLines: numberOfTitleLines
-        )
-
-        let detailHeight = adjustedHeight(
-            of: viewModel.attributedDetail,
-            availableWidth: adjustedWidth,
-            numberOfLines: Hero.numberOfSubtitleLines
-        )
-
-        return Self.layoutMargins.top
-        + imageHeight
-        + Mini.textStackTopMargin
-        + titleHeight
-        + Mini.textStackSpacing
-        + detailHeight
-        + Mini.buttonStackTopMargin
-        + Self.saveButtonHeight
-        + Self.layoutMargins.bottom
-    }
-
     static func fullHeight(viewModel: RecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
         let adjustedWidth = availableWidth - Self.layoutMargins.left - Self.layoutMargins.right
         let imageHeight = (adjustedWidth * Self.imageAspectRatio).rounded(.up)
@@ -246,27 +181,25 @@ extension RecommendationCell {
             availableWidth: adjustedWidth,
             numberOfLines: numberOfTitleLines
         )
-        let detailHeight = adjustedHeight(
-            of: viewModel.attributedDetail,
+        
+        let domainHeight = adjustedHeight(
+            of: viewModel.attributedDomain,
             availableWidth: adjustedWidth,
-            numberOfLines: Hero.numberOfSubtitleLines
+            numberOfLines: numberOfTitleLines
         )
-        let excerptHeight = adjustedHeight(
-            of: viewModel.attributedExcerpt,
+        
+        let timeToReadHeight = adjustedHeight(
+            of: viewModel.attributedTimeToRead,
             availableWidth: adjustedWidth,
-            numberOfLines: numberOfExcerptLines
+            numberOfLines: numberOfTitleLines
         )
 
         return Self.layoutMargins.top
         + imageHeight
-        + Hero.textStackTopMargin
+        + textStackTopMargin
         + titleHeight
-        + Hero.textStackSpacing
-        + detailHeight
-        + Hero.textStackSpacing
-        + excerptHeight
-        + Hero.buttonStackTopMargin
-        + Self.saveButtonHeight
+        + domainHeight
+        + timeToReadHeight
         + Self.layoutMargins.bottom
     }
 

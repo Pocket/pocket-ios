@@ -11,6 +11,8 @@ class HomeViewModel {
     
     static let lineupIdentifier = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
     
+    var recentSavesViewModels: [NSManagedObjectID: HomeCarouselItemCell.Model] = [:]
+    
     private let source: Source
     private let slateLineupController: SlateLineupController
     private let tracker: Tracker
@@ -43,7 +45,7 @@ class HomeViewModel {
     private var viewModelSubscriptions: Set<AnyCancellable> = []
     private let recentSavesController: RecentSavesController
     private var subscriptions: [AnyCancellable] = []
-
+    
     init(
         source: Source,
         tracker: Tracker
@@ -88,24 +90,16 @@ class HomeViewModel {
             completion()
         }
     }
-
-    func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
-        guard case .item(let objectID) = cellID else {
-            return nil
-        }
-
-        return presenter(for: objectID)
-    }
     
-    func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter? {
-        bareItem(with: itemID).flatMap(ItemsListItemPresenter.init)
+    func retrieveItem(for itemID: NSManagedObjectID) -> SavedItem? {
+        bareItem(with: itemID)
     }
     
     func select(cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
         case .loading, .recentSaves:
             return
-        case .recommendation:
+        case .recommendationHero, .recommendationCarousel:
             select(recommendation: cell, at: indexPath)
         }
     }
@@ -115,6 +109,7 @@ class HomeViewModel {
         
         selectedSlateDetailViewModel = SlateDetailViewModel(
             slateID: slateID,
+            slateName: slate.name,
             source: source,
             tracker: tracker.childTracker(hosting: .slateDetail.screen)
         )
@@ -132,7 +127,7 @@ class HomeViewModel {
             } else {
                 return .favorite { [weak self] _ in self?._favorite(item: item) }
             }
-        case .loading, .recommendation:
+        case .loading, .recommendationHero, .recommendationCarousel:
             return nil
         }
     }
@@ -145,7 +140,7 @@ class HomeViewModel {
         source.unfavorite(item: item)
     }
     
-    func overflowActions(for cell: Cell) -> [ItemAction] {
+    func overflowActions(for cell: Cell, at indexPath: IndexPath) -> [ItemAction] {
         switch cell {
         case .recentSaves(let objectID):
             guard let item = bareItem(with: objectID) else {
@@ -163,11 +158,18 @@ class HomeViewModel {
                     self?.confirmDelete(item: item)
                 }
             ]
-        case .loading, .recommendation:
+        case .recommendationHero, .recommendationCarousel:
+            guard let itemAction = reportAction(for: cell, at: indexPath) else { return [] }
+            return [itemAction]
+        case .loading:
             return []
         }
     }
-
+        
+    private func _share(item: SavedItem, sender: Any?) {
+        sharedActivity = PocketItemActivity(url: item.url, sender: sender)
+    }
+    
     private func _archive(item: SavedItem) {
         source.archive(item: item)
     }
@@ -195,10 +197,6 @@ class HomeViewModel {
         source.delete(item: item)
     }
 
-    func _share(item: SavedItem, sender: Any?) {
-        sharedActivity = PocketItemActivity(url: item.url, sender: sender)
-    }
-    
     func reportAction(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
         return .report { [weak self] _ in
             self?.report(cell, at: indexPath)
@@ -206,7 +204,7 @@ class HomeViewModel {
     }
 
     func saveAction(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
-        guard case .recommendation(let objectID) = cell,
+        guard let objectID = getRecommendationID(with: cell),
               let viewModel = viewModel(for: objectID) else {
             return nil
         }
@@ -219,12 +217,23 @@ class HomeViewModel {
             }
         }
     }
+    
+    private func getRecommendationID(with cell: HomeViewModel.Cell) -> NSManagedObjectID? {
+        switch cell {
+        case .recommendationHero(let objectID):
+            return objectID
+        case .recommendationCarousel(let objectID):
+            return objectID
+        default:
+            return nil
+        }
+    }
 
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
         case .loading, .recentSaves:
             return
-        case .recommendation:
+        case .recommendationHero, .recommendationCarousel:
             tracker.track(
                 event: ImpressionEvent(component: .content, requirement: .instant),
                 contexts(for: cell, at: indexPath)
@@ -234,6 +243,15 @@ class HomeViewModel {
 
     func viewModel(for objectID: NSManagedObjectID) -> HomeRecommendationCellViewModel? {
         return viewModels[objectID]
+    }
+    
+    func recentSavesViewModel(for objectID: NSManagedObjectID) -> HomeCarouselItemCell.Model? {
+        return recentSavesViewModels[objectID]
+    }
+    
+    func recommendationCarouselViewModel(for objectID: NSManagedObjectID) -> HomeCarouselItemCell.Model? {
+        guard let viewModel = viewModels[objectID] else { return nil }
+        return HomeCarouselItemCell.Model(viewModel: viewModel)
     }
 }
 
@@ -256,6 +274,7 @@ extension HomeViewModel {
     private func buildSnapshot() -> Snapshot {
         viewModels = [:]
         viewModelSubscriptions = []
+        recentSavesViewModels = [:]
         var snapshot = Snapshot()
 
         let slates = slateLineupController.slateLineup?.slates?.compactMap { $0 as? Slate } ?? []
@@ -266,6 +285,10 @@ extension HomeViewModel {
         if !recentSavesItemIDs.isEmpty {
             snapshot.appendSections([.recentSaves])
             snapshot.appendItems(recentSavesItemIDs, toSection: .recentSaves)
+            recentSavesController.recentSaves.forEach { item in
+                let viewModel = HomeCarouselItemCell.Model(item: item)
+                recentSavesViewModels[item.objectID] = viewModel
+            }
         }
         
         slates.forEach { slate in
@@ -279,33 +302,72 @@ extension HomeViewModel {
                 return
             }
 
-            let slateSection: HomeViewModel.Section = .slate(slate)
-            snapshot.appendSections([slateSection])
+            let slateHeroSection: HomeViewModel.Section = .slateHero(slate.objectID)
+            let slateCarouselSection: HomeViewModel.Section = .slateCarousel(slate.objectID)
+            
+            snapshot.appendSections([slateHeroSection])
+            snapshot.appendItems([.recommendationHero(recs[0].objectID)], toSection: slateHeroSection)
+            
+            if recs.count > 1 {
+                snapshot.appendSections([slateCarouselSection])
+                
+                let carouselItems = recs[1...].map {
+                    HomeViewModel.Cell.recommendationCarousel($0.objectID)
+                }
+
+                snapshot.appendItems(carouselItems, toSection: slateCarouselSection)
+            }
 
             recs.forEach { rec in
                 let viewModel = HomeRecommendationCellViewModel(recommendation: rec)
                 viewModels[rec.objectID] = viewModel
 
                 viewModel.updated.sink { [weak self] isSaved in
-                    let item = Cell.recommendation(rec.objectID)
-                    if self?.snapshot.indexOfItem(item) != nil {
-                        self?.snapshot.reloadItems([item])
+                    let heroItem = Cell.recommendationHero(rec.objectID)
+                    let carouselItem = Cell.recommendationCarousel(rec.objectID)
+                    if self?.snapshot.indexOfItem(heroItem) != nil {
+                        self?.snapshot.reloadItems([heroItem])
+                    }
+                    if self?.snapshot.indexOfItem(carouselItem) != nil {
+                        self?.snapshot.reloadItems([carouselItem])
                     }
                 }.store(in: &viewModelSubscriptions)
             }
-
-            let items = recs.map {
-                HomeViewModel.Cell.recommendation($0.objectID)
-            }
-
-            snapshot.appendItems(items, toSection: slateSection)
         }
 
         return snapshot
     }
+    
+    func numberOfCarouselItemsForSlate(with id: NSManagedObjectID) -> Int {
+        guard let count = (slateLineupController
+            .slateLineup?
+            .slates?
+            .first(where: { ($0 as? Slate)?.objectID == id }) as? Slate)?
+            .recommendations?.count,
+        count > 1 else {
+            return 0
+        }
+
+        return count - 1
+    }
+    
+    func slateName(with id: NSManagedObjectID) -> String? {
+        (slateLineupController
+            .slateLineup?
+            .slates?
+            .first { ($0 as? Slate)?.objectID == id } as? Slate)?.name
+    }
+    
+    func slate(with id: NSManagedObjectID) -> Slate? {
+        (slateLineupController
+            .slateLineup?
+            .slates?
+            .first { ($0 as? Slate)?.objectID == id } as? Slate)
+    }
+
 
     private func select(recommendation cell: HomeViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
+        guard let objectID = getRecommendationID(with: cell),
               let viewModel = viewModel(for: objectID) else {
             return
         }
@@ -340,7 +402,7 @@ extension HomeViewModel {
     }
 
     private func report(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
+        guard let objectID = getRecommendationID(with: cell),
               let viewModel = viewModel(for: objectID) else {
             return
         }
@@ -353,7 +415,7 @@ extension HomeViewModel {
     }
 
     private func save(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
+        guard let objectID = getRecommendationID(with: cell),
               let viewModel = viewModel(for: objectID) else {
             return
         }
@@ -368,7 +430,7 @@ extension HomeViewModel {
     }
 
     private func archive(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
+        guard let objectID = getRecommendationID(with: cell),
               let viewModel = viewModel(for: objectID) else {
             return
         }
@@ -386,11 +448,10 @@ extension HomeViewModel {
         switch cell {
         case .loading, .recentSaves:
             return []
-        case .recommendation(let objectID):
+        case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let viewModel = viewModel(for: objectID),
-                  case .slate(let slate) = snapshot.sectionIdentifier(containingItem: cell),
+                  let slate = getSlateDetails(with: cell)?.0, let slateIndex = getSlateDetails(with: cell)?.1,
                   let slateLineup = slateLineupController.slateLineup,
-                  let slateIndex = snapshot.indexOfSection(.slate(slate)),
                   let recommendationURL = viewModel.recommendation.item?.bestURL else {
                 return []
             }
@@ -419,19 +480,34 @@ extension HomeViewModel {
             return [lineupContext, slateContext, recommendationContext, contentContext, itemContext]
         }
     }
+    
+    private func getSlateDetails(with cell: HomeViewModel.Cell) -> (Slate?, Int?)? {
+        switch snapshot.sectionIdentifier(containingItem: cell) {
+        case .slateHero(let slateID):
+            let slateIndex = snapshot.indexOfSection(.slateHero(slateID))
+            return (slate(with: slateID), slateIndex)
+        case .slateCarousel(let slateID):
+            let slateIndex = snapshot.indexOfSection(.slateHero(slateID))
+            return (slate(with: slateID), slateIndex)
+        default:
+            return nil
+        }
+    }
 }
 
 extension HomeViewModel {
     enum Section: Hashable {
         case loading
         case recentSaves
-        case slate(Slate)
+        case slateHero(NSManagedObjectID)
+        case slateCarousel(NSManagedObjectID)
     }
 
     enum Cell: Hashable {
         case loading
         case recentSaves(NSManagedObjectID)
-        case recommendation(NSManagedObjectID)
+        case recommendationHero(NSManagedObjectID)
+        case recommendationCarousel(NSManagedObjectID)
     }
 }
 

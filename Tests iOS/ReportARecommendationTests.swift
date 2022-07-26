@@ -72,7 +72,9 @@ class ReportARecommendationTests: XCTestCase {
         
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
-            .reportButton.wait().tap()
+            .overflowButton.wait().tap()
+        
+        app.reportButton.wait().tap()
         
         let report = app.reportView.wait()
         report.brokenMetaButton.verify()
