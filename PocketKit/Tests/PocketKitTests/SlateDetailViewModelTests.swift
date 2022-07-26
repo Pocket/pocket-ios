@@ -197,7 +197,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
 
-    func test_saveAction_whenRecommendationIsNotSaved_savesWithSource() throws {
+    func test_primaryAction_whenRecommendationIsNotSaved_savesWithSource() throws {
         source.stubSaveRecommendation { _ in }
 
         let item = space.buildItem()
@@ -207,14 +207,14 @@ class SlateDetailViewModelTests: XCTestCase {
 
         let action = viewModel
             .recommendationViewModel(for: recommendation.objectID, at: [0,0])?
-            .saveAction
+            .primaryAction
         XCTAssertNotNil(action)
         action?.handler?(nil)
 
         XCTAssertEqual(source.saveRecommendationCall(at: 0)?.recommendation, recommendation)
     }
 
-    func test_saveAction_whenRecommendationIsSaved_archivesWithSource() throws {
+    func test_primaryAction_whenRecommendationIsSaved_archivesWithSource() throws {
         source.stubArchiveRecommendation { _ in }
 
         let item = space.buildItem()
@@ -226,7 +226,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let action = viewModel.recommendationViewModel(
             for: recommendation.objectID,
             at: IndexPath(item: 0, section: 0)
-        )?.saveAction
+        )?.primaryAction
         XCTAssertNotNil(action)
         action?.handler?(nil)
 

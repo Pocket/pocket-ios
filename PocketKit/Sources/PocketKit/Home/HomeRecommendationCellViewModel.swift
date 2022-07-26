@@ -8,7 +8,7 @@ import CoreData
 class HomeRecommendationCellViewModel {
     let recommendation: Recommendation
     let overflowActions: [ItemAction]?
-    let saveAction: ItemAction?
+    let primaryAction: ItemAction?
     
     var isSaved: Bool {
         recommendation.item?.savedItem != nil &&
@@ -18,11 +18,11 @@ class HomeRecommendationCellViewModel {
     init(
         recommendation: Recommendation,
         overflowActions: [ItemAction]? = nil,
-        saveAction: ItemAction? = nil
+        primaryAction: ItemAction? = nil
     ) {
         self.recommendation = recommendation
         self.overflowActions = overflowActions
-        self.saveAction = saveAction
+        self.primaryAction = primaryAction
     }
 }
 

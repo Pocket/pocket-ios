@@ -386,7 +386,7 @@ extension HomeViewModel {
                     self?.report(recommendation, at: indexPath)
                 }
             ],
-            saveAction: .recommendationPrimary { [weak self] _ in
+            primaryAction: .recommendationPrimary { [weak self] _ in
                 let isSaved = recommendation.item?.savedItem != nil
                 && recommendation.item?.savedItem?.isArchived == false
 

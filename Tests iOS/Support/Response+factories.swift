@@ -31,8 +31,8 @@ extension Response {
         fixture(named: "slate-detail-\(number)")
     }
 
-    static func saveItem() -> Response {
-        fixture(named: "save-item")
+    static func saveItem(_ fixtureName: String = "save-item") -> Response {
+        fixture(named: fixtureName)
     }
 
     static func delete() -> Response {

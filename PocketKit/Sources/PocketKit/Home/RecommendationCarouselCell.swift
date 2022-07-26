@@ -29,7 +29,7 @@ class RecommendationCarouselCell: HomeCarouselItemCell {
         }
 
         var saveAction: ItemAction? {
-            viewModel.saveAction
+            viewModel.primaryAction
         }
 
         var attributedTitle: NSAttributedString {

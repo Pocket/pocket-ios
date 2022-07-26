@@ -198,7 +198,7 @@ class HomeTests: XCTestCase {
             .recommendationCell("Slate 1, Recommendation 1")
 
         cell.saveButton.wait().tap()
-        XCTAssertEqual(cell.saveButton.label, "Saved")
+        cell.savedButton.wait()
 
         app.navigationBar.buttons["Home"].tap()
         app.tabBar.myListButton.tap()
@@ -212,7 +212,6 @@ class HomeTests: XCTestCase {
     
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
         let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
-        let saveButton = cell.saveButton.wait()
 
         let saveRequestExpectation = expectation(description: "A save mutation request")
         let archiveRequestExpectation = expectation(description: "An archive mutation request")
@@ -241,8 +240,8 @@ class HomeTests: XCTestCase {
             }
         }
 
-        saveButton.tap()
-        XCTAssertEqual(saveButton.label, "Saved")
+        cell.saveButton.tap()
+        cell.savedButton.wait()
 
         app.tabBar.myListButton.tap()
         app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
@@ -253,11 +252,73 @@ class HomeTests: XCTestCase {
         app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
-        saveButton.tap()
+        cell.savedButton.tap()
+        cell.saveButton.wait()
 
-        XCTAssertEqual(saveButton.label, "Save")
         wait(for: [archiveRequestExpectation], timeout: 1)
         XCTAssertFalse(app.myListView.itemView(matching: "Slate 1, Recommendation 1").exists)
+    }
+
+    func test_slateDetailsView_tappingSaveButtonInRecommendationCell_savesItemToList() {
+        app.launch()
+            .homeView
+            .sectionHeader("Slate 1")
+            .seeAllButton
+            .wait().tap()
+
+        let rec1Cell = app.slateDetailView
+            .recommendationCell("Slate 1, Recommendation 1")
+            .wait()
+
+        let coord = rec1Cell.element
+            .coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9))
+
+
+        let rec2Cell = app.slateDetailView
+            .recommendationCell("Slate 1, Recommendation 2")
+            .wait()
+
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isToSaveAnItem {
+                if apiRequest.contains("https:\\/\\/example.com\\/item-1") {
+                    return Response.saveItem("save-recommendation-1")
+                } else if apiRequest.contains("https:\\/\\/example.com\\/item-2") {
+                    return Response.saveItem("save-recommendation-2")
+                }
+            } else if apiRequest.isToArchiveAnItem {
+                if apiRequest.contains("slate-1-rec-1-saved-item") {
+                    XCTFail("Received archive request for unexpected item")
+                } else {
+                    return Response.archive()
+                }
+            }
+
+            XCTFail("Received unexpected request")
+            return Response(status: .internalServerError)
+        }
+
+
+        rec1Cell.saveButton.wait().tap()
+        rec1Cell.savedButton.wait()
+
+        coord
+            .press(
+                forDuration: 0.1,
+                thenDragTo: coord.withOffset(.init(
+                        dx: 0,
+                        dy: -50
+                    )
+                ),
+                withVelocity: .default,
+                thenHoldForDuration: 0.1
+            )
+        rec2Cell.saveButton.wait().tap()
+        rec2Cell.savedButton.wait().tap()
+        rec2Cell.saveButton.wait().tap()
+        rec2Cell.savedButton.wait()
+        rec1Cell.savedButton.wait()
     }
 }
 
