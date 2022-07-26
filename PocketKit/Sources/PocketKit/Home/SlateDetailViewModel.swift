@@ -9,6 +9,7 @@ import Analytics
 class SlateDetailViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
+    let slateName: String?
     private let slateID: String
     private let source: Source
     private let tracker: Tracker
@@ -29,8 +30,9 @@ class SlateDetailViewModel {
     @Published
     var selectedRecommendationToReport: Recommendation? = nil
 
-    init(slateID: String, source: Source, tracker: Tracker) {
+    init(slateID: String, slateName: String?, source: Source, tracker: Tracker) {
         self.slateID = slateID
+        self.slateName = slateName
         self.source = source
         self.tracker = tracker
         self.slateController = source.makeSlateController(byID: slateID)
@@ -104,6 +106,15 @@ class SlateDetailViewModel {
 
     func viewModel(for objectID: NSManagedObjectID) -> HomeRecommendationCellViewModel? {
         return viewModels[objectID]
+    }
+    
+    func recommendationViewModel(for objectID: NSManagedObjectID, and item: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> HomeRecommendationCellViewModel? {
+        guard let viewModel = viewModels[objectID] else { return nil }
+        if let action = reportAction(for: item, at: indexPath) {
+            viewModel.overflowActions = [action]
+        }
+        viewModel.saveAction = saveAction(for: item, at: indexPath)
+        return viewModel
     }
 }
 

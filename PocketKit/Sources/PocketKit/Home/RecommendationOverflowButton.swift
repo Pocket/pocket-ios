@@ -9,16 +9,18 @@ class RecommendationOverflowButton: UIButton {
         configuration = .plain()
         configuration?.contentInsets = NSDirectionalEdgeInsets(
             top: 16,
-            leading: 16,
+            leading: 8,
             bottom: 16,
             trailing: 8
         )
-        configuration?.image = UIImage(asset: .alert)
-            .withRenderingMode(.alwaysTemplate)
-
+        configuration?.image = UIImage(asset: .overflow)
+            .resized(to: CGSize(width: 20, height: 20))
+            .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
+        
         configuration?.imageColorTransformer = UIConfigurationColorTransformer { [weak self] _ in
-            self?.imageColor() ?? UIColor(.ui.grey4)
+            self?.imageColor() ?? UIColor(.ui.grey5)
         }
+        
     }
 
     required init?(coder: NSCoder) {
@@ -30,7 +32,7 @@ class RecommendationOverflowButton: UIButton {
         case .selected, .highlighted:
             return UIColor(.ui.grey1)
         default:
-            return UIColor(.ui.grey4)
+            return UIColor(.ui.grey5)
         }
     }
 }

@@ -29,11 +29,13 @@ class SlateDetailViewModelTests: XCTestCase {
 
     func subject(
         slateID: String? = nil,
+        slateName: String? = nil,
         source: Source? = nil,
         tracker: Tracker? = nil
     ) -> SlateDetailViewModel {
         SlateDetailViewModel(
             slateID: slateID ?? "abcde",
+            slateName: slateName ?? "",
             source: source ?? self.source,
             tracker: tracker ?? self.tracker
         )

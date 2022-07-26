@@ -53,7 +53,7 @@ class ReportARecommendationTests: XCTestCase {
         app.terminate()
     }
     
-    func test_reportingARecommendation_asBrokenMeta_sendsEvent() {
+    func test_reportingARecommendationfromHero_asBrokenMeta_sendsEvent() {
         let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
         var requestBody: String? = nil
         server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
@@ -72,7 +72,51 @@ class ReportARecommendationTests: XCTestCase {
         
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
-            .reportButton.wait().tap()
+            .overflowButton.wait().tap()
+        
+        app.reportButton.wait().tap()
+        
+        let report = app.reportView.wait()
+        report.brokenMetaButton.verify()
+        report.wrongCategoryButton.verify()
+        report.sexuallyExplicitButton.verify()
+        report.offensiveButton.verify()
+        report.misinformationButton.verify()
+        report.otherButton.verify().tap()
+        report.commentEntry.wait()
+        report.submitButton.wait().tap()
+        
+        wait(for: [reportExpectation], timeout: 1)
+        guard let requestBody = requestBody else {
+            XCTFail("Expected request body to not be nil")
+            return
+        }
+        
+        XCTAssertTrue(requestBody.contains("reason"))
+    }
+    
+    func test_reportingARecommendationFromCarousel_asBrokenMeta_sendsEvent() {
+        let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
+        var requestBody: String? = nil
+        server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
+            requestBody = body(of: request)
+            if requestBody?.contains("engagement") == true
+                && requestBody?.contains("report") == true
+                && requestBody?.contains("reason") == true {
+                reportExpectation.fulfill()
+            }
+
+            return Response {
+                Status.ok
+                Data()
+            }
+        }
+        
+        app.homeView
+            .recommendationCell("Slate 1, Recommendation 2")
+            .overflowButton.wait().tap()
+        
+        app.reportButton.wait().tap()
         
         let report = app.reportView.wait()
         report.brokenMetaButton.verify()

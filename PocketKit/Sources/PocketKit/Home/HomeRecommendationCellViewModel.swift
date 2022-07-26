@@ -8,7 +8,9 @@ import CoreData
 class HomeRecommendationCellViewModel: NSObject {
     let updated: PassthroughSubject<Void, Never> = .init()
     let recommendation: Recommendation
-
+    var overflowActions: [ItemAction]? = nil
+    var saveAction: ItemAction? = nil
+    
     var isSaved: Bool {
         resultsController?.fetchedObjects?.first != nil
     }
@@ -43,12 +45,16 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
         NSAttributedString(string: recommendation.item?.title ?? "", style: .title)
     }
 
-    var attributedDetail: NSAttributedString {
-        NSAttributedString(string: detail, style: .subtitle)
+    var attributedDomain: NSAttributedString {
+        NSAttributedString(string: domain ?? "", style: .domain)
     }
-
-    var attributedExcerpt: NSAttributedString {
-        NSAttributedString(string: recommendation.item?.excerpt ?? "", style: .excerpt)
+    
+    var attributedTimeToRead: NSAttributedString {
+        NSAttributedString(string: timeToRead ?? "", style: .timeToRead)
+    }
+    
+    var title: String? {
+        recommendation.item?.title
     }
 
     var imageURL: URL? {
@@ -60,38 +66,30 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
         isSaved ? .saved : .save
     }
 
-    private var detail: String {
-        [domain, timeToRead].compactMap { $0 }.joined(separator: " • ")
-    }
-
-    private var domain: String? {
+    var domain: String? {
         recommendation.item?.domainMetadata?.name ?? recommendation.item?.domain ?? recommendation.item?.bestURL?.host
     }
 
-    private var timeToRead: String? {
+    var timeToRead: String? {
         guard let timeToRead = recommendation.item?.timeToRead,
               timeToRead > 0 else {
             return nil
         }
 
-        return "\(timeToRead) min"
+        return "\(timeToRead) min read"
     }
 }
 
 private extension Style {
     static let title: Style = .header.sansSerif.h6.with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
+        paragraph.with(lineBreakMode: .byTruncatingTail).with(lineSpacing: 4)
     }
 
-    static let miniTitle: Style = .header.sansSerif.h7.with { paragraph in
+    static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
-
-    static let subtitle: Style = .header.sansSerif.p4.with(color: .ui.grey5).with { paragraph in
-        paragraph.with(lineBreakMode: .byTruncatingTail)
-    }
-
-    static let excerpt: Style = .header.sansSerif.p4.with(color: .ui.grey4).with { paragraph in
+    
+    static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey5).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
 }

@@ -25,11 +25,11 @@ struct HomeViewElement: PocketUIElement {
     }
     
     var savedItemCells: XCUIElementQuery {
-        return element.cells.matching(identifier: "my-list-item")
+        return element.cells.matching(identifier: "home-carousel-item")
     }
     
-    func recentSavesView(matching string: String) -> ItemRowElement {
-        return ItemRowElement(savedItemCell(string))
+    func recentSavesView(matching string: String) -> RecentSavesCellElement {
+        return RecentSavesCellElement(savedItemCell(string))
     }
     
     func sectionHeader(_ title: String) -> SectionHeaderElement {
