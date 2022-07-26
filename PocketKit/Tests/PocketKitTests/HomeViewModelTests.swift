@@ -687,7 +687,7 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
     
-    func test_saveAction_whenRecommendationIsNotSaved_savesWithSource() throws {
+    func test_primary_whenRecommendationIsNotSaved_savesWithSource() throws {
         source.stubSaveRecommendation { _ in }
         let item = space.buildItem(isArticle: true)
         let recommendation = space.buildRecommendation(item: item)
@@ -701,7 +701,7 @@ class HomeViewModelTests: XCTestCase {
 
         let action = viewModel.recommendationHeroViewModel(
             for: recommendation.objectID, at: [0, 0]
-        )?.saveAction
+        )?.primaryAction
         XCTAssertNotNil(action)
         action?.handler?(nil)
         XCTAssertEqual(
@@ -710,7 +710,7 @@ class HomeViewModelTests: XCTestCase {
         )
     }
 
-    func test_saveAction_whenRecommendationIsSaved_archivesWithSource() throws {
+    func test_primary_whenRecommendationIsSaved_archivesWithSource() throws {
         source.stubArchiveRecommendation { _ in }
         let item = space.buildItem(isArticle: true)
         let recommendation = space.buildRecommendation(item: item)
@@ -726,7 +726,7 @@ class HomeViewModelTests: XCTestCase {
 
         let action = viewModel.recommendationHeroViewModel(
             for: recommendation.objectID, at: [0, 0]
-        )?.saveAction
+        )?.primaryAction
         XCTAssertNotNil(action)
         action?.handler?(nil)
         XCTAssertEqual(

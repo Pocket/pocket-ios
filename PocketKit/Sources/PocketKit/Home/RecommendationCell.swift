@@ -10,7 +10,7 @@ protocol RecommendationCellViewModel {
     var imageURL: URL? { get }
     var saveButtonMode: RecommendationSaveButton.Mode { get }
     var overflowActions: [ItemAction]? { get }
-    var saveAction: ItemAction? { get }
+    var primaryAction: ItemAction? { get }
 }
 
 class RecommendationCell: UICollectionViewCell {
@@ -126,7 +126,7 @@ class RecommendationCell: UICollectionViewCell {
             timeToReadLabel.isHidden = false
         }
         
-        if let saveAction = UIAction(model.saveAction) {
+        if let saveAction = UIAction(model.primaryAction) {
             saveButton.addAction(saveAction, for: .primaryActionTriggered)
         }
         
