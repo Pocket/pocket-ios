@@ -158,14 +158,15 @@ extension HomeViewControllerSectionProvider {
         let recommendationsToShow = recommendations[1...endIndex]
 
         let miniCardHeight = recommendationsToShow.map { recommendation -> CGFloat in
-            guard let viewModel = viewModel.viewModel(for: recommendation.objectID) else {
-                return 0
-            }
-
-            return RecommendationCell.miniHeight(
-                viewModel: viewModel,
-                availableWidth: width - spacing
-            )
+            return 160
+//            guard let viewModel = viewModel.viewModel(for: recommendation.objectID) else {
+//                return 0
+//            }
+//
+//            return RecommendationCell.miniHeight(
+//                viewModel: viewModel,
+//                availableWidth: width - spacing
+//            )
         }.max() ?? 0
 
         let twoUpInner = NSCollectionLayoutGroup.horizontal(

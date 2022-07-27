@@ -176,11 +176,17 @@ class HomeViewModelTests: XCTestCase {
             slateLineupController
         }
 
+        try? space.save()
+
         let viewModel = subject()
         slateLineupController.delegate?.controllerDidChangeContent(slateLineupController)
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.$snapshot.dropFirst().sink { snapshot in
+            guard !snapshot.reloadedItemIdentifiers.isEmpty else {
+                return
+            }
+
             let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> NSManagedObjectID? in
                 switch cell {
                 case .loading, .recentSaves:
@@ -195,6 +201,49 @@ class HomeViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         item.savedItem = SavedItem.build()
+        try? space.save()
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+    func test_snapshot_whenRecommendationIsArchived_updatesSnapshot() {
+        let item = Item.build()
+        let savedItem = SavedItem.build(item: item)
+        let recommendations: [Recommendation] = [.build(remoteID: "slate-1-recommendation-1", item: item)]
+        let slates: [Slate] = [.build(recommendations: recommendations)]
+
+        let slateLineupController = MockSlateLineupController()
+        slateLineupController.slateLineup = SlateLineup.build(slates: slates)
+        source.stubMakeSlateLineupController {
+            slateLineupController
+        }
+
+        try? space.save()
+
+        let viewModel = subject()
+        slateLineupController.delegate?.controllerDidChangeContent(slateLineupController)
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            guard !snapshot.reloadedItemIdentifiers.isEmpty else {
+                return
+            }
+
+            let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> NSManagedObjectID? in
+                switch cell {
+                case .loading, .recentSaves:
+                    return nil
+                case .recommendation(let objectID):
+                    return objectID
+                }
+            }
+            XCTAssertEqual(reloaded, recommendations.map { $0.objectID })
+
+            snapshotExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        savedItem.isArchived = true
+        try? space.save()
 
         wait(for: [snapshotExpectation], timeout: 1)
     }

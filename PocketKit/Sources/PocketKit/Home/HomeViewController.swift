@@ -127,8 +127,8 @@ class HomeViewController: UIViewController {
             overscrollView.heightAnchor.constraint(equalToConstant: 96)
         ])
 
-        model.fetch()
-        handleRefresh()
+//        model.fetch()
+//        handleRefresh()
     }
 
     private func handleRefresh() {

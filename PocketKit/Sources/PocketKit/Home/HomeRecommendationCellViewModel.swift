@@ -6,35 +6,15 @@ import CoreData
 
 
 class HomeRecommendationCellViewModel: NSObject {
-    let updated: PassthroughSubject<Void, Never> = .init()
     let recommendation: Recommendation
 
     var isSaved: Bool {
-        resultsController?.fetchedObjects?.first != nil
+        return recommendation.item?.savedItem != nil
+        && recommendation.item?.savedItem?.isArchived == false
     }
-
-    private var resultsController: NSFetchedResultsController<SavedItem>?
 
     init(recommendation: Recommendation) {
         self.recommendation = recommendation
-
-        guard let item = recommendation.item,
-              let context = recommendation.managedObjectContext else {
-            super.init()
-            return
-        }
-
-        resultsController = .init(
-            fetchRequest: Requests.fetchSavedItem(for: item),
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-
-        super.init()
-
-        try? resultsController?.performFetch()
-        resultsController?.delegate = self
     }
 }
 
@@ -93,11 +73,5 @@ private extension Style {
 
     static let excerpt: Style = .header.sansSerif.p4.with(color: .ui.grey4).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
-    }
-}
-
-extension HomeRecommendationCellViewModel: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        updated.send()
     }
 }

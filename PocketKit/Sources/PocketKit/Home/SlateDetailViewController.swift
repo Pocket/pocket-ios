@@ -175,12 +175,12 @@ private extension SlateDetailViewController {
 
             let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
             let components = recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in
-                guard let viewModel = self.model.viewModel(for: recommendation.objectID) else {
-                    return result
-                }
+//                guard let viewModel = self.model.viewModel(for: recommendation.objectID) else {
+//                    return result
+//                }
 
                 let currentHeight = result.0
-                let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - spacing) + dividerHeight
+                let height: CGFloat = 300 // RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - spacing) + dividerHeight
                 var items = result.1
                 items.append(
                     NSCollectionLayoutItem(
@@ -240,11 +240,11 @@ private extension SlateDetailViewController {
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
             cell.mode = .hero
 
-            guard let viewModel = self.model.viewModel(for: objectID) else {
-                return cell
-            }
-
-            cell.configure(model: viewModel)
+//            guard let viewModel = self.model.viewModel(for: objectID) else {
+//                return cell
+//            }
+//
+//            cell.configure(model: viewModel)
 
             if let action = self.model.saveAction(for: viewModelCell, at: indexPath),
                let uiAction = UIAction(action) {

@@ -14,9 +14,6 @@ class SlateDetailViewModel {
     private let tracker: Tracker
     private let slateController: SlateController
 
-    private var viewModels: [NSManagedObjectID: HomeRecommendationCellViewModel] = [:]
-    private var viewModelSubscriptions: Set<AnyCancellable> = []
-
     @Published
     var snapshot: Snapshot
 
@@ -66,20 +63,21 @@ class SlateDetailViewModel {
     }
 
     func saveAction(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return nil
-        }
-
-        if viewModel.isSaved {
-            return .archive { [weak self] _ in
-                self?.archive(cell, at: indexPath)
-            }
-        } else {
-            return .save { [weak self] _ in
-                self?.save(cell, at: indexPath)
-            }
-        }
+        return nil
+//        guard case .recommendation(let objectID) = cell,
+//              let viewModel = viewModel(for: objectID) else {
+//            return nil
+//        }
+//
+//        if viewModel.isSaved {
+//            return .archive { [weak self] _ in
+//                self?.archive(cell, at: indexPath)
+//            }
+//        } else {
+//            return .save { [weak self] _ in
+//                self?.save(cell, at: indexPath)
+//            }
+//        }
     }
 
     func willDisplay(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
@@ -101,10 +99,6 @@ class SlateDetailViewModel {
             source.remove(recommendation: $0)
         }
     }
-
-    func viewModel(for objectID: NSManagedObjectID) -> HomeRecommendationCellViewModel? {
-        return viewModels[objectID]
-    }
 }
 
 private extension SlateDetailViewModel {
@@ -116,9 +110,6 @@ private extension SlateDetailViewModel {
     }
 
     func buildSnapshot() -> Snapshot {
-        viewModels = [:]
-        viewModelSubscriptions = []
-
         let recommendations = slateController.slate?.recommendations?
             .compactMap { $0 as? Recommendation }
         ?? []
@@ -132,97 +123,92 @@ private extension SlateDetailViewModel {
         let section: SlateDetailViewModel.Section = .slate(slate)
         snapshot.appendSections([section])
         recommendations.forEach { recommendation in
-            let viewModel = HomeRecommendationCellViewModel(recommendation: recommendation)
-            viewModels[recommendation.objectID] = viewModel
             snapshot.appendItems(
                 [.recommendation(recommendation.objectID)],
                 toSection: section
             )
-
-            viewModel.updated.sink { [weak self] in
-                let item: SlateDetailViewModel.Cell = .recommendation(recommendation.objectID)
-                if self?.snapshot.indexOfItem(item) != nil {
-                    self?.snapshot.reloadItems([item])
-                }
-            }.store(in: &viewModelSubscriptions)
         }
 
         return snapshot
     }
 
     private func select(recommendation cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return
-        }
-
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            contexts(for: cell, at: indexPath)
-        )
-
-        if let item = viewModel.recommendation.item, item.shouldOpenInWebView {
-            presentedWebReaderURL = item.bestURL
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
-                contexts(for: cell, at: indexPath)
-            )
-        } else {
-            selectedReadableViewModel = RecommendationViewModel(
-                recommendation: viewModel.recommendation,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
-            )
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
-                contexts(for: cell, at: indexPath)
-            )
-        }
+        return
+//        guard case .recommendation(let objectID) = cell,
+//              let viewModel = viewModel(for: objectID) else {
+//            return
+//        }
+//
+//        tracker.track(
+//            event: SnowplowEngagement(type: .general, value: nil),
+//            contexts(for: cell, at: indexPath)
+//        )
+//
+//        if let item = viewModel.recommendation.item, item.shouldOpenInWebView {
+//            presentedWebReaderURL = item.bestURL
+//
+//            tracker.track(
+//                event: ContentOpenEvent(destination: .external, trigger: .click),
+//                contexts(for: cell, at: indexPath)
+//            )
+//        } else {
+//            selectedReadableViewModel = RecommendationViewModel(
+//                recommendation: viewModel.recommendation,
+//                source: source,
+//                tracker: tracker.childTracker(hosting: .articleView.screen)
+//            )
+//
+//            tracker.track(
+//                event: ContentOpenEvent(destination: .internal, trigger: .click),
+//                contexts(for: cell, at: indexPath)
+//            )
+//        }
     }
 
     private func report(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return
-        }
-
-        tracker.track(
-            event: SnowplowEngagement(type: .report, value: nil),
-            contexts(for: cell, at: indexPath)
-        )
-        selectedRecommendationToReport = viewModel.recommendation
+        return
+//        guard case .recommendation(let objectID) = cell,
+//              let viewModel = viewModel(for: objectID) else {
+//            return
+//        }
+//
+//        tracker.track(
+//            event: SnowplowEngagement(type: .report, value: nil),
+//            contexts(for: cell, at: indexPath)
+//        )
+//        selectedRecommendationToReport = viewModel.recommendation
     }
 
     private func save(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return
-        }
-
-        let contexts = contexts(for: cell, at: indexPath) + [UIContext.button(identifier: .itemSave)]
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
-        source.save(recommendation: viewModel.recommendation)
+        return
+//        guard case .recommendation(let objectID) = cell,
+//              let viewModel = viewModel(for: objectID) else {
+//            return
+//        }
+//
+//        let contexts = contexts(for: cell, at: indexPath) + [UIContext.button(identifier: .itemSave)]
+//        tracker.track(
+//            event: SnowplowEngagement(type: .save, value: nil),
+//            contexts
+//        )
+//
+//        source.save(recommendation: viewModel.recommendation)
     }
 
     private func archive(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return
-        }
-
-        let contexts = contexts(for: cell, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
-        source.archive(recommendation: viewModel.recommendation)
+        return
+//        guard case .recommendation(let objectID) = cell,
+//              let viewModel = viewModel(for: objectID) else {
+//            return
+//        }
+//
+//        let contexts = contexts(for: cell, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
+//        tracker.track(
+//            event: SnowplowEngagement(type: .save, value: nil),
+//            contexts
+//        )
+//
+//        source.archive(recommendation: viewModel.recommendation)
     }
 
     private func contexts(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> [Context] {
@@ -230,28 +216,29 @@ private extension SlateDetailViewModel {
         case .loading:
             return []
         case .recommendation(let objectID):
-            guard let viewModel = viewModel(for: objectID),
-                  let slate = slateController.slate,
-                  let recommendationURL = viewModel.recommendation.item?.bestURL else {
-                return []
-            }
-
-            let slateContext = SlateContext(
-                id: slate.remoteID!,
-                requestID: slate.requestID!,
-                experiment: slate.experimentID!,
-                index: UIIndex(0)
-            )
-
-            let recommendationContext = RecommendationContext(
-                id: viewModel.recommendation.remoteID!,
-                index: UIIndex(indexPath.item)
-            )
-
-            let contentContext = ContentContext(url: recommendationURL)
-            let itemContext = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.item))
-
-            return [slateContext, recommendationContext, contentContext, itemContext]
+            return []
+//            guard let viewModel = viewModel(for: objectID),
+//                  let slate = slateController.slate,
+//                  let recommendationURL = viewModel.recommendation.item?.bestURL else {
+//                return []
+//            }
+//
+//            let slateContext = SlateContext(
+//                id: slate.remoteID!,
+//                requestID: slate.requestID!,
+//                experiment: slate.experimentID!,
+//                index: UIIndex(0)
+//            )
+//
+//            let recommendationContext = RecommendationContext(
+//                id: viewModel.recommendation.remoteID!,
+//                index: UIIndex(indexPath.item)
+//            )
+//
+//            let contentContext = ContentContext(url: recommendationURL)
+//            let itemContext = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.item))
+//
+//            return [slateContext, recommendationContext, contentContext, itemContext]
         }
     }
 }
