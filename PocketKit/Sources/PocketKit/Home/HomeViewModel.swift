@@ -212,7 +212,7 @@ class HomeViewModel {
         }
     }
 
-    func saveAction(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
+    func primaryAction(for cell: HomeViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
         guard case .recommendation(let objectID) = cell,
               let viewModel = viewModel(for: objectID) else {
             return nil

@@ -212,7 +212,7 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
 
-    func test_saveAction_whenRecommendationIsNotSaved_savesWithSource() {
+    func test_primaryAction_whenRecommendationIsNotSaved_savesWithSource() {
         source.stubSaveRecommendation { _ in }
 
         let viewModel = subject()
@@ -223,7 +223,7 @@ class SlateDetailViewModelTests: XCTestCase {
         ])
         viewModel.controllerDidChangeContent(slateController)
 
-        let action = viewModel.saveAction(
+        let action = viewModel.primaryAction(
             for: .recommendation(recommendation.objectID),
             at: IndexPath(item: 0, section: 0)
         )
@@ -233,7 +233,7 @@ class SlateDetailViewModelTests: XCTestCase {
         XCTAssertEqual(source.saveRecommendationCall(at: 0)?.recommendation, recommendation)
     }
 
-    func test_saveAction_whenRecommendationIsSaved_archivesWithSource() {
+    func test_primaryAction_whenRecommendationIsSaved_archivesWithSource() {
         source.stubArchiveRecommendation { _ in }
 
         let viewModel = subject()
@@ -244,7 +244,7 @@ class SlateDetailViewModelTests: XCTestCase {
         slateController.slate = .build(recommendations: [recommendation])
         viewModel.controllerDidChangeContent(slateController)
 
-        let action = viewModel.saveAction(
+        let action = viewModel.primaryAction(
             for: .recommendation(recommendation.objectID),
             at: IndexPath(item: 0, section: 0)
         )
