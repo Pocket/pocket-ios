@@ -6,7 +6,7 @@ import XCTest
 
 
 struct PocketAppElement {
-    private let app: XCUIApplication
+    let app: XCUIApplication
 
     init(app: XCUIApplication) {
         self.app = app

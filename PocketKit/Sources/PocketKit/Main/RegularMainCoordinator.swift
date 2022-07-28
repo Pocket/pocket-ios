@@ -165,10 +165,6 @@ class RegularMainCoordinator: NSObject {
             }
         }.store(in: &subscriptions)
 
-        model.home.$selectedSlateDetailViewModel.receive(on: DispatchQueue.main).sink { [weak self] slateDetail in
-            self?.show(slateDetail)
-        }.store(in: &subscriptions)
-
         model.home.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url)
         }.store(in: &subscriptions)
@@ -183,12 +179,11 @@ class RegularMainCoordinator: NSObject {
 
         model.home.$tappedSeeAll.dropFirst().receive(on: DispatchQueue.main).sink { [weak self] section in
             switch section {
-            case .recentSaves:
+            case .myList:
                 self?.model.selectedSection = .myList(.myList)
-            case .slateHero(let slateID):
-                guard let slate = self?.model.home.slate(with: slateID) else { return }
-                self?.model.home.select(slate: slate)
-            default:
+            case .slate(let slateDetailViewModel):
+                self?.show(slateDetailViewModel)
+            case .none:
                 return
             }
         }.store(in: &subscriptions)
@@ -419,7 +414,6 @@ extension RegularMainCoordinator: SFSafariViewControllerDelegate {
 extension RegularMainCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === home {
-            model.home.selectedSlateDetailViewModel?.resetSlate(keeping: 5)
             model.home.selectedSlateDetailViewModel = nil
         }
     }

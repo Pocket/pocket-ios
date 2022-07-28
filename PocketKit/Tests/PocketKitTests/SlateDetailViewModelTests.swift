@@ -2,109 +2,98 @@ import XCTest
 import Sync
 import Combine
 import Analytics
-@testable import PocketKit
 import CoreData
 
+@testable import Sync
+@testable import PocketKit
 
 class SlateDetailViewModelTests: XCTestCase {
+    var space: Space!
     var source: MockSource!
     var tracker: MockTracker!
-    var slateController: MockSlateController!
-
-
     var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
-        subscriptions = []
-
         source = MockSource()
         tracker = MockTracker()
-        slateController = MockSlateController()
-        slateController.stubPerformFetch { }
+        space = .testSpace()
 
-        source.stubMakeSlateController { _ in
-            return self.slateController
-        }
+        source.mainContext = space.context
+    }
+
+    override func tearDownWithError() throws {
+        subscriptions = []
+        try space.clear()
     }
 
     func subject(
-        slateID: String? = nil,
-        slateName: String? = nil,
+        slate: Slate,
         source: Source? = nil,
         tracker: Tracker? = nil
     ) -> SlateDetailViewModel {
         SlateDetailViewModel(
-            slateID: slateID ?? "abcde",
-            slateName: slateName ?? "",
+            slate: slate,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker
         )
     }
 
-    func test_refresh_delegatesToSource() {
+    func test_refresh_delegatesToSource() throws {
+        let slate = try space.createSlate(remoteID: "abcde")
+        let viewModel = subject(slate: slate)
+
         let fetchExpectation = expectation(description: "expected to fetch slate")
-        source.stubFetchSlate { _ in fetchExpectation.fulfill() }
-
-        let viewModel = subject()
+        source.stubFetchSlate { _ in
+            fetchExpectation.fulfill()
+        }
         viewModel.refresh { }
-        wait(for: [fetchExpectation], timeout: 1)
 
+        wait(for: [fetchExpectation], timeout: 1)
         XCTAssertEqual(source.fetchSlateCall(at: 0)?.identifier, "abcde")
     }
 
-    func test_snapshot_whenSlatesAreUpdates_updatesSnapshot() {
+    func test_fetch_sendsSnapshotWithItemForEachRecommendation() throws {
         let recommendations: [Recommendation] = [
-            .build(remoteID: "slate-1-recommendation-1"),
-            .build(remoteID: "slate-1-recommendation-2")
+            space.buildRecommendation(remoteID: "slate-1-recommendation-1"),
+            space.buildRecommendation(remoteID: "slate-1-recommendation-2")
         ]
 
-        let slate: Slate = .build(
+        let slate: Slate = try space.createSlate(
             remoteID: "slate-1",
             recommendations: recommendations
         )
 
-        let slateController = MockSlateController()
-        slateController.slate = slate
-        source.stubMakeSlateController { _ in
-            slateController
-        }
-
-        let viewModel = subject()
-        slateController.delegate?.controllerDidChangeContent(slateController)
+        let viewModel = subject(slate: slate)
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.sink { snapshot in
-            XCTAssertEqual(
-                snapshot.sectionIdentifiers,
-                [.slate(slateController.slate!)]
-            )
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            defer { snapshotExpectation.fulfill()}
 
+            XCTAssertEqual(snapshot.sectionIdentifiers, [.slate(slate)])
             XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: .slate(slateController.slate!)),
-                [.recommendation(recommendations[0].objectID), .recommendation(recommendations[1].objectID)]
+                snapshot.itemIdentifiers(inSection: .slate(slate)),
+                [
+                    .recommendation(recommendations[0].objectID),
+                    .recommendation(recommendations[1].objectID)
+                ]
             )
-
-            snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
+        viewModel.fetch()
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
-    func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() {
-        let item = Item.build()
-        let recommendations: [Recommendation] = [
-            .build(remoteID: "slate-1-recommendation-1", item: item),
+    func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() throws {
+        let item = space.buildItem()
+        let recommendations = [
+            space.buildRecommendation(
+                remoteID: "slate-1-recommendation-1",
+                item: item
+            ),
         ]
-        let slate: Slate = .build(recommendations: recommendations)
 
-        let slateController = MockSlateController()
-        slateController.slate = slate
-        source.stubMakeSlateController { _ in
-            slateController
-        }
-
-        let viewModel = subject()
-        slateController.delegate?.controllerDidChangeContent(slateController)
+        let slate = try space.createSlate(recommendations: recommendations)
+        let viewModel = subject(slate: slate)
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.$snapshot.dropFirst().sink { snapshot in
@@ -121,40 +110,37 @@ class SlateDetailViewModelTests: XCTestCase {
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        item.savedItem = SavedItem.build()
+        item.savedItem = space.buildSavedItem()
+        try space.save()
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
-    func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() {
-        let viewModel = subject()
+    func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
+        let recommendation = space.buildRecommendation()
+        let slate = try space.createSlate(recommendations: [recommendation])
 
-        let recommendation = Recommendation.build()
-        slateController.slate = .build(recommendations: [
-            recommendation
-        ])
-        viewModel.controllerDidChangeContent(slateController)
+        let viewModel = subject(slate: slate)
 
         let readableExpectation = expectation(description: "expected to update selected readable")
         viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
             readableExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        let cell = SlateDetailViewModel.Cell.recommendation(recommendation.objectID)
-        viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+        viewModel.select(
+            cell: .recommendation(recommendation.objectID),
+            at: IndexPath(item: 0, section: 0)
+        )
 
         wait(for: [readableExpectation], timeout: 1)
     }
 
-    func test_selectCell_whenSelectingRecommendation_recommendationIsNotReadable_updatesPresentedWebReaderURL() {
-        let viewModel = subject()
+    func test_selectCell_whenSelectingRecommendation_recommendationIsNotReadable_updatesPresentedWebReaderURL() throws {
+        let item = space.buildItem()
+        let recommendation = space.buildRecommendation(item: item)
+        let slate = try space.createSlate(recommendations: [recommendation])
 
-        let item = Item.build()
-        let recommendation = Recommendation.build(item: item)
-        slateController.slate = .build(recommendations: [
-            recommendation
-        ])
-        viewModel.controllerDidChangeContent(slateController)
+        let viewModel = subject(slate: slate)
 
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
@@ -189,92 +175,61 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [urlExpectation], timeout: 1)
     }
 
-    func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() {
-        let viewModel = subject()
+    func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() throws {
+        let item = space.buildItem()
+        let recommendation = space.buildRecommendation(item: item)
+        let slate = try space.createSlate(recommendations: [recommendation])
 
-        let recommendation = Recommendation.build()
-        slateController.slate = .build(recommendations: [
-            recommendation
-        ])
-        viewModel.controllerDidChangeContent(slateController)
-
-        let action = viewModel.reportAction(
-            for: .recommendation(recommendation.objectID),
-            at: IndexPath(item: 0, section: 0)
-        )
-        XCTAssertNotNil(action)
-
+        let viewModel = subject(slate: slate)
         let reportExpectation = expectation(description: "expected to update selected recommendation to report")
         viewModel.$selectedRecommendationToReport.dropFirst().sink { recommendation in
             XCTAssertNotNil(recommendation)
             reportExpectation.fulfill()
         }.store(in: &subscriptions)
 
+        let action = viewModel
+            .recommendationViewModel(for: recommendation.objectID, at: [0,0])?
+            .overflowActions?
+            .first { $0.identifier == .report }
+        XCTAssertNotNil(action)
+
         action?.handler?(nil)
         wait(for: [reportExpectation], timeout: 1)
     }
 
-    func test_saveAction_whenRecommendationIsNotSaved_savesWithSource() {
+    func test_saveAction_whenRecommendationIsNotSaved_savesWithSource() throws {
         source.stubSaveRecommendation { _ in }
 
-        let viewModel = subject()
+        let item = space.buildItem()
+        let recommendation = space.buildRecommendation(item: item)
+        let slate = try space.createSlate(recommendations: [recommendation])
+        let viewModel = subject(slate: slate)
 
-        let recommendation = Recommendation.build()
-        slateController.slate = .build(recommendations: [
-            recommendation
-        ])
-        viewModel.controllerDidChangeContent(slateController)
-
-        let action = viewModel.saveAction(
-            for: .recommendation(recommendation.objectID),
-            at: IndexPath(item: 0, section: 0)
-        )
+        let action = viewModel
+            .recommendationViewModel(for: recommendation.objectID, at: [0,0])?
+            .saveAction
         XCTAssertNotNil(action)
-
         action?.handler?(nil)
+
         XCTAssertEqual(source.saveRecommendationCall(at: 0)?.recommendation, recommendation)
     }
 
-    func test_saveAction_whenRecommendationIsSaved_archivesWithSource() {
+    func test_saveAction_whenRecommendationIsSaved_archivesWithSource() throws {
         source.stubArchiveRecommendation { _ in }
 
-        let viewModel = subject()
+        let item = space.buildItem()
+        space.buildSavedItem(item: item)
+        let recommendation = space.buildRecommendation(item: item)
+        let slate = try space.createSlate(recommendations: [recommendation])
+        let viewModel = subject(slate: slate)
 
-        let item = Item.build()
-        item.savedItem = .build()
-        let recommendation = Recommendation.build(item: item)
-        slateController.slate = .build(recommendations: [recommendation])
-        viewModel.controllerDidChangeContent(slateController)
-
-        let action = viewModel.saveAction(
-            for: .recommendation(recommendation.objectID),
+        let action = viewModel.recommendationViewModel(
+            for: recommendation.objectID,
             at: IndexPath(item: 0, section: 0)
-        )
+        )?.saveAction
         XCTAssertNotNil(action)
-
         action?.handler?(nil)
+
         XCTAssertEqual(source.archiveRecommendationCall(at: 0)?.recommendation, recommendation)
     }
-
-    func test_resetSlate_keepsFirstFiveRecommendations() {
-        let recommendations: [Recommendation] = [
-            .build(remoteID: "recommendation-1"),
-            .build(remoteID: "recommendation-2"),
-            .build(remoteID: "recommendation-3"),
-        ]
-
-        let slateController = MockSlateController()
-        slateController.slate = .build(recommendations: recommendations)
-        source.stubMakeSlateController { _ in
-            slateController
-        }
-        source.stubRemoveRecommendation { _ in }
-
-        let viewModel = subject()
-        viewModel.resetSlate(keeping: 1)
-
-        XCTAssertEqual(source.removeRecommendationCall(at: 0)?.recommendation.remoteID, "recommendation-2")
-        XCTAssertEqual(source.removeRecommendationCall(at: 1)?.recommendation.remoteID, "recommendation-3")
-    }
 }
-

@@ -5,6 +5,7 @@ import Network
 import Analytics
 
 @testable import PocketKit
+@testable import Sync
 
 enum FakeError: Error {
     case error
@@ -26,8 +27,9 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         source.stubMakeArchiveService { self.archiveService }
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
         subscriptions = []
+        try Space.testSpace().clear()
     }
 
     func subject(

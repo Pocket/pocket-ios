@@ -1,7 +1,7 @@
 {
     "data": {
         "getSlateLineup": {
-            "id": "slate-lineup-1",
+            "id": "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1",
             "requestId": "slate-lineup-1-request",
             "experimentId": "slate-lineup-1-experiment",
             "__typename": "[some-type-name]",
@@ -9,8 +9,8 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "slate-1",
-                    "requestId": "slate-1-request",
-                    "experimentId": "slate-1-experiment",
+                    "requestId": "slate-lineup-1-request",
+                    "experimentId": "slate-lineup-1-experiment",
                     "displayName": "Slate 1",
                     "description": "The description of slate 1",
                     "recommendations": [
@@ -88,8 +88,8 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "slate-2",
-                    "requestId": "slate-2-request",
-                    "experimentId": "slate-2-experiment",
+                    "requestId": "slate-lineup-1-request",
+                    "experimentId": "slate-lineup-1-experiment",
                     "displayName": "Slate 2",
                     "description": "The description of slate 2",
                     "recommendations": [

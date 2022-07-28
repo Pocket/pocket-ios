@@ -15,8 +15,15 @@ class MockSource: Source {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 
+    private var _mainContext: NSManagedObjectContext?
     var mainContext: NSManagedObjectContext {
-        fatalError("\(Self.self)#\(#function) is not implemented")
+        get {
+            guard let context = _mainContext else {
+                fatalError()
+            }
+            return context
+        }
+        set { _mainContext = newValue }
     }
 
     func clear() {
@@ -135,52 +142,6 @@ extension MockSource {
     }
 }
 
-// MARK: - Make slate lineup controller
-extension MockSource {
-    static let makeSlateLineupController = "makeSlateLineupController"
-    typealias MakeSlateLineupControllerImpl = () -> SlateLineupController
-
-    struct MakeSlateLineupControllerCall { }
-
-    func stubMakeSlateLineupController(impl: @escaping MakeSlateLineupControllerImpl) {
-        implementations[Self.makeSlateLineupController] = impl
-    }
-
-    func makeSlateLineupController() -> SlateLineupController {
-        guard let impl = implementations[Self.makeSlateLineupController] as? MakeSlateLineupControllerImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        calls[Self.makeSlateLineupController] = (calls[Self.makeSlateLineupController] ?? []) + [MakeSlateLineupControllerCall()]
-
-        return impl()
-    }
-}
-
-// MARK: - Make slate controller
-extension MockSource {
-    static let makeSlateController = "makeSlateController"
-    typealias MakeSlateControllerImpl = (String) -> SlateController
-
-    struct MakeSlateControllerCall {
-        let identifier: String
-    }
-
-    func stubMakeSlateController(impl: @escaping MakeSlateControllerImpl) {
-        implementations[Self.makeSlateController] = impl
-    }
-
-    func makeSlateController(byID id: String) -> SlateController {
-        guard let impl = implementations[Self.makeSlateController] as? MakeSlateControllerImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        calls[Self.makeSlateController] = (calls[Self.makeSlateController] ?? []) + [MakeSlateControllerCall(identifier: id)]
-
-        return impl(id)
-    }
-}
-
 // MARK: - Make images controller
 extension MockSource {
     static let makeUndownloadedImagesController = "makeUndownloadedImagesController"
@@ -192,24 +153,6 @@ extension MockSource {
 
     func makeUndownloadedImagesController() -> ImagesController {
         guard let impl = implementations[Self.makeUndownloadedImagesController] as? MakeUndownloadedImagesControllerImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        return impl()
-    }
-}
-
-// MARK: - Make recent saves controller
-extension MockSource {
-    static let makeRecentSavesController = "makeRecentSavesController"
-    typealias MakeRecentSavesControllerControllerImpl = () -> RecentSavesController
-
-    func stubMakeRecentSavesController(impl: @escaping MakeRecentSavesControllerControllerImpl) {
-        implementations[Self.makeRecentSavesController] = impl
-    }
-
-    func makeRecentSavesController() -> RecentSavesController {
-        guard let impl = implementations[Self.makeRecentSavesController] as? MakeRecentSavesControllerControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 

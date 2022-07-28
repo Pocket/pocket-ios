@@ -71,13 +71,12 @@ class HomeViewControllerSectionProvider {
         
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Constants.heroHeight))
         let heroGroup = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [heroItem])
-        
-        let title = viewModel.slate(with: slateID)?.name ?? ""
-        let sectionHeaderViewModel: SectionHeaderView.Model = .init(name: title, buttonTitle: "See All")
+        let sectionHeaderViewModel = viewModel.sectionHeaderViewModel(for: .slateHero(slateID))
+
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(sectionHeaderViewModel.height(width: width - Constants.sideMargin*2))
+                heightDimension: .absolute(sectionHeaderViewModel?.height(width: width - Constants.sideMargin * 2) ?? 0)
             ),
             elementKind: SectionHeaderView.kind,
             alignment: .top
@@ -96,7 +95,10 @@ class HomeViewControllerSectionProvider {
     
     func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
-        guard numberOfCarouselItems > 0 else { return nil }
+        guard numberOfCarouselItems > 0 else {
+            return .empty()
+        }
+
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 

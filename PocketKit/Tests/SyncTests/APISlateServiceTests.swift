@@ -288,7 +288,7 @@ extension APISlateServiceTests {
         XCTAssertEqual(slates.count, 1)
 
         let recommendations = slates[0].recommendations?.compactMap { $0 as? Recommendation } ?? []
-        XCTAssertEqual(recommendations.count, 4)
+        XCTAssertEqual(recommendations.count, 3)
     }
 
     @MainActor

@@ -5,20 +5,33 @@ import Textile
 
 class RecommendationCarouselCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {
-        let viewModel: HomeRecommendationCellViewModel
-        let thumbnailURL: URL?
-        let saveButtonMode: RecommendationSaveButton.Mode?
-        
+        private let viewModel: HomeRecommendationCellViewModel
+
         init(viewModel: HomeRecommendationCellViewModel) {
             self.viewModel = viewModel
-            self.thumbnailURL = viewModel.imageURL
-            self.saveButtonMode = viewModel.saveButtonMode
         }
 
-        var favoriteAction: ItemAction? = nil
-        var saveAction: ItemAction? = nil
-        var overflowActions: [ItemAction]? = nil
-        
+        var favoriteAction: ItemAction? {
+            // Recommendations can't be favorited
+            return nil
+        }
+
+        var thumbnailURL: URL? {
+            viewModel.imageURL
+        }
+
+        var saveButtonMode: RecommendationSaveButton.Mode? {
+            viewModel.saveButtonMode
+        }
+
+        var overflowActions: [ItemAction]? {
+            viewModel.overflowActions
+        }
+
+        var saveAction: ItemAction? {
+            viewModel.saveAction
+        }
+
         var attributedTitle: NSAttributedString {
             return NSAttributedString(string: viewModel.title ?? "", style: .title)
         }

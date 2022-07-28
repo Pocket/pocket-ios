@@ -9,8 +9,6 @@ import CoreData
 class HomeViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
-    var slateLineupController: MockSlateLineupController!
-    var recentSavesController: RecentSavesController!
     var space: Space!
 
     var subscriptions: Set<AnyCancellable> = []
@@ -18,30 +16,13 @@ class HomeViewModelTests: XCTestCase {
     override func setUp() async throws {
         subscriptions = []
         space = .testSpace()
-
         source = MockSource()
+        source.mainContext = space.context
+
         tracker = MockTracker()
-        recentSavesController = RecentSavesController(space: space)
-
-        slateLineupController = MockSlateLineupController()
-        slateLineupController.stubPerformFetch { }
-
-        source.stubMakeSlateLineupController {
-            return self.slateLineupController
-        }
-
-        source.stubMakeSlateController { _ in
-            MockSlateController()
-        }
-
-        source.stubMakeRecentSavesController {
-            return self.recentSavesController
-        }
-
-        continueAfterFailure = false
     }
 
-    override func tearDown() async throws {
+    override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
     }
@@ -57,8 +38,6 @@ class HomeViewModelTests: XCTestCase {
     }
 
     func test_init_createsLoadingSnapshot() {
-        source.stubFetchSlateLineup { _ in }
-
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected to receive updated snapshot")
@@ -67,6 +46,411 @@ class HomeViewModelTests: XCTestCase {
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .loading), [.loading])
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+    func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsEmptySnapshot() {
+        let viewModel = subject()
+
+        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
+        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+            defer { receivedEmptySnapshot.fulfill() }
+            XCTAssertEqual(snapshot.sectionIdentifiers, [])
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedEmptySnapshot], timeout: 1)
+    }
+
+    func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsAvailable_sendsSnapshotWithSlates() throws {
+        let recommendations = try (0...3).map {
+            try space.createRecommendation(item: space.createItem(remoteID: "item-\($0)"))
+        }
+
+        let slates = try [
+            space.createSlate(recommendations: Array(recommendations[0...1])),
+            space.createSlate(recommendations: Array(recommendations[2...3])),
+        ]
+
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: slates
+        )
+
+        let viewModel = subject()
+        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
+        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+            defer { receivedEmptySnapshot.fulfill() }
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                slates.flatMap { slate in
+                    [.slateHero(slate.objectID), .slateCarousel(slate.objectID)]
+                }
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slates[0].objectID)),
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateCarousel(slates[0].objectID)),
+                [.recommendationCarousel(recommendations[1].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slates[1].objectID)),
+                [.recommendationHero(recommendations[2].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateCarousel(slates[1].objectID)),
+                [.recommendationCarousel(recommendations[3].objectID)]
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedEmptySnapshot], timeout: 1)
+    }
+
+    func test_fetch_whenRecentSavesAreAvailable_andSlateLineupIsUnavailable_sendsSnapshotWithRecentSaves() throws {
+        let items = try (1...2).map { try space.createItem(remoteID: "item-\($0)") }
+        let savedItems = try (1...2).map {
+            try space.createSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: items[$0 - 1]
+            )
+        }
+
+        let viewModel = subject()
+        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
+        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+            defer { receivedEmptySnapshot.fulfill() }
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                [.recentSaves]
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .recentSaves),
+                savedItems.reversed().map { .recentSaves($0.objectID) }
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedEmptySnapshot], timeout: 1)
+    }
+
+    func test_fetch_whenRecentSavesAndSlateLineupAreAvailable_sendsSnapshotWithRecentSavesAndSlates() throws {
+        let items = (1...4).map { space.buildItem(remoteID: "item-\($0)") }
+        let recommendations = items.map { space.buildRecommendation(item: $0) }
+        let slates = [
+            space.buildSlate(recommendations: Array(recommendations[0...1])),
+            space.buildSlate(recommendations: Array(recommendations[2...3])),
+        ]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: slates
+        )
+
+        let savedItems = try (1...2).map {
+            try space.createSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: items[$0 - 1]
+            )
+        }
+
+        let viewModel = subject()
+        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
+        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+            defer { receivedEmptySnapshot.fulfill() }
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                [.recentSaves] + slates.flatMap {
+                    [.slateHero($0.objectID), .slateCarousel($0.objectID)]
+                }
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .recentSaves),
+                savedItems.reversed().map { .recentSaves($0.objectID) }
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slates[0].objectID)),
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateCarousel(slates[0].objectID)),
+                [.recommendationCarousel(recommendations[1].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slates[1].objectID)),
+                [.recommendationHero(recommendations[2].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateCarousel(slates[1].objectID)),
+                [.recommendationCarousel(recommendations[3].objectID)]
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedEmptySnapshot], timeout: 1)
+    }
+
+    func test_fetch_whenSlateContainsMoreThanFiveRecommendations_sendsSnapshotFirstFiveRecommendations() throws {
+        let items = try (0...5).map { try space.createItem(remoteID: "item-\($0)") }
+        let recommendations = try items.map { try space.createRecommendation(item: $0) }
+        let slate = space.buildSlate(recommendations: recommendations)
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [slate]
+        )
+
+        let viewModel = subject()
+        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
+        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+            defer { receivedEmptySnapshot.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slate.objectID)),
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateCarousel(slate.objectID)),
+                recommendations[1...4].map { .recommendationCarousel($0.objectID) }
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedEmptySnapshot], timeout: 1)
+    }
+
+    func test_snapshot_whenSlateLineupIsUpdated_updatesSnapshot() throws {
+        let lineup = try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [
+                space.createSlate(
+                    remoteID: "slate-1",
+                    recommendations: [
+                        space.createRecommendation(
+                            remoteID: "rec-1",
+                            item: space.createItem(
+                                remoteID: "item-1"
+                            )
+                        )
+                    ]
+                )
+            ]
+        )
+
+        let viewModel = subject()
+        viewModel.fetch()
+
+        var slate: Slate!
+        var rec: Recommendation!
+
+        let snapshotSent = expectation(description: "snapshotSent")
+        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+            defer { snapshotSent.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                [.slateHero(slate.objectID)]
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slate.objectID)),
+                [.recommendationHero(rec.objectID)]
+            )
+        }.store(in: &subscriptions)
+
+        space.delete(lineup)
+        rec = space.buildRecommendation(
+            remoteID: "rec-2",
+            item: space.buildItem(remoteID: "item-2")
+        )
+        slate = space.buildSlate(
+            remoteID: "slate-2",
+            recommendations: [rec]
+        )
+
+        _ = space.buildSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [slate]
+        )
+        try space.save()
+
+        wait(for: [snapshotSent], timeout: 1)
+    }
+
+    func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() throws {
+        let item = space.buildItem()
+        let recommendations = [
+            space.buildRecommendation(item: item),
+            space.buildRecommendation()
+        ]
+        let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: slates
+        )
+
+        var savedItem: SavedItem!
+        let viewModel = subject()
+        viewModel.fetch()
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            defer { snapshotExpectation.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                [.recentSaves] + slates.flatMap {
+                    [.slateHero($0.objectID), .slateCarousel($0.objectID)]
+                }
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slates[0].objectID)),
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.reloadedItemIdentifiers,
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+        }.store(in: &subscriptions)
+
+        savedItem = space.buildSavedItem()
+        item.savedItem = savedItem
+        try space.save()
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+    func test_snapshot_whenRecommendationIsArchived_updatesSnapshot() throws {
+        let item = space.buildItem()
+        item.savedItem = space.buildSavedItem()
+        let recommendations = [
+            space.buildRecommendation(item: item),
+            space.buildRecommendation()
+        ]
+        let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: slates
+        )
+
+        let viewModel = subject()
+        viewModel.fetch()
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            defer { snapshotExpectation.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                slates.flatMap {
+                    [.slateHero($0.objectID), .slateCarousel($0.objectID)]
+                }
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slates[0].objectID)),
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+            XCTAssertEqual(
+                snapshot.reloadedItemIdentifiers,
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+        }.store(in: &subscriptions)
+
+        item.savedItem?.isArchived = true
+        try space.save()
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+    func test_snapshot_whenRecommendationIsDeleted_updatesSnapshot() throws {
+        let item = space.buildItem()
+        item.savedItem = space.buildSavedItem()
+
+        let recommendations = [
+            space.buildRecommendation(item: item),
+            space.buildRecommendation()
+        ]
+        let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: slates
+        )
+
+        let viewModel = subject()
+        viewModel.fetch()
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            defer { snapshotExpectation.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                slates.flatMap {
+                    [.slateHero($0.objectID), .slateCarousel($0.objectID)]
+                }
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .slateHero(slates[0].objectID)),
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+
+            XCTAssertEqual(
+                snapshot.reloadedItemIdentifiers,
+                [.recommendationHero(recommendations[0].objectID)]
+            )
+        }.store(in: &subscriptions)
+
+        space.delete(item.savedItem!)
+        XCTAssertNotNil(item.savedItem?.item)
+        try space.save()
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+    func test_snapshot_whenSavedItemIsFavorited_updatesSnapshot() throws {
+        let savedItem = try space.createSavedItem(
+            item: space.buildItem()
+        )
+
+        let viewModel = subject()
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            defer { snapshotExpectation.fulfill() }
+
+            XCTAssertEqual(
+                snapshot.sectionIdentifiers,
+                [.recentSaves]
+            )
+
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .recentSaves),
+                [.recentSaves(savedItem.objectID)]
+            )
+
+            XCTAssertEqual(
+                snapshot.reloadedItemIdentifiers,
+                [.recentSaves(savedItem.objectID)]
+            )
+        }.store(in: &subscriptions)
+
+        savedItem.isFavorite = true
+        try space.save()
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
@@ -82,137 +466,19 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertEqual(source.fetchSlateLineupCall(at: 0)?.identifier, "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1")
     }
 
-    func test_snapshot_whenSlateLineupIsUpdated_updatesSnapshot() {
-        let recommendations: [Recommendation] = [
-            .build(remoteID: "slate-1-recommendation-1"),
-            .build(remoteID: "slate-1-recommendation-2"),
-            .build(remoteID: "slate-2-recommendation-1"),
-            .build(remoteID: "slate-3-recommendation-1"),
-        ]
-        let slates: [Slate] = [
-            .build(
-                remoteID: "slate-1",
-                recommendations: [recommendations[0], recommendations[1]]
-            ),
-            .build(
-                remoteID: "slate-2",
-                recommendations: [recommendations[2]]
-            ),
-            .build(
-                remoteID: "slate-3",
-                recommendations: [recommendations[3]]
-            ),
-        ]
-
-        let slateLineupController = MockSlateLineupController()
-        slateLineupController.slateLineup = SlateLineup.build(slates: slates)
-        source.stubMakeSlateLineupController {
-            slateLineupController
-        }
-
-        let viewModel = subject()
-        slateLineupController.delegate?.controllerDidChangeContent(slateLineupController)
-
-        let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.sink { snapshot in
-            XCTAssertEqual(snapshot.sectionIdentifiers, [.slateHero(slates[0].objectID), .slateCarousel(slates[0].objectID), .slateHero(slates[1].objectID), .slateHero(slates[2].objectID)])
-
-            let firstSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[0]) + snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[1])
-            let firstSlateRecommendations = firstSlate.compactMap { cell -> NSManagedObjectID? in
-                switch cell {
-                case .loading, .recentSaves:
-                    return nil
-                case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-                    return objectID
-                }
-            }
-            XCTAssertEqual(
-                firstSlateRecommendations,
-                [recommendations[0].objectID, recommendations[1].objectID]
-            )
-
-            let secondSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[2])
-            let secondSlateRecommendations = secondSlate.compactMap { cell -> NSManagedObjectID? in
-                switch cell {
-                case .loading, .recentSaves:
-                    return nil
-                case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-                    return objectID
-                }
-            }
-            XCTAssertEqual(
-                secondSlateRecommendations,
-                [recommendations[2].objectID]
-            )
-
-            let thirdSlate = snapshot.itemIdentifiers(inSection: snapshot.sectionIdentifiers[3])
-            let thirdSlateRecommendations = thirdSlate.compactMap { cell -> NSManagedObjectID? in
-                switch cell {
-                case .loading, .recentSaves:
-                    return nil
-                case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-                    return objectID
-                }
-            }
-            XCTAssertEqual(
-                thirdSlateRecommendations,
-                [recommendations[3].objectID]
-            )
-
-            snapshotExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        wait(for: [snapshotExpectation], timeout: 1)
-    }
-
-    func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() {
-        let item = Item.build()
-        let recommendations: [Recommendation] = [.build(remoteID: "slate-1-recommendation-1", item: item)]
-        let slates: [Slate] = [.build(recommendations: recommendations)]
-
-        let slateLineupController = MockSlateLineupController()
-        slateLineupController.slateLineup = SlateLineup.build(slates: slates)
-        source.stubMakeSlateLineupController {
-            slateLineupController
-        }
-
-        let viewModel = subject()
-        slateLineupController.delegate?.controllerDidChangeContent(slateLineupController)
-
-        let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
-            let reloaded = snapshot.reloadedItemIdentifiers.compactMap { cell -> NSManagedObjectID? in
-                switch cell {
-                case .loading, .recentSaves:
-                    return nil
-                case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-                    return objectID
-                }
-            }
-            XCTAssertEqual(reloaded, recommendations.map { $0.objectID })
-
-            snapshotExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        item.savedItem = SavedItem.build()
-
-        wait(for: [snapshotExpectation], timeout: 1)
-    }
-
-    func test_selectCell_whenSelectingHeroRecommendation_recommendationIsReadable_updatesSelectedReadable() {
-        let viewModel = subject()
-
-        let recommendation = Recommendation.build()
-        let slate: Slate = .build(recommendations: [recommendation])
-        slateLineupController.slateLineup = .build(
-            slates: [slate]
+    func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
+        let heroRec = space.buildRecommendation()
+        let carouselRec = space.buildRecommendation()
+        let recommendations = [heroRec, carouselRec]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [space.buildSlate(recommendations: recommendations)]
         )
-        source.stubObject { _ in
-            slate
-        }
-        viewModel.controllerDidChangeContent(slateLineupController)
+
+        let viewModel = subject()
 
         let readableExpectation = expectation(description: "expected to update selected readable")
+        readableExpectation.expectedFulfillmentCount = 2
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
             case .recommendation:
@@ -222,134 +488,81 @@ class HomeViewModelTests: XCTestCase {
             }
         }.store(in: &subscriptions)
 
-        let cell = HomeViewModel.Cell.recommendationHero(recommendation.objectID)
-        viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+        let cells: [HomeViewModel.Cell] = [
+            .recommendationHero(heroRec.objectID),
+            .recommendationCarousel(carouselRec.objectID),
+        ]
 
-        wait(for: [readableExpectation], timeout: 1)
-    }
-
-    func test_selectCell_whenSelectingCarouselRecommendation_recommendationIsReadable_updatesSelectedReadable() {
-        let viewModel = subject()
-
-        let recommendation = Recommendation.build()
-        slateLineupController.slateLineup = .build(
-            slates: [.build(recommendations: [recommendation])]
-        )
-        viewModel.controllerDidChangeContent(slateLineupController)
-
-        let readableExpectation = expectation(description: "expected to update selected readable")
-        viewModel.$selectedReadableType.dropFirst().sink { readable in
-            readableExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        let cell = HomeViewModel.Cell.recommendationCarousel(recommendation.objectID)
-        viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
-
-        wait(for: [readableExpectation], timeout: 1)
-    }
-    
-    func test_selectCell_whenSelectingHeroRecommendation_recommendationIsNotReadable_updatesPresentedWebReaderURL() {
-        let viewModel = subject()
-        let item = Item.build()
-        let recommendation = Recommendation.build(item: item)
-        let slate: Slate = .build(recommendations: [recommendation])
-        slateLineupController.slateLineup = .build(
-            slates: [slate]
-        )
-        source.stubObject { _ in
-            slate
-        }
-        viewModel.controllerDidChangeContent(slateLineupController)
-
-        let urlExpectation = expectation(description: "expected to update presented URL")
-        urlExpectation.expectedFulfillmentCount = 3
-        viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
-            urlExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        do {
-            item.isArticle = false
-
-            let cell = HomeViewModel.Cell.recommendationHero(recommendation.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
-        }
-
-        do {
-            item.isArticle = true
-            item.imageness = Imageness.isImage.rawValue
-
-            let cell = HomeViewModel.Cell.recommendationHero(recommendation.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
-        }
-
-        do {
-            item.isArticle = true
-            item.imageness = nil
-            item.videoness = Videoness.isVideo.rawValue
-
-            let cell = HomeViewModel.Cell.recommendationHero(recommendation.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
-        }
-
-        wait(for: [urlExpectation], timeout: 1)
-    }
-    
-    func test_selectCell_whenSelectingCarouselRecommendation_recommendationIsNotReadable_updatesPresentedWebReaderURL() {
-        let viewModel = subject()
-        let item = Item.build()
-        let recommendation = Recommendation.build(item: item)
-        slateLineupController.slateLineup = .build(
-            slates: [.build(recommendations: [recommendation])]
-        )
-        viewModel.controllerDidChangeContent(slateLineupController)
-
-        let urlExpectation = expectation(description: "expected to update presented URL")
-        urlExpectation.expectedFulfillmentCount = 3
-        viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
-            urlExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        do {
-            item.isArticle = false
-
-            let cell = HomeViewModel.Cell.recommendationCarousel(recommendation.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
-        }
-
-        do {
-            item.isArticle = true
-            item.imageness = Imageness.isImage.rawValue
-
-            let cell = HomeViewModel.Cell.recommendationCarousel(recommendation.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
-        }
-
-        do {
-            item.isArticle = true
-            item.imageness = nil
-            item.videoness = Videoness.isVideo.rawValue
-
-            let cell = HomeViewModel.Cell.recommendationCarousel(recommendation.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
-        }
-
-        wait(for: [urlExpectation], timeout: 1)
-    }
-
-    func test_selectCell_whenSelectingRecentSave_recentSaveIsReadable_updatesSelectedReadable() throws {
-        let viewModel = subject()
-
-        let savedItem = SavedItem.build(
-            item: .build(
-                resolvedURL: URL(string: "https://getpocket.com")!
+        for cell in cells {
+            viewModel.select(
+                cell: cell,
+                at: IndexPath(item: 0, section: 0)
             )
-        )
-        try space.save()
-
-        source.stubObject { _ in
-            return savedItem
         }
 
+        wait(for: [readableExpectation], timeout: 1)
+    }
+
+    func test_selectCell_whenSelectingRecommendation_whenRecommendationIsNotReadable_updatesPresentedWebReaderURL() throws {
+        let item = space.buildItem()
+        let recommendation = space.buildRecommendation(item: item)
+        let recommendations = [recommendation]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [space.buildSlate(recommendations: recommendations)]
+        )
+
+        let viewModel = subject()
+        let urlExpectation = expectation(description: "expected to update presented URL")
+        urlExpectation.expectedFulfillmentCount = 3
+        viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
+            urlExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        do {
+            item.isArticle = false
+
+            viewModel.select(
+                cell: .recommendationHero(recommendation.objectID),
+                at: IndexPath(item: 0, section: 0)
+            )
+        }
+
+        do {
+            item.isArticle = true
+            item.imageness = Imageness.isImage.rawValue
+
+            viewModel.select(
+                cell: .recommendationHero(recommendation.objectID),
+                at: IndexPath(item: 0, section: 0)
+            )
+        }
+
+        do {
+            item.isArticle = true
+            item.imageness = nil
+            item.videoness = Videoness.isVideo.rawValue
+
+            viewModel.select(
+                cell: .recommendationHero(recommendation.objectID),
+                at: IndexPath(item: 0, section: 0)
+            )
+        }
+
+        wait(for: [urlExpectation], timeout: 1)
+    }
+    
+    func test_selectCell_whenSelectingRecentSave_recentSaveIsReadable_updatesSelectedReadable() throws {
+        let item = space.buildItem(isArticle: true)
+        let savedItem = space.buildSavedItem(item: item)
+        let recommendation = space.buildRecommendation(item: item)
+        let recommendations = [recommendation]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [space.buildSlate(recommendations: recommendations)]
+        )
+
+        let viewModel = subject()
         let readableExpectation = expectation(description: "expected to update selected readable")
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
@@ -360,23 +573,25 @@ class HomeViewModelTests: XCTestCase {
             }
         }.store(in: &subscriptions)
 
-        let cell = HomeViewModel.Cell.recentSaves(savedItem.objectID)
-        viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+        viewModel.select(
+            cell: .recentSaves(savedItem.objectID),
+            at: IndexPath(item: 0, section: 0)
+        )
 
         wait(for: [readableExpectation], timeout: 1)
     }
 
     func test_selectCell_whenSelectingRecentSave_recentSaveIsNotReadable_updatesPresentedWebReaderURL() throws {
+        let item = space.buildItem(isArticle: true)
+        let savedItem = space.buildSavedItem(item: item)
+        let recommendation = space.buildRecommendation(item: item)
+        let recommendations = [recommendation]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [space.buildSlate(recommendations: recommendations)]
+        )
+
         let viewModel = subject()
-
-        let item = Item.build()
-        let savedItem = SavedItem.build(item: item)
-        try space.save()
-
-        source.stubObject { _ in
-            return savedItem
-        }
-
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
         viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
@@ -385,17 +600,20 @@ class HomeViewModelTests: XCTestCase {
 
         do {
             item.isArticle = false
-
-            let cell = HomeViewModel.Cell.recentSaves(savedItem.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+            viewModel.select(
+                cell: .recentSaves(savedItem.objectID),
+                at: IndexPath(item: 0, section: 0)
+            )
         }
 
         do {
             item.isArticle = true
             item.imageness = Imageness.isImage.rawValue
 
-            let cell = HomeViewModel.Cell.recentSaves(savedItem.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+            viewModel.select(
+                cell: .recentSaves(savedItem.objectID),
+                at: IndexPath(item: 0, section: 0)
+            )
         }
 
         do {
@@ -403,264 +621,137 @@ class HomeViewModelTests: XCTestCase {
             item.imageness = nil
             item.videoness = Videoness.isVideo.rawValue
 
-            let cell = HomeViewModel.Cell.recentSaves(savedItem.objectID)
-            viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
+            viewModel.select(
+                cell: .recentSaves(savedItem.objectID),
+                at: IndexPath(item: 0, section: 0)
+            )
         }
 
         wait(for: [urlExpectation], timeout: 1)
     }
 
     
-    func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() {
-        let viewModel = subject()
-        let recommendation = Recommendation.build()
-        slateLineupController.slateLineup = .build(
-            slates: [.build(recommendations: [recommendation])]
+    func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() throws {
+        let item = space.buildItem(isArticle: true)
+        let recommendation = space.buildRecommendation(item: item)
+        let recommendations = [recommendation]
+        let slate = space.buildSlate(name: "My Awesome Slate", recommendations: recommendations)
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [slate]
         )
-        viewModel.controllerDidChangeContent(slateLineupController)
 
+        let viewModel = subject()
         let detailExpectation = expectation(description: "expected selected slate detail to be updated")
-        viewModel.$selectedSlateDetailViewModel.dropFirst().sink { viewModel in
-            XCTAssertNotNil(viewModel)
-            detailExpectation.fulfill()
+        viewModel.$tappedSeeAll.dropFirst().sink { seeAll in
+            defer { detailExpectation.fulfill() }
+
+            switch seeAll {
+            case .slate(let viewModel):
+                XCTAssertEqual(viewModel.slateName, "My Awesome Slate")
+            default:
+                XCTFail("Expected seeAll to be a slate but got \(String(describing: seeAll))")
+            }
         }.store(in: &subscriptions)
 
-        viewModel.select(slate: .build())
-
+        viewModel.sectionHeaderViewModel(for: .slateHero(slate.objectID))?.buttonAction?()
         wait(for: [detailExpectation], timeout: 1)
     }
 
-    func test_reportAction_forHeroRecommendation_updatesSelectedRecommendationToReport() {
-        
-        let viewModel = subject()
-        let recommendation = Recommendation.build()
-        let slate: Slate = .build(recommendations: [recommendation])
-        slateLineupController.slateLineup = .build(
-            slates: [slate]
+    func test_reportAction_forRecommendationCells_updatesSelectedRecommendationToReport() throws {
+        let heroRec = space.buildRecommendation()
+        let carouselRec = space.buildRecommendation()
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [space.buildSlate(recommendations: [heroRec, carouselRec])]
         )
-        source.stubObject { _ in
-            slate
-        }
-        
-        viewModel.controllerDidChangeContent(slateLineupController)
 
-        let cell = HomeViewModel.Cell.recommendationHero(recommendation.objectID)
-        let action = viewModel.reportAction(for: cell, at: IndexPath(item: 0, section: 0))
-        XCTAssertNotNil(action)
+        let viewModel = subject()
 
         let reportExpectation = expectation(description: "expected to update selected recommendation to report")
+        reportExpectation.expectedFulfillmentCount = 2
         viewModel.$selectedRecommendationToReport.dropFirst().sink { recommendation in
             XCTAssertNotNil(recommendation)
             reportExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        action?.handler?(nil)
+        for recommendation in [heroRec, carouselRec] {
+            let action = viewModel
+                .recommendationHeroViewModel(for: recommendation.objectID, at: [0,0])?
+                .overflowActions?.first { $0.identifier == .report }
+
+            XCTAssertNotNil(action)
+            action?.handler?(nil)
+        }
+
         wait(for: [reportExpectation], timeout: 1)
     }
     
-    func test_reportAction_forCarouselRecommendation_updatesSelectedRecommendationToReport() {
-        let viewModel = subject()
-        let recommendation = Recommendation.build()
-        slateLineupController.slateLineup = .build(
-            slates: [.build(recommendations: [recommendation])]
-        )
-        viewModel.controllerDidChangeContent(slateLineupController)
-
-        let cell = HomeViewModel.Cell.recommendationCarousel(recommendation.objectID)
-        let action = viewModel.reportAction(for: cell, at: IndexPath(item: 0, section: 0))
-        XCTAssertNotNil(action)
-
-        let reportExpectation = expectation(description: "expected to update selected recommendation to report")
-        viewModel.$selectedRecommendationToReport.dropFirst().sink { recommendation in
-            XCTAssertNotNil(recommendation)
-            reportExpectation.fulfill()
-        }.store(in: &subscriptions)
-
-        action?.handler?(nil)
-        wait(for: [reportExpectation], timeout: 1)
-    }
-
-    func test_saveAction_whenHeroRecommendationIsNotSaved_savesWithSource() {
+    func test_saveAction_whenRecommendationIsNotSaved_savesWithSource() throws {
         source.stubSaveRecommendation { _ in }
+        let item = space.buildItem(isArticle: true)
+        let recommendation = space.buildRecommendation(item: item)
+        let recommendations = [recommendation]
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [space.buildSlate(recommendations: recommendations)]
+        )
 
         let viewModel = subject()
-        let recommendation = Recommendation.build()
-        let slate: Slate = .build(recommendations: [recommendation])
-        slateLineupController.slateLineup = .build(
-            slates: [slate]
-        )
-        source.stubObject { _ in
-            slate
-        }
-        viewModel.controllerDidChangeContent(slateLineupController)
 
-        let action = viewModel.saveAction(
-            for: .recommendationHero(recommendation.objectID),
-            at: IndexPath(item: 0, section: 0)
-        )
+        let action = viewModel.recommendationHeroViewModel(
+            for: recommendation.objectID, at: [0, 0]
+        )?.saveAction
         XCTAssertNotNil(action)
-
         action?.handler?(nil)
-        XCTAssertEqual(source.saveRecommendationCall(at: 0)?.recommendation, recommendation)
-    }
-    
-    func test_saveAction_whenCarouselRecommendationIsNotSaved_savesWithSource() {
-        source.stubSaveRecommendation { _ in }
-
-        let viewModel = subject()
-        let recommendation = Recommendation.build()
-        slateLineupController.slateLineup = .build(
-            slates: [.build(recommendations: [recommendation])]
+        XCTAssertEqual(
+            source.saveRecommendationCall(at: 0)?.recommendation,
+            recommendation
         )
-        viewModel.controllerDidChangeContent(slateLineupController)
-
-        let action = viewModel.saveAction(
-            for: .recommendationCarousel(recommendation.objectID),
-            at: IndexPath(item: 0, section: 0)
-        )
-        XCTAssertNotNil(action)
-
-        action?.handler?(nil)
-        XCTAssertEqual(source.saveRecommendationCall(at: 0)?.recommendation, recommendation)
     }
 
-    func test_saveAction_whenHeroRecommendationIsSaved_archivesWithSource() {
+    func test_saveAction_whenRecommendationIsSaved_archivesWithSource() throws {
         source.stubArchiveRecommendation { _ in }
+        let item = space.buildItem(isArticle: true)
+        let recommendation = space.buildRecommendation(item: item)
+        let recommendations = [recommendation]
 
-        let item = Item.build()
-        item.savedItem = .build()
-        let recommendation = Recommendation.build(item: item)
+        space.buildSavedItem(item: item)
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: [space.buildSlate(recommendations: recommendations)]
+        )
 
         let viewModel = subject()
-        let slate: Slate = .build(recommendations: [recommendation])
-        slateLineupController.slateLineup = .build(
-            slates: [slate]
-        )
-        source.stubObject { _ in
-            slate
-        }
-        viewModel.controllerDidChangeContent(slateLineupController)
 
-        let action = viewModel.saveAction(
-            for: .recommendationHero(recommendation.objectID),
-            at: IndexPath(item: 0, section: 0)
-        )
+        let action = viewModel.recommendationHeroViewModel(
+            for: recommendation.objectID, at: [0, 0]
+        )?.saveAction
         XCTAssertNotNil(action)
-
         action?.handler?(nil)
-        XCTAssertEqual(source.archiveRecommendationCall(at: 0)?.recommendation, recommendation)
-    }
-    
-    func test_saveAction_whenCarouselRecommendationIsSaved_archivesWithSource() {
-        source.stubArchiveRecommendation { _ in }
-
-        let item = Item.build()
-        item.savedItem = .build()
-        let recommendation = Recommendation.build(item: item)
-
-        let viewModel = subject()
-        slateLineupController.slateLineup = .build(
-            slates: [.build(recommendations: [recommendation])]
+        XCTAssertEqual(
+            source.archiveRecommendationCall(at: 0)?.recommendation,
+            recommendation
         )
-        viewModel.controllerDidChangeContent(slateLineupController)
-
-        let action = viewModel.saveAction(
-            for: .recommendationCarousel(recommendation.objectID),
-            at: IndexPath(item: 0, section: 0)
-        )
-        XCTAssertNotNil(action)
-
-        action?.handler?(nil)
-        XCTAssertEqual(source.archiveRecommendationCall(at: 0)?.recommendation, recommendation)
     }
     
-    func test_snapshot_withSavedItems_fetchesRecentSavedItemsSections() throws {
-        let items: [SavedItem] = [.build(createdAt: .init(timeIntervalSince1970: TimeInterval(1))), .build(createdAt: .init(timeIntervalSince1970: TimeInterval(0)))]
-        try space.save()
-        
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        let viewModel = subject()
-        viewModel.$snapshot.dropFirst().sink { snapshot in
-            XCTAssertEqual(
-                snapshot.itemIdentifiers(inSection: .recentSaves),
-                [
-                    .recentSaves(items[0].objectID),
-                    .recentSaves(items[1].objectID)
-                ]
-            )
-
-            expectSnapshot.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.fetch()
-        wait(for: [expectSnapshot], timeout: 1)
-    }
-    
-    func test_snapshot_withNoSavedItems_doesNotHaveRecentSavedItemsSection() {
-        let expectSnapshot = expectation(description: "expect a snapshot")
-        let viewModel = subject()
-        viewModel.$snapshot.dropFirst().sink { snapshot in
-            XCTAssertNil(snapshot.indexOfSection(.recentSaves))
-            expectSnapshot.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.fetch()
-        wait(for: [expectSnapshot], timeout: 1)
-    }
-    
-    func test_numberOfCarouselItemsForSlate_returnsAccurateCount() {
-        let recommendations: [Recommendation] = [
-            .build(remoteID: "slate-1-recommendation-1"),
-            .build(remoteID: "slate-1-recommendation-2"),
-            .build(remoteID: "slate-1-recommendation-3"),
-            .build(remoteID: "slate-2-recommendation-1"),
-            .build(remoteID: "slate-2-recommendation-2"),
-            .build(remoteID: "slate-3-recommendation-1"),
-        ]
-        let slates: [Slate] = [
-            .build(
-                remoteID: "slate-1",
-                recommendations: [recommendations[0], recommendations[1], recommendations[2]]
-            ),
-            .build(
-                remoteID: "slate-2",
-                recommendations: [recommendations[3], recommendations[4]]
-            ),
-            .build(
-                remoteID: "slate-3",
-                recommendations: [recommendations[5]]
-            ),
+    func test_numberOfCarouselItemsForSlate_returnsAccurateCount() throws {
+        let slates = [
+            space.buildSlate(recommendations: (0...1).map { _ in space.buildRecommendation() }),
+            space.buildSlate(recommendations: (0...2).map { _ in space.buildRecommendation() }),
+            space.buildSlate(recommendations: (0...3).map { _ in space.buildRecommendation() })
         ]
 
-        let slateLineupController = MockSlateLineupController()
-        slateLineupController.slateLineup = SlateLineup.build(slates: slates)
-        source.stubMakeSlateLineupController {
-            slateLineupController
-        }
-
-        source.stubObject { objectID in
-            slates.first { slate in
-                slate.objectID == objectID
-            }
-        }
+        try space.createSlateLineup(
+            remoteID: HomeViewModel.lineupIdentifier,
+            slates: slates
+        )
 
         let viewModel = subject()
+        viewModel.fetch()
 
-        let count1 = viewModel.numberOfCarouselItemsForSlate(with: slates[0].objectID)
-        let count2 = viewModel.numberOfCarouselItemsForSlate(with: slates[1].objectID)
-        let count3 = viewModel.numberOfCarouselItemsForSlate(with: slates[2].objectID)
-
-        XCTAssertEqual(count1, 2)
-        XCTAssertEqual(count2, 1)
-        XCTAssertEqual(count3, 0)
+        XCTAssertEqual(viewModel.numberOfCarouselItemsForSlate(with: slates[0].objectID), 1)
+        XCTAssertEqual(viewModel.numberOfCarouselItemsForSlate(with: slates[1].objectID), 2)
+        XCTAssertEqual(viewModel.numberOfCarouselItemsForSlate(with: slates[2].objectID), 3)
     }
-    
-//    func test_numberOfRecentSavesItem_returnsAccurateCount() throws {
-//        let items: [SavedItem] = [.build(), .build(), .build()]
-//        try space.save()
-//        let viewModel = subject()
-//        let count = viewModel.numberOfRecentSavesItem()
-//
-//        XCTAssertEqual(count, items.count)
-//    }
 }

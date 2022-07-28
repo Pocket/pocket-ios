@@ -156,8 +156,7 @@ extension HomeViewController {
             return cell
         case .recentSaves(let objectID):
             let cell: RecentSavesItemCell = collectionView.dequeueCell(for: indexPath)
-
-            guard let viewModel = model.recentSavesViewModel(for: objectID, and: item, at: indexPath) else {
+            guard let viewModel = model.recentSavesViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
             
@@ -165,8 +164,7 @@ extension HomeViewController {
             return cell
         case .recommendationHero(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
- 
-            guard let viewModel = model.recommendationHeroViewModel(for: objectID, and: item, at: indexPath) else {
+            guard let viewModel = model.recommendationHeroViewModel(for: objectID,  at: indexPath) else {
                 return cell
             }
 
@@ -174,11 +172,10 @@ extension HomeViewController {
             return cell
         case .recommendationCarousel(let objectID):
             let cell: RecommendationCarouselCell = collectionView.dequeueCell(for: indexPath)
-            
-            guard let viewModel = model.recommendationCarouselViewModel(for: objectID, and: item, at: indexPath) else {
+            guard let viewModel = model.recommendationCarouselViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
-            
+
             cell.configure(model: viewModel)
             return cell
         }
@@ -187,19 +184,15 @@ extension HomeViewController {
     func viewForSupplementaryElement(ofKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case SectionHeaderView.kind:
-            let header: SectionHeaderView = collectionView.dequeueReusableView(forSupplementaryViewOfKind: kind, for: indexPath)
-            let section = dataSource.sectionIdentifier(for: indexPath.section)
-            switch section {
-            case .recentSaves:
-                header.configure(model: .init(name: "Recent Saves", buttonTitle: "My List") { [weak self] in
-                    self?.model.tappedSeeAll = .recentSaves
-                })
-            case .slateHero(let objectID):
-                header.configure(model: .init(name: model.slate(with: objectID)?.name ?? "", buttonTitle: "See All") { [weak self] in
-                    self?.model.tappedSeeAll = .slateHero(objectID)
-                })
-            default:
-                break
+            let header: SectionHeaderView = collectionView.dequeueReusableView(
+                forSupplementaryViewOfKind: kind, for: indexPath
+            )
+
+
+            if let section = dataSource.sectionIdentifier(for: indexPath.section),
+               let viewModel = model.sectionHeaderViewModel(for: section) {
+
+                header.configure(model: viewModel)
             }
 
             return header

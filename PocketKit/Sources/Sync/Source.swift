@@ -22,13 +22,7 @@ public protocol Source {
 
     func makeArchiveService() -> ArchiveService
 
-    func makeSlateLineupController() -> SlateLineupController
-
-    func makeSlateController(byID id: String) -> SlateController
-
     func makeUndownloadedImagesController() -> ImagesController
-
-    func makeRecentSavesController() -> RecentSavesController
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 

@@ -114,6 +114,9 @@ class RecommendationCell: UICollectionViewCell {
     }
 
     func configure(model: RecommendationCellViewModel) {
+        if model.attributedTitle.string.isEmpty {
+            print("it's empty")
+        }
         titleLabel.attributedText = model.attributedTitle
         domainLabel.attributedText = model.attributedDomain
         timeToReadLabel.attributedText = model.attributedTimeToRead
