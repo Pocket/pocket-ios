@@ -196,7 +196,7 @@ extension HomeCarouselItemCell {
                 .processor(
                     ResizingImageProcessor(
                         referenceSize: StyleConstants.thumbnailSize,
-                        mode: .aspectFit
+                        mode: .aspectFill
                     ).append(
                         another: CroppingImageProcessor(
                             size: StyleConstants.thumbnailSize
