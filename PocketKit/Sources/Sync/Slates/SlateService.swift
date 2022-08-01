@@ -1,5 +1,7 @@
 import Apollo
 import Foundation
+import CoreData
+
 
 protocol SlateService {
     func fetchSlateLineup(_ identifier: String) async throws
@@ -26,16 +28,12 @@ class APISlateService: SlateService {
             return
         }
 
-        if let existingSlateLineup = try space.fetchSlateLineup(byRemoteID: remote.id) {
-            space.delete(existingSlateLineup)
-        }
-
-        try space.deleteUnsavedItems()
-
-        let slateLineup: SlateLineup = space.new()
-        slateLineup.update(from: remote, in: space)
+        let lineup = try space.fetchSlateLineup(byRemoteID: remote.id) ?? space.new()
+        lineup.update(from: remote, in: space)
 
         try space.save()
+        try space.batchDeleteOrphanedSlates()
+        try space.batchDeleteOrphanedItems()
     }
 
     @MainActor

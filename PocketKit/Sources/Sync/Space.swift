@@ -235,4 +235,20 @@ public class Space {
             )
         }
     }
+
+    func batchDeleteOrphanedSlates() throws {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Slate.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "slateLineup = NULL")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        try context.execute(deleteRequest)
+    }
+
+    func batchDeleteOrphanedItems() throws {
+        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Item.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL")
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+
+        try context.execute(deleteRequest)
+    }
 }
