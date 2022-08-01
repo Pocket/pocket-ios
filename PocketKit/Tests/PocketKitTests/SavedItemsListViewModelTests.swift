@@ -2,11 +2,14 @@ import XCTest
 import Analytics
 import Sync
 import Combine
+
+@testable import Sync
 @testable import PocketKit
 
 
 class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
+    var space: Space!
     var tracker: MockTracker!
     var itemsController: MockSavedItemsController!
     var subscriptions: [AnyCancellable]!
@@ -14,6 +17,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
+        space = .testSpace()
         subscriptions = []
         itemsController = MockSavedItemsController()
 
@@ -23,8 +27,9 @@ class SavedItemsListViewModelTests: XCTestCase {
         }
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
         subscriptions = []
+        try space.clear()
     }
 
     func subject(
@@ -39,8 +44,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
         let viewModel = subject()
-
-        let item = SavedItem.build(item: nil)
+        let item = space.buildPendingSavedItem()
 
         source.stubObject { _ in
             item
@@ -52,7 +56,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     func test_shouldSelectCell_whenItemIsNotPending_returnsFalse() {
         let viewModel = subject()
 
-        let item = SavedItem.build()
+        let item = space.buildSavedItem(item: nil)
 
         source.stubObject { _ in item }
 
@@ -61,7 +65,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
         let viewModel = subject()
-        let item = SavedItem.build()
+        let item = space.buildPendingSavedItem()
         
         source.stubObject { _ in item }
         
@@ -82,10 +86,10 @@ class SavedItemsListViewModelTests: XCTestCase {
     
     func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() {
         let viewModel = subject()
-        let item = SavedItem.build()
-        item.item?.isArticle = false
-        
-        source.stubObject { _ in item }
+        let item = space.buildItem(isArticle: false)
+        let savedItem = space.buildSavedItem(item: item)
+
+        source.stubObject { _ in savedItem }
         
         viewModel.selectCell(with: .item(item.objectID))
         guard let selectedItem = viewModel.selectedItem else {
@@ -147,7 +151,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     func test_sourceEvents_whenEventIsSavedItemCreated_sendsSnapshotWithNewItem() {
-        let savedItem: SavedItem = .build()
+        let savedItem = space.buildSavedItem()
         itemsController.stubPerformFetch {
             self.itemsController.fetchedObjects = [savedItem]
         }
@@ -167,7 +171,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     func test_sourceEvents_whenEventIsSavedItemUpdated_sendsSnapshotWithUpdatedItem() {
-        let savedItem: SavedItem = .build()
+        let savedItem = space.buildSavedItem()
         itemsController.stubPerformFetch {
             self.itemsController.fetchedObjects = [savedItem]
         }
@@ -227,7 +231,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
     
     func test_receivedSnapshots_withItems_doesNotIncludeMyListEmptyState() {
-        let savedItem: SavedItem = .build()
+        let savedItem = space.buildSavedItem()
         itemsController.fetchedObjects = [savedItem]
 
         let viewModel = subject()
@@ -246,7 +250,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
     
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
-        let savedItem: SavedItem = .build()
+        let savedItem = space.buildSavedItem()
         itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [savedItem] }
         
         let viewModel = subject()
@@ -277,7 +281,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     func test_receivedSnapshots_whenInitialDownloadIsInProgress_insertsPlaceholderCells() throws {
-        let savedItem: SavedItem = .build()
+        let savedItem = space.buildSavedItem()
         itemsController.stubPerformFetch {
             self.itemsController.fetchedObjects = [savedItem]
         }

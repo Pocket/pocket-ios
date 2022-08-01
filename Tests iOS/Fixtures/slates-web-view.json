@@ -1,7 +1,7 @@
 {
     "data": {
         "getSlateLineup": {
-            "id": "slate-lineup-1",
+            "id": "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1",
             "requestId": "slate-lineup-1-request",
             "experimentId": "slate-lineup-1-experiment",
             "__typename": "[some-type-name]",

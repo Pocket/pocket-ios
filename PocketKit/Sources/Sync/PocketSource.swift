@@ -130,24 +130,8 @@ public class PocketSource: Source {
         PocketArchiveService(apollo: apollo, space: space)
     }
 
-    public func makeSlateLineupController() -> SlateLineupController {
-        PocketSlateLineupController(
-            resultsController: space.makeSlateLineupController()
-        )
-    }
-
-    public func makeSlateController(byID id: String) -> SlateController {
-        PocketSlateController(
-            resultsController: space.makeSlateController(byID: id)
-        )
-    }
-
     public func makeUndownloadedImagesController() -> ImagesController {
         FetchedImagesController(resultsController: space.makeUndownloadedImagesController())
-    }
-
-    public func makeRecentSavesController() -> RecentSavesController {
-        RecentSavesController(space: space)
     }
 
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {

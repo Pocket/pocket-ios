@@ -3,11 +3,13 @@ import Sync
 import Analytics
 import Combine
 
+@testable import Sync
 @testable import PocketKit
 
 
 class RecommendationViewModelTests: XCTestCase {
     private var source: MockSource!
+    private var space: Space!
     private var tracker: MockTracker!
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -15,12 +17,14 @@ class RecommendationViewModelTests: XCTestCase {
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
+        space = .testSpace()
 
         continueAfterFailure = false
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
         subscriptions = []
+        try space.clear()
     }
 
     func subject(
@@ -35,10 +39,10 @@ class RecommendationViewModelTests: XCTestCase {
         )
     }
 
-    func test_init_buildsCorrectActions() {
+    func test_init_buildsCorrectActions() throws {
         // not saved
         do {
-            let recommendation: Recommendation = .build(item: .build())
+            let recommendation = space.buildRecommendation(item: space.buildItem())
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
@@ -48,10 +52,10 @@ class RecommendationViewModelTests: XCTestCase {
 
         // not-favorited, not-archived
         do {
-            let item: Item = .build()
-            let savedItem: SavedItem = .build(isFavorite: false, isArchived: false, item: item)
-            savedItem.item = item
-            let recommendation: Recommendation = .build(item: item)
+            let item = space.buildItem()
+            let recommendation = space.buildRecommendation(item: item)
+            try space.createSavedItem(isFavorite: false, isArchived: false, item: item)
+
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
@@ -61,10 +65,10 @@ class RecommendationViewModelTests: XCTestCase {
 
         // favorited, archived
         do {
-            let item: Item = .build()
-            let savedItem: SavedItem = .build(isFavorite: true, isArchived: true, item: item)
-            savedItem.item = item
-            let recommendation: Recommendation = .build(item: item)
+            let item = space.buildItem()
+            let recommendation = space.buildRecommendation(item: item)
+            try space.createSavedItem(isFavorite: true, isArchived: true, item: item)
+
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
@@ -73,13 +77,12 @@ class RecommendationViewModelTests: XCTestCase {
         }
     }
 
-    func test_whenItemChanges_rebuildsActions() {
-        let item: Item = .build()
-        let recommendation: Recommendation = .build(item: item)
+    func test_whenItemChanges_rebuildsActions() throws {
+        let item = space.buildItem()
+        let recommendation = try space.createRecommendation(item: item)
         let viewModel = subject(recommendation: recommendation)
 
-        let savedItem: SavedItem = .build(isFavorite: false, isArchived: true, item: item)
-        savedItem.item = item
+        let savedItem = try space.createSavedItem(isFavorite: false, isArchived: true, item: item)
 
         XCTAssertEqual(
             viewModel._actions.map(\.title),
@@ -112,10 +115,10 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_displaySettings_updatesIsPresentingReaderSettings() {
-        let item: Item = .build()
-        let savedItem: SavedItem = .build(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
         savedItem.item = item
-        let recommendation: Recommendation = .build(item: item)
+        let recommendation = space.buildRecommendation(item: space.buildItem())
         let viewModel = subject(recommendation: recommendation)
 
         viewModel.invokeAction(title: "Display Settings")
@@ -124,10 +127,9 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_favorite_delegatesToSource() {
-        let item: Item = .build()
-        let savedItem: SavedItem = .build(isFavorite: false, item: item)
-        savedItem.item = item
-        let recommendation: Recommendation = .build(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(isFavorite: false, item: item)
+        let recommendation = space.buildRecommendation(item: item)
 
         let expectFavorite = expectation(description: "expect source.favorite(_:)")
         source.stubFavoriteSavedItem { favoritedItem in
@@ -143,10 +145,9 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_unfavorite_delegatesToSource() {
-        let item: Item = .build()
-        let savedItem: SavedItem = .build(isFavorite: true, item: item)
-        savedItem.item = item
-        let recommendation: Recommendation = .build(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(isFavorite: true, item: item)
+        let recommendation = space.buildRecommendation(item: item)
 
         let expectUnfavorite = expectation(description: "expect source.unfavorite(_:)")
         source.stubUnfavoriteSavedItem { unfavoritedItem in
@@ -162,10 +163,9 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
-        let item: Item = .build()
-        let savedItem: SavedItem = .build(item: item)
-        savedItem.item = item
-        let recommendation: Recommendation = .build(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
+        let recommendation = space.buildRecommendation(item: item)
         let viewModel = subject(recommendation: recommendation)
 
         let expectDelete = expectation(description: "expect source.delete(_:)")
@@ -191,10 +191,9 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
-        let item: Item = .build()
-        let savedItem: SavedItem = .build(item: item)
-        savedItem.item = item
-        let recommendation: Recommendation = .build(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
+        let recommendation = space.buildRecommendation(item: item)
         let viewModel = subject(recommendation: recommendation)
 
         let expectArchive = expectation(description: "expect source.archive(_:)")
@@ -218,10 +217,9 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_moveToMyList_sendsRequestToSource_AndRefreshes() {
-        let item: Item = .build()
-        let savedItem: SavedItem = .build(isArchived: true, item: item)
-        savedItem.item = item
-        let recommendation: Recommendation = .build(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(isArchived: true, item: item)
+        let recommendation = space.buildRecommendation(item: item)
 
         let expectUnarchive = expectation(description: "expect source.unarchive(_:)")
         source.stubUnarchiveSavedItem { unarchivedItem in
@@ -236,10 +234,10 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_share_updatesSharedActivity() {
-        let item: Item = .build()
-        let savedItem: SavedItem = .build(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
         savedItem.item = item
-        let recommendation: Recommendation = .build(item: item)
+        let recommendation = space.buildRecommendation(item: space.buildItem())
 
         let viewModel = subject(recommendation: recommendation)
         viewModel.invokeAction(title: "Share")
@@ -248,10 +246,10 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_showWebReader_updatesPresentedWebReaderURL() {
-        let item: Item = .build()
-        let savedItem: SavedItem = .build(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
         savedItem.item = item
-        let recommendation: Recommendation = .build(item: item)
+        let recommendation = space.buildRecommendation(item: space.buildItem())
 
         let viewModel = subject(recommendation: recommendation)
         viewModel.showWebReader()
@@ -260,7 +258,7 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_save_delegatesToSource() {
-        let recommendation: Recommendation = .build(item: .build())
+        let recommendation = space.buildRecommendation(item: space.buildItem())
 
         let expectSave = expectation(description: "expect source.save(_:)")
         source.stubSaveRecommendation { saved in
@@ -276,7 +274,7 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     func test_report_updatesSelectedRecommendationToReport() {
-        let recommendation = Recommendation.build(item: .build())
+        let recommendation = space.buildRecommendation(item: space.buildItem())
 
         let viewModel = subject(recommendation: recommendation)
 
@@ -290,34 +288,34 @@ class RecommendationViewModelTests: XCTestCase {
         wait(for: [reportExpectation], timeout: 1)
     }
 
-    func test_externalSave_forwardsToSource() {
+    func test_externalSave_forwardsToSource() throws {
         source.stubSaveURL { _ in }
 
-        let viewModel = subject(recommendation: .build())
+        let viewModel = try subject(recommendation: space.createRecommendation())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Save")
         XCTAssertEqual(source.saveURLCall(at: 0)?.url, url)
     }
 
-    func test_externalCopy_copiesToClipboard() {
-        let viewModel = subject(recommendation: .build())
+    func test_externalCopy_copiesToClipboard() throws {
+        let viewModel = try subject(recommendation: space.createRecommendation())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Copy link")
         XCTAssertEqual(UIPasteboard.general.url, url)
     }
 
-    func test_externalShare_updatesSharedActivity() {
-        let viewModel = subject(recommendation: .build())
+    func test_externalShare_updatesSharedActivity() throws {
+        let viewModel = try subject(recommendation: space.createRecommendation())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Share")
         XCTAssertNotNil(viewModel.sharedActivity)
     }
 
-    func test_externalOpen_updatesPresentedWebReaderURL() {
-        let viewModel = subject(recommendation: .build())
+    func test_externalOpen_updatesPresentedWebReaderURL() throws {
+        let viewModel = try subject(recommendation: space.createRecommendation())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Open")

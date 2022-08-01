@@ -120,7 +120,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_favorite_togglesIsFavorite_andExecutesFavoriteMutation() throws {
-        let item = try space.seedSavedItem(remoteID: "test-item-id")
+        let item = try space.createSavedItem(remoteID: "test-item-id")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: FavoriteItemMutation) in
             TestSyncOperation {
@@ -136,7 +136,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_unfavorite_unsetsIsFavorite_andExecutesUnfavoriteMutation() throws {
-        let item = try space.seedSavedItem()
+        let item = try space.createSavedItem()
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: UnfavoriteItemMutation) in
             TestSyncOperation {
@@ -152,7 +152,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
-        let item = try space.seedSavedItem(remoteID: "delete-me")
+        let item = try space.createSavedItem(remoteID: "delete-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
             TestSyncOperation {
@@ -174,9 +174,9 @@ class PocketSourceTests: XCTestCase {
             TestSyncOperation { }
         }
 
-        let savedItem = try space.seedSavedItem(item: .build())
+        let savedItem = try space.createSavedItem(item: .build())
         let item = savedItem.item!
-        item.recommendation = .build()
+        item.recommendation = space.buildRecommendation()
 
         let remoteItemID = item.remoteID!
 
@@ -192,7 +192,7 @@ class PocketSourceTests: XCTestCase {
             TestSyncOperation { }
         }
 
-        let savedItem = try space.seedSavedItem(item: .build())
+        let savedItem = try space.createSavedItem(item: .build())
         let item = savedItem.item!
 
         let remoteItemID = item.remoteID!
@@ -205,7 +205,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_archive_archivesLocally_andExecutesArchiveMutation_andUpdatesArchivedAt() throws {
-        let item = try space.seedSavedItem(remoteID: "archive-me")
+        let item = try space.createSavedItem(remoteID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
         operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
             TestSyncOperation {
@@ -223,7 +223,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_unarchive_executesSaveItemMutation_andUpdatesCreatedAtField() throws {
-        let item = try space.seedSavedItem(remoteID: "unarchive-me")
+        let item = try space.createSavedItem(remoteID: "unarchive-me")
         item.isArchived = true
 
         let expectationToRunOperation = expectation(description: "Run operation")
@@ -261,7 +261,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_itemsController_returnsAFetchedResultsController() throws {
         let source = subject()
-        let item1 = try space.seedSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
+        let item1 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
 
         let itemResultsController = source.makeItemsController()
         try itemResultsController.performFetch()
@@ -273,7 +273,7 @@ class PocketSourceTests: XCTestCase {
         }
         itemResultsController.delegate = delegate
 
-        let item2 = try space.seedSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(title: "Item 2"))
+        let item2 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(title: "Item 2"))
 
         wait(for: [expectationForUpdatedItems], timeout: 1)
         XCTAssertEqual(itemResultsController.fetchedObjects, [item1, item2])
@@ -289,7 +289,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
 
-        let savedItem = try! space.seedSavedItem()
+        let savedItem = try! space.createSavedItem()
         let unresolved: UnresolvedSavedItem = space.new()
         unresolved.savedItem = savedItem
         try space.save()
@@ -309,7 +309,7 @@ class PocketSourceTests: XCTestCase {
         }
 
         let seededItem = Item.build()
-        let recommendation = Recommendation.build(item: seededItem)
+        let recommendation = space.buildRecommendation(item: seededItem)
 
         let source = subject()
         source.save(recommendation: recommendation)
@@ -333,7 +333,7 @@ class PocketSourceTests: XCTestCase {
         }
 
         let seededItem = Item.build()
-        let recommendation = Recommendation.build(item: seededItem)
+        let recommendation = space.buildRecommendation(item: seededItem)
 
         let source = subject()
         source.save(recommendation: recommendation)
@@ -357,9 +357,9 @@ class PocketSourceTests: XCTestCase {
         }
 
         let seededItem = Item.build()
-        let seededSavedItem = SavedItem.build(isArchived: true)
+        let seededSavedItem = space.buildSavedItem(isArchived: true)
         seededItem.savedItem = seededSavedItem
-        let recommendation = Recommendation.build(item: seededItem)
+        let recommendation = space.buildRecommendation(item: seededItem)
 
         let source = subject()
         source.save(recommendation: recommendation)
@@ -383,8 +383,8 @@ class PocketSourceTests: XCTestCase {
         }
 
         let seededItem = Item.build()
-        seededItem.savedItem = .build()
-        let recommendation = Recommendation.build(item: seededItem)
+        seededItem.savedItem = space.buildSavedItem()
+        let recommendation = space.buildRecommendation(item: seededItem)
 
         let source = subject()
         source.archive(recommendation: recommendation)
@@ -400,8 +400,8 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_removeRecommendation_removesRecommendationFromSpace() throws {
-        let recommendation1 = Recommendation.build()
-        let recommendation2 = Recommendation.build()
+        let recommendation1 = space.buildRecommendation()
+        let recommendation2 = space.buildRecommendation()
 
         let source = subject()
         source.remove(recommendation: recommendation1)
@@ -426,7 +426,7 @@ class PocketSourceTests: XCTestCase {
             asResultType: SavedItemByIdQuery.self
         )
 
-        let savedItem = try space.seedSavedItem(remoteID: "a-saved-item")
+        let savedItem = try space.createSavedItem(remoteID: "a-saved-item")
         savedItem.item = nil
         try space.save()
 
@@ -465,7 +465,7 @@ class PocketSourceTests: XCTestCase {
         }
 
         let url = URL(string: "https://getpocket.com")!
-        let seed: SavedItem = .build(url: url.absoluteString)
+        let seed = space.buildSavedItem(url: url.absoluteString)
         let seedDate = Date()
         seed.createdAt = seedDate
         try? space.save()
@@ -489,7 +489,7 @@ class PocketSourceTests: XCTestCase {
         }
 
         let url = URL(string: "https://getpocket.com")!
-        _ = SavedItem.build(url: "https://getpocket.com", isArchived: true)
+        _ = space.buildSavedItem(url: "https://getpocket.com", isArchived: true)
         try? space.save()
 
         let source = subject()

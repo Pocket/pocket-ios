@@ -111,6 +111,19 @@ class ReportARecommendationTests: XCTestCase {
                 Data()
             }
         }
+
+        let coordinateToScroll = app.homeView
+            .recommendationCell("Slate 1, Recommendation 1")
+            .element.coordinate(
+                withNormalizedOffset: CGVector(dx: 0.5, dy: 0.1)
+            )
+
+        coordinateToScroll.press(
+            forDuration: 0.1,
+            thenDragTo: coordinateToScroll.withOffset(CGVector(dx: 0, dy: -50)),
+            withVelocity: .default,
+            thenHoldForDuration: 0.1
+        )
         
         app.homeView
             .recommendationCell("Slate 1, Recommendation 2")

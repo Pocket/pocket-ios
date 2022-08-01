@@ -215,7 +215,7 @@ private extension SlateDetailViewController {
         case .recommendation(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
 
-            guard let viewModel = self.model.recommendationViewModel(for: objectID, and: viewModelCell, at: indexPath) else {
+            guard let viewModel = self.model.recommendationViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
 

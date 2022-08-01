@@ -43,7 +43,7 @@ extension PocketSourceTests {
         let source = subject()
         networkMonitor.update(status: .unsatisfied)
 
-        source.save(item: .build())
+        source.save(item: space.buildSavedItem())
         source.refresh()
 
         networkMonitor.update(status: .satisfied)
@@ -75,7 +75,7 @@ extension PocketSourceTests {
         }
 
         let source = subject()
-        try source.archive(item: space.seedSavedItem())
+        try source.archive(item: space.createSavedItem())
         wait(for: [firstAttempt], timeout: 1)
 
         networkMonitor.update(status: .unsatisfied)
@@ -115,7 +115,7 @@ extension PocketSourceTests {
             }
         }
 
-        let item = try space.seedSavedItem()
+        let item = try space.createSavedItem()
         let source = subject()
         source.archive(item: item)
         wait(for: [firstAttempt], timeout: 1)
@@ -147,7 +147,7 @@ extension PocketSourceTests {
             TestSyncOperation { }
         }
 
-        let item = try space.seedSavedItem()
+        let item = try space.createSavedItem()
         let source = subject()
         source.archive(item: item)
         wait(for: [firstAttempt], timeout: 1)
@@ -178,7 +178,7 @@ extension PocketSourceTests {
             }
         }
 
-        let item = try space.seedSavedItem()
+        let item = try space.createSavedItem()
         let source = subject()
         source.archive(item: item)
         wait(for: [firstAttempt], timeout: 1)

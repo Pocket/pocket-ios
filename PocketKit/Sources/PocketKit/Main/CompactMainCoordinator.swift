@@ -59,6 +59,7 @@ class CompactMainCoordinator: NSObject {
         super.init()
 
         tabBarController.delegate = self
+        home.delegate = self
 
         collapsedSubscription = model.$isCollapsed.receive(on: DispatchQueue.main).sink { [weak self] isCollapsed in
             if isCollapsed {
@@ -67,19 +68,6 @@ class CompactMainCoordinator: NSObject {
                 self?.stopObservingModelChanges()
             }
         }
-        
-        model.home.$tappedSeeAll.dropFirst().receive(on: DispatchQueue.main)
-            .sink { [weak self] section in
-                switch section {
-                case .recentSaves:
-                    self?.model.selectedSection = .myList(.myList)
-                case .slateHero(let slateID):
-                    guard let slate = self?.model.home.slate(with: slateID) else { return }
-                    self?.model.home.select(slate: slate)
-                default:
-                    return
-                }
-            }.store(in: &subscriptions)
     }
 
     func stopObservingModelChanges() {
@@ -119,5 +107,11 @@ extension CompactMainCoordinator: UITabBarControllerDelegate {
         }
 
         model.selectedSection = MainViewModel.AppSection.allCases[index]
+    }
+}
+
+extension CompactMainCoordinator: CompactHomeCoordinatorDelegate {
+    func compactHomeCoordinatorDidSelectRecentSaves(_ coordinator: CompactHomeCoordinator) {
+        model.selectedSection = .myList(.myList)
     }
 }

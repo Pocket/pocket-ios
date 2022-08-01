@@ -179,15 +179,30 @@ class HomeTests: XCTestCase {
         
         home.sectionHeader("Slate 1").seeAllButton.wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").verify()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").wait()
         app.slateDetailView.element.swipeUp()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").verify()
+        app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").wait()
 
         app.tabBar.homeButton.wait().tap()
         home.element.swipeUp()
 
         home.sectionHeader("Slate 2").seeAllButton.wait().tap()
         app.slateDetailView.recommendationCell("Slate 2, Recommendation 1").wait()
+    }
+
+    func test_slateDetails_savingARecommendation_addsItemToList() {
+        let home = app.launch().homeView
+        home.sectionHeader("Slate 1").seeAllButton.wait().tap()
+
+        let cell = app.slateDetailView
+            .recommendationCell("Slate 1, Recommendation 1")
+
+        cell.saveButton.wait().tap()
+        XCTAssertEqual(cell.saveButton.label, "Saved")
+
+        app.navigationBar.buttons["Home"].tap()
+        app.tabBar.myListButton.tap()
+        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
     }
     
     func test_tappingRecommendationCell_opensItemInReader() {

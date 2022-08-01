@@ -35,7 +35,7 @@ class SavedItemViewModelTests: XCTestCase {
     func test_init_buildsCorrectActions() {
         // not-favorited, not-archived
         do {
-            let viewModel = subject(item: .build(isFavorite: false, isArchived: false))
+            let viewModel = subject(item: space.buildSavedItem(isFavorite: false, isArchived: false))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
                 ["Display Settings", "Favorite", "Archive", "Delete", "Share"]
@@ -44,7 +44,7 @@ class SavedItemViewModelTests: XCTestCase {
 
         // favorited, archived
         do {
-            let viewModel = subject(item: .build(isFavorite: true, isArchived: true))
+            let viewModel = subject(item: space.buildSavedItem(isFavorite: true, isArchived: true))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
                 ["Display Settings", "Unfavorite", "Move to My List", "Delete", "Share"]
@@ -53,7 +53,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_whenItemChanges_rebuildsActions() {
-        let item: SavedItem = .build(isFavorite: false, isArchived: true)
+        let item = space.buildSavedItem(isFavorite: false, isArchived: true)
         let viewModel = subject(item: item)
 
         item.isFavorite = true
@@ -72,7 +72,7 @@ class SavedItemViewModelTests: XCTestCase {
     func test_fetchDetailsIfNeeded_whenItemDetailsAreNotAvailable_fetchesItemDetails_andSendsEvent() throws {
         source.stubFetchDetails { _ in }
 
-        let savedItem: SavedItem = .build()
+        let savedItem = space.buildSavedItem()
         savedItem.item?.article = nil
         try space.save()
 
@@ -103,7 +103,7 @@ class SavedItemViewModelTests: XCTestCase {
             fetchedDetails.fulfill()
         }
 
-        let savedItem: SavedItem = .build()
+        let savedItem = space.buildSavedItem()
         savedItem.item?.article = Article(components: [])
         let viewModel = subject(item: savedItem)
         viewModel.fetchDetailsIfNeeded()
@@ -113,14 +113,14 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_displaySettings_updatesIsPresentingReaderSettings() {
-        let viewModel = subject(item: .build())
+        let viewModel = subject(item: space.buildSavedItem())
         viewModel.invokeAction(title: "Display Settings")
 
         XCTAssertEqual(viewModel.isPresentingReaderSettings, true)
     }
 
     func test_favorite_delegatesToSource() {
-        let item: SavedItem = .build(isFavorite: false)
+        let item = space.buildSavedItem(isFavorite: false)
         let expectFavorite = expectation(description: "expect source.favorite(_:)")
 
         source.stubFavoriteSavedItem { favoritedItem in
@@ -135,7 +135,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_unfavorite_delegatesToSource() {
-        let item: SavedItem = .build(isFavorite: true)
+        let item = space.buildSavedItem(isFavorite: true)
         let expectUnfavorite = expectation(description: "expect source.unfavorite(_:)")
 
         source.stubUnfavoriteSavedItem { unfavoritedItem in
@@ -150,7 +150,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
-        let item: SavedItem = .build(isFavorite: true)
+        let item = space.buildSavedItem(isFavorite: true)
         let viewModel = subject(item: item)
 
         let expectDelete = expectation(description: "expect source.delete(_:)")
@@ -176,7 +176,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
-        let item: SavedItem = .build(isArchived: false)
+        let item = space.buildSavedItem(isArchived: false)
         let viewModel = subject(item: item)
 
         let expectArchive = expectation(description: "expect source.archive(_:)")
@@ -200,7 +200,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_reAdd_sendsRequestToSource_AndRefreshes() {
-        let item: SavedItem = .build(isArchived: true)
+        let item = space.buildSavedItem(isArchived: true)
         let expectUnarchive = expectation(description: "expect source.unarchive(_:)")
 
         source.stubUnarchiveSavedItem { unarchivedItem in
@@ -215,13 +215,13 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_share_updatesSharedActivity() {
-        let viewModel = subject(item: .build())
+        let viewModel = subject(item: space.buildSavedItem())
         viewModel.invokeAction(title: "Share")
         XCTAssertNotNil(viewModel.sharedActivity)
     }
 
     func test_showWebReader_updatesPresentedWebReaderURL() {
-        let item: SavedItem = .build()
+        let item = space.buildSavedItem()
         let viewModel = subject(item: item)
         viewModel.showWebReader()
 
@@ -231,7 +231,7 @@ class SavedItemViewModelTests: XCTestCase {
     func test_externalSave_forwardsToSource() {
         source.stubSaveURL { _ in }
         
-        let viewModel = subject(item: .build())
+        let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Save")
@@ -239,7 +239,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_externalCopy_copiesToClipboard() {
-        let viewModel = subject(item: .build())
+        let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Copy link")
@@ -247,7 +247,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_externalShare_updatesSharedActivity() {
-        let viewModel = subject(item: .build())
+        let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Share")
@@ -255,7 +255,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     func test_externalOpen_updatesPresentedWebReaderURL() {
-        let viewModel = subject(item: .build())
+        let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Open")

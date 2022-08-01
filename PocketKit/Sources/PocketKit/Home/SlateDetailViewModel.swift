@@ -9,15 +9,6 @@ import Analytics
 class SlateDetailViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
-    let slateName: String?
-    private let slateID: String
-    private let source: Source
-    private let tracker: Tracker
-    private let slateController: SlateController
-
-    private var viewModels: [NSManagedObjectID: HomeRecommendationCellViewModel] = [:]
-    private var viewModelSubscriptions: Set<AnyCancellable> = []
-
     @Published
     var snapshot: Snapshot
 
@@ -30,57 +21,45 @@ class SlateDetailViewModel {
     @Published
     var selectedRecommendationToReport: Recommendation? = nil
 
-    init(slateID: String, slateName: String?, source: Source, tracker: Tracker) {
-        self.slateID = slateID
-        self.slateName = slateName
+    var slateName: String? {
+        slate.name
+    }
+
+    private let slate: Slate
+    private let source: Source
+    private let tracker: Tracker
+    private var subscriptions: [AnyCancellable] = []
+
+    init(slate: Slate, source: Source, tracker: Tracker) {
+        self.slate = slate
         self.source = source
         self.tracker = tracker
-        self.slateController = source.makeSlateController(byID: slateID)
         self.snapshot = Self.loadingSnapshot()
 
-        self.slateController.delegate = self
+        NotificationCenter.default.publisher(
+            for: NSManagedObjectContext.didSaveObjectsNotification,
+            object: source.mainContext
+        ).sink { [weak self] notification in
+            do {
+                try self?.handle(notification: notification)
+            } catch {
+                print(error)
+            }
+        }.store(in: &subscriptions)
     }
 
     func fetch() {
-        try? slateController.performFetch()
+        snapshot = buildSnapshot()
     }
 
     func refresh(_ completion: @escaping () -> Void) {
+        guard let slateID = slate.remoteID else {
+            return
+        }
+
         Task {
             try await source.fetchSlate(slateID)
             completion()
-        }
-    }
-
-    func select(cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        switch cell {
-        case .loading:
-            return
-        case .recommendation:
-            select(recommendation: cell, at: indexPath)
-        }
-    }
-
-    func reportAction(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
-        return .report { [weak self] _ in
-            self?.report(cell, at: indexPath)
-        }
-    }
-
-    func saveAction(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> ItemAction? {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return nil
-        }
-
-        if viewModel.isSaved {
-            return .archive { [weak self] _ in
-                self?.archive(cell, at: indexPath)
-            }
-        } else {
-            return .save { [weak self] _ in
-                self?.save(cell, at: indexPath)
-            }
         }
     }
 
@@ -88,33 +67,154 @@ class SlateDetailViewModel {
         switch cell {
         case .loading:
             return
-        case .recommendation:
+        case .recommendation(let objectID):
+            guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+                return
+            }
+
             tracker.track(
                 event: ImpressionEvent(component: .content, requirement: .instant),
-                contexts(for: cell, at: indexPath)
+                contexts(for: recommendation, at: indexPath)
             )
         }
     }
+}
 
-    func resetSlate(keeping count: Int) {
-        let recommendations = slateController.slate?.recommendations?.compactMap { $0 as? Recommendation} ?? []
-        let toRemove = recommendations.dropFirst(count)
-        toRemove.forEach {
-            source.remove(recommendation: $0)
+// MARK: - Cell Selection
+extension SlateDetailViewModel {
+    func select(cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
+        switch cell {
+        case .loading:
+            return
+        case .recommendation(let objectID):
+            selectRecommendation(with: objectID, at: indexPath)
         }
     }
 
-    func viewModel(for objectID: NSManagedObjectID) -> HomeRecommendationCellViewModel? {
-        return viewModels[objectID]
-    }
-    
-    func recommendationViewModel(for objectID: NSManagedObjectID, and item: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> HomeRecommendationCellViewModel? {
-        guard let viewModel = viewModels[objectID] else { return nil }
-        if let action = reportAction(for: item, at: indexPath) {
-            viewModel.overflowActions = [action]
+    private func selectRecommendation(with objectID: NSManagedObjectID, at indexPath: IndexPath) {
+        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+            return
         }
-        viewModel.saveAction = saveAction(for: item, at: indexPath)
-        return viewModel
+
+        tracker.track(
+            event: SnowplowEngagement(type: .general, value: nil),
+            contexts(for: recommendation, at: indexPath)
+        )
+
+        if let item = recommendation.item, item.shouldOpenInWebView {
+            presentedWebReaderURL = item.bestURL
+
+            tracker.track(
+                event: ContentOpenEvent(destination: .external, trigger: .click),
+                contexts(for: recommendation, at: indexPath)
+            )
+        } else {
+            selectedReadableViewModel = RecommendationViewModel(
+                recommendation: recommendation,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
+
+            tracker.track(
+                event: ContentOpenEvent(destination: .internal, trigger: .click),
+                contexts(for: recommendation, at: indexPath)
+            )
+        }
+    }
+}
+
+// MARK: View model and actions
+extension SlateDetailViewModel {
+    func recommendationViewModel(
+        for objectID: NSManagedObjectID,
+        at indexPath: IndexPath
+    ) -> HomeRecommendationCellViewModel? {
+        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+            return nil
+        }
+
+        return HomeRecommendationCellViewModel(
+            recommendation: recommendation,
+            overflowActions: [
+                .report { [weak self] _ in
+                    self?.report(recommendation, at: indexPath)
+                }
+            ],
+            saveAction: .recommendationPrimary { [weak self] _ in
+                let isSaved = recommendation.item?.savedItem != nil
+                && recommendation.item?.savedItem?.isArchived == false
+
+                if isSaved {
+                    self?.archive(recommendation, at: indexPath)
+                } else {
+                    self?.save(recommendation, at: indexPath)
+                }
+            }
+        )
+    }
+
+    private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
+        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemSave)]
+        tracker.track(
+            event: SnowplowEngagement(type: .save, value: nil),
+            contexts
+        )
+
+        source.save(recommendation: recommendation)
+    }
+
+    private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
+        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
+        tracker.track(
+            event: SnowplowEngagement(type: .save, value: nil),
+            contexts
+        )
+
+        source.archive(recommendation: recommendation)
+    }
+
+    private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {
+        tracker.track(
+            event: SnowplowEngagement(type: .report, value: nil),
+            contexts(for: recommendation, at: indexPath)
+        )
+
+        selectedRecommendationToReport = recommendation
+    }
+
+    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Context] {
+        guard let recommendationURL = recommendation.item?.bestURL else {
+            return []
+        }
+
+        var contexts: [Context] = []
+
+        if let remoteID = slate.remoteID,
+           let requestID = slate.requestID,
+           let experimentID = slate.experimentID {
+
+            let slateContext = SlateContext(
+                id: remoteID,
+                requestID: requestID,
+                experiment: experimentID,
+                index: UIIndex(0)
+            )
+            contexts.append(slateContext)
+        }
+
+
+        if let remoteID = recommendation.remoteID {
+            let recommendationContext = RecommendationContext(
+                id: remoteID,
+                index: UIIndex(indexPath.item)
+            )
+            contexts.append(recommendationContext)
+        }
+
+        return contexts + [
+            ContentContext(url: recommendationURL),
+            UIContext.slateDetail.recommendation(index: UIIndex(indexPath.item))
+        ]
     }
 }
 
@@ -127,159 +227,47 @@ private extension SlateDetailViewModel {
     }
 
     func buildSnapshot() -> Snapshot {
-        viewModels = [:]
-        viewModelSubscriptions = []
-
-        let recommendations = slateController.slate?.recommendations?
-            .compactMap { $0 as? Recommendation }
-        ?? []
-
         var snapshot = Snapshot()
-
-        guard let slate = slateController.slate else {
-            return snapshot
-        }
+        let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
 
         let section: SlateDetailViewModel.Section = .slate(slate)
         snapshot.appendSections([section])
+
         recommendations.forEach { recommendation in
-            let viewModel = HomeRecommendationCellViewModel(recommendation: recommendation)
-            viewModels[recommendation.objectID] = viewModel
             snapshot.appendItems(
                 [.recommendation(recommendation.objectID)],
                 toSection: section
             )
-
-            viewModel.updated.sink { [weak self] in
-                let item: SlateDetailViewModel.Cell = .recommendation(recommendation.objectID)
-                if self?.snapshot.indexOfItem(item) != nil {
-                    self?.snapshot.reloadItems([item])
-                }
-            }.store(in: &viewModelSubscriptions)
         }
 
         return snapshot
     }
 
-    private func select(recommendation cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
+    private func handle(notification: Notification) throws {
+        source.mainContext.refresh(slate, mergeChanges: true)
+        var snapshot = buildSnapshot()
+
+        guard let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> else {
+            self.snapshot = snapshot
             return
         }
 
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            contexts(for: cell, at: indexPath)
+        var itemsToReload: [Cell] = []
+        // Reload recommendations whose Items or SavedItems have changed
+        // e.g.
+        // - Item.savedItem was set to nil or a new object
+        // - SavedItem was archived
+        itemsToReload += (
+            updatedObjects.compactMap { $0 as? Item }
+            + updatedObjects.compactMap { ($0 as? SavedItem)?.item }
         )
+        .compactMap(\.recommendation)
+        .map { .recommendation($0.objectID) }
 
-        if let item = viewModel.recommendation.item, item.shouldOpenInWebView {
-            presentedWebReaderURL = item.bestURL
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
-                contexts(for: cell, at: indexPath)
-            )
-        } else {
-            selectedReadableViewModel = RecommendationViewModel(
-                recommendation: viewModel.recommendation,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
-            )
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
-                contexts(for: cell, at: indexPath)
-            )
-        }
-    }
-
-    private func report(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return
-        }
-
-        tracker.track(
-            event: SnowplowEngagement(type: .report, value: nil),
-            contexts(for: cell, at: indexPath)
+        snapshot.reloadItems(
+            Set(itemsToReload).filter { snapshot.indexOfItem($0) != nil }
         )
-        selectedRecommendationToReport = viewModel.recommendation
-    }
-
-    private func save(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return
-        }
-
-        let contexts = contexts(for: cell, at: indexPath) + [UIContext.button(identifier: .itemSave)]
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
-        source.save(recommendation: viewModel.recommendation)
-    }
-
-    private func archive(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
-        guard case .recommendation(let objectID) = cell,
-              let viewModel = viewModel(for: objectID) else {
-            return
-        }
-
-        let contexts = contexts(for: cell, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
-        source.archive(recommendation: viewModel.recommendation)
-    }
-
-    private func contexts(for cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) -> [Context] {
-        switch cell {
-        case .loading:
-            return []
-        case .recommendation(let objectID):
-            guard let viewModel = viewModel(for: objectID),
-                  let slate = slateController.slate,
-                  let recommendationURL = viewModel.recommendation.item?.bestURL else {
-                return []
-            }
-
-            let slateContext = SlateContext(
-                id: slate.remoteID!,
-                requestID: slate.requestID!,
-                experiment: slate.experimentID!,
-                index: UIIndex(0)
-            )
-
-            let recommendationContext = RecommendationContext(
-                id: viewModel.recommendation.remoteID!,
-                index: UIIndex(indexPath.item)
-            )
-
-            let contentContext = ContentContext(url: recommendationURL)
-            let itemContext = UIContext.slateDetail.recommendation(index: UIIndex(indexPath.item))
-
-            return [slateContext, recommendationContext, contentContext, itemContext]
-        }
-    }
-}
-
-extension SlateDetailViewModel: SlateControllerDelegate {
-    func controllerDidChangeContent(_ controller: SlateController) {
-        snapshot = buildSnapshot()
-    }
-
-    func controller(
-        _ controller: SlateController,
-        didChange slate: Slate,
-        at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
-    ) {
-        snapshot = buildSnapshot()
+        self.snapshot = snapshot
     }
 }
 

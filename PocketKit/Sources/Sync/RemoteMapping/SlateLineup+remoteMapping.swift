@@ -31,13 +31,14 @@ extension Slate {
         requestID = remote.requestId
         slateDescription = remote.description
 
-        remote.recommendations.forEach { remote in
-            guard let recommendation = try? space.fetchOrCreateRecommendation(byRemoteID: remote.id!) else {
-                return
+        recommendations = NSOrderedSet(array: remote.recommendations.compactMap { remote in
+            guard let remoteID = remote.id,
+                  let recommendation = try? space.fetchOrCreateRecommendation(byRemoteID: remoteID) else {
+                return nil
             }
             recommendation.update(from: remote, in: space)
-            addToRecommendations(recommendation)
-        }
+            return recommendation
+        })
     }
 }
 

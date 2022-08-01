@@ -128,7 +128,7 @@ class PocketArchiveServiceTests: XCTestCase {
             itemAdded.fulfill()
         }.store(in: &subscriptions)
 
-        try space.seedSavedItem(
+        try space.createSavedItem(
             remoteID: "archived-saved-item-3",
             isArchived: true,
             archivedAt: Date()
@@ -334,7 +334,7 @@ class PocketArchiveServiceTests: XCTestCase {
     }
 
     func test_handlingUpdatedSavedItems_sendsEvent() throws {
-        let savedItem = try space.seedSavedItem(isFavorite: false, isArchived: true)
+        let savedItem = try space.createSavedItem(isFavorite: false, isArchived: true)
         try space.save()
 
         let service = subject()

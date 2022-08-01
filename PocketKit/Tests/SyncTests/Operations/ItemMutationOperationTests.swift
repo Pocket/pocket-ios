@@ -37,7 +37,7 @@ class ItemMutationOperationTests: XCTestCase {
     }
 
     func test_operation_performsGivenMutation() async throws {
-        try space.seedSavedItem(remoteID: "test-item-id")
+        try space.createSavedItem(remoteID: "test-item-id")
 
         apollo.stubPerform(
             toReturnFixtureNamed: "archive",
@@ -57,7 +57,7 @@ class ItemMutationOperationTests: XCTestCase {
     }
 
     func test_operation_whenMutationFails_propagatesError() async throws {
-        try space.seedSavedItem()
+        try space.createSavedItem()
 
         apollo.stubPerform(
             ofMutationType: ArchiveItemMutation.self,
