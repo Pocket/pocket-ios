@@ -70,6 +70,7 @@ class ReadableViewController: UIViewController {
         collectionView.register(cellClass: BlockquoteComponentCell.self)
         collectionView.register(cellClass: YouTubeVideoComponentCell.self)
         collectionView.register(cellClass: VimeoComponentCell.self)
+        collectionView.register(cellClass: ReaderSkeletonCell.self)
         navigationItem.largeTitleDisplayMode = .never
 
         self.readerSettings.objectWillChange.sink { [weak self] _ in
@@ -82,8 +83,6 @@ class ReadableViewController: UIViewController {
             guard case .contentUpdated = event else { return }
             self?.updateContent()
         }.store(in: &subscriptions)
-
-        updateContent()
     }
     
     override func loadView() {
@@ -135,8 +134,8 @@ extension ReadableViewController: UICollectionViewDelegate {
 
 extension ReadableViewController: UICollectionViewDataSource {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
-        guard let presenters = presenters else {
-            return 0
+        guard metadata != nil, let presenters = presenters else {
+            return 1 // loading section
         }
 
         return 1 + (presenters.isEmpty ? 0 : 1)
@@ -146,11 +145,15 @@ extension ReadableViewController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
     ) -> Int {
+        guard metadata != nil, let presenters = presenters else {
+            return 1 // loading item
+        }
+
         switch section {
         case 0:
-            return metadata == nil ? 0 : 1
+            return 1 // metadata section
         default:
-            return presenters?.count ?? 0
+            return presenters.count
         }
     }
 
@@ -158,24 +161,25 @@ extension ReadableViewController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
+        guard let metadata = metadata, let presenters = presenters else {
+            let skeletonCell: ReaderSkeletonCell = collectionView.dequeueCell(for: indexPath)
+            return skeletonCell
+        }
+
         switch indexPath.section {
         case 0:
             let metaCell: ArticleMetadataCell = collectionView.dequeueCell(for: indexPath)
             metaCell.delegate = self
 
             metaCell.configure(model: .init(
-                byline: metadata?.attributedByline,
-                publishedDate: metadata?.attributedPublishedDate,
-                title: metadata?.attributedTitle
+                byline: metadata.attributedByline,
+                publishedDate: metadata.attributedPublishedDate,
+                title: metadata.attributedTitle
             ))
 
             return metaCell
         default:
-            guard let cell = presenters?[indexPath.item].cell(for: indexPath, in: collectionView) else {
-                let empty: EmptyCell = collectionView.dequeueCell(for: indexPath)
-                return empty
-            }
-            
+            let cell = presenters[indexPath.item].cell(for: indexPath, in: collectionView)
             if let cell = cell as? ArticleComponentTextCell {
                 cell.delegate = self
             }
@@ -239,6 +243,25 @@ extension ReadableViewController {
     }
 
     func buildSection(index: Int, environment: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+        guard presenters != nil, metadata != nil else {
+            return NSCollectionLayoutSection(
+                group: NSCollectionLayoutGroup.vertical(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .estimated(environment.container.effectiveContentSize.width)
+                    ),
+                    subitems: [
+                        NSCollectionLayoutItem(
+                            layoutSize: NSCollectionLayoutSize(
+                                widthDimension: .fractionalWidth(1),
+                                heightDimension: .estimated(environment.container.effectiveContentSize.width)
+                            )
+                        )
+                    ]
+                )
+            )
+        }
+
         switch index {
         case 0:
             let availableItemWidth = environment.container.effectiveContentSize.width

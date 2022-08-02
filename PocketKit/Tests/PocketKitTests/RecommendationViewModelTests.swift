@@ -345,7 +345,7 @@ class RecommendationViewModelTests: XCTestCase {
         XCTAssertNotNil(recommendation.item?.article)
     }
 
-    func test_fetchDetailsIfNeeded_whenMarticleIsPresent_doesNothing() {
+    func test_fetchDetailsIfNeeded_whenMarticleIsPresent_immediatelySendsContentUpdatedEvent() {
         let recommendation = space.buildRecommendation(
             item: space.buildItem(article: .init(components: []))
         )
@@ -356,8 +356,6 @@ class RecommendationViewModelTests: XCTestCase {
 
         let viewModel = subject(recommendation: recommendation)
         let receivedEvent = expectation(description: "receivedEvent")
-        receivedEvent.isInverted = true
-
         viewModel.events.sink { event in
             receivedEvent.fulfill()
         }.store(in: &subscriptions)

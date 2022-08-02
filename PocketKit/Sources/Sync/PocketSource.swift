@@ -344,8 +344,10 @@ extension PocketSource {
             return
         }
 
-        item.update(remote: remoteItem)
-        try space.save()
+        try space.context.performAndWait {
+            item.update(remote: remoteItem)
+            try space.save()
+        }
     }
 }
 
