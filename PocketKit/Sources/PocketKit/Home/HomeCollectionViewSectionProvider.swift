@@ -35,7 +35,7 @@ class HomeViewControllerSectionProvider {
 
     func recentSavesSection(in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
         let numberOfRecentSavesItems = viewModel.numberOfRecentSavesItem()
-        guard numberOfRecentSavesItems > 0 else { return nil }
+        guard numberOfRecentSavesItems > 0 else { return .empty() }
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         

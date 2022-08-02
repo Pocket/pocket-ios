@@ -48,6 +48,7 @@ class HomeViewModel {
     private let source: Source
     private let tracker: Tracker
     private var subscriptions: [AnyCancellable] = []
+    private var recentSavesCount: Int = 0
 
     init(
         source: Source,
@@ -137,6 +138,7 @@ extension HomeViewModel {
 
         var snapshot = Snapshot()
 
+        recentSavesCount = recentSaves.count
         if !recentSaves.isEmpty {
             snapshot.appendSections([.recentSaves])
             snapshot.appendItems(
@@ -288,7 +290,7 @@ extension HomeViewModel {
 // MARK: - Recent Saves Model & Actions
 extension HomeViewModel {
     func numberOfRecentSavesItem() -> Int {
-        return 5
+        return recentSavesCount
     }
 
     func recentSavesViewModel(
