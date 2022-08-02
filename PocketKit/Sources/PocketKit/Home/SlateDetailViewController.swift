@@ -175,6 +175,8 @@ private extension SlateDetailViewController {
             let margin: CGFloat = Margins.normal.rawValue
             let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
             let count = recommendations.count
+            guard count > 0 else { return .empty() }
+
             let height: CGFloat = 370
             let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(height))
             let item = NSCollectionLayoutItem(layoutSize: itemSize)
@@ -215,7 +217,7 @@ private extension SlateDetailViewController {
         case .recommendation(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
 
-            guard let viewModel = self.model.recommendationViewModel(for: objectID, and: viewModelCell, at: indexPath) else {
+            guard let viewModel = self.model.recommendationViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
 

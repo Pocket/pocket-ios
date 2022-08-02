@@ -63,7 +63,7 @@ extension Response {
         fixture(named: "item-detail")
     }
 
-    private static func fixture(named fixtureName: String) -> Response {
+    static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok
             Fixture.data(name: fixtureName)

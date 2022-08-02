@@ -23,7 +23,7 @@ extension PocketSourceTests {
     func test_events_whenOSNotificationCenterPostsSavedItemUpdatedNotification_publishesAnEvent_andDeletesNotificationRecords() {
         let source = subject()
 
-        let savedItem = try! space.seedSavedItem()
+        let savedItem = try! space.createSavedItem()
         let receivedNotification = expectation(description: "received notification")
         source.events.sink { event in
             guard case .savedItemsUpdated(let savedItems) = event else {
@@ -57,7 +57,7 @@ extension PocketSourceTests {
 
         let source = subject()
 
-        let savedItem = try! space.seedSavedItem()
+        let savedItem = try! space.createSavedItem()
         let unresolved: UnresolvedSavedItem = space.new()
         unresolved.savedItem = savedItem
         try space.save()
@@ -77,7 +77,7 @@ extension PocketSourceTests {
 
         let source = subject()
 
-        let savedItem = try! space.seedSavedItem()
+        let savedItem = try! space.createSavedItem()
         let notification1: SavedItemUpdatedNotification = space.new()
         notification1.savedItem = savedItem
         try! space.save()

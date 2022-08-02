@@ -62,7 +62,7 @@ class PocketSaveServiceTests: XCTestCase {
 
     func test_save_whenSavedItemExistsWithGivenURL_returnsExistingItemStatus_postsItemUpdatedNotification() throws {
         let url = URL(string: "http://example.com/item-1")!
-        let existingSavedItem = try space.seedSavedItem(url: url.absoluteString)
+        let existingSavedItem = try space.createSavedItem(url: url.absoluteString)
         backgroundActivityPerformer.stubPerformExpiringActivity { _, _ in }
 
         let savedItemUpdated = expectation(description: "savedItemUpdated")

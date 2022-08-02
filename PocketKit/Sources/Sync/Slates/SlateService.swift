@@ -1,5 +1,7 @@
 import Apollo
 import Foundation
+import CoreData
+
 
 protocol SlateService {
     func fetchSlateLineup(_ identifier: String) async throws
@@ -18,7 +20,6 @@ class APISlateService: SlateService {
         self.space = space
     }
 
-    @MainActor
     func fetchSlateLineup(_ identifier: String) async throws {
         let query = GetSlateLineupQuery(lineupID: identifier, maxRecommendations: 5)
 
@@ -26,34 +27,35 @@ class APISlateService: SlateService {
             return
         }
 
-        if let existingSlateLineup = try space.fetchSlateLineup(byRemoteID: remote.id) {
-            space.delete(existingSlateLineup)
-        }
-
-        try space.deleteUnsavedItems()
-
-        let slateLineup: SlateLineup = space.new()
-        slateLineup.update(from: remote, in: space)
-
-        try self.space.save()
+        try await handle(remote: remote)
     }
 
-    @MainActor
     func fetchSlate(_ slateID: String) async throws {
         let query = GetSlateQuery(slateID: slateID, recommendationCount: 25)
 
-        guard let remote = try await apollo.fetch(query: query).data?.getSlate?.fragments.slateParts else {
+        guard let remote = try await apollo.fetch(query: query)
+            .data?.getSlate?.fragments.slateParts else {
             return
         }
 
-        let unsavedItems = try space.fetchUnsavedItems()
-        unsavedItems.forEach {
-            space.delete($0)
-        }
+        try await handle(remote: remote)
+    }
 
-        let slate: Slate = try space.fetchOrCreateSlate(byRemoteID: remote.id)
+    @MainActor
+    private func handle(remote: GetSlateLineupQuery.Data.GetSlateLineup) throws {
+        let lineup = try space.fetchSlateLineup(byRemoteID: remote.id) ?? space.new()
+        lineup.update(from: remote, in: space)
+
+        try space.save()
+        try space.batchDeleteOrphanedSlates()
+        try space.batchDeleteOrphanedItems()
+    }
+
+    @MainActor
+    private func handle(remote: SlateParts) throws {
+        let slate = try space.fetchOrCreateSlate(byRemoteID: remote.id)
         slate.update(from: remote, in: space)
 
-        try self.space.save()
+        try space.save()
     }
 }

@@ -56,6 +56,14 @@ extension Space {
             return savedItem
         }
     }
+
+    @discardableResult
+    func buildPendingSavedItem() -> SavedItem {
+        context.performAndWait {
+            let savedItem: SavedItem = new()
+            return savedItem
+        }
+    }
 }
 
 // MARK: - Item

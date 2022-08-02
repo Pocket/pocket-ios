@@ -5,38 +5,24 @@ import Textile
 import CoreData
 
 
-class HomeRecommendationCellViewModel: NSObject {
-    let updated: PassthroughSubject<Void, Never> = .init()
+class HomeRecommendationCellViewModel {
     let recommendation: Recommendation
-    var overflowActions: [ItemAction]? = nil
-    var saveAction: ItemAction? = nil
+    let overflowActions: [ItemAction]?
+    let saveAction: ItemAction?
     
     var isSaved: Bool {
-        resultsController?.fetchedObjects?.first != nil
+        recommendation.item?.savedItem != nil &&
+        recommendation.item?.savedItem?.isArchived == false
     }
 
-    private var resultsController: NSFetchedResultsController<SavedItem>?
-
-    init(recommendation: Recommendation) {
+    init(
+        recommendation: Recommendation,
+        overflowActions: [ItemAction]? = nil,
+        saveAction: ItemAction? = nil
+    ) {
         self.recommendation = recommendation
-
-        guard let item = recommendation.item,
-              let context = recommendation.managedObjectContext else {
-            super.init()
-            return
-        }
-
-        resultsController = .init(
-            fetchRequest: Requests.fetchSavedItem(for: item),
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil
-        )
-
-        super.init()
-
-        try? resultsController?.performFetch()
-        resultsController?.delegate = self
+        self.overflowActions = overflowActions
+        self.saveAction = saveAction
     }
 }
 
@@ -91,11 +77,5 @@ private extension Style {
     
     static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey5).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
-    }
-}
-
-extension HomeRecommendationCellViewModel: NSFetchedResultsControllerDelegate {
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        updated.send()
     }
 }

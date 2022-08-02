@@ -5,6 +5,7 @@ import Network
 import Analytics
 
 @testable import PocketKit
+@testable import Sync
 
 enum FakeError: Error {
     case error
@@ -12,6 +13,7 @@ enum FakeError: Error {
 
 class ArchivedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
+    var space: Space!
     var tracker: MockTracker!
     var networkMonitor: MockNetworkPathMonitor!
     var archiveService: MockArchiveService!
@@ -22,12 +24,14 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         self.tracker = MockTracker()
         self.networkMonitor = MockNetworkPathMonitor()
         self.archiveService = MockArchiveService()
+        self.space = .testSpace()
 
         source.stubMakeArchiveService { self.archiveService }
     }
 
-    override func tearDown() {
+    override func tearDownWithError() throws {
         subscriptions = []
+        try space.clear()
     }
 
     func subject(
@@ -76,7 +80,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_changedContentFromArchiveService_sendsNewSnapshot() {
-        let items: [SavedItem] = [.build(), .build()]
+        let items = [space.buildSavedItem(), space.buildSavedItem()]
 
         let viewModel = subject()
 
@@ -98,7 +102,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_shareAction_setsSharedActivity() {
-        let items: [SavedItem] = [.build(), .build()]
+        let items = [space.buildSavedItem(), space.buildSavedItem()]
 
         let viewModel = subject()
 
@@ -108,7 +112,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_deleteAction_delegatesToSource_andUpdatesSnapshot() {
-        let items: [SavedItem] = [.build(), .build()]
+        let items = [space.buildSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let expectDeleteCall = expectation(description: "expect source.delete(_:)")
@@ -150,7 +154,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func tests_favoriteAction_delegatesToSource_andUpdatesSnapshot() throws {
-        let items: [SavedItem] = [.build(), .build()]
+        let items = [space.buildSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
@@ -188,7 +192,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_favoriteAction_whenItemIsFavorited_delegatesToSource_andUpdatesSnapshot() throws {
-        let items: [SavedItem] = [.build(isFavorite: true), .build()]
+        let items = [space.buildSavedItem(isFavorite: true), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
@@ -227,7 +231,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_reAddAction_removeItemAndDelegatesToSource() {
-        let items: [SavedItem] = [.build(isFavorite: true), .build()]
+        let items = [space.buildSavedItem(isFavorite: true), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
@@ -256,7 +260,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
-        let items: [SavedItem] = [.build(item: nil), .build()]
+        let items = [space.buildPendingSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
@@ -265,7 +269,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_shouldSelectCell_whenItemIsNotPending_returnsFalse() {
-        let items: [SavedItem] = [.build(), .build()]
+        let items = [space.buildSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
@@ -274,7 +278,10 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
     
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
-        let items: [SavedItem] = [.build(), .build()]
+        let items = [
+            space.buildSavedItem(item: space.buildItem(isArticle: true)),
+            space.buildSavedItem()
+        ]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
@@ -294,7 +301,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
     
     func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() {
-        let items: [SavedItem] = [.build(item: .build(isArticle: false)), .build()]
+        let items = [space.buildSavedItem(item: space.buildItem(isArticle: false)), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
@@ -398,7 +405,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeArchiveEmptyState() {
-        let items: [SavedItem] = [.build(), .build()]
+        let items = [space.buildSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
@@ -432,7 +439,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
     func test_prefetch_whenOffline_doesNothing() {
         archiveService.stubFetch { _ in }
-        archiveService._results = [.loaded(.build()), .notLoaded]
+        archiveService._results = [.loaded(space.buildSavedItem()), .notLoaded]
         networkMonitor.update(status: .unsatisfied)
 
         let viewModel = subject()

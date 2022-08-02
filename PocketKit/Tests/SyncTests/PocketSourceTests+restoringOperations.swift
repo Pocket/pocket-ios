@@ -21,7 +21,7 @@ extension PocketSourceTests {
             TestSyncOperation { archiveItem.fulfill() }
         }
 
-        let item = try space.seedSavedItem()
+        let item = try space.createSavedItem()
 
         var source: PocketSource! = subject()
         networkMonitor.update(status: .unsatisfied)

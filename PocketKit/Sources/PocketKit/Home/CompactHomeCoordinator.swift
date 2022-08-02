@@ -5,11 +5,16 @@ import Analytics
 import BackgroundTasks
 import SafariServices
 
+protocol CompactHomeCoordinatorDelegate: AnyObject {
+    func compactHomeCoordinatorDidSelectRecentSaves(_ coordinator: CompactHomeCoordinator)
+}
 
 class CompactHomeCoordinator: NSObject {
     var viewController: UIViewController {
         return navigationController
     }
+
+    weak var delegate: CompactHomeCoordinatorDelegate?
 
     private let navigationController: UINavigationController
     private let homeViewController: HomeViewController
@@ -74,6 +79,10 @@ class CompactHomeCoordinator: NSObject {
         
         model.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
+        }.store(in: &subscriptions)
+
+        model.$tappedSeeAll.dropFirst().receive(on: DispatchQueue.main).sink { [weak self] seeAll in
+            self?.show(seeAll)
         }.store(in: &subscriptions)
 
         isResetting = false
@@ -188,6 +197,17 @@ class CompactHomeCoordinator: NSObject {
         viewController.present(host, animated: !isResetting)
     }
 
+    func show(_ seeAll: SeeAll?) {
+        switch seeAll {
+        case .myList:
+            delegate?.compactHomeCoordinatorDidSelectRecentSaves(self)
+        case .slate(let slateViewModel):
+            show(slateViewModel)
+        default:
+            return
+        }
+    }
+
     private func present(activity: PocketActivity?) {
         guard !isResetting, let activity = activity else { return }
 
@@ -241,8 +261,6 @@ class CompactHomeCoordinator: NSObject {
 extension CompactHomeCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === homeViewController {
-            model.selectedSlateDetailViewModel?.resetSlate(keeping: 5)
-
             model.selectedRecommendationToReport = nil
             model.selectedSlateDetailViewModel = nil
         }

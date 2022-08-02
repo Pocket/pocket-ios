@@ -161,7 +161,7 @@ class FavoriteAnItemTests: XCTestCase {
     func test_favoritingAndUnfavoritingAnItemFromArchive_togglesFavoritedIcon_andSyncsWithServer() {
         app.tabBar.myListButton.wait().tap()
         app.myListView.wait().selectionSwitcher.archiveButton.wait().tap()
-        let itemCell = app.myListView.itemView(matching: "Archived Item 1")
+        let itemCell = app.myListView.itemView(matching: "Archived Item 1").wait()
 
         // favorite
         do {
@@ -175,7 +175,7 @@ class FavoriteAnItemTests: XCTestCase {
                 return Response.favorite()
             }
 
-            itemCell.favoriteButton.tap()
+            itemCell.wait().favoriteButton.tap()
             wait(for: [expectRequest], timeout: 1)
             XCTAssertTrue(itemCell.favoriteButton.isFilled)
         }

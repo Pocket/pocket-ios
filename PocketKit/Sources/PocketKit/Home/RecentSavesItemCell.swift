@@ -5,18 +5,24 @@ import Textile
 class RecentSavesItemCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {
         let item: ItemsListItem
+        let favoriteAction: ItemAction?
+        let overflowActions: [ItemAction]?
         let thumbnailURL: URL?
-        let saveButtonMode: RecommendationSaveButton.Mode?
-        
-        init(item: ItemsListItem) {
+
+        // Unused properties for recent saves cells
+        let saveButtonMode: RecommendationSaveButton.Mode? = nil
+        let saveAction: ItemAction? = nil
+
+        init(
+            item: ItemsListItem,
+            favoriteAction: ItemAction?,
+            overflowActions: [ItemAction]?
+        ) {
             self.item = item
+            self.favoriteAction = favoriteAction
+            self.overflowActions = overflowActions
             self.thumbnailURL = imageCacheURL(for: item.topImageURL)
-            self.saveButtonMode = nil
         }
-        
-        var favoriteAction: ItemAction? = nil
-        var saveAction: ItemAction? = nil
-        var overflowActions: [ItemAction]? = nil
         
         var attributedTitle: NSAttributedString {
             NSAttributedString(string: item.title ?? "", style: .title)

@@ -43,7 +43,7 @@ class SaveItemOperationTests: XCTestCase {
 
     func test_main_performsSaveItemMutation_andUpdatesLocalStorage() async throws {
         let url = URL(string: "http://example.com/add-me-to-your-list")!
-        let savedItem = try space.seedSavedItem(
+        let savedItem = try space.createSavedItem(
             remoteID: "saved-item-1",
             item: space.buildItem(givenURL: url)
         )
@@ -72,7 +72,7 @@ class SaveItemOperationTests: XCTestCase {
     }
 
     func test_main_whenMutationFails_withUnknownError_returnsErrorStatus() async throws {
-        let savedItem = try space.seedSavedItem(remoteID: "saved-item-1")
+        let savedItem = try space.createSavedItem(remoteID: "saved-item-1")
 
         apollo.stubPerform(
             ofMutationType: SaveItemMutation.self,
@@ -92,7 +92,7 @@ class SaveItemOperationTests: XCTestCase {
         let initialError = ResponseCodeInterceptor.ResponseCodeError.withStatusCode(500)
         apollo.stubPerform(ofMutationType: SaveItemMutation.self, toReturnError: initialError)
 
-        let savedItem = try space.seedSavedItem()
+        let savedItem = try space.createSavedItem()
         let service = subject(managedItemID: savedItem.objectID, url: savedItem.url!)
         let result = await service.execute()
 
@@ -111,7 +111,7 @@ class SaveItemOperationTests: XCTestCase {
 
         apollo.stubPerform(ofMutationType: SaveItemMutation.self, toReturnError: initialError)
 
-        let savedItem = try space.seedSavedItem()
+        let savedItem = try space.createSavedItem()
         let service = subject(managedItemID: savedItem.objectID, url: savedItem.url!)
         let result = await service.execute()
 

@@ -88,6 +88,10 @@ struct PocketAppElement {
         AlertElement(app.alerts.element(boundBy: 0))
     }
 
+    var navigationBar: XCUIElement {
+        app.navigationBars.element(boundBy: 0)
+    }
+
     @discardableResult
     func launch(
         arguments: LaunchArguments = .bypassSignIn,
