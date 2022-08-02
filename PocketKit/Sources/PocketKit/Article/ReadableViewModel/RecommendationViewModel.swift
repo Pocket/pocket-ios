@@ -102,6 +102,7 @@ class RecommendationViewModel: ReadableViewModel {
 
     func fetchDetailsIfNeeded() {
         guard recommendation.item?.article == nil else {
+            _events.send(.contentUpdated)
             return
         }
 

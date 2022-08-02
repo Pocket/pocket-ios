@@ -96,19 +96,28 @@ class SavedItemViewModelTests: XCTestCase {
         XCTAssertEqual(call?.savedItem, savedItem)
     }
 
-    func test_fetchDetailsIfNeeded_whenItemDetailsAreAlreadyAvailable_doesNothing() {
-        let fetchedDetails = expectation(description: "fetchedDetails")
-        fetchedDetails.isInverted = true
+    func test_fetchDetailsIfNeeded_whenItemDetailsAreAlreadyAvailable_immediatelySendsContentUpdatedEvent() {
         source.stubFetchDetails { _ in
-            fetchedDetails.fulfill()
+            XCTFail("Expected no calls to fetch details, but lo, it has been called.")
         }
 
-        let savedItem = space.buildSavedItem()
-        savedItem.item?.article = Article(components: [])
+        let savedItem = space.buildSavedItem(
+            item: space.buildItem(article: Article(components: []))
+        )
+
         let viewModel = subject(item: savedItem)
+        let contentUpdatedSent = expectation(description: "contentUpdatedSent")
+        viewModel.events.sink { event in
+            guard case .contentUpdated = event else {
+                XCTFail("Expected contentUpdated event but got \(event)")
+                return
+            }
+            contentUpdatedSent.fulfill()
+        }.store(in: &subscriptions)
+
         viewModel.fetchDetailsIfNeeded()
 
-        wait(for: [fetchedDetails], timeout: 1)
+        wait(for: [contentUpdatedSent], timeout: 1)
         XCTAssertNil(source.fetchDetailsCall(at: 0))
     }
 

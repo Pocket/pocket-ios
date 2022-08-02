@@ -97,7 +97,10 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func fetchDetailsIfNeeded() {
-        guard item.item?.article == nil else { return }
+        guard item.item?.article == nil else {
+            _events.send(.contentUpdated)
+            return
+        }
 
         Task {
             try? await self.source.fetchDetails(for: self.item)
