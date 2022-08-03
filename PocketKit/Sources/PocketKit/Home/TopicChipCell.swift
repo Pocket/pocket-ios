@@ -18,6 +18,7 @@ class TopicChipCell: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 1
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
 

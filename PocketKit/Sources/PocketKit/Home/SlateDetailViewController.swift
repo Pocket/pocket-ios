@@ -172,24 +172,38 @@ private extension SlateDetailViewController {
 
             return NSCollectionLayoutSection(group: group)
         case .slate(let slate):
+            let width = environment.container.effectiveContentSize.width
             let margin: CGFloat = Margins.normal.rawValue
             let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
-            let count = recommendations.count
-            guard count > 0 else { return .empty() }
 
-            let height: CGFloat = 370
-            let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(height))
-            let item = NSCollectionLayoutItem(layoutSize: itemSize)
+            let components = recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in
+                guard let viewModel = self.model.recommendationViewModel(for: recommendation.objectID) else {
+                    return result
+                }
+                
+                let currentHeight = result.0
+                let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - (margin * 2)) + margin
+                var items = result.1
+                let item = NSCollectionLayoutItem(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(height)
+                    )
+                )
+                item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
+                
+                items.append(item)
+                
+                return (currentHeight + height, items)
+            }
             
             let heroGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(height*Double(count))
+                    heightDimension: .absolute(components.0)
                 ),
-                subitem: item,
-                count: count
+                subitems: components.1
             )
-            heroGroup.interItemSpacing = .fixed(16)
 
             let section = NSCollectionLayoutSection(group: heroGroup)
 
@@ -202,7 +216,7 @@ private extension SlateDetailViewController {
 
             return section
         default:
-            return nil
+            return .empty()
         }
     }
 

@@ -39,14 +39,14 @@ class ItemsListItemCell: UICollectionViewListCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxTitleLines
-
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
 
     private let detailLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxDetailLines
-
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
 

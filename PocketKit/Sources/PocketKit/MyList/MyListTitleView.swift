@@ -14,14 +14,6 @@ class MyListTitleView: UIView {
         stackView.axis = .horizontal
         return stackView
     }()
-    
-    private var selection: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor(.ui.teal6)
-
-        return view
-    }()
-
     private let selections: [MyListSelection]
     private var buttons: [UIButton] = []
 
@@ -31,8 +23,6 @@ class MyListTitleView: UIView {
         super.init(frame: .zero)
 
         accessibilityIdentifier = "my-list-selection-switcher"
-
-        addSubview(selection)
         addSubview(stackView)
         
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -88,18 +78,19 @@ class MyListTitleView: UIView {
 
         stackView.setNeedsLayout()
         stackView.layoutIfNeeded()
-        selection.frame = selectedButton.frame
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-
-        if selection.frame == .zero,
-           let selectedButton = buttons.first(where: \.isSelected) {
-            selection.frame = selectedButton.frame
+        
+        buttons.forEach { button in
+            button.layer.cornerRadius = 16
+            if button.isSelected {
+                button.configuration?.background.backgroundColor = UIColor(.ui.teal6)
+            } else {
+                button.configuration?.background.backgroundColor = .clear
+            }
         }
-
-        selection.layer.cornerRadius = selection.frame.height / 2
     }
     
     required init?(coder: NSCoder) {
