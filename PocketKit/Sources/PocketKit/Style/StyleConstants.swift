@@ -8,7 +8,7 @@ enum Margins: CGFloat {
   case wide = 32
 }
 
-struct StyleConstants {
+enum StyleConstants {
     static let thumbnailSize = CGSize(width: 90, height: 60)
     static let carouselHeight: CGFloat = 146
     static var groupHeight: CGFloat {
