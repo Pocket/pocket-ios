@@ -77,5 +77,5 @@ private extension Style {
     
     static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey5).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
-    }
+    }.with(maxScaleSize: 22)
 }

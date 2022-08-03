@@ -127,10 +127,14 @@ extension SlateDetailViewModel {
 extension SlateDetailViewModel {
     func recommendationViewModel(
         for objectID: NSManagedObjectID,
-        at indexPath: IndexPath
+        at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellViewModel? {
         guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
             return nil
+        }
+        
+        guard let indexPath = indexPath else {
+            return HomeRecommendationCellViewModel(recommendation: recommendation)
         }
 
         return HomeRecommendationCellViewModel(

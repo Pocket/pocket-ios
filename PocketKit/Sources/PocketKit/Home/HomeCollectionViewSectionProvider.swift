@@ -4,12 +4,9 @@ import CoreData
 
 
 class HomeViewControllerSectionProvider {
-    
     struct Constants {
         static let margin: CGFloat = Margins.thin.rawValue
         static let sideMargin: CGFloat = Margins.normal.rawValue
-        static let carouselHeight: CGFloat = 146
-        static let heroHeight: CGFloat = 370
         static let spacing: CGFloat = 16
         static let sectionSpacing: CGFloat = 64
     }
@@ -38,11 +35,11 @@ class HomeViewControllerSectionProvider {
         guard numberOfRecentSavesItems > 0 else { return .empty() }
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfRecentSavesItems)), heightDimension: .absolute(Constants.carouselHeight))
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfRecentSavesItems)), heightDimension: .absolute(StyleConstants.groupHeight))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfRecentSavesItems)
         group.interItemSpacing = .fixed(16)
-        
+
         let sectionHeaderViewModel: SectionHeaderView.Model = .init(name: "Recent Saves", buttonTitle: "My List")
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: NSCollectionLayoutSize(
@@ -69,7 +66,16 @@ class HomeViewControllerSectionProvider {
         let heroItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
         let heroItem = NSCollectionLayoutItem(layoutSize: heroItemSize)
         
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(Constants.heroHeight))
+        let slate = viewModel.slateModel(for: slateID)
+        let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
+        
+        guard !recommendations.isEmpty,
+              let hero = viewModel.recommendationHeroViewModel(for: recommendations[0].objectID) else {
+            return nil
+        }
+        
+        let heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(heroHeight))
         let heroGroup = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [heroItem])
         let sectionHeaderViewModel = viewModel.sectionHeaderViewModel(for: .slateHero(slateID))
 
@@ -92,6 +98,7 @@ class HomeViewControllerSectionProvider {
         )
         return section
     }
+
     
     func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
@@ -102,7 +109,7 @@ class HomeViewControllerSectionProvider {
         let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfCarouselItems)), heightDimension: .absolute(Constants.carouselHeight))
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfCarouselItems)), heightDimension: .absolute(StyleConstants.groupHeight))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfCarouselItems)
         group.interItemSpacing = .fixed(16)
         

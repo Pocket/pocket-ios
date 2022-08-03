@@ -10,8 +10,8 @@ class SectionHeaderView: UICollectionReusableView {
     private let headerLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.textColor = UIColor(.ui.lapis1)
         label.lineBreakMode = .byWordWrapping
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
     
@@ -30,7 +30,6 @@ class SectionHeaderView: UICollectionReusableView {
         button.accessibilityIdentifier = "see-all-button"
         button.isHidden = true
         button.setContentHuggingPriority(.required, for: .horizontal)
-        
         return button
     }()
     
@@ -103,5 +102,5 @@ extension SectionHeaderView {
 
 private extension Style {
     static let sectionHeader: Style = .header.sansSerif.h6.with(weight: .semibold)
-    static let buttonText: Style = .header.sansSerif.p4.with(color: .ui.lapis1)
+    static let buttonText: Style = .header.sansSerif.p4.with(color: .ui.lapis1).with(maxScaleSize: 22)
 }

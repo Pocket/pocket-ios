@@ -362,6 +362,13 @@ extension HomeViewModel {
     }
 }
 
+// MARK: - Slate Model
+extension HomeViewModel {
+    func slateModel(for objectID: NSManagedObjectID) -> Slate? {
+        return source.mainContext.object(with: objectID) as? Slate
+    }
+}
+
 // MARK: Recommendation View Model & Actions
 extension HomeViewModel {
     func numberOfCarouselItemsForSlate(with id: NSManagedObjectID) -> Int {
@@ -373,10 +380,14 @@ extension HomeViewModel {
 
     func recommendationHeroViewModel(
         for objectID: NSManagedObjectID,
-        at indexPath: IndexPath
+        at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellViewModel? {
         guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
             return nil
+        }
+        
+        guard let indexPath = indexPath else {
+            return HomeRecommendationCellViewModel(recommendation: recommendation)
         }
 
         return HomeRecommendationCellViewModel(

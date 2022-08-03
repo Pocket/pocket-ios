@@ -8,6 +8,7 @@ import SwiftUI
 
 public struct Style {
     let fontDescriptor: FontDescriptor
+    let maxScaleSize: CGFloat?
     let colorAsset: ColorAsset
     let underlineStyle: UnderlineStyle
     let strike: Strike
@@ -16,6 +17,7 @@ public struct Style {
 
     init(
         fontDescriptor: FontDescriptor,
+        maxScaleSize: CGFloat? = nil,
         color: ColorAsset = .ui.grey1,
         underlineStyle: UnderlineStyle = .none,
         strike: Strike = .none,
@@ -23,6 +25,7 @@ public struct Style {
         backgroundColor: ColorAsset? = nil
     ) {
         self.fontDescriptor = fontDescriptor
+        self.maxScaleSize = maxScaleSize
         self.colorAsset = color
         self.underlineStyle = underlineStyle
         self.strike = strike
@@ -56,6 +59,18 @@ public struct Style {
     public func with(size: FontDescriptor.Size) -> Style {
         Style(
             fontDescriptor: fontDescriptor.with(size: size),
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: paragraph,
+            backgroundColor: backgroundColorAsset
+        )
+    }
+    
+    public func with(maxScaleSize: CGFloat) -> Style {
+        Style(
+            fontDescriptor: fontDescriptor,
+            maxScaleSize: maxScaleSize,
             color: colorAsset,
             underlineStyle: underlineStyle,
             strike: strike,

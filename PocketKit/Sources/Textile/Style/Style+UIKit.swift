@@ -136,13 +136,17 @@ extension NSParagraphStyle {
 
 public extension Style {
     var textAttributes: [NSAttributedString.Key: Any] {
+        var font = UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor))
+        if let maxScaleSize = maxScaleSize {
+            font = UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor), maximumPointSize: maxScaleSize)
+        }
         var attributes: [NSAttributedString.Key: Any] = [
             .style: self,
-            .font: UIFontMetrics.default.scaledFont(for: UIFont(fontDescriptor)),
+            .font: font,
             .paragraphStyle: NSParagraphStyle.from(paragraph),
             .foregroundColor: UIColor(colorAsset),
         ]
-
+        
         if let underline = NSUnderlineStyle(underlineStyle) {
             attributes[.underlineStyle] = underline.rawValue
         }

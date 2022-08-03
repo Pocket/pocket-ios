@@ -25,6 +25,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxTitleLines
+        label.adjustsFontForContentSizeCategory = true
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         return label
     }()
@@ -32,12 +33,14 @@ class HomeCarouselItemCell: UICollectionViewCell {
     private let domainLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxDetailLines
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
     
     private let timeToReadLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxDetailLines
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
 
@@ -118,6 +121,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
         mainContentStack.translatesAutoresizingMaskIntoConstraints = false
         thumbnailView.translatesAutoresizingMaskIntoConstraints = false
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
 
         thumbnailWidthConstraint = thumbnailView.widthAnchor.constraint(
             equalToConstant: StyleConstants.thumbnailSize.width
@@ -135,6 +139,12 @@ class HomeCarouselItemCell: UICollectionViewCell {
             bottomStack.leadingAnchor.constraint(equalTo: mainContentStack.leadingAnchor),
             bottomStack.trailingAnchor.constraint(equalTo: mainContentStack.trailingAnchor),
             bottomStack.bottomAnchor.constraint(equalTo:  contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
+
+            contentView.topAnchor.constraint(equalTo:  topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo:  bottomAnchor),
+
         ])
         
         [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
@@ -153,7 +163,7 @@ extension HomeCarouselItemCell {
         titleLabel.attributedText = model.attributedTitle
         domainLabel.attributedText = model.attributedDomain
         timeToReadLabel.attributedText = model.attributedTimeToRead
-        
+
         if model.attributedTimeToRead.string == "" {
             timeToReadLabel.isHidden = true
         } else {
@@ -208,14 +218,13 @@ extension HomeCarouselItemCell {
     }
     
     override func layoutSubviews() {
-        contentView.layer.masksToBounds = false
+        layer.masksToBounds = false
         layer.cornerRadius = Constants.cornerRadius
-        contentView.layer.cornerRadius = Constants.cornerRadius
-        contentView.layer.shadowColor = UIColor(.ui.border).cgColor
-        contentView.layer.shadowOffset = .zero
-        contentView.layer.shadowOpacity = 1.0
-        contentView.layer.shadowRadius = 6
-        contentView.layer.shadowPath = UIBezierPath(roundedRect: contentView.layer.bounds, cornerRadius: contentView.layer.cornerRadius).cgPath
-        contentView.layer.backgroundColor = UIColor(.ui.white1).cgColor
+        layer.shadowColor = UIColor(.ui.border).cgColor
+        layer.shadowOffset = .zero
+        layer.shadowOpacity = 1.0
+        layer.shadowRadius = 6
+        layer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: layer.cornerRadius).cgPath
+        layer.backgroundColor = UIColor(.ui.white1).cgColor
     }
 }

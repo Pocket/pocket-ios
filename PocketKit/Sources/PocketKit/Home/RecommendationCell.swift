@@ -16,7 +16,7 @@ protocol RecommendationCellViewModel {
 class RecommendationCell: UICollectionViewCell {
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.layer.cornerRadius = 16
+        imageView.layer.cornerRadius = Constants.cornerRadius
         imageView.clipsToBounds = true
         imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         imageView.backgroundColor = UIColor(.ui.grey6)
@@ -25,20 +25,23 @@ class RecommendationCell: UICollectionViewCell {
 
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = RecommendationCell.numberOfTitleLines
+        label.numberOfLines = Constants.numberOfTitleLines
         label.setContentCompressionResistancePriority(.required, for: .vertical)
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
 
     private let domainLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = RecommendationCell.numberOfSubtitleLines
+        label.numberOfLines = Constants.numberOfSubtitleLines
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
     
     private let timeToReadLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = RecommendationCell.numberOfSubtitleLines
+        label.numberOfLines = Constants.numberOfSubtitleLines
+        label.adjustsFontForContentSizeCategory = true
         return label
     }()
 
@@ -59,7 +62,7 @@ class RecommendationCell: UICollectionViewCell {
         let stack = UIStackView()
         stack.distribution = .fillProportionally
         stack.axis = .vertical
-        stack.spacing = 4
+        stack.spacing = Constants.stackSpacing
         return stack
     }()
 
@@ -76,32 +79,37 @@ class RecommendationCell: UICollectionViewCell {
         stack.axis = .horizontal
         return stack
     }()
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
         contentView.addSubview(thumbnailImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(bottomStack)
-        contentView.layoutMargins = Self.layoutMargins
+        contentView.layoutMargins = Constants.layoutMargins
 
         thumbnailImageView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
         bottomStack.translatesAutoresizingMaskIntoConstraints = false
+        contentView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             thumbnailImageView.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             thumbnailImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             thumbnailImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            thumbnailImageView.heightAnchor.constraint(equalTo: thumbnailImageView.widthAnchor, multiplier: Self.imageAspectRatio),
+            thumbnailImageView.heightAnchor.constraint(equalTo: thumbnailImageView.widthAnchor, multiplier: Constants.imageAspectRatio),
 
-            titleLabel.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: RecommendationCell.textStackTopMargin),
+            titleLabel.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: Constants.textStackTopMargin),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             
             bottomStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             bottomStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             bottomStack.bottomAnchor.constraint(equalTo:  contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
+            
+            contentView.topAnchor.constraint(equalTo:  topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo:  bottomAnchor),
         ])
 
         [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
@@ -134,12 +142,12 @@ class RecommendationCell: UICollectionViewCell {
         overflowButton.menu = UIMenu(children: menuActions)
         
         let imageWidth = bounds.width
-                - RecommendationCell.layoutMargins.left
-                - RecommendationCell.layoutMargins.right
+                - Constants.layoutMargins.left
+                - Constants.layoutMargins.right
 
         let imageSize = CGSize(
             width: imageWidth,
-            height: (imageWidth * RecommendationCell.imageAspectRatio).rounded(.down)
+            height: (imageWidth * Constants.imageAspectRatio).rounded(.down)
         )
         thumbnailImageView.kf.indicatorType = .activity
         thumbnailImageView.kf.setImage(
@@ -161,56 +169,63 @@ class RecommendationCell: UICollectionViewCell {
     }
     
     override func layoutSubviews() {
-        contentView.layer.masksToBounds = false
-        layer.cornerRadius = 16
-        contentView.layer.cornerRadius = 16
-        contentView.layer.shadowColor = UIColor(.ui.border).cgColor
-        contentView.layer.shadowOffset = .zero
-        contentView.layer.shadowOpacity = 1.0
-        contentView.layer.shadowRadius = 6
-        contentView.layer.shadowPath = UIBezierPath(roundedRect: contentView.layer.bounds, cornerRadius: contentView.layer.cornerRadius).cgPath
-        contentView.layer.backgroundColor = UIColor(.ui.white1).cgColor
+        layer.masksToBounds = false
+        layer.cornerRadius = Constants.cornerRadius
+        layer.shadowColor = UIColor(.ui.border).cgColor
+        layer.shadowOffset = .zero
+        layer.shadowOpacity = 1.0
+        layer.shadowRadius = 6
+        layer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: layer.cornerRadius).cgPath
+        layer.backgroundColor = UIColor(.ui.white1).cgColor
     }
 }
 
 extension RecommendationCell {
-    static let textStackTopMargin: CGFloat = 16
-    static let layoutMargins = UIEdgeInsets(top: 0, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
-    static let imageAspectRatio: CGFloat = 9/16
-    static let numberOfTitleLines = 3
-    static let numberOfSubtitleLines = 2
+    enum Constants {
+        static let cornerRadius: CGFloat = 16
+        static let textStackTopMargin: CGFloat = 16
+        static let imageAspectRatio: CGFloat = 9/16
+        static let numberOfTitleLines = 3
+        static let numberOfSubtitleLines = 2
+        static let numberOfTimeToReadLines = 1
+        static let layoutMargins = UIEdgeInsets(top: 0, left: Margins.normal.rawValue, bottom: Margins.normal.rawValue, right: Margins.normal.rawValue)
+        static let stackSpacing: CGFloat = 4
+        static let textStackBottomMargin: CGFloat = 12
+    }
 }
 
 extension RecommendationCell {
-    static func fullHeight(viewModel: RecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
-        let adjustedWidth = availableWidth - Self.layoutMargins.left - Self.layoutMargins.right
-        let imageHeight = (adjustedWidth * Self.imageAspectRatio).rounded(.up)
+    static func fullHeight(viewModel: HomeRecommendationCellViewModel, availableWidth: CGFloat) -> CGFloat {
+        let adjustedWidth = availableWidth - Constants.layoutMargins.left - Constants.layoutMargins.right
+        let imageHeight = (availableWidth * Constants.imageAspectRatio).rounded(.up)
 
         let titleHeight = adjustedHeight(
             of: viewModel.attributedTitle,
             availableWidth: adjustedWidth,
-            numberOfLines: numberOfTitleLines
+            numberOfLines: Constants.numberOfTitleLines
         )
         
         let domainHeight = adjustedHeight(
             of: viewModel.attributedDomain,
-            availableWidth: adjustedWidth,
-            numberOfLines: numberOfTitleLines
+            availableWidth: adjustedWidth / 2,
+            numberOfLines: Constants.numberOfSubtitleLines
         )
         
         let timeToReadHeight = adjustedHeight(
             of: viewModel.attributedTimeToRead,
-            availableWidth: adjustedWidth,
-            numberOfLines: numberOfTitleLines
+            availableWidth: adjustedWidth / 2,
+            numberOfLines: Constants.numberOfTimeToReadLines
         )
-
-        return Self.layoutMargins.top
+        
+        let stackHeight = Constants.stackSpacing + domainHeight + Constants.stackSpacing + timeToReadHeight + Constants.stackSpacing
+        
+        return Constants.layoutMargins.top
         + imageHeight
-        + textStackTopMargin
+        + Constants.textStackTopMargin
         + titleHeight
-        + domainHeight
-        + timeToReadHeight
-        + Self.layoutMargins.bottom
+        + Constants.textStackBottomMargin
+        + stackHeight
+        + Constants.layoutMargins.bottom
     }
 
     static func height(of attributedString: NSAttributedString, width: CGFloat, numberOfLines: Int) -> CGFloat {
