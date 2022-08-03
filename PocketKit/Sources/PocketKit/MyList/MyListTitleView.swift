@@ -79,19 +79,6 @@ class MyListTitleView: UIView {
         stackView.setNeedsLayout()
         stackView.layoutIfNeeded()
     }
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        buttons.forEach { button in
-            button.layer.cornerRadius = 16
-            if button.isSelected {
-                button.configuration?.background.backgroundColor = UIColor(.ui.teal6)
-            } else {
-                button.configuration?.background.backgroundColor = .clear
-            }
-        }
-    }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not implemented")
@@ -108,12 +95,15 @@ private class MyListSelectionButton: UIButton {
         accessibilityLabel = selection.title
 
         configuration = UIButton.Configuration.plain()
+        configuration?.background.cornerRadius = 16
+        configuration?.background.backgroundColorTransformer = UIConfigurationColorTransformer { [weak self] _ in
+            guard self?.isSelected ?? false else { return .clear }
+            return UIColor(.ui.teal6)
+        }
+
         configuration?.image = selection.image
         configuration?.imagePadding = 8
-        configuration?.background = .clear()
-        configuration?.background.backgroundColor = .clear
-        configuration?.background.backgroundColorTransformer = .none
-
+        
         addAction(action, for: .primaryActionTriggered)
         clipsToBounds = true
     }
