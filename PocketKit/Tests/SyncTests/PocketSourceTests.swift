@@ -174,7 +174,7 @@ class PocketSourceTests: XCTestCase {
             TestSyncOperation { }
         }
 
-        let savedItem = try space.createSavedItem(item: .build())
+        let savedItem = try space.createSavedItem(item: space.buildItem())
         let item = savedItem.item!
         item.recommendation = space.buildRecommendation()
 
@@ -192,7 +192,7 @@ class PocketSourceTests: XCTestCase {
             TestSyncOperation { }
         }
 
-        let savedItem = try space.createSavedItem(item: .build())
+        let savedItem = try space.createSavedItem(item: space.buildItem())
         let item = savedItem.item!
 
         let remoteItemID = item.remoteID!
@@ -308,7 +308,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = Item.build()
+        let seededItem = space.buildItem()
         let recommendation = space.buildRecommendation(item: seededItem)
 
         let source = subject()
@@ -332,7 +332,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = Item.build()
+        let seededItem = space.buildItem()
         let recommendation = space.buildRecommendation(item: seededItem)
 
         let source = subject()
@@ -356,7 +356,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = Item.build()
+        let seededItem = space.buildItem()
         let seededSavedItem = space.buildSavedItem(isArchived: true)
         seededItem.savedItem = seededSavedItem
         let recommendation = space.buildRecommendation(item: seededItem)
@@ -382,7 +382,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = Item.build()
+        let seededItem = space.buildItem()
         seededItem.savedItem = space.buildSavedItem()
         let recommendation = space.buildRecommendation(item: seededItem)
 
@@ -441,7 +441,7 @@ class PocketSourceTests: XCTestCase {
     @MainActor
     func test_fetchDetailsForRecommendation_fetchesOfflineContent() async throws {
         let recommendation = try space.createRecommendation(
-            item: .build(remoteID: "remote-item-id")
+            item: space.buildItem(remoteID: "remote-item-id")
         )
 
         apollo.stubFetch(

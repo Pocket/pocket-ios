@@ -1,7 +1,7 @@
 import XCTest
-import Sync
 @testable import Kingfisher
 @testable import PocketKit
+@testable import Sync
 
 
 class ImageManagerTests: XCTestCase {
@@ -9,6 +9,7 @@ class ImageManagerTests: XCTestCase {
     var imageCache: MockImageCache!
     var imageRetriever: MockImageRetriever!
     var source: MockSource!
+    var space: Space!
 
     override func setUp() {
         continueAfterFailure = false
@@ -17,11 +18,16 @@ class ImageManagerTests: XCTestCase {
         imageCache = MockImageCache()
         imageRetriever = MockImageRetriever(imageCache: imageCache)
         source = MockSource()
+        space = Space.testSpace()
 
         imagesController.stubPerformFetch { }
         imageCache.stubRemoveImage { _, _, _, _, _, _ in }
         imageRetriever.stubRetrieveImage { _, _, _, _, _ in return nil }
         source.stubDownloadImages { _ in }
+    }
+
+    override func tearDownWithError() throws {
+        try space.clear()
     }
 
     private func subject(
@@ -52,10 +58,10 @@ class ImageManagerTests: XCTestCase {
         prefetcher.start()
 
         let images: [Image] = [
-            .build(source: URL(string: "https://example.com/image-1.png")),
-            .build(source: URL(string: "https://example.com/image-2.png")),
-            .build(source: URL(string: "https://example.com/image-3.png")),
-            .build(source: URL(string: "https://example.com/image-4.png")),
+            space.buildImage(source: URL(string: "https://example.com/image-1.png")),
+            space.buildImage(source: URL(string: "https://example.com/image-2.png")),
+            space.buildImage(source: URL(string: "https://example.com/image-3.png")),
+            space.buildImage(source: URL(string: "https://example.com/image-4.png")),
         ]
         imagesController.images = Array(images[0...1])
 
@@ -94,7 +100,7 @@ class ImageManagerTests: XCTestCase {
         prefetcher.start()
 
         let images: [Image] = [
-            .build(source: URL(string: "https://example.com/image-1.png")),
+            space.buildImage(source: URL(string: "https://example.com/image-1.png")),
         ]
         imagesController.images = images
 
@@ -115,7 +121,7 @@ class ImageManagerTests: XCTestCase {
         prefetcher.start()
 
         let images: [Image] = [
-            .build(source: URL(string: "https://example.com/image-1.png")),
+            space.buildImage(source: URL(string: "https://example.com/image-1.png")),
         ]
         imagesController.images = images
 
