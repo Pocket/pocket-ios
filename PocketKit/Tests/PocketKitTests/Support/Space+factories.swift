@@ -235,3 +235,34 @@ extension Space {
         }
     }
 }
+
+// MARK: - Image
+extension Space {
+    @discardableResult
+    func buildImage(
+        source: URL?,
+        isDownloaded: Bool = false
+    ) -> Image {
+        return context.performAndWait {
+            let image: Image = new()
+            image.source = source
+            image.isDownloaded = isDownloaded
+
+            return image
+        }
+    }
+
+    @discardableResult
+    func createImage(
+        source: URL?,
+        isDownloaded: Bool = false
+    ) throws -> Image {
+        return try context.performAndWait {
+            let image = buildImage(source: source, isDownloaded: isDownloaded)
+            try save()
+
+            return image
+        }
+    }
+}
+

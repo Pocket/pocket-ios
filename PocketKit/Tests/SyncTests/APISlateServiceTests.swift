@@ -129,7 +129,7 @@ extension APISlateServiceTests {
     func test_fetchSlateLineup_existingSlateLineup_updatesExistingSpace() async throws {
         apollo.stubFetch(toReturnFixtureNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
-        let item = Item.build(remoteID: "item-1-seed")
+        let item = space.buildItem(remoteID: "item-1-seed")
         let recommendation = space.buildRecommendation(remoteID: "slate-1-recommendation-1-seed", item: item)
         let slate = space.buildSlate(remoteID: "slate-1-seed", recommendations: [recommendation])
         space.buildSlateLineup(slates: [slate])
@@ -165,7 +165,7 @@ extension APISlateServiceTests {
     func test_fetchSlateLineup_existingSlateLineup_hasSavedItems_keepsItems() async throws {
         apollo.stubFetch(toReturnFixtureNamed: "slates", asResultType: GetSlateLineupQuery.self)
 
-        let item = Item.build(remoteID: "item-1-seed")
+        let item = space.buildItem(remoteID: "item-1-seed")
         space.buildSavedItem(item: item)
         let recommendation = space.buildRecommendation(remoteID: "slate-1-recommendation-seed", item: item)
         let slate = space.buildSlate(remoteID: "slate-1-seed", recommendations: [recommendation])
@@ -185,7 +185,7 @@ extension APISlateServiceTests {
 
         // fetchSlateLineup "cleans" all unsaved items before fetching,
         // so we have to fake a saved item for the item to update
-        let item = Item.build(title: "Item 1 Seed")
+        let item = space.buildItem(title: "Item 1 Seed")
         space.buildSavedItem(item: item)
         try self.space.save()
 
@@ -293,7 +293,7 @@ extension APISlateServiceTests {
     func test_fetchSlate_existingItem_updatesExistingItem() async throws {
         apollo.stubFetch(toReturnFixtureNamed: "slate-detail", asResultType: GetSlateQuery.self)
 
-        let item = Item.build(title: "Item 1 Seed")
+        let item = space.buildItem(title: "Item 1 Seed")
         space.buildSavedItem(item: item)
         let recommendation = space.buildRecommendation(remoteID: "slate-1-recommendation-1-seed", item: item)
         space.buildSlate(remoteID: "slate-1-seed", recommendations: [recommendation])
@@ -309,7 +309,7 @@ extension APISlateServiceTests {
     func test_fetchSlate_existingSlate_hasSavedItems_keepsItems() async throws {
         apollo.stubFetch(toReturnFixtureNamed: "slate-detail", asResultType: GetSlateQuery.self)
 
-        let item = Item.build(remoteID: "item-1-seed")
+        let item = space.buildItem(remoteID: "item-1-seed")
         space.buildSavedItem(item: item)
         let recommendation = space.buildRecommendation(remoteID: "slate-1-recommendation-seed", item: item)
         let slate = space.buildSlate(remoteID: "slate-1-seed", recommendations: [recommendation])
