@@ -4,37 +4,42 @@ import UIKit
 class ReaderSkeletonCell: UICollectionViewCell {
     private let bylineImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .readerSkeleton.byline)
         return imageView
     }()
 
     private let headImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .readerSkeleton.head)
         return imageView
     }()
 
     private let thumbnailImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .readerSkeleton.thumbnail)
         return imageView
     }()
 
     private let subheadImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .readerSkeleton.subhead)
         return imageView
     }()
 
     private let contentImageView: UIImageView = {
         let imageView = UIImageView()
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .readerSkeleton.content)
         return imageView
     }()
 
-
     override init(frame: CGRect) {
         super.init(frame: frame)
+        contentView.backgroundColor = UIColor(.ui.white1)
 
         contentView.addSubview(bylineImageView)
         contentView.addSubview(headImageView)
