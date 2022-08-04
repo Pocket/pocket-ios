@@ -308,31 +308,7 @@ class PocketSourceTests: XCTestCase {
             }
         }
 
-        let seededItem = space.buildItem()
-        let recommendation = space.buildRecommendation(item: seededItem)
-
-        let source = subject()
-        source.save(recommendation: recommendation)
-        wait(for: [expectationToRunOperation], timeout: 1)
-
-        let savedItems = try space.fetchSavedItems()
-        XCTAssertEqual(savedItems.count, 1)
-
-        let savedItem = savedItems[0]
-        XCTAssertEqual(savedItem.url, URL(string: "https://getpocket.com")!)
-
-        XCTAssertEqual(savedItem.item, seededItem)
-    }
-
-    func test_saveRecommendation_createsSavedItem_andExecutesSaveItemOperation() throws {
-        let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubSaveItemOperation { _, _, _ , _, _ in
-            return TestSyncOperation {
-                expectationToRunOperation.fulfill()
-            }
-        }
-
-        let seededItem = space.buildItem()
+        let seededItem = space.buildItem(resolvedURL: URL(string: "https://getpocket.com")!)
         let recommendation = space.buildRecommendation(item: seededItem)
 
         let source = subject()
