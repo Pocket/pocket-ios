@@ -5,7 +5,7 @@ import Textile
 class ItemPlaceholderCell: UICollectionViewListCell {
     private let actionsImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.tintColor = UIColor(.ui.grey6)
+        imageView.tintColor = UIColor(.ui.skeletonCellImageBackground)
         imageView.image = UIImage(asset: .itemSkeletonActions)
 
         return imageView
