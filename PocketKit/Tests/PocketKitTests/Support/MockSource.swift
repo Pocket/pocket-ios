@@ -713,7 +713,7 @@ extension MockSource {
     }
 }
 
-// MARK: - Retry Immediately
+// MARK: - Fetch Details for Recommendation
 extension MockSource {
     static let fetchDetailsForRecommendation = "fetchDetailsForRecommendation"
     typealias FetchDetailsForRecommendationImpl = (Recommendation) async throws -> Void
