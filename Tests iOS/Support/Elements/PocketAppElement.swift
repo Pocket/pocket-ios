@@ -20,6 +20,10 @@ struct PocketAppElement {
         return app.collectionViews["logged-out"]
     }
 
+    var bannerView: XCUIElement {
+        return app.otherElements["banner"]
+    }
+
     var homeView: HomeViewElement {
         return HomeViewElement(app.otherElements["home"])
     }
