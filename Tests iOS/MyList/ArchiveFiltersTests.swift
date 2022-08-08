@@ -41,6 +41,7 @@ class ArchiveFiltersTests: XCTestCase {
         }
 
         try server.start()
+        UIPasteboard.general.string = ""
     }
 
     override func tearDownWithError() throws {

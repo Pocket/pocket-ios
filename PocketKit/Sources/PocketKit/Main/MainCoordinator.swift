@@ -9,6 +9,10 @@ class MainCoordinator {
     var viewController: UIViewController {
         regular.viewController
     }
+    
+    var compactViewController: UIViewController {
+        compact.viewController
+    }
 
     private let compact: CompactMainCoordinator
     private let regular: RegularMainCoordinator
