@@ -36,7 +36,7 @@ class RootCoordinator {
 
         window = UIWindow(windowScene: windowScene)
 
-        rootViewModel.$isLoggedIn.receive(on: DispatchQueue.main).sink { isLoggedIn in
+        rootViewModel.$isLoggedIn.sink { isLoggedIn in
             self.updateState(isLoggedIn)
         }.store(in: &subscriptions)
 

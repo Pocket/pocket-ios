@@ -61,7 +61,7 @@ class CompactMainCoordinator: NSObject {
         tabBarController.delegate = self
         home.delegate = self
 
-        collapsedSubscription = model.$isCollapsed.receive(on: DispatchQueue.main).sink { [weak self] isCollapsed in
+        collapsedSubscription = model.$isCollapsed.sink { [weak self] isCollapsed in
             if isCollapsed {
                 self?.observeModelChanges()
             } else {
