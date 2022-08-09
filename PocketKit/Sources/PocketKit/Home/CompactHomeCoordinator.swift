@@ -26,11 +26,9 @@ class CompactHomeCoordinator: NSObject {
 
     // only necessary for creating nested view controller
     // should use a factory instead
-    private let source: Source
     private let tracker: Tracker
 
-    init(source: Source, tracker: Tracker, model: HomeViewModel) {
-        self.source = source
+    init(tracker: Tracker, model: HomeViewModel) {
         self.tracker = tracker
         self.model = model
 

@@ -20,7 +20,6 @@ class RegularMainCoordinator: NSObject {
     private let readerRoot: UINavigationController
 
     private let tracker: Tracker
-    private let source: Source
 
     private let model: MainViewModel
 
@@ -31,11 +30,9 @@ class RegularMainCoordinator: NSObject {
     private var isResetting: Bool = false
 
     init(
-        source: Source,
         tracker: Tracker,
         model: MainViewModel
     ) {
-        self.source = source
         self.tracker = tracker
         self.model = model
 

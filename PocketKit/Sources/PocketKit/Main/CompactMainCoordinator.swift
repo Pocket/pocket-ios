@@ -34,7 +34,7 @@ class CompactMainCoordinator: NSObject {
         myList.viewController.tabBarItem.image = UIImage(asset: .tabMyListDeselected)
         myList.viewController.tabBarItem.selectedImage = UIImage(asset: .tabMyListSelected)
 
-        home = CompactHomeCoordinator(source: source, tracker: tracker, model: model.home)
+        home = CompactHomeCoordinator(tracker: tracker, model: model.home)
         home.viewController.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
         home.viewController.tabBarItem.title = "Home"
         home.viewController.tabBarItem.image = UIImage(asset: .tabHomeDeselected)
