@@ -21,11 +21,7 @@ class CompactMainCoordinator: NSObject {
     private var subscriptions: [AnyCancellable] = []
     private var collapsedSubscription: AnyCancellable?
 
-    init(
-        source: Source,
-        tracker: Tracker,
-        model: MainViewModel
-    ) {
+    init(tracker: Tracker, model: MainViewModel) {
         self.model = model
 
         myList = CompactMyListContainerCoordinator(model: model.myList)
