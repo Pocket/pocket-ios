@@ -44,7 +44,7 @@ class CompactMyListContainerCoordinator: NSObject {
 
         navigationController.popToRootViewController(animated: false)
         
-        model.$selection.receive(on: DispatchQueue.main).sink { [weak self] selection in
+        model.$selection.sink { [weak self] selection in
             switch selection {
             case .myList:
                 self?.containerViewController.selectedIndex = 0
@@ -54,32 +54,32 @@ class CompactMyListContainerCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         // My List navigation
-        model.savedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        model.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        model.savedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.savedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedSavedItem in
+        model.savedItemsList.$selectedItem.sink { [weak self] selectedSavedItem in
             guard let selectedSavedItem = selectedSavedItem else { return }
             self?.model.archivedItemsList.selectedItem = nil
             self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
 
         // Archive navigation
-        model.archivedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedArchivedItem in
+        model.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
             guard let selectedArchivedItem = selectedArchivedItem else { return }
             self?.model.savedItemsList.selectedItem = nil
             self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
 
-        model.archivedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.archivedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        model.archivedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
@@ -102,23 +102,23 @@ class CompactMyListContainerCoordinator: NSObject {
             return
         }
 
-        readable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        readable.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readableSubscriptions)
 
-        readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+        readable.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &readableSubscriptions)
 
-        readable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        readable.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readableSubscriptions)
 
-        readable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
+        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readableSubscriptions)
 
-        readable.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+        readable.events.sink { [weak self] event in
             switch event {
             case .contentUpdated:
                 break

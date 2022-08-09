@@ -17,7 +17,7 @@ class LoggedOutCoordinator: NSObject {
         super.init()
 
         self.viewModel.contextProvider = self
-        self.viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        self.viewModel.$presentedAlert.sink { [weak self] alert in
             guard let alert = alert else {
                 return
             }

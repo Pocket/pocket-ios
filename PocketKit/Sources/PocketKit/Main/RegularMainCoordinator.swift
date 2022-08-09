@@ -88,7 +88,7 @@ class RegularMainCoordinator: NSObject {
     }
 
     func showInitialView() {
-        model.$isCollapsed.receive(on: DispatchQueue.main).sink { [weak self] isCollapsed in
+        model.$isCollapsed.sink { [weak self] isCollapsed in
             if !isCollapsed {
                 self?.observeModelChanges()
             } else {
@@ -104,20 +104,20 @@ class RegularMainCoordinator: NSObject {
         myList.navigationController?.popToRootViewController(animated: false)
         readerRoot.viewControllers = []
 
-        model.$selectedSection.receive(on: DispatchQueue.main).sink { [weak self] section in
+        model.$selectedSection.sink { [weak self] section in
             self?.show(section)
         }.store(in: &subscriptions)
 
         // My List - Saved Items
-        model.myList.savedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        model.myList.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)
 
-        model.myList.savedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        model.myList.savedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &subscriptions)
         
-        model.myList.$selection.receive(on: DispatchQueue.main).sink { [weak self] selection in
+        model.myList.$selection.sink { [weak self] selection in
             switch selection {
             case .myList:
                 self?.myList.selectedIndex = 0
@@ -126,29 +126,29 @@ class RegularMainCoordinator: NSObject {
             }
         }.store(in: &subscriptions)
 
-        model.myList.savedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedSavedItem in
+        model.myList.savedItemsList.$selectedItem.sink { [weak self] selectedSavedItem in
             guard let selectedSavedItem = selectedSavedItem else { return }
             self?.model.myList.archivedItemsList.selectedItem = nil
             self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
 
         // My List - Archived Items
-        model.myList.archivedItemsList.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        model.myList.archivedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)
 
-        model.myList.archivedItemsList.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        model.myList.archivedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &subscriptions)
 
-        model.myList.archivedItemsList.$selectedItem.receive(on: DispatchQueue.main).sink { [weak self] selectedArchivedItem in
+        model.myList.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
             guard let selectedArchivedItem = selectedArchivedItem else { return }
             self?.model.myList.savedItemsList.selectedItem = nil
             self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
 
         // HOME
-        model.home.$selectedReadableType.receive(on: DispatchQueue.main).sink { [weak self] readableType in
+        model.home.$selectedReadableType.sink { [weak self] readableType in
             switch readableType {
             case .recommendation(let viewModel):
                 self?.show(viewModel)
@@ -159,25 +159,25 @@ class RegularMainCoordinator: NSObject {
             }
         }.store(in: &subscriptions)
 
-        model.home.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+        model.home.$selectedRecommendationToReport.sink { [weak self] recommendation in
             self?.report(recommendation) {
                 self?.model.home.selectedRecommendationToReport = nil
             }
         }.store(in: &subscriptions)
 
-        model.home.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+        model.home.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url)
         }.store(in: &subscriptions)
         
-        model.home.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        model.home.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)
 
-        model.home.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        model.home.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &subscriptions)
 
-        model.home.$tappedSeeAll.dropFirst().receive(on: DispatchQueue.main).sink { [weak self] section in
+        model.home.$tappedSeeAll.dropFirst().sink { [weak self] section in
             switch section {
             case .myList:
                 self?.model.selectedSection = .myList(.myList)
@@ -232,19 +232,19 @@ class RegularMainCoordinator: NSObject {
         }
 
         readerSubscriptions = []
-        readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+        readable.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url)
         }.store(in: &readerSubscriptions)
 
-        readable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
+        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readerSubscriptions)
 
-        readable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        readable.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &readerSubscriptions)
 
-        readable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        readable.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &readerSubscriptions)
 
@@ -259,23 +259,23 @@ class RegularMainCoordinator: NSObject {
         }
 
         readerSubscriptions = []
-        readable.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
+        readable.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url)
         }.store(in: &readerSubscriptions)
 
-        readable.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
+        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readerSubscriptions)
 
-        readable.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        readable.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &readerSubscriptions)
 
-        readable.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
+        readable.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &readerSubscriptions)
 
-        readable.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+        readable.$selectedRecommendationToReport.sink { [weak self] recommendation in
             self?.report(recommendation) {
                 readable.selectedRecommendationToReport = nil
             }
@@ -292,13 +292,13 @@ class RegularMainCoordinator: NSObject {
             return
         }
 
-        slate.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
+        slate.$selectedRecommendationToReport.sink { [weak self] recommendation in
             self?.report(recommendation) {
                 slate.selectedRecommendationToReport = nil
             }
         }.store(in: &slateDetailSubscriptions)
 
-        slate.$selectedReadableViewModel.receive(on: DispatchQueue.main).sink { [weak self] readable in
+        slate.$selectedReadableViewModel.sink { [weak self] readable in
             if readable != nil {
                 self?.model.myList.savedItemsList.selectedItem = nil
                 self?.model.myList.archivedItemsList.selectedItem = nil
@@ -307,7 +307,7 @@ class RegularMainCoordinator: NSObject {
             self?.show(readable)
         }.store(in: &slateDetailSubscriptions)
 
-        slate.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] alert in
+        slate.$presentedWebReaderURL.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)
 
