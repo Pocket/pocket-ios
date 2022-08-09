@@ -20,16 +20,8 @@ class MainCoordinator {
         source: Source,
         tracker: Tracker
     ) {
-        compact = CompactMainCoordinator(
-            source: source,
-            tracker: tracker,
-            model: model
-        )
-
-        regular = RegularMainCoordinator(
-            tracker: tracker,
-            model: model
-        )
+        compact = CompactMainCoordinator(tracker: tracker, model: model)
+        regular = RegularMainCoordinator(tracker: tracker, model: model)
 
         regular.setCompactViewController(compact.viewController)
         
