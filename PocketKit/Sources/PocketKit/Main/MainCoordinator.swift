@@ -27,7 +27,6 @@ class MainCoordinator {
         )
 
         regular = RegularMainCoordinator(
-            source: source,
             tracker: tracker,
             model: model
         )
