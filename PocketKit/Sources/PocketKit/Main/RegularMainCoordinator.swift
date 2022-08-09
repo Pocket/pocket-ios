@@ -51,11 +51,7 @@ class RegularMainCoordinator: NSObject {
             ]
         )
         
-        home = HomeViewController(
-            source: source,
-            tracker: tracker.childTracker(hosting: UIContext.home.screen),
-            model: model.home
-        )
+        home = HomeViewController(model: model.home)
 
         account = AccountViewController(model: model.account)
         readerRoot = UINavigationController(rootViewController: UIViewController())

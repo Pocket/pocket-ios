@@ -11,8 +11,6 @@ import Lottie
 
 
 class HomeViewController: UIViewController {
-    private let source: Sync.Source
-    private let tracker: Tracker
     private let model: HomeViewModel
     private let sectionProvider: HomeViewControllerSectionProvider
     private var subscriptions: [AnyCancellable] = []
@@ -55,9 +53,7 @@ class HomeViewController: UIViewController {
     private var overscrollTopConstraint: NSLayoutConstraint? = nil
     private var overscrollOffset = 0
 
-    init(source: Sync.Source, tracker: Tracker, model: HomeViewModel) {
-        self.source = source
-        self.tracker = tracker
+    init(model: HomeViewModel) {
         self.model = model
 
         self.sectionProvider = HomeViewControllerSectionProvider()

@@ -34,7 +34,7 @@ class CompactHomeCoordinator: NSObject {
         self.tracker = tracker
         self.model = model
 
-        homeViewController = HomeViewController(source: source, tracker: tracker, model: model)
+        homeViewController = HomeViewController(model: model)
         navigationController = UINavigationController(rootViewController: homeViewController)
 
         super.init()
