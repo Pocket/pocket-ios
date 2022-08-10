@@ -1,15 +1,6 @@
 import UIKit
 
 
-protocol BannerViewModel {
-    var attributedText: NSAttributedString { get }
-    var attributedDetailText: NSAttributedString { get }
-    var attributedButtonText: NSAttributedString { get }
-    var backgroundColor: UIColor { get }
-    var borderColor: UIColor { get }
-    func action()
-}
-
 class BannerView: UIView {
     private let stackView: UIStackView = {
         let stackView = UIStackView()
@@ -52,15 +43,22 @@ class BannerView: UIView {
     }()
     
     private var borderColor: UIColor?
+    private var dismissAction: (() -> ())?
     private var isLeftToRight: Bool {
         return UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
     }
+    private var gestureRecognizer: UISwipeGestureRecognizer
         
     override init(frame: CGRect) {
+        gestureRecognizer = UISwipeGestureRecognizer(target: nil, action: nil)
+        
         super.init(frame: frame)
         accessibilityIdentifier = "banner"
         layer.borderWidth = 1
         layer.cornerRadius = 4
+                
+        gestureRecognizer.direction = .down
+        addGestureRecognizer(gestureRecognizer)
         
         addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -97,10 +95,18 @@ extension BannerView {
         saveButton.configuration?.attributedTitle = AttributedString(
             model.attributedButtonText
         )
-        saveButton.addAction(UIAction { _ in model.action()}, for: .primaryActionTriggered)
+        saveButton.addAction(UIAction { _ in model.primaryAction()}, for: .primaryActionTriggered)
         
         backgroundColor = model.backgroundColor
         borderColor = model.borderColor
         layer.borderColor = borderColor?.cgColor
+        
+        dismissAction = model.dismissAction
+        gestureRecognizer.addTarget(self, action: #selector(dismiss))
+    }
+    
+    @objc func dismiss() {
+        guard let dismissAction = dismissAction else { return }
+        dismissAction()
     }
 }

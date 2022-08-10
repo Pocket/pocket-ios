@@ -10,8 +10,8 @@ class MainCoordinator {
         regular.viewController
     }
     
-    var compactViewController: UIViewController {
-        compact.viewController
+    var tabBar: UITabBar {
+        compact.tabBar
     }
 
     private let compact: CompactMainCoordinator

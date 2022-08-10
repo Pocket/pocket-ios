@@ -23,6 +23,7 @@ class RecommendationViewModelTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        UIPasteboard.general.string = ""
         subscriptions = []
         try space.clear()
     }

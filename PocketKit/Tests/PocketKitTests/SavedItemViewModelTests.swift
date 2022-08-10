@@ -20,6 +20,7 @@ class SavedItemViewModelTests: XCTestCase {
     }
 
     override func tearDown() async throws {
+        UIPasteboard.general.string = ""
         subscriptions = []
         try space.clear()
     }

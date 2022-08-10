@@ -31,11 +31,8 @@ extension Response {
         fixture(named: "slate-detail-\(number)")
     }
 
-    static func saveItem(_ fixtureName: String = "save-item", number: Int? = nil) -> Response {
-        guard let number = number else {
-            return fixture(named: fixtureName)
-        }
-        return fixture(named: "\(fixtureName)-\(number)")
+    static func saveItem(_ fixtureName: String = "save-item") -> Response {
+        fixture(named: fixtureName)
     }
 
     static func delete() -> Response {

@@ -12,6 +12,10 @@ class CompactMainCoordinator: NSObject {
         tabBarController
     }
 
+    var tabBar: UITabBar {
+        tabBarController.tabBar
+    }
+    
     private let tabBarController: UITabBarController
     private let myList: CompactMyListContainerCoordinator
     private let home: CompactHomeCoordinator
