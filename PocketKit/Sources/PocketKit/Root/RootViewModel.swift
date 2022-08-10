@@ -45,11 +45,29 @@ class RootViewModel {
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
             self?.showSaveFromClipboardBanner()
         }.store(in: &subscriptions)
+        
+        
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
+            self?.bannerViewModel = nil
+        }.store(in: &subscriptions)
     }
     
     func showSaveFromClipboardBanner() {
-        if UIPasteboard.general.hasURLs, let clipboardURL = UIPasteboard.general.url, isLoggedIn {
-            bannerViewModel = SavedFromClipboardViewModel(clipboardURL: clipboardURL.absoluteString, source: source)
+        if UIPasteboard.general.hasURLs,
+           let clipboardURL = UIPasteboard.general.url, isLoggedIn {
+            
+            bannerViewModel = BannerViewModel(
+                prompt: "Add copied URL to your Saves?",
+                clipboardURL: clipboardURL.absoluteString,
+                backgroundColor: UIColor(.ui.teal6),
+                borderColor: UIColor(.ui.teal5),
+                primaryAction: { [weak self] in
+                    self?.source.save(url: clipboardURL)
+                    self?.bannerViewModel = nil
+                },
+                dismissAction: { [weak self] in
+                    self?.bannerViewModel = nil
+                })
         }
     }
 

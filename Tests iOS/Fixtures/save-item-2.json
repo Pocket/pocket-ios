@@ -2,8 +2,8 @@
     "data": {
         "upsertSavedItem": {
             "__typename": "[type-name-here]",
-            "remoteID": "saved-item-6",
-            "url": "https://example.com/item-6",
+            "remoteID": "saved-item-3",
+            "url": "https://example.com/item-3",
             "_createdAt": 1,
             "_deletedAt": null,
             "archivedAt": null,
@@ -11,11 +11,11 @@
             "isFavorite": false,
             "item": {
                 "__typename": "Item",
-                "remoteID": "item-6",
-                "givenUrl": "https://example.com/item-6",
-                "resolvedUrl": "https://example.com/item-6",
-                "title": "Item 6",
-                "topImageUrl": "https://example.com/item-6/top-image.jpg",
+                "remoteID": "item-3",
+                "givenUrl": "https://example.com/item-3",
+                "resolvedUrl": "https://example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
                 "domain": null,
                 "language": "en",
                 "timeToRead": 6,
@@ -26,14 +26,14 @@
                 "domainMetadata": {
                     "__typename": "[type-name-here]",
                     "name": "WIRED",
-                    "logo": "http://example.com/item-6/domain-logo.jpg"
+                    "logo": "http://example.com/item-3/domain-logo.jpg"
                 },
                 "images": [
                     {
                         "__typename": "[type-name-here]",
                         "height": 1,
                         "width": 2,
-                        "src": "http://example.com/item-6/image-1.jpg",
+                        "src": "http://example.com/item-3/image-1.jpg",
                         "imageId": 1
                     }
                 ],

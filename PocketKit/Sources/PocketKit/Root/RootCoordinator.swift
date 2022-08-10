@@ -44,27 +44,22 @@ class RootCoordinator {
         window?.makeKeyAndVisible()
         
         rootViewModel.$bannerViewModel.sink { [weak self] viewModel in
-            guard let viewModel = viewModel else { return }
-            (viewModel as? SavedFromClipboardViewModel)?.delegate = self
-            self?.setupBanner(with: viewModel)
-        }.store(in: &subscriptions)
-
-        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
-            self?.removeBanner()
+            if let viewModel = viewModel {
+                self?.setupBanner(with: viewModel)
+            } else {
+                self?.dismissView()
+            }
         }.store(in: &subscriptions)
     }
     
     private func setupBanner(with viewModel: BannerViewModel) {
         let bannerView = BannerView()
         bannerView.configure(model: viewModel)
-        let slideDown = UISwipeGestureRecognizer(target: self, action: #selector(dismissView(gesture:)))
-        slideDown.direction = .down
-        bannerView.addGestureRecognizer(slideDown)
 
         window?.addSubview(bannerView)
         configureConstraints(bannerView)
         
-        let tabBarHeight: CGFloat = (main?.compactViewController as? UITabBarController)?.tabBar.frame.height ?? 0
+        let tabBarHeight: CGFloat = main?.tabBar.frame.height ?? 0
         let translation = window?.traitCollection.userInterfaceIdiom == .phone ? tabBarHeight : 0
       
         UIView.animate(withDuration: 0.5, delay: 0, options: [.allowUserInteraction], animations: {
@@ -83,23 +78,27 @@ class RootCoordinator {
         guard let window = window else { return }
         bannerView.translatesAutoresizingMaskIntoConstraints = false
         if window.traitCollection.userInterfaceIdiom == .pad {
-            bannerView.bottomAnchor.constraint(equalTo: window.bottomAnchor, constant: -12).isActive = true
-            bannerView.widthAnchor.constraint(equalToConstant: 600).isActive = true
-            bannerView.centerXAnchor.constraint(equalTo: window.centerXAnchor).isActive = true
+            NSLayoutConstraint.activate([
+                bannerView.bottomAnchor.constraint(equalTo: window.bottomAnchor, constant: -12),
+                bannerView.widthAnchor.constraint(equalToConstant: 600),
+                bannerView.centerXAnchor.constraint(equalTo: window.centerXAnchor),
+            ])
         } else {
-            let tabBar = (main?.compactViewController as? UITabBarController)?.tabBar ?? window
-            bannerView.bottomAnchor.constraint(equalTo: tabBar.bottomAnchor, constant: 0).isActive = true
-            bannerView.leadingAnchor.constraint(equalTo: window.leadingAnchor, constant: 12).isActive = true
-            bannerView.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -12).isActive = true
+            let tabBar = main?.tabBar ?? window
+            NSLayoutConstraint.activate([
+                bannerView.bottomAnchor.constraint(equalTo: tabBar.bottomAnchor, constant: 0),
+                bannerView.leadingAnchor.constraint(equalTo: window.leadingAnchor, constant: 12),
+                bannerView.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -12),
+            ])
         }
     }
     
-    @objc func dismissView(gesture: UISwipeGestureRecognizer) {
+    func dismissView() {
         let animationDistance = self.window?.frame.height
-        UIView.animate(withDuration: 1.0, delay: 0, options: [.allowUserInteraction], animations: {
-            self.bannerView?.transform = CGAffineTransform(translationX: 0, y: animationDistance ?? CGFloat.greatestFiniteMagnitude)
-        }, completion: {_ in
-            self.removeBanner()
+        UIView.animate(withDuration: 1.0, delay: 0, options: [.allowUserInteraction], animations: { [weak self] in
+            self?.bannerView?.transform = CGAffineTransform(translationX: 0, y: animationDistance ?? CGFloat.greatestFiniteMagnitude)
+        }, completion: { [weak self] _ in
+            self?.removeBanner()
         })
     }
 
@@ -149,11 +148,5 @@ class RootCoordinator {
                 transition()
             }
         }
-    }
-}
-
-extension RootCoordinator: SavedFromClipboardViewModelDelegate {
-    func coordinatorDismissBanner() {
-        removeBanner()
     }
 }

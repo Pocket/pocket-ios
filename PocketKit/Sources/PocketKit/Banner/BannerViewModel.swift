@@ -3,30 +3,15 @@ import Sync
 import Textile
 import UIKit
 
-
-protocol SavedFromClipboardViewModelDelegate: AnyObject {
-    func coordinatorDismissBanner()
-}
-
-class SavedFromClipboardViewModel: BannerViewModel {
-    let prompt = "Add copied URL to your Saves?"
+struct BannerViewModel {
+    let prompt: String
     let clipboardURL: String?
-    let buttonText: String? = "Save"
-    
-    private let source: Source?
-    weak var delegate: SavedFromClipboardViewModelDelegate?
-    
-    init(clipboardURL: String?, source: Source? = nil) {
-        self.clipboardURL = clipboardURL
-        self.source = source
-    }
-    
-    func action() {
-        guard let clipboardURL = clipboardURL, let url =  URL(string: clipboardURL) else { return }
-        source?.save(url: url)
-        delegate?.coordinatorDismissBanner()
-    }
-    
+    var buttonText: String? = "Save"
+    let backgroundColor: UIColor
+    let borderColor: UIColor
+    let primaryAction: () -> ()
+    let dismissAction: () -> ()
+
     var attributedText: NSAttributedString {
         return NSAttributedString(string: prompt, style: .main)
     }
@@ -38,9 +23,6 @@ class SavedFromClipboardViewModel: BannerViewModel {
     var attributedButtonText: NSAttributedString {
         return NSAttributedString(string: buttonText ?? "", style: .button)
     }
-    
-    var backgroundColor: UIColor = UIColor(.ui.teal6)
-    var borderColor: UIColor = UIColor(.ui.teal5)
 }
 
 private extension Style {
