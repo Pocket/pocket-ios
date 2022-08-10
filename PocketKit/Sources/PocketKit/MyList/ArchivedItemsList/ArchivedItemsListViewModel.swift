@@ -432,3 +432,30 @@ extension ArchivedItemsListViewModel {
         return snapshot
     }
 }
+
+// MARK: - Clearing presented content
+extension ArchivedItemsListViewModel {
+    func clearSharedActivity() {
+        sharedActivity = nil
+        selectedItem?.clearSharedActivity()
+    }
+
+    func clearPresentedWebReaderURL() {
+        switch selectedItem {
+        case .readable(let readable):
+            readable?.clearPresentedWebReaderURL()
+        case .webView:
+            selectedItem = nil
+        case .none:
+            break
+        }
+    }
+
+    func clearIsPresentingReaderSettings() {
+        selectedItem?.clearIsPresentingReaderSettings()
+    }
+
+    func clearSelectedItem() {
+        selectedItem = nil
+    }
+}

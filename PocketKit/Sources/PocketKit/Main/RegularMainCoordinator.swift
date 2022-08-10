@@ -6,6 +6,14 @@ import Sync
 import Combine
 
 
+protocol ModalContentPresenting: AnyObject {
+    func report(_ recommendation: Recommendation?)
+    func present(_ url: URL?)
+    func present(_ alert: PocketAlert?)
+    func share(_ activity: PocketActivity?)
+}
+
+
 class RegularMainCoordinator: NSObject {
     var viewController: UIViewController {
         splitController
@@ -14,19 +22,17 @@ class RegularMainCoordinator: NSObject {
     private let splitController: UISplitViewController
     private let navigationSidebar: UINavigationController
 
-    private let myList: MyListContainerViewController
-    private let home: HomeViewController
-    private let account: AccountViewController
+    private let myList: RegularMyListCoordinator
+    private let home: RegularHomeCoordinator
+    private let account: UINavigationController
     private let readerRoot: UINavigationController
 
     private let tracker: Tracker
-
     private let model: MainViewModel
 
-    private var longSubscriptions: [AnyCancellable] = []
+    private var sizeClassObserver: AnyCancellable?
     private var subscriptions: [AnyCancellable] = []
     private var readerSubscriptions: [AnyCancellable] = []
-    private var slateDetailSubscriptions: [AnyCancellable] = []
     private var isResetting: Bool = false
 
     init(
@@ -41,22 +47,17 @@ class RegularMainCoordinator: NSObject {
 
         navigationSidebar = UINavigationController(rootViewController: NavigationSidebarViewController(model: model))
         
-        myList = MyListContainerViewController(
-            viewControllers: [
-                ItemsListViewController(model: model.myList.savedItemsList),
-                ItemsListViewController(model: model.myList.archivedItemsList)
-            ]
+        myList = RegularMyListCoordinator(model: model.myList)
+        home = RegularHomeCoordinator(model: model.home, tracker: tracker)
+        account = UINavigationController(
+            rootViewController: AccountViewController(model: model.account)
         )
-        
-        home = HomeViewController(model: model.home)
-
-        account = AccountViewController(model: model.account)
         readerRoot = UINavigationController(rootViewController: UIViewController())
 
         super.init()
 
         splitController.setViewController(navigationSidebar, for: .primary)
-        splitController.setViewController(home, for: .supplementary)
+        splitController.setViewController(home.viewController, for: .supplementary)
         splitController.setViewController(readerRoot, for: .secondary)
         splitController.view.tintColor = UIColor(.ui.grey1)
 
@@ -64,15 +65,8 @@ class RegularMainCoordinator: NSObject {
         navigationSidebar.navigationBar.barTintColor = UIColor(.ui.white1)
         navigationSidebar.navigationBar.tintColor = UIColor(.ui.grey1)
 
-        myList.navigationController?.navigationBar.prefersLargeTitles = true
-        myList.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
-        myList.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
-
-        home.navigationController?.navigationBar.prefersLargeTitles = true
-        home.navigationController?.navigationBar.barTintColor = UIColor(.ui.white1)
-        home.navigationController?.navigationBar.tintColor = UIColor(.ui.grey1)
-        home.navigationController?.delegate = self
-
+        myList.delegate = self
+        home.delegate = self
         splitController.delegate = self
     }
 
@@ -81,156 +75,68 @@ class RegularMainCoordinator: NSObject {
     }
 
     func showInitialView() {
-        model.$isCollapsed.sink { [weak self] isCollapsed in
+        sizeClassObserver = model.$isCollapsed.sink { [weak self] isCollapsed in
             if !isCollapsed {
                 self?.observeModelChanges()
             } else {
                 self?.stopObservingModelChanges()
             }
-        }.store(in: &longSubscriptions)
+        }
     }
 
     private func observeModelChanges() {
         isResetting = true
-
-        home.navigationController?.popToRootViewController(animated: false)
-        myList.navigationController?.popToRootViewController(animated: false)
         readerRoot.viewControllers = []
 
         model.$selectedSection.sink { [weak self] section in
             self?.show(section)
         }.store(in: &subscriptions)
 
-        // My List - Saved Items
-        model.myList.savedItemsList.$presentedAlert.sink { [weak self] alert in
-            self?.present(alert)
-        }.store(in: &subscriptions)
-
-        model.myList.savedItemsList.$sharedActivity.sink { [weak self] activity in
-            self?.share(activity)
-        }.store(in: &subscriptions)
-        
-        model.myList.$selection.sink { [weak self] selection in
-            switch selection {
-            case .myList:
-                self?.myList.selectedIndex = 0
-            case .archive:
-                self?.myList.selectedIndex = 1
-            }
-        }.store(in: &subscriptions)
-
-        model.myList.savedItemsList.$selectedItem.sink { [weak self] selectedSavedItem in
-            guard let selectedSavedItem = selectedSavedItem else { return }
-            self?.model.myList.archivedItemsList.selectedItem = nil
-            self?.navigate(selectedItem: selectedSavedItem)
-        }.store(in: &subscriptions)
-
-        // My List - Archived Items
-        model.myList.archivedItemsList.$presentedAlert.sink { [weak self] alert in
-            self?.present(alert)
-        }.store(in: &subscriptions)
-
-        model.myList.archivedItemsList.$sharedActivity.sink { [weak self] activity in
-            self?.share(activity)
-        }.store(in: &subscriptions)
-
-        model.myList.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
-            guard let selectedArchivedItem = selectedArchivedItem else { return }
-            self?.model.myList.savedItemsList.selectedItem = nil
-            self?.navigate(selectedItem: selectedArchivedItem)
-        }.store(in: &subscriptions)
-
-        // HOME
-        model.home.$selectedReadableType.sink { [weak self] readableType in
-            switch readableType {
-            case .recommendation(let viewModel):
-                self?.show(viewModel)
-            case .savedItem(let viewModel):
-                self?.show(viewModel)
-            case .none:
-                self?.readerSubscriptions = []
-            }
-        }.store(in: &subscriptions)
-
-        model.home.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation) {
-                self?.model.home.selectedRecommendationToReport = nil
-            }
-        }.store(in: &subscriptions)
-
-        model.home.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url)
-        }.store(in: &subscriptions)
-        
-        model.home.$presentedAlert.sink { [weak self] alert in
-            self?.present(alert)
-        }.store(in: &subscriptions)
-
-        model.home.$sharedActivity.sink { [weak self] activity in
-            self?.share(activity)
-        }.store(in: &subscriptions)
-
-        model.home.$tappedSeeAll.dropFirst().sink { [weak self] section in
-            switch section {
-            case .myList:
-                self?.model.selectedSection = .myList(.myList)
-            case .slate(let slateDetailViewModel):
-                self?.show(slateDetailViewModel)
-            case .none:
-                return
-            }
-        }.store(in: &subscriptions)
+        home.observeModelChanges()
+        myList.observeModelChanges()
 
         isResetting = false
     }
     
-    private func navigate(selectedItem: SelectedItem) {
-        switch selectedItem {
-        case .readable(let readable):
-            readerSubscriptions = []
-            model.home.selectedReadableType = nil
-            model.home.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
-
-            self.show(readable)
-        case .webView(let url):
-            self.present(url)
-        }
-    }
-
     private func stopObservingModelChanges() {
         subscriptions = []
         readerSubscriptions = []
+
+        home.stopObservingModelChanges()
+        myList.stopObservingModelChanges()
     }
 
     private func show(_ section: MainViewModel.AppSection) {
         switch section {
         case .myList(let subsection):
             if subsection == .myList {
-                model.selectedSection = .myList(nil)
                 model.myList.selection = .myList
             }
-            splitController.setViewController(myList, for: .supplementary)
+            splitController.setViewController(myList.viewController, for: .supplementary)
         case .home:
-            splitController.setViewController(home, for: .supplementary)
+            splitController.setViewController(home.viewController, for: .supplementary)
         case .account:
             splitController.setViewController(account, for: .supplementary)
         }
 
         splitController.show(.supplementary)
     }
+}
 
+// MARK: - Display reader content
+extension RegularMainCoordinator {
     private func show(_ readable: SavedItemViewModel?) {
         guard let readable = readable else {
             return
         }
-
         readerSubscriptions = []
+        
         readable.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url)
         }.store(in: &readerSubscriptions)
 
         readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: readable)
+            self?.present(readerSettings: readable.readerSettings, isPresenting: isPresenting)
         }.store(in: &readerSubscriptions)
 
         readable.$presentedAlert.sink { [weak self] alert in
@@ -250,14 +156,14 @@ class RegularMainCoordinator: NSObject {
         guard let readable = readable else {
             return
         }
-
         readerSubscriptions = []
+
         readable.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url)
         }.store(in: &readerSubscriptions)
 
         readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
-            self?.presentReaderSettings(isPresenting, on: readable)
+            self?.present(readerSettings: readable.readerSettings, isPresenting: isPresenting)
         }.store(in: &readerSubscriptions)
 
         readable.$presentedAlert.sink { [weak self] alert in
@@ -269,9 +175,7 @@ class RegularMainCoordinator: NSObject {
         }.store(in: &readerSubscriptions)
 
         readable.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation) {
-                readable.selectedRecommendationToReport = nil
-            }
+            self?.report(recommendation)
         }.store(in: &readerSubscriptions)
 
         let readableVC = ReadableHostViewController(readableViewModel: readable)
@@ -279,56 +183,17 @@ class RegularMainCoordinator: NSObject {
         splitController.show(.secondary)
     }
 
-    private func show(_ slate: SlateDetailViewModel?) {
-        guard let slate = slate else {
-            slateDetailSubscriptions = []
+    private func present(readerSettings: ReaderSettings?, isPresenting: Bool?) {
+        guard !isResetting, let readerSettings = readerSettings, isPresenting == true else {
             return
         }
 
-        slate.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation) {
-                slate.selectedRecommendationToReport = nil
+        let readerSettingsVC = ReaderSettingsViewController(
+            settings: readerSettings,
+            onDismiss: { [weak self] in
+                self?.model.clearIsPresentingReaderSettings()
             }
-        }.store(in: &slateDetailSubscriptions)
-
-        slate.$selectedReadableViewModel.sink { [weak self] readable in
-            if readable != nil {
-                self?.model.myList.savedItemsList.selectedItem = nil
-                self?.model.myList.archivedItemsList.selectedItem = nil
-            }
-
-            self?.show(readable)
-        }.store(in: &slateDetailSubscriptions)
-
-        slate.$presentedWebReaderURL.sink { [weak self] alert in
-            self?.present(alert)
-        }.store(in: &subscriptions)
-
-        let slateDetailVC = SlateDetailViewController(model: slate)
-        home.navigationController?.pushViewController(slateDetailVC, animated: !isResetting)
-    }
-
-    private func present(_ alert: PocketAlert?) {
-        guard !isResetting, let alert = alert else { return }
-        splitController.present(UIAlertController(alert), animated: !isResetting)
-    }
-
-    private func present(_ url: URL?) {
-        guard !isResetting, let url = url else { return }
-
-        let safariVC = SFSafariViewController(url: url)
-        safariVC.delegate = self
-        splitController.present(safariVC, animated: !isResetting)
-    }
-
-    private func presentReaderSettings(_ isPresenting: Bool?, on readable: ReadableViewModel?) {
-        guard !isResetting, isPresenting == true, let readable = readable else {
-            return
-        }
-
-        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) {
-            readable.isPresentingReaderSettings = false
-        }
+        )
 
         readerSettingsVC.modalPresentationStyle = .popover
         readerSettingsVC.popoverPresentationController?.barButtonItem = readerRoot
@@ -339,16 +204,31 @@ class RegularMainCoordinator: NSObject {
 
         splitController.present(readerSettingsVC, animated: !isResetting)
     }
+}
 
-    private func share(_ activity: PocketActivity?) {
+// MARK - ModalContentPresenting
+extension RegularMainCoordinator: ModalContentPresenting {
+    func report(_ recommendation: Recommendation?) {
+        guard !isResetting, let recommendation = recommendation else {
+            return
+        }
+
+        let host = ReportRecommendationHostingController(
+            recommendation: recommendation,
+            tracker: tracker.childTracker(hosting: .reportDialog),
+            onDismiss: { [weak self] in self?.model.clearRecommendationToReport() }
+        )
+
+        host.modalPresentationStyle = .formSheet
+        splitController.present(host, animated: !isResetting)
+    }
+
+    func share(_ activity: PocketActivity?) {
         guard !isResetting, let activity = activity else { return }
 
         let activityVC = UIActivityViewController(activity: activity)
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
-            self?.model.myList.archivedItemsList.sharedActivity = nil
-            self?.model.myList.archivedItemsList.selectedItem?.clearSharedActivity()
-            self?.model.myList.savedItemsList.sharedActivity = nil
-            self?.model.myList.archivedItemsList.sharedActivity = nil
+            self?.model.clearSharedActivity()
         }
 
         if let view = activity.sender as? UIView {
@@ -366,22 +246,63 @@ class RegularMainCoordinator: NSObject {
         splitController.present(activityVC, animated: !isResetting)
     }
 
-    private func report(_ recommendation: Recommendation?, _ completion: @escaping () -> Void) {
-        guard !isResetting, let recommendation = recommendation else {
-            return
-        }
+    func present(_ alert: PocketAlert?) {
+        guard !isResetting, let alert = alert else { return }
+        splitController.present(UIAlertController(alert), animated: !isResetting)
+    }
 
-        let host = ReportRecommendationHostingController(
-            recommendation: recommendation,
-            tracker: tracker.childTracker(hosting: .reportDialog),
-            onDismiss: completion
-        )
+    func present(_ url: URL?) {
+        guard !isResetting, let url = url else { return }
 
-        host.modalPresentationStyle = .formSheet
-        splitController.present(host, animated: !isResetting)
+        let safariVC = SFSafariViewController(url: url)
+        safariVC.delegate = self
+        splitController.present(safariVC, animated: !isResetting)
     }
 }
 
+
+// MARK: - RegularHomeCoordinatorDelegate
+extension RegularMainCoordinator: RegularHomeCoordinatorDelegate {
+    func homeCoordinatorDidSelectMyList(_ coordinator: RegularHomeCoordinator) {
+        model.selectedSection = .myList(.myList)
+    }
+
+    func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectRecommendation recommendation: RecommendationViewModel?) {
+        if recommendation != nil {
+            model.myList.clearSelectedItem()
+        }
+
+        show(recommendation)
+    }
+
+    func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectReadableType readableType: ReadableType?) {
+        if readableType != nil {
+            model.myList.clearSelectedItem()
+        }
+
+        switch readableType {
+        case .recommendation(let recommendation):
+            show(recommendation)
+        case .savedItem(let savedItem):
+            show(savedItem)
+        case .none:
+            break
+        }
+    }
+}
+
+// MARK: - RegularMyListCoordinatorDelegate
+extension RegularMainCoordinator: RegularMyListCoordinatorDelegate {
+    func myListCoordinator(_ coordinator: RegularMyListCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?) {
+        if savedItem != nil {
+            model.home.clearSelectedItem()
+        }
+
+        show(savedItem)
+    }
+}
+
+// MARK: - UISplitViewControllerDelegate
 extension RegularMainCoordinator: UISplitViewControllerDelegate {
     func splitViewControllerDidExpand(_ svc: UISplitViewController) {
         if model.isCollapsed {
@@ -396,18 +317,9 @@ extension RegularMainCoordinator: UISplitViewControllerDelegate {
     }
 }
 
+// MARK: - SFSafariViewControllerDelegate
 extension RegularMainCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        model.myList.savedItemsList.selectedItem?.clearPresentedWebReaderURL()
-        model.myList.archivedItemsList.selectedItem?.clearPresentedWebReaderURL()
-        model.home.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
-    }
-}
-
-extension RegularMainCoordinator: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        if viewController === home {
-            model.home.selectedSlateDetailViewModel = nil
-        }
+        model.clearPresentedWebReaderURL()
     }
 }

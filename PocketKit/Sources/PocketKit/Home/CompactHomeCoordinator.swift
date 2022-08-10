@@ -47,24 +47,11 @@ class CompactHomeCoordinator: NSObject {
         isResetting = true
 
         model.$selectedReadableType.sink { [weak self] readableType in
-            switch readableType {
-            case .savedItem(let viewModel):
-                self?.show(viewModel)
-            case .recommendation(let viewModel):
-                self?.show(viewModel)
-            case .none:
-                self?.readerSubscriptions = []
-            }
-        }.store(in: &subscriptions)
-
-        model.$selectedSlateDetailViewModel.sink { [weak self] viewModel in
-            self?.show(viewModel)
+            self?.show(readableType)
         }.store(in: &subscriptions)
 
         model.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation) {
-                self?.model.selectedRecommendationToReport = nil
-            }
+            self?.report(recommendation)
         }.store(in: &subscriptions)
 
         model.$presentedWebReaderURL.sink { [weak self] url in
@@ -79,7 +66,7 @@ class CompactHomeCoordinator: NSObject {
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.$tappedSeeAll.dropFirst().sink { [weak self] seeAll in
+        model.$tappedSeeAll.sink { [weak self] seeAll in
             self?.show(seeAll)
         }.store(in: &subscriptions)
 
@@ -97,9 +84,21 @@ class CompactHomeCoordinator: NSObject {
         homeViewController.handleBackgroundRefresh(task: task)
     }
 
+    func show(_ readableType: ReadableType?) {
+        switch readableType {
+        case .savedItem(let viewModel):
+            show(viewModel)
+        case .recommendation(let viewModel):
+            show(viewModel)
+        case .none:
+            readerSubscriptions = []
+        }
+    }
+
     func show(_ viewModel: SlateDetailViewModel?) {
+        slateDetailSubscriptions = []
+
         guard let viewModel = viewModel else {
-            slateDetailSubscriptions = []
             return
         }
 
@@ -113,19 +112,17 @@ class CompactHomeCoordinator: NSObject {
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation) {
-                viewModel.selectedRecommendationToReport = nil
-            }
+            self?.report(recommendation)
         }.store(in: &slateDetailSubscriptions)
 
         viewModel.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url: url)
-        }.store(in: &subscriptions)
+        }.store(in: &slateDetailSubscriptions)
     }
 
     func show(_ recommendation: RecommendationViewModel?) {
+        readerSubscriptions = []
         guard let recommendation = recommendation else {
-            readerSubscriptions = []
             return
         }
 
@@ -151,13 +148,13 @@ class CompactHomeCoordinator: NSObject {
         }.store(in: &readerSubscriptions)
 
         recommendation.$selectedRecommendationToReport.sink { [weak self] selected in
-            self?.report(selected) {
-                recommendation.selectedRecommendationToReport = nil
-            }
+            self?.report(selected)
         }.store(in: &readerSubscriptions)
     }
 
     func show(_ savedItem: SavedItemViewModel) {
+        readerSubscriptions = []
+
         navigationController.pushViewController(
             ReadableHostViewController(readableViewModel: savedItem),
             animated: !isResetting
@@ -180,7 +177,7 @@ class CompactHomeCoordinator: NSObject {
         }.store(in: &readerSubscriptions)
     }
 
-    func report(_ recommendation: Recommendation?, _ completion: @escaping () -> Void) {
+    func report(_ recommendation: Recommendation?) {
         guard !isResetting, let recommendation = recommendation else {
             return
         }
@@ -188,7 +185,7 @@ class CompactHomeCoordinator: NSObject {
         let host = ReportRecommendationHostingController(
             recommendation: recommendation,
             tracker: tracker.childTracker(hosting: .reportDialog),
-            onDismiss: completion
+            onDismiss: { [weak self] in self?.model.clearRecommendationToReport() }
         )
 
         host.modalPresentationStyle = .formSheet
@@ -215,7 +212,7 @@ class CompactHomeCoordinator: NSObject {
         activityVC.popoverPresentationController?.sourceView = navigationController.splitViewController?.view
 
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
-            self?.model.selectedSlateDetailViewModel?.selectedReadableViewModel?.sharedActivity = nil
+            self?.model.clearSharedActivity()
         }
 
         viewController.present(activityVC, animated: !isResetting)
@@ -234,8 +231,8 @@ class CompactHomeCoordinator: NSObject {
             return
         }
 
-        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) {
-            readable.isPresentingReaderSettings = false
+        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
+            self?.model.clearIsPresentingReaderSettings()
         }
 
         // iPhone (Portrait): defaults to .medium(); iPhone (Landscape): defaults to .large(); iPad (All): Menu
@@ -259,19 +256,20 @@ class CompactHomeCoordinator: NSObject {
 extension CompactHomeCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === homeViewController {
-            model.selectedRecommendationToReport = nil
-            model.selectedSlateDetailViewModel = nil
+            slateDetailSubscriptions = []
+            model.tappedSeeAll = nil
+            model.clearSelectedItem()
         }
 
         if viewController is SlateDetailViewController {
-            model.selectedSlateDetailViewModel?.selectedReadableViewModel = nil
-            model.selectedSlateDetailViewModel?.selectedRecommendationToReport = nil
+            model.clearRecommendationToReport()
+            model.tappedSeeAll?.clearSelectedItem()
         }
     }
 }
 
 extension CompactHomeCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        model.selectedSlateDetailViewModel?.selectedReadableViewModel?.presentedWebReaderURL = nil
+        model.clearPresentedWebReaderURL()
     }
 }

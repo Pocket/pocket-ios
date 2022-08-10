@@ -116,6 +116,18 @@ class SavedItemViewModel: ReadableViewModel {
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
     }
+
+    func clearPresentedWebReaderURL() {
+        presentedWebReaderURL = nil
+    }
+
+    func clearIsPresentingReaderSettings() {
+        isPresentingReaderSettings = false
+    }
+
+    func clearSharedActivity() {
+        sharedActivity = nil
+    }
 }
 
 extension SavedItemViewModel {

@@ -8,11 +8,65 @@ import Analytics
 enum ReadableType {
     case recommendation(RecommendationViewModel)
     case savedItem(SavedItemViewModel)
+
+    func clearIsPresentingReaderSettings() {
+        switch self {
+        case .recommendation(let recommendationViewModel):
+            recommendationViewModel.clearIsPresentingReaderSettings()
+        case .savedItem(let savedItemViewModel):
+            savedItemViewModel.clearIsPresentingReaderSettings()
+        }
+    }
 }
 
 enum SeeAll {
     case myList
     case slate(SlateDetailViewModel)
+
+    func clearRecommendationToReport() {
+        switch self {
+        case .myList:
+            break
+        case .slate(let viewModel):
+            viewModel.selectedRecommendationToReport = nil
+        }
+    }
+
+    func clearPresentedWebReaderURL() {
+        switch self {
+        case .myList:
+            break
+        case .slate(let viewModel):
+            viewModel.presentedWebReaderURL = nil
+        }
+    }
+
+    func clearSharedActivity() {
+        switch self {
+        case .myList:
+            break
+        case .slate(let viewModel):
+            viewModel.selectedReadableViewModel?.sharedActivity = nil
+        }
+    }
+
+    func clearIsPresentingReaderSettings() {
+        switch self {
+        case .myList:
+            break
+        case .slate(let viewModel):
+            viewModel.clearIsPresentingReaderSettings()
+        }
+    }
+
+    func clearSelectedItem() {
+        switch self {
+        case .myList:
+            break
+        case .slate(let viewModel):
+            viewModel.clearSelectedItem()
+        }
+    }
 }
 
 class HomeViewModel {
@@ -35,9 +89,6 @@ class HomeViewModel {
 
     @Published
     var selectedRecommendationToReport: Recommendation? = nil
-
-    @Published
-    var selectedSlateDetailViewModel: SlateDetailViewModel? = nil
 
     @Published
     var presentedWebReaderURL: URL? = nil
@@ -89,6 +140,31 @@ class HomeViewModel {
             try await source.fetchSlateLineup(Self.lineupIdentifier)
             completion()
         }
+    }
+
+    func clearRecommendationToReport() {
+        selectedRecommendationToReport = nil
+        tappedSeeAll?.clearRecommendationToReport()
+    }
+
+    func clearPresentedWebReaderURL() {
+        presentedWebReaderURL = nil
+        tappedSeeAll?.clearPresentedWebReaderURL()
+    }
+
+    func clearSharedActivity() {
+        sharedActivity = nil
+        tappedSeeAll?.clearSharedActivity()
+    }
+
+    func clearIsPresentingReaderSettings() {
+        selectedReadableType?.clearIsPresentingReaderSettings()
+        tappedSeeAll?.clearIsPresentingReaderSettings()
+    }
+
+    func clearSelectedItem() {
+        selectedReadableType = nil
+        tappedSeeAll?.clearSelectedItem()
     }
 }
 

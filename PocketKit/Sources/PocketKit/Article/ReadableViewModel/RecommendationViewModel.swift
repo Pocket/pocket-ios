@@ -120,6 +120,14 @@ class RecommendationViewModel: ReadableViewModel {
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
     }
+
+    func clearPresentedWebReaderURL() {
+        presentedWebReaderURL = nil
+    }
+
+    func clearIsPresentingReaderSettings() {
+        isPresentingReaderSettings = false
+    }
 }
 
 extension RecommendationViewModel {

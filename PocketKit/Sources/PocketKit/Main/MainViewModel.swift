@@ -55,4 +55,23 @@ class MainViewModel: ObservableObject {
             return self
         }
     }
+
+    func clearRecommendationToReport() {
+        home.clearRecommendationToReport()
+    }
+
+    func clearSharedActivity() {
+        home.clearSharedActivity()
+        myList.clearSharedActivity()
+    }
+
+    func clearIsPresentingReaderSettings() {
+        home.clearIsPresentingReaderSettings()
+        myList.clearIsPresentingReaderSettings()
+    }
+
+    func clearPresentedWebReaderURL() {
+        home.clearPresentedWebReaderURL()
+        myList.clearPresentedWebReaderURL()
+    }
 }

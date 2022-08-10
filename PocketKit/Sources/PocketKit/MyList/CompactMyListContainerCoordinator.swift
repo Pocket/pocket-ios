@@ -146,10 +146,7 @@ class CompactMyListContainerCoordinator: NSObject {
         activityVC.popoverPresentationController?.sourceView = navigationController.splitViewController?.view
 
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
-            self?.model.archivedItemsList.sharedActivity = nil
-            self?.model.archivedItemsList.selectedItem?.clearSharedActivity()
-            self?.model.savedItemsList.sharedActivity = nil
-            self?.model.savedItemsList.selectedItem?.clearSharedActivity()
+            self?.model.clearSharedActivity()
         }
 
         viewController.present(activityVC, animated: !isResetting)
@@ -168,8 +165,8 @@ class CompactMyListContainerCoordinator: NSObject {
             return
         }
 
-        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) {
-            readable.isPresentingReaderSettings = false
+        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
+            self?.model.clearIsPresentingReaderSettings()
         }
 
         // iPhone (Portrait): defaults to .medium(); iPhone (Landscape): defaults to .large()
@@ -186,27 +183,17 @@ class CompactMyListContainerCoordinator: NSObject {
 }
 
 extension CompactMyListContainerCoordinator: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        guard viewController == containerViewController else {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        guard viewController === containerViewController else {
             return
         }
 
-        model.archivedItemsList.selectedItem = nil
-        model.savedItemsList.selectedItem = nil
+        model.clearSelectedItem()
     }
 }
 
 extension CompactMyListContainerCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        model.archivedItemsList.selectedItem?.clearPresentedWebReaderURL()
-        model.savedItemsList.selectedItem?.clearPresentedWebReaderURL()
-        
-        if case .webView = model.archivedItemsList.selectedItem {
-            model.archivedItemsList.selectedItem = nil
-        }
-        
-        if case .webView = model.savedItemsList.selectedItem {
-            model.savedItemsList.selectedItem = nil
-        }
+        model.clearPresentedWebReaderURL()
     }
 }
