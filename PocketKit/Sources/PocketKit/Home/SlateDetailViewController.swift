@@ -51,6 +51,7 @@ class SlateDetailViewController: UIViewController {
 
         view.accessibilityIdentifier = "slate-detail"
         navigationItem.title = model.slateName
+        hidesBottomBarWhenPushed = true
         
         let largeTitleTwoLineMode = "_largeTitleTwoLineMode"
         if class_getProperty(UINavigationItem.self, largeTitleTwoLineMode) != nil {

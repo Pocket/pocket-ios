@@ -8,7 +8,7 @@ enum SelectedItem {
     func clearPresentedWebReaderURL() {
         switch self {
         case .readable(let viewModel):
-            viewModel?.presentedWebReaderURL = nil
+            viewModel?.clearPresentedWebReaderURL()
         default:
             break
         }
@@ -17,8 +17,17 @@ enum SelectedItem {
     func clearSharedActivity() {
         switch self {
         case .readable(let viewModel):
-            viewModel?.sharedActivity = nil
+            viewModel?.clearSharedActivity()
         default:
+            break
+        }
+    }
+
+    func clearIsPresentingReaderSettings() {
+        switch self {
+        case .readable(let readable):
+            readable?.clearIsPresentingReaderSettings()
+        case .webView:
             break
         }
     }

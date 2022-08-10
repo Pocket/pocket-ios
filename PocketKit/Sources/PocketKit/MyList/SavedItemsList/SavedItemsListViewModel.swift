@@ -423,3 +423,23 @@ extension SavedItemsListViewModel {
         // no op, prefetching is only needed in archive
     }
 }
+
+// MARK: - Clearing presented content
+extension SavedItemsListViewModel {
+    func clearSharedActivity() {
+        sharedActivity = nil
+        selectedItem?.clearSharedActivity()
+    }
+
+    func clearPresentedWebReaderURL() {
+        selectedItem?.clearPresentedWebReaderURL()
+    }
+
+    func clearIsPresentingReaderSettings() {
+        selectedItem?.clearIsPresentingReaderSettings()
+    }
+
+    func clearSelectedItem() {
+        selectedItem = nil
+    }
+}

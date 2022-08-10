@@ -1,0 +1,147 @@
+import UIKit
+import Combine
+import SafariServices
+import Analytics
+import Sync
+
+
+protocol RegularMyListCoordinatorDelegate: ModalContentPresenting {
+    func myListCoordinator(_ coordinator: RegularMyListCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?)
+}
+
+
+class RegularMyListCoordinator: NSObject {
+    weak var delegate: RegularMyListCoordinatorDelegate?
+
+    var viewController: UIViewController {
+        navigationController
+    }
+
+    private let myListViewController: MyListContainerViewController
+    private let navigationController: UINavigationController
+    private let model: MyListContainerViewModel
+    private var subscriptions: [AnyCancellable] = []
+    private var isResetting = false
+
+    init(model: MyListContainerViewModel) {
+        self.model = model
+        self.myListViewController = MyListContainerViewController(
+            viewControllers: [
+                ItemsListViewController(model: model.savedItemsList),
+                ItemsListViewController(model: model.archivedItemsList)
+            ]
+        )
+        self.navigationController = UINavigationController(
+            rootViewController: myListViewController
+        )
+
+        super.init()
+
+        navigationController.navigationBar.prefersLargeTitles = true
+        navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
+        navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
+    }
+
+    func stopObservingModelChanges() {
+        subscriptions = []
+    }
+
+    func observeModelChanges() {
+        isResetting = true
+        navigationController.popToRootViewController(animated: !isResetting)
+
+        model.$selection.sink { [weak self] selection in
+            self?.handle(selection)
+        }.store(in: &subscriptions)
+
+        // My List/My List
+        model.savedItemsList.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &subscriptions)
+
+        model.savedItemsList.$sharedActivity.sink { [weak self] activity in
+            self?.share(activity)
+        }.store(in: &subscriptions)
+
+        model.savedItemsList.$selectedItem.sink { [weak self] selectedSavedItem in
+            self?.showMyListItem(selectedSavedItem)
+        }.store(in: &subscriptions)
+
+        // My List/Archive
+        model.archivedItemsList.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
+            self?.share(activity)
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
+            self?.showArchivedItem(selectedArchivedItem)
+        }.store(in: &subscriptions)
+
+        isResetting = false
+    }
+
+    private func handle(_ selection: MyListContainerViewModel.Selection?) {
+        switch selection {
+        case .myList:
+            myListViewController.selectedIndex = 0
+        case .archive:
+            myListViewController.selectedIndex = 1
+        default:
+            break
+        }
+    }
+}
+
+// MARK: - Showing reader content
+extension RegularMyListCoordinator {
+    private func showMyListItem(_ selectedSavedItem: SelectedItem?) {
+        guard let selectedSavedItem = selectedSavedItem else {
+            return
+        }
+
+        model.archivedItemsList.selectedItem = nil
+        show(selectedSavedItem)
+    }
+
+    private func showArchivedItem(_ selectedArchivedItem: SelectedItem?) {
+        guard let selectedArchivedItem = selectedArchivedItem else {
+            return
+        }
+
+        model.savedItemsList.selectedItem = nil
+        show(selectedArchivedItem)
+    }
+
+    private func show(_ selectedItem: SelectedItem) {
+        switch selectedItem {
+        case .readable(let savedItem):
+            delegate?.myListCoordinator(self, didSelectSavedItem: savedItem)
+        case .webView(let url):
+            present(url)
+        }
+    }
+}
+
+// MARK: - Presenting modals
+extension RegularMyListCoordinator {
+    private func present(_ url: URL?) {
+        delegate?.present(url)
+    }
+
+    private func present(_ alert: PocketAlert?) {
+        delegate?.present(alert)
+    }
+
+    private func share(_ activity: PocketActivity?) {
+        delegate?.share(activity)
+    }
+}
+
+extension RegularMyListCoordinator: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        model.clearPresentedWebReaderURL()
+    }
+}

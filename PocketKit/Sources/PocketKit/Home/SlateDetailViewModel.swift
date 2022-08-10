@@ -78,6 +78,14 @@ class SlateDetailViewModel {
             )
         }
     }
+
+    func clearIsPresentingReaderSettings() {
+        selectedReadableViewModel?.clearIsPresentingReaderSettings()
+    }
+
+    func clearSelectedItem() {
+        selectedReadableViewModel = nil
+    }
 }
 
 // MARK: - Cell Selection
