@@ -44,6 +44,7 @@ class RootViewModel {
             APIUserContext(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
         tracker.addPersistentContext(UserContext(guid: session.guid, userID: session.userIdentifier))
+        Crashlogger.setUserID(session.userIdentifier)
         source.refresh()
     }
 
