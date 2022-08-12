@@ -116,18 +116,6 @@ class SavedItemViewModel: ReadableViewModel {
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
     }
-
-    func clearPresentedWebReaderURL() {
-        presentedWebReaderURL = nil
-    }
-
-    func clearIsPresentingReaderSettings() {
-        isPresentingReaderSettings = false
-    }
-
-    func clearSharedActivity() {
-        sharedActivity = nil
-    }
 }
 
 extension SavedItemViewModel {
@@ -185,5 +173,19 @@ extension SavedItemViewModel {
 
     private func openExternalURL(_ url: URL) {
         presentedWebReaderURL = url
+    }
+}
+
+extension SavedItemViewModel {
+    func clearPresentedWebReaderURL() {
+        presentedWebReaderURL = nil
+    }
+
+    func clearIsPresentingReaderSettings() {
+        isPresentingReaderSettings = false
+    }
+
+    func clearSharedActivity() {
+        sharedActivity = nil
     }
 }

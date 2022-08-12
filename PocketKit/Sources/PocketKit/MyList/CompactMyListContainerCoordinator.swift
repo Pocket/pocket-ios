@@ -64,14 +64,12 @@ class CompactMyListContainerCoordinator: NSObject {
 
         model.savedItemsList.$selectedItem.sink { [weak self] selectedSavedItem in
             guard let selectedSavedItem = selectedSavedItem else { return }
-            self?.model.archivedItemsList.selectedItem = nil
             self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
 
         // Archive navigation
         model.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
             guard let selectedArchivedItem = selectedArchivedItem else { return }
-            self?.model.savedItemsList.selectedItem = nil
             self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
 

@@ -432,7 +432,14 @@ extension SavedItemsListViewModel {
     }
 
     func clearPresentedWebReaderURL() {
-        selectedItem?.clearPresentedWebReaderURL()
+        switch selectedItem {
+        case .readable(let readable):
+            readable?.clearPresentedWebReaderURL()
+        case .webView:
+            selectedItem = nil
+        case .none:
+            break
+        }
     }
 
     func clearIsPresentingReaderSettings() {

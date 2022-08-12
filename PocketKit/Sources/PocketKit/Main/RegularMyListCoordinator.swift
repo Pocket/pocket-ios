@@ -102,7 +102,7 @@ extension RegularMyListCoordinator {
             return
         }
 
-        model.archivedItemsList.selectedItem = nil
+        model.archivedItemsList.clearSelectedItem()
         show(selectedSavedItem)
     }
 
@@ -111,7 +111,7 @@ extension RegularMyListCoordinator {
             return
         }
 
-        model.savedItemsList.selectedItem = nil
+        model.savedItemsList.clearSelectedItem()
         show(selectedArchivedItem)
     }
 
