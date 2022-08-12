@@ -146,7 +146,7 @@ extension RegularHomeCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === homeViewController {
             slateDetailSubscriptions = []
-            model.tappedSeeAll = nil
+            model.clearTappedSeeAll()
         }
     }
 }

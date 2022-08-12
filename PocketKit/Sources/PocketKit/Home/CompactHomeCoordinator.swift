@@ -257,7 +257,7 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === homeViewController {
             slateDetailSubscriptions = []
-            model.tappedSeeAll = nil
+            model.clearTappedSeeAll()
             model.clearSelectedItem()
         }
 

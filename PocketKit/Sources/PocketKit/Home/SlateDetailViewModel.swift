@@ -78,14 +78,6 @@ class SlateDetailViewModel {
             )
         }
     }
-
-    func clearIsPresentingReaderSettings() {
-        selectedReadableViewModel?.clearIsPresentingReaderSettings()
-    }
-
-    func clearSelectedItem() {
-        selectedReadableViewModel = nil
-    }
 }
 
 // MARK: - Cell Selection
@@ -292,5 +284,29 @@ extension SlateDetailViewModel {
     enum Cell: Hashable {
         case loading
         case recommendation(NSManagedObjectID)
+    }
+}
+
+extension SlateDetailViewModel {
+    func clearIsPresentingReaderSettings() {
+        selectedReadableViewModel?.clearIsPresentingReaderSettings()
+    }
+
+    func clearSelectedItem() {
+        selectedReadableViewModel = nil
+    }
+
+    func clearSharedActivity() {
+        selectedReadableViewModel?.clearSharedActivity()
+    }
+
+    func clearPresentedWebReaderURL() {
+        presentedWebReaderURL = nil
+        selectedReadableViewModel?.clearPresentedWebReaderURL()
+    }
+
+    func clearRecommendationToReport() {
+        selectedRecommendationToReport = nil
+        selectedReadableViewModel?.clearSelectedRecommendationToReport()
     }
 }

@@ -28,7 +28,7 @@ enum SeeAll {
         case .myList:
             break
         case .slate(let viewModel):
-            viewModel.selectedRecommendationToReport = nil
+            viewModel.clearRecommendationToReport()
         }
     }
 
@@ -37,7 +37,7 @@ enum SeeAll {
         case .myList:
             break
         case .slate(let viewModel):
-            viewModel.presentedWebReaderURL = nil
+            viewModel.clearPresentedWebReaderURL()
         }
     }
 
@@ -46,7 +46,7 @@ enum SeeAll {
         case .myList:
             break
         case .slate(let viewModel):
-            viewModel.selectedReadableViewModel?.sharedActivity = nil
+            viewModel.clearSharedActivity()
         }
     }
 
@@ -140,31 +140,6 @@ class HomeViewModel {
             try await source.fetchSlateLineup(Self.lineupIdentifier)
             completion()
         }
-    }
-
-    func clearRecommendationToReport() {
-        selectedRecommendationToReport = nil
-        tappedSeeAll?.clearRecommendationToReport()
-    }
-
-    func clearPresentedWebReaderURL() {
-        presentedWebReaderURL = nil
-        tappedSeeAll?.clearPresentedWebReaderURL()
-    }
-
-    func clearSharedActivity() {
-        sharedActivity = nil
-        tappedSeeAll?.clearSharedActivity()
-    }
-
-    func clearIsPresentingReaderSettings() {
-        selectedReadableType?.clearIsPresentingReaderSettings()
-        tappedSeeAll?.clearIsPresentingReaderSettings()
-    }
-
-    func clearSelectedItem() {
-        selectedReadableType = nil
-        tappedSeeAll?.clearSelectedItem()
     }
 }
 
@@ -612,5 +587,36 @@ extension HomeViewModel {
         case recentSaves(NSManagedObjectID)
         case recommendationHero(NSManagedObjectID)
         case recommendationCarousel(NSManagedObjectID)
+    }
+}
+
+extension HomeViewModel {
+    func clearRecommendationToReport() {
+        tappedSeeAll?.clearRecommendationToReport()
+        selectedRecommendationToReport = nil
+    }
+
+    func clearPresentedWebReaderURL() {
+        tappedSeeAll?.clearPresentedWebReaderURL()
+        presentedWebReaderURL = nil
+    }
+
+    func clearSharedActivity() {
+        tappedSeeAll?.clearSharedActivity()
+        sharedActivity = nil
+    }
+
+    func clearIsPresentingReaderSettings() {
+        selectedReadableType?.clearIsPresentingReaderSettings()
+        tappedSeeAll?.clearIsPresentingReaderSettings()
+    }
+
+    func clearSelectedItem() {
+        tappedSeeAll?.clearSelectedItem()
+        selectedReadableType = nil
+    }
+
+    func clearTappedSeeAll() {
+        tappedSeeAll = nil
     }
 }
