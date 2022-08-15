@@ -50,18 +50,18 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
-    func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsEmptySnapshot() {
+    func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() {
         let viewModel = subject()
 
-        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
-        viewModel.$snapshot.dropFirst().first().sink { snapshot in
-            defer { receivedEmptySnapshot.fulfill() }
-            XCTAssertEqual(snapshot.sectionIdentifiers, [])
+        let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
+        viewModel.$snapshot.sink { snapshot in
+            defer { receivedLoadingSnapshot.fulfill() }
+            XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
         }.store(in: &subscriptions)
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedLoadingSnapshot], timeout: 1)
     }
 
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsAvailable_sendsSnapshotWithSlates() throws {
