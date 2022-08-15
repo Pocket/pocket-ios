@@ -49,7 +49,9 @@ class SlateDetailViewModel {
     }
 
     func fetch() {
-        snapshot = buildSnapshot()
+        let snapshot = buildSnapshot()
+        guard snapshot.numberOfItems != 0 else { return }
+        self.snapshot = snapshot
     }
 
     func refresh(_ completion: @escaping () -> Void) {

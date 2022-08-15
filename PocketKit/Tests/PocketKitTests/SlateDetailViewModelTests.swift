@@ -51,6 +51,25 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [fetchExpectation], timeout: 1)
         XCTAssertEqual(source.fetchSlateCall(at: 0)?.identifier, "abcde")
     }
+    
+    
+    func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() throws {
+        let slate: Slate = try space.createSlate(
+            remoteID: "slate-1",
+            recommendations: []
+        )
+        let viewModel = subject(slate: slate)
+    
+        let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
+        viewModel.$snapshot.sink { snapshot in
+            defer { receivedLoadingSnapshot.fulfill() }
+            XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedLoadingSnapshot], timeout: 1)
+    }
 
     func test_fetch_sendsSnapshotWithItemForEachRecommendation() throws {
         let recommendations: [Recommendation] = [

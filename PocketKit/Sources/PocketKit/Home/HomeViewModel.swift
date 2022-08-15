@@ -109,10 +109,7 @@ class HomeViewModel {
         self.tracker = tracker
 
         self.snapshot = {
-            var snapshot = Snapshot()
-            snapshot.appendSections([.loading])
-            snapshot.appendItems([.loading], toSection: .loading)
-            return snapshot
+            return Self.loadingSnapshot()
         }()
 
         NotificationCenter.default.publisher(
@@ -129,7 +126,9 @@ class HomeViewModel {
 
     func fetch() {
         do {
-            snapshot = try rebuildSnapshot()
+            let snapshot = try rebuildSnapshot()
+            guard snapshot.numberOfSections != 0 else { return }
+            self.snapshot = snapshot
         } catch {
             print(error)
         }
@@ -335,6 +334,16 @@ extension HomeViewModel {
         case .loading, .slateCarousel:
             return nil
         }
+    }
+}
+
+// MARK: - Loading Section
+extension HomeViewModel {
+    static func loadingSnapshot() -> Snapshot {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.loading])
+        snapshot.appendItems([.loading], toSection: .loading)
+        return snapshot
     }
 }
 
