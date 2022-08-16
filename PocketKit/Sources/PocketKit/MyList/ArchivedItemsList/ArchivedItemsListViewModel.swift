@@ -199,6 +199,7 @@ extension ArchivedItemsListViewModel {
         }
 
         return [
+            .addTags { [weak self] _ in self?.showAddTagsView(item: item) },
             .moveToMyList { [weak self] _ in self?.moveToMyList(item: item) },
             .delete { [weak self] _ in self?.confirmDelete(item: item) }
         ]
@@ -270,6 +271,13 @@ extension ArchivedItemsListViewModel {
     private func delete(item: SavedItem) {
         track(item: item, identifier: .itemDelete)
         source.delete(item: item)
+    }
+}
+
+// MARK: - Add Tags to an item
+extension ArchivedItemsListViewModel {
+    private func showAddTagsView(item: SavedItem) {
+        // TODO: Show Add Tags View
     }
 }
 

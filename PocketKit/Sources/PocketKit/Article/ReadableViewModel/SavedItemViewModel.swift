@@ -137,6 +137,7 @@ extension SavedItemViewModel {
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
+            .addTags { [weak self] _ in self?.showAddTagsView() },
             archiveAction,
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
@@ -157,6 +158,10 @@ extension SavedItemViewModel {
         source.archive(item: item)
         track(identifier: .itemArchive)
         _events.send(.archive)
+    }
+    
+    private func showAddTagsView() {
+        // TODO: Show Add Tags View
     }
 
     private func saveExternalURL(_ url: URL) {
