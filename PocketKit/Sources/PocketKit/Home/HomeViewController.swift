@@ -30,6 +30,9 @@ class HomeViewController: UIViewController {
             return self.sectionProvider.heroSection(for: slateID, in: self.model, width: env.container.effectiveContentSize.width)
         case .slateCarousel(let slateID):
             return self.sectionProvider.carouselSection(for: slateID, in: self.model, width: env.container.effectiveContentSize.width)
+        case .offline:
+            let hasRecentSaves = self.dataSource.index(for: .recentSaves) != nil
+            return self.sectionProvider.offlineSection(environment: env, withRecentSaves: hasRecentSaves)
         }
     }
 
@@ -73,6 +76,7 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: RecommendationCell.self)
         collectionView.register(cellClass: RecentSavesItemCell.self)
         collectionView.register(cellClass: RecommendationCarouselCell.self)
+        collectionView.register(cellClass: ItemsListOfflineCell.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
 
@@ -178,6 +182,9 @@ extension HomeViewController {
             }
 
             cell.configure(model: viewModel)
+            return cell
+        case .offline:
+            let cell: ItemsListOfflineCell = collectionView.dequeueCell(for: indexPath)
             return cell
         }
     }

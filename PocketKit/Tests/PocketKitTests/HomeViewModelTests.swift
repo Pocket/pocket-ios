@@ -10,6 +10,7 @@ class HomeViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
     var space: Space!
+    var networkPathMonitor: MockNetworkPathMonitor!
 
     var subscriptions: Set<AnyCancellable> = []
 
@@ -18,6 +19,7 @@ class HomeViewModelTests: XCTestCase {
         space = .testSpace()
         source = MockSource()
         source.mainContext = space.context
+        networkPathMonitor = MockNetworkPathMonitor()
 
         tracker = MockTracker()
     }
@@ -29,11 +31,13 @@ class HomeViewModelTests: XCTestCase {
 
     func subject(
         source: Source? = nil,
-        tracker: Tracker? = nil
+        tracker: Tracker? = nil,
+        networkPathMonitor: NetworkPathMonitor? = nil
     ) -> HomeViewModel {
         HomeViewModel(
             source: source ?? self.source,
-            tracker: tracker ?? self.tracker
+            tracker: tracker ?? self.tracker,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
         )
     }
 
@@ -451,6 +455,68 @@ class HomeViewModelTests: XCTestCase {
 
         savedItem.isFavorite = true
         try space.save()
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+     func test_snapshot_whenNetworkIsInitiallyUnvailable_hasCorrectSnapshot() {
+         networkPathMonitor.update(status: .unsatisfied)
+         source.stubFetchSlateLineup { _ in }
+
+         let viewModel = subject()
+         XCTAssertNotNil(viewModel.snapshot.indexOfSection(.offline))
+         XCTAssertEqual(viewModel.snapshot.itemIdentifiers(inSection: .offline), [.offline])
+     }
+
+     func test_snapshot_whenNetworkIsInitiallyAvailable_hasCorrectSnapshot() {
+         source.stubFetchSlateLineup { _ in }
+
+         let viewModel = subject()
+         XCTAssertNil(viewModel.snapshot.indexOfSection(.offline))
+     }
+
+     func test_snapshot_withRecentSaves_andNetworkIsUnavailable_hasCorrectSnapshot() throws {
+         let items: [SavedItem] = [
+            space.buildSavedItem(createdAt: Date())
+         ]
+         try space.save()
+
+         networkPathMonitor.update(status: .unsatisfied)
+
+         let snapshotExpectation = expectation(description: "expect a snapshot")
+         let viewModel = subject()
+         viewModel.$snapshot.dropFirst().sink { snapshot in
+             XCTAssertEqual(
+                 snapshot.itemIdentifiers(inSection: .recentSaves),
+                 [
+                     .recentSaves(items[0].objectID)
+                 ]
+             )
+
+            XCTAssertNotNil(snapshot.indexOfSection(.offline))
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
+
+            snapshotExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
+    func test_refresh_whenNetworkIsUnavailable_updatesSnapshot() {
+        source.stubFetchSlateLineup { _ in }
+
+        let viewModel = subject()
+
+        let snapshotExpectation = expectation(description: "expected a snapshot update")
+        viewModel.$snapshot.dropFirst().sink { snapshot in
+            XCTAssertNotNil(snapshot.indexOfSection(.offline))
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
+            snapshotExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        networkPathMonitor.update(status: .unsatisfied)
+        viewModel.refresh { }
 
         wait(for: [snapshotExpectation], timeout: 1)
     }

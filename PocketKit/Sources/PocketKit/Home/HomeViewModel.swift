@@ -98,17 +98,27 @@ class HomeViewModel {
 
     private let source: Source
     private let tracker: Tracker
+    private let networkPathMonitor: NetworkPathMonitor
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
 
     init(
         source: Source,
-        tracker: Tracker
+        tracker: Tracker,
+        networkPathMonitor: NetworkPathMonitor
     ) {
         self.source = source
         self.tracker = tracker
+        self.networkPathMonitor = networkPathMonitor
 
         self.snapshot = {
+            guard networkPathMonitor.currentNetworkPath.status == .satisfied else {
+                var snapshot = Snapshot()
+                snapshot.appendSections([.offline])
+                snapshot.appendItems([.offline], toSection: .offline)
+                return snapshot
+            }
+
             return Self.loadingSnapshot()
         }()
 
@@ -122,6 +132,17 @@ class HomeViewModel {
                 print(error)
             }
         }.store(in: &subscriptions)
+
+        networkPathMonitor.start(queue: .global())
+        networkPathMonitor.updateHandler = { [weak self] path in
+            if path.status == .satisfied {
+                self?.refresh { }
+            }
+        }
+    }
+
+    var isOffline: Bool {
+        networkPathMonitor.currentNetworkPath.status != .satisfied
     }
 
     func fetch() {
@@ -135,6 +156,17 @@ class HomeViewModel {
     }
 
     func refresh(_ completion: @escaping () -> Void) {
+        guard !isOffline else {
+            do {
+                snapshot = try rebuildSnapshot()
+            } catch {
+                print(error)
+            }
+
+            completion()
+            return
+        }
+
         Task {
             try await source.fetchSlateLineup(Self.lineupIdentifier)
             completion()
@@ -197,6 +229,12 @@ extension HomeViewModel {
             )
         }
 
+        guard !isOffline else {
+            snapshot.appendSections([.offline])
+            snapshot.appendItems([.offline], toSection: .offline)
+            return snapshot
+        }
+
         if let slateLineup = slateLineup,
            let slates = slateLineup.slates?.compactMap({ $0 as? Slate }) {
 
@@ -232,7 +270,7 @@ extension HomeViewModel {
 extension HomeViewModel {
     func select(cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading:
+        case .loading, .offline:
             return
         case .recentSaves(let objectID):
             guard let savedItem = source.mainContext.object(with: objectID) as? SavedItem else {
@@ -331,7 +369,7 @@ extension HomeViewModel {
             return .init(name: slate.name ?? "", buttonTitle: "See All") { [weak self] in
                 self?.select(slate: slate)
             }
-        case .loading, .slateCarousel:
+        case .loading, .slateCarousel, .offline:
             return nil
         }
     }
@@ -568,7 +606,7 @@ extension HomeViewModel {
 extension HomeViewModel {
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading, .recentSaves:
+        case .loading, .recentSaves, .offline:
             return
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
@@ -589,6 +627,7 @@ extension HomeViewModel {
         case recentSaves
         case slateHero(NSManagedObjectID)
         case slateCarousel(NSManagedObjectID)
+        case offline
     }
 
     enum Cell: Hashable {
@@ -596,6 +635,7 @@ extension HomeViewModel {
         case recentSaves(NSManagedObjectID)
         case recommendationHero(NSManagedObjectID)
         case recommendationCarousel(NSManagedObjectID)
+        case offline
     }
 }
 
