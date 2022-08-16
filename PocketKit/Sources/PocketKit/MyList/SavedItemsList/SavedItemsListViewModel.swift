@@ -168,6 +168,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         return [
+            .addTags { [weak self] _ in
+                self?.showAddTagsView(item: item)
+            },
             .archive { [weak self] _ in
                 self?._archive(item: item)
             },
@@ -392,6 +395,13 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {
         itemsLoaded()
+    }
+}
+
+// MARK: - Add Tags to an item
+extension SavedItemsListViewModel {
+    private func showAddTagsView(item: SavedItem) {
+        // TODO: Show Add Tags View
     }
 }
 
