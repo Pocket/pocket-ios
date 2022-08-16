@@ -124,3 +124,27 @@ class HomeViewControllerSectionProvider {
         return section
     }
 }
+
+
+extension HomeViewControllerSectionProvider {
+    func offlineSection(environment: NSCollectionLayoutEnvironment, withRecentSaves: Bool) -> NSCollectionLayoutSection {
+        var config = UICollectionLayoutListConfiguration(appearance: .plain)
+        config.backgroundColor = UIColor(.ui.white1)
+        config.showsSeparators = false
+        let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
+
+        let layoutHeight = environment.container.contentSize.height
+        let availableWidth = environment.container.contentSize.width
+        - ItemsListOfflineCell.Constants.padding
+        - ItemsListOfflineCell.Constants.padding
+        let topInset: CGFloat = withRecentSaves ? 16 : (layoutHeight - ItemsListOfflineCell.height(fitting: availableWidth)) / 2 - 128
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: topInset,
+            leading: 0,
+            bottom: 0,
+            trailing: 0
+        )
+
+        return section
+    }
+}
