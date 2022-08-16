@@ -56,6 +56,16 @@ extension ItemAction {
             handler: handler
         )
     }
+    
+    static func addTags(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+        return ItemAction(
+            title: "Add Tags",
+            identifier: .addTagsItem,
+            accessibilityIdentifier: "item-action-add-tags",
+            image: UIImage(asset: .tag),
+            handler: handler
+        )
+    }
 
     static func moveToMyList(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
@@ -155,6 +165,7 @@ extension UIAction.Identifier {
     static let saveItem = UIAction.Identifier(rawValue: "save-item")
     static let archiveItem = UIAction.Identifier(rawValue: "archive-item")
     static let deleteItem = UIAction.Identifier(rawValue: "delete-item")
+    static let addTagsItem = UIAction.Identifier(rawValue: "add-tags-item")
     static let moveToMyListItem = UIAction.Identifier(rawValue: "move-to-my-list-item")
     static let favoriteItem = UIAction.Identifier(rawValue: "favorite-item")
     static let shareItem = UIAction.Identifier(rawValue: "share-item")
