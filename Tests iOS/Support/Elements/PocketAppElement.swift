@@ -75,6 +75,10 @@ struct PocketAppElement {
     var archiveButton: XCUIElement {
         app.buttons["item-action-archive"]
     }
+    
+    var addTagsButton: XCUIElement {
+        app.buttons["item-action-add-tags"]
+    }
 
     var reAddButton: XCUIElement {
         app.buttons["item-action-move-to-my-list"]
