@@ -12,8 +12,10 @@ class CompactMainCoordinator: NSObject {
         tabBarController
     }
 
-    var tabBar: UITabBar {
-        tabBarController.tabBar
+    var tabBar: UITabBar? {
+        let tabBar = tabBarController.tabBar
+        guard !tabBar.isHidden else { return nil }
+        return tabBar
     }
     
     private let tabBarController: UITabBarController
