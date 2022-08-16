@@ -32,5 +32,5 @@ private extension Style {
     static let detail: Self = .header.sansSerif.p4.with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }.with(maxScaleSize: 16)
-    static let button: Self = .header.sansSerif.h8.with(color: .ui.white1)
+    static let button: Self = .header.sansSerif.h8.with(color: .ui.white)
 }

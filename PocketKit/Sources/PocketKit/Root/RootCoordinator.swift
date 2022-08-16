@@ -59,7 +59,7 @@ class RootCoordinator {
         window?.addSubview(bannerView)
         configureConstraints(bannerView)
         
-        let tabBarHeight: CGFloat = main?.tabBar.frame.height ?? 0
+        let tabBarHeight: CGFloat = main?.tabBar?.frame.height ?? 0
         let translation = window?.traitCollection.userInterfaceIdiom == .phone ? tabBarHeight : 0
       
         UIView.animate(withDuration: 0.5, delay: 0, options: [.allowUserInteraction], animations: {
@@ -84,9 +84,9 @@ class RootCoordinator {
                 bannerView.centerXAnchor.constraint(equalTo: window.centerXAnchor),
             ])
         } else {
-            let tabBar = main?.tabBar ?? window
+            let bottomAnchor = main?.tabBar?.bottomAnchor ?? window.safeAreaLayoutGuide.bottomAnchor
             NSLayoutConstraint.activate([
-                bannerView.bottomAnchor.constraint(equalTo: tabBar.bottomAnchor, constant: 0),
+                bannerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0),
                 bannerView.leadingAnchor.constraint(equalTo: window.leadingAnchor, constant: 12),
                 bannerView.trailingAnchor.constraint(equalTo: window.trailingAnchor, constant: -12),
             ])

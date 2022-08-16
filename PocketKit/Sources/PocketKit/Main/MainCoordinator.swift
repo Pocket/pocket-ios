@@ -10,7 +10,7 @@ class MainCoordinator {
         regular.viewController
     }
     
-    var tabBar: UITabBar {
+    var tabBar: UITabBar? {
         compact.tabBar
     }
 
