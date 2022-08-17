@@ -14,11 +14,6 @@ class ItemsListOfflineCell: UICollectionViewCell {
         static let imageSpacing: CGFloat = 48
         static let stackSpacing: CGFloat = 16
         static let padding: CGFloat = 18
-        
-        static let buttonColor = UIColor(.ui.white1)
-        static let buttonHighlightedColor = UIColor(.ui.grey1).withAlphaComponent(0.5)
-        static let buttonContentInsets = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
-        static let buttonTitle = NSAttributedString(string: "Try Again", style: .header.sansSerif.p2)
     }
     
     private let imageView: UIImageView = {
@@ -39,26 +34,8 @@ class ItemsListOfflineCell: UICollectionViewCell {
         return label
     }()
     
-    private var actionButton: UIButton = {
-        var config = UIButton.Configuration.borderedTinted()
-        config.attributedTitle = AttributedString(Constants.buttonTitle)
-        config.cornerStyle = .capsule
-        config.background.strokeColor = UIColor(.ui.grey5)
-        config.contentInsets = Constants.buttonContentInsets
-        
-        let button = UIButton(configuration: config)
-        button.configurationUpdateHandler = { button in
-            var config = button.configuration
-            config?.baseBackgroundColor = button.isHighlighted ? Constants.buttonHighlightedColor : Constants.buttonColor
-            button.configuration = config
-        }
-        return button
-    }()
-    
-    var buttonAction: (() -> ())? = nil
-    
     private lazy var textStackView: UIStackView = {
-        let stackView = UIStackView(arrangedSubviews: [textLabel, detailTextLabel, actionButton])
+        let stackView = UIStackView(arrangedSubviews: [textLabel, detailTextLabel])
         stackView.axis = .vertical
         stackView.spacing = Constants.stackSpacing
         stackView.alignment = .center
@@ -75,9 +52,6 @@ class ItemsListOfflineCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
-        let action = UIAction(title: "") { [weak self] _ in self?.buttonAction?() }
-        actionButton.addAction(action, for: .primaryActionTriggered)
         
         contentView.addSubview(stackView)
         
@@ -101,8 +75,5 @@ class ItemsListOfflineCell: UICollectionViewCell {
         + Constants.stackSpacing
         + Constants.detailText.sizeFitting(availableWidth: availableWidth).height
         + Constants.stackSpacing
-        + Constants.buttonContentInsets.top
-        + Constants.buttonTitle.sizeFitting(availableWidth: availableWidth).height
-        + Constants.buttonContentInsets.bottom
     }
 }

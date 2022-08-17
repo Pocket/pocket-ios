@@ -36,6 +36,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     private let tracker: Tracker
 
     private let networkMonitor: NetworkPathMonitor
+    private var lastPathStatus: NWPath.Status? = nil
     private var isNetworkAvailable: Bool {
         networkMonitor.currentNetworkPath.status == .satisfied
     }
@@ -47,6 +48,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     private let availableFilters: [ItemsListFilter] = ItemsListFilter.allCases
 
     private var isFetching: Bool = false
+    private var isRefreshing: Bool = false
     private var subscriptions: [AnyCancellable] = []
 
     init(
@@ -92,22 +94,31 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 // MARK: - Fetching Items
 extension ArchivedItemsListViewModel {
     func fetch() {
-        guard networkMonitor.currentNetworkPath.status == .satisfied else {
+        guard isNetworkAvailable else {
             _snapshot = offlineSnapshot()
             return
         }
 
-        archiveService.refresh { }
+        refresh { }
+        observeNetworkChanges()
     }
 
     func refresh(_ completion: (() -> ())?) {
-        guard networkMonitor.currentNetworkPath.status == .satisfied else {
+        guard isNetworkAvailable else {
             _snapshot = offlineSnapshot()
             completion?()
             return
         }
 
-        archiveService.refresh(completion: completion)
+        guard !isRefreshing else {
+            return
+        }
+
+        isRefreshing = true
+        archiveService.refresh { [weak self] in
+            completion?()
+            self?.isRefreshing = false
+        }
     }
 
     func handleResults(results: [SavedItemResult]) {
@@ -117,6 +128,22 @@ extension ArchivedItemsListViewModel {
     func handleUpdatedItem(_ updatedItem: SavedItem) {
         if _snapshot.indexOfItem(.item(updatedItem.objectID)) != nil {
             _snapshot.reloadItems([.item(updatedItem.objectID)])
+        }
+    }
+
+    private func observeNetworkChanges() {
+        networkMonitor.updateHandler = { [weak self] path in
+            let currentPathStatus = path.status
+
+            guard let self = self,
+                  self.lastPathStatus != path.status,
+                  currentPathStatus == .satisfied else {
+                self?.lastPathStatus = path.status
+                return
+            }
+
+            self.refresh { }
+            self.lastPathStatus = currentPathStatus
         }
     }
 }
