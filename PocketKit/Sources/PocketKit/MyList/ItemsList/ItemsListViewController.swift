@@ -143,9 +143,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
         
         let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
-            cell.buttonAction = {
-                model.fetch()
-            }
+            
         }
 
         let placeholderCellRegistration: UICollectionView.CellRegistration<ItemPlaceholderCell, Int> = .init { cell, indexPath, itemIndex in
