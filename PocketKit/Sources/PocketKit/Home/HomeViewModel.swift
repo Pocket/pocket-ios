@@ -110,15 +110,9 @@ class HomeViewModel {
         self.source = source
         self.tracker = tracker
         self.networkPathMonitor = networkPathMonitor
+        networkPathMonitor.start(queue: .global())
 
         self.snapshot = {
-            guard networkPathMonitor.currentNetworkPath.status == .satisfied else {
-                var snapshot = Snapshot()
-                snapshot.appendSections([.offline])
-                snapshot.appendItems([.offline], toSection: .offline)
-                return snapshot
-            }
-
             return Self.loadingSnapshot()
         }()
 
@@ -133,7 +127,6 @@ class HomeViewModel {
             }
         }.store(in: &subscriptions)
 
-        networkPathMonitor.start(queue: .global())
         networkPathMonitor.updateHandler = { [weak self] path in
             if path.status == .satisfied {
                 self?.refresh { }
