@@ -22,14 +22,14 @@ class ItemsListOfflineCell: UICollectionViewCell {
     
     private let textLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = 1
+        label.numberOfLines = 0
         label.attributedText = Constants.text
         return label
     }()
     
     private let detailTextLabel: UILabel = {
         let label = UILabel()
-        label.numberOfLines = 2
+        label.numberOfLines = 0
         label.attributedText = Constants.detailText
         return label
     }()

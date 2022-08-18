@@ -459,15 +459,6 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
-     func test_snapshot_whenNetworkIsInitiallyUnvailable_hasCorrectSnapshot() {
-         networkPathMonitor.update(status: .unsatisfied)
-         source.stubFetchSlateLineup { _ in }
-
-         let viewModel = subject()
-         XCTAssertNotNil(viewModel.snapshot.indexOfSection(.offline))
-         XCTAssertEqual(viewModel.snapshot.itemIdentifiers(inSection: .offline), [.offline])
-     }
-
      func test_snapshot_whenNetworkIsInitiallyAvailable_hasCorrectSnapshot() {
          source.stubFetchSlateLineup { _ in }
 

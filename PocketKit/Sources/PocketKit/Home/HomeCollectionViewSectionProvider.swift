@@ -133,17 +133,18 @@ extension HomeViewControllerSectionProvider {
         config.showsSeparators = false
         let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: environment)
 
-        let layoutHeight = environment.container.contentSize.height
         let availableWidth = environment.container.contentSize.width
         - ItemsListOfflineCell.Constants.padding
         - ItemsListOfflineCell.Constants.padding
-        let topInset: CGFloat = withRecentSaves ? 16 : (layoutHeight - ItemsListOfflineCell.height(fitting: availableWidth)) / 2 - 128
-        section.contentInsets = NSDirectionalEdgeInsets(
-            top: topInset,
-            leading: 0,
-            bottom: 0,
-            trailing: 0
-        )
+
+        if !withRecentSaves {
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top:  ItemsListOfflineCell.height(fitting: availableWidth) / 4, // Insets the top so "No Internet Connection" is centered
+                leading: 0,
+                bottom: 0,
+                trailing: 0
+            )
+        }
 
         return section
     }
