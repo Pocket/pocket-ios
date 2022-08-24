@@ -110,7 +110,7 @@ extension ItemAction {
         )
     }
 
-    static func report(_ handler: @escaping (Any?) ->Void) -> ItemAction {
+    static func report(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Report",
             identifier: .report,

@@ -15,6 +15,8 @@ struct ItemRowElement: PocketUIElement {
         element
             .staticTexts
             .matching(NSPredicate(format: "label CONTAINS %@", string))
+            // Ignoring the next empty count because of https://github.com/realm/SwiftLint/issues/2012
+            // swiftlint:disable:next empty_count
             .count > 0
     }
 

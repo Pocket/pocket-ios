@@ -4,6 +4,7 @@ import SafariServices
 import Analytics
 import Sync
 
+// swiftlint:disable:next class_delegate_protocol
 protocol RegularHomeCoordinatorDelegate: ModalContentPresenting {
     func homeCoordinatorDidSelectMyList(_ coordinator: RegularHomeCoordinator)
     func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectReadableType readableType: ReadableType?)

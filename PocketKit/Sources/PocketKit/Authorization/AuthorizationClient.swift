@@ -92,7 +92,7 @@ public class AuthorizationClient {
 
 extension AuthorizationClient {
     enum Error: LocalizedError, Equatable {
-        static func ==(lhs: AuthorizationClient.Error, rhs: AuthorizationClient.Error) -> Bool {
+        static func == (lhs: AuthorizationClient.Error, rhs: AuthorizationClient.Error) -> Bool {
             switch (lhs, rhs) {
             case (.invalidRedirect, .invalidRedirect):
                 return true

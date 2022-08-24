@@ -127,7 +127,7 @@ class RecommendationCell: UICollectionViewCell {
 
         saveButton.mode = model.saveButtonMode
 
-        if model.attributedTimeToRead.string == "" {
+        if model.attributedTimeToRead.string.isEmpty {
             timeToReadLabel.isHidden = true
         } else {
             timeToReadLabel.isHidden = false

@@ -25,7 +25,9 @@ class CopyLinkWithSelectionActivity: UIActivity {
     }
 
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
-        return activityItems.first { $0 is URL } != nil && activityItems.first { $0 is String} != nil
+        let firstURL = activityItems.first(where: { $0 is URL })
+        let firstString  = activityItems.first(where: {  $0 is String })
+        return firstURL != nil && firstString != nil
     }
 
     override func prepare(withActivityItems activityItems: [Any]) {

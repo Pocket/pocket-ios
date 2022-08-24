@@ -164,7 +164,7 @@ extension HomeCarouselItemCell {
         domainLabel.attributedText = model.attributedDomain
         timeToReadLabel.attributedText = model.attributedTimeToRead
 
-        if model.attributedTimeToRead.string == "" {
+        if model.attributedTimeToRead.string.isEmpty {
             timeToReadLabel.isHidden = true
         } else {
             timeToReadLabel.isHidden = false
