@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -324,6 +324,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 166A81DA2637406C0015AA1D /* Build configuration list for PBXNativeTarget "Pocket (iOS)" */;
 			buildPhases = (
+				655C274F28B68AE40040AEAB /* Swiftlint */,
 				166A81AC2637406C0015AA1D /* Sources */,
 				166A81AD2637406C0015AA1D /* Frameworks */,
 				166A81AE2637406C0015AA1D /* Resources */,
@@ -455,6 +456,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		655C274F28B68AE40040AEAB /* Swiftlint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Swiftlint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		166A81AC2637406C0015AA1D /* Sources */ = {
