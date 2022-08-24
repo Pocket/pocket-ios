@@ -28,7 +28,7 @@ public class PersistentContainer: NSPersistentContainer {
             ]
         case .shared:
             let sharedContainerURL = FileManager.default
-                .containerURL(forSecurityApplicationGroupIdentifier: "group.com.mozilla.pocket")!
+                .containerURL(forSecurityApplicationGroupIdentifier: "group.com.ideashower.ReadItLaterProAlphaNeue")!
                 .appendingPathComponent("PocketModel.sqlite")
 
             persistentStoreDescriptions = [
