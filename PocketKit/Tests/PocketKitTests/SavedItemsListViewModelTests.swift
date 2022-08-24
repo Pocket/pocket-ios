@@ -323,4 +323,22 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [receivedSnapshot], timeout: 1)
     }
+    
+    func test_addTagsAction_sendsAddTagsViewModel() {
+        let item = space.buildSavedItem(tags: ["tag 1"])
+        source.stubObject { _ in item }
+        let viewModel = subject()
+
+        let expectAddTags = expectation(description: "expect add tags to present")
+        viewModel.$presentedAddTags.dropFirst().sink { viewModel in
+            expectAddTags.fulfill()
+            XCTAssertEqual(viewModel?.tags, ["tag 1"])
+        }.store(in: &subscriptions)
+        
+        viewModel.overflowActions(for: item.objectID)
+            .first { $0.title == "Add Tags" }?
+            .handler?(nil)
+        
+        wait(for: [expectAddTags], timeout: 1)
+    }
 }

@@ -82,6 +82,10 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(savedItem.deletedAt?.timeIntervalSince1970, nil)
         XCTAssertEqual(savedItem.isArchived, false)
         XCTAssertTrue(savedItem.isFavorite)
+        
+        let tags = savedItem.tags?.compactMap { $0 as? Tag }
+        XCTAssertEqual(tags?.count, 2)
+        XCTAssertEqual(tags?[0].name, "tag-1")
 
         let item = savedItem.item
         XCTAssertEqual(item?.remoteID, "item-1")

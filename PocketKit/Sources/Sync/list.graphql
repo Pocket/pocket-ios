@@ -6,6 +6,9 @@ fragment SavedItemParts on SavedItem {
   _deletedAt
   _createdAt
   archivedAt
+  tags {
+    name
+  }
   item {
     ...ItemParts
     ...PendingItemParts
@@ -122,6 +125,12 @@ mutation ArchiveItem($itemID: ID!) {
 
 mutation DeleteItem($itemID: ID!) {
   deleteSavedItem(id: $itemID)
+}
+
+mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
+    replaceSavedItemTags(input: $input) {
+        ...SavedItemParts
+    }
 }
 
 query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {

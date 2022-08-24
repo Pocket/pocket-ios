@@ -44,21 +44,34 @@ class AddTagsItemTests: XCTestCase {
         app.terminate()
     }
 
-    func test_addTagsToItemFromSaves_showsAddTagsInOverflowMenu() {
+    func test_addTagsToItemFromSaves_savesNewTags() {
         app.tabBar.myListButton.wait().tap()
 
-        let itemCell = app
-            .myListView
-            .itemView(matching: "Item 2")
+        let itemCell = app.myListView.itemView(matching: "Item 1")
+        itemCell.itemActionButton.wait().tap()
 
-        itemCell
-            .itemActionButton.wait()
-            .tap()
-
-        app.addTagsButton.wait()
+        app.addTagsButton.wait().tap()
+        let addTagsView = app.addTagsView.wait()
+        addTagsView.newTagTextField.tap()
+        addTagsView.newTagTextField.typeText("Tag 1")
+        XCUIApplication().keyboards.buttons["return"].tap()
+        
+        addTagsView.tag(matching: "tag 1").wait()
+        
+        server.routes.post("/graphql") { request, _ in
+            Response.savedItemWithTag()
+        }
+        
+        addTagsView.saveButton.tap()
+        
+        itemCell.itemActionButton.wait().tap()
+        app.addTagsButton.wait().tap()
+        app.addTagsView.wait()
+        
+        addTagsView.tag(matching: "tag 1").wait()
     }
     
-    func test_addTagsToItemFromArchive_showsAddTagsInOverflowMenu() {
+    func test_addTagsToItemFromArchive_showsAddTagsView() {
         app.tabBar.myListButton.wait().tap()
         app.myListView.wait().selectionSwitcher.archiveButton.wait().tap()
 
@@ -70,10 +83,11 @@ class AddTagsItemTests: XCTestCase {
             .itemActionButton.wait()
             .tap()
 
-        app.addTagsButton.wait()
+        app.addTagsButton.wait().tap()
+        app.addTagsView.wait()
     }
     
-    func test_addTagsToSavedItemFromReader_showsAddTagsInOverflowMenu() {
+    func test_addTagsToSavedItemFromReader_showsAddTagsView() {
         app.tabBar.myListButton.wait().tap()
 
         app
@@ -88,7 +102,28 @@ class AddTagsItemTests: XCTestCase {
             .moreButton.wait()
             .tap()
 
-        app
-            .addTagsButton.wait()
+        app.addTagsButton.wait().tap()
+        app.addTagsView.wait()
+    }
+    
+    func test_deleteTagsForItem_removesTags() {
+        app.tabBar.myListButton.wait().tap()
+
+        let itemCell = app.myListView.itemView(matching: "Item 1")
+        itemCell.itemActionButton.wait().tap()
+
+        app.addTagsButton.wait().tap()
+        let addTagsView = app.addTagsView.wait()
+        addTagsView.newTagTextField.tap()
+        addTagsView.newTagTextField.typeText("Tag 1")
+        XCUIApplication().keyboards.buttons["return"].tap()
+        
+        addTagsView.newTagTextField.tap()
+        addTagsView.newTagTextField.typeText("Tag 2")
+        XCUIApplication().keyboards.buttons["return"].tap()
+        
+        addTagsView.tag(matching: "tag 1").wait().tap()
+                
+        waitForDisappearance(of: addTagsView.tag(matching: "tag 1"))
     }
 }

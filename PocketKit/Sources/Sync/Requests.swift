@@ -109,6 +109,17 @@ public enum Requests {
         request.fetchLimit = 1
         return request
     }
+    
+    public static func fetchTags() -> NSFetchRequest<Tag> {
+        Tag.fetchRequest()
+    }
+    
+    public static func fetchTag(byName name: String) -> NSFetchRequest<Tag> {
+        let request = self.fetchTags()
+        request.predicate = NSPredicate(format: "name = %@", name)
+        request.fetchLimit = 1
+        return request
+    }
 
     public static func fetchUnsavedItems() -> NSFetchRequest<Item> {
         let request = self.fetchItems()

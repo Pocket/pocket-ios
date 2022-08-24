@@ -7,6 +7,7 @@ enum SyncTask: Codable {
     case delete(remoteID: String)
     case archive(remoteID: String)
     case save(localID: URL, url: URL)
+    case addTags(remoteID: String, tags: [String])
 }
 
 public class SyncTaskContainer: NSObject, Codable {

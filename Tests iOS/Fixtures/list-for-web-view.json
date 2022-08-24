@@ -23,6 +23,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -82,6 +83,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",
@@ -124,6 +126,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-3",

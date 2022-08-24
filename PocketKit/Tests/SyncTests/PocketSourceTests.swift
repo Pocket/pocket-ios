@@ -149,6 +149,24 @@ class PocketSourceTests: XCTestCase {
         XCTAssertFalse(item.isFavorite)
         waitForExpectations(timeout: 1)
     }
+    
+    func test_addTagsToSavedItem_executesAddTagsMutation() throws {
+        let item = try space.createSavedItem(tags: ["tag 1"])
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemMutationOperation { (_, _ , _: ReplaceSavedItemTagsMutation) in
+            TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let source = subject()
+        source.addTags(item: item, tags: ["tag 2", "tag 3"])
+        XCTAssertEqual(item.tags?.count, 3)
+        XCTAssertEqual((item.tags?[0] as? Tag)?.name, "tag 1")
+        XCTAssertEqual((item.tags?[1] as? Tag)?.name, "tag 2")
+        XCTAssertEqual((item.tags?[2] as? Tag)?.name, "tag 3")
+        waitForExpectations(timeout: 1)
+    }
 
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
         let item = try space.createSavedItem(remoteID: "delete-me")

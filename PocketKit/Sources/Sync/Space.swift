@@ -122,6 +122,15 @@ public class Space {
     func fetch<T>(_ request: NSFetchRequest<T>) throws -> [T] {
         try context.fetch(request)
     }
+    
+    func fetchOrCreateTag(byName name: String) -> Tag {
+        let fetchRequest = Requests.fetchTag(byName: name)
+        fetchRequest.fetchLimit = 1
+        let fetchedTag = (try? context.fetch(fetchRequest).first) ?? Tag(context: context)
+        guard fetchedTag.name == nil else { return fetchedTag }
+        fetchedTag.name = name
+        return fetchedTag
+    }
 
     func new<T: NSManagedObject>() -> T {
         return T(context: context)

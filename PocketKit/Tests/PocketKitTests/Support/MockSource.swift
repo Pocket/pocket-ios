@@ -228,6 +228,41 @@ extension MockSource {
     }
 }
 
+// MARK: - Add Tags to an item
+extension MockSource {
+    static let addTagsToSavedItem = "addTagsToSavedItem"
+    typealias AddTagsSavedItemImpl = (SavedItem, [String]) -> Void
+    struct AddTagsSavedItemCall {
+        let item: SavedItem
+        let tags: [String]
+    }
+
+    func stubAddTagsSavedItem(impl: @escaping AddTagsSavedItemImpl) {
+        implementations[Self.addTagsToSavedItem] = impl
+    }
+
+    func addTags(item: SavedItem, tags: [String]) {
+        guard let impl = implementations[Self.addTagsToSavedItem] as? AddTagsSavedItemImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.addTagsToSavedItem] = (calls[Self.addTagsToSavedItem] ?? []) + [
+            AddTagsSavedItemCall(item: item, tags: tags)
+        ]
+
+        impl(item, tags)
+    }
+
+    func addTagsToSavedItemCall(at index: Int) -> AddTagsSavedItemCall? {
+        guard let calls = calls[Self.addTagsToSavedItem],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? AddTagsSavedItemCall
+    }
+}
+
 // MARK: - Favorite an item
 extension MockSource {
     static let favoriteSavedItem = "favoriteSavedItem"
