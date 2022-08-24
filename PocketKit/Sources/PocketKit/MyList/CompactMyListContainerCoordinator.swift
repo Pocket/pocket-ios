@@ -1,6 +1,7 @@
 import UIKit
 import Combine
 import SafariServices
+import SwiftUI
 
 class CompactMyListContainerCoordinator: NSObject {
     var viewController: UIViewController {
@@ -56,6 +57,10 @@ class CompactMyListContainerCoordinator: NSObject {
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
+        
+        model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(viewModel: addTagsViewModel)
+        }.store(in: &subscriptions)
 
         model.savedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
@@ -80,6 +85,10 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
+        model.archivedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(viewModel: addTagsViewModel)
+        }.store(in: &subscriptions)
+        
         isResetting = false
         navigationController.delegate = self
     }
@@ -114,6 +123,10 @@ class CompactMyListContainerCoordinator: NSObject {
         readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readableSubscriptions)
+        
+        readable.$presentedAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(viewModel: addTagsViewModel)
+        }.store(in: &readableSubscriptions)
 
         readable.events.sink { [weak self] event in
             switch event {
@@ -133,6 +146,13 @@ class CompactMyListContainerCoordinator: NSObject {
     private func present(alert: PocketAlert?) {
         guard !isResetting, let alert = alert else { return }
         viewController.present(UIAlertController(alert), animated: !isResetting)
+    }
+    
+    private func present(viewModel: AddTagsViewModel?) {
+        guard let viewModel = viewModel else { return }
+        let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
+        hostingController.modalPresentationStyle = .formSheet
+        viewController.present(hostingController, animated: true)
     }
 
     private func present(activity: PocketActivity?) {

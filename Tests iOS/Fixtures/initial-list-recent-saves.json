@@ -23,6 +23,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -82,6 +83,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": true,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",
@@ -124,6 +126,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-3",
@@ -158,6 +161,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-4",
@@ -192,6 +196,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-5",
@@ -226,6 +231,7 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-6",

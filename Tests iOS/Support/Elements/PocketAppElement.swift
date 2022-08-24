@@ -58,6 +58,10 @@ struct PocketAppElement {
     var tabBar: TabBarElement {
         return TabBarElement(app.tabBars.element(boundBy: 0))
     }
+    
+    var addTagsView: AddTagsViewElement {
+        return AddTagsViewElement(app.otherElements["add-tags"])
+    }
 
     var favoriteButton: XCUIElement {
         app.buttons["Favorite"]
