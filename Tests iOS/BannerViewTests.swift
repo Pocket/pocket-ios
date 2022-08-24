@@ -8,7 +8,6 @@ class BannerViewTests: XCTestCase {
     var app: PocketAppElement!
 
     override func setUpWithError() throws {
-        continueAfterFailure = false
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
         
@@ -23,7 +22,6 @@ class BannerViewTests: XCTestCase {
             } else if apiRequest.isToSaveAnItem {
                 return Response.saveItem()
             } else {
-                print(apiRequest)
                 fatalError("Unexpected request")
             }
         }
