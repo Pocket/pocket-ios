@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -458,21 +458,25 @@
 /* Begin PBXShellScriptBuildPhase section */
 		655C275028B695560040AEAB /* Grab the GraphQL Schema */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/*.graphql",
 			);
 			name = "Grab the GraphQL Schema";
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/schemas.graphql",
+				"$(DERIVED_FILE_DIR)/API.swift",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Don't run this during index builds\n\nif [ $ACTION = \"indexbuild\" ]; then exit 0; fi\n\n\ncd \"${SRCROOT}\"/PocketKit/Sources/ApolloCodegen\n\nif [ $ACTION = \"indexbuild\" ]; then exit 0; fi\n\nif [ -e \"${SRCROOT}\"/PocketKit/Sources/Sync/schemas.graphql ]\nthen\n    echo \"We already have a schema file, so not downloading the latest schema.\"\nelse\n    xcrun -sdk macosx swift run ApolloCodegen download\nfi\n\nif [ -e \"${SRCROOT}\"/PocketKit/Sources/Sync/schemas.graphql ]\nthen\n    echo \"We already have an API file, so not generating the latest API file\"\nelse\n    xcrun -sdk macosx swift run ApolloCodegen generate\nfi\n\n# propagate the xcrun call's return code to Xcode\n\nexit $?\n";
+			shellScript = "# Don't run this during index builds\n\nif [ $ACTION = \"indexbuild\" ]; then exit 0; fi\n\n\ncd \"${SRCROOT}\"/PocketKit/Sources/ApolloCodegen\n\nif [[ -f \"${SRCROOT}\"/PocketKit/Sources/Sync/schemas.graphql ]]\nthen\n    echo \"We already have a schema file, so not downloading the latest schema.\"\nelse\n    xcrun -sdk macosx swift run ApolloCodegen download-schema\nfi\n\nif [[ -f \"${SRCROOT}\"/PocketKit/Sources/Sync/schemas.graphql ]]\nthen\n    echo \"We already have an API file, so not generating the latest API file\"\nelse\n    xcrun -sdk macosx swift run ApolloCodegen generate\nfi\n\n# propagate the xcrun call's return code to Xcode\n\nexit $?\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
