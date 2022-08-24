@@ -37,7 +37,7 @@ public class KeychainStorage<T: Codable & Equatable> {
         keychain: Keychain = SecItemKeychain(),
         service: String = "pocket",
         account: String,
-        accessGroup: String = "group.com.mozilla.pocket"
+        accessGroup: String = "group.com.ideashower.ReadItLaterProAlphaNeue"
     ) {
         self.keychain = keychain
         self.service = service
