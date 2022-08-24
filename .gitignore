@@ -123,3 +123,8 @@ Config/secrets.xcconfig
 **/.tmp
 schema.graphqls
 introspection_response.json
+
+
+#apollo
+PocketKit/Sources/Sync/API.swift
+PocketKit/Sources/Sync/schemas.graphql
