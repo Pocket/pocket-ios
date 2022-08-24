@@ -10,6 +10,7 @@ protocol ModalContentPresenting: AnyObject {
     func report(_ recommendation: Recommendation?)
     func present(_ url: URL?)
     func present(_ alert: PocketAlert?)
+    func present(_ viewModel: AddTagsViewModel?)
     func share(_ activity: PocketActivity?)
 }
 
@@ -143,6 +144,10 @@ extension RegularMainCoordinator {
             self?.present(alert)
         }.store(in: &readerSubscriptions)
 
+        readable.$presentAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(addTagsViewModel)
+        }.store(in: &readerSubscriptions)
+        
         readable.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &readerSubscriptions)
@@ -257,6 +262,13 @@ extension RegularMainCoordinator: ModalContentPresenting {
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self
         splitController.present(safariVC, animated: !isResetting)
+    }
+    
+    func present(_ viewModel: AddTagsViewModel?) {
+        guard let viewModel = viewModel else { return }        
+        let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
+        hostingController.modalPresentationStyle = .formSheet
+        splitController.present(hostingController, animated: true)
     }
 }
 

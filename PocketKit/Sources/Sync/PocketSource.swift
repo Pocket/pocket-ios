@@ -303,6 +303,33 @@ extension PocketSource {
         )
         enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
     }
+    
+    public func addTags(item: SavedItem, tags: [String]) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+        
+        tags.compactMap { $0 }.forEach({ tag in
+            let fetchRequest = Requests.fetchTag(byName: tag)
+            fetchRequest.fetchLimit = 1
+            let fetchedTag = try? space.context.fetch(fetchRequest).first ?? Tag(context: space.context)
+            guard let fetchedTag = fetchedTag else { return }
+            fetchedTag.name = tag
+            item.addToTags(fetchedTag)
+        })
+        
+        try? space.save()
+      
+        let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)])
+
+        let operation = operations.savedItemMutationOperation(
+            apollo: apollo,
+            events: _events,
+            mutation: mutation
+        )
+
+        enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
+    }
 
     public func fetchDetails(for savedItem: SavedItem) async throws {
         guard let remoteID = savedItem.remoteID else {
@@ -439,6 +466,13 @@ extension PocketSource {
                     events: _events,
                     apollo: apollo,
                     space: space
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .addTags(let remoteID, let tags):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)])
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             }

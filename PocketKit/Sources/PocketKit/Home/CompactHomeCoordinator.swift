@@ -4,6 +4,7 @@ import Sync
 import Analytics
 import BackgroundTasks
 import SafariServices
+import SwiftUI
 
 protocol CompactHomeCoordinatorDelegate: AnyObject {
     func compactHomeCoordinatorDidSelectRecentSaves(_ coordinator: CompactHomeCoordinator)
@@ -175,6 +176,10 @@ class CompactHomeCoordinator: NSObject {
         savedItem.$isPresentingReaderSettings.sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: savedItem)
         }.store(in: &readerSubscriptions)
+        
+        savedItem.$presentAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(addTagsViewModel)
+        }.store(in: &readerSubscriptions)
     }
 
     func report(_ recommendation: Recommendation?) {
@@ -250,6 +255,13 @@ class CompactHomeCoordinator: NSObject {
     private func present(alert: PocketAlert?) {
         guard !isResetting, let alert = alert else { return }
         viewController.present(UIAlertController(alert), animated: !isResetting)
+    }
+    
+    func present(_ viewModel: AddTagsViewModel?) {
+        guard let viewModel = viewModel else { return }
+        let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
+        hostingController.modalPresentationStyle = .formSheet
+        viewController.present(hostingController, animated: true)
     }
 }
 

@@ -34,7 +34,21 @@ extension SavedItem {
             let itemParts = remote.item.fragments.itemParts else {
             return
         }
-
+        
+        if let tags = tags {
+            removeFromTags(tags)
+        }
+        
+        remote.tags?.compactMap { $0 }.forEach({ remoteTag in
+            let fetchRequest = Requests.fetchTag(byName: remoteTag.name)
+            fetchRequest.fetchLimit = 1
+            let tag = try? context.fetch(fetchRequest).first ?? Tag(context: context)
+            
+            guard let tag = tag else { return }
+            tag.update(remote: remoteTag)
+            addToTags(tag)
+        })
+        
         let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteId)
         fetchRequest.fetchLimit = 1
         let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)

@@ -259,6 +259,25 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         wait(for: [expectUnarchiveCall, expectSnapshotWithItemRemoved], timeout: 1)
     }
 
+    func test_addTagsAction_sendsAddTagsViewModel() {
+        let item = space.buildSavedItem(tags: ["tag 1"])
+        archiveService._results = [.loaded(item)]
+        let viewModel = subject()
+
+        let expectAddTags = expectation(description: "expect add tags to present")
+        
+        viewModel.$presentAddTags.dropFirst().sink { viewModel in
+            expectAddTags.fulfill()
+            XCTAssertEqual(viewModel?.tags, ["tag 1"])
+        }.store(in: &subscriptions)
+        
+        viewModel.overflowActions(for: item.objectID)
+            .first { $0.title == "Add Tags" }?
+            .handler?(nil)
+        
+        wait(for: [expectAddTags], timeout: 1)
+    }
+    
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
         let items = [space.buildPendingSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }

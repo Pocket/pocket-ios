@@ -66,6 +66,10 @@ struct ClientAPIRequest {
     var isForRecommendationDetail: Bool {
         contains("itemByItemId(")
     }
+    
+    var isForReplacingSavedItemTags: Bool {
+        contains("replaceSavedItemTags")
+    }
 
     func contains(_ string: String) -> Bool {
         requestBody?.contains(string) == true

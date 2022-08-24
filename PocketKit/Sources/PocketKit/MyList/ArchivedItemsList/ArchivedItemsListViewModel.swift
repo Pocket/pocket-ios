@@ -24,6 +24,9 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 
     @Published
     var presentedAlert: PocketAlert?
+    
+    @Published
+    var presentAddTags: AddTagsViewModel?
 
     @Published
     var selectedItem: SelectedItem?
@@ -250,7 +253,12 @@ extension ArchivedItemsListViewModel {
 // MARK: - Add Tags to an item
 extension ArchivedItemsListViewModel {
     private func showAddTagsView(item: SavedItem) {
-        // TODO: Show Add Tags View
+        presentAddTags = AddTagsViewModel(item: item,
+                                          source: source,
+                                          saveAction:
+                                            { [weak self] in
+            self?.fetch()
+        })
     }
 }
 

@@ -58,6 +58,10 @@ class RegularMyListCoordinator: NSObject {
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)
+        
+        model.savedItemsList.$presentAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(viewModel: addTagsViewModel)
+        }.store(in: &subscriptions)
 
         model.savedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
@@ -70,6 +74,10 @@ class RegularMyListCoordinator: NSObject {
         // My List/Archive
         model.archivedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
+        }.store(in: &subscriptions)
+        
+        model.archivedItemsList.$presentAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
@@ -133,6 +141,10 @@ extension RegularMyListCoordinator {
 
     private func present(_ alert: PocketAlert?) {
         delegate?.present(alert)
+    }
+    
+    private func present(viewModel: AddTagsViewModel?) {
+        delegate?.present(viewModel)
     }
 
     private func share(_ activity: PocketActivity?) {

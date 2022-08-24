@@ -39,7 +39,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: false, isArchived: false))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Favorite", "Archive", "Delete", "Share"]
+                ["Display Settings", "Favorite", "Add Tags", "Archive", "Delete", "Share"]
             )
         }
 
@@ -48,7 +48,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: true, isArchived: true))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Move to My List", "Delete", "Share"]
+                ["Display Settings", "Unfavorite", "Add Tags", "Move to My List", "Delete", "Share"]
             )
         }
     }
@@ -60,13 +60,13 @@ class SavedItemViewModelTests: XCTestCase {
         item.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Move to My List", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Add Tags", "Move to My List", "Delete", "Share"]
         )
 
         item.isArchived = false
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Archive", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Add Tags", "Archive", "Delete", "Share"]
         )
     }
 
@@ -158,7 +158,21 @@ class SavedItemViewModelTests: XCTestCase {
 
         wait(for: [expectUnfavorite], timeout: 1)
     }
+    
+    func test_addTagsAction_sendsAddTagsViewModel() {
+        let viewModel = subject(item: space.buildSavedItem(tags: ["tag 1"]))
 
+        let expectAddTags = expectation(description: "expect add tags to present")
+        viewModel.$presentAddTags.dropFirst().sink { viewModel in
+            expectAddTags.fulfill()
+            XCTAssertEqual(viewModel?.tags, ["tag 1"])
+        }.store(in: &subscriptions)
+        
+        viewModel.invokeAction(title: "Add Tags")
+        
+        wait(for: [expectAddTags], timeout: 1)
+    }
+    
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
         let item = space.buildSavedItem(isFavorite: true)
         let viewModel = subject(item: item)
