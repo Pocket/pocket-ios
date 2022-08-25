@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
         "state": {
           "branch": null,
-          "revision": "6aea4edfc40e8a81beae182656c83ac99584af9f",
-          "version": "0.48.0"
+          "revision": "42646f765d22dac0f22bfff48590102195c76da4",
+          "version": "0.53.0"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/stephencelis/SQLite.swift.git",
         "state": {
           "branch": null,
-          "revision": "0a9893ec030501a3956bee572d6b4fdd3ae158a1",
-          "version": "0.12.2"
+          "revision": "4d543d811ee644fa4cc4bfa0be996b4dd6ba0f54",
+          "version": "0.13.3"
         }
       },
       {
@@ -80,6 +80,15 @@
           "branch": null,
           "revision": "9564d61b08a5335ae0a36f789a7d71493eacadfc",
           "version": "0.3.2"
+        }
+      },
+      {
+        "package": "YouTubePlayerKit",
+        "repositoryURL": "https://github.com/SvenTiigi/YouTubePlayerKit.git",
+        "state": {
+          "branch": null,
+          "revision": "fa70945f48780b2f78102c5905b6a65b2531b618",
+          "version": "1.1.12"
         }
       }
     ]

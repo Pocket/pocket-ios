@@ -1,4 +1,4 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.6
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -16,30 +16,44 @@ let package = Package(
         .executable(name: "ApolloCodegen", targets: ["ApolloCodegen"]),
     ],
     dependencies: [
-        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "0.51.2")),
-        .package(name: "Kingfisher", url: "https://github.com/onevcat/Kingfisher.git", .branch("fix/xcode-13")),
-        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.0.0")),
-        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.0")),
-        .package(name: "SnowplowTracker", url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMinor(from: "2.2.0")),
-        .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", from: "3.2.1"),
-        .package(name: "Down", url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
-        .package(name: "YouTubePlayerKit", url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5"))
+        .package(url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "0.51.2")),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", branch:("fix/xcode-13")),
+        .package(url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.0.0")),
+        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.0")),
+        .package(url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMinor(from: "2.2.0")),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "3.2.1"),
+        .package(url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
+        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5"))
     ],
     targets: [
         .target(
             name: "PocketKit",
-            dependencies: ["Sync", "Textile", "Analytics", "Lottie", "YouTubePlayerKit", "SharedPocketKit"],
+            dependencies: [
+                "Sync",
+                "Textile",
+                "Analytics",
+                .product(name: "Lottie", package: "lottie-ios"),
+                .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
+                "SharedPocketKit"
+            ],
             resources: [.copy("Assets")]
         ),
         .testTarget(
             name: "PocketKitTests",
-            dependencies: ["PocketKit", "SharedPocketKit"],
+            dependencies: [
+                "PocketKit",
+                "SharedPocketKit"
+            ],
             resources: [.copy("Fixtures")]
         ),
 
         .target(
             name: "SaveToPocketKit",
-            dependencies: ["SharedPocketKit", "Textile", "Sync"]
+            dependencies: [
+                "SharedPocketKit",
+                "Textile",
+                "Sync"
+            ]
         ),
         .testTarget(
             name: "SaveToPocketKitTests",
@@ -57,17 +71,22 @@ let package = Package(
 
         .target(
             name: "Textile",
-            dependencies: ["Kingfisher", "Down"],
+            dependencies: [
+                .product(name: "Kingfisher", package: "Kingfisher"),
+                .product(name: "Down", package: "Down")
+            ],
             resources: [
                 .copy("Style/Typography/Fonts"),
                 .process("Style/Colors/Colors.xcassets"),
                 .process("Style/Images/Images.xcassets"),
             ]
         ),
-
         .target(
             name: "Sync",
-            dependencies: ["Apollo", "Sentry"],
+            dependencies: [
+                .product(name: "Apollo", package: "apollo-ios"),
+                .product(name: "Sentry", package: "sentry-cocoa")
+            ],
             exclude: [
                 "list.graphql",
                 "marticle.graphql",
@@ -85,7 +104,7 @@ let package = Package(
         
         .target(
             name: "Analytics",
-            dependencies: ["SnowplowTracker"]
+            dependencies: [.product(name: "SnowplowTracker", package: "snowplow-objc-tracker"),]
         ),
         .testTarget(
             name: "AnalyticsTests",
@@ -95,7 +114,7 @@ let package = Package(
         .executableTarget(
             name: "ApolloCodegen",
             dependencies: [
-                .product(name: "ApolloCodegenLib", package: "Apollo"),
+                .product(name: "ApolloCodegenLib", package: "apollo-ios"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
         )
