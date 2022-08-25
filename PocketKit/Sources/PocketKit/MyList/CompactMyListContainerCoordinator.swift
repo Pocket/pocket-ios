@@ -59,7 +59,7 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
         
-        model.savedItemsList.$presentAddTags.sink { [weak self] addTagsViewModel in
+        model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
 
@@ -86,7 +86,7 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
-        model.archivedItemsList.$presentAddTags.sink { [weak self] addTagsViewModel in
+        model.archivedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
         
@@ -125,7 +125,7 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readableSubscriptions)
         
-        readable.$presentAddTags.sink { [weak self] addTagsViewModel in
+        readable.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &readableSubscriptions)
 

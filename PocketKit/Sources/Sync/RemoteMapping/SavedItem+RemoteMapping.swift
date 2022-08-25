@@ -43,7 +43,6 @@ extension SavedItem {
             let fetchRequest = Requests.fetchTag(byName: remoteTag.name)
             fetchRequest.fetchLimit = 1
             let tag = try? context.fetch(fetchRequest).first ?? Tag(context: context)
-            
             guard let tag = tag else { return }
             tag.update(remote: remoteTag)
             addToTags(tag)

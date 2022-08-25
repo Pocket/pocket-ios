@@ -23,7 +23,7 @@ class SavedItemViewModel: ReadableViewModel {
     var presentedWebReaderURL: URL?
     
     @Published
-    var presentAddTags: AddTagsViewModel?
+    var presentedAddTags: AddTagsViewModel?
 
     @Published
     var sharedActivity: PocketActivity?
@@ -164,12 +164,13 @@ extension SavedItemViewModel {
     }
     
     private func showAddTagsView() {
-        presentAddTags = AddTagsViewModel(item: item,
-                                          source: source,
-                                          saveAction:
-                                            { [weak self] in
-            self?.fetchDetailsIfNeeded()
-        })
+        presentedAddTags = AddTagsViewModel(
+            item: item,
+            source: source,
+            saveAction: { [weak self] in
+                self?.fetchDetailsIfNeeded()
+            }
+        )
     }
 
     private func saveExternalURL(_ url: URL) {

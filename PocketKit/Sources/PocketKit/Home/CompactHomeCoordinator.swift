@@ -177,7 +177,7 @@ class CompactHomeCoordinator: NSObject {
             self?.presentReaderSettings(isPresenting, on: savedItem)
         }.store(in: &readerSubscriptions)
         
-        savedItem.$presentAddTags.sink { [weak self] addTagsViewModel in
+        savedItem.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(addTagsViewModel)
         }.store(in: &readerSubscriptions)
     }

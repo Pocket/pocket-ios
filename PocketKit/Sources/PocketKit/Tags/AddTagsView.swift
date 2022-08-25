@@ -3,6 +3,11 @@ import UIKit
 import Textile
 
 struct AddTagsView: View {
+    enum Constants {
+        static let tagsHorizontalSpacing: CGFloat = 6
+        static let tagPadding: CGFloat = 4
+    }
+    
     @ObservedObject
     var viewModel: AddTagsViewModel
     
@@ -21,7 +26,7 @@ struct AddTagsView: View {
                     Divider()
                     VStack(spacing: 6) {
                         ForEach(getRows(screenWidth: geometry.size.width), id: \.self) { rows in
-                            HStack(spacing: 6) {
+                            HStack(spacing: Constants.tagsHorizontalSpacing) {
                                 ForEach(rows, id: \.self) { row in
                                     RowView(tag: row)
                                 }
@@ -61,7 +66,7 @@ struct AddTagsView: View {
     func RowView(tag: String) -> some View {
         Text(tag)
             .style(.tag)
-            .padding(4)
+            .padding(Constants.tagPadding)
             .background(Rectangle().fill(Color(.ui.grey6)))
             .cornerRadius(4)
             .lineLimit(1)
@@ -78,7 +83,7 @@ struct AddTagsView: View {
         
         var totalWidth: CGFloat = 0
         let safeWidth: CGFloat = screenWidth
-        let padding: CGFloat = 20  // 4 horizontal padding in viewbuilder and 6 padding in hstack
+        let padding: CGFloat = Constants.tagPadding * 2 + Constants.tagsHorizontalSpacing * 2
     
         viewModel.tags.forEach { tag in
             let attributes = Style.tag.textAttributes

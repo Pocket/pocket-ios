@@ -59,7 +59,7 @@ class RegularMyListCoordinator: NSObject {
             self?.present(alert)
         }.store(in: &subscriptions)
         
-        model.savedItemsList.$presentAddTags.sink { [weak self] addTagsViewModel in
+        model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
 
@@ -76,7 +76,7 @@ class RegularMyListCoordinator: NSObject {
             self?.present(alert)
         }.store(in: &subscriptions)
         
-        model.archivedItemsList.$presentAddTags.sink { [weak self] addTagsViewModel in
+        model.archivedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
 

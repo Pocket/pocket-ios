@@ -144,7 +144,7 @@ extension RegularMainCoordinator {
             self?.present(alert)
         }.store(in: &readerSubscriptions)
 
-        readable.$presentAddTags.sink { [weak self] addTagsViewModel in
+        readable.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(addTagsViewModel)
         }.store(in: &readerSubscriptions)
         

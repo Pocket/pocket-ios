@@ -310,14 +310,9 @@ extension PocketSource {
         }
         
         tags.compactMap { $0 }.forEach({ tag in
-            let fetchRequest = Requests.fetchTag(byName: tag)
-            fetchRequest.fetchLimit = 1
-            let fetchedTag = try? space.context.fetch(fetchRequest).first ?? Tag(context: space.context)
-            guard let fetchedTag = fetchedTag else { return }
-            fetchedTag.name = tag
+            let fetchedTag = space.fetchOrCreateTag(byName: tag)
             item.addToTags(fetchedTag)
         })
-        
         try? space.save()
       
         let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)])

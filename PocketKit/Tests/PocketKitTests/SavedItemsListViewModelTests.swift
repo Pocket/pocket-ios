@@ -331,7 +331,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let expectAddTags = expectation(description: "expect add tags to present")
-        viewModel.$presentAddTags.dropFirst().sink { viewModel in
+        viewModel.$presentedAddTags.dropFirst().sink { viewModel in
             expectAddTags.fulfill()
             XCTAssertEqual(viewModel?.tags, ["tag 1"])
         }.store(in: &subscriptions)
