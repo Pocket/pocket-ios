@@ -7,6 +7,7 @@ let package = Package(
     name: "PocketKit",
     platforms: [.iOS("15"), .macOS("11")],
     products: [
+        .plugin(name: "ApolloCodegenPlugin", targets: ["ApolloCodegenPlugin"]),
         .library(name: "PocketKit", targets: ["PocketKit"]),
         .library(name: "SaveToPocketKit", targets: ["SaveToPocketKit"]),
         .library(name: "SharedPocketKit", targets: ["SharedPocketKit"]),
@@ -81,11 +82,17 @@ let package = Package(
                 .process("Style/Images/Images.xcassets"),
             ]
         ),
+        .plugin(
+            name: "ApolloCodegenPlugin",
+            capability: .buildTool(),
+            dependencies: ["ApolloCodegen"]
+        ),
         .target(
             name: "Sync",
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
-                .product(name: "Sentry", package: "sentry-cocoa")
+                .product(name: "Sentry", package: "sentry-cocoa"),
+                "ApolloCodegen"
             ],
             exclude: [
                 "list.graphql",
@@ -94,7 +101,8 @@ let package = Package(
                 "schema.graphqls",
                 "introspection_response.json"
             ],
-            resources: [.process("PocketModel.xcdatamodeld")]
+            resources: [.process("PocketModel.xcdatamodeld")],
+            plugins: ["ApolloCodegenPlugin"]
         ),
         .testTarget(
             name: "SyncTests",
