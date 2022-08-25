@@ -88,6 +88,11 @@ class SlateDetailViewController: UIViewController {
         fatalError("init(coder:) is not implemented")
     }
 
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        guard traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return .portrait
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
