@@ -309,14 +309,21 @@ extension PocketSource {
             return
         }
         
-        tags.compactMap { $0 }.forEach({ tag in
-            let fetchedTag = space.fetchOrCreateTag(byName: tag)
-            item.addToTags(fetchedTag)
-        })
+        item.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
+            space.fetchOrCreateTag(byName: tag)
+        }))
+        
+        try? space.deleteOrphanTags()
         try? space.save()
-      
-        let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)])
+        
+        let mutation: AnyMutation
 
+        if tags.isEmpty {
+            mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
+        } else {
+            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
+        }
+        
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
@@ -324,6 +331,10 @@ extension PocketSource {
         )
 
         enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
+    }
+    
+    public func retrieveTags(excluding tags: [String]) -> [Tag]? {
+        try? space.retrieveTags(excluding: tags)
     }
 
     public func fetchDetails(for savedItem: SavedItem) async throws {
@@ -338,7 +349,7 @@ extension PocketSource {
         }
 
         try space.context.performAndWait {
-            savedItem.update(from: remoteSavedItem.fragments.savedItemParts)
+            savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
             try space.save()
         }
     }
@@ -464,10 +475,16 @@ extension PocketSource {
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             case .addTags(let remoteID, let tags):
+                let mutation: AnyMutation
+                if tags.isEmpty {
+                    mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
+                } else {
+                    mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
+                }
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)])
+                    mutation: mutation
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             }

@@ -133,6 +133,12 @@ mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
     }
 }
 
+mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
+    updateSavedItemRemoveTags(savedItemId: $savedItemId) {
+        ...SavedItemParts
+    }
+}
+
 query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
   getSlateLineup(slateLineupId: $lineupID, recommendationCount: $maxRecommendations) {
     id

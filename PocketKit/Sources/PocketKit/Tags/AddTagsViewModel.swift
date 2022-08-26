@@ -22,6 +22,10 @@ class AddTagsViewModel: ObservableObject {
         "Enter tag name..."
     }
     
+    var emptyStateText: String {
+        "Organize your items with Tags.\n To create a tag, enter one below."
+    }
+    
     func addTag(with tag: String) -> Bool {
         let tagName = validateInput(tag)
         guard !tagName.isEmpty,
@@ -35,6 +39,11 @@ class AddTagsViewModel: ObservableObject {
     func addTags() {
         source.addTags(item: item, tags: tags)
         saveAction()
+    }
+    
+    func allOtherTags() -> [String]? {
+        let fetchedTags = source.retrieveTags(excluding: tags)
+        return fetchedTags?.compactMap { $0.name }
     }
     
     func removeTag(with tag: String) {

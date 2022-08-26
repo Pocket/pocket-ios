@@ -52,6 +52,7 @@ class AddTagsItemTests: XCTestCase {
 
         app.addTagsButton.wait().tap()
         let addTagsView = app.addTagsView.wait()
+        addTagsView.wait()
         addTagsView.newTagTextField.tap()
         addTagsView.newTagTextField.typeText("Tag 1")
         XCUIApplication().keyboards.buttons["return"].tap()
@@ -68,7 +69,10 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
         
-        addTagsView.tag(matching: "tag 1").wait()
+        addTagsView.tag(matching: "tag 1").wait().tap()
+        
+        addTagsView.allTagsRow(matching: "tag 1").wait().tap()
+        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
     }
     
     func test_addTagsToItemFromArchive_showsAddTagsView() {
@@ -85,6 +89,7 @@ class AddTagsItemTests: XCTestCase {
 
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
+        app.addTagsView.allTagsView.wait()
     }
     
     func test_addTagsToSavedItemFromReader_showsAddTagsView() {
@@ -104,26 +109,6 @@ class AddTagsItemTests: XCTestCase {
 
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
-    }
-    
-    func test_deleteTagsForItem_removesTags() {
-        app.tabBar.myListButton.wait().tap()
-
-        let itemCell = app.myListView.itemView(matching: "Item 1")
-        itemCell.itemActionButton.wait().tap()
-
-        app.addTagsButton.wait().tap()
-        let addTagsView = app.addTagsView.wait()
-        addTagsView.newTagTextField.tap()
-        addTagsView.newTagTextField.typeText("Tag 1")
-        XCUIApplication().keyboards.buttons["return"].tap()
-        
-        addTagsView.newTagTextField.tap()
-        addTagsView.newTagTextField.typeText("Tag 2")
-        XCUIApplication().keyboards.buttons["return"].tap()
-        
-        addTagsView.tag(matching: "tag 1").wait().tap()
-                
-        waitForDisappearance(of: addTagsView.tag(matching: "tag 1"))
+        app.addTagsView.allTagsView.wait()
     }
 }

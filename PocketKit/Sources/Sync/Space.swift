@@ -110,6 +110,29 @@ public class Space {
     func fetchItem(byRemoteID id: String) throws -> Item? {
         return try fetch(Requests.fetchItem(byRemoteID: id)).first
     }
+    
+    func fetchTags() throws -> [Tag] {
+        return try fetch(Requests.fetchTags())
+    }
+    
+    func fetchOrCreateTag(byName name: String) -> Tag {
+        let fetchRequest = Requests.fetchTag(byName: name)
+        fetchRequest.fetchLimit = 1
+        let fetchedTag = (try? fetch(fetchRequest).first) ?? Tag(context: context)
+        guard fetchedTag.name == nil else { return fetchedTag }
+        fetchedTag.name = name
+        return fetchedTag
+    }
+    
+    func retrieveTags(excluding tags: [String]) throws -> [Tag] {
+        return try fetch(Requests.fetchTags(excluding: tags))
+    }
+    
+    func deleteOrphanTags() throws {
+        let deleteRequest = Requests.fetchTagsWithNoSavedItems()
+        let tags = try context.fetch(deleteRequest)
+        delete(tags)
+    }
 
     func fetchOrCreateItem(byRemoteID id: String) throws -> Item {
         return try fetchItem(byRemoteID: id) ?? new()
@@ -121,15 +144,6 @@ public class Space {
 
     func fetch<T>(_ request: NSFetchRequest<T>) throws -> [T] {
         try context.fetch(request)
-    }
-    
-    func fetchOrCreateTag(byName name: String) -> Tag {
-        let fetchRequest = Requests.fetchTag(byName: name)
-        fetchRequest.fetchLimit = 1
-        let fetchedTag = (try? context.fetch(fetchRequest).first) ?? Tag(context: context)
-        guard fetchedTag.name == nil else { return fetchedTag }
-        fetchedTag.name = name
-        return fetchedTag
     }
 
     func new<T: NSManagedObject>() -> T {

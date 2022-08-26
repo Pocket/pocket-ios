@@ -69,6 +69,33 @@ class AddTagsViewModelTests: XCTestCase {
         XCTAssertNotNil(source.addTagsToSavedItemCall(at: 0))
     }
     
+    func test_allOtherTags_retrievesValidTagNames() {
+        let item = space.buildSavedItem(tags: ["tag 1"])
+        let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
+        
+        source.stubRetrieveTags { [weak self] _ in
+            guard let self = self else { return nil }
+            defer { expectRetrieveTagsCall.fulfill() }
+            let tag2: Tag = self.space.new()
+            let tag3: Tag = self.space.new()
+            tag2.name = "tag 2"
+            tag3.name = "tag 3"
+            return [tag2, tag3]
+        }
+        
+        let viewModel = subject(item: item) { }
+        
+        guard let tags = viewModel.allOtherTags() else {
+            XCTFail("tags should not be nil")
+            return
+        }
+
+        XCTAssertEqual(tags, ["tag 2", "tag 3"])
+        
+        wait(for: [expectRetrieveTagsCall], timeout: 1)
+        XCTAssertNotNil(source.retrieveTagsCall(at: 0))
+    }
+    
     func test_removeTag_withValidName_updatesTags() {
         let item = space.buildSavedItem(tags: ["tag 1", "tag 2", "tag 3"])
         let viewModel = subject(item: item) { }

@@ -1,16 +1,35 @@
 import Combine
 import Apollo
 
+class AnyMutation {
+    let perform: (ApolloClientProtocol) async throws -> Void
+    
+    init<Mutation: GraphQLMutation>(_ mutation: Mutation) {
+        perform = { apollo in
+            _ = try await apollo.perform(mutation: mutation)
+        }
+    }
+}
 
-class SavedItemMutationOperation<Mutation: GraphQLMutation>: SyncOperation {
+class SavedItemMutationOperation: SyncOperation {
     private let apollo: ApolloClientProtocol
     private let events: SyncEvents
-    private let mutation: Mutation
+    private let mutation: AnyMutation
 
-    init(
+    init<Mutation: GraphQLMutation>(
         apollo: ApolloClientProtocol,
         events: SyncEvents,
         mutation: Mutation
+    ) {
+        self.apollo = apollo
+        self.events = events
+        self.mutation = AnyMutation(mutation)
+    }
+    
+    init(
+        apollo: ApolloClientProtocol,
+        events: SyncEvents,
+        mutation: AnyMutation
     ) {
         self.apollo = apollo
         self.events = events
@@ -19,7 +38,7 @@ class SavedItemMutationOperation<Mutation: GraphQLMutation>: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
-            _ = try await apollo.perform(mutation: mutation)
+            _ = try await mutation.perform(apollo)
             return .success
         } catch {
             switch error {

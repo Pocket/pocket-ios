@@ -20,6 +20,12 @@ protocol SyncOperationFactory {
         events: SyncEvents,
         mutation: Mutation
     ) -> SyncOperation
+    
+    func savedItemMutationOperation(
+        apollo: ApolloClientProtocol,
+        events: SyncEvents,
+        mutation: AnyMutation
+    ) -> SyncOperation
 
     func saveItemOperation(
         managedItemID: NSManagedObjectID,
@@ -55,6 +61,14 @@ class OperationFactory: SyncOperationFactory {
         apollo: ApolloClientProtocol,
         events: SyncEvents,
         mutation: Mutation
+    ) -> SyncOperation {
+        SavedItemMutationOperation(apollo: apollo, events: events, mutation: mutation)
+    }
+    
+    func savedItemMutationOperation(
+        apollo: ApolloClientProtocol,
+        events: SyncEvents,
+        mutation: AnyMutation
     ) -> SyncOperation {
         SavedItemMutationOperation(apollo: apollo, events: events, mutation: mutation)
     }

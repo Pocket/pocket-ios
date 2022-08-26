@@ -101,6 +101,33 @@ extension MockOperationFactory {
     }
 }
 
+// MARK: - itemAnyMutationOperation (without generics)
+extension MockOperationFactory {
+    typealias ItemAnyMutationOperationImpl = (
+        ApolloClientProtocol,
+        SyncEvents,
+        AnyMutation
+    ) -> SyncOperation
+
+    func stubItemAnyMutationOperation(
+        impl: @escaping ItemAnyMutationOperationImpl
+    ) {
+        implementations["itemAnyMutationOperation"] = impl
+    }
+
+    func savedItemMutationOperation(
+        apollo: ApolloClientProtocol,
+        events: SyncEvents,
+        mutation: AnyMutation
+    ) -> SyncOperation {
+        guard let impl = implementations["itemAnyMutationOperation"] as? ItemAnyMutationOperationImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        return impl(apollo, events, mutation)
+    }
+}
+
 // MARK: - saveItemOperation
 extension MockOperationFactory {
     typealias SaveItemOperationImpl = (NSManagedObjectID, URL, SyncEvents, ApolloClientProtocol, Space) -> SyncOperation

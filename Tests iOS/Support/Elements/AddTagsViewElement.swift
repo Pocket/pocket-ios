@@ -18,6 +18,14 @@ struct AddTagsViewElement: PocketUIElement {
     var newTagTextField: XCUIElement {
         element.textFields["enter-tag-name"]
     }
+    
+    var allTagsView: XCUIElement {
+        element.tables["all-tags"]
+    }
+    
+    func allTagsRow(matching string: String) -> XCUIElement {
+        return allTagsView.staticTexts[string].self
+    }
        
     func tag(matching string: String) -> XCUIElement {
         return element.staticTexts[string].self

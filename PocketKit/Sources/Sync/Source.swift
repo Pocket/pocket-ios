@@ -41,6 +41,8 @@ public protocol Source {
     func unarchive(item: SavedItem)
     
     func addTags(item: SavedItem, tags: [String])
+    
+    func retrieveTags(excluding: [String]) -> [Tag]?
 
     func fetchSlateLineup(_ identifier: String) async throws
 

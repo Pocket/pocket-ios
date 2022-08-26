@@ -95,14 +95,14 @@ class FetchList: SyncOperation {
         guard let edges = result.data?.userByToken?.savedItems?.edges else {
             return
         }
-
+        // TODO: Add deleteOrphanTags here instead of update and refactor below to be in space (IN-788)
         for edge in edges {
             guard let edge = edge, let node = edge.node else {
                 return
             }
 
             let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteId)
-            item.update(from: edge)
+            item.update(from: edge, with: space)
 
             if item.deletedAt != nil {
                 space.delete(item)
