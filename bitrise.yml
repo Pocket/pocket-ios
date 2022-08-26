@@ -32,7 +32,7 @@ workflows:
             - body: '$GIT_CLONE_COMMIT_MESSAGE_SUBJECT'
             - pre_release: 'yes'
             - draft: 'no'
-            - tag: 1.0+$BITRISE_BUILD_NUMBER
+            - tag: 8.0+$BITRISE_BUILD_NUMBER
             - commit: '$GIT_CLONE_COMMIT_HASH'
             - api_token: '$GITHUB_RELEASE_TOKEN'
     before_run:
