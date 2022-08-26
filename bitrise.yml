@@ -28,7 +28,7 @@ workflows:
       - github-release@0:
           inputs:
             - username: '$GITHUB_RELEASE_USERNAME'
-            - name: 1.0+$BITRISE_BUILD_NUMBER
+            - name: 8.0+$BITRISE_BUILD_NUMBER
             - body: '$GIT_CLONE_COMMIT_MESSAGE_SUBJECT'
             - pre_release: 'yes'
             - draft: 'no'
