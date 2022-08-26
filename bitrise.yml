@@ -1,0 +1,87 @@
+---
+format_version: '8'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: ios
+trigger_map:
+  - push_branch: main
+    workflow: app-store-build
+  - pull_request_target_branch: develop
+    workflow: qa-build
+workflows:
+  app-store-build:
+    steps:
+      - xcode-archive@4:
+          inputs:
+            - project_path: '$BITRISE_PROJECT_PATH'
+            - scheme: '$BITRISE_SCHEME'
+            - distribution_method: app-store
+            - configuration: RELEASE
+            - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
+            - export_method: app-store
+      - deploy-to-bitrise-io@2: {}
+      - deploy-to-itunesconnect-deliver@2:
+          inputs:
+            - app_id: '$APP_ID'
+            - connection: 'off'
+            - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
+            - api_issuer: '$API_KEY_ISSUER_ID'
+      - github-release@0:
+          inputs:
+            - username: '$GITHUB_RELEASE_USERNAME'
+            - name: 8.0+$BITRISE_BUILD_NUMBER
+            - body: '$GIT_CLONE_COMMIT_MESSAGE_SUBJECT'
+            - pre_release: 'yes'
+            - draft: 'no'
+            - tag: 8.0+$BITRISE_BUILD_NUMBER
+            - commit: '$GIT_CLONE_COMMIT_HASH'
+            - api_token: '$GITHUB_RELEASE_TOKEN'
+    before_run:
+      - test
+  qa-build:
+    steps:
+      - xcode-archive@4:
+          inputs:
+            - xcconfig_content: |-
+                COMPILER_INDEX_STORE_ENABLE = NO
+                CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
+            - configuration: Debug
+      - deploy-to-bitrise-io@2: {}
+    before_run:
+      - test
+  test:
+    steps:
+      - activate-ssh-key@4: {}
+      - git-clone@6: {}
+      - certificate-and-profile-installer@1: {}
+      - file-downloader@1:
+          inputs:
+            - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+          title: Install production secrets.xcconfig
+      - resource-archive@2:
+          inputs:
+            - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
+            - archive_url: '$BITRISEIO_BASE_FONTS_URL'
+          title: Install fonts
+      - xcode-test@4:
+          inputs:
+            - destination: platform=iOS Simulator,name=iPhone 13,OS=latest
+    before_run: []
+app:
+  envs:
+    - opts:
+        is_expand: false
+      BITRISE_PROJECT_PATH: Pocket.xcodeproj
+    - opts:
+        is_expand: false
+      BITRISE_SCHEME: Pocket (iOS)
+    - opts:
+        is_expand: false
+      BITRISE_EXPORT_METHOD: development
+    - opts:
+        is_expand: false
+      SKIP_APOLLO_CODEGEN: '1'
+meta:
+  bitrise.io:
+    machine_type_id: g2.12core
+    stack: osx-xcode-13.4.x
