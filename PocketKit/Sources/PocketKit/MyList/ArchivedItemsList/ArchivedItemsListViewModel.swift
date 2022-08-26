@@ -94,12 +94,12 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 // MARK: - Fetching Items
 extension ArchivedItemsListViewModel {
     func fetch() {
-        guard isNetworkAvailable else {
+        if isNetworkAvailable {
+            refresh { }
+        } else {
             _snapshot = offlineSnapshot()
-            return
         }
 
-        refresh { }
         observeNetworkChanges()
     }
 
@@ -133,18 +133,18 @@ extension ArchivedItemsListViewModel {
 
     private func observeNetworkChanges() {
         networkMonitor.updateHandler = { [weak self] path in
-            let currentPathStatus = path.status
-
-            guard let self = self,
-                  self.lastPathStatus != path.status,
-                  currentPathStatus == .satisfied else {
-                self?.lastPathStatus = path.status
-                return
-            }
-
-            self.refresh { }
-            self.lastPathStatus = currentPathStatus
+            self?.handleNetworkChange(path)
         }
+    }
+
+    private func handleNetworkChange(_ path: NetworkPath?) {
+        let currentPathStatus = path?.status
+
+        if lastPathStatus != currentPathStatus, currentPathStatus == .satisfied {
+            refresh { }
+        }
+
+        lastPathStatus = currentPathStatus
     }
 }
 
