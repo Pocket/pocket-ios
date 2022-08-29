@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 
 class CompactAccountCoordinator: NSObject {
     var viewController: UIViewController {
@@ -12,7 +13,7 @@ class CompactAccountCoordinator: NSObject {
     init(model: AccountViewModel) {
         self.model = model
 
-        accountViewController = AccountViewController(model: model)
+        accountViewController = SettingsViewController(rootView: SettingsView(model: model))
         navigationController = UINavigationController(rootViewController: accountViewController)
 
         super.init()
