@@ -98,6 +98,8 @@ opt_in_rules: # some rules are only opt-in
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - build
+  - .build
+  - PocketKit/.build
   - PocketKit/Sources/Sync/API.swift
   - DerivedData/
 

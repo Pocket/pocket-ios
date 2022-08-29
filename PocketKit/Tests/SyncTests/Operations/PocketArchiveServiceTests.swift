@@ -390,7 +390,7 @@ class PocketArchiveServiceTests: XCTestCase {
             XCTAssertEqual(results.count, 2)
 
             do {
-                guard results.isEmpty, case .loaded(let savedItem) = results[0] else {
+                guard !results.isEmpty, case .loaded(let savedItem) = results[0] else {
                     XCTFail("Expected a loaded result but got a non loaded result")
                     return
                 }
@@ -399,7 +399,7 @@ class PocketArchiveServiceTests: XCTestCase {
             }
 
             do {
-                guard results.isEmpty, case .loaded(let savedItem) = results[1] else {
+                guard !results.isEmpty, case .loaded(let savedItem) = results[1] else {
                     XCTFail("Expected a loaded result but got a non loaded result")
                     return
                 }
