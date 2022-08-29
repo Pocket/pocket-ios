@@ -51,7 +51,7 @@ class MyListContainerViewController: UIViewController {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait
     }
-    
+
     private func resetTitleView() {
         let selections = viewControllers.map { vc in
             MyListSelection(title: vc.selectionItem.title, image: vc.selectionItem.image) { [weak self] in

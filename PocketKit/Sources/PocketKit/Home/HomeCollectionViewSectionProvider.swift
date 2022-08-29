@@ -123,7 +123,6 @@ class HomeViewControllerSectionProvider {
     }
 }
 
-
 extension HomeViewControllerSectionProvider {
     func offlineSection(environment: NSCollectionLayoutEnvironment, withRecentSaves: Bool) -> NSCollectionLayoutSection {
         var config = UICollectionLayoutListConfiguration(appearance: .plain)
@@ -137,7 +136,7 @@ extension HomeViewControllerSectionProvider {
 
         if !withRecentSaves {
             section.contentInsets = NSDirectionalEdgeInsets(
-                top:  ItemsListOfflineCell.height(fitting: availableWidth) / 4, // Insets the top so "No Internet Connection" is centered
+                top: ItemsListOfflineCell.height(fitting: availableWidth) / 4, // Insets the top so "No Internet Connection" is centered
                 leading: 0,
                 bottom: 0,
                 trailing: 0

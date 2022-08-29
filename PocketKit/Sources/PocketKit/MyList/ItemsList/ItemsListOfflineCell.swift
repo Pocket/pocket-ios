@@ -13,14 +13,6 @@ class ItemsListOfflineCell: UICollectionViewCell {
         static let imageSpacing: CGFloat = 48
         static let stackSpacing: CGFloat = 16
         static let padding: CGFloat = 18
-<<<<<<< HEAD
-=======
-
-        static let buttonColor = UIColor(.ui.white1)
-        static let buttonHighlightedColor = UIColor(.ui.grey1).withAlphaComponent(0.5)
-        static let buttonContentInsets = NSDirectionalEdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 12)
-        static let buttonTitle = NSAttributedString(string: "Try Again", style: .header.sansSerif.p2)
->>>>>>> 39cf52f (fix(swiftlint): auto-fixing swift lint)
     }
 
     private let imageView: UIImageView = {
@@ -40,29 +32,7 @@ class ItemsListOfflineCell: UICollectionViewCell {
         label.attributedText = Constants.detailText
         return label
     }()
-<<<<<<< HEAD
-    
-=======
 
-    private var actionButton: UIButton = {
-        var config = UIButton.Configuration.borderedTinted()
-        config.attributedTitle = AttributedString(Constants.buttonTitle)
-        config.cornerStyle = .capsule
-        config.background.strokeColor = UIColor(.ui.grey5)
-        config.contentInsets = Constants.buttonContentInsets
-
-        let button = UIButton(configuration: config)
-        button.configurationUpdateHandler = { button in
-            var config = button.configuration
-            config?.baseBackgroundColor = button.isHighlighted ? Constants.buttonHighlightedColor : Constants.buttonColor
-            button.configuration = config
-        }
-        return button
-    }()
-
-    var buttonAction: (() -> Void)?
-
->>>>>>> 39cf52f (fix(swiftlint): auto-fixing swift lint)
     private lazy var textStackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [textLabel, detailTextLabel])
         stackView.axis = .vertical
@@ -80,7 +50,8 @@ class ItemsListOfflineCell: UICollectionViewCell {
     }()
 
     override init(frame: CGRect) {
-        super.init(frame: frame)        
+        super.init(frame: frame)
+
         contentView.addSubview(stackView)
 
         stackView.translatesAutoresizingMaskIntoConstraints = false

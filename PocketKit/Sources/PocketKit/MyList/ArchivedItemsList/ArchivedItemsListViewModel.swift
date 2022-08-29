@@ -35,7 +35,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     private let tracker: Tracker
 
     private let networkMonitor: NetworkPathMonitor
-    private var lastPathStatus: NWPath.Status? = nil
+    private var lastPathStatus: NWPath.Status?
     private var isNetworkAvailable: Bool {
         networkMonitor.currentNetworkPath.status == .satisfied
     }
@@ -102,7 +102,7 @@ extension ArchivedItemsListViewModel {
         observeNetworkChanges()
     }
 
-    func refresh(_ completion: (() -> ())?) {
+    func refresh(_ completion: (() -> Void)?) {
         guard isNetworkAvailable else {
             _snapshot = offlineSnapshot()
             completion?()
