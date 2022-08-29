@@ -25,7 +25,7 @@ class RegularMainCoordinator: NSObject {
 
     private let myList: RegularMyListCoordinator
     private let home: RegularHomeCoordinator
-    private let account: AccountViewController
+    private let account: SettingsViewController
     private let readerRoot: UINavigationController
 
     private let tracker: Tracker
@@ -51,7 +51,7 @@ class RegularMainCoordinator: NSObject {
 
         myList = RegularMyListCoordinator(model: model.myList)
         home = RegularHomeCoordinator(model: model.home, tracker: tracker)
-        account = AccountViewController(model: model.account)
+        account = SettingsViewController(rootView: SettingsView(model: model.account))
         readerRoot = UINavigationController(rootViewController: UIViewController())
 
         super.init()
