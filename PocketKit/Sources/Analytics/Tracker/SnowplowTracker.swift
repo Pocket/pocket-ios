@@ -4,7 +4,6 @@
 
 import class SnowplowTracker.SelfDescribing
 
-
 public protocol SnowplowTracker {
     func track(event: SelfDescribing)
 }

@@ -1,7 +1,6 @@
 import UIKit
 import Kingfisher
 
-
 class ItemsListItemCell: UICollectionViewListCell {
     var model: Model? {
         didSet {
@@ -74,7 +73,7 @@ class ItemsListItemCell: UICollectionViewListCell {
         config.image = UIImage(asset: .share)
             .resized(to: Constants.actionButtonImageSize)
             .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
-           
+
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "share"
         return button
@@ -86,7 +85,7 @@ class ItemsListItemCell: UICollectionViewListCell {
         config.image = UIImage(asset: .overflow)
             .resized(to: Constants.actionButtonImageSize)
             .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
-        
+
         let button = UIButton(configuration: config, primaryAction: nil)
         button.accessibilityIdentifier = "item-actions"
         button.showsMenuAsPrimaryAction = true
@@ -208,7 +207,7 @@ extension ItemsListItemCell {
             state.isSelected ? UIColor(.ui.grey6) : UIColor(.ui.white1)
         }
         backgroundConfiguration = bgConfig
-        
+
         titleLabel.attributedText = state.model?.attributedTitle
         detailLabel.attributedText = state.model?.attributedDetail
 

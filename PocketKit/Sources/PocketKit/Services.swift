@@ -10,7 +10,6 @@ import BackgroundTasks
 import SharedPocketKit
 import Kingfisher
 
-
 struct Services {
     static let shared = Services()
 

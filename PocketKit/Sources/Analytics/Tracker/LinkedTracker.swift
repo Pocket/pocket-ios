@@ -5,21 +5,21 @@
 class LinkedTracker: Tracker {
     private let parent: Tracker
     private let contexts: [Context]
-    
+
     init(parent: Tracker, contexts: [Context]) {
         self.parent = parent
         self.contexts = contexts
     }
-    
+
     func addPersistentContext(_ context: Context) {
         parent.addPersistentContext(context)
     }
-    
-    func track<T>(event: T, _ contexts: [Context]?) where T : Event {
+
+    func track<T>(event: T, _ contexts: [Context]?) where T: Event {
         let additional = contexts ?? []
         parent.track(event: event, self.contexts + additional)
     }
-    
+
     func childTracker(with contexts: [Context]) -> Tracker {
         LinkedTracker(parent: self, contexts: contexts)
     }

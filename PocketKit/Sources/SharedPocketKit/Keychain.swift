@@ -4,7 +4,6 @@
 
 import Foundation
 
-
 public protocol Keychain {
     func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus
     func update(query: CFDictionary, attributes: CFDictionary) -> OSStatus

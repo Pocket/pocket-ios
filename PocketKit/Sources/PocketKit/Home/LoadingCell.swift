@@ -1,7 +1,6 @@
 import UIKit
 import Textile
 
-
 class LoadingCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)

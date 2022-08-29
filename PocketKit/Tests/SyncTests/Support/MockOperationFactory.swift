@@ -5,7 +5,6 @@ import CoreData
 
 @testable import Sync
 
-
 class MockOperationFactory: SyncOperationFactory {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
@@ -63,7 +62,6 @@ extension MockOperationFactory {
 
         return impl(token, apollo, space, events, initialDownloadState, maxItems)
     }
-
 
     func fetchListCall(at index: Int) -> FetchListCall? {
         guard let fetchListCalls = calls["fetchList"], index < fetchListCalls.count else {

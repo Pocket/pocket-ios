@@ -1,11 +1,10 @@
 import UIKit
 import Textile
 
-
 struct MyListSelection {
     let title: String
     let image: UIImage?
-    let handler: () -> ()
+    let handler: () -> Void
 }
 
 class MyListTitleView: UIView {
@@ -19,12 +18,12 @@ class MyListTitleView: UIView {
 
     init(selections: [MyListSelection]) {
         self.selections = selections
-        
+
         super.init(frame: .zero)
 
         accessibilityIdentifier = "my-list-selection-switcher"
         addSubview(stackView)
-        
+
         stackView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
@@ -79,7 +78,7 @@ class MyListTitleView: UIView {
         stackView.setNeedsLayout()
         stackView.layoutIfNeeded()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not implemented")
     }
@@ -103,7 +102,7 @@ private class MyListSelectionButton: UIButton {
 
         configuration?.image = selection.image
         configuration?.imagePadding = 8
-        
+
         addAction(action, for: .primaryActionTriggered)
         clipsToBounds = true
     }
@@ -125,7 +124,7 @@ private class MyListSelectionButton: UIButton {
             selection.title,
             attributes: Style.selected.attributes
         )
-        
+
         configuration?.imageColorTransformer = UIConfigurationColorTransformer { _ in
             UIColor(.ui.teal1)
         }

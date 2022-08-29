@@ -7,7 +7,6 @@ import Sails
 import Combine
 import NIO
 
-
 class ArchiveFiltersTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
@@ -60,11 +59,11 @@ class ArchiveFiltersTests: XCTestCase {
         waitForDisappearance(of: myList.itemView(matching: "Archived Item 1"))
         myList.itemView(matching: "Favorited Archived Item 1").wait()
         app.myListView.filterButton(for: "Favorites").tap()
-        
+
         myList.itemView(matching: "Archived Item 1").wait()
         myList.itemView(matching: "Archived Item 2").wait()
     }
-    
+
     func test_archiveView_tappingAllPill_togglesDisplayingAllArchivedContent() {
         app.launch().tabBar.myListButton.wait().tap()
         let myList = app.myListView.wait()
@@ -74,13 +73,12 @@ class ArchiveFiltersTests: XCTestCase {
         app.myListView.filterButton(for: "All").tap()
         myList.itemView(matching: "Archived Item 1").wait()
         myList.itemView(matching: "Archived Item 2").wait()
-        
+
         app.myListView.filterButton(for: "Favorites").tap()
         myList.itemView(matching: "Favorited Archived Item 1").wait()
-        
+
         app.myListView.filterButton(for: "All").tap()
         myList.itemView(matching: "Archived Item 1").wait()
         myList.itemView(matching: "Archived Item 2").wait()
     }
 }
-

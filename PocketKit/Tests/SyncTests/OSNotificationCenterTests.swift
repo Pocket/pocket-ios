@@ -3,7 +3,6 @@ import Foundation
 
 @testable import Sync
 
-
 class OSNotificationCenterTests: XCTestCase {
     var cfCenter: CFNotificationCenter!
 

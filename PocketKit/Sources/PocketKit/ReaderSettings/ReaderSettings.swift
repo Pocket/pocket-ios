@@ -9,7 +9,7 @@ import SwiftUI
 class ReaderSettings: StylerModifier, ObservableObject {
     @AppStorage("readerFontSizeAdjustment")
     var fontSizeAdjustment: Int = 0
-    
+
     @AppStorage("readerFontFamily")
     var fontFamily: FontDescriptor.Family = .blanco
 
@@ -26,9 +26,8 @@ extension FontDescriptor.Family: RawRepresentable {
     public init?(rawValue: String) {
         self = FontDescriptor.Family(name: rawValue)
     }
-    
+
     public var rawValue: String {
         return self.name
     }
 }
-

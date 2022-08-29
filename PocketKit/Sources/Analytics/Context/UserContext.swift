@@ -4,10 +4,10 @@
 
 public struct UserContext: Context {
     public static let schema = "iglu:com.pocket/user/jsonschema/1-0-0"
-    
+
     let guid: String
     let userID: String
-    
+
     public init(guid: String, userID: String) {
         self.guid = guid
         self.userID = userID

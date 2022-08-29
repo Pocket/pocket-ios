@@ -1,6 +1,5 @@
 import Sync
 
-
 class MockImagesController: ImagesController {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
@@ -37,5 +36,3 @@ extension MockImagesController {
         return calls[index] as? PerformFetchCall
     }
 }
-
-

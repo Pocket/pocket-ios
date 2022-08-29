@@ -2,7 +2,6 @@ import Foundation
 import Sync
 import SharedPocketKit
 
-
 struct Services {
     static let shared = Services()
 

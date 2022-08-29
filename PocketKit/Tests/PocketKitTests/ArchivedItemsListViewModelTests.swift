@@ -276,7 +276,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.shouldSelectCell(with: .item(items[0].objectID)))
     }
-    
+
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
         let items = [
             space.buildSavedItem(item: space.buildItem(isArticle: true)),
@@ -286,20 +286,20 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         let viewModel = subject()
         viewModel.selectCell(with: .item(items[0].objectID))
-        
+
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
             return
         }
-        
+
         guard case .readable(let item) = selectedItem else {
             XCTFail("Received unexpected selectedItem: \(selectedItem)")
             return
         }
-        
+
         XCTAssertNotNil(item)
     }
-    
+
     func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() {
         let items = [space.buildSavedItem(item: space.buildItem(isArticle: false)), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
@@ -307,17 +307,17 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         viewModel.selectCell(with: .item(items[0].objectID))
-        
+
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
             return
         }
-        
+
         guard case .webView(let url) = selectedItem else {
             XCTFail("Received unexpected selectedItem: \(selectedItem)")
             return
         }
-        
+
         XCTAssertNotNil(url)
     }
 
@@ -332,11 +332,11 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             }
             eventSent.fulfill()
         }.store(in: &subscriptions)
-        
+
         viewModel.selectedItem = nil
         wait(for: [eventSent], timeout: 1)
     }
-    
+
     func test_selectedItem_whenReaderView_doesNotSendSelectionCleared() {
         let viewModel = subject()
 
@@ -346,11 +346,11 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             XCTFail("Received unexpected event call: \(event)")
             eventSent.fulfill()
         }.store(in: &subscriptions)
-        
+
         viewModel.selectedItem = .readable(nil)
         wait(for: [eventSent], timeout: 1)
     }
-    
+
     func test_selectedItem_whenWebView_doesNotSendSelectionCleared() {
         let viewModel = subject()
 
@@ -360,11 +360,11 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             XCTFail("Received unexpected event call: \(event)")
             eventSent.fulfill()
         }.store(in: &subscriptions)
-        
+
         viewModel.selectedItem = .webView(nil)
         wait(for: [eventSent], timeout: 1)
     }
-    
+
     func test_receivedSnapshots_withNoItems_includesArchiveEmptyState() {
         archiveService._results = []
 
@@ -383,7 +383,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
-    
+
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
         archiveService._results = []
 
@@ -461,7 +461,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         }
 
         wait(for: [completionInvoked], timeout: 1)
-        XCTAssertNotNil(archiveService.refreshCall(at:0))
+        XCTAssertNotNil(archiveService.refreshCall(at: 0))
     }
 
     func test_refresh_whenOffline_showsTheOfflineMessage() {

@@ -4,7 +4,6 @@
 
 import UIKit
 
-
 extension UIActivityViewController {
     convenience init(activity: PocketActivity) {
         self.init(

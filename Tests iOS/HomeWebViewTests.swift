@@ -6,7 +6,6 @@ import XCTest
 import Sails
 import NIO
 
-
 class HomeWebViewTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
@@ -69,7 +68,7 @@ class HomeWebViewTests: XCTestCase {
         app.homeView.element.swipeUp()
         test_home_showsWebView(from: "Slate 1, Recommendation 3")
     }
-    
+
     func test_home_showsWebView(from name: String) {
         app.homeView.sectionHeader("Slate 1").wait()
         app.homeView.recommendationCell(name).wait().tap()

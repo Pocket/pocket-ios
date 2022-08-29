@@ -4,10 +4,8 @@
 
 import UIKit
 
-
 protocol PocketActivity {
     var activityItems: [Any] { get }
     var sender: Any? { get }
     var applicationActivities: [UIActivity]? { get }
 }
-

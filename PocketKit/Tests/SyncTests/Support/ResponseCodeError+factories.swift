@@ -1,7 +1,6 @@
 import Apollo
 import Foundation
 
-
 extension ResponseCodeInterceptor.ResponseCodeError {
     static func withStatusCode(_ statusCode: Int) -> Self {
         ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(

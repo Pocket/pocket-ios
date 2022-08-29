@@ -1,6 +1,5 @@
 import Foundation
 
-
 protocol ExtensionContext {
     var extensionItems: [ExtensionItem] { get }
 
@@ -26,7 +25,7 @@ protocol ItemProvider {
 
     func loadItem(
         forTypeIdentifier typeIdentifier: String,
-        options: [AnyHashable : Any]?
+        options: [AnyHashable: Any]?
     ) async throws -> NSSecureCoding
 }
 extension NSItemProvider: ItemProvider { }

@@ -2,7 +2,6 @@ import Apollo
 import Combine
 import CoreData
 
-
 public protocol ArchiveService: AnyObject {
     var results: Published<[SavedItemResult]>.Publisher { get }
     var itemUpdated: AnyPublisher<SavedItem, Never> { get }
@@ -300,7 +299,6 @@ private class FetchArchivePagesOperation: AsyncOperation {
 
         let pagesToFetch = try await delegate.numberOfPagesToFetch(for: indexes)
         guard !isCancelled, pagesToFetch > 0 else { return }
-
 
         for _ in (0..<pagesToFetch) {
             let cursor = try await delegate.currentCursor()

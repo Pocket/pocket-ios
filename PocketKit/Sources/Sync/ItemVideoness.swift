@@ -1,6 +1,5 @@
 import Foundation
 
-
 public enum ItemVideoness: String, Equatable, Hashable {
     case noVideos = "NO_VIDEOS"
     case hasVideos = "HAS_VIDEOS"

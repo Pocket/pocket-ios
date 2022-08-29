@@ -4,10 +4,10 @@
 
 public struct ContentOpenEvent: Event {
     public static let schema = "iglu:com.pocket/content_open/jsonschema/1-0-0"
-    
+
     let destination: Destination
     let trigger: Trigger
-    
+
     public init(destination: Destination, trigger: Trigger) {
         self.destination = destination
         self.trigger = trigger
@@ -19,7 +19,7 @@ extension ContentOpenEvent {
         case `internal`
         case external
     }
-    
+
     public enum Trigger: String, Encodable {
         case click
         case auto

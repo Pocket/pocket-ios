@@ -2,12 +2,11 @@ import UIKit
 import Textile
 import SwiftUI
 
-
 class LoggedOutViewController: UIHostingController<LoggedOutView> {
     convenience init(viewModel: LoggedOutViewModel) {
         self.init(rootView: LoggedOutView(viewModel: viewModel))
     }
-    
+
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait

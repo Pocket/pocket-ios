@@ -5,7 +5,6 @@ import Combine
 import SafariServices
 import Analytics
 
-
 class RootCoordinator {
     private var window: UIWindow?
 
@@ -14,7 +13,7 @@ class RootCoordinator {
     private var shouldAnimateTransition = false
 
     private var subscriptions: [AnyCancellable] = []
-    private var bannerView: UIView? = nil
+    private var bannerView: UIView?
 
     private let rootViewModel: RootViewModel
     private let mainCoordinatorFactory: () -> MainCoordinator
@@ -42,7 +41,7 @@ class RootCoordinator {
         }.store(in: &subscriptions)
 
         window?.makeKeyAndVisible()
-        
+
         rootViewModel.$bannerViewModel.sink { [weak self] viewModel in
             if let viewModel = viewModel {
                 self?.setupBanner(with: viewModel)
@@ -51,29 +50,29 @@ class RootCoordinator {
             }
         }.store(in: &subscriptions)
     }
-    
+
     private func setupBanner(with viewModel: BannerViewModel) {
         let bannerView = BannerView()
         bannerView.configure(model: viewModel)
 
         window?.addSubview(bannerView)
         configureConstraints(bannerView)
-        
+
         let tabBarHeight: CGFloat = main?.tabBar?.frame.height ?? 0
         let translation = window?.traitCollection.userInterfaceIdiom == .phone ? tabBarHeight : 0
-      
+
         UIView.animate(withDuration: 0.5, delay: 0, options: [.allowUserInteraction], animations: {
             bannerView.transform = CGAffineTransform(translationX: 0, y: -translation - 12)
         })
 
         self.bannerView = bannerView
     }
-    
+
     private func removeBanner() {
         bannerView?.removeFromSuperview()
         bannerView = nil
     }
-    
+
     private func configureConstraints(_ bannerView: UIView) {
         guard let window = window else { return }
         bannerView.translatesAutoresizingMaskIntoConstraints = false
@@ -92,7 +91,7 @@ class RootCoordinator {
             ])
         }
     }
-    
+
     func dismissView() {
         let animationDistance = self.window?.frame.height
         UIView.animate(withDuration: 1.0, delay: 0, options: [.allowUserInteraction], animations: { [weak self] in

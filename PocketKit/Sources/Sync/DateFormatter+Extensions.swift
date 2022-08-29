@@ -1,6 +1,5 @@
 import Foundation
 
-
 extension DateFormatter {
     static let clientAPI: DateFormatter = {
         let formatter = DateFormatter()

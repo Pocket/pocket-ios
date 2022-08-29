@@ -44,7 +44,7 @@ public class Space {
     func fetchAllSavedItems() throws -> [SavedItem] {
         return try fetch(Requests.fetchAllSavedItems())
     }
-    
+
     func fetchOrCreateSavedItem(byRemoteID itemID: String) throws -> SavedItem {
         try fetchSavedItem(byRemoteID: itemID) ?? new()
     }

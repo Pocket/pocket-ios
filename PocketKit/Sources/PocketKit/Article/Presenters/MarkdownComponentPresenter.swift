@@ -2,7 +2,6 @@ import Foundation
 import Sync
 import UIKit
 
-
 class MarkdownComponentPresenter: ArticleComponentPresenter {
     enum ComponentType {
         case heading
@@ -19,7 +18,7 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
     }
 
     private let component: MarkdownComponent
-    
+
     private let readerSettings: ReaderSettings
 
     private let componentType: ComponentType
@@ -38,7 +37,7 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
         self.readerSettings = readerSettings
         self.componentType = componentType
     }
-    
+
     func size(for availableWidth: CGFloat) -> CGSize {
         guard let content = content, !content.string.isEmpty else {
             return .zero
@@ -50,7 +49,7 @@ class MarkdownComponentPresenter: ArticleComponentPresenter {
 
         return size
     }
-    
+
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.contentView.layoutMargins = componentType.margins

@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct AccountViewElement: PocketUIElement {
     var element: XCUIElement
 

@@ -4,7 +4,6 @@ import Apollo
 
 @testable import Sync
 
-
 class APISlateServiceTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!
@@ -146,7 +145,7 @@ extension APISlateServiceTests {
         let fetchedSlates = try space.fetchSlates()
         let fetchedSlateIDs = fetchedSlates.map { $0.remoteID! }
         XCTAssertEqual(fetchedSlates.count, 2)
-        XCTAssertEqual(Set(fetchedSlateIDs) , ["slate-1", "slate-2"])
+        XCTAssertEqual(Set(fetchedSlateIDs), ["slate-1", "slate-2"])
 
         // 3. Old recommendations should be deleted
         let fetchedRecommendations = try space.fetchRecommendations()

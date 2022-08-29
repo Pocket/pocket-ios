@@ -1,6 +1,5 @@
 import Foundation
 
-
 public struct ImageComponent: Encodable, Equatable, Hashable {
     public let caption: String?
     public let credit: String?

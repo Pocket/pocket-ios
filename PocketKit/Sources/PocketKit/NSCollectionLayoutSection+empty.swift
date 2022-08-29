@@ -1,6 +1,5 @@
 import UIKit
 
-
 extension NSCollectionLayoutSection {
     static func empty() -> NSCollectionLayoutSection {
         return NSCollectionLayoutSection(

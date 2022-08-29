@@ -3,7 +3,6 @@ import Sync
 import UIKit
 import Combine
 
-
 class RefreshCoordinator {
     static let taskID = "com.mozilla.pocket.next.refresh"
 
@@ -55,7 +54,7 @@ class RefreshCoordinator {
             task.setTaskCompleted(success: false)
         }
 
-        source.refresh() {
+        source.refresh {
             task.setTaskCompleted(success: true)
         }
     }

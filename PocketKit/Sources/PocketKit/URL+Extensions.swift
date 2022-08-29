@@ -1,6 +1,5 @@
 import Foundation
 
-
 extension URL {
     var host: String? {
         guard let urlComponents = URLComponents(url: self, resolvingAgainstBaseURL: false),

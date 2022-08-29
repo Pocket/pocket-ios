@@ -5,10 +5,9 @@ import Textile
 import UIKit
 import Analytics
 
-
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
-    
+
     var tracker: Tracker { get }
 
     var readerSettings: ReaderSettings { get }
@@ -19,7 +18,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
 
     var actions: Published<[ItemAction]>.Publisher { get }
     var events: EventPublisher { get }
-    
+
     var components: [ArticleComponent]? { get }
     var textAlignment: TextAlignment { get }
     var title: String? { get }
@@ -27,7 +26,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var domain: String? { get }
     var publishDate: Date? { get }
     var url: URL? { get }
-    
+
     func delete()
     func showWebReader()
     func fetchDetailsIfNeeded()
@@ -41,7 +40,7 @@ extension ReadableViewModel {
     func readableViewController(_ controller: ReadableViewController, openURL url: URL) {
         open(url: url)
     }
-    
+
     func readableViewController(_ controller: ReadableViewController, shareWithAdditionalText text: String?) {
         share(additionalText: text)
     }
@@ -54,7 +53,7 @@ extension ReadableViewModel {
         track(identifier: .switchToWebView)
         isPresentingReaderSettings = true
     }
-    
+
     func open(url: URL) {
         trackOpen(url: url)
         presentedWebReaderURL = url
@@ -68,12 +67,12 @@ extension ReadableViewModel {
         let contexts = additionalContexts + [link]
         tracker.track(event: contentOpen, contexts)
     }
-    
+
     func share(additionalText: String? = nil) {
         track(identifier: .itemShare)
         sharedActivity = PocketItemActivity(url: url, additionalText: additionalText)
     }
-    
+
     func confirmDelete() {
         presentedAlert = PocketAlert(
             title: "Are you sure you want to delete this item?",
@@ -94,7 +93,7 @@ extension ReadableViewModel {
         presentedAlert = nil
         delete()
     }
-    
+
     func track(identifier: UIContext.Identifier) {
         guard let url = url else {
             return

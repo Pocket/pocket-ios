@@ -1,6 +1,5 @@
 import UIKit
 
-
 struct SelectionItem {
     let title: String
     let image: UIImage
@@ -19,7 +18,7 @@ class MyListContainerViewController: UIViewController {
             select(child: viewController(at: selectedIndex))
         }
     }
-    
+
     private let viewControllers: [SelectableViewController]
 
     init(viewControllers: [SelectableViewController]) {
@@ -43,7 +42,7 @@ class MyListContainerViewController: UIViewController {
         view.accessibilityIdentifier = "my-list"
         select(child: viewControllers.first)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError()
     }
@@ -62,12 +61,12 @@ class MyListContainerViewController: UIViewController {
 
         navigationItem.titleView = MyListTitleView(selections: selections)
     }
-    
+
     private func viewController(at index: Int) -> SelectableViewController? {
         guard index < viewControllers.count else { return nil }
         return viewControllers[index]
     }
-    
+
     private func select(child: SelectableViewController?) {
         guard let child = child else {
             return

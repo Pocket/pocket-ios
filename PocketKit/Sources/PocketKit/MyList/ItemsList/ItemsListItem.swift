@@ -1,6 +1,5 @@
 import Foundation
 
-
 protocol ItemsListItem {
     var title: String? { get }
     var isFavorite: Bool { get }

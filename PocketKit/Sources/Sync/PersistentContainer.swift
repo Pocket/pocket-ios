@@ -4,7 +4,6 @@
 
 import CoreData
 
-
 public class PersistentContainer: NSPersistentContainer {
     public lazy var rootSpace = { Space(context: viewContext) }()
 

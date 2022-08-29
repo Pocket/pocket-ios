@@ -1,6 +1,5 @@
 import Foundation
 
-
 open class AsyncOperation: Operation {
     override public var isAsynchronous: Bool {
         true

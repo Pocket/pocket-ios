@@ -4,24 +4,24 @@
 
 public struct AppBackgroundEvent: Event {
     public static let schema = "iglu:com.pocket/app_background/jsonschema/1-0-0"
-    
+
     let secondsSinceLastOpen: UInt64?
     let secondsSinceLastBackground: UInt64?
-    
+
     public init(secondsSinceLastOpen: UInt64?, secondsSinceLastBackground: UInt64?) {
         self.secondsSinceLastOpen = secondsSinceLastOpen
         self.secondsSinceLastBackground = secondsSinceLastBackground
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
-        
+
         if let secondsSinceLastOpen = secondsSinceLastOpen {
             try container.encode(secondsSinceLastOpen, forKey: .secondsSinceLastOpen)
         } else {
             try container.encodeNil(forKey: .secondsSinceLastOpen)
         }
-        
+
         if let secondsSinceLastBackground = secondsSinceLastBackground {
             try container.encode(secondsSinceLastBackground, forKey: .secondsSinceLastBackground)
         } else {

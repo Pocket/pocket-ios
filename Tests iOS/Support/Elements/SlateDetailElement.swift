@@ -1,6 +1,5 @@
 import XCTest
 
-
 struct SlateDetailElement: PocketUIElement {
     let element: XCUIElement
 
@@ -11,7 +10,7 @@ struct SlateDetailElement: PocketUIElement {
     var cells: XCUIElementQuery {
         element.cells
     }
-    
+
     var overscrollView: XCUIElement {
         element.otherElements["slate-detail-overscroll"]
     }
@@ -23,7 +22,7 @@ struct SlateDetailElement: PocketUIElement {
 
         return RecommendationCellElement(element)
     }
-    
+
     func overscroll() {
         let origin = CGVector(dx: 0.5, dy: 0.8)
         let destination = CGVector(dx: 0.5, dy: 0.2)

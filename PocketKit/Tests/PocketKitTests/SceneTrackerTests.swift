@@ -6,13 +6,12 @@ import XCTest
 @testable import Analytics
 @testable import PocketKit
 
-
 class SceneTrackerTests: XCTestCase {
     var userDefaults: UserDefaults!
     var notificationCenter: NotificationCenter!
     var tracker: MockTracker!
     var sceneTracker: SceneTracker!
-    
+
     override func setUp() {
         userDefaults = UserDefaults()
         notificationCenter = NotificationCenter()
@@ -23,62 +22,62 @@ class SceneTrackerTests: XCTestCase {
             notificationCenter: notificationCenter
         )
     }
-    
+
     override func tearDown() {
         userDefaults.removeObject(forKey: SceneTracker.dateLastOpenedKey)
         userDefaults.removeObject(forKey: SceneTracker.dateLastBackgroundedKey)
     }
-    
+
     // MARK: - AppOpen
-    
+
     func test_trackAppOpenWithNoPreviousOpenOrBackground() {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
-        
+
         XCTAssertTrue(tracker.trackCalls.wasCalled)
-        
+
         let event = tracker.trackCalls.last?.event as? AppOpenEvent
         XCTAssertNotNil(event)
-        
+
         XCTAssertNil(event!.secondsSinceLastOpen)
         XCTAssertNil(event!.secondsSinceLastBackground)
     }
-    
+
     func test_doesNotTrackSecondAppOpenIfCurrentlyActive() {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
-        
+
         XCTAssertEqual(tracker.trackCalls.count, 1)
     }
-    
+
     func test_trackAppOpenAfterPreviousOpenAndBackground() {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
-        
+
         let event = tracker.trackCalls.last?.event as? AppOpenEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)
         XCTAssertNotNil(event!.secondsSinceLastBackground)
     }
-    
+
     // MARK: - AppBackground
-    
+
     func test_trackAppBackgroundAfterOpenButNoPreviousBackground() {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
-        
+
         let event = tracker.trackCalls.last?.event as? AppBackgroundEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)
         XCTAssertNil(event!.secondsSinceLastBackground)
     }
-    
+
     func test_trackAppBackgroundAfterPreviousOpenAndBackground() {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
-        
+
         let event = tracker.trackCalls.last?.event as? AppBackgroundEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)

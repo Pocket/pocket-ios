@@ -1,7 +1,6 @@
 import Sync
 import Foundation
 
-
 extension SavedItem: ItemsListItem {
     var domain: String? {
         item?.domain

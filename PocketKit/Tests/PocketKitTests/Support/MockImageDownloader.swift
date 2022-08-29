@@ -2,7 +2,6 @@ import Foundation
 import Kingfisher
 @testable import PocketKit
 
-
 class MockImageCache: ImageCacheProtocol {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]

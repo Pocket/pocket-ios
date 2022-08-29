@@ -2,7 +2,6 @@ import Foundation
 import Apollo
 import CoreData
 
-
 class SaveItemOperation: SyncOperation {
     private let managedItemID: NSManagedObjectID
     private let url: URL

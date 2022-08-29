@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct AlertElement: PocketUIElement {
     let element: XCUIElement
 
@@ -15,9 +14,8 @@ struct AlertElement: PocketUIElement {
     var no: XCUIElement {
         element.buttons["No"]
     }
-    
+
     var yes: XCUIElement {
         element.buttons["Yes"]
     }
 }
-

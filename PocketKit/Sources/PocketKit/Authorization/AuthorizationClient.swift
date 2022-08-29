@@ -5,7 +5,6 @@
 import Foundation
 import AuthenticationServices
 
-
 public class AuthorizationClient {
     typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession
 

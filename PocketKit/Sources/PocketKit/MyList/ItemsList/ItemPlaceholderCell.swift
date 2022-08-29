@@ -1,7 +1,6 @@
 import UIKit
 import Textile
 
-
 class ItemPlaceholderCell: UICollectionViewListCell {
     private let actionsImageView: UIImageView = {
         let imageView = UIImageView()

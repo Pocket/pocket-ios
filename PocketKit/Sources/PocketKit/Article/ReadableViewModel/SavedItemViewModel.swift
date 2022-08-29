@@ -5,14 +5,13 @@ import Textile
 import Analytics
 import UIKit
 
-
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
 
     @Published
     private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
-    
+
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
@@ -82,7 +81,7 @@ class SavedItemViewModel: ReadableViewModel {
     var url: URL? {
         item.bestURL
     }
-    
+
     func moveToMyList() {
         source.unarchive(item: item)
     }
@@ -107,7 +106,7 @@ class SavedItemViewModel: ReadableViewModel {
             _events.send(.contentUpdated)
         }
     }
-    
+
     func externalActions(for url: URL) -> [ItemAction] {
         [
             .save { [weak self] _ in self?.saveExternalURL(url) },

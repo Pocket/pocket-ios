@@ -4,13 +4,12 @@
 
 import Foundation
 
-
 public struct APIUserContext: Context {
     public static var schema = "iglu:com.pocket/api_user/jsonschema/1-0-1"
-    
+
     let id: UInt
     let clientVersion: String
-    
+
     public init(id: UInt, clientVersion: String) {
         self.id = id
         self.clientVersion = clientVersion

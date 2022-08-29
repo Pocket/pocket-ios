@@ -1,6 +1,5 @@
 import XCTest
 
-
 struct TabBarElement: PocketUIElement {
     let element: XCUIElement
 

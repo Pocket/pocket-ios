@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 enum Margins: CGFloat {
   case thin = 8
   case normal = 16

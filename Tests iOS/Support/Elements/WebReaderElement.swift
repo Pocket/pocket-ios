@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct WebReaderElement: PocketUIElement {
     let element: XCUIElement
 

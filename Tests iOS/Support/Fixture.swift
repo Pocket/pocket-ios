@@ -5,7 +5,6 @@
 import Foundation
 import Apollo
 
-
 class Fixture {
     enum ReplacementEscapeStrategy {
         case none

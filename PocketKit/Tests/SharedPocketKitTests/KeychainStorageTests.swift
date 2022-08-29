@@ -1,7 +1,6 @@
 import XCTest
 @testable import SharedPocketKit
 
-
 class KeychainStorageTests: XCTestCase {
     struct Test: Codable, Equatable {
         let value: String

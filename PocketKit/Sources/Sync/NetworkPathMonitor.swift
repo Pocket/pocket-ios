@@ -1,6 +1,5 @@
 import Network
 
-
 public protocol NetworkPath {
     var status: NWPath.Status { get }
 }

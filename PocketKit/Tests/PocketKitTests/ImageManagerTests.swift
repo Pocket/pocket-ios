@@ -3,7 +3,6 @@ import XCTest
 @testable import PocketKit
 @testable import Sync
 
-
 class ImageManagerTests: XCTestCase {
     var imagesController: MockImagesController!
     var imageCache: MockImageCache!

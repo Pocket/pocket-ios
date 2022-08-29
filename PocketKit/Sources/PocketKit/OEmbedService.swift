@@ -1,6 +1,5 @@
 import Foundation
 
-
 class OEmbedService {
     enum Error: Swift.Error {
         case anError

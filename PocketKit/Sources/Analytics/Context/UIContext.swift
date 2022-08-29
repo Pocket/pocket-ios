@@ -7,13 +7,13 @@ public typealias UIIndex = UInt
 
 public struct UIContext: Context {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
-    
+
     let type: UIType
     let hierarchy: UIHierarchy
     let identifier: Identifier
     let componentDetail: ComponentDetail?
     let index: UIIndex?
-    
+
     public init(
         type: UIType,
         hierarchy: UIHierarchy = 0,
@@ -27,7 +27,7 @@ public struct UIContext: Context {
         self.componentDetail = componentDetail
         self.index = index
     }
-    
+
     func with(hierarchy: UIHierarchy) -> UIContext {
         UIContext(
             type: type,
@@ -102,7 +102,7 @@ extension UIContext {
 
     public struct Home {
         public let screen = UIContext(type: .screen, identifier: .home)
-        
+
         public func item(index: UIIndex) -> UIContext {
             UIContext(
                 type: .card,
@@ -123,13 +123,13 @@ extension UIContext {
             )
         }
     }
-    
+
     public struct MyList {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .myList)
         public let myList = UIContext(type: .list, hierarchy: 0, identifier: .myList)
         public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
         public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
-        
+
         public func item(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
         }
@@ -138,16 +138,16 @@ extension UIContext {
     public struct Account {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .account)
     }
-    
+
     public struct ArticleView {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .reader)
         public let link = UIContext(type: .link, hierarchy: 0, identifier: .articleLink)
         public let switchToWebView = UIContext(type: .button, hierarchy: 0, identifier: .switchToWebView)
     }
-    
+
     public struct SlateDetail {
         public let screen = UIContext(type: .screen, identifier: .slateDetail)
-        
+
         public func recommendation(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .recommendation, componentDetail: .homeCard, index: index)
         }
@@ -159,9 +159,9 @@ extension UIContext {
     public static let account = Account()
     public static let articleView = ArticleView()
     public static let slateDetail = SlateDetail()
-    
+
     public static let reportDialog = UIContext(type: .dialog, identifier: .reportItem)
-    
+
     public static func button(identifier: Identifier) -> UIContext {
         UIContext(
             type: .button,

@@ -4,10 +4,10 @@
 
 public struct ImpressionEvent: Event {
     public static let schema = "iglu:com.pocket/impression/jsonschema/1-0-1"
-    
+
     let component: Component
     let requirement: Requirement
-    
+
     public init(component: Component, requirement: Requirement) {
         self.component = component
         self.requirement = requirement
@@ -21,7 +21,7 @@ extension ImpressionEvent {
         case content
         case screen
         case pushNotification
-        
+
         enum CodingKeys: String, CodingKey {
             case ui
             case card
@@ -30,7 +30,7 @@ extension ImpressionEvent {
             case pushNotification = "push_notification"
         }
     }
-    
+
     public enum Requirement: String, Encodable {
         case instant
         case viewable

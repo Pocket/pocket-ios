@@ -1,7 +1,6 @@
 import UIKit
 import Sync
 
-
 protocol TopicChipCellModel {
     var attributedTitle: NSAttributedString? { get }
     var iconImage: UIImage? { get }

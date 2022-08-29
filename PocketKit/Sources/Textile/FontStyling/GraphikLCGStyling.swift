@@ -77,4 +77,3 @@ public extension GraphikLCGStyling {
 
     static let defaultMonospace: Style = .body.monospace
 }
-

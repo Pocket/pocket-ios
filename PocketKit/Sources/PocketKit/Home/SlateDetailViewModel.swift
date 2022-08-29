@@ -5,7 +5,6 @@ import CoreData
 import Combine
 import Analytics
 
-
 class SlateDetailViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
@@ -13,13 +12,13 @@ class SlateDetailViewModel {
     var snapshot: Snapshot
 
     @Published
-    var selectedReadableViewModel: RecommendationViewModel? = nil
+    var selectedReadableViewModel: RecommendationViewModel?
 
     @Published
-    var presentedWebReaderURL: URL? = nil
+    var presentedWebReaderURL: URL?
 
     @Published
-    var selectedRecommendationToReport: Recommendation? = nil
+    var selectedRecommendationToReport: Recommendation?
 
     var slateName: String? {
         slate.name
@@ -134,7 +133,7 @@ extension SlateDetailViewModel {
         guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
             return nil
         }
-        
+
         guard let indexPath = indexPath else {
             return HomeRecommendationCellViewModel(recommendation: recommendation)
         }
@@ -207,7 +206,6 @@ extension SlateDetailViewModel {
             )
             contexts.append(slateContext)
         }
-
 
         if let remoteID = recommendation.remoteID {
             let recommendationContext = RecommendationContext(

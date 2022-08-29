@@ -1,6 +1,5 @@
 import Foundation
 
-
 public enum ItemImageness: String, Equatable, Hashable {
     case noImages = "NO_IMAGES"
     case hasImages = "HAS_IMAGES"

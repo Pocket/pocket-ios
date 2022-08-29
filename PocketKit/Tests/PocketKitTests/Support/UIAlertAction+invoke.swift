@@ -1,6 +1,5 @@
 import UIKit
 
-
 extension UIAlertAction {
     typealias AlertHandler = @convention(block) (UIAlertAction) -> Void
 

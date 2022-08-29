@@ -4,7 +4,6 @@ import UIKit
 import CoreData
 import Analytics
 
-
 enum ReadableType {
     case recommendation(RecommendationViewModel)
     case savedItem(SavedItemViewModel)
@@ -72,29 +71,29 @@ enum SeeAll {
 class HomeViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
     typealias ItemIdentifier = NSManagedObjectID
-    
+
     static let lineupIdentifier = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
-    
+
     @Published
     var snapshot: Snapshot
-    
+
     @Published
     var sharedActivity: PocketActivity?
-    
+
     @Published
     var presentedAlert: PocketAlert?
 
     @Published
-    var selectedReadableType: ReadableType? = nil
+    var selectedReadableType: ReadableType?
 
     @Published
-    var selectedRecommendationToReport: Recommendation? = nil
+    var selectedRecommendationToReport: Recommendation?
 
     @Published
-    var presentedWebReaderURL: URL? = nil
-    
+    var presentedWebReaderURL: URL?
+
     @Published
-    var tappedSeeAll: SeeAll? = nil
+    var tappedSeeAll: SeeAll?
 
     private let source: Source
     private let tracker: Tracker
@@ -279,7 +278,7 @@ extension HomeViewModel {
             select(recommendation: recommendation, at: indexPath)
         }
     }
-    
+
     private func select(slate: Slate) {
         tappedSeeAll = .slate(SlateDetailViewModel(
             slate: slate,
@@ -437,7 +436,7 @@ extension HomeViewModel {
             preferredAction: nil
         )
     }
-    
+
     private func delete(item: SavedItem) {
         presentedAlert = nil
         source.delete(item: item)
@@ -476,7 +475,7 @@ extension HomeViewModel {
         guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
             return nil
         }
-        
+
         guard let indexPath = indexPath else {
             return HomeRecommendationCellViewModel(recommendation: recommendation)
         }
@@ -593,7 +592,6 @@ extension HomeViewModel {
         ]
     }
 }
-
 
 // MARK: - Cell Lifecycle
 extension HomeViewModel {

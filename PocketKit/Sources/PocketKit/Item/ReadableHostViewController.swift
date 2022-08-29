@@ -4,7 +4,6 @@ import Analytics
 import Sync
 import Textile
 
-
 class ReadableHostViewController: UIViewController {
     private let moreButtonItem: UIBarButtonItem
     private var subscriptions: [AnyCancellable] = []
@@ -18,7 +17,7 @@ class ReadableHostViewController: UIViewController {
         )
 
         super.init(nibName: nil, bundle: nil)
-        
+
         title = nil
         navigationItem.largeTitleDisplayMode = .never
         hidesBottomBarWhenPushed = true
@@ -32,7 +31,7 @@ class ReadableHostViewController: UIViewController {
                 action: #selector(showWebView)
             )
         ]
-        
+
         readableViewModel.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
             self?.buildOverflowMenu(from: actions)
         }.store(in: &subscriptions)
@@ -40,7 +39,7 @@ class ReadableHostViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        
+
         let readableViewController = ReadableViewController(
             readable: readableViewModel,
             readerSettings: readableViewModel.readerSettings

@@ -11,7 +11,7 @@ struct ReaderSettingsView: View {
         static let adjustmentStep = 2
         static let allowedFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
     }
-    
+
     @Environment(\.presentationMode)
     private var presentationMode
 
@@ -21,7 +21,7 @@ struct ReaderSettingsView: View {
     init(settings: ReaderSettings) {
         self.settings = settings
     }
-    
+
     var body: some View {
         NavigationView {
             Form {

@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct PocketAppElement {
     private let app: XCUIApplication
 
@@ -31,7 +30,7 @@ struct PocketAppElement {
     var myListView: MyListElement {
         return MyListElement(app)
     }
-    
+
     var accountView: AccountViewElement {
         return AccountViewElement(app.collectionViews["account"])
     }
@@ -47,7 +46,7 @@ struct PocketAppElement {
     var webReaderView: WebReaderElement {
         return WebReaderElement(app.webViews.element(boundBy: 0))
     }
-    
+
     var reportView: ReportViewElement {
         return ReportViewElement(app.tables["report-recommendation"])
     }
@@ -87,7 +86,7 @@ struct PocketAppElement {
     var reportButton: XCUIElement {
         app.buttons["Report"]
     }
-    
+
     var alert: AlertElement {
         AlertElement(app.alerts.element(boundBy: 0))
     }

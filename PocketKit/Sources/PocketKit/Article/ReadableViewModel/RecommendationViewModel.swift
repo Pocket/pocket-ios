@@ -5,12 +5,11 @@ import Textile
 import UIKit
 import Analytics
 
-
 class RecommendationViewModel: ReadableViewModel {
     @Published
     private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
-    
+
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
@@ -28,12 +27,12 @@ class RecommendationViewModel: ReadableViewModel {
 
     @Published
     var selectedRecommendationToReport: Recommendation?
-    
+
     private let recommendation: Recommendation
     private let source: Source
     let tracker: Tracker
 
-    private var savedItemCancellable: AnyCancellable? = nil
+    private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
     init(recommendation: Recommendation, source: Source, tracker: Tracker) {
@@ -111,7 +110,7 @@ class RecommendationViewModel: ReadableViewModel {
             _events.send(.contentUpdated)
         }
     }
-    
+
     func externalActions(for url: URL) -> [ItemAction] {
         [
             .save { [weak self] _ in self?.saveExternalURL(url) },

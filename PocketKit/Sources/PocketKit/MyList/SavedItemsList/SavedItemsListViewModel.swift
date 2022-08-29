@@ -4,7 +4,6 @@ import Analytics
 import Combine
 import UIKit
 
-
 class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
@@ -17,7 +16,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     @Published
     private var _snapshot = Snapshot()
     var snapshot: Published<Snapshot>.Publisher { $_snapshot }
-    
+
     @Published
     var presentedAlert: PocketAlert?
 
@@ -26,13 +25,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published
     var sharedActivity: PocketActivity?
-    
+
     var emptyState: EmptyStateViewModel? {
         let items = itemsController.fetchedObjects ?? []
         guard items.isEmpty else {
             return nil
         }
-        
+
         return selectedFilters.contains(.favorites) ? FavoritesEmptyStateViewModel() : MyListEmptyStateViewModel()
     }
 
@@ -74,14 +73,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 return nil
             }
         }
-        
+
         self.itemsController.predicate = Predicates.savedItems(filters: filters)
 
         try? self.itemsController.performFetch()
         self.itemsLoaded()
     }
 
-    func refresh(_ completion: (() -> ())? = nil) {
+    func refresh(_ completion: (() -> Void)? = nil) {
         source.refresh(completion: completion)
         source.retryImmediately()
     }
@@ -239,7 +238,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
-
         switch source.initialDownloadState.value {
         case .unknown, .completed:
             itemCellIDs = itemsController
@@ -257,13 +255,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 return .item(fetchedObjects[index].objectID)
             }
         }
-        
+
         guard !itemCellIDs.isEmpty else {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([ItemsListCell<ItemIdentifier>.emptyState], toSection: .emptyState)
             return snapshot
         }
-        
+
         snapshot.appendSections([.items])
         snapshot.appendItems(itemCellIDs, toSection: .items)
         return snapshot
@@ -345,19 +343,19 @@ extension SavedItemsListViewModel {
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
         handleFilterSelection(with: filter)
-        
+
         fetch()
-        
+
         var snapshot = buildSnapshot()
         if snapshot.sectionIdentifiers.contains(.emptyState) {
             snapshot.reloadSections([.emptyState])
         }
-        
+
         let cells = snapshot.itemIdentifiers(inSection: .filters)
         snapshot.reloadItems(cells)
         _snapshot = snapshot
     }
-    
+
     private func handleFilterSelection(with filter: ItemsListFilter) {
         if filter == .all {
             selectedFilters.removeAll()
@@ -368,7 +366,7 @@ extension SavedItemsListViewModel {
             selectedFilters.insert(filter)
             selectedFilters.remove(.all)
         }
-        
+
         if selectedFilters.isEmpty {
             selectedFilters.insert(.all)
         }

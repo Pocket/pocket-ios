@@ -1,6 +1,5 @@
 @testable import Sync
 
-
 class MockBackgroundTaskManager: BackgroundTaskManager {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]

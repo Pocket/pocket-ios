@@ -1,6 +1,5 @@
 import Foundation
 
-
 public struct VideoComponent: Codable, Equatable, Hashable {
     public let id: Int
     public let type: VideoType

@@ -1,6 +1,5 @@
 import UIKit
 
-
 extension UIAlertController {
     convenience init(_ alert: PocketAlert) {
         self.init(title: alert.title, message: alert.message, preferredStyle: alert.preferredStyle)

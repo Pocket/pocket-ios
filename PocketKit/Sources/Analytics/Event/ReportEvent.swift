@@ -4,10 +4,10 @@
 
 public struct ReportEvent: Context {
     public static let schema = "iglu:com.pocket/report/jsonschema/1-0-0"
-    
+
     let reason: Reason
     let comment: String?
-    
+
     public init(reason: Reason, comment: String?) {
         self.reason = reason
         self.comment = comment

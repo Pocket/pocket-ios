@@ -7,7 +7,6 @@ import Apollo
 import Combine
 import Network
 
-
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
 public class PocketSource: Source {
@@ -108,7 +107,7 @@ public class PocketSource: Source {
     deinit {
         osNotificationCenter.remove(observer: notificationObserver, name: .savedItemCreated)
         osNotificationCenter.remove(observer: notificationObserver, name: .savedItemUpdated)
-        osNotificationCenter.remove(observer: notificationObserver, name:.unresolvedSavedItemCreated)
+        osNotificationCenter.remove(observer: notificationObserver, name: .unresolvedSavedItemCreated)
     }
 
     public var mainContext: NSManagedObjectContext {
@@ -173,7 +172,7 @@ public class PocketSource: Source {
 
 // MARK: - MyList/Archive items
 extension PocketSource {
-    public func refresh(maxItems: Int = 400, completion: (() -> ())? = nil) {
+    public func refresh(maxItems: Int = 400, completion: (() -> Void)? = nil) {
         if lastRefresh.lastRefresh == nil {
             initialDownloadState.send(.started)
         }

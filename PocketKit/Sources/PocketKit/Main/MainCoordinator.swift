@@ -4,19 +4,18 @@ import Sync
 import Combine
 import BackgroundTasks
 
-
 class MainCoordinator {
     var viewController: UIViewController {
         regular.viewController
     }
-    
+
     var tabBar: UITabBar? {
         compact.tabBar
     }
 
     private let compact: CompactMainCoordinator
     private let regular: RegularMainCoordinator
-    
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(
@@ -28,7 +27,7 @@ class MainCoordinator {
         regular = RegularMainCoordinator(tracker: tracker, model: model)
 
         regular.setCompactViewController(compact.viewController)
-        
+
         model.$selectedSection
             .sink { section in
                 let context: UIContext

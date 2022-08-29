@@ -4,10 +4,10 @@
 
 public struct RecommendationContext: Context {
     public static let schema = "iglu:com.pocket/recommendation/jsonschema/1-0-0"
-    
+
     let id: String
     let index: UIIndex
-    
+
     public init(id: String, index: UIIndex) {
         self.id = id
         self.index = index
@@ -20,4 +20,3 @@ private extension RecommendationContext {
         case index
     }
 }
-

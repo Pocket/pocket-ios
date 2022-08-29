@@ -1,6 +1,5 @@
 import UIKit
 
-
 class ArticleMetadataCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     enum Constants {
         static let stackSpacing: CGFloat = 14

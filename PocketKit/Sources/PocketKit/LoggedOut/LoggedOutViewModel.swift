@@ -7,7 +7,6 @@ import Network
 import Analytics
 import SharedPocketKit
 
-
 enum LoggedOutAction {
     case logIn
     case signUp
@@ -17,12 +16,12 @@ class LoggedOutViewModel: ObservableObject {
     weak var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
     @Published
-    var presentedAlert: PocketAlert? = nil
+    var presentedAlert: PocketAlert?
 
     @Published
     var isPresentingOfflineView: Bool = false
     private(set) var automaticallyDismissed = false
-    private(set) var lastAction: LoggedOutAction? = nil
+    private(set) var lastAction: LoggedOutAction?
 
     private(set) var currentNetworkStatus: NWPath.Status
     private var isOffline: Bool {

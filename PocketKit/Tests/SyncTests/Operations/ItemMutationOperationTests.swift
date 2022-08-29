@@ -4,7 +4,6 @@ import Combine
 
 @testable import Sync
 
-
 class ItemMutationOperationTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!

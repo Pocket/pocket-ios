@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct ActionsPrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label

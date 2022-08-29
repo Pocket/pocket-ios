@@ -2,7 +2,6 @@ import UIKit
 import Combine
 import SafariServices
 
-
 class CompactMyListContainerCoordinator: NSObject {
     var viewController: UIViewController {
         return navigationController
@@ -43,7 +42,7 @@ class CompactMyListContainerCoordinator: NSObject {
         isResetting = true
 
         navigationController.popToRootViewController(animated: false)
-        
+
         model.$selection.sink { [weak self] selection in
             switch selection {
             case .myList:
@@ -84,7 +83,7 @@ class CompactMyListContainerCoordinator: NSObject {
         isResetting = false
         navigationController.delegate = self
     }
-    
+
     private func navigate(selectedItem: SelectedItem) {
         switch selectedItem {
         case .readable(let readable):

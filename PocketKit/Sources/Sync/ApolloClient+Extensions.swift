@@ -5,7 +5,6 @@
 import Apollo
 import Foundation
 
-
 extension ApolloClient {
     static func createDefault(
         sessionProvider: SessionProvider,
@@ -64,7 +63,7 @@ private class AuthParamsInterceptor: ApolloInterceptor {
         request: HTTPRequest<Operation>,
         response: HTTPResponse<Operation>?,
         completion: @escaping (Result<GraphQLResult<Operation.Data>, Error>) -> Void
-    ) where Operation : GraphQLOperation {
+    ) where Operation: GraphQLOperation {
         request.graphQLEndpoint = appendAuthorizationQueryParameters(to: request.graphQLEndpoint)
         chain.proceedAsync(request: request, response: response, completion: completion)
     }
@@ -102,7 +101,7 @@ private class PrependingInterceptorProvider: InterceptorProvider {
         self.base = base
     }
 
-    func interceptors<Operation>(for operation: Operation) -> [ApolloInterceptor] where Operation : GraphQLOperation {
+    func interceptors<Operation>(for operation: Operation) -> [ApolloInterceptor] where Operation: GraphQLOperation {
         let base = base.interceptors(for: operation)
         return [prepend] + base
     }

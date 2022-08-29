@@ -5,7 +5,6 @@ import Apollo
 
 @testable import Sync
 
-
 class FetchListTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!

@@ -6,7 +6,6 @@ import Combine
 @testable import Sync
 @testable import PocketKit
 
-
 class RecommendationViewModelTests: XCTestCase {
     private var source: MockSource!
     private var space: Space!

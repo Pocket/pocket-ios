@@ -2,7 +2,6 @@ import XCTest
 import Sails
 import NIO
 
-
 class BannerViewTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
@@ -11,9 +10,9 @@ class BannerViewTests: XCTestCase {
         continueAfterFailure = false
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
-        
+
         server = Application()
-        
+
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSlateLineup {
@@ -27,7 +26,7 @@ class BannerViewTests: XCTestCase {
                 fatalError("Unexpected request")
             }
         }
-        
+
         try server.start()
     }
 
@@ -36,7 +35,7 @@ class BannerViewTests: XCTestCase {
         try server.stop()
         app.terminate()
     }
-    
+
     func test_navigatingToHomeTab_withClipboardURL_showsBannerAndSavedItem() {
         let urlString = "https://example.com/item-1"
         UIPasteboard.general.string = urlString
@@ -45,26 +44,26 @@ class BannerViewTests: XCTestCase {
 
         banner.buttons.firstMatch.tap()
         waitForDisappearance(of: banner)
-        
+
         home.recentSavesView(matching: "Slate 1, Recommendation 1").wait()
         app.tabBar.myListButton.tap()
         app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
     }
-    
+
     func test_foregroundingTheApp_withURL_showsSaveFromClipboardBanner() {
         let urlString = "https://example.com/item-1"
         UIPasteboard.general.string = urlString
         _ = app.launch().homeView
         app.bannerView.wait()
-        
+
         app.tabBar.myListButton.tap()
         app.bannerView.wait()
-        
+
         XCUIDevice.shared.press(.home)
         _ = app.launch().accountView
         app.bannerView.wait()
     }
-    
+
     func test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop() {
         let urlString = "https://example.com/item-3"
         UIPasteboard.general.string = urlString
@@ -72,13 +71,13 @@ class BannerViewTests: XCTestCase {
         app.myListView.itemView(matching: "Item 3").wait()
         app.tabBar.homeButton.tap()
         let banner = app.bannerView.wait()
-        
+
         server.routes.post("/graphql") { request, loop in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
                 XCTAssertTrue(apiRequest.contains("https:\\/\\/example.com\\/item-3"))
                 return Response.saveItem("save-item-2")
-            }  else {
+            } else {
                 fatalError("Unexpected request")
             }
 
@@ -87,23 +86,23 @@ class BannerViewTests: XCTestCase {
 
         banner.buttons.firstMatch.tap()
         waitForDisappearance(of: banner)
-        
+
         app.homeView.recentSavesView(matching: "Item 3").wait()
     }
-    
+
     func test_navigatingToHomeTab_withoutSavedURL_doesNotShowSaveFromClipboardBanner() {
         UIPasteboard.general.string = "get pocket"
         _ = app.launch().homeView
         waitForDisappearance(of: app.bannerView)
-        
+
         app.tabBar.myListButton.tap()
         waitForDisappearance(of: app.bannerView)
-        
+
         XCUIDevice.shared.press(.home)
         _ = app.launch().accountView
         waitForDisappearance(of: app.bannerView)
     }
-    
+
     func test_dismissingBanner_withClipboardURL_doesNotShowBanner() {
         let urlString = "https://example.com/item-1"
         UIPasteboard.general.string = urlString

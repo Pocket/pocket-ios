@@ -58,11 +58,11 @@ class CompactHomeCoordinator: NSObject {
         model.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &subscriptions)
-        
+
         model.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
-        
+
         model.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)

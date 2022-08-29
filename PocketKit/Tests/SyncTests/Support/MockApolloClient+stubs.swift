@@ -1,12 +1,11 @@
 import XCTest
 import Apollo
 
-
 extension MockApolloClient {
     func stubPerform<T: GraphQLMutation>(
         toReturnFixtureNamed fixtureName: String,
         asResultType: T.Type,
-        handler: (() -> ())? = nil
+        handler: (() -> Void)? = nil
     ) {
         stubPerform { (mutation: T, _, queue, completion) in
             queue.async {
@@ -25,7 +24,7 @@ extension MockApolloClient {
     func stubPerform<T: GraphQLMutation>(
         ofMutationType: T.Type,
         toReturnError error: Error,
-        handler: (() -> ())? = nil
+        handler: (() -> Void)? = nil
     ) {
         stubPerform { (mutation: T, _, queue, completion) -> Apollo.Cancellable in
             queue.async {
@@ -40,7 +39,7 @@ extension MockApolloClient {
     func stubFetch<T: GraphQLQuery>(
         toReturnFixtureNamed fixtureName: String,
         asResultType resultType: T.Type,
-        handler: (() -> ())? = nil
+        handler: (() -> Void)? = nil
     ) {
         stubFetch(
             toReturnFixture: Fixture.load(name: fixtureName),
@@ -52,7 +51,7 @@ extension MockApolloClient {
     func stubFetch<T: GraphQLQuery>(
         toReturnFixture fixture: Fixture,
         asResultType: T.Type,
-        handler: (() -> ())? = nil
+        handler: (() -> Void)? = nil
     ) {
         stubFetch { (query: T, _, _, queue, completion) -> Apollo.Cancellable in
             queue.async {
@@ -67,7 +66,7 @@ extension MockApolloClient {
     func stubFetch<T: GraphQLQuery>(
         ofQueryType: T.Type,
         toReturnError error: Error,
-        handler: (() -> ())? = nil
+        handler: (() -> Void)? = nil
     ) {
         stubFetch { (query: T, _, _, queue, completion) -> Apollo.Cancellable in
             queue.async {

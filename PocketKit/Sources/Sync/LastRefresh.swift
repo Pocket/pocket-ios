@@ -1,6 +1,5 @@
 import Foundation
 
-
 protocol LastRefresh {
     var lastRefresh: Int? { get }
     func refreshed()

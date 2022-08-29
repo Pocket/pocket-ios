@@ -3,7 +3,6 @@ import UIKit
 import Kingfisher
 import Textile
 
-
 private extension Style {
     static let imageCaption: Self = .body.serif
         .with(size: .p4)
@@ -25,13 +24,13 @@ private extension Style {
 
 class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellModel {
     private let component: ImageComponent
-    
+
     private let readerSettings: ReaderSettings
-    
+
     private let onUpdate: () -> Void
-    
+
     private var lastImageSize: CGSize?
-    
+
     private var lastAvailableWidth: CGFloat = 0
 
     private var cachedAttributedCaption: NSAttributedString?
@@ -49,7 +48,7 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
         self.readerSettings = readerSettings
         self.onUpdate = onUpdate
     }
-    
+
     var caption: NSAttributedString? {
         let base = NSMutableAttributedString()
 
@@ -67,7 +66,7 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
 
         return base
     }
-    
+
     var image: ImageComponentCell.ImageSpec? {
         return imageCacheURL(for: component.source).flatMap {
             ImageComponentCell.ImageSpec(
@@ -79,26 +78,26 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
             )
         }
     }
-    
+
     var shouldHideCaption: Bool {
         return caption == nil || caption?.string.trimmingCharacters(in: .whitespaces).isEmpty == true
     }
-    
+
     func imageViewBackgroundColor(imageSize: CGSize) -> UIColor {
         guard let idealWidth = image?.size.width else { return UIColor(.clear) }
-        
+
         if imageSize.width >= idealWidth || shouldHideCaption {
             return UIColor(.clear)
         } else {
             return UIColor(.ui.grey7)
         }
     }
-    
+
     func size(for availableWidth: CGFloat) -> CGSize {
         lastAvailableWidth = availableWidth
-        
+
         var height = lastImageSize?.height ?? availableWidth * 9 / 16
-        
+
         if let caption = caption, !caption.string.isEmpty {
             height += ImageComponentCell.Constants.captionSpacing
             height += caption.sizeFitting(availableWidth: availableWidth).height
@@ -106,10 +105,10 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
 
         height += ImageComponentCell.Constants.layoutMargins.top
         height += ImageComponentCell.Constants.layoutMargins.bottom
-        
+
         return CGSize(width: availableWidth, height: height)
     }
-    
+
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: ImageComponentCell = collectionView.dequeueCell(for: indexPath)
 

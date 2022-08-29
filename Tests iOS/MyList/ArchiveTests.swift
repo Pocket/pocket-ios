@@ -5,7 +5,6 @@
 import XCTest
 import Sails
 
-
 class ArchiveTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
@@ -88,7 +87,6 @@ class ArchiveTests: XCTestCase {
         let itemCell = app.myListView.itemView(matching: "Archived Item 1")
         itemCell.itemActionButton.wait().tap()
 
-
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
@@ -100,7 +98,6 @@ class ArchiveTests: XCTestCase {
 
             fatalError("Unexpected request")
         }
-
 
         app.reAddButton.wait().tap()
         waitForDisappearance(of: itemCell)

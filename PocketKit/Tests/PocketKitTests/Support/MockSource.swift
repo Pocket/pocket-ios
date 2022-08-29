@@ -3,7 +3,6 @@ import Foundation
 import CoreData
 import Combine
 
-
 class MockSource: Source {
     var _events: SyncEvents = SyncEvents()
     var events: AnyPublisher<SyncEvent, Never> {
@@ -44,8 +43,8 @@ extension MockSource {
     }
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
-        print(T.self)        
-        
+        print(T.self)
+
         guard let impl = implementations[Self.object] as? ObjectImpl<T> else {
             fatalError("\(Self.self)#\(#function) is not implemented")
         }
@@ -68,7 +67,7 @@ extension MockSource {
         implementations[Self.refresh] = impl
     }
 
-    func refresh(maxItems: Int, completion: (() -> ())?) {
+    func refresh(maxItems: Int, completion: (() -> Void)?) {
         guard let impl = implementations[Self.refresh] as? RefreshImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -110,7 +109,7 @@ extension MockSource {
 
         return impl()
     }
-    
+
     func makeItemsControllerCall(at index: Int) -> MakeItemsControllerCall? {
         guard let calls = calls[Self.makeItemsController], calls.count > index else {
             return nil

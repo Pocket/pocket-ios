@@ -3,13 +3,12 @@ import Textile
 import UIKit
 import SwiftUI
 
-
 struct ItemAction {
     let title: String
     let identifier: UIAction.Identifier
     let accessibilityIdentifier: String
     let image: UIImage?
-    let handler: ((Any?) -> ())?
+    let handler: ((Any?) -> Void)?
 }
 
 extension ItemAction: Hashable {
@@ -27,7 +26,7 @@ extension ItemAction: Hashable {
 }
 
 extension ItemAction {
-    static func save(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func save(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Save",
             identifier: .saveItem,
@@ -37,7 +36,7 @@ extension ItemAction {
         )
     }
 
-    static func archive(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func archive(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Archive",
             identifier: .archiveItem,
@@ -47,7 +46,7 @@ extension ItemAction {
         )
     }
 
-    static func delete(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func delete(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Delete",
             identifier: .deleteItem,
@@ -58,7 +57,7 @@ extension ItemAction {
         )
     }
 
-    static func moveToMyList(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func moveToMyList(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Move to My List",
             identifier: .moveToMyListItem,
@@ -68,7 +67,7 @@ extension ItemAction {
         )
     }
 
-    static func favorite(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func favorite(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Favorite",
             identifier: .favoriteItem,
@@ -79,7 +78,7 @@ extension ItemAction {
         )
     }
 
-    static func unfavorite(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func unfavorite(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Unfavorite",
             // intentionally the same as `favorite()` since we want to replace
@@ -91,7 +90,7 @@ extension ItemAction {
         )
     }
 
-    static func share(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func share(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Share",
             identifier: .shareItem,
@@ -100,8 +99,8 @@ extension ItemAction {
             handler: handler
         )
     }
-    
-    static func displaySettings(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+
+    static func displaySettings(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Display Settings",
             identifier: .displaySettings,
@@ -111,7 +110,7 @@ extension ItemAction {
         )
     }
 
-    static func report(_ handler: @escaping (Any?) ->()) -> ItemAction {
+    static func report(_ handler: @escaping (Any?) ->Void) -> ItemAction {
         return ItemAction(
             title: "Report",
             identifier: .report,
@@ -121,7 +120,7 @@ extension ItemAction {
         )
     }
 
-    static func recommendationPrimary(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func recommendationPrimary(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "",
             identifier: .recommendationPrimary,
@@ -131,7 +130,7 @@ extension ItemAction {
         )
     }
 
-    static func copyLink(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func copyLink(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Copy link",
             identifier: .copyLink,
@@ -141,7 +140,7 @@ extension ItemAction {
         )
     }
 
-    static func open(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+    static func open(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Open",
             identifier: .open,

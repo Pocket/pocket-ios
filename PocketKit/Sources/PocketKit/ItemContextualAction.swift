@@ -2,7 +2,6 @@ import Foundation
 import Textile
 import UIKit
 
-
 struct ItemContextualAction {
     let style: UIContextualAction.Style
     let title: String

@@ -1,6 +1,5 @@
 @testable import Sync
 
-
 class MockExpiringActivityPerformer: ExpiringActivityPerformer {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]

@@ -4,19 +4,18 @@
 
 import Foundation
 
-
 extension Date: RawRepresentable {
     private static let dateFormatter = ISO8601DateFormatter()
-    
+
     public var rawValue: String {
         return Self.dateFormatter.string(from: self)
     }
-    
+
     public init?(rawValue: String) {
         guard let date = Self.dateFormatter.date(from: rawValue) else {
             return nil
         }
-        
+
         self = date
     }
 }

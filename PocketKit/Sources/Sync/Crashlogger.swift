@@ -4,7 +4,6 @@
 
 import Sentry
 
-
 public struct Crashlogger {
     public static func setUserID(_ userID: String) {
         SentrySDK.setUser(User(userId: userID))

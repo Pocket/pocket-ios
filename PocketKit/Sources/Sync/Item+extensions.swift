@@ -1,6 +1,5 @@
 import Foundation
 
-
 extension Item {
     public var bestURL: URL? {
         resolvedURL ?? givenURL

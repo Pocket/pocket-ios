@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct SectionHeaderElement: PocketUIElement {
     let element: XCUIElement
 

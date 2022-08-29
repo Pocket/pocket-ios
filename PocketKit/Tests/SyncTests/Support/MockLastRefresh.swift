@@ -1,6 +1,5 @@
 @testable import Sync
 
-
 class MockLastRefresh: LastRefresh {
     // MARK: - lastRefresh
     typealias GetLastRefreshImpl = () -> Int?
@@ -18,7 +17,7 @@ class MockLastRefresh: LastRefresh {
     }
 
     // MARK: - refreshed
-    typealias RefreshedImpl = () -> ()
+    typealias RefreshedImpl = () -> Void
     private var refreshedImpl: RefreshedImpl?
     func stubRefreshed(impl: @escaping RefreshedImpl) {
         refreshedImpl = impl

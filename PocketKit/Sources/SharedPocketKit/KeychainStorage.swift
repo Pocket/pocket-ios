@@ -1,7 +1,6 @@
 import Foundation
 import Combine
 
-
 @propertyWrapper
 public class KeychainStorage<T: Codable & Equatable> {
     private let keychain: Keychain

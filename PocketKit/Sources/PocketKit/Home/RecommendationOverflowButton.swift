@@ -1,7 +1,6 @@
 import UIKit
 import Textile
 
-
 class RecommendationOverflowButton: UIButton {
     init() {
         super.init(frame: .zero)
@@ -16,11 +15,11 @@ class RecommendationOverflowButton: UIButton {
         configuration?.image = UIImage(asset: .overflow)
             .resized(to: CGSize(width: 20, height: 20))
             .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
-        
+
         configuration?.imageColorTransformer = UIConfigurationColorTransformer { [weak self] _ in
             self?.imageColor() ?? UIColor(.ui.grey5)
         }
-        
+
     }
 
     required init?(coder: NSCoder) {

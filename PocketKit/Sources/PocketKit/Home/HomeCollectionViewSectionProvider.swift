@@ -2,7 +2,6 @@ import UIKit
 import Sync
 import CoreData
 
-
 class HomeViewControllerSectionProvider {
     struct Constants {
         static let margin: CGFloat = Margins.thin.rawValue
@@ -10,7 +9,7 @@ class HomeViewControllerSectionProvider {
         static let spacing: CGFloat = 16
         static let sectionSpacing: CGFloat = 64
     }
-    
+
     func loadingSection() -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
@@ -26,7 +25,7 @@ class HomeViewControllerSectionProvider {
             ),
             subitems: [item]
         )
-        
+
         return NSCollectionLayoutSection(group: group)
     }
 
@@ -49,7 +48,7 @@ class HomeViewControllerSectionProvider {
             elementKind: SectionHeaderView.kind,
             alignment: .top
         )
-        
+
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
         section.boundarySupplementaryItems = [headerItem]
@@ -61,19 +60,19 @@ class HomeViewControllerSectionProvider {
         )
         return section
     }
-    
+
     func heroSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
         let heroItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
         let heroItem = NSCollectionLayoutItem(layoutSize: heroItemSize)
-        
+
         let slate = viewModel.slateModel(for: slateID)
         let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
-        
+
         guard !recommendations.isEmpty,
               let hero = viewModel.recommendationHeroViewModel(for: recommendations[0].objectID) else {
             return nil
         }
-        
+
         let heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(heroHeight))
         let heroGroup = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [heroItem])
@@ -87,7 +86,7 @@ class HomeViewControllerSectionProvider {
             elementKind: SectionHeaderView.kind,
             alignment: .top
         )
-        
+
         let section = NSCollectionLayoutSection(group: heroGroup)
         section.boundarySupplementaryItems = [headerItem]
         section.contentInsets = NSDirectionalEdgeInsets(
@@ -99,7 +98,6 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    
     func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {
@@ -112,7 +110,7 @@ class HomeViewControllerSectionProvider {
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfCarouselItems)), heightDimension: .absolute(StyleConstants.groupHeight))
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfCarouselItems)
         group.interItemSpacing = .fixed(16)
-        
+
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .continuous
         section.contentInsets = NSDirectionalEdgeInsets(

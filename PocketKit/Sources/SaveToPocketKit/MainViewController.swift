@@ -4,7 +4,6 @@ import Apollo
 import SharedPocketKit
 import Sync
 
-
 class MainViewController: UIViewController {
     private let childViewController: UIViewController
 

@@ -4,7 +4,6 @@ import Textile
 import Foundation
 import SharedPocketKit
 
-
 class AccountViewModel {
     private let appSession: AppSession
 

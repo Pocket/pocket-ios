@@ -2,7 +2,6 @@ import XCTest
 @testable import Textile
 @testable import PocketKit
 
-
 class ItemsListItemPresenterTests: XCTestCase { }
 
 // MARK: - Attributed Title

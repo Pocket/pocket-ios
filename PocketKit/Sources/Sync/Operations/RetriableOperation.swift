@@ -1,6 +1,5 @@
 import Combine
 
-
 enum SyncOperationResult {
     case retry(Error)
     case success

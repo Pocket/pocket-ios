@@ -4,12 +4,11 @@ import Combine
 import Textile
 import CoreData
 
-
 class HomeRecommendationCellViewModel {
     let recommendation: Recommendation
     let overflowActions: [ItemAction]?
     let primaryAction: ItemAction?
-    
+
     var isSaved: Bool {
         recommendation.item?.savedItem != nil &&
         recommendation.item?.savedItem?.isArchived == false
@@ -34,11 +33,11 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
     var attributedDomain: NSAttributedString {
         NSAttributedString(string: domain ?? "", style: .domain)
     }
-    
+
     var attributedTimeToRead: NSAttributedString {
         NSAttributedString(string: timeToRead ?? "", style: .timeToRead)
     }
-    
+
     var title: String? {
         recommendation.item?.title
     }
@@ -74,7 +73,7 @@ private extension Style {
     static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
-    
+
     static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey5).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }.with(maxScaleSize: 22)

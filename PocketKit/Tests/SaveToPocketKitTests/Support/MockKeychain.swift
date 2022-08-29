@@ -5,7 +5,6 @@
 import Foundation
 @testable import SharedPocketKit
 
-
 class MockKeychain: Keychain {
     struct AddCall {
         let query: CFDictionary
@@ -57,4 +56,3 @@ class MockKeychain: Keychain {
         return deleteReturnVal
     }
 }
-

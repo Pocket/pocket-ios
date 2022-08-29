@@ -1,7 +1,6 @@
 import Foundation
 import CoreData
 
-
 public protocol SavedItemsControllerDelegate: AnyObject {
     func controller(
         _ controller: SavedItemsController,

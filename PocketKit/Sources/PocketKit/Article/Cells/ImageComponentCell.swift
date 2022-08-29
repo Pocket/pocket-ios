@@ -18,7 +18,7 @@ class ImageComponentCell: UICollectionViewCell {
         let source: URL
         let size: CGSize
     }
-    
+
     let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .center
@@ -51,7 +51,7 @@ class ImageComponentCell: UICollectionViewCell {
             stack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
         ])
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
     }

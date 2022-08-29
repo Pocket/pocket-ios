@@ -6,7 +6,6 @@ import Sync
 import Analytics
 import SharedPocketKit
 
-
 class LoggedOutViewModelTests: XCTestCase {
     private var authorizationClient: AuthorizationClient!
     private var appSession: AppSession!

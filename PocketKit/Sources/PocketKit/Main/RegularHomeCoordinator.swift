@@ -4,13 +4,11 @@ import SafariServices
 import Analytics
 import Sync
 
-
 protocol RegularHomeCoordinatorDelegate: ModalContentPresenting {
     func homeCoordinatorDidSelectMyList(_ coordinator: RegularHomeCoordinator)
     func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectReadableType readableType: ReadableType?)
     func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectRecommendation recommendation: RecommendationViewModel?)
 }
-
 
 class RegularHomeCoordinator: NSObject {
     weak var delegate: RegularHomeCoordinatorDelegate?

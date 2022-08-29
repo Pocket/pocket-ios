@@ -4,27 +4,26 @@
 
 import UIKit
 
-
 class CopyLinkWithSelectionActivity: UIActivity {
-    private var link: URL? = nil
-    private var highlight: String? = nil
-    
+    private var link: URL?
+    private var highlight: String?
+
     static override var activityCategory: UIActivity.Category {
         return .action
     }
-    
+
     override var activityType: UIActivity.ActivityType? {
         return .copySelection
     }
-    
+
     override var activityTitle: String? {
         return "Copy link with selection"
     }
-    
+
     override var activityImage: UIImage? {
         return UIImage(systemName: "highlighter")
     }
-    
+
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         return activityItems.first { $0 is URL } != nil && activityItems.first { $0 is String} != nil
     }
@@ -43,11 +42,10 @@ class CopyLinkWithSelectionActivity: UIActivity {
         guard let link = link, let highlight = highlight else {
             return
         }
-        
+
         let components = [link.absoluteString, "\"\(highlight)\""]
         let string = components.joined(separator: "\n\n")
 
         UIPasteboard.general.string = string
     }
 }
-

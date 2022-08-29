@@ -1,6 +1,5 @@
 import CoreGraphics
 
-
 public enum LineBreakMode {
     case byTruncatingTail
     case none

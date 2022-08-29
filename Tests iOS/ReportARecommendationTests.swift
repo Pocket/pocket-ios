@@ -1,19 +1,18 @@
 import XCTest
 import Sails
 
-
 class ReportARecommendationTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
-    
+
     override func setUpWithError() throws {
         continueAfterFailure = false
-        
+
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
-        
+
         server = Application()
-        
+
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
@@ -35,29 +34,29 @@ class ReportARecommendationTests: XCTestCase {
                 fatalError("Unexpected request")
             }
         }
-        
+
         server.routes.post("/com.snowplowanalytics.snowplow/tp2") { _, _ in
             return Response {
                 Status.ok
                 Data()
             }
         }
-        
+
         try server.start()
-        
+
         app.launch(
             arguments: .bypassSignIn.with(disableSnowplow: false)
         )
     }
-    
+
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
     }
-    
+
     func test_reportingARecommendationfromHero_asBrokenMeta_sendsEvent() {
         let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
-        var requestBody: String? = nil
+        var requestBody: String?
         server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
             requestBody = body(of: request)
             if requestBody?.contains("engagement") == true
@@ -71,13 +70,13 @@ class ReportARecommendationTests: XCTestCase {
                 Data()
             }
         }
-        
+
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .overflowButton.wait().tap()
-        
+
         app.reportButton.wait().tap()
-        
+
         let report = app.reportView.wait()
         report.brokenMetaButton.verify()
         report.wrongCategoryButton.verify()
@@ -87,19 +86,19 @@ class ReportARecommendationTests: XCTestCase {
         report.otherButton.verify().tap()
         report.commentEntry.wait()
         report.submitButton.wait().tap()
-        
+
         wait(for: [reportExpectation], timeout: 1)
         guard let requestBody = requestBody else {
             XCTFail("Expected request body to not be nil")
             return
         }
-        
+
         XCTAssertTrue(requestBody.contains("reason"))
     }
-    
+
     func test_reportingARecommendationFromCarousel_asBrokenMeta_sendsEvent() {
         let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
-        var requestBody: String? = nil
+        var requestBody: String?
         server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
             requestBody = body(of: request)
             if requestBody?.contains("engagement") == true
@@ -126,13 +125,13 @@ class ReportARecommendationTests: XCTestCase {
             withVelocity: .default,
             thenHoldForDuration: 0.1
         )
-        
+
         app.homeView
             .recommendationCell("Slate 1, Recommendation 2")
             .overflowButton.wait().tap()
-        
+
         app.reportButton.wait().tap()
-        
+
         let report = app.reportView.wait()
         report.brokenMetaButton.verify()
         report.wrongCategoryButton.verify()
@@ -142,13 +141,13 @@ class ReportARecommendationTests: XCTestCase {
         report.otherButton.verify().tap()
         report.commentEntry.wait()
         report.submitButton.wait().tap()
-        
+
         wait(for: [reportExpectation], timeout: 1)
         guard let requestBody = requestBody else {
             XCTFail("Expected request body to not be nil")
             return
         }
-        
+
         XCTAssertTrue(requestBody.contains("reason"))
     }
 

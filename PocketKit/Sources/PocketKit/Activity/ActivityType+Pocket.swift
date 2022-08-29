@@ -4,7 +4,6 @@
 
 import UIKit
 
-
 extension UIActivity.ActivityType {
     static let copyLink = UIActivity.ActivityType("com.pocket.copy-link")
     static let copySelection = UIActivity.ActivityType("com.pocket.copy-selection")

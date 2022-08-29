@@ -51,15 +51,14 @@ class SlateDetailViewModelTests: XCTestCase {
         wait(for: [fetchExpectation], timeout: 1)
         XCTAssertEqual(source.fetchSlateCall(at: 0)?.identifier, "abcde")
     }
-    
-    
+
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() throws {
         let slate: Slate = try space.createSlate(
             remoteID: "slate-1",
             recommendations: []
         )
         let viewModel = subject(slate: slate)
-    
+
         let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
         viewModel.$snapshot.sink { snapshot in
             defer { receivedLoadingSnapshot.fulfill() }
@@ -207,7 +206,7 @@ class SlateDetailViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         let action = viewModel
-            .recommendationViewModel(for: recommendation.objectID, at: [0,0])?
+            .recommendationViewModel(for: recommendation.objectID, at: [0, 0])?
             .overflowActions?
             .first { $0.identifier == .report }
         XCTAssertNotNil(action)
@@ -225,7 +224,7 @@ class SlateDetailViewModelTests: XCTestCase {
         let viewModel = subject(slate: slate)
 
         let action = viewModel
-            .recommendationViewModel(for: recommendation.objectID, at: [0,0])?
+            .recommendationViewModel(for: recommendation.objectID, at: [0, 0])?
             .primaryAction
         XCTAssertNotNil(action)
         action?.handler?(nil)

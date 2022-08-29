@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct ItemRowElement: PocketUIElement {
     let element: XCUIElement
 
@@ -51,5 +50,3 @@ extension ItemRowElement {
         }
     }
 }
-
-

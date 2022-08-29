@@ -2,9 +2,9 @@ import SwiftUI
 import Textile
 
 open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Content: View {
-    
+
     private(set) var host: UIHostingController<Content>?
-    
+
     func embed(in parent: UIViewController, withView content: Content) {
         if let host = self.host {
             host.rootView = content
@@ -17,7 +17,7 @@ open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Conten
             self.host = host
         }
     }
-    
+
     deinit {
         host?.willMove(toParent: nil)
         host?.view.removeFromSuperview()
@@ -27,7 +27,7 @@ open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Conten
 }
 
 class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView> {
-    
+
     func configure(parent: UIViewController, _ viewModel: EmptyStateViewModel) {
         embed(in: parent, withView: EmptyStateView(viewModel: viewModel))
         host?.view.frame = self.contentView.bounds
@@ -38,33 +38,33 @@ class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView> {
 
 struct EmptyStateView: View {
     private var viewModel: EmptyStateViewModel
-    
+
     @State
     private var showSafariView = false
-    
+
     static let maxWidth: CGFloat = 300
-    
+
     init(viewModel: EmptyStateViewModel) {
         self.viewModel = viewModel
     }
-    
+
     var body: some View {
         VStack(alignment: .center, spacing: 35) {
             Image(asset: viewModel.imageAsset)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: Self.maxWidth)
-            
+
             VStack(alignment: .center, spacing: 20) {
                 Text(viewModel.headline).style(.main)
-                
+
                 if let subtitle = viewModel.detailText, let icon = viewModel.icon {
                     VStack(alignment: .center, spacing: 5) {
                         Image(asset: icon)
                         Text(subtitle).style(.detail)
                     }
                 }
-                
+
                 if let buttonText = viewModel.buttonText, let webURL = viewModel.webURL {
                     Button(action: {
                         self.showSafariView = true

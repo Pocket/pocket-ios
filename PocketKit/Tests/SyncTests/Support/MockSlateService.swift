@@ -1,6 +1,5 @@
 @testable import Sync
 
-
 class MockSlateService: SlateService {
     var implementations: [String: Any] = [:]
     var calls: [String: [Any]] = [:]

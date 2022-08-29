@@ -5,7 +5,6 @@
 import Foundation
 @testable import PocketKit
 
-
 class Fixture {
     enum ReplacementEscapeStrategy {
         case none

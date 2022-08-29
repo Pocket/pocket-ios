@@ -2,7 +2,6 @@ import UIKit
 import SharedPocketKit
 import Combine
 
-
 class LoggedOutViewModel {
     let infoViewModel = InfoView.Model(
         style: .error,
@@ -19,7 +18,7 @@ class LoggedOutViewModel {
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
     @Published
-    var actionButtonConfiguration: UIButton.Configuration? = nil
+    var actionButtonConfiguration: UIButton.Configuration?
 
     func viewWillAppear(context: ExtensionContext?, origin: Any) {
         if responder(from: origin) != nil {

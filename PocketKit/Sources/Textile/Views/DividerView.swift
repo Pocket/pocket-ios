@@ -1,6 +1,5 @@
 import UIKit
 
-
 public class DividerView: UICollectionReusableView {
     private let line = UIView()
 

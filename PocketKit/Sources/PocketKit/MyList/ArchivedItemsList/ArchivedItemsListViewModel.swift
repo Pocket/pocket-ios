@@ -5,7 +5,6 @@ import Analytics
 import Network
 import CoreData
 
-
 class ArchivedItemsListViewModel: ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
@@ -18,7 +17,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     @Published
     private var _snapshot = Snapshot()
     var snapshot: Published<Snapshot>.Publisher { $_snapshot }
-    
+
     @Published
     var sharedActivity: PocketActivity?
 
@@ -329,7 +328,7 @@ extension ArchivedItemsListViewModel {
 
         _snapshot.reloadSections([.filters])
     }
-    
+
     private func handleFilterSelection(with filter: ItemsListFilter) {
         if filter == .all {
             selectedFilters = [.all]
@@ -339,7 +338,7 @@ extension ArchivedItemsListViewModel {
             selectedFilters.insert(filter)
             selectedFilters.remove(.all)
         }
-        
+
         if selectedFilters.isEmpty {
             selectedFilters.insert(.all)
         }

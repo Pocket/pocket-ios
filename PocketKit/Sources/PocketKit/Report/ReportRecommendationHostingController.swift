@@ -2,7 +2,6 @@ import SwiftUI
 import Analytics
 import Sync
 
-
 class ReportRecommendationHostingController: OnDismissHostingController<ReportRecommendationView> {
     init(
         recommendation: Recommendation,
@@ -14,11 +13,11 @@ class ReportRecommendationHostingController: OnDismissHostingController<ReportRe
             tracker: tracker
         )
         super.init(rootView: view, onDismiss: onDismiss)
-        
+
         UITableView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = UIColor(.ui.white1)
         UITextView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = .clear
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }

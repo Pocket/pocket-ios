@@ -1,7 +1,6 @@
 import XCTest
 @testable import Sync
 
-
 extension PocketSourceTests {
     func test_restoresOperationsInCorrectOrder() throws {
         sessionProvider.session = MockSession()

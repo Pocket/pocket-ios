@@ -5,7 +5,6 @@
 import Foundation
 import SwiftUI
 
-
 public struct Style {
     let fontDescriptor: FontDescriptor
     let maxScaleSize: CGFloat?
@@ -32,7 +31,7 @@ public struct Style {
         self.paragraph = paragraph
         self.backgroundColorAsset = backgroundColor
     }
-    
+
     init(
         family: FontDescriptor.Family = .graphik,
         size: FontDescriptor.Size = .body,
@@ -55,7 +54,7 @@ public struct Style {
             backgroundColor: backgroundColor
         )
     }
-    
+
     public func with(size: FontDescriptor.Size) -> Style {
         Style(
             fontDescriptor: fontDescriptor.with(size: size),
@@ -66,7 +65,7 @@ public struct Style {
             backgroundColor: backgroundColorAsset
         )
     }
-    
+
     public func with(maxScaleSize: CGFloat) -> Style {
         Style(
             fontDescriptor: fontDescriptor,
@@ -155,7 +154,7 @@ public struct Style {
             backgroundColor: backgroundColorAsset
         )
     }
-    
+
     public func with(backgroundColor: ColorAsset?) -> Style {
         Style(
             fontDescriptor: fontDescriptor,
@@ -166,7 +165,7 @@ public struct Style {
             backgroundColor: backgroundColor
         )
     }
-    
+
     public func adjustingSize(by adjustment: Int) -> Style {
         Style(
             fontDescriptor: fontDescriptor.adjustingSize(by: adjustment),

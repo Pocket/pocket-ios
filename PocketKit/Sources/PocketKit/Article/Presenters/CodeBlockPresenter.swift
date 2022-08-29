@@ -2,14 +2,13 @@ import Sync
 import UIKit
 import Textile
 
-
 private extension Style {
     static let codeBlock: Self = .body.monospace
 }
 
 class CodeBlockPresenter: ArticleComponentPresenter {
     private let component: CodeBlockComponent
-    
+
     private let readerSettings: ReaderSettings
 
     private var cachedCodeBlock: NSAttributedString?
@@ -21,7 +20,7 @@ class CodeBlockPresenter: ArticleComponentPresenter {
         self.component = component
         self.readerSettings = readerSettings
     }
-    
+
     func size(for availableWidth: CGFloat) -> CGSize {
         codeBlock.flatMap {
             var size = $0.sizeFitting()
@@ -31,7 +30,7 @@ class CodeBlockPresenter: ArticleComponentPresenter {
             return size
         } ?? .zero
     }
-    
+
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: CodeBlockComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.textView.attributedText = codeBlock

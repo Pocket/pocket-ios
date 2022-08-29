@@ -1,7 +1,6 @@
 import Sync
 import UIKit
 
-
 class UnsupportedComponentPresenter: ArticleComponentPresenter {
     private let readableViewModel: ReadableViewModel?
 
@@ -16,7 +15,7 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
         }
         return cell
     }
-    
+
     func size(for availableWidth: CGFloat) -> CGSize {
         CGSize(width: availableWidth, height: 86)
     }
