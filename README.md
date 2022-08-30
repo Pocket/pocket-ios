@@ -30,3 +30,19 @@ new schema
 ## Pocket iOS
 
 
+
+## Commit strategy
+
+We prefer to keep out commit history linear (meaning avoiding noisy merge
+commits). To keep your branch up to date, follow these steps:
+
+```sh
+# while on your PR branch
+$ git checkout develop
+$ git pull --rebase
+$ git checkout my-pr-branch
+$ git rebase develop
+$ git push origin my-pr-branch --force[-with-lease]
+```
+
+
