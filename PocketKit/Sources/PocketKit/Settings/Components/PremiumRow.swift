@@ -13,8 +13,8 @@ enum PremiumStatus {
     }
     var style: Style {
         switch self {
-            case .notSubscribed: return .settings.rowInactive
-            case .subscribed: return .settings.rowActive
+        case .notSubscribed: return .settings.row.deactivated
+        case .subscribed: return .settings.row.active
         }
     }
 }
@@ -35,7 +35,7 @@ struct PremiumRow<Destination: View>: View {
                 HStack(alignment: .center, spacing: 0) {
                     VStack(alignment: .leading, spacing: 5) {
                         Text("Premium Status:")
-                            .style(.settings.rowHeader)
+                            .style(.settings.row.header)
                         Text(status.title)
                             .style(status.style)
                     }
