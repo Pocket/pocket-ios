@@ -142,6 +142,7 @@
 		16E4B16E27A3212900E01746 /* Response+factories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+factories.swift"; sourceTree = "<group>"; };
 		16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefreshTests.swift; sourceTree = "<group>"; };
 		16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveAnItemTests.swift; sourceTree = "<group>"; };
+		655C274E28B67ED20040AEAB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8A289CD52899BD820030E5E0 /* BannerViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerViewTests.swift; sourceTree = "<group>"; };
 		8A3E3DBB2864DB0500483564 /* EmptyStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateTests.swift; sourceTree = "<group>"; };
 		8A4ECEF8287775F90007DB67 /* SectionHeaderElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionHeaderElement.swift; sourceTree = "<group>"; };
@@ -203,6 +204,7 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
+				655C274E28B67ED20040AEAB /* README.md */,
 				166DF27827E9172800C03BF4 /* Pocket (iOS).entitlements */,
 				1624B85A268508180099B6EF /* PocketKit */,
 				16BA7D6226851513009A17C1 /* main.swift */,
