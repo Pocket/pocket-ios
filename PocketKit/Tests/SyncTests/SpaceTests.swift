@@ -20,12 +20,17 @@ class SpaceTests: XCTestCase {
     
     func testDeletingOrphanTags() throws {
         let space = subject()
-        let _: Tag = space.new()
-        let _: Tag = space.new()
+        _ = space.buildSavedItem(tags: ["tag 1"])
+        let tag2: Tag = space.new()
+        let tag3: Tag = space.new()
+        tag2.name = "tag 2"
+        tag3.name = "tag 3"
+    
+        try XCTAssertEqual(Set(space.fetchTags().compactMap { $0.name }), ["tag 1", "tag 2", "tag 3"])
         
         try space.deleteOrphanTags()
         
-        try XCTAssertEqual(space.fetchTags(), [])
+        try XCTAssertEqual(space.fetchTags().compactMap { $0.name }, ["tag 1"])
     }
     
     func testFetchTags() throws {

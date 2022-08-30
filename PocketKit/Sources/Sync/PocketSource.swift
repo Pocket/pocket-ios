@@ -316,18 +316,10 @@ extension PocketSource {
         try? space.deleteOrphanTags()
         try? space.save()
         
-        let mutation: AnyMutation
-
-        if tags.isEmpty {
-            mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
-        } else {
-            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
-        }
-        
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: mutation
+            mutation: getMutation(for: tags, and: remoteID)
         )
 
         enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
@@ -352,6 +344,16 @@ extension PocketSource {
             savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
             try space.save()
         }
+    }
+    
+    private func getMutation(for tags: [String], and remoteID: String) -> AnyMutation {
+        let mutation: AnyMutation
+        if tags.isEmpty {
+            mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
+        } else {
+            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
+        }
+        return mutation
     }
 }
 
@@ -475,16 +477,10 @@ extension PocketSource {
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             case .addTags(let remoteID, let tags):
-                let mutation: AnyMutation
-                if tags.isEmpty {
-                    mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
-                } else {
-                    mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
-                }
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: mutation
+                    mutation: getMutation(for: tags, and: remoteID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             }
