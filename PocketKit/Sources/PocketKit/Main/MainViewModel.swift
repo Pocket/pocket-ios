@@ -46,7 +46,7 @@ class MainViewModel: ObservableObject {
             case .myList:
                 return "My List"
             case .account:
-                return "Account"
+                return "Settings"
             }
         }
 
