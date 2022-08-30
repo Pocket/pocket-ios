@@ -8,7 +8,7 @@ struct SettingsRowLink<Destination: View>: View {
     
     var title: String
     var titleStyle: Style = .settings.row.default
-    var icon: SFIconModel = SFIconModel("chevron.right", color: Color(.ui.black))
+    var icon: SFIconModel = SFIconModel("chevron.right", color: Color(.ui.black1))
     var destination: Destination
     
     

@@ -1,20 +1,38 @@
 import SwiftUI
 import Textile
 
-enum PremiumStatus {
-    case notSubscribed
-    case subscribed
+enum PremiumStatus: String {
+    case notSubscribed = "Sign up for Premium"
+    case subscribed = "Premium Subscriber"
     
-    var title: String {
+    var headerVisible: Bool {
         switch self {
-            case .notSubscribed: return "Not Subscribed"
-            case .subscribed: return "Premium Subscriber"
+            case .notSubscribed: return false
+            case .subscribed: return true
         }
     }
-    var style: Style {
+    var headerStyle: Style {
+        switch self{
+        case .notSubscribed: return .settings.row.darkBackground.header
+        case .subscribed: return .settings.row.header
+        }
+    }
+    var statusStyle: Style {
         switch self {
-        case .notSubscribed: return .settings.row.deactivated
+        case .notSubscribed: return .settings.button.darkBackground
         case .subscribed: return .settings.row.active
+        }
+    }
+    var foreground: Color {
+        switch self {
+        case .notSubscribed: return Color(.ui.white)
+        case .subscribed: return Color(.ui.black1)
+        }
+    }
+    var background: Color {
+        switch self {
+        case .notSubscribed: return Color(.ui.coral2)
+        case .subscribed: return Color(UIColor.secondarySystemGroupedBackground)
         }
     }
 }
@@ -34,17 +52,20 @@ struct PremiumRow<Destination: View>: View {
             VStack(spacing: 0) {
                 HStack(alignment: .center, spacing: 0) {
                     VStack(alignment: .leading, spacing: 5) {
-                        Text("Premium Status:")
-                            .style(.settings.row.header)
-                        Text(status.title)
-                            .style(status.style)
+                        if status.headerVisible {
+                            Text("Premium Status:")
+                                .style(status.headerStyle)
+                        }
+                        Text(status.rawValue)
+                            .style(status.statusStyle)
+                            .padding(.vertical, status.headerVisible ? 0 : 9)
                     }
                     Spacer()
-                    SFIcon(SFIconModel("chevron.right", color: Color(.ui.black)))
+                    SFIcon(SFIconModel("chevron.right", weight: status.headerVisible ? .regular : .semibold ,color: status.foreground))
                 }
                 .padding(.vertical, 5)
                 NavigationLink(destination: destination, isActive: $isActive) {EmptyView()}.hidden()
             }
-        }
+        }.listRowBackground(status.background)
     }
 }

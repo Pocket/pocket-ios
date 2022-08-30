@@ -23,7 +23,7 @@ struct SettingsView: View {
         VStack(spacing:0) {
             Form {
                 Section(header: Text("Your Account").style(.settings.header)) {
-                    PremiumRow(status: .notSubscribed, destination: EmptyView())
+                    PremiumRow(status: .subscribed, destination: EmptyView())
                     SettingsRowLink(title: "Reset Password", destination: EmptyView())
                     SettingsRowLink(title: "Delete Account", destination: EmptyView())
                 }.textCase(nil)
