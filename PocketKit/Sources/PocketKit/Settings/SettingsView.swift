@@ -34,7 +34,7 @@ struct SettingsView: View {
                 }
                 
                 Section(header: Text("About & Support").style(.settings.sectionHeader)) {
-                    SettingsRowButton(title: "Help", icon: SFIconModel("doc.plaintext")) { model.helpPresented.toggle() }
+                    SettingsRowButton(title: "Help", icon: SFIconModel("questionmark.circle")) { model.helpPresented.toggle() }
                         .sheet(isPresented: $model.helpPresented) {
                             SFSafariView(url: URL(string: "https://help.getpocket.com")!)
                                 .edgesIgnoringSafeArea(.bottom)
