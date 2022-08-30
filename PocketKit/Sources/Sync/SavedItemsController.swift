@@ -18,6 +18,8 @@ public protocol SavedItemsController: AnyObject {
 
     var predicate: NSPredicate? { get set }
 
+    var sortDescriptors: [NSSortDescriptor]? { get set }
+
     var fetchedObjects: [SavedItem]? { get }
 
     func performFetch() throws
@@ -36,6 +38,11 @@ class FetchedSavedItemsController: NSObject, SavedItemsController {
         super.init()
 
         resultsController.delegate = self
+    }
+
+    var sortDescriptors: [NSSortDescriptor]? {
+        get { resultsController.fetchRequest.sortDescriptors }
+        set { resultsController.fetchRequest.sortDescriptors = newValue }
     }
 
     var predicate: NSPredicate? {

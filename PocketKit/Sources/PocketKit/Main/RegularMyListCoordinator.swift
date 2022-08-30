@@ -70,6 +70,10 @@ class RegularMyListCoordinator: NSObject {
             self?.showMyListItem(selectedSavedItem)
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedSortFilterViewModel.receive(on: DispatchQueue.main).sink { [weak self] presentedSortFilterViewModel in
+            self?.presentSortMenu(presentedSortFilterViewModel: presentedSortFilterViewModel)
+        }.store(in: &subscriptions)
+
         // My List/Archive
         model.archivedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
@@ -148,6 +152,24 @@ extension RegularMyListCoordinator {
 
     private func share(_ activity: PocketActivity?) {
         delegate?.share(activity)
+    }
+
+    private func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
+        guard !isResetting else {
+            return
+        }
+
+        guard let sortFilterVM = presentedSortFilterViewModel else {
+            if navigationController.presentedViewController is SortMenuViewController {
+                navigationController.dismiss(animated: true)
+            }
+            return
+        }
+
+        let viewController = SortMenuViewController(viewModel: sortFilterVM)
+        viewController.modalPresentationStyle = .popover
+        viewController.popoverPresentationController?.sourceView = sortFilterVM.sender as? UIView
+        navigationController.present(viewController, animated: true)
     }
 }
 

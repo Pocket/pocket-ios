@@ -5,11 +5,13 @@ class MockSavedItemsController: SavedItemsController {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 
-    var delegate: SavedItemsControllerDelegate?
+    weak var delegate: SavedItemsControllerDelegate?
 
     var predicate: NSPredicate?
 
     var fetchedObjects: [SavedItem]?
+
+    var sortDescriptors: [NSSortDescriptor]?
 }
 
 extension MockSavedItemsController {

@@ -17,7 +17,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     myList: MyListContainerViewModel(
                         savedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
-                            tracker: Services.shared.tracker.childTracker(hosting: .myList.myList)
+                            tracker: Services.shared.tracker.childTracker(hosting: .myList.myList),
+                            listOptions: ListOptions()
                         ),
                         archivedItemsList: ArchivedItemsListViewModel(
                             source: Services.shared.source,
