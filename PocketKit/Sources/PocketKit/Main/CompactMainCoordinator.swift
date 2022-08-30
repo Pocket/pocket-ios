@@ -43,9 +43,9 @@ class CompactMainCoordinator: NSObject {
 
         account = CompactAccountCoordinator(model: model.account)
         account.viewController.tabBarItem.accessibilityIdentifier = "account-tab-bar-button"
-        account.viewController.tabBarItem.title = "Account"
-        account.viewController.tabBarItem.image = UIImage(asset: .tabAccountDeselected)
-        account.viewController.tabBarItem.selectedImage = UIImage(asset: .tabAccountSelected)
+        account.viewController.tabBarItem.title = "Settings"
+        account.viewController.tabBarItem.image = UIImage(asset: .tabSettingsDeselected)
+        account.viewController.tabBarItem.selectedImage = UIImage(asset: .tabSettingsSelected)
 
         tabBarController = UITabBarController()
         tabBarController.tabBar.barTintColor = UIColor(.ui.white1)
