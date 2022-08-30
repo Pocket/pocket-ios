@@ -11,12 +11,6 @@ enum PremiumStatus: String {
             case .subscribed: return true
         }
     }
-    var headerStyle: Style {
-        switch self{
-        case .notSubscribed: return .settings.row.darkBackground.header
-        case .subscribed: return .settings.row.header
-        }
-    }
     var statusStyle: Style {
         switch self {
         case .notSubscribed: return .settings.button.darkBackground
@@ -54,14 +48,14 @@ struct PremiumRow<Destination: View>: View {
                     VStack(alignment: .leading, spacing: 5) {
                         if status.headerVisible {
                             Text("Premium Status:")
-                                .style(status.headerStyle)
+                                .style(.settings.row.header)
                         }
                         Text(status.rawValue)
                             .style(status.statusStyle)
-                            .padding(.vertical, status.headerVisible ? 0 : 9)
+                            .padding(.vertical, status.headerVisible ? 0 : 4)
                     }
                     Spacer()
-                    SFIcon(SFIconModel("chevron.right", weight: status.headerVisible ? .regular : .semibold ,color: status.foreground))
+                    SFIcon(SFIconModel("chevron.right", color: status.foreground))
                 }
                 .padding(.vertical, 5)
                 NavigationLink(destination: destination, isActive: $isActive) {EmptyView()}.hidden()
