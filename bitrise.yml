@@ -22,7 +22,7 @@ workflows:
       - deploy-to-itunesconnect-deliver@2:
           inputs:
             - app_id: '$APP_ID'
-            - connection: 'off'
+            - connection: 'api_key'
             - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
             - api_issuer: '$API_KEY_ISSUER_ID'
       - github-release@0:
