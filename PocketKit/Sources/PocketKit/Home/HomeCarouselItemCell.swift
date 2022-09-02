@@ -218,6 +218,8 @@ extension HomeCarouselItemCell {
     }
 
     override func layoutSubviews() {
+        super.layoutSubviews()
+
         layer.masksToBounds = false
         layer.cornerRadius = Constants.cornerRadius
         layer.shadowColor = UIColor(.ui.border).cgColor
