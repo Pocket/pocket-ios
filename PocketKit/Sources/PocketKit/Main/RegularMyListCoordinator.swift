@@ -13,11 +13,10 @@ class RegularMyListCoordinator: NSObject {
     weak var delegate: RegularMyListCoordinatorDelegate?
 
     var viewController: UIViewController {
-        navigationController
+        myListViewController
     }
 
     private let myListViewController: MyListContainerViewController
-    private let navigationController: UINavigationController
     private let model: MyListContainerViewModel
     private var subscriptions: [AnyCancellable] = []
     private var isResetting = false
@@ -30,15 +29,8 @@ class RegularMyListCoordinator: NSObject {
                 ItemsListViewController(model: model.archivedItemsList)
             ]
         )
-        self.navigationController = UINavigationController(
-            rootViewController: myListViewController
-        )
 
         super.init()
-
-        navigationController.navigationBar.prefersLargeTitles = true
-        navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
-        navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
     }
 
     func stopObservingModelChanges() {
@@ -47,7 +39,6 @@ class RegularMyListCoordinator: NSObject {
 
     func observeModelChanges() {
         isResetting = true
-        navigationController.popToRootViewController(animated: !isResetting)
 
         model.$selection.sink { [weak self] selection in
             self?.handle(selection)
@@ -160,8 +151,8 @@ extension RegularMyListCoordinator {
         }
 
         guard let sortFilterVM = presentedSortFilterViewModel else {
-            if navigationController.presentedViewController is SortMenuViewController {
-                navigationController.dismiss(animated: true)
+            if viewController.presentedViewController is SortMenuViewController {
+                viewController.dismiss(animated: true)
             }
             return
         }
@@ -169,7 +160,7 @@ extension RegularMyListCoordinator {
         let viewController = SortMenuViewController(viewModel: sortFilterVM)
         viewController.modalPresentationStyle = .popover
         viewController.popoverPresentationController?.sourceView = sortFilterVM.sender as? UIView
-        navigationController.present(viewController, animated: true)
+        self.viewController.present(viewController, animated: true)
     }
 }
 

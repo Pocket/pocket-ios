@@ -7,8 +7,6 @@ import Sync
 // swiftlint:disable:next class_delegate_protocol
 protocol RegularHomeCoordinatorDelegate: ModalContentPresenting {
     func homeCoordinatorDidSelectMyList(_ coordinator: RegularHomeCoordinator)
-    func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectReadableType readableType: ReadableType?)
-    func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectRecommendation recommendation: RecommendationViewModel?)
 }
 
 class RegularHomeCoordinator: NSObject {
@@ -22,9 +20,11 @@ class RegularHomeCoordinator: NSObject {
     private let tracker: Tracker
     private let navigationController: UINavigationController
     private let homeViewController: HomeViewController
+    private var isResetting: Bool = false
+
     private var subscriptions: [AnyCancellable] = []
     private var slateDetailSubscriptions: [AnyCancellable] = []
-    private var isResetting: Bool = false
+    private var readerSubscriptions: [AnyCancellable] = []
 
     init(model: HomeViewModel, tracker: Tracker) {
         self.model = model
@@ -113,11 +113,70 @@ extension RegularHomeCoordinator {
 // MARK: - Showing reader content
 extension RegularHomeCoordinator {
     private func show(_ readable: ReadableType?) {
-        delegate?.homeCoordinator(self, didSelectReadableType: readable)
+        switch readable {
+        case .recommendation(let recommendation):
+            show(recommendation)
+        case .savedItem(let savedItem):
+            show(savedItem)
+        case .none:
+            break
+        }
+    }
+
+    private func show(_ readable: SavedItemViewModel?) {
+        guard let readable = readable else {
+            return
+        }
+        readerSubscriptions = []
+
+        readable.$presentedWebReaderURL.sink { [weak self] url in
+            self?.present(url)
+        }.store(in: &readerSubscriptions)
+
+        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+            self?.present(readable.readerSettings, isPresenting: isPresenting)
+        }.store(in: &readerSubscriptions)
+
+        readable.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &readerSubscriptions)
+
+        readable.$sharedActivity.sink { [weak self] activity in
+            self?.share(activity)
+        }.store(in: &readerSubscriptions)
+
+        let readableVC = ReadableHostViewController(readableViewModel: readable)
+        navigationController.pushViewController(readableVC, animated: !isResetting)
     }
 
     private func show(_ readable: RecommendationViewModel?) {
-        delegate?.homeCoordinator(self, didSelectRecommendation: readable)
+        guard let readable = readable else {
+            return
+        }
+        readerSubscriptions = []
+
+        readable.$presentedWebReaderURL.sink { [weak self] url in
+            self?.present(url)
+        }.store(in: &readerSubscriptions)
+
+        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+            self?.present(readable.readerSettings, isPresenting: isPresenting)
+        }.store(in: &readerSubscriptions)
+
+        readable.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &readerSubscriptions)
+
+        readable.$sharedActivity.sink { [weak self] activity in
+            self?.share(activity)
+        }.store(in: &readerSubscriptions)
+
+        readable.$selectedRecommendationToReport.sink { [weak self] recommendation in
+            self?.report(recommendation)
+        }.store(in: &readerSubscriptions)
+
+        let viewController = ReadableHostViewController(readableViewModel: readable)
+        navigationController.pushViewController(viewController, animated: !isResetting)
     }
 }
 
@@ -136,7 +195,48 @@ extension RegularHomeCoordinator {
     }
 
     private func share(_ activity: PocketActivity?) {
-        delegate?.share(activity)
+        guard !isResetting, let activity = activity else { return }
+
+        let activityVC = UIActivityViewController(activity: activity)
+        activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
+            self?.model.clearSharedActivity()
+        }
+
+        if let view = activity.sender as? UIView {
+            activityVC.popoverPresentationController?.sourceView = view
+        } else if let buttonItem = activity.sender as? UIBarButtonItem {
+            activityVC.popoverPresentationController?.barButtonItem = buttonItem
+        } else {
+            activityVC.popoverPresentationController?.barButtonItem = navigationController
+                .topViewController?
+                .navigationItem
+                .rightBarButtonItems?
+                .first
+        }
+
+        navigationController.present(activityVC, animated: !isResetting)
+    }
+
+    func present(_ readerSettings: ReaderSettings?, isPresenting: Bool?) {
+        guard !isResetting, let readerSettings = readerSettings, isPresenting == true else {
+            return
+        }
+
+        let readerSettingsVC = ReaderSettingsViewController(
+            settings: readerSettings,
+            onDismiss: { [weak self] in
+                self?.model.clearIsPresentingReaderSettings()
+            }
+        )
+
+        readerSettingsVC.modalPresentationStyle = .popover
+        readerSettingsVC.popoverPresentationController?.barButtonItem = navigationController
+            .topViewController?
+            .navigationItem
+            .rightBarButtonItems?
+            .first
+
+        navigationController.present(readerSettingsVC, animated: !isResetting)
     }
 }
 
@@ -145,7 +245,14 @@ extension RegularHomeCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === homeViewController {
             slateDetailSubscriptions = []
+            readerSubscriptions = []
+            model.clearSelectedItem()
             model.clearTappedSeeAll()
+        }
+
+        if viewController is SlateDetailViewController {
+            readerSubscriptions = []
+            model.tappedSeeAll?.clearSelectedItem()
         }
     }
 }

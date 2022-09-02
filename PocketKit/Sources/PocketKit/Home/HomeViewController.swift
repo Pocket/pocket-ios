@@ -23,11 +23,16 @@ class HomeViewController: UIViewController {
         case .loading:
             return self.sectionProvider.loadingSection()
         case .recentSaves:
-            return self.sectionProvider.recentSavesSection(in: self.model, width: env.container.effectiveContentSize.width)
+            return self.sectionProvider.recentSavesSection(in: self.model, env: env)
         case .slateHero(let slateID):
-            return self.sectionProvider.heroSection(for: slateID, in: self.model, width: env.container.effectiveContentSize.width)
+            return self.sectionProvider.heroSection(for: slateID, in: self.model, env: env)
         case .slateCarousel(let slateID):
-            return self.sectionProvider.carouselSection(for: slateID, in: self.model, width: env.container.effectiveContentSize.width)
+            if env.traitCollection.userInterfaceIdiom == .pad,
+               env.traitCollection.horizontalSizeClass == .regular {
+                return self.sectionProvider.recommendationCellGridSection(for: slateID, in: self.model, env: env)
+            } else {
+                return self.sectionProvider.carouselSection(for: slateID, in: self.model, env: env)
+            }
         case .offline:
             let hasRecentSaves = self.dataSource.index(for: .recentSaves) != nil
             return self.sectionProvider.offlineSection(environment: env, withRecentSaves: hasRecentSaves)
@@ -75,6 +80,7 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: RecentSavesItemCell.self)
         collectionView.register(cellClass: RecommendationCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
+        collectionView.register(cellClass: RecommendationCellHeroWide.self)
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
 
@@ -166,13 +172,23 @@ extension HomeViewController {
             cell.configure(model: viewModel)
             return cell
         case .recommendationHero(let objectID):
-            let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-            guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
+            if traitCollection.userInterfaceIdiom == .pad && traitCollection.horizontalSizeClass == .regular {
+                let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)
+                guard let viewModel = model.recommendationHeroWideViewModel(for: objectID, at: indexPath) else {
+                    return cell
+                }
+
+                cell.configure(model: viewModel)
+                return cell
+            } else {
+                let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
+                guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
+                    return cell
+                }
+
+                cell.configure(model: viewModel)
                 return cell
             }
-
-            cell.configure(model: viewModel)
-            return cell
         case .recommendationCarousel(let objectID):
             let cell: RecommendationCarouselCell = collectionView.dequeueCell(for: indexPath)
             guard let viewModel = model.recommendationCarouselViewModel(for: objectID, at: indexPath) else {

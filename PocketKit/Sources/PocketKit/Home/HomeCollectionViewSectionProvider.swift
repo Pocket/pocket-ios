@@ -29,21 +29,45 @@ class HomeViewControllerSectionProvider {
         return NSCollectionLayoutSection(group: group)
     }
 
-    func recentSavesSection(in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
+    func recentSavesSection(in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfRecentSavesItems = viewModel.numberOfRecentSavesItem()
         guard numberOfRecentSavesItems > 0 else { return .empty() }
-        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
-        let item = NSCollectionLayoutItem(layoutSize: itemSize)
 
-        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfRecentSavesItems)), heightDimension: .absolute(StyleConstants.groupHeight))
-        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfRecentSavesItems)
+        let item = NSCollectionLayoutItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .fractionalHeight(1.0)
+            )
+        )
+
+        let itemWidthPercentage: CGFloat
+        if env.traitCollection.userInterfaceIdiom == .pad,
+           env.traitCollection.horizontalSizeClass == .regular {
+            itemWidthPercentage = 2/5
+        } else {
+            itemWidthPercentage = 0.8
+        }
+
+        let group = NSCollectionLayoutGroup.horizontal(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(itemWidthPercentage * Double(numberOfRecentSavesItems)),
+                heightDimension: .absolute(StyleConstants.groupHeight)
+            ),
+            subitem: item,
+            count: numberOfRecentSavesItems
+        )
         group.interItemSpacing = .fixed(16)
 
-        let sectionHeaderViewModel: SectionHeaderView.Model = .init(name: "Recent Saves", buttonTitle: "My List")
+        let sectionHeaderViewModel = SectionHeaderView.Model(name: "Recent Saves", buttonTitle: "My List")
+        let width = env.container.effectiveContentSize.width
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
-                heightDimension: .absolute(sectionHeaderViewModel.height(width: width - Constants.sideMargin*2))
+                heightDimension: .absolute(
+                    sectionHeaderViewModel.height(
+                        width: width - Constants.sideMargin * 2
+                    )
+                )
             ),
             elementKind: SectionHeaderView.kind,
             alignment: .top
@@ -61,7 +85,7 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func heroSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
+    func heroSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let heroItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
         let heroItem = NSCollectionLayoutItem(layoutSize: heroItemSize)
 
@@ -73,7 +97,14 @@ class HomeViewControllerSectionProvider {
             return nil
         }
 
-        let heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
+        let width = env.container.effectiveContentSize.width
+        let heroHeight: CGFloat
+        if env.traitCollection.horizontalSizeClass == .regular && env.traitCollection.userInterfaceIdiom == .pad {
+            heroHeight = width * 0.28
+        } else {
+            heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
+        }
+
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(heroHeight))
         let heroGroup = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitems: [heroItem])
         let sectionHeaderViewModel = viewModel.sectionHeaderViewModel(for: .slateHero(slateID))
@@ -98,7 +129,7 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
+    func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {
             return .empty()
@@ -119,6 +150,54 @@ class HomeViewControllerSectionProvider {
             bottom: Constants.sectionSpacing,
             trailing: Constants.sideMargin
         )
+        return section
+    }
+
+    func recommendationCellGridSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+        let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
+        guard numberOfCarouselItems > 0 else {
+            return .empty()
+        }
+
+        let numberOfGroups = (CGFloat(numberOfCarouselItems) / 2).rounded(.up)
+        let groups = (0..<Int(numberOfGroups)).map { _ -> NSCollectionLayoutGroup in
+            let group = NSCollectionLayoutGroup.horizontal(
+                layoutSize: .init(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .absolute(StyleConstants.groupHeight)
+                ),
+                subitem: .init(
+                    layoutSize: .init(
+                        widthDimension: .fractionalWidth(0.5),
+                        heightDimension: .fractionalHeight(1)
+                    )
+                ),
+                count: 2
+            )
+            group.interItemSpacing = .fixed(Constants.spacing)
+            return group
+        }
+
+        let group = NSCollectionLayoutGroup.vertical(
+            layoutSize: .init(
+                widthDimension: .fractionalWidth(1),
+                heightDimension: .absolute(
+                    numberOfGroups * StyleConstants.groupHeight +
+                    (Constants.sectionSpacing * (numberOfGroups - 1))
+                )
+            ),
+            subitems: groups
+        )
+        group.interItemSpacing = .fixed(Constants.spacing)
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: Constants.margin,
+            leading: Constants.sideMargin,
+            bottom: Constants.sectionSpacing,
+            trailing: Constants.sideMargin
+        )
+
         return section
     }
 }

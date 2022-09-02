@@ -10,6 +10,7 @@ protocol ModalContentPresenting: AnyObject {
     func present(_ url: URL?)
     func present(_ alert: PocketAlert?)
     func present(_ viewModel: AddTagsViewModel?)
+    func present(_ readerSettings: ReaderSettings?, isPresenting: Bool?)
     func share(_ activity: PocketActivity?)
 }
 
@@ -23,7 +24,7 @@ class RegularMainCoordinator: NSObject {
 
     private let myList: RegularMyListCoordinator
     private let home: RegularHomeCoordinator
-    private let account: UINavigationController
+    private let account: AccountViewController
     private let readerRoot: UINavigationController
 
     private let tracker: Tracker
@@ -41,23 +42,20 @@ class RegularMainCoordinator: NSObject {
         self.tracker = tracker
         self.model = model
 
-        splitController = UISplitViewController(style: .tripleColumn)
-        splitController.displayModeButtonVisibility = .always
+        splitController = UISplitViewController(style: .doubleColumn)
+        splitController.displayModeButtonVisibility = .never
 
         navigationSidebar = UINavigationController(rootViewController: NavigationSidebarViewController(model: model))
 
         myList = RegularMyListCoordinator(model: model.myList)
         home = RegularHomeCoordinator(model: model.home, tracker: tracker)
-        account = UINavigationController(
-            rootViewController: AccountViewController(model: model.account)
-        )
+        account = AccountViewController(model: model.account)
         readerRoot = UINavigationController(rootViewController: UIViewController())
 
         super.init()
 
         splitController.setViewController(navigationSidebar, for: .primary)
-        splitController.setViewController(home.viewController, for: .supplementary)
-        splitController.setViewController(readerRoot, for: .secondary)
+        splitController.setViewController(home.viewController, for: .secondary)
         splitController.view.tintColor = UIColor(.ui.grey1)
 
         navigationSidebar.navigationBar.prefersLargeTitles = true
@@ -66,6 +64,7 @@ class RegularMainCoordinator: NSObject {
 
         myList.delegate = self
         home.delegate = self
+        navigationSidebar.delegate = self
         splitController.delegate = self
     }
 
@@ -86,6 +85,7 @@ class RegularMainCoordinator: NSObject {
     private func observeModelChanges() {
         isResetting = true
         readerRoot.viewControllers = []
+        navigationSidebar.popToRootViewController(animated: !isResetting)
 
         model.$selectedSection.sink { [weak self] section in
             self?.show(section)
@@ -111,11 +111,11 @@ class RegularMainCoordinator: NSObject {
             if subsection == .myList {
                 model.myList.selection = .myList
             }
-            splitController.setViewController(myList.viewController, for: .supplementary)
+            navigationSidebar.pushViewController(myList.viewController, animated: true)
         case .home:
-            splitController.setViewController(home.viewController, for: .supplementary)
+            splitController.setViewController(home.viewController, for: .secondary)
         case .account:
-            splitController.setViewController(account, for: .supplementary)
+            navigationSidebar.pushViewController(account, animated: true)
         }
 
         splitController.show(.supplementary)
@@ -135,7 +135,7 @@ extension RegularMainCoordinator {
         }.store(in: &readerSubscriptions)
 
         readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
-            self?.present(readerSettings: readable.readerSettings, isPresenting: isPresenting)
+            self?.present(readable.readerSettings, isPresenting: isPresenting)
         }.store(in: &readerSubscriptions)
 
         readable.$presentedAlert.sink { [weak self] alert in
@@ -152,60 +152,7 @@ extension RegularMainCoordinator {
 
         let readableVC = ReadableHostViewController(readableViewModel: readable)
         readerRoot.viewControllers = [readableVC]
-        splitController.show(.secondary)
-    }
-
-    private func show(_ readable: RecommendationViewModel?) {
-        guard let readable = readable else {
-            return
-        }
-        readerSubscriptions = []
-
-        readable.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url)
-        }.store(in: &readerSubscriptions)
-
-        readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
-            self?.present(readerSettings: readable.readerSettings, isPresenting: isPresenting)
-        }.store(in: &readerSubscriptions)
-
-        readable.$presentedAlert.sink { [weak self] alert in
-            self?.present(alert)
-        }.store(in: &readerSubscriptions)
-
-        readable.$sharedActivity.sink { [weak self] activity in
-            self?.share(activity)
-        }.store(in: &readerSubscriptions)
-
-        readable.$selectedRecommendationToReport.sink { [weak self] recommendation in
-            self?.report(recommendation)
-        }.store(in: &readerSubscriptions)
-
-        let readableVC = ReadableHostViewController(readableViewModel: readable)
-        readerRoot.viewControllers = [readableVC]
-        splitController.show(.secondary)
-    }
-
-    private func present(readerSettings: ReaderSettings?, isPresenting: Bool?) {
-        guard !isResetting, let readerSettings = readerSettings, isPresenting == true else {
-            return
-        }
-
-        let readerSettingsVC = ReaderSettingsViewController(
-            settings: readerSettings,
-            onDismiss: { [weak self] in
-                self?.model.clearIsPresentingReaderSettings()
-            }
-        )
-
-        readerSettingsVC.modalPresentationStyle = .popover
-        readerSettingsVC.popoverPresentationController?.barButtonItem = readerRoot
-            .topViewController?
-            .navigationItem
-            .rightBarButtonItems?
-            .first
-
-        splitController.present(readerSettingsVC, animated: !isResetting)
+        splitController.setViewController(readerRoot, for: .secondary)
     }
 }
 
@@ -269,35 +216,34 @@ extension RegularMainCoordinator: ModalContentPresenting {
         hostingController.modalPresentationStyle = .formSheet
         splitController.present(hostingController, animated: true)
     }
+
+    func present(_ readerSettings: ReaderSettings?, isPresenting: Bool?) {
+        guard !isResetting, let readerSettings = readerSettings, isPresenting == true else {
+            return
+        }
+
+        let readerSettingsVC = ReaderSettingsViewController(
+            settings: readerSettings,
+            onDismiss: { [weak self] in
+                self?.model.clearIsPresentingReaderSettings()
+            }
+        )
+
+        readerSettingsVC.modalPresentationStyle = .popover
+        readerSettingsVC.popoverPresentationController?.barButtonItem = readerRoot
+            .topViewController?
+            .navigationItem
+            .rightBarButtonItems?
+            .first
+
+        splitController.present(readerSettingsVC, animated: !isResetting)
+    }
 }
 
 // MARK: - RegularHomeCoordinatorDelegate
 extension RegularMainCoordinator: RegularHomeCoordinatorDelegate {
     func homeCoordinatorDidSelectMyList(_ coordinator: RegularHomeCoordinator) {
         model.selectedSection = .myList(.myList)
-    }
-
-    func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectRecommendation recommendation: RecommendationViewModel?) {
-        if recommendation != nil {
-            model.myList.clearSelectedItem()
-        }
-
-        show(recommendation)
-    }
-
-    func homeCoordinator(_ coordinator: RegularHomeCoordinator, didSelectReadableType readableType: ReadableType?) {
-        if readableType != nil {
-            model.myList.clearSelectedItem()
-        }
-
-        switch readableType {
-        case .recommendation(let recommendation):
-            show(recommendation)
-        case .savedItem(let savedItem):
-            show(savedItem)
-        case .none:
-            break
-        }
     }
 }
 
@@ -336,5 +282,16 @@ extension RegularMainCoordinator: UISplitViewControllerDelegate {
 extension RegularMainCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
+    }
+}
+
+// MARK: UINavigationControllerDelegate
+extension RegularMainCoordinator: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if viewController === self.navigationSidebar.viewControllers[0] {
+            navigationController.isNavigationBarHidden = true
+        } else {
+            navigationController.isNavigationBarHidden = false
+        }
     }
 }
