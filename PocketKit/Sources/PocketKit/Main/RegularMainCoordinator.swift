@@ -202,11 +202,13 @@ extension RegularMainCoordinator: ModalContentPresenting {
     }
 
     func present(_ url: URL?) {
-        guard !isResetting, let url = url else { return }
+        guard let url = url else { return }
 
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self
-        splitController.present(safariVC, animated: !isResetting)
+        readerRoot.isNavigationBarHidden = true
+        readerRoot.viewControllers = [safariVC]
+        splitController.setViewController(readerRoot, for: .secondary)
     }
 
     func present(_ viewModel: AddTagsViewModel?) {
@@ -281,6 +283,9 @@ extension RegularMainCoordinator: UISplitViewControllerDelegate {
 // MARK: - SFSafariViewControllerDelegate
 extension RegularMainCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        splitController.setViewController(home.viewController, for: .secondary)
+        readerRoot.isNavigationBarHidden = false
+
         model.clearPresentedWebReaderURL()
     }
 }
