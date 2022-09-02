@@ -7,11 +7,47 @@ private extension Style {
 }
 
 class NavigationSidebarViewController: UIViewController {
-    private static let layout: UICollectionViewLayout = {
-        var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
-        configuration.headerMode = .none
-        configuration.backgroundColor = UIColor(.ui.white1)
-        return UICollectionViewCompositionalLayout.list(using: configuration)
+    private lazy var layout: UICollectionViewLayout = {
+        UICollectionViewCompositionalLayout { index, env in
+            let baseCellHeight = UIFontMetrics.default.scaledValue(for: 40)
+            let numberOfItems = MainViewModel.AppSection.allCases.count
+
+            let group = NSCollectionLayoutGroup.vertical(
+                layoutSize: NSCollectionLayoutSize(
+                    widthDimension: .fractionalWidth(1),
+                    heightDimension: .estimated(baseCellHeight * CGFloat(numberOfItems))
+                ),
+                subitem: NSCollectionLayoutItem(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .estimated(baseCellHeight)
+                    )
+                ),
+                count: numberOfItems
+            )
+            group.interItemSpacing = .fixed(6)
+
+            let section = NSCollectionLayoutSection(group: group)
+            section.contentInsets = NSDirectionalEdgeInsets(
+                top: 27,
+                leading: 27,
+                bottom: 0,
+                trailing: 18
+            )
+
+            section.boundarySupplementaryItems = [
+                NSCollectionLayoutBoundarySupplementaryItem(
+                    layoutSize: NSCollectionLayoutSize(
+                        widthDimension: .fractionalWidth(1),
+                        heightDimension: .absolute(33)
+                    ),
+                    elementKind: UICollectionView.elementKindSectionHeader,
+                    alignment: .top
+                )
+            ]
+
+            return section
+        }
     }()
 
     private static let snapshot: NSDiffableDataSourceSnapshot<String, MainViewModel.AppSection> = {
@@ -23,38 +59,32 @@ class NavigationSidebarViewController: UIViewController {
     }()
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<String, MainViewModel.AppSection> = {
-        let registration = UICollectionView.CellRegistration<UICollectionViewListCell, MainViewModel.AppSection> { (cell, indexPath, appSection) in
-            var content = cell.defaultContentConfiguration()
-            content.attributedText = NSAttributedString(string: appSection.navigationTitle, style: .title)
-            cell.contentConfiguration = content
+        let registration = UICollectionView.CellRegistration<NavigationSidebarCell, MainViewModel.AppSection> { [weak self] (cell, indexPath, appSection) in
+            self?.configure(cell, appSection: appSection)
         }
 
-        return UICollectionViewDiffableDataSource<String, MainViewModel.AppSection>(
+        let headerRegistration = UICollectionView.SupplementaryRegistration<NavigationHeaderView>(
+            elementKind: UICollectionView.elementKindSectionHeader
+        ) { (headerView, _, _) in
+            // no op
+        }
+
+        let dataSource = UICollectionViewDiffableDataSource<String, MainViewModel.AppSection>(
             collectionView: collectionView
         ) { (collectionView, indexPath, appSection) -> UICollectionViewCell? in
-            let cell = collectionView.dequeueConfiguredReusableCell(
-                using: registration,
-                for: indexPath,
-                item: appSection
-            )
-
-            let primaryColor = UIColor(.ui.grey6)
-
-            let backgroundView = UIView()
-            backgroundView.backgroundColor = primaryColor.withAlphaComponent(0.2)
-            cell.backgroundView = backgroundView
-
-            let selectedBackgroundView = UIView()
-            selectedBackgroundView.backgroundColor = primaryColor
-            cell.selectedBackgroundView = selectedBackgroundView
-
-            return cell
+            return collectionView.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: appSection)
         }
+
+        dataSource.supplementaryViewProvider = { (collectionView, elementKind, indexPath) -> UICollectionReusableView? in
+            return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+        }
+
+        return dataSource
     }()
 
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
-        collectionViewLayout: Self.layout
+        collectionViewLayout: layout
     )
     private let model: MainViewModel
     private var subscriptions: Set<AnyCancellable> = []
@@ -65,6 +95,7 @@ class NavigationSidebarViewController: UIViewController {
 
         self.title = "Pocket"
 
+        collectionView.contentInset = UIEdgeInsets(top: 21, left: 0, bottom: 0, right: 0)
         collectionView.isScrollEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = dataSource
@@ -86,10 +117,32 @@ class NavigationSidebarViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not implemented")
     }
+
+    private func configure(_ cell: NavigationSidebarCell, appSection: MainViewModel.AppSection) {
+        let cellModel = NavigationSidebarCellViewModel(
+            section: appSection,
+            isSelected: appSection == model.selectedSection
+        )
+
+        cell.configure(model: cellModel)
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
+            layout.invalidateLayout()
+        }
+    }
 }
 
 extension NavigationSidebarViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let previousSection = model.selectedSection
         model.selectedSection = MainViewModel.AppSection.allCases[indexPath.item]
+
+        var snapshot = dataSource.snapshot()
+        snapshot.reloadItems([previousSection, model.selectedSection])
+        dataSource.apply(snapshot)
     }
 }

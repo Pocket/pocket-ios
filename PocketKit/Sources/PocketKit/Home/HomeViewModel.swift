@@ -482,21 +482,27 @@ extension HomeViewModel {
 
         return HomeRecommendationCellViewModel(
             recommendation: recommendation,
-            overflowActions: [
-                .report { [weak self] _ in
-                    self?.report(recommendation, at: indexPath)
-                }
-            ],
-            primaryAction: .recommendationPrimary { [weak self] _ in
-                let isSaved = recommendation.item?.savedItem != nil
-                && recommendation.item?.savedItem?.isArchived == false
+            overflowActions: overflowActions(for: recommendation, at: indexPath),
+            primaryAction: primaryAction(for: recommendation, at: indexPath)
+        )
+    }
 
-                if isSaved {
-                    self?.archive(recommendation, at: indexPath)
-                } else {
-                    self?.save(recommendation, at: indexPath)
-                }
-            }
+    func recommendationHeroWideViewModel(
+        for objectID: NSManagedObjectID,
+        at indexPath: IndexPath? = nil
+    ) -> HomeRecommendationCellHeroWideViewModel? {
+        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+            return nil
+        }
+
+        guard let indexPath = indexPath else {
+            return HomeRecommendationCellHeroWideViewModel(recommendation: recommendation)
+        }
+
+        return HomeRecommendationCellHeroWideViewModel(
+            recommendation: recommendation,
+            overflowActions: overflowActions(for: recommendation, at: indexPath),
+            primaryAction: primaryAction(for: recommendation, at: indexPath)
         )
     }
 
@@ -506,6 +512,27 @@ extension HomeViewModel {
     ) -> RecommendationCarouselCell.Model? {
         recommendationHeroViewModel(for: objectID, at: indexPath)
             .flatMap(RecommendationCarouselCell.Model.init)
+    }
+
+    private func overflowActions(for recommendation: Recommendation, at indexPath: IndexPath) -> [ItemAction] {
+        [
+            .report { [weak self] _ in
+                self?.report(recommendation, at: indexPath)
+            }
+        ]
+    }
+
+    private func primaryAction(for recommendation: Recommendation, at indexPath: IndexPath) -> ItemAction {
+        .recommendationPrimary { [weak self] _ in
+            let isSaved = recommendation.item?.savedItem != nil
+            && recommendation.item?.savedItem?.isArchived == false
+
+            if isSaved {
+                self?.archive(recommendation, at: indexPath)
+            } else {
+                self?.save(recommendation, at: indexPath)
+            }
+        }
     }
 
     private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {
