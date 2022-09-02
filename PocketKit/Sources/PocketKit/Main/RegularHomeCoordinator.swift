@@ -60,7 +60,7 @@ class RegularHomeCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         model.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url)
+            self?.push(url)
         }.store(in: &subscriptions)
 
         model.$presentedAlert.sink { [weak self] alert in
@@ -98,7 +98,7 @@ extension RegularHomeCoordinator {
         }.store(in: &slateDetailSubscriptions)
 
         slate.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url)
+            self?.push(url)
         }.store(in: &slateDetailSubscriptions)
 
         slate.$selectedRecommendationToReport.sink { [weak self] recommendation in
@@ -130,7 +130,7 @@ extension RegularHomeCoordinator {
         readerSubscriptions = []
 
         readable.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url)
+            self?.push(url)
         }.store(in: &readerSubscriptions)
 
         readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
@@ -156,7 +156,7 @@ extension RegularHomeCoordinator {
         readerSubscriptions = []
 
         readable.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url)
+            self?.push(url)
         }.store(in: &readerSubscriptions)
 
         readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
@@ -186,8 +186,13 @@ extension RegularHomeCoordinator {
         delegate?.report(recommendation)
     }
 
-    private func present(_ url: URL?) {
-        delegate?.present(url)
+    private func push(_ url: URL?) {
+        guard let url = url else { return }
+        let safariVC = SFSafariViewController(url: url)
+
+        safariVC.delegate = self
+        navigationController.isNavigationBarHidden = true
+        navigationController.pushViewController(safariVC, animated: !isResetting)
     }
 
     private func present(_ alert: PocketAlert?) {
@@ -254,5 +259,14 @@ extension RegularHomeCoordinator: UINavigationControllerDelegate {
             readerSubscriptions = []
             model.tappedSeeAll?.clearSelectedItem()
         }
+    }
+}
+
+extension RegularHomeCoordinator: SFSafariViewControllerDelegate {
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        navigationController.popViewController(animated: !isResetting)
+        navigationController.isNavigationBarHidden = false
+
+        model.clearPresentedWebReaderURL()
     }
 }
