@@ -95,6 +95,7 @@ opt_in_rules: # some rules are only opt-in
   - multiline_arguments
   - opening_brace
   - return_arrow_whitespace
+  - multiline_arguments_brackets
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - build

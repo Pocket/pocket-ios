@@ -65,7 +65,8 @@ class RootViewModel {
                 },
                 dismissAction: { [weak self] in
                     self?.bannerViewModel = nil
-                })
+                }
+            )
         }
     }
 
