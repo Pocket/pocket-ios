@@ -5,7 +5,6 @@
 import Foundation
 import Sails
 
-
 struct ClientAPIRequest {
     private let request: Request
     private let requestBody: String?
@@ -26,7 +25,7 @@ struct ClientAPIRequest {
     var isForArchivedContent: Bool {
         contains("savedItems(") && contains(#""isArchived":true"#)
     }
-    
+
     var isForFavoritedArchivedContent: Bool {
         contains("savedItems(") && contains(#""isArchived":true"#) && contains(#""isFavorite":true"#)
     }

@@ -1,6 +1,5 @@
 import UIKit
 
-
 class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
     enum Constants {
         enum Heading {

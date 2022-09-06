@@ -4,7 +4,7 @@ import UIKit
 enum SelectedItem {
     case readable(SavedItemViewModel?)
     case webView(URL?)
-    
+
     func clearPresentedWebReaderURL() {
         switch self {
         case .readable(let viewModel):
@@ -13,7 +13,7 @@ enum SelectedItem {
             break
         }
     }
-    
+
     func clearSharedActivity() {
         switch self {
         case .readable(let viewModel):
@@ -51,7 +51,7 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
 enum ItemsListFilter: String, Hashable, CaseIterable {
     case all = "All"
     case favorites = "Favorites"
-    
+
     var image: UIImage? {
         switch self {
         case .all:
@@ -69,14 +69,14 @@ enum ItemsListEvent<ItemIdentifier: Hashable> {
 protocol ItemsListViewModel: AnyObject {
     associatedtype ItemIdentifier: Hashable
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
-    
+
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { get }
     var selectionItem: SelectionItem { get }
     var emptyState: EmptyStateViewModel? { get }
     var snapshot: Published<Snapshot>.Publisher { get }
 
     func fetch()
-    func refresh(_ completion: (() -> ())?)
+    func refresh(_ completion: (() -> Void)?)
 
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?

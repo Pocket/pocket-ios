@@ -6,7 +6,6 @@ import Combine
 @testable import Sync
 @testable import PocketKit
 
-
 class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
     var space: Space!
@@ -62,49 +61,48 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.shouldSelectCell(with: .item(item.objectID)))
     }
-    
+
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
         let viewModel = subject()
         let item = space.buildPendingSavedItem()
-        
+
         source.stubObject { _ in item }
-        
+
         viewModel.selectCell(with: .item(item.objectID))
-        
+
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
             return
         }
-        
+
         guard case .readable(let item) = selectedItem else {
             XCTFail("Received unexpected selectedItem: \(selectedItem)")
             return
         }
-        
+
         XCTAssertNotNil(item)
     }
-    
+
     func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() {
         let viewModel = subject()
         let item = space.buildItem(isArticle: false)
         let savedItem = space.buildSavedItem(item: item)
 
         source.stubObject { _ in savedItem }
-        
+
         viewModel.selectCell(with: .item(item.objectID))
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
             return
         }
-        
+
         guard case .webView(let url) = selectedItem else {
             XCTFail("Received unexpected selectedItem: \(selectedItem)")
             return
         }
-        
+
         XCTAssertNotNil(url)
     }
-
 
     func test_selectedItem_whenNil_sendsSelectionCleared() {
         let viewModel = subject()
@@ -117,11 +115,11 @@ class SavedItemsListViewModelTests: XCTestCase {
             }
             eventSent.fulfill()
         }.store(in: &subscriptions)
-        
+
         viewModel.selectedItem = nil
         wait(for: [eventSent], timeout: 1)
     }
-    
+
     func test_selectedItem_whenReaderView_doesNotSendSelectionCleared() {
         let viewModel = subject()
 
@@ -131,11 +129,11 @@ class SavedItemsListViewModelTests: XCTestCase {
             XCTFail("Received unexpected event call: \(event)")
             eventSent.fulfill()
         }.store(in: &subscriptions)
-        
+
         viewModel.selectedItem = .readable(nil)
         wait(for: [eventSent], timeout: 1)
     }
-    
+
     func test_selectedItem_whenWebView_doesNotSendSelectionCleared() {
         let viewModel = subject()
 
@@ -145,7 +143,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             XCTFail("Received unexpected event call: \(event)")
             eventSent.fulfill()
         }.store(in: &subscriptions)
-        
+
         viewModel.selectedItem = .webView(nil)
         wait(for: [eventSent], timeout: 1)
     }
@@ -190,7 +188,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [snapshotSent], timeout: 1)
     }
-    
+
     func test_receivedSnapshots_withNoItems_includesMyListEmptyState() {
         itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [] }
         let viewModel = subject()
@@ -209,12 +207,12 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
-    
+
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
         itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [] }
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites))
-        
+
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
@@ -229,7 +227,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
-    
+
     func test_receivedSnapshots_withItems_doesNotIncludeMyListEmptyState() {
         let savedItem = space.buildSavedItem()
         itemsController.fetchedObjects = [savedItem]
@@ -243,19 +241,19 @@ class SavedItemsListViewModelTests: XCTestCase {
             XCTAssertNil(viewModel.emptyState)
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
-        
+
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
-    
+
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
         let savedItem = space.buildSavedItem()
         itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [savedItem] }
-        
+
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites))
-        
+
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .items)
@@ -277,7 +275,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
         viewModel.refresh()
 
-        XCTAssertNotNil(source.retryImmediatelyCall(at:0))
+        XCTAssertNotNil(source.retryImmediatelyCall(at: 0))
     }
 
     func test_receivedSnapshots_whenInitialDownloadIsInProgress_insertsPlaceholderCells() throws {

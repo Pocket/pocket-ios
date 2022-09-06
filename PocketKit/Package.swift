@@ -82,7 +82,7 @@ let package = Package(
             dependencies: ["Sync"],
             resources: [.copy("Fixtures")]
         ),
-        
+
         .target(
             name: "Analytics",
             dependencies: ["SnowplowTracker"]

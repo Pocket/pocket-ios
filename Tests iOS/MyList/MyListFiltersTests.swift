@@ -7,7 +7,6 @@ import Sails
 import Combine
 import NIO
 
-
 class MyListFiltersTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
@@ -60,17 +59,17 @@ class MyListFiltersTests: XCTestCase {
         app.myListView.filterButton(for: "Favorites").tap()
         XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
     }
-    
+
     func test_myListView_tappingAllPill_showsAllItems() {
         app.launch().tabBar.myListButton.wait().tap()
         app.myListView.itemView(at: 0).favoriteButton.tap()
-        
+
         app.myListView.filterButton(for: "All").tap()
         XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
-        
+
         app.myListView.filterButton(for: "Favorites").tap()
         XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
-        
+
         app.myListView.filterButton(for: "All").tap()
         XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
     }

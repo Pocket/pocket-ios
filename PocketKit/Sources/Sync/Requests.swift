@@ -4,7 +4,6 @@
 
 import CoreData
 
-
 public enum Requests {
     public static func fetchSavedItems(limit: Int? = nil) -> NSFetchRequest<SavedItem> {
         let request = fetchAllSavedItems()
@@ -37,7 +36,7 @@ public enum Requests {
 
         return request
     }
-    
+
     public static func fetchSavedItem(byRemoteID remoteID: String) -> NSFetchRequest<SavedItem> {
         let request = SavedItem.fetchRequest()
         request.predicate = NSPredicate(format: "remoteID = %@", remoteID)

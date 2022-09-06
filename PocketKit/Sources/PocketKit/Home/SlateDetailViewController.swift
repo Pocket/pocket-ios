@@ -5,7 +5,6 @@ import Combine
 import Lottie
 import Textile
 
-
 class SlateDetailViewController: UIViewController {
     private lazy var layoutConfiguration = UICollectionViewCompositionalLayout { [weak self] index, env in
         return self?.section(for: index, environment: env)
@@ -35,7 +34,7 @@ class SlateDetailViewController: UIViewController {
         return view
     }()
 
-    private var overscrollTopConstraint: NSLayoutConstraint? = nil
+    private var overscrollTopConstraint: NSLayoutConstraint?
     private var overscrollOffset = 0
 
     private var subscriptions: [AnyCancellable] = []
@@ -52,7 +51,7 @@ class SlateDetailViewController: UIViewController {
         view.accessibilityIdentifier = "slate-detail"
         navigationItem.title = model.slateName
         hidesBottomBarWhenPushed = true
-        
+
         let largeTitleTwoLineMode = "_largeTitleTwoLineMode"
         if class_getProperty(UINavigationItem.self, largeTitleTwoLineMode) != nil {
             navigationItem.setValue(true, forKey: largeTitleTwoLineMode)
@@ -117,7 +116,7 @@ class SlateDetailViewController: UIViewController {
 
         model.fetch()
         model.refresh { }
-    
+
     }
 }
 
@@ -186,7 +185,7 @@ private extension SlateDetailViewController {
                 guard let viewModel = self.model.recommendationViewModel(for: recommendation.objectID) else {
                     return result
                 }
-                
+
                 let currentHeight = result.0
                 let height = RecommendationCell.fullHeight(viewModel: viewModel, availableWidth: width - (margin * 2)) + margin
                 var items = result.1
@@ -197,12 +196,12 @@ private extension SlateDetailViewController {
                     )
                 )
                 item.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0)
-                
+
                 items.append(item)
-                
+
                 return (currentHeight + height, items)
             }
-            
+
             let heroGroup = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),

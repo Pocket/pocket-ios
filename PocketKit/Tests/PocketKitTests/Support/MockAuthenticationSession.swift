@@ -1,7 +1,6 @@
 @testable import PocketKit
 import AuthenticationServices
 
-
 class MockAuthenticationSession: AuthenticationSession {
     private var implementations: [String: Any] = [:]
 

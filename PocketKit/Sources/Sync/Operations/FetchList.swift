@@ -2,7 +2,6 @@ import Foundation
 import Apollo
 import Combine
 
-
 class FetchList: SyncOperation {
     private let token: String
     private let apollo: ApolloClientProtocol

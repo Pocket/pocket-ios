@@ -4,7 +4,6 @@
 
 import Foundation
 
-
 struct LaunchArguments {
     let clearKeychain: Bool
     let clearUserDefaults: Bool
@@ -13,7 +12,7 @@ struct LaunchArguments {
     let clearImageCache: Bool
     let disableSentry: Bool
     let disableSnowplow: Bool
-    
+
     init(
         clearKeychain: Bool,
         clearUserDefaults: Bool,
@@ -31,7 +30,7 @@ struct LaunchArguments {
         self.disableSentry = disableSentry
         self.disableSnowplow = disableSnowplow
     }
-    
+
     func toArray() -> [String] {
         var args: [String] = []
         if clearKeychain {

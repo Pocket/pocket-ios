@@ -4,7 +4,6 @@
 
 import Foundation
 
-
 struct Keys {
     static let shared = Keys()
 

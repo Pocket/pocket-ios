@@ -4,12 +4,11 @@
 
 import Foundation
 
-
 public struct ContentContext: Context {
     public static let schema = "iglu:com.pocket/content/jsonschema/1-0-0"
-    
+
     let url: URL
-    
+
     public init(url: URL) {
         self.url = url
     }

@@ -6,7 +6,6 @@ import UIKit
 import SwiftUI
 import Down
 
-
 extension UIColor {
     public convenience init(_ colorAsset: ColorAsset) {
         self.init(
@@ -146,7 +145,7 @@ public extension Style {
             .paragraphStyle: NSParagraphStyle.from(paragraph),
             .foregroundColor: UIColor(colorAsset),
         ]
-        
+
         if let underline = NSUnderlineStyle(underlineStyle) {
             attributes[.underlineStyle] = underline.rawValue
         }
@@ -154,7 +153,7 @@ public extension Style {
         if let strike = NSUnderlineStyle(strike) {
             attributes[.strikethroughStyle] = strike.rawValue
         }
-        
+
         if let backgroundColor = backgroundColorAsset {
             attributes[.backgroundColor] = UIColor(backgroundColor)
         }
@@ -197,7 +196,7 @@ public extension UIImage {
     convenience init(asset: ImageAsset) {
         self.init(named: asset.name, in: .module, with: nil)!
     }
-    
+
     func resized(to size: CGSize) -> UIImage {
         return UIGraphicsImageRenderer(size: size).image { _ in
             draw(in: CGRect(origin: .zero, size: size))

@@ -4,7 +4,6 @@
 
 import Sails
 
-
 extension Response {
     static func myList(_ fixtureName: String = "initial-list") -> Response {
         Response {
@@ -18,7 +17,7 @@ extension Response {
     static func archivedContent() -> Response {
         myList("archived-items")
     }
-    
+
     static func favoritedArchivedContent() -> Response {
         myList("archived-favorite-items")
     }

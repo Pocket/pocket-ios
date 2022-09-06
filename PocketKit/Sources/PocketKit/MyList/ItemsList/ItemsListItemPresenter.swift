@@ -12,7 +12,6 @@ import CoreData
 import UIKit
 import Kingfisher
 
-
 private extension Style {
     static let title: Style = .header.sansSerif.h8
         .with { paragraph in

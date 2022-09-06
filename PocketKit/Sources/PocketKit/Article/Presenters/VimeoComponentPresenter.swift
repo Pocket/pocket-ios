@@ -1,7 +1,6 @@
 import Sync
 import UIKit
 
-
 class VimeoComponentPresenter: ArticleComponentPresenter {
     private let oEmbedService: OEmbedService
     private let readableViewModel: ReadableViewModel?

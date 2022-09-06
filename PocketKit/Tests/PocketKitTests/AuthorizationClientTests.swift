@@ -6,7 +6,6 @@ import XCTest
 @testable import PocketKit
 import AuthenticationServices
 
-
 class AuthorizationClientTests: XCTestCase {
     var client: AuthorizationClient!
     var mockAuthenticationSession: MockAuthenticationSession!

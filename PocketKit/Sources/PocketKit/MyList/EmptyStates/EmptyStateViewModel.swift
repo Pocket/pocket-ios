@@ -2,7 +2,6 @@ import Foundation
 import SwiftUI
 import Textile
 
-
 protocol EmptyStateViewModel {
     var imageAsset: ImageAsset { get }
     var icon: ImageAsset? { get }

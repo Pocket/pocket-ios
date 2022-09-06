@@ -11,10 +11,10 @@ public enum EngagementEvent: String, Encodable {
 
 public struct SnowplowEngagement: Event {
     public static let schema = "iglu:com.pocket/engagement/jsonschema/1-0-1"
-    
+
     let type: EngagementEvent
     let value: String?
-    
+
     public init(type: EngagementEvent, value: String?) {
         self.type = type
         self.value = value

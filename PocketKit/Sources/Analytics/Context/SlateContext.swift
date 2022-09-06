@@ -4,12 +4,12 @@
 
 public struct SlateContext: Context {
     public static let schema = "iglu:com.pocket/slate/jsonschema/1-0-0"
-    
+
     let id: String
     let requestID: String
     let experiment: String
     let index: UIIndex
-    
+
     public init(id: String, requestID: String, experiment: String, index: UIIndex) {
         self.id = id
         self.requestID = requestID

@@ -1,7 +1,6 @@
 import Foundation
 import CoreData
 
-
 extension SlateLineup {
     public typealias RemoteSlateLineup = GetSlateLineupQuery.Data.GetSlateLineup
 

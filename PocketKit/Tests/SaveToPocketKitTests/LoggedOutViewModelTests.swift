@@ -1,7 +1,6 @@
 import XCTest
 @testable import SaveToPocketKit
 
-
 class LoggedOutViewModelTests: XCTestCase {
     private func subject() -> LoggedOutViewModel {
         LoggedOutViewModel()

@@ -4,11 +4,9 @@ import SafariServices
 import Analytics
 import Sync
 
-
-protocol RegularMyListCoordinatorDelegate: ModalContentPresenting {
+protocol RegularMyListCoordinatorDelegate: AnyObject, ModalContentPresenting {
     func myListCoordinator(_ coordinator: RegularMyListCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?)
 }
-
 
 class RegularMyListCoordinator: NSObject {
     weak var delegate: RegularMyListCoordinatorDelegate?

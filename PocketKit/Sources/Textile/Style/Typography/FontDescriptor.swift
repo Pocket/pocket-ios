@@ -22,7 +22,7 @@ public struct FontDescriptor {
 
     public struct Family: Hashable {
         public let name: String
-        
+
         public init(name: String) {
             self.name = name
         }
@@ -59,7 +59,7 @@ public struct FontDescriptor {
     func with(slant: Slant) -> FontDescriptor {
         FontDescriptor(family: family, size: size, weight: weight, slant: slant)
     }
-    
+
     func adjustingSize(by adjustment: Int) -> FontDescriptor {
         return FontDescriptor(family: family, size: size.adjusting(by: adjustment), weight: weight, slant: slant)
     }

@@ -1,7 +1,6 @@
 import Foundation
 import Textile
 
-
 struct ArchiveEmptyStateViewModel: EmptyStateViewModel {
     let imageAsset: ImageAsset = .chest
     let icon: ImageAsset? = .archive

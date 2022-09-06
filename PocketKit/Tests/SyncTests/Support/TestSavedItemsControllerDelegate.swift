@@ -2,7 +2,6 @@ import Foundation
 import CoreData
 import Sync
 
-
 class TestSavedItemsControllerDelegate: SavedItemsControllerDelegate {
     private let handler: () -> Void
 

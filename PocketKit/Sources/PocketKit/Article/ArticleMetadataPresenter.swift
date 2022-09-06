@@ -2,7 +2,6 @@ import UIKit
 import Sync
 import Textile
 
-
 private extension Style {
     static func title(modifier: StylerModifier) -> Style {
         var style: Style = .header

@@ -5,7 +5,6 @@
 import XCTest
 import Sails
 
-
 class ShareAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!

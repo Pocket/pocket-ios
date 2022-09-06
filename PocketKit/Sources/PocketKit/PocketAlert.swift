@@ -1,6 +1,5 @@
 import UIKit
 
-
 struct PocketAlert {
     let title: String?
     let message: String?

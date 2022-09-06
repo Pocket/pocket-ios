@@ -2,7 +2,6 @@ import UIKit
 import Combine
 import AuthenticationServices
 
-
 class LoggedOutCoordinator: NSObject {
     lazy var viewController: UIViewController = {
         LoggedOutViewController(viewModel: viewModel)

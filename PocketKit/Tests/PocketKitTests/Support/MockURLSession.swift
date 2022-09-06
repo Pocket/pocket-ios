@@ -20,7 +20,7 @@ class MockURLSession: URLSessionProtocol {
         guard let impl = dataImpl else {
             fatalError("\(Self.self).\(#function) is not stubbed")
         }
-        
+
         dataTaskCalls.append(DataCall(request: request))
         return try impl(request)
     }

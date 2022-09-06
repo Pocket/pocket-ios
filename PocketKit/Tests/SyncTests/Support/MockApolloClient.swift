@@ -10,7 +10,7 @@ class MockApolloClient: ApolloClientProtocol {
     var store: ApolloStore {
         fatalError("\(Self.self).\(#function) is not implemented")
     }
-    
+
     var cacheKeyForObject: CacheKeyForObject? {
         get { fatalError("\(Self.self).\(#function) is not implemented") }
         set { fatalError("\(Self.self).\(#function) is not implemented") }
@@ -174,7 +174,7 @@ class MockApolloClient: ApolloClientProtocol {
     ) -> Cancellable {
         fatalError("\(Self.self).\(#function) is not implemented")
     }
-    
+
     @discardableResult
     func subscribe<Subscription: GraphQLSubscription>(
         subscription: Subscription,

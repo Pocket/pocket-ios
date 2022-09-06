@@ -6,7 +6,6 @@ import Sync
 import Combine
 import Textile
 
-
 class CompactMainCoordinator: NSObject {
     var viewController: UIViewController {
         tabBarController
@@ -17,7 +16,7 @@ class CompactMainCoordinator: NSObject {
         guard !tabBar.isHidden else { return nil }
         return tabBar
     }
-    
+
     private let tabBarController: UITabBarController
     private let myList: CompactMyListContainerCoordinator
     private let home: CompactHomeCoordinator

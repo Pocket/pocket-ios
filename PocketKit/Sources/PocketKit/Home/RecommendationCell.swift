@@ -2,7 +2,6 @@ import UIKit
 import Kingfisher
 import Textile
 
-
 protocol RecommendationCellViewModel {
     var attributedTitle: NSAttributedString { get }
     var attributedDomain: NSAttributedString { get }
@@ -37,7 +36,7 @@ class RecommendationCell: UICollectionViewCell {
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
+
     private let timeToReadLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.numberOfSubtitleLines
@@ -72,14 +71,14 @@ class RecommendationCell: UICollectionViewCell {
         stack.spacing = 0
         return stack
     }()
-    
+
     private let bottomStack: UIStackView = {
         let stack = UIStackView()
         stack.distribution = .equalSpacing
         stack.axis = .horizontal
         return stack
     }()
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         contentView.addSubview(thumbnailImageView)
@@ -101,15 +100,15 @@ class RecommendationCell: UICollectionViewCell {
             titleLabel.topAnchor.constraint(equalTo: thumbnailImageView.bottomAnchor, constant: Constants.textStackTopMargin),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            
+
             bottomStack.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             bottomStack.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
-            bottomStack.bottomAnchor.constraint(equalTo:  contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
-            
-            contentView.topAnchor.constraint(equalTo:  topAnchor),
+            bottomStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
+
+            contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo:  bottomAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
         ])
 
         [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
@@ -127,20 +126,20 @@ class RecommendationCell: UICollectionViewCell {
         timeToReadLabel.attributedText = model.attributedTimeToRead
 
         saveButton.mode = model.saveButtonMode
-        
-        if model.attributedTimeToRead.string == "" {
+
+        if model.attributedTimeToRead.string.isEmpty {
             timeToReadLabel.isHidden = true
         } else {
             timeToReadLabel.isHidden = false
         }
-        
+
         if let saveAction = UIAction(model.primaryAction) {
             saveButton.addAction(saveAction, for: .primaryActionTriggered)
         }
-        
+
         let menuActions = model.overflowActions?.compactMap(UIAction.init) ?? []
         overflowButton.menu = UIMenu(children: menuActions)
-        
+
         let imageWidth = bounds.width
                 - Constants.layoutMargins.left
                 - Constants.layoutMargins.right
@@ -167,7 +166,7 @@ class RecommendationCell: UICollectionViewCell {
             ]
         )
     }
-    
+
     override func layoutSubviews() {
         layer.masksToBounds = false
         layer.cornerRadius = Constants.cornerRadius
@@ -204,21 +203,21 @@ extension RecommendationCell {
             availableWidth: adjustedWidth,
             numberOfLines: Constants.numberOfTitleLines
         )
-        
+
         let domainHeight = adjustedHeight(
             of: viewModel.attributedDomain,
             availableWidth: adjustedWidth / 2,
             numberOfLines: Constants.numberOfSubtitleLines
         )
-        
+
         let timeToReadHeight = adjustedHeight(
             of: viewModel.attributedTimeToRead,
             availableWidth: adjustedWidth / 2,
             numberOfLines: Constants.numberOfTimeToReadLines
         )
-        
+
         let stackHeight = Constants.stackSpacing + domainHeight + Constants.stackSpacing + timeToReadHeight + Constants.stackSpacing
-        
+
         return Constants.layoutMargins.top
         + imageHeight
         + Constants.textStackTopMargin
@@ -232,7 +231,7 @@ extension RecommendationCell {
         guard !attributedString.string.isEmpty else {
             return 0
         }
-        
+
         let maxHeight: CGFloat
         if let font = attributedString.attribute(.font, at: 0, effectiveRange: nil) as? UIFont {
             let lineSpacing: CGFloat

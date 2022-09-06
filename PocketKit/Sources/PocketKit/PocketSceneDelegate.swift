@@ -3,7 +3,6 @@ import AuthenticationServices
 import Network
 import Sync
 
-
 public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
     private let coordinator: RootCoordinator
 

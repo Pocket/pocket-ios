@@ -6,7 +6,7 @@ class SectionHeaderView: UICollectionReusableView {
     static let kind = "SectionHeader"
     static let buttonImageSize = CGSize(width: 6.75, height: 12)
     static let stackSpacing: CGFloat = 10
-    
+
     private let headerLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
@@ -14,7 +14,7 @@ class SectionHeaderView: UICollectionReusableView {
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
+
     private let myListButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
         configuration.image = UIImage(asset: .chevronRight)
@@ -25,14 +25,14 @@ class SectionHeaderView: UICollectionReusableView {
         configuration.imagePlacement = .trailing
         configuration.contentInsets.leading = 0
         configuration.contentInsets.trailing = 0
-        
+
         let button = UIButton(configuration: configuration, primaryAction: nil)
         button.accessibilityIdentifier = "see-all-button"
         button.isHidden = true
         button.setContentHuggingPriority(.required, for: .horizontal)
         return button
     }()
-    
+
     private let headerStack: UIStackView = {
         let stack = UIStackView()
         stack.distribution = .fill
@@ -45,13 +45,13 @@ class SectionHeaderView: UICollectionReusableView {
         super.init(frame: frame)
         headerStack.addArrangedSubview(headerLabel)
         headerStack.addArrangedSubview(myListButton)
-        
+
         addSubview(headerStack)
 
         headerStack.translatesAutoresizingMaskIntoConstraints = false
         myListButton.translatesAutoresizingMaskIntoConstraints = false
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
-        
+
         NSLayoutConstraint.activate([
             headerStack.topAnchor.constraint(equalTo: topAnchor),
             headerStack.bottomAnchor.constraint(equalTo: bottomAnchor),
@@ -69,8 +69,8 @@ extension SectionHeaderView {
     struct Model {
         let name: String
         let buttonTitle: String
-        var buttonAction: (() -> ())? = nil
-        
+        var buttonAction: (() -> Void)?
+
         var attributedHeaderText: NSAttributedString {
             NSAttributedString(string: name, style: .sectionHeader)
         }
@@ -80,15 +80,15 @@ extension SectionHeaderView {
             return attributedHeaderText.sizeFitting(availableWidth: width - stackSpacing - buttonWidth).height + 16
         }
     }
-    
+
     func configure(model: Model) {
         headerLabel.attributedText = model.attributedHeaderText
         updateButtonConfiguration(with: model.buttonTitle, and: model.buttonAction)
     }
-    
-    private func updateButtonConfiguration(with text: String?, and action: (() -> ())?) {
+
+    private func updateButtonConfiguration(with text: String?, and action: (() -> Void)?) {
         guard let text = text, let action = action else { return }
-        
+
         myListButton.configurationUpdateHandler = { button in
             var config = button.configuration
             config?.attributedTitle = AttributedString(text, attributes: Style.buttonText.attributes)

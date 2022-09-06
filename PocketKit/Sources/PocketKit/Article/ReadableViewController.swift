@@ -6,7 +6,6 @@ import Analytics
 import Kingfisher
 import SafariServices
 
-
 protocol ReadableViewControllerDelegate: AnyObject {
     func readableViewController(_ controller: ReadableViewController, openURL url: URL)
     func readableViewController(_ controller: ReadableViewController, shareWithAdditionalText text: String?)
@@ -14,7 +13,7 @@ protocol ReadableViewControllerDelegate: AnyObject {
 
 class ReadableViewController: UIViewController {
     private var metadata: ArticleMetadataPresenter?
-    
+
     var presenters: [ArticleComponentPresenter]?
 
     var readableViewModel: ReadableViewModel {
@@ -23,13 +22,13 @@ class ReadableViewController: UIViewController {
         }
     }
 
-    weak var delegate: ReadableViewControllerDelegate? = nil
+    weak var delegate: ReadableViewControllerDelegate?
 
     private var contexts: [Context] {
         guard let url = readableViewModel.url else {
             return []
         }
-        
+
         let content = ContentContext(url: url)
         return [content]
     }
@@ -37,12 +36,12 @@ class ReadableViewController: UIViewController {
     private let readerSettings: ReaderSettings
 
     private var subscriptions: [AnyCancellable] = []
-    
+
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: layout
     )
-    
+
     private lazy var layout = UICollectionViewCompositionalLayout { [self] in
         return self.buildSection(index: $0, environment: $1)
     }
@@ -53,7 +52,7 @@ class ReadableViewController: UIViewController {
     ) {
         self.readerSettings = readerSettings
         self.readableViewModel = readable
-        
+
         super.init(nibName: nil, bundle: nil)
 
         collectionView.delegate = self
@@ -84,7 +83,7 @@ class ReadableViewController: UIViewController {
             self?.updateContent()
         }.store(in: &subscriptions)
     }
-    
+
     override func loadView() {
         view = collectionView
     }
@@ -140,7 +139,7 @@ extension ReadableViewController: UICollectionViewDataSource {
 
         return 1 + (presenters.isEmpty ? 0 : 1)
     }
-    
+
     func collectionView(
         _ collectionView: UICollectionView,
         numberOfItemsInSection section: Int
@@ -183,7 +182,7 @@ extension ReadableViewController: UICollectionViewDataSource {
             if let cell = cell as? ArticleComponentTextCell {
                 cell.delegate = self
             }
-            
+
             return cell
         }
     }
@@ -196,7 +195,7 @@ extension ReadableViewController: ArticleComponentTextCellDelegate {
     ) {
         delegate?.readableViewController(self, shareWithAdditionalText: selectedText)
     }
-    
+
     func articleComponentTextCell(
         _ cell: ArticleComponentTextCell,
         shouldOpenURL url: URL

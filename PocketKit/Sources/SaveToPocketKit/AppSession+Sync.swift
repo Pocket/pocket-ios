@@ -1,7 +1,6 @@
 import SharedPocketKit
 import Sync
 
-
 extension AppSession: SessionProvider {
     public var session: Sync.Session? {
         currentSession

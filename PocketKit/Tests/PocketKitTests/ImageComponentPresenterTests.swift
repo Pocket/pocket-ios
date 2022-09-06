@@ -18,10 +18,10 @@ extension ImageComponentPresenterTests {
             source: URL(string: "http://example.com")!
         )
         let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
-        
+
         XCTAssertEqual(presenter.shouldHideCaption, false)
     }
-    
+
     func test_model_withNoCaption_shouldHide() {
         let component = ImageComponent(
             caption: " ",
@@ -32,10 +32,10 @@ extension ImageComponentPresenterTests {
             source: URL(string: "http://example.com")!
         )
         let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
-        
+
         XCTAssertEqual(presenter.shouldHideCaption, true)
     }
-    
+
     func test_model_imageViewBackgroundColor_withImageSizeAndCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: "a caption",
@@ -47,10 +47,10 @@ extension ImageComponentPresenterTests {
         )
         let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
         let imageSize = CGSize(width: 0, height: 0)
-        
+
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
-    
+
     func test_model_imageViewBackgroundColor_withImageSizeAndNoCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: " ",
@@ -62,10 +62,10 @@ extension ImageComponentPresenterTests {
         )
         let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
         let imageSize = CGSize(width: 0, height: 0)
-        
+
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
-    
+
     func test_model_imageViewBackgroundColor_withSmallImageSizeAndCaption_returnsGreyBackground() {
         let component = ImageComponent(
             caption: "a caption",
@@ -77,10 +77,10 @@ extension ImageComponentPresenterTests {
         )
         let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
         let imageSize = CGSize(width: -1, height: 0)
-        
+
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.ui.grey7))
     }
-    
+
     func test_model_imageViewBackgroundColor_withSmallImageSizeAndNoCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: " ",
@@ -92,10 +92,10 @@ extension ImageComponentPresenterTests {
         )
         let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
         let imageSize = CGSize(width: -1, height: 0)
-        
+
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
-    
+
     func test_model_imageViewBackgroundColor_withNoImageAndCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: "a caption",
@@ -107,10 +107,10 @@ extension ImageComponentPresenterTests {
         )
         let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
         let imageSize = CGSize(width: -1, height: 0)
-        
+
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
-    
+
     func test_model_imageViewBackgroundColor_withNoImageAndNoCaption_returnsClearBackground() {
         let component = ImageComponent(
             caption: nil,
@@ -122,7 +122,7 @@ extension ImageComponentPresenterTests {
         )
         let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
         let imageSize = CGSize(width: -1, height: 0)
-        
+
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
     }
 }

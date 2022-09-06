@@ -23,23 +23,23 @@ class RecentSavesItemCell: HomeCarouselItemCell {
             self.overflowActions = overflowActions
             self.thumbnailURL = imageCacheURL(for: item.topImageURL)
         }
-        
+
         var attributedTitle: NSAttributedString {
             NSAttributedString(string: title, style: .title)
         }
-        
+
         var attributedDomain: NSAttributedString {
             return NSAttributedString(string: domain ?? "", style: .domain)
         }
-        
+
         var attributedTimeToRead: NSAttributedString {
             return NSAttributedString(string: timeToRead ?? "", style: .timeToRead)
         }
-        
+
         private var domain: String? {
             item.domainMetadata?.name ?? item.domain ?? item.bestURL?.host
         }
-        
+
         private var title: String {
             [
                 item.title,
@@ -48,7 +48,7 @@ class RecentSavesItemCell: HomeCarouselItemCell {
                 .compactMap { $0 }
                 .first { !$0.isEmpty } ?? ""
         }
-        
+
         private var timeToRead: String? {
             guard let timeToRead = item.timeToRead,
                   timeToRead > 0 else {
@@ -68,7 +68,7 @@ private extension Style {
     static let domain: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }
-    
+
     static let timeToRead: Style = .header.sansSerif.p4.with(color: .ui.grey5).with { paragraph in
         paragraph.with(lineBreakMode: .byTruncatingTail)
     }.with(maxScaleSize: 22)

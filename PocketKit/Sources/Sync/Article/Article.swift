@@ -1,6 +1,5 @@
 import Foundation
 
-
 public class Article: NSObject, Codable {
     public static var supportsSecureCoding: Bool = true
 

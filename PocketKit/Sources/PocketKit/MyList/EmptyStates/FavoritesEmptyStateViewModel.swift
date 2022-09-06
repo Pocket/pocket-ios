@@ -1,7 +1,6 @@
 import Foundation
 import Textile
 
-
 struct FavoritesEmptyStateViewModel: EmptyStateViewModel {
     let imageAsset: ImageAsset = .chest
     let icon: ImageAsset? = .favorite

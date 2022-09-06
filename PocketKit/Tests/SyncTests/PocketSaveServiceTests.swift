@@ -4,7 +4,6 @@ import Sync
 
 @testable import Sync
 
-
 class PocketSaveServiceTests: XCTestCase {
     private var client: MockApolloClient!
     private var backgroundActivityPerformer: MockExpiringActivityPerformer!
@@ -53,7 +52,7 @@ class PocketSaveServiceTests: XCTestCase {
         let result = service.save(url: URL(string: "https://getpocket.com")!)
 
         XCTAssertEqual(result, .newItem)
-        XCTAssertNotNil(backgroundActivityPerformer.performCall(at:0))
+        XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
 
         wait(for: [performCalled], timeout: 1)
         let performCall: MockApolloClient.PerformCall<SaveItemMutation>? = client.performCall(at: 0)

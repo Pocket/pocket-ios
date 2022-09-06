@@ -26,9 +26,9 @@ public protocol Source {
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
-    func refresh(maxItems: Int, completion: (() -> ())?)
+    func refresh(maxItems: Int, completion: (() -> Void)?)
 
-    func retryImmediately() 
+    func retryImmediately()
 
     func favorite(item: SavedItem)
 
@@ -61,12 +61,12 @@ public protocol Source {
     func fetchDetails(for savedItem: SavedItem) async throws
 
     func fetchDetails(for recommendation: Recommendation) async throws
-    
+
     func save(url: URL)
 }
 
 public extension Source {
-    func refresh(completion: (() -> ())?) {
+    func refresh(completion: (() -> Void)?) {
         self.refresh(maxItems: 400, completion: completion)
     }
 

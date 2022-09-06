@@ -1,7 +1,6 @@
 import UIKit
 import Combine
 
-
 class LoggedOutViewController: UIViewController {
     private let imageView = UIImageView(image: UIImage(asset: .logo))
 

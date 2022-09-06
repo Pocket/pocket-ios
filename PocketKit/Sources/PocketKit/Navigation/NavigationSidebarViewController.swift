@@ -2,7 +2,6 @@ import UIKit
 import Combine
 import Textile
 
-
 private extension Style {
     static let title: Style = .header.sansSerif.h8
 }
@@ -14,7 +13,7 @@ class NavigationSidebarViewController: UIViewController {
         configuration.backgroundColor = UIColor(.ui.white1)
         return UICollectionViewCompositionalLayout.list(using: configuration)
     }()
-    
+
     private static let snapshot: NSDiffableDataSourceSnapshot<String, MainViewModel.AppSection> = {
         var snapshot = NSDiffableDataSourceSnapshot<String, MainViewModel.AppSection>()
         let section = "app-section"
@@ -22,14 +21,14 @@ class NavigationSidebarViewController: UIViewController {
         snapshot.appendItems(MainViewModel.AppSection.allCases, toSection: section)
         return snapshot
     }()
-    
+
     private lazy var dataSource: UICollectionViewDiffableDataSource<String, MainViewModel.AppSection> = {
         let registration = UICollectionView.CellRegistration<UICollectionViewListCell, MainViewModel.AppSection> { (cell, indexPath, appSection) in
             var content = cell.defaultContentConfiguration()
             content.attributedText = NSAttributedString(string: appSection.navigationTitle, style: .title)
             cell.contentConfiguration = content
         }
-        
+
         return UICollectionViewDiffableDataSource<String, MainViewModel.AppSection>(
             collectionView: collectionView
         ) { (collectionView, indexPath, appSection) -> UICollectionViewCell? in
@@ -38,21 +37,21 @@ class NavigationSidebarViewController: UIViewController {
                 for: indexPath,
                 item: appSection
             )
-            
+
             let primaryColor = UIColor(.ui.grey6)
-            
+
             let backgroundView = UIView()
             backgroundView.backgroundColor = primaryColor.withAlphaComponent(0.2)
             cell.backgroundView = backgroundView
-            
+
             let selectedBackgroundView = UIView()
             selectedBackgroundView.backgroundColor = primaryColor
             cell.selectedBackgroundView = selectedBackgroundView
-            
+
             return cell
         }
     }()
-    
+
     private lazy var collectionView: UICollectionView = UICollectionView(
         frame: .zero,
         collectionViewLayout: Self.layout
@@ -63,14 +62,14 @@ class NavigationSidebarViewController: UIViewController {
     init(model: MainViewModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
-        
+
         self.title = "Pocket"
-        
+
         collectionView.isScrollEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = dataSource
         dataSource.apply(Self.snapshot)
-        
+
         model.$selectedSection
             .receive(on: DispatchQueue.main)
             .sink { [weak self] appSection in
@@ -79,7 +78,7 @@ class NavigationSidebarViewController: UIViewController {
             }
             .store(in: &subscriptions)
     }
-    
+
     override func loadView() {
         view = collectionView
     }

@@ -2,7 +2,6 @@ import UIKit
 import Lottie
 import Textile
 
-
 class EndOfFeedAnimationView: UIView {
     private lazy var textLabel: UILabel = {
         let label = UILabel(frame: .zero)
@@ -10,18 +9,18 @@ class EndOfFeedAnimationView: UIView {
         label.textAlignment = .center
         return label
     }()
-    
+
     var attributedText: NSAttributedString? {
         get { textLabel.attributedText }
         set { textLabel.attributedText = newValue }
     }
-    
+
     private lazy var animationView: AnimationView = {
         let view = AnimationView(animation: nil)
         view.animation = Animation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
         return view
     }()
-    
+
     var isAnimating: Bool {
         get { animationView.isAnimationPlaying }
         set {
@@ -36,18 +35,18 @@ class EndOfFeedAnimationView: UIView {
             }
         }
     }
-    
+
     private(set) var didFinishPreviousAnimation: Bool = false
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+
         textLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         textLabel.setContentCompressionResistancePriority(.required, for: .vertical)
-        
+
         animationView.setContentCompressionResistancePriority(.required, for: .horizontal)
         animationView.setContentCompressionResistancePriority(.required, for: .vertical)
-        
+
         let stackView = UIStackView(arrangedSubviews: [textLabel, animationView])
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
@@ -57,7 +56,7 @@ class EndOfFeedAnimationView: UIView {
         stackView.alignment = .center
 
         addSubview(stackView)
-        
+
         NSLayoutConstraint.activate([
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
@@ -67,7 +66,7 @@ class EndOfFeedAnimationView: UIView {
 
         updatePageColors()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError()
     }

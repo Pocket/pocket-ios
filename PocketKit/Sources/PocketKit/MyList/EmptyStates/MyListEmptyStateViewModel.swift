@@ -1,7 +1,6 @@
 import Foundation
 import Textile
 
-
 struct MyListEmptyStateViewModel: EmptyStateViewModel {
     let imageAsset: ImageAsset = .welcomeShelf
     let icon: ImageAsset? = nil

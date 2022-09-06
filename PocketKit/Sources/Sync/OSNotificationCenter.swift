@@ -1,7 +1,6 @@
 import Foundation
 import CoreFoundation
 
-
 public class OSNotificationCenter {
     public typealias Observer = AnyHashable
     private let center: CFNotificationCenter

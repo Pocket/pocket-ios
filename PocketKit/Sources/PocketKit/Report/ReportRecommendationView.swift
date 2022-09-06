@@ -3,7 +3,6 @@ import Sync
 import Analytics
 import Textile
 
-
 struct ReportRecommendationView: View {
     private struct Constants {
         static let cornerRadius: CGFloat = 4
@@ -16,26 +15,26 @@ struct ReportRecommendationView: View {
         static let submitButtonTintColor = Color(.ui.grey1)
         static let submitButtonBackgroundColor = Color(.ui.teal2)
     }
-    
+
     private let recommendation: Recommendation
     private let tracker: Tracker
-    
+
     private var submitAccessibilityIdentifier: String {
         selectedReason == nil ? "submit-report-disabled" : "submit-report"
     }
-    
+
     @Environment(\.dismiss)
     private var dismiss
-    
+
     @State
-    private var selectedReason: ReportEvent.Reason? = nil
-    
+    private var selectedReason: ReportEvent.Reason?
+
     @State
     private var reportComment = ""
-    
+
     @State
     private var isReported = false
-    
+
     @FocusState
     private var isCommentFocused: Bool
 
@@ -43,7 +42,7 @@ struct ReportRecommendationView: View {
         self.recommendation = recommendation
         self.tracker = tracker
     }
-    
+
     var body: some View {
         List {
             Section(header: Text("Report a concern")) {
@@ -55,7 +54,7 @@ struct ReportRecommendationView: View {
                                 isCommentFocused = false
                                 return
                             }
-                            
+
                             selectedReason = reason
                         }
                         .tint(Constants.reasonRowTint)
@@ -64,14 +63,14 @@ struct ReportRecommendationView: View {
                         .listRowSeparator(.hidden)
                         .accessibilityIdentifier(reason.accessibilityIdentifier)
                 }
-                
+
                 if selectedReason == .other {
                     ReportCommentRow(text: $reportComment, isFocused: $isCommentFocused)
                         .frame(height: Constants.commentRowHeight)
                         .listRowBackground(Rectangle().foregroundColor(.clear))
                         .listRowSeparator(.hidden)
                 }
-                
+
                 Button(action: submitReport) {
                     HStack {
                         Spacer()
@@ -95,7 +94,7 @@ struct ReportRecommendationView: View {
         .disabled(isReported == true)
         .accessibilityIdentifier("report-recommendation")
     }
-    
+
     private func report(_ reason: ReportEvent.Reason) {
         guard let url = url(for: recommendation) else {
             return
@@ -107,22 +106,22 @@ struct ReportRecommendationView: View {
         let report = ReportEvent(reason: reason, comment: comment)
         let engagement = SnowplowEngagement(type: .report, value: nil)
         tracker.track(event: engagement, [button, content, report])
-        
+
         isReported = true
-        
+
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             dismiss()
         }
     }
-    
+
     private func url(for recommendation: Recommendation) -> URL? {
         recommendation.item?.resolvedURL ?? recommendation.item?.givenURL
     }
-    
+
     private func selectionColor(for reason: ReportEvent.Reason) -> Color {
         return reason == selectedReason ? Constants.reasonRowSelectedColor : Constants.reasonRowDeselectedColor
     }
-    
+
     private func submitReport() {
         isCommentFocused = false
 
@@ -137,17 +136,17 @@ private struct ReportReasonRow: View {
     private struct Constants {
         static let contentSpacing: CGFloat = 12
     }
-    
+
     private let text: String
     private let isSelected: Bool
     private let action: () -> Void
-    
+
     init(text: String, isSelected: Bool, action: @escaping () -> Void) {
         self.text = text
         self.isSelected = isSelected
         self.action = action
     }
-    
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: Constants.contentSpacing) {
@@ -168,11 +167,11 @@ private struct ReportCommentRow: View {
         static let lineWidth: CGFloat = 1
         static let accessibilityIdentifier = "report-comment"
     }
-    
+
     var text: Binding<String>
-    
+
     var isFocused: FocusState<Bool>.Binding
-    
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             if text.wrappedValue.isEmpty && isFocused.wrappedValue == false {
@@ -181,7 +180,7 @@ private struct ReportCommentRow: View {
                     .padding(Constants.placeholderPadding)
                     .opacity(Constants.placeholderOpacity)
             }
-            
+
             TextEditor(text: text)
                 .style(.recommendationRowStyle)
                 .focused(isFocused)
@@ -210,7 +209,7 @@ private extension ReportEvent.Reason {
         case .other: return "Other"
         }
     }
-    
+
     var accessibilityIdentifier: String {
         switch self {
         case .brokenMeta: return "broken-meta"

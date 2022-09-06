@@ -1,7 +1,6 @@
 import Foundation
 @testable import SaveToPocketKit
 
-
 class MockExtensionContext: ExtensionContext {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
@@ -70,7 +69,7 @@ extension MockItemProvider {
         implementations[Self.loadItemImpl] = impl
     }
 
-    func loadItem(forTypeIdentifier typeIdentifier: String, options: [AnyHashable : Any]?) async throws -> NSSecureCoding {
+    func loadItem(forTypeIdentifier typeIdentifier: String, options: [AnyHashable: Any]?) async throws -> NSSecureCoding {
         guard let loadItemImpl = implementations[Self.loadItemImpl] as? LoadItemImpl else {
             fatalError("\(Self.self).\(#function) is not stubbed")
         }

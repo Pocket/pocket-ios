@@ -2,7 +2,6 @@ import Apollo
 import Foundation
 import CoreData
 
-
 protocol SlateService {
     func fetchSlateLineup(_ identifier: String) async throws
     func fetchSlate(_ slateID: String) async throws

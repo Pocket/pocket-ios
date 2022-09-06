@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 class ReaderSettingsViewController: OnDismissHostingController<ReaderSettingsView> {
     init(settings: ReaderSettings, onDismiss: @escaping () -> Void) {
         super.init(

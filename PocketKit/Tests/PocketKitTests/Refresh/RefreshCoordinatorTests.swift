@@ -4,7 +4,6 @@ import BackgroundTasks
 @testable import Sync
 @testable import PocketKit
 
-
 class RefreshCoordinatorTests: XCTestCase {
     var notificationCenter: NotificationCenter!
     var taskScheduler: MockBGTaskScheduler!
@@ -71,8 +70,8 @@ class RefreshCoordinatorTests: XCTestCase {
         task.stubSetTaskCompleted { _ in }
         handler?(task)
 
-        XCTAssertNotNil(source.refreshCall(at:0))
-        XCTAssertNotNil(task.setTaskCompletedCall(at:0))
+        XCTAssertNotNil(source.refreshCall(at: 0))
+        XCTAssertNotNil(task.setTaskCompletedCall(at: 0))
     }
 
     func test_backgroundTaskHandler_whenExpirationHappens_completesTask() {
@@ -95,9 +94,9 @@ class RefreshCoordinatorTests: XCTestCase {
 
         task.expirationHandler?()
 
-        XCTAssertNotNil(source.refreshCall(at:0))
-        XCTAssertNotNil(task.setTaskCompletedCall(at:0))
-        XCTAssertEqual(task.setTaskCompletedCall(at:0)?.success, false)
+        XCTAssertNotNil(source.refreshCall(at: 0))
+        XCTAssertNotNil(task.setTaskCompletedCall(at: 0))
+        XCTAssertEqual(task.setTaskCompletedCall(at: 0)?.success, false)
     }
 
     func test_receivingAppWillEnterForegroundNotification_refreshesSource_andResolvesUnresolvedSavedItems() {
@@ -110,7 +109,7 @@ class RefreshCoordinatorTests: XCTestCase {
 
         notificationCenter?.post(name: UIScene.willEnterForegroundNotification, object: nil)
 
-        XCTAssertNotNil(source.refreshCall(at:0))
-        XCTAssertNotNil(source.resolveUnresolvedSavedItemsCall(at:0))
+        XCTAssertNotNil(source.refreshCall(at: 0))
+        XCTAssertNotNil(source.resolveUnresolvedSavedItemsCall(at: 0))
     }
 }

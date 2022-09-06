@@ -4,7 +4,6 @@ import CoreData
 import Combine
 import Kingfisher
 
-
 class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
@@ -14,7 +13,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     init(model: ViewModel) {
         self.model = model
         super.init(nibName: nil, bundle: nil)
-        
+
         let layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env -> NSCollectionLayoutSection? in
             guard let self = self,
                   let section = self.dataSource.sectionIdentifier(for: sectionIndex) else {
@@ -79,7 +78,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 config.backgroundColor = UIColor(.ui.white1)
                 config.showsSeparators = false
                 let section = NSCollectionLayoutSection.list(using: config, layoutEnvironment: env)
-                
+
                 // Update the section's contentInsets to center the offline cell
                 // within the full size of the collection view
                 let layoutHeight = env.container.contentSize.height
@@ -93,7 +92,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                     bottom: 0,
                     trailing: 0
                 )
-                
+
                 return section
             case .emptyState:
                 let section = NSCollectionLayoutSection(
@@ -137,13 +136,13 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         let itemCellRegistration: UICollectionView.CellRegistration<ItemsListItemCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
             self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
         }
-        
+
         let emptyCellRegistration: UICollectionView.CellRegistration<EmptyStateCollectionViewCell, String> = .init { [weak self] cell, _, _ in
             self?.configure(cell: cell)
         }
-        
+
         let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
-            
+
         }
 
         let placeholderCellRegistration: UICollectionView.CellRegistration<ItemPlaceholderCell, Int> = .init { cell, indexPath, itemIndex in
@@ -168,7 +167,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         model.events.sink { [weak self] event in
             self?.handle(myListEvent: event)
         }.store(in: &subscriptions)
-        
+
         model.snapshot.sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot, animatingDifferences: true)
         }.store(in: &subscriptions)
@@ -231,7 +230,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     private func configure(cell: TopicChipCell, indexPath: IndexPath, filterID: ItemsListFilter) {
         cell.configure(model: model.filterButton(with: filterID))
     }
-    
+
     private func configure(cell: EmptyStateCollectionViewCell) {
         guard let viewModel = model.emptyState else {
             return

@@ -1,6 +1,5 @@
 import Combine
 
-
 class MyListContainerViewModel {
     enum Selection {
         case myList
@@ -9,7 +8,7 @@ class MyListContainerViewModel {
 
     @Published
     var selection: Selection = .myList
-    
+
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: ArchivedItemsListViewModel
 

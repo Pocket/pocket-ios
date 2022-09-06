@@ -1,7 +1,6 @@
 import XCTest
 @testable import Sync
 
-
 extension PocketSourceTests {
     func test_events_whenOSNotificationCenterPostsSavedItemCreatedNotification_publishesAnEvent() {
         let source = subject()
@@ -68,7 +67,6 @@ extension PocketSourceTests {
 
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
     }
-
 
     func test_events_whenOSNotificationCenterPostsUnresolvedItemCreatedNotification_whenSavedItemIsDuplicated_includesSavedItemOnlyOnce() throws {
         operations.stubSaveItemOperation { _, _, _, _, _ in

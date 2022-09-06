@@ -5,14 +5,12 @@ import Analytics
 import Sync
 import Combine
 
-
 protocol ModalContentPresenting: AnyObject {
     func report(_ recommendation: Recommendation?)
     func present(_ url: URL?)
     func present(_ alert: PocketAlert?)
     func share(_ activity: PocketActivity?)
 }
-
 
 class RegularMainCoordinator: NSObject {
     var viewController: UIViewController {
@@ -46,7 +44,7 @@ class RegularMainCoordinator: NSObject {
         splitController.displayModeButtonVisibility = .always
 
         navigationSidebar = UINavigationController(rootViewController: NavigationSidebarViewController(model: model))
-        
+
         myList = RegularMyListCoordinator(model: model.myList)
         home = RegularHomeCoordinator(model: model.home, tracker: tracker)
         account = UINavigationController(
@@ -97,7 +95,7 @@ class RegularMainCoordinator: NSObject {
 
         isResetting = false
     }
-    
+
     private func stopObservingModelChanges() {
         subscriptions = []
         readerSubscriptions = []
@@ -130,7 +128,7 @@ extension RegularMainCoordinator {
             return
         }
         readerSubscriptions = []
-        
+
         readable.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url)
         }.store(in: &readerSubscriptions)
@@ -206,7 +204,7 @@ extension RegularMainCoordinator {
     }
 }
 
-// MARK - ModalContentPresenting
+// MARK: - ModalContentPresenting
 extension RegularMainCoordinator: ModalContentPresenting {
     func report(_ recommendation: Recommendation?) {
         guard !isResetting, let recommendation = recommendation else {
@@ -259,7 +257,6 @@ extension RegularMainCoordinator: ModalContentPresenting {
         splitController.present(safariVC, animated: !isResetting)
     }
 }
-
 
 // MARK: - RegularHomeCoordinatorDelegate
 extension RegularMainCoordinator: RegularHomeCoordinatorDelegate {

@@ -1,7 +1,6 @@
 import SwiftUI
 import UIKit
 
-
 struct ActivitySheet: UIViewControllerRepresentable {
     typealias UIViewControllerType = UIActivityViewController
 

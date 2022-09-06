@@ -2,7 +2,6 @@ import UIKit
 import WebKit
 import Combine
 
-
 protocol VimeoComponentCellDelegate: AnyObject {
     func vimeoComponentCell(_ cell: VimeoComponentCell, didNavigateToURL: URL)
     func vimeoComponentCellDidTapOpenInWebView(_ cell: VimeoComponentCell)

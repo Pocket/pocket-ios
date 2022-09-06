@@ -1,4 +1,3 @@
-
 import UIKit
 import Sync
 import Kingfisher
@@ -8,7 +7,6 @@ import Combine
 import SwiftUI
 import BackgroundTasks
 import Lottie
-
 
 class HomeViewController: UIViewController {
     private let model: HomeViewModel
@@ -41,7 +39,7 @@ class HomeViewController: UIViewController {
     private lazy var collectionView: UICollectionView = {
         return UICollectionView(frame: .zero, collectionViewLayout: layout)
     }()
-    
+
     private lazy var overscrollView: EndOfFeedAnimationView = {
         let view = EndOfFeedAnimationView(frame: .zero)
         view.accessibilityIdentifier = "slate-detail-overscroll"
@@ -52,8 +50,8 @@ class HomeViewController: UIViewController {
         )
         return view
     }()
-    
-    private var overscrollTopConstraint: NSLayoutConstraint? = nil
+
+    private var overscrollTopConstraint: NSLayoutConstraint?
     private var overscrollOffset = 0
 
     init(model: HomeViewModel) {
@@ -90,7 +88,7 @@ class HomeViewController: UIViewController {
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
             self?.setupOverflowView(contentSize: contentSize)
         }.store(in: &subscriptions)
-        
+
         collectionView.publisher(for: \.contentOffset, options: [.new]).sink { [weak self] contentOffset in
             self?.updateOverflowView(contentOffset: contentOffset)
         }.store(in: &subscriptions)
@@ -106,17 +104,17 @@ class HomeViewController: UIViewController {
 
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
-        
+
         overscrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(overscrollView)
         overscrollTopConstraint = overscrollView.topAnchor.constraint(equalTo: collectionView.bottomAnchor)
-        
+
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            
+
             overscrollTopConstraint!,
             overscrollView.leadingAnchor.constraint(equalTo: collectionView.leadingAnchor),
             overscrollView.trailingAnchor.constraint(equalTo: collectionView.trailingAnchor),
@@ -164,12 +162,12 @@ extension HomeViewController {
             guard let viewModel = model.recentSavesViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
-            
+
             cell.configure(model: viewModel)
             return cell
         case .recommendationHero(let objectID):
             let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-            guard let viewModel = model.recommendationHeroViewModel(for: objectID,  at: indexPath) else {
+            guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
 
@@ -196,7 +194,6 @@ extension HomeViewController {
                 forSupplementaryViewOfKind: kind, for: indexPath
             )
 
-
             if let section = dataSource.sectionIdentifier(for: indexPath.section),
                let viewModel = model.sectionHeaderViewModel(for: section) {
 
@@ -208,17 +205,17 @@ extension HomeViewController {
             fatalError("Unknown supplementary view kind: \(kind)")
         }
     }
-    
+
     private func setupOverflowView(contentSize: CGSize) {
         let shouldHide = contentSize.height <= collectionView.frame.height
         overscrollView.isHidden = shouldHide
     }
-    
+
     private func updateOverflowView(contentOffset: CGPoint) {
         guard collectionView.contentSize.height > collectionView.frame.height else {
             return
         }
-        
+
         let visibleHeight = round(
             collectionView.frame.height
             - collectionView.adjustedContentInset.top
@@ -226,17 +223,17 @@ extension HomeViewController {
         )
         let yOffset = round(contentOffset.y + collectionView.adjustedContentInset.top)
         let overscroll = max(-round(collectionView.contentSize.height - yOffset - visibleHeight), 0)
-        
+
         if overscroll > 0 {
             let constant = overscroll + collectionView.adjustedContentInset.bottom
             overscrollTopConstraint?.constant = -constant
             overscrollView.alpha = min(overscroll / 96, 1)
-            
+
             if !overscrollView.didFinishPreviousAnimation {
                 overscrollView.isAnimating = true
             }
         }
-        
+
         if overscroll == 0 {
             if overscrollView.didFinishPreviousAnimation {
                 overscrollView.isAnimating = false
@@ -253,7 +250,7 @@ extension HomeViewController: UICollectionViewDelegate {
 
         model.willDisplay(cell, at: indexPath)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
 

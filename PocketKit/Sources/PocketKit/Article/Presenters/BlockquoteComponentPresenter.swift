@@ -11,10 +11,9 @@ private extension Style {
         }
 }
 
-
 class BlockquoteComponentPresenter: ArticleComponentPresenter {
     private let component: BlockquoteComponent
-    
+
     private let readerSettings: ReaderSettings
 
     private var cachedAttributedBlockquote: NSAttributedString?
@@ -26,7 +25,7 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
         self.component = component
         self.readerSettings = readerSettings
     }
-    
+
     func size(for availableWidth: CGFloat) -> CGSize {
         attributedBlockquote.flatMap {
             var size = $0.sizeFitting(
@@ -40,7 +39,7 @@ class BlockquoteComponentPresenter: ArticleComponentPresenter {
             return size
         } ?? .zero
     }
-    
+
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: BlockquoteComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedBlockquote = attributedBlockquote

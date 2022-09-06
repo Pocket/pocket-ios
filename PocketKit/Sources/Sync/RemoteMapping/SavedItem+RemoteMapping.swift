@@ -5,7 +5,6 @@
 import Foundation
 import CoreData
 
-
 extension SavedItem {
     typealias SavedItemEdge = UserByTokenQuery.Data.UserByToken.SavedItem.Edge
     public typealias RemoteSavedItem = SavedItemParts

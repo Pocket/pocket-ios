@@ -1,6 +1,5 @@
 import UIKit
 
-
 class CompactAccountCoordinator: NSObject {
     var viewController: UIViewController {
         navigationController

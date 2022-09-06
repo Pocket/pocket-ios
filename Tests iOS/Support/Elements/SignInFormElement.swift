@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct SignInFormElement: PocketUIElement {
     let element: XCUIElement
 

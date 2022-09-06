@@ -1,7 +1,6 @@
 import Combine
 import Apollo
 
-
 class SavedItemMutationOperation<Mutation: GraphQLMutation>: SyncOperation {
     private let apollo: ApolloClientProtocol
     private let events: SyncEvents

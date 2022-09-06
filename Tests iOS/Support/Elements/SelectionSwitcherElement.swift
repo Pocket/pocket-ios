@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct SelectionSwitcherElement: PocketUIElement {
     let element: XCUIElement
 

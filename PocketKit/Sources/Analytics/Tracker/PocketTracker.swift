@@ -4,33 +4,32 @@
 
 import SnowplowTracker
 
-
 public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker
-    
+
     private var persistentContexts: [Context] = []
-    
+
     public init(snowplow: SnowplowTracker) {
         self.snowplow = snowplow
     }
-    
+
     public func addPersistentContext(_ context: Context) {
         persistentContexts.append(context)
     }
-    
+
     public func track<T: Event>(event: T, _ contexts: [Context]?) {
         guard let event = Event(from: event) else {
             return
         }
-        
+
         let contexts = contexts ?? []
         let merged = contexts + persistentContexts
         let Contexts = Contexts(from: merged)
         event.contexts.addObjects(from: Contexts)
-        
+
         snowplow.track(event: event)
     }
-    
+
     public func childTracker(with contexts: [Context]) -> Tracker {
         return LinkedTracker(parent: self, contexts: contexts)
     }
@@ -49,7 +48,7 @@ extension PocketTracker {
               }
         return SelfDescribing(eventData: eventJSON)
     }
-    
+
     private func Contexts(from contexts: [Context]) -> [SelfDescribingJson] {
         var Hierarchy: UInt = 0
         // UIs are returned outside-in, such that the parent precedes the child.
@@ -63,10 +62,10 @@ extension PocketTracker {
                 Hierarchy += 1
                 return context
             }
-            
+
             return context
         }
-        
+
         return contexts.compactMap { context -> SelfDescribingJson? in
             guard let data = context.jsonEncoded,
                   let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],

@@ -5,7 +5,7 @@ public extension NSAttributedString {
     convenience init(string: String, style: Style) {
         self.init(string: string, attributes: style.textAttributes)
     }
-    
+
     static func styled(markdown: String, styler: Styler) -> NSAttributedString? {
         let d = Down(markdownString: markdown)
 
@@ -17,7 +17,7 @@ public extension NSAttributedString {
 
         return nil
     }
-    
+
     static func defaultStyler(
         with modifier: StylerModifier,
         bodyStyle: Style? = nil

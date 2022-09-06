@@ -5,7 +5,6 @@ import Combine
 @testable import Sync
 @testable import PocketKit
 
-
 class SavedItemViewModelTests: XCTestCase {
     private var source: MockSource!
     private var tracker: MockTracker!
@@ -240,7 +239,7 @@ class SavedItemViewModelTests: XCTestCase {
 
     func test_externalSave_forwardsToSource() {
         source.stubSaveURL { _ in }
-        
+
         let viewModel = subject(item: space.buildSavedItem())
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)

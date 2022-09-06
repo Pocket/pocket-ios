@@ -2,7 +2,6 @@ import Sync
 import Combine
 import CoreData
 
-
 class MockArchiveService: ArchiveService {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
@@ -102,4 +101,3 @@ extension MockArchiveService {
         impl(completion)
     }
 }
-

@@ -10,6 +10,9 @@ trigger_map:
 workflows:
   app-store-build:
     steps:
+      - brew-install@0:
+          inputs:
+            - packages: swiftlint
       - xcode-archive@4:
           inputs:
             - project_path: '$BITRISE_PROJECT_PATH'
@@ -39,6 +42,9 @@ workflows:
       - test
   qa-build:
     steps:
+      - brew-install@0:
+          inputs:
+            - packages: swiftlint
       - xcode-archive@4:
           inputs:
             - xcconfig_content: |-
@@ -50,6 +56,9 @@ workflows:
       - test
   test:
     steps:
+      - brew-install@0:
+          inputs:
+            - packages: swiftlint
       - activate-ssh-key@4: {}
       - git-clone@6: {}
       - certificate-and-profile-installer@1: {}

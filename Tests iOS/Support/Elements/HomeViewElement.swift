@@ -14,7 +14,7 @@ struct HomeViewElement: PocketUIElement {
     var overscrollView: XCUIElement {
         element.otherElements["home-overscroll"]
     }
-    
+
     func savedItemCell(_ title: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label = %@", title)
         return savedItemCells.containing(predicate).element(boundBy: 0)
@@ -23,15 +23,15 @@ struct HomeViewElement: PocketUIElement {
     func savedItemCell(at index: Int) -> XCUIElement {
         return savedItemCells.element(boundBy: index)
     }
-    
+
     var savedItemCells: XCUIElementQuery {
         return element.cells.matching(identifier: "home-carousel-item")
     }
-    
+
     func recentSavesView(matching string: String) -> RecentSavesCellElement {
         return RecentSavesCellElement(savedItemCell(string))
     }
-    
+
     func sectionHeader(_ title: String) -> SectionHeaderElement {
         let predicate = NSPredicate(format: "label = %@", title)
         let element = element.otherElements.containing(predicate).element(boundBy: 0)
@@ -60,7 +60,7 @@ struct HomeViewElement: PocketUIElement {
                 )
             )
     }
-    
+
     func overscroll() {
         let origin = CGVector(dx: 0.5, dy: 0.8)
         let destination = CGVector(dx: 0.5, dy: 0.2)

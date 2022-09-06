@@ -1,7 +1,6 @@
 import Foundation
 import CoreData
 
-
 public protocol ImagesControllerDelegate: AnyObject {
     func controller(
         _ controller: ImagesController,

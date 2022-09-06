@@ -6,7 +6,6 @@ import Foundation
 import Sync
 import SwiftUI
 
-
 struct StaticDataCleaner {
     static let hasClearedStaticDataKey = "StatisDataCleaner.hasClearedStaticData"
     private let bundle: Bundle
@@ -18,7 +17,7 @@ struct StaticDataCleaner {
     init(bundle: Bundle, source: Source, userDefaults: UserDefaults) {
         self.bundle = bundle
         self.source = source
-        
+
         _hasClearedStaticData = AppStorage(
             wrappedValue: false,
             Self.hasClearedStaticDataKey,

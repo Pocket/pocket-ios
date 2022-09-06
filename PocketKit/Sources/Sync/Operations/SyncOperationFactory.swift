@@ -3,7 +3,6 @@ import Apollo
 import Combine
 import CoreData
 
-
 protocol SyncOperationFactory {
     func fetchList(
         token: String,

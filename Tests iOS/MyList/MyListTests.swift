@@ -54,7 +54,7 @@ class MyListTests: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
-        
+
         server.routes.get("/v3/guid") { _, _ in
             Response(
                 status: .created,
@@ -160,8 +160,7 @@ class MyListTests: XCTestCase {
                 return promise!.futureResult
             } else if apiRequest.isForMyListContent {
                 return Response.myList()
-            }
-            else {
+            } else {
                 fatalError("Unexpected request")
             }
         }
@@ -192,26 +191,26 @@ class MyListTests: XCTestCase {
             "Jacob and David",
             "WIRED",
             "January 1, 2021",
-            
+
             "Commodo Consectetur Dapibus",
-            
+
             "Purus Vulputate",
-            
+
             "Nulla vitae elit libero, a pharetra augue. Cras justo odio, dapibus ac facilisis in, egestas eget quam.",
             "Photo by: Bibendum Vestibulum Mollis",
-            
+
             "<some></some><code></code>",
-            
+
             "• Pharetra Dapibus Ultricies",
             "• netus et malesuada",
             "• quis commodo odio",
             "• tincidunt ornare massa",
-            
+
             "1. Amet Commodo Fringilla",
             "2. nunc sed augue",
-            
+
             "This element is currently unsupported.",
-            
+
             "Pellentesque Ridiculus Porta"
         ]
 

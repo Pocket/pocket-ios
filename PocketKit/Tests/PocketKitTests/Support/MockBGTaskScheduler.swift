@@ -1,7 +1,6 @@
 import BackgroundTasks
 @testable import PocketKit
 
-
 class MockBGTaskScheduler: BGTaskSchedulerProtocol {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
@@ -84,7 +83,6 @@ extension MockBGTaskScheduler {
         return call
     }
 }
-
 
 class MockBGTask: BGTaskProtocol {
     var expirationHandler: (() -> Void)?

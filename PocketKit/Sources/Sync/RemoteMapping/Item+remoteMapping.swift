@@ -2,7 +2,6 @@ import Foundation
 import CoreData
 import Apollo
 
-
 extension Item {
 
     func update(remote: ItemParts) {

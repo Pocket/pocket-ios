@@ -1,7 +1,6 @@
 import XCTest
 @testable import Sync
 
-
 class ArticleComponentTests: XCTestCase {
     func test_decode_whenTypeIsMarticleText_returnsATextComponent() throws {
         let json = """

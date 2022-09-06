@@ -9,7 +9,6 @@ import Combine
 
 @testable import Sync
 
-
 class PocketSourceTests: XCTestCase {
     var space: Space!
     var apollo: MockApolloClient!
@@ -122,7 +121,7 @@ class PocketSourceTests: XCTestCase {
     func test_favorite_togglesIsFavorite_andExecutesFavoriteMutation() throws {
         let item = try space.createSavedItem(remoteID: "test-item-id")
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemMutationOperation { (_, _ , _: FavoriteItemMutation) in
+        operations.stubItemMutationOperation { (_, _, _: FavoriteItemMutation) in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -138,7 +137,7 @@ class PocketSourceTests: XCTestCase {
     func test_unfavorite_unsetsIsFavorite_andExecutesUnfavoriteMutation() throws {
         let item = try space.createSavedItem()
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemMutationOperation { (_, _ , _: UnfavoriteItemMutation) in
+        operations.stubItemMutationOperation { (_, _, _: UnfavoriteItemMutation) in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -154,7 +153,7 @@ class PocketSourceTests: XCTestCase {
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
         let item = try space.createSavedItem(remoteID: "delete-me")
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
+        operations.stubItemMutationOperation { (_, _, _: DeleteItemMutation) in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -170,7 +169,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_delete_ifSavedItemItemHasRecommendation_doesNotDeleteSavedItemItem() throws {
-        operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
+        operations.stubItemMutationOperation { (_, _, _: DeleteItemMutation) in
             TestSyncOperation { }
         }
 
@@ -188,7 +187,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_delete_ifSavedItemItemHasNoRecommendation_doesNotDeleteSavedItemItem() throws {
-        operations.stubItemMutationOperation { (_, _ , _: DeleteItemMutation) in
+        operations.stubItemMutationOperation { (_, _, _: DeleteItemMutation) in
             TestSyncOperation { }
         }
 
@@ -207,7 +206,7 @@ class PocketSourceTests: XCTestCase {
     func test_archive_archivesLocally_andExecutesArchiveMutation_andUpdatesArchivedAt() throws {
         let item = try space.createSavedItem(remoteID: "archive-me")
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemMutationOperation { (_, _ , _: ArchiveItemMutation) in
+        operations.stubItemMutationOperation { (_, _, _: ArchiveItemMutation) in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -302,7 +301,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_saveRecommendation_createsPendingItem_andExecutesSaveItemOperation() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubSaveItemOperation { _, _, _ , _, _ in
+        operations.stubSaveItemOperation { _, _, _, _, _ in
             return TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -326,7 +325,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_saveRecommendation_withArchivedItem_unarchivesItem_andExecutesUnarchiveOperation() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubSaveItemOperation { _, _, _ , _, _ in
+        operations.stubSaveItemOperation { _, _, _, _, _ in
             return TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -433,10 +432,9 @@ class PocketSourceTests: XCTestCase {
         XCTAssertFalse(recommendation.hasChanges)
     }
 
-    
     func test_saveURL_insertsSavedItem_andExecutesSaveItemOperation() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubSaveItemOperation { _, _, _ , _, _ in
+        operations.stubSaveItemOperation { _, _, _, _, _ in
             return TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -454,7 +452,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_saveURL_withExistingSavedItem_updatesSavedItem_andExecutesSaveItemOperation() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubSaveItemOperation { _, _, _ , _, _ in
+        operations.stubSaveItemOperation { _, _, _, _, _ in
             return TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -478,7 +476,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_saveURL_withArchivedSavedItem_unarchivesItem_andExecutesSaveItemOperation() throws {
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubSaveItemOperation { _, _, _ , _, _ in
+        operations.stubSaveItemOperation { _, _, _, _, _ in
             return TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }

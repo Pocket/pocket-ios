@@ -1,7 +1,6 @@
 import Foundation
 @testable import PocketKit
 
-
 struct MockItemsListItem: ItemsListItem {
     let title: String?
     let isFavorite: Bool

@@ -1,6 +1,5 @@
 import CoreData
 
-
 extension Author {
     convenience init(remote: ItemParts.Author, context: NSManagedObjectContext) {
         self.init(context: context)

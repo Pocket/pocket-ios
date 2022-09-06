@@ -4,7 +4,6 @@ import Foundation
 import BackgroundTasks
 import UIKit
 
-
 class MainViewModel: ObservableObject {
     @Published
     var selectedSection: AppSection = .home
@@ -25,7 +24,7 @@ class MainViewModel: ObservableObject {
         self.home = home
         self.account = account
     }
-    
+
     enum Subsection {
         case myList
         case archive
@@ -35,7 +34,7 @@ class MainViewModel: ObservableObject {
         static var allCases: [MainViewModel.AppSection] {
             return [.home, .myList(nil), .account]
         }
-        
+
         case home
         case myList(Subsection?)
         case account

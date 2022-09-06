@@ -3,7 +3,6 @@ import Combine
 
 @testable import Sync
 
-
 class RetriableOperationTests: XCTestCase {
     var retrySignal: PassthroughSubject<Void, Never>!
     var backgroundTaskManager: MockBackgroundTaskManager!

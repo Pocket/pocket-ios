@@ -1,6 +1,5 @@
 @testable import Sync
 
-
 class TestSyncOperation: SyncOperation {
     private let block: () async -> SyncOperationResult
 

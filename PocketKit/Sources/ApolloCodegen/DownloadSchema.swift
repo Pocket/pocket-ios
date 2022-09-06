@@ -2,7 +2,6 @@ import Foundation
 import ArgumentParser
 import ApolloCodegenLib
 
-
 struct DownloadSchema: ParsableCommand {
     static var configuration = CommandConfiguration(
         commandName: "download-schema",

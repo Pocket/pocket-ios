@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 class OnDismissHostingController<T: View>: UIHostingController<T> {
     private let onDismiss: () -> Void
 

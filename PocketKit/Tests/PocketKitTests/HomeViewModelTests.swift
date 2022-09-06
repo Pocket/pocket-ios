@@ -5,7 +5,6 @@ import CoreData
 @testable import Sync
 @testable import PocketKit
 
-
 class HomeViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
@@ -608,7 +607,7 @@ class HomeViewModelTests: XCTestCase {
 
         wait(for: [urlExpectation], timeout: 1)
     }
-    
+
     func test_selectCell_whenSelectingRecentSave_recentSaveIsReadable_updatesSelectedReadable() throws {
         let item = space.buildItem(isArticle: true)
         let savedItem = space.buildSavedItem(item: item)
@@ -687,7 +686,6 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [urlExpectation], timeout: 1)
     }
 
-    
     func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() throws {
         let item = space.buildItem(isArticle: true)
         let recommendation = space.buildRecommendation(item: item)
@@ -734,7 +732,7 @@ class HomeViewModelTests: XCTestCase {
 
         for recommendation in [heroRec, carouselRec] {
             let action = viewModel
-                .recommendationHeroViewModel(for: recommendation.objectID, at: [0,0])?
+                .recommendationHeroViewModel(for: recommendation.objectID, at: [0, 0])?
                 .overflowActions?.first { $0.identifier == .report }
 
             XCTAssertNotNil(action)
@@ -743,7 +741,7 @@ class HomeViewModelTests: XCTestCase {
 
         wait(for: [reportExpectation], timeout: 1)
     }
-    
+
     func test_primary_whenRecommendationIsNotSaved_savesWithSource() throws {
         source.stubSaveRecommendation { _ in }
         let item = space.buildItem(isArticle: true)
@@ -791,7 +789,7 @@ class HomeViewModelTests: XCTestCase {
             recommendation
         )
     }
-    
+
     func test_numberOfCarouselItemsForSlate_returnsAccurateCount() throws {
         let slates = [
             space.buildSlate(recommendations: (0...1).map { _ in space.buildRecommendation() }),

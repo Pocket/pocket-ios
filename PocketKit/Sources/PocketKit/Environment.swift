@@ -5,7 +5,6 @@
 import SwiftUI
 import Sync
 
-
 private struct SourceKey: EnvironmentKey {
     static var defaultValue = Services.shared.source
 }
@@ -19,7 +18,7 @@ extension EnvironmentValues {
         get { self[SourceKey.self] }
         set { self[SourceKey.self] = newValue }
     }
-    
+
     var characterDirection: LayoutDirection {
         get { self[CharacterDirectionKey.self] }
         set { self[CharacterDirectionKey.self] = newValue }

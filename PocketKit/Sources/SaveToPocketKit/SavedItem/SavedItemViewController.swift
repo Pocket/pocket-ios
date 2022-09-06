@@ -2,7 +2,6 @@ import UIKit
 import Combine
 import Textile
 
-
 class SavedItemViewController: UIViewController {
     private let imageView = UIImageView(image: UIImage(asset: .logo))
 

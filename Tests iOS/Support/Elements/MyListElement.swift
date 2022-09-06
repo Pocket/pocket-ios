@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct MyListElement: PocketUIElement {
     let element: XCUIElement
 
@@ -23,7 +22,7 @@ struct MyListElement: PocketUIElement {
     var itemCells: XCUIElementQuery {
         collectionView.cells.matching(NSPredicate(format: "identifier = %@", "my-list-item"))
     }
-    
+
     func filterButton(for type: String) -> XCUIElement {
         collectionView.cells.matching(
             NSPredicate(
@@ -32,11 +31,11 @@ struct MyListElement: PocketUIElement {
             )
         ).containing(.staticText, identifier: type).element(boundBy: 0)
     }
-    
+
     func emptyStateView(for type: String) -> XCUIElement {
         element.otherElements["\(type)-empty-state"]
     }
-    
+
     var archiveSwipeButton: XCUIElement {
         collectionView.buttons["Archive"]
     }

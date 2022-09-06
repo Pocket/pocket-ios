@@ -4,7 +4,6 @@
 
 import Foundation
 
-
 public protocol Context: Encodable {
     static var schema: String { get }
 }

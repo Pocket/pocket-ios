@@ -5,7 +5,6 @@ import CoreData
 
 @testable import Sync
 
-
 class SaveItemOperationTests: XCTestCase {
     var apollo: MockApolloClient!
     var space: Space!

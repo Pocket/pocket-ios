@@ -3,13 +3,12 @@ import SharedPocketKit
 import Sync
 import Combine
 
-
 class SavedItemViewModel {
     private let appSession: AppSession
     private let saveService: SaveService
     private let dismissTimer: Timer.TimerPublisher
 
-    private var dismissTimerCancellable: AnyCancellable? = nil
+    private var dismissTimerCancellable: AnyCancellable?
 
     @Published
     var infoViewModel: InfoView.Model = .empty

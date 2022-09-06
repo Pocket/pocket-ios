@@ -94,8 +94,8 @@ public extension Style {
     }
 
     struct Body {
-        public let sansSerif = Style(family:  .graphik, size: .body, weight: .regular)
-        public let serif = Style(family:  .blanco, size: .body, weight: .regular)
+        public let sansSerif = Style(family: .graphik, size: .body, weight: .regular)
+        public let serif = Style(family: .blanco, size: .body, weight: .regular)
         public let monospace = Style(family: .monospace, size: .monospace, weight: .regular)
     }
 }

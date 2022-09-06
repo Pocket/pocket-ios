@@ -6,7 +6,6 @@ import Foundation
 import Sails
 import NIO
 
-
 func body(of request: Request) -> String? {
     var body = request.body
     return body?.read()

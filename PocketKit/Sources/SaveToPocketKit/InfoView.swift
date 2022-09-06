@@ -1,7 +1,6 @@
 import UIKit
 import Textile
 
-
 enum InfoViewStyle {
     case `default`
     case error
@@ -38,7 +37,7 @@ class InfoView: UIView {
         didSet { capsuleView.style = style }
     }
 
-    var model: Model? = nil {
+    var model: Model? {
         didSet {
             style = model?.style ?? .default
             attributedText = model?.attributedText ?? nil

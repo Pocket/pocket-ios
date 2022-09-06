@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 protocol PocketUIElement {
     var element: XCUIElement { get }
 }

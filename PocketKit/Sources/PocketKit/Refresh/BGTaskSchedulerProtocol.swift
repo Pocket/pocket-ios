@@ -1,6 +1,5 @@
 import BackgroundTasks
 
-
 protocol BGTaskProtocol: AnyObject {
     var expirationHandler: (() -> Void)? { get set }
 

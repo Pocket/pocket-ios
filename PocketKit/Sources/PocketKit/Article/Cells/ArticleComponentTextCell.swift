@@ -1,6 +1,5 @@
 import UIKit
 
-
 // An object that conforms to this protocol is commonly capable of responding to
 // (overridden) events that occur within a PocketTextView nested within a PocketTextCell.
 protocol ArticleComponentTextCellDelegate: AnyObject {
@@ -22,7 +21,7 @@ extension ArticleComponentTextCell {
         let selectedText =  (textView.text as NSString).substring(with: textView.selectedRange)
         delegate?.articleComponentTextCell(self, didShareText: selectedText)
     }
-    
+
     func articleComponentTextView(_ textView: ArticleComponentTextView, shouldOpenURL url: URL) -> Bool {
         return delegate?.articleComponentTextCell(self, shouldOpenURL: url) ?? true
     }
@@ -43,13 +42,13 @@ protocol ArticleComponentTextViewDelegate: AnyObject {
 // A subclass of UITextView that overrides certain actions (e.g Share),
 // and delegates the response to these actions to its delegate.
 class ArticleComponentTextView: UITextView {
-    var actionDelegate: ArticleComponentTextViewDelegate? = nil
+    var actionDelegate: ArticleComponentTextViewDelegate?
 
-    private var urlTextRange: UITextRange? = nil
-    
+    private var urlTextRange: UITextRange?
+
     override init(frame: CGRect, textContainer: NSTextContainer?) {
         super.init(frame: frame, textContainer: textContainer)
-        
+
         backgroundColor = .clear
         textContainerInset = .zero
         self.textContainer.lineFragmentPadding = .zero
@@ -62,11 +61,11 @@ class ArticleComponentTextView: UITextView {
             .forEach { removeInteraction($0) }
         addInteraction(UIContextMenuInteraction(delegate: self))
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("Unable to instantiate \(Self.self) from xib/storyboard")
     }
-    
+
     @objc
     func _share(_ sender: Any?) {
         actionDelegate?.articleComponentTextViewDidSelectShareAction(self)

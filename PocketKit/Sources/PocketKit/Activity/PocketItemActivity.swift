@@ -5,7 +5,6 @@
 import UIKit
 import Sync
 
-
 struct PocketItemActivity: PocketActivity {
     var applicationActivities: [UIActivity]? {
         [
@@ -13,15 +12,15 @@ struct PocketItemActivity: PocketActivity {
             CopyLinkWithSelectionActivity()
         ]
     }
-    
+
     let activityItems: [Any]
     let sender: Any?
-    
+
     init(url: URL?, additionalText: String? = nil, sender: Any? = nil) {
         self.activityItems = Self.activityItems(for: url, additionalText: additionalText)
         self.sender = sender
     }
-    
+
     private static func activityItems(for url: URL?, additionalText: String?) -> [Any] {
         [
             url.flatMap(ActivityItemSource.init),

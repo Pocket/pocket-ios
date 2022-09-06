@@ -1,7 +1,6 @@
 import XCTest
 @testable import Sync
 
-
 extension PocketSourceTests {
     func test_initialization_startsMonitoringNetworkPath() {
         _ = subject()
@@ -24,7 +23,6 @@ extension PocketSourceTests {
 
     func test_enqueueingOperations_whenNetworkBecomesSatisfied_executesPendingOperations() {
         sessionProvider.session = MockSession()
-
 
         let expectSaveItem = expectation(description: "execute the save item operation")
         operations.stubSaveItemOperation { _, _, _, _, _ in

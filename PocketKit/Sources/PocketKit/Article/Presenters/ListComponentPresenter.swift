@@ -2,7 +2,6 @@ import Sync
 import UIKit
 import Textile
 
-
 protocol ListComponent {
     var elements: [ListComponentElement] { get }
 }
@@ -37,7 +36,7 @@ class ListComponentPresenter: ArticleComponentPresenter {
             return size
         } ?? .zero
     }
-    
+
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: MarkdownComponentCell = collectionView.dequeueCell(for: indexPath)
         cell.attributedContent = attributedContent
@@ -97,7 +96,7 @@ extension BulletedListComponent.Row: ListComponentElement {
     var prefix: String {
         "• "
     }
-    
+
     func prefixStyle(applying settings: ReaderSettings) -> Style {
         .body.monospace.adjustingSize(by: settings.fontSizeAdjustment)
     }
@@ -115,7 +114,7 @@ extension NumberedListComponent.Row: ListComponentElement {
     var prefix: String {
         "\(index + 1). "
     }
-    
+
     func prefixStyle(applying settings: ReaderSettings) -> Style {
         .body.sansSerif.modified(by: settings)
     }

@@ -1,6 +1,5 @@
 import UIKit
 
-
 class ReaderSkeletonCell: UICollectionViewCell {
     private let bylineImageView: UIImageView = {
         let imageView = UIImageView()

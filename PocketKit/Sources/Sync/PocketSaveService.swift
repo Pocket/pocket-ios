@@ -1,7 +1,6 @@
 import Foundation
 import Apollo
 
-
 public class PocketSaveService: SaveService {
     private let apollo: ApolloClientProtocol
     private let expiringActivityPerformer: ExpiringActivityPerformer

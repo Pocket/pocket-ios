@@ -9,17 +9,17 @@ struct BannerViewModel {
     var buttonText: String? = "Save"
     let backgroundColor: UIColor
     let borderColor: UIColor
-    let primaryAction: () -> ()
-    let dismissAction: () -> ()
+    let primaryAction: () -> Void
+    let dismissAction: () -> Void
 
     var attributedText: NSAttributedString {
         return NSAttributedString(string: prompt, style: .main)
     }
-    
+
     var attributedDetailText: NSAttributedString {
         return NSAttributedString(string: clipboardURL ?? "", style: .detail)
     }
-    
+
     var attributedButtonText: NSAttributedString {
         return NSAttributedString(string: buttonText ?? "", style: .button)
     }

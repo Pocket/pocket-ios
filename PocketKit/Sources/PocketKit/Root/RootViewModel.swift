@@ -6,13 +6,12 @@ import Textile
 import SharedPocketKit
 import UIKit
 
-
 class RootViewModel {
     @Published
     var isLoggedIn = false
-    
+
     @Published
-    var bannerViewModel: BannerViewModel? = nil
+    var bannerViewModel: BannerViewModel?
 
     private let appSession: AppSession
     private let tracker: Tracker
@@ -41,21 +40,20 @@ class RootViewModel {
                 self.isLoggedIn = false
             }
         }.store(in: &subscriptions)
-        
+
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
             self?.showSaveFromClipboardBanner()
         }.store(in: &subscriptions)
-        
-        
+
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
             self?.bannerViewModel = nil
         }.store(in: &subscriptions)
     }
-    
+
     func showSaveFromClipboardBanner() {
         if UIPasteboard.general.hasURLs,
            let clipboardURL = UIPasteboard.general.url, isLoggedIn {
-            
+
             bannerViewModel = BannerViewModel(
                 prompt: "Add copied URL to your Saves?",
                 clipboardURL: clipboardURL.absoluteString,

@@ -1,7 +1,6 @@
 import Foundation
 import Sync
 
-
 class MockSaveService: SaveService {
     private var calls: [String: [Any]] = [:]
     private var implementations: [String: Any] = [:]

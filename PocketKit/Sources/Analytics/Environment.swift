@@ -4,7 +4,6 @@
 
 import SwiftUI
 
-
 struct TrackerKey: EnvironmentKey {
     static var defaultValue: Tracker = NoopTracker()
 }

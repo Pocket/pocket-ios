@@ -36,7 +36,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
         label.adjustsFontForContentSizeCategory = true
         return label
     }()
-    
+
     private let timeToReadLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = Constants.maxDetailLines
@@ -61,7 +61,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
         button.accessibilityIdentifier = "favorite"
         return button
     }()
-    
+
     let saveButton: RecommendationSaveButton = {
         let button = RecommendationSaveButton()
         button.accessibilityIdentifier = "save-button"
@@ -76,7 +76,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
     }()
 
     private let mainContentView = UIView()
-    
+
     private let mainContentStack: UIStackView = {
         let stack = UIStackView()
         stack.alignment = .top
@@ -92,7 +92,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
         stack.axis = .horizontal
         return stack
     }()
-    
+
     private let subtitleStack: UIStackView = {
         let stack = UIStackView()
         stack.distribution = .fillProportionally
@@ -100,7 +100,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
         stack.spacing = 4
         return stack
     }()
-    
+
     private let buttonStack: UIStackView = {
         let stack = UIStackView()
         stack.axis = .horizontal
@@ -113,7 +113,7 @@ class HomeCarouselItemCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         accessibilityIdentifier = "home-carousel-item"
-        
+
         contentView.addSubview(mainContentStack)
         contentView.addSubview(bottomStack)
         contentView.layoutMargins = Constants.layoutMargins
@@ -138,15 +138,15 @@ class HomeCarouselItemCell: UICollectionViewCell {
 
             bottomStack.leadingAnchor.constraint(equalTo: mainContentStack.leadingAnchor),
             bottomStack.trailingAnchor.constraint(equalTo: mainContentStack.trailingAnchor),
-            bottomStack.bottomAnchor.constraint(equalTo:  contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
+            bottomStack.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor).with(priority: .required),
 
-            contentView.topAnchor.constraint(equalTo:  topAnchor),
+            contentView.topAnchor.constraint(equalTo: topAnchor),
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo:  bottomAnchor),
+            contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
 
         ])
-        
+
         [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
         [favoriteButton, saveButton, overflowButton].forEach(buttonStack.addArrangedSubview)
         [titleLabel, thumbnailView].forEach(mainContentStack.addArrangedSubview)
@@ -164,12 +164,12 @@ extension HomeCarouselItemCell {
         domainLabel.attributedText = model.attributedDomain
         timeToReadLabel.attributedText = model.attributedTimeToRead
 
-        if model.attributedTimeToRead.string == "" {
+        if model.attributedTimeToRead.string.isEmpty {
             timeToReadLabel.isHidden = true
         } else {
             timeToReadLabel.isHidden = false
         }
-        
+
         favoriteButton.accessibilityLabel = model.favoriteAction?.title
         favoriteButton.accessibilityIdentifier = model.favoriteAction?.accessibilityIdentifier
         favoriteButton.configuration?.image = model.favoriteAction?.image?.resized(to: Constants.actionButtonImageSize)
@@ -177,18 +177,18 @@ extension HomeCarouselItemCell {
         if let favoriteAction = UIAction(model.favoriteAction) {
             favoriteButton.addAction(favoriteAction, for: .primaryActionTriggered)
         }
-        
+
         if let mode = model.saveButtonMode {
             saveButton.isHidden = false
             saveButton.mode = mode
         } else {
             saveButton.isHidden = true
         }
-        
+
         if let saveAction = UIAction(model.saveAction) {
             saveButton.addAction(saveAction, for: .primaryActionTriggered)
         }
-        
+
         let menuActions = model.overflowActions?.compactMap(UIAction.init) ?? []
         overflowButton.menu = UIMenu(children: menuActions)
 
@@ -216,7 +216,7 @@ extension HomeCarouselItemCell {
             ]
         )
     }
-    
+
     override func layoutSubviews() {
         layer.masksToBounds = false
         layer.cornerRadius = Constants.cornerRadius

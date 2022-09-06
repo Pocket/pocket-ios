@@ -2,7 +2,6 @@ import XCTest
 
 @testable import PocketKit
 
-
 class OEmbedServiceTests: XCTestCase {
     func test_itFetchesOEmbedContentWithProperURL() async throws {
         let session = MockURLSession()

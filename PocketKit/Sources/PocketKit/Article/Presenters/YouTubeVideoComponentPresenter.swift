@@ -4,13 +4,12 @@ import Combine
 import CoreGraphics
 import UIKit
 
-
 class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
     private let component: VideoComponent
     private let readableViewModel: ReadableViewModel?
-    
-    private var cancellable: AnyCancellable? = nil
-    
+
+    private var cancellable: AnyCancellable?
+
     init(
         component: VideoComponent,
         readableViewModel: ReadableViewModel?
@@ -18,18 +17,18 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
         self.component = component
         self.readableViewModel = readableViewModel
     }
-    
+
     func size(for availableWidth: CGFloat) -> CGSize {
         CGSize(width: availableWidth, height: availableWidth * 9 / 16)
     }
-    
+
     func cell(for indexPath: IndexPath, in collectionView: UICollectionView) -> UICollectionViewCell {
         let cell: YouTubeVideoComponentCell = collectionView.dequeueCell(for: indexPath)
 
         cell.onError = { [weak self] in
             self?.handleShowInWebReaderButtonTap()
         }
-        
+
         cancellable =  cell.player
             .statePublisher
             .receive(on: DispatchQueue.main)
@@ -46,12 +45,12 @@ class YouTubeVideoComponentPresenter: ArticleComponentPresenter {
                     cell?.mode = .error
             }
         }
-        
+
         guard let vid = VIDExtractor(component).vid else {
             cell.mode = .error
             return cell
         }
-        
+
         cell.mode = .loading
         cell.cue(vid: vid)
 

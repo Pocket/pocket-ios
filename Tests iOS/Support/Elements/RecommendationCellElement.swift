@@ -4,7 +4,6 @@
 
 import XCTest
 
-
 struct RecommendationCellElement: PocketUIElement {
     let element: XCUIElement
 
@@ -19,7 +18,7 @@ struct RecommendationCellElement: PocketUIElement {
     var savedButton: XCUIElement {
         element.buttons["Saved"]
     }
-    
+
     var overflowButton: XCUIElement {
         element.buttons["overflow-button"]
     }

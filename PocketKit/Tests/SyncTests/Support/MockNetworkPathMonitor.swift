@@ -1,7 +1,6 @@
 import Sync
 import Network
 
-
 class MockNetworkPathMonitor: NetworkPathMonitor {
     var updateHandler: UpdateHandler?
     var currentNetworkPath: NetworkPath { path }

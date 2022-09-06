@@ -4,7 +4,6 @@ import Sync
 
 @testable import SaveToPocketKit
 
-
 class SavedItemViewModelTests: XCTestCase {
     private var appSession: AppSession!
     private var saveService: MockSaveService!
@@ -224,4 +223,3 @@ extension SavedItemViewModelTests {
         subscription.cancel()
     }
 }
-

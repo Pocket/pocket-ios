@@ -77,4 +77,3 @@ public extension BlancoOSFStyling {
 
     static var defaultMonospace: Style = .body.monospace
 }
-
