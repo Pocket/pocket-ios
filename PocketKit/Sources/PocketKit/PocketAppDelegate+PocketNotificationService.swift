@@ -6,7 +6,7 @@ import Sync
  Extend the App Delegate so that we can add in the notification methods
  */
 extension PocketAppDelegate {
-    
+
     /**
      Called when Apple assigns us a Push notification token.
      */
@@ -16,18 +16,18 @@ extension PocketAppDelegate {
     ) {
         notificationService.register(deviceToken: deviceToken)
     }
-    
+
     /**
      Called when Apple gives us a notication in the background.
      */
     public func application(
         _ application: UIApplication,
-        didReceiveRemoteNotification userInfo: [AnyHashable : Any],
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
         notificationService.handleBackgroundNotifcation(didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
     }
-    
+
     /**
      Called when push notifications fail to register with Apple
      */

@@ -24,7 +24,7 @@ struct Services {
     let authClient: AuthorizationClient
     let imageManager: ImageManager
     let notificationService: PocketNotificationService
-    
+
     private let persistentContainer: PersistentContainer
 
     private init() {
@@ -66,7 +66,7 @@ struct Services {
             source: source
         )
         imageManager.start()
-        
+
         notificationService = PocketNotificationService(
             source: source,
             tracker: tracker,

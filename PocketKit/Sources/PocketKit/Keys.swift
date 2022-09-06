@@ -24,15 +24,14 @@ struct Keys {
         guard let sentryDSN = info["SentryDSN"] as? String else {
             fatalError("Unable to extract SentryDSN from main bundle")
         }
-        
+
         guard let brazeAPIEndpoint = info["BrazeAPIEndpoint"] as? String else {
             fatalError("Unable to extract BrazeAPIEndpoint from main bundle")
         }
-        
+
         guard let brazeAPIKey = info["BrazeAPIKey"] as? String else {
             fatalError("Unable to extract BrazeAPIKey from main bundle")
         }
-
 
         self.pocketApiConsumerKey = pocketApiConsumerKey
         self.sentryDSN = sentryDSN
