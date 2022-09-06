@@ -32,6 +32,9 @@ fragment SavedItemSummary on SavedItem {
   _deletedAt
   _createdAt
   archivedAt
+  tags {
+    name
+  }
   item {
     ...ItemSummary
   }

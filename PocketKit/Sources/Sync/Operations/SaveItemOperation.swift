@@ -59,7 +59,7 @@ class SaveItemOperation: SyncOperation {
             return
         }
 
-        savedItem.update(from: remote)
+        savedItem.update(from: remote, with: space)
 
         do {
             try space.save()

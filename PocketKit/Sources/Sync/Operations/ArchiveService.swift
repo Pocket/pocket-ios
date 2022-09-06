@@ -221,7 +221,7 @@ extension PocketArchiveService: FetchArchivePagesOperationDelegate {
 
             let savedItem = try space.fetchOrCreateSavedItem(byRemoteID: summary.remoteId)
             savedItem.cursor = edge.cursor
-            savedItem.update(from: summary)
+            savedItem.update(from: summary, with: space)
 
             if savedItem.deletedAt != nil {
                 space.delete(savedItem)
@@ -229,6 +229,7 @@ extension PocketArchiveService: FetchArchivePagesOperationDelegate {
         }
 
         isStoring = true
+        try space.deleteOrphanTags()
         try space.save()
         isStoring = false
 

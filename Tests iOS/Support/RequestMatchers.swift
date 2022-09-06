@@ -65,7 +65,7 @@ struct ClientAPIRequest {
     var isForRecommendationDetail: Bool {
         contains("itemByItemId(")
     }
-    
+
     var isForReplacingSavedItemTags: Bool {
         contains("replaceSavedItemTags")
     }

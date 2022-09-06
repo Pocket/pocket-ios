@@ -23,6 +23,7 @@
                             "archivedAt": 1648493207,
                             "isArchived": true,
                             "isFavorite": true,
+                            "tags": [],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "archived-item-1",

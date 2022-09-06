@@ -263,6 +263,40 @@ extension MockSource {
     }
 }
 
+// MARK: - Retrieve Tags
+extension MockSource {
+    static let retrieveTags = "retrieveTags"
+    typealias RetrieveTagsImpl = ([String]) -> [Tag]?
+    struct RetrieveTagsImplCall {
+        let tags: [String]
+    }
+
+    func stubRetrieveTags(impl: @escaping RetrieveTagsImpl) {
+        implementations[Self.retrieveTags] = impl
+    }
+
+    func retrieveTags(excluding tags: [String]) -> [Tag]? {
+        guard let impl = implementations[Self.retrieveTags] as? RetrieveTagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.retrieveTags] = (calls[Self.retrieveTags] ?? []) + [
+            RetrieveTagsImplCall(tags: tags)
+        ]
+
+        return impl(tags)
+    }
+
+    func retrieveTagsCall(at index: Int) -> RetrieveTagsImplCall? {
+        guard let calls = calls[Self.retrieveTags],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? RetrieveTagsImplCall
+    }
+}
+
 // MARK: - Favorite an item
 extension MockSource {
     static let favoriteSavedItem = "favoriteSavedItem"

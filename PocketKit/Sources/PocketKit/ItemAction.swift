@@ -56,8 +56,8 @@ extension ItemAction {
             handler: handler
         )
     }
-    
-    static func addTags(_ handler: @escaping (Any?) -> ()) -> ItemAction {
+
+    static func addTags(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
             title: "Add Tags",
             identifier: .addTagsItem,

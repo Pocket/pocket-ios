@@ -141,7 +141,7 @@ class SaveOperation: AsyncOperation {
             return
         }
 
-        savedItem.update(from: savedItemParts)
+        savedItem.update(from: savedItemParts, with: space)
         let notification: SavedItemUpdatedNotification = space.new()
         notification.savedItem = savedItem
         try? space.save()

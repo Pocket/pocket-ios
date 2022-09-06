@@ -19,7 +19,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published
     var presentedAlert: PocketAlert?
-    
+
     @Published
     var presentedAddTags: AddTagsViewModel?
 

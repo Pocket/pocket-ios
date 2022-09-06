@@ -302,27 +302,30 @@ extension PocketSource {
         )
         enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
     }
-    
+
     public func addTags(item: SavedItem, tags: [String]) {
         guard let remoteID = item.remoteID else {
             return
         }
-        
-        tags.compactMap { $0 }.forEach({ tag in
-            let fetchedTag = space.fetchOrCreateTag(byName: tag)
-            item.addToTags(fetchedTag)
-        })
+
+        item.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
+            space.fetchOrCreateTag(byName: tag)
+        }))
+
+        try? space.deleteOrphanTags()
         try? space.save()
-      
-        let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)])
 
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: mutation
+            mutation: getMutation(for: tags, and: remoteID)
         )
 
         enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
+    }
+
+    public func retrieveTags(excluding tags: [String]) -> [Tag]? {
+        try? space.retrieveTags(excluding: tags)
     }
 
     public func fetchDetails(for savedItem: SavedItem) async throws {
@@ -337,9 +340,19 @@ extension PocketSource {
         }
 
         try space.context.performAndWait {
-            savedItem.update(from: remoteSavedItem.fragments.savedItemParts)
+            savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
             try space.save()
         }
+    }
+
+    private func getMutation(for tags: [String], and remoteID: String) -> AnyMutation {
+        let mutation: AnyMutation
+        if tags.isEmpty {
+            mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
+        } else {
+            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
+        }
+        return mutation
     }
 }
 
@@ -466,7 +479,7 @@ extension PocketSource {
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)])
+                    mutation: getMutation(for: tags, and: remoteID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             }

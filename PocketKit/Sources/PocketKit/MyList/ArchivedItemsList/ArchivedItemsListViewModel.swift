@@ -23,7 +23,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 
     @Published
     var presentedAlert: PocketAlert?
-    
+
     @Published
     var presentedAddTags: AddTagsViewModel?
 
@@ -283,7 +283,7 @@ extension ArchivedItemsListViewModel {
             item: item,
             source: source,
             saveAction: { [weak self] in
-                self?.fetch()
+                self?.archiveService.fetch()
             }
         )
     }

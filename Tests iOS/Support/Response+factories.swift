@@ -65,7 +65,7 @@ extension Response {
     static func recommendationDetail() -> Response {
         fixture(named: "recommendation-detail")
     }
-    
+
     static func savedItemWithTag() -> Response {
         fixture(named: "list-with-tagged-item")
     }

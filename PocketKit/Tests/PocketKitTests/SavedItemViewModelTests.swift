@@ -157,7 +157,7 @@ class SavedItemViewModelTests: XCTestCase {
 
         wait(for: [expectUnfavorite], timeout: 1)
     }
-    
+
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject(item: space.buildSavedItem(tags: ["tag 1"]))
 
@@ -166,12 +166,12 @@ class SavedItemViewModelTests: XCTestCase {
             expectAddTags.fulfill()
             XCTAssertEqual(viewModel?.tags, ["tag 1"])
         }.store(in: &subscriptions)
-        
+
         viewModel.invokeAction(title: "Add Tags")
-        
+
         wait(for: [expectAddTags], timeout: 1)
     }
-    
+
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
         let item = space.buildSavedItem(isFavorite: true)
         let viewModel = subject(item: item)
