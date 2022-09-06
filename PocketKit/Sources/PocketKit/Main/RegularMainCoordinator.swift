@@ -43,7 +43,7 @@ class RegularMainCoordinator: NSObject {
         self.model = model
 
         splitController = UISplitViewController(style: .doubleColumn)
-        splitController.displayModeButtonVisibility = .never
+        splitController.displayModeButtonVisibility = .always
 
         navigationSidebar = UINavigationController(rootViewController: NavigationSidebarViewController(model: model))
 
