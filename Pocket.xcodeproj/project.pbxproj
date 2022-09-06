@@ -699,6 +699,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: David Skuza (A7H8F4CPQQ)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -727,6 +728,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution: Read It Later, Inc (EX3VH4YFCH)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -861,6 +863,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: David Skuza (A7H8F4CPQQ)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_BITCODE = NO;
 				ENABLE_PREVIEWS = YES;
 				INFOPLIST_FILE = Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -908,6 +911,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: David Skuza (A7H8F4CPQQ)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Save to Pocket";
@@ -939,6 +943,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development: David Skuza (A7H8F4CPQQ)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Save to Pocket";
@@ -970,6 +975,7 @@
 				CODE_SIGN_IDENTITY = "Apple Distribution: Read It Later, Inc (EX3VH4YFCH)";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_BITCODE = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Save to Pocket";
