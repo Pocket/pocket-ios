@@ -4,7 +4,8 @@ import SafariServices
 import Analytics
 import Sync
 
-protocol RegularMyListCoordinatorDelegate: AnyObject, ModalContentPresenting {
+// swiftlint:disable:next class_delegate_protocol
+protocol RegularMyListCoordinatorDelegate: ModalContentPresenting {
     func myListCoordinator(_ coordinator: RegularMyListCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?)
 }
 
