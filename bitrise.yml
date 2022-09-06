@@ -7,6 +7,8 @@ trigger_map:
     workflow: app-store-build
   - pull_request_target_branch: develop
     workflow: qa-build
+  - pull_request_target_branch: develop
+    workflow: test
 workflows:
   #Reusable workflow that is ran before each workflow to setup the necessary information
   _setup:
@@ -42,6 +44,7 @@ workflows:
                 brew tap getsentry/tools
                 brew install getsentry/tools/sentry-cli
                 sentry-cli --log-level=debug --auth-token $SENTRY_AUTH_TOKEN  upload-dif -o pocket -p ios-next $BITRISE_DSYM_PATH
+                #TODO: In the future we can add Sentry releases here.
   app-store-build:
     steps:
       - xcode-archive@4:
