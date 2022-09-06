@@ -4,9 +4,27 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: ios
 trigger_map:
   - push_branch: main
-    workflow: app-store-build
+    pipeline: app-store-pipeline
   - pull_request_target_branch: develop
-    workflow: qa-build
+    pipeline: build-test-pipeline
+
+pipelines:
+  build-test-pipeline:
+    stages:
+      - build-test: {}
+  app-store-pipeline:
+    stages:
+      - deploy: {}
+
+stages:
+  build-test:
+    workflows:
+      - test: {}
+      - qa-build: {}
+  deploy:
+    workflows:
+      - app-store-build: {}
+
 workflows:
   #Reusable workflow that is ran before each workflow to setup the necessary information
   _setup:
@@ -74,6 +92,7 @@ workflows:
       - _setup
     after_run:
       - _upload_sentry
+
   qa-build:
     steps:
       - brew-install@0:
@@ -90,6 +109,7 @@ workflows:
       - _setup
     after_run:
       - _upload_sentry
+
   test:
     steps:
       - xcode-test@4:
@@ -97,8 +117,7 @@ workflows:
             - destination: platform=iOS Simulator,name=iPhone 13,OS=latest
     before_run:
       - _setup
-    after_run:
-      - qa-build
+
 app:
   envs:
     - opts:
