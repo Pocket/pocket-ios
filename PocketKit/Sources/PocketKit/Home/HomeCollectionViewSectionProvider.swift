@@ -10,6 +10,11 @@ class HomeViewControllerSectionProvider {
         static let sectionSpacing: CGFloat = 64
     }
 
+    func shouldUseWideLayout(traitCollection: UITraitCollection) -> Bool {
+        traitCollection.userInterfaceIdiom == .pad &&
+        traitCollection.horizontalSizeClass == .regular
+    }
+
     func loadingSection() -> NSCollectionLayoutSection {
         let item = NSCollectionLayoutItem(
             layoutSize: NSCollectionLayoutSize(
@@ -41,8 +46,7 @@ class HomeViewControllerSectionProvider {
         )
 
         let itemWidthPercentage: CGFloat
-        if env.traitCollection.userInterfaceIdiom == .pad,
-           env.traitCollection.horizontalSizeClass == .regular {
+        if shouldUseWideLayout(traitCollection: env.traitCollection) {
             itemWidthPercentage = 2/5
         } else {
             itemWidthPercentage = 0.8
@@ -99,7 +103,7 @@ class HomeViewControllerSectionProvider {
 
         let width = env.container.effectiveContentSize.width
         let heroHeight: CGFloat
-        if env.traitCollection.horizontalSizeClass == .regular && env.traitCollection.userInterfaceIdiom == .pad {
+        if shouldUseWideLayout(traitCollection: env.traitCollection) {
             heroHeight = width * 0.28
         } else {
             heroHeight = RecommendationCell.fullHeight(viewModel: hero, availableWidth: width - (Constants.sideMargin * 2))
@@ -129,7 +133,15 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+    func additionalRecommendationsSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+        if shouldUseWideLayout(traitCollection: env.traitCollection) {
+            return recommendationCellGridSection(for: slateID, in: viewModel, env: env)
+        } else {
+            return carouselSection(for: slateID, in: viewModel, env: env)
+        }
+    }
+
+    private func carouselSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {
             return .empty()
@@ -153,7 +165,7 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
-    func recommendationCellGridSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
+    private func recommendationCellGridSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection {
         let numberOfCarouselItems = viewModel.numberOfCarouselItemsForSlate(with: slateID)
         guard numberOfCarouselItems > 0 else {
             return .empty()
