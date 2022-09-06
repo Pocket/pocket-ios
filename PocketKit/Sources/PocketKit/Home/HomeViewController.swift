@@ -27,12 +27,7 @@ class HomeViewController: UIViewController {
         case .slateHero(let slateID):
             return self.sectionProvider.heroSection(for: slateID, in: self.model, env: env)
         case .slateCarousel(let slateID):
-            if env.traitCollection.userInterfaceIdiom == .pad,
-               env.traitCollection.horizontalSizeClass == .regular {
-                return self.sectionProvider.recommendationCellGridSection(for: slateID, in: self.model, env: env)
-            } else {
-                return self.sectionProvider.carouselSection(for: slateID, in: self.model, env: env)
-            }
+            return self.sectionProvider.additionalRecommendationsSection(for: slateID, in: self.model, env: env)
         case .offline:
             let hasRecentSaves = self.dataSource.index(for: .recentSaves) != nil
             return self.sectionProvider.offlineSection(environment: env, withRecentSaves: hasRecentSaves)
@@ -172,7 +167,7 @@ extension HomeViewController {
             cell.configure(model: viewModel)
             return cell
         case .recommendationHero(let objectID):
-            if traitCollection.userInterfaceIdiom == .pad && traitCollection.horizontalSizeClass == .regular {
+            if sectionProvider.shouldUseWideLayout(traitCollection: traitCollection) {
                 let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)
                 guard let viewModel = model.recommendationHeroWideViewModel(for: objectID, at: indexPath) else {
                     return cell
