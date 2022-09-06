@@ -7,8 +7,6 @@ trigger_map:
     workflow: app-store-build
   - pull_request_target_branch: develop
     workflow: qa-build
-  - pull_request_target_branch: develop
-    workflow: test
 workflows:
   #Reusable workflow that is ran before each workflow to setup the necessary information
   _setup:
@@ -99,6 +97,8 @@ workflows:
             - destination: platform=iOS Simulator,name=iPhone 13,OS=latest
     before_run:
       - _setup
+    after_run:
+      - qa-build
 app:
   envs:
     - opts:
