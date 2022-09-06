@@ -99,10 +99,11 @@ class RootCoordinator {
             delay: 0,
             options: [.allowUserInteraction],
             animations: { [weak self] in
-            self?.bannerView?.transform = CGAffineTransform(translationX: 0, y: animationDistance ?? CGFloat.greatestFiniteMagnitude)
-        }, completion: { [weak self] _ in
-            self?.removeBanner()
-        })
+                self?.bannerView?.transform = CGAffineTransform(translationX: 0, y: animationDistance ?? CGFloat.greatestFiniteMagnitude)
+            }, completion: { [weak self] _ in
+                self?.removeBanner()
+            }
+        )
     }
 
     private func updateState(_ isLoggedIn: Bool) {

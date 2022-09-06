@@ -305,10 +305,8 @@ class HomeTests: XCTestCase {
         coord
             .press(
                 forDuration: 0.1,
-                thenDragTo: coord.withOffset(.init(
-                        dx: 0,
-                        dy: -50
-                    )
+                thenDragTo: coord.withOffset(
+                    .init(dx: 0, dy: -50)
                 ),
                 withVelocity: .default,
                 thenHoldForDuration: 0.1
