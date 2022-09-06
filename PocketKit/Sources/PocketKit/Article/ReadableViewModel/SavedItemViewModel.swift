@@ -20,7 +20,7 @@ class SavedItemViewModel: ReadableViewModel {
 
     @Published
     var presentedWebReaderURL: URL?
-    
+
     @Published
     var presentedAddTags: AddTagsViewModel?
 
@@ -161,7 +161,7 @@ extension SavedItemViewModel {
         track(identifier: .itemArchive)
         _events.send(.archive)
     }
-    
+
     private func showAddTagsView() {
         presentedAddTags = AddTagsViewModel(
             item: item,

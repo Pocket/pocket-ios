@@ -145,7 +145,7 @@ extension RegularMainCoordinator {
         readable.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(addTagsViewModel)
         }.store(in: &readerSubscriptions)
-        
+
         readable.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &readerSubscriptions)
@@ -261,9 +261,10 @@ extension RegularMainCoordinator: ModalContentPresenting {
         safariVC.delegate = self
         splitController.present(safariVC, animated: !isResetting)
     }
-    
+
     func present(_ viewModel: AddTagsViewModel?) {
-        guard let viewModel = viewModel else { return }        
+        guard !isResetting, let viewModel = viewModel else { return }
+
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
         splitController.present(hostingController, animated: true)

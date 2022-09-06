@@ -52,7 +52,7 @@ extension Space {
                 newTag.name = tag
                 return newTag
             }
-            
+
             savedItem.remoteID = remoteID
             savedItem.isFavorite = isFavorite
             savedItem.isArchived = isArchived

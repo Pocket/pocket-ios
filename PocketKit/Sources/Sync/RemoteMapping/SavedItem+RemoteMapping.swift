@@ -10,17 +10,17 @@ extension SavedItem {
     public typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
 
-    func update(from edge: SavedItemEdge) {
+    func update(from edge: SavedItemEdge, with space: Space) {
         cursor = edge.cursor
 
         guard let savedItemParts = edge.node?.fragments.savedItemParts else {
             return
         }
 
-        update(from: savedItemParts)
+        update(from: savedItemParts, with: space)
     }
 
-    public func update(from remote: RemoteSavedItem) {
+    public func update(from remote: RemoteSavedItem, with space: Space) {
         remoteID = remote.remoteId
         url = URL(string: remote.url)
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
@@ -33,20 +33,17 @@ extension SavedItem {
             let itemParts = remote.item.fragments.itemParts else {
             return
         }
-        
+
         if let tags = tags {
             removeFromTags(tags)
         }
-        
-        remote.tags?.compactMap { $0 }.forEach({ remoteTag in
-            let fetchRequest = Requests.fetchTag(byName: remoteTag.name)
-            fetchRequest.fetchLimit = 1
-            let tag = try? context.fetch(fetchRequest).first ?? Tag(context: context)
-            guard let tag = tag else { return }
-            tag.update(remote: remoteTag)
-            addToTags(tag)
-        })
-        
+
+        tags = NSOrderedSet(array: remote.tags?.compactMap { $0 }.map { remoteTag in
+            space.fetchOrCreateTag(byName: remoteTag.name)
+        } ?? [])
+
+        try? space.deleteOrphanTags()
+
         let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteId)
         fetchRequest.fetchLimit = 1
         let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
@@ -61,7 +58,7 @@ extension SavedItem {
         item = recommendation.item
     }
 
-    public func update(from summary: SavedItemSummary) {
+    public func update(from summary: SavedItemSummary, with space: Space) {
         remoteID = summary.remoteId
         url = URL(string: summary.url)
         createdAt = Date(timeIntervalSince1970: TimeInterval(summary._createdAt))
@@ -74,6 +71,14 @@ extension SavedItem {
               let itemSummary = summary.item.fragments.itemSummary else {
             return
         }
+
+        if let tags = tags {
+            removeFromTags(tags)
+        }
+
+        tags = NSOrderedSet(array: summary.tags?.compactMap { $0 }.map { summaryTag in
+            space.fetchOrCreateTag(byName: summaryTag.name)
+        } ?? [])
 
         let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteId)
         fetchRequest.fetchLimit = 1

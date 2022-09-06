@@ -58,7 +58,7 @@ struct PocketAppElement {
     var tabBar: TabBarElement {
         return TabBarElement(app.tabBars.element(boundBy: 0))
     }
-    
+
     var addTagsView: AddTagsViewElement {
         return AddTagsViewElement(app.otherElements["add-tags"])
     }
@@ -78,7 +78,7 @@ struct PocketAppElement {
     var archiveButton: XCUIElement {
         app.buttons["item-action-archive"]
     }
-    
+
     var addTagsButton: XCUIElement {
         app.buttons["item-action-add-tags"]
     }

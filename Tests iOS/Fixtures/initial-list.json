@@ -23,7 +23,12 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
-                            "tags": [],
+                            "tags": [
+                                {
+                                    "__typename": "Tag",
+                                    "name": "tag 0"
+                                }
+                            ],
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",

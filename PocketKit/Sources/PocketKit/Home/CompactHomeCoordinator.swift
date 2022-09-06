@@ -177,7 +177,7 @@ class CompactHomeCoordinator: NSObject {
         savedItem.$isPresentingReaderSettings.sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: savedItem)
         }.store(in: &readerSubscriptions)
-        
+
         savedItem.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(addTagsViewModel)
         }.store(in: &readerSubscriptions)
@@ -257,9 +257,9 @@ class CompactHomeCoordinator: NSObject {
         guard !isResetting, let alert = alert else { return }
         viewController.present(UIAlertController(alert), animated: !isResetting)
     }
-    
+
     func present(_ viewModel: AddTagsViewModel?) {
-        guard let viewModel = viewModel else { return }
+        guard !isResetting, let viewModel = viewModel else { return }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
         viewController.present(hostingController, animated: true)

@@ -149,11 +149,11 @@ class PocketSourceTests: XCTestCase {
         XCTAssertFalse(item.isFavorite)
         waitForExpectations(timeout: 1)
     }
-    
-    func test_addTagsToSavedItem_executesAddTagsMutation() throws {
+
+    func test_addTagsToSavedItem_executesReplaceSavedItemTagsMutation() throws {
         let item = try space.createSavedItem(tags: ["tag 1"])
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemMutationOperation { (_, _ , _: ReplaceSavedItemTagsMutation) in
+        operations.stubItemAnyMutationOperation { (_, _, _) in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -161,11 +161,38 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.addTags(item: item, tags: ["tag 2", "tag 3"])
-        XCTAssertEqual(item.tags?.count, 3)
-        XCTAssertEqual((item.tags?[0] as? Tag)?.name, "tag 1")
-        XCTAssertEqual((item.tags?[1] as? Tag)?.name, "tag 2")
-        XCTAssertEqual((item.tags?[2] as? Tag)?.name, "tag 3")
+        XCTAssertEqual(item.tags?.count, 2)
+        XCTAssertEqual((item.tags?[0] as? Tag)?.name, "tag 2")
+        XCTAssertEqual((item.tags?[1] as? Tag)?.name, "tag 3")
         waitForExpectations(timeout: 1)
+    }
+
+    func test_addTagsToSavedItem_withNoTags_executesUpdateSavedItemRemoveTagsMutation() throws {
+        let item = try space.createSavedItem(tags: ["tag 1", "tag 2"])
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemAnyMutationOperation { (_, _, _) in
+            TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let source = subject()
+        source.addTags(item: item, tags: [])
+        XCTAssertEqual(item.tags?.count, 0)
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_retrieveTags_excludesTagsAlreadySelected() throws {
+        let tag1: Tag = space.new()
+        let tag2: Tag = space.new()
+        let tag3: Tag = space.new()
+        tag1.name = "tag 1"
+        tag2.name = "tag 2"
+        tag3.name = "tag 3"
+        let source = subject()
+        let tags = source.retrieveTags(excluding: [tag1.name ?? "", tag2.name ?? ""])
+        XCTAssertEqual(tags?.count, 1)
+        XCTAssertEqual(tags?[0].name, "tag 3")
     }
 
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {

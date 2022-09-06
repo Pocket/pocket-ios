@@ -57,7 +57,7 @@ class CompactMyListContainerCoordinator: NSObject {
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
-        
+
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
@@ -88,7 +88,7 @@ class CompactMyListContainerCoordinator: NSObject {
         model.archivedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
-        
+
         isResetting = false
         navigationController.delegate = self
     }
@@ -123,7 +123,7 @@ class CompactMyListContainerCoordinator: NSObject {
         readable.$isPresentingReaderSettings.sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: readable)
         }.store(in: &readableSubscriptions)
-        
+
         readable.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &readableSubscriptions)
@@ -147,9 +147,9 @@ class CompactMyListContainerCoordinator: NSObject {
         guard !isResetting, let alert = alert else { return }
         viewController.present(UIAlertController(alert), animated: !isResetting)
     }
-    
+
     private func present(viewModel: AddTagsViewModel?) {
-        guard let viewModel = viewModel else { return }
+        guard !isResetting, let viewModel = viewModel else { return }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
         viewController.present(hostingController, animated: true)

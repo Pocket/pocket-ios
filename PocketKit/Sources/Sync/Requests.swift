@@ -109,15 +109,27 @@ public enum Requests {
         request.fetchLimit = 1
         return request
     }
-    
+
     public static func fetchTags() -> NSFetchRequest<Tag> {
         Tag.fetchRequest()
     }
-    
+
     public static func fetchTag(byName name: String) -> NSFetchRequest<Tag> {
-        let request = self.fetchTags()
+        let request = fetchTags()
         request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchTagsWithNoSavedItems() -> NSFetchRequest<Tag> {
+        let request = fetchTags()
+        request.predicate = NSPredicate(format: "savedItems.@count = 0")
+        return request
+    }
+
+    public static func fetchTags(excluding tags: [String]) -> NSFetchRequest<Tag> {
+        let request = fetchTags()
+        request.predicate = NSPredicate(format: "NOT (self.name IN %@)", tags)
         return request
     }
 
