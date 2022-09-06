@@ -476,10 +476,6 @@ extension HomeViewModel {
             return nil
         }
 
-        guard let indexPath = indexPath else {
-            return HomeRecommendationCellViewModel(recommendation: recommendation)
-        }
-
         return HomeRecommendationCellViewModel(
             recommendation: recommendation,
             overflowActions: overflowActions(for: recommendation, at: indexPath),
@@ -493,10 +489,6 @@ extension HomeViewModel {
     ) -> HomeRecommendationCellHeroWideViewModel? {
         guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
             return nil
-        }
-
-        guard let indexPath = indexPath else {
-            return HomeRecommendationCellHeroWideViewModel(recommendation: recommendation)
         }
 
         return HomeRecommendationCellHeroWideViewModel(
@@ -514,16 +506,24 @@ extension HomeViewModel {
             .flatMap(RecommendationCarouselCell.Model.init)
     }
 
-    private func overflowActions(for recommendation: Recommendation, at indexPath: IndexPath) -> [ItemAction] {
-        [
+    private func overflowActions(for recommendation: Recommendation, at indexPath: IndexPath?) -> [ItemAction] {
+        guard let indexPath = indexPath else {
+            return []
+        }
+
+        return [
             .report { [weak self] _ in
                 self?.report(recommendation, at: indexPath)
             }
         ]
     }
 
-    private func primaryAction(for recommendation: Recommendation, at indexPath: IndexPath) -> ItemAction {
-        .recommendationPrimary { [weak self] _ in
+    private func primaryAction(for recommendation: Recommendation, at indexPath: IndexPath?) -> ItemAction? {
+        guard let indexPath = indexPath else {
+            return nil
+        }
+
+        return .recommendationPrimary { [weak self] _ in
             let isSaved = recommendation.item?.savedItem != nil
             && recommendation.item?.savedItem?.isArchived == false
 
