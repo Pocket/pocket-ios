@@ -16,7 +16,7 @@ struct Services {
         persistentContainer = .init(storage: .shared)
 
         appSession = AppSession()
-    
+
         saveService = PocketSaveService(
             space: persistentContainer.rootSpace,
             sessionProvider: appSession,
