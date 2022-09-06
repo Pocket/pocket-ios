@@ -18,10 +18,12 @@ class MainViewController: UIViewController {
         let child: UIViewController
 
         if appSession.currentSession == nil {
+            Crashlogger.clearUser()
             child = LoggedOutViewController(
                 viewModel: LoggedOutViewModel()
             )
         } else {
+            Crashlogger.setUserID(services.appSession.currentSession!.userIdentifier)
             child = SavedItemViewController(
                 viewModel: SavedItemViewModel(
                     appSession: appSession,
