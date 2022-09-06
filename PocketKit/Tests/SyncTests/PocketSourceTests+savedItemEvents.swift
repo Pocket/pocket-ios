@@ -54,7 +54,7 @@ extension PocketSourceTests {
             }
         }
 
-        let source = subject()
+        var source: PocketSource? = subject()
 
         let savedItem = try! space.createSavedItem()
         let unresolved: UnresolvedSavedItem = space.new()
@@ -66,6 +66,8 @@ extension PocketSourceTests {
         wait(for: [operationStarted], timeout: 1)
 
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
+
+        source = nil
     }
 
     func test_events_whenOSNotificationCenterPostsUnresolvedItemCreatedNotification_whenSavedItemIsDuplicated_includesSavedItemOnlyOnce() throws {
