@@ -22,7 +22,7 @@ struct Keys {
         guard let sentryDSN = info["SentryDSN"] as? String else {
             fatalError("Unable to extract SentryDSN from main bundle")
         }
-        
+
         self.pocketApiConsumerKey = pocketApiConsumerKey
         self.sentryDSN = sentryDSN
     }
