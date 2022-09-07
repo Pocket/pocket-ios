@@ -51,6 +51,7 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
 enum ItemsListFilter: String, Hashable, CaseIterable {
     case all = "All"
     case favorites = "Favorites"
+    case sortAndFilter = "Sort/Filter"
 
     var image: UIImage? {
         switch self {
@@ -58,6 +59,8 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return nil
         case .favorites:
             return UIImage(asset: .favorite)
+        case .sortAndFilter:
+            return UIImage(asset: .sortFilter)
         }
     }
 }
@@ -82,7 +85,7 @@ protocol ItemsListViewModel: AnyObject {
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool
-    func selectCell(with: ItemsListCell<ItemIdentifier>)
+    func selectCell(with: ItemsListCell<ItemIdentifier>, sender: Any)
 
     func shareAction(for objectID: ItemIdentifier) -> ItemAction?
     func favoriteAction(for objectID: ItemIdentifier) -> ItemAction?

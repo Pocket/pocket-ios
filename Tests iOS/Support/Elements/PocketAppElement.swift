@@ -51,6 +51,10 @@ struct PocketAppElement {
         return ReportViewElement(app.tables["report-recommendation"])
     }
 
+    var sortMenu: SortMenuElement {
+        return SortMenuElement(app.tables["sort-menu"])
+    }
+
     var shareSheet: XCUIElement {
         return app.otherElements["ActivityListView"]
     }

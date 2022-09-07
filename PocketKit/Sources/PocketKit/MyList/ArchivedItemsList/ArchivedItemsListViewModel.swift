@@ -302,7 +302,7 @@ extension ArchivedItemsListViewModel {
         }
     }
 
-    func selectCell(with cell: ItemsListCell<ItemIdentifier>) {
+    func selectCell(with cell: ItemsListCell<ItemIdentifier>, sender: Any) {
         switch cell {
         case .filterButton(let filter):
             apply(filter: filter, from: cell)
@@ -340,6 +340,8 @@ extension ArchivedItemsListViewModel {
                 return nil
             case .favorites:
                 return .favorites
+            case .sortAndFilter:
+                return nil
             }
         }
 

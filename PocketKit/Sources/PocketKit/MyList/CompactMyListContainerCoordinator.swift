@@ -71,6 +71,10 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.navigate(selectedItem: selectedSavedItem)
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedSortFilterViewModel.receive(on: DispatchQueue.main).sink { [weak self] presentedSortFilterViewModel in
+            self?.presentSortMenu(presentedSortFilterViewModel: presentedSortFilterViewModel)
+        }.store(in: &subscriptions)
+
         // Archive navigation
         model.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
             guard let selectedArchivedItem = selectedArchivedItem else { return }
@@ -185,17 +189,25 @@ class CompactMyListContainerCoordinator: NSObject {
         let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
             self?.model.clearIsPresentingReaderSettings()
         }
-
-        // iPhone (Portrait): defaults to .medium(); iPhone (Landscape): defaults to .large()
-        // By setting `prefersEdgeAttachedInCompactHeight` and `widthFollowsPreferredContentSizeWhenEdgeAttached`,
-        // landscape (iPhone) provides a non-fullscreen view that is dismissable by the user.
-        let detents: [UISheetPresentationController.Detent] = [.medium(), .large()]
-        readerSettingsVC.sheetPresentationController?.detents = detents
-        readerSettingsVC.sheetPresentationController?.prefersGrabberVisible = true
-        readerSettingsVC.sheetPresentationController?.prefersEdgeAttachedInCompactHeight = true
-        readerSettingsVC.sheetPresentationController?.widthFollowsPreferredContentSizeWhenEdgeAttached = true
-
+        readerSettingsVC.configurePocketDefaultDetents()
         viewController.present(readerSettingsVC, animated: !isResetting)
+    }
+
+    func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
+        guard !isResetting else {
+            return
+        }
+
+        guard let sortFilterVM = presentedSortFilterViewModel else {
+            if navigationController.presentedViewController is SortMenuViewController {
+                navigationController.dismiss(animated: true)
+            }
+            return
+        }
+
+        let viewController = SortMenuViewController(viewModel: sortFilterVM)
+        viewController.configurePocketDefaultDetents()
+        navigationController.present(viewController, animated: true)
     }
 }
 

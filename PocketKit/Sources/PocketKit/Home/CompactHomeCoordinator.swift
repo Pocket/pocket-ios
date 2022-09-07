@@ -240,16 +240,7 @@ class CompactHomeCoordinator: NSObject {
         let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
             self?.model.clearIsPresentingReaderSettings()
         }
-
-        // iPhone (Portrait): defaults to .medium(); iPhone (Landscape): defaults to .large(); iPad (All): Menu
-        // By setting `prefersEdgeAttachedInCompactHeight` and `widthFollowsPreferredContentSizeWhenEdgeAttached`,
-        // landscape (iPhone) provides a non-fullscreen view that is dismissable by the user.
-        let detents: [UISheetPresentationController.Detent] = [.medium(), .large()]
-        readerSettingsVC.sheetPresentationController?.detents = detents
-        readerSettingsVC.sheetPresentationController?.prefersGrabberVisible = true
-        readerSettingsVC.sheetPresentationController?.prefersEdgeAttachedInCompactHeight = true
-        readerSettingsVC.sheetPresentationController?.widthFollowsPreferredContentSizeWhenEdgeAttached = true
-
+        readerSettingsVC.configurePocketDefaultDetents()
         viewController.present(readerSettingsVC, animated: !isResetting)
     }
 

@@ -18,7 +18,7 @@
                             "__typename": "[type-name-here]",
                             "remoteID": "saved-item-1",
                             "url": "http://localhost:8080/hello",
-                            "_createdAt": 0,
+                            "_createdAt": 1,
                             "_deletedAt": null,
                             "archivedAt": null,
                             "isArchived": false,

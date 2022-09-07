@@ -304,7 +304,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
-        viewModel.selectCell(with: .item(items[0].objectID))
+        viewModel.selectCell(with: .item(items[0].objectID), sender: UIView())
 
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -324,8 +324,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()
-
-        viewModel.selectCell(with: .item(items[0].objectID))
+        viewModel.selectCell(with: .item(items[0].objectID), sender: UIView())
 
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -407,7 +406,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         archiveService._results = []
 
         let viewModel = subject()
-        viewModel.selectCell(with: .filterButton(.favorites))
+        viewModel.selectCell(with: .filterButton(.favorites), sender: UIView())
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.snapshot.sink { snapshot in

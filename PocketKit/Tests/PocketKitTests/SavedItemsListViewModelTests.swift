@@ -11,6 +11,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var space: Space!
     var tracker: MockTracker!
     var itemsController: MockSavedItemsController!
+    var listOptions: ListOptions!
     var subscriptions: [AnyCancellable]!
 
     override func setUp() {
@@ -19,6 +20,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         space = .testSpace()
         subscriptions = []
         itemsController = MockSavedItemsController()
+        listOptions = ListOptions()
+        listOptions.selectedSort = .newest
 
         itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
         source.stubMakeItemsController {
@@ -33,12 +36,44 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func subject(
         source: Source? = nil,
-        tracker: Tracker? = nil
+        tracker: Tracker? = nil,
+        listOptions: ListOptions? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
             source: source ?? self.source,
-            tracker: tracker ?? self.tracker
+            tracker: tracker ?? self.tracker,
+            listOptions: listOptions ?? self.listOptions
         )
+    }
+    
+    func test_applySortingOnMyListSavedItems() throws {
+        let savedItems = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0))
+            )
+        }
+        try space.save()
+        
+        itemsController.stubPerformFetch {
+            self.itemsController.fetchedObjects = savedItems
+        }
+
+        let viewModel = subject()
+
+        let snapshotSent = expectation(description: "snapshotSent")
+        viewModel.snapshot.dropFirst().sink { [unowned self] snapshot in
+            XCTAssertEqual(
+                self.itemsController.sortDescriptors,
+                [NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: true)]
+            )
+
+            snapshotSent.fulfill()
+        }.store(in: &subscriptions)
+
+        listOptions.selectedSort = .oldest
+
+        wait(for: [snapshotSent], timeout: 1)
     }
 
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
@@ -67,8 +102,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let item = space.buildPendingSavedItem()
 
         source.stubObject { _ in item }
-
-        viewModel.selectCell(with: .item(item.objectID))
+        viewModel.selectCell(with: .item(item.objectID), sender: UIView())
 
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -89,8 +123,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         let savedItem = space.buildSavedItem(item: item)
 
         source.stubObject { _ in savedItem }
+        viewModel.selectCell(with: .item(item.objectID), sender: UIView())
 
-        viewModel.selectCell(with: .item(item.objectID))
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
             return
@@ -178,7 +212,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotSent = expectation(description: "snapshotSent")
-        viewModel.snapshot.dropFirst().sink { snapshot in
+        viewModel.snapshot.dropFirst().sink { [unowned self] snapshot in
             XCTAssertEqual(self.source.refreshObjectCall(at: 0)?.object, savedItem)
             XCTAssertEqual(snapshot.reloadedItemIdentifiers, [.item(savedItem.objectID)])
             snapshotSent.fulfill()
@@ -190,7 +224,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     func test_receivedSnapshots_withNoItems_includesMyListEmptyState() {
-        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [] }
+        itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [] }
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
@@ -209,9 +243,10 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
-        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [] }
+        itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [] }
+
         let viewModel = subject()
-        viewModel.selectCell(with: .filterButton(.favorites))
+        viewModel.selectCell(with: .filterButton(.favorites), sender: UIView())
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.snapshot.dropFirst().sink { snapshot in
@@ -249,11 +284,12 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
         let savedItem = space.buildSavedItem()
-        itemsController.stubPerformFetch { self.itemsController.fetchedObjects = [savedItem] }
 
+        itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [savedItem] }
+        
         let viewModel = subject()
-        viewModel.selectCell(with: .filterButton(.favorites))
-
+        viewModel.selectCell(with: .filterButton(.favorites), sender: UIView())
+        
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .items)
@@ -280,7 +316,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_receivedSnapshots_whenInitialDownloadIsInProgress_insertsPlaceholderCells() throws {
         let savedItem = space.buildSavedItem()
-        itemsController.stubPerformFetch {
+        itemsController.stubPerformFetch { [unowned self] in
             self.itemsController.fetchedObjects = [savedItem]
         }
 
@@ -304,7 +340,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_receivedSnapshots_whenInitialDownloadIsStarted_insertsPlaceholderCells() throws {
         source.initialDownloadState.send(.started)
-        itemsController.stubPerformFetch {
+        itemsController.stubPerformFetch { [unowned self] in
             self.itemsController.fetchedObjects = []
         }
 

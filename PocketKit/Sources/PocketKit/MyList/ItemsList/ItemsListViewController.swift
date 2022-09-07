@@ -256,7 +256,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             return
         }
 
-        model.selectCell(with: itemID)
+        model.selectCell(with: itemID, sender: collectionView.cellForItem(at: indexPath))
     }
 
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {

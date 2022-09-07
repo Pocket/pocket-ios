@@ -29,6 +29,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     @Published
     var sharedActivity: PocketActivity?
 
+    @Published
+    var presentedSortFilterViewModel: SortMenuViewModel?
+
+    private let listOptions: ListOptions
+
     var emptyState: EmptyStateViewModel? {
         let items = itemsController.fetchedObjects ?? []
         guard items.isEmpty else {
@@ -46,16 +51,26 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
 
-    init(source: Source, tracker: Tracker) {
+    init(source: Source, tracker: Tracker, listOptions: ListOptions) {
         self.source = source
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
         self.itemsController = source.makeItemsController()
+        self.listOptions = listOptions
 
         super.init()
 
         itemsController.delegate = self
+
+        listOptions
+            .objectWillChange
+            .dropFirst()
+            .receive(on: DispatchQueue.main).sink { [weak self] _ in
+                
+            self?.fetch()
+            self?.presentedSortFilterViewModel = nil
+        }.store(in: &subscriptions)
 
         $selectedItem.sink { [weak self] itemSelected in
             guard itemSelected == nil else { return }
@@ -74,9 +89,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 return NSPredicate(format: "isFavorite = true")
             case .all:
                 return nil
+            case .sortAndFilter:
+                return nil
             }
         }
 
+        applySorting()
         self.itemsController.predicate = Predicates.savedItems(filters: filters)
 
         try? self.itemsController.performFetch()
@@ -119,12 +137,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
-    func selectCell(with cellID: ItemsListCell<ItemIdentifier>) {
+    func selectCell(with cellID: ItemsListCell<ItemIdentifier>, sender: Any) {
         switch cellID {
         case .item(let objectID):
             select(item: objectID)
         case .filterButton(let filterID):
-            apply(filter: filterID, from: cellID)
+            apply(filter: filterID, from: cellID, sender: sender)
         case .offline, .emptyState, .placeholder:
             return
         }
@@ -347,8 +365,8 @@ extension SavedItemsListViewModel {
         }
     }
 
-    private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>) {
-        handleFilterSelection(with: filter)
+    private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>, sender: Any) {
+        handleFilterSelection(with: filter, sender: sender)
 
         fetch()
 
@@ -362,19 +380,31 @@ extension SavedItemsListViewModel {
         _snapshot = snapshot
     }
 
-    private func handleFilterSelection(with filter: ItemsListFilter) {
-        if filter == .all {
+    private func applySorting() {
+        let sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSort == .oldest))
+        self.itemsController.sortDescriptors = [sortDescriptorTemp]
+    }
+
+    private func handleFilterSelection(with filter: ItemsListFilter, sender: Any) {
+        switch filter {
+        case .all:
             selectedFilters.removeAll()
             selectedFilters.insert(.all)
-        } else if selectedFilters.contains(filter) {
-            selectedFilters.remove(filter)
-        } else {
-            selectedFilters.insert(filter)
-            selectedFilters.remove(.all)
-        }
-
-        if selectedFilters.isEmpty {
-            selectedFilters.insert(.all)
+        case .sortAndFilter:
+            presentedSortFilterViewModel = SortMenuViewModel(
+                source: source,
+                tracker: tracker.childTracker(hosting: .myList.myList),
+                listOptions: listOptions,
+                sender: sender
+            )
+        default:
+            if selectedFilters.contains(filter) {
+                selectedFilters.remove(filter)
+                selectedFilters.insert(.all)
+            } else {
+                selectedFilters.insert(filter)
+                selectedFilters.remove(.all)
+            }
         }
     }
 }
