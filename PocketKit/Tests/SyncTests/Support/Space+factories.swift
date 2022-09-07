@@ -12,7 +12,7 @@ extension Space {
         createdAt: Date = Date(),
         archivedAt: Date? = nil,
         cursor: String? = nil,
-        tags: [String]? = nil,
+        tags: [Tag]? = nil,
         item: Item? = nil
     ) throws -> SavedItem {
         try context.performAndWait {
@@ -42,17 +42,11 @@ extension Space {
         createdAt: Date = Date(),
         archivedAt: Date? = nil,
         cursor: String? = nil,
-        tags: [String]? = nil,
+        tags: [Tag]? = nil,
         item: Item? = nil
     ) -> SavedItem {
         context.performAndWait {
             let savedItem: SavedItem = new()
-            let tags: [Tag]? = tags?.map { tag -> Tag in
-                let newTag: Tag = new()
-                newTag.name = tag
-                return newTag
-            }
-
             savedItem.remoteID = remoteID
             savedItem.isFavorite = isFavorite
             savedItem.isArchived = isArchived

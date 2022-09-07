@@ -18,23 +18,116 @@ struct TagsFilterView: View {
     @State
     private var selection = Set<String>()
 
+    @State
+    private var isEditing = false
+
+    @State
+    private var showDeleteAlert = false
+
+    @State
+    private var showRenameAlert: Bool = false
+
     var body: some View {
         NavigationView {
-            List(viewModel.getAllTags(), id: \.self, selection: $selection) { tag in
-                Text(tag)
-                    .style(.tagsFilter.tag)
-                    .accessibilityIdentifier("all-tags")
-                    .onTapGesture {
-                        didTap = true
-                        let isNotTagged = tag == TagsFilterViewModel.SelectedTag.notTagged.name
-                        let selectedTag: TagsFilterViewModel.SelectedTag = isNotTagged ? .notTagged : .tag(tag)
-                        viewModel.selectTag(selectedTag)
-                        dismiss()
+            VStack {
+                List(selection: $selection) {
+                    Text("not tagged")
+                        .style(.tagsFilter.tag)
+                        .accessibilityIdentifier("all-tags")
+                        .onTapGesture {
+                            didTap = true
+                            viewModel.selectTag(.notTagged)
+                            dismiss()
+                        }.disabled(isEditing)
+                    ForEach(viewModel.getAllTags(), id: \.self) { tag in
+                        Text(tag)
+                            .style(.tagsFilter.tag)
+                            .accessibilityIdentifier("all-tags")
+                            .onTapGesture {
+                                didTap = true
+                                viewModel.selectTag(.tag(tag))
+                                dismiss()
+                            }.disabled(isEditing)
                     }
+                }
+                .listStyle(.plain)
+                .navigationBarTitleDisplayMode(.inline)
+                .tagsHeaderToolBar($isEditing)
+                Spacer()
+                if isEditing {
+                    EditBottomBar(selection: selection, showRenameAlert: $showRenameAlert, showDeleteAlert: $showDeleteAlert)
+                }
             }
-            .listStyle(.plain)
-            .accessibilityIdentifier("filter-tags")
-            .navigationBarTitleDisplayMode(.inline)
+        }
+        .alert(isPresented: $showDeleteAlert) {
+            Alert(
+                title: Text("Delete Tag?"),
+                message: Text("Are you sure you want to delete the tags and remove it from all items?"),
+                primaryButton: .destructive(Text("Delete"), action: {
+                    viewModel.delete(tags: Array(selection))
+                    selection = Set<String>()
+                }),
+                secondaryButton: .cancel(Text("Cancel"), action: {
+                })
+            )
+        }
+        .alert(isPresented: $showRenameAlert,
+               TextAlert(
+                title: "Rename Tag",
+                message: "Enter a new name for this tag"
+               ) { result in
+                   if let text = result, let oldName = selection.first {
+                       viewModel.rename(from: oldName, to: text)
+                       selection = Set<String>()
+                   }
+               }
+        )
+        .accessibilityIdentifier("filter-tags")
+        .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30))
+        .onDisappear {
+            guard !didTap else { return }
+            viewModel.selectAllAction()
+        }
+    }
+}
+
+struct EditModeView: View {
+    @Environment(\.editMode) var editMode
+    @Binding var isEditing: Bool
+
+    var body: some View {
+        EditButton()
+            .onChange(of: editMode?.wrappedValue.isEditing, perform: { newValue in
+                isEditing = newValue ?? false
+            })
+            .accessibilityIdentifier("edit-button")
+    }
+}
+
+struct EditBottomBar: View {
+    var selection: Set<String>
+    @Binding var showRenameAlert: Bool
+    @Binding var showDeleteAlert: Bool
+    var body: some View {
+        HStack {
+            Button("Rename") {
+                showRenameAlert = true
+            }
+            .disabled(selection.count != 1)
+            .accessibilityIdentifier("rename-button")
+            Spacer()
+            Button("Delete") {
+                showDeleteAlert = true
+            }.disabled(selection.isEmpty)
+                .accessibilityIdentifier("delete-button")
+        }
+    }
+}
+
+struct TagsHeaderToolBar: ViewModifier {
+    @Binding var isEditing: Bool
+    func body(content: Content) -> some View {
+        content
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack {
@@ -45,28 +138,19 @@ struct TagsFilterView: View {
                     Image(asset: .tag).foregroundColor(Color(.ui.grey5))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
+                    EditModeView(isEditing: $isEditing)
                 }
             }
-        }
-        .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30))
-        .onDisappear {
-            guard !didTap else { return }
-            viewModel.selectAllAction()
-        }
     }
 }
 
-struct ListHeader: View {
-    var body: some View {
-        HStack {
-            Text("Tags").style(.tagsFilter.sectionHeader)
-            Spacer()
-            Button("Edit", action: {
-                // TODO: Edit Screen
-            }).accessibilityIdentifier("edit-button")
-        }
+extension View {
+    func tagsHeaderToolBar(_ isEditing: Binding<Bool>) -> some View {
+        modifier(TagsHeaderToolBar(isEditing: isEditing))
+    }
 
+    public func alert(isPresented: Binding<Bool>, _ alert: TextAlert) -> some View {
+        AlertWrapper(isPresented: isPresented, alert: alert, content: self)
     }
 }
 

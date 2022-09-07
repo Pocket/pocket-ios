@@ -329,6 +329,75 @@ extension MockSource {
     }
 }
 
+// MARK: - Delete Tag
+extension MockSource {
+    static let deleteTag = "deleteTag"
+    typealias DeleteTagImpl = (Tag) -> Void
+    struct DeleteTagImplCall {
+        let tag: Tag
+    }
+
+    func stubDeleteTag(impl: @escaping DeleteTagImpl) {
+        implementations[Self.deleteTag] = impl
+    }
+
+    func deleteTag(tag: Tag) {
+        guard let impl = implementations[Self.deleteTag] as? DeleteTagImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.deleteTag] = (calls[Self.deleteTag] ?? []) + [
+            DeleteTagImplCall(tag: tag)
+        ]
+
+        return impl(tag)
+    }
+
+    func deleteTagCall(at index: Int) -> DeleteTagImplCall? {
+        guard let calls = calls[Self.deleteTag],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? DeleteTagImplCall
+    }
+}
+
+// MARK: - Rename Tags
+extension MockSource {
+    static let renameTag = "renameTag"
+    typealias RenameTagImpl = (Tag, String) -> Void
+    struct RenameTagsImplCall {
+        let oldTag: Tag
+        let name: String
+    }
+
+    func stubRenameTag(impl: @escaping RenameTagImpl) {
+        implementations[Self.renameTag] = impl
+    }
+
+    func renameTag(from oldTag: Tag, to name: String) {
+        guard let impl = implementations[Self.renameTag] as? RenameTagImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.renameTag] = (calls[Self.renameTag] ?? []) + [
+            RenameTagsImplCall(oldTag: oldTag, name: name)
+        ]
+
+        return impl(oldTag, name)
+    }
+
+    func renameTagCall(at index: Int) -> RenameTagsImplCall? {
+        guard let calls = calls[Self.renameTag],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? RenameTagsImplCall
+    }
+}
+
 // MARK: - Favorite an item
 extension MockSource {
     static let favoriteSavedItem = "favoriteSavedItem"

@@ -6,29 +6,23 @@ import Combine
 
 class TagsFilterViewModelTests: XCTestCase {
     private var subscriptions: [AnyCancellable]!
+    var source: MockSource!
     var space: Space!
 
     override func setUp() {
         space = .testSpace()
+        source = MockSource()
         subscriptions = []
     }
 
     override func tearDown() async throws {
+        source = nil
         subscriptions = []
         try space.clear()
     }
 
-    private func subject(fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
-        TagsFilterViewModel(fetchedTags: fetchedTags, selectAllAction: selectAllAction)
-    }
-
-    func test_getAllTags_withNoUserTags_returnsNotTagged() {
-        let viewModel = subject(fetchedTags: nil) { }
-
-        let tags = viewModel.getAllTags()
-
-        XCTAssertEqual(tags.count, 1)
-        XCTAssertEqual(tags, ["not tagged"])
+    private func subject(source: Source? = nil, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
+        TagsFilterViewModel(source: source ?? self.source, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
     }
 
     func test_getAllTags_withThreeTags_returnsMostRecentTags() {
@@ -40,8 +34,8 @@ class TagsFilterViewModelTests: XCTestCase {
         XCTAssertEqual(savedTags?.compactMap { $0.name }, ["tag 1", "tag 2", "tag 3"])
         let tags = viewModel.getAllTags()
 
-        XCTAssertEqual(tags.count, 4)
-        XCTAssertEqual(tags, ["not tagged", "tag 3", "tag 2", "tag 1"])
+        XCTAssertEqual(tags.count, 3)
+        XCTAssertEqual(tags, ["tag 3", "tag 2", "tag 1"])
     }
 
     func test_getAllTags_withMoreThan3Tags_returnsSortedOrder() {
@@ -57,8 +51,8 @@ class TagsFilterViewModelTests: XCTestCase {
 
         let tags = viewModel.getAllTags()
 
-        XCTAssertEqual(tags.count, 6)
-        XCTAssertEqual(tags, ["not tagged", "e", "d", "c", "a", "b"])
+        XCTAssertEqual(tags.count, 5)
+        XCTAssertEqual(tags, ["e", "d", "c", "a", "b"])
     }
 
     func test_selectedTag_withTagName_sendsPredicate() {
@@ -93,5 +87,42 @@ class TagsFilterViewModelTests: XCTestCase {
 
         viewModel.selectTag(.tag("tag 0"))
         wait(for: [expectSeletedTagCall], timeout: 1)
+    }
+
+    func test_deleteTag_removesExistingTags() {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["a"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["b"])
+        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["c"])
+        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["d"])
+        _ = try? space.createSavedItem(createdAt: Date() + 4, tags: ["e"])
+        var deletedTags: [String] = []
+        let expectDelete = expectation(description: "expect source.deleteTag(_:)")
+        expectDelete.assertForOverFulfill = false
+        source.stubDeleteTag { tag in
+            defer { expectDelete.fulfill() }
+            deletedTags.append(tag.name ?? "")
+        }
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = subject(fetchedTags: savedTags) { }
+        viewModel.delete(tags: ["b", "e", "q"])
+
+        XCTAssertEqual(deletedTags, ["b", "e"])
+        wait(for: [expectDelete], timeout: 1)
+    }
+
+    func test_renameTag_showsNewName() {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
+
+        let expectRename = expectation(description: "expect source.renameTag(_:_:)")
+        source.stubRenameTag { _, tag in
+            defer { expectRename.fulfill() }
+            XCTAssertEqual(tag, "tag 0")
+        }
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = subject(fetchedTags: savedTags) { }
+        viewModel.rename(from: "tag 1", to: "tag 0")
+
+        wait(for: [expectRename], timeout: 1)
     }
 }

@@ -373,6 +373,7 @@ extension ArchivedItemsListViewModel {
                 return nil
             case .tagged:
                 presentedTagsFilter = TagsFilterViewModel(
+                    source: source,
                     fetchedTags: { [weak self] in
                         self?.source.fetchTags(isArchived: true)
                     }(),
@@ -489,7 +490,7 @@ extension ArchivedItemsListViewModel {
 // MARK: - Building and sending snapshots
 extension ArchivedItemsListViewModel {
     private func buildSnapshot(results: [SavedItemResult]) -> Snapshot {
-        var snapshot = Snapshot()
+        var snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> = .init()
 
         snapshot.appendSections([.filters, .items])
         snapshot.appendItems(

@@ -38,6 +38,14 @@ extension Response {
         fixture(named: "delete")
     }
 
+    static func deleteTag(_ fixtureName: String = "delete-tag-1") -> Response {
+        fixture(named: fixtureName)
+    }
+
+    static func updateTag() -> Response {
+        fixture(named: "update-tag")
+    }
+
     static func archive() -> Response {
         fixture(named: "archive")
     }

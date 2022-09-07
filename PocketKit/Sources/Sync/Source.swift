@@ -42,6 +42,10 @@ public protocol Source {
 
     func addTags(item: SavedItem, tags: [String])
 
+    func deleteTag(tag: Tag)
+
+    func renameTag(from oldTag: Tag, to name: String)
+
     func retrieveTags(excluding: [String]) -> [Tag]?
 
     func fetchTags(isArchived: Bool) -> [Tag]?

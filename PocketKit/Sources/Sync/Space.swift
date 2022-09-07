@@ -132,6 +132,10 @@ public class Space {
         return fetchedTag
     }
 
+    func fetchTag(byID id: String) throws -> Tag? {
+        try fetch(Requests.fetchTag(byID: id)).first
+    }
+
     func retrieveTags(excluding tags: [String]) throws -> [Tag] {
         return try fetch(Requests.fetchTags(excluding: tags))
     }
@@ -140,6 +144,13 @@ public class Space {
         let deleteRequest = Requests.fetchTagsWithNoSavedItems()
         let tags = try context.fetch(deleteRequest)
         delete(tags)
+    }
+
+    func deleteTag(byID id: String) throws {
+        let fetchRequest = Requests.fetchTag(byID: id)
+        fetchRequest.fetchLimit = 1
+        let tag = try context.fetch(fetchRequest)
+        delete(tag)
     }
 
     func fetchOrCreateItem(byRemoteID id: String) throws -> Item {

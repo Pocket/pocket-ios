@@ -309,7 +309,7 @@ extension PocketSource {
         }
 
         item.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
-            space.fetchOrCreateTag(byName: tag)
+           space.fetchOrCreateTag(byName: tag)
         }))
 
         try? space.deleteOrphanTags()
@@ -322,6 +322,37 @@ extension PocketSource {
         )
 
         enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
+    }
+
+    public func deleteTag(tag: Tag) {
+        guard let remoteID = tag.remoteID else { return }
+
+        try? space.deleteTag(byID: remoteID)
+        try? space.save()
+
+        let operation = operations.savedItemMutationOperation(
+            apollo: apollo,
+            events: _events,
+            mutation: DeleteTagMutation(id: remoteID)
+        )
+
+        enqueue(operation: operation, task: .deleteTag(remoteID: remoteID))
+    }
+
+    public func renameTag(from oldTag: Tag, to name: String) {
+        guard let remoteID = oldTag.remoteID else { return }
+
+        let fetchedTag = try? space.fetchTag(byID: remoteID)
+        fetchedTag?.name = name
+        try? space.save()
+
+        let operation = operations.savedItemMutationOperation(
+            apollo: apollo,
+            events: _events,
+            mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
+        )
+
+        enqueue(operation: operation, task: .renameTag(remoteID: remoteID, name: name))
     }
 
     public func retrieveTags(excluding tags: [String]) -> [Tag]? {
@@ -484,6 +515,20 @@ extension PocketSource {
                     apollo: apollo,
                     events: _events,
                     mutation: getMutation(for: tags, and: remoteID)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .deleteTag(let tagID):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: DeleteTagMutation(id: tagID)
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .renameTag(let remoteID, let name):
+                let operation = operations.savedItemMutationOperation(
+                    apollo: apollo,
+                    events: _events,
+                    mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             }

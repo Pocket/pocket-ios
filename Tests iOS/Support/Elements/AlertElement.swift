@@ -18,4 +18,16 @@ struct AlertElement: PocketUIElement {
     var yes: XCUIElement {
         element.buttons["Yes"]
     }
+
+    var cancel: XCUIElement {
+        element.buttons["Cancel"]
+    }
+
+    var delete: XCUIElement {
+        element.buttons["Delete"]
+    }
+
+    var ok: XCUIElement {
+        element.buttons["OK"]
+    }
 }
