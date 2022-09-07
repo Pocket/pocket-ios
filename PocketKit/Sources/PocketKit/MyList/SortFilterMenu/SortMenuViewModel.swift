@@ -2,7 +2,6 @@ import UIKit
 import Sync
 import Analytics
 
-
 class SortMenuViewModel {
 
     typealias Snapshot = NSDiffableDataSourceSnapshot<SortSection, SortOption>
@@ -13,7 +12,7 @@ class SortMenuViewModel {
     private let tracker: Tracker
     private let listOptions: ListOptions
     let sender: Any
-    
+
     init(source: Source, tracker: Tracker, listOptions: ListOptions, sender: Any) {
         self.source = source
         self.tracker = tracker

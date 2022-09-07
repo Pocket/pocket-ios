@@ -5,7 +5,6 @@ import Combine
 @testable import Sync
 @testable import PocketKit
 
-
 class SortMenuViewModelTests: XCTestCase {
 
     private var source: MockSource!
@@ -19,18 +18,20 @@ class SortMenuViewModelTests: XCTestCase {
         listOptions = ListOptions()
         listOptions.selectedSort = .newest
     }
-    
+
     override func tearDown() {
         subscriptions = []
     }
 
     private func subject(source: Source? = nil, tracker: Tracker? = nil, listOptions: ListOptions? = nil) -> SortMenuViewModel {
-        return SortMenuViewModel(source: source ?? self.source,
-                                 tracker: tracker ?? self.tracker,
-                                 listOptions: listOptions ?? self.listOptions,
-                                 sender: UIView())
+        return SortMenuViewModel(
+            source: source ?? self.source,
+            tracker: tracker ?? self.tracker,
+            listOptions: listOptions ?? self.listOptions,
+            sender: UIView()
+        )
     }
-    
+
     func test_snapshot_containsAllSortOptions() {
         let sortMenuVM = subject()
         sortMenuVM.$snapshot.sink { snapshot in
@@ -58,7 +59,7 @@ class SortMenuViewModelTests: XCTestCase {
     }
 
     func test_select_setsTheSelectedSortOnListOptions() {
-        
+
         listOptions.selectedSort = .oldest
         let sortMenuVM = subject()
         XCTAssert(listOptions.selectedSort == .oldest)

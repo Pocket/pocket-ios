@@ -45,7 +45,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             listOptions: listOptions ?? self.listOptions
         )
     }
-    
+
     func test_applySortingOnMyListSavedItems() throws {
         let savedItems = (1...2).map {
             space.buildSavedItem(
@@ -54,7 +54,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             )
         }
         try space.save()
-        
+
         itemsController.stubPerformFetch {
             self.itemsController.fetchedObjects = savedItems
         }
@@ -286,10 +286,10 @@ class SavedItemsListViewModelTests: XCTestCase {
         let savedItem = space.buildSavedItem()
 
         itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [savedItem] }
-        
+
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites), sender: UIView())
-        
+
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.snapshot.dropFirst().sink { snapshot in
             let identifiers = snapshot.itemIdentifiers(inSection: .items)

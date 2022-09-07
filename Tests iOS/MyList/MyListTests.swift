@@ -309,19 +309,19 @@ class MyListTests: XCTestCase {
     func test_selectingANewSortOrder_SortItems() {
         app.launch().tabBar.myListButton.wait().tap()
         app.myListView.itemView(matching: "Item 1").wait()
-        
+
         app.myListView.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Oldest saved").wait().tap()
-        
+
         app.myListView.itemView(matching: "Item 1").wait()
         XCTAssertTrue(app.myListView.itemView(at: 0).contains(string: "Item 2"))
-        XCTAssertTrue(app.myListView.itemView(at: 1).contains(string:  "Item 1"))
-        
+        XCTAssertTrue(app.myListView.itemView(at: 1).contains(string: "Item 1"))
+
         app.myListView.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Newest saved").wait().tap()
-        
+
         XCTAssertTrue(app.myListView.itemView(at: 0).contains(string: "Item 1"))
-        XCTAssertTrue(app.myListView.itemView(at: 1).contains(string:  "Item 2"))
+        XCTAssertTrue(app.myListView.itemView(at: 1).contains(string: "Item 2"))
     }
 }
 

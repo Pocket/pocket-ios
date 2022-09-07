@@ -10,13 +10,13 @@ class SortMenuHeaderView: UITableViewHeaderFooterView {
         sortIconIV.heightAnchor.constraint(equalToConstant: SortMenuHeaderView.Constants.SortIcon.height).isActive = true
         return sortIconIV
     }()
-    
+
     private var sortTitleLabel: UILabel = {
         let sortTitleLbl = UILabel()
         sortTitleLbl.textColor = UIColor(.ui.grey5)
         return sortTitleLbl
     }()
-    
+
     private var stackViewContainer: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
@@ -25,12 +25,12 @@ class SortMenuHeaderView: UITableViewHeaderFooterView {
         stackView.distribution = .fillProportionally
         return stackView
     }()
-    
+
     override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
         setupHeaderView()
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -50,11 +50,11 @@ class SortMenuHeaderView: UITableViewHeaderFooterView {
 }
 
 extension SortMenuHeaderView {
-    
+
     func setHeader(title: String) {
         sortTitleLabel.attributedText = NSAttributedString(string: title, style: .header.sansSerif.h8)
     }
-    
+
     private func setLayoutConstraints(containerView: UIView, subView: UIView, padding: SortMenuPadding? = nil) {
         let paddingTemp = padding ?? SortMenuPadding()
         subView.translatesAutoresizingMaskIntoConstraints = false
@@ -69,7 +69,7 @@ extension SortMenuHeaderView {
 }
 
 extension SortMenuHeaderView {
-    
+
     enum Constants {
         enum ContainerView {
             static let height = 51.0
@@ -83,13 +83,13 @@ extension SortMenuHeaderView {
             static let height = 16.0
         }
     }
-    
+
     struct SortMenuPadding {
         var top: CGFloat = 0.0
         var left: CGFloat = 0.0
         var bottom: CGFloat = 0.0
         var right: CGFloat = 0.0
-        
+
         init(top: Double? = nil, left: Double? = nil, bottom: Double? = nil, right: Double? = nil) {
             self.top = CGFloat(top ?? 0.0)
             self.left = CGFloat(left ?? 0.0)

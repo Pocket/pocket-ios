@@ -67,7 +67,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             .objectWillChange
             .dropFirst()
             .receive(on: DispatchQueue.main).sink { [weak self] _ in
-                
+
             self?.fetch()
             self?.presentedSortFilterViewModel = nil
         }.store(in: &subscriptions)

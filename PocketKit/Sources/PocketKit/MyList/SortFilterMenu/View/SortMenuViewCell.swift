@@ -43,9 +43,9 @@ extension SortMenuViewCell {
         var attributedTitle: NSAttributedString {
             NSAttributedString(string: sortOption.rawValue, style: .header.sansSerif.h8)
         }
-        
+
         private let sortOption: SortOption
-        
+
         init(sortOption: SortOption, isSelected: Bool) {
             self.sortOption = sortOption
             self.isSelected = isSelected

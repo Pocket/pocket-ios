@@ -4,14 +4,13 @@
 
 import XCTest
 
-
 struct SortMenuElement: PocketUIElement {
     var element: XCUIElement
-    
+
     init(_ element: XCUIElement) {
         self.element = element
     }
-    
+
     func sortOption(_ label: String) -> XCUIElement {
         return element.cells.containing(.staticText, identifier: label).firstMatch
     }
