@@ -39,7 +39,9 @@ extension SavedItem {
         }
 
         tags = NSOrderedSet(array: remote.tags?.compactMap { $0 }.map { remoteTag in
-            space.fetchOrCreateTag(byName: remoteTag.name)
+            let fetchedTag = space.fetchOrCreateTag(byName: remoteTag.name)
+            fetchedTag.update(remote: remoteTag)
+            return fetchedTag
         } ?? [])
 
         try? space.deleteOrphanTags()

@@ -38,6 +38,14 @@ struct ClientAPIRequest {
         contains("updateSavedItemArchive")
     }
 
+    func isToDeleteATag(_ number: Int = 1) -> Bool {
+        contains("deleteTag(") && contains("id-\(number)")
+    }
+
+    func isToUpdateTag(_ name: String) -> Bool {
+        contains("updateTag(") && contains("\(name)")
+    }
+
     var isToDeleteAnItem: Bool {
         contains("deleteSavedItem")
     }

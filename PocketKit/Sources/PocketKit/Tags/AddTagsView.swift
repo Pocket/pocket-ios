@@ -17,6 +17,9 @@ struct AddTagsView: View {
     @Environment(\.dismiss)
     private var dismiss
 
+    @FocusState
+    private var isTextFieldFocused: Bool
+
     var body: some View {
         GeometryReader { geometry in
             NavigationView {
@@ -31,7 +34,9 @@ struct AddTagsView: View {
                         .onSubmit {
                             guard viewModel.addTag(with: newTag) else { return }
                             newTag = ""
-                        }.accessibilityIdentifier("enter-tag-name")
+                        }
+                        .focused($isTextFieldFocused)
+                        .accessibilityIdentifier("enter-tag-name")
                 }
                 .navigationTitle("Add Tags")
                 .navigationBarTitleDisplayMode(.inline)
@@ -48,9 +53,16 @@ struct AddTagsView: View {
                         })
                     }
                 }
+                .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                            isTextFieldFocused = true
+                        }
+                    }
                 .animation(.easeInOut, value: viewModel.tags)
             }
-        }.accessibilityIdentifier("add-tags")
+        }
+
+        .accessibilityIdentifier("add-tags")
     }
 
     struct InputTagsView: View {

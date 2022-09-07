@@ -26,14 +26,17 @@
                             "tags": [
                                 {
                                     "__typename": "Tag",
+                                    "id": "id-0",
                                     "name": "tag 0"
                                 },
                                 {
                                     "__typename": "Tag",
+                                    "id": "id-1",
                                     "name": "tag 1"
                                 },
                                 {
                                     "__typename": "Tag",
+                                    "id": "id-2",
                                     "name": "tag 2"
                                 }
                             ],

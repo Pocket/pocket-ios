@@ -83,6 +83,7 @@
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="remoteID" optional="YES" attributeType="String"/>
         <relationship name="savedItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SavedItem" inverseName="tags" inverseEntity="SavedItem"/>
     </entity>
     <entity name="UnresolvedSavedItem" representedClassName="UnresolvedSavedItem" syncable="YES" codeGenerationType="class">
@@ -99,7 +100,7 @@
         <element name="SavedItemUpdatedNotification" positionX="-36" positionY="144" width="128" height="44"/>
         <element name="Slate" positionX="-27" positionY="153" width="128" height="134"/>
         <element name="SlateLineup" positionX="-36" positionY="144" width="128" height="89"/>
-        <element name="Tag" positionX="-36" positionY="144" width="128" height="59"/>
+        <element name="Tag" positionX="-36" positionY="144" width="128" height="74"/>
         <element name="UnresolvedSavedItem" positionX="-36" positionY="144" width="128" height="44"/>
     </elements>
 </model>

@@ -92,6 +92,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 return NSPredicate(format: "isFavorite = true")
             case .tagged:
                 presentedTagsFilter = TagsFilterViewModel(
+                    source: source,
                     fetchedTags: { [weak self] in
                         self?.source.fetchTags(isArchived: false)
                     }(),

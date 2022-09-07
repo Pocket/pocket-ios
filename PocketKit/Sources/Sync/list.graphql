@@ -8,6 +8,7 @@ fragment SavedItemParts on SavedItem {
   archivedAt
   tags {
     name
+    id
   }
   item {
     ...ItemParts
@@ -128,6 +129,17 @@ mutation ArchiveItem($itemID: ID!) {
 
 mutation DeleteItem($itemID: ID!) {
   deleteSavedItem(id: $itemID)
+}
+
+mutation DeleteTag($id: ID!) {
+  deleteTag(id: $id)
+}
+
+mutation TagUpdate($input: TagUpdateInput!) {
+  updateTag(input: $input) {
+    name
+    id
+  }
 }
 
 mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {

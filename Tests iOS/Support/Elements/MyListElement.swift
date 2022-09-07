@@ -15,7 +15,7 @@ struct MyListElement: PocketUIElement {
         return SelectionSwitcherElement(element.otherElements["my-list-selection-switcher"])
     }
 
-    var tagsFilterView: TagsFilterViewElement { TagsFilterViewElement(element.tables["filter-tags"])
+    var tagsFilterView: TagsFilterViewElement { TagsFilterViewElement(element.otherElements["filter-tags"])
     }
 
     private var collectionView: XCUIElement {

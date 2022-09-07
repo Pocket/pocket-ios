@@ -6,6 +6,7 @@ public protocol ArchiveService: AnyObject {
     var results: Published<[SavedItemResult]>.Publisher { get }
     var itemUpdated: AnyPublisher<SavedItem, Never> { get }
     var tagFilter: CurrentValueSubject<String, Never> { get }
+
     var filters: [ArchiveServiceFilter] { get set }
 
     func fetch(at indexes: [Int]?)

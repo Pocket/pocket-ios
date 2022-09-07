@@ -150,82 +150,6 @@ class PocketSourceTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func test_addTagsToSavedItem_executesReplaceSavedItemTagsMutation() throws {
-        let item = try space.createSavedItem(tags: ["tag 1"])
-        let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemAnyMutationOperation { (_, _, _) in
-            TestSyncOperation {
-                expectationToRunOperation.fulfill()
-            }
-        }
-
-        let source = subject()
-        source.addTags(item: item, tags: ["tag 2", "tag 3"])
-        XCTAssertEqual(item.tags?.count, 2)
-        XCTAssertEqual((item.tags?[0] as? Tag)?.name, "tag 2")
-        XCTAssertEqual((item.tags?[1] as? Tag)?.name, "tag 3")
-        waitForExpectations(timeout: 1)
-    }
-
-    func test_addTagsToSavedItem_withNoTags_executesUpdateSavedItemRemoveTagsMutation() throws {
-        let item = try space.createSavedItem(tags: ["tag 1", "tag 2"])
-        let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubItemAnyMutationOperation { (_, _, _) in
-            TestSyncOperation {
-                expectationToRunOperation.fulfill()
-            }
-        }
-
-        let source = subject()
-        source.addTags(item: item, tags: [])
-        XCTAssertEqual(item.tags?.count, 0)
-        waitForExpectations(timeout: 1)
-    }
-
-    func test_retrieveTags_excludesTagsAlreadySelected() throws {
-        let tag1: Tag = space.new()
-        let tag2: Tag = space.new()
-        let tag3: Tag = space.new()
-        tag1.name = "tag 1"
-        tag2.name = "tag 2"
-        tag3.name = "tag 3"
-        let source = subject()
-        let tags = source.retrieveTags(excluding: [tag1.name ?? "", tag2.name ?? ""])
-        XCTAssertEqual(tags?.count, 1)
-        XCTAssertEqual(tags?[0].name, "tag 3")
-    }
-
-    func test_fetchTags_withSaved_returnsSavedTags() throws {
-        let tagNames = ["tag 1", "tag 2", "tag 3"]
-        _ = try space.createSavedItem(tags: tagNames)
-        _ = try space.createSavedItem(isArchived: true, tags: ["tag 4"])
-        let source = subject()
-        guard let tags = source.fetchTags() else {
-            XCTFail("tags should not be nil")
-            return
-        }
-        let names = tags.compactMap { $0.name }
-        XCTAssertEqual(names.count, 3)
-        XCTAssertTrue(names.contains(tagNames[0]))
-        XCTAssertTrue(names.contains(tagNames[1]))
-        XCTAssertTrue(names.contains(tagNames[2]))
-    }
-
-    func test_fetchTags_withArchive_returnsArchivedTags() throws {
-        let tagNames = ["tag 1", "tag 2"]
-        _ = try space.createSavedItem(isArchived: true, tags: tagNames)
-        _ = try space.createSavedItem(isArchived: false, tags: ["tag 3"])
-        let source = subject()
-        guard let tags = source.fetchTags(isArchived: true) else {
-            XCTFail("tags should not be nil")
-            return
-        }
-        let names = tags.compactMap { $0.name }
-        XCTAssertEqual(names.count, 2)
-        XCTAssertTrue(names.contains(tagNames[0]))
-        XCTAssertTrue(names.contains(tagNames[1]))
-    }
-
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
         let item = try space.createSavedItem(remoteID: "delete-me")
         let expectationToRunOperation = expectation(description: "Run operation")
@@ -569,5 +493,129 @@ class PocketSourceTests: XCTestCase {
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
         XCTAssertFalse(savedItems[0].isArchived)
+    }
+}
+
+// MARK: Tags
+extension PocketSourceTests {
+    func test_addTagsToSavedItem_executesReplaceSavedItemTagsMutation() throws {
+        let items = createItemsWithTags(1)
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemAnyMutationOperation { (_, _, _) in
+            TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let source = subject()
+        source.addTags(item: items[0], tags: ["tag 2", "tag 3"])
+        XCTAssertEqual(items[0].tags?.count, 2)
+        XCTAssertEqual((items[0].tags?[0] as? Tag)?.name, "tag 2")
+        XCTAssertEqual((items[0].tags?[1] as? Tag)?.name, "tag 3")
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_addTagsToSavedItem_withNoTags_executesUpdateSavedItemRemoveTagsMutation() throws {
+        let items = createItemsWithTags(1)
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemAnyMutationOperation { (_, _, _) in
+            TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+
+        let source = subject()
+        source.addTags(item: items[0], tags: [])
+        XCTAssertEqual(items[0].tags?.count, 0)
+        waitForExpectations(timeout: 1)
+    }
+
+    func test_retrieveTags_excludesTagsAlreadySelected() throws {
+        _ = createItemsWithTags(3)
+        let source = subject()
+        let tags = source.retrieveTags(excluding: ["tag 1", "tag 2"])
+        XCTAssertEqual(tags?.count, 1)
+        XCTAssertEqual(tags?[0].name, "tag 3")
+    }
+
+    func test_fetchTags_withSaved_returnsSavedTags() throws {
+        let tagNames = ["tag 1", "tag 2", "tag 3"]
+        _ = createItemsWithTags(3)
+        _ = createItemsWithTags(1, isArchived: true)
+        let source = subject()
+        guard let tags = source.fetchTags() else {
+            XCTFail("tags should not be nil")
+            return
+        }
+        let names = tags.compactMap { $0.name }
+        XCTAssertEqual(names.count, 3)
+        XCTAssertTrue(names.contains(tagNames[0]))
+        XCTAssertTrue(names.contains(tagNames[1]))
+        XCTAssertTrue(names.contains(tagNames[2]))
+    }
+
+    func test_fetchTags_withArchive_returnsArchivedTags() throws {
+        let tagNames = ["tag 1", "tag 2"]
+        _ = createItemsWithTags(1)
+        _ = createItemsWithTags(2, isArchived: true)
+        let source = subject()
+        guard let tags = source.fetchTags(isArchived: true) else {
+            XCTFail("tags should not be nil")
+            return
+        }
+        let names = tags.compactMap { $0.name }
+        XCTAssertEqual(names.count, 2)
+        XCTAssertTrue(names.contains(tagNames[0]))
+        XCTAssertTrue(names.contains(tagNames[1]))
+    }
+
+    func test_deleteTags_executesDeleteTagMutation() throws {
+        let items = createItemsWithTags(1)
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemMutationOperation { (_, _, _: DeleteTagMutation) in
+            TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+        try XCTAssertEqual( space.fetchAllTags().compactMap { $0.name }, ["tag 1"])
+        let source = subject()
+        guard let tag = items[0].tags?[0] as? Tag else {
+            XCTFail("Should not be nil")
+            return
+        }
+        source.deleteTag(tag: tag)
+
+        try XCTAssertEqual(space.fetchAllTags(), [])
+        wait(for: [expectationToRunOperation], timeout: 1)
+    }
+
+    func test_renameTag_executesUpdateTagMutation() throws {
+        let tag1: Tag = space.new()
+        tag1.remoteID = "id 1"
+        tag1.name = "tag 1"
+        let source = subject()
+
+        let expectationToRunOperation = expectation(description: "Run operation")
+        operations.stubItemMutationOperation { (_, _, _: TagUpdateMutation) in
+            TestSyncOperation {
+                expectationToRunOperation.fulfill()
+            }
+        }
+        try XCTAssertEqual( space.fetchAllTags().compactMap { $0.name }, ["tag 1"])
+
+        source.renameTag(from: tag1, to: "tag 3")
+
+        try XCTAssertEqual(space.fetchAllTags().compactMap { $0.name }, ["tag 3"])
+        wait(for: [expectationToRunOperation], timeout: 1)
+    }
+
+    private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [SavedItem] {
+        guard number > 0 else { return [] }
+        return (1...number).compactMap { num in
+            let tag: Tag = space.new()
+            tag.remoteID = "id \(num)"
+            tag.name = "tag \(num)"
+            return space.buildSavedItem(isArchived: isArchived, tags: [tag])
+        }
     }
 }

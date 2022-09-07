@@ -11,8 +11,24 @@ struct TagsFilterViewElement: PocketUIElement {
         self.element = element
     }
 
+    var editButton: XCUIElement {
+        element.buttons["edit-button"]
+    }
+
+    var renameButton: XCUIElement {
+        element.buttons["rename-button"]
+    }
+
+    var deleteButton: XCUIElement {
+        element.buttons["delete-button"]
+    }
+
     func tag(matching string: String) -> XCUIElement {
         return element.staticTexts[string].self
+    }
+
+    func tagCell(matching string: String) -> XCUIElement {
+        return element.cells[string]
     }
 
     var tagCells: XCUIElementQuery {

@@ -133,6 +133,13 @@ public enum Requests {
         return request
     }
 
+    public static func fetchTag(byID id: String) -> NSFetchRequest<Tag> {
+        let request = fetchTags()
+        request.predicate = NSPredicate(format: "remoteID = %@", id)
+        request.fetchLimit = 1
+        return request
+    }
+
     public static func fetchTagsWithNoSavedItems() -> NSFetchRequest<Tag> {
         let request = fetchTags()
         request.predicate = NSPredicate(format: "savedItems.@count = 0")

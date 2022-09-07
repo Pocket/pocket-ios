@@ -18,19 +18,21 @@ class TagsFilterViewModel: ObservableObject {
         }
     }
 
-    private let fetchedTags: [Tag]?
+    private var fetchedTags: [Tag]?
+    private let source: Source
     var selectAllAction: () -> Void?
 
     @Published
     var selectedTag: SelectedTag?
 
-    init(fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
+    init(source: Source, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
+        self.source = source
         self.fetchedTags = fetchedTags
         self.selectAllAction = selectAllAction
     }
 
     func getAllTags() -> [String] {
-        var allTags = [SelectedTag.notTagged.name]
+        var allTags: [String] = []
         guard let fetchedTags = fetchedTags?.compactMap({ $0.name }).reversed() else { return allTags }
 
         if fetchedTags.count > 3 {
@@ -47,7 +49,19 @@ class TagsFilterViewModel: ObservableObject {
     func selectTag(_ tag: SelectedTag) {
         selectedTag = tag
         if case .notTagged = tag {
-            // TODO: Track Analytics
+            // TODO: Track Analytics (IN-151)
         }
+    }
+
+    func delete(tags: [String]) {
+        tags.forEach { tag in
+            guard let tag: Tag = fetchedTags?.filter({ $0.name == tag }).first else { return }
+            source.deleteTag(tag: tag)
+        }
+    }
+
+    func rename(from oldName: String, to newName: String) {
+        guard let tag: Tag = fetchedTags?.filter({ $0.name == oldName }).first else { return }
+        source.renameTag(from: tag, to: newName)
     }
 }
