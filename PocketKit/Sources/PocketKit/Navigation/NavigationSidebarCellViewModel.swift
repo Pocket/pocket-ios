@@ -3,7 +3,7 @@ import Textile
 
 struct NavigationSidebarCellViewModel {
     private let section: MainViewModel.AppSection
-    private let isSelected: Bool
+    let isSelected: Bool
 
     init(section: MainViewModel.AppSection, isSelected: Bool) {
         self.section = section
