@@ -73,4 +73,20 @@ class MainViewModel: ObservableObject {
         home.clearPresentedWebReaderURL()
         myList.clearPresentedWebReaderURL()
     }
+
+    func navigationSidebarCellViewModel(for appSection: AppSection) -> NavigationSidebarCellViewModel {
+        let isSelected: Bool = {
+            switch (selectedSection, appSection) {
+            case (.home, .home), (.myList, .myList), (.account, .account):
+                return true
+            default:
+                return false
+            }
+        }()
+
+        return NavigationSidebarCellViewModel(
+            section: appSection,
+            isSelected: isSelected
+        )
+    }
 }
