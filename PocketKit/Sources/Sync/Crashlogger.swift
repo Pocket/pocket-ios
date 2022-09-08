@@ -22,10 +22,25 @@ public struct Crashlogger {
     }
 
     public static func start(dsn: String) {
+        if isRunningTests() {
+            // We are in a test environment, lets not init sentry.
+            return
+        }
+
         SentrySDK.start { options in
             options.dsn = dsn
-            options.enableAutoPerformanceTracking = false
+            options.enableAutoSessionTracking = true
+            #if DEBUG
             options.debug = true
+            #endif
         }
+    }
+
+    /**
+     Utility to determine if we are in a test environment.
+     */
+    static func isRunningTests() -> Bool {
+        let env: [String: String] = ProcessInfo.processInfo.environment
+        return env["XCInjectBundleInto"] != nil
     }
 }

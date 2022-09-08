@@ -4,15 +4,65 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 project_type: ios
 trigger_map:
   - push_branch: main
-    workflow: app-store-build
+    pipeline: app-store-pipeline
   - pull_request_target_branch: develop
-    workflow: qa-build
+    pipeline: build-test-pipeline
+
+pipelines:
+  build-test-pipeline:
+    stages:
+      - build-test: {}
+  app-store-pipeline:
+    stages:
+      - deploy: {}
+
+stages:
+  build-test:
+    workflows:
+      - test: {}
+      - qa-build: {}
+  deploy:
+    workflows:
+      - app-store-build: {}
+
 workflows:
-  app-store-build:
+  #Reusable workflow that is ran before each workflow to setup the necessary information
+  _setup:
     steps:
       - brew-install@0:
           inputs:
             - packages: swiftlint
+      - activate-ssh-key@4: {}
+      - git-clone@6: {}
+      - certificate-and-profile-installer@1: {}
+      - file-downloader@1:
+          inputs:
+            - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+          title: Install production secrets.xcconfig
+      - resource-archive@2:
+          inputs:
+            - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
+            - archive_url: '$BITRISEIO_BASE_FONTS_URL'
+          title: Install fonts
+
+  #Workflow to that can be ran after archiving builds to upload dysms to sentry.
+  _upload_sentry:
+    steps:
+      - script@1:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+
+                # fail if any commands fails
+                set -e
+
+                brew tap getsentry/tools
+                brew install getsentry/tools/sentry-cli
+                sentry-cli --log-level=debug --auth-token $SENTRY_AUTH_TOKEN  upload-dif -o pocket -p ios-next $BITRISE_DSYM_PATH
+                #TODO: In the future we can add Sentry releases here.
+  app-store-build:
+    steps:
       - xcode-archive@4:
           inputs:
             - project_path: '$BITRISE_PROJECT_PATH'
@@ -39,7 +89,10 @@ workflows:
             - commit: '$GIT_CLONE_COMMIT_HASH'
             - api_token: '$GITHUB_RELEASE_TOKEN'
     before_run:
-      - test
+      - _setup
+    after_run:
+      - _upload_sentry
+
   qa-build:
     steps:
       - brew-install@0:
@@ -53,29 +106,18 @@ workflows:
             - configuration: Debug
       - deploy-to-bitrise-io@2: {}
     before_run:
-      - test
+      - _setup
+    after_run:
+      - _upload_sentry
+
   test:
     steps:
-      - brew-install@0:
-          inputs:
-            - packages: swiftlint
-      - activate-ssh-key@4: {}
-      - git-clone@6: {}
-      - certificate-and-profile-installer@1: {}
-      - file-downloader@1:
-          inputs:
-            - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
-            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
-          title: Install production secrets.xcconfig
-      - resource-archive@2:
-          inputs:
-            - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
-            - archive_url: '$BITRISEIO_BASE_FONTS_URL'
-          title: Install fonts
       - xcode-test@4:
           inputs:
             - destination: platform=iOS Simulator,name=iPhone 13,OS=latest
-    before_run: []
+    before_run:
+      - _setup
+
 app:
   envs:
     - opts:
