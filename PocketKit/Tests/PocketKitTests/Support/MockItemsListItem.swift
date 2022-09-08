@@ -11,6 +11,7 @@ struct MockItemsListItem: ItemsListItem {
     let timeToRead: Int?
     let isPending: Bool
     let host: String?
+    let tagNames: [String]?
 
     static func build(
         title: String? = nil,
@@ -21,7 +22,8 @@ struct MockItemsListItem: ItemsListItem {
         domainMetadata: ItemsListItemDomainMetadata? = nil,
         timeToRead: Int? = nil,
         isPending: Bool = false,
-        host: String? = nil
+        host: String? = nil,
+        tagNames: [String]? = nil
     ) -> MockItemsListItem {
         MockItemsListItem(
             title: title,
@@ -32,7 +34,8 @@ struct MockItemsListItem: ItemsListItem {
             domainMetadata: domainMetadata,
             timeToRead: timeToRead,
             isPending: isPending,
-            host: host
+            host: host,
+            tagNames: tagNames
         )
     }
 }

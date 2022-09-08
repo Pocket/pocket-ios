@@ -111,8 +111,16 @@ public class Space {
         return try fetch(Requests.fetchItem(byRemoteID: id)).first
     }
 
-    func fetchTags() throws -> [Tag] {
+    func fetchAllTags() throws -> [Tag] {
         return try fetch(Requests.fetchTags())
+    }
+
+    func fetchTags(isArchived: Bool) throws -> [Tag] {
+        if isArchived {
+            return try fetch(Requests.fetchArchivedTags())
+        } else {
+            return try fetch(Requests.fetchSavedTags())
+        }
     }
 
     func fetchOrCreateTag(byName name: String) -> Tag {

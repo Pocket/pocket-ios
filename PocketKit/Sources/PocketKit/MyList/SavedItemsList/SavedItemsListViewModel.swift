@@ -24,6 +24,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     var presentedAddTags: AddTagsViewModel?
 
     @Published
+    var presentedTagsFilter: TagsFilterViewModel?
+
+    @Published
     var selectedItem: SelectedItem?
 
     @Published
@@ -87,15 +90,49 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             switch filter {
             case .favorites:
                 return NSPredicate(format: "isFavorite = true")
+            case .tagged:
+                presentedTagsFilter = TagsFilterViewModel(
+                    fetchedTags: { [weak self] in
+                        self?.source.fetchTags(isArchived: false)
+                    }(),
+                    selectAllAction: { [weak self] in
+                        self?.selectCell(with: .filterButton(.all))
+                    }
+                )
+                presentedTagsFilter?.$selectedTag.sink { [weak self] selectedTag in
+                    guard let selectedTag = selectedTag else { return }
+                    let predicate: NSPredicate
+                    switch selectedTag {
+                    case .notTagged:
+                        predicate = NSPredicate(format: "tags.@count = 0")
+                    case .tag(let name):
+                        predicate = NSPredicate(format: "%@ IN tags.name", name)
+                    }
+                    self?.fetchItems(with: [predicate])
+                    self?.updateSnapshotForTagFilter(with: selectedTag.name)
+                }.store(in: &subscriptions)
+                return nil
             case .all:
                 return nil
             case .sortAndFilter:
                 return nil
             }
         }
-
         applySorting()
-        self.itemsController.predicate = Predicates.savedItems(filters: filters)
+        fetchItems(with: filters)
+    }
+
+    private func updateSnapshotForTagFilter(with name: String) {
+        var snapshot = _snapshot
+        let cells = snapshot.itemIdentifiers(inSection: .filters)
+        snapshot.reloadItems(cells)
+        snapshot.insertSections([.tags], afterSection: .filters)
+        snapshot.appendItems([.tag(name)], toSection: .tags)
+        self._snapshot = snapshot
+    }
+
+    private func fetchItems(with predicates: [NSPredicate]) {
+        self.itemsController.predicate = Predicates.savedItems(filters: predicates)
 
         try? self.itemsController.performFetch()
         self.itemsLoaded()
@@ -126,26 +163,41 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         )
     }
 
+    func tagModel(with name: String) -> SelectedTagChipModel {
+        SelectedTagChipCell.Model(name: name)
+    }
+
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool {
         switch cell {
         case .filterButton:
             return true
         case .item(let objectID):
             return !(bareItem(with: objectID)?.isPending ?? true)
-        case .offline, .emptyState, .placeholder:
+        case .offline, .emptyState, .placeholder, .tag:
             return false
         }
     }
 
-    func selectCell(with cellID: ItemsListCell<ItemIdentifier>, sender: Any) {
+    func selectCell(with cellID: ItemsListCell<ItemIdentifier>, sender: Any? = nil) {
         switch cellID {
         case .item(let objectID):
             select(item: objectID)
         case .filterButton(let filterID):
             apply(filter: filterID, from: cellID, sender: sender)
-        case .offline, .emptyState, .placeholder:
+        case .offline, .emptyState, .placeholder, .tag:
             return
         }
+    }
+
+    func filterByTagAction() -> UIAction? {
+        return UIAction(title: "", handler: { [weak self] action in
+            let button = action.sender as? UIButton
+            guard let name = button?.titleLabel?.text else { return }
+            let predicate = NSPredicate(format: "%@ IN tags.name", name)
+            self?.fetchItems(with: [predicate])
+            self?.handleFilterSelection(with: .tagged)
+            self?.updateSnapshotForTagFilter(with: name)
+        })
     }
 
     func favoriteAction(for objectID: NSManagedObjectID) -> ItemAction? {
@@ -366,7 +418,7 @@ extension SavedItemsListViewModel {
         }
     }
 
-    private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>, sender: Any) {
+    private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>, sender: Any? = nil) {
         handleFilterSelection(with: filter, sender: sender)
 
         fetch()
@@ -386,12 +438,15 @@ extension SavedItemsListViewModel {
         self.itemsController.sortDescriptors = [sortDescriptorTemp]
     }
 
-    private func handleFilterSelection(with filter: ItemsListFilter, sender: Any) {
+    private func handleFilterSelection(with filter: ItemsListFilter, sender: Any? = nil) {
+        let reTappedTagFilter = selectedFilters.contains(.tagged) && filter == .tagged
+        guard !reTappedTagFilter else { return }
         switch filter {
         case .all:
             selectedFilters.removeAll()
             selectedFilters.insert(.all)
         case .sortAndFilter:
+            guard let sender = sender else { return }
             presentedSortFilterViewModel = SortMenuViewModel(
                 source: source,
                 tracker: tracker.childTracker(hosting: .myList.myList),
@@ -403,8 +458,8 @@ extension SavedItemsListViewModel {
                 selectedFilters.remove(filter)
                 selectedFilters.insert(.all)
             } else {
+                selectedFilters.removeAll()
                 selectedFilters.insert(filter)
-                selectedFilters.remove(.all)
             }
         }
     }

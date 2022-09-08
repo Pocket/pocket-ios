@@ -103,12 +103,37 @@ class ItemsListItemCell: UICollectionViewListCell {
         return stack
     }()
 
+    private let tagsStack: UIStackView = {
+        let stack = UIStackView()
+        stack.spacing = 10
+        stack.axis = .horizontal
+
+        return stack
+    }()
+
+    private var tagButton: UIButton {
+        var config = UIButton.Configuration.plain()
+        config.image = UIImage(asset: .tag)
+            .resized(to: CGSize(width: 13, height: 13))
+            .withTintColor(UIColor(.ui.grey4))
+        config.imagePadding = 5
+
+        config.background.cornerRadius = 4
+        config.background.backgroundColor = UIColor(.ui.grey7)
+        config.contentInsets = NSDirectionalEdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5)
+
+        let button = UIButton(configuration: config, primaryAction: nil)
+        button.accessibilityIdentifier = "tag-button"
+        return button
+    }
+
     private var thumbnailWidthConstraint: NSLayoutConstraint!
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         accessibilityIdentifier = "my-list-item"
 
+        buttonStack.addArrangedSubview(tagsStack)
         buttonStack.addArrangedSubview(UIView())
         buttonStack.addArrangedSubview(favoriteButton)
         buttonStack.addArrangedSubview(shareButton)
@@ -191,11 +216,15 @@ extension ItemsListItemCell {
     struct Model: Hashable {
         let attributedTitle: NSAttributedString
         let attributedDetail: NSAttributedString
+        let attributedTags: [NSAttributedString]?
+        let attributedTagCount: NSAttributedString?
+
         let thumbnailURL: URL?
 
         let shareAction: ItemAction?
         let favoriteAction: ItemAction?
         let overflowActions: [ItemAction]
+        let filterByTagAction: UIAction?
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -210,6 +239,24 @@ extension ItemsListItemCell {
 
         titleLabel.attributedText = state.model?.attributedTitle
         detailLabel.attributedText = state.model?.attributedDetail
+
+        tagsStack.subviews.forEach { view in
+            view.removeFromSuperview()
+        }
+
+        if let attributedTags = state.model?.attributedTags {
+            attributedTags.forEach { attributedTag in
+                let button = tagButton
+                button.configuration?.attributedTitle = AttributedString(attributedTag)
+                if let uiAction = state.model?.filterByTagAction {
+                    button.addAction(uiAction, for: .primaryActionTriggered)
+                }
+                tagsStack.addArrangedSubview(button)
+            }
+            let countLabel = UILabel()
+            countLabel.attributedText = state.model?.attributedTagCount
+            tagsStack.addArrangedSubview(countLabel)
+        }
 
         favoriteButton.accessibilityLabel = state.model?.favoriteAction?.title
         favoriteButton.accessibilityIdentifier = state.model?.favoriteAction?.accessibilityIdentifier

@@ -82,7 +82,7 @@ struct AddTagsView: View {
 
         func RowView(tag: String) -> some View {
             Text(tag)
-                .style(.tag)
+                .style(.addTags.tag)
                 .padding(Constants.tagPadding)
                 .background(Rectangle().fill(Color(.ui.grey6)))
                 .cornerRadius(4)
@@ -103,7 +103,7 @@ struct AddTagsView: View {
             let padding: CGFloat = Constants.tagPadding * 2 + Constants.tagsHorizontalSpacing * 2
 
             viewModel.tags.forEach { tag in
-                let attributes = Style.tag.textAttributes
+                let attributes = Style.addTags.tag.textAttributes
                 let tagWidth: CGFloat = tag.size(withAttributes: attributes).width + padding
 
                 totalWidth += tagWidth
@@ -133,10 +133,10 @@ struct AddTagsView: View {
         var body: some View {
             if let otherTags = viewModel.allOtherTags(), !otherTags.isEmpty {
                 List {
-                    Section(header: Text("All Tags").style(.sectionHeader)) {
+                    Section(header: Text("All Tags").style(.addTags.sectionHeader)) {
                         ForEach(otherTags, id: \.self) { tag in
                             HStack {
-                                Text(tag).style(.allTags)
+                                Text(tag).style(.addTags.allTags)
                                 Spacer()
                             }
                             .contentShape(Rectangle())
@@ -149,11 +149,11 @@ struct AddTagsView: View {
                 .listStyle(.plain)
                 .accessibilityIdentifier("all-tags")
             } else {
-                // TODO: Empty State View
+                // TODO: Empty State View (IN-779)
                 VStack(alignment: .center, spacing: 20) {
                     Spacer()
                     Text(viewModel.emptyStateText)
-                        .style(.emptyStateText)
+                        .style(.addTags.emptyStateText)
                         .padding()
                     Spacer()
                 }
@@ -163,10 +163,13 @@ struct AddTagsView: View {
 }
 
 private extension Style {
-    static let emptyStateText: Self = .header.sansSerif.p2.with { $0.with(alignment: .center).with(lineSpacing: 6) }
-    static let sectionHeader: Self = .header.sansSerif.h8.with(color: .ui.grey4)
-    static let tag: Self = .header.sansSerif.h8.with(color: .ui.grey4)
-    static let allTags: Self = .header.sansSerif.h8.with(color: .ui.grey1)
+    static let addTags = AddTagsStyle()
+    struct AddTagsStyle {
+        let emptyStateText: Style = Style.header.sansSerif.p2.with { $0.with(alignment: .center).with(lineSpacing: 6) }
+        let sectionHeader: Style = Style.header.sansSerif.h8.with(color: .ui.grey4)
+        let tag: Style = Style.header.sansSerif.h8.with(color: .ui.grey4)
+        let allTags: Style = Style.header.sansSerif.h8.with(color: .ui.grey1)
+    }
 }
 
 extension View {

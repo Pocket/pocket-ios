@@ -11,6 +11,7 @@ protocol ModalContentPresenting: AnyObject {
     func present(_ alert: PocketAlert?)
     func present(_ viewModel: AddTagsViewModel?)
     func present(_ readerSettings: ReaderSettings?, isPresenting: Bool?)
+    func present(_ tagsFilterViewModel: TagsFilterViewModel?)
     func share(_ activity: PocketActivity?)
 }
 
@@ -244,6 +245,13 @@ extension RegularMainCoordinator: ModalContentPresenting {
             .first
 
         splitController.present(readerSettingsVC, animated: !isResetting)
+    }
+
+    func present(_ tagsFilterViewModel: TagsFilterViewModel?) {
+        guard !isResetting, let tagsFilterViewModel = tagsFilterViewModel else { return }
+        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel))
+        hostingController.modalPresentationStyle = .formSheet
+        viewController.present(hostingController, animated: true)
     }
 }
 

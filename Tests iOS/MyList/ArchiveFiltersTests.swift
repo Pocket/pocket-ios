@@ -81,4 +81,25 @@ class ArchiveFiltersTests: XCTestCase {
         myList.itemView(matching: "Archived Item 1").wait()
         myList.itemView(matching: "Archived Item 2").wait()
     }
+
+    func test_archiveView_tappingTaggedPill_showsFilteredItems() {
+        app.launch().tabBar.myListButton.wait().tap()
+        let myList = app.myListView.wait()
+
+        myList.selectionSwitcher.archiveButton.wait().tap()
+
+        app.myListView.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.myListView.tagsFilterView.wait()
+
+        XCTAssertEqual(tagsFilterView.tagCells.count, 4)
+
+        tagsFilterView.tag(matching: "not tagged").wait().tap()
+
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
+        waitForDisappearance(of: tagsFilterView)
+
+        app.myListView.selectedTagChip(for: "not tagged").wait()
+        app.myListView.selectedTagChip(for: "not tagged").buttons.element(boundBy: 0).tap()
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
+    }
 }

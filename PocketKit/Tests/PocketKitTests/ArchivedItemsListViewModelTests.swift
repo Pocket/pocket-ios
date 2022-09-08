@@ -259,25 +259,6 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         wait(for: [expectUnarchiveCall, expectSnapshotWithItemRemoved], timeout: 1)
     }
 
-    func test_addTagsAction_sendsAddTagsViewModel() {
-        let item = space.buildSavedItem(tags: ["tag 1"])
-        archiveService._results = [.loaded(item)]
-        let viewModel = subject()
-
-        let expectAddTags = expectation(description: "expect add tags to present")
-
-        viewModel.$presentedAddTags.dropFirst().sink { viewModel in
-            expectAddTags.fulfill()
-            XCTAssertEqual(viewModel?.tags, ["tag 1"])
-        }.store(in: &subscriptions)
-
-        viewModel.overflowActions(for: item.objectID)
-            .first { $0.title == "Add Tags" }?
-            .handler?(nil)
-
-        wait(for: [expectAddTags], timeout: 1)
-    }
-
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
         let items = [space.buildPendingSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
@@ -503,5 +484,56 @@ class ArchivedItemsListViewModelTests: XCTestCase {
             expectCompletion.fulfill()
         }
         wait(for: [expectCompletion, expectSnapshot], timeout: 1)
+    }
+}
+
+// MARK: - Tags
+extension ArchivedItemsListViewModelTests {
+    func test_addTagsAction_sendsAddTagsViewModel() {
+        let item = space.buildSavedItem(tags: ["tag 1"])
+        archiveService._results = [.loaded(item)]
+        let viewModel = subject()
+
+        let expectAddTags = expectation(description: "expect add tags to present")
+
+        viewModel.$presentedAddTags.dropFirst().sink { viewModel in
+            expectAddTags.fulfill()
+            XCTAssertEqual(viewModel?.tags, ["tag 1"])
+        }.store(in: &subscriptions)
+
+        viewModel.overflowActions(for: item.objectID)
+            .first { $0.title == "Add Tags" }?
+            .handler?(nil)
+
+        wait(for: [expectAddTags], timeout: 1)
+    }
+
+    func test_fetch_whenTaggedSelected_sendsTagsFilterViewModel() throws {
+        let item = space.buildSavedItem(tags: ["tag 1"])
+        archiveService._results = [.loaded(item)]
+        source.stubFetchTags {
+            []
+        }
+        let viewModel = subject()
+
+        let expectTagFiltersCall = expectation(description: "expect filter tag to present")
+        viewModel.$presentedTagsFilter.dropFirst().sink { viewModel in
+            defer { expectTagFiltersCall.fulfill() }
+            XCTAssertNotNil(viewModel)
+        }.store(in: &subscriptions)
+
+        viewModel.selectCell(with: .filterButton(.tagged))
+
+        wait(for: [expectTagFiltersCall], timeout: 1)
+    }
+
+    func test_tagModel_calculatesTagHeightAndWidth() {
+        let viewModel = subject()
+        let model = viewModel.tagModel(with: "tag 0")
+
+        let width = SelectedTagChipCell.width(model: model)
+        let height = SelectedTagChipCell.height(model: model)
+        XCTAssertEqual(width, 115.0)
+        XCTAssertEqual(height, 39.0)
     }
 }

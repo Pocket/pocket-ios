@@ -35,6 +35,48 @@ extension ItemsListItemPresenterTests {
         let style = presenter.attributedTitle.attributes(at: 0, effectiveRange: nil)[.style] as! Style
         XCTAssertEqual(UIColor(style.colorAsset), UIColor(.ui.grey5))
     }
+
+    func test_attributedTags_returnsNil() {
+        let item = MockItemsListItem.build(tagNames: [])
+        let presenter = ItemsListItemPresenter(item: item)
+
+        XCTAssertEqual(presenter.attributedTags?.compactMap { $0.string }, nil)
+    }
+
+    func test_attributedTags_returnsOneLabel() {
+        let item = MockItemsListItem.build(tagNames: ["tag 1"])
+        let presenter = ItemsListItemPresenter(item: item)
+
+        XCTAssertEqual(presenter.attributedTags?.compactMap { $0.string }, ["tag 1"])
+    }
+
+    func test_attributedTags_returnsMaxTwoLabels() {
+        let item = MockItemsListItem.build(tagNames: ["tag 1", "tag 2", "tag 3"])
+        let presenter = ItemsListItemPresenter(item: item)
+
+        XCTAssertEqual(presenter.attributedTags?.compactMap { $0.string }, ["tag 1", "tag 2"])
+    }
+
+    func test_attributedTagCount_withNoAdditionalTags_returnsNil() {
+        let item = MockItemsListItem.build(tagNames: [])
+        let presenter = ItemsListItemPresenter(item: item)
+
+        XCTAssertEqual(presenter.attributedTagCount?.string, nil)
+    }
+
+    func test_attributedTagCount_withOnlyTwoAdditionalTags_returnsNil() {
+        let item = MockItemsListItem.build(tagNames: ["tag 1", "tag 2"])
+        let presenter = ItemsListItemPresenter(item: item)
+
+        XCTAssertEqual(presenter.attributedTagCount?.string, nil)
+    }
+
+    func test_attributedTagCount_withAdditionalTags_returnsProperCount() {
+        let item = MockItemsListItem.build(tagNames: ["tag 1", "tag 2", "tag 3", "tag 4", "tag 5"])
+        let presenter = ItemsListItemPresenter(item: item)
+
+        XCTAssertEqual(presenter.attributedTagCount?.string, "+3")
+    }
 }
 
 // MARK: - Attributed Detail

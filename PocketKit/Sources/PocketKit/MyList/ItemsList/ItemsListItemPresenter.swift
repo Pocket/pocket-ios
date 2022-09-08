@@ -29,6 +29,11 @@ private extension Style {
                 .with(lineBreakMode: .byTruncatingTail)
         }
     static let pendingDetail: Style = .detail.with(color: .ui.grey5)
+    static let tag: Style = .header.sansSerif.p5.with(color: .ui.grey4).with(weight: .medium).with { paragraph in
+        paragraph
+            .with(lineBreakMode: .byTruncatingTail)
+    }
+    static let tagCount: Style = .header.sansSerif.h8.with(color: .ui.grey4)
 }
 
 class ItemsListItemPresenter {
@@ -44,6 +49,15 @@ class ItemsListItemPresenter {
 
     var attributedDetail: NSAttributedString {
         NSAttributedString(string: detail, style: item.isPending ? .pendingDetail : .detail)
+    }
+
+    var attributedTags: [NSAttributedString]? {
+        tags?.map { NSAttributedString(string: $0, style: .tag) }
+    }
+
+    var attributedTagCount: NSAttributedString? {
+        guard let otherTagsCount = otherTagsCount else { return nil }
+        return NSAttributedString(string: "+\(otherTagsCount)", style: .tagCount)
     }
 
     var thumbnailURL: URL? {
@@ -67,6 +81,17 @@ class ItemsListItemPresenter {
 
     private var domain: String? {
         item.domainMetadata?.name ?? item.domain ?? item.host
+    }
+
+    private var tags: [String]? {
+        guard let names = item.tagNames else { return nil }
+        let tagsCount = min(names.count, 2)
+        return tagsCount > 0 ? Array(names[..<tagsCount]) : nil
+    }
+
+    private var otherTagsCount: Int? {
+        guard let count = item.tagNames?.count else { return nil }
+        return count > 2 ? count - 2 : nil
     }
 
     private var timeToRead: String? {

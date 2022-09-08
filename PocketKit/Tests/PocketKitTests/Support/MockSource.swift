@@ -297,6 +297,38 @@ extension MockSource {
     }
 }
 
+// MARK: - Fetch All Tags
+extension MockSource {
+    static let fetchTags = "fetchTags"
+    typealias FetchTagsImpl = () -> [Tag]?
+    struct FetchTagsImplCall { }
+
+    func stubFetchTags(impl: @escaping FetchTagsImpl) {
+        implementations[Self.fetchTags] = impl
+    }
+
+    func fetchTags(isArchived: Bool = false) -> [Tag]? {
+        guard let impl = implementations[Self.fetchTags] as? FetchTagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchTags] = (calls[Self.fetchTags] ?? []) + [
+            FetchTagsImplCall()
+        ]
+
+        return impl()
+    }
+
+    func fetchTagsCall(at index: Int) -> FetchTagsImplCall? {
+        guard let calls = calls[Self.fetchTags],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? FetchTagsImplCall
+    }
+}
+
 // MARK: - Favorite an item
 extension MockSource {
     static let favoriteSavedItem = "favoriteSavedItem"

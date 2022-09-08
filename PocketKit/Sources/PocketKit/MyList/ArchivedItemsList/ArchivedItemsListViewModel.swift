@@ -28,6 +28,9 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     var presentedAddTags: AddTagsViewModel?
 
     @Published
+    var presentedTagsFilter: TagsFilterViewModel?
+
+    @Published
     var selectedItem: SelectedItem?
 
     var emptyState: EmptyStateViewModel? {
@@ -82,6 +85,11 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
             self?.handleUpdatedItem(updatedItem)
         }.store(in: &subscriptions)
 
+        archiveService.tagFilter.sink { [weak self] name in
+            guard !name.isEmpty else { return }
+            self?.handleTagFilter(name)
+        }.store(in: &subscriptions)
+
         $selectedItem.sink { [weak self] itemSelected in
             guard itemSelected == nil else { return }
             self?._events.send(.selectionCleared)
@@ -131,6 +139,16 @@ extension ArchivedItemsListViewModel {
         if _snapshot.indexOfItem(.item(updatedItem.objectID)) != nil {
             _snapshot.reloadItems([.item(updatedItem.objectID)])
         }
+    }
+
+    func handleTagFilter(_ name: String) {
+        var snapshot = _snapshot
+        if snapshot.indexOfSection(.tags) != nil {
+            snapshot.deleteSections([.tags])
+        }
+        snapshot.insertSections([.tags], afterSection: .filters)
+        snapshot.appendItems([.tag(name)], toSection: .tags)
+        self._snapshot = snapshot
     }
 
     private func observeNetworkChanges() {
@@ -276,7 +294,7 @@ extension ArchivedItemsListViewModel {
     }
 }
 
-// MARK: - Add Tags to an item
+// MARK: - Tags
 extension ArchivedItemsListViewModel {
     private func showAddTagsView(item: SavedItem) {
         presentedAddTags = AddTagsViewModel(
@@ -286,6 +304,20 @@ extension ArchivedItemsListViewModel {
                 self?.archiveService.fetch()
             }
         )
+    }
+
+    func tagModel(with name: String) -> SelectedTagChipModel {
+        SelectedTagChipCell.Model(name: name)
+    }
+
+    func filterByTagAction() -> UIAction? {
+        return UIAction(title: "", handler: { [weak self] action in
+            let button = action.sender as? UIButton
+            guard let name = button?.titleLabel?.text else { return }
+            let predicate = NSPredicate(format: "%@ IN tags.name", name)
+            self?.handleFilterSelection(with: .tagged)
+            self?.updateSnapshotForTagFilter(with: name, and: predicate)
+        })
     }
 }
 
@@ -297,18 +329,18 @@ extension ArchivedItemsListViewModel {
             return true
         case .item(let objectID):
             return !(savedItem(objectID)?.isPending ?? true)
-        case .emptyState, .offline, .placeholder:
+        case .emptyState, .offline, .placeholder, .tag:
             return false
         }
     }
 
-    func selectCell(with cell: ItemsListCell<ItemIdentifier>, sender: Any) {
+    func selectCell(with cell: ItemsListCell<ItemIdentifier>, sender: Any? = nil) {
         switch cell {
         case .filterButton(let filter):
             apply(filter: filter, from: cell)
         case .item(let itemID):
             select(item: itemID)
-        case .emptyState, .offline, .placeholder:
+        case .emptyState, .offline, .placeholder, .tag:
             return
         }
     }
@@ -339,6 +371,27 @@ extension ArchivedItemsListViewModel {
             switch filter {
             case .all:
                 return nil
+            case .tagged:
+                presentedTagsFilter = TagsFilterViewModel(
+                    fetchedTags: { [weak self] in
+                        self?.source.fetchTags(isArchived: true)
+                    }(),
+                    selectAllAction: { [weak self] in
+                        self?.selectCell(with: .filterButton(.all))
+                    }
+                )
+                presentedTagsFilter?.$selectedTag.sink { [weak self] selectedTag in
+                    guard let selectedTag = selectedTag else { return }
+                    let predicate: NSPredicate
+                    switch selectedTag {
+                    case .notTagged:
+                        predicate = NSPredicate(format: "tags.@count = 0")
+                    case .tag(let name):
+                        predicate = NSPredicate(format: "%@ IN tags.name", name)
+                    }
+                    self?.updateSnapshotForTagFilter(with: selectedTag.name, and: predicate)
+                }.store(in: &subscriptions)
+                return nil
             case .favorites:
                 return .favorites
             case .sortAndFilter:
@@ -349,14 +402,26 @@ extension ArchivedItemsListViewModel {
         _snapshot.reloadSections([.filters])
     }
 
+    private func updateSnapshotForTagFilter(with name: String, and predicate: NSPredicate) {
+
+        self.archiveService.filters = self.selectedFilters.compactMap { filter in
+            switch filter {
+            case .tagged:
+                return .tagged(predicate, name)
+            default:
+                return nil
+            }
+        }
+    }
+
     private func handleFilterSelection(with filter: ItemsListFilter) {
-        if filter == .all {
-            selectedFilters = [.all]
-        } else if selectedFilters.contains(filter) {
+        let reTappedTagFilter = selectedFilters.contains(.tagged) && filter == .tagged
+        guard !reTappedTagFilter else { return }
+        if selectedFilters.contains(filter) {
             selectedFilters.remove(filter)
         } else {
+            selectedFilters.removeAll()
             selectedFilters.insert(filter)
-            selectedFilters.remove(.all)
         }
 
         if selectedFilters.isEmpty {

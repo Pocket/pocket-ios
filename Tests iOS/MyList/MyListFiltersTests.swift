@@ -73,4 +73,21 @@ class MyListFiltersTests: XCTestCase {
         app.myListView.filterButton(for: "All").tap()
         XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
     }
+
+    func test_myListView_tappingTaggedPill_showsFilteredItems() {
+        app.launch().tabBar.myListButton.wait().tap()
+        app.myListView.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.myListView.tagsFilterView.wait()
+
+        XCTAssertEqual(tagsFilterView.tagCells.count, 4)
+
+        tagsFilterView.tag(matching: "not tagged").wait().tap()
+
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
+        waitForDisappearance(of: tagsFilterView)
+
+        app.myListView.selectedTagChip(for: "not tagged").wait()
+        app.myListView.selectedTagChip(for: "not tagged").buttons.element(boundBy: 0).tap()
+        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
+    }
 }

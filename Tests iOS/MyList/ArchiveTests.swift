@@ -131,6 +131,19 @@ class ArchiveTests: XCTestCase {
         app.myListView.selectionSwitcher.myListButton.tap()
         itemCell.wait()
     }
+
+    func test_tappingTagLabel_showsTagFilter() {
+        app.launch().tabBar.myListButton.wait().tap()
+        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+
+        let listView = app.myListView.wait()
+        XCTAssertEqual(listView.itemCount, 2)
+        let item = listView.itemView(at: 0)
+        XCTAssertTrue(item.tagButton.firstMatch.label == "tag 0")
+        XCTAssertTrue(item.contains(string: "+1"))
+        item.tagButton.firstMatch.tap()
+        app.myListView.selectedTagChip(for: "tag 0").wait()
+    }
 }
 
 extension ArchiveTests {
