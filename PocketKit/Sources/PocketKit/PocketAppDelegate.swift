@@ -15,6 +15,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let firstLaunchDefaults: UserDefaults
     private let refreshCoordinator: RefreshCoordinator
     private let appSession: AppSession
+    internal let notificationService: PocketNotificationService
 
     convenience override init() {
         self.init(services: Services.shared)
@@ -26,6 +27,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.firstLaunchDefaults = services.firstLaunchDefaults
         self.refreshCoordinator = services.refreshCoordinator
         self.appSession = services.appSession
+        self.notificationService = services.notificationService
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -77,6 +79,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         source.restore()
         Textiles.initialize()
         refreshCoordinator.initialize()
+        
+        application.registerForRemoteNotifications()
 
         return true
     }

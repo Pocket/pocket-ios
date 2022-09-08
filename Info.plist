@@ -6,6 +6,10 @@
 	<array>
 		<string>com.mozilla.pocket.next.refresh</string>
 	</array>
+	<key>BrazeAPIEndpoint</key>
+	<string>$(BRAZE_API_ENDPOINT)</string>
+	<key>BrazeAPIKey</key>
+	<string>$(BRAZE_API_KEY)</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -76,6 +80,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
