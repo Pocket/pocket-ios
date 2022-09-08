@@ -104,8 +104,7 @@ class NavigationSidebarViewController: UIViewController {
         model.$selectedSection
             .receive(on: DispatchQueue.main)
             .sink { [weak self] appSection in
-                let indexPath = self?.dataSource.indexPath(for: appSection)
-                self?.collectionView.selectItem(at: indexPath, animated: false, scrollPosition: .top)
+                self?.select(appSection)
             }
             .store(in: &subscriptions)
     }
@@ -119,12 +118,12 @@ class NavigationSidebarViewController: UIViewController {
     }
 
     private func configure(_ cell: NavigationSidebarCell, appSection: MainViewModel.AppSection) {
-        let cellModel = NavigationSidebarCellViewModel(
-            section: appSection,
-            isSelected: appSection == model.selectedSection
-        )
-
+        let cellModel = model.navigationSidebarCellViewModel(for: appSection)
         cell.configure(model: cellModel)
+    }
+
+    private func select(_ appSection: MainViewModel.AppSection) {
+        collectionView.reloadData()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -138,11 +137,6 @@ class NavigationSidebarViewController: UIViewController {
 
 extension NavigationSidebarViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let previousSection = model.selectedSection
         model.selectedSection = MainViewModel.AppSection.allCases[indexPath.item]
-
-        var snapshot = dataSource.snapshot()
-        snapshot.reloadItems([previousSection, model.selectedSection])
-        dataSource.apply(snapshot)
     }
 }

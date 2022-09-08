@@ -13,23 +13,29 @@ class NavigationSidebarCell: UICollectionViewCell {
         return label
     }()
 
+    private let selectedView: UIView = {
+        let view = UIView()
+        view.backgroundColor = UIColor(.ui.teal6)
+        return view
+    }()
+
     private var subscriptions: [AnyCancellable] = []
     override init(frame: CGRect) {
         super.init(frame: frame)
 
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = UIColor(.ui.teal6)
-        selectedBackgroundView?.publisher(for: \.bounds).sink { [weak self] value in
-            self?.selectedBackgroundView?.layer.cornerRadius = value.height / 2
+        selectedView.publisher(for: \.bounds).sink { [weak self] value in
+            self?.selectedView.layer.cornerRadius = value.height / 2
         }.store(in: &subscriptions)
 
         // Build View Hierarchy
+        contentView.addSubview(selectedView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(iconImageView)
 
         // Apply Layout
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
+        selectedView.translatesAutoresizingMaskIntoConstraints = false
 
         contentView.layoutMargins = UIEdgeInsets(top: 8, left: 16, bottom: 8, right: 16)
         NSLayoutConstraint.activate([
@@ -42,6 +48,11 @@ class NavigationSidebarCell: UICollectionViewCell {
             titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             titleLabel.topAnchor.constraint(equalTo: iconImageView.topAnchor),
             titleLabel.bottomAnchor.constraint(equalTo: iconImageView.bottomAnchor),
+
+            selectedView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            selectedView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            selectedView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            selectedView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
     }
 
@@ -55,5 +66,6 @@ extension NavigationSidebarCell {
         titleLabel.attributedText = model.attributedTitle
         iconImageView.tintColor = model.iconImageTintColor
         iconImageView.image = model.iconImage
+        selectedView.isHidden = !model.isSelected
     }
 }
