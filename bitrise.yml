@@ -6,19 +6,26 @@ trigger_map:
   - push_branch: main
     pipeline: app-store-pipeline
   - pull_request_target_branch: '*'
-    pipeline: build-test-pipeline
+    pipeline: qa-build-test-pipeline
 
 pipelines:
-  build-test-pipeline:
+  # Will create a QA Build and run a test across multiple simulator devices
+  qa-build-test-pipeline:
     stages:
-      # Run the buld and test stage workflows
-      - build-test: {}
+      # Build a qa build, and build a test build in parallel
+      - build-and-test: {}
+      # Run multiple tests on simulators in parallel
+      - run_test_groups: {}
+      - deploy_test_results: {}
+  # Will create an app store build and upload it to itunes connect
   app-store-pipeline:
     stages:
       # First Build the release build (app store build)
       - release-build: {}
       # Run the steps to deploy to the app store
       - deploy-app-store: {}
+  # Will create an app store capabale build, but release it to Internal Testing users in Testflight.
+  # Intended to run nightly.
   nightly-internal-pipeline:
     stages:
       # First Build the release build (app store build)
@@ -26,11 +33,22 @@ pipelines:
       # Run the steps to deploy to testflight internally
       - deploy-internal-testflight: {}
 stages:
-  build-test:
+  build-and-test:
     workflows:
-      # Run the test and qa build flow in parallel
-      - test: {}
+      # Build a test build
+      - test_build: {}
+      # Build a qa build
       - qa-build: {}
+
+  run_test_groups:
+    workflows:
+      - run_tests_iphone_14: {}
+      - run_tests_iphone_13_mini: {}
+
+  deploy_test_results:
+    workflows:
+      - deploy_test_results: {}
+
   release-build:
     workflows:
       - release-build: {}
@@ -105,6 +123,13 @@ workflows:
                 swift run danger-swift ci
       - cache-push@2: {}
 
+  # Helper step to pull the built test bundle.
+  _pull_test_bundle:
+    steps:
+      - pull-intermediate-files@1:
+          inputs:
+            - artifact_sources: build-and-test.test_build
+
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
     steps:
@@ -164,6 +189,10 @@ workflows:
             - tag: 8.0+$BITRISE_BUILD_NUMBER
             - commit: '$GIT_CLONE_COMMIT_HASH'
             - api_token: '$GITHUB_RELEASE_TOKEN'
+    before_run:
+      - _setup
+    after_run:
+      - _upload_sentry
 
   qa-build:
     steps:
@@ -188,19 +217,74 @@ workflows:
     after_run:
       - _upload_sentry
 
-  test:
+  test_build:
     steps:
       - file-downloader@1:
           inputs:
             - source: '$BITRISEIO_SECRETS_TEST_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install test secrets.xcconfig
-      - xcode-test@4:
+      - xcode-build-for-test:
           inputs:
-            - destination: platform=iOS Simulator,name=iPhone 14,OS=latest
-      - deploy-to-bitrise-io@2: {}
+            - destination: generic/platform=iOS Simulator
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_TEST_BUNDLE_PATH:BITRISE_TEST_BUNDLE_PATH'
     before_run:
       - _setup
+
+  run_tests_iphone_14:
+    before_run:
+      - _pull_test_bundle
+    steps:
+      - xcode-test-without-building:
+          inputs:
+            - xctestrun: '$BITRISE_TEST_BUNDLE_PATH/$TEST_BUNDLE_NAME'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_IPHONE_14_TEST_XCRESULT_PATH'
+
+  run_tests_iphone_13_mini:
+    before_run:
+      - _pull_test_bundle
+    steps:
+      - xcode-test-without-building:
+          inputs:
+            - xctestrun: '$BITRISE_TEST_BUNDLE_PATH/$TEST_BUNDLE_NAME'
+            - destination: platform=iOS Simulator,name=iPhone 13 mini,OS=16
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_IPHONE_13_MINI_TEST_XCRESULT_PATH'
+
+  deploy_test_results:
+    steps:
+      - pull-intermediate-files@1:
+          inputs:
+            - artifact_sources: run_tests_groups\..*
+      - script@1:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -eo pipefail
+
+                for item in "${BITRISE_IPHONE_14_TEST_XCRESULT_PATH}" "${BITRISE_IPHONE_13_MINI_TEST_XCRESULT_PATH}";
+                  do
+                    echo "Exporting ${item}"
+
+                    test_name=$(basename "$item" .xcresult)
+                    echo "Test name: $test_name"
+
+                    test_dir="${BITRISE_TEST_RESULT_DIR}/${test_name}"
+                    mkdir -p "${test_dir}"
+                    echo "Moving test result to: ${test_dir}"
+                    cp -R "${item}" "${test_dir}/$(basename ${item})"
+
+                    test_info="${test_dir}/test-info.json"
+                    echo "Creating Test info at: ${test_info}"
+                    echo "{ \"test-name\": \"${test_name}\" }" > "$test_info"
+                  done
+      - deploy-to-bitrise-io@2: {}
     after_run:
       - _danger
 
@@ -218,7 +302,10 @@ app:
     - opts:
         is_expand: false
       SKIP_APOLLO_CODEGEN: '1'
+    - opts:
+        is_expand: false
+      TEST_BUNDLE_NAME: 'Pocket (iOS)_iphonesimulator16.0-arm64-x86_64.xctestrun'
 meta:
   bitrise.io:
-    machine_type_id: g2.12core
+    machine_type_id: g2-m1.8core
     stack: osx-xcode-14.0.x
