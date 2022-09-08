@@ -95,9 +95,11 @@ workflows:
 
   qa-build:
     steps:
-      - brew-install@0:
+      - file-downloader@1:
           inputs:
-            - packages: swiftlint
+            - source: '$BITRISEIO_SECRETS_DEVELOPMENT_XCCONFIG_URL'
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+          title: Install development secrets.xcconfig
       - xcode-archive@4:
           inputs:
             - xcconfig_content: |-
