@@ -15,11 +15,8 @@ class SectionHeaderView: UICollectionReusableView {
         return label
     }()
 
-    private let myListButton: UIButton = {
+    private let seeAllButton: UIButton = {
         var configuration = UIButton.Configuration.plain()
-        configuration.image = UIImage(asset: .chevronRight)
-            .resized(to: buttonImageSize)
-            .withTintColor(UIColor(.ui.lapis1), renderingMode: .alwaysOriginal)
 
         configuration.imagePadding = 10
         configuration.imagePlacement = .trailing
@@ -44,12 +41,12 @@ class SectionHeaderView: UICollectionReusableView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         headerStack.addArrangedSubview(headerLabel)
-        headerStack.addArrangedSubview(myListButton)
+        headerStack.addArrangedSubview(seeAllButton)
 
         addSubview(headerStack)
 
         headerStack.translatesAutoresizingMaskIntoConstraints = false
-        myListButton.translatesAutoresizingMaskIntoConstraints = false
+        seeAllButton.translatesAutoresizingMaskIntoConstraints = false
         headerLabel.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
@@ -69,6 +66,7 @@ extension SectionHeaderView {
     struct Model {
         let name: String
         let buttonTitle: String
+        let buttonImage: UIImage?
         var buttonAction: (() -> Void)?
 
         var attributedHeaderText: NSAttributedString {
@@ -83,20 +81,22 @@ extension SectionHeaderView {
 
     func configure(model: Model) {
         headerLabel.attributedText = model.attributedHeaderText
-        updateButtonConfiguration(with: model.buttonTitle, and: model.buttonAction)
-    }
 
-    private func updateButtonConfiguration(with text: String?, and action: (() -> Void)?) {
-        guard let text = text, let action = action else { return }
+        var config = seeAllButton.configuration
+        config?.attributedTitle = AttributedString(
+            model.buttonTitle,
+            attributes: Style.buttonText.attributes
+        )
+        config?.image = model.buttonImage?
+            .resized(to: Self.buttonImageSize)
+            .withTintColor(UIColor(.ui.lapis1), renderingMode: .alwaysOriginal)
+        seeAllButton.configuration = config
 
-        myListButton.configurationUpdateHandler = { button in
-            var config = button.configuration
-            config?.attributedTitle = AttributedString(text, attributes: Style.buttonText.attributes)
-            button.configuration = config
+        let buttonAction = UIAction(title: "", identifier: .seeAllPrimary) { _ in
+            model.buttonAction?()
         }
-        let buttonAction = UIAction(title: "", identifier: .seeAllPrimary) { _ in action() }
-        myListButton.addAction(buttonAction, for: .primaryActionTriggered)
-        myListButton.isHidden = false
+        seeAllButton.addAction(buttonAction, for: .primaryActionTriggered)
+        seeAllButton.isHidden = false
     }
 }
 

@@ -62,15 +62,15 @@ class HomeViewControllerSectionProvider {
         )
         group.interItemSpacing = .fixed(16)
 
-        let sectionHeaderViewModel = SectionHeaderView.Model(name: "Recent Saves", buttonTitle: "My List")
+        let sectionHeaderViewModel = viewModel.sectionHeaderViewModel(for: .recentSaves)
         let width = env.container.effectiveContentSize.width
         let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: NSCollectionLayoutSize(
                 widthDimension: .fractionalWidth(1.0),
                 heightDimension: .absolute(
-                    sectionHeaderViewModel.height(
+                    sectionHeaderViewModel?.height(
                         width: width - Constants.sideMargin * 2
-                    )
+                    ) ?? 1
                 )
             ),
             elementKind: SectionHeaderView.kind,

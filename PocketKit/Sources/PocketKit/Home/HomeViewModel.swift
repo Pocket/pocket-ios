@@ -350,7 +350,11 @@ extension HomeViewModel {
     func sectionHeaderViewModel(for section: Section) -> SectionHeaderView.Model? {
         switch section {
         case .recentSaves:
-            return .init(name: "Recent Saves", buttonTitle: "My List") { [weak self] in
+            return .init(
+                name: "Recent Saves",
+                buttonTitle: "My List",
+                buttonImage: nil
+            ) { [weak self] in
                 self?.tappedSeeAll = .myList
             }
         case .slateHero(let objectID):
@@ -358,7 +362,11 @@ extension HomeViewModel {
                 return nil
             }
 
-            return .init(name: slate.name ?? "", buttonTitle: "See All") { [weak self] in
+            return .init(
+                name: slate.name ?? "",
+                buttonTitle: "See All",
+                buttonImage: UIImage(asset: .chevronRight)
+            ) { [weak self] in
                 self?.select(slate: slate)
             }
         case .loading, .slateCarousel, .offline:
