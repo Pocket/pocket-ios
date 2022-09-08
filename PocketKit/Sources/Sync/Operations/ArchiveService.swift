@@ -5,6 +5,7 @@ import CoreData
 public protocol ArchiveService: AnyObject {
     var results: Published<[SavedItemResult]>.Publisher { get }
     var itemUpdated: AnyPublisher<SavedItem, Never> { get }
+    var tagFilter: CurrentValueSubject<String, Never> { get }
     var filters: [ArchiveServiceFilter] { get set }
 
     func fetch(at indexes: [Int]?)
@@ -20,8 +21,9 @@ public extension ArchiveService {
     }
 }
 
-public enum ArchiveServiceFilter {
+public enum ArchiveServiceFilter: Equatable {
     case favorites
+    case tagged(NSPredicate, String)
 }
 
 public enum SavedItemResult: Equatable {
@@ -36,6 +38,8 @@ class PocketArchiveService: NSObject, ArchiveService {
 
     private let _itemUpdated: PassthroughSubject<SavedItem, Never> = .init()
     public var itemUpdated: AnyPublisher<SavedItem, Never> { _itemUpdated.eraseToAnyPublisher() }
+
+    public var tagFilter: CurrentValueSubject<String, Never> = .init("")
 
     public var filters: [ArchiveServiceFilter] = [] {
         didSet { refresh() }
@@ -126,6 +130,9 @@ class PocketArchiveService: NSObject, ArchiveService {
                 switch filter {
                 case .favorites:
                     return NSPredicate(format: "isFavorite = 1")
+                case .tagged(let predicate, let name):
+                    tagFilter.value = name
+                    return predicate
                 }
             }
         )
@@ -152,6 +159,8 @@ class PocketArchiveService: NSObject, ArchiveService {
                 return .notLoaded
             }
         }
+        tagFilter.send(tagFilter.value)
+        tagFilter.value = ""
     }
 }
 

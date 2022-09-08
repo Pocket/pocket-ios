@@ -195,6 +195,37 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(tags?[0].name, "tag 3")
     }
 
+    func test_fetchTags_withSaved_returnsSavedTags() throws {
+        let tagNames = ["tag 1", "tag 2", "tag 3"]
+        _ = try space.createSavedItem(tags: tagNames)
+        _ = try space.createSavedItem(isArchived: true, tags: ["tag 4"])
+        let source = subject()
+        guard let tags = source.fetchTags() else {
+            XCTFail("tags should not be nil")
+            return
+        }
+        let names = tags.compactMap { $0.name }
+        XCTAssertEqual(names.count, 3)
+        XCTAssertTrue(names.contains(tagNames[0]))
+        XCTAssertTrue(names.contains(tagNames[1]))
+        XCTAssertTrue(names.contains(tagNames[2]))
+    }
+
+    func test_fetchTags_withArchive_returnsArchivedTags() throws {
+        let tagNames = ["tag 1", "tag 2"]
+        _ = try space.createSavedItem(isArchived: true, tags: tagNames)
+        _ = try space.createSavedItem(isArchived: false, tags: ["tag 3"])
+        let source = subject()
+        guard let tags = source.fetchTags(isArchived: true) else {
+            XCTFail("tags should not be nil")
+            return
+        }
+        let names = tags.compactMap { $0.name }
+        XCTAssertEqual(names.count, 2)
+        XCTAssertTrue(names.contains(tagNames[0]))
+        XCTAssertTrue(names.contains(tagNames[1]))
+    }
+
     func test_delete_removesItemFromLocalStorage_andExecutesDeleteMutation() throws {
         let item = try space.createSavedItem(remoteID: "delete-me")
         let expectationToRunOperation = expectation(description: "Run operation")

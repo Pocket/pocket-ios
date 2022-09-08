@@ -3,6 +3,7 @@ import Combine
 import CoreData
 
 class MockArchiveService: ArchiveService {
+
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 
@@ -12,6 +13,7 @@ class MockArchiveService: ArchiveService {
 
     let _itemUpdated: PassthroughSubject<SavedItem, Never> = .init()
     var itemUpdated: AnyPublisher<SavedItem, Never> { _itemUpdated.eraseToAnyPublisher() }
+    var tagFilter: CurrentValueSubject<String, Never> = .init("")
 
     var filters: [ArchiveServiceFilter] = []
 

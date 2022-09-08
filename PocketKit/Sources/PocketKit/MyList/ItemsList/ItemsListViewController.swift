@@ -58,6 +58,19 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 section.orthogonalScrollingBehavior = .continuous
 
                 return section
+            case .tags:
+                guard case .tag(let name) = self.dataSource.snapshot(for: .tags).items.first else { return nil }
+                let selectedTagModel = model.tagModel(with: name)
+                let width = SelectedTagChipCell.width(model: selectedTagModel)
+                let height = SelectedTagChipCell.height(model: selectedTagModel)
+                let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(width), heightDimension: .absolute(height)))
+
+                let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(height))
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+
+                let section = NSCollectionLayoutSection(group: group)
+                section.contentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
+                return section
             case .items:
                 var config = UICollectionLayoutListConfiguration(appearance: .plain)
                 config.backgroundColor = UIColor(.ui.white1)
@@ -133,6 +146,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             self?.configure(cell: cell, indexPath: indexPath, filterID: filterID)
         }
 
+        let tagButtonRegistration: UICollectionView.CellRegistration<SelectedTagChipCell, String> = .init { [weak self] cell, _, name in
+            self?.configure(cell: cell, name: name)
+        }
+
         let itemCellRegistration: UICollectionView.CellRegistration<ItemsListItemCell, ViewModel.ItemIdentifier> = .init { [weak self] cell, indexPath, objectID in
             self?.configure(cell: cell, indexPath: indexPath, objectID: objectID)
         }
@@ -153,6 +170,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             switch item {
             case .filterButton(let filter):
                 return collectionView.dequeueConfiguredReusableCell(using: filterButtonRegistration, for: indexPath, item: filter)
+            case .tag(let name):
+                return collectionView.dequeueConfiguredReusableCell(using: tagButtonRegistration, for: indexPath, item: name)
             case .item(let itemID):
                 return collectionView.dequeueConfiguredReusableCell(using: itemCellRegistration, for: indexPath, item: itemID)
             case .emptyState:
@@ -208,10 +227,13 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             cell.model = .init(
                 attributedTitle: NSAttributedString(string: ""),
                 attributedDetail: NSAttributedString(string: ""),
+                attributedTags: nil,
+                attributedTagCount: nil,
                 thumbnailURL: nil,
                 shareAction: nil,
                 favoriteAction: nil,
-                overflowActions: []
+                overflowActions: [],
+                filterByTagAction: nil
             )
 
             return
@@ -220,15 +242,27 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         cell.model = .init(
             attributedTitle: presenter.attributedTitle,
             attributedDetail: presenter.attributedDetail,
+            attributedTags: presenter.attributedTags,
+            attributedTagCount: presenter.attributedTagCount,
             thumbnailURL: presenter.thumbnailURL,
             shareAction: model.shareAction(for: objectID),
             favoriteAction: model.favoriteAction(for: objectID),
-            overflowActions: model.overflowActions(for: objectID)
+            overflowActions: model.overflowActions(for: objectID),
+            filterByTagAction: model.filterByTagAction()
         )
     }
 
     private func configure(cell: TopicChipCell, indexPath: IndexPath, filterID: ItemsListFilter) {
         cell.configure(model: model.filterButton(with: filterID))
+    }
+
+    private func configure(cell: SelectedTagChipCell, name: String) {
+        cell.configure(model: SelectedTagChipCell.Model(
+            name: name,
+            closeAction: UIAction(handler: { [weak self] _ in
+                self?.model.selectCell(with: .filterButton(.all), sender: nil)
+            })
+        ))
     }
 
     private func configure(cell: EmptyStateCollectionViewCell) {

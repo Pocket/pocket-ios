@@ -10,6 +10,7 @@ protocol ItemsListItem {
     var timeToRead: Int? { get }
     var isPending: Bool { get }
     var host: String? { get }
+    var tagNames: [String]? { get }
 }
 
 protocol ItemsListItemDomainMetadata {

@@ -35,6 +35,7 @@ enum SelectedItem {
 
 enum ItemsListSection: Int, CaseIterable {
     case filters
+    case tags
     case items
     case emptyState
     case offline
@@ -42,6 +43,7 @@ enum ItemsListSection: Int, CaseIterable {
 
 enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
     case filterButton(ItemsListFilter)
+    case tag(String)
     case item(ItemIdentifier)
     case emptyState
     case offline
@@ -50,6 +52,7 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
 
 enum ItemsListFilter: String, Hashable, CaseIterable {
     case all = "All"
+    case tagged = "Tagged"
     case favorites = "Favorites"
     case sortAndFilter = "Sort/Filter"
 
@@ -57,6 +60,8 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
         switch self {
         case .all:
             return nil
+        case .tagged:
+            return UIImage(asset: .tag)
         case .favorites:
             return UIImage(asset: .favorite)
         case .sortAndFilter:
@@ -84,9 +89,11 @@ protocol ItemsListViewModel: AnyObject {
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter
+    func tagModel(with name: String) -> SelectedTagChipModel
     func shouldSelectCell(with cell: ItemsListCell<ItemIdentifier>) -> Bool
-    func selectCell(with: ItemsListCell<ItemIdentifier>, sender: Any)
+    func selectCell(with: ItemsListCell<ItemIdentifier>, sender: Any?)
 
+    func filterByTagAction() -> UIAction?
     func shareAction(for objectID: ItemIdentifier) -> ItemAction?
     func favoriteAction(for objectID: ItemIdentifier) -> ItemAction?
     func overflowActions(for objectID: ItemIdentifier) -> [ItemAction]

@@ -20,6 +20,10 @@ struct ItemRowElement: PocketUIElement {
             .count > 0
     }
 
+    var tagButton: XCUIElement {
+        element.buttons["tag-button"]
+    }
+
     func tap() {
         element
             .coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.1))
@@ -41,6 +45,18 @@ struct ItemRowElement: PocketUIElement {
 
 extension ItemRowElement {
     struct FavoriteButton: PocketUIElement {
+        let element: XCUIElement
+
+        init(_ element: XCUIElement) {
+            self.element = element
+        }
+
+        var isFilled: Bool {
+            element.label == "Unfavorite"
+        }
+    }
+
+    struct TagButton: PocketUIElement {
         let element: XCUIElement
 
         init(_ element: XCUIElement) {

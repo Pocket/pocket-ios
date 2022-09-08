@@ -25,20 +25,29 @@ class SpaceTests: XCTestCase {
         let tag3: Tag = space.new()
         tag2.name = "tag 2"
         tag3.name = "tag 3"
-
-        try XCTAssertEqual(Set(space.fetchTags().compactMap { $0.name }), ["tag 1", "tag 2", "tag 3"])
+        try XCTAssertEqual(Set(space.fetchAllTags().compactMap { $0.name }), ["tag 1", "tag 2", "tag 3"])
 
         try space.deleteOrphanTags()
 
-        try XCTAssertEqual(space.fetchTags().compactMap { $0.name }, ["tag 1"])
+        try XCTAssertEqual(space.fetchAllTags().compactMap { $0.name }, ["tag 1"])
     }
 
-    func testFetchTags() throws {
+    func testFetchTagsForSavedItems() throws {
         let space = subject()
-        let _: Tag = space.new()
-        let _: Tag = space.new()
+        _ = space.buildSavedItem(tags: ["tag 1"])
+        _ = space.buildSavedItem(isArchived: true, tags: ["tag 2"])
+        _ = space.buildSavedItem(isArchived: true, tags: ["tag 3"])
 
-        let tags = try space.fetchTags()
+        let tags = try space.fetchTags(isArchived: false)
+        XCTAssertEqual(tags.count, 1)
+    }
+
+    func testFetchTagsForArchivedItems() throws {
+        let space = subject()
+        _ = space.buildSavedItem(tags: ["tag 1"])
+        _ = space.buildSavedItem(isArchived: true, tags: ["tag 2"])
+        _ = space.buildSavedItem(isArchived: true, tags: ["tag 3"])
+        let tags = try space.fetchTags(isArchived: true)
         XCTAssertEqual(tags.count, 2)
     }
 
@@ -52,7 +61,7 @@ class SpaceTests: XCTestCase {
 
         XCTAssertEqual(fetchedTag1.name, "tag 1")
         XCTAssertEqual(fetchedTag2.name, "tag 2")
-        try XCTAssertEqual(space.fetchTags().count, 2)
+        try XCTAssertEqual(space.fetchAllTags().count, 2)
     }
 
     func testRetrieveTagsExcludingCertainTags() throws {

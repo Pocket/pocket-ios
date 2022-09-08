@@ -114,6 +114,18 @@ public enum Requests {
         Tag.fetchRequest()
     }
 
+    public static func fetchSavedTags() -> NSFetchRequest<Tag> {
+        let request = fetchTags()
+        request.predicate = NSPredicate(format: "ANY savedItems.isArchived = false")
+        return request
+    }
+
+    public static func fetchArchivedTags() -> NSFetchRequest<Tag> {
+        let request = fetchTags()
+        request.predicate = NSPredicate(format: "ANY savedItems.isArchived = true")
+        return request
+    }
+
     public static func fetchTag(byName name: String) -> NSFetchRequest<Tag> {
         let request = fetchTags()
         request.predicate = NSPredicate(format: "name = %@", name)

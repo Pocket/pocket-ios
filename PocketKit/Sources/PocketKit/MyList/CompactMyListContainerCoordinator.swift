@@ -62,6 +62,10 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedTagsFilter.sink { [weak self] tagsFilterViewModel in
+            self?.present(tagsFilterViewModel: tagsFilterViewModel)
+        }.store(in: &subscriptions)
+
         model.savedItemsList.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)
@@ -91,6 +95,10 @@ class CompactMyListContainerCoordinator: NSObject {
 
         model.archivedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$presentedTagsFilter.sink { [weak self] tagsFilterViewModel in
+            self?.present(tagsFilterViewModel: tagsFilterViewModel)
         }.store(in: &subscriptions)
 
         isResetting = false
@@ -156,6 +164,19 @@ class CompactMyListContainerCoordinator: NSObject {
         guard !isResetting, let viewModel = viewModel else { return }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
+        viewController.present(hostingController, animated: true)
+    }
+
+    private func present(tagsFilterViewModel: TagsFilterViewModel?) {
+        guard !isResetting, let tagsFilterViewModel = tagsFilterViewModel else { return }
+        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel))
+        // Cyndi: Add Extension for this and reader once Sort / Filter merged
+        let detents: [UISheetPresentationController.Detent] = [.medium(), .large()]
+        hostingController.sheetPresentationController?.detents = detents
+        hostingController.sheetPresentationController?.prefersGrabberVisible = true
+        hostingController.sheetPresentationController?.prefersEdgeAttachedInCompactHeight = true
+        hostingController.sheetPresentationController?.widthFollowsPreferredContentSizeWhenEdgeAttached = true
+
         viewController.present(hostingController, animated: true)
     }
 

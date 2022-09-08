@@ -17,7 +17,7 @@ class AddTagsViewModelTests: XCTestCase {
         try space.clear()
     }
 
-    func subject(item: SavedItem, source: Source? = nil, saveAction: @escaping () -> Void) -> AddTagsViewModel {
+    private func subject(item: SavedItem, source: Source? = nil, saveAction: @escaping () -> Void) -> AddTagsViewModel {
         AddTagsViewModel(item: item, source: source ?? self.source, saveAction: saveAction)
     }
 

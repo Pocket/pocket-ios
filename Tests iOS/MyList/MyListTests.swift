@@ -323,6 +323,19 @@ class MyListTests: XCTestCase {
         XCTAssertTrue(app.myListView.itemView(at: 0).contains(string: "Item 1"))
         XCTAssertTrue(app.myListView.itemView(at: 1).contains(string: "Item 2"))
     }
+
+    func test_tappingTagLabel_showsTagFilter() {
+        app.launch().tabBar.myListButton.wait().tap()
+
+        let listView = app.myListView.wait()
+        XCTAssertEqual(listView.itemCount, 2)
+        let item = listView.itemView(at: 1)
+        XCTAssertTrue(item.tagButton.firstMatch.label == "tag 0")
+        XCTAssertTrue(item.contains(string: "+1"))
+        item.tagButton.firstMatch.tap()
+        app.myListView.selectedTagChip(for: "tag 0").wait()
+
+    }
 }
 
 // MARK: - Web View

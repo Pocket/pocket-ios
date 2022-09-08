@@ -120,7 +120,7 @@ class AddTagsItemTests: XCTestCase {
 
         app
             .myListView
-            .itemView(matching: "Item 2")
+            .itemView(matching: "Item 1")
             .wait()
             .tap()
 

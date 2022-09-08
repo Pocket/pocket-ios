@@ -359,7 +359,10 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [receivedSnapshot], timeout: 1)
     }
+}
 
+// MARK: - Tags
+extension SavedItemsListViewModelTests {
     func test_addTagsAction_sendsAddTagsViewModel() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         source.stubObject { _ in item }
@@ -367,7 +370,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         let expectAddTags = expectation(description: "expect add tags to present")
         viewModel.$presentedAddTags.dropFirst().sink { viewModel in
-            expectAddTags.fulfill()
+            defer { expectAddTags.fulfill() }
             XCTAssertEqual(viewModel?.tags, ["tag 1"])
         }.store(in: &subscriptions)
 
@@ -377,4 +380,98 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         wait(for: [expectAddTags], timeout: 1)
     }
+
+    func test_fetch_whenTaggedSelected_sendsTagsFilterViewModel() throws {
+        itemsController.stubPerformFetch {
+            self.itemsController.fetchedObjects = []
+        }
+        source.stubFetchTags {
+            []
+        }
+        let viewModel = subject()
+
+        let expectTagFiltersCall = expectation(description: "expect filter tag to present")
+        viewModel.$presentedTagsFilter.dropFirst().sink { viewModel in
+            defer { expectTagFiltersCall.fulfill() }
+            XCTAssertNotNil(viewModel)
+        }.store(in: &subscriptions)
+
+        viewModel.selectCell(with: .filterButton(.tagged))
+
+        wait(for: [expectTagFiltersCall], timeout: 1)
+    }
+
+    func test_tagModel_calculatesTagHeightAndWidth() {
+        let viewModel = subject()
+        let model = viewModel.tagModel(with: "tag 0")
+
+        let width = SelectedTagChipCell.width(model: model)
+        let height = SelectedTagChipCell.height(model: model)
+        XCTAssertEqual(width, 115.0)
+        XCTAssertEqual(height, 39.0)
+    }
+
+    //    func test_filterByTagAction_sendsSnapshotWithUpdatedItems() {
+    //        itemsController.stubPerformFetch {
+    //            self.itemsController.fetchedObjects = []
+    //        }
+    //
+    //        let viewModel = subject()
+    //
+    //        let expectSnapshot = expectation(description: "expected snapshot")
+    //        viewModel.snapshot.dropFirst().sink { snapshot in
+    //            defer { expectSnapshot.fulfill() }
+    //
+    //            XCTAssertEqual(
+    //                snapshot.itemIdentifiers(inSection: .tags), [
+    //                    .tag("not tagged"),
+    //                ]
+    //            )
+    //        }.store(in: &subscriptions)
+    //
+    ////        let action = viewModel.filterByTagAction()
+    //
+    //        action?.invoke()
+    ////        action.handler()
+    //        wait(for: [expectSnapshot], timeout: 1)
+    //    }
+
+//    func test_selectedTag_updatesSnapshot() throws {
+//        itemsController.stubPerformFetch {
+//            self.itemsController.fetchedObjects = []
+//        }
+//
+//        source.stubFetchTags {
+//            []
+//        }
+//
+//        let viewModel = subject()
+//
+//        let expectSnapshot = expectation(description: "expect snapshot")
+//        expectSnapshot.assertForOverFulfill = false
+//        viewModel.snapshot.dropFirst().sink { snapshot in
+//            defer { expectSnapshot.fulfill() }
+//            XCTAssertEqual(
+//                snapshot.itemIdentifiers(inSection: .tags),
+//                [.tag("not tagged")]
+//            )
+//        }.store(in: &subscriptions)
+//        viewModel.selectCell(with: .filterButton(.tagged))
+//        viewModel.presentedTagsFilter?.selectedTag = .notTagged
+//
+//        wait(for: [expectSnapshot], timeout: 1)
+//    }
+}
+
+extension UIAction {
+    private typealias Handler = @convention(block) (UIAction) -> Void
+
+    func invoke() {
+        if let block = value(forKey: "handler") {
+            let blockPtr = UnsafeRawPointer(Unmanaged<AnyObject>.passUnretained(block as AnyObject).toOpaque())
+            let handler = unsafeBitCast(blockPtr, to: Handler.self)
+            handler(self)
+        }
+    }
+
 }

@@ -15,6 +15,9 @@ struct MyListElement: PocketUIElement {
         return SelectionSwitcherElement(element.otherElements["my-list-selection-switcher"])
     }
 
+    var tagsFilterView: TagsFilterViewElement { TagsFilterViewElement(element.tables["filter-tags"])
+    }
+
     private var collectionView: XCUIElement {
         element.otherElements["my-list"].collectionViews.firstMatch
     }
@@ -30,6 +33,15 @@ struct MyListElement: PocketUIElement {
                 "topic-chip"
             )
         ).containing(.staticText, identifier: type).element(boundBy: 0)
+    }
+
+    func selectedTagChip(for tag: String) -> XCUIElement {
+        collectionView.cells.matching(
+            NSPredicate(
+                format: "identifier = %@",
+                "selected-tag-chip"
+            )
+        ).containing(.staticText, identifier: tag).element(boundBy: 0)
     }
 
     func emptyStateView(for type: String) -> XCUIElement {

@@ -2,9 +2,9 @@ import Combine
 import Sync
 
 class AddTagsViewModel: ObservableObject {
-    let item: SavedItem
-    let source: Source
-    let saveAction: () -> Void
+    private let item: SavedItem
+    private let source: Source
+    private let saveAction: () -> Void
 
     @Published
     var tags: [String] = []
