@@ -20,6 +20,7 @@ class RegularMainCoordinator: NSObject {
     }
 
     private let splitController: UISplitViewController
+    private let sidebarViewController: NavigationSidebarViewController
     private let navigationSidebar: UINavigationController
 
     private let myList: RegularMyListCoordinator
@@ -43,9 +44,10 @@ class RegularMainCoordinator: NSObject {
         self.model = model
 
         splitController = UISplitViewController(style: .doubleColumn)
-        splitController.displayModeButtonVisibility = .always
+        splitController.displayModeButtonVisibility = .automatic
 
-        navigationSidebar = UINavigationController(rootViewController: NavigationSidebarViewController(model: model))
+        sidebarViewController = NavigationSidebarViewController(model: model)
+        navigationSidebar = UINavigationController(rootViewController: sidebarViewController)
 
         myList = RegularMyListCoordinator(model: model.myList)
         home = RegularHomeCoordinator(model: model.home, tracker: tracker)
@@ -111,11 +113,14 @@ class RegularMainCoordinator: NSObject {
             if subsection == .myList {
                 model.myList.selection = .myList
             }
-            navigationSidebar.pushViewController(myList.viewController, animated: true)
+
+            navigationSidebar.setViewControllers([sidebarViewController, myList.viewController], animated: true)
+            splitController.show(.primary)
         case .home:
             splitController.setViewController(home.viewController, for: .secondary)
         case .account:
-            navigationSidebar.pushViewController(account, animated: true)
+            navigationSidebar.setViewControllers([sidebarViewController, account], animated: true)
+            splitController.show(.primary)
         }
 
         splitController.show(.supplementary)
