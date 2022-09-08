@@ -23,12 +23,22 @@ let package = Package(
         .package(name: "SnowplowTracker", url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMinor(from: "2.2.0")),
         .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", from: "3.2.1"),
         .package(name: "Down", url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
-        .package(name: "YouTubePlayerKit", url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5"))
+        .package(name: "YouTubePlayerKit", url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5")),
+        .package(name: "BrazeKit", url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMinor(from: "5.3.0"))
     ],
     targets: [
         .target(
             name: "PocketKit",
-            dependencies: ["Sync", "Textile", "Analytics", "Lottie", "YouTubePlayerKit", "SharedPocketKit"],
+            dependencies: [
+                "Sync",
+                "Textile",
+                "Analytics",
+                "Lottie",
+                "YouTubePlayerKit",
+                "SharedPocketKit",
+                "BrazeKit",
+                .product(name: "BrazeUI", package: "BrazeKit")
+            ],
             resources: [.copy("Assets")]
         ),
         .testTarget(
