@@ -11,19 +11,35 @@ trigger_map:
 pipelines:
   build-test-pipeline:
     stages:
+      # Run the buld and test stage workflows
       - build-test: {}
   app-store-pipeline:
     stages:
-      - deploy: {}
-
+      # First Build the release build (app store build)
+      - release-build: {}
+      # Run the steps to deploy to the app store
+      - deploy-app-store: {}
+  nightly-internal-pipeline:
+    stages:
+      # First Build the release build (app store build)
+      - release-build: {}
+      # Run the steps to deploy to testflight internally
+      - deploy-internal-testflight: {}
 stages:
   build-test:
     workflows:
+      # Run the test and qa build flow in parallel
       - test: {}
       - qa-build: {}
-  deploy:
+  release-build:
     workflows:
-      - app-store-build: {}
+      - release-build: {}
+  deploy-internal-testflight:
+    workflows:
+      - internal-testflight-release: {}
+  deploy-app-store:
+    workflows:
+      - app-store-release: {}
 
 workflows:
   #Reusable workflow that is ran before each workflow to setup the necessary information
@@ -61,9 +77,12 @@ workflows:
                 brew install getsentry/tools/sentry-cli
                 sentry-cli --log-level=debug --auth-token $SENTRY_AUTH_TOKEN  upload-dif -o pocket -p ios-next $BITRISE_DSYM_PATH
                 #TODO: In the future we can add Sentry releases here.
-  app-store-build:
+
+  #Builds a release build that could be uploaded to App Store Connect
+  release-build:
     steps:
       - xcode-archive@4:
+          title: Build an app store release build
           inputs:
             - project_path: '$BITRISE_PROJECT_PATH'
             - scheme: '$BITRISE_SCHEME'
@@ -71,7 +90,37 @@ workflows:
             - configuration: RELEASE
             - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - export_method: app-store
-      - deploy-to-bitrise-io@2: {}
+      - deploy-to-bitrise-io@2:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
+    before_run:
+      - _setup
+    after_run:
+      - _upload_sentry
+
+  # Uses artifacts from the release build stage and workflow to ship the build to testflight.
+  internal-testflight-release:
+    steps:
+      - activate-ssh-key@4: {}
+      #clone the repo so we can get our fastlane files.
+      - git-clone@6: {}
+      - pull-intermediate-files@1:
+          inputs:
+            - artifact_sources: release-build.release-build
+      - fastlane@3:
+          inputs:
+            - connection: 'off'
+            - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
+            - api_issuer: '$API_KEY_ISSUER_ID'
+            - verbose_log: 'yes'
+            - lane: beta_internal
+
+  # Uses artifacts from the release build stage and workflow to ship the build to the App Store and create a github release.
+  app-store-release:
+    steps:
+      - pull-intermediate-files@1:
+          inputs:
+            - artifact_sources: release-build.release-build
       - deploy-to-itunesconnect-deliver@2:
           inputs:
             - app_id: '$APP_ID'
@@ -88,10 +137,6 @@ workflows:
             - tag: 8.0+$BITRISE_BUILD_NUMBER
             - commit: '$GIT_CLONE_COMMIT_HASH'
             - api_token: '$GITHUB_RELEASE_TOKEN'
-    before_run:
-      - _setup
-    after_run:
-      - _upload_sentry
 
   qa-build:
     steps:

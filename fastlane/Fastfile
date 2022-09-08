@@ -1,0 +1,36 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+BITRISE_IPA_PATH = ENV["BITRISE_IPA_PATH"]
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new beta build to TestFlight Internal Testers via CI"
+  lane :beta_internal do
+
+    #upload to testflight for our internal apps store connect nightly builds.
+    upload_to_testflight(
+      skip_waiting_for_build_processing: false, #wait for build to process in app store connect
+      skip_submission: true, # Don't submit the build
+      distribute_external: false, # Don't distrubte the build externally
+      notify_external_testers: false, # Don't notify externally
+      reject_build_waiting_for_review: false, # Leave any existing build waiting for review
+      expire_previous_builds: false,
+      groups: ['Nightly Internal Builds'],
+      submit_beta_review: false,
+      ipa: BITRISE_IPA_PATH
+    )
+  end
+end
