@@ -90,6 +90,10 @@ class RegularMyListCoordinator: NSObject {
             self?.showArchivedItem(selectedArchivedItem)
         }.store(in: &subscriptions)
 
+        model.archivedItemsList.$presentedSortFilterViewModel.receive(on: DispatchQueue.main).sink { [weak self] presentedSortFilterViewModel in
+            self?.presentSortMenu(presentedSortFilterViewModel: presentedSortFilterViewModel)
+        }.store(in: &subscriptions)
+
         isResetting = false
     }
 

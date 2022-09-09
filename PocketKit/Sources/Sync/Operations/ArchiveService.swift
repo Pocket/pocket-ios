@@ -8,6 +8,7 @@ public protocol ArchiveService: AnyObject {
     var tagFilter: CurrentValueSubject<String, Never> { get }
 
     var filters: [ArchiveServiceFilter] { get set }
+    var selectedSortOption: ArchiveSortOrder { get set }
 
     func fetch(at indexes: [Int]?)
     func refresh(completion: (() -> Void)?)
@@ -32,6 +33,11 @@ public enum SavedItemResult: Equatable {
     case notLoaded
 }
 
+public enum ArchiveSortOrder {
+    case ascending
+    case descending
+}
+
 class PocketArchiveService: NSObject, ArchiveService {
     @Published
     private var _results: [SavedItemResult]
@@ -43,7 +49,9 @@ class PocketArchiveService: NSObject, ArchiveService {
     public var tagFilter: CurrentValueSubject<String, Never> = .init("")
 
     public var filters: [ArchiveServiceFilter] = [] {
-        didSet { refresh() }
+        didSet {
+            refresh()
+        }
     }
 
     @MainActor
@@ -63,6 +71,8 @@ class PocketArchiveService: NSObject, ArchiveService {
     }()
 
     private var mergeCancellable: AnyCancellable?
+
+    var selectedSortOption: ArchiveSortOrder = .descending
 
     public init(apollo: ApolloClientProtocol, space: Space, pageSize: Int = 100) {
         self.apollo = apollo
@@ -115,6 +125,7 @@ class PocketArchiveService: NSObject, ArchiveService {
             indexes: indexes ?? [0],
             isFavorite: isFavorite,
             tagName: tagName,
+            sortOrder: selectedSortOption,
             firstPageReceived: firstPageReceived
         )
 
@@ -150,6 +161,12 @@ class PocketArchiveService: NSObject, ArchiveService {
                 }
             }
         )
+        archivedItemsController.fetchRequest.sortDescriptors = [
+            NSSortDescriptor(
+                keyPath: \SavedItem.archivedAt,
+                ascending: (selectedSortOption == .ascending)
+            )
+        ]
 
         try? space.batchDeleteArchivedItems()
         totalCount = 0
@@ -166,6 +183,7 @@ class PocketArchiveService: NSObject, ArchiveService {
         }
 
         let fetchedObjects = archivedItemsController.fetchedObjects ?? []
+
         _results = (0..<totalCount).map { index in
             if index < fetchedObjects.count {
                 return .loaded(fetchedObjects[index])
@@ -279,6 +297,7 @@ private class FetchArchivePagesOperation: AsyncOperation {
     private let indexes: [Int]
     private let isFavorite: Bool?
     private let tagName: String?
+    private let sortOrder: ArchiveSortOrder
     private var firstPageReceived: (() -> Void)?
 
     init(
@@ -287,6 +306,7 @@ private class FetchArchivePagesOperation: AsyncOperation {
         indexes: [Int],
         isFavorite: Bool?,
         tagName: String?,
+        sortOrder: ArchiveSortOrder,
         firstPageReceived: (() -> Void)?
     ) {
         self.apollo = apollo
@@ -295,7 +315,7 @@ private class FetchArchivePagesOperation: AsyncOperation {
         self.isFavorite = isFavorite
         self.tagName = tagName
         self.firstPageReceived = firstPageReceived
-
+        self.sortOrder = sortOrder
         super.init()
     }
 
@@ -330,6 +350,14 @@ private class FetchArchivePagesOperation: AsyncOperation {
             let cursor = try await delegate.currentCursor()
             guard !isCancelled else { return }
 
+            let sortOrder: SavedItemsSortOrder
+            switch self.sortOrder {
+            case .descending:
+                sortOrder = .desc
+            case .ascending:
+                sortOrder = .asc
+            }
+
             var tagNames: [String] = []
             if let tagName = tagName {
                 tagNames = tagName == "not tagged" ? ["untagged"] : [tagName]
@@ -340,8 +368,9 @@ private class FetchArchivePagesOperation: AsyncOperation {
                         after: cursor,
                         first: pageSize
                     ),
+
                     filter: SavedItemsFilter(isFavorite: isFavorite, isArchived: true, tagNames: tagNames),
-                    sort: SavedItemsSort(sortBy: .archivedAt, sortOrder: .desc)
+                    sort: SavedItemsSort(sortBy: .archivedAt, sortOrder: sortOrder)
                 )
             )
             guard !isCancelled else { return }

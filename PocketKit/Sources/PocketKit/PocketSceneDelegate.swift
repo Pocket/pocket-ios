@@ -22,7 +22,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         ),
                         archivedItemsList: ArchivedItemsListViewModel(
                             source: Services.shared.source,
-                            tracker: Services.shared.tracker.childTracker(hosting: .myList.archive)
+                            tracker: Services.shared.tracker.childTracker(hosting: .myList.archive),
+                            listOptions: ListOptions()
                         )
                     ),
                     home: HomeViewModel(

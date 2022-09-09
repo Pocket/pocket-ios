@@ -36,6 +36,24 @@ class PocketArchiveServiceTests: XCTestCase {
         )
     }
 
+    func test_applySortingOnArchivedItems() throws {
+        let service = subject()
+        service.selectedSortOption = .ascending
+
+        let itemsChanged = expectation(description: "itemsChanged")
+        service.results.dropFirst().sink { items in
+            itemsChanged.fulfill()
+        }.store(in: &subscriptions)
+
+        service.fetch()
+
+        wait(for: [itemsChanged], timeout: 1)
+
+        let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 0)
+        XCTAssertNotNil(call)
+        XCTAssertEqual(call?.query.sort?.sortOrder, .asc)
+    }
+
     func test_fetch_executesAQuery() {
         let service = subject()
 
@@ -84,6 +102,7 @@ class PocketArchiveServiceTests: XCTestCase {
 
     func test_observingCoreDataChanges_whenItemIsAdded_InsertsNewItemIntoResults() throws {
         let service = subject()
+        service.selectedSortOption = .ascending
 
         let initialLoad = expectation(description: "initialLoad")
         service.results.dropFirst().first().sink { items in
