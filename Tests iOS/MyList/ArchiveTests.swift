@@ -63,6 +63,28 @@ class ArchiveTests: XCTestCase {
         XCTAssertFalse(myList.itemView(matching: "Item 2").exists)
     }
 
+    func test_archiveView_selectingANewSortOrder_SortItems() {
+        app.launch().tabBar.myListButton.wait().tap()
+        let myList = app.myListView.wait()
+        myList.itemView(matching: "Item 1").wait()
+
+        myList.selectionSwitcher.archiveButton.wait().tap()
+
+        // Sort by Oldest saved
+        myList.filterButton(for: "Sort/Filter").wait().tap()
+        app.sortMenu.sortOption("Oldest saved").wait().tap()
+
+        XCTAssertTrue(myList.itemView(at: 0).contains(string: "Archived Item 2"))
+        XCTAssertTrue(myList.itemView(at: 1).contains(string: "Archived Item 1"))
+
+        // Sort by Newest saved
+        myList.filterButton(for: "Sort/Filter").wait().tap()
+        app.sortMenu.sortOption("Newest saved").wait().tap()
+
+        XCTAssertTrue(myList.itemView(at: 0).contains(string: "Archived Item 1"))
+        XCTAssertTrue(myList.itemView(at: 1).contains(string: "Archived Item 2"))
+    }
+
     func test_tappingItem_displaysNativeReaderView() {
         app.launch().tabBar.myListButton.wait().tap()
         app.myListView.selectionSwitcher.archiveButton.wait().tap()

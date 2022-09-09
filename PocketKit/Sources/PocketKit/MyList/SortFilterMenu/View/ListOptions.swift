@@ -1,7 +1,7 @@
-import Foundation
 import SwiftUI
+import Sync
 
 class ListOptions: ObservableObject {
     @AppStorage("listSelectedSort")
-    var selectedSort: SortOption = .newest
+    var selectedSort: SortOption  = .newest
 }

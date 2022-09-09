@@ -208,6 +208,10 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         model.fetch()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        model.fetch()
+    }
+
     private func handleRefresh() {
         model.refresh { [weak self] in
             self?.handleRefreshCompletion()

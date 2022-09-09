@@ -4,6 +4,8 @@ import CoreData
 
 class MockArchiveService: ArchiveService {
 
+    var selectedSortOption: ArchiveSortOrder = .descending
+
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 

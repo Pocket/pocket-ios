@@ -442,6 +442,7 @@ extension SavedItemsListViewModel {
     private func handleFilterSelection(with filter: ItemsListFilter, sender: Any? = nil) {
         let reTappedTagFilter = selectedFilters.contains(.tagged) && filter == .tagged
         guard !reTappedTagFilter else { return }
+
         switch filter {
         case .all:
             selectedFilters.removeAll()

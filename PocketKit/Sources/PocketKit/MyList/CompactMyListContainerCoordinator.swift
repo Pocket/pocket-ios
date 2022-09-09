@@ -93,6 +93,10 @@ class CompactMyListContainerCoordinator: NSObject {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
+        model.archivedItemsList.$presentedSortFilterViewModel.receive(on: DispatchQueue.main).sink { [weak self] presentedSortFilterViewModel in
+            self?.presentSortMenu(presentedSortFilterViewModel: presentedSortFilterViewModel)
+        }.store(in: &subscriptions)
+
         model.archivedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)

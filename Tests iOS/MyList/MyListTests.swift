@@ -247,7 +247,7 @@ class MyListTests: XCTestCase {
         app
             .webReaderView
             .staticText(matching: "Hello, world")
-            .wait()
+            .wait(timeout: 2.0)
     }
 
     func test_list_excludesArchivedContent() {

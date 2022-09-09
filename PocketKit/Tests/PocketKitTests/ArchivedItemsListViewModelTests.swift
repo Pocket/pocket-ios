@@ -18,6 +18,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     var networkMonitor: MockNetworkPathMonitor!
     var archiveService: MockArchiveService!
     var subscriptions: Set<AnyCancellable> = []
+    var listOptions: ListOptions!
 
     override func setUp() {
         self.source = MockSource()
@@ -25,6 +26,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         self.networkMonitor = MockNetworkPathMonitor()
         self.archiveService = MockArchiveService()
         self.space = .testSpace()
+        listOptions = ListOptions()
 
         source.stubMakeArchiveService { self.archiveService }
     }
@@ -37,13 +39,36 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     func subject(
         source: Source? = nil,
         tracker: Tracker? = nil,
-        networkMonitor: NetworkPathMonitor? = nil
+        networkMonitor: NetworkPathMonitor? = nil,
+        listOptions: ListOptions? = nil
     ) -> ArchivedItemsListViewModel {
         ArchivedItemsListViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            networkMonitor: networkMonitor ?? self.networkMonitor
+            networkMonitor: networkMonitor ?? self.networkMonitor,
+            listOptions: listOptions ?? self.listOptions
         )
+    }
+
+    func test_applySortingOnMyListArchivedItems() throws {
+
+        // When selected sort is newest
+        let listOptionsToPass = ListOptions()
+        listOptionsToPass.selectedSort = .newest
+        let viewModel = subject(listOptions: listOptionsToPass)
+
+        XCTAssertTrue(archiveService.selectedSortOption == .descending)
+
+        let refreshCalled = expectation(description: "refreshCalled")
+        archiveService.stubRefresh { _ in
+            refreshCalled.fulfill()
+        }
+
+        // When selected sort is oldest
+        listOptionsToPass.selectedSort = .oldest
+
+        wait(for: [refreshCalled], timeout: 1)
+        XCTAssertTrue(archiveService.selectedSortOption == .ascending)
     }
 
     func test_fetch_delegatesToArchiveService() {

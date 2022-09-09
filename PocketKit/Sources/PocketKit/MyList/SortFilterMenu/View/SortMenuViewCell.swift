@@ -19,6 +19,21 @@ class SortMenuViewCell: UITableViewCell {
 
     override public init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configSelectdBackgroundView()
+        setupViewElements()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    func configSelectdBackgroundView() {
+        let selectedBGViewToSet = UIView()
+        selectedBGViewToSet.backgroundColor = UIColor(.ui.teal6)
+        selectedBackgroundView = selectedBGViewToSet
+    }
+
+    func setupViewElements() {
         contentView.addSubview(titleLabel)
         contentView.layoutMargins = UIEdgeInsets(top: 10.0, left: 68.0, bottom: 10.0, right: 10.0)
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -28,10 +43,6 @@ class SortMenuViewCell: UITableViewCell {
             titleLabel.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             titleLabel.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor)
             ])
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }
 
