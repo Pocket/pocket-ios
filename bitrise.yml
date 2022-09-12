@@ -152,6 +152,10 @@ workflows:
                 CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - configuration: Debug
       - deploy-to-bitrise-io@2: {}
+      - slack@3:
+          inputs:
+            - channel: '#log-ios-qa-builds'
+            - webhook_url: $SLACK_WEBHOOK_URL
     before_run:
       - _setup
     after_run:
