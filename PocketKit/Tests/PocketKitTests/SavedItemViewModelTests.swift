@@ -273,7 +273,7 @@ class SavedItemViewModelTests: XCTestCase {
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Copy link")
-        XCTAssertEqual(pasteboard.general.url, url)
+        XCTAssertEqual(pasteboard.url, url)
     }
 
     func test_externalShare_updatesSharedActivity() {
