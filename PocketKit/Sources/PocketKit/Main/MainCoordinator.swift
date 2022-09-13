@@ -29,7 +29,7 @@ class MainCoordinator {
         regular.setCompactViewController(compact.viewController)
 
         model.$selectedSection
-            .sink { section in
+            .receive(on: DispatchQueue.global(priority: .background)).sink { section in
                 let context: UIContext
                 switch section {
                 case .home:
