@@ -76,7 +76,8 @@ extension LoggedOutViewModelTests {
         wait(for: [startExpectation], timeout: 1)
     }
 
-    func test_logIn_onFxAError_setsPresentedAlert() async {
+    @MainActor
+    func test_logIn_onFxAError_setsPresentedAlert() {
         mockAuthenticationSession.url = URL(string: "pocket://fxa")!
         let viewModel = subject()
 
@@ -86,12 +87,13 @@ extension LoggedOutViewModelTests {
             alertExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        await viewModel.logIn()
+        viewModel.logIn()
 
         wait(for: [alertExpectation], timeout: 1)
     }
 
-    func test_logIn_onFxASuccess_updatesSession() async {
+    @MainActor
+    func test_logIn_onFxASuccess_updatesSession() {
         mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")!
         let viewModel = subject()
 
@@ -103,7 +105,7 @@ extension LoggedOutViewModelTests {
             sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        await viewModel.logIn()
+        viewModel.logIn()
         wait(for: [sessionExpectation], timeout: 1)
     }
 }
@@ -129,7 +131,8 @@ extension LoggedOutViewModelTests {
         wait(for: [startExpectation], timeout: 1)
     }
 
-    func test_signUp_onFxAError_setsPresentedAlert() async {
+    @MainActor
+    func test_signUp_onFxAError_setsPresentedAlert() {
         mockAuthenticationSession.url = URL(string: "pocket://fxa")!
         let viewModel = subject()
 
@@ -139,11 +142,12 @@ extension LoggedOutViewModelTests {
             alertExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        await viewModel.signUp()
+        viewModel.signUp()
         wait(for: [alertExpectation], timeout: 1)
     }
 
-    func test_signUp_onFxASuccess_updatesSession() async {
+    @MainActor
+    func test_signUp_onFxASuccess_updatesSession() {
         mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")!
         let viewModel = subject()
 
@@ -155,7 +159,7 @@ extension LoggedOutViewModelTests {
             sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        await viewModel.signUp()
+        viewModel.signUp()
         wait(for: [sessionExpectation], timeout: 1)
     }
 }
