@@ -21,7 +21,7 @@ let package = Package(
         .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.25.0")),
         .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.0")),
         .package(name: "SnowplowTracker", url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMinor(from: "2.2.0")),
-        .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", from: "3.2.1"),
+        .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", from: "3.4.3"),
         .package(name: "Down", url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
         .package(name: "YouTubePlayerKit", url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5")),
         .package(name: "BrazeKit", url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMinor(from: "5.3.0"))
