@@ -9,26 +9,33 @@ class SavedItemViewModelTests: XCTestCase {
     private var source: MockSource!
     private var tracker: MockTracker!
     private var space: Space!
+    private var pasteboard: Pasteboard!
 
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
+        pasteboard = MockPasteboard()
         space = .testSpace()
     }
 
     override func tearDown() async throws {
-        UIPasteboard.general.string = ""
         subscriptions = []
         try space.clear()
     }
 
-    func subject(item: SavedItem, source: Source? = nil, tracker: Tracker? = nil) -> SavedItemViewModel {
+    func subject(
+        item: SavedItem,
+        source: Source? = nil,
+        tracker: Tracker? = nil,
+        pasteboard: UIPasteboard? = nil
+    ) -> SavedItemViewModel {
         SavedItemViewModel(
             item: item,
             source: source ?? self.source,
-            tracker: tracker ?? self.tracker
+            tracker: tracker ?? self.tracker,
+            pasteboard: pasteboard ?? self.pasteboard
         )
     }
 
@@ -266,7 +273,7 @@ class SavedItemViewModelTests: XCTestCase {
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Copy link")
-        XCTAssertEqual(UIPasteboard.general.url, url)
+        XCTAssertEqual(pasteboard.general.url, url)
     }
 
     func test_externalShare_updatesSharedActivity() {

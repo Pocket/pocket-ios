@@ -10,19 +10,20 @@ class RecommendationViewModelTests: XCTestCase {
     private var source: MockSource!
     private var space: Space!
     private var tracker: MockTracker!
+    private var pasteboard: MockPasteboard!
 
     private var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
+        pasteboard = MockPasteboard()
         space = .testSpace()
 
         continueAfterFailure = false
     }
 
     override func tearDownWithError() throws {
-        UIPasteboard.general.string = ""
         subscriptions = []
         try space.clear()
     }
@@ -30,12 +31,14 @@ class RecommendationViewModelTests: XCTestCase {
     func subject(
         recommendation: Recommendation,
         source: Source? = nil,
-        tracker: Tracker? = nil
+        tracker: Tracker? = nil,
+        pasteboard: Pasteboard? = nil
     ) -> RecommendationViewModel {
         RecommendationViewModel(
             recommendation: recommendation,
             source: source ?? self.source,
-            tracker: tracker ?? self.tracker
+            tracker: tracker ?? self.tracker,
+            pasteboard: pasteboard ?? self.pasteboard
         )
     }
 
@@ -303,7 +306,8 @@ class RecommendationViewModelTests: XCTestCase {
         let url = URL(string: "https://getpocket.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Copy link")
-        XCTAssertEqual(UIPasteboard.general.url, url)
+
+        XCTAssertEqual(pasteboard.url, url)
     }
 
     func test_externalShare_updatesSharedActivity() throws {
