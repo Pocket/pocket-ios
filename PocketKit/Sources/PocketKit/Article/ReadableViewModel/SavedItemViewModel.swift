@@ -32,16 +32,19 @@ class SavedItemViewModel: ReadableViewModel {
 
     private let item: SavedItem
     private let source: Source
+    private let pasteboard: Pasteboard
     private var subscriptions: [AnyCancellable] = []
 
     init(
         item: SavedItem,
         source: Source,
-        tracker: Tracker
+        tracker: Tracker,
+        pasteboard: Pasteboard
     ) {
         self.item = item
         self.source = source
         self.tracker = tracker
+        self.pasteboard = pasteboard
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -177,7 +180,7 @@ extension SavedItemViewModel {
     }
 
     private func copyExternalURL(_ url: URL) {
-        UIPasteboard.general.url = url
+        pasteboard.url = url
     }
 
     private func shareExternalURL(_ url: URL) {

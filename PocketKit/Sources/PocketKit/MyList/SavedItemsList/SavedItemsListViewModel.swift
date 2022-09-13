@@ -358,7 +358,8 @@ extension SavedItemsListViewModel {
                 SavedItemViewModel(
                     item: $0,
                     source: source,
-                    tracker: tracker.childTracker(hosting: .articleView.screen)
+                    tracker: tracker.childTracker(hosting: .articleView.screen),
+                    pasteboard: UIPasteboard.general
                 )
             }
             selectedItem = .readable(selectedReadable)

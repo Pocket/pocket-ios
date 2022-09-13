@@ -305,7 +305,8 @@ extension HomeViewModel {
             let viewModel = RecommendationViewModel(
                 recommendation: recommendation,
                 source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general
             )
             selectedReadableType = .recommendation(viewModel)
 
@@ -333,7 +334,8 @@ extension HomeViewModel {
             let viewModel = SavedItemViewModel(
                 item: savedItem,
                 source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen)
+                tracker: tracker.childTracker(hosting: .articleView.screen),
+                pasteboard: UIPasteboard.general
             )
             selectedReadableType = .savedItem(viewModel)
 

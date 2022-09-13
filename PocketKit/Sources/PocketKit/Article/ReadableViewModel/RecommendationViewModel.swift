@@ -30,15 +30,17 @@ class RecommendationViewModel: ReadableViewModel {
 
     private let recommendation: Recommendation
     private let source: Source
+    private let pasteboard: Pasteboard
     let tracker: Tracker
 
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
-    init(recommendation: Recommendation, source: Source, tracker: Tracker) {
+    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard) {
         self.recommendation = recommendation
         self.source = source
         self.tracker = tracker
+        self.pasteboard = pasteboard
 
         self.savedItemCancellable = recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
@@ -218,7 +220,7 @@ extension RecommendationViewModel {
     }
 
     private func copyExternalURL(_ url: URL) {
-        UIPasteboard.general.url = url
+        pasteboard.url = url
     }
 
     private func shareExternalURL(_ url: URL) {

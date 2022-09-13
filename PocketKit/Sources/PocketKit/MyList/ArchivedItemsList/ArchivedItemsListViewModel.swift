@@ -325,7 +325,8 @@ extension ArchivedItemsListViewModel {
                 SavedItemViewModel(
                     item: item,
                     source: source,
-                    tracker: tracker.childTracker(hosting: .articleView.screen)
+                    tracker: tracker.childTracker(hosting: .articleView.screen),
+                    pasteboard: UIPasteboard.general
                 )
             )
         }
