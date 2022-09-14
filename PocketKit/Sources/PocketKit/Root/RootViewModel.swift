@@ -51,22 +51,35 @@ class RootViewModel {
     }
 
     func showSaveFromClipboardBanner() {
-        if UIPasteboard.general.hasURLs,
-           let clipboardURL = UIPasteboard.general.url, isLoggedIn {
+        if UIPasteboard.general.hasURLs, isLoggedIn {
 
             bannerViewModel = BannerViewModel(
                 prompt: "Add copied URL to your Saves?",
-                clipboardURL: clipboardURL.absoluteString,
                 backgroundColor: UIColor(.ui.teal6),
                 borderColor: UIColor(.ui.teal5),
-                primaryAction: { [weak self] in
-                    self?.source.save(url: clipboardURL)
-                    self?.bannerViewModel = nil
+                primaryAction: { [weak self] itemProviders in
+                    self?.handleBannerPrimaryAction(itemProviders: itemProviders)
                 },
                 dismissAction: { [weak self] in
                     self?.bannerViewModel = nil
                 }
             )
+        }
+    }
+
+    private func handleBannerPrimaryAction(itemProviders: [NSItemProvider]) {
+        bannerViewModel = nil
+
+        for provider in itemProviders {
+            if provider.canLoadObject(ofClass: URL.self) {
+                _ = provider.loadObject(ofClass: URL.self) { [weak self] url, error in
+                    guard let url = url else {
+                        return
+                    }
+
+                    self?.source.save(url: url)
+                }
+            }
         }
     }
 
