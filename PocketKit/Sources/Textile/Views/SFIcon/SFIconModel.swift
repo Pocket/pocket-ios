@@ -1,7 +1,6 @@
 import Foundation
 import SwiftUI
 
-
 public class SFIconModel: ObservableObject {
     
     var systemImage: String

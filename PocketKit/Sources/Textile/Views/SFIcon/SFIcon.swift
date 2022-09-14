@@ -1,10 +1,3 @@
-//
-//  SFIcon.swift
-//  
-//
-//  Created by Ky B Hamilton on 8/29/22.
-//
-
 import SwiftUI
 
 public struct SFIcon: View {
