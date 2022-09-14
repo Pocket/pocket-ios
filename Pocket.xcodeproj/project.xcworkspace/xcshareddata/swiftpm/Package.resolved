@@ -6,8 +6,8 @@
         "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
         "state": {
           "branch": null,
-          "revision": "08a41bad4ebf76ae8e4efebf26862a42084b7786",
-          "version": "0.51.2"
+          "revision": "42646f765d22dac0f22bfff48590102195c76da4",
+          "version": "0.53.0"
         }
       },
       {
@@ -41,9 +41,9 @@
         "package": "Kingfisher",
         "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
         "state": {
-          "branch": "fix/xcode-13",
-          "revision": "f012224344f09421588a28e9f6259968e3574f8b",
-          "version": null
+          "branch": null,
+          "revision": "be1a1acb283a702b99b630f586877ba02234b4cb",
+          "version": "7.3.2"
         }
       },
       {
@@ -51,8 +51,8 @@
         "repositoryURL": "https://github.com/airbnb/lottie-ios.git",
         "state": {
           "branch": null,
-          "revision": "4a6058cbbdfe4f74aeae92c8bd51ad3b0de2a1ee",
-          "version": "3.3.0"
+          "revision": "314537ec697719fa33a9d48210f4d06a463286d3",
+          "version": "3.4.3"
         }
       },
       {
@@ -69,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa.git",
         "state": {
           "branch": null,
-          "revision": "129432a53a031ea4bf214eba6c1c857eccb11407",
-          "version": "7.24.0"
+          "revision": "7acc8479b2c773dddacc7c5985e7ce9e4344f5f0",
+          "version": "7.25.0"
         }
       },
       {
@@ -78,8 +78,8 @@
         "repositoryURL": "https://github.com/snowplow/snowplow-objc-tracker",
         "state": {
           "branch": null,
-          "revision": "805dfc4aab4fd23c417677a5198a8860998f7f5a",
-          "version": "2.2.2"
+          "revision": "dc5ecb6ad2921a50f629ef600cc1ee700e608f66",
+          "version": "3.2.0"
         }
       },
       {

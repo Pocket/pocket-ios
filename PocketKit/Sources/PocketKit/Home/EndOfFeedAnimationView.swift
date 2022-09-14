@@ -16,7 +16,7 @@ class EndOfFeedAnimationView: UIView {
     }
 
     private lazy var animationView: AnimationView = {
-        let view = AnimationView(animation: nil)
+        let view = AnimationView(animation: nil, configuration: LottieConfiguration(renderingEngine: .automatic))
         view.animation = Animation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
         return view
     }()
