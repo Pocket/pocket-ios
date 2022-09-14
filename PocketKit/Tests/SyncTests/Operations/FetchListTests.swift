@@ -48,16 +48,16 @@ class FetchListTests: XCTestCase {
         )
     }
 
-    func test_refresh_fetchesUserByTokenQueryWithGivenToken() async {
+    func test_refresh_fetchesFetchSavesQueryWithGivenToken() async {
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
-        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: FetchSavesQuery.self)
 
         let service = subject()
         _ = await service.execute()
 
         XCTAssertFalse(apollo.fetchCalls.isEmpty)
-        let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
+        let call: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.token, "test-token")
 
         XCTAssertEqual(lastRefresh.refreshedCallCount, 1)
@@ -66,7 +66,7 @@ class FetchListTests: XCTestCase {
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() async throws {
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
-        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: FetchSavesQuery.self)
 
         let service = subject()
         _ = await service.execute()
@@ -116,7 +116,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
-        apollo.stubFetch(toReturnFixtureNamed: "duplicate-list", asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "duplicate-list", asResultType: FetchSavesQuery.self)
 
         let service = subject()
         _ = await service.execute()
@@ -126,7 +126,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() async throws {
-        apollo.stubFetch(toReturnFixtureNamed: "updated-item", asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixtureNamed: "updated-item", asResultType: FetchSavesQuery.self)
         try space.createSavedItem(
             remoteID: "saved-item-1",
             item: space.buildItem(title: "Item 1")
@@ -140,7 +140,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() async throws {
-        apollo.stubFetch(ofQueryType: UserByTokenQuery.self, toReturnError: TestError.anError)
+        apollo.stubFetch(ofQueryType: FetchSavesQuery.self, toReturnError: TestError.anError)
 
         var error: Error?
         events.sink { event in
@@ -160,7 +160,7 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() async throws {
         var fetches = 0
-        apollo.stubFetch { (query: UserByTokenQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -190,7 +190,7 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenItemCountExceedsMax_fetchesMaxNumberOfItems() async throws {
         var fetches = 0
-        apollo.stubFetch { (query: UserByTokenQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -233,12 +233,12 @@ class FetchListTests: XCTestCase {
 
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
-        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: FetchSavesQuery.self)
 
         let service = subject()
         _ = await service.execute()
 
-        let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
+        let call: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(call?.query.savedItemsFilter)
         XCTAssertEqual(call?.query.savedItemsFilter?.updatedSince, 123456789)
     }
@@ -248,7 +248,7 @@ class FetchListTests: XCTestCase {
 
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
-        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: FetchSavesQuery.self)
 
         let receivedEvent = expectation(description: "receivedEvent")
         receivedEvent.isInverted = true
@@ -271,12 +271,12 @@ class FetchListTests: XCTestCase {
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
-        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: FetchSavesQuery.self)
 
         let service = subject()
         _ = await service.execute()
 
-        let call: MockApolloClient.FetchCall<UserByTokenQuery>? = apollo.fetchCall(at: 0)
+        let call: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.savedItemsFilter?.status, .unread)
     }
 
@@ -285,7 +285,7 @@ class FetchListTests: XCTestCase {
 
         let fixture = Fixture.load(name: "list")
             .replacing("MARTICLE", withFixtureNamed: "marticle")
-        apollo.stubFetch(toReturnFixture: fixture, asResultType: UserByTokenQuery.self)
+        apollo.stubFetch(toReturnFixture: fixture, asResultType: FetchSavesQuery.self)
 
         let receivedFirstPageEvent = expectation(description: "receivedFirstPageEvent")
         let receivedCompletedEvent = expectation(description: "receivedCompletedEvent")
@@ -310,7 +310,7 @@ class FetchListTests: XCTestCase {
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {
         apollo.stubFetch(
             toReturnFixtureNamed: "empty-list",
-            asResultType: UserByTokenQuery.self
+            asResultType: FetchSavesQuery.self
         )
 
         let service = subject()
@@ -326,7 +326,7 @@ class FetchListTests: XCTestCase {
             underlying: TestError.anError
         )
 
-        apollo.stubFetch(ofQueryType: UserByTokenQuery.self, toReturnError: initialError)
+        apollo.stubFetch(ofQueryType: FetchSavesQuery.self, toReturnError: initialError)
 
         let service = subject()
         let result = await service.execute()
@@ -339,7 +339,7 @@ class FetchListTests: XCTestCase {
 
     func test_execute_whenResponseIs5XX_retries() async {
         let initialError = ResponseCodeInterceptor.ResponseCodeError.withStatusCode(500)
-        apollo.stubFetch(ofQueryType: UserByTokenQuery.self, toReturnError: initialError)
+        apollo.stubFetch(ofQueryType: FetchSavesQuery.self, toReturnError: initialError)
 
         let service = subject()
         let result = await service.execute()

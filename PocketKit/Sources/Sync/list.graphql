@@ -81,7 +81,7 @@ fragment SlateParts on Slate {
   }
 }
 
-query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
+query FetchSaves($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
   userByToken(token: $token) {
     savedItems(pagination: $pagination, filter: $savedItemsFilter) {
       totalCount
