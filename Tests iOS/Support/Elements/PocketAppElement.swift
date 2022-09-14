@@ -48,7 +48,7 @@ struct PocketAppElement {
     }
 
     var reportView: ReportViewElement {
-        return ReportViewElement(app.tables["report-recommendation"])
+        return ReportViewElement(app.collectionViews["report-recommendation"])
     }
 
     var sortMenu: SortMenuElement {

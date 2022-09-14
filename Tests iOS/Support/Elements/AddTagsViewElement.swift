@@ -20,7 +20,7 @@ struct AddTagsViewElement: PocketUIElement {
     }
 
     var allTagsView: XCUIElement {
-        element.tables["all-tags"]
+        element.collectionViews["all-tags"]
     }
 
     func allTagsRow(matching string: String) -> XCUIElement {
