@@ -158,16 +158,21 @@ extension PocketSourceTests {
         var attempts = 0
         let firstAttempt = expectation(description: "first attempt")
         let retrySignalSent = expectation(description: "send retry signal")
+
+        // Using a queue to fulfill the above expectations
+        // gives us a to register a listener to the retry signal before actually triggering the retry
+        let queue = DispatchQueue.global(qos: .background)
+
         operations.stubItemMutationOperation { (_, _, _: ArchiveItemMutation) in
             TestSyncOperation { () -> SyncOperationResult in
                 defer { attempts += 1 }
 
                 switch attempts {
                 case 0:
-                    firstAttempt.fulfill()
+                    queue.async { firstAttempt.fulfill() }
                     return .retry(TestError.anError)
                 case 1:
-                    retrySignalSent.fulfill()
+                    queue.async { retrySignalSent.fulfill() }
                     return .success
                 default:
                     XCTFail("Unexpected number of attempts: \(attempts)")
