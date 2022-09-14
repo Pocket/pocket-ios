@@ -16,7 +16,7 @@ class AccountViewModel: ObservableObject {
         appSession.currentSession = nil
     }
     
-    @Published var helpPresented = false
-    @Published var termsPresented = false
-    @Published var privacyPresented = false
+    @Published var isPresentingHelp = false
+    @Published var isPresentingTerms = false
+    @Published var isPresentingPrivacy = false
 }
