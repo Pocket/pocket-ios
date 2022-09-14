@@ -126,14 +126,26 @@ class LoggedOutViewModel: ObservableObject {
         }
     }
 
+    @MainActor
+    private func handle(_ response: AuthorizationClient.Response) {
+        appSession.currentSession = Session(
+            guid: response.guid,
+            accessToken: response.accessToken,
+            userIdentifier: response.userIdentifier
+        )
+    }
+
+    @MainActor
+    private func present(_ error: Error) {
+        presentedAlert = PocketAlert(error) { [weak self] in
+            self?.presentedAlert = nil
+        }
+    }
+
     private func authenticate(_ authentication: (ASWebAuthenticationPresentationContextProviding?) async throws -> AuthorizationClient.Response) async {
         do {
             let response = try await authentication(contextProvider)
-            appSession.currentSession = Session(
-                guid: response.guid,
-                accessToken: response.accessToken,
-                userIdentifier: response.userIdentifier
-            )
+            await handle(response)
         } catch {
             // AuthorizationClient should only ever throw an AuthorizationClient.error
             guard let error = error as? AuthorizationClient.Error else {
@@ -145,9 +157,7 @@ class LoggedOutViewModel: ObservableObject {
             case .invalidRedirect, .invalidComponents:
                 // If component generation failed, we should alert the user (to hopefully reach out),
                 // as well as capture the error
-                presentedAlert = PocketAlert(error) { [weak self] in
-                    self?.presentedAlert = nil
-                }
+                await present(error)
                 Crashlogger.capture(error: error)
             case .alreadyAuthenticating:
                 Crashlogger.capture(error: error)
