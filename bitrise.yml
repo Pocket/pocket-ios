@@ -90,6 +90,23 @@ workflows:
                 sentry-cli --log-level=debug --auth-token $SENTRY_AUTH_TOKEN  upload-dif -o pocket -p ios-next $BITRISE_DSYM_PATH
                 #TODO: In the future we can add Sentry releases here.
 
+  _danger:
+    steps:
+      - cache-pull@2: {}
+      - script@1:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+
+                # fail if any commands fails
+                set -e
+
+                cd PocketKit/
+
+                echo "Run danger"
+                swift run danger-swift ci
+      - cache-push@2: {}
+
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
     steps:
@@ -184,9 +201,10 @@ workflows:
           inputs:
             - destination: platform=iOS Simulator,name=iPhone 13,OS=latest
       - deploy-to-bitrise-io@2: {}
-      - xcode-result-bundle-to-checks@1: {}
     before_run:
       - _setup
+    after_run:
+      - _danger
 
 app:
   envs:
