@@ -183,6 +183,8 @@ workflows:
       - xcode-test@4:
           inputs:
             - destination: platform=iOS Simulator,name=iPhone 13,OS=latest
+      - deploy-to-bitrise-io@2: {}
+      - xcode-result-bundle-to-checks@1: {}
     before_run:
       - _setup
 
