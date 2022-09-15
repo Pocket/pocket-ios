@@ -20,14 +20,22 @@ struct AddTagsViewElement: PocketUIElement {
     }
 
     var allTagsView: XCUIElement {
-        element.collectionViews["all-tags"]
+        let query: XCUIElementQuery
+
+        if #available(iOS 16, *) {
+            query = element.collectionViews
+        } else {
+            query = element.tables
+        }
+
+        return query["all-tags"]
     }
 
     func allTagsRow(matching string: String) -> XCUIElement {
-        return allTagsView.staticTexts[string].self
+        return allTagsView.staticTexts[string]
     }
 
     func tag(matching string: String) -> XCUIElement {
-        return element.staticTexts[string].self
+        return element.staticTexts[string]
     }
 }

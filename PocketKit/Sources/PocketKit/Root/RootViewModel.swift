@@ -57,8 +57,8 @@ class RootViewModel {
                 prompt: "Add copied URL to your Saves?",
                 backgroundColor: UIColor(.ui.teal6),
                 borderColor: UIColor(.ui.teal5),
-                primaryAction: { [weak self] itemProviders in
-                    self?.handleBannerPrimaryAction(itemProviders: itemProviders)
+                primaryAction: { [weak self] url in
+                    self?.handleBannerPrimaryAction(url: url)
                 },
                 dismissAction: { [weak self] in
                     self?.bannerViewModel = nil
@@ -67,20 +67,11 @@ class RootViewModel {
         }
     }
 
-    private func handleBannerPrimaryAction(itemProviders: [NSItemProvider]) {
+    private func handleBannerPrimaryAction(url: URL?) {
         bannerViewModel = nil
 
-        for provider in itemProviders {
-            if provider.canLoadObject(ofClass: URL.self) {
-                _ = provider.loadObject(ofClass: URL.self) { [weak self] url, error in
-                    guard let url = url else {
-                        return
-                    }
-
-                    self?.source.save(url: url)
-                }
-            }
-        }
+        guard let url = url else { return }
+        source.save(url: url)
     }
 
     private func setUpSession(_ session: SharedPocketKit.Session) {

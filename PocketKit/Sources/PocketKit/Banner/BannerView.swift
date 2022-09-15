@@ -63,7 +63,7 @@ class BannerView: UIView {
 
     private var borderColor: UIColor?
     private var dismissAction: (() -> Void)?
-    private var primaryAction: (([NSItemProvider]) -> Void)?
+    private var primaryAction: ((URL?) -> Void)?
 
     private var isLeftToRight: Bool {
         return UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
@@ -129,6 +129,12 @@ extension BannerView {
         borderView.layer.borderColor = borderColor?.cgColor
 
         primaryAction = model.primaryAction
+
+        if let button = saveControl as? UIButton {
+            button.configuration?.attributedTitle = model.attributedButtonText
+            button.addAction(UIAction { _ in model.primaryAction(UIPasteboard.general.url) }, for: .primaryActionTriggered)
+        }
+
         dismissAction = model.dismissAction
         gestureRecognizer.addTarget(self, action: #selector(dismiss))
     }
@@ -141,7 +147,13 @@ extension BannerView {
 
 extension BannerView {
     override func paste(itemProviders: [NSItemProvider]) {
-        primaryAction?(itemProviders)
+        for provider in itemProviders {
+            if provider.canLoadObject(ofClass: URL.self) {
+                _ = provider.loadObject(ofClass: URL.self) { [weak self] url, error in
+                    self?.primaryAction?(url)
+                }
+            }
+        }
     }
 
     override func canPaste(_ itemProviders: [NSItemProvider]) -> Bool {

@@ -48,7 +48,14 @@ struct PocketAppElement {
     }
 
     var reportView: ReportViewElement {
-        return ReportViewElement(app.collectionViews["report-recommendation"])
+        let query: XCUIElementQuery
+        if #available(iOS 16, *) {
+            query = app.collectionViews
+        } else {
+            query = app.tables
+        }
+
+        return ReportViewElement(query["report-recommendation"])
     }
 
     var sortMenu: SortMenuElement {
