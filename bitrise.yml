@@ -199,7 +199,7 @@ workflows:
           title: Install test secrets.xcconfig
       - xcode-test@4:
           inputs:
-            - destination: platform=iOS Simulator,name=iPhone 13,OS=latest
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=latest
       - deploy-to-bitrise-io@2: {}
     before_run:
       - _setup
