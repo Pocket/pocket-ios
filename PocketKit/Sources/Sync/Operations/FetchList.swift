@@ -73,8 +73,8 @@ class FetchList: SyncOperation {
         initialDownloadState.send(.completed)
     }
 
-    private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<UserByTokenQuery.Data> {
-        let query = UserByTokenQuery(token: token)
+    private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
+        let query = FetchSavesQuery(token: token)
         query.pagination = PaginationInput(
             after: pagination.cursor,
             first: pagination.maxItems
@@ -90,7 +90,7 @@ class FetchList: SyncOperation {
     }
 
     @MainActor
-    private func updateLocalStorage(result: GraphQLResult<UserByTokenQuery.Data>) throws {
+    private func updateLocalStorage(result: GraphQLResult<FetchSavesQuery.Data>) throws {
         guard let edges = result.data?.userByToken?.savedItems?.edges else {
             return
         }
@@ -126,7 +126,7 @@ class FetchList: SyncOperation {
             self.maxItems = maxItems
         }
 
-        func nextPage(result: GraphQLResult<UserByTokenQuery.Data>) -> PaginationSpec {
+        func nextPage(result: GraphQLResult<FetchSavesQuery.Data>) -> PaginationSpec {
             guard let savedItems = result.data?.userByToken?.savedItems,
                   let itemCount = savedItems.edges?.count,
                   let endCursor = savedItems.pageInfo.endCursor else {

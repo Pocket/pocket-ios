@@ -1729,11 +1729,11 @@ public final class SavedItemSummariesQuery: GraphQLQuery {
   }
 }
 
-public final class UserByTokenQuery: GraphQLQuery {
+public final class FetchSavesQuery: GraphQLQuery {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
     """
-    query UserByToken($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
+    query FetchSaves($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
       userByToken(token: $token) {
         __typename
         savedItems(pagination: $pagination, filter: $savedItemsFilter) {
@@ -1757,7 +1757,7 @@ public final class UserByTokenQuery: GraphQLQuery {
     }
     """
 
-  public let operationName: String = "UserByToken"
+  public let operationName: String = "FetchSaves"
 
   public var queryDocument: String {
     var document: String = operationDefinition
@@ -1797,7 +1797,7 @@ public final class UserByTokenQuery: GraphQLQuery {
 
     public static var selections: [GraphQLSelection] {
       return [
-        GraphQLField("userByToken", arguments: ["token": GraphQLVariable("token")], type: .object(UserByToken.selections)),
+        GraphQLField("userByToken", arguments: ["token": GraphQLVariable("token")], type: .object(FetchSaves.selections)),
       ]
     }
 
@@ -1807,21 +1807,21 @@ public final class UserByTokenQuery: GraphQLQuery {
       self.resultMap = unsafeResultMap
     }
 
-    public init(userByToken: UserByToken? = nil) {
-      self.init(unsafeResultMap: ["__typename": "Query", "userByToken": userByToken.flatMap { (value: UserByToken) -> ResultMap in value.resultMap }])
+    public init(userByToken: FetchSaves? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "userByToken": userByToken.flatMap { (value: FetchSaves) -> ResultMap in value.resultMap }])
     }
 
     /// Gets a user entity for a given access token
-    public var userByToken: UserByToken? {
+    public var userByToken: FetchSaves? {
       get {
-        return (resultMap["userByToken"] as? ResultMap).flatMap { UserByToken(unsafeResultMap: $0) }
+        return (resultMap["userByToken"] as? ResultMap).flatMap { FetchSaves(unsafeResultMap: $0) }
       }
       set {
         resultMap.updateValue(newValue?.resultMap, forKey: "userByToken")
       }
     }
 
-    public struct UserByToken: GraphQLSelectionSet {
+    public struct FetchSaves: GraphQLSelectionSet {
       public static let possibleTypes: [String] = ["User"]
 
       public static var selections: [GraphQLSelection] {
