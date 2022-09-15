@@ -223,4 +223,4 @@ app:
 meta:
   bitrise.io:
     machine_type_id: g2.12core
-    stack: osx-xcode-13.4.x
+    stack: osx-xcode-14.0.x
