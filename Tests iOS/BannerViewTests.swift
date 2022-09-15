@@ -41,11 +41,11 @@ class BannerViewTests: XCTestCase {
         let banner = app.bannerView.wait()
 
         banner.buttons.firstMatch.tap()
-        waitForDisappearance(of: banner)
+        waitForDisappearance(of: banner, timeout: 10)
 
-        home.recentSavesView(matching: "Slate 1, Recommendation 1").wait()
+        home.recentSavesView(matching: "Slate 1, Recommendation 1").wait(timeout: 10)
         app.tabBar.myListButton.tap()
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
+        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait(timeout: 10)
     }
 
     func test_foregroundingTheApp_withURL_showsSaveFromClipboardBanner() {
@@ -83,9 +83,9 @@ class BannerViewTests: XCTestCase {
         }
 
         banner.buttons.firstMatch.tap()
-        waitForDisappearance(of: banner)
+        waitForDisappearance(of: banner, timeout: 10)
 
-        app.homeView.recentSavesView(matching: "Item 3").wait()
+        app.homeView.recentSavesView(matching: "Item 3").wait(timeout: 10)
     }
 
     func test_navigatingToHomeTab_withoutSavedURL_doesNotShowSaveFromClipboardBanner() {

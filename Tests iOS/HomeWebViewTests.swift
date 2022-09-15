@@ -76,6 +76,6 @@ class HomeWebViewTests: XCTestCase {
         app
             .webReaderView
             .staticText(matching: "Hello, world")
-            .wait()
+            .wait(timeout: 10)
     }
 }

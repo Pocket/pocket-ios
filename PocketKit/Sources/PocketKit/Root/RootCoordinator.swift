@@ -42,7 +42,7 @@ class RootCoordinator {
 
         window?.makeKeyAndVisible()
 
-        rootViewModel.$bannerViewModel.sink { [weak self] viewModel in
+        rootViewModel.$bannerViewModel.receive(on: DispatchQueue.main).sink { [weak self] viewModel in
             if let viewModel = viewModel {
                 self?.setupBanner(with: viewModel)
             } else {
