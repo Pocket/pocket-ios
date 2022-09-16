@@ -61,6 +61,18 @@ workflows:
             - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
             - archive_url: '$BITRISEIO_BASE_FONTS_URL'
           title: Install fonts
+      - script@1:
+          title: Download latest schema
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+
+                # fail if any commands fails
+                set -e
+
+                cd PocketKit
+                swift run ApolloCodegen download-schema
+                swift run ApolloCodegen generate
 
   #Workflow to that can be ran after archiving builds to upload dysms to sentry.
   _upload_sentry:
