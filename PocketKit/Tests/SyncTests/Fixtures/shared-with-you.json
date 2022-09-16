@@ -1,0 +1,42 @@
+{
+  "data": {
+    "__typename": "[type-name-here]",
+    "itemByUrl": {
+      "__typename": "[some-type-name]",
+      "remoteID": "recommended-item-1",
+      "givenUrl": "https://example.com/item-1",
+      "resolvedUrl": "https://example.com/item-1",
+      "title": "Slate 1, Shared With You",
+      "language": "en",
+      "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
+      "timeToRead": 1,
+      "authors": [
+        {
+          "__typename": "Author",
+          "id": "author-1",
+          "name": "Jacob",
+          "url": "http://example.com/authors/author-1"
+        },
+        {
+          "__typename": "Author",
+          "id": "author-2",
+          "name": "David",
+          "url": "http://example.com/authors/author-2"
+        }
+      ],
+      "datePublished": "2021-01-01 12:01:01",
+      "images": [],
+      "excerpt": "Cursus Aenean Elit",
+      "domain": "slate-1-rec-1.example.com",
+      "domainMetadata": {
+        "__typename": "[some-type-name]",
+        "name": "Lifehacker",
+        "logo": "https://slate-1-rec-1.example.com/logo.png"
+      },
+      "isArticle": true,
+      "hasImage": "HAS_IMAGES",
+      "hasVideo": "HAS_VIDEOS",
+      "marticle": []
+    }
+  }
+}

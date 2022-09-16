@@ -5,12 +5,14 @@ import CoreData
 import Analytics
 import Localization
 import SharedPocketKit
+import SharedWithYou
 
 enum ReadableType {
     case recommendation(RecommendationViewModel)
     case savedItem(SavedItemViewModel)
     case webViewRecommendation(RecommendationViewModel)
     case webViewSavedItem(SavedItemViewModel)
+    case sharedWithYou(SharedWithYouViewModel)
 
     func clearIsPresentingReaderSettings() {
         switch self {
@@ -22,6 +24,8 @@ enum ReadableType {
             recommendationViewModel.clearPresentedWebReaderURL()
         case .webViewSavedItem(let savedItemViewModel):
             savedItemViewModel.clearPresentedWebReaderURL()
+        case .sharedWithYou(let sharedWithYouViewModel):
+            sharedWithYouViewModel.clearIsPresentingReaderSettings()
         }
     }
 }
@@ -106,6 +110,7 @@ class HomeViewModel: NSObject {
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
+    private var sharedWithYouCount: Int = 0
 
     init(
         source: Source,
@@ -194,6 +199,15 @@ extension HomeViewModel {
             )
         }
 
+        // sharedWithYouCount = shatedWithYouItems.count
+        // if !shatedWithYouItems.isEmpty {
+        //     snapshot.appendSections([.sharedWithYou])
+        //     snapshot.appendItems(
+        //         shatedWithYouItems.map { .sharedWithYou($0.objectID) },
+        //         toSection: .sharedWithYou
+        //     )
+        // }
+
         guard !isOffline else {
             snapshot.appendSections([.offline])
             snapshot.appendItems([.offline], toSection: .offline)
@@ -247,6 +261,12 @@ extension HomeViewModel {
             }
 
             select(savedItem: savedItem, at: indexPath)
+        case .sharedWithYou(let objectID):
+            guard let sharedWithYouHighlight = source.mainContext.object(with: objectID) as? SharedWithYouHighlight else {
+                return
+            }
+
+            select(sharedWithYouHighlight: sharedWithYouHighlight, at: indexPath)
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
                 return
@@ -317,6 +337,35 @@ extension HomeViewModel {
         }
         tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath.item))
     }
+
+    private func select(sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
+        tracker.track(
+            event: SnowplowEngagement(type: .general, value: nil),
+            contexts(for: sharedWithYouHighlight, at: indexPath)
+        )
+
+        let item = sharedWithYouHighlight.item
+
+        if item?.shouldOpenInWebView == true {
+            presentedWebReaderURL = item?.bestURL
+            tracker.track(
+                event: ContentOpenEvent(destination: .external, trigger: .click),
+                contexts(for: sharedWithYouHighlight, at: indexPath)
+            )
+        } else {
+            let viewModel = SharedWithYouViewModel(
+                sharedWithYouHighlight: sharedWithYouHighlight,
+                source: source,
+                tracker: tracker.childTracker(hosting: .articleView.screen)
+            )
+            selectedReadableType = .sharedWithYou(viewModel)
+
+            tracker.track(
+                event: ContentOpenEvent(destination: .internal, trigger: .click),
+                contexts(for: sharedWithYouHighlight, at: indexPath)
+            )
+        }
+    }
 }
 
 // MARK: - Section Headers
@@ -330,6 +379,16 @@ extension HomeViewModel {
                 buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
                 self?.tappedSeeAll = .saves
+            }
+        case .sharedWithYou:
+            var sectionName = "Shared With You"
+
+            if #available(iOS 16.0, *) {
+                sectionName = SWHighlightCenter.highlightCollectionTitle
+            }
+            return .init(name: sectionName, buttonTitle: "See All", buttonImage: nil) { [weak self] in
+                // TODO: Go to a view for shared with you.
+                self?.tappedSeeAll = .myList
             }
         case .slateHero(let objectID):
             guard let slate = source.viewObject(id: objectID) as? Slate else {
@@ -423,6 +482,79 @@ extension HomeViewModel {
         presentedAlert = nil
         tracker.track(event: Events.Home.RecentSavesCardDelete(url: item.url, positionInList: indexPath.item))
         source.delete(item: item)
+    }
+}
+
+// MARK: - Shared With You Model
+extension HomeViewModel {
+    func numberOfSharedWithYouItems() -> Int {
+        return sharedWithYouCount
+    }
+
+    func sharedWithYouViewModel(
+        for objectID: NSManagedObjectID,
+        at indexPath: IndexPath?
+    ) -> HomeSharedWithYouCellViewModel? {
+        guard let sharedWithYou = source.mainContext.object(with: objectID) as? SharedWithYouHighlight else {
+            return nil
+        }
+
+        guard let indexPath = indexPath else {
+            return HomeSharedWithYouCellViewModel(sharedWithYou: sharedWithYou)
+        }
+
+        return HomeSharedWithYouCellViewModel(
+            sharedWithYou: sharedWithYou,
+            overflowActions: [
+                .share { [weak self] sender in
+                    self?.sharedActivity = PocketItemActivity(url: sharedWithYou.url, sender: sender)
+                },
+            ],
+            primaryAction: .recommendationPrimary { [weak self] _ in
+                let isSaved = sharedWithYou.item?.savedItem != nil
+                && sharedWithYou.item?.savedItem?.isArchived == false
+
+                if isSaved {
+                   self?.archive(sharedWithYou, at: indexPath)
+                } else {
+                   self?.save(sharedWithYou, at: indexPath)
+                }
+            }
+        )
+    }
+
+    private func save(_ sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
+        let contexts = contexts(for: sharedWithYouHighlight, at: indexPath) + [UIContext.button(identifier: .itemSave)]
+
+        tracker.track(
+            event: SnowplowEngagement(type: .save, value: nil),
+            contexts
+        )
+
+        source.save(sharedWithYouHighlight: sharedWithYouHighlight)
+    }
+
+    private func archive(_ sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) {
+        let contexts = contexts(for: sharedWithYouHighlight, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
+        tracker.track(
+            event: SnowplowEngagement(type: .save, value: nil),
+            contexts
+        )
+
+       source.archive(sharedWithYouHighlight: sharedWithYouHighlight)
+    }
+
+    private func contexts(for sharedWithYouHighlight: SharedWithYouHighlight, at indexPath: IndexPath) -> [Context] {
+        guard let sharedWithYouURL = sharedWithYouHighlight.item?.bestURL else {
+            return []
+        }
+
+        let contexts: [Context] = []
+
+        return contexts + [
+            ContentContext(url: sharedWithYouURL),
+            UIContext.home.item(index: UIIndex(indexPath.item))
+        ]
     }
 }
 
@@ -576,7 +708,7 @@ extension HomeViewModel {
 extension HomeViewModel {
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading, .offline:
+        case .loading, .offline, .sharedWithYou:
             return
         case .recentSaves(let objectID):
             guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
@@ -610,6 +742,7 @@ extension HomeViewModel {
     enum Section: Hashable {
         case loading
         case recentSaves
+        case sharedWithYou
         case slateHero(NSManagedObjectID)
         case slateCarousel(NSManagedObjectID)
         case offline
@@ -617,6 +750,7 @@ extension HomeViewModel {
 
     enum Cell: Hashable {
         case loading
+        case sharedWithYou(NSManagedObjectID)
         case recentSaves(NSManagedObjectID)
         case recommendationHero(NSManagedObjectID)
         case recommendationCarousel(NSManagedObjectID)

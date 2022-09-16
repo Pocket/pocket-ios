@@ -1,0 +1,20 @@
+query SharedWithYouNeededData($url: String!) {
+  itemByUrl(url: $url) {
+    resolvedItemId: itemId
+    givenUrl
+    title
+    topImageUrl
+    timeToRead
+    domain
+    excerpt
+    domainMetadata {
+      name
+    }
+  }
+}
+
+query SharedWithYouFullItem($url: String!) {
+  itemByUrl(url: $url) {
+    ...ItemParts
+  }
+}

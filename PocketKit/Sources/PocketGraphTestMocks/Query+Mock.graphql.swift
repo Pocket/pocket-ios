@@ -16,6 +16,7 @@ public class Query: MockObject {
     @available(*, deprecated, message: "Please use queries specific to the surface ex. setMomentSlate. If a named query for your surface does not yet exit please reach out to the Data Products team and they will happily provide you with a named query.")
     @Field<SlateLineup>("getSlateLineup") public var getSlateLineup
     @Field<Item>("itemByItemId") public var itemByItemId
+    @Field<Item>("itemByUrl") public var itemByUrl
     @Field<User>("user") public var user
   }
 }
@@ -26,6 +27,7 @@ public extension Mock where O == Query {
     getSlate: Mock<Slate>? = nil,
     getSlateLineup: Mock<SlateLineup>? = nil,
     itemByItemId: Mock<Item>? = nil,
+    itemByUrl: Mock<Item>? = nil,
     user: Mock<User>? = nil
   ) {
     self.init()
@@ -33,6 +35,7 @@ public extension Mock where O == Query {
     self.getSlate = getSlate
     self.getSlateLineup = getSlateLineup
     self.itemByItemId = itemByItemId
+    self.itemByUrl = itemByUrl
     self.user = user
   }
 }

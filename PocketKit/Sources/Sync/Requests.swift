@@ -120,6 +120,29 @@ public enum Requests {
         Recommendation.fetchRequest()
     }
 
+    public static func fetchSharedWithYouHighlight() -> NSFetchRequest<SharedWithYouHighlight> {
+        SharedWithYouHighlight.fetchRequest()
+    }
+
+    public static func fetchAllSharedWithYouHighlights() -> NSFetchRequest<SharedWithYouHighlight> {
+        let request: NSFetchRequest<SharedWithYouHighlight> = SharedWithYouHighlight.fetchRequest()
+
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \SharedWithYouHighlight.sortOrder, ascending: true),
+            NSSortDescriptor(key: "item.title", ascending: true)
+        ]
+
+        return request
+    }
+
+    public static func fetchSharedWithYouHighlights(limit: Int? = nil) -> NSFetchRequest<SharedWithYouHighlight> {
+        let request = fetchAllSharedWithYouHighlights()
+        if let limit = limit {
+            request.fetchLimit = limit
+        }
+        return request
+    }
+
     public static func fetchItems() -> NSFetchRequest<Item> {
         Item.fetchRequest()
     }

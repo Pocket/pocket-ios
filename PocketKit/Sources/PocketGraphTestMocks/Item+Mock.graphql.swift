@@ -27,6 +27,7 @@ public class Item: MockObject {
     @Field<SyndicatedArticle?>("syndicatedArticle") public var syndicatedArticle
     @Field<Int?>("timeToRead") public var timeToRead
     @Field<String?>("title") public var title
+    @Field<String>("resolvedItemId") public var resolvedItemId
     @available(*, deprecated, message: "use the topImage object")
     @Field<PocketGraph.Url?>("topImageUrl") public var topImageUrl
     @Field<Int?>("wordCount") public var wordCount
@@ -48,6 +49,7 @@ public extension Mock where O == Item {
     language: String? = nil,
     marticle: [AnyMock]? = nil,
     remoteID: String? = nil,
+    resolvedItemId: String? = nil,
     resolvedUrl: PocketGraph.Url? = nil,
     syndicatedArticle: Mock<SyndicatedArticle>? = nil,
     timeToRead: Int? = nil,
@@ -69,6 +71,7 @@ public extension Mock where O == Item {
     self.language = language
     self.marticle = marticle
     self.remoteID = remoteID
+    self.resolvedItemId = resolvedItemId
     self.resolvedUrl = resolvedUrl
     self.syndicatedArticle = syndicatedArticle
     self.timeToRead = timeToRead

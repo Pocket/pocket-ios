@@ -44,6 +44,7 @@ struct Services {
     let bannerPresenter: BannerPresenter
     let notificationCenter: NotificationCenter
     let sessionBackupUtility: SessionBackupUtility
+    let sharedWithYouManager: SharedWithYouManager
 
     private let persistentContainer: PersistentContainer
 
@@ -208,6 +209,8 @@ struct Services {
             store: PocketEncryptedStore(),
             notificationCenter: notificationCenter
         )
+
+        sharedWithYouManager = SharedWithYouManager(source: source, appSession: appSession)
     }
 }
 

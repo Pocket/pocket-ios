@@ -1017,6 +1017,140 @@ extension MockSource {
     }
 }
 
+// MARK: - Shared With You
+extension MockSource {
+    func fetchDetails(for sharedWithYouHighlight: Sync.SharedWithYouHighlight) async throws {
+
+    }
+
+    static let saveSharedWithYouHighlight = "saveSharedWithYouHighlight"
+    typealias SaveSharedWithYouHighlightImpl = (SharedWithYouHighlight) -> Void
+    struct SaveSharedWithYouHighlightCall {
+        let sharedWithYouHighlight: SharedWithYouHighlight
+    }
+
+    func stubSaveSharedWithYouHighlight(_ impl: @escaping SaveSharedWithYouHighlightImpl) {
+        implementations[Self.saveSharedWithYouHighlight] = impl
+    }
+
+    func saveSharedWithYouHighlightCall(at index: Int) -> SaveSharedWithYouHighlightCall? {
+        guard let calls = calls[Self.saveSharedWithYouHighlight],
+              index < calls.count,
+              let call = calls[index] as? SaveSharedWithYouHighlightCall else {
+                  return nil
+              }
+
+        return call
+    }
+    func save(sharedWithYouHighlight: Sync.SharedWithYouHighlight) {
+        guard let impl = implementations[Self.saveSharedWithYouHighlight] as? SaveSharedWithYouHighlightImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.saveSharedWithYouHighlight] = (calls[Self.saveSharedWithYouHighlight] ?? []) + [
+            SaveSharedWithYouHighlightCall(sharedWithYouHighlight: sharedWithYouHighlight)
+        ]
+
+        impl(sharedWithYouHighlight)
+    }
+
+    static let archiveSharedWithYouHighlight = "archiveSharedWithYouHighlight"
+    typealias ArchiveSharedWithYouHighlightImpl = (SharedWithYouHighlight) -> Void
+    struct ArchiveSharedWithYouHighlightCall {
+        let sharedWithYouHighlight: SharedWithYouHighlight
+    }
+
+    func stubArchiveSharedWithYouHighlight(_ impl: @escaping ArchiveSharedWithYouHighlightImpl) {
+        implementations[Self.saveSharedWithYouHighlight] = impl
+    }
+
+    func archiveSharedWithYouHighlightCall(at index: Int) -> ArchiveSharedWithYouHighlightCall? {
+        guard let calls = calls[Self.archiveSharedWithYouHighlight],
+              index < calls.count,
+              let call = calls[index] as? ArchiveSharedWithYouHighlightCall else {
+                  return nil
+              }
+
+        return call
+    }
+
+    func archive(sharedWithYouHighlight: Sync.SharedWithYouHighlight) {
+        guard let impl = implementations[Self.archiveSharedWithYouHighlight] as? ArchiveSharedWithYouHighlightImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.archiveSharedWithYouHighlight] = (calls[Self.archiveSharedWithYouHighlight] ?? []) + [
+            ArchiveSharedWithYouHighlightCall(sharedWithYouHighlight: sharedWithYouHighlight)
+        ]
+
+        impl(sharedWithYouHighlight)
+    }
+
+    static let removeSharedWithYouHighlight = "removeSharedWithYouHighlight"
+    typealias RemoveSharedWithYouHighlightImpl = (SharedWithYouHighlight) -> Void
+    struct RemoveSharedWithYouHighlightCall {
+        let sharedWithYouHighlight: SharedWithYouHighlight
+    }
+
+    func stubRemoveSharedWithYouHighlight(_ impl: @escaping RemoveSharedWithYouHighlightImpl) {
+        implementations[Self.saveSharedWithYouHighlight] = impl
+    }
+
+    func removeSharedWithYouHighlightCall(at index: Int) -> RemoveSharedWithYouHighlightCall? {
+        guard let calls = calls[Self.removeSharedWithYouHighlight],
+              index < calls.count,
+              let call = calls[index] as? RemoveSharedWithYouHighlightCall else {
+                  return nil
+              }
+
+        return call
+    }
+
+    func remove(sharedWithYouHighlight: Sync.SharedWithYouHighlight) {
+        guard let impl = implementations[Self.removeSharedWithYouHighlight] as? RemoveSharedWithYouHighlightImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.removeSharedWithYouHighlight] = (calls[Self.removeSharedWithYouHighlight] ?? []) + [
+            RemoveSharedWithYouHighlightCall(sharedWithYouHighlight: sharedWithYouHighlight)
+        ]
+
+        impl(sharedWithYouHighlight)
+    }
+
+    static let saveNewSharedWithYouSnapshot = "saveNewSharedWithYouSnapshot"
+    typealias SaveNewSharedWithYouSnapshotImpl = ([Sync.PocketSWHighlight]) -> Void
+    struct SaveNewSharedWithYouSnapshotCall {
+        let sharedWithYouHighlights: [Sync.PocketSWHighlight]
+    }
+
+    func stubSaveNewSharedWithYouSnapshot(_ impl: @escaping SaveNewSharedWithYouSnapshotImpl) {
+        implementations[Self.saveSharedWithYouHighlight] = impl
+    }
+
+    func saveNewSharedWithYouSnapshotCall(at index: Int) -> SaveNewSharedWithYouSnapshotCall? {
+        guard let calls = calls[Self.saveNewSharedWithYouSnapshot],
+              index < calls.count,
+              let call = calls[index] as? SaveNewSharedWithYouSnapshotCall else {
+                  return nil
+              }
+
+        return call
+    }
+
+    func saveNewSharedWithYouSnapshot(for sharedWithYouHighlights: [Sync.PocketSWHighlight]) throws {
+        guard let impl = implementations[Self.saveNewSharedWithYouSnapshot] as? SaveNewSharedWithYouSnapshotImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.saveNewSharedWithYouSnapshot] = (calls[Self.saveNewSharedWithYouSnapshot] ?? []) + [
+           SaveNewSharedWithYouSnapshotCall(sharedWithYouHighlights: sharedWithYouHighlights)
+        ]
+
+        impl(sharedWithYouHighlights)
+    }
+}
+
 // MARK: - Fetch details
 extension MockSource {
     static let fetchDetails = "fetchDetails"

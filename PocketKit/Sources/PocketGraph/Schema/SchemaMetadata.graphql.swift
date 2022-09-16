@@ -36,13 +36,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Image": return PocketGraph.Objects.Image
     case "SyndicatedArticle": return PocketGraph.Objects.SyndicatedArticle
     case "Publisher": return PocketGraph.Objects.Publisher
-    case "Mutation": return PocketGraph.Objects.Mutation
-    case "SlateLineup": return PocketGraph.Objects.SlateLineup
-    case "Slate": return PocketGraph.Objects.Slate
-    case "Recommendation": return PocketGraph.Objects.Recommendation
-    case "CuratedInfo": return PocketGraph.Objects.CuratedInfo
-    case "UnleashAssignmentList": return PocketGraph.Objects.UnleashAssignmentList
-    case "UnleashAssignment": return PocketGraph.Objects.UnleashAssignment
     case "MarticleText": return PocketGraph.Objects.MarticleText
     case "MarticleDivider": return PocketGraph.Objects.MarticleDivider
     case "MarticleTable": return PocketGraph.Objects.MarticleTable
@@ -55,6 +48,13 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "UnMarseable": return PocketGraph.Objects.UnMarseable
     case "BulletedListElement": return PocketGraph.Objects.BulletedListElement
     case "NumberedListElement": return PocketGraph.Objects.NumberedListElement
+    case "Mutation": return PocketGraph.Objects.Mutation
+    case "SlateLineup": return PocketGraph.Objects.SlateLineup
+    case "Slate": return PocketGraph.Objects.Slate
+    case "Recommendation": return PocketGraph.Objects.Recommendation
+    case "CuratedInfo": return PocketGraph.Objects.CuratedInfo
+    case "UnleashAssignmentList": return PocketGraph.Objects.UnleashAssignmentList
+    case "UnleashAssignment": return PocketGraph.Objects.UnleashAssignment
     case "TagConnection": return PocketGraph.Objects.TagConnection
     case "TagEdge": return PocketGraph.Objects.TagEdge
     case "SavedItemSearchResultConnection": return PocketGraph.Objects.SavedItemSearchResultConnection

@@ -1,4 +1,5 @@
 import UIKit
+import SharedWithYou
 import Sync
 import CoreData
 
@@ -89,7 +90,46 @@ class HomeViewControllerSectionProvider {
         return section
     }
 
+    func sharedWithYouSection(in viewModel: HomeViewModel, width: CGFloat) -> NSCollectionLayoutSection? {
+        let numberOfSharedWithYouItems = viewModel.numberOfSharedWithYouItems()
+        guard numberOfSharedWithYouItems > 0 else { return .empty() }
+        let itemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1.0))
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.8*Double(numberOfSharedWithYouItems)), heightDimension: .absolute(StyleConstants.sharedWithYouHeight))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitem: item, count: numberOfSharedWithYouItems)
+        group.interItemSpacing = .fixed(16)
+
+        var sectionName = "Shared With You"
+
+        if #available(iOS 16.0, *) {
+            sectionName = SWHighlightCenter.highlightCollectionTitle
+        }
+
+        let sectionHeaderViewModel: SectionHeaderView.Model = .init(name: sectionName, buttonTitle: "See All", buttonImage: nil)
+        let headerItem = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(sectionHeaderViewModel.height(width: width - Constants.sideMargin*2))
+            ),
+            elementKind: SectionHeaderView.kind,
+            alignment: .top
+        )
+
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        section.boundarySupplementaryItems = [headerItem]
+        section.contentInsets = NSDirectionalEdgeInsets(
+            top: Constants.margin,
+            leading: Constants.sideMargin,
+            bottom: Constants.sectionSpacing,
+            trailing: Constants.sideMargin
+        )
+        return section
+    }
+
     func heroSection(for slateID: NSManagedObjectID, in viewModel: HomeViewModel, env: NSCollectionLayoutEnvironment) -> NSCollectionLayoutSection? {
+
         let heroItemSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .fractionalHeight(1))
         let heroItem = NSCollectionLayoutItem(layoutSize: heroItemSize)
 

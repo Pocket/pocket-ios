@@ -212,4 +212,28 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         )
         Adjust.appDidLaunch(adjustConfig)
     }
+
+    public func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        // TODO: Do actual url checking
+        return true
+    }
+
+    /**
+     Handle opening a URL from a universal link.
+     We support Syndicated URLs and Collection URLs
+     */
+    public func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
+        // TODO: Do actual url checking
+        return true
+    }
+
+    /**
+     Helper Function to see if something is a syndicated url.
+     */
+    func isSyndicatedURL(url: String) -> Bool {
+       let urlRegEx = "^https?://(?:getpocket.com)/explore/item/(.*)"
+       let urlTest = NSPredicate(format: "SELF MATCHES %@", urlRegEx)
+       let result = urlTest.evaluate(with: url)
+       return result
+    }
 }

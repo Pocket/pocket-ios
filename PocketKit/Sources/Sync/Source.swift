@@ -1,12 +1,21 @@
 import Combine
 import CoreData
 import Foundation
+import SharedWithYou
 
 public enum InitialDownloadState {
     case unknown
     case started
     case paginating(totalCount: Int, currentPercentProgress: Float)
     case completed
+}
+
+public struct PocketSWHighlight {
+    var url: URL!
+
+    public init(url: URL!) {
+        self.url = url
+    }
 }
 
 public protocol Source {
@@ -77,6 +86,21 @@ public protocol Source {
     func fetchDetails(for savedItem: SavedItem) async throws
 
     func fetchDetails(for recommendation: Recommendation) async throws
+
+    func fetchDetails(for sharedWithYouHighlight: SharedWithYouHighlight) async throws
+
+    func save(sharedWithYouHighlight: SharedWithYouHighlight)
+
+    func archive(sharedWithYouHighlight: SharedWithYouHighlight)
+
+    func remove(sharedWithYouHighlight: SharedWithYouHighlight)
+
+    /**
+      Saves a new snapshot of highlights provided by SWHighlightCenter delegates.
+    - parameter sharedWithYouHighlights: The highlights to replace the existing snapsnow.
+    */
+    @available(iOS 16.0, *)
+    func saveNewSharedWithYouSnapshot(for sharedWithYouHighlights: [PocketSWHighlight]) throws
 
     func save(url: URL)
 

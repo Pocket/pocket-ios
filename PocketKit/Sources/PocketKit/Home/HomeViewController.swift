@@ -42,6 +42,8 @@ class HomeViewController: UIViewController {
         switch section {
         case .loading:
             return self.sectionProvider.loadingSection()
+        case .sharedWithYou:
+            return self.sectionProvider.sharedWithYouSection(in: self.model, width: env.container.effectiveContentSize.width)
         case .recentSaves:
             return self.sectionProvider.recentSavesSection(in: self.model, env: env)
         case .slateHero(let slateID):
@@ -96,6 +98,9 @@ class HomeViewController: UIViewController {
         collectionView.register(cellClass: RecommendationCarouselCell.self)
         collectionView.register(cellClass: ItemsListOfflineCell.self)
         collectionView.register(cellClass: RecommendationCellHeroWide.self)
+        if #available(iOS 16.0, *) {
+            collectionView.register(cellClass: SharedWithYouCell.self)
+        }
         collectionView.register(viewClass: SectionHeaderView.self, forSupplementaryViewOfKind: SectionHeaderView.kind)
         collectionView.delegate = self
 
@@ -197,9 +202,20 @@ extension HomeViewController {
             guard let viewModel = model.recentSavesViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
-
             cell.configure(model: viewModel)
             return cell
+        case .sharedWithYou(let objectID):
+            if #available(iOS 16.0, *) {
+                let cell: SharedWithYouCell = collectionView.dequeueCell(for: indexPath)
+                guard let viewModel = model.sharedWithYouViewModel(for: objectID, at: indexPath) else {
+                    return cell
+                }
+
+                cell.configure(sharedWithYouModel: viewModel)
+                return cell
+            }
+            // This should never be called on non iOS 16 devices because we will never fill it with SharedWithYou content
+            return UICollectionViewCell(frame: CGRect())
         case .recommendationHero(let objectID):
             if traitCollection.shouldUseWideLayout() {
                 let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)
