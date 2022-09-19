@@ -6,7 +6,7 @@ import Foundation
 import CoreData
 
 extension SavedItem {
-    typealias SavedItemEdge = FetchSavesQuery.Data.FetchSaves.SavedItem.Edge
+    typealias SavedItemEdge = FetchSavesQuery.Data.UserByToken.SavedItem.Edge
     public typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
 

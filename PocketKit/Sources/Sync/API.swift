@@ -1797,7 +1797,7 @@ public final class FetchSavesQuery: GraphQLQuery {
 
     public static var selections: [GraphQLSelection] {
       return [
-        GraphQLField("userByToken", arguments: ["token": GraphQLVariable("token")], type: .object(FetchSaves.selections)),
+        GraphQLField("userByToken", arguments: ["token": GraphQLVariable("token")], type: .object(UserByToken.selections)),
       ]
     }
 
@@ -1807,21 +1807,21 @@ public final class FetchSavesQuery: GraphQLQuery {
       self.resultMap = unsafeResultMap
     }
 
-    public init(userByToken: FetchSaves? = nil) {
-      self.init(unsafeResultMap: ["__typename": "Query", "userByToken": userByToken.flatMap { (value: FetchSaves) -> ResultMap in value.resultMap }])
+    public init(userByToken: UserByToken? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "userByToken": userByToken.flatMap { (value: UserByToken) -> ResultMap in value.resultMap }])
     }
 
     /// Gets a user entity for a given access token
-    public var userByToken: FetchSaves? {
+    public var userByToken: UserByToken? {
       get {
-        return (resultMap["userByToken"] as? ResultMap).flatMap { FetchSaves(unsafeResultMap: $0) }
+        return (resultMap["userByToken"] as? ResultMap).flatMap { UserByToken(unsafeResultMap: $0) }
       }
       set {
         resultMap.updateValue(newValue?.resultMap, forKey: "userByToken")
       }
     }
 
-    public struct FetchSaves: GraphQLSelectionSet {
+    public struct UserByToken: GraphQLSelectionSet {
       public static let possibleTypes: [String] = ["User"]
 
       public static var selections: [GraphQLSelection] {
@@ -4647,7 +4647,7 @@ public final class FetchSavesQuery: GraphQLQuery {
                         }
                       }
 
-                      /// Zero-indexed level, for handling nexted lists.
+                      /// Zero-indexed level, for handling nested lists.
                       public var level: Int {
                         get {
                           return resultMap["level"]! as! Int
@@ -7805,7 +7805,7 @@ public final class SaveItemMutation: GraphQLMutation {
                   }
                 }
 
-                /// Zero-indexed level, for handling nexted lists.
+                /// Zero-indexed level, for handling nested lists.
                 public var level: Int {
                   get {
                     return resultMap["level"]! as! Int
@@ -11302,7 +11302,7 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
                   }
                 }
 
-                /// Zero-indexed level, for handling nexted lists.
+                /// Zero-indexed level, for handling nested lists.
                 public var level: Int {
                   get {
                     return resultMap["level"]! as! Int
@@ -14459,7 +14459,7 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
                   }
                 }
 
-                /// Zero-indexed level, for handling nexted lists.
+                /// Zero-indexed level, for handling nested lists.
                 public var level: Int {
                   get {
                     return resultMap["level"]! as! Int
@@ -14979,6 +14979,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
     }
 
     /// Request a specific `SlateLineup` by id
+    @available(*, deprecated, message: "Please use queries specific to the surface ex. setMomentSlate. If a named query for your surface does not yet exit please reach out to the Data Products team and they will happily provide you with a named query.")
     public var getSlateLineup: GetSlateLineup? {
       get {
         return (resultMap["getSlateLineup"] as? ResultMap).flatMap { GetSlateLineup(unsafeResultMap: $0) }
@@ -15030,8 +15031,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
         }
       }
 
-      /// A guid that is unique to every API request that returned slates, such as `getRecommendationSlateLineup` or `getSlate`.
-      /// The API will provide a new request id every time apps hit the API.
+      /// A guid that is unique to every API request that returned slates, such as `getRecommendationSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API.
       public var requestId: GraphQLID {
         get {
           return resultMap["requestId"]! as! GraphQLID
@@ -15041,8 +15041,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
         }
       }
 
-      /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment.
-      /// Production apps typically won't request a specific one, but can for QA or during a/b testing.
+      /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing.
       public var experimentId: GraphQLID {
         get {
           return resultMap["experimentId"]! as! GraphQLID
@@ -15106,8 +15105,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
           }
         }
 
-        /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`.
-        /// The API will provide a new request id every time apps hit the API.
+        /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API.
         public var requestId: GraphQLID {
           get {
             return resultMap["requestId"]! as! GraphQLID
@@ -15117,8 +15115,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
           }
         }
 
-        /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment.
-        /// Production apps typically won't request a specific one, but can for QA or during a/b testing.
+        /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing.
         public var experimentId: GraphQLID {
           get {
             return resultMap["experimentId"]! as! GraphQLID
@@ -15128,7 +15125,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
           }
         }
 
-        /// The name to show to the user for this set of recomendations
+        /// The name to show to the user for this set of recommendations
         public var displayName: String? {
           get {
             return resultMap["displayName"] as? String
@@ -15148,7 +15145,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
           }
         }
 
-        /// An ordered list of the recomendations to show to the user
+        /// An ordered list of the recommendations to show to the user
         public var recommendations: [Recommendation] {
           get {
             return (resultMap["recommendations"] as! [ResultMap]).map { (value: ResultMap) -> Recommendation in Recommendation(unsafeResultMap: value) }
@@ -15214,7 +15211,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
             }
           }
 
-          /// A generated id from the Data and Learning team that represents the Recomendation
+          /// A generated id from the Data and Learning team that represents the Recommendation
           public var id: GraphQLID? {
             get {
               return resultMap["id"] as? GraphQLID
@@ -15744,6 +15741,7 @@ public final class GetSlateQuery: GraphQLQuery {
     }
 
     /// Request a specific `Slate` by id
+    @available(*, deprecated, message: "Please use queries specific to the surface ex. setMomentSlate. If a named query for your surface does not yet exit please reach out to the Data Products team and they will happily provide you with a named query.")
     public var getSlate: GetSlate? {
       get {
         return (resultMap["getSlate"] as? ResultMap).flatMap { GetSlate(unsafeResultMap: $0) }
@@ -15797,8 +15795,7 @@ public final class GetSlateQuery: GraphQLQuery {
         }
       }
 
-      /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`.
-      /// The API will provide a new request id every time apps hit the API.
+      /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API.
       public var requestId: GraphQLID {
         get {
           return resultMap["requestId"]! as! GraphQLID
@@ -15808,8 +15805,7 @@ public final class GetSlateQuery: GraphQLQuery {
         }
       }
 
-      /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment.
-      /// Production apps typically won't request a specific one, but can for QA or during a/b testing.
+      /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing.
       public var experimentId: GraphQLID {
         get {
           return resultMap["experimentId"]! as! GraphQLID
@@ -15819,7 +15815,7 @@ public final class GetSlateQuery: GraphQLQuery {
         }
       }
 
-      /// The name to show to the user for this set of recomendations
+      /// The name to show to the user for this set of recommendations
       public var displayName: String? {
         get {
           return resultMap["displayName"] as? String
@@ -15839,7 +15835,7 @@ public final class GetSlateQuery: GraphQLQuery {
         }
       }
 
-      /// An ordered list of the recomendations to show to the user
+      /// An ordered list of the recommendations to show to the user
       public var recommendations: [Recommendation] {
         get {
           return (resultMap["recommendations"] as! [ResultMap]).map { (value: ResultMap) -> Recommendation in Recommendation(unsafeResultMap: value) }
@@ -15905,7 +15901,7 @@ public final class GetSlateQuery: GraphQLQuery {
           }
         }
 
-        /// A generated id from the Data and Learning team that represents the Recomendation
+        /// A generated id from the Data and Learning team that represents the Recommendation
         public var id: GraphQLID? {
           get {
             return resultMap["id"] as? GraphQLID
@@ -19119,7 +19115,7 @@ public final class SavedItemByIdQuery: GraphQLQuery {
                     }
                   }
 
-                  /// Zero-indexed level, for handling nexted lists.
+                  /// Zero-indexed level, for handling nested lists.
                   public var level: Int {
                     get {
                       return resultMap["level"]! as! Int
@@ -21980,7 +21976,7 @@ public final class ItemByIdQuery: GraphQLQuery {
               }
             }
 
-            /// Zero-indexed level, for handling nexted lists.
+            /// Zero-indexed level, for handling nested lists.
             public var level: Int {
               get {
                 return resultMap["level"]! as! Int
@@ -26134,7 +26130,7 @@ public struct SavedItemParts: GraphQLFragment {
               }
             }
 
-            /// Zero-indexed level, for handling nexted lists.
+            /// Zero-indexed level, for handling nested lists.
             public var level: Int {
               get {
                 return resultMap["level"]! as! Int
@@ -28946,7 +28942,7 @@ public struct ItemParts: GraphQLFragment {
           }
         }
 
-        /// Zero-indexed level, for handling nexted lists.
+        /// Zero-indexed level, for handling nested lists.
         public var level: Int {
           get {
             return resultMap["level"]! as! Int
@@ -29485,8 +29481,7 @@ public struct SlateParts: GraphQLFragment {
     }
   }
 
-  /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`.
-  /// The API will provide a new request id every time apps hit the API.
+  /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API.
   public var requestId: GraphQLID {
     get {
       return resultMap["requestId"]! as! GraphQLID
@@ -29496,8 +29491,7 @@ public struct SlateParts: GraphQLFragment {
     }
   }
 
-  /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment.
-  /// Production apps typically won't request a specific one, but can for QA or during a/b testing.
+  /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing.
   public var experimentId: GraphQLID {
     get {
       return resultMap["experimentId"]! as! GraphQLID
@@ -29507,7 +29501,7 @@ public struct SlateParts: GraphQLFragment {
     }
   }
 
-  /// The name to show to the user for this set of recomendations
+  /// The name to show to the user for this set of recommendations
   public var displayName: String? {
     get {
       return resultMap["displayName"] as? String
@@ -29527,7 +29521,7 @@ public struct SlateParts: GraphQLFragment {
     }
   }
 
-  /// An ordered list of the recomendations to show to the user
+  /// An ordered list of the recommendations to show to the user
   public var recommendations: [Recommendation] {
     get {
       return (resultMap["recommendations"] as! [ResultMap]).map { (value: ResultMap) -> Recommendation in Recommendation(unsafeResultMap: value) }
@@ -29567,7 +29561,7 @@ public struct SlateParts: GraphQLFragment {
       }
     }
 
-    /// A generated id from the Data and Learning team that represents the Recomendation
+    /// A generated id from the Data and Learning team that represents the Recommendation
     public var id: GraphQLID? {
       get {
         return resultMap["id"] as? GraphQLID
@@ -30736,7 +30730,7 @@ public struct MarticleNumberedListParts: GraphQLFragment {
       }
     }
 
-    /// Zero-indexed level, for handling nexted lists.
+    /// Zero-indexed level, for handling nested lists.
     public var level: Int {
       get {
         return resultMap["level"]! as! Int
