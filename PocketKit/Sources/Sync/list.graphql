@@ -55,6 +55,9 @@ fragment ItemParts on Item {
     src
     imageId
   }
+  syndicatedArticle {
+    itemId
+  }
 }
 
 fragment DomainMetadataParts on DomainMetadata {

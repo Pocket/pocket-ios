@@ -20,8 +20,8 @@
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "recommended-item-1",
-                                "givenUrl": "https://example.com/item-1",
-                                "resolvedUrl": "https://example.com/item-1",
+                                "givenUrl": "http://localhost:8080/hello",
+                                "resolvedUrl": "http://localhost:8080/hello",
                                 "title": "Slate 1, Recommendation 1",
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
@@ -52,6 +52,7 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": null
                             }
                         },
                         {
@@ -79,6 +80,7 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": null
                             }
                         }
                     ],
@@ -116,6 +118,7 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": null
                             }
                         },
                         {
@@ -143,6 +146,10 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": {
+                                    "__typename": "type-name-here",
+                                    "itemId": "syndicated-item-id"
+                                }
                             }
                         }
                     ],

@@ -48,6 +48,7 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": null
                             }
                         },
                         {
@@ -76,6 +77,7 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": null
                             }
                         }
                     ],
@@ -134,6 +136,7 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": null
                             }
                         }
                     ],

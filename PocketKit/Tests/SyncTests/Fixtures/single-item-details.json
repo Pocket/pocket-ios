@@ -30,7 +30,8 @@
                     "isArticle": true,
                     "hasImage": "HAS_IMAGES",
                     "hasVideo": "HAS_VIDEOS",
-                    "marticle": []
+                    "marticle": [],
+                    "syndicatedArticle": null
                 }
             }
         }

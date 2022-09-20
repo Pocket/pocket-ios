@@ -113,6 +113,8 @@ class FetchListTests: XCTestCase {
 
         let images = item?.images?.compactMap { $0 as? Image } ?? []
         XCTAssertEqual(images[0].source, URL(string: "http://example.com/item-1/image-1.jpg"))
+
+        XCTAssertEqual(item?.syndicatedArticle?.itemID, "syndicated-article-item-id")
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
