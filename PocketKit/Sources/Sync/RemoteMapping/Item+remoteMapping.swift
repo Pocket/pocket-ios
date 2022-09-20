@@ -54,6 +54,11 @@ extension Item {
 
             addToImages(Image(remote: remoteImage, context: context))
         }
+
+        if let syndicatedArticle = remote.syndicatedArticle {
+            self.syndicatedArticle = SyndicatedArticle(context: context)
+            self.syndicatedArticle?.itemID = syndicatedArticle.itemId
+        }
     }
 
     func update(from summary: ItemSummary) {
@@ -102,6 +107,11 @@ extension Item {
             }
 
             addToImages(Image(remote: remoteImage, context: context))
+        }
+
+        if let syndicatedArticle = summary.syndicatedArticle {
+            self.syndicatedArticle = SyndicatedArticle(context: context)
+            self.syndicatedArticle?.itemID = syndicatedArticle.itemId
         }
     }
 }

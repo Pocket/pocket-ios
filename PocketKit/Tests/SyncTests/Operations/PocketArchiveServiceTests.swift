@@ -73,6 +73,7 @@ class PocketArchiveServiceTests: XCTestCase {
             let archivedItem = archivedItems[0]
             XCTAssertEqual(archivedItem.remoteID, "archived-saved-item-2")
             XCTAssertEqual(archivedItem.archivedAt, Date(timeIntervalSince1970: 5))
+            XCTAssertEqual(archivedItem.item?.syndicatedArticle?.itemID, "archived-syndicated-article-id")
         }
 
         do {

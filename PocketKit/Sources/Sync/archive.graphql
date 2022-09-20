@@ -68,4 +68,7 @@ fragment ItemSummary on Item {
     src
     imageId
   }
+  syndicatedArticle {
+    itemId
+  }
 }

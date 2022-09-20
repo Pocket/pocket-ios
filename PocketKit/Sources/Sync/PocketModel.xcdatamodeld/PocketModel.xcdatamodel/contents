@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="20086" systemVersion="21E258" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G115" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Author" representedClassName="Author" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -36,6 +36,7 @@
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Image" inverseName="item" inverseEntity="Image"/>
         <relationship name="recommendation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Recommendation" inverseName="item" inverseEntity="Recommendation"/>
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="item" inverseEntity="SavedItem"/>
+        <relationship name="syndicatedArticle" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SyndicatedArticle" inverseName="item" inverseEntity="SyndicatedArticle"/>
     </entity>
     <entity name="PersistentSyncTask" representedClassName="PersistentSyncTask" syncable="YES" codeGenerationType="class">
         <attribute name="createdAt" optional="YES" attributeType="Date" defaultDateTimeInterval="666643260" usesScalarValueType="NO"/>
@@ -75,6 +76,10 @@
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="requestID" optional="YES" attributeType="String"/>
         <relationship name="slates" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Slate" inverseName="slateLineup" inverseEntity="Slate"/>
+    </entity>
+    <entity name="SyndicatedArticle" representedClassName="SyndicatedArticle" syncable="YES" codeGenerationType="class">
+        <attribute name="itemID" optional="YES" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="syndicatedArticle" inverseEntity="Item"/>
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>

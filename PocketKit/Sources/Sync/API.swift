@@ -1221,8 +1221,8 @@ public final class SavedItemSummariesQuery: GraphQLQuery {
                 return Item(unsafeResultMap: ["__typename": "PendingItem"])
               }
 
-              public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-                return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+              public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil, syndicatedArticle: AsItem.SyndicatedArticle? = nil) -> Item {
+                return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: AsItem.SyndicatedArticle) -> ResultMap in value.resultMap }])
               }
 
               public var __typename: String {
@@ -1296,6 +1296,7 @@ public final class SavedItemSummariesQuery: GraphQLQuery {
                     GraphQLField("excerpt", type: .scalar(String.self)),
                     GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
                     GraphQLField("images", type: .list(.object(Image.selections))),
+                    GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
                   ]
                 }
 
@@ -1305,8 +1306,8 @@ public final class SavedItemSummariesQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+                public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
                 }
 
                 public var __typename: String {
@@ -1478,6 +1479,16 @@ public final class SavedItemSummariesQuery: GraphQLQuery {
                   }
                   set {
                     resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+                  }
+                }
+
+                /// If the item has a syndicated counterpart the syndication information
+                public var syndicatedArticle: SyndicatedArticle? {
+                  get {
+                    return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
                   }
                 }
 
@@ -1717,6 +1728,46 @@ public final class SavedItemSummariesQuery: GraphQLQuery {
                     }
                     set {
                       resultMap.updateValue(newValue, forKey: "imageId")
+                    }
+                  }
+                }
+
+                public struct SyndicatedArticle: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(itemId: GraphQLID? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  /// The item id of this Syndicated Article
+                  public var itemId: GraphQLID? {
+                    get {
+                      return resultMap["itemId"] as? GraphQLID
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "itemId")
                     }
                   }
                 }
@@ -2236,8 +2287,8 @@ public final class FetchSavesQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-                return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+              public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil, syndicatedArticle: AsItem.SyndicatedArticle? = nil) -> Item {
+                return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: AsItem.SyndicatedArticle) -> ResultMap in value.resultMap }])
               }
 
               public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -2327,6 +2378,7 @@ public final class FetchSavesQuery: GraphQLQuery {
                     GraphQLField("excerpt", type: .scalar(String.self)),
                     GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
                     GraphQLField("images", type: .list(.object(Image.selections))),
+                    GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
                   ]
                 }
 
@@ -2336,8 +2388,8 @@ public final class FetchSavesQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+                public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
                 }
 
                 public var __typename: String {
@@ -2519,6 +2571,16 @@ public final class FetchSavesQuery: GraphQLQuery {
                   }
                   set {
                     resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+                  }
+                }
+
+                /// If the item has a syndicated counterpart the syndication information
+                public var syndicatedArticle: SyndicatedArticle? {
+                  get {
+                    return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
                   }
                 }
 
@@ -4998,6 +5060,46 @@ public final class FetchSavesQuery: GraphQLQuery {
                     }
                   }
                 }
+
+                public struct SyndicatedArticle: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(itemId: GraphQLID? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  /// The item id of this Syndicated Article
+                  public var itemId: GraphQLID? {
+                    get {
+                      return resultMap["itemId"] as? GraphQLID
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "itemId")
+                    }
+                  }
+                }
               }
 
               public var asPendingItem: AsPendingItem? {
@@ -5394,8 +5496,8 @@ public final class SaveItemMutation: GraphQLMutation {
           self.resultMap = unsafeResultMap
         }
 
-        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil, syndicatedArticle: AsItem.SyndicatedArticle? = nil) -> Item {
+          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: AsItem.SyndicatedArticle) -> ResultMap in value.resultMap }])
         }
 
         public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -5485,6 +5587,7 @@ public final class SaveItemMutation: GraphQLMutation {
               GraphQLField("excerpt", type: .scalar(String.self)),
               GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
               GraphQLField("images", type: .list(.object(Image.selections))),
+              GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
             ]
           }
 
@@ -5494,8 +5597,8 @@ public final class SaveItemMutation: GraphQLMutation {
             self.resultMap = unsafeResultMap
           }
 
-          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
           }
 
           public var __typename: String {
@@ -5677,6 +5780,16 @@ public final class SaveItemMutation: GraphQLMutation {
             }
             set {
               resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+            }
+          }
+
+          /// If the item has a syndicated counterpart the syndication information
+          public var syndicatedArticle: SyndicatedArticle? {
+            get {
+              return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
             }
           }
 
@@ -8153,6 +8266,46 @@ public final class SaveItemMutation: GraphQLMutation {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "imageId")
+              }
+            }
+          }
+
+          public struct SyndicatedArticle: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(itemId: GraphQLID? = nil) {
+              self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The item id of this Syndicated Article
+            public var itemId: GraphQLID? {
+              get {
+                return resultMap["itemId"] as? GraphQLID
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "itemId")
               }
             }
           }
@@ -8891,8 +9044,8 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
           self.resultMap = unsafeResultMap
         }
 
-        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil, syndicatedArticle: AsItem.SyndicatedArticle? = nil) -> Item {
+          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: AsItem.SyndicatedArticle) -> ResultMap in value.resultMap }])
         }
 
         public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -8982,6 +9135,7 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
               GraphQLField("excerpt", type: .scalar(String.self)),
               GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
               GraphQLField("images", type: .list(.object(Image.selections))),
+              GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
             ]
           }
 
@@ -8991,8 +9145,8 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
             self.resultMap = unsafeResultMap
           }
 
-          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
           }
 
           public var __typename: String {
@@ -9174,6 +9328,16 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
             }
             set {
               resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+            }
+          }
+
+          /// If the item has a syndicated counterpart the syndication information
+          public var syndicatedArticle: SyndicatedArticle? {
+            get {
+              return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
             }
           }
 
@@ -11650,6 +11814,46 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "imageId")
+              }
+            }
+          }
+
+          public struct SyndicatedArticle: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(itemId: GraphQLID? = nil) {
+              self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The item id of this Syndicated Article
+            public var itemId: GraphQLID? {
+              get {
+                return resultMap["itemId"] as? GraphQLID
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "itemId")
               }
             }
           }
@@ -12048,8 +12252,8 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
           self.resultMap = unsafeResultMap
         }
 
-        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+        public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil, syndicatedArticle: AsItem.SyndicatedArticle? = nil) -> Item {
+          return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: AsItem.SyndicatedArticle) -> ResultMap in value.resultMap }])
         }
 
         public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -12139,6 +12343,7 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
               GraphQLField("excerpt", type: .scalar(String.self)),
               GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
               GraphQLField("images", type: .list(.object(Image.selections))),
+              GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
             ]
           }
 
@@ -12148,8 +12353,8 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
             self.resultMap = unsafeResultMap
           }
 
-          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
           }
 
           public var __typename: String {
@@ -12331,6 +12536,16 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
             }
             set {
               resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+            }
+          }
+
+          /// If the item has a syndicated counterpart the syndication information
+          public var syndicatedArticle: SyndicatedArticle? {
+            get {
+              return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
             }
           }
 
@@ -14807,6 +15022,46 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "imageId")
+              }
+            }
+          }
+
+          public struct SyndicatedArticle: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(itemId: GraphQLID? = nil) {
+              self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The item id of this Syndicated Article
+            public var itemId: GraphQLID? {
+              get {
+                return resultMap["itemId"] as? GraphQLID
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "itemId")
               }
             }
           }
@@ -15256,6 +15511,7 @@ public final class GetSlateLineupQuery: GraphQLQuery {
                 GraphQLField("excerpt", type: .scalar(String.self)),
                 GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
                 GraphQLField("images", type: .list(.object(Image.selections))),
+                GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
               ]
             }
 
@@ -15265,8 +15521,8 @@ public final class GetSlateLineupQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-              self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+            public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+              self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
             }
 
             public var __typename: String {
@@ -15438,6 +15694,16 @@ public final class GetSlateLineupQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+              }
+            }
+
+            /// If the item has a syndicated counterpart the syndication information
+            public var syndicatedArticle: SyndicatedArticle? {
+              get {
+                return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
               }
             }
 
@@ -15677,6 +15943,46 @@ public final class GetSlateLineupQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "imageId")
+                }
+              }
+            }
+
+            public struct SyndicatedArticle: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(itemId: GraphQLID? = nil) {
+                self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              /// The item id of this Syndicated Article
+              public var itemId: GraphQLID? {
+                get {
+                  return resultMap["itemId"] as? GraphQLID
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "itemId")
                 }
               }
             }
@@ -15946,6 +16252,7 @@ public final class GetSlateQuery: GraphQLQuery {
               GraphQLField("excerpt", type: .scalar(String.self)),
               GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
               GraphQLField("images", type: .list(.object(Image.selections))),
+              GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
             ]
           }
 
@@ -15955,8 +16262,8 @@ public final class GetSlateQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+          public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+            self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
           }
 
           public var __typename: String {
@@ -16128,6 +16435,16 @@ public final class GetSlateQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+            }
+          }
+
+          /// If the item has a syndicated counterpart the syndication information
+          public var syndicatedArticle: SyndicatedArticle? {
+            get {
+              return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
             }
           }
 
@@ -16367,6 +16684,46 @@ public final class GetSlateQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue, forKey: "imageId")
+              }
+            }
+          }
+
+          public struct SyndicatedArticle: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(itemId: GraphQLID? = nil) {
+              self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The item id of this Syndicated Article
+            public var itemId: GraphQLID? {
+              get {
+                return resultMap["itemId"] as? GraphQLID
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "itemId")
               }
             }
           }
@@ -16704,8 +17061,8 @@ public final class SavedItemByIdQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-            return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+          public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil, syndicatedArticle: AsItem.SyndicatedArticle? = nil) -> Item {
+            return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: AsItem.SyndicatedArticle) -> ResultMap in value.resultMap }])
           }
 
           public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -16795,6 +17152,7 @@ public final class SavedItemByIdQuery: GraphQLQuery {
                 GraphQLField("excerpt", type: .scalar(String.self)),
                 GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
                 GraphQLField("images", type: .list(.object(Image.selections))),
+                GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
               ]
             }
 
@@ -16804,8 +17162,8 @@ public final class SavedItemByIdQuery: GraphQLQuery {
               self.resultMap = unsafeResultMap
             }
 
-            public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-              self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+            public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+              self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
             }
 
             public var __typename: String {
@@ -16987,6 +17345,16 @@ public final class SavedItemByIdQuery: GraphQLQuery {
               }
               set {
                 resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+              }
+            }
+
+            /// If the item has a syndicated counterpart the syndication information
+            public var syndicatedArticle: SyndicatedArticle? {
+              get {
+                return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
               }
             }
 
@@ -19466,6 +19834,46 @@ public final class SavedItemByIdQuery: GraphQLQuery {
                 }
               }
             }
+
+            public struct SyndicatedArticle: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public init(itemId: GraphQLID? = nil) {
+                self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              /// The item id of this Syndicated Article
+              public var itemId: GraphQLID? {
+                get {
+                  return resultMap["itemId"] as? GraphQLID
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "itemId")
+                }
+              }
+            }
           }
 
           public var asPendingItem: AsPendingItem? {
@@ -19667,6 +20075,7 @@ public final class ItemByIdQuery: GraphQLQuery {
           GraphQLField("excerpt", type: .scalar(String.self)),
           GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
           GraphQLField("images", type: .list(.object(Image.selections))),
+          GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
         ]
       }
 
@@ -19676,8 +20085,8 @@ public final class ItemByIdQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -19859,6 +20268,16 @@ public final class ItemByIdQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+        }
+      }
+
+      /// If the item has a syndicated counterpart the syndication information
+      public var syndicatedArticle: SyndicatedArticle? {
+        get {
+          return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
         }
       }
 
@@ -22327,6 +22746,46 @@ public final class ItemByIdQuery: GraphQLQuery {
           }
         }
       }
+
+      public struct SyndicatedArticle: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(itemId: GraphQLID? = nil) {
+          self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// The item id of this Syndicated Article
+        public var itemId: GraphQLID? {
+          get {
+            return resultMap["itemId"] as? GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "itemId")
+          }
+        }
+      }
     }
   }
 }
@@ -22545,8 +23004,8 @@ public struct SavedItemSummary: GraphQLFragment {
       return Item(unsafeResultMap: ["__typename": "PendingItem"])
     }
 
-    public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-      return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+    public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil, syndicatedArticle: AsItem.SyndicatedArticle? = nil) -> Item {
+      return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: AsItem.SyndicatedArticle) -> ResultMap in value.resultMap }])
     }
 
     public var __typename: String {
@@ -22620,6 +23079,7 @@ public struct SavedItemSummary: GraphQLFragment {
           GraphQLField("excerpt", type: .scalar(String.self)),
           GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
           GraphQLField("images", type: .list(.object(Image.selections))),
+          GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
         ]
       }
 
@@ -22629,8 +23089,8 @@ public struct SavedItemSummary: GraphQLFragment {
         self.resultMap = unsafeResultMap
       }
 
-      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -22802,6 +23262,16 @@ public struct SavedItemSummary: GraphQLFragment {
         }
         set {
           resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+        }
+      }
+
+      /// If the item has a syndicated counterpart the syndication information
+      public var syndicatedArticle: SyndicatedArticle? {
+        get {
+          return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
         }
       }
 
@@ -23044,6 +23514,46 @@ public struct SavedItemSummary: GraphQLFragment {
           }
         }
       }
+
+      public struct SyndicatedArticle: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(itemId: GraphQLID? = nil) {
+          self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// The item id of this Syndicated Article
+        public var itemId: GraphQLID? {
+          get {
+            return resultMap["itemId"] as? GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "itemId")
+          }
+        }
+      }
     }
   }
 }
@@ -23084,6 +23594,10 @@ public struct ItemSummary: GraphQLFragment {
         src
         imageId
       }
+      syndicatedArticle {
+        __typename
+        itemId
+      }
     }
     """
 
@@ -23108,6 +23622,7 @@ public struct ItemSummary: GraphQLFragment {
       GraphQLField("excerpt", type: .scalar(String.self)),
       GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
       GraphQLField("images", type: .list(.object(Image.selections))),
+      GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
     ]
   }
 
@@ -23117,8 +23632,8 @@ public struct ItemSummary: GraphQLFragment {
     self.resultMap = unsafeResultMap
   }
 
-  public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-    self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+  public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+    self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
   }
 
   public var __typename: String {
@@ -23290,6 +23805,16 @@ public struct ItemSummary: GraphQLFragment {
     }
     set {
       resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+    }
+  }
+
+  /// If the item has a syndicated counterpart the syndication information
+  public var syndicatedArticle: SyndicatedArticle? {
+    get {
+      return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+    }
+    set {
+      resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
     }
   }
 
@@ -23506,6 +24031,46 @@ public struct ItemSummary: GraphQLFragment {
       }
     }
   }
+
+  public struct SyndicatedArticle: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(itemId: GraphQLID? = nil) {
+      self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+    }
+
+    public var __typename: String {
+      get {
+        return resultMap["__typename"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "__typename")
+      }
+    }
+
+    /// The item id of this Syndicated Article
+    public var itemId: GraphQLID? {
+      get {
+        return resultMap["itemId"] as? GraphQLID
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "itemId")
+      }
+    }
+  }
 }
 
 public struct SavedItemParts: GraphQLFragment {
@@ -23719,8 +24284,8 @@ public struct SavedItemParts: GraphQLFragment {
       self.resultMap = unsafeResultMap
     }
 
-    public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil) -> Item {
-      return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }])
+    public static func makeItem(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [AsItem.Author?]? = nil, marticle: [AsItem.Marticle]? = nil, excerpt: String? = nil, domainMetadata: AsItem.DomainMetadatum? = nil, images: [AsItem.Image?]? = nil, syndicatedArticle: AsItem.SyndicatedArticle? = nil) -> Item {
+      return Item(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [AsItem.Author?]) -> [ResultMap?] in value.map { (value: AsItem.Author?) -> ResultMap? in value.flatMap { (value: AsItem.Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [AsItem.Marticle]) -> [ResultMap] in value.map { (value: AsItem.Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: AsItem.DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [AsItem.Image?]) -> [ResultMap?] in value.map { (value: AsItem.Image?) -> ResultMap? in value.flatMap { (value: AsItem.Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: AsItem.SyndicatedArticle) -> ResultMap in value.resultMap }])
     }
 
     public static func makePendingItem(url: String, status: PendingItemStatus? = nil) -> Item {
@@ -23810,6 +24375,7 @@ public struct SavedItemParts: GraphQLFragment {
           GraphQLField("excerpt", type: .scalar(String.self)),
           GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
           GraphQLField("images", type: .list(.object(Image.selections))),
+          GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
         ]
       }
 
@@ -23819,8 +24385,8 @@ public struct SavedItemParts: GraphQLFragment {
         self.resultMap = unsafeResultMap
       }
 
-      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -24002,6 +24568,16 @@ public struct SavedItemParts: GraphQLFragment {
         }
         set {
           resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+        }
+      }
+
+      /// If the item has a syndicated counterpart the syndication information
+      public var syndicatedArticle: SyndicatedArticle? {
+        get {
+          return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
         }
       }
 
@@ -26481,6 +27057,46 @@ public struct SavedItemParts: GraphQLFragment {
           }
         }
       }
+
+      public struct SyndicatedArticle: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(itemId: GraphQLID? = nil) {
+          self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// The item id of this Syndicated Article
+        public var itemId: GraphQLID? {
+          get {
+            return resultMap["itemId"] as? GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "itemId")
+          }
+        }
+      }
     }
 
     public var asPendingItem: AsPendingItem? {
@@ -26634,6 +27250,10 @@ public struct ItemParts: GraphQLFragment {
         src
         imageId
       }
+      syndicatedArticle {
+        __typename
+        itemId
+      }
     }
     """
 
@@ -26659,6 +27279,7 @@ public struct ItemParts: GraphQLFragment {
       GraphQLField("excerpt", type: .scalar(String.self)),
       GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
       GraphQLField("images", type: .list(.object(Image.selections))),
+      GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
     ]
   }
 
@@ -26668,8 +27289,8 @@ public struct ItemParts: GraphQLFragment {
     self.resultMap = unsafeResultMap
   }
 
-  public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-    self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+  public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, marticle: [Marticle]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+    self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "marticle": marticle.flatMap { (value: [Marticle]) -> [ResultMap] in value.map { (value: Marticle) -> ResultMap in value.resultMap } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
   }
 
   public var __typename: String {
@@ -26851,6 +27472,16 @@ public struct ItemParts: GraphQLFragment {
     }
     set {
       resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+    }
+  }
+
+  /// If the item has a syndicated counterpart the syndication information
+  public var syndicatedArticle: SyndicatedArticle? {
+    get {
+      return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+    }
+    set {
+      resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
     }
   }
 
@@ -29293,6 +29924,46 @@ public struct ItemParts: GraphQLFragment {
       }
     }
   }
+
+  public struct SyndicatedArticle: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(itemId: GraphQLID? = nil) {
+      self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+    }
+
+    public var __typename: String {
+      get {
+        return resultMap["__typename"]! as! String
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "__typename")
+      }
+    }
+
+    /// The item id of this Syndicated Article
+    public var itemId: GraphQLID? {
+      get {
+        return resultMap["itemId"] as? GraphQLID
+      }
+      set {
+        resultMap.updateValue(newValue, forKey: "itemId")
+      }
+    }
+  }
 }
 
 public struct DomainMetadataParts: GraphQLFragment {
@@ -29606,6 +30277,7 @@ public struct SlateParts: GraphQLFragment {
           GraphQLField("excerpt", type: .scalar(String.self)),
           GraphQLField("domainMetadata", type: .object(DomainMetadatum.selections)),
           GraphQLField("images", type: .list(.object(Image.selections))),
+          GraphQLField("syndicatedArticle", type: .object(SyndicatedArticle.selections)),
         ]
       }
 
@@ -29615,8 +30287,8 @@ public struct SlateParts: GraphQLFragment {
         self.resultMap = unsafeResultMap
       }
 
-      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil) {
-        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }])
+      public init(remoteId: String, givenUrl: String, resolvedUrl: String? = nil, title: String? = nil, language: String? = nil, topImageUrl: String? = nil, timeToRead: Int? = nil, domain: String? = nil, datePublished: String? = nil, isArticle: Bool? = nil, hasImage: Imageness? = nil, hasVideo: Videoness? = nil, authors: [Author?]? = nil, excerpt: String? = nil, domainMetadata: DomainMetadatum? = nil, images: [Image?]? = nil, syndicatedArticle: SyndicatedArticle? = nil) {
+        self.init(unsafeResultMap: ["__typename": "Item", "remoteID": remoteId, "givenUrl": givenUrl, "resolvedUrl": resolvedUrl, "title": title, "language": language, "topImageUrl": topImageUrl, "timeToRead": timeToRead, "domain": domain, "datePublished": datePublished, "isArticle": isArticle, "hasImage": hasImage, "hasVideo": hasVideo, "authors": authors.flatMap { (value: [Author?]) -> [ResultMap?] in value.map { (value: Author?) -> ResultMap? in value.flatMap { (value: Author) -> ResultMap in value.resultMap } } }, "excerpt": excerpt, "domainMetadata": domainMetadata.flatMap { (value: DomainMetadatum) -> ResultMap in value.resultMap }, "images": images.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, "syndicatedArticle": syndicatedArticle.flatMap { (value: SyndicatedArticle) -> ResultMap in value.resultMap }])
       }
 
       public var __typename: String {
@@ -29788,6 +30460,16 @@ public struct SlateParts: GraphQLFragment {
         }
         set {
           resultMap.updateValue(newValue.flatMap { (value: [Image?]) -> [ResultMap?] in value.map { (value: Image?) -> ResultMap? in value.flatMap { (value: Image) -> ResultMap in value.resultMap } } }, forKey: "images")
+        }
+      }
+
+      /// If the item has a syndicated counterpart the syndication information
+      public var syndicatedArticle: SyndicatedArticle? {
+        get {
+          return (resultMap["syndicatedArticle"] as? ResultMap).flatMap { SyndicatedArticle(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "syndicatedArticle")
         }
       }
 
@@ -30027,6 +30709,46 @@ public struct SlateParts: GraphQLFragment {
           }
           set {
             resultMap.updateValue(newValue, forKey: "imageId")
+          }
+        }
+      }
+
+      public struct SyndicatedArticle: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["SyndicatedArticle"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("itemId", type: .scalar(GraphQLID.self)),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(itemId: GraphQLID? = nil) {
+          self.init(unsafeResultMap: ["__typename": "SyndicatedArticle", "itemId": itemId])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// The item id of this Syndicated Article
+        public var itemId: GraphQLID? {
+          get {
+            return resultMap["itemId"] as? GraphQLID
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "itemId")
           }
         }
       }

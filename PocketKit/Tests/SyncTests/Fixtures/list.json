@@ -70,6 +70,10 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": {
+                                    "__typename": "[type-name-here]",
+                                    "itemId": "syndicated-article-item-id"
+                                }
                             }
                         }
                     },
@@ -117,6 +121,7 @@
                                 "isArticle": true,
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
+                                "syndicatedArticle": null
                             }
                         }
                     }
