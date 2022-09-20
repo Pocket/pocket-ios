@@ -67,10 +67,6 @@ public protocol Source {
     func fetchDetails(for recommendation: Recommendation) async throws
 
     func save(url: URL)
-
-    func registerPushToken(for deviceIdentifer: String, pushType: String, token: String)
-
-    func deregisterPushToken(for deviceIdentifer: String, pushType: String)
 }
 
 public extension Source {

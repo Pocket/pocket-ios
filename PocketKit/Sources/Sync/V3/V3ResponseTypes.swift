@@ -12,7 +12,7 @@ protocol BasicV3Response {
     var status: Int { get set }
 }
 
-struct RegisterPushTokenResponse: Codable, BasicV3Response {
+public struct RegisterPushTokenResponse: Decodable, BasicV3Response {
     var error: Int
 
     var status: Int
@@ -23,7 +23,7 @@ struct RegisterPushTokenResponse: Codable, BasicV3Response {
     var token: String
 }
 
-struct DeregisterPushTokenResponse: Codable, BasicV3Response {
+public struct DeregisterPushTokenResponse: Decodable, BasicV3Response {
     var error: Int
 
     var status: Int

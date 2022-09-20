@@ -27,8 +27,7 @@ let package = Package(
         .package(name: "YouTubePlayerKit", url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5")),
         .package(name: "BrazeKit", url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMinor(from: "5.3.0")),
         .package(name: "Danger", url: "https://github.com/danger/swift.git", from: "3.12.3"), // dev
-        .package(name: "DangerSwiftCoverage", url: "https://github.com/f-meloni/danger-swift-coverage", .upToNextMinor(from: "1.2.1")), // dev
-        .package(url: "https://github.com/Alamofire/Alamofire.git", .upToNextMajor(from: "5.6.1"))
+        .package(name: "DangerSwiftCoverage", url: "https://github.com/f-meloni/danger-swift-coverage", .upToNextMinor(from: "1.2.1")) // dev
     ],
     targets: [
         .target(
@@ -81,7 +80,7 @@ let package = Package(
 
         .target(
             name: "Sync",
-            dependencies: ["Apollo", "Sentry", "Alamofire"],
+            dependencies: ["Apollo", "Sentry"],
             exclude: [
                 "list.graphql",
                 "marticle.graphql",

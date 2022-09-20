@@ -24,6 +24,7 @@ struct Services {
     let authClient: AuthorizationClient
     let imageManager: ImageManager
     let notificationService: PocketNotificationService
+    let v3Client: V3Client
 
     private let persistentContainer: PersistentContainer
 
@@ -53,6 +54,11 @@ struct Services {
             backgroundTaskManager: UIApplication.shared
         )
 
+        v3Client = V3Client(
+            sessionProvider: appSession,
+            consumerKey: Keys.shared.pocketApiConsumerKey
+        )
+
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
         refreshCoordinator = RefreshCoordinator(
             notificationCenter: .default,
@@ -70,7 +76,8 @@ struct Services {
         notificationService = PocketNotificationService(
             source: source,
             tracker: tracker,
-            sessionManager: appSession
+            sessionManager: appSession,
+            v3Client: v3Client
         )
     }
 }

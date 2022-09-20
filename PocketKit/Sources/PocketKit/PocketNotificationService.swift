@@ -31,14 +31,20 @@ class PocketNotificationService: NSObject {
     private let sessionManager: AppSession
 
     /**
+     Instance of our v3 Client to make legacy requests
+     */
+    private let v3Client: V3ClientProtocol
+
+    /**
      App wide subscriptions that we listen to.
      */
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(source: Source, tracker: Tracker, sessionManager: AppSession) {
+    init(source: Source, tracker: Tracker, sessionManager: AppSession, v3Client: V3ClientProtocol) {
         self.source = source
         self.tracker = tracker
         self.sessionManager = sessionManager
+        self.v3Client = v3Client
 
         // Init Braze with our information.
         var configuration = Braze.Configuration(
@@ -58,7 +64,18 @@ class PocketNotificationService: NSObject {
         braze.inAppMessagePresenter = inAppMessageUI
 
         sessionManager.$currentSession.receive(on: DispatchQueue.main).sink { [weak self] session in
-            guard let session = session else { return }
+            guard let session = session else {
+                Task {
+                    do {
+                        // TODO: IFV is not guarenteed, look at the old iOS code for the fallbacks.
+                        _ = try await v3Client.deregisterPushToken(for: UIDevice.current.identifierForVendor!.uuidString, pushType: PocketNotificationService.pushType())
+                    } catch {
+                        Crashlogger.capture(error: error)
+                    }
+                }
+
+                return
+            }
 
             // Braze SDK docs say this needs to be called from the main thread.
             // https://www.braze.com/docs/developer_guide/platform_integration_guides/ios/analytics/setting_user_ids/#assigning-a-user-id
@@ -86,8 +103,14 @@ class PocketNotificationService: NSObject {
         // TODO: Also register the token with the Pocket Instant Sync endpoint
         braze.notifications.register(deviceToken: deviceToken)
 
-        // V3ify the token and device id
-        // source.registerPushToken(for: <#T##String#>, pushType: <#T##String#>, token: deviceToken)
+        Task {
+            do {
+                // TODO: IFV is not guarenteed, look at the old iOS code for the fallbacks.
+                _ = try await v3Client.registerPushToken(for: UIDevice.current.identifierForVendor!.uuidString, pushType: PocketNotificationService.pushType(), token: deviceToken.base64EncodedString())
+            } catch {
+                Crashlogger.capture(error: error)
+            }
+        }
     }
 
     /**
@@ -168,5 +191,21 @@ extension PocketNotificationService: BrazeInAppMessageUIDelegate {
         view: InAppMessageView
     ) {
         // Executed when `message` is presented to the user
+    }
+}
+
+/**
+ V3 Helpers
+ */
+extension PocketNotificationService {
+
+    static func pushType() -> PushType {
+        // TODO: Once we move to the main app store bundle, we will need to move this to say prod when built
+        // for that identifier and alpha when built for Alpha Neue
+        var pushType: PushType = .alpha
+#if DEBUG
+        pushType = .alphadev
+#endif
+        return pushType
     }
 }
