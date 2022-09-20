@@ -15,7 +15,7 @@ class AccountViewModel: ObservableObject {
     func signOut() {
         appSession.currentSession = nil
     }
-    
+
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
     @Published var isPresentingPrivacy = false

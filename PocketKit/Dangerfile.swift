@@ -12,7 +12,7 @@ SwiftLint.lint(.modifiedAndCreatedFiles(directory: "../"), inline: false, config
 
 let xcresult = ProcessInfo.processInfo.environment["BITRISE_XCRESULT_PATH"]!.escapeString()
 
-Coverage.xcodeBuildCoverage(.xcresultBundle(xcresult), 
+Coverage.xcodeBuildCoverage(.xcresultBundle(xcresult),
                             minimumCoverage: 50)
 
 extension String {
