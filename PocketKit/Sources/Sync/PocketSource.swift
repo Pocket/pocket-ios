@@ -19,6 +19,7 @@ public class PocketSource: Source {
 
     private let space: Space
     private let apollo: ApolloClientProtocol
+    private let v3Client: V3Client
     private let lastRefresh: LastRefresh
     private let slateService: SlateService
     private let networkMonitor: NetworkPathMonitor
@@ -47,9 +48,15 @@ public class PocketSource: Source {
             consumerKey: consumerKey
         )
 
+        let v3Client = V3Client(
+            sessionProvider: sessionProvider,
+            consumerKey: consumerKey
+        )
+
         self.init(
             space: space,
             apollo: apollo,
+            v3Client: v3Client,
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo, space: space),
@@ -65,6 +72,7 @@ public class PocketSource: Source {
     init(
         space: Space,
         apollo: ApolloClientProtocol,
+        v3Client: V3Client,
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
         slateService: SlateService,
@@ -75,6 +83,7 @@ public class PocketSource: Source {
     ) {
         self.space = space
         self.apollo = apollo
+        self.v3Client = v3Client
         self.operations = operations
         self.lastRefresh = lastRefresh
         self.slateService = slateService
@@ -369,8 +378,8 @@ extension PocketSource {
     public func fetchDetails(for recommendation: Recommendation) async throws {
         guard let item = recommendation.item,
               let remoteID = item.remoteID else {
-                  return
-              }
+            return
+        }
 
         guard let remoteItem = try await apollo
             .fetch(query: ItemByIdQuery(id: remoteID))
@@ -575,5 +584,46 @@ extension PocketSource {
 
             save(item: savedItem)
         }
+    }
+}
+
+// MARK: - V3 Push Notifcation
+extension PocketSource {
+
+    /**
+     Used to register a Push Notification token with the v3 Pocket Backend, currently only used to enable Pocket's Intant Sync feature
+     */
+    public func registerPushToken(for
+                           deviceIdentifer: String,
+                           pushType: String,
+                           token: String
+    ) {
+        // TODO: Perhaps we should enqueue this onto Sync???
+        Task {
+            do {
+                _ = try await v3Client.registerPushToken(for: deviceIdentifer, pushType: pushType, token: token)
+            } catch {
+                Crashlogger.capture(error: error)
+            }
+        }
+
+    }
+
+    /**
+     Used to register a Push Notification token with the v3 Pocket Backend, currently only used to enable Pocket's Intant Sync feature
+     */
+    public func deregisterPushToken(for
+                             deviceIdentifer: String,
+                             pushType: String
+    ) {
+        // TODO: Perhaps we should enqueue this onto Sync???
+        Task {
+            do {
+                _ = try await v3Client.deregisterPushToken(for: deviceIdentifer, pushType: pushType)
+            } catch {
+                Crashlogger.capture(error: error)
+            }
+        }
+
     }
 }

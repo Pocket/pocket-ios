@@ -85,6 +85,9 @@ class PocketNotificationService: NSObject {
     public func register(deviceToken: Data) {
         // TODO: Also register the token with the Pocket Instant Sync endpoint
         braze.notifications.register(deviceToken: deviceToken)
+
+        // V3ify the token and device id
+        // source.registerPushToken(for: <#T##String#>, pushType: <#T##String#>, token: deviceToken)
     }
 
     /**
