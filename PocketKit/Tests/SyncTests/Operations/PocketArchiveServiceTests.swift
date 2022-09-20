@@ -12,22 +12,15 @@ class PocketArchiveServiceTests: XCTestCase {
     var queue: OperationQueue!
     var subscriptions: [AnyCancellable] = []
 
-    override func setUp() async throws {
-        await initializeDepedencies()
-        await setupArchivePagination()
-    }
-
-    override func tearDown() async throws {
-        try await teardownDependencies()
-    }
-
-    func initializeDepedencies() {
+    override func setUp() {
         apollo = MockApolloClient()
         space = .testSpace()
         queue = OperationQueue()
+
+        setupArchivePagination()
     }
 
-    func teardownDependencies() throws {
+    override func tearDownWithError() throws {
         try space.clear()
         subscriptions = []
     }
