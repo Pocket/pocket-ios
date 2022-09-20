@@ -1,37 +1,36 @@
 import SwiftUI
 import Textile
 
-
 class SettingsViewController: UIHostingController<SettingsView> {
    override init(rootView: SettingsView) {
         super.init(rootView: rootView)
-        
+
         UITableView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = UIColor(.ui.grey7)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
 }
 
 struct SettingsView: View {
-    
+
     @ObservedObject
     var model: AccountViewModel
 
     var body: some View {
-        VStack(spacing:0) {
+        VStack(spacing: 0) {
             Form {
 //                Section(header: Text("Your Account").style(.settings.header)) {
 //                    PremiumRow(status: .notSubscribed, destination: EmptyView())
 //                    SettingsRowLink(title: "Reset Password", destination: EmptyView())
 //                    SettingsRowLink(title: "Delete Account", destination: EmptyView())
 //                }.textCase(nil)
-                
+
                 Section(header: Text("Your Account").style(.settings.header)) {
                     SettingsRowButton(title: "Sign Out", titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.signOut() }
                 }.textCase(nil)
-                
+
                 Section(header: Text("About & Support").style(.settings.header)) {
                     SettingsRowButton(title: "Help", icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
@@ -48,7 +47,7 @@ struct SettingsView: View {
                             SFSafariView(url: URL(string: "https://getpocket.com/en/privacy/")!)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
-                    
+
                 }.textCase(nil)
             }
         }

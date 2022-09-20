@@ -4,7 +4,7 @@ import Textile
 enum PremiumStatus: String {
     case notSubscribed = "Sign up for Premium"
     case subscribed = "Premium Subscriber"
-    
+
     var headerVisible: Bool {
         switch self {
             case .notSubscribed: return false
@@ -32,17 +32,17 @@ enum PremiumStatus: String {
 }
 
 struct PremiumRow<Destination: View>: View {
-    
+
     @State
     var isActive: Bool = false
-    
+
     var status: PremiumStatus
     var destination: Destination
-    
+
     var body: some View {
         Button(action: {
             isActive.toggle()
-        }){
+        }) {
             VStack(spacing: 0) {
                 HStack(alignment: .center, spacing: 0) {
                     VStack(alignment: .leading, spacing: 5) {
