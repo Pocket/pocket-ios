@@ -18,12 +18,30 @@ public extension SavedItem {
     var isPending: Bool {
         item == nil
     }
+
+    var shouldOpenInWebView: Bool {
+        item?.shouldOpenInWebView == true
+    }
+
+    var isSyndicated: Bool {
+        item?.isSyndicated == true
+    }
 }
 
 public extension Item {
     var shouldOpenInWebView: Bool {
-        return isArticle == false
-        || hasImage == .isImage
-        || hasVideo == .isVideo
+        if !isSaved && !isSyndicated {
+            return true
+        }
+
+        return !isArticle || hasImage == .isImage || hasVideo == .isVideo
+    }
+
+    var isSyndicated: Bool {
+        syndicatedArticle != nil
+    }
+
+    var isSaved: Bool {
+        savedItem != nil
     }
 }
