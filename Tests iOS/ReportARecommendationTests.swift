@@ -155,7 +155,10 @@ class ReportARecommendationTests: XCTestCase {
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .wait()
-            .tap()
+
+        // Swipe down to a syndicated item
+        app.homeView.element.swipeUp()
+        app.homeView.recommendationCell("Slate 2, Recommendation 2").wait().tap()
 
         app.readerView.readerToolbar.moreButton.tap()
         app.reportButton.wait().tap()

@@ -206,8 +206,21 @@ class HomeTests: XCTestCase {
         app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
     }
 
-    func test_tappingRecommendationCell_opensItemInReader() {
+    func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsNotSyndicated_opensItemInWebView() {
         app.launch().homeView.recommendationCell("Slate 1, Recommendation 1").wait().tap()
+        app.webReaderView
+            .staticText(matching: "Hello, world")
+            .wait()
+    }
+
+    func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_opensItemInReaderView() {
+        app.launch()
+            .homeView.recommendationCell("Slate 1, Recommendation 1")
+            .wait().element.swipeUp()
+
+        app.homeView.recommendationCell("Slate 2, Recommendation 2")
+            .wait().tap()
+
         app.readerView.cell(containing: "Jacob and David").wait()
     }
 
@@ -229,7 +242,7 @@ class HomeTests: XCTestCase {
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToSaveAnItem {
-                XCTAssertTrue(apiRequest.contains("https:\\/\\/example.com\\/item-1"))
+                XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/hello"))
                 saveRequestExpectation.fulfill()
                 promise = loop.makePromise()
                 return promise!.futureResult
