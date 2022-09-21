@@ -67,8 +67,19 @@ class AddTagsItemTests: XCTestCase {
         itemCell.itemActionButton.wait().tap()
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
+    }
 
-        addTagsView.tag(matching: "tag 1").wait().tap()
+    func test_addTagsToItemFromSaves_savesFromExistingTags() {
+        app.tabBar.myListButton.wait().tap()
+        let itemCell = app.myListView.itemView(matching: "Item 1")
+        itemCell.itemActionButton.wait().tap()
+
+        app.addTagsButton.wait().tap()
+        let addTagsView = app.addTagsView.wait()
+        addTagsView.wait()
+
+        addTagsView.tag(matching: "tag 0").wait().tap()
+        addTagsView.allTagsRow(matching: "tag 0").wait()
 
         addTagsView.allTagsRow(matching: "tag 1").wait().tap()
         waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
@@ -108,11 +119,6 @@ class AddTagsItemTests: XCTestCase {
         itemCell.itemActionButton.wait().tap()
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
-
-        addTagsView.tag(matching: "tag 1").wait().tap()
-
-        addTagsView.allTagsRow(matching: "tag 1").wait().tap()
-        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
     }
 
     func test_addTagsToSavedItemFromReader_showsAddTagsView() {

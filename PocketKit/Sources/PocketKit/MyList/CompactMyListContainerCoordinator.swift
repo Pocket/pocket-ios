@@ -164,20 +164,14 @@ class CompactMyListContainerCoordinator: NSObject {
         guard !isResetting, let viewModel = viewModel else { return }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
-        viewController.present(hostingController, animated: true)
+        viewController.present(hostingController, animated: !isResetting)
     }
 
     private func present(tagsFilterViewModel: TagsFilterViewModel?) {
         guard !isResetting, let tagsFilterViewModel = tagsFilterViewModel else { return }
         let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel))
-        // Cyndi: Add Extension for this and reader once Sort / Filter merged
-        let detents: [UISheetPresentationController.Detent] = [.medium(), .large()]
-        hostingController.sheetPresentationController?.detents = detents
-        hostingController.sheetPresentationController?.prefersGrabberVisible = true
-        hostingController.sheetPresentationController?.prefersEdgeAttachedInCompactHeight = true
-        hostingController.sheetPresentationController?.widthFollowsPreferredContentSizeWhenEdgeAttached = true
-
-        viewController.present(hostingController, animated: true)
+        hostingController.configurePocketDefaultDetents()
+        viewController.present(hostingController, animated: !isResetting)
     }
 
     private func present(activity: PocketActivity?) {

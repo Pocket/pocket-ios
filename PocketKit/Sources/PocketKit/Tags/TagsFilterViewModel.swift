@@ -25,6 +25,9 @@ class TagsFilterViewModel: ObservableObject {
     @Published
     var selectedTag: SelectedTag?
 
+    @Published
+    var refreshView: Bool? = false
+
     init(source: Source, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
         self.source = source
         self.fetchedTags = fetchedTags
@@ -63,5 +66,6 @@ class TagsFilterViewModel: ObservableObject {
     func rename(from oldName: String, to newName: String) {
         guard let tag: Tag = fetchedTags?.filter({ $0.name == oldName }).first else { return }
         source.renameTag(from: tag, to: newName)
+        refreshView = true
     }
 }

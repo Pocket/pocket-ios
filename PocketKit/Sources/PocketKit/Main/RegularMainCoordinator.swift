@@ -222,7 +222,7 @@ extension RegularMainCoordinator: ModalContentPresenting {
 
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
-        splitController.present(hostingController, animated: true)
+        splitController.present(hostingController, animated: !isResetting)
     }
 
     func present(_ readerSettings: ReaderSettings?, isPresenting: Bool?) {
@@ -251,7 +251,7 @@ extension RegularMainCoordinator: ModalContentPresenting {
         guard !isResetting, let tagsFilterViewModel = tagsFilterViewModel else { return }
         let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel))
         hostingController.modalPresentationStyle = .formSheet
-        viewController.present(hostingController, animated: true)
+        viewController.present(hostingController, animated: !isResetting)
     }
 }
 

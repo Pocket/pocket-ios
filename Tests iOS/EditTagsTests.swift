@@ -51,11 +51,11 @@ class EditTagsTests: XCTestCase {
         XCTAssertEqual(tagsFilterView.editButton.label, "Done")
         XCTAssertFalse(tagsFilterView.renameButton.isEnabled)
 
-        tagsFilterView.tagCell(matching: "tag 1").tap()
-        tagsFilterView.tagCell(matching: "tag 0").tap()
+        tagsFilterView.tag(matching: "tag 1").tap()
+        tagsFilterView.tag(matching: "tag 0").tap()
         XCTAssertFalse(tagsFilterView.renameButton.isEnabled)
 
-        tagsFilterView.tagCell(matching: "tag 0").tap()
+        tagsFilterView.tag(matching: "tag 0").tap()
         XCTAssertTrue(tagsFilterView.renameButton.isEnabled)
 
         tagsFilterView.renameButton.tap()
