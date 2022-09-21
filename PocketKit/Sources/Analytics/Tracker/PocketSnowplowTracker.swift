@@ -18,8 +18,8 @@ public class PocketSnowplowTracker: SnowplowTracker {
         trackerConfiguration.devicePlatform = .mobile
         trackerConfiguration.base64Encoding = false
         trackerConfiguration.logLevel = .off
-        trackerConfiguration.applicationContext = false
-        trackerConfiguration.platformContext = false
+        trackerConfiguration.applicationContext = true
+        trackerConfiguration.platformContext = true
         trackerConfiguration.geoLocationContext = false
         trackerConfiguration.sessionContext = false
         trackerConfiguration.screenContext = false
