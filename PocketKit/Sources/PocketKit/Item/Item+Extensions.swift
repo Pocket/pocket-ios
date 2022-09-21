@@ -30,11 +30,24 @@ public extension SavedItem {
 
 public extension Item {
     var shouldOpenInWebView: Bool {
-        if !isSaved && !isSyndicated {
+        if isSaved || isSyndicated {
+            // We are legally allowed to open the item in reader view
+            // BUT: if any of the following are true...
+            // a) the item is not an article (i.e. it was not parseable)
+            // b) the item is an image
+            // c) the item is a video
+            if !isArticle || isImage || isVideo {
+                // then we should open in web view
+                return true
+            } else {
+                // the item is safe to open in reader view
+                return false
+            }
+        } else {
+            // We are not legally allowed to open the item in reader view
+            // open in web view
             return true
         }
-
-        return !isArticle || hasImage == .isImage || hasVideo == .isVideo
     }
 
     var isSyndicated: Bool {
@@ -43,5 +56,13 @@ public extension Item {
 
     var isSaved: Bool {
         savedItem != nil
+    }
+
+    var isVideo: Bool {
+        hasVideo == .isVideo
+    }
+
+    var isImage: Bool {
+        hasImage == .isImage
     }
 }
