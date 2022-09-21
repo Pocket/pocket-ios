@@ -28,7 +28,7 @@ public class V3Client: NSObject, V3ClientProtocol {
     /**
      Our http session we are keeping to reuse
      */
-    let urlSession: URLSession
+    let urlSession: URLSessionProtocol
 
     /**
      The session provider that holds the current session for the requests
@@ -40,16 +40,25 @@ public class V3Client: NSObject, V3ClientProtocol {
      */
     let consumerKey: String
 
+    public static func createDefault(
+        sessionProvider: SessionProvider,
+        consumerKey: String
+    ) -> V3Client {
+        let urlSession = URLSession(configuration: URLSessionConfiguration.ephemeral)
+        return V3Client(sessionProvider: sessionProvider, consumerKey: consumerKey, urlSession: urlSession)
+    }
+
     /**
      Init our V3Client using the current session provider and our consumer key
      */
     public init(
         sessionProvider: SessionProvider,
-        consumerKey: String
+        consumerKey: String,
+        urlSession: URLSessionProtocol
     ) {
-        urlSession = URLSession(configuration: URLSessionConfiguration.background(withIdentifier: "com.mozilla.pocket.v3"))
         self.sessionProvider = sessionProvider
         self.consumerKey = consumerKey
+        self.urlSession = urlSession
     }
 
     /**
@@ -79,6 +88,7 @@ public class V3Client: NSObject, V3ClientProtocol {
             }
 
             let decoder = JSONDecoder()
+            decoder.keyDecodingStrategy = .convertFromSnakeCase
             guard let response = try? decoder.decode(decodeable, from: data) else {
                 throw Error.invalidResponse
             }
@@ -100,24 +110,26 @@ public class V3Client: NSObject, V3ClientProtocol {
     /**
      Given a path and parameters build a URL Request to be used on V3
      */
-    internal func buildRequest(path: String, parameters: [String: String]) throws -> URLRequest {
+    internal func buildRequest(path: String, parameters: Encodable & BasicV3Request)  throws -> URLRequest {
         let url = Constants.baseURL.appendingPathComponent(path)
         var request = URLRequest(url: url)
         var parameters = parameters
 
-        parameters["consumer_key"] = consumerKey
+        parameters.consumerKey = consumerKey
 
-        guard let guid = sessionProvider.session?.guid, let accessToken = sessionProvider.session?.accessToken else {
-            // TODO: throw a better error
-            throw Error.invalidCredentials
+        guard let guid = sessionProvider.session?.guid,
+              let accessToken = sessionProvider.session?.accessToken else {
+            throw Error.unexpectedError
         }
-        parameters["access_token"] = accessToken
-        parameters["guid"] = guid
+
+        parameters.accessToken = accessToken
+        parameters.guid = guid
 
         let encoder = JSONEncoder()
-        let data = try encoder.encode(parameters)
-        request.httpBody = data
-        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        request.httpBody = try! encoder.encode(parameters)
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "X-Accept")
         request.httpMethod = "POST"
 
         return request
@@ -138,11 +150,15 @@ extension V3Client {
                                   pushType: PushType,
                                   token: String
     ) async throws -> RegisterPushTokenResponse? {
-        let request = try buildRequest(path: "push/register", parameters: [
-            "device_identifier": deviceIdentifer,
-            "push_type": pushType.rawValue,
-            "token": token
-        ])
+
+        let request = try buildRequest(
+            path: "push/register",
+            parameters: RegisterPushTokenRequest(
+                deviceIdentifier: deviceIdentifer,
+                pushType: pushType.rawValue,
+                token: token
+            )
+        )
 
         return try await executeRequest(request: request, decodeable: RegisterPushTokenResponse.self)
     }
@@ -154,10 +170,13 @@ extension V3Client {
                                     deviceIdentifer: String,
                                     pushType: PushType
     ) async throws -> DeregisterPushTokenResponse? {
-        let request = try buildRequest(path: "push/register", parameters: [
-            "device_identifier": deviceIdentifer,
-            "push_type": pushType.rawValue,
-        ])
+        let request = try buildRequest(
+            path: "push/deregister",
+            parameters: DeregisterPushTokenRequest(
+                deviceIdentifier: deviceIdentifer,
+                pushType: pushType.rawValue
+            )
+        )
 
         return try await executeRequest(request: request, decodeable: DeregisterPushTokenResponse.self)
     }

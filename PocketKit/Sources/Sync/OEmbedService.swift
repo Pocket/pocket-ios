@@ -1,17 +1,17 @@
 import Foundation
 
-class OEmbedService {
-    enum Error: Swift.Error {
+public class OEmbedService {
+    public enum Error: Swift.Error {
         case anError
     }
 
     private let session: URLSessionProtocol
 
-    init(session: URLSessionProtocol) {
+    public init(session: URLSessionProtocol) {
         self.session = session
     }
 
-    func fetch(request: OEmbedRequest) async throws -> OEmbed {
+    public func fetch(request: OEmbedRequest) async throws -> OEmbed {
         let data = try await session.data(
             for: httpRequest(for: request),
             delegate: nil
@@ -47,13 +47,18 @@ class OEmbedService {
     }
 }
 
-struct OEmbed: Decodable {
-    let html: String?
-    let width: Int?
-    let height: Int?
+public struct OEmbed: Decodable {
+    public let html: String?
+    public let width: Int?
+    public let height: Int?
 }
 
-struct OEmbedRequest {
-    let id: String?
-    let width: Int?
+public struct OEmbedRequest {
+    public let id: String?
+    public let width: Int?
+
+    public init(id: String?, width: Int?) {
+        self.id = id
+        self.width = width
+    }
 }

@@ -12,15 +12,25 @@ protocol BasicV3Response {
     var status: Int { get set }
 }
 
+public struct V3DeviceToken: Decodable {
+    /**
+     The deviceIdentifier that was registered
+     */
+    var deviceIdentifier: String
+
+    /**
+     Timestamp of when the token from apple expires
+     */
+    var expiresAt: Int
+}
+
+// MARK: Push Notifications
 public struct RegisterPushTokenResponse: Decodable, BasicV3Response {
     var error: Int
 
     var status: Int
 
-    /**
-     The token that was registered
-     */
-    var token: String
+    var token: V3DeviceToken
 }
 
 public struct DeregisterPushTokenResponse: Decodable, BasicV3Response {

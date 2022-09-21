@@ -19,7 +19,6 @@ public class PocketSource: Source {
 
     private let space: Space
     private let apollo: ApolloClientProtocol
-    private let v3Client: V3Client
     private let lastRefresh: LastRefresh
     private let slateService: SlateService
     private let networkMonitor: NetworkPathMonitor
@@ -48,15 +47,9 @@ public class PocketSource: Source {
             consumerKey: consumerKey
         )
 
-        let v3Client = V3Client(
-            sessionProvider: sessionProvider,
-            consumerKey: consumerKey
-        )
-
         self.init(
             space: space,
             apollo: apollo,
-            v3Client: v3Client,
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo, space: space),
@@ -72,7 +65,6 @@ public class PocketSource: Source {
     init(
         space: Space,
         apollo: ApolloClientProtocol,
-        v3Client: V3Client,
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
         slateService: SlateService,
@@ -83,7 +75,6 @@ public class PocketSource: Source {
     ) {
         self.space = space
         self.apollo = apollo
-        self.v3Client = v3Client
         self.operations = operations
         self.lastRefresh = lastRefresh
         self.slateService = slateService

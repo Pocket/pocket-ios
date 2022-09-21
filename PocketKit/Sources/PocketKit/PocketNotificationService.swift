@@ -63,24 +63,28 @@ class PocketNotificationService: NSObject {
         inAppMessageUI.delegate = self
         braze.inAppMessagePresenter = inAppMessageUI
 
-        sessionManager.$currentSession.receive(on: DispatchQueue.main).sink { [weak self] session in
+        sessionManager.$currentSession.sink { [weak self] session in
             guard let session = session else {
-                Task {
-                    do {
-                        // TODO: IFV is not guarenteed, look at the old iOS code for the fallbacks.
-                        _ = try await v3Client.deregisterPushToken(for: UIDevice.current.identifierForVendor!.uuidString, pushType: PocketNotificationService.pushType())
-                    } catch {
-                        Crashlogger.capture(error: error)
-                    }
-                }
-
+                self?.loggedOut()
                 return
             }
 
+            self?.loggedIn(session: session)
+        }.store(in: &subscriptions)
+    }
+
+    /**
+     Perform the following notification actions on Login:
+     - Register with Braze
+     - Register for provisional push notifications
+     - ONLY CALL THIS FROM THE MAIN THREAD So that ui can happen and for braze registration
+     */
+    private func loggedIn(session: SharedPocketKit.Session) {
+        DispatchQueue.main.async { [weak self] in
             // Braze SDK docs say this needs to be called from the main thread.
             // https://www.braze.com/docs/developer_guide/platform_integration_guides/ios/analytics/setting_user_ids/#assigning-a-user-id
             self?.braze.changeUser(userId: session.userIdentifier)
-        }.store(in: &subscriptions)
+        }
 
         let center = UNUserNotificationCenter.current()
         // In the future we can setup other types of categories
@@ -97,20 +101,36 @@ class PocketNotificationService: NSObject {
     }
 
     /**
+     Perform the following notification actions on Logout:
+     - Remove instant sync
+     */
+    private func loggedOut() {
+        // TODO: Re-enable in a followup pr when we act on instant sync
+
+//        Task {
+//            do {
+//                _ = try await v3Client.deregisterPushToken(for: Device.current.deviceIdentifer(), pushType: PocketNotificationService.pushType())
+//            } catch {
+//                Crashlogger.capture(error: error)
+//            }
+//        }
+    }
+
+    /**
      Proxy function to braze to register a device token
      */
     public func register(deviceToken: Data) {
         // TODO: Also register the token with the Pocket Instant Sync endpoint
         braze.notifications.register(deviceToken: deviceToken)
 
-        Task {
-            do {
-                // TODO: IFV is not guarenteed, look at the old iOS code for the fallbacks.
-                _ = try await v3Client.registerPushToken(for: UIDevice.current.identifierForVendor!.uuidString, pushType: PocketNotificationService.pushType(), token: deviceToken.base64EncodedString())
-            } catch {
-                Crashlogger.capture(error: error)
-            }
-        }
+        // TODO: Re-enable in a followup pr when we act on instant sync
+//        Task {
+//            do {
+//                _ = try await v3Client.registerPushToken(for: Device.current.deviceIdentifer(), pushType: PocketNotificationService.pushType(), token: deviceToken.base64EncodedString())
+//            } catch {
+//                Crashlogger.capture(error: error)
+//            }
+//        }
     }
 
     /**

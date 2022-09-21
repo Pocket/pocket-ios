@@ -54,7 +54,7 @@ struct Services {
             backgroundTaskManager: UIApplication.shared
         )
 
-        v3Client = V3Client(
+        v3Client = V3Client.createDefault(
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey
         )
