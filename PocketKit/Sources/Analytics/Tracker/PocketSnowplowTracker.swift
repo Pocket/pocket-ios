@@ -16,7 +16,7 @@ public class PocketSnowplowTracker: SnowplowTracker {
         let trackerConfiguration = TrackerConfiguration()
         trackerConfiguration.appId = appID
         trackerConfiguration.devicePlatform = .mobile
-        trackerConfiguration.base64Encoding = true
+        trackerConfiguration.base64Encoding = false
         trackerConfiguration.logLevel = .off
         trackerConfiguration.applicationContext = true
         trackerConfiguration.platformContext = true
