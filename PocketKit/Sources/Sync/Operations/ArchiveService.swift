@@ -97,11 +97,24 @@ class PocketArchiveService: NSObject, ArchiveService {
             isFavorite = nil
         }
 
+        let tagName: String?
+        let containsTagged = filters.contains {
+            guard case .tagged = $0 else { return false }
+            return true
+        }
+
+        if containsTagged {
+            tagName = tagFilter.value
+        } else {
+            tagName = nil
+        }
+
         let operation = FetchArchivePagesOperation(
             apollo: apollo,
             pageSize: pageSize,
             indexes: indexes ?? [0],
             isFavorite: isFavorite,
+            tagName: tagName,
             firstPageReceived: firstPageReceived
         )
 
@@ -266,6 +279,7 @@ private class FetchArchivePagesOperation: AsyncOperation {
     private let pageSize: Int
     private let indexes: [Int]
     private let isFavorite: Bool?
+    private let tagName: String?
     private var firstPageReceived: (() -> Void)?
 
     init(
@@ -273,12 +287,14 @@ private class FetchArchivePagesOperation: AsyncOperation {
         pageSize: Int,
         indexes: [Int],
         isFavorite: Bool?,
+        tagName: String?,
         firstPageReceived: (() -> Void)?
     ) {
         self.apollo = apollo
         self.pageSize = pageSize
         self.indexes = indexes
         self.isFavorite = isFavorite
+        self.tagName = tagName
         self.firstPageReceived = firstPageReceived
 
         super.init()
@@ -315,13 +331,17 @@ private class FetchArchivePagesOperation: AsyncOperation {
             let cursor = try await delegate.currentCursor()
             guard !isCancelled else { return }
 
+            var tagNames: [String] = []
+            if let tagName = tagName {
+                tagNames = tagName == "not tagged" ? ["untagged"] : [tagName]
+            }
             let result = try await apollo.fetch(
                 query: SavedItemSummariesQuery(
                     pagination: PaginationInput(
                         after: cursor,
                         first: pageSize
                     ),
-                    filter: SavedItemsFilter(isFavorite: isFavorite, isArchived: true),
+                    filter: SavedItemsFilter(isFavorite: isFavorite, isArchived: true, tagNames: tagNames),
                     sort: SavedItemsSort(sortBy: .archivedAt, sortOrder: .desc)
                 )
             )

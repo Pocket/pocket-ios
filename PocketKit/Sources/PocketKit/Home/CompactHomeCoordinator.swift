@@ -253,7 +253,7 @@ class CompactHomeCoordinator: NSObject {
         guard !isResetting, let viewModel = viewModel else { return }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
-        viewController.present(hostingController, animated: true)
+        viewController.present(hostingController, animated: !isResetting)
     }
 }
 

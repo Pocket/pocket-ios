@@ -410,57 +410,6 @@ extension SavedItemsListViewModelTests {
         XCTAssertEqual(width, 115.0)
         XCTAssertEqual(height, 39.0)
     }
-
-    //    func test_filterByTagAction_sendsSnapshotWithUpdatedItems() {
-    //        itemsController.stubPerformFetch {
-    //            self.itemsController.fetchedObjects = []
-    //        }
-    //
-    //        let viewModel = subject()
-    //
-    //        let expectSnapshot = expectation(description: "expected snapshot")
-    //        viewModel.snapshot.dropFirst().sink { snapshot in
-    //            defer { expectSnapshot.fulfill() }
-    //
-    //            XCTAssertEqual(
-    //                snapshot.itemIdentifiers(inSection: .tags), [
-    //                    .tag("not tagged"),
-    //                ]
-    //            )
-    //        }.store(in: &subscriptions)
-    //
-    ////        let action = viewModel.filterByTagAction()
-    //
-    //        action?.invoke()
-    ////        action.handler()
-    //        wait(for: [expectSnapshot], timeout: 1)
-    //    }
-
-//    func test_selectedTag_updatesSnapshot() throws {
-//        itemsController.stubPerformFetch {
-//            self.itemsController.fetchedObjects = []
-//        }
-//
-//        source.stubFetchTags {
-//            []
-//        }
-//
-//        let viewModel = subject()
-//
-//        let expectSnapshot = expectation(description: "expect snapshot")
-//        expectSnapshot.assertForOverFulfill = false
-//        viewModel.snapshot.dropFirst().sink { snapshot in
-//            defer { expectSnapshot.fulfill() }
-//            XCTAssertEqual(
-//                snapshot.itemIdentifiers(inSection: .tags),
-//                [.tag("not tagged")]
-//            )
-//        }.store(in: &subscriptions)
-//        viewModel.selectCell(with: .filterButton(.tagged))
-//        viewModel.presentedTagsFilter?.selectedTag = .notTagged
-//
-//        wait(for: [expectSnapshot], timeout: 1)
-//    }
 }
 
 extension UIAction {
@@ -473,5 +422,4 @@ extension UIAction {
             handler(self)
         }
     }
-
 }

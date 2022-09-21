@@ -490,7 +490,7 @@ extension ArchivedItemsListViewModel {
 // MARK: - Building and sending snapshots
 extension ArchivedItemsListViewModel {
     private func buildSnapshot(results: [SavedItemResult]) -> Snapshot {
-        var snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> = .init()
+        var snapshot = Snapshot()
 
         snapshot.appendSections([.filters, .items])
         snapshot.appendItems(

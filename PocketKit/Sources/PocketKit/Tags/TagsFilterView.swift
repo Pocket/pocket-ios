@@ -27,6 +27,9 @@ struct TagsFilterView: View {
     @State
     private var showRenameAlert: Bool = false
 
+    @State
+    private var tagsSelected = Set<String>()
+
     var body: some View {
         NavigationView {
             VStack {
@@ -55,7 +58,7 @@ struct TagsFilterView: View {
                 .tagsHeaderToolBar($isEditing)
                 Spacer()
                 if isEditing {
-                    EditBottomBar(selection: selection, showRenameAlert: $showRenameAlert, showDeleteAlert: $showDeleteAlert)
+                    EditBottomBar(selection: $selection, tagsSelected: $tagsSelected, showRenameAlert: $showRenameAlert, showDeleteAlert: $showDeleteAlert)
                 }
             }
         }
@@ -64,8 +67,8 @@ struct TagsFilterView: View {
                 title: Text("Delete Tag?"),
                 message: Text("Are you sure you want to delete the tags and remove it from all items?"),
                 primaryButton: .destructive(Text("Delete"), action: {
-                    viewModel.delete(tags: Array(selection))
-                    selection = Set<String>()
+                    viewModel.delete(tags: Array(tagsSelected))
+                    tagsSelected = Set<String>()
                 }),
                 secondaryButton: .cancel(Text("Cancel"), action: {
                 })
@@ -76,9 +79,9 @@ struct TagsFilterView: View {
                 title: "Rename Tag",
                 message: "Enter a new name for this tag"
                ) { result in
-                   if let text = result, let oldName = selection.first {
+                   if let text = result, let oldName = tagsSelected.first {
                        viewModel.rename(from: oldName, to: text)
-                       selection = Set<String>()
+                       tagsSelected = Set<String>()
                    }
                }
         )
@@ -105,20 +108,25 @@ struct EditModeView: View {
 }
 
 struct EditBottomBar: View {
-    var selection: Set<String>
+    @Binding var selection: Set<String>
+    @Binding var tagsSelected: Set<String>
     @Binding var showRenameAlert: Bool
     @Binding var showDeleteAlert: Bool
+
     var body: some View {
         HStack {
             Button("Rename") {
+                tagsSelected = selection
                 showRenameAlert = true
             }
             .disabled(selection.count != 1)
             .accessibilityIdentifier("rename-button")
             Spacer()
             Button("Delete") {
+                tagsSelected = selection
                 showDeleteAlert = true
-            }.disabled(selection.isEmpty)
+            }
+        .disabled(selection.isEmpty)
                 .accessibilityIdentifier("delete-button")
         }
     }
