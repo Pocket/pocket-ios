@@ -1,6 +1,6 @@
 import XCTest
 
-@testable import PocketKit
+@testable import Sync
 
 class OEmbedServiceTests: XCTestCase {
     func test_itFetchesOEmbedContentWithProperURL() async throws {
@@ -31,14 +31,5 @@ class OEmbedServiceTests: XCTestCase {
             session.dataTaskCalls[0].request.url!.absoluteString,
             "https://vimeo.com/api/oembed.json?url=https://vimeo.com/286898202&width=335"
         )
-    }
-}
-
-extension URLResponse {
-    convenience init(
-        url: URL = URL(string: "http://example.com")!,
-        mimeType: String = "application/json"
-    ) {
-        self.init(url: url, mimeType: mimeType, expectedContentLength: 0, textEncodingName: nil)
     }
 }

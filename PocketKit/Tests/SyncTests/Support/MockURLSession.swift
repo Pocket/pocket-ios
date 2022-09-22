@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
-@testable import PocketKit
+@testable import Sync
 
 class MockURLSession: URLSessionProtocol {
     struct DataCall {
@@ -27,5 +27,14 @@ class MockURLSession: URLSessionProtocol {
 
     func stubData(_ impl: @escaping DataImpl) {
         dataImpl = impl
+    }
+}
+
+extension URLResponse {
+    convenience init(
+        url: URL = URL(string: "http://example.com")!,
+        mimeType: String = "application/json"
+    ) {
+        self.init(url: url, mimeType: mimeType, expectedContentLength: 0, textEncodingName: nil)
     }
 }
