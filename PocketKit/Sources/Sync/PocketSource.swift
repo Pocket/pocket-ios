@@ -404,8 +404,8 @@ extension PocketSource {
     public func fetchDetails(for recommendation: Recommendation) async throws {
         guard let item = recommendation.item,
               let remoteID = item.remoteID else {
-                  return
-              }
+            return
+        }
 
         guard let remoteItem = try await apollo
             .fetch(query: ItemByIdQuery(id: remoteID))
