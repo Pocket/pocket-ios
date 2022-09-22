@@ -20,6 +20,8 @@
 	<string>$(POCKET_API_BASE_URL)</string>
 	<key>PocketAPIConsumerKey</key>
 	<string>$(POCKET_API_CONSUMER_KEY)</string>
+	<key>PocketAPIConsumerKeyPad</key>
+	<string>$(POCKET_API_CONSUMER_KEY_PAD)</string>
 	<key>SentryDSN</key>
 	<string>$(SENTRY_DSN)</string>
 </dict>
