@@ -14,6 +14,7 @@ public struct Crashlogger {
     }
 
     public static func capture(error: Error) {
+        print("Error: \(error.localizedDescription)")
         SentrySDK.capture(error: error)
     }
 

@@ -64,11 +64,14 @@ class PocketNotificationService: NSObject {
         braze.inAppMessagePresenter = inAppMessageUI
 
         sessionManager.$currentSession.sink { [weak self] session in
+            // First try and see if we have a new session coming into Session Manager to indicate a login or exsting session.
             guard let session = session else {
-                self?.loggedOut()
+                // We do not have a new session coming in, so use our previous session to log out a user.
+                self?.loggedOut(session: self?.sessionManager.currentSession)
                 return
             }
 
+            // We are logged in, but lets explicitly pass our session to the calling function.
             self?.loggedIn(session: session)
         }.store(in: &subscriptions)
     }
@@ -77,7 +80,6 @@ class PocketNotificationService: NSObject {
      Perform the following notification actions on Login:
      - Register with Braze
      - Register for provisional push notifications
-     - ONLY CALL THIS FROM THE MAIN THREAD So that ui can happen and for braze registration
      */
     private func loggedIn(session: SharedPocketKit.Session) {
         DispatchQueue.main.async { [weak self] in
@@ -98,39 +100,59 @@ class PocketNotificationService: NSObject {
         center.requestAuthorization(options: [.badge, .sound, .alert, .provisional]) { granted, error in
             print("Notification authorization, granted: \(granted), error: \(String(describing: error))")
         }
+
+        // Register for REMOTE (not regular marketing) notifcations, i.e. Instant Sync.
+        UIApplication.shared.registerForRemoteNotifications()
     }
 
     /**
      Perform the following notification actions on Logout:
      - Remove instant sync
      */
-    private func loggedOut() {
-        // TODO: Re-enable in a followup pr when we act on instant sync
+    private func loggedOut(session: SharedPocketKit.Session?) {
+        // Unregister for REMOTE (not regular marketing) notifcations, i.e. Instant Sync.
+        UIApplication.shared.unregisterForRemoteNotifications()
 
-        //        Task {
-        //            do {
-        //                _ = try await v3Client.deregisterPushToken(for: Device.current.deviceIdentifer(), pushType: PocketNotificationService.pushType)
-        //            } catch {
-        //                Crashlogger.capture(error: error)
-        //            }
-        //        }
+        // Check if we got a session from our caller
+        guard let session = session else {
+            // We do not have a session so we can not deregister for push notifications.
+            // Capture the message for later use and move on.
+            Crashlogger.capture(message: "Push Notification Service has no previous session to use to deregister a push token with")
+            return
+        }
+
+        Task {[weak self] in
+            do {
+                // TODO: At the point we act on this we actually do not have the user's accessToken or guid anymore...
+                // Need to subscribe to logout another way.
+                _ = try await self?.v3Client.deregisterPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, session: session)
+            } catch {
+                Crashlogger.capture(error: error)
+            }
+        }
     }
 
     /**
      Proxy function to braze to register a device token
      */
     public func register(deviceToken: Data) {
-        // TODO: Also register the token with the Pocket Instant Sync endpoint
         braze.notifications.register(deviceToken: deviceToken)
 
-        // TODO: Re-enable in a followup pr when we act on instant sync
-        //        Task {
-        //            do {
-        //                _ = try await v3Client.registerPushToken(for: Device.current.deviceIdentifer(), pushType: PocketNotificationService.pushType, token: deviceToken.base64EncodedString())
-        //            } catch {
-        //                Crashlogger.capture(error: error)
-        //            }
-        //        }
+        // Check if we have a current session
+        guard let session = sessionManager.session else {
+            // We do not have a session so we can not register for push notifications.
+            // Capture the message for later use and move on.
+            Crashlogger.capture(message: "Push Notification Service has no current session to use to register a push token with")
+            return
+        }
+
+        Task {[weak self] in
+            do {
+                _ = try await self?.v3Client.registerPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, token: deviceToken.base64EncodedString(), session: session)
+            } catch {
+                Crashlogger.capture(error: error)
+            }
+        }
     }
 
     /**
@@ -151,12 +173,8 @@ class PocketNotificationService: NSObject {
         }
 
         // Braze did not handle this remote background notification.
-        // We can handle the notification yourself here.
-        // TODO: Handle the V3 Instant sync push notification.
-
-        // Manually call the completion handler to let the system know
-        // that the background notification is processed.
-        completionHandler(.noData)
+        // So that means it must bbe an instant sync notification!
+        handleInstantSync(didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
     }
 
     /**
@@ -224,5 +242,44 @@ extension PocketNotificationService {
         type = .alphadev
 #endif
         return type
+    }
+
+    /**
+     Handle our Instant Sync push notification
+     */
+    func handleInstantSync(
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
+        guard let currentSession = sessionManager.currentSession else {
+            // The user is not logged in, so we ignore the instant sync.
+            completionHandler(.noData)
+            return
+        }
+
+        guard let pushGuid = userInfo["g"] as? String else {
+            // The push does not contain a guid to check, lets instant sync!
+            triggerSyncFromRemotePush(fetchCompletionHandler: completionHandler)
+            return
+        }
+
+        guard pushGuid == currentSession.guid else {
+            // The push contains a guid that is equal to our current guid.
+            // This means that the instant sync is because we ourselves performed an action that triggered the remote push.
+            // Because of this we ignore this instant sync!
+            completionHandler(.noData)
+            return
+        }
+
+        triggerSyncFromRemotePush(fetchCompletionHandler: completionHandler)
+    }
+
+    /**
+     Triggers our sync process when told to via a remote push
+     */
+    func triggerSyncFromRemotePush(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        self.source.refresh {
+            completionHandler(.newData)
+        }
     }
 }

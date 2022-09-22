@@ -80,8 +80,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         Textiles.initialize()
         refreshCoordinator.initialize()
 
-        application.registerForRemoteNotifications()
-
         return true
     }
 
