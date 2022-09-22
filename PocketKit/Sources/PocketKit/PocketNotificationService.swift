@@ -107,13 +107,13 @@ class PocketNotificationService: NSObject {
     private func loggedOut() {
         // TODO: Re-enable in a followup pr when we act on instant sync
 
-//        Task {
-//            do {
-//                _ = try await v3Client.deregisterPushToken(for: Device.current.deviceIdentifer(), pushType: PocketNotificationService.pushType())
-//            } catch {
-//                Crashlogger.capture(error: error)
-//            }
-//        }
+        //        Task {
+        //            do {
+        //                _ = try await v3Client.deregisterPushToken(for: Device.current.deviceIdentifer(), pushType: PocketNotificationService.pushType)
+        //            } catch {
+        //                Crashlogger.capture(error: error)
+        //            }
+        //        }
     }
 
     /**
@@ -124,13 +124,13 @@ class PocketNotificationService: NSObject {
         braze.notifications.register(deviceToken: deviceToken)
 
         // TODO: Re-enable in a followup pr when we act on instant sync
-//        Task {
-//            do {
-//                _ = try await v3Client.registerPushToken(for: Device.current.deviceIdentifer(), pushType: PocketNotificationService.pushType(), token: deviceToken.base64EncodedString())
-//            } catch {
-//                Crashlogger.capture(error: error)
-//            }
-//        }
+        //        Task {
+        //            do {
+        //                _ = try await v3Client.registerPushToken(for: Device.current.deviceIdentifer(), pushType: PocketNotificationService.pushType, token: deviceToken.base64EncodedString())
+        //            } catch {
+        //                Crashlogger.capture(error: error)
+        //            }
+        //        }
     }
 
     /**
@@ -218,14 +218,11 @@ extension PocketNotificationService: BrazeInAppMessageUIDelegate {
  V3 Helpers
  */
 extension PocketNotificationService {
-
-    static func pushType() -> PushType {
-        // TODO: Once we move to the main app store bundle, we will need to move this to say prod when built
-        // for that identifier and alpha when built for Alpha Neue
-        var pushType: PushType = .alpha
+    var pushType: PushType {
+        var type: PushType = .alpha
 #if DEBUG
-        pushType = .alphadev
+        type = .alphadev
 #endif
-        return pushType
+        return type
     }
 }

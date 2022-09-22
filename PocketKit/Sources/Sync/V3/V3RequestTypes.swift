@@ -1,31 +1,30 @@
-protocol BasicV3Request {
+protocol V3Request: Encodable {
+    var accessToken: String { get }
 
-    var accessToken: String? { get set }
+    var consumerKey: String { get }
 
-    var consumerKey: String? { get set }
-
-    var guid: String? { get set }
+    var guid: String { get }
 
 }
 
-public struct RegisterPushTokenRequest: Codable, Equatable, BasicV3Request {
-    var accessToken: String?
+public struct RegisterPushTokenRequest: Codable, Equatable, V3Request {
+    let accessToken: String
 
-    var consumerKey: String?
+    let consumerKey: String
 
-    var guid: String?
+    let guid: String
 
     let deviceIdentifier: String
     let pushType: String
     let token: String
 }
 
-public struct DeregisterPushTokenRequest: Codable, Equatable, BasicV3Request {
-    var accessToken: String?
+public struct DeregisterPushTokenRequest: Codable, Equatable, V3Request {
+    let accessToken: String
 
-    var consumerKey: String?
+    let consumerKey: String
 
-    var guid: String?
+    let guid: String
 
     let deviceIdentifier: String
     let pushType: String

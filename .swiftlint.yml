@@ -43,7 +43,6 @@ disabled_rules: # rule identifiers to exclude from running
   - orphaned_doc_comment
   - private_unit_test
   - reduce_boolean
-  - redundant_set_access_control
   - redundant_string_enum_value
   - self_in_property_initialization
   - shorthand_operator
