@@ -28,7 +28,7 @@ class PocketNotificationService: NSObject {
     /**
      Instance of the Pocket Session manager for us to subscribe to
      */
-    private let sessionManager: AppSession
+    private let appSession: AppSession
 
     /**
      Instance of our v3 Client to make legacy requests
@@ -40,10 +40,10 @@ class PocketNotificationService: NSObject {
      */
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(source: Source, tracker: Tracker, sessionManager: AppSession, v3Client: V3ClientProtocol) {
+    init(source: Source, tracker: Tracker, appSession: AppSession, v3Client: V3ClientProtocol) {
         self.source = source
         self.tracker = tracker
-        self.sessionManager = sessionManager
+        self.appSession = appSession
         self.v3Client = v3Client
 
         // Init Braze with our information.
@@ -63,17 +63,40 @@ class PocketNotificationService: NSObject {
         inAppMessageUI.delegate = self
         braze.inAppMessagePresenter = inAppMessageUI
 
-        sessionManager.$currentSession.sink { [weak self] session in
-            // First try and see if we have a new session coming into Session Manager to indicate a login or exsting session.
-            guard let session = session else {
-                // We do not have a new session coming in, so use our previous session to log out a user.
-                self?.loggedOut(session: self?.sessionManager.currentSession)
+        // Register for login notifications
+        NotificationCenter.default.publisher(
+            for: .userLoggedIn
+        ).sink { [weak self] notification in
+            guard let session = notification.object as? SharedPocketKit.Session  else {
+                Crashlogger.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
                 return
             }
-
-            // We are logged in, but lets explicitly pass our session to the calling function.
             self?.loggedIn(session: session)
         }.store(in: &subscriptions)
+
+        // Register for logout notifications
+        NotificationCenter.default.publisher(
+            for: .userLoggedOut
+        ).sink { [weak self] notification in
+            guard let session = notification.object as? SharedPocketKit.Session  else {
+                Crashlogger.capture(message: "Logged out publisher in PocketNotificationService could not convert to session")
+                return
+            }
+            self?.loggedOut(session: session)
+        }.store(in: &subscriptions)
+
+        handleSessionInitilization(session: appSession.currentSession)
+    }
+
+    /**
+     Handle session intitlization when not coming from a notification center subscriber. Mainly for app initilization.
+     */
+    private func handleSessionInitilization(session: SharedPocketKit.Session?) {
+        guard let session = session else {
+            loggedOut(session: nil)
+            return
+        }
+        self.loggedIn(session: session)
     }
 
     /**
@@ -116,15 +139,12 @@ class PocketNotificationService: NSObject {
         // Check if we got a session from our caller
         guard let session = session else {
             // We do not have a session so we can not deregister for push notifications.
-            // Capture the message for later use and move on.
-            Crashlogger.capture(message: "Push Notification Service has no previous session to use to deregister a push token with")
+            // This is likely because the app opened to the login screen where we would have not had a session beforehand.
             return
         }
 
         Task {[weak self] in
             do {
-                // TODO: At the point we act on this we actually do not have the user's accessToken or guid anymore...
-                // Need to subscribe to logout another way.
                 _ = try await self?.v3Client.deregisterPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, session: session)
             } catch {
                 Crashlogger.capture(error: error)
@@ -139,7 +159,7 @@ class PocketNotificationService: NSObject {
         braze.notifications.register(deviceToken: deviceToken)
 
         // Check if we have a current session
-        guard let session = sessionManager.session else {
+        guard let session = appSession.currentSession else {
             // We do not have a session so we can not register for push notifications.
             // Capture the message for later use and move on.
             Crashlogger.capture(message: "Push Notification Service has no current session to use to register a push token with")
@@ -251,7 +271,7 @@ extension PocketNotificationService {
         didReceiveRemoteNotification userInfo: [AnyHashable: Any],
         fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
     ) {
-        guard let currentSession = sessionManager.currentSession else {
+        guard let session = appSession.currentSession else {
             // The user is not logged in, so we ignore the instant sync.
             completionHandler(.noData)
             return
@@ -263,7 +283,7 @@ extension PocketNotificationService {
             return
         }
 
-        guard pushGuid == currentSession.guid else {
+        guard pushGuid == session.guid else {
             // The push contains a guid that is equal to our current guid.
             // This means that the instant sync is because we ourselves performed an action that triggered the remote push.
             // Because of this we ignore this instant sync!
@@ -281,5 +301,6 @@ extension PocketNotificationService {
         self.source.refresh {
             completionHandler(.newData)
         }
+        self.source.retryImmediately()
     }
 }

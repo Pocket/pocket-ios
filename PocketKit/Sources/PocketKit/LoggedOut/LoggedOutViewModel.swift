@@ -133,6 +133,8 @@ class LoggedOutViewModel: ObservableObject {
             accessToken: response.accessToken,
             userIdentifier: response.userIdentifier
         )
+        // Post that we logged in to the rest of the app
+        NotificationCenter.default.post(name: .userLoggedIn, object: appSession.currentSession)
     }
 
     @MainActor

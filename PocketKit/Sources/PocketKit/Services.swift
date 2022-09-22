@@ -76,7 +76,7 @@ struct Services {
         notificationService = PocketNotificationService(
             source: source,
             tracker: tracker,
-            sessionManager: appSession,
+            appSession: appSession,
             v3Client: v3Client
         )
     }

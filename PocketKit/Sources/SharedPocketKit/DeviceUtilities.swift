@@ -10,8 +10,17 @@ import UIKit
 
 public class DeviceUtilities {
 
-    enum Error: Swift.Error {
+    enum Error: Swift.Error, LocalizedError {
         case idfvUnavailable
+
+        var errorDescription: String? {
+            get {
+                switch self {
+                case .idfvUnavailable:
+                    return "IDFV Identifier is currently unavailable"
+                }
+            }
+        }
     }
 
     /**

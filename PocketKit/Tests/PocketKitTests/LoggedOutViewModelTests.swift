@@ -98,10 +98,17 @@ extension LoggedOutViewModelTests {
         let viewModel = subject()
 
         let sessionExpectation = expectation(description: "published error event")
-        appSession.$currentSession.dropFirst().sink { session in
-            XCTAssertEqual(session?.guid, "test-guid")
-            XCTAssertEqual(session?.accessToken, "test-access-token")
-            XCTAssertEqual(session?.userIdentifier, "test-id")
+
+        NotificationCenter.default.publisher(
+            for: .userLoggedIn
+        ).sink { notification in
+            guard let session = notification.object as? SharedPocketKit.Session  else {
+                XCTFail("Session did not exist in notification center")
+                return
+            }
+            XCTAssertEqual(session.guid, "test-guid")
+            XCTAssertEqual(session.accessToken, "test-access-token")
+            XCTAssertEqual(session.userIdentifier, "test-id")
             sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -152,10 +159,17 @@ extension LoggedOutViewModelTests {
         let viewModel = subject()
 
         let sessionExpectation = expectation(description: "published error event")
-        appSession.$currentSession.dropFirst().sink { session in
-            XCTAssertEqual(session?.guid, "test-guid")
-            XCTAssertEqual(session?.accessToken, "test-access-token")
-            XCTAssertEqual(session?.userIdentifier, "test-id")
+
+        NotificationCenter.default.publisher(
+            for: .userLoggedIn
+        ).sink { notification in
+            guard let session = notification.object as? SharedPocketKit.Session  else {
+                XCTFail("Session did not exist in notification center")
+                return
+            }
+            XCTAssertEqual(session.guid, "test-guid")
+            XCTAssertEqual(session.accessToken, "test-access-token")
+            XCTAssertEqual(session.userIdentifier, "test-id")
             sessionExpectation.fulfill()
         }.store(in: &subscriptions)
 
