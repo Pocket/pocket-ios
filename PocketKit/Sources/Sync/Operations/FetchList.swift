@@ -100,6 +100,12 @@ class FetchList: SyncOperation {
                 return
             }
 
+            Crashlogger.breadcrumb(
+                category: "sync",
+                level: .info,
+                message: "Updating/Inserting SavedItem with ID: \(node.remoteId)"
+            )
+
             let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteId)
             item.update(from: edge, with: space)
 
