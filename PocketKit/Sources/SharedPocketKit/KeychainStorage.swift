@@ -17,11 +17,11 @@ public class KeychainStorage<T: Codable & Equatable> {
             return _wrappedValue
         }
         set {
-            _wrappedValue = nil
             if let newValue = newValue {
-                _ = upsert(value: newValue)
+                _wrappedValue = upsert(value: newValue)
             } else {
                 delete()
+                _wrappedValue = nil
             }
         }
     }
@@ -36,6 +36,8 @@ public class KeychainStorage<T: Codable & Equatable> {
         self.service = service
         self.account = account
         self.accessGroup = accessGroup
+
+        _wrappedValue = read()
     }
 
     private func upsert(value: T?) -> T? {

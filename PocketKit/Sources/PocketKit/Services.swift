@@ -23,8 +23,10 @@ struct Services {
     let refreshCoordinator: RefreshCoordinator
     let authClient: AuthorizationClient
     let imageManager: ImageManager
-    let notificationService: PocketNotificationService
-    let v3Client: V3Client
+    let notificationService: PushNotificationService
+    let v3Client: V3ClientProtocol
+    let instantSync: InstantSyncProtocol
+    let braze: BrazeProtocol
 
     private let persistentContainer: PersistentContainer
 
@@ -73,11 +75,23 @@ struct Services {
         )
         imageManager.start()
 
-        notificationService = PocketNotificationService(
+        instantSync = InstantSync(
+            appSession: appSession,
+            source: source,
+            v3Client: v3Client
+        )
+
+        braze = PocketBraze(
+            apiKey: Keys.shared.brazeAPIKey,
+            endpoint: Keys.shared.brazeAPIEndpoint
+        )
+
+        notificationService = PushNotificationService(
             source: source,
             tracker: tracker,
             appSession: appSession,
-            v3Client: v3Client
+            braze: braze,
+            instantSync: instantSync
         )
     }
 }

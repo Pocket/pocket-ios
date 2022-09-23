@@ -40,7 +40,7 @@ public struct Crashlogger {
     /**
      Utility to determine if we are in a test environment.
      */
-    static func isRunningTests() -> Bool {
+    public static func isRunningTests() -> Bool {
         let env: [String: String] = ProcessInfo.processInfo.environment
         return env["XCInjectBundleInto"] != nil
     }

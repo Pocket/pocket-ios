@@ -31,14 +31,6 @@ class RootViewModel {
         self.source = source
         self.userDefaults = userDefaults
 
-        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
-            self?.showSaveFromClipboardBanner()
-        }.store(in: &subscriptions)
-
-        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
-            self?.bannerViewModel = nil
-        }.store(in: &subscriptions)
-
         // Register for login notifications
         NotificationCenter.default.publisher(
             for: .userLoggedIn
@@ -55,6 +47,14 @@ class RootViewModel {
 
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
+
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
+            self?.showSaveFromClipboardBanner()
+        }.store(in: &subscriptions)
+
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
+            self?.bannerViewModel = nil
+        }.store(in: &subscriptions)
     }
 
     /**

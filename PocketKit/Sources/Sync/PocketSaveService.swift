@@ -163,5 +163,4 @@ public extension CFNotificationName {
     static let savedItemCreated = CFNotificationName("com.mozilla.pocket.savedItemCreated" as CFString)
     static let savedItemUpdated = CFNotificationName("com.mozilla.pocket.savedItemUpdated" as CFString)
     static let unresolvedSavedItemCreated = CFNotificationName("com.mozilla.pocket.unresolvedSavedItemCreated" as CFString)
-
 }

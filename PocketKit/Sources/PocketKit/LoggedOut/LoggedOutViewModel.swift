@@ -134,6 +134,7 @@ class LoggedOutViewModel: ObservableObject {
             userIdentifier: response.userIdentifier
         )
         // Post that we logged in to the rest of the app
+        // Note when we pass appSession.currentSession it seems to pass a nil object to NotificatioNcenter, but when we save the value and we pass the basic struct it works perfectly
         NotificationCenter.default.post(name: .userLoggedIn, object: appSession.currentSession)
     }
 

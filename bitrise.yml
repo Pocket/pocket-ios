@@ -5,7 +5,7 @@ project_type: ios
 trigger_map:
   - push_branch: main
     pipeline: app-store-pipeline
-  - pull_request_target_branch: develop
+  - pull_request_target_branch: '*'
     pipeline: build-test-pipeline
 
 pipelines:

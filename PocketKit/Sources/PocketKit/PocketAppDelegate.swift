@@ -15,7 +15,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let firstLaunchDefaults: UserDefaults
     private let refreshCoordinator: RefreshCoordinator
     private let appSession: AppSession
-    internal let notificationService: PocketNotificationService
+    internal let notificationService: PushNotificationService
 
     convenience override init() {
         self.init(services: Services.shared)
