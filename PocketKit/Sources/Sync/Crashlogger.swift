@@ -5,6 +5,15 @@
 import Sentry
 
 public struct Crashlogger {
+    public enum Level: UInt {
+        case none = 0
+        case debug = 1
+        case info = 2
+        case warning = 3
+        case error = 4
+        case fatal = 5
+    }
+
     public static func setUserID(_ userID: String) {
         SentrySDK.setUser(User(userId: userID))
     }
@@ -34,6 +43,15 @@ public struct Crashlogger {
             options.debug = true
             #endif
         }
+    }
+
+    public static func breadcrumb(category: String, level: Level, message: String) {
+        let crumb = Breadcrumb()
+        crumb.category = category
+        crumb.level = SentryLevel(rawValue: level.rawValue) ?? .none
+        crumb.message = message
+
+        SentrySDK.addBreadcrumb(crumb: crumb)
     }
 
     /**
