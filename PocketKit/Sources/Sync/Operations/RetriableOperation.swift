@@ -38,11 +38,12 @@ class RetriableOperation: AsyncOperation {
     override func main() {
         Task {
             let taskID = backgroundTaskManager.beginTask()
+
             switch await operation.execute() {
             case .retry(let error):
                 retry(error)
             case .failure(let error):
-                Crashlogger.capture(message: "Retriable operation \"\(operation)\" failed")
+                Crashlogger.breadcrumb(category: "sync", level: .error, message: error.localizedDescription)
                 Crashlogger.capture(error: error)
                 finishOperation()
             case .success:
