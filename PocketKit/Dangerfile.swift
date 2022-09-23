@@ -12,8 +12,10 @@ SwiftLint.lint(.modifiedAndCreatedFiles(directory: "../"), inline: false, config
 
 let xcresult = ProcessInfo.processInfo.environment["BITRISE_XCRESULT_PATH"]!.escapeString()
 
-Coverage.xcodeBuildCoverage(.xcresultBundle(xcresult),
-                            minimumCoverage: 50)
+Coverage.xcodeBuildCoverage(
+    .xcresultBundle(xcresult),
+    minimumCoverage: 50
+)
 
 extension String {
     // Helper function to escape (iOS) in our file name for xcov.
