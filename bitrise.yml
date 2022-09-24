@@ -213,7 +213,7 @@ app:
       BITRISE_PROJECT_PATH: Pocket.xcodeproj
     - opts:
         is_expand: false
-      BITRISE_SCHEME: Pocket (iOS)
+      BITRISE_SCHEME: Pocket
     - opts:
         is_expand: false
       BITRISE_EXPORT_METHOD: development

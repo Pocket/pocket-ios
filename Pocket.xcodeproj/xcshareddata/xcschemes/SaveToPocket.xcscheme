@@ -31,7 +31,7 @@
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "166A81AF2637406C0015AA1D"
                BuildableName = "Pocket.app"
-               BlueprintName = "Pocket (iOS)"
+               BlueprintName = "Pocket"
                ReferencedContainer = "container:Pocket.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -67,7 +67,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "166A81AF2637406C0015AA1D"
             BuildableName = "Pocket.app"
-            BlueprintName = "Pocket (iOS)"
+            BlueprintName = "Pocket"
             ReferencedContainer = "container:Pocket.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -86,7 +86,7 @@
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "166A81AF2637406C0015AA1D"
             BuildableName = "Pocket.app"
-            BlueprintName = "Pocket (iOS)"
+            BlueprintName = "Pocket"
             ReferencedContainer = "container:Pocket.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

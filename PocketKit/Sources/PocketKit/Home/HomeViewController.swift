@@ -83,7 +83,9 @@ class HomeViewController: UIViewController {
             self?.handleRefresh()
         }
 
+#if !targetEnvironment(macCatalyst)
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
+#endif
 
         navigationItem.title = "Home"
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in

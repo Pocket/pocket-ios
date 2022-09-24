@@ -135,12 +135,15 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         )
 
         collectionView.delegate = self
+
+#if !targetEnvironment(macCatalyst)
         collectionView.refreshControl = UIRefreshControl(
             frame: .zero,
             primaryAction: UIAction(handler: { [weak self] _ in
                 self?.handleRefresh()
             })
         )
+#endif
 
         let filterButtonRegistration: UICollectionView.CellRegistration<TopicChipCell, ItemsListFilter> = .init { [weak self] cell, indexPath, filterID in
             self?.configure(cell: cell, indexPath: indexPath, filterID: filterID)
