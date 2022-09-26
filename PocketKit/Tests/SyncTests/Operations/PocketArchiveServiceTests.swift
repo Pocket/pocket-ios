@@ -94,6 +94,14 @@ class PocketArchiveServiceTests: XCTestCase {
             XCTAssertEqual(archivedItem.remoteID, "archived-saved-item-2")
             XCTAssertEqual(archivedItem.archivedAt, Date(timeIntervalSince1970: 5))
             XCTAssertEqual(archivedItem.item?.syndicatedArticle?.itemID, "archived-syndicated-article-id")
+
+            let highlight = archivedItem.annotations?.highlights?[0] as? Highlight
+            XCTAssertEqual(highlight?.patch, "Justo Condimentum Pharetra")
+            XCTAssertEqual(highlight?.quote, "Cursus Lorem Ornare")
+            XCTAssertEqual(highlight?.version, 2)
+            XCTAssertEqual(highlight?.remoteID, "a329caf5-c3e4-43fb-b7fb-17bd1c69204a")
+            XCTAssertEqual(highlight?.createdAt, Date(timeIntervalSince1970: 1))
+            XCTAssertEqual(highlight?.updatedAt, Date(timeIntervalSince1970: 2))
         }
 
         do {

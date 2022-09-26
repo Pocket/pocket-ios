@@ -10,6 +10,10 @@
                 "archivedAt": null,
                 "isArchived": false,
                 "isFavorite": false,
+                "annotations": {
+                    "__typename": "<type-name>",
+                    "highlights": []
+                },
                 "tags": [
                     {
                         "__typename": "Tag",
@@ -29,6 +33,10 @@
                     "isArchived": false,
                     "isFavorite": false,
                     "tags": [],
+                    "annotations": {
+                        "__typename": "<type-name>",
+                        "highlights": []
+                    },
                     "item": {
                         "__typename": "Item",
                         "remoteID": "item-1",

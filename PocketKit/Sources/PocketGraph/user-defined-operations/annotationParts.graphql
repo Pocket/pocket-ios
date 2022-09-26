@@ -1,0 +1,12 @@
+fragment AnnotationParts on SavedItem {
+  annotations {
+    highlights {
+      id
+      version
+      quote
+      patch
+      _createdAt
+      _updatedAt
+    }
+  }
+}

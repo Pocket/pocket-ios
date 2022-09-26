@@ -29,6 +29,8 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "SavedItemEdge": return PocketGraph.Objects.SavedItemEdge
     case "SavedItem": return PocketGraph.Objects.SavedItem
     case "Tag": return PocketGraph.Objects.Tag
+    case "SavedItemAnnotations": return PocketGraph.Objects.SavedItemAnnotations
+    case "Highlight": return PocketGraph.Objects.Highlight
     case "PendingItem": return PocketGraph.Objects.PendingItem
     case "Item": return PocketGraph.Objects.Item
     case "Author": return PocketGraph.Objects.Author

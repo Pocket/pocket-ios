@@ -33,7 +33,23 @@
                                     "__typename": "Tag",
                                     "id": "id-2",
                                     "name": "tag-2"
-                                }],
+                                }
+                            ],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": [
+                                    {
+                                        "__typename": "<type-name>",
+                                        "patch": "Justo Condimentum Pharetra",
+                                        "quote": "Cursus Lorem Ornare",
+                                        "version": 2,
+                                        "id": "a329caf5-c3e4-43fb-b7fb-17bd1c69204a",
+                                        "_createdAt": 1,
+                                        "_updatedAt": 2
+
+                                    }
+                                ]
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -92,6 +108,10 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",

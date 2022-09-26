@@ -84,6 +84,14 @@ class FetchListTests: XCTestCase {
         XCTAssertEqual(tags?.count, 2)
         XCTAssertEqual(tags?[0].name, "tag-1")
 
+        let highlight = savedItem.annotations?.highlights?[0] as? Highlight
+        XCTAssertEqual(highlight?.patch, "Justo Condimentum Pharetra")
+        XCTAssertEqual(highlight?.quote, "Cursus Lorem Ornare")
+        XCTAssertEqual(highlight?.version, 2)
+        XCTAssertEqual(highlight?.remoteID, "a329caf5-c3e4-43fb-b7fb-17bd1c69204a")
+        XCTAssertEqual(highlight?.createdAt, Date(timeIntervalSince1970: 1))
+        XCTAssertEqual(highlight?.updatedAt, Date(timeIntervalSince1970: 2))
+
         let item = savedItem.item
         XCTAssertEqual(item?.remoteID, "item-1")
         XCTAssertEqual(item?.givenURL, URL(string: "https://given.example.com/item-1")!)

@@ -11,6 +11,10 @@
             "isArchived": false,
             "isFavorite": false,
             "tags": [],
+            "annotations": {
+                "__typename": "Annotations",
+                "highlights": []
+            },
             "item": {
                 "__typename": "Item",
                 "remoteID": "item-1",

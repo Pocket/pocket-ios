@@ -6,12 +6,23 @@ fragment SavedItemParts on SavedItem {
   _deletedAt
   _createdAt
   archivedAt
+  ...AnnotationParts 
   tags {
     ...TagParts
   }
   item {
     ...ItemParts
     ...PendingItemParts
+  }
+  annotations {
+    highlights {
+      patch
+      quote
+      version
+      id
+      _createdAt
+      _updatedAt
+    }
   }
 }
 

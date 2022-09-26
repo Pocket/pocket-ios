@@ -14,6 +14,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       _deletedAt
       _createdAt
       archivedAt
+      ...AnnotationParts
       tags {
         __typename
         name
@@ -39,6 +40,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
     .field("archivedAt", Int?.self),
     .field("tags", [Tag]?.self),
     .field("item", Item.self),
+    .fragment(AnnotationParts.self),
   ] }
 
   /// The url the user saved to their list
@@ -59,6 +61,15 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
   public var tags: [Tag]? { __data["tags"] }
   /// Link to the underlying Pocket Item for the URL
   public var item: Item { __data["item"] }
+  /// Annotations associated to this SavedItem
+  public var annotations: AnnotationParts.Annotations? { __data["annotations"] }
+
+  public struct Fragments: FragmentContainer {
+    public let __data: DataDict
+    public init(data: DataDict) { __data = data }
+
+    public var annotationParts: AnnotationParts { _toFragment() }
+  }
 
   /// Tag
   ///

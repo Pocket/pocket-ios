@@ -23,6 +23,10 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "tags": [
                                 {
                                     "__typename": "Tag",
@@ -90,6 +94,10 @@
                             "archivedAt": null,
                             "isArchived": false,
                             "isFavorite": false,
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "tags": [
                                 {
                                     "__typename": "Tag",

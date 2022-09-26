@@ -24,6 +24,10 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-1",
@@ -85,6 +89,10 @@
                             "isArchived": false,
                             "isFavorite": true,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-2",
@@ -129,6 +137,10 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-3",
@@ -165,6 +177,10 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-4",
@@ -201,6 +217,10 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-5",
@@ -237,6 +257,10 @@
                             "isArchived": false,
                             "isFavorite": false,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "item-6",

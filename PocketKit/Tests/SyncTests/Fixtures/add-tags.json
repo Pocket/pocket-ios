@@ -22,6 +22,10 @@
                         "name": "tag-2"
                     }
                 ],
+                "annotations": {
+                    "__typename": "Annotations",
+                    "highlights": []
+                },
                 "item": {
                     "__typename": "Item",
                     "remoteID": "item-1",

@@ -24,6 +24,10 @@
                             "isArchived": true,
                             "isFavorite": false,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "archived-item-1",
@@ -66,6 +70,10 @@
                             "isArchived": true,
                             "isFavorite": true,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "archived-item-2",
@@ -101,6 +109,10 @@
                             "isArchived": true,
                             "isFavorite": true,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "archived-item-3",

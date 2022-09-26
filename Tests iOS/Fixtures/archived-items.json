@@ -23,6 +23,10 @@
                             "archivedAt": 100,
                             "isArchived": true,
                             "isFavorite": false,
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "tags": [
                                 {
                                     "__typename": "Tag",
@@ -82,6 +86,10 @@
                             "isArchived": true,
                             "isFavorite": true,
                             "tags": [],
+                            "annotations": {
+                                "__typename": "<type-name>",
+                                "highlights": []
+                            },
                             "item": {
                                 "__typename": "Item",
                                 "remoteID": "archived-item-2",

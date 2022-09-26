@@ -35,6 +35,8 @@ extension SavedItem {
             return
         }
 
+        annotations = Annotations(fragment: remote.fragments.annotationParts, context: context)
+
         if let tags = tags {
             removeFromTags(tags)
         }
@@ -72,6 +74,8 @@ extension SavedItem {
               let itemSummary = summary.item.asItem?.fragments.itemSummary else {
             return
         }
+
+        annotations = Annotations(fragment: summary.fragments.annotationParts, context: context)
 
         if let tags = tags {
             removeFromTags(tags)
