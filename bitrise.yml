@@ -222,5 +222,5 @@ app:
       SKIP_APOLLO_CODEGEN: '1'
 meta:
   bitrise.io:
-    machine_type_id: g2.12core
+    machine_type_id: g2.4core
     stack: osx-xcode-14.0.x
