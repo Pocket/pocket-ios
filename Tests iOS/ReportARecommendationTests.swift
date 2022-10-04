@@ -30,6 +30,8 @@ class ReportARecommendationTests: XCTestCase {
                 return Response.archive()
             } else if apiRequest.isForRecommendationDetail {
                 return Response.recommendationDetail()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

@@ -25,6 +25,8 @@ class EditTagsTests: XCTestCase {
                 return Response.myList()
             } else if apiRequest.isToUpdateTag("rename tag 1") {
                 return Response.updateTag()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

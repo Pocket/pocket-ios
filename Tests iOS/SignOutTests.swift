@@ -29,6 +29,8 @@ class SignOutTests: XCTestCase {
                 return Response.saveItem()
             } else if apiRequest.isToArchiveAnItem {
                 return Response.archive()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

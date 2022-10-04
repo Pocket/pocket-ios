@@ -25,6 +25,8 @@ class DeleteAnItemTests: XCTestCase {
                 return .myList()
             } else if apiRequest.isForArchivedContent {
                 return .archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

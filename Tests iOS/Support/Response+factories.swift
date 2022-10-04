@@ -78,6 +78,10 @@ extension Response {
         fixture(named: "list-with-tagged-item")
     }
 
+    static func emptyTags() -> Response {
+        fixture(named: "empty-tags")
+    }
+
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok

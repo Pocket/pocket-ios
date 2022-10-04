@@ -78,6 +78,10 @@ struct ClientAPIRequest {
         contains("replaceSavedItemTags")
     }
 
+    var isForTags: Bool {
+        contains("Tags")
+    }
+
     func contains(_ string: String) -> Bool {
         requestBody?.contains(string) == true
     }

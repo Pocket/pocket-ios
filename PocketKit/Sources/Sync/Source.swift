@@ -48,6 +48,8 @@ public protocol Source {
 
     func retrieveTags(excluding: [String]) -> [Tag]?
 
+    func fetchAllTags() -> [Tag]?
+
     func fetchTags(isArchived: Bool) -> [Tag]?
 
     func fetchSlateLineup(_ identifier: String) async throws

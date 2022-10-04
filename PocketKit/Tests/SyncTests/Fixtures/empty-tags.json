@@ -1,0 +1,19 @@
+{
+    "data": {
+        "user": {
+            "__typename": "[type-name-here]",
+            "tags": {
+                "__typename": "[type-name-here]",
+                "edges": [],
+                "pageInfo": {
+                    "__typename": "[type-name-here]",
+                    "endCursor": null,
+                    "hasNextPage": false,
+                    "hasPreviousPage": false,
+                    "startCursor": null
+                },
+                "totalCount": 0
+            }
+        }
+    }
+}

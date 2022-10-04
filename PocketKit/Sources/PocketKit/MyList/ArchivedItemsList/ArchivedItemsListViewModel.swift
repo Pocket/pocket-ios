@@ -375,7 +375,7 @@ extension ArchivedItemsListViewModel {
                 presentedTagsFilter = TagsFilterViewModel(
                     source: source,
                     fetchedTags: { [weak self] in
-                        self?.source.fetchTags(isArchived: true)
+                        self?.source.fetchAllTags()
                     }(),
                     selectAllAction: { [weak self] in
                         self?.selectCell(with: .filterButton(.all))

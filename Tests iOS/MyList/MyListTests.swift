@@ -28,6 +28,8 @@ class MyListTests: XCTestCase {
                 return Response.myList()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }
@@ -160,6 +162,8 @@ class MyListTests: XCTestCase {
                 return promise!.futureResult
             } else if apiRequest.isForMyListContent {
                 return Response.myList()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }
@@ -256,6 +260,8 @@ class MyListTests: XCTestCase {
                 return Response.myList("list-with-archived-item")
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }
@@ -285,6 +291,8 @@ class MyListTests: XCTestCase {
                 return promise.futureResult
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }
@@ -363,6 +371,8 @@ extension MyListTests {
                 return Response.myList("list-for-web-view")
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

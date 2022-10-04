@@ -40,7 +40,7 @@ extension SavedItem {
 
         tags = NSOrderedSet(array: remote.tags?.compactMap { $0 }.map { remoteTag in
             let fetchedTag = space.fetchOrCreateTag(byName: remoteTag.name)
-            fetchedTag.update(remote: remoteTag)
+            fetchedTag.update(remote: remoteTag.fragments.tagParts)
             return fetchedTag
         } ?? [])
 

@@ -26,6 +26,8 @@ class PullToRefreshTests: XCTestCase {
                 return Response.myList()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

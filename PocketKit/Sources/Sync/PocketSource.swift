@@ -358,6 +358,10 @@ extension PocketSource {
         try? space.retrieveTags(excluding: tags)
     }
 
+    public func fetchAllTags() -> [Tag]? {
+        try? space.fetchAllTags()
+    }
+
     public func fetchTags(isArchived: Bool = false) -> [Tag]? {
         try? space.fetchTags(isArchived: isArchived)
     }

@@ -31,7 +31,9 @@ class FetchList: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
-            try await fetchList()
+            async let doneFetchingList: Void = try fetchList()
+            async let doneFetchingTags: Void = try fetchTags()
+            _ = try await (doneFetchingList, doneFetchingTags)
 
             lastRefresh.refreshed()
             return .success
@@ -73,6 +75,24 @@ class FetchList: SyncOperation {
         initialDownloadState.send(.completed)
     }
 
+    private func fetchTags() async throws {
+        var shouldFetchNextPage = true
+        var pagination = PaginationInput()
+
+        while shouldFetchNextPage {
+            let query = TagsQuery(pagination: pagination)
+            let result = try await apollo.fetch(query: query)
+            try await updateLocalTags(result)
+
+            if let pageInfo = result.data?.user?.tags?.pageInfo {
+                pagination.after = pageInfo.endCursor
+                shouldFetchNextPage = pageInfo.hasNextPage
+            } else {
+                shouldFetchNextPage = false
+            }
+        }
+    }
+
     private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
         let query = FetchSavesQuery(token: token)
         query.pagination = PaginationInput(
@@ -112,6 +132,17 @@ class FetchList: SyncOperation {
             if item.deletedAt != nil {
                 space.delete(item)
             }
+        }
+
+        try space.save()
+    }
+
+    @MainActor
+    func updateLocalTags(_ result: GraphQLResult<TagsQuery.Data>) throws {
+        result.data?.user?.tags?.edges?.forEach { edge in
+            guard let node = edge?.node else { return }
+            let tag = space.fetchOrCreateTag(byName: node.name)
+            tag.update(remote: node.fragments.tagParts)
         }
 
         try space.save()

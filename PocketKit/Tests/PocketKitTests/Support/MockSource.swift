@@ -297,7 +297,7 @@ extension MockSource {
     }
 }
 
-// MARK: - Fetch All Tags
+// MARK: - Fetch Tags
 extension MockSource {
     static let fetchTags = "fetchTags"
     typealias FetchTagsImpl = () -> [Tag]?
@@ -326,6 +326,38 @@ extension MockSource {
               }
 
         return calls[index] as? FetchTagsImplCall
+    }
+}
+
+// MARK: - Fetch All Tags
+extension MockSource {
+    static let fetchAllTags = "fetchAllTags"
+    typealias FetchAllTagsImpl = () -> [Tag]?
+    struct FetchAllTagsCall { }
+
+    func stubFetchAllTags(impl: @escaping FetchAllTagsImpl) {
+        implementations[Self.fetchAllTags] = impl
+    }
+
+    func fetchAllTags() -> [Tag]? {
+        guard let impl = implementations[Self.fetchAllTags] as? FetchAllTagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchAllTags] = (calls[Self.fetchAllTags] ?? []) + [
+            FetchAllTagsCall()
+        ]
+
+        return impl()
+    }
+
+    func fetchTagsCall(at index: Int) -> FetchAllTagsCall? {
+        guard let calls = calls[Self.fetchAllTags],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? FetchAllTagsCall
     }
 }
 
