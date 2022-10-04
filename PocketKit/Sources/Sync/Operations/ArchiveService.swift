@@ -252,7 +252,6 @@ extension PocketArchiveService: FetchArchivePagesOperationDelegate {
         }
 
         isStoring = true
-        try space.deleteOrphanTags()
         try space.save()
         isStoring = false
 

@@ -140,12 +140,6 @@ public class Space {
         return try fetch(Requests.fetchTags(excluding: tags))
     }
 
-    func deleteOrphanTags() throws {
-        let deleteRequest = Requests.fetchTagsWithNoSavedItems()
-        let tags = try context.fetch(deleteRequest)
-        delete(tags)
-    }
-
     func deleteTag(byID id: String) throws {
         let fetchRequest = Requests.fetchTag(byID: id)
         fetchRequest.fetchLimit = 1

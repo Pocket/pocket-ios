@@ -312,7 +312,6 @@ extension PocketSource {
            space.fetchOrCreateTag(byName: tag)
         }))
 
-        try? space.deleteOrphanTags()
         try? space.save()
 
         let operation = operations.savedItemMutationOperation(

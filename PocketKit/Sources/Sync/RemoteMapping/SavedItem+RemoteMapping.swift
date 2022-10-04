@@ -44,8 +44,6 @@ extension SavedItem {
             return fetchedTag
         } ?? [])
 
-        try? space.deleteOrphanTags()
-
         let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteId)
         fetchRequest.fetchLimit = 1
         let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
