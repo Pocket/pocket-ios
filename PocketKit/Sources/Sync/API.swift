@@ -1845,6 +1845,7 @@ public final class FetchSavesQuery: GraphQLQuery {
   public var queryDocument: String {
     var document: String = operationDefinition
     document.append("\n" + SavedItemParts.fragmentDefinition)
+    document.append("\n" + TagParts.fragmentDefinition)
     document.append("\n" + ItemParts.fragmentDefinition)
     document.append("\n" + MarticleTextParts.fragmentDefinition)
     document.append("\n" + ImageParts.fragmentDefinition)
@@ -2265,6 +2266,7 @@ public final class FetchSavesQuery: GraphQLQuery {
               public static var selections: [GraphQLSelection] {
                 return [
                   GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                  GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                   GraphQLField("name", type: .nonNull(.scalar(String.self))),
                   GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
                 ]
@@ -2306,6 +2308,32 @@ public final class FetchSavesQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "id")
+                }
+              }
+
+              public var fragments: Fragments {
+                get {
+                  return Fragments(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+
+              public struct Fragments {
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public var tagParts: TagParts {
+                  get {
+                    return TagParts(unsafeResultMap: resultMap)
+                  }
+                  set {
+                    resultMap += newValue.resultMap
+                  }
                 }
               }
             }
@@ -5269,6 +5297,7 @@ public final class SaveItemMutation: GraphQLMutation {
   public var queryDocument: String {
     var document: String = operationDefinition
     document.append("\n" + SavedItemParts.fragmentDefinition)
+    document.append("\n" + TagParts.fragmentDefinition)
     document.append("\n" + ItemParts.fragmentDefinition)
     document.append("\n" + MarticleTextParts.fragmentDefinition)
     document.append("\n" + ImageParts.fragmentDefinition)
@@ -5485,6 +5514,7 @@ public final class SaveItemMutation: GraphQLMutation {
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("name", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           ]
@@ -5526,6 +5556,32 @@ public final class SaveItemMutation: GraphQLMutation {
           }
           set {
             resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(unsafeResultMap: resultMap)
+          }
+          set {
+            resultMap += newValue.resultMap
+          }
+        }
+
+        public struct Fragments {
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public var tagParts: TagParts {
+            get {
+              return TagParts(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
           }
         }
       }
@@ -8987,6 +9043,7 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
   public var queryDocument: String {
     var document: String = operationDefinition
     document.append("\n" + SavedItemParts.fragmentDefinition)
+    document.append("\n" + TagParts.fragmentDefinition)
     document.append("\n" + ItemParts.fragmentDefinition)
     document.append("\n" + MarticleTextParts.fragmentDefinition)
     document.append("\n" + ImageParts.fragmentDefinition)
@@ -9207,6 +9264,7 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("name", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           ]
@@ -9248,6 +9306,32 @@ public final class ReplaceSavedItemTagsMutation: GraphQLMutation {
           }
           set {
             resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(unsafeResultMap: resultMap)
+          }
+          set {
+            resultMap += newValue.resultMap
+          }
+        }
+
+        public struct Fragments {
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public var tagParts: TagParts {
+            get {
+              return TagParts(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
           }
         }
       }
@@ -12208,6 +12292,7 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
   public var queryDocument: String {
     var document: String = operationDefinition
     document.append("\n" + SavedItemParts.fragmentDefinition)
+    document.append("\n" + TagParts.fragmentDefinition)
     document.append("\n" + ItemParts.fragmentDefinition)
     document.append("\n" + MarticleTextParts.fragmentDefinition)
     document.append("\n" + ImageParts.fragmentDefinition)
@@ -12426,6 +12511,7 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
             GraphQLField("name", type: .nonNull(.scalar(String.self))),
             GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           ]
@@ -12467,6 +12553,32 @@ public final class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
           }
           set {
             resultMap.updateValue(newValue, forKey: "id")
+          }
+        }
+
+        public var fragments: Fragments {
+          get {
+            return Fragments(unsafeResultMap: resultMap)
+          }
+          set {
+            resultMap += newValue.resultMap
+          }
+        }
+
+        public struct Fragments {
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public var tagParts: TagParts {
+            get {
+              return TagParts(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
           }
         }
       }
@@ -16992,6 +17104,7 @@ public final class SavedItemByIdQuery: GraphQLQuery {
   public var queryDocument: String {
     var document: String = operationDefinition
     document.append("\n" + SavedItemParts.fragmentDefinition)
+    document.append("\n" + TagParts.fragmentDefinition)
     document.append("\n" + ItemParts.fragmentDefinition)
     document.append("\n" + MarticleTextParts.fragmentDefinition)
     document.append("\n" + ImageParts.fragmentDefinition)
@@ -17246,6 +17359,7 @@ public final class SavedItemByIdQuery: GraphQLQuery {
           public static var selections: [GraphQLSelection] {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("name", type: .nonNull(.scalar(String.self))),
               GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
             ]
@@ -17287,6 +17401,32 @@ public final class SavedItemByIdQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "id")
+            }
+          }
+
+          public var fragments: Fragments {
+            get {
+              return Fragments(unsafeResultMap: resultMap)
+            }
+            set {
+              resultMap += newValue.resultMap
+            }
+          }
+
+          public struct Fragments {
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public var tagParts: TagParts {
+              get {
+                return TagParts(unsafeResultMap: resultMap)
+              }
+              set {
+                resultMap += newValue.resultMap
+              }
             }
           }
         }
@@ -23040,6 +23180,389 @@ public final class ItemByIdQuery: GraphQLQuery {
   }
 }
 
+public final class TagsQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query Tags($pagination: PaginationInput) {
+      user {
+        __typename
+        tags(pagination: $pagination) {
+          __typename
+          edges {
+            __typename
+            node {
+              __typename
+              ...TagParts
+            }
+            cursor
+          }
+          pageInfo {
+            __typename
+            endCursor
+            hasNextPage
+            hasPreviousPage
+            startCursor
+          }
+          totalCount
+        }
+      }
+    }
+    """
+
+  public let operationName: String = "Tags"
+
+  public var queryDocument: String {
+    var document: String = operationDefinition
+    document.append("\n" + TagParts.fragmentDefinition)
+    return document
+  }
+
+  public var pagination: PaginationInput?
+
+  public init(pagination: PaginationInput? = nil) {
+    self.pagination = pagination
+  }
+
+  public var variables: GraphQLMap? {
+    return ["pagination": pagination]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("user", type: .object(User.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(user: User? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "user": user.flatMap { (value: User) -> ResultMap in value.resultMap }])
+    }
+
+    /// Get a user entity for an authenticated client
+    public var user: User? {
+      get {
+        return (resultMap["user"] as? ResultMap).flatMap { User(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "user")
+      }
+    }
+
+    public struct User: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["User"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("tags", arguments: ["pagination": GraphQLVariable("pagination")], type: .object(Tag.selections)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(tags: Tag? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "tags": tags.flatMap { (value: Tag) -> ResultMap in value.resultMap }])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      /// Get a paginated listing of all a user's Tags
+      public var tags: Tag? {
+        get {
+          return (resultMap["tags"] as? ResultMap).flatMap { Tag(unsafeResultMap: $0) }
+        }
+        set {
+          resultMap.updateValue(newValue?.resultMap, forKey: "tags")
+        }
+      }
+
+      public struct Tag: GraphQLSelectionSet {
+        public static let possibleTypes: [String] = ["TagConnection"]
+
+        public static var selections: [GraphQLSelection] {
+          return [
+            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("edges", type: .list(.object(Edge.selections))),
+            GraphQLField("pageInfo", type: .nonNull(.object(PageInfo.selections))),
+            GraphQLField("totalCount", type: .nonNull(.scalar(Int.self))),
+          ]
+        }
+
+        public private(set) var resultMap: ResultMap
+
+        public init(unsafeResultMap: ResultMap) {
+          self.resultMap = unsafeResultMap
+        }
+
+        public init(edges: [Edge?]? = nil, pageInfo: PageInfo, totalCount: Int) {
+          self.init(unsafeResultMap: ["__typename": "TagConnection", "edges": edges.flatMap { (value: [Edge?]) -> [ResultMap?] in value.map { (value: Edge?) -> ResultMap? in value.flatMap { (value: Edge) -> ResultMap in value.resultMap } } }, "pageInfo": pageInfo.resultMap, "totalCount": totalCount])
+        }
+
+        public var __typename: String {
+          get {
+            return resultMap["__typename"]! as! String
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        /// A list of edges.
+        public var edges: [Edge?]? {
+          get {
+            return (resultMap["edges"] as? [ResultMap?]).flatMap { (value: [ResultMap?]) -> [Edge?] in value.map { (value: ResultMap?) -> Edge? in value.flatMap { (value: ResultMap) -> Edge in Edge(unsafeResultMap: value) } } }
+          }
+          set {
+            resultMap.updateValue(newValue.flatMap { (value: [Edge?]) -> [ResultMap?] in value.map { (value: Edge?) -> ResultMap? in value.flatMap { (value: Edge) -> ResultMap in value.resultMap } } }, forKey: "edges")
+          }
+        }
+
+        /// Information to aid in pagination.
+        public var pageInfo: PageInfo {
+          get {
+            return PageInfo(unsafeResultMap: resultMap["pageInfo"]! as! ResultMap)
+          }
+          set {
+            resultMap.updateValue(newValue.resultMap, forKey: "pageInfo")
+          }
+        }
+
+        /// Identifies the total count of Tags in the connection.
+        public var totalCount: Int {
+          get {
+            return resultMap["totalCount"]! as! Int
+          }
+          set {
+            resultMap.updateValue(newValue, forKey: "totalCount")
+          }
+        }
+
+        public struct Edge: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["TagEdge"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("node", type: .object(Node.selections)),
+              GraphQLField("cursor", type: .nonNull(.scalar(String.self))),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(node: Node? = nil, cursor: String) {
+            self.init(unsafeResultMap: ["__typename": "TagEdge", "node": node.flatMap { (value: Node) -> ResultMap in value.resultMap }, "cursor": cursor])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// The Tag at the end of the edge.
+          public var node: Node? {
+            get {
+              return (resultMap["node"] as? ResultMap).flatMap { Node(unsafeResultMap: $0) }
+            }
+            set {
+              resultMap.updateValue(newValue?.resultMap, forKey: "node")
+            }
+          }
+
+          /// A cursor for use in pagination.
+          public var cursor: String {
+            get {
+              return resultMap["cursor"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "cursor")
+            }
+          }
+
+          public struct Node: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["Tag"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("name", type: .nonNull(.scalar(String.self))),
+                GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(name: String, id: GraphQLID) {
+              self.init(unsafeResultMap: ["__typename": "Tag", "name": name, "id": id])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The actual tag string the user created for their list
+            public var name: String {
+              get {
+                return resultMap["name"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "name")
+              }
+            }
+
+            /// Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation
+            public var id: GraphQLID {
+              get {
+                return resultMap["id"]! as! GraphQLID
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "id")
+              }
+            }
+
+            public var fragments: Fragments {
+              get {
+                return Fragments(unsafeResultMap: resultMap)
+              }
+              set {
+                resultMap += newValue.resultMap
+              }
+            }
+
+            public struct Fragments {
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public var tagParts: TagParts {
+                get {
+                  return TagParts(unsafeResultMap: resultMap)
+                }
+                set {
+                  resultMap += newValue.resultMap
+                }
+              }
+            }
+          }
+        }
+
+        public struct PageInfo: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["PageInfo"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("endCursor", type: .scalar(String.self)),
+              GraphQLField("hasNextPage", type: .nonNull(.scalar(Bool.self))),
+              GraphQLField("hasPreviousPage", type: .nonNull(.scalar(Bool.self))),
+              GraphQLField("startCursor", type: .scalar(String.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(endCursor: String? = nil, hasNextPage: Bool, hasPreviousPage: Bool, startCursor: String? = nil) {
+            self.init(unsafeResultMap: ["__typename": "PageInfo", "endCursor": endCursor, "hasNextPage": hasNextPage, "hasPreviousPage": hasPreviousPage, "startCursor": startCursor])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          /// When paginating forwards, the cursor to continue.
+          public var endCursor: String? {
+            get {
+              return resultMap["endCursor"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "endCursor")
+            }
+          }
+
+          /// When paginating forwards, are there more items?
+          public var hasNextPage: Bool {
+            get {
+              return resultMap["hasNextPage"]! as! Bool
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "hasNextPage")
+            }
+          }
+
+          /// When paginating backwards, are there more items?
+          public var hasPreviousPage: Bool {
+            get {
+              return resultMap["hasPreviousPage"]! as! Bool
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "hasPreviousPage")
+            }
+          }
+
+          /// When paginating backwards, the cursor to continue.
+          public var startCursor: String? {
+            get {
+              return resultMap["startCursor"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "startCursor")
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 public struct SavedItemSummary: GraphQLFragment {
   /// The raw GraphQL definition of this fragment.
   public static let fragmentDefinition: String =
@@ -24338,8 +24861,7 @@ public struct SavedItemParts: GraphQLFragment {
       archivedAt
       tags {
         __typename
-        name
-        id
+        ...TagParts
       }
       item {
         __typename
@@ -24481,6 +25003,7 @@ public struct SavedItemParts: GraphQLFragment {
     public static var selections: [GraphQLSelection] {
       return [
         GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
         GraphQLField("name", type: .nonNull(.scalar(String.self))),
         GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
       ]
@@ -24522,6 +25045,32 @@ public struct SavedItemParts: GraphQLFragment {
       }
       set {
         resultMap.updateValue(newValue, forKey: "id")
+      }
+    }
+
+    public var fragments: Fragments {
+      get {
+        return Fragments(unsafeResultMap: resultMap)
+      }
+      set {
+        resultMap += newValue.resultMap
+      }
+    }
+
+    public struct Fragments {
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public var tagParts: TagParts {
+        get {
+          return TagParts(unsafeResultMap: resultMap)
+        }
+        set {
+          resultMap += newValue.resultMap
+        }
       }
     }
   }
@@ -27459,6 +28008,67 @@ public struct SavedItemParts: GraphQLFragment {
           }
         }
       }
+    }
+  }
+}
+
+public struct TagParts: GraphQLFragment {
+  /// The raw GraphQL definition of this fragment.
+  public static let fragmentDefinition: String =
+    """
+    fragment TagParts on Tag {
+      __typename
+      name
+      id
+    }
+    """
+
+  public static let possibleTypes: [String] = ["Tag"]
+
+  public static var selections: [GraphQLSelection] {
+    return [
+      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+      GraphQLField("name", type: .nonNull(.scalar(String.self))),
+      GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
+    ]
+  }
+
+  public private(set) var resultMap: ResultMap
+
+  public init(unsafeResultMap: ResultMap) {
+    self.resultMap = unsafeResultMap
+  }
+
+  public init(name: String, id: GraphQLID) {
+    self.init(unsafeResultMap: ["__typename": "Tag", "name": name, "id": id])
+  }
+
+  public var __typename: String {
+    get {
+      return resultMap["__typename"]! as! String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "__typename")
+    }
+  }
+
+  /// The actual tag string the user created for their list
+  public var name: String {
+    get {
+      return resultMap["name"]! as! String
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "name")
+    }
+  }
+
+  /// Surrogate primary key. This is usually generated by clients, but will be generated by the server if not passed through creation
+  public var id: GraphQLID {
+    get {
+      return resultMap["id"]! as! GraphQLID
+    }
+    set {
+      resultMap.updateValue(newValue, forKey: "id")
     }
   }
 }

@@ -7,13 +7,17 @@ fragment SavedItemParts on SavedItem {
   _createdAt
   archivedAt
   tags {
-    name
-    id
+    ...TagParts
   }
   item {
     ...ItemParts
     ...PendingItemParts
   }
+}
+
+fragment TagParts on Tag {
+  name
+  id
 }
 
 fragment ItemParts on Item {
@@ -143,15 +147,15 @@ mutation TagUpdate($input: TagUpdateInput!) {
 }
 
 mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
-    replaceSavedItemTags(input: $input) {
-        ...SavedItemParts
-    }
+  replaceSavedItemTags(input: $input) {
+    ...SavedItemParts
+  }
 }
 
 mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
-    updateSavedItemRemoveTags(savedItemId: $savedItemId) {
-        ...SavedItemParts
-    }
+  updateSavedItemRemoveTags(savedItemId: $savedItemId) {
+    ...SavedItemParts
+  }
 }
 
 query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
@@ -182,5 +186,25 @@ query SavedItemByID($id: ID!) {
 query ItemByID($id: ID!) {
   itemByItemId(id: $id) {
     ...ItemParts
+  }
+}
+
+query Tags($pagination: PaginationInput) {
+  user {
+    tags(pagination: $pagination) {
+      edges {
+        node {
+          ...TagParts
+        }
+        cursor
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
+    }
   }
 }
