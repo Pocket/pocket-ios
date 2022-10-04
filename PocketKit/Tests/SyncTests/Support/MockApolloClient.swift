@@ -7,16 +7,13 @@ import Apollo
 @testable import Sync
 
 class MockApolloClient: ApolloClientProtocol {
-    var store: ApolloStore {
-        fatalError("\(Self.self).\(#function) is not implemented")
-    }
+    private var implementations: [String: Any] = [:]
+    private var calls: [String: [Any]] = [:]
+}
 
-    var cacheKeyForObject: CacheKeyForObject? {
-        get { fatalError("\(Self.self).\(#function) is not implemented") }
-        set { fatalError("\(Self.self).\(#function) is not implemented") }
-    }
-
-    // MARK: - fetch
+// MARK: - fetch
+extension MockApolloClient {
+    private static let fetch = "fetch"
 
     struct FetchCall<Query: GraphQLQuery> {
         let query: Query
@@ -33,8 +30,6 @@ class MockApolloClient: ApolloClientProtocol {
         GraphQLResultHandler<Query.Data>?
     ) -> Cancellable
 
-    var fetchCalls: [Any] = []
-    var fetchImpl: Any?
     @discardableResult
     func fetch<Query: GraphQLQuery>(
         query: Query,
@@ -43,15 +38,9 @@ class MockApolloClient: ApolloClientProtocol {
         queue: DispatchQueue,
         resultHandler: GraphQLResultHandler<Query.Data>? = nil
     ) -> Cancellable {
-        let call = FetchCall(
-            query: query,
-            cachePolicy: cachePolicy,
-            contextIdentifier: contextIdentifier,
-            queue: queue
-        )
-        fetchCalls.append(call)
+        let functionID = "\(Self.fetch)<\(Query.self)>"
 
-        guard let anyImpl = fetchImpl else {
+        guard let anyImpl = implementations[functionID] else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
@@ -59,19 +48,31 @@ class MockApolloClient: ApolloClientProtocol {
             fatalError("Stub implementation for \(Self.self).\(#function) is incorrect type")
         }
 
+        calls[functionID] = (calls[functionID] ?? []) + [
+            FetchCall(
+                query: query,
+                cachePolicy: cachePolicy,
+                contextIdentifier: contextIdentifier,
+                queue: queue
+            )
+        ]
+
         return impl(query, cachePolicy, contextIdentifier, queue, resultHandler)
     }
 
     func stubFetch<Query: GraphQLQuery>(impl: @escaping FetchImpl<Query>) {
-        fetchImpl = impl
+        let functionID = "\(Self.fetch)<\(Query.self)>"
+        implementations[functionID] = impl
     }
 
     func fetchCall<Query: GraphQLQuery>(at index: Int) -> FetchCall<Query>? {
-        guard index < fetchCalls.count else {
+        let functionID = "\(Self.fetch)<\(Query.self)>"
+
+        guard let calls = calls[functionID], calls.count > index else {
             return nil
         }
 
-        let anyCall = fetchCalls[index]
+        let anyCall = calls[index]
         guard let call = anyCall as? MockApolloClient.FetchCall<Query> else {
             fatalError("Call is incorrect type: \(anyCall)")
         }
@@ -86,7 +87,15 @@ class MockApolloClient: ApolloClientProtocol {
         return fetchCall(at: index)
     }
 
-    // MARK: - perform
+    func fetchCalls<Query: GraphQLQuery>(withQueryType: Query.Type) -> [FetchCall<Query>] {
+        let functionID = "\(Self.fetch)<\(Query.self)>"
+        return (calls[functionID] ?? []).compactMap { $0 as? FetchCall<Query> }
+    }
+}
+
+// MARK: - perform
+extension MockApolloClient {
+    private static let perform = "perform"
 
     struct PerformCall<Mutation: GraphQLMutation> {
         let mutation: Mutation
@@ -102,8 +111,6 @@ class MockApolloClient: ApolloClientProtocol {
         GraphQLResultHandler<Mutation.Data>?
     ) -> Cancellable
 
-    private(set) var performCalls: [Any] = []
-    private var performImpl: Any?
     @discardableResult
     func perform<Mutation: GraphQLMutation>(
         mutation: Mutation,
@@ -111,14 +118,9 @@ class MockApolloClient: ApolloClientProtocol {
         queue: DispatchQueue,
         resultHandler: GraphQLResultHandler<Mutation.Data>?
     ) -> Cancellable {
-        performCalls.append(PerformCall(
-            mutation: mutation,
-            publishResultToStore: publishResultToStore,
-            queue: queue,
-            resultHandler: resultHandler
-        ))
+        let functionID = "\(Self.perform)<\(Mutation.self)>"
 
-        guard let anyImpl = performImpl else {
+        guard let anyImpl = implementations[functionID] else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
@@ -126,19 +128,31 @@ class MockApolloClient: ApolloClientProtocol {
             fatalError("Stub implementation for \(Self.self).\(#function) is incorrect type")
         }
 
+        calls[functionID] = (calls[functionID] ?? []) + [
+            PerformCall(
+                mutation: mutation,
+                publishResultToStore: publishResultToStore,
+                queue: queue,
+                resultHandler: resultHandler
+            )
+        ]
+
         return impl(mutation, publishResultToStore, queue, resultHandler)
     }
 
     func stubPerform<Mutation: GraphQLMutation>(impl: @escaping PerformImpl<Mutation>) {
-        performImpl = impl
+        let functionID = "\(Self.perform)<\(Mutation.self)>"
+        implementations[functionID] = impl
     }
 
     func performCall<Mutation: GraphQLMutation>(at index: Int) -> PerformCall<Mutation>? {
-        guard index < performCalls.count else {
+        let functionID = "\(Self.perform)<\(Mutation.self)>"
+
+        guard let calls = calls[functionID], calls.count > index else {
             return nil
         }
 
-        let anyCall = performCalls[index]
+        let anyCall = calls[index]
         guard let call = anyCall as? MockApolloClient.PerformCall<Mutation> else {
             fatalError("Call is incorrect type: \(anyCall)")
         }
@@ -152,8 +166,18 @@ class MockApolloClient: ApolloClientProtocol {
     ) -> PerformCall<Mutation>? {
         return performCall(at: index)
     }
+}
 
-    // MARK: - not implemented
+// MARK: - not implemented
+extension MockApolloClient {
+    var store: ApolloStore {
+        fatalError("\(Self.self).\(#function) is not implemented")
+    }
+
+    var cacheKeyForObject: CacheKeyForObject? {
+        get { fatalError("\(Self.self).\(#function) is not implemented") }
+        set { fatalError("\(Self.self).\(#function) is not implemented") }
+    }
 
     @discardableResult
     func watch<Query: GraphQLQuery>(
