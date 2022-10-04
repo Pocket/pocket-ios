@@ -511,7 +511,7 @@ extension ArchivedItemsListViewModelTests {
     func test_fetch_whenTaggedSelected_sendsTagsFilterViewModel() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
         archiveService._results = [.loaded(item)]
-        source.stubFetchTags {
+        source.stubFetchAllTags {
             []
         }
         let viewModel = subject()

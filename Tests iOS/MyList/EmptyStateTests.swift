@@ -33,6 +33,8 @@ class EmptyStateTests: XCTestCase {
                 return Response.archive()
             } else if apiRequest.isToSaveAnItem {
                 return Response.saveItem()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

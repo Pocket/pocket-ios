@@ -28,6 +28,8 @@ class AddTagsItemTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isForRecommendationDetail {
                 return Response.recommendationDetail()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

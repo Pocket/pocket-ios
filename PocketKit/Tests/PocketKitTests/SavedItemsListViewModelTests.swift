@@ -385,7 +385,7 @@ extension SavedItemsListViewModelTests {
         itemsController.stubPerformFetch {
             self.itemsController.fetchedObjects = []
         }
-        source.stubFetchTags {
+        source.stubFetchAllTags {
             []
         }
         let viewModel = subject()

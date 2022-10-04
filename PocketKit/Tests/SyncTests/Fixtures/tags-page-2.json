@@ -1,0 +1,38 @@
+{
+    "data": {
+        "user": {
+            "__typename": "[type-name-here]",
+            "tags": {
+                "__typename": "[type-name-here]",
+                "edges": [
+                    {
+                        "__typename": "[type-name-here]",
+                        "node": {
+                            "__typename": "[type-name-here]",
+                            "name": "tag-3",
+                            "id": "tag-3-id"
+                        },
+                        "cursor": "tag-3-cursor"
+                    },
+                    {
+                        "__typename": "[type-name-here]",
+                        "node": {
+                            "__typename": "[type-name-here]",
+                            "name": "tag-4",
+                            "id": "tag-4-id"
+                        },
+                        "cursor": "tag-4-cursor"
+                    }
+                ],
+                "pageInfo": {
+                    "__typename": "[type-name-here]",
+                    "endCursor": "tag-4-cursor",
+                    "hasNextPage": false,
+                    "hasPreviousPage": false,
+                    "startCursor": "tag-3-cursor"
+                },
+                "totalCount": 4
+            }
+        }
+    }
+}

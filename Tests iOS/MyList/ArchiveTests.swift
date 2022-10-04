@@ -27,6 +27,8 @@ class ArchiveTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isForItemDetail {
                 return Response.itemDetail()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }
@@ -169,6 +171,8 @@ extension ArchiveTests {
                 return Response.myList("list-for-web-view")
             } else if apiRequest.isForArchivedContent {
                 return Response.myList("archived-web-view")
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

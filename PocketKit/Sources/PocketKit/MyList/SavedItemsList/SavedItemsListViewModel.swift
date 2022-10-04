@@ -94,7 +94,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 presentedTagsFilter = TagsFilterViewModel(
                     source: source,
                     fetchedTags: { [weak self] in
-                        self?.source.fetchTags(isArchived: false)
+                        self?.source.fetchAllTags()
                     }(),
                     selectAllAction: { [weak self] in
                         self?.selectCell(with: .filterButton(.all))

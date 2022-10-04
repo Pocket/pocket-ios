@@ -32,6 +32,8 @@ class MyListFiltersTests: XCTestCase {
                 return Response.favorite()
             } else if apiRequest.isToUnfavoriteAnItem {
                 return Response.unfavorite()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

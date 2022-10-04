@@ -43,6 +43,8 @@ class HomeTests: XCTestCase {
                 return Response.delete()
             } else if apiRequest.isForRecommendationDetail {
                 return Response.recommendationDetail()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }
@@ -377,6 +379,8 @@ extension HomeTests {
                 return Response.myList("list-for-web-view")
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
             } else {
                 fatalError("Unexpected request")
             }

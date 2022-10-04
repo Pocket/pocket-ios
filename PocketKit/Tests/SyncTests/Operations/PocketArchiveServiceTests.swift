@@ -324,7 +324,7 @@ class PocketArchiveServiceTests: XCTestCase {
         service.fetch()
 
         wait(for: [initialLoad, secondLoad], timeout: 1)
-        XCTAssertEqual(apollo.fetchCalls.count, 1)
+        XCTAssertEqual(apollo.fetchCalls(withQueryType: SavedItemSummariesQuery.self).count, 1)
     }
 
     func test_handlingUpdatedSavedItems_sendsEvent() throws {
