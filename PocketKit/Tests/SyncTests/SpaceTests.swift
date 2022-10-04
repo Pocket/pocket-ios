@@ -18,19 +18,6 @@ class SpaceTests: XCTestCase {
         Space(context: context ?? self.context)
     }
 
-    func testDeletingOrphanTags() throws {
-        let space = subject()
-        let tag: Tag = space.new()
-        tag.name = "tag 0"
-        _ = createItemsWithTags(1)
-
-        try XCTAssertEqual(Set(space.fetchAllTags().compactMap { $0.name }), ["tag 0", "tag 1"])
-
-        try space.deleteOrphanTags()
-
-        try XCTAssertEqual(space.fetchAllTags().compactMap { $0.name }, ["tag 1"])
-    }
-
     func testDeleteTags() throws {
         let space = subject()
         let items = createItemsWithTags(2)

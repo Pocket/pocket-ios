@@ -94,7 +94,7 @@ class FetchList: SyncOperation {
         guard let edges = result.data?.userByToken?.savedItems?.edges else {
             return
         }
-        // TODO: Add deleteOrphanTags here instead of update and refactor below to be in space (IN-788)
+
         for edge in edges {
             guard let edge = edge, let node = edge.node else {
                 return
