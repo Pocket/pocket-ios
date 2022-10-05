@@ -19,6 +19,9 @@ class SlateDetailViewModel {
 
     @Published
     var selectedRecommendationToReport: Recommendation?
+    
+    @Published
+    var sharedActivity: PocketActivity?
 
     var slateName: String? {
         slate.name
@@ -142,6 +145,9 @@ extension SlateDetailViewModel {
         return HomeRecommendationCellViewModel(
             recommendation: recommendation,
             overflowActions: [
+                .share { [weak self] sender in
+                    self?.sharedActivity = PocketItemActivity(url: recommendation.item?.bestURL, sender: sender)
+                },
                 .report { [weak self] _ in
                     self?.report(recommendation, at: indexPath)
                 }
@@ -299,6 +305,7 @@ extension SlateDetailViewModel {
 
     func clearSharedActivity() {
         selectedReadableViewModel?.clearSharedActivity()
+        sharedActivity = nil
     }
 
     func clearPresentedWebReaderURL() {
