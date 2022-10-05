@@ -1,0 +1,45 @@
+{
+  "schemaName" : "PocketGraph",
+  "input" : {
+    "operationSearchPaths" : [
+        "Sources/Sync/PocketGraph/operations/*.graphql"
+    ],
+    "schemaSearchPaths" : [
+        "Sources/Sync/PocketGraph/generated/schema.graphqls"
+    ]
+  },
+  "output" : {
+    "testMocks" : {
+      "none" : {
+      }
+    },
+    "schemaTypes" : {
+      "path" : "./Sources/Sync/PocketGraph/generated/schemaTypes",
+      "moduleType": {
+          "embeddedInTarget": {
+              "name": "Sync"
+          }
+      },
+    },
+    "operations" : {
+      "relative" : {
+          "subpath": "../generated/operations"
+      }
+    }
+  },
+  "schemaDownloadConfiguration": {
+      "downloadMethod": {
+          "introspection": {
+              "endpointURL": "https://client-api.getpocket.com",
+              "httpMethod": {
+                  "POST": {}
+              },
+              "includeDeprecatedInputValues": true,
+              "outputFormat": "SDL"
+          }
+      },
+      "downloadTimeout": 60,
+      "headers": [],
+      "outputPath": "./Sources/Sync/PocketGraph/generated/schema.graphqls"
+  }
+}

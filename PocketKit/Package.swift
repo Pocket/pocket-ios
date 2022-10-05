@@ -13,13 +13,11 @@ let package = Package(
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
         .library(name: "Analytics", targets: ["Analytics"]),
-        .executable(name: "ApolloCodegen", targets: ["ApolloCodegen"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "0.53.0")),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "1.0.0")),
         .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.3.2")),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.25.0")),
-        .package(url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.0")),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMajor(from: "3.2.0")),
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "3.4.3"),
         .package(url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
@@ -84,13 +82,8 @@ let package = Package(
                 .product(name: "Sentry", package: "sentry-cocoa"),
             ],
             exclude: [
-                "archive.graphql",
-                "home.graphql",
-                "itemFragments.graphql",
-                "list.graphql",
-                "marticle.graphql",
-                "schema.graphqls",
-                "introspection_response.json"
+                "PocketGraph/operations",
+                "PocketGraph/generated/schema.graphqls",
             ],
             resources: [.process("PocketModel.xcdatamodeld")]
         ),
@@ -110,13 +103,5 @@ let package = Package(
             name: "AnalyticsTests",
             dependencies: ["Analytics"]
         ),
-
-        .executableTarget(
-            name: "ApolloCodegen",
-            dependencies: [
-                .product(name: "ApolloCodegenLib", package: "apollo-ios"),
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
-            ]
-        )
     ]
 )

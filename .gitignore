@@ -123,3 +123,5 @@ Config/secrets.xcconfig
 **/.tmp
 schema.graphqls
 introspection_response.json
+**/*.graphql.swift
+PocketKit/Sources/Sync/PocketGraph/generated/schemaTypes/**/*.swift
