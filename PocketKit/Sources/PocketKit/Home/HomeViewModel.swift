@@ -522,6 +522,9 @@ extension HomeViewModel {
         }
 
         return [
+            .share { [weak self] sender in
+                self?.sharedActivity = PocketItemActivity(url: recommendation.item?.bestURL, sender: sender)
+            },
             .report { [weak self] _ in
                 self?.report(recommendation, at: indexPath)
             }
