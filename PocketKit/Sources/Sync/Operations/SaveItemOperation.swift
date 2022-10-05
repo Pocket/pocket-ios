@@ -1,6 +1,7 @@
 import Foundation
 import Apollo
 import CoreData
+import PocketGraph
 
 class SaveItemOperation: SyncOperation {
     private let managedItemID: NSManagedObjectID
@@ -24,7 +25,7 @@ class SaveItemOperation: SyncOperation {
     }
 
     func execute() async -> SyncOperationResult {
-        let input = SavedItemUpsertInput(url: url.absoluteString)
+        let input = PocketGraph.SavedItemUpsertInput(url: url.absoluteString)
         let mutation = SaveItemMutation(input: input)
 
         do {

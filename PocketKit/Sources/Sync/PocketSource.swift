@@ -6,6 +6,7 @@ import CoreData
 import Apollo
 import Combine
 import Network
+import PocketGraph
 
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
@@ -348,7 +349,7 @@ extension PocketSource {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
+            mutation: TagUpdateMutation(input: PocketGraph.TagUpdateInput(id: remoteID, name: name))
         )
 
         enqueue(operation: operation, task: .renameTag(remoteID: remoteID, name: name))
@@ -372,7 +373,7 @@ extension PocketSource {
         }
 
         guard let remoteSavedItem = try await apollo
-            .fetch(query: SavedItemByIdQuery(id: remoteID))
+            .fetch(query: PocketGraph.SavedItemByIdQuery(id: remoteID))
             .data?.user?.savedItemById else {
             return
         }
@@ -388,7 +389,7 @@ extension PocketSource {
         if tags.isEmpty {
             mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
         } else {
-            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
+            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [PocketGraph.SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
         }
         return mutation
     }
@@ -411,7 +412,7 @@ extension PocketSource {
         }
 
         guard let remoteItem = try await apollo
-            .fetch(query: ItemByIdQuery(id: remoteID))
+            .fetch(query: PocketGraph.ItemByIdQuery(id: remoteID))
             .data?.itemByItemId?.fragments.itemParts else {
             return
         }
@@ -531,7 +532,7 @@ extension PocketSource {
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
+                    mutation: TagUpdateMutation(input: PocketGraph.TagUpdateInput(id: remoteID, name: name))
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             }

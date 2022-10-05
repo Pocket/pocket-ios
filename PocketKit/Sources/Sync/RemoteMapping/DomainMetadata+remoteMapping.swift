@@ -1,4 +1,5 @@
 import Foundation
+import PocketGraph
 
 extension DomainMetadata {
     func update(remote: DomainMetadataParts) {

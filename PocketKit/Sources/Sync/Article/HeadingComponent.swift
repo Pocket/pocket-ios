@@ -1,3 +1,5 @@
+import PocketGraph
+
 public struct HeadingComponent: MarkdownComponent, Codable, Equatable, Hashable {
     public let content: Markdown
     public let level: UInt

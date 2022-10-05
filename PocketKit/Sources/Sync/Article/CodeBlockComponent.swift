@@ -1,3 +1,5 @@
+import PocketGraph
+
 public struct CodeBlockComponent: Codable, Equatable, Hashable {
     public let language: Int?
     public let text: String

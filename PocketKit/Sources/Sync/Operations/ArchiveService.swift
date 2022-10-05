@@ -1,6 +1,7 @@
 import Apollo
 import Combine
 import CoreData
+import PocketGraph
 
 public protocol ArchiveService: AnyObject {
     var results: Published<[SavedItemResult]>.Publisher { get }
@@ -260,7 +261,7 @@ extension PocketArchiveService: FetchArchivePagesOperationDelegate {
                 continue
             }
 
-            let savedItem = try space.fetchOrCreateSavedItem(byRemoteID: summary.remoteId)
+            let savedItem = try space.fetchOrCreateSavedItem(byRemoteID: summary.remoteID)
             savedItem.cursor = edge.cursor
             savedItem.update(from: summary, with: space)
 

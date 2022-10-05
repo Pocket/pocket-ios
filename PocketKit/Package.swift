@@ -22,7 +22,7 @@ let package = Package(
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "3.4.3"),
         .package(url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5")),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMinor(from: "5.3.0")),
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMajor(from: "5.5.0"))
     ],
     targets: [
         .target(
@@ -80,10 +80,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
                 .product(name: "Sentry", package: "sentry-cocoa"),
-            ],
-            exclude: [
-                "PocketGraph/operations",
-                "PocketGraph/generated/schema.graphqls",
+                "PocketGraph"
             ],
             resources: [.process("PocketModel.xcdatamodeld")]
         ),
@@ -91,6 +88,17 @@ let package = Package(
             name: "SyncTests",
             dependencies: ["Sync"],
             resources: [.copy("Fixtures")]
+        ),
+
+        .target(
+            name: "PocketGraph",
+            dependencies: [
+                .product(name: "ApolloAPI", package: "apollo-ios"),
+            ],
+            exclude: [
+                "user-defined-operations",
+                "schema.graphqls"
+            ]
         ),
 
         .target(

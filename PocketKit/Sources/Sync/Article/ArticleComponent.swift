@@ -1,3 +1,5 @@
+import PocketGraph
+
 public typealias Markdown = String
 
 public enum ArticleComponent: Codable, Equatable, Hashable {
@@ -166,55 +168,53 @@ extension ArticleComponent {
     }
 
     init(_ marticle: ItemParts.Marticle) {
-        let fragments = marticle.fragments
-
-        if let parts = fragments.marticleTextParts {
-            self.init(parts)
+        if let parts = marticle.asMarticleText {
+            self.init(parts.fragments.marticleTextParts)
             return
         }
 
-        if let parts = fragments.imageParts {
-            self.init(parts)
+        if let parts = marticle.asImage {
+            self.init(parts.fragments.imageParts)
             return
         }
 
-        if let parts = fragments.marticleDividerParts {
-            self.init(parts)
+        if let parts = marticle.asMarticleDivider {
+            self.init(parts.fragments.marticleDividerParts)
             return
         }
 
-        if let parts = fragments.marticleTableParts {
-            self.init(parts)
+        if let parts = marticle.asMarticleTable {
+            self.init(parts.fragments.marticleTableParts)
             return
         }
 
-        if let parts = fragments.marticleHeadingParts {
-            self.init(parts)
+        if let parts = marticle.asMarticleHeading {
+            self.init(parts.fragments.marticleHeadingParts)
             return
         }
 
-        if let parts = fragments.marticleCodeBlockParts {
-            self.init(parts)
+        if let parts = marticle.asMarticleCodeBlock {
+            self.init(parts.fragments.marticleCodeBlockParts)
             return
         }
 
-        if let parts = fragments.videoParts {
-            self.init(parts)
+        if let parts = marticle.asVideo {
+            self.init(parts.fragments.videoParts)
             return
         }
 
-        if let parts = fragments.marticleBulletedListParts {
-            self.init(parts)
+        if let parts = marticle.asMarticleBulletedList {
+            self.init(parts.fragments.marticleBulletedListParts)
             return
         }
 
-        if let parts = fragments.marticleNumberedListParts {
-            self.init(parts)
+        if let parts = marticle.asMarticleNumberedList {
+            self.init(parts.fragments.marticleNumberedListParts)
             return
         }
 
-        if let parts = fragments.marticleBlockquoteParts {
-            self.init(parts)
+        if let parts = marticle.asMarticleBlockquote {
+            self.init(parts.fragments.marticleBlockquoteParts)
             return
         }
 

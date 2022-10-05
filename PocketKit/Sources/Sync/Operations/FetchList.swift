@@ -1,6 +1,7 @@
 import Foundation
 import Apollo
 import Combine
+import PocketGraph
 
 class FetchList: SyncOperation {
     private let token: String
@@ -96,7 +97,7 @@ class FetchList: SyncOperation {
         let query = FetchSavesQuery(token: token)
         query.pagination = PaginationInput(
             after: pagination.cursor,
-            first: pagination.maxItems
+            first: GraphQLNullable<Int>(integerLiteral: pagination.maxItems)
         )
 
         if let updatedSince = lastRefresh.lastRefresh {
@@ -122,10 +123,10 @@ class FetchList: SyncOperation {
             Crashlogger.breadcrumb(
                 category: "sync",
                 level: .info,
-                message: "Updating/Inserting SavedItem with ID: \(node.remoteId)"
+                message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"
             )
 
-            let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteId)
+            let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteID)
             item.update(from: edge, with: space)
 
             if item.deletedAt != nil {

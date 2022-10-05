@@ -2,10 +2,10 @@
   "schemaName" : "PocketGraph",
   "input" : {
     "operationSearchPaths" : [
-        "Sources/Sync/PocketGraph/operations/*.graphql"
+        "Sources/PocketGraph/user-defined-operations/*.graphql"
     ],
     "schemaSearchPaths" : [
-        "Sources/Sync/PocketGraph/generated/schema.graphqls"
+        "Sources/PocketGraph/schema.graphqls"
     ]
   },
   "output" : {
@@ -14,17 +14,13 @@
       }
     },
     "schemaTypes" : {
-      "path" : "./Sources/Sync/PocketGraph/generated/schemaTypes",
+      "path" : "./Sources/PocketGraph/",
       "moduleType": {
-          "embeddedInTarget": {
-              "name": "Sync"
-          }
+          "other": {}
       },
     },
     "operations" : {
-      "relative" : {
-          "subpath": "../generated/operations"
-      }
+      "inSchemaModule" : {}
     }
   },
   "schemaDownloadConfiguration": {
@@ -40,6 +36,6 @@
       },
       "downloadTimeout": 60,
       "headers": [],
-      "outputPath": "./Sources/Sync/PocketGraph/generated/schema.graphqls"
+      "outputPath": "./Sources/PocketGraph/schema.graphqls"
   }
 }

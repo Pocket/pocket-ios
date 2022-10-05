@@ -1,4 +1,5 @@
 import CoreData
+import PocketGraph
 
 extension Image {
     convenience init(remote: ItemParts.Image, context: NSManagedObjectContext) {
