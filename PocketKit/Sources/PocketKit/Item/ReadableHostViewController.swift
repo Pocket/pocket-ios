@@ -21,6 +21,7 @@ class ReadableHostViewController: UIViewController {
         title = nil
         navigationItem.largeTitleDisplayMode = .never
         hidesBottomBarWhenPushed = true
+        
 
         navigationItem.rightBarButtonItems = [
             moreButtonItem,
@@ -29,6 +30,12 @@ class ReadableHostViewController: UIViewController {
                 style: .plain,
                 target: self,
                 action: #selector(showWebView)
+            ),
+            UIBarButtonItem(
+                image: UIImage(asset: .archive),
+                style: .plain,
+                target: self,
+                action: #selector(archiveArticle)
             )
         ]
 
@@ -76,6 +83,11 @@ class ReadableHostViewController: UIViewController {
     @objc
     private func showWebView() {
         readableViewModel.showWebReader()
+    }
+    
+    @objc
+    private func archiveArticle() {
+        readableViewModel.archiveArticle()
     }
 
     var popoverAnchor: UIBarButtonItem? {
