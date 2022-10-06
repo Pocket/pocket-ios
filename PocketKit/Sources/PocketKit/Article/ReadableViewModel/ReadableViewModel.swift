@@ -29,6 +29,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
 
     func delete()
     func showWebReader()
+    func archiveArticle()
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
     func clearPresentedWebReaderURL()

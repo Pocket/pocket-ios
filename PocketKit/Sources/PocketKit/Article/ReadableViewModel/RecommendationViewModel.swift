@@ -6,6 +6,7 @@ import UIKit
 import Analytics
 
 class RecommendationViewModel: ReadableViewModel {
+    
     @Published
     private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
@@ -99,6 +100,10 @@ class RecommendationViewModel: ReadableViewModel {
 
     func showWebReader() {
         presentedWebReaderURL = url
+    }
+    
+    func archiveArticle() {
+        archive()
     }
 
     func fetchDetailsIfNeeded() {

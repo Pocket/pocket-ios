@@ -100,6 +100,10 @@ class SavedItemViewModel: ReadableViewModel {
     func showWebReader() {
         presentedWebReaderURL = url
     }
+    
+    func archiveArticle() {
+        archive()
+    }
 
     func fetchDetailsIfNeeded() {
         guard item.item?.article == nil else {
@@ -132,18 +136,10 @@ extension SavedItemViewModel {
             favoriteAction = .favorite { [weak self] _ in self?.favorite() }
         }
 
-        let archiveAction: ItemAction
-        if item.isArchived {
-            archiveAction = .moveToMyList { [weak self] _ in self?.moveToMyList() }
-        } else {
-            archiveAction = .archive { [weak self] _ in self?.archive() }
-        }
-
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
             .addTags { [weak self] _ in self?.showAddTagsView() },
-            archiveAction,
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
