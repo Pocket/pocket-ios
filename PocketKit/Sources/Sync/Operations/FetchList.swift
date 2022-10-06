@@ -31,9 +31,8 @@ class FetchList: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
-            async let doneFetchingList: Void = try fetchList()
-            async let doneFetchingTags: Void = try fetchTags()
-            _ = try await (doneFetchingList, doneFetchingTags)
+            try await fetchList()
+            try await fetchTags()
 
             lastRefresh.refreshed()
             return .success
