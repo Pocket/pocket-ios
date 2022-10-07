@@ -435,8 +435,20 @@ extension SavedItemsListViewModel {
     }
 
     private func applySorting() {
-        let sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSort == .oldest))
-        self.itemsController.sortDescriptors = [sortDescriptorTemp]
+        var sortDescriptorTemp: NSSortDescriptor?
+
+        switch listOptions.selectedSortOption {
+        case .longestToRead, .shortestToRead:
+            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
+        case .newest, .oldest:
+            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
+        }
+
+        guard let sortDescriptor = sortDescriptorTemp else {
+            assertionFailure("sortDescriptorTemp can not be nil!")
+            return
+        }
+        self.itemsController.sortDescriptors = [sortDescriptor]
     }
 
     private func handleFilterSelection(with filter: ItemsListFilter, sender: Any? = nil) {

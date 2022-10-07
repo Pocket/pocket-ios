@@ -20,8 +20,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         space = .testSpace()
         subscriptions = []
         itemsController = MockSavedItemsController()
-        listOptions = ListOptions()
-        listOptions.selectedSort = .newest
+        listOptions = .saved
+        listOptions.selectedSortOption = .newest
 
         itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
         source.stubMakeItemsController {
@@ -71,7 +71,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             snapshotSent.fulfill()
         }.store(in: &subscriptions)
 
-        listOptions.selectedSort = .oldest
+        listOptions.selectedSortOption = .oldest
 
         wait(for: [snapshotSent], timeout: 1)
     }
