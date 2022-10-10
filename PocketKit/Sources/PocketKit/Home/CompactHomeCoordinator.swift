@@ -153,6 +153,15 @@ class CompactHomeCoordinator: NSObject {
         recommendation.$selectedRecommendationToReport.sink { [weak self] selected in
             self?.report(selected)
         }.store(in: &readerSubscriptions)
+
+        recommendation.events.sink { [weak self] event in
+            switch event {
+                case .contentUpdated:
+                    break
+                case .archive, .delete:
+                    self?.navigationController.popViewController(animated: true)
+            }
+        }.store(in: &readerSubscriptions)
     }
 
     func show(_ savedItem: SavedItemViewModel) {
@@ -181,6 +190,15 @@ class CompactHomeCoordinator: NSObject {
 
         savedItem.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(addTagsViewModel)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.navigationController.popViewController(animated: true)
+            }
         }.store(in: &readerSubscriptions)
     }
 
