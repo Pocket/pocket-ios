@@ -21,7 +21,14 @@ class ReadableHostViewController: UIViewController {
         title = nil
         navigationItem.largeTitleDisplayMode = .never
         hidesBottomBarWhenPushed = true
-        
+
+        let archiveNavButton = UIBarButtonItem(
+            image: UIImage(asset: .archive),
+            style: .plain,
+            target: self,
+            action: #selector(archiveArticle)
+        )
+        archiveNavButton.accessibilityIdentifier = "archiveNavButton"
 
         navigationItem.rightBarButtonItems = [
             moreButtonItem,
@@ -31,12 +38,7 @@ class ReadableHostViewController: UIViewController {
                 target: self,
                 action: #selector(showWebView)
             ),
-            UIBarButtonItem(
-                image: UIImage(asset: .archive),
-                style: .plain,
-                target: self,
-                action: #selector(archiveArticle)
-            )
+            archiveNavButton
         ]
 
         readableViewModel.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
@@ -84,7 +86,7 @@ class ReadableHostViewController: UIViewController {
     private func showWebView() {
         readableViewModel.showWebReader()
     }
-    
+
     @objc
     private func archiveArticle() {
         readableViewModel.archiveArticle()

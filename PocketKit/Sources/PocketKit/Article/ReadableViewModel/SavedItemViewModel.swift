@@ -100,7 +100,7 @@ class SavedItemViewModel: ReadableViewModel {
     func showWebReader() {
         presentedWebReaderURL = url
     }
-    
+
     func archiveArticle() {
         archive()
     }

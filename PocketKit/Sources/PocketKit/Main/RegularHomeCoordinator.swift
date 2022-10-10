@@ -147,6 +147,15 @@ extension RegularHomeCoordinator {
 
         let readableVC = ReadableHostViewController(readableViewModel: readable)
         navigationController.pushViewController(readableVC, animated: !isResetting)
+
+        readable.events.sink { [weak self] event in
+            switch event {
+                case .contentUpdated:
+                    break
+                case .archive, .delete:
+                    self?.navigationController.popViewController(animated: true)
+            }
+        }.store(in: &readerSubscriptions)
     }
 
     private func show(_ readable: RecommendationViewModel?) {
@@ -177,6 +186,15 @@ extension RegularHomeCoordinator {
 
         let viewController = ReadableHostViewController(readableViewModel: readable)
         navigationController.pushViewController(viewController, animated: !isResetting)
+
+        readable.events.sink { [weak self] event in
+            switch event {
+                case .contentUpdated:
+                    break
+                case .archive, .delete:
+                    self?.navigationController.popViewController(animated: true)
+            }
+        }.store(in: &readerSubscriptions)
     }
 }
 
