@@ -26,7 +26,7 @@ extension MockPocketBraze {
         implementations[Self.didRecieveUserNotifcation] = impl
     }
 
-    func didRecieveUserNotifcation(
+    func didReceiveUserNotification(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void) {

@@ -13,7 +13,7 @@ import SharedPocketKit
 import UIKit
 
 protocol BrazeSDKProtocol {
-    func didRecieveUserNotifcation(
+    func didReceiveUserNotification(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void)
@@ -84,7 +84,7 @@ extension PocketBraze: BrazeProtocol {
         // Waiting on braze support to understand logout
     }
 
-    func didRecieveUserNotifcation(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+    func didReceiveUserNotification(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         _ = braze.notifications.handleUserNotification(response: response, withCompletionHandler: completionHandler)
     }
 
@@ -127,7 +127,7 @@ extension PocketBraze: UNUserNotificationCenterDelegate {
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
-        didRecieveUserNotifcation(center, didReceive: response, withCompletionHandler: completionHandler)
+        didReceiveUserNotification(center, didReceive: response, withCompletionHandler: completionHandler)
     }
 
     func userNotificationCenter(
