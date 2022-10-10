@@ -27,6 +27,33 @@ final class V3ClientTests: XCTestCase {
     }
 }
 
+// MARK: Session Helper
+extension V3ClientTests {
+    func test_fallbackSession_usesPassedInSession() {
+        do {
+            var passedSession = MockSession()
+            passedSession.accessToken = "the-better-access-token"
+            passedSession.guid = "the-cool-guid"
+            let receivedSession = try client.fallbackSession(session: passedSession)
+            XCTAssertEqual(receivedSession.guid, passedSession.guid)
+            XCTAssertEqual(receivedSession.accessToken, passedSession.accessToken)
+        } catch {
+            XCTFail("fallbackSession() should not throw an error in this context: \(error)")
+        }
+
+    }
+
+    func test_fallbackSession_usesFallbackSession() {
+        do {
+            let receivedSession = try client.fallbackSession(session: nil)
+            XCTAssertEqual(receivedSession.guid, session.guid)
+            XCTAssertEqual(receivedSession.accessToken, session.accessToken)
+        } catch {
+            XCTFail("fallbackSession() should not throw an error in this context: \(error)")
+        }
+    }
+}
+
 // MARK: Register Device for Identifier
 extension V3ClientTests {
     func test_registerDeviceFor_sendsPostRequestWithCorrectParameters() async {
@@ -183,7 +210,8 @@ extension V3ClientTests {
         return try await client.registerPushToken(
             for: deviceIdentifier,
             pushType: .alpha,
-            token: token
+            token: token,
+            session: session
         )!
     }
 }
@@ -336,7 +364,8 @@ extension V3ClientTests {
     private func deregisterDeviceForIdentifer() async throws -> DeregisterPushTokenResponse {
         return try await client.deregisterPushToken(
             for: deviceIdentifier,
-            pushType: .alpha
+            pushType: .alpha,
+            session: session
         )!
     }
 }

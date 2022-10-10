@@ -13,6 +13,8 @@ class AccountViewModel: ObservableObject {
     }
 
     func signOut() {
+        // Post that we logged out to the rest of the app using the old session
+        NotificationCenter.default.post(name: .userLoggedOut, object: appSession.currentSession)
         appSession.currentSession = nil
     }
 

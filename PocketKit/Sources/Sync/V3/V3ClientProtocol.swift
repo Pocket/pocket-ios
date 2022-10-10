@@ -33,17 +33,19 @@ public protocol V3ClientProtocol {
     /**
      Used to register a Push Notification token with the v3 Pocket Backend, currently only used to enable Pocket's Intant Sync feature
      */
-    func registerPushToken(for
-                           deviceIdentifer: String,
-                           pushType: PushType,
-                           token: String
+    func registerPushToken(
+        for  deviceIdentifer: String,
+        pushType: PushType,
+        token: String,
+        session: Session
     ) async throws -> RegisterPushTokenResponse?
 
     /**
      Used to deregister a device with the v3 Pocket Backend, currently only used to deregister a device for Pocket's Instant Sync Feature
      */
-    func deregisterPushToken(for
-                             deviceIdentifer: String,
-                             pushType: PushType
+    func deregisterPushToken(
+        for deviceIdentifer: String,
+        pushType: PushType,
+        session: Session
     ) async throws -> DeregisterPushTokenResponse?
 }
