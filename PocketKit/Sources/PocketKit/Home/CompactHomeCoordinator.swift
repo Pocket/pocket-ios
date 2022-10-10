@@ -121,10 +121,10 @@ class CompactHomeCoordinator: NSObject {
         viewModel.$presentedWebReaderURL.sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &slateDetailSubscriptions)
-        
+
         viewModel.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
-        }.store(in: &subscriptions)
+        }.store(in: &slateDetailSubscriptions)
     }
 
     func show(_ recommendation: RecommendationViewModel?) {
