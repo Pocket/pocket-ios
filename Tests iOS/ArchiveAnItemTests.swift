@@ -128,4 +128,32 @@ class ArchiveAnItemTests: XCTestCase {
         listView.wait()
         waitForDisappearance(of: itemCell)
     }
+
+    func test_archivingAnItemFromHomeRecentSaves_archivesItem_andPopsBackToList() {
+        let home = app.launch().homeView.wait()
+
+        let itemCell = home.recentSavesView(matching: "Item 2")
+
+        app.tabBar.homeButton.tap()
+
+        itemCell.wait().tap()
+
+        let expectRequest = expectation(description: "A request to the server")
+        server.routes.post("/graphql") { request, loop in
+            defer { expectRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToArchiveAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
+
+            return Response.archive()
+        }
+
+        let archiveNavButton = XCUIApplication().buttons["archiveNavButton"]
+        XCTAssert(archiveNavButton.exists)
+        archiveNavButton.tap()
+        app.homeView.wait()
+
+        wait(for: [expectRequest], timeout: 1)
+        waitForDisappearance(of: itemCell)
+    }
 }
