@@ -51,7 +51,10 @@ class PocketSaveServiceTests: XCTestCase {
         let service = subject()
         let result = service.save(url: URL(string: "https://getpocket.com")!)
 
-        XCTAssertEqual(result, .newItem)
+        guard case .newItem = result else {
+            XCTFail("Expected newItem, but was \(result)")
+            return
+        }
         XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
 
         wait(for: [performCalled], timeout: 1)
@@ -72,7 +75,10 @@ class PocketSaveServiceTests: XCTestCase {
         let service = subject()
         let result = service.save(url: url)
 
-        XCTAssertEqual(result, .existingItem)
+        guard case .existingItem = result else {
+            XCTFail("Expected existingItem, but was \(result)")
+            return
+        }
         wait(for: [savedItemUpdated], timeout: 1)
 
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
@@ -259,5 +265,131 @@ class PocketSaveServiceTests: XCTestCase {
         wait(for: [savedItemUpdated], timeout: 1)
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
         XCTAssertEqual(notifications?.isEmpty, false)
+    }
+}
+
+// MARK: Tags
+extension PocketSaveServiceTests {
+    func test_addTags_beginsBackgroundActivity_andPerformsReplaceSavedItemTagsMutationWithCorrectTags() {
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, block in
+            DispatchQueue.global(qos: .background).async {
+                block(false)
+            }
+        }
+
+        let performCalled = expectation(description: "perform called")
+        client.stubPerform(toReturnFixtureNamed: "add-tags", asResultType: ReplaceSavedItemTagsMutation.self) {
+            performCalled.fulfill()
+        }
+
+        let service = subject()
+        let item = space.buildSavedItem()
+        let result = service.addTags(savedItem: item, tags: ["tag 1", "tag 2"])
+
+        guard case .taggedItem = result else {
+            XCTFail("Expected taggedItem, but was \(result)")
+            return
+        }
+        XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
+
+        wait(for: [performCalled], timeout: 1)
+        let performCall: MockApolloClient.PerformCall<ReplaceSavedItemTagsMutation>? = client.performCall(at: 0)
+        XCTAssertEqual(performCall?.mutation.input.compactMap { $0.tags }, [["tag 1", "tag 2"]])
+    }
+
+    func test_addTags_whenApolloRequestFailsForReplaceSavedItemTagsMutation_storesUnresolvedSavedItemAndPostsNotification() throws {
+        var expiringActivity: ((Bool) -> Void)?
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
+            expiringActivity = _expiringActivity
+        }
+
+        let performMutationCalled = expectation(description: "perform called")
+        client.stubPerform(ofMutationType: ReplaceSavedItemTagsMutation.self, toReturnError: TestError.anError) {
+            performMutationCalled.fulfill()
+        }
+        let item = space.buildSavedItem()
+        let service = self.subject()
+        _ = service.addTags(savedItem: item, tags: ["tag 1", "tag 2"])
+
+        let notificationReceived = expectation(description: "notificationReceived")
+        osNotificationCenter.add(observer: self, name: .unresolvedSavedItemCreated) {
+            notificationReceived.fulfill()
+        }
+
+        DispatchQueue(label: "start task").async {
+            expiringActivity?(false)
+        }
+        wait(for: [performMutationCalled, notificationReceived], timeout: 1)
+
+        let unresolved = try space.fetchUnresolvedSavedItems()
+        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name}, ["tag 1", "tag 2"] )
+        XCTAssertEqual(unresolved[0].hasChanges, false)
+    }
+
+    func test_addTags_beginsBackgroundActivity_andPerformsUpdateSavedItemRemoveTagsMutationWithCorrectTags() {
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, block in
+            DispatchQueue.global(qos: .background).async {
+                block(false)
+            }
+        }
+
+        let performCalled = expectation(description: "perform called")
+        client.stubPerform(toReturnFixtureNamed: "update-tags", asResultType: UpdateSavedItemRemoveTagsMutation.self) {
+            performCalled.fulfill()
+        }
+
+        let service = subject()
+        let item = space.buildSavedItem()
+        let result = service.addTags(savedItem: item, tags: [])
+
+        guard case .taggedItem = result else {
+            XCTFail("Expected taggedItem, but was \(result)")
+            return
+        }
+        XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
+
+        wait(for: [performCalled], timeout: 1)
+        let performCall: MockApolloClient.PerformCall<UpdateSavedItemRemoveTagsMutation>? = client.performCall(at: 0)
+        XCTAssertNotNil(performCall?.mutation.savedItemId)
+    }
+
+    func test_addTags_whenApolloRequestFailsForUpdateSavedItemRemoveTagsMutation_storesUnresolvedSavedItemAndPostsNotification() throws {
+        var expiringActivity: ((Bool) -> Void)?
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
+            expiringActivity = _expiringActivity
+        }
+
+        let performMutationCalled = expectation(description: "perform called")
+        client.stubPerform(ofMutationType: UpdateSavedItemRemoveTagsMutation.self, toReturnError: TestError.anError) {
+            performMutationCalled.fulfill()
+        }
+        let item = space.buildSavedItem()
+        let service = self.subject()
+        _ = service.addTags(savedItem: item, tags: [])
+
+        let notificationReceived = expectation(description: "notificationReceived")
+        osNotificationCenter.add(observer: self, name: .unresolvedSavedItemCreated) {
+            notificationReceived.fulfill()
+        }
+
+        DispatchQueue(label: "start task").async {
+            expiringActivity?(false)
+        }
+        wait(for: [performMutationCalled, notificationReceived], timeout: 1)
+
+        let unresolved = try space.fetchUnresolvedSavedItems()
+        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name}, [] )
+        XCTAssertEqual(unresolved[0].hasChanges, false)
+    }
+
+    func test_retrieveTags_updatesInfoViewModel() async {
+        let tag: Tag = space.new()
+        tag.name = "tag 1"
+        let tag2: Tag = space.new()
+        tag2.name = "tag 2"
+        let service = subject()
+        let tags = service.retrieveTags(excluding: ["tag 1"])
+        XCTAssertEqual(tags?.count, 1)
+        XCTAssertEqual(tags?[0].name, "tag 2")
     }
 }

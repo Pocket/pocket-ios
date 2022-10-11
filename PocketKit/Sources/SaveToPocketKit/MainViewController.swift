@@ -28,7 +28,7 @@ class MainViewController: UIViewController {
                 viewModel: SavedItemViewModel(
                     appSession: appSession,
                     saveService: services.saveService,
-                    dismissTimer: Timer.TimerPublisher(interval: 2.1, runLoop: .main, mode: .default)
+                    dismissTimer: Timer.TimerPublisher(interval: 3.0, runLoop: .main, mode: .default)
                 )
             )
         }

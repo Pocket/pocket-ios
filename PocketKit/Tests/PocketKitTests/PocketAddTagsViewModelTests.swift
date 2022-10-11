@@ -3,7 +3,7 @@ import XCTest
 @testable import Sync
 @testable import PocketKit
 
-class AddTagsViewModelTests: XCTestCase {
+class PocketAddTagsViewModelTests: XCTestCase {
     private var source: MockSource!
     private var space: Space!
 
@@ -17,8 +17,8 @@ class AddTagsViewModelTests: XCTestCase {
         try space.clear()
     }
 
-    private func subject(item: SavedItem, source: Source? = nil, saveAction: @escaping () -> Void) -> AddTagsViewModel {
-        AddTagsViewModel(item: item, source: source ?? self.source, saveAction: saveAction)
+    private func subject(item: SavedItem, source: Source? = nil, saveAction: @escaping () -> Void) -> PocketAddTagsViewModel {
+        PocketAddTagsViewModel(item: item, source: source ?? self.source, saveAction: saveAction)
     }
 
     func test_addTag_withValidName_updatesTags() {

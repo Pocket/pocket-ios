@@ -1,15 +1,16 @@
 import SwiftUI
 import UIKit
-import Textile
+import Combine
 
-struct AddTagsView: View {
-    enum Constants {
-        static let tagsHorizontalSpacing: CGFloat = 6
-        static let tagPadding: CGFloat = 4
-    }
+enum Constants {
+    static let tagsHorizontalSpacing: CGFloat = 6
+    static let tagPadding: CGFloat = 4
+}
+
+public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
 
     @ObservedObject
-    var viewModel: AddTagsViewModel
+    var viewModel: ViewModel
 
     @State
     private var newTag: String = ""
@@ -20,7 +21,11 @@ struct AddTagsView: View {
     @FocusState
     private var isTextFieldFocused: Bool
 
-    var body: some View {
+    public init(viewModel: ViewModel) {
+        self.viewModel = viewModel
+    }
+
+    public var body: some View {
         GeometryReader { geometry in
             NavigationView {
                 VStack {
@@ -61,13 +66,12 @@ struct AddTagsView: View {
                 .animation(.easeInOut, value: viewModel.tags)
             }
         }
-
         .accessibilityIdentifier("add-tags")
     }
 
     struct InputTagsView: View {
         @ObservedObject
-        var viewModel: AddTagsViewModel
+        var viewModel: ViewModel
 
         @Namespace
         var animation
@@ -140,7 +144,7 @@ struct AddTagsView: View {
 
     struct OtherTagsView: View {
         @ObservedObject
-        var viewModel: AddTagsViewModel
+        var viewModel: ViewModel
 
         var body: some View {
             if let otherTags = viewModel.allOtherTags(), !otherTags.isEmpty {

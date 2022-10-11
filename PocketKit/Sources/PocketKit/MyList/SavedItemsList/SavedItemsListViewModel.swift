@@ -21,7 +21,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     var presentedAlert: PocketAlert?
 
     @Published
-    var presentedAddTags: AddTagsViewModel?
+    var presentedAddTags: PocketAddTagsViewModel?
 
     @Published
     var presentedTagsFilter: TagsFilterViewModel?
@@ -492,7 +492,7 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
 // MARK: - Add Tags to an item
 extension SavedItemsListViewModel {
     private func showAddTagsView(item: SavedItem) {
-        presentedAddTags = AddTagsViewModel(
+        presentedAddTags = PocketAddTagsViewModel(
             item: item,
             source: source,
             saveAction: { [weak self] in

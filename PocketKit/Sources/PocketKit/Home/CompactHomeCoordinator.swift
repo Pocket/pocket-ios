@@ -5,6 +5,7 @@ import Analytics
 import BackgroundTasks
 import SafariServices
 import SwiftUI
+import Textile
 
 protocol CompactHomeCoordinatorDelegate: AnyObject {
     func compactHomeCoordinatorDidSelectRecentSaves(_ coordinator: CompactHomeCoordinator)
@@ -249,7 +250,7 @@ class CompactHomeCoordinator: NSObject {
         viewController.present(UIAlertController(alert), animated: !isResetting)
     }
 
-    func present(_ viewModel: AddTagsViewModel?) {
+    func present(_ viewModel: PocketAddTagsViewModel?) {
         guard !isResetting, let viewModel = viewModel else { return }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet

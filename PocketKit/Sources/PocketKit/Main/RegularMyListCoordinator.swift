@@ -149,7 +149,7 @@ extension RegularMyListCoordinator {
         delegate?.present(alert)
     }
 
-    private func present(viewModel: AddTagsViewModel?) {
+    private func present(viewModel: PocketAddTagsViewModel?) {
         delegate?.present(viewModel)
     }
 

@@ -1,22 +1,16 @@
 import Combine
-import Sync
 
-class AddTagsViewModel: ObservableObject {
-    private let item: SavedItem
-    private let source: Source
-    private let saveAction: () -> Void
+public protocol AddTagsViewModel: ObservableObject {
+    var placeholderText: String { get }
+    var emptyStateText: String { get }
+    var tags: [String] { get set }
+    func addTag(with tag: String) -> Bool
+    func addTags()
+    func allOtherTags() -> [String]?
+    func removeTag(with tag: String)
+}
 
-    @Published
-    var tags: [String] = []
-
-    init(item: SavedItem, source: Source, saveAction: @escaping () -> Void) {
-        self.item = item
-        self.source = source
-        self.saveAction = saveAction
-
-        tags = item.tags?.compactMap { $0 as? Tag }.map { $0.name ?? "" } ?? []
-    }
-
+public extension AddTagsViewModel {
     var placeholderText: String {
         "Enter tag name..."
     }
@@ -33,16 +27,6 @@ class AddTagsViewModel: ObservableObject {
         }
         tags.append(tagName)
         return true
-    }
-
-    func addTags() {
-        source.addTags(item: item, tags: tags)
-        saveAction()
-    }
-
-    func allOtherTags() -> [String]? {
-        let fetchedTags = source.retrieveTags(excluding: tags)
-        return fetchedTags?.compactMap { $0.name }
     }
 
     func removeTag(with tag: String) {
