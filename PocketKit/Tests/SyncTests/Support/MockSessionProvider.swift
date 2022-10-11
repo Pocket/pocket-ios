@@ -9,6 +9,6 @@ class MockSessionProvider: SessionProvider {
 }
 
 struct MockSession: Session {
-    let guid = "session-guid"
-    let accessToken = "session-access-token"
+    var guid = "session-guid"
+    var accessToken = "session-access-token"
 }

@@ -8,28 +8,22 @@ public class KeychainStorage<T: Codable & Equatable> {
     private let account: String
     private let accessGroup: String
 
-    private var subject: CurrentValueSubject<T?, Never>!
-
+    private var _wrappedValue: T?
     public var wrappedValue: T? {
         get {
-            if let value = subject.value {
-                return value
-            } else {
-                subject.value = read()
-                return subject.value
+            if _wrappedValue == nil {
+                _wrappedValue = read()
             }
+            return _wrappedValue
         }
         set {
-            if let newValue = newValue, let upserted = upsert(value: newValue) {
-                subject.value = upserted
+            if let newValue = newValue {
+                _wrappedValue = upsert(value: newValue)
             } else {
                 delete()
+                _wrappedValue = nil
             }
         }
-    }
-
-    public var projectedValue: AnyPublisher<T?, Never> {
-        subject.removeDuplicates().eraseToAnyPublisher()
     }
 
     init(
@@ -43,11 +37,11 @@ public class KeychainStorage<T: Codable & Equatable> {
         self.account = account
         self.accessGroup = accessGroup
 
-        subject = CurrentValueSubject(read())
+        _wrappedValue = read()
     }
 
     private func upsert(value: T?) -> T? {
-        if subject.value == nil {
+        if _wrappedValue == nil {
             return add(value: value)
         } else {
             return update(value: value)
@@ -98,7 +92,6 @@ public class KeychainStorage<T: Codable & Equatable> {
 
     private func delete() {
         _ = keychain.delete(query: makeQuery())
-        subject.value = nil
     }
 
     private func makeQuery(_ additionalProperties: [CFString: Any] = [:]) -> CFDictionary {

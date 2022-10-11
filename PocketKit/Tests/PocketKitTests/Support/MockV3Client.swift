@@ -1,0 +1,76 @@
+import Foundation
+import Sync
+
+class MockV3Client: V3ClientProtocol {
+    private var implementations: [String: Any] = [:]
+    private var calls: [String: [Any]] = [:]
+}
+
+// MARK: registerPushToken
+extension MockV3Client {
+    static let registerPushToken = "registerPushToken"
+    typealias RegisterPushTokenImpl = (String, Sync.PushType, String, Sync.Session) -> Sync.RegisterPushTokenResponse?
+    struct RegisterPushTokenCall {
+        let deviceIdentifer: String
+        let pushType: PushType
+        let token: String
+        let session: Sync.Session
+    }
+
+    func stubRegisterPushToken(impl: @escaping RegisterPushTokenImpl) {
+        implementations[Self.registerPushToken] = impl
+    }
+
+    func registerPushToken(for deviceIdentifer: String, pushType: Sync.PushType, token: String, session: Sync.Session) async throws -> Sync.RegisterPushTokenResponse? {
+        guard let impl = implementations[Self.registerPushToken] as? RegisterPushTokenImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.registerPushToken] = (calls[Self.registerPushToken] ?? []) + [RegisterPushTokenCall(deviceIdentifer: deviceIdentifer, pushType: pushType, token: token, session: session)]
+
+        return impl(deviceIdentifer, pushType, token, session)
+    }
+
+    func registerPushTokenCall(at index: Int) -> RegisterPushTokenCall? {
+        guard let calls = calls[Self.registerPushToken],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RegisterPushTokenCall
+    }
+}
+
+// MARK: deregisterPushToken
+extension MockV3Client {
+    static let deregisterPushToken = "deregisterPushToken"
+    typealias DeregisterPushTokenImpl = (String, Sync.PushType, Sync.Session) -> Sync.DeregisterPushTokenResponse?
+    struct DeregisterPushTokenCall {
+        let deviceIdentifer: String
+        let pushType: PushType
+        let session: Sync.Session
+    }
+
+    func stubDeregisterPushToken(impl: @escaping DeregisterPushTokenImpl) {
+        implementations[Self.deregisterPushToken] = impl
+    }
+
+    func deregisterPushToken(for deviceIdentifer: String, pushType: Sync.PushType, session: Sync.Session) async throws -> Sync.DeregisterPushTokenResponse? {
+        guard let impl = implementations[Self.deregisterPushToken] as? DeregisterPushTokenImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.deregisterPushToken] = (calls[Self.deregisterPushToken] ?? []) + [DeregisterPushTokenCall(deviceIdentifer: deviceIdentifer, pushType: pushType, session: session)]
+
+        return impl(deviceIdentifer, pushType, session)
+    }
+
+    func deregisterPushTokenCall(at index: Int) -> DeregisterPushTokenCall? {
+        guard let calls = calls[Self.deregisterPushToken],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? DeregisterPushTokenCall
+    }
+}
