@@ -115,14 +115,10 @@ class ArchiveAnItemTests: XCTestCase {
             return Response.archive()
         }
 
-        app
-            .readerView
-            .readerToolbar
-            .moreButton
-            .wait()
-            .tap()
-
-        app.archiveButton.wait().tap()
+        let archiveNavButton = XCUIApplication().buttons["archiveNavButton"]
+        XCTAssert(archiveNavButton.exists)
+        archiveNavButton.wait().tap()
+        app.myListView.wait()
 
         wait(for: [expectRequest], timeout: 1)
         listView.wait()
@@ -150,7 +146,7 @@ class ArchiveAnItemTests: XCTestCase {
 
         let archiveNavButton = XCUIApplication().buttons["archiveNavButton"]
         XCTAssert(archiveNavButton.exists)
-        archiveNavButton.tap()
+        archiveNavButton.wait().tap()
         app.homeView.wait()
 
         wait(for: [expectRequest], timeout: 1)
