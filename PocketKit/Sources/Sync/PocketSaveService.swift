@@ -48,19 +48,40 @@ public class PocketSaveService: SaveService {
             self?._save(expiring: expiring, savedItem: result.savedItem)
         }
 
-        return result.status
+        return result
     }
 
-    private func fetchOrCreateSavedItem(url: URL) -> (savedItem: SavedItem, status: SaveServiceStatus) {
+    public func retrieveTags(excluding tags: [String]) -> [Tag]? {
+        try? space.retrieveTags(excluding: tags)
+    }
+
+    public func addTags(savedItem: SavedItem, tags: [String]) -> SaveServiceStatus {
+        savedItem.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
+            space.fetchOrCreateTag(byName: tag)
+        }))
+
+       try? space.save()
+
+        osNotifications.post(name: .savedItemUpdated)
+
+        expiringActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.addTags") { [weak self] expiring in
+            self?._addTags(expiring: expiring, savedItem: savedItem)
+        }
+
+        return .taggedItem(savedItem)
+    }
+
+    private func fetchOrCreateSavedItem(url: URL) -> SaveServiceStatus {
         if let existingItem = try! space.fetchSavedItem(byURL: url) {
             existingItem.createdAt = Date()
 
             let notification: SavedItemUpdatedNotification = space.new()
             notification.savedItem = existingItem
+
             try? space.save()
 
             osNotifications.post(name: .savedItemUpdated)
-            return (existingItem, .existingItem)
+            return .existingItem(existingItem)
         } else {
             let savedItem: SavedItem = space.new()
             savedItem.url = url
@@ -68,7 +89,46 @@ public class PocketSaveService: SaveService {
             try? space.save()
 
             osNotifications.post(name: .savedItemCreated)
-            return (savedItem, .newItem)
+            return .newItem(savedItem)
+        }
+    }
+
+    private func _addTags(expiring: Bool, savedItem: SavedItem) {
+        guard !expiring else {
+            queue.cancelAllOperations()
+            queue.waitUntilAllOperationsAreFinished()
+            return
+        }
+
+        guard let tags = savedItem.tags, let remoteID = savedItem.remoteID else { return }
+        let names = Array(tags).compactMap { ($0 as? Tag)?.name }
+
+        if names.isEmpty {
+            let mutation = UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID)
+
+            let operation = SaveOperation<UpdateSavedItemRemoveTagsMutation>(
+                apollo: apollo,
+                osNotifications: osNotifications,
+                space: space,
+                savedItem: savedItem,
+                mutation: mutation) { graphQLResultData in
+                    return (graphQLResultData as? UpdateSavedItemRemoveTagsMutation.Data)?.updateSavedItemRemoveTags.fragments.savedItemParts
+                }
+            queue.addOperation(operation)
+            queue.waitUntilAllOperationsAreFinished()
+        } else {
+            let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: names)])
+
+            let operation = SaveOperation<ReplaceSavedItemTagsMutation>(
+                apollo: apollo,
+                osNotifications: osNotifications,
+                space: space,
+                savedItem: savedItem,
+                mutation: mutation) { graphQLResultData in
+                    return (graphQLResultData as? ReplaceSavedItemTagsMutation.Data)?.replaceSavedItemTags.first?.fragments.savedItemParts
+                }
+            queue.addOperation(operation)
+            queue.waitUntilAllOperationsAreFinished()
         }
     }
 
@@ -79,23 +139,30 @@ public class PocketSaveService: SaveService {
             return
         }
 
-        let operation = SaveOperation(
+        guard let url = savedItem.url else { return }
+        let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: url.absoluteString))
+
+        let operation = SaveOperation<SaveItemMutation>(
             apollo: apollo,
             osNotifications: osNotifications,
             space: space,
-            savedItem: savedItem
-        )
+            savedItem: savedItem,
+            mutation: mutation) { graphQLResultData in
+                return (graphQLResultData as? SaveItemMutation.Data)?.upsertSavedItem.fragments.savedItemParts
+            }
 
         queue.addOperation(operation)
         queue.waitUntilAllOperationsAreFinished()
     }
 }
 
-class SaveOperation: AsyncOperation {
+class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let apollo: ApolloClientProtocol
     private let osNotifications: OSNotificationCenter
     private let space: Space
     private let savedItem: SavedItem
+    private let mutation: any GraphQLMutation
+    private let savedItemParts: (GraphQLSelectionSet) -> SavedItemParts?
 
     private var task: Cancellable?
 
@@ -103,17 +170,21 @@ class SaveOperation: AsyncOperation {
         apollo: ApolloClientProtocol,
         osNotifications: OSNotificationCenter,
         space: Space,
-        savedItem: SavedItem
+        savedItem: SavedItem,
+        mutation: Mutation,
+        savedItemParts: @escaping (GraphQLSelectionSet) -> SavedItemParts?
     ) {
         self.apollo = apollo
         self.osNotifications = osNotifications
         self.space = space
         self.savedItem = savedItem
+        self.mutation = mutation
+        self.savedItemParts = savedItemParts
     }
 
     override func start() {
         guard !isCancelled else { return }
-        performMutation()
+        performMutation(mutation: mutation)
     }
 
     override func cancel() {
@@ -124,23 +195,20 @@ class SaveOperation: AsyncOperation {
         super.cancel()
     }
 
-    private func performMutation() {
-        guard let url = savedItem.url else { return }
-
-        let mutation = SaveItemMutation(input: SavedItemUpsertInput(url: url.absoluteString))
+    private func performMutation<Mutation: GraphQLMutation>(mutation: Mutation) {
         task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .main) { [weak self] result in
-            self?.handle(result: result)
+            guard case .success(let graphQLResult) = result,
+                    let data = graphQLResult.data,
+                    let savedItemParts = self?.savedItemParts(data) else {
+                self?.storeUnresolvedSavedItem()
+                self?.finishOperation()
+                return
+            }
+            self?.updateSavedItem(savedItemParts: savedItemParts)
         }
     }
 
-    private func handle(result: Result<GraphQLResult<SaveItemMutation.Data>, Error>) {
-        guard case .success(let graphQLResult) = result,
-              let savedItemParts = graphQLResult.data?.upsertSavedItem.fragments.savedItemParts else {
-            storeUnresolvedSavedItem()
-            finishOperation()
-            return
-        }
-
+    private func updateSavedItem(savedItemParts: SavedItemParts) {
         savedItem.update(from: savedItemParts, with: space)
         let notification: SavedItemUpdatedNotification = space.new()
         notification.savedItem = savedItem

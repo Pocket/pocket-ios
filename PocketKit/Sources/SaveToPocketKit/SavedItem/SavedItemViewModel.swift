@@ -13,6 +13,11 @@ class SavedItemViewModel {
     @Published
     var infoViewModel: InfoView.Model = .empty
 
+    @Published
+    var presentedAddTags: SaveToAddTagsViewModel?
+
+    var savedItem: SavedItem?
+
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
     init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher) {
@@ -35,11 +40,16 @@ class SavedItemViewModel {
                 break
             }
 
-            switch saveService.save(url: url) {
-            case .existingItem:
+            let result = saveService.save(url: url)
+            switch result {
+            case .existingItem(let savedItem):
+                self.savedItem = savedItem
                 infoViewModel = .existingItem
-            case .newItem:
+            case .newItem(let savedItem):
+                self.savedItem = savedItem
                 infoViewModel = .newItem
+            case .taggedItem(_):
+                break
             }
 
             autodismiss(from: context)
@@ -47,8 +57,37 @@ class SavedItemViewModel {
         }
     }
 
+    func showAddTagsView() {
+        presentedAddTags = SaveToAddTagsViewModel(
+            item: savedItem,
+            retrieveAction: { [weak self] tags in
+                self?.retrieveTags(excluding: tags)
+            },
+            saveAction: { [weak self] tags in
+                self?.addTags(tags: tags)
+            }
+        )
+    }
+
+    func addTags(tags: [String]) {
+        guard let savedItem = savedItem else { return }
+        let result = saveService.addTags(savedItem: savedItem, tags: tags)
+        if case let .taggedItem(savedItem) = result {
+            self.savedItem = savedItem
+            infoViewModel = .taggedItem
+        }
+    }
+
+    func retrieveTags(excluding tags: [String]) -> [Tag]? {
+        return saveService.retrieveTags(excluding: tags)
+    }
+
     func finish(context: ExtensionContext?, completionHandler: ((Bool) -> Void)? = nil) {
         context?.completeRequest(returningItems: nil, completionHandler: completionHandler)
+    }
+
+    func cancelDismissTimer() {
+        dismissTimerCancellable?.cancel()
     }
 }
 
@@ -113,9 +152,18 @@ private extension InfoView.Model {
             style: .mainText
         ),
         attributedDetailText: NSAttributedString(
-            string: "You've already saved this before. We'll move it to the top of your list.",
+            string: "You've already saved this. We'll move it to the top of your list.",
             style: .detailText
         )
+    )
+
+    static let taggedItem = InfoView.Model(
+        style: .default,
+        attributedText: NSAttributedString(
+            string: "Tags Added!",
+            style: .mainText
+        ),
+        attributedDetailText: nil
     )
 
     static let error = InfoView.Model(

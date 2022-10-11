@@ -4,12 +4,13 @@ import SafariServices
 import Analytics
 import Sync
 import Combine
+import Textile
 
 protocol ModalContentPresenting: AnyObject {
     func report(_ recommendation: Recommendation?)
     func present(_ url: URL?)
     func present(_ alert: PocketAlert?)
-    func present(_ viewModel: AddTagsViewModel?)
+    func present(_ viewModel: PocketAddTagsViewModel?)
     func present(_ readerSettings: ReaderSettings?, isPresenting: Bool?)
     func present(_ tagsFilterViewModel: TagsFilterViewModel?)
     func share(_ activity: PocketActivity?)
@@ -217,7 +218,7 @@ extension RegularMainCoordinator: ModalContentPresenting {
         splitController.setViewController(readerRoot, for: .secondary)
     }
 
-    func present(_ viewModel: AddTagsViewModel?) {
+    func present(_ viewModel: PocketAddTagsViewModel?) {
         guard !isResetting, let viewModel = viewModel else { return }
 
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))

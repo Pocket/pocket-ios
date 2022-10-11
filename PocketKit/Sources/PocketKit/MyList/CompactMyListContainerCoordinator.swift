@@ -2,6 +2,7 @@ import UIKit
 import Combine
 import SafariServices
 import SwiftUI
+import Textile
 
 class CompactMyListContainerCoordinator: NSObject {
     var viewController: UIViewController {
@@ -164,7 +165,7 @@ class CompactMyListContainerCoordinator: NSObject {
         viewController.present(UIAlertController(alert), animated: !isResetting)
     }
 
-    private func present(viewModel: AddTagsViewModel?) {
+    private func present(viewModel: PocketAddTagsViewModel?) {
         guard !isResetting, let viewModel = viewModel else { return }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet

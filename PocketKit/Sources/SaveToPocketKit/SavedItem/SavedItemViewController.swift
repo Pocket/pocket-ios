@@ -1,17 +1,32 @@
 import UIKit
 import Combine
 import Textile
+import SwiftUI
 
 class SavedItemViewController: UIViewController {
     private let imageView = UIImageView(image: UIImage(asset: .logo))
-
     private let infoView = InfoView()
-
     private let dismissLabel = UILabel()
-
     private let viewModel: SavedItemViewModel
 
     private var infoViewModelSubscription: AnyCancellable?
+    private var subscriptions: [AnyCancellable] = []
+
+    private let addTagsButton: UIButton = {
+        var configuration: UIButton.Configuration = .filled()
+        configuration.background.backgroundColor = UIColor(.ui.teal2)
+        configuration.background.cornerRadius = 13
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: 13, leading: 0, bottom: 13, trailing: 0)
+        configuration.attributedTitle = AttributedString(NSAttributedString(string: "Add Tags", style: .buttonText))
+
+        let button = UIButton(
+            configuration: configuration,
+            primaryAction: nil
+        )
+
+        button.accessibilityIdentifier = "add-tags-button"
+        return button
+    }()
 
     init(viewModel: SavedItemViewModel) {
         self.viewModel = viewModel
@@ -21,6 +36,15 @@ class SavedItemViewController: UIViewController {
         infoViewModelSubscription = viewModel.$infoViewModel.receive(on: DispatchQueue.main).sink { [weak self] infoViewModel in
             self?.infoView.model = infoViewModel
         }
+
+        viewModel.$presentedAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(addTagsViewModel)
+        }.store(in: &subscriptions)
+
+        addTagsButton.addAction(UIAction { [weak self] _ in
+            self?.viewModel.cancelDismissTimer()
+            self?.viewModel.showAddTagsView()
+        }, for: .primaryActionTriggered)
     }
 
     required init?(coder: NSCoder) {
@@ -35,10 +59,12 @@ class SavedItemViewController: UIViewController {
         view.addSubview(imageView)
         view.addSubview(infoView)
         view.addSubview(dismissLabel)
+        view.addSubview(addTagsButton)
 
         imageView.translatesAutoresizingMaskIntoConstraints = false
         infoView.translatesAutoresizingMaskIntoConstraints = false
         dismissLabel.translatesAutoresizingMaskIntoConstraints = false
+        addTagsButton.translatesAutoresizingMaskIntoConstraints = false
 
         let capsuleTopConstraint = NSLayoutConstraint(
             item: infoView,
@@ -55,6 +81,9 @@ class SavedItemViewController: UIViewController {
             imageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 36),
 
             capsuleTopConstraint,
+            addTagsButton.bottomAnchor.constraint(equalTo: dismissLabel.topAnchor, constant: -16),
+            addTagsButton.safeAreaLayoutGuide.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            addTagsButton.safeAreaLayoutGuide.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
 
             dismissLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             dismissLabel.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
@@ -85,5 +114,12 @@ class SavedItemViewController: UIViewController {
     @objc
     private func finish() {
         viewModel.finish(context: extensionContext)
+    }
+
+    func present(_ viewModel: SaveToAddTagsViewModel?) {
+        guard let viewModel = viewModel else { return }
+        let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
+        hostingController.modalPresentationStyle = .formSheet
+        self.present(hostingController, animated: true)
     }
 }

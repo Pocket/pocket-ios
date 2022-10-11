@@ -2,12 +2,14 @@ import XCTest
 import SharedPocketKit
 import Sync
 
+@testable import Sync
 @testable import SaveToPocketKit
 
 class SavedItemViewModelTests: XCTestCase {
     private var appSession: AppSession!
     private var saveService: MockSaveService!
     private var dismissTimer: Timer.TimerPublisher!
+    private var space: Space!
 
     private func subject(
         appSession: AppSession? = nil,
@@ -27,8 +29,14 @@ class SavedItemViewModelTests: XCTestCase {
         appSession = AppSession(keychain: MockKeychain())
         saveService = MockSaveService()
         dismissTimer = Timer.TimerPublisher(interval: 0, runLoop: .main, mode: .default)
+        space = .testSpace()
 
-        saveService.stubSave { _ in .newItem }
+        let savedItem = SavedItem()
+        saveService.stubSave { _ in .newItem(savedItem) }
+    }
+
+    override func tearDown() async throws {
+        try space.clear()
     }
 }
 
@@ -84,6 +92,7 @@ extension SavedItemViewModelTests {
             accessToken: "mock-access-token",
             userIdentifier: "mock-user-identifier"
         )
+
         let viewModel = subject(appSession: appSession)
 
         let provider = MockItemProvider()
@@ -136,6 +145,7 @@ extension SavedItemViewModelTests {
             accessToken: "mock-access-token",
             userIdentifier: "mock-user-identifier"
         )
+
         let viewModel = subject(appSession: appSession)
 
         let provider = MockItemProvider()
@@ -165,8 +175,8 @@ extension SavedItemViewModelTests {
             accessToken: "mock-access-token",
             userIdentifier: "mock-user-identifier"
         )
-
-        saveService.stubSave { _ in .existingItem }
+        let savedItem = SavedItem()
+        saveService.stubSave { _ in .existingItem(savedItem) }
 
         let provider = MockItemProvider()
         provider.stubHasItemConformingToTypeIdentifier { identifier in
@@ -182,7 +192,7 @@ extension SavedItemViewModelTests {
         let subscription = viewModel.$infoViewModel.dropFirst().sink { model in
             defer { infoViewModelChanged.fulfill() }
             XCTAssertEqual(model.attributedText.string, "Saved to Pocket")
-            XCTAssertEqual(model.attributedDetailText?.string, "You've already saved this before. We'll move it to the top of your list.")
+            XCTAssertEqual(model.attributedDetailText?.string, "You've already saved this. We'll move it to the top of your list.")
         }
 
         let extensionItem = MockExtensionItem(itemProviders: [provider])
@@ -221,5 +231,54 @@ extension SavedItemViewModelTests {
         await viewModel.save(from: context)
         wait(for: [infoViewModelChanged], timeout: 1)
         subscription.cancel()
+    }
+}
+
+// MARK: - Tags
+extension SavedItemViewModelTests {
+    func test_addTagsAction_sendsAddTagsViewModel() {
+        let viewModel = subject()
+
+        let expectAddTags = expectation(description: "expect add tags to present")
+        let subscription = viewModel.$presentedAddTags.dropFirst().sink { viewModel in
+            defer { expectAddTags.fulfill() }
+            XCTAssertNotNil(viewModel)
+        }
+
+        viewModel.showAddTagsView()
+
+        wait(for: [expectAddTags], timeout: 1)
+        subscription.cancel()
+    }
+
+    func test_addTags_updatesInfoViewModel() async {
+        let item = space.buildSavedItem(tags: ["tag 1"])
+        let viewModel = subject()
+        viewModel.savedItem = item
+        saveService.stubAddTags { _, _  in
+            return .taggedItem(item)
+        }
+
+        viewModel.addTags(tags: ["tag 1"])
+        let infoViewModelChanged = expectation(description: "infoViewModelChanged")
+        let subscription = viewModel.$infoViewModel.sink { model in
+            defer { infoViewModelChanged.fulfill() }
+            XCTAssertEqual(model.attributedText.string, "Tags Added!")
+        }
+
+        wait(for: [infoViewModelChanged], timeout: 1)
+        subscription.cancel()
+    }
+
+    func test_retrieveTags_updatesInfoViewModel() async {
+        let viewModel = subject()
+        saveService.stubRetrieveTags { _ in
+            let tag: Tag = self.space.new()
+            tag.name = "tag 1"
+            return [tag]
+        }
+        let tags = viewModel.retrieveTags(excluding: [])
+        XCTAssertEqual(tags?.count, 1)
+        XCTAssertEqual(tags?[0].name, "tag 1")
     }
 }

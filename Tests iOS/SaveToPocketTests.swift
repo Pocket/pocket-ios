@@ -45,4 +45,42 @@ class SaveToPocketTests: XCTestCase {
 
         app.loggedOutView.wait()
     }
+
+    func test_userAddTags_showsConfirmationView() {
+        app.launch()
+
+        let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+        safari.launch()
+
+        safari.textFields["Address"].tap()
+        safari.typeText("http://localhost:8080/hello\n")
+        safari.staticTexts["Hello, world"].wait()
+        safari.toolbars.buttons["ShareButton"].tap()
+        let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
+
+        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
+        safari.buttons["add-tags-button"].wait().tap()
+
+        let addTagsView = AddTagsViewElement(safari.otherElements["add-tags"])
+
+        addTagsView.wait()
+        addTagsView.newTagTextField.tap()
+        addTagsView.newTagTextField.typeText("Tag 1")
+        addTagsView.newTagTextField.typeText("\n")
+
+        addTagsView.tag(matching: "tag 1").wait()
+
+        server.routes.post("/graphql") { request, _ in
+            Response.savedItemWithTag()
+        }
+
+        addTagsView.saveButton.tap()
+        safari.staticTexts["Tags Added!"].wait()
+        safari.staticTexts["Tap to Dismiss"].tap()
+
+        safari.toolbars.buttons["ShareButton"].tap()
+        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
+        safari.buttons["add-tags-button"].wait().tap()
+        addTagsView.tag(matching: "tag 1").wait()
+    }
 }
