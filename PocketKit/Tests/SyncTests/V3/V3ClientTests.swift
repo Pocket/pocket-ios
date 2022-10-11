@@ -1,10 +1,3 @@
-//
-//  V3ClientTests.swift
-//  
-//
-//  Created by Daniel Brooks on 9/20/22.
-//
-
 import XCTest
 @testable import Sync
 

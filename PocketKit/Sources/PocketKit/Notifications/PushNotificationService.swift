@@ -10,7 +10,7 @@ import UserNotifications
 
 protocol PushNotificationProtocol {
     /**
-     We have a sesison indicating a login
+     We have a session indicating a login
      */
     func loggedIn(session: SharedPocketKit.Session)
 

@@ -14,7 +14,7 @@ class MockPocketBraze: MockPushNotificationProtocol, BrazeSDKProtocol { }
 // MARK: Did Receive User Notification
 extension MockPocketBraze {
 
-    static let didRecieveUserNotifcation = "didRecieveUserNotifcation"
+    static let didReceiveUserNotifcation = "didRecieveUserNotifcation"
     typealias DidRecieveUserNotifcationImpl = (UNUserNotificationCenter, UNNotificationResponse, (() -> Void)) -> Void
     struct DidRecieveUserNotifcationCall {
         let center: UNUserNotificationCenter
@@ -23,24 +23,24 @@ extension MockPocketBraze {
     }
 
     func stubDidRecieveUserNotifcation(impl: @escaping DidRecieveUserNotifcationImpl) {
-        implementations[Self.didRecieveUserNotifcation] = impl
+        implementations[Self.didReceiveUserNotifcation] = impl
     }
 
     func didReceiveUserNotification(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void) {
-            guard let impl = implementations[Self.didRecieveUserNotifcation] as? DidRecieveUserNotifcationImpl else {
+            guard let impl = implementations[Self.didReceiveUserNotifcation] as? DidRecieveUserNotifcationImpl else {
                 fatalError("\(Self.self).\(#function) has not been stubbed")
             }
 
-            calls[Self.didRecieveUserNotifcation] = (calls[Self.didRecieveUserNotifcation] ?? []) + [DidRecieveUserNotifcationCall(center: center, response: response, completionHandler: completionHandler)]
+            calls[Self.didReceiveUserNotifcation] = (calls[Self.didReceiveUserNotifcation] ?? []) + [DidRecieveUserNotifcationCall(center: center, response: response, completionHandler: completionHandler)]
 
             return impl(center, response, completionHandler)
         }
 
-    func didRecieveUserNotifcationCall(at index: Int) -> DidRecieveUserNotifcationImpl? {
-        guard let calls = calls[Self.didRecieveUserNotifcation],
+    func didRecieveUserNotificationCall(at index: Int) -> DidRecieveUserNotifcationImpl? {
+        guard let calls = calls[Self.didReceiveUserNotifcation],
               calls.count > index else {
             return nil
         }

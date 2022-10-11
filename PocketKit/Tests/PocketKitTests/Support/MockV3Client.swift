@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Daniel Brooks on 9/23/22.
-//
-
 import Foundation
 import Sync
 
