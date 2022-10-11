@@ -1,0 +1,35 @@
+{
+  "configurations" : [
+    {
+      "id" : "A4EB5A67-4AB5-4BAF-934F-5BDCE7E091F6",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "HomeTests",
+        "HomeWebViewTests",
+        "MyListFiltersTests",
+        "MyListTests",
+        "PullToRefreshTests",
+        "ReportARecommendationTests",
+        "SaveToPocketTests",
+        "ShareAnItemTests",
+        "SignOutTests"
+      ],
+      "target" : {
+        "containerPath" : "container:Pocket.xcodeproj",
+        "identifier" : "166A81BF2637406C0015AA1D",
+        "name" : "Tests iOS"
+      }
+    }
+  ],
+  "version" : 1
+}

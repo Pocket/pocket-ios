@@ -29,7 +29,9 @@ stages:
   build-test:
     workflows:
       # Run the test and qa build flow in parallel
-      - test: {}
+      - test_1: {}
+      - test_2: {}
+      - test_3: {}
       - qa-build: {}
   release-build:
     workflows:
@@ -190,7 +192,7 @@ workflows:
     after_run:
       - _upload_sentry
 
-  test:
+  test_1:
     steps:
       - file-downloader@1:
           inputs:
@@ -200,6 +202,39 @@ workflows:
       - xcode-test@4:
           inputs:
             - destination: platform=iOS Simulator,name=iPhone 14,OS=latest
+            - test_plan: UITests
+      - deploy-to-bitrise-io@2: {}
+    before_run:
+      - _setup
+    after_run:
+      - _danger
+  test_2:
+    steps:
+      - file-downloader@1:
+          inputs:
+            - source: '$BITRISEIO_SECRETS_TEST_URL'
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+          title: Install test secrets.xcconfig
+      - xcode-test@4:
+          inputs:
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=latest
+            - test_plan: UITests-2
+      - deploy-to-bitrise-io@2: {}
+    before_run:
+      - _setup
+    after_run:
+      - _danger
+  test_3:
+    steps:
+      - file-downloader@1:
+          inputs:
+            - source: '$BITRISEIO_SECRETS_TEST_URL'
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+          title: Install test secrets.xcconfig
+      - xcode-test@4:
+          inputs:
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=latest
+            - test_plan: UnitTests
       - deploy-to-bitrise-io@2: {}
     before_run:
       - _setup
