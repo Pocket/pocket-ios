@@ -46,6 +46,7 @@
 		3E8283A428B65ECF00C1DC4A /* SortMenuElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8283A328B65ECF00C1DC4A /* SortMenuElement.swift */; };
 		650FECCE28BA85F300A3CB0C /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650FECCD28BA85F300A3CB0C /* NotificationService.swift */; };
 		650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		651F008A28F7139700BE8667 /* SharedPocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 651F008928F7139700BE8667 /* SharedPocketKit */; };
 		65734C2628BA89B900730661 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = 65734C2528BA89B900730661 /* BrazeNotificationService */; };
 		65EC272728BA8AD50075E1DF /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272628BA8AD50075E1DF /* UserNotifications.framework */; };
 		65EC272928BA8AD50075E1DF /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */; };
@@ -224,6 +225,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				651F008A28F7139700BE8667 /* SharedPocketKit in Frameworks */,
 				65734C2628BA89B900730661 /* BrazeNotificationService in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -471,6 +473,7 @@
 			name = PushNotificationServiceExtension;
 			packageProductDependencies = (
 				65734C2528BA89B900730661 /* BrazeNotificationService */,
+				651F008928F7139700BE8667 /* SharedPocketKit */,
 			);
 			productName = PushNotificationServiceExtension;
 			productReference = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */;
@@ -1450,6 +1453,10 @@
 		16BA7D6526851579009A17C1 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PocketKit;
+		};
+		651F008928F7139700BE8667 /* SharedPocketKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SharedPocketKit;
 		};
 		65734C2528BA89B900730661 /* BrazeNotificationService */ = {
 			isa = XCSwiftPackageProductDependency;
