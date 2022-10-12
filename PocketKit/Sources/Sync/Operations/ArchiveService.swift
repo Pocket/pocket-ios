@@ -360,7 +360,7 @@ private class FetchArchivePagesOperation: AsyncOperation {
 
             var tagNames: [String] = []
             if let tagName = tagName {
-                tagNames = tagName == "not tagged" ? ["untagged"] : [tagName]
+                tagNames = tagName == "not tagged" ? ["_untagged_"] : [tagName]
             }
             let result = try await apollo.fetch(
                 query: SavedItemSummariesQuery(
