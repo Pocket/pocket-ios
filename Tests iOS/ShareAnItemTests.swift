@@ -28,6 +28,8 @@ class ShareAnItemTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
+            } else if apiRequest.isForSlateDetail() {
+                return Response.slateDetail()
             } else {
                 fatalError("Unexpected request")
             }
@@ -73,6 +75,32 @@ class ShareAnItemTests: XCTestCase {
         app
             .shareButton.wait()
             .tap()
+
+        app.shareSheet.wait()
+    }
+
+    func test_shareFromHome_sharingARecommendation_sharingFromSlate() {
+        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
+
+        cell.overflowButton.wait().tap()
+        app.shareButton.wait().tap()
+
+        app.shareSheet.wait()
+    }
+
+    func test_shareFromHome_sharingARecommendation_sharingFromSlateDetails() {
+        app.launch()
+            .homeView
+            .sectionHeader("Slate 1")
+            .seeAllButton
+            .wait().tap()
+
+        let cell = app.slateDetailView
+            .recommendationCell("Slate 1, Recommendation 1")
+            .wait()
+
+        cell.overflowButton.wait().tap()
+        app.shareButton.wait().tap()
 
         app.shareSheet.wait()
     }
