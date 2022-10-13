@@ -36,7 +36,7 @@ stages:
       - test_1: {}
       #- test_2: {}
       #- test_3: {}
-      - qa-build: {}
+      #- qa-build: {}
   release-build:
     workflows:
       - release-build: {}
@@ -228,7 +228,7 @@ workflows:
             "$BITRISE_SOURCE_DIR/xcodebuild.log" \
             "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/" \
             "$BITRISE_SOURCE_DIR/PocketKit/" \
-            "$BITRISE_SOURCE_DIR/Tests\ iOS"
+            "$BITRISE_SOURCE_DIR/Tests\ iOS/"
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "${BITRISE_SOURCE_DIR}/DerivedData.zip"
