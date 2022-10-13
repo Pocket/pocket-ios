@@ -202,8 +202,20 @@ workflows:
             - source: '$BITRISEIO_SECRETS_TEST_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install test secrets.xcconfig
+    - git::https://github.com/DamienBitrise/bitrise-test-plan-sharder.git@master:
+        title: Bitrise Test Plan Sharder
+        inputs:
+        - xcode_project: Pocket.xcodeproj
+        - target: Pocket (iOS)
+        - shards: '3'
+        - scheme: Pocket (iOS)
+        - test_plan: UITests.xctestplan
+        - debug_mode: 'true'
+        - test_path: ''
+        - file_type: ".swift"
     - script@1.1:
         title: Build for Testing
+        is_always_run: true
         inputs:
         - content: |
             set -euxo pipefail
@@ -234,7 +246,7 @@ workflows:
     before_run:
       - _setup
     after_run:
-      - _danger
+      #- _danger
   test_1:
     steps:
     - git::https://github.com/bitrise-steplib/bitrise-step-artifact-pull.git@main:
