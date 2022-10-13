@@ -197,63 +197,63 @@ workflows:
       - _upload_sentry
   configure_build:
     steps:
-      - file-downloader@1:
+    - file-downloader@1:
           inputs:
             - source: '$BITRISEIO_SECRETS_TEST_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install test secrets.xcconfig
-      - git::https://github.com/DamienBitrise/bitrise-test-plan-sharder.git@master:
-          title: Bitrise Test Plan Sharder
-          inputs:
-          - xcode_project: Pocket.xcodeproj
-          - target: Pocket
-          - shards: '3'
-          - scheme: Pocket (iOS)
-          - test_plan: UITests.xctestplan
-          - debug_mode: 'true'
-          - test_path: ''
-          - file_type: ".swift"
-      - script@1.1:
-          title: Build for Testing
-          inputs:
-          - content: |
-              set -euxo pipefail
-              echo "-- build-for-testing --"
-              mkdir DerivedData
-              xcodebuild "-project" "/Users/vagrant/git/Pocket.xcodeproj" "-scheme" "Pocket (iOS)" "CODE_SIGNING_ALLOWED=NO" -sdk "iphonesimulator" "-destination" "platform=iOS Simulator,name=iPhone 14,OS=latest" "COMPILER_INDEX_STORE_ENABLE=NO" "build-for-testing" "CODE_SIGN_IDENTITY=" "CODE_SIGNING_REQUIRED=NO" "CODE_SIGNING_ALLOWED=NO" -derivedDataPath "/Users/vagrant/git/DerivedData" | xcpretty | tee xcodebuild_test.log
-      - script@1.1:
-          title: Compress Derived Data
-          is_always_run: true
-          inputs:
-          - content: |
-              set -euxo pipefail
-              echo "-- compress --"
-              exec zip -0 -qr "${BITRISE_SOURCE_DIR}/DerivedData.zip" \
-              "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/Pocket.app" \
-              "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/Tests\ iOS-Runner" \
-              "$BITRISE_SOURCE_DIR/Pocket.xcodeproj" \
-              "$BITRISE_SOURCE_DIR/UITests.xctestplan" \
-              "$BITRISE_SOURCE_DIR/UITests-2.xctestplan" \
-              "$BITRISE_SOURCE_DIR/Tests/UnitTests.xctestplan" \
-              "$BITRISE_SOURCE_DIR/xcodebuild.log" \
-              "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/" \
-              "$BITRISE_SOURCE_DIR/PocketKit/" \
-              "$BITRISE_SOURCE_DIR/Tests\ iOS"
-      - deploy-to-bitrise-io@2:
-          inputs:
-          - deploy_path: "${BITRISE_SOURCE_DIR}/DerivedData.zip"
+    - git::https://github.com/DamienBitrise/bitrise-test-plan-sharder.git@master:
+        title: Bitrise Test Plan Sharder
+        inputs:
+        - xcode_project: Pocket.xcodeproj
+        - target: Pocket
+        - shards: '3'
+        - scheme: Pocket (iOS)
+        - test_plan: UITests.xctestplan
+        - debug_mode: 'true'
+        - test_path: ''
+        - file_type: ".swift"
+    - script@1.1:
+        title: Build for Testing
+        inputs:
+        - content: |
+            set -euxo pipefail
+            echo "-- build-for-testing --"
+            mkdir DerivedData
+            xcodebuild "-project" "/Users/vagrant/git/Pocket.xcodeproj" "-scheme" "Pocket (iOS)" "CODE_SIGNING_ALLOWED=NO" -sdk "iphonesimulator" "-destination" "platform=iOS Simulator,name=iPhone 14,OS=latest" "COMPILER_INDEX_STORE_ENABLE=NO" "build-for-testing" "CODE_SIGN_IDENTITY=" "CODE_SIGNING_REQUIRED=NO" "CODE_SIGNING_ALLOWED=NO" -derivedDataPath "/Users/vagrant/git/DerivedData" | xcpretty | tee xcodebuild_test.log
+    - script@1.1:
+        title: Compress Derived Data
+        is_always_run: true
+        inputs:
+        - content: |
+            set -euxo pipefail
+            echo "-- compress --"
+            exec zip -0 -qr "${BITRISE_SOURCE_DIR}/DerivedData.zip" \
+            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/Pocket.app" \
+            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/Tests\ iOS-Runner" \
+            "$BITRISE_SOURCE_DIR/Pocket.xcodeproj" \
+            "$BITRISE_SOURCE_DIR/UITests.xctestplan" \
+            "$BITRISE_SOURCE_DIR/UITests-2.xctestplan" \
+            "$BITRISE_SOURCE_DIR/Tests/UnitTests.xctestplan" \
+            "$BITRISE_SOURCE_DIR/xcodebuild.log" \
+            "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/" \
+            "$BITRISE_SOURCE_DIR/PocketKit/" \
+            "$BITRISE_SOURCE_DIR/Tests\ iOS"
+    - deploy-to-bitrise-io@2:
+        inputs:
+        - deploy_path: "${BITRISE_SOURCE_DIR}/DerivedData.zip"
     before_run:
       - _setup
     after_run:
       - _danger
   test_1:
     steps:
-      - git::https://github.com/bitrise-steplib/bitrise-step-artifact-pull.git@main:
+    - git::https://github.com/bitrise-steplib/bitrise-step-artifact-pull.git@main:
         title: Pull artifacts
         inputs:
         - verbose: true
         - artifact_sources: build.*
-      - script@1.1:
+    - script@1.1:
         title: Unzip
         inputs:
         - content: |
@@ -263,7 +263,7 @@ workflows:
             exec unzip "${BITRISE_ARTIFACT_PATHS}"
             echo "show dir"
             ls
-      - script@1.1:
+    - script@1.1:
         title: Test without Building
         inputs:
         - content: |
@@ -275,11 +275,11 @@ workflows:
             ls -la
             echo "-- test-without-building --"
             xcodebuild -project "Pocket.xcodeproj" -scheme "Pocket (iOS)" -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "UITests" -destination "platform=iOS Simulator,name=iPhone 14,OS=latest" test-without-building
-      - custom-test-results-export@0:
+    - custom-test-results-export@0:
         inputs:
         - search_pattern: "$BITRISE_SOURCE_DIR/xcodebuild.xcresult"
         - test_name: UITests
-      - deploy-to-bitrise-io@2: {}
+    - deploy-to-bitrise-io@2: {}
   test_2:
     steps:
       - file-downloader@1:
