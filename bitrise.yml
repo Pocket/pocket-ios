@@ -210,10 +210,10 @@ workflows:
             set -euxo pipefail
             echo "-- build-for-testing --"
             mkdir DerivedData
-            cp -r 'Tests iOS' DerivedData/TestsiOS
-            cp -r 'Tests iOS' DerivedData
+            mv 'Tests iOS' TestsiOS
+            ls
             ls DerivedData/
-            xcodebuild "-project" "/Users/vagrant/git/Pocket.xcodeproj" "-scheme" "Pocket (iOS)" "CODE_SIGNING_ALLOWED=NO" -sdk "iphonesimulator" "-destination" "platform=iOS Simulator,name=iPhone 14,OS=latest" "COMPILER_INDEX_STORE_ENABLE=NO" "build-for-testing" "CODE_SIGN_IDENTITY=" "CODE_SIGNING_REQUIRED=NO" "CODE_SIGNING_ALLOWED=NO" -derivedDataPath "/Users/vagrant/git/DerivedData" | xcpretty | tee xcodebuild_test.log
+            xcodebuild "-project" "/Users/vagrant/git/Pocket.xcodeproj" "-scheme" "Pocket (iOS)" "CODE_SIGNING_ALLOWED=NO" -sdk "iphonesimulator" "-destination" "platform=iOS Simulator,name=iPhone 14,OS=latest" "COMPILER_INDEX_STORE_ENABLE=NO" "test" "CODE_SIGN_IDENTITY=" "CODE_SIGNING_REQUIRED=NO" "CODE_SIGNING_ALLOWED=NO" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan UnitTests | xcpretty | tee xcodebuild_test.log
     - script@1.1:
         title: Compress Derived Data
         is_always_run: true
@@ -225,13 +225,12 @@ workflows:
             "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/Pocket.app" \
             "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/Tests\ iOS-Runner" \
             "$BITRISE_SOURCE_DIR/Pocket.xcodeproj" \
-            "$BITRISE_SOURCE_DIR/DerivedData/TestsiOS/" \
+            "$BITRISE_SOURCE_DIR/TestsiOS/" \
             "$BITRISE_SOURCE_DIR/UITests.xctestplan" \
             "$BITRISE_SOURCE_DIR/UITests-2.xctestplan" \
             "$BITRISE_SOURCE_DIR/UnitTests.xctestplan" \
             "$BITRISE_SOURCE_DIR/xcodebuild.log" \
             "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/" \
-            "$BITRISE_SOURCE_DIR/DerivedData/Tests\ iOS/" \
             "$BITRISE_SOURCE_DIR/PocketKit/" \
     - deploy-to-bitrise-io@2:
         inputs:
@@ -271,7 +270,7 @@ workflows:
             ls .
             ls ./Users/vagrant/git/
             ls ./Users/vagrant/git/DerivedData
-            cp -r ./Users/vagrant/git/DerivedData/TestsiOS/* .
+            cp -r ./Users/vagrant/git/TestsiOS/ .
             mv ./Users/vagrant/git/* .
             ls -la
             echo "-- test-without-building --"
