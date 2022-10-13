@@ -81,6 +81,23 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
         Textiles.initialize()
 
+        do {
+            let migration = LegacyUserMigration(
+                userDefaults: userDefaults,
+                encryptedStore: PocketEncryptedStore(),
+                appSession: appSession
+            )
+
+            let attempted = try migration.perform()
+            if attempted {
+                Crashlogger.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
+            } else {
+                Crashlogger.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
+            }
+        } catch {
+            Crashlogger.capture(error: error)
+        }
+
         return true
     }
 
