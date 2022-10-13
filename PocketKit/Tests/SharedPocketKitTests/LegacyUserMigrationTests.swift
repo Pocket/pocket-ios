@@ -44,31 +44,48 @@ class LegacyUserMigrationTests: XCTestCase {
     private var userDefaults: UserDefaults!
     private var encryptedStore: MockEncryptedStore!
     private var appSession: AppSession!
+<<<<<<< HEAD
     private var keychain: MockKeychain!
     private var groupID: String!
+=======
+>>>>>>> ba0ea9d4 (feat(migration): add legacy user migration and run on launch)
 
     private func subject(
         userDefaults: UserDefaults? = nil,
         encryptedStore: LegacyEncryptedStore? = nil,
+<<<<<<< HEAD
         appSession: AppSession? = nil,
         keychain: Keychain? = nil,
         groupID: String? = nil
+=======
+        appSession: AppSession? = nil
+>>>>>>> ba0ea9d4 (feat(migration): add legacy user migration and run on launch)
     ) -> LegacyUserMigration {
         return LegacyUserMigration(
             userDefaults: userDefaults ?? self.userDefaults,
             encryptedStore: encryptedStore ?? self.encryptedStore,
+<<<<<<< HEAD
             appSession: appSession ?? self.appSession,
             keychain: keychain ?? self.keychain,
             groupID: groupID ?? self.groupID
+=======
+            appSession: appSession ?? self.appSession
+>>>>>>> ba0ea9d4 (feat(migration): add legacy user migration and run on launch)
         )
     }
 
     override func setUp() {
+<<<<<<< HEAD
         groupID = "group.com.mozilla.test"
         userDefaults = UserDefaults(suiteName: "LegacyUserMigrationTests")
         encryptedStore = MockEncryptedStore()
         appSession = AppSession(keychain: BlankKeychain(), groupID: groupID)
         keychain = MockKeychain()
+=======
+        userDefaults = UserDefaults(suiteName: "LegacyUserMigrationTests")
+        encryptedStore = MockEncryptedStore()
+        appSession = AppSession(keychain: BlankKeychain())
+>>>>>>> ba0ea9d4 (feat(migration): add legacy user migration and run on launch)
     }
 
     override func tearDown() {
@@ -125,7 +142,11 @@ extension LegacyUserMigrationTests {
         XCTAssertNoThrow(try migration.perform())
     }
 
+<<<<<<< HEAD
     func test_perform_withMissingKeyInKeychainAndDefaults_throwsError() {
+=======
+    func test_perform_withMissingKey_throwsError() {
+>>>>>>> ba0ea9d4 (feat(migration): add legacy user migration and run on launch)
         let migration = subject()
 
         do {
@@ -137,6 +158,7 @@ extension LegacyUserMigrationTests {
             }
         }
     }
+<<<<<<< HEAD
 
     func test_perform_withKeyNotInKeychainAndInUserDefaults_doesNotThrowError() {
         userDefaults.set("password", forKey: LegacyUserMigration.decryptionKey)
@@ -152,6 +174,8 @@ extension LegacyUserMigrationTests {
             }
         }
     }
+=======
+>>>>>>> ba0ea9d4 (feat(migration): add legacy user migration and run on launch)
 }
 
 // MARK: - perform (guid)
