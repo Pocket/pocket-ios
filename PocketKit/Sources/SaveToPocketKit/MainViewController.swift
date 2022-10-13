@@ -17,6 +17,23 @@ class MainViewController: UIViewController {
         let appSession = services.appSession
         let child: UIViewController
 
+        do {
+            let migration = LegacyUserMigration(
+                userDefaults: services.userDefaults,
+                encryptedStore: PocketEncryptedStore(),
+                appSession: appSession
+            )
+
+            let attempted = try migration.perform()
+            if attempted {
+                Crashlogger.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
+            } else {
+                Crashlogger.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
+            }
+        } catch {
+            Crashlogger.capture(error: error)
+        }
+
         if appSession.currentSession == nil {
             Log.clearUser()
             child = LoggedOutViewController(
