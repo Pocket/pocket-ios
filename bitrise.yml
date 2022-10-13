@@ -210,7 +210,8 @@ workflows:
             set -euxo pipefail
             echo "-- build-for-testing --"
             mkdir DerivedData
-            cp -r Tests\ iOS DerivedData
+            cp -r 'Tests iOS' DerivedData
+            ls DerivedData/
             xcodebuild "-project" "/Users/vagrant/git/Pocket.xcodeproj" "-scheme" "Pocket (iOS)" "CODE_SIGNING_ALLOWED=NO" -sdk "iphonesimulator" "-destination" "platform=iOS Simulator,name=iPhone 14,OS=latest" "COMPILER_INDEX_STORE_ENABLE=NO" "build-for-testing" "CODE_SIGN_IDENTITY=" "CODE_SIGNING_REQUIRED=NO" "CODE_SIGNING_ALLOWED=NO" -derivedDataPath "/Users/vagrant/git/DerivedData" | xcpretty | tee xcodebuild_test.log
     - script@1.1:
         title: Compress Derived Data
@@ -267,6 +268,7 @@ workflows:
             set -ex
             ls .
             ls ./Users/vagrant/git/
+            ls ./Users/vagrant/git/DerivedData
             #cp -r ./Users/vagrant/git/Tests\ iOS/* .
             mv ./Users/vagrant/git/* .
             ls -la
