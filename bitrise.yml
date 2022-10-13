@@ -227,8 +227,8 @@ workflows:
             "$BITRISE_SOURCE_DIR/UnitTests.xctestplan" \
             "$BITRISE_SOURCE_DIR/xcodebuild.log" \
             "$BITRISE_SOURCE_DIR/DerivedData/Build/Products/Debug_Test-iphonesimulator/" \
+            "$BITRISE_SOURCE_DIR/Tests\ iOS/" \
             "$BITRISE_SOURCE_DIR/PocketKit/" \
-            "$BITRISE_SOURCE_DIR/Tests\ iOS/"
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "${BITRISE_SOURCE_DIR}/DerivedData.zip"
@@ -259,9 +259,10 @@ workflows:
         - content: |
             #!/usr/bin/env bash
             set -ex
-            #ls ./Users/vagrant/git/Tests\ iOS/
+            ls .
+            ls ./Users/vagrant/git/
             #cp -r ./Users/vagrant/git/Tests\ iOS/* .
-            #mv ./Users/vagrant/git/* .
+            mv ./Users/vagrant/git/* .
             ls -la
             echo "-- test-without-building --"
             xcodebuild -project "Pocket.xcodeproj" -scheme "Pocket (iOS)" -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "UITests" -destination "platform=iOS Simulator,name=iPhone 14,OS=latest" test-without-building
