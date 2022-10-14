@@ -27,7 +27,7 @@ class HomeRecommendationCellViewModel {
 
 extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
     var attributedTitle: NSAttributedString {
-        NSAttributedString(string: recommendation.item?.title ?? "", style: .title)
+        NSAttributedString(string: title ?? "", style: .title)
     }
 
     var attributedDomain: NSAttributedString {
@@ -39,12 +39,11 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
     }
 
     var title: String? {
-        recommendation.item?.title
+        recommendation.bestTitle
     }
 
     var imageURL: URL? {
-        let topImageURL = recommendation.item?.topImageURL
-        return imageCacheURL(for: topImageURL)
+        recommendation.bestImageURL
     }
 
     var saveButtonMode: RecommendationSaveButton.Mode {
@@ -52,7 +51,7 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
     }
 
     var domain: String? {
-        recommendation.item?.domainMetadata?.name ?? recommendation.item?.domain ?? recommendation.item?.bestURL?.host
+        recommendation.bestDomain
     }
 
     var timeToRead: String? {

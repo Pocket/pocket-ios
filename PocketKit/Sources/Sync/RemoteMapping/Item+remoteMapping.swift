@@ -112,6 +112,10 @@ extension Item {
         if let syndicatedArticle = summary.syndicatedArticle {
             self.syndicatedArticle = SyndicatedArticle(context: context)
             self.syndicatedArticle?.itemID = syndicatedArticle.itemId
+            self.syndicatedArticle?.publisherName = syndicatedArticle.publisher?.name
+            self.syndicatedArticle?.title = syndicatedArticle.title
+            self.syndicatedArticle?.excerpt = syndicatedArticle.excerpt
+            self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init)
         }
     }
 }

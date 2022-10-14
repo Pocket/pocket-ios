@@ -20,75 +20,6 @@ fragment TagParts on Tag {
   id
 }
 
-fragment ItemParts on Item {
-  remoteID: itemId
-  givenUrl
-  resolvedUrl
-  title
-  language
-  topImageUrl
-  timeToRead
-  domain
-  datePublished
-  isArticle
-  hasImage
-  hasVideo
-  authors {
-    id
-    name
-    url
-  }
-  marticle {
-    ...MarticleTextParts
-    ...ImageParts
-    ...MarticleDividerParts
-    ...MarticleTableParts
-    ...MarticleHeadingParts
-    ...MarticleCodeBlockParts
-    ...VideoParts
-    ...MarticleBulletedListParts
-    ...MarticleNumberedListParts
-    ...MarticleBlockquoteParts
-  }
-  excerpt
-  domainMetadata {
-    ...DomainMetadataParts
-  }
-  images {
-    height
-    width
-    src
-    imageId
-  }
-  syndicatedArticle {
-    itemId
-  }
-}
-
-fragment DomainMetadataParts on DomainMetadata {
-  name
-  logo
-}
-
-fragment PendingItemParts on PendingItem {
-  url
-  status
-}
-
-fragment SlateParts on Slate {
-  id
-  requestId
-  experimentId
-  displayName
-  description
-  recommendations {
-    id
-    item {
-      ...ItemSummary
-    }
-  }
-}
-
 query FetchSaves($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
   userByToken(token: $token) {
     savedItems(pagination: $pagination, filter: $savedItemsFilter) {
@@ -155,23 +86,6 @@ mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
 mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
   updateSavedItemRemoveTags(savedItemId: $savedItemId) {
     ...SavedItemParts
-  }
-}
-
-query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
-  getSlateLineup(slateLineupId: $lineupID, recommendationCount: $maxRecommendations) {
-    id
-    requestId
-    experimentId
-    slates {
-      ...SlateParts
-    }
-  }
-}
-
-query GetSlate($slateID: String!, $recommendationCount: Int!) {
-  getSlate(slateId: $slateID, recommendationCount: $recommendationCount) {
-    ...SlateParts
   }
 }
 

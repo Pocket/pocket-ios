@@ -1,0 +1,39 @@
+fragment SlateParts on Slate {
+  id
+  requestId
+  experimentId
+  displayName
+  description
+  recommendations {
+    id
+    item {
+      ...ItemSummary
+    }
+    curatedInfo {
+      ...CuratedInfoParts
+    }
+  }
+}
+
+fragment CuratedInfoParts on CuratedInfo {
+  excerpt
+  imageSrc
+  title
+}
+
+query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
+  getSlateLineup(slateLineupId: $lineupID, recommendationCount: $maxRecommendations) {
+    id
+    requestId
+    experimentId
+    slates {
+      ...SlateParts
+    }
+  }
+}
+
+query GetSlate($slateID: String!, $recommendationCount: Int!) {
+  getSlate(slateId: $slateID, recommendationCount: $recommendationCount) {
+    ...SlateParts
+  }
+}

@@ -1,0 +1,94 @@
+fragment ItemParts on Item {
+  remoteID: itemId
+  givenUrl
+  resolvedUrl
+  title
+  language
+  topImageUrl
+  timeToRead
+  domain
+  datePublished
+  isArticle
+  hasImage
+  hasVideo
+  authors {
+    id
+    name
+    url
+  }
+  marticle {
+    ...MarticleTextParts
+    ...ImageParts
+    ...MarticleDividerParts
+    ...MarticleTableParts
+    ...MarticleHeadingParts
+    ...MarticleCodeBlockParts
+    ...VideoParts
+    ...MarticleBulletedListParts
+    ...MarticleNumberedListParts
+    ...MarticleBlockquoteParts
+  }
+  excerpt
+  domainMetadata {
+    ...DomainMetadataParts
+  }
+  images {
+    height
+    width
+    src
+    imageId
+  }
+  syndicatedArticle {
+    itemId
+  }
+}
+
+fragment DomainMetadataParts on DomainMetadata {
+  name
+  logo
+}
+
+fragment PendingItemParts on PendingItem {
+  url
+  status
+}
+
+fragment ItemSummary on Item {
+  remoteID: itemId
+  givenUrl
+  resolvedUrl
+  title
+  language
+  topImageUrl
+  topImageUrl
+  timeToRead
+  domain
+  datePublished
+  isArticle
+  hasImage
+  hasVideo
+  authors {
+    id
+    name
+    url
+  }
+  excerpt
+  domainMetadata {
+    ...DomainMetadataParts
+  }
+  images {
+    height
+    width
+    src
+    imageId
+  }
+  syndicatedArticle {
+    itemId
+    mainImage
+    title
+    excerpt
+    publisher {
+      name
+    }
+  }
+}

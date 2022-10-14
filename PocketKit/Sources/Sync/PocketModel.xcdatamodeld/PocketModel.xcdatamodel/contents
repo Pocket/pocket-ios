@@ -43,7 +43,10 @@
         <attribute name="syncTaskContainer" attributeType="Transformable" valueTransformerName="SyncTaskTransformer" customClassName="SyncTaskContainer"/>
     </entity>
     <entity name="Recommendation" representedClassName="Recommendation" syncable="YES" codeGenerationType="class">
+        <attribute name="excerpt" optional="YES" attributeType="String"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="recommendation" inverseEntity="Item"/>
         <relationship name="slate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slate" inverseName="recommendations" inverseEntity="Slate"/>
     </entity>
@@ -80,7 +83,11 @@
         <relationship name="slates" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Slate" inverseName="slateLineup" inverseEntity="Slate"/>
     </entity>
     <entity name="SyndicatedArticle" representedClassName="SyndicatedArticle" syncable="YES" codeGenerationType="class">
+        <attribute name="excerpt" optional="YES" attributeType="String"/>
+        <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="itemID" optional="YES" attributeType="String"/>
+        <attribute name="publisherName" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="syndicatedArticle" inverseEntity="Item"/>
     </entity>
     <entity name="Tag" representedClassName="Tag" syncable="YES" codeGenerationType="class">

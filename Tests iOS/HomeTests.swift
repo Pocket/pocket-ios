@@ -220,7 +220,7 @@ class HomeTests: XCTestCase {
             .homeView.recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
-        app.homeView.recommendationCell("Slate 2, Recommendation 2")
+        app.homeView.recommendationCell("Syndicated Article Rec, 1")
             .wait().tap()
 
         app.readerView.cell(containing: "Jacob and David").wait()
