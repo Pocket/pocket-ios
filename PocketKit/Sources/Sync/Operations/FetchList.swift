@@ -80,12 +80,12 @@ class FetchList: SyncOperation {
         var pagination = PaginationInput()
 
         while shouldFetchNextPage {
-            let query = TagsQuery(pagination: pagination)
+            let query = TagsQuery(pagination: .init(pagination))
             let result = try await apollo.fetch(query: query)
             try await updateLocalTags(result)
 
             if let pageInfo = result.data?.user?.tags?.pageInfo {
-                pagination.after = pageInfo.endCursor
+                pagination.after = pageInfo.endCursor ?? .none
                 shouldFetchNextPage = pageInfo.hasNextPage
             } else {
                 shouldFetchNextPage = false
@@ -94,16 +94,18 @@ class FetchList: SyncOperation {
     }
 
     private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
-        let query = FetchSavesQuery(token: token)
-        query.pagination = PaginationInput(
-            after: pagination.cursor,
-            first: GraphQLNullable<Int>(integerLiteral: pagination.maxItems)
+        let query = FetchSavesQuery(
+            token: token,
+            pagination: PaginationInput(
+                after: pagination.cursor ?? .none,
+                first: pagination.maxItems
+            )
         )
 
         if let updatedSince = lastRefresh.lastRefresh {
-            query.savedItemsFilter = SavedItemsFilter(updatedSince: updatedSince)
+            query.savedItemsFilter = SavedItemsFilter(updatedSince: .init(integerLiteral: updatedSince))
         } else {
-            query.savedItemsFilter = SavedItemsFilter(status: .unread)
+            query.savedItemsFilter = SavedItemsFilter(status: .init(.unread))
         }
 
         return try await apollo.fetch(query: query)

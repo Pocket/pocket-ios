@@ -121,8 +121,10 @@ Config/secrets.xcconfig
 **/*.otf
 **/.swiftpm
 **/.tmp
-schema.graphqls
-introspection_response.json
-**/*.graphql.swift
-PocketKit/Sources/PocketGraph/*
-!PocketKit/Sources/PocketGraph/user-defined-operations
+
+# For now, commenting out generated types, until Apollo can generate this at build time in xcode
+#schema.graphqls
+#introspection_response.json
+#**/*.graphql.swift
+#PocketKit/Sources/PocketGraph/*
+#!PocketKit/Sources/PocketGraph/user-defined-operations
