@@ -45,7 +45,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: false, isArchived: false))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Favorite", "Add Tags", "Archive", "Delete", "Share"]
+                ["Display Settings", "Favorite", "Add Tags", "Delete", "Share"]
             )
         }
 
@@ -54,7 +54,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: true, isArchived: true))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Add Tags", "Move to My List", "Delete", "Share"]
+                ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
             )
         }
     }
@@ -66,13 +66,13 @@ class SavedItemViewModelTests: XCTestCase {
         item.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Add Tags", "Move to My List", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
         )
 
         item.isArchived = false
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Add Tags", "Archive", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
         )
     }
 
@@ -203,45 +203,6 @@ class SavedItemViewModelTests: XCTestCase {
         viewModel.presentedAlert?.actions.first { $0.title == "Yes" }?.invoke()
 
         wait(for: [expectDelete, expectDeleteEvent], timeout: 1)
-    }
-
-    func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
-        let item = space.buildSavedItem(isArchived: false)
-        let viewModel = subject(item: item)
-
-        let expectArchive = expectation(description: "expect source.archive(_:)")
-        source.stubArchiveSavedItem { archivedItem in
-            defer { expectArchive.fulfill() }
-            XCTAssertTrue(archivedItem === item)
-        }
-
-        let expectArchiveEvent = expectation(description: "expect archive event")
-        viewModel.events.sink { event in
-            guard case .archive = event else {
-                XCTFail("Received unexpected event: \(event)")
-                return
-            }
-
-            expectArchiveEvent.fulfill()
-        }.store(in: &subscriptions)
-
-        viewModel.invokeAction(title: "Archive")
-        wait(for: [expectArchive, expectArchiveEvent], timeout: 1)
-    }
-
-    func test_reAdd_sendsRequestToSource_AndRefreshes() {
-        let item = space.buildSavedItem(isArchived: true)
-        let expectUnarchive = expectation(description: "expect source.unarchive(_:)")
-
-        source.stubUnarchiveSavedItem { unarchivedItem in
-            defer { expectUnarchive.fulfill() }
-            XCTAssertTrue(unarchivedItem === item)
-        }
-
-        let viewModel = subject(item: item)
-        viewModel.invokeAction(title: "Move to My List")
-
-        wait(for: [expectUnarchive], timeout: 1)
     }
 
     func test_share_updatesSharedActivity() {
