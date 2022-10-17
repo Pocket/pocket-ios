@@ -15,7 +15,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
         self.retrieveAction = retrieveAction
         self.saveAction = saveAction
 
-        tags = item?.tags?.compactMap { $0 as? Tag }.map { $0.name ?? "" } ?? []
+        tags = item?.tags?.compactMap { ($0 as? Tag)?.name } ?? []
     }
 
     func addTags() {

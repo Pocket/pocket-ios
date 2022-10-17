@@ -48,7 +48,7 @@ class SavedItemViewModel {
             case .newItem(let savedItem):
                 self.savedItem = savedItem
                 infoViewModel = .newItem
-            case .taggedItem(_):
+            case .taggedItem:
                 break
             }
 
