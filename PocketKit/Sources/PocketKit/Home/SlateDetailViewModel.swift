@@ -19,7 +19,7 @@ class SlateDetailViewModel {
 
     @Published
     var selectedRecommendationToReport: Recommendation?
-    
+
     @Published
     var sharedActivity: PocketActivity?
 

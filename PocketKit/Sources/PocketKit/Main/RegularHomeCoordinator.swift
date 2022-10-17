@@ -104,7 +104,7 @@ extension RegularHomeCoordinator {
         slate.$selectedRecommendationToReport.sink { [weak self] recommendation in
             self?.report(recommendation)
         }.store(in: &slateDetailSubscriptions)
-        
+
         slate.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
         }.store(in: &subscriptions)
