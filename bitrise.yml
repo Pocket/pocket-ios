@@ -232,8 +232,8 @@ workflows:
             "$BITRISE_SOURCE_DIR/Tests iOS/" \
             "$BITRISE_SOURCE_DIR/PushNotificationServiceExtension/" \
             "$BITRISE_SOURCE_DIR/PushNotificationStoryExtension/" \
-            "$BITRISE_SOURCE_DIR/SaveToPocket/"
-            "$BITRISE_SOURCE_DIR/Assets.xcassets/"
+            "$BITRISE_SOURCE_DIR/SaveToPocket/" \
+            "$BITRISE_SOURCE_DIR/Assets.xcassets/" \
             "$BITRISE_SOURCE_DIR/DerivedData/"
     - deploy-to-bitrise-io@2:
         inputs:
