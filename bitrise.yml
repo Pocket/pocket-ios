@@ -233,8 +233,7 @@ workflows:
             "$BITRISE_SOURCE_DIR/PushNotificationServiceExtension/" \
             "$BITRISE_SOURCE_DIR/PushNotificationStoryExtension/" \
             "$BITRISE_SOURCE_DIR/SaveToPocket/" \
-            "$BITRISE_SOURCE_DIR/Assets.xcassets/" \
-            "$BITRISE_SOURCE_DIR/DerivedData/"
+            "$BITRISE_SOURCE_DIR/Assets.xcassets/"
     - deploy-to-bitrise-io@2:
         inputs:
         - deploy_path: "${BITRISE_SOURCE_DIR}/DerivedData.zip"
