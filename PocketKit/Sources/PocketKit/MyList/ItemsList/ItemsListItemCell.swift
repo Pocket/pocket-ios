@@ -307,7 +307,7 @@ private extension UIConfigurationStateCustomKey {
 
 private extension UICellConfigurationState {
     var model: ItemsListItemCell.Model? {
-        set { self[.model] = newValue }
         get { return self[.model] as? ItemsListItemCell.Model }
+        set { self[.model] = newValue }
     }
 }
