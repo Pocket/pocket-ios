@@ -249,10 +249,30 @@ workflows:
         - verbose: true
         - artifact_sources: build.*
     - file-downloader@1:
-          inputs:
-            - source: '$BITRISEIO_SECRETS_TEST_URL'
-            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
-          title: Install test secrets.xcconfig
+        inputs:
+        - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
+        - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+        title: Install production secrets.xcconfig
+    - resource-archive@2:
+        inputs:
+        - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
+        - archive_url: '$BITRISEIO_BASE_FONTS_URL'
+        title: Install fonts
+    - script@1:
+        title: Download latest schema
+        inputs:
+        - content: |
+            #!/usr/bin/env bash
+            # fail if any commands fails
+            set -e
+            cd PocketKit
+            swift run ApolloCodegen download-schema
+            swift run ApolloCodegen generate
+    - file-downloader@1:
+        inputs:
+        - source: '$BITRISEIO_SECRETS_TEST_URL'
+        - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+        title: Install test secrets.xcconfig
     - script@1.1:
         title: Unzip
         inputs:
@@ -272,7 +292,6 @@ workflows:
             ls .
             ls ./Users/vagrant/git/
             ls ./Users/vagrant/git/DerivedData
-            #cp -r ./Users/vagrant/git/Tests\ iOS/ .
             mv ./Users/vagrant/git/* .
             ls -la
             echo "-- test-without-building --"
