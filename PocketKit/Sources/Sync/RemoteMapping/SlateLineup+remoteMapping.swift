@@ -44,6 +44,9 @@ extension Recommendation {
 
     func update(from remote: RemoteRecommendation, in space: Space) {
         remoteID = remote.id
+        title = remote.curatedInfo?.title
+        excerpt = remote.curatedInfo?.excerpt
+        imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init)
 
         let recommendationItem = try? space.fetchOrCreateItem(byRemoteID: remote.item.remoteId)
         recommendationItem?.update(from: remote.item.fragments.itemSummary)

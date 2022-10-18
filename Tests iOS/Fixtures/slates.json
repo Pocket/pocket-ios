@@ -5,18 +5,17 @@
             "requestId": "slate-lineup-1-request",
             "experimentId": "slate-lineup-1-experiment",
             "__typename": "[some-type-name]",
-            "slates": [
-                {
+            "slates": [{
                     "__typename": "[some-type-name]",
                     "id": "slate-1",
                     "requestId": "slate-1-request",
                     "experimentId": "slate-1-experiment",
                     "displayName": "Slate 1",
                     "description": "The description of slate 1",
-                    "recommendations": [
-                        {
+                    "recommendations": [{
                             "__typename": "[some-type-name]",
                             "id": "slate-1-rec-1",
+                            "curatedInfo": null,
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "recommended-item-1",
@@ -26,8 +25,7 @@
                                 "language": "en",
                                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                                 "timeToRead": 1,
-                                "authors": [
-                                    {
+                                "authors": [{
                                         "__typename": "Author",
                                         "id": "author-1",
                                         "name": "Jacob",
@@ -58,6 +56,7 @@
                         {
                             "__typename": "[some-type-name]",
                             "id": "slate-1-rec-2",
+                            "curatedInfo": null,
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "recommended-item-2",
@@ -83,7 +82,7 @@
                                 "syndicatedArticle": null
                             }
                         }
-                    ],
+                    ]
                 },
                 {
                     "__typename": "[some-type-name]",
@@ -92,10 +91,10 @@
                     "experimentId": "slate-2-experiment",
                     "displayName": "Slate 2",
                     "description": "The description of slate 2",
-                    "recommendations": [
-                        {
+                    "recommendations": [{
                             "__typename": "[some-type-name]",
                             "id": "slate-2-rec-1",
+                            "curatedInfo": null,
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "recommended-item-3",
@@ -124,6 +123,7 @@
                         {
                             "__typename": "[some-type-name]",
                             "id": "slate-2-rec-2",
+                            "curatedInfo": null,
                             "item": {
                                 "remoteID": "recommended-item-4",
                                 "__typename": "[some-type-name]",
@@ -147,12 +147,16 @@
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": {
-                                    "__typename": "type-name-here",
-                                    "itemId": "syndicated-item-id"
+                                    "__typename": "SyndicatedArticle",
+                                    "itemId": "syndicated-item-id",
+                                    "title": "Syndicated Article Rec, 1",
+                                    "excerpt": "A better syndicated excerpt",
+                                    "mainImage": "http://example.com/slate-2-rec-2/top-image.png",
+                                    "publisher": null
                                 }
                             }
                         }
-                    ],
+                    ]
                 }
             ]
         }

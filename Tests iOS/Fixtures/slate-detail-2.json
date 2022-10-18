@@ -11,6 +11,7 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "slate-2-rec-1",
+                    "curatedInfo": null,
                     "item": {
                         "__typename": "[some-type-name]",
                         "remoteID": "recommended-item-1",

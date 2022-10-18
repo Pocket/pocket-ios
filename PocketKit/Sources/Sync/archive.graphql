@@ -40,35 +40,3 @@ fragment SavedItemSummary on SavedItem {
   }
 }
 
-fragment ItemSummary on Item {
-  remoteID: itemId
-  givenUrl
-  resolvedUrl
-  title
-  language
-  topImageUrl
-  timeToRead
-  domain
-  datePublished
-  isArticle
-  hasImage
-  hasVideo
-  authors {
-    id
-    name
-    url
-  }
-  excerpt
-  domainMetadata {
-    ...DomainMetadataParts
-  }
-  images {
-    height
-    width
-    src
-    imageId
-  }
-  syndicatedArticle {
-    itemId
-  }
-}

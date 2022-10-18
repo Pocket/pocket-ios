@@ -17,6 +17,7 @@
                         {
                             "__typename": "[some-type-name]",
                             "id": "slate-1-rec-1",
+                            "curatedInfo": null,
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "item-1",
@@ -54,6 +55,7 @@
                         {
                             "__typename": "[some-type-name]",
                             "id": "slate-1-rec-2",
+                            "curatedInfo": null,
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "item-2",
@@ -93,6 +95,7 @@
                         {
                             "__typename": "[some-type-name]",
                             "id": "slate-2-rec-1",
+                            "curatedInfo": null,
                             "item": {
                                 "__typename": "[some-type-name]",
                                 "remoteID": "item-3",

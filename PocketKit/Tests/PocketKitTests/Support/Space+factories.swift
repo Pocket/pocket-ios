@@ -105,8 +105,11 @@ extension Space {
         title: String = "Item 1",
         givenURL: URL? = URL(string: "https://example.com/items/item-1"),
         resolvedURL: URL? = nil,
+        topImageURL: URL? = nil,
+        excerpt: String? = nil,
         isArticle: Bool = true,
-        article: Article? = nil
+        article: Article? = nil,
+        syndicatedArticle: SyndicatedArticle? = nil
     ) -> Item {
         context.performAndWait {
             let item: Item = new()
@@ -116,7 +119,9 @@ extension Space {
             item.resolvedURL = resolvedURL
             item.isArticle = isArticle
             item.article = article
-
+            item.topImageURL = topImageURL
+            item.excerpt = excerpt
+            item.syndicatedArticle = syndicatedArticle
             return item
         }
     }
@@ -233,14 +238,40 @@ extension Space {
     @discardableResult
     func buildRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil
+        item: Item? = nil,
+        imageURL: URL? = nil,
+        title: String? = nil,
+        excerpt: String?  = nil
     ) -> Recommendation {
         context.performAndWait {
             let recommendation: Recommendation = new()
             recommendation.remoteID = remoteID
             recommendation.item = item
+            recommendation.title = title
+            recommendation.excerpt = excerpt
+            recommendation.imageURL = imageURL
 
             return recommendation
+        }
+    }
+}
+
+// MARK: - Syndication
+extension Space {
+    @discardableResult
+    func buildSyndicatedArticle(
+        title: String = "Syndicated Article 1",
+        imageURL: URL? = nil,
+        excerpt: String? = nil,
+        publisherName: String? = nil
+    ) -> SyndicatedArticle {
+        context.performAndWait {
+            let syndicatedArticle: SyndicatedArticle = new()
+            syndicatedArticle.title = title
+            syndicatedArticle.imageURL = imageURL
+            syndicatedArticle.excerpt  = excerpt
+            syndicatedArticle.publisherName = publisherName
+            return syndicatedArticle
         }
     }
 }

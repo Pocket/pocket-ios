@@ -44,7 +44,11 @@
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": {
                                     "__typename": "[type-name-here]",
-                                    "itemId": "archived-syndicated-article-id"
+                                    "itemId": "archived-syndicated-article-id",
+                                    "mainImage": null,
+                                    "title": "Archived Item 2",
+                                    "excerpt": null,
+                                    "publisher": null
                                 }
                             }
                         }

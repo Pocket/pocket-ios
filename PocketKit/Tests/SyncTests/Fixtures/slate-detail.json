@@ -11,6 +11,7 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "1",
+                    "curatedInfo": null,
                     "item": {
                         "__typename": "[some-type-name]",
                         "remoteID": "item-1",
@@ -40,6 +41,7 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "2",
+                    "curatedInfo": null,
                     "item": {
                         "__typename": "[some-type-name]",
                         "remoteID": "item-2",
@@ -69,6 +71,7 @@
                 {
                     "__typename": "[some-type-name]",
                     "id": "3",
+                    "curatedInfo": null,
                     "item": {
                         "__typename": "[some-type-name]",
                         "remoteID": "item-3",
