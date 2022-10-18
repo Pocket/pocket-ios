@@ -44,11 +44,11 @@ class MarkdownComponentCell: UICollectionViewCell, ArticleComponentTextCell, Art
     }
 
     var attributedContent: NSAttributedString? {
-        set {
-            textView.attributedText = newValue
-        }
         get {
             textView.attributedText
+        }
+        set {
+            textView.attributedText = newValue
         }
     }
 
