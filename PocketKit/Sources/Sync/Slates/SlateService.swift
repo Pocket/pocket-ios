@@ -22,15 +22,11 @@ class APISlateService: SlateService {
     func fetchSlateLineup(_ identifier: String) async throws {
         let query = GetSlateLineupQuery(lineupID: identifier, maxRecommendations: 5)
 
-        do {
-            guard let remote =  try await apollo.fetch(query: query).data?.getSlateLineup else { return }
-            try await handle(remote: remote)
-
-        } catch {
-            print("error \(error)")
-            throw error
+        guard let remote = try await apollo.fetch(query: query).data?.getSlateLineup else {
+            return
         }
 
+        try await handle(remote: remote)
     }
 
     func fetchSlate(_ slateID: String) async throws {
