@@ -70,7 +70,7 @@ public class AuthorizationClient {
                     continuation.resume(throwing: AuthorizationClient.Error.other(error))
                 } else if let url = url {
                     guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                          let guid = components.queryItems?.first(where: {$0.name == "guid" })?.value,
+                          let guid = components.queryItems?.first(where: { $0.name == "guid" })?.value,
                           let token = components.queryItems?.first(where: { $0.name == "access_token" })?.value,
                           let userID = components.queryItems?.first(where: { $0.name == "id" })?.value else {
                               continuation.resume(throwing: AuthorizationClient.Error.invalidRedirect)

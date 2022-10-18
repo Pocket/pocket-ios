@@ -66,7 +66,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var authors: [ReadableAuthor]? {
-        recommendation.item?.authors?.compactMap { $0 as? Author}
+        recommendation.item?.authors?.compactMap { $0 as? Author }
     }
 
     var domain: String? {

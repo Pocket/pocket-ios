@@ -322,7 +322,7 @@ extension PocketSaveServiceTests {
         wait(for: [performMutationCalled, notificationReceived], timeout: 1)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
-        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name}, ["tag 1", "tag 2"] )
+        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"] )
         XCTAssertEqual(unresolved[0].hasChanges, false)
     }
 
@@ -378,7 +378,7 @@ extension PocketSaveServiceTests {
         wait(for: [performMutationCalled, notificationReceived], timeout: 1)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
-        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name}, [] )
+        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name }, [] )
         XCTAssertEqual(unresolved[0].hasChanges, false)
     }
 
