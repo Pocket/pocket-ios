@@ -258,16 +258,6 @@ workflows:
         - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
         - archive_url: '$BITRISEIO_BASE_FONTS_URL'
         title: Install fonts
-    - script@1:
-        title: Download latest schema
-        inputs:
-        - content: |
-            #!/usr/bin/env bash
-            # fail if any commands fails
-            set -e
-            cd PocketKit
-            swift run ApolloCodegen download-schema
-            swift run ApolloCodegen generate
     - file-downloader@1:
         inputs:
         - source: '$BITRISEIO_SECRETS_TEST_URL'
@@ -294,6 +284,11 @@ workflows:
             ls ./Users/vagrant/git/DerivedData
             mv ./Users/vagrant/git/* .
             ls -la
+            cd PocketKit
+            swift run ApolloCodegen download-schema
+            swift run ApolloCodegen generate
+
+            cd ..
             echo "-- test-without-building --"
             xcodebuild -project "Pocket.xcodeproj" -scheme "Pocket (iOS)" -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "UITests" -destination "platform=iOS Simulator,name=iPhone 14,OS=latest" test-without-building
     - custom-test-results-export@0:
