@@ -7,11 +7,9 @@ public class DeviceUtilities {
         case idfvUnavailable
 
         var errorDescription: String? {
-            get {
-                switch self {
-                case .idfvUnavailable:
-                    return "IDFV Identifier is currently unavailable"
-                }
+            switch self {
+            case .idfvUnavailable:
+                return "IDFV Identifier is currently unavailable"
             }
         }
     }
