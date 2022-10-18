@@ -47,7 +47,10 @@ class ImageManagerTests: XCTestCase {
                 image: UIImage(),
                 cacheType: .memory,
                 source: .network(URL(string: "https://getpocket.com/example-image.png")!),
-                originalSource: .network(URL(string: "https://getpocket.com/example-image.png")!)
+                originalSource: .network(URL(string: "https://getpocket.com/example-image.png")!),
+                data: {
+                    return nil
+                }
             )
             completion?(.success(result))
             return nil

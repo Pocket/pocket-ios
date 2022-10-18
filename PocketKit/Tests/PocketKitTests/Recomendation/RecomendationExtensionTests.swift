@@ -19,7 +19,6 @@ class RecomendationExtensionTests: XCTestCase {
         try space.clear()
     }
 
-
     // MARK: - Tests
 
     func test_whenOnlyItemIsPresent_rendersItemFirst() throws {
@@ -70,7 +69,6 @@ extension RecomendationExtensionTests {
             syndicatedArticle: syndicatedArticle
         )
     }
-
 
     func subject(item: Item? = nil, syndicatedArticle: SyndicatedArticle? = nil, imageURL: URL? = nil, title: String? = nil, excerpt: String? = nil) -> Recommendation {
         let item = item ?? buildItem()

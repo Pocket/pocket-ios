@@ -13,7 +13,6 @@ let package = Package(
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
         .library(name: "Analytics", targets: ["Analytics"]),
-        .library(name: "DangerDeps", type: .dynamic, targets: ["DangerDependencies"]), // dev
         .executable(name: "ApolloCodegen", targets: ["ApolloCodegen"]),
     ],
     dependencies: [
@@ -25,9 +24,7 @@ let package = Package(
         .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", from: "3.4.3"),
         .package(name: "Down", url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
         .package(name: "YouTubePlayerKit", url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5")),
-        .package(name: "BrazeKit", url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMinor(from: "5.3.0")),
-        .package(name: "Danger", url: "https://github.com/danger/swift.git", from: "3.12.3"), // dev
-        .package(name: "DangerSwiftCoverage", url: "https://github.com/f-meloni/danger-swift-coverage", .upToNextMinor(from: "1.2.1")) // dev
+        .package(name: "BrazeKit", url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMinor(from: "5.3.0"))
     ],
     targets: [
         .target(
@@ -46,8 +43,7 @@ let package = Package(
         ),
         .testTarget(
             name: "PocketKitTests",
-            dependencies: ["PocketKit", "SharedPocketKit"],
-            resources: [.copy("Fixtures")]
+            dependencies: ["PocketKit", "SharedPocketKit"]
         ),
 
         .target(
@@ -82,9 +78,11 @@ let package = Package(
             name: "Sync",
             dependencies: ["Apollo", "Sentry"],
             exclude: [
+                "archive.graphql",
+                "home.graphql",
+                "itemFragments.graphql",
                 "list.graphql",
                 "marticle.graphql",
-                "archive.graphql",
                 "schema.graphqls",
                 "introspection_response.json"
             ],
@@ -111,7 +109,6 @@ let package = Package(
                 .product(name: "ApolloCodegenLib", package: "Apollo"),
                 .product(name: "ArgumentParser", package: "swift-argument-parser")
             ]
-        ),
-        .target(name: "DangerDependencies", dependencies: ["Danger", "DangerSwiftCoverage"]), // dev
+        )
     ]
 )

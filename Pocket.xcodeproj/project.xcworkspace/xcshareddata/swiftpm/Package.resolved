@@ -15,17 +15,8 @@
         "repositoryURL": "https://github.com/braze-inc/braze-swift-sdk",
         "state": {
           "branch": null,
-          "revision": "baf59bc6c1c06d3f909a40991c5ac59a6fc7c8cd",
-          "version": "5.3.0"
-        }
-      },
-      {
-        "package": "DangerSwiftCoverage",
-        "repositoryURL": "https://github.com/f-meloni/danger-swift-coverage",
-        "state": {
-          "branch": null,
-          "revision": "6a21a6e595e2b13443428942ce128b3ba6b827ee",
-          "version": "1.2.1"
+          "revision": "bf3c855aa4780b7d2b0157b8a15d78c6a91bd07a",
+          "version": "5.3.2"
         }
       },
       {
@@ -51,17 +42,8 @@
         "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
         "state": {
           "branch": null,
-          "revision": "be1a1acb283a702b99b630f586877ba02234b4cb",
-          "version": "7.3.2"
-        }
-      },
-      {
-        "package": "Logger",
-        "repositoryURL": "https://github.com/shibapm/Logger",
-        "state": {
-          "branch": null,
-          "revision": "53c3ecca5abe8cf46697e33901ee774236d94cce",
-          "version": "0.2.3"
+          "revision": "017f94ccfdacabb1ae7f45b75b4217b24c06e6ac",
+          "version": "7.4.0"
         }
       },
       {
@@ -69,26 +51,8 @@
         "repositoryURL": "https://github.com/airbnb/lottie-ios.git",
         "state": {
           "branch": null,
-          "revision": "314537ec697719fa33a9d48210f4d06a463286d3",
-          "version": "3.4.3"
-        }
-      },
-      {
-        "package": "OctoKit",
-        "repositoryURL": "https://github.com/nerdishbynature/octokit.swift",
-        "state": {
-          "branch": null,
-          "revision": "9521cdff919053868ab13cd08a228f7bc1bde2a9",
-          "version": "0.11.0"
-        }
-      },
-      {
-        "package": "RequestKit",
-        "repositoryURL": "https://github.com/nerdishbynature/RequestKit.git",
-        "state": {
-          "branch": null,
-          "revision": "fd5e9e99aada7432170366c9e95967011ce13bad",
-          "version": "2.4.0"
+          "revision": "b4bd0604ded9574807f41b4004b57dd1226a30a4",
+          "version": "3.5.0"
         }
       },
       {
@@ -105,8 +69,8 @@
         "repositoryURL": "https://github.com/getsentry/sentry-cocoa.git",
         "state": {
           "branch": null,
-          "revision": "7acc8479b2c773dddacc7c5985e7ce9e4344f5f0",
-          "version": "7.25.0"
+          "revision": "dc00a3673e3d313e41326bd53802f757defd0eee",
+          "version": "7.28.0"
         }
       },
       {
@@ -128,15 +92,6 @@
         }
       },
       {
-        "package": "danger-swift",
-        "repositoryURL": "https://github.com/danger/swift.git",
-        "state": {
-          "branch": null,
-          "revision": "0d62144a8bdfdb087c476ac3e88e96491c158a7b",
-          "version": "3.14.0"
-        }
-      },
-      {
         "package": "swift-argument-parser",
         "repositoryURL": "https://github.com/apple/swift-argument-parser.git",
         "state": {
@@ -155,12 +110,21 @@
         }
       },
       {
+        "package": "swift-collections",
+        "repositoryURL": "https://github.com/apple/swift-collections.git",
+        "state": {
+          "branch": null,
+          "revision": "f504716c27d2e5d4144fa4794b12129301d17729",
+          "version": "1.0.3"
+        }
+      },
+      {
         "package": "swift-nio",
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "b4e0a274f7f34210e97e2f2c50ab02a10b549250",
-          "version": "2.41.1"
+          "revision": "bc4c55b9f9584f09eb971d67d956e28d08caa9d0",
+          "version": "2.43.1"
         }
       },
       {
@@ -173,21 +137,12 @@
         }
       },
       {
-        "package": "Version",
-        "repositoryURL": "https://github.com/mxcl/Version",
-        "state": {
-          "branch": null,
-          "revision": "1fe824b80d89201652e7eca7c9252269a1d85e25",
-          "version": "2.0.1"
-        }
-      },
-      {
         "package": "YouTubePlayerKit",
         "repositoryURL": "https://github.com/SvenTiigi/YouTubePlayerKit.git",
         "state": {
           "branch": null,
-          "revision": "1f78a2121f58b393bca54bc0a8da9e9b11cab198",
-          "version": "1.1.9"
+          "revision": "fa70945f48780b2f78102c5905b6a65b2531b618",
+          "version": "1.1.12"
         }
       }
     ]
