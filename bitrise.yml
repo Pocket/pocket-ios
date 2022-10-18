@@ -253,11 +253,6 @@ workflows:
         - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
         - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
         title: Install production secrets.xcconfig
-    - resource-archive@2:
-        inputs:
-        - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
-        - archive_url: '$BITRISEIO_BASE_FONTS_URL'
-        title: Install fonts
     - file-downloader@1:
         inputs:
         - source: '$BITRISEIO_SECRETS_TEST_URL'
@@ -287,8 +282,8 @@ workflows:
             cd PocketKit
             swift run ApolloCodegen download-schema
             swift run ApolloCodegen generate
-
             cd ..
+
             echo "-- test-without-building --"
             xcodebuild -project "Pocket.xcodeproj" -scheme "Pocket (iOS)" -resultBundlePath "xcodebuild.xcresult" -derivedDataPath "/Users/vagrant/git/DerivedData" -testPlan "UITests" -destination "platform=iOS Simulator,name=iPhone 14,OS=latest" test-without-building
     - custom-test-results-export@0:
