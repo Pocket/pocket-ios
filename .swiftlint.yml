@@ -7,17 +7,12 @@ disabled_rules: # rule identifiers to exclude from running
   # Disabled all default rules
   - block_based_kvo
   - closure_parameter_position
-  - compiler_protocol_init
-  - computed_accessors_order
   - custom_rules
   - cyclomatic_complexity
   - deployment_target
   - discouraged_direct_init
   - discarded_notification_center_observer
-  - duplicate_enum_cases
   - duplicate_imports
-  - duplicated_key_in_dictionary_literal
-  - dynamic_inline
   - fallthrough
   - file_length
   - for_where
@@ -27,9 +22,6 @@ disabled_rules: # rule identifiers to exclude from running
   - function_parameter_count
   - generic_type_name
   - identifier_name
-  - implicit_getter
-  - inclusive_language
-  - inert_defer
   - is_disjoint
   - legacy_hashing
   - legacy_random
@@ -79,8 +71,12 @@ opt_in_rules: # some rules are only opt-in
   # - redundant_type_annotation
   # Find all the available rules by running:
   # swiftlint rules
-
+  - anyobject_protocol
+  - array_init
+  - attributes
+  - capture_variable
   - closing_brace
+  - closure_spacing
   - contains_over_filter_count
   - contains_over_filter_is_empty
   - contains_over_first_not_nil
@@ -91,10 +87,10 @@ opt_in_rules: # some rules are only opt-in
   - empty_xctest_method
   - duplicate_imports
   - duplicate_enum_cases
+  - multiline_arguments_brackets
   - multiline_arguments
   - opening_brace
   - return_arrow_whitespace
-  - multiline_arguments_brackets
 
 excluded: # paths to ignore during linting. Takes precedence over `included`.
   - build
