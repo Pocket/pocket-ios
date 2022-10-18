@@ -58,7 +58,7 @@ struct PremiumRow<Destination: View>: View {
                     SFIcon(SFIconModel("chevron.right", color: status.foreground))
                 }
                 .padding(.vertical, 5)
-                NavigationLink(destination: destination, isActive: $isActive) {EmptyView()}.hidden()
+                NavigationLink(destination: destination, isActive: $isActive) { EmptyView() }.hidden()
             }
         }.listRowBackground(status.background)
     }

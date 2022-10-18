@@ -33,7 +33,7 @@ class PocketSourceTests: XCTestCase {
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
         subscriptions = []
 
-        lastRefresh.stubGetLastRefresh { nil}
+        lastRefresh.stubGetLastRefresh { nil }
 
         backgroundTaskManager.stubBeginTask { _, _ in return 0 }
         backgroundTaskManager.stubEndTask { _ in }

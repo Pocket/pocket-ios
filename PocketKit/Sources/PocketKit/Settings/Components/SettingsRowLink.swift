@@ -23,7 +23,7 @@ struct SettingsRowLink<Destination: View>: View {
                     SFIcon(icon)
                 }
                 .padding(.vertical, 5)
-                NavigationLink(destination: destination, isActive: $isActive) {EmptyView()}.hidden()
+                NavigationLink(destination: destination, isActive: $isActive) { EmptyView() }.hidden()
             }
         }
     }

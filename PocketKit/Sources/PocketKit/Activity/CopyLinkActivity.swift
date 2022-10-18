@@ -24,7 +24,7 @@ class CopyLinkActivity: UIActivity {
     }
 
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
-        let first = activityItems.first(where: {$0 is URL})
+        let first = activityItems.first(where: { $0 is URL })
         return first != nil
     }
 

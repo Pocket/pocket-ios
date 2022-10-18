@@ -85,7 +85,7 @@ class SlateDetailViewModelTests: XCTestCase {
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.$snapshot.dropFirst().sink { snapshot in
-            defer { snapshotExpectation.fulfill()}
+            defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(snapshot.sectionIdentifiers, [.slate(slate)])
             XCTAssertEqual(
