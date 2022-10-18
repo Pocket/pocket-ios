@@ -139,7 +139,8 @@ extension BannerView {
         gestureRecognizer.addTarget(self, action: #selector(dismiss))
     }
 
-    @objc func dismiss() {
+    @objc
+    func dismiss() {
         guard let dismissAction = dismissAction else { return }
         dismissAction()
     }
