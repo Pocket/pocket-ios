@@ -63,7 +63,7 @@ class EmptyStateTests: XCTestCase {
         }
 
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
-        XCTAssertTrue(app.saves.emptyStateView(for: "my-list").exists)
+        XCTAssertTrue(app.saves.emptyStateView(for: "saves").exists)
 
         app.saves.selectionSwitcher.archiveButton.wait().tap()
         XCTAssertEqual(app.saves.wait().itemCells.count, 2)

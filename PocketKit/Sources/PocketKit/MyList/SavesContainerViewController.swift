@@ -39,7 +39,7 @@ class SavesContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.accessibilityIdentifier = "my-list"
+        view.accessibilityIdentifier = "saves"
         select(child: viewControllers.first)
     }
 

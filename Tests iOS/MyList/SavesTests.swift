@@ -303,12 +303,12 @@ class SavesTests: XCTestCase {
         let listView = app.saves.wait()
         XCTAssertEqual(listView.itemCount, 0)
         XCTAssertEqual(listView.skeletonCellCount, 4)
-        promises[0].completeWith(.success(Response.saves("my-list-loading-page-1")))
+        promises[0].completeWith(.success(Response.saves("saves-loading-page-1")))
 
         XCTAssertEqual(listView.itemCount, 2)
         XCTAssertEqual(listView.skeletonCellCount, 1)
 
-        promises[1].completeWith(.success(Response.saves("my-list-loading-page-2")))
+        promises[1].completeWith(.success(Response.saves("saves-loading-page-2")))
         XCTAssertEqual(listView.itemCount, 3)
         XCTAssertEqual(listView.skeletonCellCount, 0)
     }

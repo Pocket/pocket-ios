@@ -12,18 +12,18 @@ struct SavesElement: PocketUIElement {
     }
 
     var selectionSwitcher: SelectionSwitcherElement {
-        return SelectionSwitcherElement(element.otherElements["my-list-selection-switcher"])
+        return SelectionSwitcherElement(element.otherElements["saves-selection-switcher"])
     }
 
     var tagsFilterView: TagsFilterViewElement { TagsFilterViewElement(element.otherElements["filter-tags"])
     }
 
     private var collectionView: XCUIElement {
-        element.otherElements["my-list"].collectionViews.firstMatch
+        element.otherElements["saves"].collectionViews.firstMatch
     }
 
     var itemCells: XCUIElementQuery {
-        collectionView.cells.matching(NSPredicate(format: "identifier = %@", "my-list-item"))
+        collectionView.cells.matching(NSPredicate(format: "identifier = %@", "saves-item"))
     }
 
     func filterButton(for type: String) -> XCUIElement {
@@ -61,7 +61,7 @@ struct SavesElement: PocketUIElement {
     }
 
     var skeletonCellCount: Int {
-        element.cells.matching(identifier: "my-list-item-skeleton").count
+        element.cells.matching(identifier: "saves-item-skeleton").count
     }
 
     func itemView(at index: Int) -> ItemRowElement {

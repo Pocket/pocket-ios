@@ -30,7 +30,7 @@ class CompactMainCoordinator: NSObject {
         self.model = model
 
         saves = CompactSavesContainerCoordinator(model: model.saves)
-        saves.viewController.tabBarItem.accessibilityIdentifier = "my-list-tab-bar-button"
+        saves.viewController.tabBarItem.accessibilityIdentifier = "saves-tab-bar-button"
         saves.viewController.tabBarItem.title = "Saves"
         saves.viewController.tabBarItem.image = UIImage(asset: .tabSavesDeselected)
         saves.viewController.tabBarItem.selectedImage = UIImage(asset: .tabSavesSelected)
