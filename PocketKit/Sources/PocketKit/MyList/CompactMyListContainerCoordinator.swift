@@ -54,7 +54,7 @@ class CompactMyListContainerCoordinator: NSObject {
             }
         }.store(in: &subscriptions)
 
-        // My List navigation
+        // Saves navigation
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)

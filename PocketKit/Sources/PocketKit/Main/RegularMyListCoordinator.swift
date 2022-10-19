@@ -44,7 +44,7 @@ class RegularMyListCoordinator: NSObject {
             self?.handle(selection)
         }.store(in: &subscriptions)
 
-        // My List/My List
+        // Saves/Saves
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)
@@ -69,7 +69,7 @@ class RegularMyListCoordinator: NSObject {
             self?.presentSortMenu(presentedSortFilterViewModel: presentedSortFilterViewModel)
         }.store(in: &subscriptions)
 
-        // My List/Archive
+        // Saves/Archive
         model.archivedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)

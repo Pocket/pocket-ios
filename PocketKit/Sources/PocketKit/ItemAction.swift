@@ -69,7 +69,7 @@ extension ItemAction {
 
     static func moveToMyList(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Move to My List",
+            title: "Move to Saves",
             identifier: .moveToMyListItem,
             accessibilityIdentifier: "item-action-move-to-my-list",
             image: UIImage(asset: .save),

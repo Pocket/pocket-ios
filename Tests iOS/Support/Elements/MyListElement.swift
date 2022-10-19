@@ -53,7 +53,7 @@ struct MyListElement: PocketUIElement {
     }
 
     var moveToMyListSwipeButton: XCUIElement {
-        collectionView.buttons["Move to My List"]
+        collectionView.buttons["Move to Saves"]
     }
 
     var itemCount: Int {
