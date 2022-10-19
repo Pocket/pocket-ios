@@ -14,7 +14,7 @@ extension ItemContextualAction {
     static func moveToMyList(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
         ItemContextualAction(
             style: .destructive,
-            title: "Move to My List",
+            title: "Move to Saves",
             image: UIImage(asset: .save),
             backgroundColor: UIColor(.ui.teal2),
             completion: completion

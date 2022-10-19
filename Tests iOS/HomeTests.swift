@@ -390,7 +390,7 @@ extension HomeTests {
 
         // If an item isn't initially visible (e.g "Item 3"),
         // take the first cell and swipe left so that it becomes visible.
-        // This works because the fixture for "My List" contains 3 items.
+        // This works because the fixture for "Saves" contains 3 items.
         // The first two tests for "Item 1" and "Item 2" work because
         // they are on-screen, but we have to scroll for "Item 3".
         if !app.homeView.savedItemCell(item).exists {

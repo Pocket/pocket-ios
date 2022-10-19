@@ -11,7 +11,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
 
-    let selectionItem: SelectionItem = SelectionItem(title: "My List", image: .init(asset: .myList))
+    let selectionItem: SelectionItem = SelectionItem(title: "Saves", image: .init(asset: .myList))
 
     @Published
     private var _snapshot = Snapshot()

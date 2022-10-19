@@ -31,7 +31,7 @@ class CompactMainCoordinator: NSObject {
 
         myList = CompactMyListContainerCoordinator(model: model.myList)
         myList.viewController.tabBarItem.accessibilityIdentifier = "my-list-tab-bar-button"
-        myList.viewController.tabBarItem.title = "My List"
+        myList.viewController.tabBarItem.title = "Saves"
         myList.viewController.tabBarItem.image = UIImage(asset: .tabMyListDeselected)
         myList.viewController.tabBarItem.selectedImage = UIImage(asset: .tabMyListSelected)
 

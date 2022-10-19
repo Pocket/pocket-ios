@@ -44,7 +44,7 @@ class MainViewModel: ObservableObject {
             case .home:
                 return "Home"
             case .myList:
-                return "My List"
+                return "Saves"
             case .account:
                 return "Settings"
             }

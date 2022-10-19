@@ -269,7 +269,7 @@ extension ArchivedItemsListViewModel {
     }
 }
 
-// MARK: - Move item to My List
+// MARK: - Move item to Saves
 extension ArchivedItemsListViewModel {
     func moveToMyList(item: SavedItem) {
         track(item: item, identifier: .itemSave)

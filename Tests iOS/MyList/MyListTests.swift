@@ -313,7 +313,7 @@ class MyListTests: XCTestCase {
         XCTAssertEqual(listView.skeletonCellCount, 0)
     }
 
-    // MARK: - My List: Sort Items
+    // MARK: - Saves: Sort Items
     func test_selectingANewSortOrder_SortItems() {
         app.launch().tabBar.myListButton.wait().tap()
         app.myListView.itemView(matching: "Item 1").wait()
