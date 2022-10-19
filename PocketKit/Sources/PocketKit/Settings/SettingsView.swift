@@ -2,10 +2,10 @@ import SwiftUI
 import Textile
 
 class SettingsViewController: UIHostingController<SettingsView> {
-   override init(rootView: SettingsView) {
+    override init(rootView: SettingsView) {
         super.init(rootView: rootView)
 
-        UITableView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = UIColor(.ui.grey7)
+        UITableView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = .clear
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -20,12 +20,30 @@ struct SettingsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Form {
-//                Section(header: Text("Your Account").style(.settings.header)) {
-//                    PremiumRow(status: .notSubscribed, destination: EmptyView())
-//                    SettingsRowLink(title: "Reset Password", destination: EmptyView())
-//                    SettingsRowLink(title: "Delete Account", destination: EmptyView())
-//                }.textCase(nil)
+            if #available(iOS 16.0, *) {
+                SettingsForm(model: model)
+                    .scrollContentBackground(.hidden)
+                    .background(Color(.ui.white1))
+            } else {
+                SettingsForm(model: model)
+                    .background(Color(.ui.white1))
+            }
+        }
+        .navigationBarTitle("Settings", displayMode: .large)
+    }
+}
+
+struct SettingsForm: View {
+    @ObservedObject
+    var model: AccountViewModel
+    var body: some View {
+        Form {
+            Group {
+                //                Section(header: Text("Your Account").style(.settings.header)) {
+                //                    PremiumRow(status: .notSubscribed, destination: EmptyView())
+                //                    SettingsRowLink(title: "Reset Password", destination: EmptyView())
+                //                    SettingsRowLink(title: "Delete Account", destination: EmptyView())
+                //                }.textCase(nil)
 
                 Section(header: Text("Your Account").style(.settings.header)) {
                     SettingsRowButton(title: "Sign Out", titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
@@ -60,7 +78,7 @@ struct SettingsView: View {
 
                 }.textCase(nil)
             }
+            .listRowBackground(Color(.ui.grey7))
         }
-        .navigationBarTitle("Settings", displayMode: .large)
     }
 }
