@@ -1,0 +1,52 @@
+{
+  "configurations" : [
+    {
+      "id" : "D7A8561E-5086-4968-9C3A-9D568C5F3698",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "AnalyticsTests",
+        "name" : "AnalyticsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "PocketKitTests",
+        "name" : "PocketKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SaveToPocketKitTests",
+        "name" : "SaveToPocketKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SharedPocketKitTests",
+        "name" : "SharedPocketKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SyncTests",
+        "name" : "SyncTests"
+      }
+    }
+  ],
+  "version" : 1
+}

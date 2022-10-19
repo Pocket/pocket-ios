@@ -15,8 +15,8 @@ pipelines:
       # Build a qa build, and build a test build in parallel
       - build-and-test: {}
       # Run multiple tests on simulators in parallel
-      - run_test_groups: {}
-      - deploy_test_results: {}
+      - run-test-groups: {}
+      - deploy-test-results: {}
   # Will create an app store build and upload it to itunes connect
   app-store-pipeline:
     stages:
@@ -36,18 +36,19 @@ stages:
   build-and-test:
     workflows:
       # Build a test build
-      - test_build: {}
+      - test-build: {}
       # Build a qa build
       - qa-build: {}
 
-  run_test_groups:
+  run-test-groups:
     workflows:
-      - run_tests_iphone_14: {}
-      - run_tests_iphone_13_mini: {}
+      - run-tests-unit: {}
+      - run-tests-ui-1: {}
+      - run-tests-ui-2: {}
 
-  deploy_test_results:
+  deploy-test-results:
     workflows:
-      - deploy_test_results: {}
+      - deploy-test-results: {}
 
   release-build:
     workflows:
@@ -128,7 +129,7 @@ workflows:
     steps:
       - pull-intermediate-files@1:
           inputs:
-            - artifact_sources: build-and-test.test_build
+            - artifact_sources: build-and-test.test-build
 
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
@@ -217,7 +218,7 @@ workflows:
     after_run:
       - _upload_sentry
 
-  test_build:
+  test-build:
     steps:
       - file-downloader@1:
           inputs:
@@ -233,42 +234,56 @@ workflows:
     before_run:
       - _setup
 
-  run_tests_iphone_14:
+  run-tests-unit:
     before_run:
       - _pull_test_bundle
     steps:
       - xcode-test-without-building:
           inputs:
-            - xctestrun: '$BITRISE_TEST_BUNDLE_PATH/$TEST_BUNDLE_NAME'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator16.0.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16
       - deploy-to-bitrise-io@2.1.1:
           inputs:
-            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_IPHONE_14_TEST_XCRESULT_PATH'
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
 
-  run_tests_iphone_13_mini:
+  run-tests-ui-1:
     before_run:
       - _pull_test_bundle
     steps:
       - xcode-test-without-building:
           inputs:
-            - xctestrun: '$BITRISE_TEST_BUNDLE_PATH/$TEST_BUNDLE_NAME'
-            - destination: platform=iOS Simulator,name=iPhone 13 mini,OS=16
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator16.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16
       - deploy-to-bitrise-io@2.1.1:
           inputs:
-            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_IPHONE_13_MINI_TEST_XCRESULT_PATH'
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_1_XCRESULT_PATH'
 
-  deploy_test_results:
+  run-tests-ui-2:
+    before_run:
+      - _pull_test_bundle
+    steps:
+      - xcode-test-without-building:
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator16.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16
+            - test_plan: UITests-2
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_2_XCRESULT_PATH'
+
+
+  deploy-test-results:
     steps:
       - pull-intermediate-files@1:
           inputs:
-            - artifact_sources: run_tests_groups\..*
+            - artifact_sources: run-test-groups\..*
       - script@1:
           inputs:
             - content: |
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                for item in "${BITRISE_IPHONE_14_TEST_XCRESULT_PATH}" "${BITRISE_IPHONE_13_MINI_TEST_XCRESULT_PATH}";
+                for item in "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}";
                   do
                     echo "Exporting ${item}"
 
@@ -302,9 +317,7 @@ app:
     - opts:
         is_expand: false
       SKIP_APOLLO_CODEGEN: '1'
-    - opts:
-        is_expand: false
-      TEST_BUNDLE_NAME: 'Pocket (iOS)_iphonesimulator16.0-arm64-x86_64.xctestrun'
+
 meta:
   bitrise.io:
     machine_type_id: g2-m1.8core
