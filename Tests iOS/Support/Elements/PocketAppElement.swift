@@ -27,8 +27,8 @@ struct PocketAppElement {
         return HomeViewElement(app.otherElements["home"])
     }
 
-    var myListView: MyListElement {
-        return MyListElement(app)
+    var saves: SavesElement {
+        return SavesElement(app)
     }
 
     var accountView: AccountViewElement {

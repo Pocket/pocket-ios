@@ -25,7 +25,7 @@ class RegularMainCoordinator: NSObject {
     private let sidebarViewController: NavigationSidebarViewController
     private let navigationSidebar: UINavigationController
 
-    private let myList: RegularMyListCoordinator
+    private let saves: RegularSavesCoordinator
     private let home: RegularHomeCoordinator
     private let account: SettingsViewController
     private let readerRoot: UINavigationController
@@ -51,7 +51,7 @@ class RegularMainCoordinator: NSObject {
         sidebarViewController = NavigationSidebarViewController(model: model)
         navigationSidebar = UINavigationController(rootViewController: sidebarViewController)
 
-        myList = RegularMyListCoordinator(model: model.myList)
+        saves = RegularSavesCoordinator(model: model.saves)
         home = RegularHomeCoordinator(model: model.home, tracker: tracker)
         account = SettingsViewController(rootView: SettingsView(model: model.account))
         readerRoot = UINavigationController(rootViewController: UIViewController())
@@ -66,7 +66,7 @@ class RegularMainCoordinator: NSObject {
         navigationSidebar.navigationBar.barTintColor = UIColor(.ui.white1)
         navigationSidebar.navigationBar.tintColor = UIColor(.ui.grey1)
 
-        myList.delegate = self
+        saves.delegate = self
         home.delegate = self
         navigationSidebar.delegate = self
         splitController.delegate = self
@@ -96,7 +96,7 @@ class RegularMainCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         home.observeModelChanges()
-        myList.observeModelChanges()
+        saves.observeModelChanges()
 
         isResetting = false
     }
@@ -106,17 +106,17 @@ class RegularMainCoordinator: NSObject {
         readerSubscriptions = []
 
         home.stopObservingModelChanges()
-        myList.stopObservingModelChanges()
+        saves.stopObservingModelChanges()
     }
 
     private func show(_ section: MainViewModel.AppSection) {
         switch section {
-        case .myList(let subsection):
-            if subsection == .myList {
-                model.myList.selection = .myList
+        case .saves(let subsection):
+            if subsection == .saves {
+                model.saves.selection = .saves
             }
 
-            navigationSidebar.setViewControllers([sidebarViewController, myList.viewController], animated: true)
+            navigationSidebar.setViewControllers([sidebarViewController, saves.viewController], animated: true)
             splitController.show(.primary)
         case .home:
             splitController.setViewController(home.viewController, for: .secondary)
@@ -258,14 +258,14 @@ extension RegularMainCoordinator: ModalContentPresenting {
 
 // MARK: - RegularHomeCoordinatorDelegate
 extension RegularMainCoordinator: RegularHomeCoordinatorDelegate {
-    func homeCoordinatorDidSelectMyList(_ coordinator: RegularHomeCoordinator) {
-        model.selectedSection = .myList(.myList)
+    func homeCoordinatorDidSelectSaves(_ coordinator: RegularHomeCoordinator) {
+        model.selectedSection = .saves(.saves)
     }
 }
 
-// MARK: - RegularMyListCoordinatorDelegate
-extension RegularMainCoordinator: RegularMyListCoordinatorDelegate {
-    func myListCoordinator(_ coordinator: RegularMyListCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?) {
+// MARK: - RegularSavesCoordinatorDelegate
+extension RegularMainCoordinator: RegularSavesCoordinatorDelegate {
+    func savesCoordinator(_ coordinator: RegularSavesCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?) {
         if savedItem != nil {
             model.home.clearSelectedItem()
         }

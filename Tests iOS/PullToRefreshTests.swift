@@ -22,8 +22,8 @@ class PullToRefreshTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
@@ -43,10 +43,10 @@ class PullToRefreshTests: XCTestCase {
         app.terminate()
     }
 
-    func test_myList_pullToRefresh_fetchesNewContent() {
-        app.tabBar.myListButton.wait().tap()
+    func test_saves_pullToRefresh_fetchesNewContent() {
+        app.tabBar.savesButton.wait().tap()
 
-        let listView = app.myListView.wait()
+        let listView = app.saves.wait()
         XCTAssertEqual(listView.itemCount, 2)
 
         server.routes.post("/graphql") { _, _ in

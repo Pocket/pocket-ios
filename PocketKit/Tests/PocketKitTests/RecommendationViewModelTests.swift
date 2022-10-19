@@ -219,7 +219,7 @@ class RecommendationViewModelTests: XCTestCase {
         wait(for: [expectArchive, expectArchiveEvent], timeout: 1)
     }
 
-    func test_moveToMyList_sendsRequestToSource_AndRefreshes() {
+    func test_moveToSaves_sendsRequestToSource_AndRefreshes() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(isArchived: true, item: item)
         let recommendation = space.buildRecommendation(item: item)

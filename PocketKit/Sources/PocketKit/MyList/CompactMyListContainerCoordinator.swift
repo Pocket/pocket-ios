@@ -4,23 +4,23 @@ import SafariServices
 import SwiftUI
 import Textile
 
-class CompactMyListContainerCoordinator: NSObject {
+class CompactSavesContainerCoordinator: NSObject {
     var viewController: UIViewController {
         return navigationController
     }
 
-    private let model: MyListContainerViewModel
+    private let model: SavesContainerViewModel
     private let navigationController: UINavigationController
-    private let containerViewController: MyListContainerViewController
+    private let containerViewController: SavesContainerViewController
     private var subscriptions: [AnyCancellable]
     private var readableSubscriptions: [AnyCancellable] = []
     private var isResetting: Bool = false
 
-    init(model: MyListContainerViewModel) {
+    init(model: SavesContainerViewModel) {
         self.model = model
         self.subscriptions = []
 
-        containerViewController = MyListContainerViewController(
+        containerViewController = SavesContainerViewController(
             viewControllers: [
                 ItemsListViewController(model: model.savedItemsList),
                 ItemsListViewController(model: model.archivedItemsList)
@@ -47,7 +47,7 @@ class CompactMyListContainerCoordinator: NSObject {
 
         model.$selection.sink { [weak self] selection in
             switch selection {
-            case .myList:
+            case .saves:
                 self?.containerViewController.selectedIndex = 0
             case .archive:
                 self?.containerViewController.selectedIndex = 1
@@ -231,7 +231,7 @@ class CompactMyListContainerCoordinator: NSObject {
     }
 }
 
-extension CompactMyListContainerCoordinator: UINavigationControllerDelegate {
+extension CompactSavesContainerCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         guard viewController === containerViewController else {
             return
@@ -255,7 +255,7 @@ extension CompactMyListContainerCoordinator: UINavigationControllerDelegate {
     }
 }
 
-extension CompactMyListContainerCoordinator: SFSafariViewControllerDelegate {
+extension CompactSavesContainerCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
     }

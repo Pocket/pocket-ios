@@ -24,8 +24,8 @@ class FavoriteAnItemTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
@@ -69,10 +69,10 @@ class FavoriteAnItemTests: XCTestCase {
     }
 
     func test_favoritingAndUnfavoritingAnItemFromList_showsFavoritedIcon_andSyncsWithServer() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
             .wait()
 
@@ -106,10 +106,10 @@ class FavoriteAnItemTests: XCTestCase {
     }
 
     func test_favoritingAndUnfavoritingAnItemFromReader_togglesMenu_andSyncsWithServer() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
             .wait()
             .tap()
@@ -161,9 +161,9 @@ class FavoriteAnItemTests: XCTestCase {
     }
 
     func test_favoritingAndUnfavoritingAnItemFromArchive_togglesFavoritedIcon_andSyncsWithServer() {
-        app.tabBar.myListButton.wait().tap()
-        app.myListView.wait().selectionSwitcher.archiveButton.wait().tap()
-        let itemCell = app.myListView.itemView(matching: "Archived Item 1").wait()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
+        let itemCell = app.saves.itemView(matching: "Archived Item 1").wait()
 
         // favorite
         do {

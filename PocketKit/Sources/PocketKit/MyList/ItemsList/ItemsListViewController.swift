@@ -184,7 +184,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
 
         model.events.sink { [weak self] event in
-            self?.handle(myListEvent: event)
+            self?.handle(savesEvent: event)
         }.store(in: &subscriptions)
 
         model.snapshot.sink { [weak self] snapshot in
@@ -276,7 +276,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         cell.configure(parent: self, viewModel)
     }
 
-    private func handle(myListEvent event: ItemsListEvent<ViewModel.ItemIdentifier>) {
+    private func handle(savesEvent event: ItemsListEvent<ViewModel.ItemIdentifier>) {
         switch event {
         case .selectionCleared:
             deselectAll()
@@ -323,7 +323,7 @@ extension ItemsListViewController: SelectableViewController {
         return model.selectionItem
     }
 
-    func didBecomeSelected(by parent: MyListContainerViewController) {
+    func didBecomeSelected(by parent: SavesContainerViewController) {
         // Fixes an issue where the navigation bar state could be out-of-sync
         // with the expected state based on the current visible
         // collection view's content offset after toggling list selection.

@@ -7,7 +7,7 @@ import Sails
 import Combine
 import NIO
 
-class MyListTests: XCTestCase {
+class SavesTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
 
@@ -24,8 +24,8 @@ class MyListTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
@@ -84,8 +84,8 @@ class MyListTests: XCTestCase {
 //        app.typeText("super-secret-password")
 //        signInView.signInButton.tap()
 //
-//        app.tabBar.myListButton.wait().tap()
-//        let listView = app.myListView.wait()
+//        app.tabBar.savesButton.wait().tap()
+//        let listView = app.savesView.wait()
 //
 //        do {
 //            let item = listView
@@ -114,7 +114,7 @@ class MyListTests: XCTestCase {
 //                return Response.slateLineup()
 //            } else if apiRequest.isForArchivedContent {
 //                return Response.archivedContent()
-//            } else if apiRequest.isForMyListContent {
+//            } else if apiRequest.isForSavesContent {
 //                promise = loop.makePromise()
 //                return promise!.futureResult
 //            } else {
@@ -125,15 +125,15 @@ class MyListTests: XCTestCase {
 //        app.launch(
 //            arguments: .preserve,
 //            environment: .noSession
-//        ).tabBar.myListButton.wait().tap()
+//        ).tabBar.savesButton.wait().tap()
 //
-//        let listView = app.myListView.wait()
+//        let listView = app.savesView.wait()
 //        ["Item 1", "Item 2"].forEach { label in
 //            listView.itemView(matching: label).wait()
 //        }
 //        XCTAssertEqual(listView.itemCount, 2)
 //
-//        promise?.succeed(Response.myList("updated-list"))
+//        promise?.succeed(Response.saves("updated-list"))
 //        ["Updated Item 1", "Updated Item 2"].forEach { label in
 //            listView.itemView(matching: label).wait()
 //        }
@@ -141,8 +141,8 @@ class MyListTests: XCTestCase {
 //    }
 
     func test_savingAnItemFromShareExtension_addsItemToList() {
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.itemView(at: 0).wait()
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(at: 0).wait()
 
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         safari.launch()
@@ -160,8 +160,8 @@ class MyListTests: XCTestCase {
             if apiRequest.isToSaveAnItem {
                 promise = eventLoop.makePromise()
                 return promise!.futureResult
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
@@ -175,17 +175,17 @@ class MyListTests: XCTestCase {
         safari.staticTexts["Saved to Pocket"].wait()
 
         app.activate()
-        app.myListView.itemView(matching: "http://localhost:8080/new-item").wait()
+        app.saves.itemView(matching: "http://localhost:8080/new-item").wait()
 
         promise?.succeed(.saveItemFromExtension())
-        app.myListView.itemView(matching: "Item 3").wait()
+        app.saves.itemView(matching: "Item 3").wait()
     }
 
     func test_tappingItem_displaysNativeReaderView() {
-        app.launch().tabBar.myListButton.wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(at: 0)
             .wait()
             .tap()
@@ -229,10 +229,10 @@ class MyListTests: XCTestCase {
     }
 
     func test_webReader_displaysWebContent() {
-        app.launch().tabBar.myListButton.wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(at: 0)
             .wait()
             .tap()
@@ -256,8 +256,8 @@ class MyListTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("list-with-archived-item")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("list-with-archived-item")
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
@@ -267,9 +267,9 @@ class MyListTests: XCTestCase {
             }
         }
 
-        app.launch().tabBar.myListButton.wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
 
-        let listView = app.myListView.wait()
+        let listView = app.saves.wait()
         listView.itemView(at: 0).wait()
 
         XCTAssertEqual(listView.itemCount, 1)
@@ -285,7 +285,7 @@ class MyListTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
+            } else if apiRequest.isForSavesContent {
                 let promise = eventLoop.makePromise(of: Response.self)
                 promises.append(promise)
                 return promise.futureResult
@@ -298,57 +298,57 @@ class MyListTests: XCTestCase {
             }
         }
 
-        app.launch().tabBar.myListButton.wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
 
-        let listView = app.myListView.wait()
+        let listView = app.saves.wait()
         XCTAssertEqual(listView.itemCount, 0)
         XCTAssertEqual(listView.skeletonCellCount, 4)
-        promises[0].completeWith(.success(Response.myList("my-list-loading-page-1")))
+        promises[0].completeWith(.success(Response.saves("my-list-loading-page-1")))
 
         XCTAssertEqual(listView.itemCount, 2)
         XCTAssertEqual(listView.skeletonCellCount, 1)
 
-        promises[1].completeWith(.success(Response.myList("my-list-loading-page-2")))
+        promises[1].completeWith(.success(Response.saves("my-list-loading-page-2")))
         XCTAssertEqual(listView.itemCount, 3)
         XCTAssertEqual(listView.skeletonCellCount, 0)
     }
 
     // MARK: - Saves: Sort Items
     func test_selectingANewSortOrder_SortItems() {
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.itemView(matching: "Item 1").wait()
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Item 1").wait()
 
-        app.myListView.filterButton(for: "Sort/Filter").wait().tap()
+        app.saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 
-        app.myListView.itemView(matching: "Item 1").wait()
-        XCTAssertTrue(app.myListView.itemView(at: 0).contains(string: "Item 2"))
-        XCTAssertTrue(app.myListView.itemView(at: 1).contains(string: "Item 1"))
+        app.saves.itemView(matching: "Item 1").wait()
+        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 2"))
+        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 1"))
 
-        app.myListView.filterButton(for: "Sort/Filter").wait().tap()
+        app.saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Newest saved").wait().tap()
 
-        XCTAssertTrue(app.myListView.itemView(at: 0).contains(string: "Item 1"))
-        XCTAssertTrue(app.myListView.itemView(at: 1).contains(string: "Item 2"))
+        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 1"))
+        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 2"))
     }
 
     func test_tappingTagLabel_showsTagFilter() {
-        app.launch().tabBar.myListButton.wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
 
-        let listView = app.myListView.wait()
+        let listView = app.saves.wait()
         XCTAssertEqual(listView.itemCount, 2)
         let item = listView.itemView(at: 1)
         XCTAssertTrue(item.tagButton.firstMatch.label == "tag 0")
         XCTAssertTrue(item.contains(string: "+1"))
         item.tagButton.firstMatch.tap()
-        app.myListView.selectedTagChip(for: "tag 0").wait()
+        app.saves.selectedTagChip(for: "tag 0").wait()
 
     }
 }
 
 // MARK: - Web View
 
-extension MyListTests {
+extension SavesTests {
     func test_list_showsWebViewWhenItemIsImage() {
         test_list_showsWebView(at: 0)
     }
@@ -367,8 +367,8 @@ extension MyListTests {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("list-for-web-view")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("list-for-web-view")
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
@@ -378,10 +378,10 @@ extension MyListTests {
             }
         }
 
-        app.launch().tabBar.myListButton.wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(at: index)
             .wait()
             .tap()

@@ -21,8 +21,8 @@ class SignOutTests: XCTestCase {
                 return Response.slateLineup()
             } else if apiRequest.isForSlateDetail() {
                 return Response.slateDetail()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToSaveAnItem {

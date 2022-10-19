@@ -18,7 +18,7 @@ class CompactMainCoordinator: NSObject {
     }
 
     private let tabBarController: UITabBarController
-    private let myList: CompactMyListContainerCoordinator
+    private let saves: CompactSavesContainerCoordinator
     private let home: CompactHomeCoordinator
     private let account: CompactAccountCoordinator
 
@@ -29,11 +29,11 @@ class CompactMainCoordinator: NSObject {
     init(tracker: Tracker, model: MainViewModel) {
         self.model = model
 
-        myList = CompactMyListContainerCoordinator(model: model.myList)
-        myList.viewController.tabBarItem.accessibilityIdentifier = "my-list-tab-bar-button"
-        myList.viewController.tabBarItem.title = "Saves"
-        myList.viewController.tabBarItem.image = UIImage(asset: .tabMyListDeselected)
-        myList.viewController.tabBarItem.selectedImage = UIImage(asset: .tabMyListSelected)
+        saves = CompactSavesContainerCoordinator(model: model.saves)
+        saves.viewController.tabBarItem.accessibilityIdentifier = "my-list-tab-bar-button"
+        saves.viewController.tabBarItem.title = "Saves"
+        saves.viewController.tabBarItem.image = UIImage(asset: .tabSavesDeselected)
+        saves.viewController.tabBarItem.selectedImage = UIImage(asset: .tabSavesSelected)
 
         home = CompactHomeCoordinator(tracker: tracker, model: model.home)
         home.viewController.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
@@ -63,7 +63,7 @@ class CompactMainCoordinator: NSObject {
 
         tabBarController.viewControllers = [
             home.viewController,
-            myList.viewController,
+            saves.viewController,
             account.viewController
         ]
 
@@ -83,7 +83,7 @@ class CompactMainCoordinator: NSObject {
 
     func stopObservingModelChanges() {
         subscriptions = []
-        myList.stopObservingModelChanges()
+        saves.stopObservingModelChanges()
         home.stopObservingModelChanges()
     }
 
@@ -92,17 +92,17 @@ class CompactMainCoordinator: NSObject {
             self?.show(section)
         }.store(in: &subscriptions)
 
-        myList.observeModelChanges()
+        saves.observeModelChanges()
         home.observeModelChanges()
     }
 
     private func show(_ section: MainViewModel.AppSection) {
         switch section {
-        case .myList(let subsection):
-            if subsection == .myList {
-                model.myList.selection = .myList
+        case .saves(let subsection):
+            if subsection == .saves {
+                model.saves.selection = .saves
             }
-            tabBarController.selectedViewController = myList.viewController
+            tabBarController.selectedViewController = saves.viewController
         case .home:
             tabBarController.selectedViewController = home.viewController
         case .account:
@@ -128,6 +128,6 @@ extension CompactMainCoordinator: UITabBarControllerDelegate {
 
 extension CompactMainCoordinator: CompactHomeCoordinatorDelegate {
     func compactHomeCoordinatorDidSelectRecentSaves(_ coordinator: CompactHomeCoordinator) {
-        model.selectedSection = .myList(.myList)
+        model.selectedSection = .saves(.saves)
     }
 }

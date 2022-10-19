@@ -302,7 +302,7 @@ extension ItemsListItemCell {
 }
 
 private extension UIConfigurationStateCustomKey {
-    static let model = UIConfigurationStateCustomKey("com.mozilla.pocket.next.MyListItemCell.model")
+    static let model = UIConfigurationStateCustomKey("com.mozilla.pocket.next.SavesItemCell.model")
 }
 
 private extension UICellConfigurationState {

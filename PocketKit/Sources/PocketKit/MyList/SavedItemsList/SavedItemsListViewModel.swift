@@ -11,7 +11,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
 
-    let selectionItem: SelectionItem = SelectionItem(title: "Saves", image: .init(asset: .myList))
+    let selectionItem: SelectionItem = SelectionItem(title: "Saves", image: .init(asset: .saves))
 
     @Published
     private var _snapshot = Snapshot()
@@ -43,7 +43,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
 
-        return selectedFilters.contains(.favorites) ? FavoritesEmptyStateViewModel() : MyListEmptyStateViewModel()
+        return selectedFilters.contains(.favorites) ? FavoritesEmptyStateViewModel() : SavesEmptyStateViewModel()
     }
 
     private let source: Source
@@ -358,13 +358,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         var contexts: [Context] = [
-            UIContext.myList.item(index: UIIndex(indexPath.item)),
+            UIContext.saves.item(index: UIIndex(indexPath.item)),
             UIContext.button(identifier: identifier),
             ContentContext(url: url)
         ]
 
         if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.myList.favorites, at: 0)
+            contexts.insert(UIContext.saves.favorites, at: 0)
         }
 
         let event = SnowplowEngagement(type: .general, value: nil)
@@ -377,12 +377,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         var contexts: [Context] = [
-            UIContext.myList.item(index: UIIndex(indexPath.item)),
+            UIContext.saves.item(index: UIIndex(indexPath.item)),
             ContentContext(url: url)
         ]
 
         if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.myList.favorites, at: 0)
+            contexts.insert(UIContext.saves.favorites, at: 0)
         }
 
         let event = ImpressionEvent(component: .card, requirement: .instant)
@@ -463,7 +463,7 @@ extension SavedItemsListViewModel {
             guard let sender = sender else { return }
             presentedSortFilterViewModel = SortMenuViewModel(
                 source: source,
-                tracker: tracker.childTracker(hosting: .myList.myList),
+                tracker: tracker.childTracker(hosting: .saves.saves),
                 listOptions: listOptions,
                 sender: sender
             )

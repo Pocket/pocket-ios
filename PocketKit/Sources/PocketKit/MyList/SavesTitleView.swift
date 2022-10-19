@@ -1,22 +1,22 @@
 import UIKit
 import Textile
 
-struct MyListSelection {
+struct SavesSelection {
     let title: String
     let image: UIImage?
     let handler: () -> Void
 }
 
-class MyListTitleView: UIView {
+class SavesTitleView: UIView {
     private let stackView: UIStackView = {
         let stackView = UIStackView()
         stackView.axis = .horizontal
         return stackView
     }()
-    private let selections: [MyListSelection]
+    private let selections: [SavesSelection]
     private var buttons: [UIButton] = []
 
-    init(selections: [MyListSelection]) {
+    init(selections: [SavesSelection]) {
         self.selections = selections
 
         super.init(frame: .zero)
@@ -33,7 +33,7 @@ class MyListTitleView: UIView {
         ])
 
         buttons = selections.map { selection in
-            MyListSelectionButton(
+            SavesSelectionButton(
                 selection: selection,
                 action: UIAction(title: selection.title, image: selection.image) { [weak self] action in
                     selection.handler()
@@ -84,10 +84,10 @@ class MyListTitleView: UIView {
     }
 }
 
-private class MyListSelectionButton: UIButton {
-    private let selection: MyListSelection
+private class SavesSelectionButton: UIButton {
+    private let selection: SavesSelection
 
-    init(selection: MyListSelection, action: UIAction) {
+    init(selection: SavesSelection, action: UIAction) {
         self.selection = selection
         super.init(frame: .zero)
 

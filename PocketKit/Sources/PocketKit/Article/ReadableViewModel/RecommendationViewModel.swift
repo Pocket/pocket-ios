@@ -80,7 +80,7 @@ class RecommendationViewModel: ReadableViewModel {
         recommendation.item?.bestURL
     }
 
-    func moveToMyList() {
+    func moveToSaves() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
         }
@@ -149,7 +149,7 @@ extension RecommendationViewModel {
 
         let archiveAction: ItemAction
         if savedItem.isArchived {
-            archiveAction = .moveToMyList { [weak self] _ in self?.moveToMyList() }
+            archiveAction = .moveToSaves { [weak self] _ in self?.moveToSaves() }
         } else {
             archiveAction = .archive { [weak self] _ in self?.archive() }
         }

@@ -237,7 +237,7 @@ extension ArchivedItemsListViewModel {
 
         return [
             .addTags { [weak self] _ in self?.showAddTagsView(item: item) },
-            .moveToMyList { [weak self] _ in self?.moveToMyList(item: item) },
+            .moveToSaves { [weak self] _ in self?.moveToSaves(item: item) },
             .delete { [weak self] _ in self?.confirmDelete(item: item) }
         ]
     }
@@ -248,8 +248,8 @@ extension ArchivedItemsListViewModel {
         }
 
         return [
-            .moveToMyList { [weak self] completion in
-                self?.moveToMyList(item: item)
+            .moveToSaves { [weak self] completion in
+                self?.moveToSaves(item: item)
                 completion(true)
             }
         ]
@@ -271,7 +271,7 @@ extension ArchivedItemsListViewModel {
 
 // MARK: - Move item to Saves
 extension ArchivedItemsListViewModel {
-    func moveToMyList(item: SavedItem) {
+    func moveToSaves(item: SavedItem) {
         track(item: item, identifier: .itemSave)
         source.unarchive(item: item)
     }
@@ -454,7 +454,7 @@ extension ArchivedItemsListViewModel {
             guard let sender = sender else { return }
             presentedSortFilterViewModel = SortMenuViewModel(
                 source: source,
-                tracker: tracker.childTracker(hosting: .myList.myList),
+                tracker: tracker.childTracker(hosting: .saves.saves),
                 listOptions: listOptions,
                 sender: sender,
                 listOfSortMenuOptions: [.newest, .oldest]
@@ -496,12 +496,12 @@ extension ArchivedItemsListViewModel {
         }
 
         var contexts: [Context] = [
-            UIContext.myList.item(index: UIIndex(index)),
+            UIContext.saves.item(index: UIIndex(index)),
             ContentContext(url: url)
         ]
 
         if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.myList.favorites, at: 0)
+            contexts.insert(UIContext.saves.favorites, at: 0)
         }
 
         let event = ImpressionEvent(component: .card, requirement: .instant)
@@ -514,13 +514,13 @@ extension ArchivedItemsListViewModel {
         }
 
         var contexts: [Context] = [
-            UIContext.myList.item(index: UIIndex(index)),
+            UIContext.saves.item(index: UIIndex(index)),
             UIContext.button(identifier: identifier),
             ContentContext(url: url)
         ]
 
         if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.myList.favorites, at: 0)
+            contexts.insert(UIContext.saves.favorites, at: 0)
         }
 
         let event = SnowplowEngagement(type: .general, value: nil)

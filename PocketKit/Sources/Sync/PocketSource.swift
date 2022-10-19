@@ -171,7 +171,7 @@ public class PocketSource: Source {
     }
 }
 
-// MARK: - MyList/Archive items
+// MARK: - Saves/Archive items
 extension PocketSource {
     public func refresh(maxItems: Int = 400, completion: (() -> Void)? = nil) {
         if lastRefresh.lastRefresh == nil {

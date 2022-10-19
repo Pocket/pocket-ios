@@ -88,7 +88,7 @@ class SavedItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
-    func moveToMyList() {
+    func moveToSaves() {
         source.unarchive(item: item)
     }
 

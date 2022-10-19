@@ -21,8 +21,8 @@ class EmptyStateTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForFavoritedArchivedContent {
                 return Response.favoritedArchivedContent()
             } else if apiRequest.isForArchivedContent {
@@ -49,63 +49,63 @@ class EmptyStateTests: XCTestCase {
         app.terminate()
     }
 
-    func testMyListAndArchive_showsEmptyStateView() {
-        app.tabBar.myListButton.wait().tap()
+    func testSavesAndArchive_showsEmptyStateView() {
+        app.tabBar.savesButton.wait().tap()
 
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
+        XCTAssertEqual(app.saves.wait().itemCells.count, 2)
 
         do {
-            let itemCell2 = app.myListView.itemView(matching: "Item 2")
-            let itemCell1 = app.myListView.itemView(matching: "Item 1")
+            let itemCell2 = app.saves.itemView(matching: "Item 2")
+            let itemCell1 = app.saves.itemView(matching: "Item 1")
 
             swipeItemToArchive(with: itemCell1)
             swipeItemToArchive(with: itemCell2)
         }
 
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
-        XCTAssertTrue(app.myListView.emptyStateView(for: "my-list").exists)
+        XCTAssertEqual(app.saves.wait().itemCells.count, 0)
+        XCTAssertTrue(app.saves.emptyStateView(for: "my-list").exists)
 
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+        XCTAssertEqual(app.saves.wait().itemCells.count, 2)
 
         do {
-            let itemCell2 = app.myListView.itemView(matching: "Archived Item 2")
-            let itemCell1 = app.myListView.itemView(matching: "Archived Item 1")
+            let itemCell2 = app.saves.itemView(matching: "Archived Item 2")
+            let itemCell1 = app.saves.itemView(matching: "Archived Item 1")
 
-            swipeItemToMyList(with: itemCell2)
-            swipeItemToMyList(with: itemCell1)
+            swipeItemToSaves(with: itemCell2)
+            swipeItemToSaves(with: itemCell1)
         }
 
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
-        XCTAssertTrue(app.myListView.emptyStateView(for: "archive").exists)
+        XCTAssertEqual(app.saves.wait().itemCells.count, 0)
+        XCTAssertTrue(app.saves.emptyStateView(for: "archive").exists)
     }
 
     func testFavorites_showsEmptyStateView() {
-        app.tabBar.myListButton.wait().tap()
-        app.myListView.filterButton(for: "Favorites").tap()
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
-        XCTAssertTrue(app.myListView.emptyStateView(for: "favorites").exists)
+        app.tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Favorites").tap()
+        XCTAssertEqual(app.saves.wait().itemCells.count, 0)
+        XCTAssertTrue(app.saves.emptyStateView(for: "favorites").exists)
 
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.myListView.filterButton(for: "Favorites").tap()
-        app.myListView.itemView(at: 0).favoriteButton.tap()
+        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.itemView(at: 0).favoriteButton.tap()
 
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 0)
-        XCTAssertTrue(app.myListView.emptyStateView(for: "favorites").exists)
+        XCTAssertEqual(app.saves.wait().itemCells.count, 0)
+        XCTAssertTrue(app.saves.emptyStateView(for: "favorites").exists)
     }
 
     private func swipeItemToArchive(with itemCell: ItemRowElement) {
         itemCell.element.swipeLeft()
 
-        app.myListView.archiveSwipeButton.wait().tap()
+        app.saves.archiveSwipeButton.wait().tap()
         waitForDisappearance(of: itemCell)
     }
 
-    private func swipeItemToMyList(with itemCell: ItemRowElement) {
+    private func swipeItemToSaves(with itemCell: ItemRowElement) {
         itemCell.element.swipeLeft()
 
-        app.myListView.moveToMyListSwipeButton.wait().tap()
+        app.saves.moveToSavesSwipeButton.wait().tap()
         waitForDisappearance(of: itemCell)
     }
 }

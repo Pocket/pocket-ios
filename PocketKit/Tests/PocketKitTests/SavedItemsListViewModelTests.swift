@@ -46,7 +46,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         )
     }
 
-    func test_applySortingOnMyListSavedItems() throws {
+    func test_applySortingOnSavesSavedItems() throws {
         let savedItems = (1...2).map {
             space.buildSavedItem(
                 remoteID: "saved-item-\($0)",
@@ -223,7 +223,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotSent], timeout: 1)
     }
 
-    func test_receivedSnapshots_withNoItems_includesMyListEmptyState() {
+    func test_receivedSnapshots_withNoItems_includesSavesEmptyState() {
         itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [] }
         let viewModel = subject()
 
@@ -233,7 +233,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             XCTAssertEqual(identifiers.count, 1)
             XCTAssertTrue(snapshot.sectionIdentifiers.contains(.emptyState))
             XCTAssertNotNil(viewModel.emptyState)
-            XCTAssertTrue(viewModel.emptyState is MyListEmptyStateViewModel)
+            XCTAssertTrue(viewModel.emptyState is SavesEmptyStateViewModel)
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -263,7 +263,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
-    func test_receivedSnapshots_withItems_doesNotIncludeMyListEmptyState() {
+    func test_receivedSnapshots_withItems_doesNotIncludeSavesEmptyState() {
         let savedItem = space.buildSavedItem()
         itemsController.fetchedObjects = [savedItem]
 

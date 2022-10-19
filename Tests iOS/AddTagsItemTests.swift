@@ -22,8 +22,8 @@ class AddTagsItemTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForRecommendationDetail {
@@ -46,9 +46,9 @@ class AddTagsItemTests: XCTestCase {
     }
 
     func test_addTagsToItemFromSaves_savesNewTags() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
-        let itemCell = app.myListView.itemView(matching: "Item 1")
+        let itemCell = app.saves.itemView(matching: "Item 1")
         itemCell.itemActionButton.wait().tap()
 
         app.addTagsButton.wait().tap()
@@ -72,8 +72,8 @@ class AddTagsItemTests: XCTestCase {
     }
 
     func test_addTagsToItemFromSaves_savesFromExistingTags() {
-        app.tabBar.myListButton.wait().tap()
-        let itemCell = app.myListView.itemView(matching: "Item 1")
+        app.tabBar.savesButton.wait().tap()
+        let itemCell = app.saves.itemView(matching: "Item 1")
         itemCell.itemActionButton.wait().tap()
 
         app.addTagsButton.wait().tap()
@@ -88,11 +88,11 @@ class AddTagsItemTests: XCTestCase {
     }
 
     func test_addTagsToItemFromArchive_showsAddTagsView() {
-        app.tabBar.myListButton.wait().tap()
-        app.myListView.wait().selectionSwitcher.archiveButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
 
         let itemCell = app
-            .myListView
+            .saves
             .itemView(matching: "Archived Item 2")
 
         itemCell
@@ -124,10 +124,10 @@ class AddTagsItemTests: XCTestCase {
     }
 
     func test_addTagsToSavedItemFromReader_showsAddTagsView() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(matching: "Item 1")
             .wait()
             .tap()
