@@ -108,7 +108,13 @@ class BannerViewTests: XCTestCase {
         UIPasteboard.general.string = urlString
         _ = app.launch().homeView
         let banner = app.bannerView.wait()
-        banner.swipeDown()
+        let origin = CGVector(dx: 0.5, dy: 0.5)
+        let destination = CGVector(dx: 0.5, dy: 5)
+
+        banner
+            .coordinate(withNormalizedOffset: origin)
+            .press(forDuration: 0.1, thenDragTo: banner.coordinate(withNormalizedOffset: destination), withVelocity: .fast, thenHoldForDuration: 0)
+
         waitForDisappearance(of: banner)
     }
 }
