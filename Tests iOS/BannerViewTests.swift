@@ -47,7 +47,7 @@ class BannerViewTests: XCTestCase {
 
         home.recentSavesView(matching: "Slate 1, Recommendation 1").wait()
         app.tabBar.savesButton.tap()
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
+        app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
     }
 
     func test_foregroundingTheApp_withURL_showsSaveFromClipboardBanner() {

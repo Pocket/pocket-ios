@@ -71,7 +71,7 @@ extension ItemAction {
         return ItemAction(
             title: "Move to Saves",
             identifier: .moveToSavesItem,
-            accessibilityIdentifier: "item-action-move-to-my-list",
+            accessibilityIdentifier: "item-action-move-to-saves",
             image: UIImage(asset: .save),
             handler: handler
         )
@@ -166,7 +166,7 @@ extension UIAction.Identifier {
     static let archiveItem = UIAction.Identifier(rawValue: "archive-item")
     static let deleteItem = UIAction.Identifier(rawValue: "delete-item")
     static let addTagsItem = UIAction.Identifier(rawValue: "add-tags-item")
-    static let moveToSavesItem = UIAction.Identifier(rawValue: "move-to-my-list-item")
+    static let moveToSavesItem = UIAction.Identifier(rawValue: "move-to-saves-item")
     static let favoriteItem = UIAction.Identifier(rawValue: "favorite-item")
     static let shareItem = UIAction.Identifier(rawValue: "share-item")
     static let displaySettings = UIAction.Identifier(rawValue: "display-settings")

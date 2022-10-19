@@ -131,7 +131,7 @@ class ItemsListItemCell: UICollectionViewListCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        accessibilityIdentifier = "my-list-item"
+        accessibilityIdentifier = "saves-item"
 
         buttonStack.addArrangedSubview(tagsStack)
         buttonStack.addArrangedSubview(UIView())

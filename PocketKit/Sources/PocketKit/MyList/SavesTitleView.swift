@@ -21,7 +21,7 @@ class SavesTitleView: UIView {
 
         super.init(frame: .zero)
 
-        accessibilityIdentifier = "my-list-selection-switcher"
+        accessibilityIdentifier = "saves-selection-switcher"
         addSubview(stackView)
 
         stackView.translatesAutoresizingMaskIntoConstraints = false

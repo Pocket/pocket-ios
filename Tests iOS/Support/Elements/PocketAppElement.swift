@@ -95,7 +95,7 @@ struct PocketAppElement {
     }
 
     var reAddButton: XCUIElement {
-        app.buttons["item-action-move-to-my-list"]
+        app.buttons["item-action-move-to-saves"]
     }
 
     var shareButton: XCUIElement {

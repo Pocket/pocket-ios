@@ -36,7 +36,7 @@ class ItemPlaceholderCell: UICollectionViewListCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        accessibilityIdentifier = "my-list-item-skeleton"
+        accessibilityIdentifier = "saves-item-skeleton"
 
         contentView.backgroundColor = UIColor(.ui.white1)
         contentView.addSubview(actionsImageView)
