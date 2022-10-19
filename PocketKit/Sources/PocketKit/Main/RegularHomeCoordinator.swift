@@ -107,7 +107,7 @@ extension RegularHomeCoordinator {
 
         slate.$sharedActivity.sink { [weak self] activity in
             self?.share(activity)
-        }.store(in: &subscriptions)
+        }.store(in: &slateDetailSubscriptions)
 
         let slateDetailVC = SlateDetailViewController(model: slate)
         navigationController.pushViewController(slateDetailVC, animated: !isResetting)
