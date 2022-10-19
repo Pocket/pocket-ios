@@ -172,6 +172,9 @@
 		16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefreshTests.swift; sourceTree = "<group>"; };
 		16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveAnItemTests.swift; sourceTree = "<group>"; };
 		3E8283A328B65ECF00C1DC4A /* SortMenuElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortMenuElement.swift; sourceTree = "<group>"; };
+		650D169728FFA40B00EE9339 /* Sources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sources; sourceTree = "<group>"; };
+		650D169A28FFA42800EE9339 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
+		650D169B28FFA54B00EE9339 /* Dangerfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dangerfile.swift; sourceTree = "<group>"; };
 		650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		650FECCD28BA85F300A3CB0C /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		650FECCF28BA85F300A3CB0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -270,6 +273,9 @@
 				16BA7D6226851513009A17C1 /* main.swift */,
 				16D47E7F26851AB40095D5A4 /* Assets.xcassets */,
 				166A81B32637406C0015AA1D /* Info.plist */,
+				650D169B28FFA54B00EE9339 /* Dangerfile.swift */,
+				650D169A28FFA42800EE9339 /* Package.swift */,
+				650D169728FFA40B00EE9339 /* Sources */,
 				16973354263CBB290003DE2A /* Config */,
 				166A81C32637406C0015AA1D /* Tests iOS */,
 				F204A76127E22EC50010E155 /* SaveToPocket */,
@@ -615,12 +621,13 @@
 		655C274F28B68AE40040AEAB /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
+			buildActionMask = 12;
 			files = (
 			);
 			inputFileListPaths = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/PocketKit",
 			);
 			name = Swiftlint;
 			outputFileListPaths = (
@@ -629,7 +636,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftlint > /dev/null; then\n  if [ \"$CONFIGURATION\" = 'Debug' ]; then\n    swiftlint\n  else \n    echo \"Skipping swift lint because it is not a local developer build.\"\n  fi  \nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

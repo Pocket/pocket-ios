@@ -101,8 +101,6 @@ workflows:
                 # fail if any commands fails
                 set -e
 
-                cd PocketKit/
-
                 echo "Run danger"
                 swift run danger-swift ci
       - cache-push@2: {}
