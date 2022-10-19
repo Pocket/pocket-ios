@@ -19,12 +19,12 @@ enum ReadableType {
 }
 
 enum SeeAll {
-    case myList
+    case saves
     case slate(SlateDetailViewModel)
 
     func clearRecommendationToReport() {
         switch self {
-        case .myList:
+        case .saves:
             break
         case .slate(let viewModel):
             viewModel.clearRecommendationToReport()
@@ -33,7 +33,7 @@ enum SeeAll {
 
     func clearPresentedWebReaderURL() {
         switch self {
-        case .myList:
+        case .saves:
             break
         case .slate(let viewModel):
             viewModel.clearPresentedWebReaderURL()
@@ -42,7 +42,7 @@ enum SeeAll {
 
     func clearSharedActivity() {
         switch self {
-        case .myList:
+        case .saves:
             break
         case .slate(let viewModel):
             viewModel.clearSharedActivity()
@@ -51,7 +51,7 @@ enum SeeAll {
 
     func clearIsPresentingReaderSettings() {
         switch self {
-        case .myList:
+        case .saves:
             break
         case .slate(let viewModel):
             viewModel.clearIsPresentingReaderSettings()
@@ -60,7 +60,7 @@ enum SeeAll {
 
     func clearSelectedItem() {
         switch self {
-        case .myList:
+        case .saves:
             break
         case .slate(let viewModel):
             viewModel.clearSelectedItem()
@@ -357,7 +357,7 @@ extension HomeViewModel {
                 buttonTitle: "Saves",
                 buttonImage: nil
             ) { [weak self] in
-                self?.tappedSeeAll = .myList
+                self?.tappedSeeAll = .saves
             }
         case .slateHero(let objectID):
             guard let slate = source.mainContext.object(with: objectID) as? Slate else {

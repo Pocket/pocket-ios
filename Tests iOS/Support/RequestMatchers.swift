@@ -18,7 +18,7 @@ struct ClientAPIRequest {
         requestBody == nil
     }
 
-    var isForMyListContent: Bool {
+    var isForSavesContent: Bool {
         contains("userByToken") && !contains(#""isArchived":true"#)
     }
 

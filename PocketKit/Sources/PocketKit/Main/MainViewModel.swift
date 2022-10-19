@@ -12,38 +12,38 @@ class MainViewModel: ObservableObject {
     var isCollapsed = UIDevice.current.userInterfaceIdiom == .phone
 
     let home: HomeViewModel
-    let myList: MyListContainerViewModel
+    let saves: SavesContainerViewModel
     let account: AccountViewModel
 
     init(
-        myList: MyListContainerViewModel,
+        saves: SavesContainerViewModel,
         home: HomeViewModel,
         account: AccountViewModel
     ) {
-        self.myList = myList
+        self.saves = saves
         self.home = home
         self.account = account
     }
 
     enum Subsection {
-        case myList
+        case saves
         case archive
     }
 
     enum AppSection: CaseIterable, Identifiable, Hashable {
         static var allCases: [MainViewModel.AppSection] {
-            return [.home, .myList(nil), .account]
+            return [.home, .saves(nil), .account]
         }
 
         case home
-        case myList(Subsection?)
+        case saves(Subsection?)
         case account
 
         var navigationTitle: String {
             switch self {
             case .home:
                 return "Home"
-            case .myList:
+            case .saves:
                 return "Saves"
             case .account:
                 return "Settings"
@@ -61,23 +61,23 @@ class MainViewModel: ObservableObject {
 
     func clearSharedActivity() {
         home.clearSharedActivity()
-        myList.clearSharedActivity()
+        saves.clearSharedActivity()
     }
 
     func clearIsPresentingReaderSettings() {
         home.clearIsPresentingReaderSettings()
-        myList.clearIsPresentingReaderSettings()
+        saves.clearIsPresentingReaderSettings()
     }
 
     func clearPresentedWebReaderURL() {
         home.clearPresentedWebReaderURL()
-        myList.clearPresentedWebReaderURL()
+        saves.clearPresentedWebReaderURL()
     }
 
     func navigationSidebarCellViewModel(for appSection: AppSection) -> NavigationSidebarCellViewModel {
         let isSelected: Bool = {
             switch (selectedSection, appSection) {
-            case (.home, .home), (.myList, .myList), (.account, .account):
+            case (.home, .home), (.saves, .saves), (.account, .account):
                 return true
             default:
                 return false

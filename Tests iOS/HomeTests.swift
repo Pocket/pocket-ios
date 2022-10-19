@@ -27,8 +27,8 @@ class HomeTests: XCTestCase {
                 return Response.slateDetail()
             } else if apiRequest.isForSlateDetail(2) {
                 return Response.slateDetail(2)
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("initial-list-recent-saves")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("initial-list-recent-saves")
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToSaveAnItem {
@@ -110,27 +110,27 @@ class HomeTests: XCTestCase {
         test_tappingRecentSavesItem_showsWebView("Item 3")
     }
 
-    func test_favoritingRecentSavesItem_shouldShowFavoriteInMyList() {
+    func test_favoritingRecentSavesItem_shouldShowFavoriteInSaves() {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").favoriteButton.tap()
         XCTAssertTrue(home.recentSavesView(matching: "Item 1").favoriteButton.isFilled)
 
-        app.tabBar.myListButton.tap()
-        app.myListView.filterButton(for: "Favorites").tap()
-        XCTAssertTrue(app.myListView.itemView(matching: "Item 1").favoriteButton.isFilled)
+        app.tabBar.savesButton.tap()
+        app.saves.filterButton(for: "Favorites").tap()
+        XCTAssertTrue(app.saves.itemView(matching: "Item 1").favoriteButton.isFilled)
     }
 
-    func test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInMyList() {
+    func test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInSaves() {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 2").wait()
         XCTAssertTrue(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
         home.recentSavesView(matching: "Item 2").favoriteButton.tap()
         XCTAssertFalse(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
 
-        app.tabBar.myListButton.tap()
-        app.myListView.filterButton(for: "Favorites").tap()
-        waitForDisappearance(of: app.myListView.itemView(matching: "Item 2"))
+        app.tabBar.savesButton.tap()
+        app.saves.filterButton(for: "Favorites").tap()
+        waitForDisappearance(of: app.saves.itemView(matching: "Item 2"))
     }
 
     func test_archivingRecentSavesItem_removesItemFromRecentSaves() {
@@ -150,8 +150,8 @@ class HomeTests: XCTestCase {
         app.alert.yes.wait().tap()
         waitForDisappearance(of: home.savedItemCell("Item 1"))
 
-        app.tabBar.myListButton.tap()
-        waitForDisappearance(of: app.myListView.itemView(matching: "Item 1"))
+        app.tabBar.savesButton.tap()
+        waitForDisappearance(of: app.saves.itemView(matching: "Item 1"))
     }
 
     func test_sharingRecentSavesItem_removesItemFromRecentSaves() {
@@ -162,19 +162,19 @@ class HomeTests: XCTestCase {
         app.shareSheet.wait()
     }
 
-    func test_tappingRecentSavesMyListButton_opensMyListView() {
+    func test_tappingRecentSavesSavesButton_opensSavesView() {
         app.launch().homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
-        app.myListView.itemView(matching: "Item 1").wait()
-        XCTAssertTrue(app.myListView.selectionSwitcher.myListButton.isSelected)
+        app.saves.itemView(matching: "Item 1").wait()
+        XCTAssertTrue(app.saves.selectionSwitcher.savesButton.isSelected)
     }
 
-    func test_tappingRecentSavesMyListButton_whenPreviouslyArchiveView_opensMyListView() {
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+    func test_tappingRecentSavesSavesButton_whenPreviouslyArchiveView_opensSavesView() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
         app.tabBar.homeButton.wait().tap()
         app.homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
-        app.myListView.itemView(matching: "Item 1").wait()
-        XCTAssertTrue(app.myListView.selectionSwitcher.myListButton.isSelected)
+        app.saves.itemView(matching: "Item 1").wait()
+        XCTAssertTrue(app.saves.selectionSwitcher.savesButton.isSelected)
     }
 
     func test_tappingSlatesSeeAllButton_showsSlateDetailView() {
@@ -204,8 +204,8 @@ class HomeTests: XCTestCase {
         cell.savedButton.wait()
 
         app.navigationBar.buttons["Home"].tap()
-        app.tabBar.myListButton.tap()
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
+        app.tabBar.savesButton.tap()
+        app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
     }
 
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsNotSyndicated_opensItemInWebView() {
@@ -239,8 +239,8 @@ class HomeTests: XCTestCase {
                 return Response.slateLineup()
             } else if apiRequest.isForSlateDetail() {
                 return Response.slateDetail()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToSaveAnItem {
@@ -259,20 +259,20 @@ class HomeTests: XCTestCase {
         cell.saveButton.tap()
         cell.savedButton.wait()
 
-        app.tabBar.myListButton.tap()
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
+        app.tabBar.savesButton.tap()
+        app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         wait(for: [saveRequestExpectation])
 
         promise?.succeed(Response.saveItem())
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
+        app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
         cell.savedButton.tap()
         cell.saveButton.wait()
 
         wait(for: [archiveRequestExpectation])
-        XCTAssertFalse(app.myListView.itemView(matching: "Slate 1, Recommendation 1").exists)
+        XCTAssertFalse(app.saves.itemView(matching: "Slate 1, Recommendation 1").exists)
     }
 
     func test_slateDetailsView_tappingSaveButtonInRecommendationCell_savesItemToList() {
@@ -375,8 +375,8 @@ extension HomeTests {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("list-for-web-view")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("list-for-web-view")
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {

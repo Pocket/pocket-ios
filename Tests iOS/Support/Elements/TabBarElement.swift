@@ -11,7 +11,7 @@ struct TabBarElement: PocketUIElement {
         element.buttons["Home"]
     }
 
-    var myListButton: XCUIElement {
+    var savesButton: XCUIElement {
         element.buttons["Saves"]
     }
 

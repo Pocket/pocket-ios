@@ -22,8 +22,8 @@ class ArchiveAnItemTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
@@ -44,10 +44,10 @@ class ArchiveAnItemTests: XCTestCase {
     }
 
     func test_archivingAnItemFromList_removesItFromList_andSyncsWithServer() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
 
         itemCell
@@ -70,10 +70,10 @@ class ArchiveAnItemTests: XCTestCase {
     }
 
     func test_archivingAnItemFromList_bySwipe_removesItFromList_andSyncWithServer() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
 
         itemCell.element.swipeLeft()
@@ -89,7 +89,7 @@ class ArchiveAnItemTests: XCTestCase {
         }
 
         app
-            .myListView
+            .saves
             .archiveSwipeButton.wait()
             .tap()
 
@@ -98,9 +98,9 @@ class ArchiveAnItemTests: XCTestCase {
     }
 
     func test_archivingAnItemFromReader_archivesItem_andPopsBackToList() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
-        let listView = app.myListView
+        let listView = app.saves
         let itemCell = listView.itemView(matching: "Item 2")
 
         itemCell.wait().tap()
@@ -118,7 +118,7 @@ class ArchiveAnItemTests: XCTestCase {
         let archiveNavButton = XCUIApplication().buttons["archiveNavButton"]
         XCTAssert(archiveNavButton.exists)
         archiveNavButton.wait().tap()
-        app.myListView.wait()
+        app.saves.wait()
 
         wait(for: [expectRequest], timeout: 1)
         listView.wait()

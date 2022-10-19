@@ -51,7 +51,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         )
     }
 
-    func test_applySortingOnMyListArchivedItems() throws {
+    func test_applySortingOnSavesArchivedItems() throws {
 
         // When selected sort is newest
         listOptions.selectedSortOption = .newest

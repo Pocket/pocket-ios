@@ -5,25 +5,25 @@ import Analytics
 import Sync
 
 // swiftlint:disable:next class_delegate_protocol
-protocol RegularMyListCoordinatorDelegate: ModalContentPresenting {
-    func myListCoordinator(_ coordinator: RegularMyListCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?)
+protocol RegularSavesCoordinatorDelegate: ModalContentPresenting {
+    func savesCoordinator(_ coordinator: RegularSavesCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?)
 }
 
-class RegularMyListCoordinator: NSObject {
-    weak var delegate: RegularMyListCoordinatorDelegate?
+class RegularSavesCoordinator: NSObject {
+    weak var delegate: RegularSavesCoordinatorDelegate?
 
     var viewController: UIViewController {
-        myListViewController
+        savesViewController
     }
 
-    private let myListViewController: MyListContainerViewController
-    private let model: MyListContainerViewModel
+    private let savesViewController: SavesContainerViewController
+    private let model: SavesContainerViewModel
     private var subscriptions: [AnyCancellable] = []
     private var isResetting = false
 
-    init(model: MyListContainerViewModel) {
+    init(model: SavesContainerViewModel) {
         self.model = model
-        self.myListViewController = MyListContainerViewController(
+        self.savesViewController = SavesContainerViewController(
             viewControllers: [
                 ItemsListViewController(model: model.savedItemsList),
                 ItemsListViewController(model: model.archivedItemsList)
@@ -62,7 +62,7 @@ class RegularMyListCoordinator: NSObject {
         }.store(in: &subscriptions)
 
         model.savedItemsList.$selectedItem.sink { [weak self] selectedSavedItem in
-            self?.showMyListItem(selectedSavedItem)
+            self?.showSavesItem(selectedSavedItem)
         }.store(in: &subscriptions)
 
         model.savedItemsList.$presentedSortFilterViewModel.receive(on: DispatchQueue.main).sink { [weak self] presentedSortFilterViewModel in
@@ -97,12 +97,12 @@ class RegularMyListCoordinator: NSObject {
         isResetting = false
     }
 
-    private func handle(_ selection: MyListContainerViewModel.Selection?) {
+    private func handle(_ selection: SavesContainerViewModel.Selection?) {
         switch selection {
-        case .myList:
-            myListViewController.selectedIndex = 0
+        case .saves:
+            savesViewController.selectedIndex = 0
         case .archive:
-            myListViewController.selectedIndex = 1
+            savesViewController.selectedIndex = 1
         default:
             break
         }
@@ -110,8 +110,8 @@ class RegularMyListCoordinator: NSObject {
 }
 
 // MARK: - Showing reader content
-extension RegularMyListCoordinator {
-    private func showMyListItem(_ selectedSavedItem: SelectedItem?) {
+extension RegularSavesCoordinator {
+    private func showSavesItem(_ selectedSavedItem: SelectedItem?) {
         guard let selectedSavedItem = selectedSavedItem else {
             return
         }
@@ -132,7 +132,7 @@ extension RegularMyListCoordinator {
     private func show(_ selectedItem: SelectedItem) {
         switch selectedItem {
         case .readable(let savedItem):
-            delegate?.myListCoordinator(self, didSelectSavedItem: savedItem)
+            delegate?.savesCoordinator(self, didSelectSavedItem: savedItem)
         case .webView(let url):
             present(url)
         }
@@ -140,7 +140,7 @@ extension RegularMyListCoordinator {
 }
 
 // MARK: - Presenting modals
-extension RegularMyListCoordinator {
+extension RegularSavesCoordinator {
     private func present(_ url: URL?) {
         delegate?.present(url)
     }
@@ -180,7 +180,7 @@ extension RegularMyListCoordinator {
     }
 }
 
-extension RegularMyListCoordinator: SFSafariViewControllerDelegate {
+extension RegularSavesCoordinator: SFSafariViewControllerDelegate {
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
     }

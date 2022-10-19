@@ -4,7 +4,7 @@
 
 import XCTest
 
-struct MyListElement: PocketUIElement {
+struct SavesElement: PocketUIElement {
     let element: XCUIElement
 
     init(_ element: XCUIElement) {
@@ -52,7 +52,7 @@ struct MyListElement: PocketUIElement {
         collectionView.buttons["Archive"]
     }
 
-    var moveToMyListSwipeButton: XCUIElement {
+    var moveToSavesSwipeButton: XCUIElement {
         collectionView.buttons["Move to Saves"]
     }
 

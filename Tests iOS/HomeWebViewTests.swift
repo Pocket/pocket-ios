@@ -25,8 +25,8 @@ class HomeWebViewTests: XCTestCase {
                 return Response.slateLineup("slates-web-view")
             } else if apiRequest.isForSlateDetail() {
                 return Response.slateLineup("slate-detail-web-view")
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToSaveAnItem {

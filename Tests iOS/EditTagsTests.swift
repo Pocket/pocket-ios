@@ -21,8 +21,8 @@ class EditTagsTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isToUpdateTag("rename tag 1") {
                 return Response.updateTag()
             } else if apiRequest.isForTags {
@@ -44,9 +44,9 @@ class EditTagsTests: XCTestCase {
     }
 
     func test_editTagsView_renamesTag() {
-        app.tabBar.myListButton.wait().tap()
-        app.myListView.filterButton(for: "Tagged").tap()
-        let tagsFilterView = app.myListView.tagsFilterView.wait()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.editButton.label, "Edit")
         tagsFilterView.editButton.wait().tap()
@@ -69,13 +69,13 @@ class EditTagsTests: XCTestCase {
 
         tagsFilterView.editButton.wait().tap()
         tagsFilterView.tag(matching: "rename tag 1").wait().tap()
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
+        XCTAssertEqual(app.saves.wait().itemCells.count, 1)
     }
 
     func test_editTagsView_deletesTag() {
-        app.tabBar.myListButton.wait().tap()
-        app.myListView.filterButton(for: "Tagged").tap()
-        let tagsFilterView = app.myListView.tagsFilterView.wait()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.editButton.label, "Edit")
         tagsFilterView.editButton.wait().tap()

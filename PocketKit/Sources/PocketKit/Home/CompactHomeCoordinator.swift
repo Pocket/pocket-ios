@@ -223,7 +223,7 @@ class CompactHomeCoordinator: NSObject {
 
     func show(_ seeAll: SeeAll?) {
         switch seeAll {
-        case .myList:
+        case .saves:
             delegate?.compactHomeCoordinatorDidSelectRecentSaves(self)
         case .slate(let slateViewModel):
             show(slateViewModel)

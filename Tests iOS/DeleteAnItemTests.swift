@@ -21,8 +21,8 @@ class DeleteAnItemTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return .slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return .myList()
+            } else if apiRequest.isForSavesContent {
+                return .saves()
             } else if apiRequest.isForArchivedContent {
                 return .archivedContent()
             } else if apiRequest.isForTags {
@@ -43,10 +43,10 @@ class DeleteAnItemTests: XCTestCase {
     }
 
     func test_deletingAnItemFromList_removesItFromList_andSyncsWithServer() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
 
         itemCell
@@ -71,10 +71,10 @@ class DeleteAnItemTests: XCTestCase {
     }
 
     func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
             .wait()
 
@@ -102,14 +102,14 @@ class DeleteAnItemTests: XCTestCase {
         app.alert.yes.wait().tap()
         wait(for: [expectRequest], timeout: 1)
 
-        app.myListView.wait()
+        app.saves.wait()
         waitForDisappearance(of: itemCell)
     }
 
     func test_deletingAnItem_fromArchive_removesItFromList_andSyncsWithServer() {
-        app.tabBar.myListButton.wait().tap()
-        app.myListView.wait().selectionSwitcher.archiveButton.wait().tap()
-        let cell = app.myListView.itemView(matching: "Archived Item 1")
+        app.tabBar.savesButton.wait().tap()
+        app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
+        let cell = app.saves.itemView(matching: "Archived Item 1")
 
         let receivedDeleteRequest = expectation(description: "receivedDeleteRequest")
         server.routes.post("/graphql") { request, _ -> Response in
@@ -117,8 +117,8 @@ class DeleteAnItemTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return .slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return .myList()
+            } else if apiRequest.isForSavesContent {
+                return .saves()
             } else if apiRequest.isForArchivedContent {
                 return .archivedContent()
             } else if apiRequest.isToDeleteAnItem {

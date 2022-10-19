@@ -8,10 +8,10 @@ struct SelectionItem {
 protocol SelectableViewController: UIViewController {
     var selectionItem: SelectionItem { get }
 
-    func didBecomeSelected(by parent: MyListContainerViewController)
+    func didBecomeSelected(by parent: SavesContainerViewController)
 }
 
-class MyListContainerViewController: UIViewController {
+class SavesContainerViewController: UIViewController {
     var selectedIndex: Int {
         didSet {
             resetTitleView()
@@ -54,12 +54,12 @@ class MyListContainerViewController: UIViewController {
 
     private func resetTitleView() {
         let selections = viewControllers.map { vc in
-            MyListSelection(title: vc.selectionItem.title, image: vc.selectionItem.image) { [weak self] in
+            SavesSelection(title: vc.selectionItem.title, image: vc.selectionItem.image) { [weak self] in
                 self?.select(child: vc)
             }
         }
 
-        navigationItem.titleView = MyListTitleView(selections: selections)
+        navigationItem.titleView = SavesTitleView(selections: selections)
     }
 
     private func viewController(at index: Int) -> SelectableViewController? {

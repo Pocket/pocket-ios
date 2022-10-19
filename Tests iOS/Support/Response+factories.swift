@@ -5,7 +5,7 @@
 import Sails
 
 extension Response {
-    static func myList(_ fixtureName: String = "initial-list") -> Response {
+    static func saves(_ fixtureName: String = "initial-list") -> Response {
         Response {
             Status.ok
             Fixture.load(name: fixtureName)
@@ -15,11 +15,11 @@ extension Response {
     }
 
     static func archivedContent() -> Response {
-        myList("archived-items")
+        saves("archived-items")
     }
 
     static func favoritedArchivedContent() -> Response {
-        myList("archived-favorite-items")
+        saves("archived-favorite-items")
     }
 
     static func slateLineup(_ fixtureName: String = "slates") -> Response {

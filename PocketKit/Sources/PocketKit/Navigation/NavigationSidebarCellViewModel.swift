@@ -35,10 +35,10 @@ struct NavigationSidebarCellViewModel {
             asset = .tabHomeSelected
         case (.home, false):
             asset = .tabHomeDeselected
-        case (.myList, true):
-            asset = .tabMyListSelected
-        case (.myList, false):
-            asset = .tabMyListDeselected
+        case (.saves, true):
+            asset = .tabSavesSelected
+        case (.saves, false):
+            asset = .tabSavesDeselected
         case (.account, true):
             asset = .tabAccountSelected
         case (.account, false):

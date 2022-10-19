@@ -14,15 +14,15 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
         func mainCoordinator() -> MainCoordinator {
             MainCoordinator(
                 model: MainViewModel(
-                    myList: MyListContainerViewModel(
+                    saves: SavesContainerViewModel(
                         savedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
-                            tracker: Services.shared.tracker.childTracker(hosting: .myList.myList),
+                            tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
                             listOptions: .saved
                         ),
                         archivedItemsList: ArchivedItemsListViewModel(
                             source: Services.shared.source,
-                            tracker: Services.shared.tracker.childTracker(hosting: .myList.archive),
+                            tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
                             listOptions: .archived
                         )
                     ),

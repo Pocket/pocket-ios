@@ -6,7 +6,7 @@ import Sync
 
 // swiftlint:disable:next class_delegate_protocol
 protocol RegularHomeCoordinatorDelegate: ModalContentPresenting {
-    func homeCoordinatorDidSelectMyList(_ coordinator: RegularHomeCoordinator)
+    func homeCoordinatorDidSelectSaves(_ coordinator: RegularHomeCoordinator)
 }
 
 class RegularHomeCoordinator: NSObject {
@@ -85,8 +85,8 @@ extension RegularHomeCoordinator {
         switch seeAll {
         case .slate(let slateDetail):
             show(slateDetail)
-        case .myList:
-            delegate?.homeCoordinatorDidSelectMyList(self)
+        case .saves:
+            delegate?.homeCoordinatorDidSelectSaves(self)
         case .none:
             break
         }

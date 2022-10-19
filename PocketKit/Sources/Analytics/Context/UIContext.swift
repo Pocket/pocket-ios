@@ -64,7 +64,7 @@ extension UIContext {
 extension UIContext {
     public enum Identifier: String, Encodable {
         case home
-        case myList = "my_list"
+        case saves = "saves"
         case archive
         case favorites
         case reader
@@ -124,9 +124,9 @@ extension UIContext {
         }
     }
 
-    public struct MyList {
-        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .myList)
-        public let myList = UIContext(type: .list, hierarchy: 0, identifier: .myList)
+    public struct Saves {
+        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .saves)
+        public let saves = UIContext(type: .list, hierarchy: 0, identifier: .saves)
         public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
         public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
 
@@ -155,7 +155,7 @@ extension UIContext {
 
     public static let loggedOut = LoggedOut()
     public static let home = Home()
-    public static let myList = MyList()
+    public static let saves = Saves()
     public static let account = Account()
     public static let articleView = ArticleView()
     public static let slateDetail = SlateDetail()

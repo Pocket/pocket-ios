@@ -21,8 +21,8 @@ class ArchiveTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForItemDetail {
@@ -50,45 +50,45 @@ class ArchiveTests: XCTestCase {
     }
 
     func test_archiveView_displaysArchivedContent() {
-        app.launch().tabBar.myListButton.wait().tap()
-        let myList = app.myListView.wait()
-        myList.itemView(matching: "Item 1").wait()
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
+        saves.itemView(matching: "Item 1").wait()
 
-        myList.selectionSwitcher.archiveButton.wait().tap()
+        saves.selectionSwitcher.archiveButton.wait().tap()
 
-        XCTAssertTrue(myList.itemView(at: 0).contains(string: "Archived Item 1"))
-        XCTAssertTrue(myList.itemView(at: 1).contains(string: "Archived Item 2"))
+        XCTAssertTrue(saves.itemView(at: 0).contains(string: "Archived Item 1"))
+        XCTAssertTrue(saves.itemView(at: 1).contains(string: "Archived Item 2"))
 
-        XCTAssertFalse(myList.itemView(matching: "Item 1").exists)
-        XCTAssertFalse(myList.itemView(matching: "Item 2").exists)
+        XCTAssertFalse(saves.itemView(matching: "Item 1").exists)
+        XCTAssertFalse(saves.itemView(matching: "Item 2").exists)
     }
 
     func test_archiveView_selectingANewSortOrder_SortItems() {
-        app.launch().tabBar.myListButton.wait().tap()
-        let myList = app.myListView.wait()
-        myList.itemView(matching: "Item 1").wait()
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
+        saves.itemView(matching: "Item 1").wait()
 
-        myList.selectionSwitcher.archiveButton.wait().tap()
+        saves.selectionSwitcher.archiveButton.wait().tap()
 
         // Sort by Oldest saved
-        myList.filterButton(for: "Sort/Filter").wait().tap()
+        saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 
-        XCTAssertTrue(myList.itemView(at: 0).contains(string: "Archived Item 2"))
-        XCTAssertTrue(myList.itemView(at: 1).contains(string: "Archived Item 1"))
+        XCTAssertTrue(saves.itemView(at: 0).contains(string: "Archived Item 2"))
+        XCTAssertTrue(saves.itemView(at: 1).contains(string: "Archived Item 1"))
 
         // Sort by Newest saved
-        myList.filterButton(for: "Sort/Filter").wait().tap()
+        saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Newest saved").wait().tap()
 
-        XCTAssertTrue(myList.itemView(at: 0).contains(string: "Archived Item 1"))
-        XCTAssertTrue(myList.itemView(at: 1).contains(string: "Archived Item 2"))
+        XCTAssertTrue(saves.itemView(at: 0).contains(string: "Archived Item 1"))
+        XCTAssertTrue(saves.itemView(at: 1).contains(string: "Archived Item 2"))
     }
 
     func test_tappingItem_displaysNativeReaderView() {
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
-        app.myListView.itemView(at: 0).wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+        app.saves.itemView(at: 0).wait().tap()
 
         let expectedContent = [
             "Archived Item 1",
@@ -104,20 +104,20 @@ class ArchiveTests: XCTestCase {
         }
     }
 
-    func test_unarchivingAnItem_removesFromArchive_andAddsToMyList() {
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+    func test_unarchivingAnItem_removesFromArchive_andAddsToSaves() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
 
-        let itemCell = app.myListView.itemView(matching: "Archived Item 1")
+        let itemCell = app.saves.itemView(matching: "Archived Item 1")
         itemCell.itemActionButton.wait().tap()
 
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                return Response.myList("unarchive")
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("list-with-unarchived-item")
+                return Response.saves("unarchive")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("list-with-unarchived-item")
             }
 
             fatalError("Unexpected request")
@@ -126,47 +126,47 @@ class ArchiveTests: XCTestCase {
         app.reAddButton.wait().tap()
         waitForDisappearance(of: itemCell)
 
-        app.myListView.selectionSwitcher.myListButton.tap()
+        app.saves.selectionSwitcher.savesButton.tap()
         itemCell.wait()
     }
 
-    func test_unarchivingAnItem_bySwiping_removesFromArchive_andAddsToMyList() {
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+    func test_unarchivingAnItem_bySwiping_removesFromArchive_andAddsToSaves() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
 
-        let itemCell = app.myListView.itemView(matching: "Archived Item 1")
+        let itemCell = app.saves.itemView(matching: "Archived Item 1")
         itemCell.element.swipeLeft()
 
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                return Response.myList("unarchive")
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("list-with-unarchived-item")
+                return Response.saves("unarchive")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("list-with-unarchived-item")
             }
 
             fatalError("Unexpected request")
         }
 
-        app.myListView.moveToMyListSwipeButton.wait().tap()
+        app.saves.moveToSavesSwipeButton.wait().tap()
         waitForDisappearance(of: itemCell)
 
-        app.myListView.selectionSwitcher.myListButton.tap()
+        app.saves.selectionSwitcher.savesButton.tap()
         itemCell.wait()
     }
 
     func test_tappingTagLabel_showsTagFilter() {
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
 
-        let listView = app.myListView.wait()
+        let listView = app.saves.wait()
         XCTAssertEqual(listView.itemCount, 2)
         let item = listView.itemView(at: 0)
         XCTAssertTrue(item.tagButton.firstMatch.label == "tag 0")
         XCTAssertTrue(item.contains(string: "+1"))
         item.tagButton.firstMatch.tap()
-        app.myListView.selectedTagChip(for: "tag 0").wait()
+        app.saves.selectedTagChip(for: "tag 0").wait()
     }
 }
 
@@ -189,10 +189,10 @@ extension ArchiveTests {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("list-for-web-view")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("list-for-web-view")
             } else if apiRequest.isForArchivedContent {
-                return Response.myList("archived-web-view")
+                return Response.saves("archived-web-view")
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
@@ -200,9 +200,9 @@ extension ArchiveTests {
             }
         }
 
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
-        app.myListView.itemView(at: index).wait().tap()
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+        app.saves.itemView(at: index).wait().tap()
 
         app
             .webReaderView

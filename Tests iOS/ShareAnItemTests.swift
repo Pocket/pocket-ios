@@ -22,8 +22,8 @@ class ShareAnItemTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
@@ -46,10 +46,10 @@ class ShareAnItemTests: XCTestCase {
     }
 
     func test_sharingAnItemFromList_presentsShareSheet() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
             .shareButton.wait()
             .tap()
@@ -58,10 +58,10 @@ class ShareAnItemTests: XCTestCase {
     }
 
     func test_sharingAnItemFromReader_presentsShareSheet() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
             .wait()
             .tap()

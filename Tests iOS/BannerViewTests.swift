@@ -16,8 +16,8 @@ class BannerViewTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("initial-list-recent-saves")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("initial-list-recent-saves")
             } else if apiRequest.isToSaveAnItem {
                 return Response.saveItem()
             } else if apiRequest.isForTags {
@@ -46,7 +46,7 @@ class BannerViewTests: XCTestCase {
         waitForDisappearance(of: banner)
 
         home.recentSavesView(matching: "Slate 1, Recommendation 1").wait()
-        app.tabBar.myListButton.tap()
+        app.tabBar.savesButton.tap()
         app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
     }
 
@@ -56,7 +56,7 @@ class BannerViewTests: XCTestCase {
         _ = app.launch().homeView
         app.bannerView.wait()
 
-        app.tabBar.myListButton.tap()
+        app.tabBar.savesButton.tap()
         app.bannerView.wait()
 
         XCUIDevice.shared.press(.home)
@@ -67,8 +67,8 @@ class BannerViewTests: XCTestCase {
     func test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop() {
         let urlString = "https://example.com/item-3"
         UIPasteboard.general.string = urlString
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.itemView(matching: "Item 3").wait()
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Item 3").wait()
         app.tabBar.homeButton.tap()
         let banner = app.bannerView.wait()
 
@@ -95,7 +95,7 @@ class BannerViewTests: XCTestCase {
         _ = app.launch().homeView
         waitForDisappearance(of: app.bannerView)
 
-        app.tabBar.myListButton.tap()
+        app.tabBar.savesButton.tap()
         waitForDisappearance(of: app.bannerView)
 
         XCUIDevice.shared.press(.home)

@@ -34,8 +34,8 @@ class MainCoordinator {
                 switch section {
                 case .home:
                     context = UIContext.home.screen
-                case .myList:
-                    context = UIContext.myList.screen
+                case .saves:
+                    context = UIContext.saves.screen
                 case .account:
                     context = UIContext.account.screen
                 }

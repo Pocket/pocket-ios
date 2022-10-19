@@ -11,7 +11,7 @@ struct ItemContextualAction {
 }
 
 extension ItemContextualAction {
-    static func moveToMyList(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
+    static func moveToSaves(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
         ItemContextualAction(
             style: .destructive,
             title: "Move to Saves",
