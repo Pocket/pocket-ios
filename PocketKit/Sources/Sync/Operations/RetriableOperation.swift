@@ -61,7 +61,12 @@ class RetriableOperation: AsyncOperation {
 
     private func _retry(_ error: Error?) {
         guard retries < 2 else {
-            Crashlogger.capture(message: "Retriable operation \"\(operation)\" exceeded maximum number of retries")
+            Crashlogger.breadcrumb(
+                category: "sync",
+                level: .error,
+                message: "Retriable operation \"\(operation)\" exceeded maximum number of retries"
+            )
+
             if let error = error {
                 Crashlogger.capture(error: error)
             }
