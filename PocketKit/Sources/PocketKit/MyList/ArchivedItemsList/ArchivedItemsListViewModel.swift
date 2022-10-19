@@ -435,7 +435,7 @@ extension ArchivedItemsListViewModel {
     }
 
     func applySorting() {
-        if listOptions.selectedSort == .oldest {
+        if listOptions.selectedSortOption == .oldest {
             archiveService.selectedSortOption = .ascending
         } else {
             archiveService.selectedSortOption = .descending
@@ -456,7 +456,8 @@ extension ArchivedItemsListViewModel {
                 source: source,
                 tracker: tracker.childTracker(hosting: .myList.myList),
                 listOptions: listOptions,
-                sender: sender
+                sender: sender,
+                listOfSortMenuOptions: [.newest, .oldest]
             )
 
         default:

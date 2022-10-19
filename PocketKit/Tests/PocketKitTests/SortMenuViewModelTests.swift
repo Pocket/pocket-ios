@@ -15,33 +15,41 @@ class SortMenuViewModelTests: XCTestCase {
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
-        listOptions = ListOptions()
-        listOptions.selectedSort = .newest
+        listOptions = .saved
+        listOptions.selectedSortOption = .newest
     }
 
     override func tearDown() {
         subscriptions = []
     }
 
-    private func subject(source: Source? = nil, tracker: Tracker? = nil, listOptions: ListOptions? = nil) -> SortMenuViewModel {
+    private func subject(
+        source: Source? = nil,
+        tracker: Tracker? = nil,
+        listOptions: ListOptions? = nil,
+        listOfSortMenuOptions: [SortOption] = [.newest, .oldest, .shortestToRead, .longestToRead]
+    ) -> SortMenuViewModel {
         return SortMenuViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             listOptions: listOptions ?? self.listOptions,
-            sender: UIView()
+            sender: UIView(),
+            listOfSortMenuOptions: listOfSortMenuOptions
         )
     }
 
-    func test_snapshot_containsAllSortOptions() {
-        let sortMenuVM = subject()
+    func test_snapshot_containsAllSortOptionsForSavedItemsList() {
+        let sortMenuVM = subject(
+            listOfSortMenuOptions: [.newest, .oldest, .shortestToRead, .longestToRead]
+        )
         sortMenuVM.$snapshot.sink { snapshot in
             XCTAssertEqual(snapshot.sectionIdentifiers, [.sortBy])
-            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .sortBy), [.newest, .oldest])
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .sortBy), [.newest, .oldest, .shortestToRead, .longestToRead])
         }.store(in: &subscriptions)
     }
 
     func test_cellViewModel_whenSortOptionIsSelected_returnsViewModelWithIsSelectedSetToTrue() {
-
+        listOptions.selectedSortOption = .newest
         let sortMenuVM = subject()
         let sortCellModel = sortMenuVM.cellViewModel(for: SortOption.newest)
 
@@ -58,14 +66,20 @@ class SortMenuViewModelTests: XCTestCase {
         XCTAssertEqual(sortCellModel.isSelected, false)
     }
 
-    func test_select_setsTheSelectedSortOnListOptions() {
+    func test_select_setsTheSelectedSortOnListOptionsForSavedList() {
 
-        listOptions.selectedSort = .oldest
+        listOptions.selectedSortOption = .oldest
         let sortMenuVM = subject()
-        XCTAssert(listOptions.selectedSort == .oldest)
+        XCTAssert(listOptions.selectedSortOption == .oldest)
 
         sortMenuVM.select(row: .newest)
+        XCTAssert(listOptions.selectedSortOption == .newest)
 
-        XCTAssert(listOptions.selectedSort == .newest)
+        sortMenuVM.select(row: .shortestToRead)
+        XCTAssert(listOptions.selectedSortOption == .shortestToRead)
+
+        sortMenuVM.select(row: .longestToRead)
+        XCTAssert(listOptions.selectedSortOption == .longestToRead)
+
     }
 }

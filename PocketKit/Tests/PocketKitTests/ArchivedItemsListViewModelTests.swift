@@ -19,6 +19,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     var archiveService: MockArchiveService!
     var subscriptions: Set<AnyCancellable> = []
     var listOptions: ListOptions!
+    var viewModel: ArchivedItemsListViewModel!
 
     override func setUp() {
         self.source = MockSource()
@@ -26,7 +27,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         self.networkMonitor = MockNetworkPathMonitor()
         self.archiveService = MockArchiveService()
         self.space = .testSpace()
-        listOptions = ListOptions()
+        listOptions = .archived
 
         source.stubMakeArchiveService { self.archiveService }
     }
@@ -53,9 +54,8 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     func test_applySortingOnMyListArchivedItems() throws {
 
         // When selected sort is newest
-        let listOptionsToPass = ListOptions()
-        listOptionsToPass.selectedSort = .newest
-        let viewModel = subject(listOptions: listOptionsToPass)
+        listOptions.selectedSortOption = .newest
+        let viewModel = subject()
 
         XCTAssertTrue(archiveService.selectedSortOption == .descending)
 
@@ -65,7 +65,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         }
 
         // When selected sort is oldest
-        listOptionsToPass.selectedSort = .oldest
+        listOptions.selectedSortOption = .oldest
 
         wait(for: [refreshCalled], timeout: 1)
         XCTAssertTrue(archiveService.selectedSortOption == .ascending)
