@@ -62,23 +62,18 @@ class SaveToPocketTests: XCTestCase {
         safari.buttons["add-tags-button"].wait().tap()
 
         let addTagsView = AddTagsViewElement(safari.otherElements["add-tags"])
-        var tagString = "tag 1"
 
+        // typeText is flakey and cannot type "Tag 1" 100% of the time
         addTagsView.wait()
         addTagsView.newTagTextField.tap()
-        addTagsView.newTagTextField.typeText(tagString)
+        addTagsView.newTagTextField.typeText("T")
+        addTagsView.newTagTextField.typeText("a")
+        addTagsView.newTagTextField.typeText("g")
+        addTagsView.newTagTextField.typeText(" ")
+        addTagsView.newTagTextField.typeText("1")
         addTagsView.newTagTextField.typeText("\n")
 
-        addTagsView.tag(matching: tagString).wait()
-
-        // response to typeText not typing "tag 1" 100% of the time
-        // short term work around
-        if (!addTagsView.tag(matching: tagString).exists) {
-            addTagsView.tag(matching: "ta 1").wait()
-            if (!addTagsView.tag(matching: "ta 1").exists) {
-                tagString = "ta 1"
-            }
-        }
+        addTagsView.tag(matching: "tag 1").wait()
 
         server.routes.post("/graphql") { request, _ in
             Response.savedItemWithTag()
@@ -91,6 +86,6 @@ class SaveToPocketTests: XCTestCase {
         safari.toolbars.buttons["ShareButton"].tap()
         activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
         safari.buttons["add-tags-button"].wait().tap()
-        addTagsView.tag(matching: tagString).wait()
+        addTagsView.tag(matching: "tag 1").wait()
     }
 }
