@@ -48,9 +48,19 @@ class CompactMainCoordinator: NSObject {
         account.viewController.tabBarItem.selectedImage = UIImage(asset: .tabSettingsSelected)
 
         tabBarController = UITabBarController()
-        tabBarController.tabBar.barTintColor = UIColor(.ui.white1)
-        tabBarController.tabBar.tintColor = UIColor(.ui.grey1)
-        tabBarController.tabBar.unselectedItemTintColor = UIColor(.ui.grey1)
+        let appearance = UITabBarAppearance()
+        let tabBar = tabBarController.tabBar
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = UIColor(.ui.white1)
+        appearance.compactInlineLayoutAppearance.normal.iconColor = UIColor(.ui.grey1)
+        appearance.compactInlineLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.ui.grey1)]
+        appearance.stackedLayoutAppearance.normal.iconColor = UIColor(.ui.grey1)
+        appearance.stackedLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.ui.grey1)]
+        appearance.inlineLayoutAppearance.normal.iconColor = UIColor(.ui.grey1)
+        appearance.inlineLayoutAppearance.normal.titleTextAttributes = [.foregroundColor: UIColor(.ui.grey1)]
+        tabBar.standardAppearance = appearance
+        tabBar.scrollEdgeAppearance = tabBar.standardAppearance
+
         tabBarController.viewControllers = [
             home.viewController,
             myList.viewController,

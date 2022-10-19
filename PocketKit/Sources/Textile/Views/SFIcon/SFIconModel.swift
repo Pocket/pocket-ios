@@ -9,7 +9,7 @@ public class SFIconModel: ObservableObject {
     var rotation: CGFloat
     var color: Color
 
-    public init(_ systemImage: String, size: CGFloat = 18, weight: Font.Weight = .regular, rotation: CGFloat = 0, color: Color = Color(.ui.black)) {
+    public init(_ systemImage: String, size: CGFloat = 18, weight: Font.Weight = .regular, rotation: CGFloat = 0, color: Color = Color(.ui.black1)) {
         self.systemImage = systemImage
         self.size = size
         self.weight = weight
