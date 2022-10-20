@@ -6,19 +6,26 @@ trigger_map:
   - push_branch: main
     pipeline: app-store-pipeline
   - pull_request_target_branch: '*'
-    pipeline: build-test-pipeline
+    pipeline: qa-build-test-pipeline
 
 pipelines:
-  build-test-pipeline:
+  # Will create a QA Build and run a test across multiple simulator devices
+  qa-build-test-pipeline:
     stages:
-      # Run the buld and test stage workflows
-      - build-test: {}
+      # Build a qa build, and build a test build in parallel
+      - build-and-test: {}
+      # Run multiple tests on simulators in parallel
+      - run-test-groups: {}
+      - deploy-test-results: {}
+  # Will create an app store build and upload it to itunes connect
   app-store-pipeline:
     stages:
       # First Build the release build (app store build)
       - release-build: {}
       # Run the steps to deploy to the app store
       - deploy-app-store: {}
+  # Will create an app store capabale build, but release it to Internal Testing users in Testflight.
+  # Intended to run nightly.
   nightly-internal-pipeline:
     stages:
       # First Build the release build (app store build)
@@ -26,11 +33,24 @@ pipelines:
       # Run the steps to deploy to testflight internally
       - deploy-internal-testflight: {}
 stages:
-  build-test:
+  build-and-test:
     workflows:
-      # Run the test and qa build flow in parallel
-      - test: {}
+      # Build a test build
+      - test-build: {}
+      # Build a qa build
       - qa-build: {}
+
+  run-test-groups:
+    workflows:
+      - run-tests-unit: {}
+      - run-tests-ui-1: {}
+      - run-tests-ui-2: {}
+      - run-tests-ui-3: {}
+
+  deploy-test-results:
+    workflows:
+      - deploy-test-results: {}
+
   release-build:
     workflows:
       - release-build: {}
@@ -93,6 +113,8 @@ workflows:
   _danger:
     steps:
       - cache-pull@2: {}
+      - activate-ssh-key@4: {}
+      - git-clone@6: {}
       - script@1:
           inputs:
             - content: |
@@ -104,6 +126,13 @@ workflows:
                 echo "Run danger"
                 swift run danger-swift ci
       - cache-push@2: {}
+
+  # Helper step to pull the built test bundle.
+  _pull_test_bundle:
+    steps:
+      - pull-intermediate-files@1:
+          inputs:
+            - artifact_sources: build-and-test.test-build
 
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
@@ -164,6 +193,10 @@ workflows:
             - tag: 8.0+$BITRISE_BUILD_NUMBER
             - commit: '$GIT_CLONE_COMMIT_HASH'
             - api_token: '$GITHUB_RELEASE_TOKEN'
+    before_run:
+      - _setup
+    after_run:
+      - _upload_sentry
 
   qa-build:
     steps:
@@ -188,19 +221,105 @@ workflows:
     after_run:
       - _upload_sentry
 
-  test:
+  test-build:
     steps:
       - file-downloader@1:
           inputs:
             - source: '$BITRISEIO_SECRETS_TEST_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install test secrets.xcconfig
-      - xcode-test@4:
+      - xcode-build-for-test:
           inputs:
-            - destination: platform=iOS Simulator,name=iPhone 14,OS=latest
-      - deploy-to-bitrise-io@2: {}
+            - destination: generic/platform=iOS Simulator
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_TEST_BUNDLE_PATH:BITRISE_TEST_BUNDLE_PATH'
     before_run:
       - _setup
+
+  run-tests-unit:
+    before_run:
+      - _pull_test_bundle
+    steps:
+      - xcode-test-without-building:
+          title: Unit Tests
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator16.0.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
+
+  run-tests-ui-1:
+    meta:
+      bitrise.io:
+        machine_type_id: g2-m1.8core
+    before_run:
+      - _pull_test_bundle
+    steps:
+      - xcode-test-without-building:
+          title: UI Test Suite 1
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator16.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_1_XCRESULT_PATH'
+
+  run-tests-ui-2:
+    meta:
+      bitrise.io:
+        machine_type_id: g2-m1.8core
+    before_run:
+      - _pull_test_bundle
+    steps:
+      - xcode-test-without-building:
+          title: UI Test Suite 2
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator16.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_2_XCRESULT_PATH'
+
+  run-tests-ui-3:
+    meta:
+      bitrise.io:
+        machine_type_id: g2-m1.8core
+    before_run:
+      - _pull_test_bundle
+    steps:
+      - xcode-test-without-building:
+          title: UI Test Suite 3
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator16.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_XCRESULT_PATH'
+
+  deploy-test-results:
+    steps:
+      - pull-intermediate-files@1:
+          inputs:
+            - artifact_sources: run-test-groups\..*
+      - script@1:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -eo pipefail
+
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+
+                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
+      - custom-test-results-export@0:
+          inputs:
+          - search_pattern: '*'
+          - base_path: $BITRISE_XCRESULT_PATH
+          - test_name: Pocket Tests
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_XCRESULT_PATH'
     after_run:
       - _danger
 
@@ -218,7 +337,8 @@ app:
     - opts:
         is_expand: false
       SKIP_APOLLO_CODEGEN: '1'
+
 meta:
   bitrise.io:
-    machine_type_id: g2.12core
+    machine_type_id: g2.4core
     stack: osx-xcode-14.0.x
