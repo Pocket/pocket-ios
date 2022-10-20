@@ -66,12 +66,7 @@ class SaveToPocketTests: XCTestCase {
         // typeText is flakey and cannot type "Tag 1" 100% of the time
         addTagsView.wait()
         addTagsView.newTagTextField.tap()
-        addTagsView.newTagTextField.typeText("T")
-        addTagsView.newTagTextField.typeText("a")
-        addTagsView.newTagTextField.typeText("g")
-        addTagsView.newTagTextField.typeText(" ")
-        addTagsView.newTagTextField.typeText("1")
-        addTagsView.newTagTextField.typeText("\n")
+        safari.typeText("Tag 1\n")
 
         addTagsView.tag(matching: "tag 1").wait()
 
