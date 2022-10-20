@@ -1,7 +1,7 @@
 {
   "configurations" : [
     {
-      "id" : "A4EB5A67-4AB5-4BAF-934F-5BDCE7E091F6",
+      "id" : "101CDED1-1A9D-4A85-8EDB-6090311C70C0",
       "name" : "Configuration 1",
       "options" : {
 
@@ -11,11 +11,6 @@
   "defaultOptions" : {
     "codeCoverage" : {
       "targets" : [
-        {
-          "containerPath" : "container:PocketKit",
-          "identifier" : "Analytics",
-          "name" : "Analytics"
-        },
         {
           "containerPath" : "container:Pocket.xcodeproj",
           "identifier" : "166A81AF2637406C0015AA1D",
@@ -35,6 +30,11 @@
           "containerPath" : "container:Pocket.xcodeproj",
           "identifier" : "65EC272428BA8AD50075E1DF",
           "name" : "PushNotificationStoryExtension"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Analytics",
+          "name" : "Analytics"
         },
         {
           "containerPath" : "container:PocketKit",
@@ -68,15 +68,17 @@
   "testTargets" : [
     {
       "skippedTests" : [
+        "AddTagsItemTests",
+        "ArchiveAnItemTests",
+        "ArchiveFiltersTests",
+        "ArchiveTests",
+        "BannerViewTests",
+        "DeleteAnItemTests",
+        "EditTagsTests",
+        "EmptyStateTests",
+        "FavoriteAnItemTests",
         "HomeTests",
-        "HomeWebViewTests",
-        "MyListFiltersTests",
-        "MyListTests",
-        "PullToRefreshTests",
-        "ReportARecommendationTests",
-        "SaveToPocketTests",
-        "ShareAnItemTests",
-        "SignOutTests"
+        "HomeWebViewTests"
       ],
       "target" : {
         "containerPath" : "container:Pocket.xcodeproj",

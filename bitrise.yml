@@ -45,6 +45,7 @@ stages:
       - run-tests-unit: {}
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
+      - run-tests-ui-3: {}
 
   deploy-test-results:
     workflows:
@@ -112,6 +113,8 @@ workflows:
   _danger:
     steps:
       - cache-pull@2: {}
+      - activate-ssh-key@4: {}
+      - git-clone@6: {}
       - script@1:
           inputs:
             - content: |
@@ -239,6 +242,7 @@ workflows:
       - _pull_test_bundle
     steps:
       - xcode-test-without-building:
+          title: Unit Tests
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator16.0.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16
@@ -247,10 +251,14 @@ workflows:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
 
   run-tests-ui-1:
+    meta:
+      bitrise.io:
+        machine_type_id: g2-m1.8core
     before_run:
       - _pull_test_bundle
     steps:
       - xcode-test-without-building:
+          title: UI Test Suite 1
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator16.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16
@@ -259,18 +267,36 @@ workflows:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_1_XCRESULT_PATH'
 
   run-tests-ui-2:
+    meta:
+      bitrise.io:
+        machine_type_id: g2-m1.8core
     before_run:
       - _pull_test_bundle
     steps:
       - xcode-test-without-building:
+          title: UI Test Suite 2
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator16.0-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16
-            - test_plan: UITests-2
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_2_XCRESULT_PATH'
 
+  run-tests-ui-3:
+    meta:
+      bitrise.io:
+        machine_type_id: g2-m1.8core
+    before_run:
+      - _pull_test_bundle
+    steps:
+      - xcode-test-without-building:
+          title: UI Test Suite 3
+          inputs:
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator16.0-arm64-x86_64.xctestrun'
+            - destination: platform=iOS Simulator,name=iPhone 14,OS=16
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_XCRESULT_PATH'
 
   deploy-test-results:
     steps:
@@ -283,23 +309,17 @@ workflows:
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                for item in "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}";
-                  do
-                    echo "Exporting ${item}"
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
 
-                    test_name=$(basename "$item" .xcresult)
-                    echo "Test name: $test_name"
-
-                    test_dir="${BITRISE_TEST_RESULT_DIR}/${test_name}"
-                    mkdir -p "${test_dir}"
-                    echo "Moving test result to: ${test_dir}"
-                    cp -R "${item}" "${test_dir}/$(basename ${item})"
-
-                    test_info="${test_dir}/test-info.json"
-                    echo "Creating Test info at: ${test_info}"
-                    echo "{ \"test-name\": \"${test_name}\" }" > "$test_info"
-                  done
-      - deploy-to-bitrise-io@2: {}
+                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
+      - custom-test-results-export@0:
+          inputs:
+          - search_pattern: '*'
+          - base_path: $BITRISE_XCRESULT_PATH
+          - test_name: Pocket Tests
+      - deploy-to-bitrise-io@2.1.1:
+          inputs:
+            - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_XCRESULT_PATH'
     after_run:
       - _danger
 
@@ -320,5 +340,5 @@ app:
 
 meta:
   bitrise.io:
-    machine_type_id: g2-m1.8core
+    machine_type_id: g2.4core
     stack: osx-xcode-14.0.x

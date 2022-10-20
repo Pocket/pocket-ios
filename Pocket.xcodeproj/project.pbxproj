@@ -188,6 +188,7 @@
 		65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
 		65EC272B28BA8AD50075E1DF /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		65EC273028BA8AD50075E1DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		65EDF6B22901979800D737E0 /* UITests-3.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-3.xctestplan"; sourceTree = "<group>"; };
 		8A289CD52899BD820030E5E0 /* BannerViewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BannerViewTests.swift; sourceTree = "<group>"; };
 		8A3E3DBB2864DB0500483564 /* EmptyStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateTests.swift; sourceTree = "<group>"; };
 		8A3EAA5028AACC9500392057 /* AddTagsItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagsItemTests.swift; sourceTree = "<group>"; };
@@ -279,6 +280,7 @@
 				6551C9D42900B27D00247C40 /* UnitTests.xctestplan */,
 				6551C9D62900B27D00247C40 /* UITests.xctestplan */,
 				6551C9D52900B27D00247C40 /* UITests-2.xctestplan */,
+				65EDF6B22901979800D737E0 /* UITests-3.xctestplan */,
 				16D47E7F26851AB40095D5A4 /* Assets.xcassets */,
 				166A81B32637406C0015AA1D /* Info.plist */,
 				650D169B28FFA54B00EE9339 /* Dangerfile.swift */,

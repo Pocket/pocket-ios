@@ -9,6 +9,60 @@
     }
   ],
   "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "166A81AF2637406C0015AA1D",
+          "name" : "Pocket (iOS)"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "F204A75F27E22EC50010E155",
+          "name" : "SaveToPocket"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "65EC272428BA8AD50075E1DF",
+          "name" : "PushNotificationStoryExtension"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "650FECCA28BA85F300A3CB0C",
+          "name" : "PushNotificationServiceExtension"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Analytics",
+          "name" : "Analytics"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "PocketKit",
+          "name" : "PocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "SaveToPocketKit",
+          "name" : "SaveToPocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "SharedPocketKit",
+          "name" : "SharedPocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Sync",
+          "name" : "Sync"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Textile",
+          "name" : "Textile"
+        }
+      ]
+    },
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [
@@ -22,7 +76,14 @@
         "DeleteAnItemTests",
         "EditTagsTests",
         "EmptyStateTests",
-        "FavoriteAnItemTests"
+        "FavoriteAnItemTests",
+        "MyListFiltersTests",
+        "MyListTests",
+        "PullToRefreshTests",
+        "ReportARecommendationTests",
+        "SaveToPocketTests",
+        "ShareAnItemTests",
+        "SignOutTests"
       ],
       "target" : {
         "containerPath" : "container:Pocket.xcodeproj",
