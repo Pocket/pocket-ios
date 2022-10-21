@@ -5,7 +5,7 @@
 import Apollo
 import ApolloAPI
 
-public extension Apollo.ApolloClientProtocol {
+public extension ApolloClientProtocol {
     func fetch<Query: GraphQLQuery>(query: Query, resultHandler: GraphQLResultHandler<Query.Data>? = nil) -> Cancellable {
         return fetch(
             query: query,

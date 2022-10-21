@@ -350,7 +350,7 @@ extension PocketSource {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: TagUpdateMutation(input: PocketGraph.TagUpdateInput(id: remoteID, name: name))
+            mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
         )
 
         enqueue(operation: operation, task: .renameTag(remoteID: remoteID, name: name))
@@ -390,7 +390,7 @@ extension PocketSource {
         if tags.isEmpty {
             mutation = AnyMutation(UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID))
         } else {
-            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [PocketGraph.SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
+            mutation = AnyMutation(ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: tags)]))
         }
         return mutation
     }
@@ -533,7 +533,7 @@ extension PocketSource {
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
-                    mutation: TagUpdateMutation(input: PocketGraph.TagUpdateInput(id: remoteID, name: name))
+                    mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             }

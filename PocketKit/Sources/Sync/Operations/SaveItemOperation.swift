@@ -25,7 +25,7 @@ class SaveItemOperation: SyncOperation {
     }
 
     func execute() async -> SyncOperationResult {
-        let input = PocketGraph.SavedItemUpsertInput(url: url.absoluteString)
+        let input = SavedItemUpsertInput(url: url.absoluteString)
         let mutation = SaveItemMutation(input: input)
 
         do {
