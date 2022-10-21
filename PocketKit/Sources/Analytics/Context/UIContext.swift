@@ -85,6 +85,7 @@ extension UIContext {
         case loggedOut = "logged_out"
         case logIn = "log_in"
         case signUp = "sign_up"
+        case taggedChip = "taggedChip"
     }
 }
 
@@ -129,6 +130,7 @@ extension UIContext {
         public let myList = UIContext(type: .list, hierarchy: 0, identifier: .myList)
         public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
         public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
+        public let taggedChip = UIContext(type: .button, hierarchy: 0, identifier: .taggedChip)
 
         public func item(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)

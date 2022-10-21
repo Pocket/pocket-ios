@@ -93,6 +93,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             case .tagged:
                 presentedTagsFilter = TagsFilterViewModel(
                     source: source,
+                    tracker: tracker.childTracker(hosting: .myList.screen),
                     fetchedTags: { [weak self] in
                         self?.source.fetchAllTags()
                     }(),

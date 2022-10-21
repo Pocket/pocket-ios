@@ -392,6 +392,7 @@ extension ArchivedItemsListViewModel {
                 case .tagged:
                     presentedTagsFilter = TagsFilterViewModel(
                         source: source,
+                        tracker: tracker,
                         fetchedTags: { [weak self] in
                             self?.source.fetchAllTags()
                         }(),

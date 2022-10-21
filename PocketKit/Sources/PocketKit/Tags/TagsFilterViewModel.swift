@@ -19,6 +19,7 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     private var fetchedTags: [Tag]?
+    private let tracker: Tracker
     private let source: Source
     var selectAllAction: () -> Void?
 
@@ -28,8 +29,9 @@ class TagsFilterViewModel: ObservableObject {
     @Published
     var refreshView: Bool? = false
 
-    init(source: Source, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
+    init(source: Source, tracker: Tracker, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
         self.source = source
+        self.tracker = tracker
         self.fetchedTags = fetchedTags
         self.selectAllAction = selectAllAction
     }
@@ -53,6 +55,14 @@ class TagsFilterViewModel: ObservableObject {
         selectedTag = tag
         if case .notTagged = tag {
             // TODO: Track Analytics (IN-151)
+            // TODO: tracking does not currently exist
+        } else {
+            let event = SnowplowEngagement(type: .general, value: nil)
+            let taggedChipContexts: [Context] = [UIContext.myList.taggedChip]
+            tracker.track(event: event, taggedChipContexts)
+
+            let homeScreenContexts: [Context] = [UIContext.home.screen]
+            tracker.track(event: event, homeScreenContexts)
         }
     }
 

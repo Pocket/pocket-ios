@@ -8,6 +8,7 @@ class TagsFilterViewModelTests: XCTestCase {
     private var subscriptions: [AnyCancellable]!
     var source: MockSource!
     var space: Space!
+    var tracker: MockTracker!
 
     override func setUp() {
         space = .testSpace()
@@ -22,7 +23,7 @@ class TagsFilterViewModelTests: XCTestCase {
     }
 
     private func subject(source: Source? = nil, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
-        TagsFilterViewModel(source: source ?? self.source, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
+        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
     }
 
     func test_getAllTags_withThreeTags_returnsMostRecentTags() {
