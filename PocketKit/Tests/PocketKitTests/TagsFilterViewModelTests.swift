@@ -8,10 +8,12 @@ class TagsFilterViewModelTests: XCTestCase {
     private var subscriptions: [AnyCancellable]!
     var source: MockSource!
     var space: Space!
+    private var tracker: MockTracker!
 
     override func setUp() {
         space = .testSpace()
         source = MockSource()
+        tracker = MockTracker()
         subscriptions = []
     }
 
@@ -22,7 +24,7 @@ class TagsFilterViewModelTests: XCTestCase {
     }
 
     private func subject(source: Source? = nil, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
-        TagsFilterViewModel(source: source ?? self.source, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
+        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
     }
 
     func test_getAllTags_withThreeTags_returnsMostRecentTags() {
@@ -69,7 +71,7 @@ class TagsFilterViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectTag(.notTagged)
-        wait(for: [expectSeletedTagCall], timeout: 1)
+        wait(for: [expectSeletedTagCall], timeout: 5)
     }
 
     func test_selectedTag_withNotTagged_sendsPredicate() {
@@ -86,7 +88,7 @@ class TagsFilterViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectTag(.tag("tag 0"))
-        wait(for: [expectSeletedTagCall], timeout: 1)
+        wait(for: [expectSeletedTagCall], timeout: 5)
     }
 
     func test_deleteTag_removesExistingTags() {

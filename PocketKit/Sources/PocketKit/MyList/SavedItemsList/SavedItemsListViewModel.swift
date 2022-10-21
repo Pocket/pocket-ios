@@ -71,9 +71,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             .dropFirst()
             .receive(on: DispatchQueue.main).sink { [weak self] _ in
 
-            self?.fetch()
-            self?.presentedSortFilterViewModel = nil
-        }.store(in: &subscriptions)
+                self?.fetch()
+                self?.presentedSortFilterViewModel = nil
+            }.store(in: &subscriptions)
 
         $selectedItem.sink { [weak self] itemSelected in
             guard itemSelected == nil else { return }
@@ -93,6 +93,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             case .tagged:
                 presentedTagsFilter = TagsFilterViewModel(
                     source: source,
+                    tracker: tracker,
                     fetchedTags: { [weak self] in
                         self?.source.fetchAllTags()
                     }(),
@@ -191,6 +192,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func filterByTagAction() -> UIAction? {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: Context = UIContext.button(identifier: .tagBadge)
+        tracker.track(event: event, [contexts])
         return UIAction(title: "", handler: { [weak self] action in
             let button = action.sender as? UIButton
             guard let name = button?.titleLabel?.text else { return }
@@ -327,7 +331,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 guard let fetchedObjects = itemsController.fetchedObjects,
                       fetchedObjects.count > index else {
                     return .placeholder(index)
-                      }
+                }
 
                 return .item(fetchedObjects[index].objectID)
             }
@@ -467,6 +471,10 @@ extension SavedItemsListViewModel {
                 listOptions: listOptions,
                 sender: sender
             )
+        case .tagged:
+            filterTagAnalytics()
+            selectedFilters.removeAll()
+            selectedFilters.insert(filter)
         default:
             if selectedFilters.contains(filter) {
                 selectedFilters.remove(filter)
@@ -476,6 +484,12 @@ extension SavedItemsListViewModel {
                 selectedFilters.insert(filter)
             }
         }
+    }
+
+    private func filterTagAnalytics() {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: Context = UIContext.button(identifier: .taggedChip)
+        tracker.track(event: event, [contexts])
     }
 }
 

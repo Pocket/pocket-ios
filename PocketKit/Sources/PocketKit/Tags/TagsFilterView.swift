@@ -55,7 +55,7 @@ struct TagsFilterView: View {
                 }
                 .listStyle(.plain)
                 .navigationBarTitleDisplayMode(.inline)
-                .tagsHeaderToolBar($isEditing)
+                .tagsHeaderToolBar($isEditing, viewModel: viewModel)
                 Spacer()
                 if isEditing {
                     EditBottomBar(selection: $selection, tagsSelected: $tagsSelected, showRenameAlert: $showRenameAlert, showDeleteAlert: $showDeleteAlert)
@@ -97,11 +97,14 @@ struct TagsFilterView: View {
 struct EditModeView: View {
     @Environment(\.editMode) var editMode
     @Binding var isEditing: Bool
+    @ObservedObject
+    var viewModel: TagsFilterViewModel
 
     var body: some View {
         EditButton()
             .onChange(of: editMode?.wrappedValue.isEditing, perform: { newValue in
                 isEditing = newValue ?? false
+                if isEditing { viewModel.trackEditAsOverflowAnalytics() }
             })
             .accessibilityIdentifier("edit-button")
     }
@@ -126,14 +129,16 @@ struct EditBottomBar: View {
                 tagsSelected = selection
                 showDeleteAlert = true
             }
-        .disabled(selection.isEmpty)
-                .accessibilityIdentifier("delete-button")
+            .disabled(selection.isEmpty)
+            .accessibilityIdentifier("delete-button")
         }
     }
 }
 
 struct TagsHeaderToolBar: ViewModifier {
     @Binding var isEditing: Bool
+    @ObservedObject
+    var viewModel: TagsFilterViewModel
     func body(content: Content) -> some View {
         content
             .toolbar {
@@ -146,15 +151,15 @@ struct TagsHeaderToolBar: ViewModifier {
                     Image(asset: .tag).foregroundColor(Color(.ui.grey5))
                 }
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    EditModeView(isEditing: $isEditing)
+                    EditModeView(isEditing: $isEditing, viewModel: viewModel)
                 }
             }
     }
 }
 
 extension View {
-    func tagsHeaderToolBar(_ isEditing: Binding<Bool>) -> some View {
-        modifier(TagsHeaderToolBar(isEditing: isEditing))
+    func tagsHeaderToolBar(_ isEditing: Binding<Bool>, viewModel: TagsFilterViewModel) -> some View {
+        modifier(TagsHeaderToolBar(isEditing: isEditing, viewModel: viewModel))
     }
 
     public func alert(isPresented: Binding<Bool>, _ alert: TextAlert) -> some View {
