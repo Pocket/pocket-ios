@@ -34,7 +34,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     var selectedItem: SelectedItem?
 
     @Published
-     var presentedSortFilterViewModel: SortMenuViewModel?
+    var presentedSortFilterViewModel: SortMenuViewModel?
 
     var emptyState: EmptyStateViewModel? {
         return selectedFilters.contains(.favorites) ? FavoritesEmptyStateViewModel() : ArchiveEmptyStateViewModel()
@@ -108,7 +108,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
                 self?.refresh({
                     self?.presentedSortFilterViewModel = nil
                 })
-        }.store(in: &subscriptions)
+            }.store(in: &subscriptions)
     }
 
     private func savedItem(_ itemID: ItemIdentifier) -> SavedItem? {
@@ -328,6 +328,9 @@ extension ArchivedItemsListViewModel {
     }
 
     func filterByTagAction() -> UIAction? {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: Context = UIContext.button(identifier: .tagBadge)
+        tracker.track(event: event, [contexts])
         return UIAction(title: "", handler: { [weak self] action in
             let button = action.sender as? UIButton
             guard let name = button?.titleLabel?.text else { return }
@@ -390,8 +393,10 @@ extension ArchivedItemsListViewModel {
                 case .all:
                     return nil
                 case .tagged:
+                    filterTagAnalytics()
                     presentedTagsFilter = TagsFilterViewModel(
                         source: source,
+                        tracker: tracker,
                         fetchedTags: { [weak self] in
                             self?.source.fetchAllTags()
                         }(),
@@ -420,6 +425,12 @@ extension ArchivedItemsListViewModel {
 
             _snapshot.reloadSections([.filters])
         }
+    }
+
+    private func filterTagAnalytics() {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: Context = UIContext.button(identifier: .taggedChip)
+        tracker.track(event: event, [contexts])
     }
 
     private func updateSnapshotForTagFilter(with name: String, and predicate: NSPredicate) {
