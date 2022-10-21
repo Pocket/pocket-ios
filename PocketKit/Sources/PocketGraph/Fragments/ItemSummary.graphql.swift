@@ -15,6 +15,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
       title
       language
       topImageUrl
+      topImageUrl
       timeToRead
       domain
       datePublished
@@ -42,6 +43,13 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
       syndicatedArticle {
         __typename
         itemId
+        mainImage
+        title
+        excerpt
+        publisher {
+          __typename
+          name
+        }
       }
     }
     """ }
@@ -191,9 +199,37 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     public static var __parentType: ParentType { PocketGraph.Objects.SyndicatedArticle }
     public static var __selections: [Selection] { [
       .field("itemId", ID?.self),
+      .field("mainImage", String?.self),
+      .field("title", String.self),
+      .field("excerpt", String?.self),
+      .field("publisher", Publisher?.self),
     ] }
 
     /// The item id of this Syndicated Article
     public var itemId: ID? { __data["itemId"] }
+    /// Primary image to use in surfacing this content
+    public var mainImage: String? { __data["mainImage"] }
+    /// Title of syndicated article
+    public var title: String { __data["title"] }
+    /// Excerpt 
+    public var excerpt: String? { __data["excerpt"] }
+    /// The manually set publisher information for this article
+    public var publisher: Publisher? { __data["publisher"] }
+
+    /// SyndicatedArticle.Publisher
+    ///
+    /// Parent Type: `Publisher`
+    public struct Publisher: PocketGraph.SelectionSet {
+      public let __data: DataDict
+      public init(data: DataDict) { __data = data }
+
+      public static var __parentType: ParentType { PocketGraph.Objects.Publisher }
+      public static var __selections: [Selection] { [
+        .field("name", String?.self),
+      ] }
+
+      /// Name of the publisher of the article
+      public var name: String? { __data["name"] }
+    }
   }
 }

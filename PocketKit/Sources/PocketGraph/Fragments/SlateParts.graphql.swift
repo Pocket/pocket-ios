@@ -21,6 +21,10 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
           __typename
           ...ItemSummary
         }
+        curatedInfo {
+          __typename
+          ...CuratedInfoParts
+        }
       }
     }
     """ }
@@ -61,6 +65,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
     public static var __selections: [Selection] { [
       .field("id", ID?.self),
       .field("item", Item.self),
+      .field("curatedInfo", CuratedInfo?.self),
     ] }
 
     /// A generated id from the Data and Learning team that represents the Recommendation
@@ -69,6 +74,7 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
     /// We extend it in this service to add an extra field ('curationInfo') to the Recommendation entity.
     /// The key for this entity is the 'itemId' found within the Item entity which is owned by the Parser service.
     public var item: Item { __data["item"] }
+    public var curatedInfo: CuratedInfo? { __data["curatedInfo"] }
 
     /// Recommendation.Item
     ///
@@ -147,6 +153,30 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
 
           public var domainMetadataParts: DomainMetadataParts { _toFragment() }
         }
+      }
+    }
+
+    /// Recommendation.CuratedInfo
+    ///
+    /// Parent Type: `CuratedInfo`
+    public struct CuratedInfo: PocketGraph.SelectionSet {
+      public let __data: DataDict
+      public init(data: DataDict) { __data = data }
+
+      public static var __parentType: ParentType { PocketGraph.Objects.CuratedInfo }
+      public static var __selections: [Selection] { [
+        .fragment(CuratedInfoParts.self),
+      ] }
+
+      public var excerpt: String? { __data["excerpt"] }
+      public var imageSrc: Url? { __data["imageSrc"] }
+      public var title: String? { __data["title"] }
+
+      public struct Fragments: FragmentContainer {
+        public let __data: DataDict
+        public init(data: DataDict) { __data = data }
+
+        public var curatedInfoParts: CuratedInfoParts { _toFragment() }
       }
     }
   }

@@ -1,5 +1,6 @@
 import Foundation
 import Apollo
+import ApolloAPI
 import PocketGraph
 
 public class PocketSaveService: SaveService {
@@ -163,7 +164,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let space: Space
     private let savedItem: SavedItem
     private let mutation: any GraphQLMutation
-    private let savedItemParts: (GraphQLSelectionSet) -> SavedItemParts?
+    private let savedItemParts: (AnySelectionSet) -> SavedItemParts?
 
     private var task: Cancellable?
 
@@ -173,7 +174,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
         space: Space,
         savedItem: SavedItem,
         mutation: Mutation,
-        savedItemParts: @escaping (GraphQLSelectionSet) -> SavedItemParts?
+        savedItemParts: @escaping (AnySelectionSet) -> SavedItemParts?
     ) {
         self.apollo = apollo
         self.osNotifications = osNotifications

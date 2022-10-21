@@ -19,15 +19,6 @@
       }
     },
     {
-      "identity" : "danger-swift-coverage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/f-meloni/danger-swift-coverage",
-      "state" : {
-        "revision" : "6a21a6e595e2b13443428942ce128b3ba6b827ee",
-        "version" : "1.2.1"
-      }
-    },
-    {
       "identity" : "down",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/johnxnguyen/Down",
@@ -64,39 +55,12 @@
       }
     },
     {
-      "identity" : "logger",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/shibapm/Logger",
-      "state" : {
-        "revision" : "53c3ecca5abe8cf46697e33901ee774236d94cce",
-        "version" : "0.2.3"
-      }
-    },
-    {
       "identity" : "lottie-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/airbnb/lottie-ios.git",
       "state" : {
         "revision" : "314537ec697719fa33a9d48210f4d06a463286d3",
         "version" : "3.4.3"
-      }
-    },
-    {
-      "identity" : "octokit.swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/nerdishbynature/octokit.swift",
-      "state" : {
-        "revision" : "9521cdff919053868ab13cd08a228f7bc1bde2a9",
-        "version" : "0.11.0"
-      }
-    },
-    {
-      "identity" : "requestkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/nerdishbynature/RequestKit.git",
-      "state" : {
-        "revision" : "fd5e9e99aada7432170366c9e95967011ce13bad",
-        "version" : "2.4.0"
       }
     },
     {
@@ -127,15 +91,6 @@
       }
     },
     {
-      "identity" : "swift",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/danger/swift.git",
-      "state" : {
-        "revision" : "0d62144a8bdfdb087c476ac3e88e96491c158a7b",
-        "version" : "3.14.0"
-      }
-    },
-    {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
@@ -151,15 +106,6 @@
       "state" : {
         "revision" : "f504716c27d2e5d4144fa4794b12129301d17729",
         "version" : "1.0.3"
-      }
-    },
-    {
-      "identity" : "version",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mxcl/Version",
-      "state" : {
-        "revision" : "1fe824b80d89201652e7eca7c9252269a1d85e25",
-        "version" : "2.0.1"
       }
     },
     {
