@@ -6,10 +6,12 @@ import ApolloAPI
 /// A SavedItem can be one of these content types
 public enum SavedItemsContentType: String, EnumType {
   /// Item is a parsed article that contains videos
-  @available(*, deprecated, message: "Use `HAS_VIDEO`.")
+  ///
+  /// **Deprecated**: Use `HAS_VIDEO`.
   case video = "VIDEO"
   /// Item is a parsed page can be opened in reader view
-  @available(*, deprecated, message: "Use `IS_READABLE`.")
+  ///
+  /// **Deprecated**: Use `IS_READABLE`.
   case article = "ARTICLE"
   /// Item is an image
   case isImage = "IS_IMAGE"

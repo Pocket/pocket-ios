@@ -1,5 +1,6 @@
 import Foundation
 import Apollo
+import ApolloAPI
 import Combine
 import PocketGraph
 
@@ -96,16 +97,17 @@ class FetchList: SyncOperation {
     private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
         let query = FetchSavesQuery(
             token: token,
-            pagination: PaginationInput(
+            pagination: .some(PaginationInput(
                 after: pagination.cursor ?? .none,
-                first: pagination.maxItems
-            )
+                first: .some(pagination.maxItems)
+            )),
+            savedItemsFilter: .none
         )
 
         if let updatedSince = lastRefresh.lastRefresh {
-            query.savedItemsFilter = SavedItemsFilter(updatedSince: .init(integerLiteral: updatedSince))
+            query.savedItemsFilter = .some(SavedItemsFilter(updatedSince: .some(updatedSince)))
         } else {
-            query.savedItemsFilter = SavedItemsFilter(status: .init(.unread))
+            query.savedItemsFilter = .some(SavedItemsFilter(status: .init(.unread)))
         }
 
         return try await apollo.fetch(query: query)

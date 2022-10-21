@@ -37,7 +37,7 @@ To download a new version of [`PocketKit/Sources/Sync/API.swift`](./PocketKit/So
 
 ```bash
 cd PocketKit/
-swift package --disable-sandbox --allow-writing-to-package-directory apollo-fetch-schema
+swift package --disable-sandbox --allow-writing-to-package-directory apollo-generate
 ```
 
 ### Future

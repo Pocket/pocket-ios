@@ -239,13 +239,13 @@ enum CorpusLanguage {
 }
 
 type CorpusRecommendation {
-  """Content meta data."""
-  corpusItem: CorpusItem!
-
   """
   Clients should include this id in the `corpus_recommendation` Snowplow entity for impression, content_open, and engagement events related to this recommendation. This id is different across users, across requests, and across corpus items. The recommendation-api service associates metadata with this id to join and aggregate recommendations in our data warehouse.
   """
   id: ID!
+
+  """Content meta data."""
+  corpusItem: CorpusItem!
 
   """
   Reason why this CorpusItem is recommended to the user, or null if no reason is available.
@@ -257,21 +257,21 @@ type CorpusRecommendation {
 This is the same as Slate but in this type all recommendations are backed by CorpusItems. This means that the editorial team has editorial control over the items served by this endpoint.
 """
 type CorpusSlate {
-  """Recommendations for the current request context."""
-  recommendations(count: Int = 10): [CorpusRecommendation!]!
-
-  """
-  The display headline for the slate. Surface context may be required to render determine what to display. This will depend on if we connect the copy to the Surface, SlateExperiment, or Slate.
-  """
-  headline: String!
-
   """UUID"""
   id: ID!
+
+  """Recommendations for the current request context."""
+  recommendations(count: Int = 10): [CorpusRecommendation!]!
 
   """
   Indicates the main type of reason why recommendations are included in this slate, or null if none is available.
   """
   recommendationReasonType: RecommendationReasonType
+
+  """
+  The display headline for the slate. Surface context may be required to render determine what to display. This will depend on if we connect the copy to the Surface, SlateExperiment, or Slate.
+  """
+  headline: String!
 
   """
   A smaller, secondary headline that can be displayed to provide additional context on the slate.
@@ -286,11 +286,11 @@ type CorpusSlate {
 
 """A collection of slates."""
 type CorpusSlateLineup {
-  """Slates."""
-  slates(count: Int = 15): [CorpusSlate!]!
-
   """UUID"""
   id: ID!
+
+  """Slates."""
+  slates(count: Int = 15): [CorpusSlate!]!
 }
 
 """Input for creating a new User-highlighted passage on a SavedItem."""
@@ -1198,12 +1198,6 @@ type Recommendation {
   curatedInfo: CuratedInfo
 
   """
-  The ID of the item this recommendation represents
-  TODO: Use apollo federation to turn this into an Item type.
-  """
-  itemId: ID!
-
-  """
   A generated id from the Data and Learning team that represents the Recommendation
   """
   id: ID
@@ -1212,6 +1206,12 @@ type Recommendation {
   A generated id from the Data and Learning team that represents the Recommendation - Deprecated
   """
   feedItemId: ID @deprecated(reason: "Use `id`")
+
+  """
+  The ID of the item this recommendation represents
+  TODO: Use apollo federation to turn this into an Item type.
+  """
+  itemId: ID!
 
   """The source of the recommendation"""
   recSrc: String!
@@ -1785,13 +1785,13 @@ type SlateLineup {
   """
   requestId: ID!
 
-  """An ordered list of slates for the client to display"""
-  slates: [Slate!]!
-
   """
   A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing.
   """
   experimentId: ID!
+
+  """An ordered list of slates for the client to display"""
+  slates: [Slate!]!
 }
 
 """

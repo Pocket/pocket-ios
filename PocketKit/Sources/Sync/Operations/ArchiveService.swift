@@ -1,4 +1,5 @@
 import Apollo
+import ApolloAPI
 import Combine
 import CoreData
 import PocketGraph
@@ -365,13 +366,13 @@ private class FetchArchivePagesOperation: AsyncOperation {
             }
             let result = try await apollo.fetch(
                 query: SavedItemSummariesQuery(
-                    pagination: PaginationInput(
-                        after: cursor,
-                        first: pageSize
-                    ),
+                    pagination: .some(PaginationInput(
+                        after: cursor ?? .none,
+                        first: .some(pageSize)
+                    )),
 
-                    filter: SavedItemsFilter(isFavorite: isFavorite, isArchived: true, tagNames: tagNames),
-                    sort: SavedItemsSort(sortBy: .archivedAt, sortOrder: sortOrder)
+                    filter: .some(SavedItemsFilter(isFavorite: isFavorite ?? .none, isArchived: true, tagNames: .some(tagNames))),
+                    sort: .some(SavedItemsSort(sortBy: .init(.archivedAt), sortOrder: .init(sortOrder)))
                 )
             )
             guard !isCancelled else { return }
