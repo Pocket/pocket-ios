@@ -48,21 +48,24 @@ class TagsFilterViewModel: ObservableObject {
         } else {
             allTags.append(contentsOf: fetchedTags)
         }
+
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: [Context] = [UIContext.home.screen, UIContext.myList.taggedChip]
+        tracker.track(event: event, contexts)
+
         return allTags
     }
 
     func selectTag(_ tag: SelectedTag) {
         selectedTag = tag
         if case .notTagged = tag {
-            // TODO: Track Analytics (IN-151)
-            // TODO: tracking does not currently exist
+            let event = SnowplowEngagement(type: .general, value: nil)
+            let contexts: [Context] = [UIContext.home.screen, UIContext.myList.notTagged]
+            tracker.track(event: event, contexts)
         } else {
             let event = SnowplowEngagement(type: .general, value: nil)
-            let taggedChipContexts: [Context] = [UIContext.myList.taggedChip]
-            tracker.track(event: event, taggedChipContexts)
-
-            let homeScreenContexts: [Context] = [UIContext.home.screen]
-            tracker.track(event: event, homeScreenContexts)
+            let contexts: [Context] = [UIContext.home.screen, UIContext.myList.taggedChip]
+            tracker.track(event: event, contexts)
         }
     }
 

@@ -86,6 +86,8 @@ extension UIContext {
         case logIn = "log_in"
         case signUp = "sign_up"
         case taggedChip = "taggedChip"
+        case notTagged = "notTagged"
+        case tagBadge = "tagBadge"
     }
 }
 
@@ -131,6 +133,8 @@ extension UIContext {
         public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
         public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
         public let taggedChip = UIContext(type: .button, hierarchy: 0, identifier: .taggedChip)
+        public let notTagged = UIContext(type: .button, hierarchy: 0, identifier: .notTagged)
+        public let tagBadge = UIContext(type: .button, hierarchy: 0, identifier: .tagBadge)
 
         public func item(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
