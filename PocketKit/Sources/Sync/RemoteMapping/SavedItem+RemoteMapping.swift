@@ -30,7 +30,6 @@ extension SavedItem {
         isArchived = remote.isArchived
         isFavorite = remote.isFavorite
 
-
         guard let context = managedObjectContext,
               let itemParts = remote.item.asItem?.fragments.itemParts else {
             return
