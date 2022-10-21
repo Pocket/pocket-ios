@@ -5,6 +5,7 @@
 import XCTest
 import CoreData
 import Apollo
+import PocketGraph
 import Combine
 
 @testable import Sync
@@ -398,7 +399,7 @@ class PocketSourceTests: XCTestCase {
     func test_fetchOfflineContent_fetchesOfflineContent() async throws {
         apollo.stubFetch(
             toReturnFixtureNamed: "single-item-details",
-            asResultType: SavedItemByIdQuery.self
+            asResultType: SavedItemByIDQuery.self
         )
 
         let savedItem = try space.createSavedItem(remoteID: "a-saved-item")
@@ -421,7 +422,7 @@ class PocketSourceTests: XCTestCase {
 
         apollo.stubFetch(
             toReturnFixtureNamed: "recommendation-detail",
-            asResultType: ItemByIdQuery.self
+            asResultType: ItemByIDQuery.self
         )
 
         let source = subject()

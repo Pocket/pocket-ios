@@ -1,5 +1,6 @@
 import XCTest
 import Apollo
+import PocketGraph
 import Combine
 import CoreData
 

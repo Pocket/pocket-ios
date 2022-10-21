@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 import Apollo
+import PocketGraph
 
 @testable import Sync
 

@@ -4,6 +4,7 @@
 
 import Foundation
 import Apollo
+import ApolloAPI
 @testable import Sync
 
 class MockApolloClient: ApolloClientProtocol {
@@ -172,11 +173,6 @@ extension MockApolloClient {
 extension MockApolloClient {
     var store: ApolloStore {
         fatalError("\(Self.self).\(#function) is not implemented")
-    }
-
-    var cacheKeyForObject: CacheKeyForObject? {
-        get { fatalError("\(Self.self).\(#function) is not implemented") }
-        set { fatalError("\(Self.self).\(#function) is not implemented") }
     }
 
     @discardableResult
