@@ -13,6 +13,7 @@ class TagsFilterViewModelTests: XCTestCase {
     override func setUp() {
         space = .testSpace()
         source = MockSource()
+        tracker = MockTracker()
         subscriptions = []
     }
 
