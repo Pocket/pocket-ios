@@ -467,6 +467,10 @@ extension SavedItemsListViewModel {
                 listOptions: listOptions,
                 sender: sender
             )
+        case .tagged:
+            filterTagOverflowAnalytics()
+            selectedFilters.removeAll()
+            selectedFilters.insert(filter)
         default:
             if selectedFilters.contains(filter) {
                 selectedFilters.remove(filter)
@@ -476,6 +480,12 @@ extension SavedItemsListViewModel {
                 selectedFilters.insert(filter)
             }
         }
+    }
+
+    private func filterTagOverflowAnalytics() {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: [Context] = [UIContext.myList.tagsOverflow]
+        tracker.track(event: event, contexts)
     }
 }
 
