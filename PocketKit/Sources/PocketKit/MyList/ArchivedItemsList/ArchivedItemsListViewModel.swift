@@ -328,6 +328,9 @@ extension ArchivedItemsListViewModel {
     }
 
     func filterByTagAction() -> UIAction? {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: [Context] = [UIContext.home.screen, UIContext.myList.tagBadge]
+        tracker.track(event: event, contexts)
         return UIAction(title: "", handler: { [weak self] action in
             let button = action.sender as? UIButton
             guard let name = button?.titleLabel?.text else { return }
