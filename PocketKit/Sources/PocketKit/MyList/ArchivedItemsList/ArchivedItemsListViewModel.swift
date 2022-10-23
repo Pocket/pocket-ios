@@ -390,8 +390,10 @@ extension ArchivedItemsListViewModel {
                 case .all:
                     return nil
                 case .tagged:
+                    filterTagOverflowAnalytics()
                     presentedTagsFilter = TagsFilterViewModel(
                         source: source,
+                        tracker: tracker,
                         fetchedTags: { [weak self] in
                             self?.source.fetchAllTags()
                         }(),
@@ -420,6 +422,12 @@ extension ArchivedItemsListViewModel {
 
             _snapshot.reloadSections([.filters])
         }
+    }
+
+    private func filterTagOverflowAnalytics() {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: [Context] = [UIContext.myList.tagsOverflow]
+        tracker.track(event: event, contexts)
     }
 
     private func updateSnapshotForTagFilter(with name: String, and predicate: NSPredicate) {

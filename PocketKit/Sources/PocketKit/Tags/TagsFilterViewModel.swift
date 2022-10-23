@@ -20,6 +20,7 @@ class TagsFilterViewModel: ObservableObject {
 
     private var fetchedTags: [Tag]?
     private let source: Source
+    private let tracker: Tracker
     var selectAllAction: () -> Void?
 
     @Published
@@ -28,8 +29,9 @@ class TagsFilterViewModel: ObservableObject {
     @Published
     var refreshView: Bool? = false
 
-    init(source: Source, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
+    init(source: Source, tracker: Tracker, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
         self.source = source
+        self.tracker = tracker
         self.fetchedTags = fetchedTags
         self.selectAllAction = selectAllAction
     }
@@ -57,6 +59,9 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     func delete(tags: [String]) {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: [Context] = [UIContext.myList.tagsDelete]
+        tracker.track(event: event, contexts)
         tags.forEach { tag in
             guard let tag: Tag = fetchedTags?.filter({ $0.name == tag }).first else { return }
             source.deleteTag(tag: tag)
@@ -64,6 +69,9 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     func rename(from oldName: String, to newName: String) {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: [Context] = [UIContext.myList.tagsSaveChanges]
+        tracker.track(event: event, contexts)
         guard let tag: Tag = fetchedTags?.filter({ $0.name == oldName }).first else { return }
         source.renameTag(from: tag, to: newName)
         refreshView = true
