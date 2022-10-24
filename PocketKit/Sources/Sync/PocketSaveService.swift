@@ -219,9 +219,11 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     }
 
     private func storeUnresolvedSavedItem() {
-        let unresolved: UnresolvedSavedItem = space.new()
-        unresolved.savedItem = savedItem
-        try? space.save()
+        try? space.context.performAndWait {
+            let unresolved: UnresolvedSavedItem = space.new()
+            unresolved.savedItem = savedItem
+            try space.save()
+        }
 
         osNotifications.post(name: .unresolvedSavedItemCreated)
     }
