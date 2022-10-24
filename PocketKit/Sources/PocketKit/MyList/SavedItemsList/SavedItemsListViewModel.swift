@@ -92,7 +92,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 return NSPredicate(format: "isFavorite = true")
             case .tagged:
                 let event = SnowplowEngagement(type: .general, value: nil)
-                let contexts: [Context] = [UIContext.home.screen, UIContext.myList.taggedChip]
+                let contexts: [Context] = [UIContext.myList.screen, UIContext.myList.taggedChip]
                 tracker.track(event: event, contexts)
                 presentedTagsFilter = TagsFilterViewModel(
                     source: source,
@@ -196,7 +196,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     func filterByTagAction() -> UIAction? {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: [Context] = [UIContext.home.screen, UIContext.myList.tagBadge]
+        let contexts: [Context] = [UIContext.myList.screen, UIContext.myList.tagBadge]
         tracker.track(event: event, contexts)
         return UIAction(title: "", handler: { [weak self] action in
             let button = action.sender as? UIButton
