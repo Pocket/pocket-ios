@@ -1,6 +1,5 @@
 import Foundation
 import Apollo
-import ApolloAPI
 import PocketGraph
 
 public class PocketSaveService: SaveService {

@@ -49,12 +49,6 @@ We plan on implementing the following changes in the future:
 
 ## Build Targets
 
-### Apollo CodeGen
-
-Apollo CodeGen is a build target setup to download and generate the GraphQL schemas provided by the [Pocket Graph](https://github.com/Pocket/client-api).
-
-How to use it can be seen in [Generating API Schema](#Generating API Schema) above.
-
 ### Pocket Kit
 
 Pocket Kit is the foundation of all of Pocket. Pocket is purposefully abstracted into a Kit so that we can define multiple targets in the Apple Ecosystem and still use the same code base. Here you can find the view controllers, app delegates and most entrypoints into the Pocket application.
