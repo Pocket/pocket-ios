@@ -207,11 +207,14 @@
             reference = "container:UITests-2.xctestplan">
          </TestPlanReference>
          <TestPlanReference
-            reference = "container:UnitTests.xctestplan"
-            default = "YES">
+            reference = "container:UnitTests.xctestplan">
          </TestPlanReference>
          <TestPlanReference
             reference = "container:UITests-3.xctestplan">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:AllTests.xctestplan"
+            default = "YES">
          </TestPlanReference>
       </TestPlans>
       <Testables>
