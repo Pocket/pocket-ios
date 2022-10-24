@@ -10,4 +10,8 @@ extension XCTestCase {
     func waitForDisappearance(of element: PocketUIElement) {
         waitForDisappearance(of: element.element)
     }
+
+    func wait(for expectations: [XCTestExpectation]) {
+        wait(for: expectations, timeout: 3)
+    }
 }

@@ -7,7 +7,7 @@ import XCTest
 extension XCUIElement {
     @discardableResult
     func wait(
-        timeout: TimeInterval = 1,
+        timeout: TimeInterval = 3,
         file: StaticString = #file,
         line: UInt = #line
     ) -> XCUIElement {

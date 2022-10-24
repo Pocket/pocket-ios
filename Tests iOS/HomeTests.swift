@@ -262,7 +262,7 @@ class HomeTests: XCTestCase {
         app.tabBar.myListButton.tap()
         app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
 
-        wait(for: [saveRequestExpectation], timeout: 1)
+        wait(for: [saveRequestExpectation])
 
         promise?.succeed(Response.saveItem())
         app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
@@ -271,7 +271,7 @@ class HomeTests: XCTestCase {
         cell.savedButton.tap()
         cell.saveButton.wait()
 
-        wait(for: [archiveRequestExpectation], timeout: 1)
+        wait(for: [archiveRequestExpectation])
         XCTAssertFalse(app.myListView.itemView(matching: "Slate 1, Recommendation 1").exists)
     }
 

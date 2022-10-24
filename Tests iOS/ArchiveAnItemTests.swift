@@ -149,7 +149,7 @@ class ArchiveAnItemTests: XCTestCase {
         archiveNavButton.wait().tap()
         app.homeView.wait()
 
-        wait(for: [expectRequest], timeout: 1)
+        wait(for: [expectRequest])
         waitForDisappearance(of: itemCell)
     }
 }
