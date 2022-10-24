@@ -1,0 +1,59 @@
+{
+  "configurations" : [
+    {
+      "id" : "CBD9B299-2465-43ED-AB9C-57B74D7AD70A",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SyncTests",
+        "name" : "SyncTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:Pocket.xcodeproj",
+        "identifier" : "166A81BF2637406C0015AA1D",
+        "name" : "Tests iOS"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "AnalyticsTests",
+        "name" : "AnalyticsTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "PocketKitTests",
+        "name" : "PocketKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SaveToPocketKitTests",
+        "name" : "SaveToPocketKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SharedPocketKitTests",
+        "name" : "SharedPocketKitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

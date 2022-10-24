@@ -169,6 +169,7 @@
 		16D76882279F3C73004A3694 /* ArchiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveTests.swift; sourceTree = "<group>"; };
 		16E4B16C27A31BEC00E01746 /* RequestMatchers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestMatchers.swift; sourceTree = "<group>"; };
 		16E4B16E27A3212900E01746 /* Response+factories.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Response+factories.swift"; sourceTree = "<group>"; };
+		16E881F129072663008B2E05 /* AllTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AllTests.xctestplan; sourceTree = "<group>"; };
 		16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefreshTests.swift; sourceTree = "<group>"; };
 		16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveAnItemTests.swift; sourceTree = "<group>"; };
 		3E8283A328B65ECF00C1DC4A /* SortMenuElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortMenuElement.swift; sourceTree = "<group>"; };
@@ -272,6 +273,7 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
+				16E881F129072663008B2E05 /* AllTests.xctestplan */,
 				655C274E28B67ED20040AEAB /* README.md */,
 				166DF27827E9172800C03BF4 /* Pocket (iOS).entitlements */,
 				1624B85A268508180099B6EF /* PocketKit */,
