@@ -89,7 +89,7 @@ class ReportARecommendationTests: XCTestCase {
         report.commentEntry.wait()
         report.submitButton.wait().tap()
 
-        wait(for: [reportExpectation], timeout: 1)
+        wait(for: [reportExpectation])
         guard let requestBody = requestBody else {
             XCTFail("Expected request body to not be nil")
             return
@@ -144,7 +144,7 @@ class ReportARecommendationTests: XCTestCase {
         report.commentEntry.wait()
         report.submitButton.wait().tap()
 
-        wait(for: [reportExpectation], timeout: 1)
+        wait(for: [reportExpectation])
         guard let requestBody = requestBody else {
             XCTFail("Expected request body to not be nil")
             return

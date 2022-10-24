@@ -87,7 +87,7 @@ class FavoriteAnItemTests: XCTestCase {
         }
 
         itemCell.favoriteButton.tap()
-        wait(for: [expectRequest], timeout: 1)
+        wait(for: [expectRequest])
         XCTAssertTrue(itemCell.favoriteButton.isFilled)
 
         let expectUnfavoriteRequest = expectation(description: "A request to the server")
@@ -101,7 +101,7 @@ class FavoriteAnItemTests: XCTestCase {
         }
 
         itemCell.favoriteButton.tap()
-        wait(for: [expectUnfavoriteRequest], timeout: 1)
+        wait(for: [expectUnfavoriteRequest])
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
     }
 
@@ -134,7 +134,7 @@ class FavoriteAnItemTests: XCTestCase {
             // Tap the favorite button in the overflow menu
             moreButton.wait().tap()
             app.favoriteButton.wait().tap()
-            wait(for: [expectRequest], timeout: 1)
+            wait(for: [expectRequest])
         }
 
         // Unfavoriting
@@ -152,7 +152,7 @@ class FavoriteAnItemTests: XCTestCase {
             // Tap the Unfavorite button from overflow menu
             moreButton.tap()
             app.unfavoriteButton.wait().tap()
-            wait(for: [expectUnfavoriteRequest], timeout: 1)
+            wait(for: [expectUnfavoriteRequest])
         }
 
         moreButton.tap()
@@ -178,7 +178,7 @@ class FavoriteAnItemTests: XCTestCase {
             }
 
             itemCell.wait().favoriteButton.tap()
-            wait(for: [expectRequest], timeout: 1)
+            wait(for: [expectRequest])
             XCTAssertTrue(itemCell.favoriteButton.isFilled)
         }
 
@@ -195,7 +195,7 @@ class FavoriteAnItemTests: XCTestCase {
             }
 
             itemCell.favoriteButton.tap()
-            wait(for: [expectRequest], timeout: 1)
+            wait(for: [expectRequest])
             XCTAssertFalse(itemCell.favoriteButton.isFilled)
         }
     }

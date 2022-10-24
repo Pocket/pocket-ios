@@ -105,7 +105,7 @@ class EditTagsTests: XCTestCase {
         }
 
         app.alert.delete.wait().tap()
-        wait(for: [firstDeleteRequest, secondDeleteRequest], timeout: 1)
+        wait(for: [firstDeleteRequest, secondDeleteRequest])
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 1"))
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 2"))
     }

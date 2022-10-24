@@ -178,7 +178,7 @@ class MyListTests: XCTestCase {
         app.myListView.itemView(matching: "http://localhost:8080/new-item").wait()
 
         promise?.succeed(.saveItemFromExtension())
-        app.myListView.itemView(matching: "Item 3").wait(timeout: 10000)
+        app.myListView.itemView(matching: "Item 3").wait()
     }
 
     func test_tappingItem_displaysNativeReaderView() {
@@ -247,7 +247,7 @@ class MyListTests: XCTestCase {
         app
             .webReaderView
             .staticText(matching: "Hello, world")
-            .wait(timeout: 2.0)
+            .wait()
     }
 
     func test_list_excludesArchivedContent() {
