@@ -394,7 +394,7 @@ extension ArchivedItemsListViewModel {
                     return nil
                 case .tagged:
                     let event = SnowplowEngagement(type: .general, value: nil)
-                    let contexts: [Context] = [UIContext.home.screen, UIContext.myList.taggedChip]
+                    let contexts: [Context] = [UIContext.myList.screen, UIContext.myList.taggedChip]
                     tracker.track(event: event, contexts)
                     presentedTagsFilter = TagsFilterViewModel(
                         source: source,

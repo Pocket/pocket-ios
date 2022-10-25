@@ -4,7 +4,7 @@ import Analytics
 import Foundation
 
 class TagsFilterViewModel: ObservableObject {
-    enum SelectedTag {
+    enum SelectedTag : Equatable {
         case notTagged
         case tag(String)
 
@@ -56,17 +56,15 @@ class TagsFilterViewModel: ObservableObject {
         return allTags
     }
 
-    func selectTag(_ tag: SelectedTag) {
-        selectedTag = tag
-        if case .notTagged = tag {
-            let event = SnowplowEngagement(type: .general, value: nil)
-            let contexts: [Context] = [UIContext.home.screen, UIContext.myList.notTagged]
-            tracker.track(event: event, contexts)
-        } else {
-            let event = SnowplowEngagement(type: .general, value: nil)
-            let contexts: [Context] = [UIContext.home.screen, UIContext.myList.taggedChip]
-            tracker.track(event: event, contexts)
-        }
+    func selectTag(tag: SelectedTag) {
+        let tagContext = tag == .notTagged ? UIContext.myList.notTagged : UIContext.myList.taggedChip
+        sendSelectedTagAnalytics(context: tagContext)
+    }
+
+    private func sendSelectedTagAnalytics(context: Context) {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        let contexts: [Context] = [UIContext.home.screen, context]
+        tracker.track(event: event, contexts)
     }
 
     func delete(tags: [String]) {
