@@ -8,7 +8,7 @@ class TagsFilterViewModelTests: XCTestCase {
     private var subscriptions: [AnyCancellable]!
     var source: MockSource!
     var space: Space!
-    var tracker: MockTracker!
+    private var tracker: MockTracker!
 
     override func setUp() {
         space = .testSpace()
