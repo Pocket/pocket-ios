@@ -11,6 +11,11 @@ class SettingsViewController: UIHostingController<SettingsView> {
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
+
+    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+        guard traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return .portrait
+    }
 }
 
 struct SettingsView: View {
