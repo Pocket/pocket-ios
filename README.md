@@ -20,7 +20,7 @@ After you will need to run the API Generation steps below.
 
 ## Pocket Graph (API) Schema
 
-Pocket for iOS uses Apollo client to autogenerate it's API schema code. You will need to run the following commands everytime the api's you use change or if you change your api queries.
+Pocket for iOS uses Apollo client to autogenerate its API schema code. You will need to run the following commands every time the APIs you use change or if you change your API queries.
 
 ### Downloading Graph Schema
 
