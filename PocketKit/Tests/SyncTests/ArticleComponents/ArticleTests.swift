@@ -1,4 +1,6 @@
 import XCTest
+import PocketGraph
+import ApolloAPI
 @testable import Sync
 
 class ArticleComponentTests: XCTestCase {
@@ -91,14 +93,15 @@ class ArticleComponentTests: XCTestCase {
     }
 
     func test_initWithMarticle_withImageParts_handlesSpacesInSourceURL() throws {
-        let parts = ImageParts(
-            caption: "hello",
-            credit: "world",
-            imageId: 1,
-            src: "http://example.com/image 3.jpg",
-            height: 0,
-            width: 0
-        )
+
+        let parts = ImageParts(data: DataDict([
+            "caption": "hello",
+            "credit": "world",
+            "imageID": 1,
+            "src": "http://example.com/image 3.jpg",
+            "height": 0,
+            "width": 0,
+        ], variables: nil))
 
         let component = ImageComponent(parts)
         XCTAssertEqual(component.source?.absoluteString, "http://example.com/image%203.jpg")

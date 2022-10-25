@@ -1,6 +1,7 @@
 import Apollo
 import Foundation
 import CoreData
+import PocketGraph
 
 protocol SlateService {
     func fetchSlateLineup(_ identifier: String) async throws

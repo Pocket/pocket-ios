@@ -1,7 +1,9 @@
 import XCTest
 import Apollo
+import ApolloAPI
 import Foundation
 import Combine
+import PocketGraph
 
 @testable import Sync
 
@@ -51,7 +53,7 @@ class PocketArchiveServiceTests: XCTestCase {
 
         let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(call)
-        XCTAssertEqual(call?.query.sort?.sortOrder, .asc)
+        XCTAssertEqual(call?.query.sort.unwrapped?.sortOrder.value, .asc)
     }
 
     func test_fetch_executesAQuery() {
@@ -69,9 +71,9 @@ class PocketArchiveServiceTests: XCTestCase {
 
         let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(call)
-        XCTAssertEqual(call?.query.filter?.isArchived, true)
-        XCTAssertEqual(call?.query.pagination?.after, nil)
-        XCTAssertEqual(call?.query.pagination?.first, 2)
+        XCTAssertEqual(call?.query.filter.unwrapped?.isArchived, true)
+        XCTAssertEqual(call?.query.pagination.unwrapped?.after.unwrapped, nil)
+        XCTAssertEqual(call?.query.pagination.unwrapped?.first.unwrapped, 2)
     }
 
     func test_theOperation_whenQuerySucceeds_storesResultsInCoreData() throws {
@@ -242,9 +244,9 @@ class PocketArchiveServiceTests: XCTestCase {
         // assert that pagination params are correct
         let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 1)
         XCTAssertNotNil(call)
-        XCTAssertEqual(call?.query.filter?.isArchived, true)
-        XCTAssertEqual(call?.query.pagination?.after, "cursor-2")
-        XCTAssertEqual(call?.query.pagination?.first, 2)
+        XCTAssertEqual(call?.query.filter.unwrapped?.isArchived.unwrapped, true)
+        XCTAssertEqual(call?.query.pagination.unwrapped?.after.unwrapped, "cursor-2")
+        XCTAssertEqual(call?.query.pagination.unwrapped?.first.unwrapped, 2)
     }
 
     func test_fetch_whenFetchingIndexMultipleContiguousPagesAhead_fetchesEachIntermediatePage() throws {
@@ -260,7 +262,7 @@ class PocketArchiveServiceTests: XCTestCase {
         service.fetch()
         wait(for: [initialLoad], timeout: 1)
         let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 0)
-        XCTAssertEqual(call?.query.pagination?.after, nil)
+        XCTAssertEqual(call?.query.pagination.unwrapped?.after.unwrapped, nil)
 
         // fetch the second and third pages
         let loadThirdPage = expectation(description: "loadThirdPage")
@@ -274,14 +276,14 @@ class PocketArchiveServiceTests: XCTestCase {
         do {
             // assert that pagination params are correct
             let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 1)
-            XCTAssertEqual(call?.query.filter?.isArchived, true)
-            XCTAssertEqual(call?.query.pagination?.after, "cursor-2")
+            XCTAssertEqual(call?.query.filter.unwrapped?.isArchived.unwrapped, true)
+            XCTAssertEqual(call?.query.pagination.unwrapped?.after.unwrapped, "cursor-2")
         }
 
         do {
             let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 2)
             XCTAssertNotNil(call)
-            XCTAssertEqual(call?.query.pagination?.after, "cursor-4")
+            XCTAssertEqual(call?.query.pagination.unwrapped?.after.unwrapped, "cursor-4")
         }
     }
 
@@ -298,7 +300,7 @@ class PocketArchiveServiceTests: XCTestCase {
         service.fetch()
         wait(for: [initialLoad], timeout: 1)
         let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 0)
-        XCTAssertEqual(call?.query.pagination?.after, nil)
+        XCTAssertEqual(call?.query.pagination.unwrapped?.after.unwrapped, nil)
 
         // fetch the second and third pages
         let loadThirdPage = expectation(description: "loadThirdPage")
@@ -312,14 +314,14 @@ class PocketArchiveServiceTests: XCTestCase {
         do {
             // assert that pagination params are correct
             let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 1)
-            XCTAssertEqual(call?.query.filter?.isArchived, true)
-            XCTAssertEqual(call?.query.pagination?.after, "cursor-2")
+            XCTAssertEqual(call?.query.filter.unwrapped?.isArchived.unwrapped, true)
+            XCTAssertEqual(call?.query.pagination.unwrapped?.after.unwrapped, "cursor-2")
         }
 
         do {
             let call: MockApolloClient.FetchCall<SavedItemSummariesQuery>? = apollo.fetchCall(at: 2)
             XCTAssertNotNil(call)
-            XCTAssertEqual(call?.query.pagination?.after, "cursor-4")
+            XCTAssertEqual(call?.query.pagination.unwrapped?.after.unwrapped, "cursor-4")
         }
     }
 
@@ -468,8 +470,8 @@ extension PocketArchiveServiceTests {
     func setupArchivePagination() {
         apollo.stubFetch { (query: SavedItemSummariesQuery, _, _, queue, completion) in
             let resultFixtureName: String
-            switch query.pagination?.after {
-            case .none:
+            switch query.pagination.after {
+            case nil:
                 resultFixtureName = "archived-items"
             case .some(let cursor):
                 switch cursor {
@@ -484,6 +486,8 @@ extension PocketArchiveServiceTests {
                     default:
                         fatalError("Unexpected pagination cursor: \(cursor)")
                     }
+                case .null:
+                    fatalError("Unexpected pagination cursor: \(cursor)")
                 }
             }
 

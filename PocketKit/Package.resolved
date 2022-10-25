@@ -1,160 +1,122 @@
 {
-  "object": {
-    "pins": [
-      {
-        "package": "Apollo",
-        "repositoryURL": "https://github.com/apollographql/apollo-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "42646f765d22dac0f22bfff48590102195c76da4",
-          "version": "0.53.0"
-        }
-      },
-      {
-        "package": "braze-swift-sdk",
-        "repositoryURL": "https://github.com/braze-inc/braze-swift-sdk.git",
-        "state": {
-          "branch": null,
-          "revision": "bf3c855aa4780b7d2b0157b8a15d78c6a91bd07a",
-          "version": "5.3.2"
-        }
-      },
-      {
-        "package": "DangerSwiftCoverage",
-        "repositoryURL": "https://github.com/f-meloni/danger-swift-coverage",
-        "state": {
-          "branch": null,
-          "revision": "6a21a6e595e2b13443428942ce128b3ba6b827ee",
-          "version": "1.2.1"
-        }
-      },
-      {
-        "package": "Down",
-        "repositoryURL": "https://github.com/johnxnguyen/Down",
-        "state": {
-          "branch": null,
-          "revision": "f34b166be1f1db4aa8f573067e901d72f2a6be57",
-          "version": "0.11.0"
-        }
-      },
-      {
-        "package": "FMDB",
-        "repositoryURL": "https://github.com/ccgus/fmdb",
-        "state": {
-          "branch": null,
-          "revision": "61e51fde7f7aab6554f30ab061cc588b28a97d04",
-          "version": "2.7.7"
-        }
-      },
-      {
-        "package": "Kingfisher",
-        "repositoryURL": "https://github.com/onevcat/Kingfisher.git",
-        "state": {
-          "branch": null,
-          "revision": "be1a1acb283a702b99b630f586877ba02234b4cb",
-          "version": "7.3.2"
-        }
-      },
-      {
-        "package": "Logger",
-        "repositoryURL": "https://github.com/shibapm/Logger",
-        "state": {
-          "branch": null,
-          "revision": "53c3ecca5abe8cf46697e33901ee774236d94cce",
-          "version": "0.2.3"
-        }
-      },
-      {
-        "package": "Lottie",
-        "repositoryURL": "https://github.com/airbnb/lottie-ios.git",
-        "state": {
-          "branch": null,
-          "revision": "314537ec697719fa33a9d48210f4d06a463286d3",
-          "version": "3.4.3"
-        }
-      },
-      {
-        "package": "OctoKit",
-        "repositoryURL": "https://github.com/nerdishbynature/octokit.swift",
-        "state": {
-          "branch": null,
-          "revision": "9521cdff919053868ab13cd08a228f7bc1bde2a9",
-          "version": "0.11.0"
-        }
-      },
-      {
-        "package": "RequestKit",
-        "repositoryURL": "https://github.com/nerdishbynature/RequestKit.git",
-        "state": {
-          "branch": null,
-          "revision": "fd5e9e99aada7432170366c9e95967011ce13bad",
-          "version": "2.4.0"
-        }
-      },
-      {
-        "package": "Sentry",
-        "repositoryURL": "https://github.com/getsentry/sentry-cocoa.git",
-        "state": {
-          "branch": null,
-          "revision": "199000acd6a0a3f9c8e0bff03ef233f930993c71",
-          "version": "7.25.1"
-        }
-      },
-      {
-        "package": "SnowplowTracker",
-        "repositoryURL": "https://github.com/snowplow/snowplow-objc-tracker",
-        "state": {
-          "branch": null,
-          "revision": "dc5ecb6ad2921a50f629ef600cc1ee700e608f66",
-          "version": "3.2.0"
-        }
-      },
-      {
-        "package": "SQLite.swift",
-        "repositoryURL": "https://github.com/stephencelis/SQLite.swift.git",
-        "state": {
-          "branch": null,
-          "revision": "4d543d811ee644fa4cc4bfa0be996b4dd6ba0f54",
-          "version": "0.13.3"
-        }
-      },
-      {
-        "package": "danger-swift",
-        "repositoryURL": "https://github.com/danger/swift.git",
-        "state": {
-          "branch": null,
-          "revision": "0d62144a8bdfdb087c476ac3e88e96491c158a7b",
-          "version": "3.14.0"
-        }
-      },
-      {
-        "package": "swift-argument-parser",
-        "repositoryURL": "https://github.com/apple/swift-argument-parser.git",
-        "state": {
-          "branch": null,
-          "revision": "9564d61b08a5335ae0a36f789a7d71493eacadfc",
-          "version": "0.3.2"
-        }
-      },
-      {
-        "package": "Version",
-        "repositoryURL": "https://github.com/mxcl/Version",
-        "state": {
-          "branch": null,
-          "revision": "1fe824b80d89201652e7eca7c9252269a1d85e25",
-          "version": "2.0.1"
-        }
-      },
-      {
-        "package": "YouTubePlayerKit",
-        "repositoryURL": "https://github.com/SvenTiigi/YouTubePlayerKit.git",
-        "state": {
-          "branch": null,
-          "revision": "fa70945f48780b2f78102c5905b6a65b2531b618",
-          "version": "1.1.12"
-        }
+  "pins" : [
+    {
+      "identity" : "apollo-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apollographql/apollo-ios.git",
+      "state" : {
+        "revision" : "d884d6b7610798fb697a4697423c956f44816103",
+        "version" : "1.0.2"
       }
-    ]
-  },
-  "version": 1
+    },
+    {
+      "identity" : "braze-swift-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
+      "state" : {
+        "revision" : "eec5fe0bd84b553560b76334e832f8f124406749",
+        "version" : "5.5.1"
+      }
+    },
+    {
+      "identity" : "down",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/johnxnguyen/Down",
+      "state" : {
+        "revision" : "f34b166be1f1db4aa8f573067e901d72f2a6be57",
+        "version" : "0.11.0"
+      }
+    },
+    {
+      "identity" : "fmdb",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ccgus/fmdb",
+      "state" : {
+        "revision" : "61e51fde7f7aab6554f30ab061cc588b28a97d04",
+        "version" : "2.7.7"
+      }
+    },
+    {
+      "identity" : "inflectorkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattt/InflectorKit",
+      "state" : {
+        "revision" : "d8cbcc04972690aaa5fc760a2b9ddb3e9f0decd7",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "kingfisher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/onevcat/Kingfisher.git",
+      "state" : {
+        "revision" : "be1a1acb283a702b99b630f586877ba02234b4cb",
+        "version" : "7.3.2"
+      }
+    },
+    {
+      "identity" : "lottie-ios",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/airbnb/lottie-ios.git",
+      "state" : {
+        "revision" : "314537ec697719fa33a9d48210f4d06a463286d3",
+        "version" : "3.4.3"
+      }
+    },
+    {
+      "identity" : "sentry-cocoa",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/getsentry/sentry-cocoa.git",
+      "state" : {
+        "revision" : "199000acd6a0a3f9c8e0bff03ef233f930993c71",
+        "version" : "7.25.1"
+      }
+    },
+    {
+      "identity" : "snowplow-objc-tracker",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/snowplow/snowplow-objc-tracker",
+      "state" : {
+        "revision" : "dc5ecb6ad2921a50f629ef600cc1ee700e608f66",
+        "version" : "3.2.0"
+      }
+    },
+    {
+      "identity" : "sqlite.swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stephencelis/SQLite.swift.git",
+      "state" : {
+        "revision" : "4d543d811ee644fa4cc4bfa0be996b4dd6ba0f54",
+        "version" : "0.13.3"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "9f39744e025c7d377987f30b03770805dcb0bcd1",
+        "version" : "1.1.4"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections",
+      "state" : {
+        "revision" : "f504716c27d2e5d4144fa4794b12129301d17729",
+        "version" : "1.0.3"
+      }
+    },
+    {
+      "identity" : "youtubeplayerkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SvenTiigi/YouTubePlayerKit.git",
+      "state" : {
+        "revision" : "fa70945f48780b2f78102c5905b6a65b2531b618",
+        "version" : "1.1.12"
+      }
+    }
+  ],
+  "version" : 2
 }

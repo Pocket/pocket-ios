@@ -98,6 +98,6 @@ excluded: # paths to ignore during linting. Takes precedence over `included`.
   - PocketKit/.build
   - PocketKit/Sources/Sync/API.swift
   - DerivedData/
-
+  - PocketKit/Sources/PocketGraph/
 # reporter: "json" # reporter type (xcode, json, csv, checkstyle)
 reporter: 'xcode' # reporter type (xcode, json, csv, checkstyle)

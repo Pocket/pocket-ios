@@ -3,6 +3,7 @@ import Sync
 import Combine
 import Analytics
 import CoreData
+import PocketGraph
 
 @testable import Sync
 @testable import PocketKit

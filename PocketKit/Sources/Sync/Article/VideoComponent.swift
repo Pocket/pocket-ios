@@ -1,4 +1,5 @@
 import Foundation
+import PocketGraph
 
 public struct VideoComponent: Codable, Equatable, Hashable {
     public let id: Int
@@ -36,7 +37,7 @@ public extension VideoComponent {
 extension VideoComponent {
     init(_ marticle: VideoParts) {
         self.init(
-            id: marticle.videoId,
+            id: marticle.videoID,
             type: VideoType(rawValue: marticle.type.rawValue) ?? .unknown,
             source: URL(string: marticle.src)!,
             vid: marticle.vid,

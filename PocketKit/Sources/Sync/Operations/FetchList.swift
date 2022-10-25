@@ -1,6 +1,7 @@
 import Foundation
 import Apollo
 import Combine
+import PocketGraph
 
 class FetchList: SyncOperation {
     private let token: String
@@ -79,12 +80,12 @@ class FetchList: SyncOperation {
         var pagination = PaginationInput()
 
         while shouldFetchNextPage {
-            let query = TagsQuery(pagination: pagination)
+            let query = TagsQuery(pagination: .init(pagination))
             let result = try await apollo.fetch(query: query)
             try await updateLocalTags(result)
 
             if let pageInfo = result.data?.user?.tags?.pageInfo {
-                pagination.after = pageInfo.endCursor
+                pagination.after = pageInfo.endCursor ?? .none
                 shouldFetchNextPage = pageInfo.hasNextPage
             } else {
                 shouldFetchNextPage = false
@@ -93,16 +94,19 @@ class FetchList: SyncOperation {
     }
 
     private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
-        let query = FetchSavesQuery(token: token)
-        query.pagination = PaginationInput(
-            after: pagination.cursor,
-            first: pagination.maxItems
+        let query = FetchSavesQuery(
+            token: token,
+            pagination: .some(PaginationInput(
+                after: pagination.cursor ?? .none,
+                first: .some(pagination.maxItems)
+            )),
+            savedItemsFilter: .none
         )
 
         if let updatedSince = lastRefresh.lastRefresh {
-            query.savedItemsFilter = SavedItemsFilter(updatedSince: updatedSince)
+            query.savedItemsFilter = .some(SavedItemsFilter(updatedSince: .some(updatedSince)))
         } else {
-            query.savedItemsFilter = SavedItemsFilter(status: .unread)
+            query.savedItemsFilter = .some(SavedItemsFilter(status: .init(.unread)))
         }
 
         return try await apollo.fetch(query: query)
@@ -122,10 +126,10 @@ class FetchList: SyncOperation {
             Crashlogger.breadcrumb(
                 category: "sync",
                 level: .info,
-                message: "Updating/Inserting SavedItem with ID: \(node.remoteId)"
+                message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"
             )
 
-            let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteId)
+            let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteID)
             item.update(from: edge, with: space)
 
             if item.deletedAt != nil {

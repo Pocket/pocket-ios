@@ -15,9 +15,9 @@ class EndOfFeedAnimationView: UIView {
         set { textLabel.attributedText = newValue }
     }
 
-    private lazy var animationView: AnimationView = {
-        let view = AnimationView(animation: nil, configuration: LottieConfiguration(renderingEngine: .automatic))
-        view.animation = Animation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
+    private lazy var animationView: LottieAnimationView = {
+        let view = LottieAnimationView(animation: nil, configuration: LottieConfiguration(renderingEngine: .automatic))
+        view.animation = LottieAnimation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
         return view
     }()
 
@@ -79,9 +79,9 @@ class EndOfFeedAnimationView: UIView {
         let colorValueProvider: ColorValueProvider?
         switch traitCollection.userInterfaceStyle {
         case .light:
-            colorValueProvider = ColorValueProvider(Color(.ui.black))
+            colorValueProvider = ColorValueProvider(LottieColor(.ui.black))
         case .dark:
-            colorValueProvider = ColorValueProvider(Color(.ui.white))
+            colorValueProvider = ColorValueProvider(LottieColor(.ui.white))
         case .unspecified:
             colorValueProvider = nil
         @unknown default:
@@ -98,7 +98,7 @@ class EndOfFeedAnimationView: UIView {
     }
 }
 
-private extension Lottie.Color {
+private extension LottieColor {
     init(_ colorAsset: ColorAsset) {
         let color = UIColor(colorAsset)
         var r: CGFloat = 0

@@ -1,6 +1,7 @@
 import Foundation
 import Apollo
 import CoreData
+import PocketGraph
 
 class SaveItemOperation: SyncOperation {
     private let managedItemID: NSManagedObjectID

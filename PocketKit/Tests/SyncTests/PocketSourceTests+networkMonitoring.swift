@@ -1,4 +1,5 @@
 import XCTest
+import PocketGraph
 @testable import Sync
 
 extension PocketSourceTests {

@@ -1,11 +1,12 @@
 import Foundation
 import CoreData
 import Apollo
+import PocketGraph
 
 extension Item {
 
     func update(remote: ItemParts) {
-        remoteID = remote.remoteId
+        remoteID = remote.remoteID
         givenURL = URL(string: remote.givenUrl)
         resolvedURL = remote.resolvedUrl.flatMap(URL.init)
         title = remote.title
@@ -62,7 +63,7 @@ extension Item {
     }
 
     func update(from summary: ItemSummary) {
-        remoteID = summary.remoteId
+        remoteID = summary.remoteID
         givenURL = URL(string: summary.givenUrl)
         resolvedURL = summary.resolvedUrl.flatMap(URL.init)
         title = summary.title

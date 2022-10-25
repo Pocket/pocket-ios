@@ -2,6 +2,7 @@ import XCTest
 import Combine
 import CoreData
 import Apollo
+import PocketGraph
 
 @testable import Sync
 
@@ -168,7 +169,7 @@ class FetchListTests: XCTestCase {
             case 0:
                 result = Fixture.load(name: "paginated-list-1")
             case 1:
-                XCTAssertEqual(query.pagination?.after, "cursor-1")
+                XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-1")
                 result = Fixture.load(name: "paginated-list-2")
             default:
                 XCTFail("Unexpected number of fetches: \(fetches)")
@@ -197,17 +198,17 @@ class FetchListTests: XCTestCase {
             let result: Fixture
             switch fetches {
             case 0:
-                XCTAssertEqual(query.pagination?.first, 3)
+                XCTAssertEqual(query.pagination.unwrapped?.first, 3)
 
                 result = Fixture.load(name: "large-list-1")
             case 1:
-                XCTAssertEqual(query.pagination?.after, "cursor-1")
-                XCTAssertEqual(query.pagination?.first, 2)
+                XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-1")
+                XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 2)
 
                 result = Fixture.load(name: "large-list-2")
             case 2:
-                XCTAssertEqual(query.pagination?.after, "cursor-2")
-                XCTAssertEqual(query.pagination?.first, 1)
+                XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-2")
+                XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 1)
 
                 result = Fixture.load(name: "large-list-3")
             default:
@@ -238,7 +239,7 @@ class FetchListTests: XCTestCase {
 
         let call: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(call?.query.savedItemsFilter)
-        XCTAssertEqual(call?.query.savedItemsFilter?.updatedSince, 123456789)
+        XCTAssertEqual(call?.query.savedItemsFilter.unwrapped?.updatedSince, 123456789)
     }
 
     func test_refresh_whenUpdatedSinceIsPresent_doesNotSendInitialDownloadFetchedFirstPageEvent() async {
@@ -270,7 +271,7 @@ class FetchListTests: XCTestCase {
         _ = await service.execute()
 
         let call: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
-        XCTAssertEqual(call?.query.savedItemsFilter?.status, .unread)
+        XCTAssertEqual(call?.query.savedItemsFilter.unwrapped?.status.value, .unread)
     }
 
     func test_execute_whenUpdatedSinceIsNotPresent_downloadsAllTags() async throws {
@@ -299,10 +300,10 @@ class FetchListTests: XCTestCase {
 
         let fetchCall1 = apollo.fetchCall(withQueryType: TagsQuery.self, at: 0)
         XCTAssertNotNil(fetchCall1)
-        XCTAssertEqual(fetchCall1?.query.pagination?.after!, nil)
+        XCTAssertEqual(fetchCall1?.query.pagination.unwrapped?.after.unwrapped, nil)
 
         let fetchCall2 = apollo.fetchCall(withQueryType: TagsQuery.self, at: 1)
-        XCTAssertEqual(fetchCall2?.query.pagination?.after!, "tag-2-cursor")
+        XCTAssertEqual(fetchCall2?.query.pagination.unwrapped?.after.unwrapped, "tag-2-cursor")
 
         let tags = try space.context.fetch(Tag.fetchRequest())
         XCTAssertEqual(tags.count, 4)

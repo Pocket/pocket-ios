@@ -2,6 +2,7 @@ import Foundation
 import Apollo
 import Combine
 import CoreData
+import PocketGraph
 
 protocol SyncOperationFactory {
     func fetchList(

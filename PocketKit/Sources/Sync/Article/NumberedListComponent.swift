@@ -1,3 +1,5 @@
+import PocketGraph
+
 public struct NumberedListComponent: Codable, Equatable, Hashable {
     public let rows: [Row]
 

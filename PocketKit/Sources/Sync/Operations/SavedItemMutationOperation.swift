@@ -1,5 +1,6 @@
 import Combine
 import Apollo
+import ApolloAPI
 
 class AnyMutation {
     let perform: (ApolloClientProtocol) async throws -> Void

@@ -1,4 +1,5 @@
 import CoreData
+import PocketGraph
 
 extension Author {
     convenience init(remote: ItemParts.Author, context: NSManagedObjectContext) {

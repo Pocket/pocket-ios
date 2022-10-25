@@ -4,9 +4,10 @@
 
 import Foundation
 import CoreData
+import PocketGraph
 
 extension SavedItem {
-    typealias SavedItemEdge = FetchSavesQuery.Data.UserByToken.SavedItem.Edge
+    typealias SavedItemEdge = FetchSavesQuery.Data.UserByToken.SavedItems.Edge
     public typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
 
@@ -21,7 +22,7 @@ extension SavedItem {
     }
 
     public func update(from remote: RemoteSavedItem, with space: Space) {
-        remoteID = remote.remoteId
+        remoteID = remote.remoteID
         url = URL(string: remote.url)
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
         deletedAt = remote._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -30,7 +31,7 @@ extension SavedItem {
         isFavorite = remote.isFavorite
 
         guard let context = managedObjectContext,
-            let itemParts = remote.item.fragments.itemParts else {
+              let itemParts = remote.item.asItem?.fragments.itemParts else {
             return
         }
 
@@ -44,7 +45,7 @@ extension SavedItem {
             return fetchedTag
         } ?? [])
 
-        let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteId)
+        let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteID)
         fetchRequest.fetchLimit = 1
         let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
         itemToUpdate?.update(remote: itemParts)
@@ -59,7 +60,7 @@ extension SavedItem {
     }
 
     public func update(from summary: SavedItemSummary, with space: Space) {
-        remoteID = summary.remoteId
+        remoteID = summary.remoteID
         url = URL(string: summary.url)
         createdAt = Date(timeIntervalSince1970: TimeInterval(summary._createdAt))
         deletedAt = summary._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -68,7 +69,7 @@ extension SavedItem {
         isFavorite = summary.isFavorite
 
         guard let context = managedObjectContext,
-              let itemSummary = summary.item.fragments.itemSummary else {
+              let itemSummary = summary.item.asItem?.fragments.itemSummary else {
             return
         }
 
@@ -80,7 +81,7 @@ extension SavedItem {
             space.fetchOrCreateTag(byName: summaryTag.name)
         } ?? [])
 
-        let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteId)
+        let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteID)
         fetchRequest.fetchLimit = 1
         let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
         itemToUpdate?.update(from: itemSummary)

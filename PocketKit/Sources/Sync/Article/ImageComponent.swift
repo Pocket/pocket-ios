@@ -1,4 +1,5 @@
 import Foundation
+import PocketGraph
 
 public struct ImageComponent: Encodable, Equatable, Hashable {
     public let caption: String?
@@ -25,7 +26,7 @@ extension ImageComponent {
             credit: marticle.credit,
             height: marticle.height.flatMap(UInt.init),
             width: marticle.width.flatMap(UInt.init),
-            id: marticle.imageId,
+            id: marticle.imageID,
             source: marticle.src.addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted).flatMap(URL.init)
         )
     }

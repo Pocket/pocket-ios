@@ -1,4 +1,5 @@
 import Foundation
+import PocketGraph
 
 public enum ItemImageness: String, Equatable, Hashable {
     case noImages = "NO_IMAGES"

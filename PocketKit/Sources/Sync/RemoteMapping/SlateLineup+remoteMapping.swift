@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import PocketGraph
 
 extension SlateLineup {
     public typealias RemoteSlateLineup = GetSlateLineupQuery.Data.GetSlateLineup
@@ -48,7 +49,7 @@ extension Recommendation {
         excerpt = remote.curatedInfo?.excerpt
         imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init)
 
-        let recommendationItem = try? space.fetchOrCreateItem(byRemoteID: remote.item.remoteId)
+        let recommendationItem = try? space.fetchOrCreateItem(byRemoteID: remote.item.remoteID)
         recommendationItem?.update(from: remote.item.fragments.itemSummary)
         item = recommendationItem
     }

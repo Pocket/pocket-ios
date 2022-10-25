@@ -1454,8 +1454,8 @@
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk";
 			requirement = {
-				kind = upToNextMinorVersion;
-				minimumVersion = 5.3.0;
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.5.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */

@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Apollo
+import ApolloAPI
 
 public extension ApolloClientProtocol {
     func fetch<Query: GraphQLQuery>(query: Query, resultHandler: GraphQLResultHandler<Query.Data>? = nil) -> Cancellable {

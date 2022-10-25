@@ -1,6 +1,7 @@
 import Apollo
 import Combine
 import CoreData
+import PocketGraph
 
 public protocol ArchiveService: AnyObject {
     var results: Published<[SavedItemResult]>.Publisher { get }
@@ -260,7 +261,7 @@ extension PocketArchiveService: FetchArchivePagesOperationDelegate {
                 continue
             }
 
-            let savedItem = try space.fetchOrCreateSavedItem(byRemoteID: summary.remoteId)
+            let savedItem = try space.fetchOrCreateSavedItem(byRemoteID: summary.remoteID)
             savedItem.cursor = edge.cursor
             savedItem.update(from: summary, with: space)
 
@@ -364,13 +365,13 @@ private class FetchArchivePagesOperation: AsyncOperation {
             }
             let result = try await apollo.fetch(
                 query: SavedItemSummariesQuery(
-                    pagination: PaginationInput(
-                        after: cursor,
-                        first: pageSize
-                    ),
+                    pagination: .some(PaginationInput(
+                        after: cursor ?? .none,
+                        first: .some(pageSize)
+                    )),
 
-                    filter: SavedItemsFilter(isFavorite: isFavorite, isArchived: true, tagNames: tagNames),
-                    sort: SavedItemsSort(sortBy: .archivedAt, sortOrder: sortOrder)
+                    filter: .some(SavedItemsFilter(isFavorite: isFavorite ?? .none, isArchived: true, tagNames: .some(tagNames))),
+                    sort: .some(SavedItemsSort(sortBy: .init(.archivedAt), sortOrder: .init(sortOrder)))
                 )
             )
             guard !isCancelled else { return }

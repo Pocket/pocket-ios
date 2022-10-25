@@ -6,6 +6,7 @@ import CoreData
 import Apollo
 import Combine
 import Network
+import PocketGraph
 
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
@@ -372,7 +373,7 @@ extension PocketSource {
         }
 
         guard let remoteSavedItem = try await apollo
-            .fetch(query: SavedItemByIdQuery(id: remoteID))
+            .fetch(query: SavedItemByIDQuery(id: remoteID))
             .data?.user?.savedItemById else {
             return
         }
@@ -411,7 +412,7 @@ extension PocketSource {
         }
 
         guard let remoteItem = try await apollo
-            .fetch(query: ItemByIdQuery(id: remoteID))
+            .fetch(query: ItemByIDQuery(id: remoteID))
             .data?.itemByItemId?.fragments.itemParts else {
             return
         }
