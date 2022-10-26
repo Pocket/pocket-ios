@@ -43,7 +43,7 @@ class SavedItemViewController: UIViewController {
 
         addTagsButton.addAction(UIAction { [weak self] _ in
             self?.viewModel.cancelDismissTimer()
-            self?.viewModel.showAddTagsView()
+            self?.viewModel.showAddTagsView(from: self?.extensionContext)
         }, for: .primaryActionTriggered)
     }
 
