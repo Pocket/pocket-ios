@@ -22,8 +22,8 @@ public class PocketSnowplowTracker: SnowplowTracker {
         trackerConfiguration.platformContext = true
         trackerConfiguration.geoLocationContext = false
         trackerConfiguration.sessionContext = false
-        trackerConfiguration.screenContext = false
-        trackerConfiguration.screenViewAutotracking = false
+        trackerConfiguration.screenContext = true
+        trackerConfiguration.screenViewAutotracking = true
         trackerConfiguration.lifecycleAutotracking = false
         trackerConfiguration.installAutotracking = false
         trackerConfiguration.exceptionAutotracking = false
