@@ -90,7 +90,6 @@ class SavedItemViewModel {
         let result = saveService.addTags(savedItem: savedItem, tags: tags)
         if case let .taggedItem(savedItem) = result {
             self.savedItem = savedItem
-            infoViewModel = .taggedItem
 
             track(context: .saveExtension.addTagsDone)
         }
@@ -179,15 +178,6 @@ private extension InfoView.Model {
             string: "You've already saved this. We'll move it to the top of your list.",
             style: .detailText
         )
-    )
-
-    static let taggedItem = InfoView.Model(
-        style: .default,
-        attributedText: NSAttributedString(
-            string: "Tags Added!",
-            style: .mainText
-        ),
-        attributedDetailText: nil
     )
 
     static let error = InfoView.Model(

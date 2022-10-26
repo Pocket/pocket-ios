@@ -254,7 +254,11 @@ extension SavedItemViewModelTests {
             XCTAssertNotNil(viewModel)
         }
 
-        viewModel.showAddTagsView()
+        let extensionItem = MockExtensionItem(itemProviders: [])
+        let context = MockExtensionContext(extensionItems: [extensionItem])
+        context.stubCompleteRequest { _, _ in }
+
+        viewModel.showAddTagsView(from: context)
 
         wait(for: [expectAddTags], timeout: 1)
         subscription.cancel()
@@ -268,7 +272,11 @@ extension SavedItemViewModelTests {
             return .taggedItem(item)
         }
 
-        viewModel.addTags(tags: ["tag 1"])
+        let extensionItem = MockExtensionItem(itemProviders: [])
+        let context = MockExtensionContext(extensionItems: [extensionItem])
+        context.stubCompleteRequest { _, _ in }
+
+        viewModel.addTags(tags: ["tag 1"], from: context)
         let infoViewModelChanged = expectation(description: "infoViewModelChanged")
         let subscription = viewModel.$infoViewModel.sink { model in
             defer { infoViewModelChanged.fulfill() }

@@ -75,8 +75,6 @@ class SaveToPocketTests: XCTestCase {
         }
 
         addTagsView.saveButton.tap()
-        safari.staticTexts["Tags Added!"].wait()
-        safari.staticTexts["Tap to Dismiss"].tap()
 
         safari.toolbars.buttons["ShareButton"].tap()
         activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
