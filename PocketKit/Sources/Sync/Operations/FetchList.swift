@@ -77,7 +77,7 @@ class FetchList: SyncOperation {
 
     private func fetchTags() async throws {
         var shouldFetchNextPage = true
-        var pagination = PaginationInput()
+        var pagination = PaginationInput(first: .null)
 
         while shouldFetchNextPage {
             let query = TagsQuery(pagination: .init(pagination))
