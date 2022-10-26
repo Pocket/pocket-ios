@@ -72,20 +72,20 @@ class SavedItemViewModel {
         }
     }
 
-    func showAddTagsView() {
+    func showAddTagsView(from context: ExtensionContext?) {
         presentedAddTags = SaveToAddTagsViewModel(
             item: savedItem,
             retrieveAction: { [weak self] tags in
                 self?.retrieveTags(excluding: tags)
             },
             saveAction: { [weak self] tags in
-                self?.addTags(tags: tags)
+                self?.addTags(tags: tags, from: context)
             }
         )
         track(context: .saveExtension.addTagsButton)
     }
 
-    func addTags(tags: [String]) {
+    func addTags(tags: [String], from context: ExtensionContext?) {
         guard let savedItem = savedItem else { return }
         let result = saveService.addTags(savedItem: savedItem, tags: tags)
         if case let .taggedItem(savedItem) = result {
@@ -94,6 +94,7 @@ class SavedItemViewModel {
 
             track(context: .saveExtension.addTagsDone)
         }
+        finish(context: context)
     }
 
     func retrieveTags(excluding tags: [String]) -> [Tag]? {
