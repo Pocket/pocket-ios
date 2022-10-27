@@ -237,7 +237,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 shareAction: nil,
                 favoriteAction: nil,
                 overflowActions: [],
-                filterByTagAction: nil
+                filterByTagAction: nil,
+                trackOverflow: nil
             )
 
             return
@@ -252,7 +253,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             shareAction: model.shareAction(for: objectID),
             favoriteAction: model.favoriteAction(for: objectID),
             overflowActions: model.overflowActions(for: objectID),
-            filterByTagAction: model.filterByTagAction()
+            filterByTagAction: model.filterByTagAction(),
+            trackOverflow: model.trackOverflow(for: objectID)
         )
     }
 

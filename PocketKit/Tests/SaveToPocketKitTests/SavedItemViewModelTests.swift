@@ -1,4 +1,5 @@
 import XCTest
+import Analytics
 import SharedPocketKit
 import Sync
 
@@ -9,17 +10,23 @@ class SavedItemViewModelTests: XCTestCase {
     private var appSession: AppSession!
     private var saveService: MockSaveService!
     private var dismissTimer: Timer.TimerPublisher!
+    private var tracker: MockTracker!
+    private var consumerKey: String!
     private var space: Space!
 
     private func subject(
         appSession: AppSession? = nil,
         saveService: SaveService? = nil,
-        dismissTimer: Timer.TimerPublisher? = nil
+        dismissTimer: Timer.TimerPublisher? = nil,
+        tracker: Tracker? = nil,
+        consumerKey: String? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             appSession: appSession ?? self.appSession,
             saveService: saveService ?? self.saveService,
-            dismissTimer: dismissTimer ?? self.dismissTimer
+            dismissTimer: dismissTimer ?? self.dismissTimer,
+            tracker: tracker ?? self.tracker,
+            consumerKey: consumerKey ?? self.consumerKey
         )
     }
 
@@ -29,6 +36,8 @@ class SavedItemViewModelTests: XCTestCase {
         appSession = AppSession(keychain: MockKeychain())
         saveService = MockSaveService()
         dismissTimer = Timer.TimerPublisher(interval: 0, runLoop: .main, mode: .default)
+        tracker = MockTracker()
+        consumerKey = "test-key"
         space = .testSpace()
 
         let savedItem = SavedItem()

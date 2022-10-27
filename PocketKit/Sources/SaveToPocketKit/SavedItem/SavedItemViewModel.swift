@@ -2,11 +2,14 @@ import Foundation
 import SharedPocketKit
 import Sync
 import Combine
+import Analytics
 
 class SavedItemViewModel {
     private let appSession: AppSession
     private let saveService: SaveService
     private let dismissTimer: Timer.TimerPublisher
+    private let tracker: Tracker
+    private let consumerKey: String
 
     private var dismissTimerCancellable: AnyCancellable?
 
@@ -20,10 +23,19 @@ class SavedItemViewModel {
 
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
-    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher) {
+    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher, tracker: Tracker, consumerKey: String) {
         self.appSession = appSession
         self.saveService = saveService
         self.dismissTimer = dismissTimer
+        self.tracker = tracker
+        self.consumerKey = consumerKey
+
+        guard let session = appSession.currentSession else { return }
+
+        tracker.resetPersistentContexts([
+            APIUserContext(consumerKey: consumerKey)
+        ])
+        tracker.addPersistentContext(UserContext(guid: session.guid, userID: session.userIdentifier))
     }
 
     func save(from context: ExtensionContext?) async {
@@ -39,6 +51,9 @@ class SavedItemViewModel {
                 infoViewModel = .error
                 break
             }
+
+            tracker.addPersistentContext(ContentContext(url: url))
+            track(context: .saveExtension.saveDialog)
 
             let result = saveService.save(url: url)
             switch result {
@@ -67,6 +82,7 @@ class SavedItemViewModel {
                 self?.addTags(tags: tags)
             }
         )
+        track(context: .saveExtension.addTagsButton)
     }
 
     func addTags(tags: [String]) {
@@ -75,6 +91,8 @@ class SavedItemViewModel {
         if case let .taggedItem(savedItem) = result {
             self.savedItem = savedItem
             infoViewModel = .taggedItem
+
+            track(context: .saveExtension.addTagsDone)
         }
     }
 
@@ -126,6 +144,11 @@ extension SavedItemViewModel {
         }
 
         return nil
+    }
+
+    private func track(context: UIContext) {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, [context])
     }
 }
 

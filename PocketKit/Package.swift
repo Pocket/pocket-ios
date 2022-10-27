@@ -43,10 +43,9 @@ let package = Package(
             name: "PocketKitTests",
             dependencies: ["PocketKit", "SharedPocketKit"]
         ),
-
         .target(
             name: "SaveToPocketKit",
-            dependencies: ["SharedPocketKit", "Textile", "Sync"]
+            dependencies: ["SharedPocketKit", "Textile", "Sync", "Analytics"]
         ),
         .testTarget(
             name: "SaveToPocketKitTests",
@@ -89,7 +88,6 @@ let package = Package(
             dependencies: ["Sync"],
             resources: [.copy("Fixtures")]
         ),
-
         .target(
             name: "PocketGraph",
             dependencies: [

@@ -94,6 +94,7 @@ protocol ItemsListViewModel: AnyObject {
     func selectCell(with: ItemsListCell<ItemIdentifier>, sender: Any?)
 
     func filterByTagAction() -> UIAction?
+    func trackOverflow(for objectID: ItemIdentifier) -> UIAction?
     func shareAction(for objectID: ItemIdentifier) -> ItemAction?
     func favoriteAction(for objectID: ItemIdentifier) -> ItemAction?
     func overflowActions(for objectID: ItemIdentifier) -> [ItemAction]
