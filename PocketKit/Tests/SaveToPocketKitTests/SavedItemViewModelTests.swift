@@ -279,8 +279,7 @@ extension SavedItemViewModelTests {
         viewModel.addTags(tags: ["tag 1"], from: context)
         let infoViewModelChanged = expectation(description: "infoViewModelChanged")
         let subscription = viewModel.$infoViewModel.sink { model in
-            defer { infoViewModelChanged.fulfill() }
-            XCTAssertEqual(model.attributedText.string, "Tags Added!")
+            do { infoViewModelChanged.fulfill() }
         }
 
         wait(for: [infoViewModelChanged], timeout: 1)
