@@ -22,7 +22,8 @@ let package = Package(
         .package(url: "https://github.com/airbnb/lottie-ios.git", from: "3.4.3"),
         .package(url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5")),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMajor(from: "5.6.0"))
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMajor(from: "5.6.0")),
+        .package(url: "https://github.com/jacobsimeon/google-diff-match-patch-Objective-C", branch: "master"),
     ],
     targets: [
         .target(
@@ -79,13 +80,19 @@ let package = Package(
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
                 .product(name: "Sentry", package: "sentry-cocoa"),
-                "PocketGraph"
+                "PocketGraph",
+                .product(name: "DiffMatchPatch", package: "google-diff-match-patch-Objective-C")
             ],
             resources: [.process("PocketModel.xcdatamodeld")]
         ),
         .testTarget(
             name: "SyncTests",
-            dependencies: ["Sync"],
+            dependencies: [
+                "Sync",
+                // This shouldn't be necessary.
+                // It's just here to faciliate a test that directly imports DiffMatchPatch, which should eventually be deleted
+                .product(name: "DiffMatchPatch", package: "google-diff-match-patch-Objective-C")
+            ],
             resources: [.copy("Fixtures")]
         ),
         .target(

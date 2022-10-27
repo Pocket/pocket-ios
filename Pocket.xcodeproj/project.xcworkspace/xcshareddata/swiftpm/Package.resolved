@@ -37,6 +37,15 @@
       }
     },
     {
+      "identity" : "google-diff-match-patch-objective-c",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jacobsimeon/google-diff-match-patch-Objective-C",
+      "state" : {
+        "branch" : "master",
+        "revision" : "8b5779020e05e40c61a6f1c1d95be160243c77bd"
+      }
+    },
+    {
       "identity" : "inflectorkit",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattt/InflectorKit",
