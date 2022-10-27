@@ -225,6 +225,7 @@ extension ItemsListItemCell {
         let favoriteAction: ItemAction?
         let overflowActions: [ItemAction]
         let filterByTagAction: UIAction?
+        let trackOverflow: UIAction?
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -274,6 +275,10 @@ extension ItemsListItemCell {
 
         let menuActions = state.model?.overflowActions.compactMap(UIAction.init) ?? []
         menuButton.menu = UIMenu(children: menuActions)
+
+        if let trackAction = state.model?.trackOverflow {
+            menuButton.addAction(trackAction, for: .menuActionTriggered)
+        }
 
         thumbnailView.image = nil
         guard let thumbnailURL = state.model?.thumbnailURL else {

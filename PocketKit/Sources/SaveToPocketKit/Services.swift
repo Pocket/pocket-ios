@@ -2,12 +2,14 @@ import Foundation
 import Sync
 import SharedPocketKit
 import Combine
+import Analytics
 
 struct Services {
     static let shared = Services()
 
     let appSession: AppSession
     let saveService: PocketSaveService
+    let tracker: Tracker
 
     private let persistentContainer: PersistentContainer
 
@@ -16,6 +18,9 @@ struct Services {
         persistentContainer = .init(storage: .shared)
 
         appSession = AppSession()
+
+        let snowplow = PocketSnowplowTracker()
+        tracker = PocketTracker(snowplow: snowplow)
 
         saveService = PocketSaveService(
             space: persistentContainer.rootSpace,

@@ -169,6 +169,7 @@ extension SavedItemViewModel {
                 self?.fetchDetailsIfNeeded()
             }
         )
+        track(identifier: .itemAddTags)
     }
 
     private func saveExternalURL(_ url: URL) {

@@ -244,7 +244,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         guard let item = bareItem(with: objectID) else {
             return []
         }
-
         return [
             .addTags { [weak self] _ in
                 self?.showAddTagsView(item: item)
@@ -256,6 +255,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 self?.confirmDelete(item: item)
             }
         ]
+    }
+
+    func trackOverflow(for objectID: NSManagedObjectID) -> UIAction? {
+        guard let item = bareItem(with: objectID) else {
+            return nil
+        }
+        return UIAction(title: "", handler: { [weak self] _ in
+            self?.trackButton(item: item, identifier: .itemOverflow)
+        })
     }
 
     func trailingSwipeActions(for objectID: NSManagedObjectID) -> [ItemContextualAction] {
@@ -370,6 +378,20 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         if selectedFilters.contains(.favorites) {
             contexts.insert(UIContext.saves.favorites, at: 0)
         }
+
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
+    }
+
+    private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
+        guard let url = item.bestURL else {
+            return
+        }
+
+        let contexts: [Context] = [
+            UIContext.button(identifier: identifier),
+            ContentContext(url: url)
+        ]
 
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, contexts)
@@ -525,6 +547,7 @@ extension SavedItemsListViewModel {
                 self?.refresh()
             }
         )
+        trackButton(item: item, identifier: .itemEditTags)
     }
 }
 

@@ -242,6 +242,15 @@ extension ArchivedItemsListViewModel {
         ]
     }
 
+    func trackOverflow(for itemID: ItemIdentifier) -> UIAction? {
+        guard let item = savedItem(itemID) else {
+            return nil
+        }
+        return UIAction(title: "", handler: { [weak self] _ in
+            self?.trackButton(item: item, identifier: .itemOverflow)
+        })
+    }
+
     func trailingSwipeActions(for objectID: ItemIdentifier) -> [ItemContextualAction] {
         guard let item = savedItem(objectID) else {
             return []
@@ -321,6 +330,8 @@ extension ArchivedItemsListViewModel {
                 self?.archiveService.fetch()
             }
         )
+
+        trackButton(item: item, identifier: .itemEditTags)
     }
 
     func tagModel(with name: String) -> SelectedTagChipModel {
@@ -533,6 +544,20 @@ extension ArchivedItemsListViewModel {
         if selectedFilters.contains(.favorites) {
             contexts.insert(UIContext.saves.favorites, at: 0)
         }
+
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
+    }
+
+    private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
+        guard let url = item.bestURL else {
+            return
+        }
+
+        let contexts: [Context] = [
+            UIContext.button(identifier: identifier),
+            ContentContext(url: url)
+        ]
 
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, contexts)
