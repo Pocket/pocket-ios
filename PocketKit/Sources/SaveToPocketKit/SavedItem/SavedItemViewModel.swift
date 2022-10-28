@@ -90,6 +90,7 @@ class SavedItemViewModel {
         let result = saveService.addTags(savedItem: savedItem, tags: tags)
         if case let .taggedItem(savedItem) = result {
             self.savedItem = savedItem
+            infoViewModel = .taggedItem
 
             track(context: .saveExtension.addTagsDone)
         }
@@ -185,6 +186,15 @@ private extension InfoView.Model {
         attributedText: NSAttributedString(
             string: "Pocket couldn't save this link",
             style: .mainTextError
+        ),
+        attributedDetailText: nil
+    )
+
+    static let taggedItem = InfoView.Model(
+        style: .default,
+        attributedText: NSAttributedString(
+            string: "Tags Added!",
+            style: .mainText
         ),
         attributedDetailText: nil
     )
