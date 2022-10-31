@@ -58,11 +58,13 @@ struct EmptyStateView: View {
             VStack(alignment: .center, spacing: 20) {
                 Text(viewModel.headline).style(.main)
 
-                if let subtitle = viewModel.detailText, let icon = viewModel.icon {
-                    VStack(alignment: .center, spacing: 5) {
-                        Image(asset: icon)
-                        Text(subtitle).style(.detail)
-                    }
+                if let subtitle = viewModel.detailText {
+                    if let icon = viewModel.icon {
+                        VStack(alignment: .center, spacing: 5) {
+                            Image(asset: icon)
+                            Text(subtitle).style(.detail)
+                        }
+                    } else { Text(subtitle).style(.detail) }
                 }
 
                 if let buttonText = viewModel.buttonText, let webURL = viewModel.webURL {
