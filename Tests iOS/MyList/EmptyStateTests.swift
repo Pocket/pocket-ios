@@ -63,7 +63,7 @@ class EmptyStateTests: XCTestCase {
         }
 
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
-        XCTAssertTrue(app.saves.emptyStateView(for: "saves").exists)
+        XCTAssertTrue(app.saves.emptyStateView(for: "saves-empty-state").exists)
 
         app.saves.selectionSwitcher.archiveButton.wait().tap()
         XCTAssertEqual(app.saves.wait().itemCells.count, 2)
@@ -77,14 +77,14 @@ class EmptyStateTests: XCTestCase {
         }
 
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
-        XCTAssertTrue(app.saves.emptyStateView(for: "archive").exists)
+        XCTAssertTrue(app.saves.emptyStateView(for: "archive-empty-state").exists)
     }
 
     func testFavorites_showsEmptyStateView() {
         app.tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Favorites").tap()
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
-        XCTAssertTrue(app.saves.emptyStateView(for: "favorites").exists)
+        XCTAssertTrue(app.saves.emptyStateView(for: "favorites-empty-state").exists)
 
         app.saves.selectionSwitcher.archiveButton.wait().tap()
 
@@ -92,7 +92,14 @@ class EmptyStateTests: XCTestCase {
         app.saves.itemView(at: 0).favoriteButton.tap()
 
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
-        XCTAssertTrue(app.saves.emptyStateView(for: "favorites").exists)
+        XCTAssertTrue(app.saves.emptyStateView(for: "favorites-empty-state").exists)
+    }
+
+    func testTags_showsEmptyStateView() {
+        app.tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        app.saves.tagsFilterView.tag(matching: "not tagged").tap()
+        XCTAssertTrue(app.saves.emptyStateView(for: "tags-empty-state").exists)
     }
 
     private func swipeItemToArchive(with itemCell: ItemRowElement) {

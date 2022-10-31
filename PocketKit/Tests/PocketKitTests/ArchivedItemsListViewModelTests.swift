@@ -428,6 +428,28 @@ class ArchivedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
+    func test_receivedSnapshots_withNoItems_includesTagsEmptyState() {
+        archiveService._results = []
+        source.stubFetchAllTags {
+            []
+        }
+        let viewModel = subject()
+        viewModel.selectCell(with: .filterButton(.tagged), sender: UIView())
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.sink { snapshot in
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .emptyState),
+                [.emptyState]
+            )
+
+            XCTAssertTrue(viewModel.emptyState is TagsEmptyStateViewModel)
+            snapshotExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
     func test_receivedSnapshots_withItems_doesNotIncludeArchiveEmptyState() {
         let items = [space.buildSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
