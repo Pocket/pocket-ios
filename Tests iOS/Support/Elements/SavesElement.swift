@@ -45,7 +45,7 @@ struct SavesElement: PocketUIElement {
     }
 
     func emptyStateView(for type: String) -> XCUIElement {
-        element.otherElements["\(type)-empty-state"]
+        element.otherElements[type]
     }
 
     var archiveSwipeButton: XCUIElement {

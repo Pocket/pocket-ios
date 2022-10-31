@@ -263,6 +263,29 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
+    func test_receivedSnapshots_withNoItems_includesTagsEmptyState() {
+        itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [] }
+        source.stubFetchAllTags {
+            []
+        }
+        let viewModel = subject()
+        viewModel.selectCell(with: .filterButton(.tagged), sender: UIView())
+
+        let snapshotExpectation = expectation(description: "expected snapshot to update")
+        viewModel.snapshot.dropFirst().sink { snapshot in
+            let identifiers = snapshot.itemIdentifiers(inSection: .emptyState)
+            XCTAssertEqual(identifiers.count, 1)
+            XCTAssertTrue(snapshot.sectionIdentifiers.contains(.emptyState))
+            XCTAssertNotNil(viewModel.emptyState)
+            XCTAssertTrue(viewModel.emptyState is TagsEmptyStateViewModel)
+            snapshotExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        itemsController.delegate?.controllerDidChangeContent(itemsController)
+
+        wait(for: [snapshotExpectation], timeout: 1)
+    }
+
     func test_receivedSnapshots_withItems_doesNotIncludeSavesEmptyState() {
         let savedItem = space.buildSavedItem()
         itemsController.fetchedObjects = [savedItem]
