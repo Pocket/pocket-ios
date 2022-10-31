@@ -37,7 +37,13 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     var presentedSortFilterViewModel: SortMenuViewModel?
 
     var emptyState: EmptyStateViewModel? {
-        return selectedFilters.contains(.favorites) ? FavoritesEmptyStateViewModel() : ArchiveEmptyStateViewModel()
+        if selectedFilters.contains(.favorites) {
+            return FavoritesEmptyStateViewModel()
+        } else if selectedFilters.contains(.tagged) {
+            return TagsEmptyStateViewModel()
+        } else {
+            return ArchiveEmptyStateViewModel()
+        }
     }
 
     private let source: Source

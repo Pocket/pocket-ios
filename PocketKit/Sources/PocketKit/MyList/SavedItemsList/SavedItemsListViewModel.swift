@@ -43,7 +43,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
 
-        return selectedFilters.contains(.favorites) ? FavoritesEmptyStateViewModel() : SavesEmptyStateViewModel()
+        if selectedFilters.contains(.favorites) {
+            return FavoritesEmptyStateViewModel()
+        } else if selectedFilters.contains(.tagged) {
+            return TagsEmptyStateViewModel()
+        } else {
+            return SavesEmptyStateViewModel()
+        }
     }
 
     private let source: Source
