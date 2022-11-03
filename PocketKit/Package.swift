@@ -15,7 +15,7 @@ let package = Package(
         .library(name: "Analytics", targets: ["Analytics"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "1.0.3")),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "1.0.2")),
         .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.3.2")),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.25.0")),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMajor(from: "3.2.0")),
