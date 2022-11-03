@@ -21,6 +21,7 @@ struct Services {
     let tracker: Tracker
     let sceneTracker: SceneTracker
     let refreshCoordinator: RefreshCoordinator
+    let homeRefreshCoordinator: HomeRefreshCoordinator
     let authClient: AuthorizationClient
     let imageManager: ImageManager
     let notificationService: PushNotificationService
@@ -65,6 +66,12 @@ struct Services {
         refreshCoordinator = RefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
+            source: source
+        )
+
+        homeRefreshCoordinator = HomeRefreshCoordinator(
+            notificationCenter: .default,
+            userDefaults: userDefaults,
             source: source
         )
 

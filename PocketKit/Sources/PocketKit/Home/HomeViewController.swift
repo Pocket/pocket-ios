@@ -80,7 +80,7 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
 
         let action = UIAction { [weak self] _ in
-            self?.handleRefresh()
+            self?.handleRefresh(isForced: true)
         }
 
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
@@ -126,8 +126,8 @@ class HomeViewController: UIViewController {
         handleRefresh()
     }
 
-    private func handleRefresh() {
-        model.refresh { [weak self] in
+    private func handleRefresh(isForced: Bool = false) {
+        model.refresh(isForced: isForced) { [weak self] in
             DispatchQueue.main.async {
                 if self?.collectionView.refreshControl?.isRefreshing == true {
                     self?.collectionView.refreshControl?.endRefreshing()

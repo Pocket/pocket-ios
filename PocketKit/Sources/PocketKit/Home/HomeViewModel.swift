@@ -98,18 +98,21 @@ class HomeViewModel {
     private let source: Source
     private let tracker: Tracker
     private let networkPathMonitor: NetworkPathMonitor
+    private let homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
 
     init(
         source: Source,
         tracker: Tracker,
-        networkPathMonitor: NetworkPathMonitor
+        networkPathMonitor: NetworkPathMonitor,
+        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
     ) {
         self.source = source
         self.tracker = tracker
         self.networkPathMonitor = networkPathMonitor
         networkPathMonitor.start(queue: .global())
+        self.homeRefreshCoordinator = homeRefreshCoordinator
 
         self.snapshot = {
             return Self.loadingSnapshot()
@@ -147,7 +150,7 @@ class HomeViewModel {
         }
     }
 
-    func refresh(_ completion: @escaping () -> Void) {
+    func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         guard !isOffline else {
             do {
                 snapshot = try rebuildSnapshot()
@@ -159,8 +162,7 @@ class HomeViewModel {
             return
         }
 
-        Task {
-            try await source.fetchSlateLineup(Self.lineupIdentifier)
+        homeRefreshCoordinator.refresh(isForced: isForced) {
             completion()
         }
     }
