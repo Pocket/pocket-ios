@@ -29,7 +29,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     home: HomeViewModel(
                         source: Services.shared.source,
                         tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
-                        networkPathMonitor: NWPathMonitor()
+                        networkPathMonitor: NWPathMonitor(),
+                        homeRefreshCoordinator: Services.shared.homeRefreshCoordinator
                     ),
                     account: AccountViewModel(appSession: Services.shared.appSession)
                 ),

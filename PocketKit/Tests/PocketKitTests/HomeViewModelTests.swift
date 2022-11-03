@@ -11,7 +11,7 @@ class HomeViewModelTests: XCTestCase {
     var tracker: MockTracker!
     var space: Space!
     var networkPathMonitor: MockNetworkPathMonitor!
-
+    var homeRefreshCoordinator: MockHomeRefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
 
     override func setUp() async throws {
@@ -20,6 +20,7 @@ class HomeViewModelTests: XCTestCase {
         source = MockSource()
         source.mainContext = space.context
         networkPathMonitor = MockNetworkPathMonitor()
+        homeRefreshCoordinator = MockHomeRefreshCoordinator()
 
         tracker = MockTracker()
     }
@@ -32,12 +33,14 @@ class HomeViewModelTests: XCTestCase {
     func subject(
         source: Source? = nil,
         tracker: Tracker? = nil,
-        networkPathMonitor: NetworkPathMonitor? = nil
+        networkPathMonitor: NetworkPathMonitor? = nil,
+        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol? = nil
     ) -> HomeViewModel {
         HomeViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
+            homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator
         )
     }
 
@@ -512,15 +515,16 @@ class HomeViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
-    func test_refresh_delegatesToSource() {
+    func test_refresh_delegatesToHomeRefreshCoordinator() {
         let fetchExpectation = expectation(description: "expected to fetch slate lineup")
         source.stubFetchSlateLineup { _ in fetchExpectation.fulfill() }
+        homeRefreshCoordinator.stubRefresh { _, _ in fetchExpectation.fulfill() }
 
         let viewModel = subject()
         viewModel.refresh { }
         wait(for: [fetchExpectation], timeout: 1)
 
-        XCTAssertEqual(source.fetchSlateLineupCall(at: 0)?.identifier, "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1")
+        XCTAssertNotNil(homeRefreshCoordinator.refreshCall(at: 0))
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
