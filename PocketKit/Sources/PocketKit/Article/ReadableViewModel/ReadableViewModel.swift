@@ -33,6 +33,10 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
     func clearPresentedWebReaderURL()
+    func moveToSaves()
+    func unfavorite()
+    func favorite()
+    func webViewActivityItems() -> [UIActivity]
 }
 
 // MARK: - ReadableViewControllerDelegate
@@ -107,5 +111,37 @@ extension ReadableViewModel {
 
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, contexts)
+    }
+
+    func webViewActivityItems(for item: SavedItem) -> [UIActivity] {
+        let archiveActivityTitle: WebActivityTitle = (item.isArchived
+                                                       ? .moveToSaves
+                                                       : .archive)
+        let archiveActivity = ReaderActionsWebActivity(title: archiveActivityTitle) { [weak self] in
+            if item.isArchived == true {
+                self?.moveToSaves()
+            } else {
+                self?.archiveArticle()
+            }
+        }
+
+        let deleteActivity = ReaderActionsWebActivity(title: .delete) { [weak self] in
+            self?.confirmDelete()
+        }
+
+        let favoriteActivityTitle: WebActivityTitle = (item.isFavorite
+                                                        ? .unfavorite
+                                                        : .favorite
+        )
+
+        let favoriteActivity = ReaderActionsWebActivity(title: favoriteActivityTitle) { [weak self] in
+            if item.isFavorite == true {
+                self?.unfavorite()
+            } else {
+                self?.favorite()
+            }
+        }
+
+        return [archiveActivity, deleteActivity, favoriteActivity]
     }
 }

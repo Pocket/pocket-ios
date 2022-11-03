@@ -125,6 +125,10 @@ class SavedItemViewModel: ReadableViewModel {
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
     }
+
+    func webViewActivityItems() -> [UIActivity] {
+        return webViewActivityItems(for: item)
+    }
 }
 
 extension SavedItemViewModel {
@@ -145,12 +149,12 @@ extension SavedItemViewModel {
         ]
     }
 
-    private func favorite() {
+    func favorite() {
         source.favorite(item: item)
         track(identifier: .itemFavorite)
     }
 
-    private func unfavorite() {
+    func unfavorite() {
         source.unfavorite(item: item)
         track(identifier: .itemUnfavorite)
     }

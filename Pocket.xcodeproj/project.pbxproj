@@ -43,6 +43,7 @@
 		16E4B16F27A3212900E01746 /* Response+factories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E4B16E27A3212900E01746 /* Response+factories.swift */; };
 		16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */; };
 		16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */; };
+		3E44BE77290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E44BE76290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift */; };
 		3E8283A428B65ECF00C1DC4A /* SortMenuElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E8283A328B65ECF00C1DC4A /* SortMenuElement.swift */; };
 		650FECCE28BA85F300A3CB0C /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 650FECCD28BA85F300A3CB0C /* NotificationService.swift */; };
 		650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -172,6 +173,7 @@
 		16E881F129072663008B2E05 /* AllTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = AllTests.xctestplan; sourceTree = "<group>"; };
 		16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PullToRefreshTests.swift; sourceTree = "<group>"; };
 		16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchiveAnItemTests.swift; sourceTree = "<group>"; };
+		3E44BE76290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderActionsWebActivityElement.swift; sourceTree = "<group>"; };
 		3E8283A328B65ECF00C1DC4A /* SortMenuElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SortMenuElement.swift; sourceTree = "<group>"; };
 		650D169728FFA40B00EE9339 /* Sources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sources; sourceTree = "<group>"; };
 		650D169A28FFA42800EE9339 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 				166BAD082656E76B00E401F0 /* PocketAppElement.swift */,
 				166F8F2826D0494F00F898E3 /* PocketUIElement.swift */,
 				166BAD062656E76B00E401F0 /* ReaderElement.swift */,
+				3E44BE76290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift */,
 				166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */,
 				166BAD052656E76B00E401F0 /* SignInFormElement.swift */,
 				166BAD072656E76B00E401F0 /* SavesElement.swift */,
@@ -674,6 +677,7 @@
 				F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */,
 				166BAD0D2656E76B00E401F0 /* PocketAppElement.swift in Sources */,
 				8A7765A2288EE80900127BB4 /* RecentSavesCellElement.swift in Sources */,
+				3E44BE77290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift in Sources */,
 				164FB66E278F7ECC002959D6 /* SavesFiltersTests.swift in Sources */,
 				F2843C1E2714D18200E03ED5 /* ReportARecommendationTests.swift in Sources */,
 				1605237E27A4627F00E09FD2 /* XCTestCase+extensions.swift in Sources */,

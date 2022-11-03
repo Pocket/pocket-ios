@@ -57,10 +57,6 @@ class CompactHomeCoordinator: NSObject {
             self?.report(recommendation)
         }.store(in: &subscriptions)
 
-        model.$presentedWebReaderURL.sink { [weak self] url in
-            self?.present(url: url)
-        }.store(in: &subscriptions)
-
         model.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
@@ -93,6 +89,12 @@ class CompactHomeCoordinator: NSObject {
             show(viewModel)
         case .recommendation(let viewModel):
             show(viewModel)
+        case .webViewRecommendation(let viewModel):
+            showRecommendation(forWebView: viewModel)
+            present(url: viewModel.url)
+        case .webViewSavedItem(let viewModel):
+            showSavedItem(forWebView: viewModel)
+            present(url: viewModel.url)
         case .none:
             readerSubscriptions = []
         }
@@ -163,7 +165,7 @@ class CompactHomeCoordinator: NSObject {
                 case .contentUpdated:
                     break
                 case .archive, .delete:
-                    self?.navigationController.popViewController(animated: true)
+                self?.popToPreviousScreen()
             }
         }.store(in: &readerSubscriptions)
     }
@@ -201,7 +203,41 @@ class CompactHomeCoordinator: NSObject {
             case .contentUpdated:
                 break
             case .archive, .delete:
-                self?.navigationController.popViewController(animated: true)
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
+        viewModel.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
+            self?.report(recommendation)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
+        viewModel.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
             }
         }.store(in: &readerSubscriptions)
     }
@@ -218,7 +254,11 @@ class CompactHomeCoordinator: NSObject {
         )
 
         host.modalPresentationStyle = .formSheet
-        viewController.present(host, animated: !isResetting)
+        guard let presentedVC = viewController.presentedViewController else {
+            viewController.present(host, animated: !isResetting)
+            return
+        }
+        presentedVC.present(host, animated: !isResetting)
     }
 
     func show(_ seeAll: SeeAll?) {
@@ -269,7 +309,11 @@ class CompactHomeCoordinator: NSObject {
 
     private func present(alert: PocketAlert?) {
         guard !isResetting, let alert = alert else { return }
-        viewController.present(UIAlertController(alert), animated: !isResetting)
+        guard let presentedVC = viewController.presentedViewController else {
+            viewController.present(UIAlertController(alert), animated: !isResetting)
+            return
+        }
+        presentedVC.present(UIAlertController(alert), animated: !isResetting)
     }
 
     func present(_ viewModel: PocketAddTagsViewModel?) {
@@ -309,9 +353,25 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
         guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
         return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
     }
+
+    private func popToPreviousScreen() {
+
+        if let presentedVC = navigationController.presentedViewController {
+            presentedVC.dismiss(animated: true) { [weak self] in
+                self?.navigationController.popToRootViewController(animated: true)
+            }
+        } else {
+            navigationController.popViewController(animated: true)
+        }
+    }
 }
 
 extension CompactHomeCoordinator: SFSafariViewControllerDelegate {
+
+    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
+        return model.activityItemsForSelectedItem()
+    }
+
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
     }

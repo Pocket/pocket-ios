@@ -7,6 +7,8 @@ import Analytics
 enum ReadableType {
     case recommendation(RecommendationViewModel)
     case savedItem(SavedItemViewModel)
+    case webViewRecommendation(RecommendationViewModel)
+    case webViewSavedItem(SavedItemViewModel)
 
     func clearIsPresentingReaderSettings() {
         switch self {
@@ -14,6 +16,10 @@ enum ReadableType {
             recommendationViewModel.clearIsPresentingReaderSettings()
         case .savedItem(let savedItemViewModel):
             savedItemViewModel.clearIsPresentingReaderSettings()
+        case .webViewRecommendation(let recommendationViewModel):
+            recommendationViewModel.clearPresentedWebReaderURL()
+        case .webViewSavedItem(let savedItemViewModel):
+            savedItemViewModel.clearPresentedWebReaderURL()
         }
     }
 }
@@ -88,9 +94,6 @@ class HomeViewModel {
 
     @Published
     var selectedRecommendationToReport: Recommendation?
-
-    @Published
-    var presentedWebReaderURL: URL?
 
     @Published
     var tappedSeeAll: SeeAll?
@@ -295,21 +298,21 @@ extension HomeViewModel {
             contexts(for: recommendation, at: indexPath)
         )
 
-        let item = recommendation.item
+        let viewModel = RecommendationViewModel(
+            recommendation: recommendation,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general
+        )
 
-        if item?.shouldOpenInWebView == true {
-            presentedWebReaderURL = item?.bestURL
+        if let item = recommendation.item, item.shouldOpenInWebView {
+            selectedReadableType = .webViewRecommendation(viewModel)
+
             tracker.track(
                 event: ContentOpenEvent(destination: .external, trigger: .click),
                 contexts(for: recommendation, at: indexPath)
             )
         } else {
-            let viewModel = RecommendationViewModel(
-                recommendation: recommendation,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen),
-                pasteboard: UIPasteboard.general
-            )
             selectedReadableType = .recommendation(viewModel)
 
             tracker.track(
@@ -325,20 +328,21 @@ extension HomeViewModel {
             contexts(for: savedItem, at: indexPath)
         )
 
+        let viewModel = SavedItemViewModel(
+            item: savedItem,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general
+        )
+
         if let item = savedItem.item, item.shouldOpenInWebView {
-            presentedWebReaderURL = item.bestURL
+            selectedReadableType = .webViewSavedItem(viewModel)
 
             tracker.track(
                 event: ContentOpenEvent(destination: .external, trigger: .click),
                 contexts(for: savedItem, at: indexPath)
             )
         } else {
-            let viewModel = SavedItemViewModel(
-                item: savedItem,
-                source: source,
-                tracker: tracker.childTracker(hosting: .articleView.screen),
-                pasteboard: UIPasteboard.general
-            )
             selectedReadableType = .savedItem(viewModel)
 
             tracker.track(
@@ -680,7 +684,6 @@ extension HomeViewModel {
 
     func clearPresentedWebReaderURL() {
         tappedSeeAll?.clearPresentedWebReaderURL()
-        presentedWebReaderURL = nil
     }
 
     func clearSharedActivity() {
@@ -700,5 +703,21 @@ extension HomeViewModel {
 
     func clearTappedSeeAll() {
         tappedSeeAll = nil
+    }
+}
+
+extension HomeViewModel {
+
+    func activityItemsForSelectedItem() -> [UIActivity] {
+        switch selectedReadableType {
+        case .recommendation(let viewModel),
+                .webViewRecommendation(let viewModel):
+            return viewModel.webViewActivityItems()
+        case .savedItem(let viewModel),
+                .webViewSavedItem(let viewModel):
+            return viewModel.webViewActivityItems()
+        case .none:
+            return []
+        }
     }
 }
