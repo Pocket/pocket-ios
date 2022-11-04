@@ -64,6 +64,12 @@ struct SettingsForm: View {
                 })
                 .textCase(nil)
 
+                Section(header: Text("App Customization").style(.settings.header)) {
+                    SettingsRowToggle(title: "Show App Badge Count", model: model) {
+                        model.toggleAppBadge()
+                    }
+                }.textCase(nil)
+
                 Section(header: Text("About & Support").style(.settings.header)) {
                     SettingsRowButton(title: "Help", icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
@@ -80,7 +86,6 @@ struct SettingsForm: View {
                             SFSafariView(url: URL(string: "https://getpocket.com/en/privacy/")!)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
-
                 }.textCase(nil)
             }
             .listRowBackground(Color(.ui.grey7))

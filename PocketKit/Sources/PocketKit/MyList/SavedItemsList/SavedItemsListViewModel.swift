@@ -59,14 +59,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
+    private let notificationCenter: NotificationCenter
 
-    init(source: Source, tracker: Tracker, listOptions: ListOptions) {
+    init(source: Source, tracker: Tracker, listOptions: ListOptions, notificationCenter: NotificationCenter) {
         self.source = source
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
         self.itemsController = source.makeItemsController()
         self.listOptions = listOptions
+        self.notificationCenter = notificationCenter
 
         super.init()
 
@@ -531,7 +533,6 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         guard .update == type else {
             return
         }
-
         var snapshot = buildSnapshot()
         snapshot.reloadItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
         _snapshot = snapshot
@@ -539,6 +540,7 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {
         itemsLoaded()
+        notificationCenter.post(name: .listUpdated, object: nil)
     }
 }
 

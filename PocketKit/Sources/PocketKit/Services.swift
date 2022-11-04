@@ -29,6 +29,7 @@ struct Services {
     let v3Client: V3ClientProtocol
     let instantSync: InstantSyncProtocol
     let braze: BrazeProtocol
+    let appBadgeSetup: AppBadgeSetup
 
     private let persistentContainer: PersistentContainer
 
@@ -66,6 +67,7 @@ struct Services {
         )
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
+
         refreshCoordinator = RefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
@@ -102,6 +104,12 @@ struct Services {
             appSession: appSession,
             braze: braze,
             instantSync: instantSync
+        )
+
+        appBadgeSetup = AppBadgeSetup(
+            source: source,
+            userDefaults: userDefaults,
+            badgeProvider: UIApplication.shared
         )
     }
 }
