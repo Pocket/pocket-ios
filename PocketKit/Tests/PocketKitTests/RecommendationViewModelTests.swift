@@ -1,5 +1,4 @@
 import XCTest
-import Sync
 import Analytics
 import Combine
 

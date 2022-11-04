@@ -5,7 +5,6 @@
 import Foundation
 import Apollo
 import ApolloAPI
-import Sync
 
 @testable import Sync
 

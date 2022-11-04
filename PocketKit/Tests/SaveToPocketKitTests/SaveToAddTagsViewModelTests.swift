@@ -1,5 +1,4 @@
 import XCTest
-import Sync
 
 @testable import Sync
 @testable import SaveToPocketKit

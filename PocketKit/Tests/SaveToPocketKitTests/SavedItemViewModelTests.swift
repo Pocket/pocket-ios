@@ -1,7 +1,6 @@
 import XCTest
 import Analytics
 import SharedPocketKit
-import Sync
 
 @testable import Sync
 @testable import SaveToPocketKit
