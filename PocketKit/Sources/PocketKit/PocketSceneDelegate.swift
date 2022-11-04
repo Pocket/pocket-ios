@@ -18,7 +18,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         savedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
-                            listOptions: .saved
+                            listOptions: .saved,
+                            notificationCenter: .default
                         ),
                         archivedItemsList: ArchivedItemsListViewModel(
                             source: Services.shared.source,
@@ -34,7 +35,9 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     ),
                     account: AccountViewModel(
                         appSession: Services.shared.appSession,
-                        user: Services.shared.user
+                        user: Services.shared.user,
+                        userDefaults: Services.shared.userDefaults,
+                        notificationCenter: .default
                     )
                 ),
                 source: Services.shared.source,

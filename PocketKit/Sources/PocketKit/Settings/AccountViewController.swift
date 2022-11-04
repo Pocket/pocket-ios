@@ -6,6 +6,7 @@ enum AccountSection {
 
 enum AccountItem {
     case signOut
+    case toggleAppBadge
 }
 
 class AccountViewController: UIViewController {
@@ -32,6 +33,8 @@ class AccountViewController: UIViewController {
 
                 cell.contentConfiguration = content
                 cell.backgroundConfiguration?.backgroundColor = UIColor(.ui.white1)
+            case .toggleAppBadge:
+                model.toggleAppBadge()
             }
         }
 
@@ -74,6 +77,8 @@ extension AccountViewController: UICollectionViewDelegate {
         switch dataSource.itemIdentifier(for: indexPath) {
         case .signOut:
             model.signOut()
+        case .toggleAppBadge:
+            model.toggleAppBadge()
         default:
             break
         }

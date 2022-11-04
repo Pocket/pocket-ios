@@ -41,7 +41,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         SavedItemsListViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            listOptions: listOptions ?? self.listOptions
+            listOptions: listOptions ?? self.listOptions,
+            notificationCenter: .default
         )
     }
 
