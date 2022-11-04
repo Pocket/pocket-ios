@@ -6,7 +6,6 @@ import Textile
 import Sync
 import Combine
 import Foundation
-import Sync
 import Analytics
 import CoreData
 import UIKit

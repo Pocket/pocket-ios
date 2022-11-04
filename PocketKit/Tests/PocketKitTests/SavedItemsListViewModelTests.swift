@@ -1,6 +1,5 @@
 import XCTest
 import Analytics
-import Sync
 import Combine
 
 @testable import Sync
