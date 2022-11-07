@@ -89,6 +89,19 @@ git rebase develop
 git push origin my-pr-branch --force[-with-lease]
 ```
 
+We would also like to implement [Commit Message Standard](https://getpocket.atlassian.net/wiki/spaces/PE/pages/2817458212/Commit+Message+Standard#Should-we-have-a-standard-commit-strategy-across-engineer%3F) in PR comments.
+One solution is to squash (which we also prefer) your commits once its ready to merge in:
+
+```bash
+git checkout develop
+git pull --rebase
+git checkout my-pr-branch
+git reset --soft main
+git add <your files here>
+git commit -m "commit message standard"
+git push --force[-with-lease]
+```
+
 ### Running Danger Locally
 
 You can run danger locally to see what it would output by running the following in the root of the repository.
