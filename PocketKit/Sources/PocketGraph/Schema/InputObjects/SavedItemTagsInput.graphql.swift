@@ -23,13 +23,13 @@ public struct SavedItemTagsInput: InputObject {
 
   /// The SavedItem ID to associate Tags to
   public var savedItemId: ID {
-    get { __data.savedItemId }
-    set { __data.savedItemId = newValue }
+    get { __data["savedItemId"] }
+    set { __data["savedItemId"] = newValue }
   }
 
   /// The set of Tag names to associate to the SavedItem
   public var tags: [String] {
-    get { __data.tags }
-    set { __data.tags = newValue }
+    get { __data["tags"] }
+    set { __data["tags"] = newValue }
   }
 }

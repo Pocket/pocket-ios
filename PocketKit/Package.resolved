@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apollographql/apollo-ios.git",
       "state" : {
-        "revision" : "d884d6b7610798fb697a4697423c956f44816103",
-        "version" : "1.0.2"
+        "revision" : "4b13a927b581c40d06f2c65f593f672a52c0c812",
+        "version" : "1.0.3"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
       "state" : {
-        "revision" : "eec5fe0bd84b553560b76334e832f8f124406749",
-        "version" : "5.5.1"
+        "revision" : "ce1aba4ecc3a4c0ca37b40340a4e481cac0bb3a2",
+        "version" : "5.6.1"
       }
     },
     {

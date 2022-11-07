@@ -23,13 +23,13 @@ public struct TagUpdateInput: InputObject {
 
   /// Tag ID
   public var id: ID {
-    get { __data.id }
-    set { __data.id = newValue }
+    get { __data["id"] }
+    set { __data["id"] = newValue }
   }
 
   /// The updated tag string
   public var name: String {
-    get { __data.name }
-    set { __data.name = newValue }
+    get { __data["name"] }
+    set { __data["name"] = newValue }
   }
 }

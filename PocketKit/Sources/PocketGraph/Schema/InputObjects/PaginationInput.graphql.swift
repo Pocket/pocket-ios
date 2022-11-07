@@ -32,28 +32,28 @@ public struct PaginationInput: InputObject {
   /// Returns the elements in the list that come after the specified cursor.
   /// The specified cursor is not included in the result.
   public var after: GraphQLNullable<String> {
-    get { __data.after }
-    set { __data.after = newValue }
+    get { __data["after"] }
+    set { __data["after"] = newValue }
   }
 
   /// Returns the elements in the list that come before the specified cursor.
   /// The specified cursor is not included in the result.
   public var before: GraphQLNullable<String> {
-    get { __data.before }
-    set { __data.before = newValue }
+    get { __data["before"] }
+    set { __data["before"] = newValue }
   }
 
   /// Returns the first _n_ elements from the list. Must be a non-negative integer.
   /// If `first` contains a value, `last` should be null/omitted in the input.
   public var first: GraphQLNullable<Int> {
-    get { __data.first }
-    set { __data.first = newValue }
+    get { __data["first"] }
+    set { __data["first"] = newValue }
   }
 
   /// Returns the last _n_ elements from the list. Must be a non-negative integer.
   /// If `last` contains a value, `first` should be null/omitted in the input.
   public var last: GraphQLNullable<Int> {
-    get { __data.last }
-    set { __data.last = newValue }
+    get { __data["last"] }
+    set { __data["last"] = newValue }
   }
 }
