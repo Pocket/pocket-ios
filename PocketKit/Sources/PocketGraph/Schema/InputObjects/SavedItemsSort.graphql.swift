@@ -23,13 +23,13 @@ public struct SavedItemsSort: InputObject {
 
   /// The field by which to sort SavedItems
   public var sortBy: GraphQLEnum<SavedItemsSortBy> {
-    get { __data.sortBy }
-    set { __data.sortBy = newValue }
+    get { __data["sortBy"] }
+    set { __data["sortBy"] = newValue }
   }
 
   /// The order in which to sort SavedItems
   public var sortOrder: GraphQLEnum<SavedItemsSortOrder> {
-    get { __data.sortOrder }
-    set { __data.sortOrder = newValue }
+    get { __data["sortOrder"] }
+    set { __data["sortOrder"] = newValue }
   }
 }

@@ -25,19 +25,19 @@ public struct SavedItemUpsertInput: InputObject {
 
   /// The url to create/update the SavedItem with. (the url to save to the list)
   public var url: String {
-    get { __data.url }
-    set { __data.url = newValue }
+    get { __data["url"] }
+    set { __data["url"] = newValue }
   }
 
   /// Optional, create/update the SavedItem as a favorited item
   public var isFavorite: GraphQLNullable<Bool> {
-    get { __data.isFavorite }
-    set { __data.isFavorite = newValue }
+    get { __data["isFavorite"] }
+    set { __data["isFavorite"] = newValue }
   }
 
   /// Optional, time that request was submitted by client epoch/unix time
   public var timestamp: GraphQLNullable<Int> {
-    get { __data.timestamp }
-    set { __data.timestamp = newValue }
+    get { __data["timestamp"] }
+    set { __data["timestamp"] = newValue }
   }
 }
