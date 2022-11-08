@@ -89,7 +89,9 @@ git rebase develop
 git push origin my-pr-branch --force[-with-lease]
 ```
 
-We would also like to implement [Commit Message Standard](https://getpocket.atlassian.net/wiki/spaces/PE/pages/2817458212/Commit+Message+Standard#Should-we-have-a-standard-commit-strategy-across-engineer%3F) in PR comments.
+We would also like to implement [Commit Message Standard](https://www.conventionalcommits.org/en/v1.0.0/) in PR comments.
+`type(scope): message description`
+
 One solution is to squash (which we also prefer) your commits once its ready to merge in:
 
 ```bash
