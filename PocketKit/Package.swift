@@ -79,7 +79,8 @@ let package = Package(
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
                 .product(name: "Sentry", package: "sentry-cocoa"),
-                "PocketGraph"
+                "PocketGraph",
+                "SharedPocketKit"
             ],
             resources: [.process("PocketModel.xcdatamodeld")]
         ),

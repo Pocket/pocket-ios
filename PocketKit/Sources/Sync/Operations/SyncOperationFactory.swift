@@ -3,9 +3,11 @@ import Apollo
 import Combine
 import CoreData
 import PocketGraph
+import SharedPocketKit
 
 protocol SyncOperationFactory {
     func fetchList(
+        user: User,
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
@@ -38,6 +40,7 @@ protocol SyncOperationFactory {
 
 class OperationFactory: SyncOperationFactory {
     func fetchList(
+        user: User,
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
@@ -47,6 +50,7 @@ class OperationFactory: SyncOperationFactory {
         lastRefresh: LastRefresh
     ) -> SyncOperation {
         return FetchList(
+            user: user,
             token: token,
             apollo: apollo,
             space: space,

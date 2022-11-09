@@ -131,7 +131,7 @@ class HomeViewModel {
 
         networkPathMonitor.updateHandler = { [weak self] path in
             if path.status == .satisfied {
-                self?.refresh { }
+                self?.refresh(isForced: true) { }
             }
         }
     }

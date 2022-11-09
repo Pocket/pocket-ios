@@ -3,11 +3,13 @@ import Combine
 import CoreData
 import Apollo
 import PocketGraph
+import SharedPocketKit
 
 @testable import Sync
 
 class FetchListTests: XCTestCase {
     var apollo: MockApolloClient!
+    var user: MockUser!
     var space: Space!
     var events: SyncEvents!
     var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>!
@@ -17,6 +19,7 @@ class FetchListTests: XCTestCase {
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
+        user = MockUser()
         events = PassthroughSubject()
         initialDownloadState = .init(.unknown)
         queue = OperationQueue()
@@ -30,6 +33,7 @@ class FetchListTests: XCTestCase {
     }
 
     func subject(
+        user: User? = nil,
         token: String = "test-token",
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil,
@@ -39,6 +43,7 @@ class FetchListTests: XCTestCase {
         lastRefresh: LastRefresh? = nil
     ) -> FetchList {
         FetchList(
+            user: user ?? self.user,
             token: token,
             apollo: apollo ?? self.apollo,
             space: space ?? self.space,
@@ -50,6 +55,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_fetchesFetchSavesQueryWithGivenToken() async {
+        user.stubSetStatus { _ in }
         apollo.setupSyncResponse()
 
         let service = subject()
@@ -63,6 +69,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() async throws {
+        user.stubSetStatus { _ in }
         apollo.setupSyncResponse()
 
         let service = subject()
@@ -115,6 +122,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
+        user.stubSetStatus { _ in }
         apollo.setupSyncResponse(listFixtureName: "duplicate-list")
 
         let service = subject()
@@ -125,6 +133,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() async throws {
+        user.stubSetStatus { _ in }
         apollo.setupSyncResponse(listFixtureName: "updated-item")
         try space.createSavedItem(
             remoteID: "saved-item-1",
@@ -139,6 +148,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenFetchFails_sendsErrorOverGivenSubject() async throws {
+        user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
         apollo.stubFetch(ofQueryType: FetchSavesQuery.self, toReturnError: TestError.anError)
 
@@ -160,6 +170,7 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() async throws {
         var fetches = 0
+        user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
         apollo.stubFetch { (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
@@ -191,6 +202,7 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenItemCountExceedsMax_fetchesMaxNumberOfItems() async throws {
         var fetches = 0
+        user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
         apollo.stubFetch { (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
@@ -231,6 +243,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() async {
+        user.stubSetStatus { _ in }
         lastRefresh.stubGetLastRefresh { 123456789 }
         apollo.setupSyncResponse()
 
@@ -243,6 +256,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenUpdatedSinceIsPresent_doesNotSendInitialDownloadFetchedFirstPageEvent() async {
+        user.stubSetStatus { _ in }
         initialDownloadState.send(.completed)
         apollo.setupSyncResponse()
 
@@ -265,6 +279,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {
+        user.stubSetStatus { _ in }
         apollo.setupSyncResponse()
 
         let service = subject()
@@ -275,6 +290,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_execute_whenUpdatedSinceIsNotPresent_downloadsAllTags() async throws {
+        user.stubSetStatus { _ in }
         apollo.setupFetchListResponse(fixtureName: "empty-list")
 
         var tagsPageCount = 1
@@ -311,6 +327,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenIsInitialDownload_sendsAppropriateEvents() async {
+        user.stubSetStatus { _ in }
         initialDownloadState.send(.started)
         apollo.setupSyncResponse()
 
@@ -335,6 +352,7 @@ class FetchListTests: XCTestCase {
     }
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {
+        user.stubSetStatus { _ in }
         apollo.setupSyncResponse(listFixtureName: "empty-list")
 
         let service = subject()
@@ -349,7 +367,7 @@ class FetchListTests: XCTestCase {
             response: nil,
             underlying: TestError.anError
         )
-
+        user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
         apollo.stubFetch(ofQueryType: FetchSavesQuery.self, toReturnError: initialError)
 
@@ -364,6 +382,7 @@ class FetchListTests: XCTestCase {
 
     func test_execute_whenResponseIs5XX_retries() async {
         let initialError = ResponseCodeInterceptor.ResponseCodeError.withStatusCode(500)
+        user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
         apollo.stubFetch(ofQueryType: FetchSavesQuery.self, toReturnError: initialError)
 
@@ -374,6 +393,14 @@ class FetchListTests: XCTestCase {
             XCTFail("Expected retry result but got \(result)")
             return
         }
+    }
+
+    func test_execute_setsUserStatus() async {
+        user.stubSetStatus { _ in }
+        apollo.setupSyncResponse()
+        let service = subject()
+        _ = await service.execute()
+        XCTAssertNotNil(user.setStatusCall(at: 0))
     }
 }
 

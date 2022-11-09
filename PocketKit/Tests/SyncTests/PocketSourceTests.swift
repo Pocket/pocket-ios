@@ -7,11 +7,13 @@ import CoreData
 import Apollo
 import PocketGraph
 import Combine
+import SharedPocketKit
 
 @testable import Sync
 
 class PocketSourceTests: XCTestCase {
     var space: Space!
+    var user: MockUser!
     var apollo: MockApolloClient!
     var operations: MockOperationFactory!
     var lastRefresh: MockLastRefresh!
@@ -24,6 +26,7 @@ class PocketSourceTests: XCTestCase {
 
     override func setUpWithError() throws {
         space = .testSpace()
+        user = MockUser()
         apollo = MockApolloClient()
         operations = MockOperationFactory()
         lastRefresh = MockLastRefresh()
@@ -48,6 +51,7 @@ class PocketSourceTests: XCTestCase {
 
     func subject(
         space: Space? = nil,
+        user: User? = nil,
         apollo: ApolloClientProtocol? = nil,
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
@@ -58,6 +62,7 @@ class PocketSourceTests: XCTestCase {
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
+            user: user ?? self.user,
             apollo: apollo ?? self.apollo,
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
@@ -73,7 +78,7 @@ class PocketSourceTests: XCTestCase {
         let session = MockSession()
         sessionProvider.session = session
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubFetchList { _, _, _, _, _, _ in
+        operations.stubFetchList { _, _, _, _, _, _, _  in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -89,7 +94,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_refreshWithCompletion_callsCompletionWhenFinished() {
         sessionProvider.session = MockSession()
-        operations.stubFetchList { _, _, _, _, _, _ in
+        operations.stubFetchList { _, _, _, _, _, _, _  in
             TestSyncOperation { }
         }
 
@@ -105,7 +110,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_refresh_whenTokenIsNil_callsCompletion() {
         sessionProvider.session = nil
-        operations.stubFetchList { _, _, _, _, _, _ in
+        operations.stubFetchList { _, _, _, _, _, _, _  in
             TestSyncOperation { }
         }
 
