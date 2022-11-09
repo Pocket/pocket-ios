@@ -49,7 +49,7 @@ public class GetSlateLineupQuery: GraphQLQuery {
 
     public static var __parentType: ParentType { PocketGraph.Objects.Query }
     public static var __selections: [Selection] { [
-      .field("getSlateLineup", GetSlateLineup?.self, arguments: [
+      .field("getSlateLineup", GetSlateLineup.self, arguments: [
         "slateLineupId": .variable("lineupID"),
         "recommendationCount": .variable("maxRecommendations")
       ]),
@@ -57,7 +57,7 @@ public class GetSlateLineupQuery: GraphQLQuery {
 
     /// Request a specific `SlateLineup` by id
     @available(*, deprecated, message: "Please use queries specific to the surface ex. setMomentSlate. If a named query for your surface does not yet exit please reach out to the Data Products team and they will happily provide you with a named query.")
-    public var getSlateLineup: GetSlateLineup? { __data["getSlateLineup"] }
+    public var getSlateLineup: GetSlateLineup { __data["getSlateLineup"] }
 
     /// GetSlateLineup
     ///

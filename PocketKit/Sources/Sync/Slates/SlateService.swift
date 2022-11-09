@@ -34,7 +34,7 @@ class APISlateService: SlateService {
         let query = GetSlateQuery(slateID: slateID, recommendationCount: 25)
 
         guard let remote = try await apollo.fetch(query: query)
-            .data?.getSlate?.fragments.slateParts else {
+            .data?.getSlate.fragments.slateParts else {
             return
         }
 
