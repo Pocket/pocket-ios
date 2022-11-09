@@ -16,6 +16,7 @@ struct Services {
     let userDefaults: UserDefaults
     let firstLaunchDefaults: UserDefaults
     let appSession: AppSession
+    let user: User
     let urlSession: URLSessionProtocol
     let source: Sync.Source
     let tracker: Tracker
@@ -45,12 +46,14 @@ struct Services {
             consumerKey: Keys.shared.pocketApiConsumerKey,
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
+        user = PocketUser(userDefaults: userDefaults)
 
         let snowplow = PocketSnowplowTracker()
         tracker = PocketTracker(snowplow: snowplow)
 
         source = PocketSource(
             space: persistentContainer.rootSpace,
+            user: user,
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults,

@@ -7,6 +7,7 @@ import Apollo
 import Combine
 import Network
 import PocketGraph
+import SharedPocketKit
 
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
@@ -19,6 +20,7 @@ public class PocketSource: Source {
     public var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
 
     private let space: Space
+    private let user: User
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
     private let slateService: SlateService
@@ -38,6 +40,7 @@ public class PocketSource: Source {
 
     public convenience init(
         space: Space,
+        user: User,
         sessionProvider: SessionProvider,
         consumerKey: String,
         defaults: UserDefaults,
@@ -50,6 +53,7 @@ public class PocketSource: Source {
 
         self.init(
             space: space,
+            user: user,
             apollo: apollo,
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
@@ -65,6 +69,7 @@ public class PocketSource: Source {
 
     init(
         space: Space,
+        user: User,
         apollo: ApolloClientProtocol,
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
@@ -75,6 +80,7 @@ public class PocketSource: Source {
         osNotificationCenter: OSNotificationCenter
     ) {
         self.space = space
+        self.user = user
         self.apollo = apollo
         self.operations = operations
         self.lastRefresh = lastRefresh
@@ -184,6 +190,7 @@ extension PocketSource {
         }
 
         let operation = operations.fetchList(
+            user: user,
             token: token,
             apollo: apollo,
             space: space,
@@ -473,6 +480,7 @@ extension PocketSource {
             case .fetchList(let maxItems):
                 guard let token = sessionProvider.session?.accessToken else { return }
                 let operation = operations.fetchList(
+                    user: user,
                     token: token,
                     apollo: apollo,
                     space: space,

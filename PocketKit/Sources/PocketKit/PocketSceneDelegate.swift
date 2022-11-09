@@ -32,7 +32,10 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         networkPathMonitor: NWPathMonitor(),
                         homeRefreshCoordinator: Services.shared.homeRefreshCoordinator
                     ),
-                    account: AccountViewModel(appSession: Services.shared.appSession)
+                    account: AccountViewModel(
+                        appSession: Services.shared.appSession,
+                        user: Services.shared.user
+                    )
                 ),
                 source: Services.shared.source,
                 tracker: Services.shared.tracker

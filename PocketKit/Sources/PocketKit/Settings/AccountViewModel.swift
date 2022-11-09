@@ -7,14 +7,17 @@ import SwiftUI
 
 class AccountViewModel: ObservableObject {
     private let appSession: AppSession
+    private let user: User
 
-    init(appSession: AppSession) {
+    init(appSession: AppSession, user: User) {
         self.appSession = appSession
+        self.user = user
     }
 
     func signOut() {
         // Post that we logged out to the rest of the app using the old session
         NotificationCenter.default.post(name: .userLoggedOut, object: appSession.currentSession)
+        user.clear()
         appSession.currentSession = nil
     }
 
