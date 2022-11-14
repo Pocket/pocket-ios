@@ -74,6 +74,10 @@ struct PocketAppElement {
         return AddTagsViewElement(app.otherElements["add-tags"])
     }
 
+    var readerActionWebActivity: ReaderActionsWebActivityElement {
+        return ReaderActionsWebActivityElement(app.otherElements["ActivityListView"])
+    }
+
     var favoriteButton: XCUIElement {
         app.buttons["Favorite"]
     }

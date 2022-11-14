@@ -51,8 +51,7 @@ extension ItemAction {
             title: "Delete",
             identifier: .deleteItem,
             accessibilityIdentifier: "item-action-delete",
-            // TODO: Use the pocket trash can icon here
-            image: UIImage(systemName: "trash"),
+            image: UIImage(asset: .delete),
             handler: handler
         )
     }

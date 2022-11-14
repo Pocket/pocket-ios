@@ -133,7 +133,8 @@ extension RegularSavesCoordinator {
         switch selectedItem {
         case .readable(let savedItem):
             delegate?.savesCoordinator(self, didSelectSavedItem: savedItem)
-        case .webView(let url):
+        case .webView(let item):
+            guard let url = item?.url else { return }
             present(url)
         }
     }
@@ -181,6 +182,11 @@ extension RegularSavesCoordinator {
 }
 
 extension RegularSavesCoordinator: SFSafariViewControllerDelegate {
+
+    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
+        return model.activityItemsForSelectedItem()
+    }
+
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
     }

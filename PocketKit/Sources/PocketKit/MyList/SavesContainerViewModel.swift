@@ -1,4 +1,5 @@
 import Combine
+import UIKit
 
 class SavesContainerViewModel {
     enum Selection {
@@ -15,6 +16,21 @@ class SavesContainerViewModel {
     init(savedItemsList: SavedItemsListViewModel, archivedItemsList: ArchivedItemsListViewModel) {
         self.savedItemsList = savedItemsList
         self.archivedItemsList = archivedItemsList
+    }
+
+    var selectedItem: SelectedItem? {
+        savedItemsList.selectedItem ?? archivedItemsList.selectedItem
+    }
+
+    func activityItemsForSelectedItem() -> [UIActivity] {
+        let selectedItem = savedItemsList.selectedItem ?? archivedItemsList.selectedItem
+        switch selectedItem {
+        case .webView(let readableViewModel),
+                .readable(let readableViewModel):
+            return readableViewModel?.webViewActivityItems() ?? []
+        case .none:
+            return []
+        }
     }
 
     func clearSharedActivity() {

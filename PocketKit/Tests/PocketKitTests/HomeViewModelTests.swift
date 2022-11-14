@@ -542,9 +542,9 @@ class HomeViewModelTests: XCTestCase {
         readableExpectation.expectedFulfillmentCount = 2
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
-            case .recommendation:
+            case .recommendation, .webViewRecommendation:
                 readableExpectation.fulfill()
-            case .savedItem, .none:
+            case .savedItem, .webViewSavedItem, .none:
                 XCTFail("Expected recommendation, but got \(String(describing: readableType))")
             }
         }.store(in: &subscriptions)
@@ -576,7 +576,8 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
-        viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
+
+        viewModel.$selectedReadableType.dropFirst().sink { readableType in
             urlExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -627,9 +628,9 @@ class HomeViewModelTests: XCTestCase {
         let readableExpectation = expectation(description: "expected to update selected readable")
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
-            case .savedItem:
+            case .savedItem, .webViewSavedItem:
                 readableExpectation.fulfill()
-            case .recommendation, .none:
+            case .webViewRecommendation, .recommendation, .none:
                 XCTFail("Expected recommendation, but got \(String(describing: readableType))")
             }
         }.store(in: &subscriptions)
@@ -655,7 +656,8 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
-        viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
+
+        viewModel.$selectedReadableType.dropFirst().sink { readableType in
             urlExpectation.fulfill()
         }.store(in: &subscriptions)
 

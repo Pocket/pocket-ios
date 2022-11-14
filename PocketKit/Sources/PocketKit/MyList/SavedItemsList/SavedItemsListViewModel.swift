@@ -432,22 +432,21 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
 extension SavedItemsListViewModel {
     private func select(item itemID: ItemIdentifier) {
-        guard let item = bareItem(with: itemID) else {
+        guard let savedItem = bareItem(with: itemID) else {
             return
         }
 
-        if let item = item.item, item.shouldOpenInWebView {
-            selectedItem = .webView(item.bestURL)
+        let readable = SavedItemViewModel(
+            item: savedItem,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general
+        )
+
+        if savedItem.shouldOpenInWebView {
+            selectedItem = .webView(readable)
         } else {
-            let selectedReadable = bareItem(with: itemID).flatMap {
-                SavedItemViewModel(
-                    item: $0,
-                    source: source,
-                    tracker: tracker.childTracker(hosting: .articleView.screen),
-                    pasteboard: UIPasteboard.general
-                )
-            }
-            selectedItem = .readable(selectedReadable)
+            selectedItem = .readable(readable)
         }
     }
 

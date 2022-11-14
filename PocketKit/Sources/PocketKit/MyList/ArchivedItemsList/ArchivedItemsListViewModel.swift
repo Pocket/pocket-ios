@@ -386,18 +386,17 @@ extension ArchivedItemsListViewModel {
         guard let item = savedItem(identifier) else {
             return
         }
+        let readable = SavedItemViewModel(
+            item: item,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general
+        )
 
-        if let item = item.item, item.shouldOpenInWebView {
-            selectedItem = .webView(item.bestURL)
+        if item.shouldOpenInWebView {
+            selectedItem = .webView(readable)
         } else {
-            selectedItem = .readable(
-                SavedItemViewModel(
-                    item: item,
-                    source: source,
-                    tracker: tracker.childTracker(hosting: .articleView.screen),
-                    pasteboard: UIPasteboard.general
-                )
-            )
+            selectedItem = .readable(readable)
         }
     }
 

@@ -59,10 +59,6 @@ class RegularHomeCoordinator: NSObject {
             self?.report(recommendation)
         }.store(in: &subscriptions)
 
-        model.$presentedWebReaderURL.sink { [weak self] url in
-            self?.push(url)
-        }.store(in: &subscriptions)
-
         model.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
         }.store(in: &subscriptions)
@@ -118,12 +114,18 @@ extension RegularHomeCoordinator {
 extension RegularHomeCoordinator {
     private func show(_ readable: ReadableType?) {
         switch readable {
-        case .recommendation(let recommendation):
-            show(recommendation)
-        case .savedItem(let savedItem):
-            show(savedItem)
+        case .savedItem(let viewModel):
+            show(viewModel)
+        case .recommendation(let viewModel):
+            show(viewModel)
+        case .webViewRecommendation(let viewModel):
+            showRecommendation(forWebView: viewModel)
+            push(viewModel.url)
+        case .webViewSavedItem(let viewModel):
+            showSavedItem(forWebView: viewModel)
+            push(viewModel.url)
         case .none:
-            break
+            readerSubscriptions = []
         }
     }
 
@@ -196,7 +198,32 @@ extension RegularHomeCoordinator {
                 case .contentUpdated:
                     break
                 case .archive, .delete:
-                    self?.navigationController.popViewController(animated: true)
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
+        viewModel.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
+            self?.report(recommendation)
+        }.store(in: &slateDetailSubscriptions)
+    }
+
+    private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
+        viewModel.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
             }
         }.store(in: &readerSubscriptions)
     }
@@ -265,6 +292,11 @@ extension RegularHomeCoordinator {
 
         navigationController.present(readerSettingsVC, animated: !isResetting)
     }
+
+    private func popToPreviousScreen() {
+        navigationController.popToRootViewController(animated: true)
+        navigationController.isNavigationBarHidden = false
+    }
 }
 
 // MARK: - UINavigationControllerDelegate
@@ -285,6 +317,11 @@ extension RegularHomeCoordinator: UINavigationControllerDelegate {
 }
 
 extension RegularHomeCoordinator: SFSafariViewControllerDelegate {
+
+    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
+        return model.activityItemsForSelectedItem()
+    }
+
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         navigationController.popViewController(animated: !isResetting)
         navigationController.isNavigationBarHidden = false
