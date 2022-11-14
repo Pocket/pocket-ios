@@ -400,6 +400,10 @@ extension PocketSource {
         }
         return mutation
     }
+
+    public func fetchItem(_ url: URL) -> Item? {
+        return try? space.fetchItem(byURL: url)
+    }
 }
 
 // MARK: - Slates/Recommendations

@@ -948,3 +948,26 @@ extension MockSource {
         return calls[index] as? FetchDetailsForRecommendationCall
     }
 }
+
+// MARK: - Fetch item by URL
+extension MockSource {
+    private static let fetchItem = "fetchItem"
+    typealias FetchItemImpl = (URL) -> Item?
+
+    struct FetchItemCall {
+        let url: URL
+    }
+
+    func stubFetchItem(impl: @escaping FetchItemImpl) {
+        implementations[Self.fetchItem] = impl
+    }
+
+    func fetchItem(_ url: URL) -> Item? {
+        guard let impl = implementations[Self.fetchItem] as? FetchItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchItem] = (calls[Self.fetchItem] ?? []) + [FetchItemCall(url: url)]
+        return impl(url)
+    }
+}

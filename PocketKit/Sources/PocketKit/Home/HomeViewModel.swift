@@ -708,14 +708,14 @@ extension HomeViewModel {
 
 extension HomeViewModel {
 
-    func activityItemsForSelectedItem() -> [UIActivity] {
+    func activityItemsForSelectedItem(url: URL) -> [UIActivity] {
         switch selectedReadableType {
         case .recommendation(let viewModel),
                 .webViewRecommendation(let viewModel):
-            return viewModel.webViewActivityItems()
+            return viewModel.webViewActivityItems(url: url)
         case .savedItem(let viewModel),
                 .webViewSavedItem(let viewModel):
-            return viewModel.webViewActivityItems()
+            return viewModel.webViewActivityItems(url: url)
         case .none:
             return []
         }

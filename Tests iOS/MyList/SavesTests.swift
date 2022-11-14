@@ -65,6 +65,13 @@ class SavesTests: XCTestCase {
             )
         }
 
+        server.routes.get("/welcome") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "welcome", ext: "html")
+            }
+        }
+
         try server.start()
     }
 
@@ -393,7 +400,34 @@ extension SavesTests {
     }
 
     func test_webview_includesCustomItemActions() {
-        test_list_showsWebView(at: 0)
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("list-for-web-view-actions")
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        app.launch().tabBar.savesButton.wait().tap()
+
+        app
+            .saves
+            .itemView(at: 0)
+            .wait()
+            .tap()
+
+        app
+            .webReaderView
+            .staticText(matching: "Hello, world")
+            .wait(timeout: 10)
 
         app.shareButton.tap()
 
@@ -411,5 +445,48 @@ extension SavesTests {
             .readerActionWebActivity
             .activityOption("Favorite")
             .wait(timeout: 5.0)
+    }
+
+    func test_webview_validateCustomItemActions_whenNavigateToAnotherPage() {
+        test_list_showsWebView(at: 0)
+
+        app
+            .webReaderView
+            .staticText(matching: "Hello, world")
+            .wait(timeout: 10)
+            .tap()
+
+        app
+            .webReaderView
+            .staticText(matching: "Welcome")
+            .wait(timeout: 10)
+
+        app
+            .shareButton
+            .tap()
+
+        waitForDisappearance(
+            of: app
+                .readerActionWebActivity
+                .activityOption("Save")
+        )
+
+        waitForDisappearance(
+            of: app
+                .readerActionWebActivity
+                .activityOption("Archive")
+        )
+
+        waitForDisappearance(
+            of: app
+                .readerActionWebActivity
+                .activityOption("Delete")
+        )
+
+        waitForDisappearance(
+            of: app
+                .readerActionWebActivity
+                .activityOption("Favorite")
+        )
     }
 }

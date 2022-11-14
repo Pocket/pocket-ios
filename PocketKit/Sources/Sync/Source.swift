@@ -75,6 +75,8 @@ public protocol Source {
     func fetchDetails(for recommendation: Recommendation) async throws
 
     func save(url: URL)
+
+    func fetchItem(_ url: URL) -> Item?
 }
 
 public extension Source {

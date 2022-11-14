@@ -369,7 +369,7 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
 extension CompactHomeCoordinator: SFSafariViewControllerDelegate {
 
     func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
-        return model.activityItemsForSelectedItem()
+        return model.activityItemsForSelectedItem(url: URL)
     }
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
