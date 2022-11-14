@@ -325,6 +325,7 @@ class SavesTests: XCTestCase {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.itemView(matching: "Item 1").wait()
 
+        app.saves.filterButton(for: "All").swipeLeft()
         app.saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 
@@ -349,7 +350,25 @@ class SavesTests: XCTestCase {
         XCTAssertTrue(item.contains(string: "+1"))
         item.tagButton.firstMatch.tap()
         app.saves.selectedTagChip(for: "tag 0").wait()
+    }
 
+    // MARK: - Saves: Search
+    func test_enterSearch_fromCarouselGoIntoSearch() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Item 1").wait()
+
+        app.saves.filterButton(for: "Search").wait().tap()
+        XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
+    }
+
+    func test_enterSearch_fromSwipeDownSearch() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Item 1").wait()
+
+        app.saves.element.swipeDown()
+
+        app.navigationBar.searchFields["Search"].wait().tap()
+        XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
     }
 }
 

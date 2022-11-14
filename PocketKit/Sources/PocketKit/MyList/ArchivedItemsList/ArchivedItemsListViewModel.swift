@@ -9,7 +9,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
 
-    let selectionItem: SelectionItem = SelectionItem(title: "Archive", image: .init(asset: .archive))
+    let selectionItem: SelectionItem = SelectionItem(title: "Archive", image: .init(asset: .archive), selectedView: SelectedView.archive)
 
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
@@ -35,6 +35,9 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
 
     @Published
     var presentedSortFilterViewModel: SortMenuViewModel?
+
+    @Published
+    var presentedSearch: Bool?
 
     var emptyState: EmptyStateViewModel? {
         if selectedFilters.contains(.favorites) {
@@ -407,6 +410,8 @@ extension ArchivedItemsListViewModel {
         if filter != .sortAndFilter {
             archiveService.filters = selectedFilters.compactMap { filter in
                 switch filter {
+                case .search:
+                    return nil
                 case .all:
                     return nil
                 case .tagged:
@@ -475,6 +480,8 @@ extension ArchivedItemsListViewModel {
         guard !reTappedTagFilter else { return }
 
         switch filter {
+        case .search:
+            presentedSearch = true
         case .all:
             selectedFilters.removeAll()
             selectedFilters.insert(.all)
