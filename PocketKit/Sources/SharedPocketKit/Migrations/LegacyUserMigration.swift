@@ -46,6 +46,14 @@ public class LegacyUserMigration {
         let decryptedData: Data?
         do {
             decryptedData = try encryptedStore.decryptStore(securedBy: password)
+        } catch LegacyUserMigrationError.missingStore {
+            // Decryption can throw one of "two" errors - .missingStore, and
+            // the rethrow of the internal decryption. We want to
+            // forward the missing store to force-skip the
+            // migration as necessary, since the migration shouldn't
+            // have been attempted if there is no file on disk.
+            // It is likely that the user has a fresh install, then.
+            throw LegacyUserMigrationError.missingStore
         } catch {
             throw LegacyUserMigrationError.failedDecryption(error)
         }
@@ -74,6 +82,10 @@ public class LegacyUserMigration {
 
         updateUserDefaults()
         return true
+    }
+
+    public func forceSkip() {
+        updateUserDefaults()
     }
 }
 
