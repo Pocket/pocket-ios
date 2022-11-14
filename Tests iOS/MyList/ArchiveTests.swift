@@ -71,6 +71,7 @@ class ArchiveTests: XCTestCase {
         saves.selectionSwitcher.archiveButton.wait().tap()
 
         // Sort by Oldest saved
+        app.saves.filterButton(for: "All").swipeLeft()
         saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 
@@ -167,6 +168,25 @@ class ArchiveTests: XCTestCase {
         XCTAssertTrue(item.contains(string: "+1"))
         item.tagButton.firstMatch.tap()
         app.saves.selectedTagChip(for: "tag 0").wait()
+    }
+
+    // MARK: - Archives: Search
+    func test_enterSearch_fromCarouselGoIntoSearch() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+
+        app.saves.filterButton(for: "Search").wait().tap()
+        XCTAssertTrue(app.navigationBar.buttons["Archive"].isSelected)
+    }
+
+    func test_enterSearch_fromSwipeDownSearch() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+
+        app.saves.element.swipeDown()
+
+        app.navigationBar.searchFields["Search"].wait().tap()
+        XCTAssertTrue(app.navigationBar.buttons["Archive"].isSelected)
     }
 }
 

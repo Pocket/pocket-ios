@@ -59,6 +59,10 @@ class CompactSavesContainerCoordinator: NSObject {
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedSearch.sink { [weak self] alert in
+            self?.updateSearchScope()
+        }.store(in: &subscriptions)
+
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
@@ -84,6 +88,10 @@ class CompactSavesContainerCoordinator: NSObject {
         model.archivedItemsList.$selectedItem.sink { [weak self] selectedArchivedItem in
             guard let selectedArchivedItem = selectedArchivedItem else { return }
             self?.navigate(selectedItem: selectedArchivedItem)
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$presentedSearch.sink { [weak self] alert in
+            self?.updateSearchScope()
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
@@ -211,6 +219,11 @@ class CompactSavesContainerCoordinator: NSObject {
         }
         readerSettingsVC.configurePocketDefaultDetents()
         viewController.present(readerSettingsVC, animated: !isResetting)
+    }
+
+    private func updateSearchScope() {
+        containerViewController.navigationItem.searchController?.isActive = true
+        containerViewController.updateSearchScope(fromSaves: containerViewController.isFromSaves)
     }
 
     func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
