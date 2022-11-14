@@ -1,8 +1,15 @@
 import UIKit
+import SwiftUI
 
 struct SelectionItem {
     let title: String
     let image: UIImage
+    let selectedView: SelectedView
+}
+
+public enum SelectedView {
+    case saves
+    case archive
 }
 
 protocol SelectableViewController: UIViewController {
@@ -11,7 +18,7 @@ protocol SelectableViewController: UIViewController {
     func didBecomeSelected(by parent: SavesContainerViewController)
 }
 
-class SavesContainerViewController: UIViewController {
+class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var selectedIndex: Int {
         didSet {
             resetTitleView()
@@ -19,11 +26,14 @@ class SavesContainerViewController: UIViewController {
         }
     }
 
+    var isFromSaves: Bool
+
     private let viewControllers: [SelectableViewController]
 
     init(viewControllers: [SelectableViewController]) {
         selectedIndex = 0
         self.viewControllers = viewControllers
+        self.isFromSaves = true
 
         super.init(nibName: nil, bundle: nil)
 
@@ -87,5 +97,38 @@ class SavesContainerViewController: UIViewController {
         ])
 
         child.didBecomeSelected(by: self)
+
+        if child.selectionItem.selectedView == SelectedView.saves {
+            isFromSaves = true
+        } else {
+            isFromSaves = false
+        }
+        setupSearch()
+    }
+
+    private func setupSearch() {
+        navigationItem.searchController = UISearchController(searchResultsController: UIHostingController(rootView: SearchViewController()))
+        navigationItem.searchController?.searchBar.delegate = self
+        navigationItem.searchController?.searchBar.accessibilityHint = "Search"
+        navigationItem.searchController?.searchBar.scopeButtonTitles = ["Saves", "Archive", "All Items"]
+        if #available(iOS 16.0, *) {
+            navigationItem.searchController?.scopeBarActivation = .onSearchActivation
+        } else {
+            navigationItem.searchController?.automaticallyShowsScopeBar = true
+        }
+        navigationItem.searchController?.showsSearchResultsController = true
+    }
+
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        updateSearchScope(fromSaves: isFromSaves)
+    }
+
+    func updateSearchScope(fromSaves: Bool) {
+        self.isFromSaves = fromSaves
+        if isFromSaves {
+            navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 0
+        } else {
+            navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 1
+        }
     }
 }

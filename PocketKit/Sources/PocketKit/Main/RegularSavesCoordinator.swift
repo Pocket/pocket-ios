@@ -49,6 +49,10 @@ class RegularSavesCoordinator: NSObject {
             self?.present(alert)
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedSearch.sink { [weak self] alert in
+            self?.updateSearchScope(isFromSaves: true)
+        }.store(in: &subscriptions)
+
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
@@ -72,6 +76,10 @@ class RegularSavesCoordinator: NSObject {
         // Saves/Archive
         model.archivedItemsList.$presentedAlert.sink { [weak self] alert in
             self?.present(alert)
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$presentedSearch.sink { [weak self] alert in
+            self?.updateSearchScope(isFromSaves: false)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
@@ -178,6 +186,11 @@ extension RegularSavesCoordinator {
         viewController.modalPresentationStyle = .popover
         viewController.popoverPresentationController?.sourceView = sortFilterVM.sender as? UIView
         self.viewController.present(viewController, animated: true)
+    }
+
+    private func updateSearchScope(isFromSaves: Bool) {
+        savesViewController.navigationItem.searchController?.isActive = true
+        savesViewController.updateSearchScope(fromSaves: savesViewController.isFromSaves)
     }
 }
 
