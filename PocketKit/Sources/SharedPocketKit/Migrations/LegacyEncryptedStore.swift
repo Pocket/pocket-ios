@@ -17,7 +17,7 @@ public class PocketEncryptedStore: LegacyEncryptedStore {
 
         let filepath = url.appendingPathComponent(directory).appendingPathComponent("PKTSharedKeyStore").appendingPathExtension("json")
 
-        guard FileManager.default.fileExists(atPath: filepath.absoluteString) else {
+        guard FileManager.default.fileExists(atPath: filepath.path) else {
             return nil
         }
 
