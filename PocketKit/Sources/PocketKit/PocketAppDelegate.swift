@@ -106,20 +106,27 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             Log.capture(error: error)
         }
 
-        do {
-            let migration = LegacyUserMigration(
-                userDefaults: userDefaults,
-                encryptedStore: PocketEncryptedStore(),
-                appSession: appSession
-            )
+        let legacyUserMigration = LegacyUserMigration(
+            userDefaults: userDefaults,
+            encryptedStore: PocketEncryptedStore(),
+            appSession: appSession
+        )
 
-            let attempted = try migration.perform()
+        do {
+            let attempted = try legacyUserMigration.perform()
             if attempted {
                 Crashlogger.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
             } else {
                 Crashlogger.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
+        } catch LegacyUserMigrationError.missingStore {
+            Crashlogger.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
+            // Since we don't have a store, we can skip any further attempts at running this migration.
+            legacyUserMigration.forceSkip()
         } catch {
+            // All errors are something we can't resolve client-side, so we don't want to re-attempt
+            // on further launches.
+            legacyUserMigration.forceSkip()
             Crashlogger.capture(error: error)
         }
 
