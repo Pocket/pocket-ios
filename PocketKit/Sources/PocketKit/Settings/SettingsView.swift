@@ -35,6 +35,7 @@ struct SettingsView: View {
             }
         }
         .navigationBarTitle("Settings", displayMode: .large)
+        .accessibilityIdentifier("account")
     }
 }
 
@@ -52,6 +53,7 @@ struct SettingsForm: View {
 
                 Section(header: Text("Your Account").style(.settings.header)) {
                     SettingsRowButton(title: "Sign Out", titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
+                        .accessibilityIdentifier("sign-out-button")
                 }
                 .alert("Are you sure?",
                        isPresented: $model.isPresentingSignOutConfirm,

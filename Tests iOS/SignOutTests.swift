@@ -44,4 +44,27 @@ class SignOutTests: XCTestCase {
         try server.stop()
         app.terminate()
     }
+
+    func test_tappingSignOutshowsLogin() {
+        app.tabBar.settingsButton.wait().tap()
+        tap_SignOut()
+
+        let account = XCUIApplication()
+        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Sign Out"].wait().tap()
+        XCTAssertTrue(app.loggedOutView.exists)
+    }
+
+    func test_tappingSignOutCancelshowsAccountsMenu() {
+        app.tabBar.settingsButton.wait().tap()
+        tap_SignOut()
+        let account = XCUIApplication()
+        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Cancel"].wait().tap()
+        let cellCount = account.cells.count
+        XCTAssertTrue(cellCount > 0)
+    }
+
+    func tap_SignOut() {
+        app.accountView.signOutButton.tap()
+    }
+
 }
