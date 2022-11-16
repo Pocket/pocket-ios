@@ -214,7 +214,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         })
     }
 
-    func favoriteAction(for objectID: NSManagedObjectID) -> ItemAction? {
+    internal func favoriteAction(for objectID: NSManagedObjectID) -> ItemAction? {
         guard let item = bareItem(with: objectID) else {
             return nil
         }
