@@ -71,19 +71,21 @@ public extension Style {
     }
 
     struct Display {
-        let medium = Medium()
-        let regular = Regular()
+        public let medium = Medium()
+        public let regular = Regular()
 
-        struct Medium {
+        public struct Medium {
             public let h1 = Style(family: .doyle, size: .h1, weight: .medium)
             public let h2 = Style(family: .doyle, size: .h2, weight: .medium)
             public let h3 = Style(family: .doyle, size: .h3, weight: .medium)
             public let h4 = Style(family: .doyle, size: .h4, weight: .medium)
             public let h5 = Style(family: .doyle, size: .h5, weight: .medium)
             public let h6 = Style(family: .doyle, size: .h6, weight: .medium)
+            public let h7 = Style(family: .doyle, size: .h7, weight: .medium)
+            public let h8 = Style(family: .doyle, size: .h8, weight: .medium)
         }
 
-        struct Regular {
+        public struct Regular {
             public let h1 = Style(family: .doyle, size: .h1, weight: .regular)
             public let h2 = Style(family: .doyle, size: .h2, weight: .regular)
             public let h3 = Style(family: .doyle, size: .h3, weight: .regular)
