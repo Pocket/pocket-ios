@@ -15,6 +15,10 @@ class AccountViewModel: ObservableObject {
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
 
+    public var isPremium: Bool {
+        user.status == .premium
+    }
+
     init(appSession: AppSession, user: User, userDefaults: UserDefaults, notificationCenter: NotificationCenter) {
         self.appSession = appSession
         self.userDefaults = userDefaults
@@ -50,4 +54,5 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingTerms = false
     @Published var isPresentingPrivacy = false
     @Published var isPresentingSignOutConfirm = false
+    @Published var isUpgrading = false
 }

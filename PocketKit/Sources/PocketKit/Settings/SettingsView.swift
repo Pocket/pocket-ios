@@ -51,6 +51,14 @@ struct SettingsForm: View {
                 //                }.textCase(nil)
 
                 Section(header: Text("Your Account").style(.settings.header)) {
+                    if !model.isPremium {
+                        SettingsRowButton(title: "Go Premium", icon: nil) {
+                            model.isUpgrading.toggle()
+                        }
+                        .sheet(isPresented: $model.isUpgrading) {
+                            PremiumUpgradeView()
+                        }
+                    }
                     SettingsRowButton(title: "Sign Out", titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
                         .accessibilityIdentifier("sign-out-button")
                 }
