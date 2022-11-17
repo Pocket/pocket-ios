@@ -8,6 +8,7 @@ public enum Status: String {
 }
 
 public protocol User {
+    var status: Status { get }
     func setPremiumStatus(_ isPremium: Bool)
     func clear()
 }
@@ -16,10 +17,10 @@ public class PocketUser: User {
     static let userStatusKey = "User.statusKey"
 
     @AppStorage
-    public var status: Status?
+    public var status: Status
 
     public init(status: Status = .unknown, userDefaults: UserDefaults) {
-        _status = AppStorage(Self.userStatusKey, store: userDefaults)
+        _status = AppStorage(wrappedValue: status, Self.userStatusKey, store: userDefaults)
     }
 
     public func setPremiumStatus(_ isPremium: Bool) {
