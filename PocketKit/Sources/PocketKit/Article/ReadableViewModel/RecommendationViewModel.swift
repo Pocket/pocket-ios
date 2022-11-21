@@ -125,6 +125,35 @@ class RecommendationViewModel: ReadableViewModel {
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
     }
+
+    func webViewActivityItems() -> [UIActivity] {
+
+        guard let item = recommendation.item else {
+            return []
+        }
+
+        if !item.isSaved {
+            // When recommendation is Not saved
+            let saveActivity = ReaderActionsWebActivity(title: .save) { [weak self] in
+                if item.isSaved {
+                    self?.archive()
+                } else {
+                    self?.save()
+                }
+            }
+
+            let reportActivity = ReaderActionsWebActivity(title: .report) { [weak self] in
+                self?.report()
+            }
+            return [saveActivity, reportActivity]
+        } else {
+            // When recommendation is saved
+            guard let savedItem = item.savedItem else {
+                return []
+            }
+            return webViewActivityItems(for: savedItem)
+        }
+    }
 }
 
 extension RecommendationViewModel {
@@ -186,7 +215,7 @@ extension RecommendationViewModel {
         selectedRecommendationToReport = recommendation
     }
 
-    private func favorite() {
+    func favorite() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
         }
@@ -195,7 +224,7 @@ extension RecommendationViewModel {
         track(identifier: .itemFavorite)
     }
 
-    private func unfavorite() {
+    func unfavorite() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
         }

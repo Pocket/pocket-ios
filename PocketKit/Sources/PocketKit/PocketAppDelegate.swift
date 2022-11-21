@@ -16,6 +16,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let refreshCoordinator: RefreshCoordinator
     private let appSession: AppSession
     internal let notificationService: PushNotificationService
+    private let user: User
 
     convenience override init() {
         self.init(services: Services.shared)
@@ -28,6 +29,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.refreshCoordinator = services.refreshCoordinator
         self.appSession = services.appSession
         self.notificationService = services.notificationService
+        self.user = services.user
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -57,6 +59,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
         SignOutOnFirstLaunch(
             appSession: appSession,
+            user: user,
             userDefaults: firstLaunchDefaults
         ).signOutOnFirstLaunch()
 

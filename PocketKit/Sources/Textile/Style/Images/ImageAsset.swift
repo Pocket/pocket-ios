@@ -17,6 +17,7 @@ extension ImageAsset {
     public static let radioSelected = ImageAsset("radioSelected")
     public static let radioDeselected = ImageAsset("radioDeselected")
     public static let saves = ImageAsset("saves")
+    public static let delete = ImageAsset("delete")
     public static let sortFilter = ImageAsset("sort-filter")
     public static let sort = ImageAsset("sort")
     public static let archive = ImageAsset("archive")

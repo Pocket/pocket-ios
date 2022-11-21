@@ -3,6 +3,7 @@ import Apollo
 import ApolloAPI
 import Combine
 import CoreData
+import SharedPocketKit
 
 @testable import Sync
 
@@ -14,6 +15,7 @@ class MockOperationFactory: SyncOperationFactory {
 // MARK: - fetchList
 extension MockOperationFactory {
     typealias FetchListImpl = (
+        User,
         String,
         ApolloClientProtocol,
         Space,
@@ -23,6 +25,7 @@ extension MockOperationFactory {
     ) -> SyncOperation
 
     struct FetchListCall {
+        let user: User
         let token: String
         let apollo: ApolloClientProtocol
         let space: Space
@@ -37,6 +40,7 @@ extension MockOperationFactory {
     }
 
     func fetchList(
+        user: User,
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
@@ -51,6 +55,7 @@ extension MockOperationFactory {
 
         calls["fetchList"] = (calls["fetchList"] ?? []) + [
             FetchListCall(
+                user: user,
                 token: token,
                 apollo: apollo,
                 space: space,
@@ -61,7 +66,7 @@ extension MockOperationFactory {
             )
         ]
 
-        return impl(token, apollo, space, events, initialDownloadState, maxItems)
+        return impl(user, token, apollo, space, events, initialDownloadState, maxItems)
     }
 
     func fetchListCall(at index: Int) -> FetchListCall? {

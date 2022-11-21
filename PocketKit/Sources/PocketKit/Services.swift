@@ -16,6 +16,7 @@ struct Services {
     let userDefaults: UserDefaults
     let firstLaunchDefaults: UserDefaults
     let appSession: AppSession
+    let user: User
     let urlSession: URLSessionProtocol
     let source: Sync.Source
     let tracker: Tracker
@@ -28,6 +29,7 @@ struct Services {
     let v3Client: V3ClientProtocol
     let instantSync: InstantSyncProtocol
     let braze: BrazeProtocol
+    let appBadgeSetup: AppBadgeSetup
 
     private let persistentContainer: PersistentContainer
 
@@ -45,12 +47,14 @@ struct Services {
             consumerKey: Keys.shared.pocketApiConsumerKey,
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
+        user = PocketUser(userDefaults: userDefaults)
 
         let snowplow = PocketSnowplowTracker()
         tracker = PocketTracker(snowplow: snowplow)
 
         source = PocketSource(
             space: persistentContainer.rootSpace,
+            user: user,
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults,
@@ -63,6 +67,7 @@ struct Services {
         )
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
+
         refreshCoordinator = RefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
@@ -99,6 +104,12 @@ struct Services {
             appSession: appSession,
             braze: braze,
             instantSync: instantSync
+        )
+
+        appBadgeSetup = AppBadgeSetup(
+            source: source,
+            userDefaults: userDefaults,
+            badgeProvider: UIApplication.shared
         )
     }
 }

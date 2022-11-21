@@ -2,8 +2,10 @@ import Foundation
 import Apollo
 import Combine
 import PocketGraph
+import SharedPocketKit
 
 class FetchList: SyncOperation {
+    private let user: User
     private let token: String
     private let apollo: ApolloClientProtocol
     private let space: Space
@@ -13,6 +15,7 @@ class FetchList: SyncOperation {
     private let lastRefresh: LastRefresh
 
     init(
+        user: User,
         token: String,
         apollo: ApolloClientProtocol,
         space: Space,
@@ -21,6 +24,7 @@ class FetchList: SyncOperation {
         maxItems: Int,
         lastRefresh: LastRefresh
     ) {
+        self.user = user
         self.token = token
         self.apollo = apollo
         self.space = space
@@ -61,6 +65,9 @@ class FetchList: SyncOperation {
 
         repeat {
             let result = try await fetchPage(pagination)
+            if let isPremium = result.data?.userByToken?.isPremium as? Bool {
+                user.setPremiumStatus(isPremium)
+             }
 
             if case .started = initialDownloadState.value,
                let totalCount = result.data?.userByToken?.savedItems?.totalCount,

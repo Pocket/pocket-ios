@@ -122,7 +122,21 @@ class CompactSavesContainerCoordinator: NSObject {
         switch selectedItem {
         case .readable(let readable):
             self.push(savedItem: readable)
-        case .webView(let url):
+        case .webView(let readable):
+            readable?.$presentedAlert.sink { [weak self] alert in
+                self?.present(alert: alert)
+            }.store(in: &readableSubscriptions)
+
+            readable?.events.sink { [weak self] event in
+                switch event {
+                case .contentUpdated:
+                    break
+                case .archive, .delete:
+                    self?.popToPreviousScreen(navigationController: self?.navigationController)
+                }
+            }.store(in: &readableSubscriptions)
+
+            guard let url = readable?.url else { return }
             self.present(url: url)
         }
     }
@@ -158,7 +172,7 @@ class CompactSavesContainerCoordinator: NSObject {
             case .contentUpdated:
                 break
             case .archive, .delete:
-                self?.navigationController.popToRootViewController(animated: true)
+                self?.popToPreviousScreen(navigationController: self?.navigationController)
             }
         }.store(in: &readableSubscriptions)
 
@@ -170,7 +184,11 @@ class CompactSavesContainerCoordinator: NSObject {
 
     private func present(alert: PocketAlert?) {
         guard !isResetting, let alert = alert else { return }
-        viewController.present(UIAlertController(alert), animated: !isResetting)
+        guard let presentedVC = viewController.presentedViewController else {
+            viewController.present(UIAlertController(alert), animated: !isResetting)
+            return
+        }
+        presentedVC.present(UIAlertController(alert), animated: !isResetting)
     }
 
     private func present(viewModel: PocketAddTagsViewModel?) {
@@ -242,6 +260,21 @@ class CompactSavesContainerCoordinator: NSObject {
         viewController.configurePocketDefaultDetents()
         navigationController.present(viewController, animated: true)
     }
+
+    private func popToPreviousScreen(navigationController: UINavigationController?) {
+
+        guard let navController = navigationController else {
+            return
+        }
+
+        if let presentedVC = navController.presentedViewController {
+            presentedVC.dismiss(animated: true) {
+                navController.popToRootViewController(animated: true)
+            }
+        } else {
+            navController.popViewController(animated: true)
+        }
+    }
 }
 
 extension CompactSavesContainerCoordinator: UINavigationControllerDelegate {
@@ -269,6 +302,12 @@ extension CompactSavesContainerCoordinator: UINavigationControllerDelegate {
 }
 
 extension CompactSavesContainerCoordinator: SFSafariViewControllerDelegate {
+
+    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
+        return model.activityItemsForSelectedItem()
+
+    }
+
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
     }

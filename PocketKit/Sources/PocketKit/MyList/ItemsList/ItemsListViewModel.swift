@@ -1,9 +1,10 @@
 import Combine
 import UIKit
+import Sync
 
 enum SelectedItem {
     case readable(SavedItemViewModel?)
-    case webView(URL?)
+    case webView(SavedItemViewModel?)
 
     func clearPresentedWebReaderURL() {
         switch self {

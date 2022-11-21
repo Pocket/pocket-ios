@@ -410,4 +410,25 @@ extension SavesTests {
             .staticText(matching: "Hello, world")
             .wait(timeout: 10)
     }
+
+    func test_webview_includesCustomItemActions() {
+        test_list_showsWebView(at: 0)
+
+        app.shareButton.tap()
+
+        app
+            .readerActionWebActivity
+            .activityOption("Archive")
+            .wait(timeout: 5.0)
+
+        app
+            .readerActionWebActivity
+            .activityOption("Delete")
+            .wait(timeout: 5.0)
+
+        app
+            .readerActionWebActivity
+            .activityOption("Favorite")
+            .wait(timeout: 5.0)
+    }
 }

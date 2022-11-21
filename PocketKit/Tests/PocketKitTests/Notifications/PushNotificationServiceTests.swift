@@ -82,5 +82,4 @@ final class PushNotificationServiceTests: XCTestCase {
         XCTAssertEqual(braze.loggedOutCalls(), 1)
         XCTAssertEqual(instantSync.loggedOutCalls(), 1)
     }
-
 }
