@@ -1,8 +1,13 @@
 import SwiftUI
 
-struct SearchViewController: View {
+struct SearchView: View {
+    @ObservedObject
+    var viewModel: SearchViewModel
 
     var body: some View {
-        Text("Results VC")
+        if let emptyState = viewModel.emptyState {
+            EmptyStateView(viewModel: emptyState)
+                .padding(Margins.normal.rawValue)
+        }
     }
 }

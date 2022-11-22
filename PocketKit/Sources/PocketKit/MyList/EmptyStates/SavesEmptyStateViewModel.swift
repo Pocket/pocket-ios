@@ -3,6 +3,7 @@ import Textile
 
 struct SavesEmptyStateViewModel: EmptyStateViewModel {
     let imageAsset: ImageAsset = .welcomeShelf
+    let maxWidth: CGFloat = Width.wide.rawValue
     let icon: ImageAsset? = nil
     let headline = "Start building your Pocket list"
     let detailText: String? = nil
