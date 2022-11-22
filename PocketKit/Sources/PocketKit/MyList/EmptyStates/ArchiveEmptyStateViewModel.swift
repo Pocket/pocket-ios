@@ -3,6 +3,7 @@ import Textile
 
 struct ArchiveEmptyStateViewModel: EmptyStateViewModel {
     let imageAsset: ImageAsset = .chest
+    let maxWidth: CGFloat = 300
     let icon: ImageAsset? = .archive
     let headline = "Keep your list fresh and clean"
     let detailText: String? = "Archive the saves you're finished with\n using the archive icon."

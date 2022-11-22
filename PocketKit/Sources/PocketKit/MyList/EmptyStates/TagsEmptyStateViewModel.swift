@@ -3,6 +3,7 @@ import Textile
 
 struct TagsEmptyStateViewModel: EmptyStateViewModel {
     let imageAsset: ImageAsset = .chest
+    let maxWidth: CGFloat = 300
     let icon: ImageAsset? = nil
     let headline = "No saves with this tag."
     let detailText: String? = "Tag your saves by topic to find them later."
