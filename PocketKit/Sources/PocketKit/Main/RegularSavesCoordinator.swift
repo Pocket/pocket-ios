@@ -24,6 +24,8 @@ class RegularSavesCoordinator: NSObject {
     init(model: SavesContainerViewModel) {
         self.model = model
         self.savesViewController = SavesContainerViewController(
+            networkPathMonitor: model.networkPathMonitor,
+            user: model.user,
             viewControllers: [
                 ItemsListViewController(model: model.savedItemsList),
                 ItemsListViewController(model: model.archivedItemsList)
@@ -190,7 +192,7 @@ extension RegularSavesCoordinator {
 
     private func updateSearchScope(isFromSaves: Bool) {
         savesViewController.navigationItem.searchController?.isActive = true
-        savesViewController.updateSearchScope(fromSaves: savesViewController.isFromSaves)
+        savesViewController.updateSearchScope()
     }
 }
 

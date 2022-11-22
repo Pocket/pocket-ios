@@ -21,6 +21,8 @@ class CompactSavesContainerCoordinator: NSObject {
         self.subscriptions = []
 
         containerViewController = SavesContainerViewController(
+            networkPathMonitor: model.networkPathMonitor,
+            user: model.user,
             viewControllers: [
                 ItemsListViewController(model: model.savedItemsList),
                 ItemsListViewController(model: model.archivedItemsList)
@@ -241,7 +243,7 @@ class CompactSavesContainerCoordinator: NSObject {
 
     private func updateSearchScope() {
         containerViewController.navigationItem.searchController?.isActive = true
-        containerViewController.updateSearchScope(fromSaves: containerViewController.isFromSaves)
+        containerViewController.updateSearchScope()
     }
 
     func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
