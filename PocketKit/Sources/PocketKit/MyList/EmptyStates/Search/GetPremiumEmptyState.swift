@@ -1,9 +1,10 @@
 import Foundation
 import Textile
 
+// TODO: Localization
 struct GetPremiumEmptyState: EmptyStateViewModel {
     let imageAsset: ImageAsset = .diamond
-    let maxWidth: CGFloat = 145
+    let maxWidth: CGFloat = Width.normal.rawValue
     let icon: ImageAsset? = nil
     let headline = "Searching in All Your Items?"
     let detailText: String? = "See results from both saves and archive when you join Pocket Premium."
