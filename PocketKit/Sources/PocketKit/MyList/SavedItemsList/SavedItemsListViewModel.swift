@@ -200,10 +200,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func filterByTagAction() -> UIAction? {
-        let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Context = UIContext.button(identifier: .tagBadge)
-        tracker.track(event: event, [contexts])
         return UIAction(title: "", handler: { [weak self] action in
+            let event = SnowplowEngagement(type: .general, value: nil)
+            let contexts: Context = UIContext.button(identifier: .tagBadge)
+            self?.tracker.track(event: event, [contexts])
+
             let button = action.sender as? UIButton
             guard let name = button?.titleLabel?.text else { return }
             let predicate = NSPredicate(format: "%@ IN tags.name", name)
