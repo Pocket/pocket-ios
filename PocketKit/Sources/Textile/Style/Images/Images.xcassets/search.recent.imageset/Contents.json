@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "looking.pdf",
+      "filename" : "search.recent.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "looking.dark.pdf",
+      "filename" : "search.recent.dark.pdf",
       "idiom" : "universal"
     }
   ],

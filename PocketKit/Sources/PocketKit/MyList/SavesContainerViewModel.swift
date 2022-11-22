@@ -1,5 +1,7 @@
 import Combine
+import Sync
 import UIKit
+import SharedPocketKit
 
 class SavesContainerViewModel {
     enum Selection {
@@ -10,10 +12,19 @@ class SavesContainerViewModel {
     @Published
     var selection: Selection = .saves
 
+    let networkPathMonitor: NetworkPathMonitor
+    let user: User
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: ArchivedItemsListViewModel
 
-    init(savedItemsList: SavedItemsListViewModel, archivedItemsList: ArchivedItemsListViewModel) {
+    init(
+        networkPathMonitor: NetworkPathMonitor,
+        user: User,
+        savedItemsList: SavedItemsListViewModel,
+        archivedItemsList: ArchivedItemsListViewModel
+    ) {
+        self.networkPathMonitor = networkPathMonitor
+        self.user = user
         self.savedItemsList = savedItemsList
         self.archivedItemsList = archivedItemsList
     }
