@@ -15,14 +15,14 @@ let package = Package(
         .library(name: "Analytics", targets: ["Analytics"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "1.0.3")),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.3.2")),
-        .package(url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.25.0")),
-        .package(url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMajor(from: "3.2.0")),
-        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "3.4.3"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "1.0.5")),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.4.1")),
+        .package(url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.31.2")),
+        .package(url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMajor(from: "4.0.1")),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", from: "3.5.0"),
         .package(url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5")),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMajor(from: "5.6.2"))
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMajor(from: "5.6.3"))
     ],
     targets: [
         .target(

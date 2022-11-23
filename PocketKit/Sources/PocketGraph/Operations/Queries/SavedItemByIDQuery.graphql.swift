@@ -5,7 +5,7 @@
 
 public class SavedItemByIDQuery: GraphQLQuery {
   public static let operationName: String = "SavedItemByID"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       query SavedItemByID($id: ID!) {

@@ -91,8 +91,9 @@ workflows:
                 set -e
 
                 cd PocketKit
-                swift package --disable-sandbox  --allow-writing-to-package-directory apollo-fetch-schema
-                swift package --allow-writing-to-package-directory apollo-generate
+                swift package --allow-writing-to-package-directory apollo-cli-install
+                ./apollo-ios-cli fetch-schema
+                ./apollo-ios-cli generate
 
   #Workflow to that can be ran after archiving builds to upload dysms to sentry.
   _upload_sentry:

@@ -5,7 +5,7 @@
 
 public class GetSlateQuery: GraphQLQuery {
   public static let operationName: String = "GetSlate"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       query GetSlate($slateID: String!, $recommendationCount: Int!) {

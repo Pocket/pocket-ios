@@ -5,7 +5,7 @@
 
 public class TagUpdateMutation: GraphQLMutation {
   public static let operationName: String = "TagUpdate"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       mutation TagUpdate($input: TagUpdateInput!) {

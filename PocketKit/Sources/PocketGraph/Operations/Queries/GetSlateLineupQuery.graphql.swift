@@ -5,7 +5,7 @@
 
 public class GetSlateLineupQuery: GraphQLQuery {
   public static let operationName: String = "GetSlateLineup"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {

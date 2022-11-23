@@ -5,7 +5,7 @@
 
 public class FavoriteItemMutation: GraphQLMutation {
   public static let operationName: String = "FavoriteItem"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       mutation FavoriteItem($itemID: ID!) {
