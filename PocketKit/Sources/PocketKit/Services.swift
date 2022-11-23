@@ -37,6 +37,7 @@ struct Services {
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
     let lastRefresh: LastRefresh
+    let featureFlagService: FeatureFlagService
 
     private let persistentContainer: PersistentContainer
 
@@ -166,6 +167,8 @@ struct Services {
         subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
+
+        featureFlagService = FeatureFlagService(source: source, tracker: tracker)
     }
 }
 

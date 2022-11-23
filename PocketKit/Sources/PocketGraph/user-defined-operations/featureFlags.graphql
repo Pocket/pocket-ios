@@ -1,0 +1,10 @@
+query unleashAssignments($context: UnleashContext!) {
+    assignments: unleashAssignments(context: $context) {
+        assignments {
+            name
+            assigned
+            variant
+            payload
+        }
+    }
+}
