@@ -5,7 +5,7 @@
 
 public class ArchiveItemMutation: GraphQLMutation {
   public static let operationName: String = "ArchiveItem"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       mutation ArchiveItem($itemID: ID!) {

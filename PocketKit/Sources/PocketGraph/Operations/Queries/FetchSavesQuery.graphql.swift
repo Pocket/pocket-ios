@@ -5,7 +5,7 @@
 
 public class FetchSavesQuery: GraphQLQuery {
   public static let operationName: String = "FetchSaves"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       query FetchSaves($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {

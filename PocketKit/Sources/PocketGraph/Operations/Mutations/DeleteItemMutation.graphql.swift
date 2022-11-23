@@ -5,7 +5,7 @@
 
 public class DeleteItemMutation: GraphQLMutation {
   public static let operationName: String = "DeleteItem"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       mutation DeleteItem($itemID: ID!) {

@@ -5,7 +5,7 @@
 
 public class TagsQuery: GraphQLQuery {
   public static let operationName: String = "Tags"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       query Tags($pagination: PaginationInput) {

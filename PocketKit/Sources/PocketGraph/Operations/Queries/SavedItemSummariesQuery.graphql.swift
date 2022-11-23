@@ -5,7 +5,7 @@
 
 public class SavedItemSummariesQuery: GraphQLQuery {
   public static let operationName: String = "SavedItemSummaries"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       query SavedItemSummaries($pagination: PaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) {

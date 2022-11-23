@@ -5,7 +5,7 @@
 
 public class ItemByIDQuery: GraphQLQuery {
   public static let operationName: String = "ItemByID"
-  public static let document: DocumentType = .notPersisted(
+  public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
       query ItemByID($id: ID!) {
