@@ -22,13 +22,20 @@ After you will need to run the API Generation steps below.
 
 Pocket for iOS uses Apollo client to autogenerate its API schema code. You will need to run the following commands every time the APIs you use change or if you change your API queries.
 
+To Start run the following command:
+
+```bash
+cd PocketKit/
+swift package --allow-writing-to-package-directory apollo-cli-install
+```
+
 ### Downloading Graph Schema
 
 To download a new version of [`PocketKit/Sources/Sync/schema.graphqls`](./PocketKit/Sources/Sync/schema.graphqls) you can run the following commands:
 
 ```bash
 cd PocketKit/
-swift package --disable-sandbox --allow-writing-to-package-directory apollo-fetch-schema
+./apollo-ios-cli fetch-schema
 ```
 
 ### Generating API.swift
@@ -37,7 +44,7 @@ To download a new version of [`PocketKit/Sources/Sync/API.swift`](./PocketKit/So
 
 ```bash
 cd PocketKit/
-swift package --disable-sandbox --allow-writing-to-package-directory apollo-generate
+./apollo-ios-cli generate
 ```
 
 ### Future
