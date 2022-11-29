@@ -49,7 +49,7 @@ class ReaderActionsWebActivity: UIActivity {
     let action: () -> Void
 
     init(title: WebActivityTitle, action: @escaping () -> Void) {
-        self.title = title.rawValue
+        self.title = title.rawValue.localized()
         self.iconAsset = title.imageAsset
         self.action = action
 

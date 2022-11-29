@@ -17,7 +17,7 @@ class CopyLinkWithSelectionActivity: UIActivity {
     }
 
     override var activityTitle: String? {
-        return "Copy link with selection"
+        return "Copy link with selection".localized()
     }
 
     override var activityImage: UIImage? {

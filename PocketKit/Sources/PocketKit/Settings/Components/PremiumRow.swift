@@ -46,7 +46,7 @@ struct PremiumRow<Destination: View>: View {
                 HStack(alignment: .center, spacing: 0) {
                     VStack(alignment: .leading, spacing: 5) {
                         if status.headerVisible {
-                            Text("Premium Status:")
+                            Text("Premium Status:".localized())
                                 .style(.settings.row.header)
                         }
                         Text(status.rawValue)

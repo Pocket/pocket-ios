@@ -16,7 +16,7 @@ class ArticleComponentUnavailableView: UIView {
         config.baseBackgroundColor = UIColor(.ui.teal2)
         config.attributedTitle = AttributedString(
             NSAttributedString(
-                string: "Open in Web View",
+                string: "Open in Web View".localized(),
                 style: .button
             )
         )
