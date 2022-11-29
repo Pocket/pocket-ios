@@ -358,8 +358,8 @@ extension HomeViewModel {
         switch section {
         case .recentSaves:
             return .init(
-                name: "Recent Saves",
-                buttonTitle: "Saves",
+                name: "Recent Saves".localized(),
+                buttonTitle: "Saves".localized(),
                 buttonImage: nil
             ) { [weak self] in
                 self?.tappedSeeAll = .saves
@@ -371,7 +371,7 @@ extension HomeViewModel {
 
             return .init(
                 name: slate.name ?? "",
-                buttonTitle: "See All",
+                buttonTitle: "See All".localized(),
                 buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
                 self?.select(slate: slate)
@@ -436,14 +436,14 @@ extension HomeViewModel {
 
     private func confirmDelete(item: SavedItem) {
         presentedAlert = PocketAlert(
-            title: "Are you sure you want to delete this item?",
+            title: "Are you sure you want to delete this item?".localized(),
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                UIAlertAction(title: "No".localized(), style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in
+                UIAlertAction(title: "Yes".localized(), style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
                     self?.delete(item: item)
                 }

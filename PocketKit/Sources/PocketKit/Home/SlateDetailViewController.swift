@@ -28,7 +28,7 @@ class SlateDetailViewController: UIViewController {
         view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
         view.attributedText = NSAttributedString(
-            string: "You're all caught up!\nCheck back later for more.",
+            string: "You're all caught up!\nCheck back later for more.".localized(),
             style: .overscroll
         )
         return view

@@ -12,7 +12,7 @@ class YouTubeVideoComponentCell: UICollectionViewCell {
 
     private lazy var errorView: ArticleComponentUnavailableView = {
         let view = ArticleComponentUnavailableView()
-        view.text = "This video could not be loaded."
+        view.text = "This video could not be loaded.".localized()
         return view
     }()
 
