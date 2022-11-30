@@ -5,7 +5,6 @@ import Combine
 import Kingfisher
 
 class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
-
     private let model: ViewModel
     private var subscriptions: [AnyCancellable] = []
     private var collectionView: UICollectionView!

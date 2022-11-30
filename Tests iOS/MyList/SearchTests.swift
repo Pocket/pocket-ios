@@ -41,48 +41,48 @@ class SearchTests: XCTestCase {
         app.terminate()
     }
 
-    // MARK: - Empty States
-    func test_search_forFreeUser_showsEmptyStateView() {
-        server.routes.post("/graphql") { request, _ in
-            Response.saves("initial-list-free-user")
-        }
-        tapSearch()
-        XCTAssertTrue(app.saves.searchView.exists)
-        XCTAssertTrue(app.saves.searchEmptyStateView(for: "search-empty-state").exists)
-
-    }
-
-    func test_search_forPremiumUser_showsEmptyStateView() {
-        tapSearch()
-        XCTAssertTrue(app.saves.searchView.exists)
-        XCTAssertTrue(app.saves.searchEmptyStateView(for: "recent-search-empty-state").exists)
-    }
-
     // MARK: - Saves: Search
     func test_enterSavesSearch_fromCarouselGoIntoSearch() {
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.itemView(matching: "Item 1").wait()
-
-        app.saves.filterButton(for: "Search").wait().tap()
+        app.launch()
+        tapSearch()
         XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
     }
 
     func test_enterSavesSearch_fromSwipeDownSearch() {
         app.launch().tabBar.savesButton.wait().tap()
-        app.saves.itemView(matching: "Item 1").wait()
-
         app.saves.element.swipeDown()
 
         app.navigationBar.searchFields["Search"].wait().tap()
         XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
     }
 
+    func test_searchSaves_forFreeUser_showsEmptyStateView() {
+        server.routes.post("/graphql") { request, _ in
+            Response.saves("initial-list-free-user")
+        }
+        app.launch()
+        tapSearch()
+        XCTAssertTrue(app.saves.searchView.exists)
+        XCTAssertTrue(app.saves.searchEmptyStateView(for: "search-empty-state").exists)
+    }
+
+    func test_search_forPremiumUser_showsRecentSaves() {
+        app.launch()
+        tapSearch()
+        XCTAssertTrue(app.saves.searchView.exists)
+        XCTAssertTrue(app.saves.searchEmptyStateView(for: "recent-search-empty-state").exists)
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("search-term\n")
+        app.navigationBar.buttons["Cancel"].tap()
+        tapSearch()
+        XCTAssertTrue(app.saves.searchView.recentSearchesView.exists)
+    }
+
     // MARK: - Archives: Search
     func test_enterArchiveSearch_fromCarouselGoIntoSearch() {
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.selectionSwitcher.archiveButton.wait().tap()
-
-        app.saves.filterButton(for: "Search").wait().tap()
+        app.launch()
+        tapSearch(fromArchive: true)
         XCTAssertTrue(app.navigationBar.buttons["Archive"].isSelected)
     }
 
@@ -96,9 +96,34 @@ class SearchTests: XCTestCase {
         XCTAssertTrue(app.navigationBar.buttons["Archive"].isSelected)
     }
 
-    private func tapSearch() {
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.itemView(matching: "Item 1").wait()
+    func test_searchArchive_forFreeUser_showsEmptyStateView() {
+        server.routes.post("/graphql") { request, _ in
+            Response.saves("initial-list-free-user")
+        }
+        app.launch()
+        tapSearch(fromArchive: true)
+        XCTAssertTrue(app.saves.searchView.exists)
+        XCTAssertTrue(app.saves.searchEmptyStateView(for: "search-empty-state").exists)
+    }
+
+    func test_searchArchive_forPremiumUser_showsRecentSaves() {
+        app.launch()
+        tapSearch(fromArchive: true)
+        XCTAssertTrue(app.saves.searchView.exists)
+        XCTAssertTrue(app.saves.searchEmptyStateView(for: "recent-search-empty-state").exists)
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("search-term\n")
+        app.navigationBar.buttons["Cancel"].tap()
+        tapSearch(fromArchive: true)
+        XCTAssertTrue(app.saves.searchView.recentSearchesView.exists)
+    }
+
+    private func tapSearch(fromArchive: Bool = false) {
+        app.tabBar.savesButton.wait().tap()
+        if fromArchive {
+            app.saves.selectionSwitcher.archiveButton.wait().tap()
+        }
         app.saves.filterButton(for: "Search").wait().tap()
     }
 }
