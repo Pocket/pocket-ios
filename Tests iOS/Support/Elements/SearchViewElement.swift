@@ -10,4 +10,16 @@ struct SearchViewElement: PocketUIElement {
     init(_ element: XCUIElement) {
         self.element = element
     }
+
+    var recentSearchesView: XCUIElement {
+        let query: XCUIElementQuery
+
+        if #available(iOS 16, *) {
+            query = element.collectionViews
+        } else {
+            query = element.tables
+        }
+
+        return query["recent-searches"]
+    }
 }

@@ -14,17 +14,20 @@ class SavesContainerViewModel {
 
     let networkPathMonitor: NetworkPathMonitor
     let user: User
+    let userDefaults: UserDefaults
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: ArchivedItemsListViewModel
 
     init(
         networkPathMonitor: NetworkPathMonitor,
         user: User,
+        userDefaults: UserDefaults,
         savedItemsList: SavedItemsListViewModel,
         archivedItemsList: ArchivedItemsListViewModel
     ) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
+        self.userDefaults = userDefaults
         self.savedItemsList = savedItemsList
         self.archivedItemsList = archivedItemsList
     }
