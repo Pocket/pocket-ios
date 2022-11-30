@@ -33,12 +33,14 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     private let viewControllers: [SelectableViewController]
     private let networkPathMonitor: NetworkPathMonitor
     private let user: User
+    private let userDefaults: UserDefaults
     private var searchViewModel: SearchViewModel?
 
-    init(networkPathMonitor: NetworkPathMonitor, user: User, viewControllers: [SelectableViewController]) {
+    init(networkPathMonitor: NetworkPathMonitor, user: User, userDefaults: UserDefaults, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
         self.networkPathMonitor = networkPathMonitor
         self.user = user
+        self.userDefaults = userDefaults
         self.viewControllers = viewControllers
         self.isFromSaves = true
 
@@ -116,11 +118,16 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     // MARK: Search
 
     private func setupSearch() {
-        let searchViewModel = SearchViewModel(networkPathMonitor: networkPathMonitor, user: user)
+        let searchViewModel = SearchViewModel(
+            networkPathMonitor: networkPathMonitor,
+            user: user,
+            userDefaults: userDefaults
+        )
         self.searchViewModel = searchViewModel
         let searchViewController = UIHostingController(rootView: SearchView(viewModel: searchViewModel))
         navigationItem.searchController = UISearchController(searchResultsController: searchViewController)
         navigationItem.searchController?.searchBar.delegate = self
+        navigationItem.searchController?.searchBar.autocapitalizationType = .none
         navigationItem.searchController?.view.accessibilityIdentifier = "search-view"
         navigationItem.searchController?.searchBar.accessibilityHint = "Search"
         navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
