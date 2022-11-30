@@ -26,6 +26,7 @@ class RegularSavesCoordinator: NSObject {
         self.savesViewController = SavesContainerViewController(
             networkPathMonitor: model.networkPathMonitor,
             user: model.user,
+            userDefaults: model.userDefaults,
             viewControllers: [
                 ItemsListViewController(model: model.savedItemsList),
                 ItemsListViewController(model: model.archivedItemsList)
