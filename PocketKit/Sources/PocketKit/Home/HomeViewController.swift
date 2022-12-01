@@ -85,7 +85,7 @@ class HomeViewController: UIViewController {
 
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
-        navigationItem.title = "Home"
+        navigationItem.title = "Home".localized()
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
             self?.setupOverflowView(contentSize: contentSize)
         }.store(in: &subscriptions)
