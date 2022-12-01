@@ -36,7 +36,6 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func moveToSaves()
     func unfavorite()
     func favorite()
-    func webViewActivityItems() -> [UIActivity]
 }
 
 // MARK: - ReadableViewControllerDelegate

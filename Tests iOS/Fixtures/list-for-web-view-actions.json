@@ -1,0 +1,80 @@
+{
+    "data": {
+        "userByToken": {
+            "__typename": "[type-name-here]",
+            "isPremium": true,
+            "savedItems": {
+                "__typename": "[type-name-here]",
+                "totalCount": 3,
+                "pageInfo": {
+                    "__typename": "[type-name-here]",
+                    "hasNextPage": false,
+                    "endCursor": "cursor-3"
+                },
+                "edges": [
+                    {
+                        "__typename": "[type-name-here]",
+                        "cursor": "cursor-1",
+                        "node": {
+                            "__typename": "[type-name-here]",
+                            "remoteID": "saved-item-1",
+                            "url": "http://localhost:8080/hello",
+                            "_createdAt": 0,
+                            "_deletedAt": null,
+                            "archivedAt": null,
+                            "isArchived": false,
+                            "isFavorite": false,
+                            "tags": [],
+                            "item": {
+                                "__typename": "Item",
+                                "remoteID": "item-1",
+                                "title": "Item 1",
+                                "givenUrl": "http://localhost:8080/hello",
+                                "resolvedUrl": "http://localhost:8080/hello",
+                                "topImageUrl": "https://example.com/item-1/top-image.jpg",
+                                "domain": null,
+                                "language": "en",
+                                "timeToRead": 6,
+                                "marticle": #MARTICLE#,
+                                "excerpt": "Cursus Aenean Elit",
+                                "datePublished": "2021-01-01 12:01:01",
+                                "authors": [
+                                    {
+                                        "__typename": "Author",
+                                        "id": "author-1",
+                                        "name": "Jacob",
+                                        "url": "https://example.com/authors/jacob"
+                                    },
+                                    {
+                                        "__typename": "Author",
+                                        "id": "author-2",
+                                        "name": "David",
+                                        "url": "https://example.com/authors/david"
+                                    }
+                                ],
+                                "domainMetadata": {
+                                    "__typename": "[type-name-here]",
+                                    "name": "WIRED",
+                                    "logo": "http://example.com/item-1/domain-logo.jpg"
+                                },
+                                "images": [
+                                    {
+                                        "__typename": "[type-name-here]",
+                                        "height": 1,
+                                        "width": 2,
+                                        "src": "http://example.com/item-1/image-1.jpg",
+                                        "imageId": 1
+                                    }
+                                ],
+                                "isArticle": true,
+                                "hasImage": "IS_IMAGE",
+                                "hasVideo": "",
+                                "syndicatedArticle": null
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

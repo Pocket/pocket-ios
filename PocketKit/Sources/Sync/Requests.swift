@@ -170,6 +170,15 @@ public enum Requests {
 
         return request
     }
+
+    public static func fetchItem(byURL url: URL) -> NSFetchRequest<Item> {
+        let request = fetchItems()
+        let resolvedUrlPredicate = NSPredicate(format: "resolvedURL = %@", url.absoluteString)
+        let givenUrlPredicate = NSPredicate(format: "givenURL = %@", url.absoluteString)
+        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [resolvedUrlPredicate, givenUrlPredicate])
+        request.fetchLimit = 1
+        return request
+    }
 }
 
 public enum Predicates {

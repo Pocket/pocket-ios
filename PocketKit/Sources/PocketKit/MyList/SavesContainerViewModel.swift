@@ -22,12 +22,12 @@ class SavesContainerViewModel {
         savedItemsList.selectedItem ?? archivedItemsList.selectedItem
     }
 
-    func activityItemsForSelectedItem() -> [UIActivity] {
+    func activityItemsForSelectedItem(url: URL) -> [UIActivity] {
         let selectedItem = savedItemsList.selectedItem ?? archivedItemsList.selectedItem
         switch selectedItem {
         case .webView(let readableViewModel),
                 .readable(let readableViewModel):
-            return readableViewModel?.webViewActivityItems() ?? []
+            return readableViewModel?.webViewActivityItems(url: url) ?? []
         case .none:
             return []
         }

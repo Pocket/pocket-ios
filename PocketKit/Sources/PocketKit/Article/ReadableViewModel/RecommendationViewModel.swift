@@ -126,9 +126,9 @@ class RecommendationViewModel: ReadableViewModel {
         ]
     }
 
-    func webViewActivityItems() -> [UIActivity] {
+    func webViewActivityItems(url: URL) -> [UIActivity] {
 
-        guard let item = recommendation.item else {
+        guard let item = source.fetchItem(url) else {
             return []
         }
 
