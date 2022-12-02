@@ -77,11 +77,11 @@
         "EditTagsTests",
         "EmptyStateTests",
         "FavoriteAnItemTests",
-        "MyListFiltersTests",
-        "MyListTests",
         "PullToRefreshTests",
         "ReportARecommendationTests",
         "SaveToPocketTests",
+        "SavesFiltersTests",
+        "SavesTests",
         "ShareAnItemTests",
         "SignOutTests"
       ],
