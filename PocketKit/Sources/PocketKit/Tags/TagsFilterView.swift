@@ -74,16 +74,17 @@ struct TagsFilterView: View {
                 })
             )
         }
-        .alert(isPresented: $showRenameAlert,
-               TextAlert(
+        .alert(
+            isPresented: $showRenameAlert,
+            TextAlert(
                 title: "Rename Tag",
                 message: "Enter a new name for this tag"
-               ) { result in
-                   if let text = result, let oldName = tagsSelected.first {
-                       viewModel.rename(from: oldName, to: text)
-                       tagsSelected = Set<String>()
-                   }
-               }
+            ) { result in
+                if let text = result, let oldName = tagsSelected.first {
+                    viewModel.rename(from: oldName, to: text)
+                    tagsSelected = Set<String>()
+                }
+            }
         )
         .accessibilityIdentifier("filter-tags")
         .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 30))

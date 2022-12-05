@@ -112,9 +112,10 @@ public class PocketSaveService: SaveService {
                 osNotifications: osNotifications,
                 space: space,
                 savedItem: savedItem,
-                mutation: mutation) { graphQLResultData in
-                    return (graphQLResultData as? UpdateSavedItemRemoveTagsMutation.Data)?.updateSavedItemRemoveTags.fragments.savedItemParts
-                }
+                mutation: mutation
+            ) { graphQLResultData in
+                return (graphQLResultData as? UpdateSavedItemRemoveTagsMutation.Data)?.updateSavedItemRemoveTags.fragments.savedItemParts
+            }
             queue.addOperation(operation)
             queue.waitUntilAllOperationsAreFinished()
         } else {
@@ -125,9 +126,10 @@ public class PocketSaveService: SaveService {
                 osNotifications: osNotifications,
                 space: space,
                 savedItem: savedItem,
-                mutation: mutation) { graphQLResultData in
-                    return (graphQLResultData as? ReplaceSavedItemTagsMutation.Data)?.replaceSavedItemTags.first?.fragments.savedItemParts
-                }
+                mutation: mutation
+            ) { graphQLResultData in
+                return (graphQLResultData as? ReplaceSavedItemTagsMutation.Data)?.replaceSavedItemTags.first?.fragments.savedItemParts
+            }
             queue.addOperation(operation)
             queue.waitUntilAllOperationsAreFinished()
         }
@@ -148,9 +150,10 @@ public class PocketSaveService: SaveService {
             osNotifications: osNotifications,
             space: space,
             savedItem: savedItem,
-            mutation: mutation) { graphQLResultData in
-                return (graphQLResultData as? SaveItemMutation.Data)?.upsertSavedItem.fragments.savedItemParts
-            }
+            mutation: mutation
+        ) { graphQLResultData in
+            return (graphQLResultData as? SaveItemMutation.Data)?.upsertSavedItem.fragments.savedItemParts
+        }
 
         queue.addOperation(operation)
         queue.waitUntilAllOperationsAreFinished()

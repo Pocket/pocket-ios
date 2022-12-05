@@ -54,15 +54,17 @@ struct SettingsForm: View {
                     SettingsRowButton(title: "Sign Out", titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
                         .accessibilityIdentifier("sign-out-button")
                 }
-                .alert("Are you sure?",
-                       isPresented: $model.isPresentingSignOutConfirm,
-                       actions: {
-                    Button("Sign Out", role: .destructive) {
-                        model.signOut()
+                .alert(
+                    "Are you sure?",
+                    isPresented: $model.isPresentingSignOutConfirm,
+                    actions: {
+                        Button("Sign Out", role: .destructive) {
+                            model.signOut()
+                        }
+                    }, message: {
+                        Text("You will be signed out of your account and any files that have been saved for offline viewing will be deleted.")
                     }
-                }, message: {
-                    Text("You will be signed out of your account and any files that have been saved for offline viewing will be deleted.")
-                })
+                )
                 .textCase(nil)
 
                 Section(header: Text("App Customization").style(.settings.header)) {
