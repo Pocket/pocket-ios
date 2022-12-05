@@ -5,11 +5,11 @@ import CoreData
 
 protocol ImageCacheProtocol {
     func removeImage(forKey key: String,
-                          processorIdentifier identifier: String,
-                          fromMemory: Bool,
-                          fromDisk: Bool,
-                          callbackQueue: CallbackQueue,
-                          completionHandler: (() -> Void)?
+                     processorIdentifier identifier: String,
+                     fromMemory: Bool,
+                     fromDisk: Bool,
+                     callbackQueue: CallbackQueue,
+                     completionHandler: (() -> Void)?
     )
 }
 
