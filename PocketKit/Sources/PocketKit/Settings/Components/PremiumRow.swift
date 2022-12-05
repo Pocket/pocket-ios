@@ -7,8 +7,8 @@ enum PremiumStatus: String {
 
     var headerVisible: Bool {
         switch self {
-            case .notSubscribed: return false
-            case .subscribed: return true
+        case .notSubscribed: return false
+        case .subscribed: return true
         }
     }
     var statusStyle: Style {
