@@ -162,9 +162,9 @@ class CompactHomeCoordinator: NSObject {
 
         recommendation.events.sink { [weak self] event in
             switch event {
-                case .contentUpdated:
-                    break
-                case .archive, .delete:
+            case .contentUpdated:
+                break
+            case .archive, .delete:
                 self?.popToPreviousScreen()
             }
         }.store(in: &readerSubscriptions)

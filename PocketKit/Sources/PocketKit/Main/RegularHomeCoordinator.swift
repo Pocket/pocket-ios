@@ -156,10 +156,10 @@ extension RegularHomeCoordinator {
 
         readable.events.sink { [weak self] event in
             switch event {
-                case .contentUpdated:
-                    break
-                case .archive, .delete:
-                    self?.navigationController.popViewController(animated: true)
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.navigationController.popViewController(animated: true)
             }
         }.store(in: &readerSubscriptions)
     }
@@ -195,9 +195,9 @@ extension RegularHomeCoordinator {
 
         readable.events.sink { [weak self] event in
             switch event {
-                case .contentUpdated:
-                    break
-                case .archive, .delete:
+            case .contentUpdated:
+                break
+            case .archive, .delete:
                 self?.popToPreviousScreen()
             }
         }.store(in: &readerSubscriptions)
