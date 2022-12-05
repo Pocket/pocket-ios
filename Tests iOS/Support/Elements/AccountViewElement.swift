@@ -14,5 +14,4 @@ struct AccountViewElement: PocketUIElement {
     var signOutButton: XCUIElement {
         element.buttons["sign-out-button"]
     }
-
 }

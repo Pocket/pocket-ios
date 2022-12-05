@@ -317,7 +317,6 @@ extension RegularHomeCoordinator: UINavigationControllerDelegate {
 }
 
 extension RegularHomeCoordinator: SFSafariViewControllerDelegate {
-
     func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
         return model.activityItemsForSelectedItem(url: URL)
     }

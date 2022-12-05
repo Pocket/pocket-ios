@@ -30,12 +30,10 @@ class EditTagsTests: XCTestCase {
             } else {
                 fatalError("Unexpected request")
             }
-
         }
 
         try server.start()
         app.launch()
-
     }
 
     override func tearDownWithError() throws {

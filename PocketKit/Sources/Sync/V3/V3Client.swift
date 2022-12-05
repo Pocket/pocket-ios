@@ -4,7 +4,6 @@ import Foundation
  Client used to access Pocket's V3 endpoint which is legacy, but still holds some critical pieces of Pocket's API for now.
  */
 public class V3Client: NSObject, V3ClientProtocol {
-
     /**
      V3 Client Error Types
      */

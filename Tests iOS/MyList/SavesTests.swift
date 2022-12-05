@@ -349,7 +349,6 @@ class SavesTests: XCTestCase {
         XCTAssertTrue(item.contains(string: "+1"))
         item.tagButton.firstMatch.tap()
         app.saves.selectedTagChip(for: "tag 0").wait()
-
     }
 }
 

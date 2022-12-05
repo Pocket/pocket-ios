@@ -6,7 +6,6 @@ import Combine
 @testable import PocketKit
 
 class SortMenuViewModelTests: XCTestCase {
-
     private var source: MockSource!
     private var tracker: MockTracker!
     private var listOptions: ListOptions!
@@ -58,7 +57,6 @@ class SortMenuViewModelTests: XCTestCase {
     }
 
     func test_cellViewModel_whenGivenSortOptionIsNotSelected_returnsViewModelWithIsSelectedSetToFalse() {
-
         let sortMenuVM = subject()
         let sortCellModel = sortMenuVM.cellViewModel(for: SortOption.oldest)
 
@@ -67,7 +65,6 @@ class SortMenuViewModelTests: XCTestCase {
     }
 
     func test_select_setsTheSelectedSortOnListOptionsForSavedList() {
-
         listOptions.selectedSortOption = .oldest
         let sortMenuVM = subject()
         XCTAssert(listOptions.selectedSortOption == .oldest)
@@ -80,6 +77,5 @@ class SortMenuViewModelTests: XCTestCase {
 
         sortMenuVM.select(row: .longestToRead)
         XCTAssert(listOptions.selectedSortOption == .longestToRead)
-
     }
 }

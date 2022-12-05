@@ -19,7 +19,6 @@ class RecommendationOverflowButton: UIButton {
         configuration?.imageColorTransformer = UIConfigurationColorTransformer { [weak self] _ in
             self?.imageColor() ?? UIColor(.ui.grey5)
         }
-
     }
 
     required init?(coder: NSCoder) {

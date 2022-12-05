@@ -355,7 +355,6 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
     }
 
     private func popToPreviousScreen() {
-
         if let presentedVC = navigationController.presentedViewController {
             presentedVC.dismiss(animated: true) { [weak self] in
                 self?.navigationController.popToRootViewController(animated: true)
@@ -367,7 +366,6 @@ extension CompactHomeCoordinator: UINavigationControllerDelegate {
 }
 
 extension CompactHomeCoordinator: SFSafariViewControllerDelegate {
-
     func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
         return model.activityItemsForSelectedItem(url: URL)
     }

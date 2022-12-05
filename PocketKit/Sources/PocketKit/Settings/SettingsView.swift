@@ -19,7 +19,6 @@ class SettingsViewController: UIHostingController<SettingsView> {
 }
 
 struct SettingsView: View {
-
     @ObservedObject
     var model: AccountViewModel
 

@@ -50,7 +50,6 @@ class SortMenuHeaderView: UITableViewHeaderFooterView {
 }
 
 extension SortMenuHeaderView {
-
     func setHeader(title: String) {
         sortTitleLabel.attributedText = NSAttributedString(string: title, style: .header.sansSerif.h8)
     }
@@ -69,7 +68,6 @@ extension SortMenuHeaderView {
 }
 
 extension SortMenuHeaderView {
-
     enum Constants {
         enum ContainerView {
             static let height = 51.0

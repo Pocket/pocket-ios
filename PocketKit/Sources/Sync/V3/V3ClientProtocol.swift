@@ -29,7 +29,6 @@ public enum PushType: String {
  Protocol used to define our V3Client, this is used to be able to create different underlying
  */
 public protocol V3ClientProtocol {
-
     /**
      Used to register a Push Notification token with the v3 Pocket Backend, currently only used to enable Pocket's Intant Sync feature
      */

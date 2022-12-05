@@ -2,7 +2,6 @@ import SwiftUI
 import Textile
 
 struct SettingsRowToggle: View {
-
     private var title: String
 
     @ObservedObject

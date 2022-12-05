@@ -72,7 +72,6 @@ private extension Style {
         paragraph
             .with(lineHeight: .multiplier(1.4))
             .with(lineBreakMode: .byTruncatingTail)
-
     }
 
     static let publisher: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium)

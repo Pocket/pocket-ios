@@ -7,7 +7,6 @@ class ImageComponentPresenterTests: XCTestCase { }
 
 // MARK: - ImageComponentCell Model
 extension ImageComponentPresenterTests {
-
     func test_model_withCaption_shouldShow() {
         let component = ImageComponent(
             caption: "a caption",

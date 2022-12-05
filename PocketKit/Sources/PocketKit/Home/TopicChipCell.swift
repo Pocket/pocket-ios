@@ -8,7 +8,6 @@ protocol TopicChipCellModel {
 }
 
 class TopicChipCell: UICollectionViewCell {
-
     enum Constants {
         static let imagePadding: CGFloat = 8
         static let padding: CGFloat = 12

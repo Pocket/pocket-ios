@@ -149,7 +149,6 @@ class PocketArchiveServiceTests: XCTestCase {
             archivedAt: Date()
         )
         wait(for: [itemAdded], timeout: 1)
-
     }
 
     func test_observingCoreDataChanges_whenItemIsUnarchived_RemovesItemFromResults() throws {
@@ -447,7 +446,6 @@ class PocketArchiveServiceTests: XCTestCase {
         service.results.dropFirst().first().sink { results in
             defer { emptyContent.fulfill() }
             XCTAssertEqual(results, [])
-
         }.store(in: &subscriptions)
 
         let refreshedContent = expectation(description: "refreshedContent")

@@ -207,7 +207,6 @@ extension HomeViewController {
 
             if let section = dataSource.sectionIdentifier(for: indexPath.section),
                let viewModel = model.sectionHeaderViewModel(for: section) {
-
                 header.configure(model: viewModel)
             }
 

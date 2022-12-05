@@ -93,7 +93,6 @@ class ArticleComponentTests: XCTestCase {
     }
 
     func test_initWithMarticle_withImageParts_handlesSpacesInSourceURL() throws {
-
         let parts = ImageParts(data: DataDict([
             "caption": "hello",
             "credit": "world",

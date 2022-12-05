@@ -32,5 +32,4 @@ extension SavedItem: ItemsListItem {
 }
 
 extension DomainMetadata: ItemsListItemDomainMetadata {
-
 }

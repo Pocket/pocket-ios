@@ -40,5 +40,4 @@ struct TopicChipPresenter {
 }
 
 extension TopicChipPresenter: TopicChipCellModel {
-
 }

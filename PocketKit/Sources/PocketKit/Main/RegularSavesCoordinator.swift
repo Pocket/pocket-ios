@@ -182,7 +182,6 @@ extension RegularSavesCoordinator {
 }
 
 extension RegularSavesCoordinator: SFSafariViewControllerDelegate {
-
     func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
         return model.activityItemsForSelectedItem(url: URL)
     }

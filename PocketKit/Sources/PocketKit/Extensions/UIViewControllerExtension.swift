@@ -1,7 +1,6 @@
 import UIKit
 
 extension UIViewController {
-
     func configurePocketDefaultDetents() {
         // iPhone (Portrait): defaults to .medium(); iPhone (Landscape): defaults to .large()
         // By setting `prefersEdgeAttachedInCompactHeight` and `widthFollowsPreferredContentSizeWhenEdgeAttached`,
