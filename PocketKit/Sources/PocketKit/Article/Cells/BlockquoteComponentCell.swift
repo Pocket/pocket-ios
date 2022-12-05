@@ -1,7 +1,6 @@
 import UIKit
 
 class BlockquoteComponentCell: UICollectionViewCell, ArticleComponentTextCell, ArticleComponentTextViewDelegate {
-
     struct Constants {
         static let dividerWidth: CGFloat = 3
         static let stackSpacing: CGFloat = 12

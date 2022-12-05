@@ -451,7 +451,6 @@ extension ArchivedItemsListViewModel {
     }
 
     private func updateSnapshotForTagFilter(with name: String, and predicate: NSPredicate) {
-
         self.archiveService.filters = self.selectedFilters.compactMap { filter in
             switch filter {
             case .tagged:

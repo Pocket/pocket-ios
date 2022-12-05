@@ -204,7 +204,6 @@ extension SlateDetailViewModel {
         if let remoteID = slate.remoteID,
            let requestID = slate.requestID,
            let experimentID = slate.experimentID {
-
             let slateContext = SlateContext(
                 id: remoteID,
                 requestID: requestID,

@@ -14,6 +14,5 @@ class TestSavedItemsControllerDelegate: SavedItemsControllerDelegate {
     }
 
     func controller(_ controller: SavedItemsController, didChange aSavedItem: SavedItem, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
-
     }
 }

@@ -249,7 +249,6 @@ class CompactSavesContainerCoordinator: NSObject {
     }
 
     private func popToPreviousScreen(navigationController: UINavigationController?) {
-
         guard let navController = navigationController else {
             return
         }
@@ -289,7 +288,6 @@ extension CompactSavesContainerCoordinator: UINavigationControllerDelegate {
 }
 
 extension CompactSavesContainerCoordinator: SFSafariViewControllerDelegate {
-
     func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
         return model.activityItemsForSelectedItem(url: URL)
     }

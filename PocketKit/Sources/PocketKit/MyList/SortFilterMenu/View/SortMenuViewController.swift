@@ -5,7 +5,6 @@ import Textile
 import SharedPocketKit
 
 class SortMenuViewController: UIViewController {
-
     private let tableView = UITableView()
     let viewModel: SortMenuViewModel
     private var subscriptions: [AnyCancellable] = []
@@ -58,7 +57,6 @@ extension SortMenuViewController {
 
 // MARK: TableView Delegates
 extension SortMenuViewController: UITableViewDelegate {
-
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let headerView: SortMenuHeaderView = tableView.dequeueReusableHeaderFooterView()
         headerView.setHeader(title: SortSection.allCases[section].rawValue)

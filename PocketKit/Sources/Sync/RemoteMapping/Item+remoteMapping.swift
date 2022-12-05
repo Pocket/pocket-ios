@@ -4,7 +4,6 @@ import Apollo
 import PocketGraph
 
 extension Item {
-
     func update(remote: ItemParts) {
         remoteID = remote.remoteID
         givenURL = URL(string: remote.givenUrl)

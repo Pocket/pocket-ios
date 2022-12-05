@@ -31,7 +31,6 @@ enum WebActivityTitle: String {
 }
 
 class ReaderActionsWebActivity: UIActivity {
-
     override var activityTitle: String? {
         return title
     }

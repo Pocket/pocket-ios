@@ -38,7 +38,6 @@ protocol PushNotificationProtocol {
  Coordinator class that handles InstantSync, and Braze notifications from and to Apple.
  */
 class PushNotificationService: NSObject {
-
     /**
      Instance of our API client for pulling in data when we recieve pushes.
      */
@@ -138,7 +137,6 @@ class PushNotificationService: NSObject {
 
 // MARK: Apple callbacks and specific functions
 extension PushNotificationService {
-
     /**
      Deregister with Apple
      */
@@ -183,5 +181,4 @@ extension PushNotificationService {
         // So that means it must bbe an instant sync notification!
         _ = instantSync.handleBackgroundNotifcation(didReceiveRemoteNotification: userInfo, fetchCompletionHandler: completionHandler)
     }
-
 }

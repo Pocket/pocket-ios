@@ -19,7 +19,6 @@ private extension Style {
         }
         .with(weight: .medium)
         .with(color: .ui.grey3)
-
 }
 
 class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellModel {

@@ -1,7 +1,6 @@
 import UIKit
 
 class SortMenuViewCell: UITableViewCell {
-
     var model: Model? {
         didSet {
             updateModel()
@@ -47,7 +46,6 @@ class SortMenuViewCell: UITableViewCell {
 }
 
 extension SortMenuViewCell {
-
     struct Model {
         let isSelected: Bool
 

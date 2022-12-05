@@ -2,7 +2,6 @@ import SwiftUI
 import Textile
 
 struct SettingsRowLink<Destination: View>: View {
-
     @State
     var isActive: Bool = false
 

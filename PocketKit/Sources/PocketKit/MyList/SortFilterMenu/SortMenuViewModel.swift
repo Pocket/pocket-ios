@@ -8,7 +8,6 @@ enum SortMenuSourceView {
 }
 
 class SortMenuViewModel {
-
     typealias Snapshot = NSDiffableDataSourceSnapshot<SortSection, SortOption>
     @Published
     private(set) var snapshot = Snapshot()
@@ -43,9 +42,7 @@ class SortMenuViewModel {
 }
 
 extension SortMenuViewModel {
-
     func cellViewModel(for row: SortOption) -> SortMenuViewCell.Model {
-
         return .init(
             sortOption: row,
             isSelected: listOptions.selectedSortOption == row
@@ -53,7 +50,6 @@ extension SortMenuViewModel {
     }
 
     func select(row: SortOption) {
-
         guard listOfSortMenuOptions.contains(row) else {
             return
         }

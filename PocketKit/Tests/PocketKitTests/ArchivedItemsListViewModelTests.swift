@@ -51,7 +51,6 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_applySortingOnSavesArchivedItems() throws {
-
         // When selected sort is newest
         listOptions.selectedSortOption = .newest
         let viewModel = subject()

@@ -381,7 +381,6 @@ private class FetchArchivePagesOperation: AsyncOperation {
 
             await invokeFirstPageReceived()
         }
-
     }
 
     @MainActor

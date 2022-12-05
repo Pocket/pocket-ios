@@ -2,7 +2,6 @@ import SwiftUI
 import Textile
 
 struct SettingsRowButton: View {
-
     var title: String
     var titleStyle: Style = .settings.row.default
     var icon: SFIconModel?
@@ -24,7 +23,6 @@ struct SettingsRowButton: View {
                 }
             }
             .padding(.vertical, 5)
-
         }
     }
 }

@@ -5,5 +5,4 @@ protocol Pasteboard: AnyObject {
 }
 
 extension UIPasteboard: Pasteboard {
-
 }

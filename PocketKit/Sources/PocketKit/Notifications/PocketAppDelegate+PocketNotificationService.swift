@@ -6,7 +6,6 @@ import Sync
  Extend the App Delegate so that we can add in the notification methods
  */
 extension PocketAppDelegate {
-
     /**
      Called when Apple assigns us a Push notification token.
      */

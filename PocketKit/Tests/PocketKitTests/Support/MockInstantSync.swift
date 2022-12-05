@@ -39,5 +39,4 @@ extension MockInstantSync {
 
         return calls[index] as? HandleInstantSyncImpl
     }
-
 }

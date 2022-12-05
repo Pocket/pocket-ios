@@ -13,7 +13,6 @@ class MockPocketBraze: MockPushNotificationProtocol, BrazeSDKProtocol { }
 
 // MARK: Did Receive User Notification
 extension MockPocketBraze {
-
     static let didReceiveUserNotifcation = "didRecieveUserNotifcation"
     typealias DidRecieveUserNotifcationImpl = (UNUserNotificationCenter, UNNotificationResponse, (() -> Void)) -> Void
     struct DidRecieveUserNotifcationCall {

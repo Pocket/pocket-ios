@@ -127,7 +127,6 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func webViewActivityItems(url: URL) -> [UIActivity] {
-
         guard let item = source.fetchItem(url), let savedItem = item.savedItem else {
             return []
         }

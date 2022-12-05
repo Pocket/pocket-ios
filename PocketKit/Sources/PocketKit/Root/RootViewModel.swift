@@ -75,7 +75,6 @@ class RootViewModel {
 
     func showSaveFromClipboardBanner() {
         if UIPasteboard.general.hasURLs, isLoggedIn {
-
             bannerViewModel = BannerViewModel(
                 prompt: "Add copied URL to your Saves?",
                 backgroundColor: UIColor(.ui.teal6),

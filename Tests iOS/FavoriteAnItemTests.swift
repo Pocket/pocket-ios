@@ -199,5 +199,4 @@ class FavoriteAnItemTests: XCTestCase {
             XCTAssertFalse(itemCell.favoriteButton.isFilled)
         }
     }
-
 }

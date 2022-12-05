@@ -32,7 +32,6 @@ enum PremiumStatus: String {
 }
 
 struct PremiumRow<Destination: View>: View {
-
     @State
     var isActive: Bool = false
 
