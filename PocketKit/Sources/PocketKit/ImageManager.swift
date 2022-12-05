@@ -67,7 +67,8 @@ private extension ImageManager {
             with: cachedSource,
             options: nil,
             progressBlock: nil,
-            downloadTaskUpdated: nil) { result in
+            downloadTaskUpdated: nil
+        ) { result in
                 switch result {
                 case .success:
                     completion?(true)
