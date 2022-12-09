@@ -82,6 +82,7 @@
         "SaveToPocketTests",
         "SavesFiltersTests",
         "SavesTests",
+        "SearchTests",
         "ShareAnItemTests",
         "SignOutTests"
       ],

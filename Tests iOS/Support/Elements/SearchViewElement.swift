@@ -22,4 +22,16 @@ struct SearchViewElement: PocketUIElement {
 
         return query["recent-searches"]
     }
+
+    var searchResultsView: XCUIElement {
+        let query: XCUIElementQuery
+
+        if #available(iOS 16, *) {
+            query = element.collectionViews
+        } else {
+            query = element.tables
+        }
+
+        return query["search-results"]
+    }
 }

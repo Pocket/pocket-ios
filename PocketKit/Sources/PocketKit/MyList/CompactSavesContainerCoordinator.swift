@@ -21,9 +21,7 @@ class CompactSavesContainerCoordinator: NSObject {
         self.subscriptions = []
 
         containerViewController = SavesContainerViewController(
-            networkPathMonitor: model.networkPathMonitor,
-            user: model.user,
-            userDefaults: model.userDefaults,
+            searchViewModel: model.searchList,
             viewControllers: [
                 ItemsListViewController(model: model.savedItemsList),
                 ItemsListViewController(model: model.archivedItemsList)
