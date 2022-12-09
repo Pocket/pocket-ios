@@ -141,6 +141,28 @@ extension MockSource {
     }
 }
 
+// MARK: - Make search service
+extension MockSource {
+    static let makeSearchService = "makeSearchService"
+    typealias MakeSearchServiceImpl = () -> SearchService
+
+    struct MakeSearchServiceCall { }
+
+    func stubMakeSearchService(impl: @escaping MakeSearchServiceImpl) {
+        implementations[Self.makeSearchService] = impl
+    }
+
+    func makeSearchService() -> SearchService {
+        guard let impl = implementations[Self.makeSearchService] as? MakeSearchServiceImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeSearchService] = (calls[Self.makeSearchService] ?? []) + [MakeSearchServiceCall()]
+
+        return impl()
+    }
+}
+
 // MARK: - Make images controller
 extension MockSource {
     static let makeUndownloadedImagesController = "makeUndownloadedImagesController"

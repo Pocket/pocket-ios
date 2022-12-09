@@ -31,16 +31,11 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
-    private let networkPathMonitor: NetworkPathMonitor
-    private let user: User
-    private let userDefaults: UserDefaults
-    private var searchViewModel: SearchViewModel?
+    private var searchViewModel: SearchViewModel
 
-    init(networkPathMonitor: NetworkPathMonitor, user: User, userDefaults: UserDefaults, viewControllers: [SelectableViewController]) {
+    init(searchViewModel: SearchViewModel, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
-        self.networkPathMonitor = networkPathMonitor
-        self.user = user
-        self.userDefaults = userDefaults
+        self.searchViewModel = searchViewModel
         self.viewControllers = viewControllers
         self.isFromSaves = true
 
@@ -116,14 +111,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     }
 
     // MARK: Search
-
     private func setupSearch() {
-        let searchViewModel = SearchViewModel(
-            networkPathMonitor: networkPathMonitor,
-            user: user,
-            userDefaults: userDefaults
-        )
-        self.searchViewModel = searchViewModel
         let searchViewController = UIHostingController(rootView: SearchView(viewModel: searchViewModel))
         navigationItem.searchController = UISearchController(searchResultsController: searchViewController)
         navigationItem.searchController?.searchBar.delegate = self
@@ -141,12 +129,12 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         guard let titles = searchBar.scopeButtonTitles else { return }
-        searchViewModel?.updateScope(with: SearchScope(rawValue: titles[selectedScope]) ?? .saves)
+        searchViewModel.updateScope(with: SearchScope(rawValue: titles[selectedScope]) ?? .saves)
     }
 
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         guard let text = searchBar.text, !text.isEmpty else { return }
-        searchViewModel?.updateSearchResults(with: text)
+        searchViewModel.updateSearchResults(with: text)
     }
 
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
@@ -154,9 +142,12 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         updateSearchScope()
     }
 
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchViewModel.clear()
+    }
     func updateSearchScope() {
         let scope: SearchScope = isFromSaves ? .saves : .archive
-        searchViewModel?.updateScope(with: scope)
+        searchViewModel.updateScope(with: scope)
 
         if isFromSaves {
             navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 0
