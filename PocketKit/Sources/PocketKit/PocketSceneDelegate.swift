@@ -15,9 +15,12 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
             MainCoordinator(
                 model: MainViewModel(
                     saves: SavesContainerViewModel(
-                        networkPathMonitor: NWPathMonitor(),
-                        user: Services.shared.user,
-                        userDefaults: Services.shared.userDefaults,
+                        searchList: SearchViewModel(
+                            networkPathMonitor: NWPathMonitor(),
+                            user: Services.shared.user,
+                            userDefaults: Services.shared.userDefaults,
+                            source: Services.shared.source
+                        ),
                         savedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
