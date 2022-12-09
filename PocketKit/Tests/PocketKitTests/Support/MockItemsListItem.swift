@@ -2,6 +2,7 @@ import Foundation
 @testable import PocketKit
 
 struct MockItemsListItem: ItemsListItem {
+    let id: String?
     let title: String?
     let isFavorite: Bool
     let bestURL: URL?
@@ -14,6 +15,7 @@ struct MockItemsListItem: ItemsListItem {
     let tagNames: [String]?
 
     static func build(
+        id: String? = nil,
         title: String? = nil,
         isFavorite: Bool = false,
         bestURL: URL? = nil,
@@ -26,6 +28,7 @@ struct MockItemsListItem: ItemsListItem {
         tagNames: [String]? = nil
     ) -> MockItemsListItem {
         MockItemsListItem(
+            id: id,
             title: title,
             isFavorite: isFavorite,
             bestURL: bestURL,

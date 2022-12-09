@@ -28,6 +28,8 @@ class SearchTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
+            } else if apiRequest.isForSearch {
+                return Response.searchList()
             } else {
                 fatalError("Unexpected request")
             }
@@ -117,6 +119,56 @@ class SearchTests: XCTestCase {
         app.navigationBar.buttons["Cancel"].tap()
         tapSearch(fromArchive: true)
         XCTAssertTrue(app.saves.searchView.recentSearchesView.exists)
+    }
+
+    // MARK: - Online Search
+    func test_submitSearch_forFreeUser_withArchive_showsResults() {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSearch {
+                return Response.searchList()
+            } else {
+                return Response.saves("initial-list-free-user")
+            }
+        }
+        app.launch()
+        tapSearch(fromArchive: true)
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        let searchView = app.saves.searchView.searchResultsView.wait()
+        XCTAssertEqual(searchView.cells.count, 2)
+    }
+
+    func test_submitSearch_forPremiumUser_withSaves_showsResults() {
+        app.launch()
+        tapSearch()
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        let searchView = app.saves.searchView.searchResultsView.wait()
+        XCTAssertEqual(searchView.cells.count, 2)
+    }
+
+    func test_submitSearch_forPremiumUser_withArchive_showsResults() {
+        app.launch()
+        tapSearch(fromArchive: true)
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        let searchView = app.saves.searchView.searchResultsView.wait()
+        XCTAssertEqual(searchView.cells.count, 2)
+    }
+
+    func test_submitSearch_forPremiumUser_withAllItems_showsResults() {
+        app.launch()
+        tapSearch()
+        app.navigationBar.buttons["All Items"].wait().tap()
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        let searchView = app.saves.searchView.searchResultsView.wait()
+        XCTAssertEqual(searchView.cells.count, 2)
     }
 
     private func tapSearch(fromArchive: Bool = false) {
