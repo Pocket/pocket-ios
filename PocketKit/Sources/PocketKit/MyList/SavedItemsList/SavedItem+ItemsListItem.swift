@@ -2,6 +2,10 @@ import Sync
 import Foundation
 
 extension SavedItem: ItemsListItem {
+    var id: String? {
+        item?.remoteID
+    }
+
     var domain: String? {
         item?.domain
     }

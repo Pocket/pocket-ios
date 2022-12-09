@@ -55,6 +55,9 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Mutation": return PocketGraph.Objects.Mutation
     case "TagConnection": return PocketGraph.Objects.TagConnection
     case "TagEdge": return PocketGraph.Objects.TagEdge
+    case "SavedItemSearchResultConnection": return PocketGraph.Objects.SavedItemSearchResultConnection
+    case "SavedItemSearchResultEdge": return PocketGraph.Objects.SavedItemSearchResultEdge
+    case "SavedItemSearchResult": return PocketGraph.Objects.SavedItemSearchResult
     default: return nil
     }
   }

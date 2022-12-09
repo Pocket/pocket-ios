@@ -123,3 +123,41 @@ query Tags($pagination: PaginationInput) {
     }
   }
 }
+
+query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: SearchFilterInput) {
+  user {
+    searchSavedItems(term: $term, pagination: $pagination, filter: $filter) {
+      edges {
+        node {
+            savedItem {
+                ...SearchSavedItemParts
+            }
+        }
+        cursor
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
+    }
+  }
+}
+
+fragment SearchSavedItemParts on SavedItem {
+    url
+    isArchived
+    isFavorite
+    _deletedAt
+    _createdAt
+    archivedAt
+    tags {
+        ...TagParts
+    }
+    item {
+        ...SearchItemParts
+        ...PendingItemParts
+    }
+}

@@ -82,6 +82,10 @@ extension Response {
         fixture(named: "empty-tags")
     }
 
+    static func searchList() -> Response {
+        fixture(named: "search-list")
+    }
+
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok
