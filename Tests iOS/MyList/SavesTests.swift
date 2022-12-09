@@ -331,6 +331,7 @@ class SavesTests: XCTestCase {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.itemView(matching: "Item 1").wait()
 
+        app.saves.filterButton(for: "All").swipeLeft()
         app.saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 

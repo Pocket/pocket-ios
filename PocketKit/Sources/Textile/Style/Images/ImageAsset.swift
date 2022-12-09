@@ -46,6 +46,7 @@ extension ImageAsset {
     public static let chevronRight = ImageAsset("chevronRight")
     public static let tag = ImageAsset("tag")
     public static let pocketWordmark = ImageAsset("pocket-wordmark")
+    public static let magnifyingGlass = ImageAsset("magnifying-glass")
 
     public static let readerSkeleton = ReaderSkeleton()
 }
