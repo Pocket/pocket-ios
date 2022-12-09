@@ -136,6 +136,10 @@ public class PocketSource: Source {
         PocketArchiveService(apollo: apollo, space: space)
     }
 
+    public func makeSearchService() -> SearchService {
+        PocketSearchService(apollo: apollo)
+    }
+
     public func makeUndownloadedImagesController() -> ImagesController {
         FetchedImagesController(resultsController: space.makeUndownloadedImagesController())
     }
