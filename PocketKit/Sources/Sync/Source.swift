@@ -22,6 +22,8 @@ public protocol Source {
 
     func makeArchiveService() -> ArchiveService
 
+    func makeSearchService() -> SearchService
+
     func makeUndownloadedImagesController() -> ImagesController
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
