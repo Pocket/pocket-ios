@@ -81,4 +81,14 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
     ) {
         coordinator.setup(scene: scene)
     }
+
+    public func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        guard userActivity.activityType == NSUserActivityTypeBrowsingWeb,
+            let incomingURL = userActivity.webpageURL else {
+            return
+        }
+
+        let router = Router(source: Services.shared.source)
+        router.handle(url: incomingURL)
+    }
 }

@@ -563,7 +563,7 @@ extension ArchivedItemsListViewModel {
             return
         }
 
-        var contexts: [Context] = [
+        let contexts: [Context] = [
             ContentContext(url: url)
         ]
 
