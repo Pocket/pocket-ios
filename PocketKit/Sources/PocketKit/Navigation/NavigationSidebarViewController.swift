@@ -1,6 +1,7 @@
 import UIKit
 import Combine
 import Textile
+import Analytics
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8
@@ -87,10 +88,12 @@ class NavigationSidebarViewController: UIViewController {
         collectionViewLayout: layout
     )
     private let model: MainViewModel
+    private let tracker: Tracker
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(model: MainViewModel) {
+    init(model: MainViewModel, tracker: Tracker) {
         self.model = model
+        self.tracker = tracker
         super.init(nibName: nil, bundle: nil)
 
         self.title = "Pocket"
@@ -111,6 +114,13 @@ class NavigationSidebarViewController: UIViewController {
 
     override func loadView() {
         view = collectionView
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        let event = ImpressionEvent(component: .screen, requirement: .instant)
+        tracker.track(event: event, nil)
     }
 
     required init?(coder: NSCoder) {

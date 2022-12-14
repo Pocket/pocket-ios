@@ -48,7 +48,10 @@ class RegularMainCoordinator: NSObject {
         splitController = UISplitViewController(style: .doubleColumn)
         splitController.displayModeButtonVisibility = .automatic
 
-        sidebarViewController = NavigationSidebarViewController(model: model)
+        sidebarViewController = NavigationSidebarViewController(
+            model: model,
+            tracker: tracker.childTracker(hosting: .navigationDrawer)
+        )
         navigationSidebar = UINavigationController(rootViewController: sidebarViewController)
 
         saves = RegularSavesCoordinator(model: model.saves)

@@ -391,6 +391,19 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         tracker.track(event: event, contexts)
     }
 
+    private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
+        guard let url = item.bestURL else {
+            return
+        }
+
+        var contexts: [Context] = [
+            ContentContext(url: url)
+        ]
+
+        let event = ContentOpenEvent(destination: destination, trigger: .click)
+        tracker.track(event: event, contexts)
+    }
+
     private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
         guard let url = item.bestURL else {
             return
@@ -447,8 +460,12 @@ extension SavedItemsListViewModel {
 
         if savedItem.shouldOpenInWebView {
             selectedItem = .webView(readable)
+
+            trackContentOpen(destination: .external, item: savedItem)
         } else {
             selectedItem = .readable(readable)
+
+            trackContentOpen(destination: .internal, item: savedItem)
         }
     }
 
@@ -496,7 +513,7 @@ extension SavedItemsListViewModel {
             guard let sender = sender else { return }
             presentedSortFilterViewModel = SortMenuViewModel(
                 source: source,
-                tracker: tracker.childTracker(hosting: .saves.saves),
+                tracker: tracker.childTracker(hosting: .saves.sortFilterSheet),
                 listOptions: listOptions,
                 sender: sender
             )

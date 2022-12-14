@@ -55,5 +55,23 @@ extension SortMenuViewModel {
         }
 
         listOptions.selectedSortOption = row
+        track(sortOption: row)
+    }
+
+    private func track(sortOption: SortOption) {
+        let selection = UIContext(type: .button, identifier: sortOption.uiContextIdentifier)
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, [selection])
+    }
+}
+
+extension SortOption {
+    var uiContextIdentifier: UIContext.Identifier {
+        switch self {
+        case .newest: return .sortByNewest
+        case .oldest: return .sortByOldest
+        case .longestToRead: return .sortByLongest
+        case .shortestToRead: return .sortByShortest
+        }
     }
 }
