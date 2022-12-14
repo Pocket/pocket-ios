@@ -97,10 +97,6 @@ class RecommendationViewModel: ReadableViewModel {
         _events.send(.delete)
     }
 
-    func showWebReader() {
-        presentedWebReaderURL = url
-    }
-
     func archiveArticle() {
         archive()
     }

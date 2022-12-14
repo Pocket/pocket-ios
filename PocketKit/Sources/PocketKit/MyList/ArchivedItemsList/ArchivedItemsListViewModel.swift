@@ -396,8 +396,12 @@ extension ArchivedItemsListViewModel {
 
         if item.shouldOpenInWebView {
             selectedItem = .webView(readable)
+
+            trackContentOpen(destination: .external, item: item)
         } else {
             selectedItem = .readable(readable)
+
+            trackContentOpen(destination: .internal, item: item)
         }
     }
 
@@ -481,7 +485,7 @@ extension ArchivedItemsListViewModel {
             guard let sender = sender else { return }
             presentedSortFilterViewModel = SortMenuViewModel(
                 source: source,
-                tracker: tracker.childTracker(hosting: .saves.saves),
+                tracker: tracker.childTracker(hosting: .saves.sortFilterSheet),
                 listOptions: listOptions,
                 sender: sender,
                 listOfSortMenuOptions: [.newest, .oldest]
@@ -551,6 +555,19 @@ extension ArchivedItemsListViewModel {
         }
 
         let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, contexts)
+    }
+
+    private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
+        guard let url = item.bestURL else {
+            return
+        }
+
+        var contexts: [Context] = [
+            ContentContext(url: url)
+        ]
+
+        let event = ContentOpenEvent(destination: destination, trigger: .click)
         tracker.track(event: event, contexts)
     }
 
