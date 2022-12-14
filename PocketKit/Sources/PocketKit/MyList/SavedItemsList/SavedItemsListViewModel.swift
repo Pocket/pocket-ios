@@ -396,7 +396,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return
         }
 
-        var contexts: [Context] = [
+        let contexts: [Context] = [
             ContentContext(url: url)
         ]
 
