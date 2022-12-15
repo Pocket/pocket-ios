@@ -173,11 +173,13 @@ class LoggedOutViewModel: ObservableObject {
                     // but the other errors should never occur, so they should be captured.
                     switch nested.code {
                     case .presentationContextInvalid, .presentationContextNotProvided:
+                        Crashlogger.breadcrumb(category: "auth", level: .error, message: "ASWebAuthenticationSessionError: \(nested.localizedDescription)")
                         Crashlogger.capture(error: nested)
                     default:
                         return
                     }
                 } else {
+                    Crashlogger.breadcrumb(category: "auth", level: .error, message: "Error: \(nested.localizedDescription)")
                     Crashlogger.capture(error: error)
                 }
             }
