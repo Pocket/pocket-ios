@@ -44,23 +44,31 @@ class LegacyUserMigrationTests: XCTestCase {
     private var userDefaults: UserDefaults!
     private var encryptedStore: MockEncryptedStore!
     private var appSession: AppSession!
+    private var keychain: MockKeychain!
+    private var groupID: String!
 
     private func subject(
         userDefaults: UserDefaults? = nil,
         encryptedStore: LegacyEncryptedStore? = nil,
-        appSession: AppSession? = nil
+        appSession: AppSession? = nil,
+        keychain: Keychain? = nil,
+        groupID: String? = nil
     ) -> LegacyUserMigration {
         return LegacyUserMigration(
             userDefaults: userDefaults ?? self.userDefaults,
             encryptedStore: encryptedStore ?? self.encryptedStore,
-            appSession: appSession ?? self.appSession
+            appSession: appSession ?? self.appSession,
+            keychain: keychain ?? self.keychain,
+            groupID: groupID ?? self.groupID
         )
     }
 
     override func setUp() {
+        groupID = "group.com.mozilla.test"
         userDefaults = UserDefaults(suiteName: "LegacyUserMigrationTests")
         encryptedStore = MockEncryptedStore()
-        appSession = AppSession(keychain: BlankKeychain())
+        appSession = AppSession(keychain: BlankKeychain(), groupID: groupID)
+        keychain = MockKeychain()
     }
 
     override func tearDown() {
@@ -117,7 +125,7 @@ extension LegacyUserMigrationTests {
         XCTAssertNoThrow(try migration.perform())
     }
 
-    func test_perform_withMissingKey_throwsError() {
+    func test_perform_withMissingKeyInKeychainAndDefaults_throwsError() {
         let migration = subject()
 
         do {
@@ -126,6 +134,35 @@ extension LegacyUserMigrationTests {
             guard case LegacyUserMigrationError.missingKey = error else {
                 XCTFail("Incorrect error thrown")
                 return
+            }
+        }
+    }
+
+    func test_perform_withKeyInKeychain_doesNotThrowError() {
+        keychain.copyMatchingResult = "password" as CFTypeRef
+        let migration = subject()
+        encryptedStore.stubDecryptStore { _ in return nil }
+
+        do {
+            try migration.perform()
+        } catch {
+            if case LegacyUserMigrationError.missingKey = error {
+                XCTFail("Key should exist; error should not be thrown")
+            }
+        }
+    }
+
+    func test_perform_withKeyNotInKeychainAndInUserDefaults_doesNotThrowError() {
+        userDefaults.set("password", forKey: LegacyUserMigration.decryptionKey)
+
+        let migration = subject()
+        encryptedStore.stubDecryptStore { _ in return nil }
+
+        do {
+            try migration.perform()
+        } catch {
+            if case LegacyUserMigrationError.missingKey = error {
+                XCTFail("Key should exist; error should not be thrown")
             }
         }
     }
