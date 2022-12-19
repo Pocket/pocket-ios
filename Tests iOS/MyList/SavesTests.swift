@@ -226,12 +226,13 @@ class SavesTests: XCTestCase {
         ]
 
         for expectedString in expectedContent {
-            let cell = app
-                .readerView
-                .cell(containing: expectedString)
-                .wait()
-
-            app.readerView.scrollCellToTop(cell)
+            guard app.readerView.cell(containing: expectedString).isHittable else {
+                app.readerView.element.swipeUp()
+                let cell = app.readerView.cell(containing: expectedString)
+                app.readerView.scrollCellToTop(cell)
+                XCTAssertTrue(cell.exists)
+                return
+            }
         }
     }
 
