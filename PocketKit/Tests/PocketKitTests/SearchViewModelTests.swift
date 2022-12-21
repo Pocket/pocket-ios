@@ -100,6 +100,108 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.emptyState is RecentSearchEmptyState)
     }
 
+    // MARK: Select Search Scope
+    func test_updateScope_forFreeUser_withSavesAndTerm_showsResults() throws {
+        try setupLocalSearch()
+        let viewModel = subject()
+        viewModel.updateScope(with: .saves, searchTerm: "saved")
+
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
+    }
+
+    func test_updateScope_forFreeUser_withArchiveAndTerm_showsResults() {
+        let term = "search-term"
+        user.status = .free
+
+        let viewModel = subject()
+        setupOnlineSearch(with: term, for: viewModel)
+        viewModel.updateScope(with: .archive, searchTerm: term)
+
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+    }
+
+    func test_updateScope_forFreeUser_withAllAndTerm_showsGetPremiumEmptyState() {
+        let term = "search-term"
+
+        let viewModel = subject()
+        setupOnlineSearch(with: term, for: viewModel)
+        viewModel.updateScope(with: .all, searchTerm: term)
+
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, [])
+        XCTAssertTrue(viewModel.emptyState is GetPremiumEmptyState)
+    }
+
+    func test_updateScope_forPremiumUser_withSavesAndTerm_showsResults() throws {
+        let term = "search-term"
+        user.status = .premium
+
+        let viewModel = subject()
+        setupOnlineSearch(with: term, for: viewModel)
+        viewModel.updateScope(with: .saves, searchTerm: term)
+
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+    }
+
+    func test_updateScope_forPremiumUser_withArchiveAndTerm_showsResults() {
+        let term = "search-term"
+        user.status = .premium
+
+        let viewModel = subject()
+        setupOnlineSearch(with: term, for: viewModel)
+        viewModel.updateScope(with: .archive, searchTerm: term)
+
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+    }
+
+    func test_updateScope_forPremiumUser_withAllAndTerm_showsResults() {
+        let term = "search-term"
+        user.status = .premium
+
+        let viewModel = subject()
+        setupOnlineSearch(with: term, for: viewModel)
+        viewModel.updateScope(with: .all, searchTerm: term)
+
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+    }
+
+    func test_updateScope_withSaves_showsCachedResults() throws {
+        let viewModel = subject()
+        try setupLocalSearch()
+        viewModel.updateScope(with: .saves, searchTerm: "search-term")
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
+
+        viewModel.searchResults = []
+
+        viewModel.updateScope(with: .saves, searchTerm: "search-term")
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
+    }
+
+    func test_updateScope_withArchive_showsCachedResults() {
+        user.status = .premium
+        let viewModel = subject()
+        setupOnlineSearch(with: "search-term", for: viewModel)
+        viewModel.updateScope(with: .archive, searchTerm: "search-term")
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+
+        viewModel.searchResults = []
+
+        viewModel.updateScope(with: .archive, searchTerm: "search-term")
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+    }
+
+    func test_updateScope_withAll_showsCachedResults() {
+        user.status = .premium
+        let viewModel = subject()
+        setupOnlineSearch(with: "search-term", for: viewModel)
+        viewModel.updateScope(with: .all, searchTerm: "search-term")
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+
+        viewModel.searchResults = []
+
+        viewModel.updateScope(with: .all, searchTerm: "search-term")
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+    }
+
     // MARK: - Update Search Results
     func test_updateSearchResults_forFreeUser_withNoItems_showsNoResultsEmptyState() {
         source.stubSearchItems { _ in return [] }
@@ -115,28 +217,14 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_forFreeUser_withItems_showsResults() {
-        source.stubSearchItems { _ in return [] }
-
         let term = "search-term"
-        let item = SearchSavedItemParts(data: DataDict([
-            "__typename": "SavedItem",
-            "item": [
-                "__typename": "Item",
-                "title": term,
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ], variables: nil))
-        user.status = .premium
-        let viewModel = subject()
-        searchService.stubSearch { _, _ in
-            viewModel.searchResults = [SearchItem(item: item)]
-        }
 
+        let viewModel = subject()
+        setupOnlineSearch(with: term, for: viewModel)
+        viewModel.updateScope(with: .archive)
         viewModel.updateSearchResults(with: term)
 
         XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
-        XCTAssertNil(viewModel.emptyState)
     }
 
     func test_updateSearchResults_forFreeUser_withAll_showsGetPremiumForAllItems() {
@@ -164,36 +252,20 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateSearchResults_forPremiumUser_withItems_showsResults() {
         let term = "search-term"
-        let item = SearchSavedItemParts(data: DataDict([
-            "__typename": "SavedItem",
-            "item": [
-                "__typename": "Item",
-                "title": term,
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ], variables: nil))
         user.status = .premium
-        source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
-
-        searchService.stubSearch { _, _ in
-            viewModel.searchResults = [SearchItem(item: item)]
-        }
+        setupOnlineSearch(with: "search-term", for: viewModel)
 
         viewModel.updateSearchResults(with: term)
 
         XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
-        XCTAssertNil(viewModel.emptyState)
     }
 
     // MARK: - Offline States
     func test_updateSearchResults_forFreeUser_withOfflineArchive_showsOfflineEmptyState() {
         searchService.stubSearch { _, _ in }
         networkPathMonitor.update(status: .unsatisfied)
-
-        source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
         viewModel.updateScope(with: .archive)
@@ -206,8 +278,6 @@ class SearchViewModelTests: XCTestCase {
         user.status = .premium
         networkPathMonitor.update(status: .unsatisfied)
 
-        source.stubSearchItems { _ in return [] }
-
         let viewModel = subject()
         viewModel.updateScope(with: .archive)
         viewModel.updateSearchResults(with: "search-term")
@@ -219,11 +289,21 @@ class SearchViewModelTests: XCTestCase {
         user.status = .premium
         networkPathMonitor.update(status: .unsatisfied)
 
-        source.stubSearchItems { _ in return [] }
-
         let viewModel = subject()
         viewModel.updateScope(with: .all)
         viewModel.updateSearchResults(with: "search-term")
+        XCTAssertTrue(viewModel.emptyState is OfflineEmptyState)
+    }
+
+    func test_selectingScope_whenOffline_showsOfflineEmptyState() {
+        searchService.stubSearch { _, _ in }
+        user.status = .premium
+        let viewModel = subject()
+        networkPathMonitor.update(status: .unsatisfied)
+
+        viewModel.updateScope(with: .all, searchTerm: "search-term")
+        XCTAssertTrue(viewModel.emptyState is OfflineEmptyState)
+        viewModel.updateScope(with: .archive, searchTerm: "search-term")
         XCTAssertTrue(viewModel.emptyState is OfflineEmptyState)
     }
 
@@ -308,7 +388,7 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentSearches, ["search-term-3", "search-term-4", "search-term-5", "search-term-6", "search-term-2"])
     }
 
-    // MARK: - Saves Searches
+    // MARK: - Local Saves Searches
     func test_savesSearches_withFreeUser_showSearchResults_searchTitle() throws {
         user.status = .free
 
@@ -482,5 +562,34 @@ class SearchViewModelTests: XCTestCase {
 
         viewModel.submitLocalSearch(with: "none")
         XCTAssertTrue(source.searchSavesCall(at: 1)?.searchTerm == "none")
+    }
+
+    private func setupOnlineSearch(with term: String, for viewModel: SearchViewModel) {
+        let item = SearchSavedItemParts(data: DataDict([
+            "__typename": "SavedItem",
+            "item": [
+                "__typename": "Item",
+                "title": term,
+                "givenUrl": "http://localhost:8080/hello",
+                "resolvedUrl": "http://localhost:8080/hello"
+            ]
+        ], variables: nil))
+
+        searchService.stubSearch { _, _ in
+            viewModel.searchResults = [SearchItem(item: item)]
+        }
+    }
+
+    private func setupLocalSearch() throws {
+        let savedItems = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: space.buildItem(title: "saved-item-\($0)")
+            )
+        }
+        try space.save()
+
+        source.stubSearchItems { _ in return savedItems }
     }
 }

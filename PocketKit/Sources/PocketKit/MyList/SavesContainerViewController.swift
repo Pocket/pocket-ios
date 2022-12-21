@@ -142,7 +142,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
         guard let titles = searchBar.scopeButtonTitles else { return }
         searchBar.returnKeyType = .search
-        searchViewModel.updateScope(with: SearchScope(rawValue: titles[selectedScope]) ?? .saves)
+        searchViewModel.updateScope(with: SearchScope(rawValue: titles[selectedScope]) ?? .saves, searchTerm: searchBar.text)
     }
 
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -157,6 +157,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchViewModel.clear()
+        searchViewModel.clearCache()
     }
 
     func updateSearchScope() {

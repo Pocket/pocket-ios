@@ -4,6 +4,7 @@
 
 import Foundation
 import Sails
+import SharedPocketKit
 
 struct ClientAPIRequest {
     private let request: Request
@@ -82,8 +83,15 @@ struct ClientAPIRequest {
         contains("Tags")
     }
 
-    var isForSearch: Bool {
-        contains("searchSavedItems")
+    func isForSearch(_ type: SearchScope) -> Bool {
+        switch type {
+        case .saves:
+            return contains("searchSavedItems") && contains("filter\":{\"status\":\"UNREAD\"}")
+        case .archive:
+            return contains("searchSavedItems") && contains("filter\":{\"status\":\"ARCHIVED\"}")
+        case .all:
+            return contains("searchSavedItems") && contains("filter\":{}")
+        }
     }
 
     func contains(_ string: String) -> Bool {
