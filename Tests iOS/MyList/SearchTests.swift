@@ -28,8 +28,12 @@ class SearchTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
-            } else if apiRequest.isForSearch {
-                return Response.searchList()
+            } else if apiRequest.isForSearch(.saves) {
+                return Response.searchList(.saves)
+            } else if apiRequest.isForSearch(.archive) {
+                return Response.searchList(.archive)
+            } else if apiRequest.isForSearch(.all) {
+                return Response.searchList(.all)
             } else {
                 fatalError("Unexpected request")
             }
@@ -125,8 +129,8 @@ class SearchTests: XCTestCase {
     func test_submitSearch_forFreeUser_withArchive_showsResults() {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isForSearch {
-                return Response.searchList()
+            if apiRequest.isForSearch(.archive) {
+                return Response.searchList(.archive)
             } else {
                 return Response.saves("initial-list-free-user")
             }
@@ -137,7 +141,7 @@ class SearchTests: XCTestCase {
         searchField.tap()
         searchField.typeText("item\n")
         let searchView = app.saves.searchView.searchResultsView.wait()
-        XCTAssertEqual(searchView.cells.count, 2)
+        XCTAssertEqual(searchView.cells.count, 1)
     }
 
     func test_submitSearch_forPremiumUser_withSaves_showsResults() {
@@ -157,7 +161,7 @@ class SearchTests: XCTestCase {
         searchField.tap()
         searchField.typeText("item\n")
         let searchView = app.saves.searchView.searchResultsView.wait()
-        XCTAssertEqual(searchView.cells.count, 2)
+        XCTAssertEqual(searchView.cells.count, 1)
     }
 
     func test_submitSearch_forPremiumUser_withAllItems_showsResults() {
@@ -168,7 +172,23 @@ class SearchTests: XCTestCase {
         searchField.tap()
         searchField.typeText("item\n")
         let searchView = app.saves.searchView.searchResultsView.wait()
+        XCTAssertEqual(searchView.cells.count, 3)
+    }
+
+    func test_switchingScopes_showsResults() {
+        app.launch()
+        tapSearch()
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
+
+        app.navigationBar.buttons["All Items"].wait().tap()
+        XCTAssertEqual(searchView.cells.count, 3)
+
+        app.navigationBar.buttons["Archive"].wait().tap()
+        XCTAssertEqual(searchView.cells.count, 1)
     }
 
     private func tapSearch(fromArchive: Bool = false) {
