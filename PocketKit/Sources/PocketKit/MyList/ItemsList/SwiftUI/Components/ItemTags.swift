@@ -1,10 +1,9 @@
 import SwiftUI
 
 struct ItemTags: View {
+    private let constants = ListItem.Constants.tags.self
     var tags: [NSAttributedString]?
     var tagCount: NSAttributedString?
-
-    let constants = ListItem.Constants.tags.self
 
     var body: some View {
         if let tags = tags {
