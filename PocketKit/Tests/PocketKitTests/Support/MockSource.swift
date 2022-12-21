@@ -993,3 +993,35 @@ extension MockSource {
         return impl(url)
     }
 }
+
+// MARK: - Fetch Items by Search
+extension MockSource {
+    private static let searchTerm = "searchTerm"
+    typealias SearchItemsImpl = (String) -> [SavedItem]?
+
+    struct SearchItemsCall {
+        let searchTerm: String
+    }
+
+    func stubSearchItems(impl: @escaping SearchItemsImpl) {
+        implementations[Self.searchTerm] = impl
+    }
+
+    func searchSaves(search: String) -> [Sync.SavedItem]? {
+        guard let impl = implementations[Self.searchTerm] as? SearchItemsImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.searchTerm] = (calls[Self.searchTerm] ?? []) + [SearchItemsCall(searchTerm: search)]
+        return impl(search)
+    }
+
+    func searchSavesCall(at index: Int) -> SearchItemsCall? {
+        guard let calls = calls[Self.searchTerm],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? SearchItemsCall
+    }
+}
