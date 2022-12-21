@@ -28,7 +28,7 @@ extension SearchSavedItemParts: ItemsListItem {
     }
 
     var domainMetadata: ItemsListItemDomainMetadata? {
-        item.asItem?.domainMetadata as? ItemsListItemDomainMetadata
+        item.asItem?.domainMetadata
     }
 
     var timeToRead: Int? {
@@ -47,3 +47,5 @@ extension SearchSavedItemParts: ItemsListItem {
         self.tags?.compactMap { $0.name }
     }
 }
+
+extension SearchSavedItemParts.Item.AsItem.DomainMetadata: ItemsListItemDomainMetadata { }
