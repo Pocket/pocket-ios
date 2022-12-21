@@ -20,11 +20,14 @@ class SearchViewModel: ObservableObject {
         return user.status == .premium
     }
 
-    private var selectedScope: SearchScope = .saves {
-        didSet {
-            self.emptyState = isPremium ? premiumEmptyState(for: selectedScope) : freeEmptyState(for: selectedScope)
-        }
-    }
+    private var selectedScope: SearchScope = .saves
+    private var currentSearchTerm: String = ""
+
+    private var cachedSearchResults: [SearchScope: [String: [SearchItem]]] = [
+        .saves: [:],
+        .archive: [:],
+        .all: [:]
+    ]
 
     @Published
     var emptyState: EmptyStateViewModel?
@@ -32,9 +35,11 @@ class SearchViewModel: ObservableObject {
     @Published
     var searchResults: [SearchItem]? {
         didSet {
-            if let searchResults = searchResults {
-                self.emptyState = searchResults.isEmpty ? self.searchResultState() : nil
+            guard let searchResults = searchResults, !searchResults.isEmpty, !currentSearchTerm.isEmpty else {
+                self.emptyState = self.searchResultState()
+                return
             }
+            self.cachedSearchResults[selectedScope]?[currentSearchTerm] = searchResults
         }
     }
 
@@ -65,19 +70,31 @@ class SearchViewModel: ObservableObject {
         self.user = user
         self.userDefaults = userDefaults
         self.source = source
-        networkPathMonitor.start(queue: DispatchQueue.global())
+        networkPathMonitor.start(queue: .global())
         self.searchService = source.makeSearchService()
     }
 
-    func updateScope(with scope: SearchScope) {
+    func updateScope(with scope: SearchScope, searchTerm: String? = nil) {
         self.selectedScope = scope
+        if let searchTerm = searchTerm, !searchTerm.isEmpty {
+            updateSearchResults(with: searchTerm)
+        } else {
+            emptyState = isPremium ? premiumEmptyState(for: selectedScope) : freeEmptyState(for: selectedScope)
+        }
     }
 
     func updateSearchResults(with searchTerm: String) {
-        let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
         let shouldShowUpsell = !isPremium && selectedScope == .all
 
-        guard !shouldShowUpsell else { return }
+        guard !shouldShowUpsell else {
+            clear()
+            emptyState = GetPremiumEmptyState()
+            return
+        }
+
+        let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
+        currentSearchTerm = term
+        guard !term.isEmpty, !retrieveCachedResults() else { return }
 
         // TODO: Handle Offline for Premium https://getpocket.atlassian.net/browse/IN-971
         if !isPremium && selectedScope == .saves {
@@ -87,14 +104,28 @@ class SearchViewModel: ObservableObject {
         }
 
         showRecentSearches = false
-
-        guard isPremium, !term.isEmpty else { return }
         recentSearches = updateRecentSearches(with: term)
     }
 
     func clear() {
         searchResults = []
         subscriptions = []
+    }
+
+    func clearCache() {
+        cachedSearchResults = [
+            .saves: [:],
+            .archive: [:],
+            .all: [:]
+        ]
+    }
+
+    private func retrieveCachedResults() -> Bool {
+        if let cachedItems = cachedSearchResults[selectedScope]?[currentSearchTerm], !cachedItems.isEmpty {
+            self.searchResults = cachedItems
+            return true
+        }
+        return false
     }
 
     private func submitOnlineSearch(with term: String) {
@@ -109,6 +140,7 @@ class SearchViewModel: ObservableObject {
     }
 
     private func updateRecentSearches(with searchTerm: String) -> [String] {
+        guard isPremium else { return [] }
         var searches = recentSearches
         searches.append(searchTerm)
 
