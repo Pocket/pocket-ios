@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Sails
+import SharedPocketKit
 
 extension Response {
     static func saves(_ fixtureName: String = "initial-list") -> Response {
@@ -82,8 +83,15 @@ extension Response {
         fixture(named: "empty-tags")
     }
 
-    static func searchList() -> Response {
-        fixture(named: "search-list")
+    static func searchList(_ type: SearchScope) -> Response {
+        switch type {
+        case .saves:
+            return fixture(named: "search-list")
+        case .archive:
+            return fixture(named: "search-list-archive")
+        case .all:
+            return fixture(named: "search-list-all")
+        }
     }
 
     static func fixture(named fixtureName: String) -> Response {
