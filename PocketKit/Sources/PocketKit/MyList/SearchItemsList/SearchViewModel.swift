@@ -74,6 +74,9 @@ class SearchViewModel: ObservableObject {
         submitSearch(with: term)
         showRecentSearches = false
 
+        _ = searchItems(with: searchTerm)
+        // TODO: pass results to update table
+
         guard isPremium, !term.isEmpty else { return }
         recentSearches = updateRecentSearches(with: term)
     }
@@ -106,6 +109,14 @@ class SearchViewModel: ObservableObject {
 
         searches.removeFirst()
         return searches
+    }
+
+    public func searchItems(with searchTerm: String) -> [SavedItem] {
+        let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
+        guard let list = source.searchSaves(search: term), !list.isEmpty else {
+            return []
+        }
+        return list
     }
 
     private func searchResultState() -> EmptyStateViewModel {

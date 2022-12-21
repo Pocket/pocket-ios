@@ -58,6 +58,19 @@ public enum Requests {
         return request
     }
 
+    public static func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) -> NSFetchRequest<SavedItem> {
+        let request = SavedItem.fetchRequest()
+        let urlPredicate = NSPredicate(format: "url CONTAINS %@", searchTerm)
+        let titlePredicate = NSPredicate(format: "item.title CONTAINS %@", searchTerm)
+        var allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate])
+        if isPremium {
+            let tagsPredicate = NSPredicate(format: "%@ IN tags.name", searchTerm)
+            allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate, tagsPredicate])
+        }
+        request.predicate = allPredicate
+        return request
+    }
+
     public static func fetchPersistentSyncTasks() -> NSFetchRequest<PersistentSyncTask> {
         let request = PersistentSyncTask.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \PersistentSyncTask.createdAt, ascending: true)]
