@@ -2,6 +2,7 @@ import UIKit
 import SwiftUI
 import Sync
 import SharedPocketKit
+import Combine
 
 struct SelectionItem {
     let title: String
@@ -32,6 +33,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     private let viewControllers: [SelectableViewController]
     private var searchViewModel: SearchViewModel
+    private var subscriptions: [AnyCancellable] = []
 
     init(searchViewModel: SearchViewModel, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
@@ -125,6 +127,16 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
             navigationItem.searchController?.automaticallyShowsScopeBar = true
         }
         navigationItem.searchController?.showsSearchResultsController = true
+
+        searchViewModel.$searchText.sink { searchText in
+            self.updateSearchBar(searchText: searchText)
+        }.store(in: &subscriptions)
+    }
+
+    func updateSearchBar(searchText: String) {
+        let searchBar = navigationItem.searchController?.searchBar
+        searchBar?.text = searchText
+        searchBar?.resignFirstResponder()
     }
 
     func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
@@ -146,6 +158,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchViewModel.clear()
     }
+
     func updateSearchScope() {
         let scope: SearchScope = isFromSaves ? .saves : .archive
         searchViewModel.updateScope(with: scope)
