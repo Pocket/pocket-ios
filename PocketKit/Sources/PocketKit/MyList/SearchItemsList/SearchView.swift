@@ -10,7 +10,7 @@ struct SearchView: View {
         if let results = viewModel.searchResults, !results.isEmpty {
             ResultsView(results: results)
         } else if viewModel.showRecentSearches == true, !viewModel.recentSearches.isEmpty {
-            RecentSearchView(recentSearches: viewModel.recentSearches)
+            RecentSearchView(viewModel: viewModel, recentSearches: viewModel.recentSearches)
         } else if let emptyState = viewModel.emptyState {
             SearchEmptyView(viewModel: emptyState)
         }
@@ -46,6 +46,8 @@ struct SearchEmptyView: View {
 
 // MARK: - Recent Searches Component
 struct RecentSearchView: View {
+    @ObservedObject
+    var viewModel: SearchViewModel
     var recentSearches: [String]
 
     var body: some View {
@@ -59,7 +61,7 @@ struct RecentSearchView: View {
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        // TODO: Handle recent search tap
+                        viewModel.searchText = recentSearch
                     }
                 }
             }
