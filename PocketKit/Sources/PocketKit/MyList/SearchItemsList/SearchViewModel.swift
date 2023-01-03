@@ -54,6 +54,12 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    @Published var searchText = "" {
+        didSet {
+            updateSearchResults(with: searchText)
+        }
+    }
+
     init(networkPathMonitor: NetworkPathMonitor, user: User, userDefaults: UserDefaults, source: Source) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
