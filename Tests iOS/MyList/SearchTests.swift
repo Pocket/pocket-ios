@@ -178,4 +178,27 @@ class SearchTests: XCTestCase {
         }
         app.saves.filterButton(for: "Search").wait().tap()
     }
+
+    // MARK: - Recent Search
+    func test_submitSearch_fromRecentSearch() {
+        app.launch()
+        tapSearch()
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        var searchView = app.saves.searchView.searchResultsView.wait()
+        XCTAssertEqual(searchView.cells.count, 2)
+
+        app.navigationBar.buttons["Cancel"].tap()
+
+        searchField.tap()
+        searchField.typeText("test\n")
+        searchView = app.saves.searchView.searchResultsView.wait()
+
+        app.navigationBar.buttons["Cancel"].tap()
+
+        searchField.tap()
+        app.saves.searchView.recentSearchesView.staticTexts["item"].tap()
+        XCTAssertEqual(searchView.cells.count, 2)
+    }
 }
