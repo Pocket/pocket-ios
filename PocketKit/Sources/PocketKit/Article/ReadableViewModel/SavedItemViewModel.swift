@@ -97,10 +97,6 @@ class SavedItemViewModel: ReadableViewModel {
         _events.send(.delete)
     }
 
-    func showWebReader() {
-        presentedWebReaderURL = url
-    }
-
     func archiveArticle() {
         archive()
     }
@@ -126,8 +122,12 @@ class SavedItemViewModel: ReadableViewModel {
         ]
     }
 
-    func webViewActivityItems() -> [UIActivity] {
-        return webViewActivityItems(for: item)
+    func webViewActivityItems(url: URL) -> [UIActivity] {
+        guard let item = source.fetchItem(url), let savedItem = item.savedItem else {
+            return []
+        }
+
+        return webViewActivityItems(for: savedItem)
     }
 }
 

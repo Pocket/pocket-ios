@@ -14,7 +14,6 @@ public protocol NetworkPathMonitor: AnyObject {
 }
 
 extension NWPath: NetworkPath {
-
 }
 
 extension NWPathMonitor: NetworkPathMonitor {

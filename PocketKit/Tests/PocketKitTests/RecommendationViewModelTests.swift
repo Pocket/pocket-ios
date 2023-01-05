@@ -366,6 +366,49 @@ class RecommendationViewModelTests: XCTestCase {
         viewModel.fetchDetailsIfNeeded()
         wait(for: [receivedEvent], timeout: 1)
     }
+
+    func test_webActivitiesActions_whenRecommendation_notSaved() {
+        let recommendation = space.buildRecommendation(
+            item: space.buildItem()
+        )
+
+        let viewModel = subject(recommendation: recommendation)
+
+        let webActivitiesExpectation = expectation(description: "Recommendation Web Activities")
+        source.stubFetchItem { url in
+            defer { webActivitiesExpectation.fulfill() }
+            return recommendation.item
+        }
+
+        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL!)
+        XCTAssertEqual(webViewActivityList[0].activityTitle, "Save")
+        XCTAssertEqual(webViewActivityList[1].activityTitle, "Report")
+
+        wait(for: [webActivitiesExpectation], timeout: 1)
+    }
+
+    func test_webActivitiesActions_whenRecommendation_isSaved() throws {
+        let item = space.buildItem()
+        let recommendation = space.buildRecommendation(
+            item: item
+        )
+        try space.createSavedItem(isFavorite: false, isArchived: false, item: item)
+
+        let viewModel = subject(recommendation: recommendation)
+
+        let webActivitiesExpectation = expectation(description: "Recommendation Web Activities")
+        source.stubFetchItem { url in
+            defer { webActivitiesExpectation.fulfill() }
+            return recommendation.item
+        }
+
+        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL!)
+        XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
+        XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
+        XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
+
+        wait(for: [webActivitiesExpectation], timeout: 1)
+    }
 }
 
 extension RecommendationViewModel {

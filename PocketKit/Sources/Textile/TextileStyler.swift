@@ -14,39 +14,30 @@ public class TextileStyler: Styler {
     }
 
     public func style(document str: NSMutableAttributedString) {
-
     }
 
     public func style(blockQuote str: NSMutableAttributedString, nestDepth: Int) {
-
     }
 
     public func style(list str: NSMutableAttributedString, nestDepth: Int) {
-
     }
 
     public func style(listItemPrefix str: NSMutableAttributedString) {
-
     }
 
     public func style(item str: NSMutableAttributedString, prefixLength: Int) {
-
     }
 
     public func style(codeBlock str: NSMutableAttributedString, fenceInfo: String?) {
-
     }
 
     public func style(htmlBlock str: NSMutableAttributedString) {
-
     }
 
     public func style(customBlock str: NSMutableAttributedString) {
-
     }
 
     public func style(paragraph str: NSMutableAttributedString) {
-
     }
 
     public func style(heading str: NSMutableAttributedString, level: Int) {
@@ -79,7 +70,6 @@ public class TextileStyler: Styler {
     }
 
     public func style(thematicBreak str: NSMutableAttributedString) {
-
     }
 
     public func style(text str: NSMutableAttributedString) {
@@ -89,11 +79,9 @@ public class TextileStyler: Styler {
     }
 
     public func style(softBreak str: NSMutableAttributedString) {
-
     }
 
     public func style(lineBreak str: NSMutableAttributedString) {
-
     }
 
     public func style(code str: NSMutableAttributedString) {
@@ -103,11 +91,9 @@ public class TextileStyler: Styler {
     }
 
     public func style(htmlInline str: NSMutableAttributedString) {
-
     }
 
     public func style(customInline str: NSMutableAttributedString) {
-
     }
 
     public func style(emphasis str: NSMutableAttributedString) {
@@ -135,6 +121,5 @@ public class TextileStyler: Styler {
     }
 
     public func style(image str: NSMutableAttributedString, title: String?, url: String?) {
-
     }
 }

@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
       "state" : {
-        "revision" : "2a4c863027f716e088175bcf71b0b2d7bfb9d46f",
-        "version" : "5.8.0"
+        "revision" : "7afd6e0ac0bf59fcf9918e243298114888581ee2",
+        "version" : "5.6.4"
       }
     },
     {
@@ -86,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa.git",
       "state" : {
-        "revision" : "cf43eac1aa12017868c257ad3854ad87a5de0758",
-        "version" : "7.31.5"
+        "revision" : "5238cc5f12c2b75027730a54ecf632cf103daf21",
+        "version" : "7.31.4"
       }
     },
     {

@@ -21,7 +21,6 @@ typealias BrazeProtocol = BrazeSDKProtocol & PushNotificationProtocol
  Class that is managing our Braze SDK implementation
  */
 class PocketBraze: NSObject {
-
     /**
      Our Braze SDK Object
      */
@@ -114,7 +113,6 @@ extension PocketBraze: BrazeInAppMessageUIDelegate {
  Extend the Notification service to support User Notifications
  */
 extension PocketBraze: UNUserNotificationCenterDelegate {
-
     func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,

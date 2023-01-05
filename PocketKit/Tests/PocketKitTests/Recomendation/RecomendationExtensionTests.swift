@@ -51,7 +51,6 @@ class RecomendationExtensionTests: XCTestCase {
  Extension to build the subjects and data
  */
 extension RecomendationExtensionTests {
-
     func buildSyndicatedArticle() -> SyndicatedArticle {
         return space.buildSyndicatedArticle(
             title: "Syndicated Title",

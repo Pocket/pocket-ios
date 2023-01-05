@@ -1,7 +1,6 @@
 import SwiftUI
 
 public struct SFIcon: View {
-
     var model: SFIconModel
 
     public init(_ model: SFIconModel) {

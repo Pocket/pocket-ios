@@ -111,6 +111,10 @@ public class Space {
         return try fetch(Requests.fetchItem(byRemoteID: id)).first
     }
 
+    func fetchItem(byURL url: URL) throws -> Item? {
+        return try fetch(Requests.fetchItem(byURL: url)).first
+    }
+
     func fetchAllTags() throws -> [Tag] {
         return try fetch(Requests.fetchTags())
     }

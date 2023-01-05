@@ -28,7 +28,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var url: URL? { get }
 
     func delete()
-    func showWebReader()
+    func openExternally(url: URL?)
     func archiveArticle()
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
@@ -36,14 +36,13 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     func moveToSaves()
     func unfavorite()
     func favorite()
-    func webViewActivityItems() -> [UIActivity]
 }
 
 // MARK: - ReadableViewControllerDelegate
 
 extension ReadableViewModel {
     func readableViewController(_ controller: ReadableViewController, openURL url: URL) {
-        open(url: url)
+        openExternally(url: url)
     }
 
     func readableViewController(_ controller: ReadableViewController, shareWithAdditionalText text: String?) {
@@ -59,9 +58,16 @@ extension ReadableViewModel {
         isPresentingReaderSettings = true
     }
 
-    func open(url: URL) {
-        trackOpen(url: url)
+    func openExternally(url: URL?) {
         presentedWebReaderURL = url
+
+        if let url = url {
+            trackOpen(url: url)
+        }
+    }
+
+    func showWebReader() {
+        openExternally(url: url)
     }
 
     private func trackOpen(url: URL) {

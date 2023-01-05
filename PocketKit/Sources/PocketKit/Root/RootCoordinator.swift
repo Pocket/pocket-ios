@@ -130,7 +130,6 @@ class RootCoordinator {
         to rootViewController: UIViewController?,
         completion: (() -> Void)? = nil
     ) {
-
         func transition() {
             UIView.transition(
                 with: window!,

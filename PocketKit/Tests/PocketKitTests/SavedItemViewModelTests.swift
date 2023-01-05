@@ -252,6 +252,45 @@ class SavedItemViewModelTests: XCTestCase {
         viewModel.invokeAction(from: actions, title: "Open")
         XCTAssertEqual(viewModel.presentedWebReaderURL, url)
     }
+
+    func test_webActivitiesActions_whenItemIsSaved_canArchive() throws {
+        let savedItem = space.buildSavedItem()
+
+        let viewModel = subject(item: savedItem)
+
+        let webActivitiesExpectation = expectation(description: "Web activity list includes archive")
+        source.stubFetchItem { url in
+            defer { webActivitiesExpectation.fulfill() }
+            return savedItem.item
+        }
+
+        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url!)
+        XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
+        XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
+        XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
+
+        wait(for: [webActivitiesExpectation], timeout: 1)
+    }
+
+    func test_webActivitiesActions_whenItemIsArchive_canMoveToSaves() throws {
+        let savedItem = space.buildSavedItem()
+        savedItem.isArchived = true
+        try space.save()
+
+        let viewModel = subject(item: savedItem)
+        let webActivitiesExpectation = expectation(description: "Web activity list includes move to saves")
+        source.stubFetchItem { url in
+            defer { webActivitiesExpectation.fulfill() }
+            return savedItem.item
+        }
+
+        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url!)
+        XCTAssertEqual(webViewActivityList[0].activityTitle, "Move to saves")
+        XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
+        XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
+
+        wait(for: [webActivitiesExpectation], timeout: 1)
+    }
 }
 
 extension SavedItemViewModel {

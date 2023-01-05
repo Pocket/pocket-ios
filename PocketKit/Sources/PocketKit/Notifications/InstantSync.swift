@@ -19,7 +19,6 @@ typealias InstantSyncProtocol = PushNotificationProtocol & BaseInstantSyncProtoc
  Class that manages the Instant Sync part of Pocket.
  */
 class InstantSync: NSObject {
-
     let appSession: AppSession
     let source: Source
     let v3Client: V3ClientProtocol
@@ -54,7 +53,6 @@ class InstantSync: NSObject {
  Conforming InstantSync to the InstantSyncProtocol
  */
 extension InstantSync: InstantSyncProtocol {
-
     func loggedIn(session: SharedPocketKit.Session) {
         // Instant sync does not need to do anything on login, we only register tokens when we recieve one.
         // This is to conform to the APNS protocol
@@ -134,5 +132,4 @@ extension InstantSync: InstantSyncProtocol {
         // The guid we got in the push does not match our current GUID, lets Instant Sync!
         triggerSyncFromRemotePush(fetchCompletionHandler: completionHandler)
     }
-
 }

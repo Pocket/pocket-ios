@@ -49,19 +49,20 @@ struct ReportRecommendationView: View {
                 ForEach(ReportEvent.Reason.allCases, id: \.self) { reason in
                     ReportReasonRow(
                         text: reason.displayString,
-                        isSelected: reason == selectedReason) {
-                            guard reason != selectedReason else {
-                                isCommentFocused = false
-                                return
-                            }
-
-                            selectedReason = reason
+                        isSelected: reason == selectedReason
+                    ) {
+                        guard reason != selectedReason else {
+                            isCommentFocused = false
+                            return
                         }
-                        .tint(Constants.reasonRowTint)
-                        .frame(height: Constants.reasonRowHeight)
-                        .listRowBackground(Rectangle().foregroundColor(selectionColor(for: reason)))
-                        .listRowSeparator(.hidden)
-                        .accessibilityIdentifier(reason.accessibilityIdentifier)
+
+                        selectedReason = reason
+                    }
+                    .tint(Constants.reasonRowTint)
+                    .frame(height: Constants.reasonRowHeight)
+                    .listRowBackground(Rectangle().foregroundColor(selectionColor(for: reason)))
+                    .listRowSeparator(.hidden)
+                    .accessibilityIdentifier(reason.accessibilityIdentifier)
                 }
 
                 if selectedReason == .other {

@@ -4,7 +4,6 @@ protocol V3Request: Encodable {
     var consumerKey: String { get }
 
     var guid: String { get }
-
 }
 
 public struct RegisterPushTokenRequest: Codable, Equatable, V3Request {

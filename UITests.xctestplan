@@ -70,11 +70,11 @@
       "skippedTests" : [
         "HomeTests",
         "HomeWebViewTests",
-        "MyListFiltersTests",
-        "MyListTests",
         "PullToRefreshTests",
         "ReportARecommendationTests",
         "SaveToPocketTests",
+        "SavesFiltersTests",
+        "SavesTests",
         "ShareAnItemTests",
         "SignOutTests"
       ],

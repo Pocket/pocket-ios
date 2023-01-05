@@ -2,7 +2,6 @@ import XCTest
 @testable import Sync
 
 final class V3ClientTests: XCTestCase {
-
     let consumerKey = "the-consumer-key"
     let deviceIdentifier = "never-gonna-give-you-up"
     let token = "the-cool-apns-token"
@@ -33,7 +32,6 @@ extension V3ClientTests {
         } catch {
             XCTFail("fallbackSession() should not throw an error in this context: \(error)")
         }
-
     }
 
     func test_fallbackSession_usesFallbackSession() {

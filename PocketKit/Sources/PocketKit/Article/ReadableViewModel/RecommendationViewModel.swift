@@ -97,10 +97,6 @@ class RecommendationViewModel: ReadableViewModel {
         _events.send(.delete)
     }
 
-    func showWebReader() {
-        presentedWebReaderURL = url
-    }
-
     func archiveArticle() {
         archive()
     }
@@ -126,9 +122,8 @@ class RecommendationViewModel: ReadableViewModel {
         ]
     }
 
-    func webViewActivityItems() -> [UIActivity] {
-
-        guard let item = recommendation.item else {
+    func webViewActivityItems(url: URL) -> [UIActivity] {
+        guard let item = source.fetchItem(url) else {
             return []
         }
 

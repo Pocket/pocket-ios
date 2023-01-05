@@ -116,7 +116,6 @@ class SlateDetailViewController: UIViewController {
 
         model.fetch()
         model.refresh { }
-
     }
 }
 

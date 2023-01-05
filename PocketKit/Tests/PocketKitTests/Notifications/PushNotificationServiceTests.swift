@@ -5,7 +5,6 @@ import Sync
 import SharedPocketKit
 
 final class PushNotificationServiceTests: XCTestCase {
-
     private var subscriptions: Set<AnyCancellable>!
     private var source: MockSource!
     private var tracker: MockTracker!

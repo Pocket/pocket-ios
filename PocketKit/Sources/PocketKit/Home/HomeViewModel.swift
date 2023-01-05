@@ -234,7 +234,6 @@ extension HomeViewModel {
 
         if let slateLineup = slateLineup,
            let slates = slateLineup.slates?.compactMap({ $0 as? Slate }) {
-
             for slate in slates {
                 guard var recs = slate.recommendations?.compactMap({ $0 as? Recommendation }),
                       !recs.isEmpty else {
@@ -597,7 +596,6 @@ extension HomeViewModel {
         if  let id = slateLineup.remoteID,
             let requestID = slateLineup.requestID,
             let experimentID = slateLineup.experimentID {
-
             let context = SlateLineupContext(
                 id: id,
                 requestID: requestID,
@@ -611,7 +609,6 @@ extension HomeViewModel {
            let requestID = slate.requestID,
            let experimentID = slate.experimentID,
            let slateIndex = slateLineup.slates?.index(of: slate) {
-
             let slateContext = SlateContext(
                 id: slateID,
                 requestID: requestID,
@@ -624,7 +621,6 @@ extension HomeViewModel {
         // Recommendation context
         if let recommendationID = recommendation.remoteID,
            let recommendationIndex = slate.recommendations?.index(of: recommendation) {
-
             let recommendationContext = RecommendationContext(
                 id: recommendationID,
                 index: UIIndex(recommendationIndex)
@@ -707,15 +703,14 @@ extension HomeViewModel {
 }
 
 extension HomeViewModel {
-
-    func activityItemsForSelectedItem() -> [UIActivity] {
+    func activityItemsForSelectedItem(url: URL) -> [UIActivity] {
         switch selectedReadableType {
         case .recommendation(let viewModel),
                 .webViewRecommendation(let viewModel):
-            return viewModel.webViewActivityItems()
+            return viewModel.webViewActivityItems(url: url)
         case .savedItem(let viewModel),
                 .webViewSavedItem(let viewModel):
-            return viewModel.webViewActivityItems()
+            return viewModel.webViewActivityItems(url: url)
         case .none:
             return []
         }

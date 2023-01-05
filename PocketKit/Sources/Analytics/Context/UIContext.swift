@@ -102,6 +102,12 @@ extension UIContext {
         case tagsSaveChanges = "tagsSaveChanges"
         case externalApp = "external_app"
         case saveExtension = "save_extension"
+        case sortFilterSheet = "sort_filter"
+        case sortByNewest = "sortByNewest"
+        case sortByOldest = "sortByOldest"
+        case sortByLongest = "sortByLongest"
+        case sortByShortest = "sortByShortest"
+        case navigationDrawer = "navigationDrawer"
     }
 }
 
@@ -156,6 +162,7 @@ extension UIContext {
         public let saves = UIContext(type: .list, hierarchy: 0, identifier: .saves)
         public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
         public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
+        public let sortFilterSheet = UIContext(type: .screen, identifier: .sortFilterSheet)
 
         public func item(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
@@ -196,6 +203,8 @@ extension UIContext {
     public static let saveExtension = SaveExtension()
 
     public static let reportDialog = UIContext(type: .dialog, identifier: .reportItem)
+
+    public static let navigationDrawer = UIContext(type: .screen, identifier: .navigationDrawer)
 
     public static func button(identifier: Identifier) -> UIContext {
         UIContext(

@@ -89,8 +89,9 @@ class SaveToAddTagsViewModelTests: XCTestCase {
                 tag.name = "tag \(index)"
                 tags.append(tag)
             }
-            return tags
-        }) { _ in
+                return tags
+            }
+        ) { _ in
         }
 
         guard let tags = viewModel.allOtherTags() else {

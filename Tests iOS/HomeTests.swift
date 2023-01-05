@@ -186,7 +186,7 @@ class HomeTests: XCTestCase {
         app.slateDetailView.element.swipeUp()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").wait()
 
-        app.navigationBar.buttons["Home"].wait().tap()
+        app.navigationBar.buttons["Home".localized()].wait().tap()
         home.element.swipeUp()
 
         home.sectionHeader("Slate 2").seeAllButton.wait().tap()

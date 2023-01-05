@@ -2,7 +2,6 @@ import Textile
 
 extension Style {
     struct Settings {
-
         let header: Style = Style.header.sansSerif.h7.with(color: .ui.black1)
 
         struct Row {

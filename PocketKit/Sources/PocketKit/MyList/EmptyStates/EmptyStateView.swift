@@ -2,7 +2,6 @@ import SwiftUI
 import Textile
 
 open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Content: View {
-
     private(set) var host: UIHostingController<Content>?
 
     func embed(in parent: UIViewController, withView content: Content) {
@@ -27,7 +26,6 @@ open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Conten
 }
 
 class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView> {
-
     func configure(parent: UIViewController, _ viewModel: EmptyStateViewModel) {
         embed(in: parent, withView: EmptyStateView(viewModel: viewModel))
         host?.view.frame = self.contentView.bounds

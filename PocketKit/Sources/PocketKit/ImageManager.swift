@@ -5,11 +5,11 @@ import CoreData
 
 protocol ImageCacheProtocol {
     func removeImage(forKey key: String,
-                          processorIdentifier identifier: String,
-                          fromMemory: Bool,
-                          fromDisk: Bool,
-                          callbackQueue: CallbackQueue,
-                          completionHandler: (() -> Void)?
+                     processorIdentifier identifier: String,
+                     fromMemory: Bool,
+                     fromDisk: Bool,
+                     callbackQueue: CallbackQueue,
+                     completionHandler: (() -> Void)?
     )
 }
 
@@ -67,7 +67,8 @@ private extension ImageManager {
             with: cachedSource,
             options: nil,
             progressBlock: nil,
-            downloadTaskUpdated: nil) { result in
+            downloadTaskUpdated: nil
+        ) { result in
                 switch result {
                 case .success:
                     completion?(true)

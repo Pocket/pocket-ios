@@ -8,7 +8,6 @@ enum Constants {
 }
 
 public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
-
     @ObservedObject
     var viewModel: ViewModel
 

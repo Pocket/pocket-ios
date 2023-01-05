@@ -5,7 +5,6 @@ import Sync
 import SharedPocketKit
 
 final class InstantSyncTests: XCTestCase {
-
     private var source: MockSource!
     private var v3Client: MockV3Client!
 

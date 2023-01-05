@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 
 public class DeviceUtilities {
-
     enum Error: Swift.Error, LocalizedError {
         case idfvUnavailable
 
@@ -25,5 +24,4 @@ public class DeviceUtilities {
 
         return identifierForVendor.uuidString
     }
-
 }

@@ -14,7 +14,6 @@ class MockTracker: Tracker {
     private(set) var trackCalls = Calls<TrackCall>()
 
     func addPersistentContext(_ context: Context) {
-
     }
 
     func resetPersistentContexts(_ contexts: [Context]) {

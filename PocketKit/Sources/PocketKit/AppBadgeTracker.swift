@@ -10,7 +10,6 @@ protocol BadgeProvider: AnyObject {
 extension UIApplication: BadgeProvider { }
 
 class AppBadgeSetup {
-
     private let source: Source
     private let notificationCenter: NotificationCenter
     private var subscriptions: Set<AnyCancellable> = []
