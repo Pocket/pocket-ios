@@ -42,6 +42,7 @@ public struct Crashlogger {
             options.enableAutoSessionTracking = true
             #if DEBUG
             options.debug = true
+            options.diagnosticLevel = .warning
             #endif
         }
     }
