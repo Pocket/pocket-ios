@@ -6,7 +6,6 @@ import XCTest
 import Sails
 
 class ReaderTests: XCTestCase {
-
     var server: Application!
     var app: PocketAppElement!
 
