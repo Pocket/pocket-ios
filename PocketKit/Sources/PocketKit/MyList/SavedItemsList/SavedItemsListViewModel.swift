@@ -279,6 +279,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         })
     }
 
+    func swiftUITrackOverflow(for objectID: NSManagedObjectID) -> ItemAction? {
+        guard let item = bareItem(with: objectID) else {
+            return nil
+        }
+        return ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil) { [weak self] _ in
+            self?.trackButton(item: item, identifier: .itemOverflow)
+        }
+    }
+
     func trailingSwipeActions(for objectID: NSManagedObjectID) -> [ItemContextualAction] {
         guard let item = bareItem(with: objectID) else {
             return []
