@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/braze-inc/braze-swift-sdk",
       "state" : {
-        "revision" : "7afd6e0ac0bf59fcf9918e243298114888581ee2",
-        "version" : "5.6.4"
+        "revision" : "3f322b0ca1ec2f53bc87192a39377be7e8f142db",
+        "version" : "5.8.1"
       }
     },
     {
@@ -70,6 +70,15 @@
       "state" : {
         "branch" : "master",
         "revision" : "730166aa43b900e71a128e74910b1d9a431b24cf"
+      }
+    },
+    {
+      "identity" : "sdwebimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/SDWebImage/SDWebImage.git",
+      "state" : {
+        "revision" : "4178d12a44691182c2eb79c70281b14cb73f4cbf",
+        "version" : "5.14.3"
       }
     },
     {
