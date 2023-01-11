@@ -625,3 +625,34 @@ extension PocketSourceTests {
         }
     }
 }
+
+// MARK: - Search Term
+extension PocketSourceTests {
+    func test_searchItems_searchSaves() throws {
+        let source = subject()
+
+        var savedItems = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                item: space.buildItem(title: "saved-item-tag-\($0)")
+            )
+        }
+        savedItems.append(
+            space.buildSavedItem(
+                remoteID: "test-item",
+                item: space.buildItem(title: "item")
+            )
+        )
+        _ = createItemsWithTags(2)
+
+        try space.save()
+
+        let results = source.searchSaves(search: "tag")
+        XCTAssertTrue(results?.count == 2)
+
+        let noResults = source.searchSaves(search: "test-tag")
+        XCTAssertTrue((noResults?.isEmpty) != nil)
+
+        try space.clear()
+    }
+}

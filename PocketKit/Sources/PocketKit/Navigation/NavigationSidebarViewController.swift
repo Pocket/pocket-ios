@@ -1,7 +1,7 @@
 import UIKit
+import Analytics
 import Combine
 import Textile
-import Analytics
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8
