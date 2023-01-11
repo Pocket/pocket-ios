@@ -216,9 +216,11 @@ class SearchTests: XCTestCase {
         searchView = app.saves.searchView.searchResultsView.wait()
 
         app.navigationBar.buttons["Cancel"].tap()
+        XCTAssertTrue(app.saves.itemView(at: 0).element.isHittable)
 
         searchField.tap()
         app.saves.searchView.recentSearchesView.staticTexts["item"].tap()
         XCTAssertEqual(searchView.cells.count, 2)
+        XCTAssertFalse(app.saves.itemView(at: 0).element.isHittable)
     }
 }
