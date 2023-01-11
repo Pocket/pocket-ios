@@ -1,8 +1,8 @@
 import XCTest
-import Sync
 import SharedPocketKit
 import PocketGraph
 
+@testable import Sync
 @testable import PocketKit
 
 class SearchViewModelTests: XCTestCase {
@@ -10,6 +10,7 @@ class SearchViewModelTests: XCTestCase {
     private var user: MockUser!
     private var userDefaults: UserDefaults!
     private var source: MockSource!
+    private var space: Space!
     private var searchService: MockSearchService!
 
     override func setUpWithError() throws {
@@ -17,8 +18,8 @@ class SearchViewModelTests: XCTestCase {
         user = MockUser()
         source = MockSource()
         userDefaults = UserDefaults(suiteName: "SearchViewModelTests")
+        space = .testSpace()
         searchService = MockSearchService()
-
         source.stubMakeSearchService { self.searchService }
     }
 
@@ -27,6 +28,7 @@ class SearchViewModelTests: XCTestCase {
         source = nil
         user = nil
         networkPathMonitor = nil
+        try space.clear()
     }
 
     func subject(
@@ -45,18 +47,24 @@ class SearchViewModelTests: XCTestCase {
 
     // MARK: - Update Scope
     func test_updateScope_forFreeUser_withOnlineSaves_showsSearchEmptyState() {
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateScope(with: .saves)
         XCTAssertTrue(viewModel.emptyState is SearchEmptyState)
     }
 
     func test_updateScope_forFreeUser_withOnlineArchive_showsSearchEmptyState() {
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateScope(with: .archive)
         XCTAssertTrue(viewModel.emptyState is SearchEmptyState)
     }
 
     func test_updateScope_forFreeUser_withAll_showsGetPremiumEmptyState() {
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateScope(with: .all)
         XCTAssertTrue(viewModel.emptyState is GetPremiumEmptyState)
@@ -64,6 +72,8 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateScope_forPremiumUser_withSaves_showsRecentSearchEmptyState() {
         user.status = .premium
+
+        source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
         viewModel.updateScope(with: .saves)
@@ -73,6 +83,8 @@ class SearchViewModelTests: XCTestCase {
     func test_updateScope_forPremiumUser_withArchive_showsRecentSearchEmptyState() {
         user.status = .premium
 
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateScope(with: .archive)
         XCTAssertTrue(viewModel.emptyState is RecentSearchEmptyState)
@@ -81,6 +93,8 @@ class SearchViewModelTests: XCTestCase {
     func test_updateScope_forPremiumUser_withAll_showsRecentSearchEmptyState() {
         user.status = .premium
 
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateScope(with: .archive)
         XCTAssertTrue(viewModel.emptyState is RecentSearchEmptyState)
@@ -88,8 +102,10 @@ class SearchViewModelTests: XCTestCase {
 
     // MARK: - Update Search Results
     func test_updateSearchResults_forFreeUser_withNoItems_showsNoResultsEmptyState() {
+        source.stubSearchItems { _ in return [] }
         searchService.stubSearch { _, _ in }
         let term = "search-term"
+
         let viewModel = subject()
 
         searchService._results = []
@@ -99,7 +115,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_forFreeUser_withItems_showsResults() {
-        searchService.stubSearch { _, _ in }
+        source.stubSearchItems { _ in return [] }
 
         let term = "search-term"
         let item = SearchSavedItemParts(data: DataDict([
@@ -125,6 +141,7 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateSearchResults_forFreeUser_withAll_showsGetPremiumForAllItems() {
         searchService.stubSearch { _, _ in }
+        source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
         viewModel.updateScope(with: .all)
@@ -134,8 +151,10 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateSearchResults_forPremiumUser_withNoItems_showsNoResultsEmptyState() {
         searchService.stubSearch { _, _ in }
+        source.stubSearchItems { _ in return [] }
 
         user.status = .premium
+
         let viewModel = subject()
 
         searchService._results = []
@@ -155,6 +174,8 @@ class SearchViewModelTests: XCTestCase {
             ]
         ], variables: nil))
         user.status = .premium
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
 
         searchService.stubSearch { _, _ in
@@ -172,6 +193,8 @@ class SearchViewModelTests: XCTestCase {
         searchService.stubSearch { _, _ in }
         networkPathMonitor.update(status: .unsatisfied)
 
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateScope(with: .archive)
         viewModel.updateSearchResults(with: "search-term")
@@ -182,6 +205,8 @@ class SearchViewModelTests: XCTestCase {
         searchService.stubSearch { _, _ in }
         user.status = .premium
         networkPathMonitor.update(status: .unsatisfied)
+
+        source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
         viewModel.updateScope(with: .archive)
@@ -194,6 +219,8 @@ class SearchViewModelTests: XCTestCase {
         user.status = .premium
         networkPathMonitor.update(status: .unsatisfied)
 
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateScope(with: .all)
         viewModel.updateSearchResults(with: "search-term")
@@ -205,6 +232,8 @@ class SearchViewModelTests: XCTestCase {
         searchService.stubSearch { _, _ in }
         user.status = .free
 
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateSearchResults(with: "search-term")
         XCTAssertEqual(viewModel.recentSearches, [])
@@ -214,6 +243,8 @@ class SearchViewModelTests: XCTestCase {
         searchService.stubSearch { _, _ in }
         user.status = .premium
 
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateSearchResults(with: "search-term")
         XCTAssertEqual(viewModel.recentSearches, ["search-term"])
@@ -222,6 +253,8 @@ class SearchViewModelTests: XCTestCase {
     func test_recentSearches_withDuplicateTerm_showsRecentSearches() {
         searchService.stubSearch { _, _ in }
         user.status = .premium
+
+        source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
         viewModel.updateSearchResults(with: "search-term")
@@ -233,6 +266,8 @@ class SearchViewModelTests: XCTestCase {
         searchService.stubSearch { _, _ in }
         user.status = .premium
 
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateSearchResults(with: "     ")
         XCTAssertEqual(viewModel.recentSearches, [])
@@ -241,6 +276,8 @@ class SearchViewModelTests: XCTestCase {
     func test_recentSearches_withNewTerms_showsMaxSearches() {
         searchService.stubSearch { _, _ in }
         user.status = .premium
+
+        source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
         viewModel.updateSearchResults(with: "search-term-1")
@@ -257,6 +294,8 @@ class SearchViewModelTests: XCTestCase {
         searchService.stubSearch { _, _ in }
         user.status = .premium
 
+        source.stubSearchItems { _ in return [] }
+
         let viewModel = subject()
         viewModel.updateSearchResults(with: "search-term-1")
         viewModel.updateSearchResults(with: "search-term-2")
@@ -267,5 +306,181 @@ class SearchViewModelTests: XCTestCase {
         viewModel.updateSearchResults(with: "search-term-2")
 
         XCTAssertEqual(viewModel.recentSearches, ["search-term-3", "search-term-4", "search-term-5", "search-term-6", "search-term-2"])
+    }
+
+    // MARK: - Saves Searches
+    func test_savesSearches_withFreeUser_showSearchResults_searchTitle() throws {
+        user.status = .free
+
+        let savedItems = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: space.buildItem(title: "saved-item-\($0)")
+            )
+        }
+        try space.save()
+
+        source.stubSearchItems { _ in return savedItems }
+
+        let viewModel = subject()
+        var results = viewModel.searchItems(with: "saved")
+        XCTAssertTrue(results.count == 2)
+
+        source.stubSearchItems { _ in return [] }
+
+        results = viewModel.searchItems(with: "none")
+        XCTAssertTrue(results.isEmpty)
+
+        try space.clear()
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchTitle() throws {
+        user.status = .premium
+
+        let savedItems = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: space.buildItem(title: "saved-item-\($0)")
+            )
+        }
+        try space.save()
+
+        source.stubSearchItems { _ in return savedItems }
+
+        let viewModel = subject()
+        var results = viewModel.searchItems(with: "saved")
+        XCTAssertTrue(results.count == 2)
+
+        source.stubSearchItems { _ in return [] }
+
+        results = viewModel.searchItems(with: "none")
+        XCTAssertTrue(results.isEmpty)
+
+        try space.clear()
+    }
+
+    func test_savesSearches_withFreeUser_showSearchResults_searchUrl() throws {
+        user.status = .free
+
+        let url = URL(string: "testUrl.saved")
+        let savedItems = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: space.buildItem(title: "=item-\($0)", givenURL: url)
+            )
+        }
+        try space.save()
+
+        source.stubSearchItems { _ in return savedItems }
+
+        let viewModel = subject()
+        var results = viewModel.searchItems(with: "saved")
+        XCTAssertTrue(results.count == 2)
+
+        source.stubSearchItems { _ in return [] }
+
+        results = viewModel.searchItems(with: "none")
+        XCTAssertTrue(results.isEmpty)
+
+        try space.clear()
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchUrl() throws {
+        user.status = .premium
+
+        let url = URL(string: "testUrl.saved")
+        let savedItems = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: space.buildItem(title: "item-\($0)", givenURL: url)
+            )
+        }
+        try space.save()
+
+        source.stubSearchItems { _ in return savedItems }
+
+        let viewModel = subject()
+        var results = viewModel.searchItems(with: "saved")
+        XCTAssertTrue(results.count == 2)
+
+        source.stubSearchItems { _ in return [] }
+
+        results = viewModel.searchItems(with: "none")
+        XCTAssertTrue(results.isEmpty)
+
+        try space.clear()
+    }
+
+    func test_savesSearches_withFreeUser_showSearchResults_doesNotSearchTag() throws {
+        user.status = .free
+
+        _ = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                tags: ["test"]
+            )
+        }
+        try space.save()
+
+        source.stubSearchItems { _ in return [] }
+
+        let viewModel = subject()
+        var results = viewModel.searchItems(with: "saved")
+        XCTAssertTrue(results.isEmpty)
+
+        results = viewModel.searchItems(with: "test")
+        XCTAssertTrue(results.isEmpty)
+
+        results = viewModel.searchItems(with: "none")
+        XCTAssertTrue(results.isEmpty)
+
+        try space.clear()
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchTag() throws {
+        user.status = .premium
+
+        let savedItems = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                tags: ["test"]
+            )
+        }
+        try space.save()
+
+        source.stubSearchItems { _ in return savedItems }
+
+        let viewModel = subject()
+        var results = viewModel.searchItems(with: "test")
+        XCTAssertTrue(results.count == 2)
+
+        source.stubSearchItems { _ in return [] }
+
+        results = viewModel.searchItems(with: "saved")
+        XCTAssertTrue(results.isEmpty)
+
+        results = viewModel.searchItems(with: "none")
+        XCTAssertTrue(results.isEmpty)
+
+        try space.clear()
+    }
+
+    func test_savesSearches_testSourceWithSearchTerm() throws {
+        user.status = .premium
+
+        source.stubSearchItems { _ in return [] }
+
+        let viewModel = subject()
+        _ = viewModel.searchItems(with: "test")
+        XCTAssertTrue(source.searchSavesCall(at: 0)?.searchTerm == "test")
+
+        _ = viewModel.searchItems(with: "none")
+        XCTAssertTrue(source.searchSavesCall(at: 1)?.searchTerm == "none")
     }
 }
