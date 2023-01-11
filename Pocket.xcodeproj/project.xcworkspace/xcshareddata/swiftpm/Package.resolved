@@ -12,8 +12,9 @@
     {
       "identity" : "braze-swift-sdk",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
+      "location" : "https://github.com/braze-inc/braze-swift-sdk",
       "state" : {
+<<<<<<< HEAD
 <<<<<<< HEAD
         "revision" : "3f322b0ca1ec2f53bc87192a39377be7e8f142db",
         "version" : "5.8.1"
@@ -21,6 +22,10 @@
         "revision" : "2a4c863027f716e088175bcf71b0b2d7bfb9d46f",
         "version" : "5.8.0"
 >>>>>>> 50b8f91e (feat(search): local search)
+=======
+        "revision" : "7afd6e0ac0bf59fcf9918e243298114888581ee2",
+        "version" : "5.6.4"
+>>>>>>> e70595ef (feat(search): display search results (IN-894))
       }
     },
     {
@@ -78,6 +83,7 @@
       }
     },
     {
+<<<<<<< HEAD
       "identity" : "sdwebimage",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SDWebImage/SDWebImage.git",
@@ -92,6 +98,8 @@
       }
     },
     {
+=======
+>>>>>>> e70595ef (feat(search): display search results (IN-894))
       "identity" : "sentry-cocoa",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa.git",
@@ -141,8 +149,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "937e904258d22af6e447a0b72c0bc67583ef64a2",
-        "version" : "1.0.4"
+        "revision" : "f504716c27d2e5d4144fa4794b12129301d17729",
+        "version" : "1.0.3"
       }
     },
     {
@@ -150,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "7e3b50b38e4e66f31db6cf4a784c6af148bac846",
-        "version" : "2.46.0"
+        "revision" : "e855380cb5234e96b760d93e0bfdc403e381e928",
+        "version" : "2.45.0"
       }
     },
     {
