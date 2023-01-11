@@ -5,7 +5,7 @@ struct ArchiveEmptyStateViewModel: EmptyStateViewModel {
     let imageAsset: ImageAsset = .chest
     let maxWidth: CGFloat = Width.wide.rawValue
     let icon: ImageAsset? = .archive
-    let headline = "Keep your list fresh and clean"
+    let headline: String? = "Keep your list fresh and clean"
     let detailText: String? = "Archive the saves you're finished with\n using the archive icon."
     let buttonText: String? = "How to archive"
     let webURL: URL? = URL(string: "https://getpocket.com/what-is-the-archive-ios")!
