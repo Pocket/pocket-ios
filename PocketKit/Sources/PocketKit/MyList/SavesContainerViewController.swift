@@ -128,7 +128,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         }
         navigationItem.searchController?.showsSearchResultsController = true
 
-        searchViewModel.$searchText.sink { searchText in
+        searchViewModel.$searchText.dropFirst().sink { searchText in
             self.updateSearchBar(searchText: searchText)
         }.store(in: &subscriptions)
     }
@@ -158,6 +158,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchViewModel.clear()
         searchViewModel.clearCache()
+        searchBar.text = nil
     }
 
     func updateSearchScope() {
