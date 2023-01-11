@@ -165,7 +165,7 @@ class SearchViewModel: ObservableObject {
         case .saves:
             return NoResultsEmptyState()
         case .archive, .all:
-            return isOffline ? OfflineEmptyState() : NoResultsEmptyState()
+            return isOffline ? OfflineEmptyState(type: selectedScope) : NoResultsEmptyState()
         }
     }
 

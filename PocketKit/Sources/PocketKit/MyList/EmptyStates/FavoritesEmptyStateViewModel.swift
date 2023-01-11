@@ -5,7 +5,7 @@ struct FavoritesEmptyStateViewModel: EmptyStateViewModel {
     let imageAsset: ImageAsset = .chest
     let maxWidth: CGFloat = Width.wide.rawValue
     let icon: ImageAsset? = .favorite
-    let headline = "Find your favorites here"
+    let headline: String? = "Find your favorites here"
     let detailText: String? = "Hit the star icon to favorite an article and find it faster."
     let buttonText: String? = nil
     let webURL: URL? = nil
