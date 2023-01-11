@@ -1,15 +1,14 @@
 import SwiftUI
 
 struct ItemDetails: View {
-    var title: String
-    var detail: String
+    private let constants = ListItem.Constants.self
+    private let title: String
+    private let detail: String
 
     init(attributedTitle: NSAttributedString, attributedDetail: NSAttributedString) {
         self.title = attributedTitle.string
         self.detail = attributedDetail.string
     }
-
-    let constants = ListItem.Constants.self
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -22,7 +21,7 @@ struct ItemDetails: View {
                 .style(.listItem.detail)
                 .lineLimit(constants.detail.maxLines)
         }
-        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .leading)
+        .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
         .padding([.bottom, .trailing], constants.objectSpacing)
     }
 }
