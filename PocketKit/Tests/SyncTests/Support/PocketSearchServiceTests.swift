@@ -79,10 +79,55 @@ class PocketSearchServiceTests: XCTestCase {
         XCTAssertEqual(call?.query.term, "search-term")
         XCTAssertEqual(call?.query.filter.status, .init(.none))
     }
+
+    // MARK: Pagination
+    func test_search_whenResponseIncludesMultiplePages_fetchesNextPage() async throws {
+        apollo.setupSearchListResponseForPagination()
+        let service = subject()
+
+        _ = await service.search(for: "search-term", scope: .all)
+
+        XCTAssertEqual(self.apollo.fetchCalls(withQueryType: SearchSavedItemsQuery.self).count, 3)
+    }
 }
 
 extension MockApolloClient {
     func setupSearchListResponse(fixtureName: String = "search-list") {
         stubFetch(toReturnFixture: Fixture.load(name: fixtureName), asResultType: SearchSavedItemsQuery.self)
+    }
+
+    func setupSearchListResponseForPagination(fixtureName: String = "search-list-page-1") {
+        stubFetch { (query: SearchSavedItemsQuery, _, _, queue, completion) in
+            let resultFixtureName: String
+            switch query.pagination.after {
+            case nil:
+                resultFixtureName = "search-list-page-1"
+            case .some(let cursor):
+                switch cursor {
+                case .none:
+                    resultFixtureName = "search-list-page-1"
+                case .some(let cursor):
+                    switch cursor {
+                    case "cursor-2":
+                        resultFixtureName = "search-list-page-2"
+                    case "cursor-4":
+                        resultFixtureName = "search-list-page-3"
+                    default:
+                        fatalError("Unexpected pagination cursor: \(cursor)")
+                    }
+                case .null:
+                    fatalError("Unexpected pagination cursor: \(cursor)")
+                }
+            }
+
+            queue.async {
+                let fixture = Fixture.load(name: resultFixtureName)
+                let graphQLResult = fixture.asGraphQLResult(from: query)
+
+                completion?(.success(graphQLResult))
+            }
+
+            return MockCancellable()
+        }
     }
 }
