@@ -3,30 +3,28 @@ import Textile
 import Kingfisher
 
 struct ListItem: View {
-    var model: ItemsListItemCell.Model
+    var model: SearchItem
 
     let constants = Constants.self
 
     var body: some View {
         VStack(spacing: 0) {
             HStack(alignment: .top, spacing: 0) {
-                ItemDetails(attributedTitle: model.attributedTitle, attributedDetail: model.attributedDetail)
+                ItemDetails(attributedTitle: model.title, attributedDetail: model.detail)
 
                 KFImage(model.thumbnailURL)
-                    .frame(width: constants.image.width, height: constants.image.height, alignment: .trailing)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: constants.image.width, height: constants.image.height, alignment: .center)
                     .cornerRadius(constants.image.cornerRadius)
             }
 
             HStack(alignment: .center, spacing: constants.tags.horizontalSpacing) {
-                ItemTags(tags: model.attributedTags, tagCount: model.attributedTagCount)
-
+                ItemTags(tags: model.tags, tagCount: model.tagCount)
                 Spacer()
-
                 ActionButton(model.favoriteAction)
-
                 ActionButton(model.shareAction)
-
-                OverflowMenu(overflowActions: model.overflowActions, trackOverflow: model.swiftUITrackOverflow, trailingPadding: false)
+                OverflowMenu(overflowActions: model.overflowActions, trackOverflow: model.trackOverflow, trailingPadding: false)
             }
         }
         .padding(.vertical, constants.verticalPadding)
