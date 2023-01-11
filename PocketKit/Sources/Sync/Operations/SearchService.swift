@@ -1,4 +1,5 @@
 import Apollo
+import UIKit
 import Foundation
 import PocketGraph
 import SharedPocketKit
@@ -11,7 +12,9 @@ public protocol SearchService: AnyObject {
 
 public class PocketSearchService: SearchService {
     enum Constants {
-        static let pageSize = 30
+        static var pageSize: Int {
+            UIDevice.current.userInterfaceIdiom == .phone ? 30 : 50
+        }
     }
 
     @Published
