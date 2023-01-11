@@ -70,12 +70,17 @@ class SearchViewModel: ObservableObject {
     func updateSearchResults(with searchTerm: String) {
         let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
         let shouldShowUpsell = !isPremium && selectedScope == .all
-        guard !shouldShowUpsell else { return }
-        submitSearch(with: term)
-        showRecentSearches = false
 
-        _ = searchItems(with: searchTerm)
-        // TODO: pass results to update table
+        guard !shouldShowUpsell else { return }
+
+        // TODO: Handle Offline for Premium https://getpocket.atlassian.net/browse/IN-971
+        if !isPremium && selectedScope == .saves {
+            submitLocalSearch(with: term)
+        } else {
+            submitOnlineSearch(with: term)
+        }
+
+        showRecentSearches = false
 
         guard isPremium, !term.isEmpty else { return }
         recentSearches = updateRecentSearches(with: term)
@@ -86,7 +91,7 @@ class SearchViewModel: ObservableObject {
         subscriptions = []
     }
 
-    private func submitSearch(with term: String) {
+    private func submitOnlineSearch(with term: String) {
         clear()
         searchService.results.receive(on: DispatchQueue.main).sink { [weak self] items in
             guard let self else { return }
@@ -111,12 +116,9 @@ class SearchViewModel: ObservableObject {
         return searches
     }
 
-    public func searchItems(with searchTerm: String) -> [SavedItem] {
-        let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
-        guard let list = source.searchSaves(search: term), !list.isEmpty else {
-            return []
-        }
-        return list
+    public func submitLocalSearch(with term: String) {
+        let list = source.searchSaves(search: term)
+        self.searchResults = list?.compactMap { SearchItem(item: $0) } ?? []
     }
 
     private func searchResultState() -> EmptyStateViewModel {

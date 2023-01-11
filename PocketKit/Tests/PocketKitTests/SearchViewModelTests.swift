@@ -135,7 +135,7 @@ class SearchViewModelTests: XCTestCase {
 
         viewModel.updateSearchResults(with: term)
 
-        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title }, ["search-term"])
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
         XCTAssertNil(viewModel.emptyState)
     }
 
@@ -184,7 +184,7 @@ class SearchViewModelTests: XCTestCase {
 
         viewModel.updateSearchResults(with: term)
 
-        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title }, ["search-term"])
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
         XCTAssertNil(viewModel.emptyState)
     }
 
@@ -324,13 +324,13 @@ class SearchViewModelTests: XCTestCase {
         source.stubSearchItems { _ in return savedItems }
 
         let viewModel = subject()
-        var results = viewModel.searchItems(with: "saved")
-        XCTAssertTrue(results.count == 2)
+        viewModel.submitLocalSearch(with: "saved")
+        XCTAssertEqual(viewModel.searchResults?.count, 2)
 
         source.stubSearchItems { _ in return [] }
 
-        results = viewModel.searchItems(with: "none")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "none")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
         try space.clear()
     }
@@ -350,13 +350,13 @@ class SearchViewModelTests: XCTestCase {
         source.stubSearchItems { _ in return savedItems }
 
         let viewModel = subject()
-        var results = viewModel.searchItems(with: "saved")
-        XCTAssertTrue(results.count == 2)
+        viewModel.submitLocalSearch(with: "saved")
+        XCTAssertEqual(viewModel.searchResults?.count, 2)
 
         source.stubSearchItems { _ in return [] }
 
-        results = viewModel.searchItems(with: "none")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "none")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
         try space.clear()
     }
@@ -377,13 +377,13 @@ class SearchViewModelTests: XCTestCase {
         source.stubSearchItems { _ in return savedItems }
 
         let viewModel = subject()
-        var results = viewModel.searchItems(with: "saved")
-        XCTAssertTrue(results.count == 2)
+        viewModel.submitLocalSearch(with: "saved")
+        XCTAssertEqual(viewModel.searchResults?.count, 2)
 
         source.stubSearchItems { _ in return [] }
 
-        results = viewModel.searchItems(with: "none")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "none")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
         try space.clear()
     }
@@ -404,13 +404,13 @@ class SearchViewModelTests: XCTestCase {
         source.stubSearchItems { _ in return savedItems }
 
         let viewModel = subject()
-        var results = viewModel.searchItems(with: "saved")
-        XCTAssertTrue(results.count == 2)
+        viewModel.submitLocalSearch(with: "saved")
+        XCTAssertEqual(viewModel.searchResults?.count, 2)
 
         source.stubSearchItems { _ in return [] }
 
-        results = viewModel.searchItems(with: "none")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "none")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
         try space.clear()
     }
@@ -430,14 +430,14 @@ class SearchViewModelTests: XCTestCase {
         source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
-        var results = viewModel.searchItems(with: "saved")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "saved")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
-        results = viewModel.searchItems(with: "test")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "test")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
-        results = viewModel.searchItems(with: "none")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "none")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
         try space.clear()
     }
@@ -457,16 +457,16 @@ class SearchViewModelTests: XCTestCase {
         source.stubSearchItems { _ in return savedItems }
 
         let viewModel = subject()
-        var results = viewModel.searchItems(with: "test")
-        XCTAssertTrue(results.count == 2)
+        viewModel.submitLocalSearch(with: "test")
+        XCTAssertEqual(viewModel.searchResults?.count, 2)
 
         source.stubSearchItems { _ in return [] }
 
-        results = viewModel.searchItems(with: "saved")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "saved")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
-        results = viewModel.searchItems(with: "none")
-        XCTAssertTrue(results.isEmpty)
+        viewModel.submitLocalSearch(with: "none")
+        XCTAssertEqual(viewModel.searchResults?.isEmpty, true)
 
         try space.clear()
     }
@@ -477,10 +477,10 @@ class SearchViewModelTests: XCTestCase {
         source.stubSearchItems { _ in return [] }
 
         let viewModel = subject()
-        _ = viewModel.searchItems(with: "test")
+        viewModel.submitLocalSearch(with: "test")
         XCTAssertTrue(source.searchSavesCall(at: 0)?.searchTerm == "test")
 
-        _ = viewModel.searchItems(with: "none")
+        viewModel.submitLocalSearch(with: "none")
         XCTAssertTrue(source.searchSavesCall(at: 1)?.searchTerm == "none")
     }
 }
