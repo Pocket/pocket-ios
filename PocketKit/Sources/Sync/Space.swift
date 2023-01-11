@@ -31,6 +31,11 @@ public class Space {
         return try context.fetch(request).first
     }
 
+    func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) throws -> [SavedItem]? {
+        let request = Requests.fetchSavedItems(bySearchTerm: searchTerm, userPremium: isPremium)
+        return try context.fetch(request)
+    }
+
     func fetchSavedItems() throws -> [SavedItem] {
         let request = Requests.fetchSavedItems()
         let results = try context.fetch(request)

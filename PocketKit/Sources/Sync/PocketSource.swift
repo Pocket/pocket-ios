@@ -646,3 +646,10 @@ extension PocketSource {
         }
     }
 }
+
+// MARK: - Search term
+extension PocketSource {
+    public func searchSaves(search: String) -> [SavedItem]? {
+        try? space.fetchSavedItems(bySearchTerm: search, userPremium: user.status == .premium)
+    }
+}
