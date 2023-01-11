@@ -14,8 +14,13 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
       "state" : {
+<<<<<<< HEAD
         "revision" : "3f322b0ca1ec2f53bc87192a39377be7e8f142db",
         "version" : "5.8.1"
+=======
+        "revision" : "2a4c863027f716e088175bcf71b0b2d7bfb9d46f",
+        "version" : "5.8.0"
+>>>>>>> aa7da8b7 (swiftlint fix and test list fix)
       }
     },
     {
