@@ -167,7 +167,7 @@ class SearchTests: XCTestCase {
     func test_submitSearch_forPremiumUser_withAllItems_showsResults() {
         app.launch()
         tapSearch()
-        app.navigationBar.buttons["All Items"].wait().tap()
+        app.navigationBar.buttons["All items"].wait().tap()
         let searchField = app.navigationBar.searchFields["Search"].wait()
         searchField.tap()
         searchField.typeText("item\n")
@@ -184,7 +184,7 @@ class SearchTests: XCTestCase {
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
 
-        app.navigationBar.buttons["All Items"].wait().tap()
+        app.navigationBar.buttons["All items"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 3)
 
         app.navigationBar.buttons["Archive"].wait().tap()
