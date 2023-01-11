@@ -52,7 +52,9 @@ struct EmptyStateView: View {
                 .frame(maxWidth: viewModel.maxWidth)
 
             VStack(alignment: .center, spacing: 20) {
-                Text(viewModel.headline).style(.main)
+                if let headline = viewModel.headline {
+                    Text(headline).style(.main)
+                }
 
                 if let subtitle = viewModel.detailText {
                     if let icon = viewModel.icon {
