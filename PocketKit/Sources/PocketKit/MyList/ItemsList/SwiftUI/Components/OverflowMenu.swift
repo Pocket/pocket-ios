@@ -8,7 +8,7 @@ struct OverflowMenu: View {
     var trailingPadding: Bool = false
 
     var body: some View {
-        if overflowActions.isEmpty {
+        if !overflowActions.isEmpty {
             Menu {
                 ForEach(overflowActions, id: \.self) { action in
                     Button {
