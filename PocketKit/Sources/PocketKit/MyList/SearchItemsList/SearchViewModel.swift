@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import UIKit
 import Network
 import Sync
@@ -11,7 +15,12 @@ class SearchViewModel: ObservableObject {
     private let user: User
     private let userDefaults: UserDefaults
     private let source: Source
-    private let searchService: SearchService
+
+    private let savesLocalSearch: LocalSavesSearch
+    private let savesOnlineSearch: OnlineSearch
+    private let archiveOnlineSearch: OnlineSearch
+    private let allOnlineSearch: OnlineSearch
+
     private var isOffline: Bool {
         networkPathMonitor.currentNetworkPath.status == .unsatisfied
     }
@@ -21,13 +30,6 @@ class SearchViewModel: ObservableObject {
     }
 
     private var selectedScope: SearchScope = .saves
-    private var currentSearchTerm: String = ""
-
-    private var cachedSearchResults: [SearchScope: [String: [SearchItem]]] = [
-        .saves: [:],
-        .archive: [:],
-        .all: [:]
-    ]
 
     @Published
     var emptyState: EmptyStateViewModel?
@@ -35,11 +37,10 @@ class SearchViewModel: ObservableObject {
     @Published
     var searchResults: [SearchItem]? {
         didSet {
-            guard let searchResults = searchResults, !searchResults.isEmpty, !currentSearchTerm.isEmpty else {
-                self.emptyState = self.searchResultState()
+            guard let searchResults = searchResults, searchResults.isEmpty else {
                 return
             }
-            self.cachedSearchResults[selectedScope]?[currentSearchTerm] = searchResults
+            emptyState = searchResultState()
         }
     }
 
@@ -71,11 +72,15 @@ class SearchViewModel: ObservableObject {
         self.userDefaults = userDefaults
         self.source = source
         networkPathMonitor.start(queue: .global())
-        self.searchService = source.makeSearchService()
+
+        savesLocalSearch = LocalSavesSearch(source: source)
+        savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
+        archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
+        allOnlineSearch = OnlineSearch(source: source, scope: .all)
     }
 
     func updateScope(with scope: SearchScope, searchTerm: String? = nil) {
-        self.selectedScope = scope
+        selectedScope = scope
         if let searchTerm = searchTerm, !searchTerm.isEmpty {
             updateSearchResults(with: searchTerm)
         } else {
@@ -93,15 +98,12 @@ class SearchViewModel: ObservableObject {
         }
 
         let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
-        currentSearchTerm = term
-        guard !term.isEmpty, !retrieveCachedResults() else { return }
-
-        // TODO: Handle Offline for Premium https://getpocket.atlassian.net/browse/IN-971
-        if !isPremium && selectedScope == .saves {
-            submitLocalSearch(with: term)
-        } else {
-            submitOnlineSearch(with: term)
+        guard !term.isEmpty else { return }
+        guard !isOffline else {
+            emptyState = searchResultState()
+            return
         }
+        submitSearch(with: term)
 
         showRecentSearches = false
         recentSearches = updateRecentSearches(with: term)
@@ -110,32 +112,38 @@ class SearchViewModel: ObservableObject {
     func clear() {
         searchResults = []
         subscriptions = []
+        savesLocalSearch.clear()
+        savesOnlineSearch.clear()
+        archiveOnlineSearch.clear()
+        allOnlineSearch.clear()
     }
 
-    func clearCache() {
-        cachedSearchResults = [
-            .saves: [:],
-            .archive: [:],
-            .all: [:]
-        ]
-    }
-
-    private func retrieveCachedResults() -> Bool {
-        if let cachedItems = cachedSearchResults[selectedScope]?[currentSearchTerm], !cachedItems.isEmpty {
-            self.searchResults = cachedItems
-            return true
-        }
-        return false
-    }
-
-    private func submitOnlineSearch(with term: String) {
-        clear()
-        searchService.results.receive(on: DispatchQueue.main).sink { [weak self] items in
-            guard let self else { return }
-            self.searchResults = items.compactMap { SearchItem(item: $0) }
-        }.store(in: &subscriptions)
-        Task {
-            await searchService.search(for: term, scope: selectedScope)
+    private func submitSearch(with term: String) {
+        switch selectedScope {
+        case .saves:
+            // TODO: Handle Offline for Premium https://getpocket.atlassian.net/browse/IN-971
+            guard isPremium else {
+                guard selectedScope == .saves else { return }
+                searchResults = savesLocalSearch.search(with: term)
+                return
+            }
+            savesOnlineSearch.search(with: term)
+            savesOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] items in
+                guard let self, self.selectedScope == .saves else { return }
+                self.searchResults = items
+            }.store(in: &subscriptions)
+        case .archive:
+            archiveOnlineSearch.search(with: term)
+            archiveOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] items in
+                guard let self, self.selectedScope == .archive else { return }
+                self.searchResults = items
+            }.store(in: &subscriptions)
+        case .all:
+            allOnlineSearch.search(with: term)
+            allOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] items in
+                guard let self, self.selectedScope == .all else { return }
+                self.searchResults = items
+            }.store(in: &subscriptions)
         }
     }
 
@@ -152,11 +160,6 @@ class SearchViewModel: ObservableObject {
 
         searches.removeFirst()
         return searches
-    }
-
-    public func submitLocalSearch(with term: String) {
-        let list = source.searchSaves(search: term)
-        self.searchResults = list?.compactMap { SearchItem(item: $0) } ?? []
     }
 
     private func searchResultState() -> EmptyStateViewModel {

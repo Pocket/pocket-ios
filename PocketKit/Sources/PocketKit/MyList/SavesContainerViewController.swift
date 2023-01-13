@@ -157,7 +157,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         searchViewModel.clear()
-        searchViewModel.clearCache()
         searchBar.text = nil
     }
 

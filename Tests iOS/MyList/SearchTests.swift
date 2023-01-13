@@ -175,7 +175,7 @@ class SearchTests: XCTestCase {
         XCTAssertEqual(searchView.cells.count, 3)
     }
 
-    func test_switchingScopes_showsResults() {
+    func test_switchingScopes_showsResultsWithCache() {
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -183,6 +183,12 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
+
+        app.navigationBar.buttons["All items"].wait().tap()
+        XCTAssertEqual(searchView.cells.count, 3)
+
+        app.navigationBar.buttons["Archive"].wait().tap()
+        XCTAssertEqual(searchView.cells.count, 1)
 
         app.navigationBar.buttons["All items"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 3)
