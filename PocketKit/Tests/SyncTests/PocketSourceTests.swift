@@ -628,31 +628,94 @@ extension PocketSourceTests {
 
 // MARK: - Search Term
 extension PocketSourceTests {
-    func test_searchItems_searchSaves() throws {
-        let source = subject()
+    func test_savesSearches_withFreeUser_showSearchResults_searchTitle() throws {
+        user.status = .free
 
-        var savedItems = (1...2).map {
-            space.buildSavedItem(
-                remoteID: "saved-item-\($0)",
-                item: space.buildItem(title: "saved-item-tag-\($0)")
-            )
-        }
-        savedItems.append(
-            space.buildSavedItem(
-                remoteID: "test-item",
-                item: space.buildItem(title: "item")
-            )
-        )
+        try setupLocalSavesSearch()
+        let source = subject()
+        let results = source.searchSaves(search: "saved")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "none")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchTitle() throws {
+        user.status = .premium
+        try setupLocalSavesSearch()
+        let source = subject()
+        let results = source.searchSaves(search: "saved")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "none")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withFreeUser_showSearchResults_searchUrl() throws {
+        user.status = .free
+        let url = URL(string: "testUrl.saved")
+        try setupLocalSavesSearch(with: url)
+
+        let source = subject()
+        let results = source.searchSaves(search: "saved")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "none")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchUrl() throws {
+        user.status = .premium
+
+        let url = URL(string: "testUrl.saved")
+        try setupLocalSavesSearch(with: url)
+
+        let source = subject()
+        let results = source.searchSaves(search: "saved")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "none")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withFreeUser_showSearchResults_doesNotSearchTag() throws {
+        user.status = .free
+
+         _ = createItemsWithTags(2)
+
+        try space.save()
+
+        let source = subject()
+        let results = source.searchSaves(search: "tag")
+        XCTAssertEqual(results?.isEmpty, true)
+
+        let noResults = source.searchSaves(search: "test-tag")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchTag() throws {
+        user.status = .premium
+
         _ = createItemsWithTags(2)
 
         try space.save()
 
+        let source = subject()
         let results = source.searchSaves(search: "tag")
-        XCTAssertTrue(results?.count == 2)
+        XCTAssertEqual(results?.count, 2)
 
         let noResults = source.searchSaves(search: "test-tag")
-        XCTAssertTrue((noResults?.isEmpty) != nil)
+        XCTAssertEqual(noResults?.count, 0)
+    }
 
-        try space.clear()
+    private func setupLocalSavesSearch(with url: URL? = nil) throws {
+        _ = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: space.buildItem(title: "saved-item-\($0)", givenURL: url)
+            )
+        }
+        try space.save()
     }
 }
