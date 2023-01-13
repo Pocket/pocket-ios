@@ -36,4 +36,12 @@ extension MockSearchService {
 
         impl(term, scope)
     }
+
+    func searchCall(at index: Int) -> SearchCall? {
+        guard let calls = calls[Self.search], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? SearchCall
+    }
 }
