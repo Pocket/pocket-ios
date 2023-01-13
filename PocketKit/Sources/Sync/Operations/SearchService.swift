@@ -37,7 +37,6 @@ public class PocketSearchService: SearchService {
     }
 
     private func fetch(for term: String, scope: SearchScope) async throws {
-        _results = []
         var shouldFetchNextPage = true
         var items: [SearchSavedItemParts] = []
         var pagination = PaginationInput(first: GraphQLNullable<Int>(integerLiteral: Constants.pageSize))
