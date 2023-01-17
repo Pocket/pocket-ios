@@ -17,13 +17,12 @@ struct PremiumUpgradeView: View {
 
     private var dismissButton: some View {
         HStack(spacing: 0) {
+            Spacer()
             Button {
                 dismiss()
             } label: {
                 Image(asset: .close).renderingMode(.template).foregroundColor(Color(.ui.grey5))
             }.padding(.top, 10)
-
-            Spacer()
         }
     }
 
@@ -34,9 +33,9 @@ struct PremiumUpgradeView: View {
                 Divider().background(Color(.ui.grey1))
                 PremiumUpgradeFeaturesView()
                 HStack {
-                    PremiumUpgradeButton(text: "TBD", pricing: "$0.00/month")
+                    PremiumUpgradeButton(text: "TBD", pricing: "$0.00/month", isYearly: false)
                     Spacer().frame(width: 32)
-                    PremiumUpgradeButton(text: "TBD", pricing: "$0.00/year")
+                    PremiumUpgradeButton(text: "TBD", pricing: "$0.00/year", isYearly: true)
                 }
                 PremiumInfoView()
                 PremiumTermsView()
@@ -94,29 +93,46 @@ private struct PremiumUpgradeFeatureRow: View {
 private struct PremiumUpgradeButton: View {
     private let text: String
     private let pricing: String
+    private let isYearly: Bool
 
-    init(text: String, pricing: String) {
+    init(text: String, pricing: String, isYearly: Bool) {
         self.text = text
         self.pricing = pricing
+        self.isYearly = isYearly
     }
 
     var body: some View {
-        Button {
-
-        } label: {
-            VStack(spacing: 4) {
-                Text(text)
-                    .style(.featureRow)
-                Text(pricing)
-                    .style(.pricing)
+        if isYearly {
+            Button(action: {}) {
+                VStack(spacing: 4) {
+                    Text(text)
+                        .style(.yearlyPremiumRow)
+                    Text(pricing)
+                        .style(.yearlyPricing)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, minHeight: 53)
+                .background(
+                    RoundedRectangle(cornerRadius: 4, style: .continuous)
+                        .fill(Color(.ui.coral2))
+                )
+            }
+        } else {
+            Button(action: {}) {
+                VStack(spacing: 4) {
+                    Text(text)
+                        .style(.featureRow)
+                    Text(pricing)
+                        .style(.pricing)
+                }
+                .padding()
+                .frame(maxWidth: .infinity, minHeight: 53)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 4)
+                        .stroke(Color(.ui.grey1), lineWidth: 2)
+                )
             }
         }
-        .padding()
-        .frame(maxWidth: .infinity, minHeight: 53)
-        .overlay(
-            RoundedRectangle(cornerRadius: 4)
-                .stroke(Color(.ui.grey1), lineWidth: 2)
-        )
     }
 }
 
@@ -173,7 +189,11 @@ private extension Style {
 
     static let featureRow = Style.settings.row.default
 
+    static let yearlyPremiumRow = Style.settings.row.darkBackground.default
+
     static let pricing = Style.featureRow.with(size: .p5)
+
+    static let yearlyPricing = Style.yearlyPremiumRow.with(size: .p5)
 
     static let info = Style.body.sansSerif.with(size: .p4).with(color: .ui.grey4)
 
