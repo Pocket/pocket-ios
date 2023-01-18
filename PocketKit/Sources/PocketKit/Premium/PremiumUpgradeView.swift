@@ -11,7 +11,6 @@ struct PremiumUpgradeView: View {
             upgradeView
         }
         .padding([.top, .bottom], 20)
-        .padding([.leading, .trailing], 32)
         .background(PremiumBackgroundView())
     }
 
@@ -22,24 +21,33 @@ struct PremiumUpgradeView: View {
                 dismiss()
             } label: {
                 Image(asset: .close).renderingMode(.template).foregroundColor(Color(.ui.grey5))
-            }.padding(.top, 10)
+            }
+            .padding(.top, 10)
+            .padding([.leading, .trailing], 32)
         }
     }
 
     private var upgradeView: some View {
         ScrollView(showsIndicators: false) {
-            VStack(spacing: 24) {
+            VStack(spacing: 40) {
                 PremiumUpgradeHeader()
                 Divider().background(Color(.ui.grey1))
                 PremiumUpgradeFeaturesView()
                 HStack {
                     PremiumUpgradeButton(text: "TBD", pricing: "$0.00/month", isYearly: false)
-                    Spacer().frame(width: 32)
-                    PremiumUpgradeButton(text: "TBD", pricing: "$0.00/year", isYearly: true)
+                    Spacer().frame(width: 28)
+                    ZStack {
+                        GeometryReader { proxy in
+                            PremiumUpgradeButton(text: "TBD", pricing: "$0.00/year", isYearly: true)
+                            PremiumYearlyPercent()
+                                .offset(x: proxy.size.width * 0.7, y: -proxy.size.height * 0.4)
+                        }
+                    }
                 }
                 PremiumInfoView()
                 PremiumTermsView()
             }
+            .padding([.leading, .trailing], 32)
         }
     }
 }
@@ -104,7 +112,7 @@ private struct PremiumUpgradeButton: View {
     var body: some View {
         if isYearly {
             Button(action: {}) {
-                VStack(spacing: 4) {
+                VStack(spacing: 8) {
                     Text(text)
                         .style(.yearlyPremiumRow)
                     Text(pricing)
@@ -119,9 +127,9 @@ private struct PremiumUpgradeButton: View {
             }
         } else {
             Button(action: {}) {
-                VStack(spacing: 4) {
+                VStack(spacing: 8) {
                     Text(text)
-                        .style(.featureRow)
+                        .style(.monthlyPremiumRow)
                     Text(pricing)
                         .style(.pricing)
                 }
@@ -133,6 +141,18 @@ private struct PremiumUpgradeButton: View {
                 )
             }
         }
+    }
+}
+
+private struct PremiumYearlyPercent: View {
+    var body: some View {
+        VStack {
+            Text("Save 25%")
+                .style(.percentSaved)
+                .multilineTextAlignment(.center)
+        }
+        .frame(width: 60, height: 60, alignment: .center)
+        .background(Circle().fill(Color(.ui.teal3)))
     }
 }
 
@@ -187,13 +207,17 @@ private extension Style {
         style.with(alignment: .center)
     }
 
-    static let featureRow = Style.settings.row.default
+    static let featureRow = Style.settings.row.default.with(size: .p3)
 
-    static let yearlyPremiumRow = Style.settings.row.darkBackground.default
+    static let monthlyPremiumRow = Style.settings.row.default.with(size: .h4).with(weight: .medium)
 
-    static let pricing = Style.featureRow.with(size: .p5)
+    static let yearlyPremiumRow = Style.settings.row.darkBackground.default.with(size: .h4).with(weight: .medium)
 
-    static let yearlyPricing = Style.yearlyPremiumRow.with(size: .p5)
+    static let pricing = Style.featureRow.with(size: .p4)
+
+    static let yearlyPricing = Style.yearlyPremiumRow.with(size: .p4)
+
+    static let percentSaved = Style.yearlyPremiumRow.with(size: .p3).with(weight: .medium)
 
     static let info = Style.body.sansSerif.with(size: .p4).with(color: .ui.grey4)
 
