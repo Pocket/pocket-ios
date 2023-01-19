@@ -27,6 +27,11 @@ struct PremiumUpgradeView: View {
         }
     }
 
+    struct OffsetConstant {
+        static var offsetX: CGFloat = 10
+        static var offsetY: CGFloat = -30
+    }
+
     private var upgradeView: some View {
         ScrollView(showsIndicators: false) {
             VStack(spacing: 40) {
@@ -36,12 +41,10 @@ struct PremiumUpgradeView: View {
                 HStack {
                     PremiumUpgradeButton(text: "TBD", pricing: "$0.00/month", isYearly: false)
                     Spacer().frame(width: 28)
-                    ZStack {
-                        GeometryReader { proxy in
-                            PremiumUpgradeButton(text: "TBD", pricing: "$0.00/year", isYearly: true)
-                            PremiumYearlyPercent()
-                                .offset(x: proxy.size.width * 0.7, y: -proxy.size.height * 0.4)
-                        }
+                    ZStack(alignment: .topTrailing) {
+                        PremiumUpgradeButton(text: "TBD", pricing: "$0.00/year", isYearly: true)
+                        PremiumYearlyPercent()
+                            .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
                     }
                 }
                 PremiumInfoView()
