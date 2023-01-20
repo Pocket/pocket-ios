@@ -14,11 +14,7 @@ class OnlineSearch {
     private let scope: SearchScope
 
     @Published
-    var results: [SearchItem]? {
-        didSet {
-            subscriptions = []
-        }
-    }
+    var results: [SearchItem]?
 
     init(source: Source, scope: SearchScope) {
         self.source = source
@@ -42,10 +38,5 @@ class OnlineSearch {
         Task {
             await searchService.search(for: term, scope: scope)
         }
-    }
-
-    func clear() {
-        cache = [:]
-        subscriptions = []
     }
 }

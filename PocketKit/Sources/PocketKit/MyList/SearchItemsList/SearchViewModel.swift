@@ -16,10 +16,10 @@ class SearchViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let source: Source
 
-    private let savesLocalSearch: LocalSavesSearch
-    private let savesOnlineSearch: OnlineSearch
-    private let archiveOnlineSearch: OnlineSearch
-    private let allOnlineSearch: OnlineSearch
+    private var savesLocalSearch: LocalSavesSearch
+    private var savesOnlineSearch: OnlineSearch
+    private var archiveOnlineSearch: OnlineSearch
+    private var allOnlineSearch: OnlineSearch
 
     private var isOffline: Bool {
         networkPathMonitor.currentNetworkPath.status == .unsatisfied
@@ -103,7 +103,7 @@ class SearchViewModel: ObservableObject {
             emptyState = searchResultState()
             return
         }
-        submitSearch(with: term)
+        submitSearch(with: term, scope: selectedScope)
 
         showRecentSearches = false
         recentSearches = updateRecentSearches(with: term)
@@ -112,14 +112,14 @@ class SearchViewModel: ObservableObject {
     func clear() {
         searchResults = []
         subscriptions = []
-        savesLocalSearch.clear()
-        savesOnlineSearch.clear()
-        archiveOnlineSearch.clear()
-        allOnlineSearch.clear()
+        savesLocalSearch = LocalSavesSearch(source: source)
+        savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
+        archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
+        allOnlineSearch = OnlineSearch(source: source, scope: .all)
     }
 
-    private func submitSearch(with term: String) {
-        switch selectedScope {
+    private func submitSearch(with term: String, scope: SearchScope) {
+        switch scope {
         case .saves:
             // TODO: Handle Offline for Premium https://getpocket.atlassian.net/browse/IN-971
             guard isPremium else {

@@ -14,7 +14,6 @@ class OnlineSearchTests: XCTestCase {
     private var source: MockSource!
     private var searchService: MockSearchService!
     private var user: MockUser!
-    private var subscriptions: [AnyCancellable] = []
 
     override func setUpWithError() throws {
         source = MockSource()
@@ -34,8 +33,6 @@ class OnlineSearchTests: XCTestCase {
         XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
         XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .saves)
 
-        searchService._results = []
-
         sut.search(with: "search-term")
         XCTAssertEqual(sut.results?.count, 2)
         XCTAssertNil(searchService.searchCall(at: 1))
@@ -48,8 +45,6 @@ class OnlineSearchTests: XCTestCase {
         XCTAssertEqual(sut.results?.count, 2)
         XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
         XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .archive)
-
-        searchService._results = []
 
         sut.search(with: "search-term")
         XCTAssertEqual(sut.results?.count, 2)
@@ -64,34 +59,9 @@ class OnlineSearchTests: XCTestCase {
         XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
         XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .all)
 
-        searchService._results = []
-
         sut.search(with: "search-term")
         XCTAssertEqual(sut.results?.count, 2)
         XCTAssertNil(searchService.searchCall(at: 1))
-    }
-
-    func test_clear_emptiesCaches() async {
-        let sut = subject()
-        sut.search(with: "search-term")
-        await setupOnlineSearch(with: "search-term")
-        XCTAssertEqual(sut.results?.count, 2)
-        XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
-        XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .saves)
-
-        sut.clear()
-        sut.search(with: "search-term")
-
-        await withCheckedContinuation { continuation in
-            searchService.stubSearch { _, _ in
-                self.searchService._results = []
-                continuation.resume()
-            }
-        }
-
-        XCTAssertEqual(sut.results?.count, 0)
-        XCTAssertEqual(searchService.searchCall(at: 1)?.term, "search-term")
-        XCTAssertEqual(searchService.searchCall(at: 1)?.scope, .saves)
     }
 
     private func setupOnlineSearch(with term: String) async {

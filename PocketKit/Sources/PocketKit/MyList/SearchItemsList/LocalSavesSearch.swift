@@ -20,8 +20,4 @@ class LocalSavesSearch {
         cache[term] = items
         return cache[term] ?? []
     }
-
-    func clear() {
-        cache = [:]
-    }
 }

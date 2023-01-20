@@ -39,19 +39,6 @@ class LocalSavesSearchTests: XCTestCase {
         XCTAssertEqual(results.count, 2)
     }
 
-    func test_clear_emptiesCaches() throws {
-        try setupLocalSavesSearch()
-        let sut = subject()
-        var results = sut.search(with: "saved")
-        XCTAssertEqual(results.count, 2)
-
-        source.stubSearchItems { _ in return [] }
-
-        sut.clear()
-        results = sut.search(with: "saved")
-        XCTAssertEqual(results.count, 0)
-    }
-
     private func setupLocalSavesSearch() throws {
         let savedItems = (1...2).map {
             space.buildSavedItem(

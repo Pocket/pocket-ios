@@ -324,6 +324,22 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentSearches, ["search-term-3", "search-term-4", "search-term-5", "search-term-6", "search-term-2"])
     }
 
+    // MARK: - Clear
+    func test_clear_resetsSearchResults() async {
+        let term = "search-term"
+        user.status = .premium
+        await setupOnlineSearch(with: term)
+
+        let viewModel = subject()
+        viewModel.updateSearchResults(with: term)
+
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+
+        viewModel.clear()
+
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, [])
+    }
+
     private func setupLocalSavesSearch(with url: URL? = nil) throws {
         let savedItems = (1...2).map {
             space.buildSavedItem(
