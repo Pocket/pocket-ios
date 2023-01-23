@@ -78,6 +78,7 @@
         "EmptyStateTests",
         "FavoriteAnItemTests",
         "PullToRefreshTests",
+        "ReaderTests",
         "ReportARecommendationTests",
         "SaveToPocketTests",
         "SavesFiltersTests",

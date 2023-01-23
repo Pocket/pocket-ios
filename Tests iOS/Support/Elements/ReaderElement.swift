@@ -15,6 +15,74 @@ struct ReaderElement: PocketUIElement {
         return ReaderToolbarElement(element.navigationBars.element(boundBy: 0))
     }
 
+    var savesBackButton: XCUIElement {
+        element.buttons["Saves"]
+    }
+
+    var archiveButton: XCUIElement {
+        element.buttons["archiveNavButton"]
+    }
+
+    var overflowButton: XCUIElement {
+        element.buttons["more"]
+    }
+
+    var displaySettingsButton: XCUIElement {
+        element.buttons["Display Settings"]
+    }
+
+    var favoriteButton: XCUIElement {
+        element.buttons["Favorite"]
+    }
+
+    var addTagsButton: XCUIElement {
+        element.buttons["Add Tags"]
+    }
+
+    var deleteButton: XCUIElement {
+        element.buttons["Delete"]
+    }
+
+    var deleteNoButton: XCUIElement {
+        element.buttons["No"]
+    }
+
+    var deleteYesButton: XCUIElement {
+        element.buttons["Yes"]
+    }
+
+    var shareButton: XCUIElement {
+        element.buttons["Share"]
+    }
+
+    var fontButton: XCUIElement {
+        element.collectionViews.cells.staticTexts["Font"]
+    }
+
+    func fontSelection(fontName: String) -> XCUIElement {
+        element.collectionViews.buttons[fontName]
+    }
+
+    var fontStepperIncreaseButton: XCUIElement {
+        element.collectionViews.steppers["Font Size"].buttons["Increment"]
+    }
+
+    var fontStepperDecreaseButton: XCUIElement {
+        element.collectionViews.steppers["Font Size"].buttons["Decrement"]
+    }
+
+    var safariButton: XCUIElement {
+        element.buttons["safari"]
+    }
+
+    var safariDoneButton: XCUIElement {
+        element.buttons["Done"]
+    }
+
+    var unsupportedElementOpenButton: XCUIElement {
+        element.buttons["Open in Web View"]
+    }
+
     func cell(containing string: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS %@", string)
         return element
