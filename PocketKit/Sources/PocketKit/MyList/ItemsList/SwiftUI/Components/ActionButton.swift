@@ -20,7 +20,7 @@ struct ActionButton: View {
                 Image(uiImage: image)
                     .actionButtonStyle(selected: selected, trailingPadding: trailingPadding)
                     .accessibilityIdentifier(action.accessibilityIdentifier)
-            }
+            }.buttonStyle(.borderless)
         }
     }
 }

@@ -84,13 +84,21 @@ extension Response {
     }
 
     static func searchList(_ type: SearchScope) -> Response {
+        var fixtureName = "search-list"
         switch type {
         case .saves:
-            return fixture(named: "search-list")
+            fixtureName = "search-list"
         case .archive:
-            return fixture(named: "search-list-archive")
+            fixtureName = "search-list-archive"
         case .all:
-            return fixture(named: "search-list-all")
+            fixtureName = "search-list-all"
+        }
+
+        return Response {
+            Status.ok
+            Fixture.load(name: fixtureName)
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
         }
     }
 

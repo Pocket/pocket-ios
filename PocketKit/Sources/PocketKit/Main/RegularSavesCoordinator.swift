@@ -103,6 +103,11 @@ class RegularSavesCoordinator: NSObject {
             self?.presentSortMenu(presentedSortFilterViewModel: presentedSortFilterViewModel)
         }.store(in: &subscriptions)
 
+        // Saves/Search
+        model.searchList.$selectedItem.sink { [weak self] selectedSavedItem in
+            self?.showSavesItem(selectedSavedItem)
+        }.store(in: &subscriptions)
+
         isResetting = false
     }
 
