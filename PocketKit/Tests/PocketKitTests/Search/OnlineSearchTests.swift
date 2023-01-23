@@ -3,11 +3,11 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import XCTest
-import Sync
 import PocketGraph
 import Combine
 import SharedPocketKit
 
+@testable import Sync
 @testable import PocketKit
 
 class OnlineSearchTests: XCTestCase {
@@ -65,7 +65,7 @@ class OnlineSearchTests: XCTestCase {
     }
 
     private func setupOnlineSearch(with term: String) async {
-        let item = SearchSavedItemParts(data: DataDict([
+        let itemParts = SavedItemParts(data: DataDict([
             "__typename": "SavedItem",
             "item": [
                 "__typename": "Item",
@@ -75,6 +75,7 @@ class OnlineSearchTests: XCTestCase {
             ]
         ], variables: nil))
 
+        let item = SearchSavedItem(remoteItem: itemParts)
         await withCheckedContinuation { continuation in
             searchService.stubSearch { _, _ in
                 self.searchService._results = [item, item]

@@ -652,4 +652,16 @@ extension PocketSource {
     public func searchSaves(search: String) -> [SavedItem]? {
         try? space.fetchSavedItems(bySearchTerm: search, userPremium: user.status == .premium)
     }
+
+    public func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+        var savedItem: SavedItem? = try? space.fetchSavedItem(byRemoteID: remoteID)
+        guard savedItem == nil else { return savedItem }
+        savedItem = space.new()
+        try? space.save()
+
+        if let remoteParts = remoteParts {
+            savedItem?.update(from: remoteParts, with: space)
+        }
+        return savedItem
+    }
 }

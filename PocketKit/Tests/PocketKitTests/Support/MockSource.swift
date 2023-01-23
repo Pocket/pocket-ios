@@ -1025,3 +1025,35 @@ extension MockSource {
         return calls[index] as? SearchItemsCall
     }
 }
+
+// MARK: - Fetch SavedItem by Remote ID
+extension MockSource {
+    private static let fetchSavedItem = "fetchSavedItem"
+    typealias FetchSavedItemImpl = (String) -> SavedItem?
+
+    struct FetchSavedItemCall {
+        let remoteID: String
+    }
+
+    func stubFetchSavedItem(impl: @escaping FetchSavedItemImpl) {
+        implementations[Self.fetchSavedItem] = impl
+    }
+
+    func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+        guard let impl = implementations[Self.fetchSavedItem] as? FetchSavedItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchSavedItem] = (calls[Self.fetchSavedItem] ?? []) + [FetchSavedItemCall(remoteID: remoteID)]
+        return impl(remoteID)
+    }
+
+    func fetchSavedItemCall(at index: Int) -> FetchSavedItemCall? {
+        guard let calls = calls[Self.fetchSavedItem],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchSavedItemCall
+    }
+}
