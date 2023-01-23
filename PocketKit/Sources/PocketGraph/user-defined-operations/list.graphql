@@ -130,7 +130,7 @@ query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: Se
       edges {
         node {
             savedItem {
-                ...SearchSavedItemParts
+                ...SavedItemParts
             }
         }
         cursor
@@ -144,20 +144,4 @@ query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: Se
       totalCount
     }
   }
-}
-
-fragment SearchSavedItemParts on SavedItem {
-    url
-    isArchived
-    isFavorite
-    _deletedAt
-    _createdAt
-    archivedAt
-    tags {
-        ...TagParts
-    }
-    item {
-        ...SearchItemParts
-        ...PendingItemParts
-    }
 }

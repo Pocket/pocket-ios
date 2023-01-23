@@ -2,9 +2,17 @@ import Foundation
 import PocketGraph
 import Sync
 
-extension SearchSavedItemParts: ItemsListItem {
+extension SearchSavedItem: ItemsListItem {
+    var remoteItemParts: PocketGraph.SavedItemParts? {
+        return remoteItem
+    }
+
     var id: String? {
         item.asItem?.remoteID
+    }
+
+    var isFavorite: Bool {
+        remoteItem.isFavorite
     }
 
     var title: String? {
@@ -19,8 +27,8 @@ extension SearchSavedItemParts: ItemsListItem {
     }
 
     var topImageURL: URL? {
-        guard let topImage = item.asItem?.topImage else { return nil }
-        return URL(string: topImage.url)
+        guard let topImageUrl = item.asItem?.topImageUrl else { return nil }
+        return URL(string: topImageUrl)
     }
 
     var domain: String? {
@@ -44,8 +52,8 @@ extension SearchSavedItemParts: ItemsListItem {
     }
 
     var tagNames: [String]? {
-        self.tags?.compactMap { $0.name }
+        remoteItem.tags?.compactMap { $0.name }
     }
 }
 
-extension SearchSavedItemParts.Item.AsItem.DomainMetadata: ItemsListItemDomainMetadata { }
+extension SavedItemParts.Item.AsItem.DomainMetadata: ItemsListItemDomainMetadata { }

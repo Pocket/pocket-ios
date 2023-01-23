@@ -1,6 +1,8 @@
 import XCTest
 import SharedPocketKit
 import PocketGraph
+import Analytics
+import Combine
 
 @testable import Sync
 @testable import PocketKit
@@ -12,11 +14,14 @@ class SearchViewModelTests: XCTestCase {
     private var source: MockSource!
     private var space: Space!
     private var searchService: MockSearchService!
+    private var tracker: MockTracker!
+    private var subscriptions: [AnyCancellable] = []
 
     override func setUpWithError() throws {
         networkPathMonitor = MockNetworkPathMonitor()
         user = MockUser()
         source = MockSource()
+        tracker = MockTracker()
         userDefaults = UserDefaults(suiteName: "SearchViewModelTests")
         space = .testSpace()
         searchService = MockSearchService()
@@ -35,13 +40,15 @@ class SearchViewModelTests: XCTestCase {
         networkPathMonitor: NetworkPathMonitor? = nil,
         user: User? = nil,
         userDefaults: UserDefaults? = nil,
-        source: Source? = nil
+        source: Source? = nil,
+        tracker: Tracker? = nil
     ) -> SearchViewModel {
         SearchViewModel(
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user ?? self.user,
             userDefaults: userDefaults ?? self.userDefaults,
-            source: source ?? self.source
+            source: source ?? self.source,
+            tracker: tracker ?? self.tracker
         )
     }
 
@@ -355,7 +362,7 @@ class SearchViewModelTests: XCTestCase {
 
     private func setupOnlineSearch(with term: String) async {
         searchService.stubSearch { _, _ in }
-        let item = SearchSavedItemParts(data: DataDict([
+        let itemParts = SavedItemParts(data: DataDict([
             "__typename": "SavedItem",
             "item": [
                 "__typename": "Item",
@@ -365,6 +372,7 @@ class SearchViewModelTests: XCTestCase {
             ]
         ], variables: nil))
 
+        let item = SearchSavedItem(remoteItem: itemParts)
         searchService._results = [item]
     }
 }
