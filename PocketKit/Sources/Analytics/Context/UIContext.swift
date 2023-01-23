@@ -71,6 +71,7 @@ extension UIContext {
         case home
         case saves = "saves"
         case archive
+        case search
         case favorites
         case reader
         case item
@@ -161,6 +162,7 @@ extension UIContext {
         public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .saves)
         public let saves = UIContext(type: .list, hierarchy: 0, identifier: .saves)
         public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
+        public let search = UIContext(type: .list, hierarchy: 0, identifier: .search)
         public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
         public let sortFilterSheet = UIContext(type: .screen, identifier: .sortFilterSheet)
 

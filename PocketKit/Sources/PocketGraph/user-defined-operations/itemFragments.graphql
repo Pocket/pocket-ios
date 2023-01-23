@@ -92,37 +92,3 @@ fragment ItemSummary on Item {
     }
   }
 }
-
-fragment SearchItemParts on Item {
-  remoteID: itemId
-  givenUrl
-  resolvedUrl
-  title
-  topImage {
-    url
-  }
-  timeToRead
-  domain
-  datePublished
-  isArticle
-  hasImage
-  hasVideo
-  authors {
-    id
-    name
-    url
-  }
-  domainMetadata {
-    ...DomainMetadataParts
-  }
-  images {
-    height
-    width
-    src
-    imageId
-  }
-  syndicatedArticle {
-    itemId
-  }
-}
-
