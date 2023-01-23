@@ -12,7 +12,7 @@ struct SearchView: View {
 
     var body: some View {
         if let results = viewModel.searchResults, !results.isEmpty {
-            ResultsView(results: results)
+            ResultsView(viewModel: viewModel, results: results)
         } else if viewModel.showRecentSearches == true, !viewModel.recentSearches.isEmpty {
             RecentSearchView(viewModel: viewModel, recentSearches: viewModel.recentSearches)
         } else if let emptyState = viewModel.emptyState {
@@ -23,18 +23,32 @@ struct SearchView: View {
 
 // MARK: - Search Results Component
 struct ResultsView: View {
+    @ObservedObject
+    var viewModel: SearchViewModel
     var results: [SearchItem]
+
+    @State private var showingAlert = false
+
     var body: some View {
-        List {
-            ForEach(results, id: \.id) { item in
-                HStack {
-                    ListItem(model: item)
-                    Spacer()
-                }
+        List(results, id: \.id) { item in
+            HStack {
+                ListItem(model: item)
+                Spacer()
             }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                if viewModel.isOffline {
+                    showingAlert = true
+                } else {
+                    viewModel.select(item)
+                }
+            }.accessibilityIdentifier("search-results-item")
         }
         .listStyle(.plain)
         .accessibilityIdentifier("search-results")
+        .alert(isPresented: $showingAlert) {
+            Alert(title: Text("You must have an internet connection to view this item."), dismissButton: .default(Text("OK")))
+        }
     }
 }
 

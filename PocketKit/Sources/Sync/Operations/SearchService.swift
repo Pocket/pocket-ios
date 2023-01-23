@@ -6,8 +6,19 @@ import SharedPocketKit
 import Combine
 
 public protocol SearchService: AnyObject {
-    var results: Published<[SearchSavedItemParts]>.Publisher { get }
+    var results: Published<[SearchSavedItem]>.Publisher { get }
     func search(for term: String, scope: SearchScope) async
+}
+
+public struct SearchSavedItem {
+    public var remoteItem: SavedItem.RemoteSavedItem
+    public var item: SavedItem.RemoteSavedItem.Item
+    public var cursor: String?
+
+    init(remoteItem: SavedItem.RemoteSavedItem) {
+        self.remoteItem = remoteItem
+        self.item = remoteItem.item
+    }
 }
 
 public class PocketSearchService: SearchService {
@@ -17,9 +28,11 @@ public class PocketSearchService: SearchService {
         }
     }
 
+    typealias SearchItemEdge = SearchSavedItemsQuery.Data.User.SearchSavedItems.Edge
+
     @Published
-    private var _results: [SearchSavedItemParts] = []
-    public var results: Published<[SearchSavedItemParts]>.Publisher { $_results }
+    private var _results: [SearchSavedItem] = []
+    public var results: Published<[SearchSavedItem]>.Publisher { $_results }
 
     private let apollo: ApolloClientProtocol
 
@@ -38,7 +51,7 @@ public class PocketSearchService: SearchService {
 
     private func fetch(for term: String, scope: SearchScope) async throws {
         var shouldFetchNextPage = true
-        var items: [SearchSavedItemParts] = []
+        var items: [SearchSavedItem] = []
         var pagination = PaginationInput(first: GraphQLNullable<Int>(integerLiteral: Constants.pageSize))
 
         while shouldFetchNextPage {
@@ -46,7 +59,9 @@ public class PocketSearchService: SearchService {
             let query = SearchSavedItemsQuery(term: term, pagination: .init(pagination), filter: .some(filter))
             let result = try await apollo.fetch(query: query)
             result.data?.user?.searchSavedItems?.edges.forEach { edge in
-                items.append(edge.node.savedItem.fragments.searchSavedItemParts)
+                var searchSavedItem = SearchSavedItem(remoteItem: edge.node.savedItem.fragments.savedItemParts)
+                searchSavedItem.cursor = edge.cursor
+                items.append(searchSavedItem)
             }
             if let pageInfo = result.data?.user?.searchSavedItems?.pageInfo {
                 pagination.after = pageInfo.endCursor ?? .none

@@ -115,6 +115,12 @@ class CompactSavesContainerCoordinator: NSObject {
             self?.present(tagsFilterViewModel: tagsFilterViewModel)
         }.store(in: &subscriptions)
 
+        // Search navigation
+        model.searchList.$selectedItem.sink { [weak self] selectedArchivedItem in
+            guard let selectedArchivedItem = selectedArchivedItem else { return }
+            self?.navigate(selectedItem: selectedArchivedItem)
+        }.store(in: &subscriptions)
+
         isResetting = false
         navigationController.delegate = self
     }

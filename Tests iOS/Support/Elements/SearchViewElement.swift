@@ -34,4 +34,8 @@ struct SearchViewElement: PocketUIElement {
 
         return query["search-results"]
     }
+
+    func searchItemCell(at index: Int) -> XCUIElement {
+        return searchResultsView.cells.element(boundBy: index)
+    }
 }
