@@ -5,8 +5,8 @@ import PocketGraph
 
 class MockSearchService: SearchService {
     @Published
-    var _results: [SearchSavedItemParts] = []
-    var results: Published<[SearchSavedItemParts]>.Publisher { $_results }
+    var _results: [SearchSavedItem] = []
+    var results: Published<[SearchSavedItem]>.Publisher { $_results }
 
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]

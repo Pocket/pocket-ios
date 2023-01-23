@@ -32,13 +32,13 @@
                                     "title": "Item 1",
                                     "givenUrl": "http://localhost:8080/hello",
                                     "resolvedUrl": "http://localhost:8080/hello",
-                                    "topImage": {
-                                        "__typename": "Image",
-                                        "url": "https://example.com/item-1/top-image.jpg",
-                                    },
+                                    "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                     "domain": null,
+                                    "language": "en",
                                     "timeToRead": 6,
+                                    "marticle": [],
                                     "datePublished": "2021-01-01 12:01:01",
+                                    "excerpt": "Cursus Aenean Elit",
                                     "authors": [
                                         {
                                             "__typename": "Author",
@@ -102,13 +102,13 @@
                                     "title": "Item 2",
                                     "givenUrl": "http://localhost:8080/hello",
                                     "resolvedUrl": "http://localhost:8080/hello",
-                                    "topImage": {
-                                        "__typename": "Image",
-                                        "url": "https://example.com/item-1/top-image.jpg",
-                                    },
+                                    "topImageUrl": "https://example.com/item-1/top-image.jpg",
                                     "domain": null,
+                                    "language": "en",
                                     "timeToRead": 6,
+                                    "marticle": [],
                                     "datePublished": "2021-01-01 12:01:01",
+                                    "excerpt": "Cursus Aenean Elit",
                                     "authors": [
                                         {
                                             "__typename": "Author",

@@ -1,4 +1,5 @@
 import Foundation
+import PocketGraph
 
 protocol ItemsListItem {
     var id: String? { get }
@@ -12,6 +13,13 @@ protocol ItemsListItem {
     var isPending: Bool { get }
     var host: String? { get }
     var tagNames: [String]? { get }
+    var remoteItemParts: SavedItemParts? { get }
+}
+
+extension ItemsListItem {
+    var remoteItemParts: SavedItemParts? {
+        return nil
+    }
 }
 
 protocol ItemsListItemDomainMetadata {

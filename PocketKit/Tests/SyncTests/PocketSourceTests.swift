@@ -708,6 +708,31 @@ extension PocketSourceTests {
         XCTAssertEqual(noResults?.count, 0)
     }
 
+    func test_fetchOrCreateSavedItem_retrievesItem() throws {
+        let itemParts = SavedItemParts(data: DataDict([
+            "__typename": "SavedItem",
+            "remoteID": "saved-item",
+            "url": "http://localhost:8080/hello",
+            "_createdAt": 1,
+            "isArchived": false,
+            "isFavorite": false,
+            "item": [
+                "__typename": "Item",
+                "remoteID": "item-1",
+                "title": "item-title",
+                "givenUrl": "http://localhost:8080/hello",
+                "resolvedUrl": "http://localhost:8080/hello"
+            ]
+        ], variables: nil))
+
+        let source = subject()
+        let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemParts)
+
+        XCTAssertEqual(savedItem?.remoteID, "saved-item")
+        XCTAssertEqual(savedItem?.item?.title, "item-title")
+        XCTAssertEqual(savedItem?.item?.bestURL?.absoluteString, "http://localhost:8080/hello")
+    }
+
     private func setupLocalSavesSearch(with url: URL? = nil) throws {
         _ = (1...2).map {
             space.buildSavedItem(

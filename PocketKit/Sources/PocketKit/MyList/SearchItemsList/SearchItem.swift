@@ -52,4 +52,8 @@ struct SearchItem {
             print("Overflow button tapped!")
         })
     }
+
+    var remoteItemParts: SavedItemParts? {
+        item.remoteItemParts
+    }
 }
