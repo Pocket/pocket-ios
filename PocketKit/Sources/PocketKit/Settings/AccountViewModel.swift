@@ -17,9 +17,9 @@ class AccountViewModel: ObservableObject {
 
     init(appSession: AppSession, user: User, userDefaults: UserDefaults, notificationCenter: NotificationCenter) {
         self.appSession = appSession
+        self.user = user
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
-        self.user = user
     }
 
     func signOut() {
