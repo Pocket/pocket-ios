@@ -8,6 +8,7 @@ public enum Status: String {
 }
 
 public protocol User {
+    var status: Status? { get }
     func setPremiumStatus(_ isPremium: Bool)
     func clear()
 }

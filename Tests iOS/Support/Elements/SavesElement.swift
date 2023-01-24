@@ -15,7 +15,12 @@ struct SavesElement: PocketUIElement {
         return SelectionSwitcherElement(element.otherElements["saves-selection-switcher"])
     }
 
-    var tagsFilterView: TagsFilterViewElement { TagsFilterViewElement(element.otherElements["filter-tags"])
+    var tagsFilterView: TagsFilterViewElement {
+        TagsFilterViewElement(element.otherElements["filter-tags"])
+    }
+
+    var searchView: SearchViewElement {
+        SearchViewElement(element.otherElements["search-view"])
     }
 
     private var collectionView: XCUIElement {
@@ -46,6 +51,10 @@ struct SavesElement: PocketUIElement {
 
     func emptyStateView(for type: String) -> XCUIElement {
         element.otherElements[type]
+    }
+
+    func searchEmptyStateView(for type: String) -> XCUIElement {
+        element.images[type]
     }
 
     var archiveSwipeButton: XCUIElement {

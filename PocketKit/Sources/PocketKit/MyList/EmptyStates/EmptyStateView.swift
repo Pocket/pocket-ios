@@ -40,8 +40,6 @@ struct EmptyStateView: View {
     @State
     private var showSafariView = false
 
-    static let maxWidth: CGFloat = 300
-
     init(viewModel: EmptyStateViewModel) {
         self.viewModel = viewModel
     }
@@ -51,7 +49,7 @@ struct EmptyStateView: View {
             Image(asset: viewModel.imageAsset)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: Self.maxWidth)
+                .frame(maxWidth: viewModel.maxWidth)
 
             VStack(alignment: .center, spacing: 20) {
                 Text(viewModel.headline).style(.main)
@@ -78,7 +76,7 @@ struct EmptyStateView: View {
                     }
                 }
             }
-        }
+        }.accessibilityIdentifier(viewModel.accessibilityIdentifier)
     }
 }
 
