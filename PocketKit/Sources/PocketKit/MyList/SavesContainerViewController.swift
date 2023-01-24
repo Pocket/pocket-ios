@@ -1,5 +1,7 @@
 import UIKit
 import SwiftUI
+import Sync
+import SharedPocketKit
 
 struct SelectionItem {
     let title: String
@@ -29,9 +31,14 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
+    private let networkPathMonitor: NetworkPathMonitor
+    private let user: User
+    private var searchViewModel: SearchViewModel?
 
-    init(viewControllers: [SelectableViewController]) {
+    init(networkPathMonitor: NetworkPathMonitor, user: User, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
+        self.networkPathMonitor = networkPathMonitor
+        self.user = user
         self.viewControllers = viewControllers
         self.isFromSaves = true
 
@@ -106,11 +113,17 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         setupSearch()
     }
 
+    // MARK: Search
+
     private func setupSearch() {
-        navigationItem.searchController = UISearchController(searchResultsController: UIHostingController(rootView: SearchViewController()))
+        let searchViewModel = SearchViewModel(networkPathMonitor: networkPathMonitor, user: user)
+        self.searchViewModel = searchViewModel
+        let searchViewController = UIHostingController(rootView: SearchView(viewModel: searchViewModel))
+        navigationItem.searchController = UISearchController(searchResultsController: searchViewController)
         navigationItem.searchController?.searchBar.delegate = self
+        navigationItem.searchController?.view.accessibilityIdentifier = "search-view"
         navigationItem.searchController?.searchBar.accessibilityHint = "Search"
-        navigationItem.searchController?.searchBar.scopeButtonTitles = ["Saves", "Archive", "All Items"]
+        navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
         if #available(iOS 16.0, *) {
             navigationItem.searchController?.scopeBarActivation = .onSearchActivation
         } else {
@@ -119,12 +132,25 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         navigationItem.searchController?.showsSearchResultsController = true
     }
 
-    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-        updateSearchScope(fromSaves: isFromSaves)
+    func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
+        guard let titles = searchBar.scopeButtonTitles else { return }
+        searchViewModel?.updateScope(with: SearchScope(rawValue: titles[selectedScope]) ?? .saves)
     }
 
-    func updateSearchScope(fromSaves: Bool) {
-        self.isFromSaves = fromSaves
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        guard let text = searchBar.text, !text.isEmpty else { return }
+        searchViewModel?.updateSearchResults(with: text)
+    }
+
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        guard navigationItem.searchController?.isActive == false else { return }
+        updateSearchScope()
+    }
+
+    func updateSearchScope() {
+        let scope: SearchScope = isFromSaves ? .saves : .archive
+        searchViewModel?.updateScope(with: scope)
+
         if isFromSaves {
             navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 0
         } else {
