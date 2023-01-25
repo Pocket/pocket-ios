@@ -5,6 +5,9 @@ struct PremiumUpgradeView: View {
     @Environment(\.dismiss)
     private var dismiss
 
+    @ObservedObject
+    var viewModel: PremiumUpgradeViewModel
+
     var body: some View {
         VStack(spacing: 0) {
             dismissButton
@@ -159,6 +162,7 @@ private struct PremiumYearlyPercent: View {
     }
 }
 
+// TODO: localization
 private struct PremiumInfoView: View {
     private let text = """
 Subscriptions will be charged to your credit card through your iTunes account. \
@@ -174,6 +178,7 @@ Refunds are not available for unused portions of a subscription.
     }
 }
 
+// TODO: localization
 private struct PremiumTermsView: View {
     var body: some View {
         HStack(spacing: 16) {
