@@ -347,4 +347,4 @@ app:
 meta:
   bitrise.io:
     machine_type_id: g2.4core
-    stack: osx-xcode-14.1.x
+    stack: osx-xcode-14.2.x-ventura
