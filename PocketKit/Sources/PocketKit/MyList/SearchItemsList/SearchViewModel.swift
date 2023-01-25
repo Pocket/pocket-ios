@@ -34,6 +34,8 @@ class SearchViewModel: ObservableObject {
         return user.status == .premium
     }
 
+    var isPremiumAndOffline: Bool = false
+
     private var selectedScope: SearchScope = .saves
 
     @Published
@@ -86,6 +88,8 @@ class SearchViewModel: ObservableObject {
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
+
+        isPremiumAndOffline = isPremium && isOffline
     }
 
     func updateScope(with scope: SearchScope, searchTerm: String? = nil) {
