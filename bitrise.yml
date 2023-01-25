@@ -70,6 +70,7 @@ workflows:
             - packages: swiftlint
       - activate-ssh-key@4: {}
       - git-clone@6: {}
+      - certificate-and-profile-installer@1: {}
       - file-downloader@1:
           inputs:
             - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
@@ -211,9 +212,6 @@ workflows:
                 COMPILER_INDEX_STORE_ENABLE = NO
                 CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - configuration: Debug
-            - automatic_code_signing: api-key
-            - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
-            - api_key_issuer_id: '$API_KEY_ISSUER_ID'
       - deploy-to-bitrise-io@2: {}
       - slack@3:
           inputs:
