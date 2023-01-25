@@ -347,6 +347,32 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, [])
     }
 
+    func test_search_whenDeviceRegainsInternetConnection_submitsSearch() async {
+        await setupOnlineSearch(with: "search-term")
+
+        let viewModel = subject()
+        networkPathMonitor.update(status: .unsatisfied)
+        let offlineExpectation = expectation(description: "handle offline scenario")
+        let onlineExpectation = expectation(description: "handle online scenario")
+
+        var count = 0
+        viewModel.$searchResults.sink { results in
+            count += 1
+            if count == 1 {
+                XCTAssertNil(results)
+                offlineExpectation.fulfill()
+            } else if count == 2 {
+                XCTAssertEqual(results?.compactMap { $0.title.string }, ["search-term"])
+                onlineExpectation.fulfill()
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.updateScope(with: .archive, searchTerm: "search-term")
+        XCTAssertTrue(viewModel.emptyState is OfflineEmptyState)
+        networkPathMonitor.update(status: .satisfied)
+        wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
+    }
+
     private func setupLocalSavesSearch(with url: URL? = nil) throws {
         let savedItems = (1...2).map {
             space.buildSavedItem(
