@@ -70,7 +70,6 @@ workflows:
             - packages: swiftlint
       - activate-ssh-key@4: {}
       - git-clone@6: {}
-      - certificate-and-profile-installer@1: {}
       - file-downloader@1:
           inputs:
             - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
