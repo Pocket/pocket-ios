@@ -15,6 +15,7 @@ class SearchViewModel: ObservableObject {
     static let recentSearchesKey = "Search.recentSearches"
     private var subscriptions: [AnyCancellable] = []
     private let networkPathMonitor: NetworkPathMonitor
+    private var lastPathStatus: NWPath.Status?
     private let user: User
     private let userDefaults: UserDefaults
     private let source: Source
@@ -26,8 +27,10 @@ class SearchViewModel: ObservableObject {
 
     private let tracker: Tracker
 
+    private var currentSearchTerm: String?
+
     var isOffline: Bool {
-        networkPathMonitor.currentNetworkPath.status == .unsatisfied
+        return networkPathMonitor.currentNetworkPath.status == .unsatisfied
     }
 
     private var isPremium: Bool {
@@ -82,7 +85,6 @@ class SearchViewModel: ObservableObject {
         self.userDefaults = userDefaults
         self.source = source
         self.tracker = tracker
-        networkPathMonitor.start(queue: .global())
 
         savesLocalSearch = LocalSavesSearch(source: source)
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
@@ -90,6 +92,8 @@ class SearchViewModel: ObservableObject {
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
 
         isPremiumAndOffline = isPremium && isOffline
+        networkPathMonitor.start(queue: .global())
+        observeNetworkChanges()
     }
 
     func updateScope(with scope: SearchScope, searchTerm: String? = nil) {
@@ -111,14 +115,16 @@ class SearchViewModel: ObservableObject {
         }
 
         let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
+        currentSearchTerm = term
         guard !term.isEmpty else { return }
         guard !isOffline else {
             emptyState = searchResultState()
             return
         }
         submitSearch(with: term, scope: selectedScope)
-
-        showRecentSearches = false
+        DispatchQueue.main.async { [weak self] in
+            self?.showRecentSearches = false
+        }
         recentSearches = updateRecentSearches(with: term)
     }
 
@@ -129,6 +135,7 @@ class SearchViewModel: ObservableObject {
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
+        currentSearchTerm = nil
     }
 
     private func submitSearch(with term: String, scope: SearchScope) {
@@ -200,6 +207,23 @@ class SearchViewModel: ObservableObject {
             return nil
         }
         return RecentSearchEmptyState()
+    }
+
+    private func observeNetworkChanges() {
+        networkPathMonitor.updateHandler = { [weak self] path in
+            self?.handleNetworkChange(path)
+        }
+    }
+
+    private func handleNetworkChange(_ path: NetworkPath?) {
+        let currentPathStatus = path?.status
+
+        if lastPathStatus == .unsatisfied, currentPathStatus == .satisfied {
+            guard let currentSearchTerm, !currentSearchTerm.isEmpty, selectedScope == .archive || selectedScope == .all else { return }
+            updateSearchResults(with: currentSearchTerm)
+        }
+
+        lastPathStatus = currentPathStatus
     }
 }
 
