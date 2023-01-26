@@ -78,6 +78,10 @@ struct ReaderElement: PocketUIElement {
     var safariDoneButton: XCUIElement {
         element.buttons["Done"]
     }
+    
+    var readerHomeButton: XCUIElement {
+        element.buttons["Home"]
+    }
 
     var unsupportedElementOpenButton: XCUIElement {
         element.buttons["Open in Web View"]
