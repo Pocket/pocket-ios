@@ -77,4 +77,16 @@ struct HomeViewElement: PocketUIElement {
             .coordinate(withNormalizedOffset: origin)
             .press(forDuration: 0.1, thenDragTo: element.coordinate(withNormalizedOffset: destination), withVelocity: .fast, thenHoldForDuration: 1)
     }
+    
+    var overscrollText: XCUIElement {
+        element.otherElements["slate-detail-overscroll"]
+    }
+    
+    var seeAllCollectionButton: XCUIElement {
+        element.staticTexts["See All"]
+    }
+    
+    var returnToHomeButton: XCUIElement {
+        element.buttons["Home"]
+    }
 }

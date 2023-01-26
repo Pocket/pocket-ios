@@ -161,10 +161,8 @@ class ReportARecommendationTests: XCTestCase {
         // Swipe down to a syndicated item
         app.homeView.element.swipeUp()
         app.homeView.recommendationCell("Syndicated Article Rec, 1").wait().tap()
-
         app.readerView.readerToolbar.moreButton.tap()
         app.reportButton.wait().tap()
-
         app.reportView.wait()
     }
 }
