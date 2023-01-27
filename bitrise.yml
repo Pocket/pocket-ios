@@ -214,8 +214,7 @@ workflows:
             - configuration: Debug
             - automatic_code_signing: api-key
             - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
-            - api_key_issuer_id: '$API_KEY_ISSUER_ID'
-            - api_key_id: '$API_KEY_ID'
+            - api_issuer: '$API_KEY_ISSUER_ID'
       - deploy-to-bitrise-io@2: {}
       - slack@3:
           inputs:
