@@ -38,7 +38,7 @@ stages:
       # Build a test build
       - test-build: {}
       # Build a qa build
-      - qa-build: {}
+      - qa-build-automatic-provision: {}
 
   run-test-groups:
     workflows:
@@ -71,6 +71,38 @@ workflows:
       - activate-ssh-key@4: {}
       - git-clone@6: {}
       - certificate-and-profile-installer@1: {}
+      - file-downloader@1:
+          inputs:
+            - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+          title: Install production secrets.xcconfig
+      - resource-archive@2:
+          inputs:
+            - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
+            - archive_url: '$BITRISEIO_BASE_FONTS_URL'
+          title: Install fonts
+      - script@1:
+          title: Download latest schema
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+
+                # fail if any commands fails
+                set -e
+
+                cd PocketKit
+                swift package --allow-writing-to-package-directory apollo-cli-install
+                ./apollo-ios-cli fetch-schema
+                ./apollo-ios-cli generate
+
+    #Reusable workflow that is ran before each workflow to setup the necessary information
+  _setup-automatic-provision:
+    steps:
+      - brew-install@0:
+          inputs:
+            - packages: swiftlint
+      - activate-ssh-key@4: {}
+      - git-clone@6: {}
       - file-downloader@1:
           inputs:
             - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
@@ -222,6 +254,32 @@ workflows:
             - webhook_url: $SLACK_WEBHOOK_URL
     before_run:
       - _setup
+    after_run:
+      - _upload_sentry
+
+    qa-build-automatic-provision:
+    steps:
+      - file-downloader@1:
+          inputs:
+            - source: '$BITRISEIO_SECRETS_DEVELOPMENT_XCCONFIG_URL'
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
+          title: Install development secrets.xcconfig
+      - xcode-archive@4:
+          inputs:
+            - xcconfig_content: |-
+                COMPILER_INDEX_STORE_ENABLE = NO
+                CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
+            - configuration: Debug
+            - automatic_code_signing: api-key
+            - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
+            - api_issuer: '$API_KEY_ISSUER_ID'
+      - deploy-to-bitrise-io@2: {}
+      - slack@3:
+          inputs:
+            - channel: '#log-ios-qa-builds'
+            - webhook_url: $SLACK_WEBHOOK_URL
+    before_run:
+      - _setup-automatic-provision
     after_run:
       - _upload_sentry
 
