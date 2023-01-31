@@ -37,7 +37,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         appSession: Services.shared.appSession,
                         user: Services.shared.user,
                         userDefaults: Services.shared.userDefaults,
-                        notificationCenter: .default
+                        notificationCenter: .default,
+                        networkPathMonitor: NWPathMonitor()
                     )
                 ),
                 source: Services.shared.source,

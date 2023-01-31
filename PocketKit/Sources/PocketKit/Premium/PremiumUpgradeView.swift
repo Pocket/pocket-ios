@@ -12,6 +12,7 @@ struct PremiumUpgradeView: View {
         VStack(spacing: 0) {
             dismissButton
             upgradeView
+                .modifier(offlineAlert(isPresented: true))
         }
         .padding([.top, .bottom], 20)
         .background(PremiumBackgroundView())
@@ -42,10 +43,10 @@ struct PremiumUpgradeView: View {
                 Divider().background(Color(.ui.grey1))
                 PremiumUpgradeFeaturesView()
                 HStack {
-                    PremiumUpgradeButton(text: "TBD", pricing: "$0.00/month", isYearly: false)
+                    PremiumUpgradeButton(text: viewModel.monthlyText, pricing: viewModel.monthyFee, isYearly: false)
                     Spacer().frame(width: 28)
                     ZStack(alignment: .topTrailing) {
-                        PremiumUpgradeButton(text: "TBD", pricing: "$0.00/year", isYearly: true)
+                        PremiumUpgradeButton(text: viewModel.yearlyText, pricing: viewModel.yearlyFee, isYearly: true)
                         PremiumYearlyPercent()
                             .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
                     }
@@ -159,6 +160,21 @@ private struct PremiumYearlyPercent: View {
         }
         .frame(width: 60, height: 60, alignment: .center)
         .background(Circle().fill(Color(.ui.teal3)))
+    }
+}
+
+private struct offlineAlert: ViewModifier {
+    @State var isPresented: Bool
+
+    func body(content: Content) -> some View {
+        content
+            .alert(isPresented: $isPresented) {
+                Alert(
+                    title: Text("Looks like you're offline"),
+                    message: Text("You must be online to upgrade to Pocket Premium. Please check your connection and check again."),
+                    dismissButton: .default(Text("OK"))
+                )
+            }
     }
 }
 

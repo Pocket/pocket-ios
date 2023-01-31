@@ -15,15 +15,18 @@ class AccountViewModel: ObservableObject {
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
 
+    let premiumUpgrade: PremiumUpgradeViewModel
+
     public var isPremium: Bool {
         user.status == .premium
     }
 
-    init(appSession: AppSession, user: User, userDefaults: UserDefaults, notificationCenter: NotificationCenter) {
+    init(appSession: AppSession, user: User, userDefaults: UserDefaults, notificationCenter: NotificationCenter, premiumUpgradeViewModel: PremiumUpgradeViewModel? = nil, networkPathMonitor: NetworkPathMonitor) {
         self.appSession = appSession
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.user = user
+        self.premiumUpgrade = premiumUpgradeViewModel ?? PremiumUpgradeViewModel(networkPathMonitor: networkPathMonitor)
     }
 
     func signOut() {
