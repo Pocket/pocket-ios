@@ -5,8 +5,8 @@ import PocketGraph
 
 class MockSearchService: SearchService {
     @Published
-    var _results: [SearchSavedItem] = []
-    var results: Published<[SearchSavedItem]>.Publisher { $_results }
+    var _results: [SearchSavedItem]? = []
+    var results: Published<[SearchSavedItem]?>.Publisher { $_results }
 
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
@@ -14,7 +14,7 @@ class MockSearchService: SearchService {
 
 extension MockSearchService {
     private static let search = "search"
-    typealias SearchImpl = (String, SearchScope) -> Void
+    typealias SearchImpl = (String, SearchScope) throws -> Void
 
     struct SearchCall {
         let term: String
@@ -25,7 +25,7 @@ extension MockSearchService {
         implementations[Self.search] = impl
     }
 
-    func search(for term: String, scope: SharedPocketKit.SearchScope) {
+    func search(for term: String, scope: SharedPocketKit.SearchScope) throws {
         guard let impl = implementations[Self.search] as? SearchImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
@@ -34,7 +34,7 @@ extension MockSearchService {
             SearchCall(term: term, scope: scope)
         ]
 
-        impl(term, scope)
+        try impl(term, scope)
     }
 
     func searchCall(at index: Int) -> SearchCall? {

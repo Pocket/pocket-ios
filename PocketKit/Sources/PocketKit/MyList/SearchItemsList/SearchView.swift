@@ -8,7 +8,6 @@ import Textile
 struct SearchView: View {
     @ObservedObject
     var viewModel: SearchViewModel
-    var showTempResultsView: Bool = false
 
     var body: some View {
         if let results = viewModel.searchResults, !results.isEmpty {
@@ -29,7 +28,7 @@ struct ResultsView: View {
 
     @State private var showingAlert = false
 
-    @State var bannerData: BannerModifier.BannerData = BannerModifier.BannerData(image: .looking, title: "Limited search results", detail: "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.")
+    let bannerData: BannerModifier.BannerData = BannerModifier.BannerData(image: .looking, title: "Limited search results", detail: "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.")
 
     var body: some View {
         List(results, id: \.id) { item in
@@ -46,9 +45,10 @@ struct ResultsView: View {
                 }
             }.accessibilityIdentifier("search-results-item")
         }
+        .zIndex(-1)
         .listStyle(.plain)
         .accessibilityIdentifier("search-results")
-        .banner(data: $bannerData, show: $viewModel.isPremiumAndOffline)
+        .banner(data: bannerData, show: $viewModel.showBanner)
         .alert(isPresented: $showingAlert) {
             Alert(title: Text("You must have an internet connection to view this item."), dismissButton: .default(Text("OK")))
         }
