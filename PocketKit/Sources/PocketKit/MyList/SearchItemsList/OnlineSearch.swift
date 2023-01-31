@@ -14,7 +14,7 @@ class OnlineSearch {
     private let scope: SearchScope
 
     @Published
-    var results: [SearchItem]?
+    var results: Result<[SearchItem], Error>?
 
     init(source: Source, scope: SearchScope) {
         self.source = source
@@ -24,19 +24,25 @@ class OnlineSearch {
 
     func search(with term: String) {
         guard cache[term] == nil else {
-            results = cache[term] ?? []
+            results = .success(cache[term] ?? [])
             return
         }
 
         searchService.results.sink { [weak self] items in
-            guard let self else { return }
+            guard let self, let items else { return }
             let searchItems = items.compactMap { SearchItem(item: $0) }
             self.cache[term] = searchItems
-            self.results = self.cache[term] ?? []
+            self.results = .success(self.cache[term] ?? [])
         }.store(in: &subscriptions)
 
         Task {
-            await searchService.search(for: term, scope: scope)
+            do {
+                try await searchService.search(for: term, scope: scope)
+            } catch {
+                // TODO: How to handle errors
+                Crashlogger.capture(error: error)
+                self.results = .failure(error)
+            }
         }
     }
 }

@@ -26,7 +26,7 @@ class PocketSearchServiceTests: XCTestCase {
         )
     }
 
-    func test_search_forSaves_fetchesSearchSavedItemsQueryWithTerm() async {
+    func test_search_forSaves_fetchesSearchSavedItemsQueryWithTerm() async throws {
         apollo.setupSearchListResponse()
         let service = subject()
         let searchExpectation = expectation(description: "searchExpectation")
@@ -35,7 +35,7 @@ class PocketSearchServiceTests: XCTestCase {
             searchExpectation.fulfill()
         }.store(in: &cancellables)
 
-        await service.search(for: "search-term", scope: .saves)
+        try await service.search(for: "search-term", scope: .saves)
 
         wait(for: [searchExpectation], timeout: 1)
 
@@ -44,7 +44,7 @@ class PocketSearchServiceTests: XCTestCase {
         XCTAssertEqual(call?.query.filter.status, .init(.unread))
     }
 
-    func test_search_forArchive_fetchesSearchSavedItemsQueryWithTerm() async {
+    func test_search_forArchive_fetchesSearchSavedItemsQueryWithTerm() async throws {
         apollo.setupSearchListResponse()
         let service = subject()
         let searchExpectation = expectation(description: "searchExpectation")
@@ -53,7 +53,7 @@ class PocketSearchServiceTests: XCTestCase {
             searchExpectation.fulfill()
         }.store(in: &cancellables)
 
-        await service.search(for: "search-term", scope: .archive)
+        try await service.search(for: "search-term", scope: .archive)
 
         wait(for: [searchExpectation], timeout: 1)
 
@@ -62,7 +62,7 @@ class PocketSearchServiceTests: XCTestCase {
         XCTAssertEqual(call?.query.filter.status, .init(.archived))
     }
 
-    func test_search_forAll_fetchesSearchSavedItemsQueryWithTerm() async {
+    func test_search_forAll_fetchesSearchSavedItemsQueryWithTerm() async throws {
         apollo.setupSearchListResponse()
         let service = subject()
         let searchExpectation = expectation(description: "searchExpectation")
@@ -71,7 +71,7 @@ class PocketSearchServiceTests: XCTestCase {
             searchExpectation.fulfill()
         }.store(in: &cancellables)
 
-        await service.search(for: "search-term", scope: .all)
+        try await service.search(for: "search-term", scope: .all)
 
         wait(for: [searchExpectation], timeout: 1)
 
@@ -85,7 +85,7 @@ class PocketSearchServiceTests: XCTestCase {
         apollo.setupSearchListResponseForPagination()
         let service = subject()
 
-        _ = await service.search(for: "search-term", scope: .all)
+        try await service.search(for: "search-term", scope: .all)
 
         XCTAssertEqual(self.apollo.fetchCalls(withQueryType: SearchSavedItemsQuery.self).count, 3)
     }
