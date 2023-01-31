@@ -27,14 +27,27 @@ class OnlineSearchTests: XCTestCase {
 
     func test_search_withSaves_showsResultsAndCaches() async {
         let sut = subject()
+
         sut.search(with: "search-term")
         await setupOnlineSearch(with: "search-term")
-        XCTAssertEqual(sut.results?.count, 2)
+
+        guard case .success(let items) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(items.count, 2)
         XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
         XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .saves)
 
         sut.search(with: "search-term")
-        XCTAssertEqual(sut.results?.count, 2)
+
+        guard case .success(let items) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(items.count, 2)
         XCTAssertNil(searchService.searchCall(at: 1))
     }
 
@@ -42,12 +55,23 @@ class OnlineSearchTests: XCTestCase {
         let sut = subject(scope: .archive)
         sut.search(with: "search-term")
         await setupOnlineSearch(with: "search-term")
-        XCTAssertEqual(sut.results?.count, 2)
+
+        guard case .success(let items) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(items.count, 2)
         XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
         XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .archive)
 
         sut.search(with: "search-term")
-        XCTAssertEqual(sut.results?.count, 2)
+        guard case .success(let items) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(items.count, 2)
         XCTAssertNil(searchService.searchCall(at: 1))
     }
 
@@ -55,12 +79,23 @@ class OnlineSearchTests: XCTestCase {
         let sut = subject(scope: .all)
         sut.search(with: "search-term")
         await setupOnlineSearch(with: "search-term")
-        XCTAssertEqual(sut.results?.count, 2)
+
+        guard case .success(let items) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(items.count, 2)
         XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
         XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .all)
 
         sut.search(with: "search-term")
-        XCTAssertEqual(sut.results?.count, 2)
+        guard case .success(let items) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(items.count, 2)
         XCTAssertNil(searchService.searchCall(at: 1))
     }
 

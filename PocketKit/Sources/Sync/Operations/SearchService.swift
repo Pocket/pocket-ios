@@ -6,8 +6,8 @@ import SharedPocketKit
 import Combine
 
 public protocol SearchService: AnyObject {
-    var results: Published<[SearchSavedItem]>.Publisher { get }
-    func search(for term: String, scope: SearchScope) async
+    var results: Published<[SearchSavedItem]?>.Publisher { get }
+    func search(for term: String, scope: SearchScope) async throws
 }
 
 public struct SearchSavedItem {
@@ -31,8 +31,8 @@ public class PocketSearchService: SearchService {
     typealias SearchItemEdge = SearchSavedItemsQuery.Data.User.SearchSavedItems.Edge
 
     @Published
-    private var _results: [SearchSavedItem] = []
-    public var results: Published<[SearchSavedItem]>.Publisher { $_results }
+    private var _results: [SearchSavedItem]?
+    public var results: Published<[SearchSavedItem]?>.Publisher { $_results }
 
     private let apollo: ApolloClientProtocol
 
@@ -40,12 +40,13 @@ public class PocketSearchService: SearchService {
         self.apollo = apollo
     }
 
-    public func search(for term: String, scope: SearchScope) async {
+    public func search(for term: String, scope: SearchScope) async throws {
         do {
             try await fetch(for: term, scope: scope)
         } catch {
             // TODO: How to handle errors
             Crashlogger.capture(error: error)
+            throw error
         }
     }
 
