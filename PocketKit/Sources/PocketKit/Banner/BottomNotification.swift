@@ -9,7 +9,7 @@ struct BannerModifier: ViewModifier {
         var detail: String
     }
 
-    @Binding var data: BannerData
+    let data: BannerData
     @Binding var show: Bool
 
     func body(content: Content) -> some View {
@@ -21,47 +21,51 @@ struct BannerModifier: ViewModifier {
                         Image(asset: data.image)
                             .resizable()
                             .frame(width: 83, height: 50, alignment: .leading)
-                            .padding(8)
-                        VStack(alignment: .leading, spacing: 2) {
+                        Spacer(minLength: 10)
+                        VStack(alignment: .leading, spacing: 8) {
                             Text(data.title)
                                 .style(.title)
                             Text(data.detail)
                                 .style(.subtitle)
                         }
-                        Spacer()
                     }
-                    .foregroundColor(Color.white)
-                    .padding(8)
-                    .background(Color(red: 1, green: 0.984, blue: 0.89))
-                    .cornerRadius(8)
+                    .padding(13)
+                    .background(Color(.branding.amber5))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 4)
+                            .stroke(Color(.branding.amber3), lineWidth: 1)
+                    )
                 }
                 .padding()
+                .transition(.move(edge: .bottom).combined(with: .opacity))
                 .animation(.easeInOut, value: show)
-                .transition(AnyTransition.move(edge: .bottom).combined(with: .opacity))
                 .onTapGesture {
                     withAnimation {
                         self.show = false
                     }
-                }.onAppear(perform: {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 10) {
-                        withAnimation {
-                            self.show = false
+                }
+                .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .global)
+                    .onEnded { value in
+                        let verticalAmount = value.translation.height
+                        if verticalAmount > 0 {
+                            withAnimation {
+                                self.show = false
+                            }
                         }
-                    }
-                })
+                    })
             }
         }
     }
 }
 
 extension View {
-    func banner(data: Binding<BannerModifier.BannerData>, show: Binding<Bool>) -> some View {
+    func banner(data: BannerModifier.BannerData, show: Binding<Bool>) -> some View {
         self.modifier(BannerModifier(data: data, show: show))
     }
 }
 
 private extension Style {
-    static let title: Self = .header.sansSerif.h4.with(weight: .semibold).with { paragraph in
+    static let title: Self = .header.sansSerif.p2.with(weight: .semibold).with { paragraph in
         paragraph.with(lineSpacing: 4)
     }
     static let subtitle: Self = .header.sansSerif.p4.with(weight: .regular).with { paragraph in

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import XCTest
 import SharedPocketKit
 import PocketGraph
@@ -33,6 +37,7 @@ class SearchViewModelTests: XCTestCase {
         source = nil
         user = nil
         networkPathMonitor = nil
+        subscriptions = []
         try space.clear()
     }
 
@@ -143,9 +148,19 @@ class SearchViewModelTests: XCTestCase {
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
+
+        let searchExpectation = expectation(description: "online search expectation")
+        searchExpectation.assertForOverFulfill = false
+
+        viewModel.$searchResults.receive(on: DispatchQueue.main).sink { results in
+            guard let results = viewModel.searchResults, !results.isEmpty else { return }
+            XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+            searchExpectation.fulfill()
+        }.store(in: &subscriptions)
+
         viewModel.updateScope(with: .saves, searchTerm: term)
 
-        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     func test_updateScope_forPremiumUser_withArchiveAndTerm_showsResults() async {
@@ -154,9 +169,19 @@ class SearchViewModelTests: XCTestCase {
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
+
+        let searchExpectation = expectation(description: "online search expectation")
+        searchExpectation.assertForOverFulfill = false
+
+        viewModel.$searchResults.receive(on: DispatchQueue.main).sink { results in
+            guard let results = viewModel.searchResults, !results.isEmpty else { return }
+            XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+            searchExpectation.fulfill()
+        }.store(in: &subscriptions)
+
         viewModel.updateScope(with: .archive, searchTerm: term)
 
-        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     func test_updateScope_forPremiumUser_withAllAndTerm_showsResults() async {
@@ -165,9 +190,19 @@ class SearchViewModelTests: XCTestCase {
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
+
+        let searchExpectation = expectation(description: "online search expectation")
+        searchExpectation.assertForOverFulfill = false
+
+        viewModel.$searchResults.receive(on: DispatchQueue.main).sink { results in
+            guard let results = viewModel.searchResults, !results.isEmpty else { return }
+            XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+            searchExpectation.fulfill()
+        }.store(in: &subscriptions)
+
         viewModel.updateScope(with: .all, searchTerm: term)
 
-        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     // MARK: - Update Search Results
@@ -182,13 +217,23 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateSearchResults_forFreeUser_withItems_showsResults() async {
         let term = "search-term"
-        await setupOnlineSearch(with: term)
 
         let viewModel = subject()
+
+        let searchExpectation = expectation(description: "online search expectation")
+        searchExpectation.assertForOverFulfill = false
+
+        viewModel.$searchResults.receive(on: DispatchQueue.main).sink { results in
+            guard let results = viewModel.searchResults, !results.isEmpty else { return }
+            XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+            searchExpectation.fulfill()
+        }.store(in: &subscriptions)
+
         viewModel.updateScope(with: .archive)
         viewModel.updateSearchResults(with: term)
+        await setupOnlineSearch(with: term)
 
-        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     func test_updateSearchResults_forFreeUser_withAll_showsGetPremiumForAllItems() {
@@ -219,6 +264,29 @@ class SearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Offline States
+    func test_updateSearchResults_forPremiumUser_withOfflineSaves_showsLocalSaves() throws {
+        user.status = .premium
+        networkPathMonitor.update(status: .unsatisfied)
+        searchService.stubSearch { _, _ in
+            throw TestError.anError
+        }
+
+        searchService._results = nil
+        try setupLocalSavesSearch()
+
+        let searchExpectation = expectation(description: "handle offline saves scenario")
+        let viewModel = subject()
+        viewModel.$searchResults.dropFirst().receive(on: DispatchQueue.main).sink { results in
+            XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
+            XCTAssertTrue(viewModel.showBanner)
+            searchExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.updateSearchResults(with: "saved")
+
+        wait(for: [searchExpectation], timeout: 1)
+    }
+
     func test_updateSearchResults_forFreeUser_withOfflineArchive_showsOfflineEmptyState() async {
         networkPathMonitor.update(status: .unsatisfied)
         let viewModel = subject()
@@ -338,13 +406,27 @@ class SearchViewModelTests: XCTestCase {
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
-        viewModel.updateSearchResults(with: term)
 
-        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+        let searchExpectation = expectation(description: "search expectation")
+        let clearExpectation = expectation(description: "clear expectation")
+
+        var count = 0
+        viewModel.$searchResults.dropFirst().receive(on: DispatchQueue.main).sink { results in
+            count += 1
+            if count == 1 {
+                XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
+                searchExpectation.fulfill()
+            } else if count == 2 {
+                XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, [])
+                clearExpectation.fulfill()
+            }
+        }.store(in: &subscriptions)
+
+        viewModel.updateSearchResults(with: term)
+        wait(for: [searchExpectation], timeout: 1)
 
         viewModel.clear()
-
-        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, [])
+        wait(for: [clearExpectation], timeout: 1)
     }
 
     func test_search_whenDeviceRegainsInternetConnection_submitsSearch() async {
@@ -362,15 +444,17 @@ class SearchViewModelTests: XCTestCase {
                 XCTAssertNil(results)
                 offlineExpectation.fulfill()
             } else if count == 2 {
-                XCTAssertEqual(results?.compactMap { $0.title.string }, ["search-term"])
                 onlineExpectation.fulfill()
             }
         }.store(in: &subscriptions)
 
         viewModel.updateScope(with: .archive, searchTerm: "search-term")
         XCTAssertTrue(viewModel.emptyState is OfflineEmptyState)
+
         networkPathMonitor.update(status: .satisfied)
+
         wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
+        XCTAssertEqual(viewModel.searchResults?.compactMap { $0.title.string }, ["search-term"])
     }
 
     private func setupLocalSavesSearch(with url: URL? = nil) throws {
@@ -397,7 +481,6 @@ class SearchViewModelTests: XCTestCase {
                 "resolvedUrl": "http://localhost:8080/hello"
             ]
         ], variables: nil))
-
         let item = SearchSavedItem(remoteItem: itemParts)
         searchService._results = [item]
     }
