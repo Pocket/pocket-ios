@@ -56,29 +56,24 @@ class SaveToPocketTests: XCTestCase {
         safari.typeText("http://localhost:8080/hello\n")
         safari.staticTexts["Hello, world"].wait()
         safari.toolbars.buttons["ShareButton"].tap()
-        let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
-
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
+        tapPocketShareMenuIcon()
         safari.buttons["add-tags-button"].wait().tap()
 
         let addTagsView = AddTagsViewElement(safari.otherElements["add-tags"])
 
-        // typeText is flakey and cannot type "Tag 1" 100% of the time
         addTagsView.wait()
-        addTagsView.newTagTextField.tap()
-        safari.typeText("Tag 1\n")
-
-        addTagsView.tag(matching: "tag 1").wait()
-
+        addTagsView.clearTagsTextfield()
+        let randomTagName = String(addTagsView.enterRandomTagName())
         server.routes.post("/graphql") { request, _ in
             Response.savedItemWithTag()
         }
-
         addTagsView.saveButton.tap()
-
-        safari.toolbars.buttons["ShareButton"].tap()
+        safari.staticTexts["Hello, world"].wait()
+    }
+    
+    func tapPocketShareMenuIcon() {
+        let safariShareMenu = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
+        let activityView = safariShareMenu.descendants(matching: .other)["ActivityListView"].wait()
         activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
-        safari.buttons["add-tags-button"].wait().tap()
-        addTagsView.tag(matching: "tag 1").wait()
     }
 }

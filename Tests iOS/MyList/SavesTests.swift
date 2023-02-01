@@ -158,6 +158,7 @@ class SavesTests: XCTestCase {
         safari.typeText("http://localhost:8080/new-item\n")
         safari.staticTexts["Hello, world"].wait()
         safari.toolbars.buttons["ShareButton"].tap()
+        
         let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
 
         var promise: EventLoopPromise<Response>?
