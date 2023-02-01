@@ -53,26 +53,16 @@ class AddTagsItemTests: XCTestCase {
 
         app.addTagsButton.wait().tap()
         let addTagsView = app.addTagsView.wait()
-        addTagsView.wait()
-        addTagsView.newTagTextField.tap()
-        addTagsView.newTagTextField.typeText(XCUIKeyboardKey.delete.rawValue)
-        let randomInt = Int.random(in: 1..<155)
-        let tagInt = String(randomInt)
-        addTagsView.newTagTextField.typeText(tagInt)
-        addTagsView.newTagTextField.typeText("\n")
-
-        addTagsView.tag(matching: tagInt).wait()
-
+        addTagsView.clearTagsTextfield()
+        let randomTagName = String(addTagsView.enterRandomTagName())
         server.routes.post("/graphql") { request, _ in
             Response.savedItemWithTag()
         }
-
         addTagsView.saveButton.tap()
-
         itemCell.itemActionButton.wait().tap()
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
-        addTagsView.tag(matching: tagInt).wait()
+        addTagsView.tag(matching: randomTagName).wait()
     }
 
     func test_addTagsToItemFromSaves_savesFromExistingTags() {
