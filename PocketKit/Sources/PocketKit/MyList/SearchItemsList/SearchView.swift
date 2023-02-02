@@ -10,12 +10,15 @@ struct SearchView: View {
     var viewModel: SearchViewModel
 
     var body: some View {
-        if let results = viewModel.searchResults, !results.isEmpty {
+        switch viewModel.searchState {
+        case .emptyState(let viewModel):
+            SearchEmptyView(viewModel: viewModel)
+        case .recentSearches(let searches):
+            RecentSearchView(viewModel: viewModel, recentSearches: searches)
+        case .searchResults(let results):
             ResultsView(viewModel: viewModel, results: results)
-        } else if viewModel.showRecentSearches == true, !viewModel.recentSearches.isEmpty {
-            RecentSearchView(viewModel: viewModel, recentSearches: viewModel.recentSearches)
-        } else if let emptyState = viewModel.emptyState {
-            SearchEmptyView(viewModel: emptyState)
+        default:
+            EmptyView()
         }
     }
 }
