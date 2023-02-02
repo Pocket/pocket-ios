@@ -10,6 +10,12 @@ import SharedPocketKit
 import Analytics
 import CoreData
 
+enum SearchViewState {
+    case emptyState(EmptyStateViewModel)
+    case recentSearches([String])
+    case searchResults([SearchItem])
+}
+
 class SearchViewModel: ObservableObject {
     typealias ItemIdentifier = NSManagedObjectID
     static let recentSearchesKey = "Search.recentSearches"
@@ -43,29 +49,23 @@ class SearchViewModel: ObservableObject {
     var showBanner: Bool = false
 
     @Published
-    var emptyState: EmptyStateViewModel?
+    var searchState: SearchViewState?
 
-    @Published
-    var selectedItem: SelectedItem?
-
-    @Published
-    var searchResults: [SearchItem]? {
-        didSet {
-            guard let searchResults = searchResults, searchResults.isEmpty else {
-                return
-            }
-            emptyState = searchResultState()
+    var defaultState: SearchViewState {
+        guard let emptyStateViewModel = isPremium ? premiumEmptyState(for: selectedScope) : freeEmptyState(for: selectedScope) else {
+            return .recentSearches(recentSearches)
         }
+        return .emptyState(emptyStateViewModel)
     }
 
     @Published
-    var showRecentSearches: Bool?
+    var selectedItem: SelectedItem?
 
     var scopeTitles: [String] {
         SearchScope.allCases.map { $0.rawValue }
     }
 
-    var recentSearches: [String] {
+    private var recentSearches: [String] {
         get {
             userDefaults.stringArray(forKey: SearchViewModel.recentSearchesKey) ?? []
         }
@@ -92,6 +92,8 @@ class SearchViewModel: ObservableObject {
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
 
+        searchState = defaultState
+
         networkPathMonitor.start(queue: .global())
         observeNetworkChanges()
     }
@@ -99,10 +101,10 @@ class SearchViewModel: ObservableObject {
     func updateScope(with scope: SearchScope, searchTerm: String? = nil) {
         selectedScope = scope
         if let searchTerm = searchTerm, !searchTerm.isEmpty {
-            clear()
+            resetSearch()
             updateSearchResults(with: searchTerm)
         } else {
-            emptyState = isPremium ? premiumEmptyState(for: selectedScope) : freeEmptyState(for: selectedScope)
+            searchState = defaultState
         }
     }
 
@@ -110,7 +112,7 @@ class SearchViewModel: ObservableObject {
         let shouldShowUpsell = !isPremium && selectedScope == .all
 
         guard !shouldShowUpsell else {
-            emptyState = GetPremiumEmptyState()
+            searchState = .emptyState(GetPremiumEmptyState())
             return
         }
 
@@ -118,26 +120,28 @@ class SearchViewModel: ObservableObject {
         currentSearchTerm = term
         guard !term.isEmpty else { return }
         guard !isOffline || selectedScope == .saves else {
-            emptyState = searchResultState()
+            searchState = .emptyState(searchResultState())
             return
         }
 
         submitSearch(with: term, scope: selectedScope)
-        DispatchQueue.main.async { [weak self] in
-            self?.showRecentSearches = false
-        }
         recentSearches = updateRecentSearches(with: term)
     }
 
     func clear() {
+        searchState = defaultState
         showBanner = false
-        searchResults = []
+        currentSearchTerm = nil
+        resetSearch()
+    }
+
+    private func resetSearch() {
         subscriptions = []
+        currentSearchTerm = nil
         savesLocalSearch = LocalSavesSearch(source: source)
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
-        currentSearchTerm = nil
     }
 
     private func submitSearch(with term: String, scope: SearchScope) {
@@ -147,9 +151,10 @@ class SearchViewModel: ObservableObject {
             savesOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
                 guard let self, let result, self.selectedScope == .saves else { return }
                 if case .success(let items) = result {
-                    self.searchResults = items
+                    self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
                 } else {
-                    self.searchResults = self.savesLocalSearch.search(with: term)
+                    let results = self.savesLocalSearch.search(with: term)
+                    self.searchState = .searchResults(results)
                     self.showBanner = self.isPremium && self.isOffline
                 }
             }.store(in: &subscriptions)
@@ -157,13 +162,13 @@ class SearchViewModel: ObservableObject {
             archiveOnlineSearch.search(with: term)
             archiveOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
                 guard let self, case .success(let items) = result, self.selectedScope == .archive else { return }
-                self.searchResults = items
+                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
             }.store(in: &subscriptions)
         case .all:
             allOnlineSearch.search(with: term)
             allOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
                 guard let self, case .success(let items) = result, self.selectedScope == .all else { return }
-                self.searchResults = items
+                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
             }.store(in: &subscriptions)
         }
     }
@@ -171,7 +176,8 @@ class SearchViewModel: ObservableObject {
     private func searchSaves(with term: String) {
         guard isPremium else {
             guard selectedScope == .saves else { return }
-            searchResults = savesLocalSearch.search(with: term)
+            let results = savesLocalSearch.search(with: term)
+            searchState = results.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(results)
             return
         }
         savesOnlineSearch.search(with: term)
@@ -204,18 +210,20 @@ class SearchViewModel: ObservableObject {
 
     private func freeEmptyState(for scope: SearchScope) -> EmptyStateViewModel {
         switch scope {
-        case .saves, .archive:
+        case .saves:
             return SearchEmptyState()
+        case .archive:
+            return isOffline ? OfflineEmptyState(type: .archive) : SearchEmptyState()
         case .all:
             return GetPremiumEmptyState()
         }
     }
 
     private func premiumEmptyState(for scope: SearchScope) -> EmptyStateViewModel? {
-        guard recentSearches.isEmpty else {
-            showRecentSearches = true
-            return nil
+        guard !isOffline || selectedScope == .saves else {
+            return OfflineEmptyState(type: scope)
         }
+        guard recentSearches.isEmpty else { return nil }
         return RecentSearchEmptyState()
     }
 
