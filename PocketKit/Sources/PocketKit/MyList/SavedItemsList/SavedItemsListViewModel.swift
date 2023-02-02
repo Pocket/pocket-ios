@@ -11,7 +11,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
 
-    let selectionItem: SelectionItem = SelectionItem(title: "Saves".localized(), image: .init(asset: .saves))
+    let selectionItem: SelectionItem = SelectionItem(title: "Saves".localized(), image: .init(asset: .saves), selectedView: SelectedView.saves)
 
     @Published
     private var _snapshot = Snapshot()
@@ -34,6 +34,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     @Published
     var presentedSortFilterViewModel: SortMenuViewModel?
+
+    @Published
+    var presentedSearch: Bool?
 
     private let listOptions: ListOptions
 
@@ -95,6 +98,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func fetch() {
         let filters = selectedFilters.compactMap { filter -> NSPredicate? in
             switch filter {
+            case.search:
+                return nil
             case .favorites:
                 return NSPredicate(format: "isFavorite = true")
             case .tagged:
@@ -506,6 +511,8 @@ extension SavedItemsListViewModel {
         guard !reTappedTagFilter else { return }
 
         switch filter {
+        case .search:
+            presentedSearch = true
         case .all:
             selectedFilters.removeAll()
             selectedFilters.insert(.all)
