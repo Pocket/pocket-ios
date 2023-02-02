@@ -45,10 +45,10 @@ struct ReportRecommendationView: View {
 
     var body: some View {
         List {
-            Section(header: Text("Report a concern")) {
+            Section(header: Text("Report a concern".localized())) {
                 ForEach(ReportEvent.Reason.allCases, id: \.self) { reason in
                     ReportReasonRow(
-                        text: reason.displayString,
+                        text: reason.displayString.localized(),
                         isSelected: reason == selectedReason
                     ) {
                         guard reason != selectedReason else {
@@ -176,7 +176,7 @@ private struct ReportCommentRow: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             if text.wrappedValue.isEmpty && isFocused.wrappedValue == false {
-                Text("Tell us more")
+                Text("Tell us more".localized())
                     .style(.recommendationRowStyle)
                     .padding(Constants.placeholderPadding)
                     .opacity(Constants.placeholderOpacity)

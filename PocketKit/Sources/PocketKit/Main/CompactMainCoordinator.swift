@@ -31,19 +31,19 @@ class CompactMainCoordinator: NSObject {
 
         saves = CompactSavesContainerCoordinator(model: model.saves)
         saves.viewController.tabBarItem.accessibilityIdentifier = "saves-tab-bar-button"
-        saves.viewController.tabBarItem.title = "Saves"
+        saves.viewController.tabBarItem.title = "Saves".localized()
         saves.viewController.tabBarItem.image = UIImage(asset: .tabSavesDeselected)
         saves.viewController.tabBarItem.selectedImage = UIImage(asset: .tabSavesSelected)
 
         home = CompactHomeCoordinator(tracker: tracker, model: model.home)
         home.viewController.tabBarItem.accessibilityIdentifier = "home-tab-bar-button"
-        home.viewController.tabBarItem.title = "Home"
+        home.viewController.tabBarItem.title = "Home".localized()
         home.viewController.tabBarItem.image = UIImage(asset: .tabHomeDeselected)
         home.viewController.tabBarItem.selectedImage = UIImage(asset: .tabHomeSelected)
 
         account = CompactAccountCoordinator(model: model.account)
         account.viewController.tabBarItem.accessibilityIdentifier = "account-tab-bar-button"
-        account.viewController.tabBarItem.title = "Settings"
+        account.viewController.tabBarItem.title = "Settings".localized()
         account.viewController.tabBarItem.image = UIImage(asset: .tabSettingsDeselected)
         account.viewController.tabBarItem.selectedImage = UIImage(asset: .tabSettingsSelected)
 

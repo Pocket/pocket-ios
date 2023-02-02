@@ -4,9 +4,9 @@ import Textile
 class ItemsListOfflineCell: UICollectionViewCell {
     enum Constants {
         static let image = UIImage(asset: .looking)
-        static let text = NSAttributedString(string: "No Internet Connection", style: .header.sansSerif.h2)
+        static let text = NSAttributedString(string: "No Internet Connection".localized(), style: .header.sansSerif.h2)
         static let detailText = NSAttributedString(
-            string: "Looks like you're offline. Try checking your mobile data or wifi.",
+            string: "Looks like you're offline. Try checking your mobile data or wifi.".localized(),
             style: .header.sansSerif.p2.with { $0.with(alignment: .center).with(lineHeight: .explicit(28)) }
         )
 
