@@ -7,6 +7,7 @@ import SharedPocketKit
 import PocketGraph
 import Analytics
 import Combine
+import Apollo
 
 @testable import Sync
 @testable import PocketKit
@@ -338,43 +339,6 @@ class SearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Offline States
-    func test_updateSearchResults_forPremiumUser_withOfflineSaves_showsLocalSaves() throws {
-        user.status = .premium
-        networkPathMonitor.update(status: .unsatisfied)
-        searchService.stubSearch { _, _ in
-            throw TestError.anError
-        }
-
-        try setupLocalSavesSearch()
-
-        let viewModel = subject()
-        let searchExpectation = expectation(description: "handle offline saves scenario")
-
-        var count = 0
-        viewModel.$searchState.receive(on: DispatchQueue.main).sink { state in
-            count += 1
-            if count == 1 {
-                guard let state else { return }
-                guard case .emptyState(let emptyStateViewModel) = state else {
-                    XCTFail("Should not have failed")
-                    return
-                }
-                XCTAssertTrue(emptyStateViewModel is RecentSearchEmptyState)
-                searchExpectation.fulfill()
-            } else {
-                guard case .searchResults(let results) = state else {
-                    XCTFail("Should not have failed")
-                    return
-                }
-                XCTAssertEqual(results.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
-                XCTAssertTrue(viewModel.showBanner)
-            }
-        }.store(in: &subscriptions)
-
-        viewModel.updateSearchResults(with: "saved")
-        wait(for: [searchExpectation], timeout: 1)
-    }
-
     func test_updateSearchResults_forFreeUser_withOfflineArchive_showsOfflineEmptyState() async {
         networkPathMonitor.update(status: .unsatisfied)
         let viewModel = subject()
@@ -568,9 +532,9 @@ class SearchViewModelTests: XCTestCase {
         let recentSearchesExpectation = expectation(description: "show recent searches state")
 
         var count = 0
-        viewModel.$searchState.receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
             count += 1
-            if count == 2 {
+            if count == 1 {
                 guard case .searchResults(let results) = state else {
                     XCTFail("Should not have failed")
                     return
@@ -578,7 +542,7 @@ class SearchViewModelTests: XCTestCase {
 
                 XCTAssertEqual(results.compactMap { $0.title.string }, ["search-term"])
                 searchResultsExpectation.fulfill()
-            } else if count == 3 {
+            } else if count == 2 {
                 guard case .recentSearches(let searches) = state else {
                     XCTFail("Should not have failed")
                     return
@@ -607,9 +571,9 @@ class SearchViewModelTests: XCTestCase {
         let onlineExpectation = expectation(description: "handle online scenario")
 
         var count = 0
-        viewModel.$searchState.receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
             count += 1
-            if count == 2 {
+            if count == 1 {
                 guard case .emptyState(let emptyStateViewModel) = state else {
                     XCTFail("Should not have failed")
                     return
@@ -617,7 +581,7 @@ class SearchViewModelTests: XCTestCase {
 
                 XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
                 offlineExpectation.fulfill()
-            } else if count == 3 {
+            } else if count == 2 {
                 guard case .searchResults(let results) = state else {
                     XCTFail("Should not have failed")
                     return
@@ -631,6 +595,56 @@ class SearchViewModelTests: XCTestCase {
         viewModel.updateScope(with: .archive, searchTerm: "search-term")
         networkPathMonitor.update(status: .satisfied)
         wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
+    }
+
+    // MARK: - Error Handling
+    func test_updateSearchResults_forPremiumUser_withOnlineSavesError_showsLocalSaves() throws {
+        user.status = .premium
+        networkPathMonitor.update(status: .unsatisfied)
+
+        searchService.stubSearch { _, _ in
+            throw TestError.anError
+        }
+
+        try setupLocalSavesSearch()
+
+        let viewModel = subject()
+        let localSavesExpectation = expectation(description: "handle local saves scenario")
+
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
+            guard case .searchResults(let results) = state else {
+                XCTFail("Should not have failed")
+                return
+            }
+            XCTAssertEqual(results.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
+            XCTAssertTrue(viewModel.showBanner)
+            localSavesExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.updateScope(with: .saves, searchTerm: "saved")
+        wait(for: [localSavesExpectation], timeout: 1)
+    }
+
+    func test_updateSearchResults_withInternetConnectionError_showsOfflineView() throws {
+        user.status = .premium
+        searchService.stubSearch { _, _ in
+            throw SearchServiceError.noInternet
+        }
+
+        let viewModel = subject()
+        let errorExpectation = expectation(description: "handle apollo internet connection error")
+
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
+            guard case .emptyState(let emptyStateViewModel) = state else {
+                XCTFail("Should not have failed")
+                return
+            }
+            XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
+            errorExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.updateScope(with: .archive, searchTerm: "search-term")
+        wait(for: [errorExpectation], timeout: 1)
     }
 
     private func setupLocalSavesSearch(with url: URL? = nil) throws {
