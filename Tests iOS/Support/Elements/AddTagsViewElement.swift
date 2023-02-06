@@ -44,11 +44,11 @@ struct AddTagsViewElement: PocketUIElement {
         newTagTextField.typeText(XCUIKeyboardKey.delete.rawValue)
     }
 
-     func enterRandomTagName() -> Int {
-         let randomInt = Int.random(in: 1..<155)
-         let tagInt = String(randomInt)
-         newTagTextField.typeText(tagInt)
-         newTagTextField.typeText("\n")
-         return randomInt
-     }
+    func enterRandomTagName() -> Int {
+        let randomInt = Int.random(in: 1..<155)
+        let tagInt = String(randomInt)
+        newTagTextField.typeText(tagInt)
+        newTagTextField.typeText("\n")
+        return randomInt
+    }
 }
