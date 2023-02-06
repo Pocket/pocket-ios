@@ -5,6 +5,10 @@ import PocketGraph
 import SharedPocketKit
 import Combine
 
+public enum SearchServiceError: Error {
+    case noInternet
+}
+
 public protocol SearchService: AnyObject {
     var results: Published<[SearchSavedItem]?>.Publisher { get }
     func search(for term: String, scope: SearchScope) async throws
@@ -32,6 +36,7 @@ public class PocketSearchService: SearchService {
 
     @Published
     private var _results: [SearchSavedItem]?
+
     public var results: Published<[SearchSavedItem]?>.Publisher { $_results }
 
     private let apollo: ApolloClientProtocol
@@ -46,6 +51,14 @@ public class PocketSearchService: SearchService {
         } catch {
             // TODO: How to handle errors
             Crashlogger.capture(error: error)
+            if case URLSessionClient.URLSessionClientError.networkError(_, _, let underlying) = error {
+                switch (underlying as NSError).code {
+                case -1009:
+                    throw SearchServiceError.noInternet
+                default:
+                    throw error
+                }
+            }
             throw error
         }
     }
