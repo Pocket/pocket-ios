@@ -130,46 +130,31 @@ class SearchViewModel: ObservableObject {
 
     func clear() {
         searchState = defaultState
-        showBanner = false
         currentSearchTerm = nil
         resetSearch()
-    }
 
-    private func resetSearch() {
-        subscriptions = []
-        currentSearchTerm = nil
         savesLocalSearch = LocalSavesSearch(source: source)
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
         archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
     }
 
+    private func resetSearch() {
+        showBanner = false
+        subscriptions = []
+    }
+
     private func submitSearch(with term: String, scope: SearchScope) {
         switch scope {
         case .saves:
             searchSaves(with: term)
-            savesOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
-                guard let self, let result, self.selectedScope == .saves else { return }
-                if case .success(let items) = result {
-                    self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
-                } else {
-                    let results = self.savesLocalSearch.search(with: term)
-                    self.searchState = .searchResults(results)
-                    self.showBanner = self.isPremium && self.isOffline
-                }
-            }.store(in: &subscriptions)
+            listenForSaveResults(with: term)
         case .archive:
             archiveOnlineSearch.search(with: term)
-            archiveOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
-                guard let self, case .success(let items) = result, self.selectedScope == .archive else { return }
-                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
-            }.store(in: &subscriptions)
+            listenForArchiveResults(with: term)
         case .all:
             allOnlineSearch.search(with: term)
-            allOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
-                guard let self, case .success(let items) = result, self.selectedScope == .all else { return }
-                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
-            }.store(in: &subscriptions)
+            listenForAllResults(with: term)
         }
     }
 
@@ -181,6 +166,43 @@ class SearchViewModel: ObservableObject {
             return
         }
         savesOnlineSearch.search(with: term)
+    }
+
+    private func listenForSaveResults(with term: String) {
+        savesOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
+            guard let self, let result, self.selectedScope == .saves else { return }
+            if case .success(let items) = result {
+                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+            } else {
+                let results = self.savesLocalSearch.search(with: term)
+                self.searchState = .searchResults(results)
+                self.showBanner = self.isPremium && self.isOffline
+            }
+        }.store(in: &subscriptions)
+    }
+
+    private func listenForArchiveResults(with term: String) {
+        archiveOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
+            guard let self, let result, self.selectedScope == .archive else { return }
+            if case .success(let items) = result {
+                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+            } else if case .failure(let error) = result {
+                guard case SearchServiceError.noInternet = error else { return }
+                self.searchState = .emptyState(OfflineEmptyState(type: .archive))
+            }
+        }.store(in: &subscriptions)
+    }
+
+    private func listenForAllResults(with term: String) {
+        allOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
+            guard let self, let result, self.selectedScope == .all else { return }
+            if case .success(let items) = result {
+                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+            } else if case .failure(let error) = result {
+                guard case SearchServiceError.noInternet = error else { return }
+                self.searchState = .emptyState(OfflineEmptyState(type: .all))
+            }
+        }.store(in: &subscriptions)
     }
 
     private func updateRecentSearches(with searchTerm: String) -> [String] {
