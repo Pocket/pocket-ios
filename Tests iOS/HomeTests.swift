@@ -186,7 +186,7 @@ class HomeTests: XCTestCase {
         app.slateDetailView.element.swipeUp()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").wait()
 
-        app.navigationBar.buttons["Home".localized()].wait().tap()
+        app.navigationBar.buttons["Home"].wait().tap()
         home.element.swipeUp()
 
         home.sectionHeader("Slate 2").seeAllButton.wait().tap()
@@ -331,6 +331,46 @@ class HomeTests: XCTestCase {
         rec2Cell.saveButton.wait().tap()
         rec2Cell.savedButton.wait()
         rec1Cell.savedButton.wait()
+    }
+    
+    func test_returningFromSaves_maintainsHomePosition() {
+        let home = app.launch().homeView
+        home.overscroll()
+        validateBottomMessage()
+        app.tabBar.savesButton.tap()
+        app.tabBar.homeButton.tap()
+        validateBottomMessage()
+    }
+    
+    func test_returningFromSettings_maintainsHomePosition() {
+        let home = app.launch().homeView
+        home.overscroll()
+        validateBottomMessage()
+        app.tabBar.settingsButton.tap()
+        app.tabBar.homeButton.tap()
+        validateBottomMessage()
+    }
+    
+    func test_returningFromReader_maintainsHomePosition() {
+        let home = app.launch().homeView
+        home.overscroll()
+        validateBottomMessage()
+        home.recommendationCell("Syndicated Article Rec, 1").tap()
+        app.readerView.readerHomeButton.wait().tap()
+        validateBottomMessage()
+    }
+    
+    func test_returningFromSeeAll_maintainsHomePosition() {
+        let home = app.launch().homeView
+        home.overscroll()
+        validateBottomMessage()
+        home.seeAllCollectionButton.tap()
+        app.readerView.readerHomeButton.wait().tap()
+        validateBottomMessage()
+    }
+    
+    func validateBottomMessage() {
+        XCTAssertTrue(app.homeView.overscrollText.exists)
     }
 }
 

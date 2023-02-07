@@ -11,7 +11,7 @@ class TagsFilterViewModel: ObservableObject {
         var name: String {
             switch self {
             case .notTagged:
-                return "not tagged"
+                return "not tagged".localized()
             case .tag(let name):
                 return name
             }

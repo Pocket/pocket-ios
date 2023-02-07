@@ -71,6 +71,7 @@
         "HomeTests",
         "HomeWebViewTests",
         "PullToRefreshTests",
+        "ReaderTests",
         "ReportARecommendationTests",
         "SaveToPocketTests",
         "SavesFiltersTests",

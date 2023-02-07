@@ -48,20 +48,20 @@ private struct LoggedOutCarouselView: View {
         TabView {
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel1,
-                text: "Save what really interests you",
-                detailText: "Collect articles, videos or any online content you like."
+                text: "Save what really interests you".localized(),
+                detailText: "Collect articles, videos or any online content you like.".localized()
             )
 
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel2,
-                text: "Make the most of any moment",
-                detailText: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket"
+                text: "Make the most of any moment".localized(),
+                detailText: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket".localized()
             )
 
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel3,
-                text: "Your quiet corner of the Internet",
-                detailText: "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise."
+                text: "Your quiet corner of the Internet".localized(),
+                detailText: "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.".localized()
             )
         }
         .tabViewStyle(.page)
@@ -111,7 +111,7 @@ private struct LoggedOutActionsView: View {
             Button {
                 viewModel.signUp()
             } label: {
-                Text("Sign Up").style(.header.sansSerif.h8.with(color: .ui.white))
+                Text("Sign Up".localized()).style(.header.sansSerif.h8.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                     .frame(maxWidth: 320)
             }.buttonStyle(ActionsPrimaryButtonStyle())
@@ -119,7 +119,7 @@ private struct LoggedOutActionsView: View {
             Button {
                 viewModel.logIn()
             } label: {
-                Text("Log In")
+                Text("Log In".localized())
                     .style(.header.sansSerif.p4)
                     .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
             }

@@ -44,10 +44,20 @@ class FetchList: SyncOperation {
         } catch {
             switch error {
             case is URLSessionClient.URLSessionClientError:
+                Crashlogger.breadcrumb(
+                    category: "sync",
+                    level: .error,
+                    message: "URLSessionClient.URLSessionClientError with Error: \(error.localizedDescription)"
+                )
                 return .retry(error)
             case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
                 switch response?.statusCode {
                 case .some((500...)):
+                    Crashlogger.breadcrumb(
+                        category: "sync",
+                        level: .error,
+                        message: "ResponseCodeInterceptor.ResponseCodeError with Error: \(error.localizedDescription) and status code \(String(describing: response?.statusCode))"
+                    )
                     return .retry(error)
                 default:
                     return .failure(error)
