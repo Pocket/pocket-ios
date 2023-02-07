@@ -69,7 +69,7 @@ workflows:
           inputs:
             - packages: swiftlint
       - activate-ssh-key@4: {}
-      - git-clone@6: {}
+      - git-clone@7: {}
       - certificate-and-profile-installer@1: {}
       - file-downloader@1:
           inputs:
@@ -115,7 +115,7 @@ workflows:
     steps:
       - cache-pull@2: {}
       - activate-ssh-key@4: {}
-      - git-clone@6: {}
+      - git-clone@7: {}
       - script@1:
           inputs:
             - content: |
@@ -350,4 +350,4 @@ app:
 meta:
   bitrise.io:
     machine_type_id: g2.4core
-    stack: osx-xcode-14.1.x
+    stack: osx-xcode-14.2.x-ventura
