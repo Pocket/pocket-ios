@@ -30,6 +30,8 @@ public class PocketSearchService: SearchService {
         static var pageSize: Int {
             UIDevice.current.userInterfaceIdiom == .phone ? 30 : 50
         }
+        // This error code is returned from Apollo when there is a no internet connection
+        static let noConnectionErrorCode = -1009
     }
 
     typealias SearchItemEdge = SearchSavedItemsQuery.Data.User.SearchSavedItems.Edge
@@ -53,7 +55,7 @@ public class PocketSearchService: SearchService {
             Crashlogger.capture(error: error)
             if case URLSessionClient.URLSessionClientError.networkError(_, _, let underlying) = error {
                 switch (underlying as NSError).code {
-                case -1009:
+                case Constants.noConnectionErrorCode:
                     throw SearchServiceError.noInternet
                 default:
                     throw error

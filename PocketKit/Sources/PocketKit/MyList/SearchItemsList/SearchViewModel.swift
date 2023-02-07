@@ -151,10 +151,10 @@ class SearchViewModel: ObservableObject {
             listenForSaveResults(with: term)
         case .archive:
             archiveOnlineSearch.search(with: term)
-            listenForArchiveResults(with: term)
+            listenForResults(with: term, onlineSearch: archiveOnlineSearch, scope: .archive)
         case .all:
             allOnlineSearch.search(with: term)
-            listenForAllResults(with: term)
+            listenForResults(with: term, onlineSearch: allOnlineSearch, scope: .all)
         }
     }
 
@@ -169,40 +169,34 @@ class SearchViewModel: ObservableObject {
     }
 
     private func listenForSaveResults(with term: String) {
-        savesOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
-            guard let self, let result, self.selectedScope == .saves else { return }
-            if case .success(let items) = result {
-                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
-            } else {
-                let results = self.savesLocalSearch.search(with: term)
-                self.searchState = .searchResults(results)
-                self.showBanner = self.isPremium && self.isOffline
+        savesOnlineSearch.$results
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] result in
+                guard let self, let result, self.selectedScope == .saves else { return }
+                if case .success(let items) = result {
+                    self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+                } else {
+                    let results = self.savesLocalSearch.search(with: term)
+                    self.searchState = .searchResults(results)
+                    self.showBanner = self.isPremium && self.isOffline
+                }
             }
-        }.store(in: &subscriptions)
+            .store(in: &subscriptions)
     }
 
-    private func listenForArchiveResults(with term: String) {
-        archiveOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
-            guard let self, let result, self.selectedScope == .archive else { return }
-            if case .success(let items) = result {
-                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
-            } else if case .failure(let error) = result {
-                guard case SearchServiceError.noInternet = error else { return }
-                self.searchState = .emptyState(OfflineEmptyState(type: .archive))
+    private func listenForResults(with term: String, onlineSearch: OnlineSearch, scope: SearchScope) {
+        onlineSearch.$results
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] result in
+                guard let self, let result, self.selectedScope == scope else { return }
+                if case .success(let items) = result {
+                    self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+                } else if case .failure(let error) = result {
+                    guard case SearchServiceError.noInternet = error else { return }
+                    self.searchState = .emptyState(OfflineEmptyState(type: scope))
+                }
             }
-        }.store(in: &subscriptions)
-    }
-
-    private func listenForAllResults(with term: String) {
-        allOnlineSearch.$results.receive(on: DispatchQueue.main).sink { [weak self] result in
-            guard let self, let result, self.selectedScope == .all else { return }
-            if case .success(let items) = result {
-                self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
-            } else if case .failure(let error) = result {
-                guard case SearchServiceError.noInternet = error else { return }
-                self.searchState = .emptyState(OfflineEmptyState(type: .all))
-            }
-        }.store(in: &subscriptions)
+            .store(in: &subscriptions)
     }
 
     private func updateRecentSearches(with searchTerm: String) -> [String] {
