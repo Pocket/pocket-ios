@@ -40,7 +40,6 @@ class OnlineSearch {
                 try await searchService.search(for: term, scope: scope)
             } catch {
                 // TODO: How to handle errors
-                Crashlogger.capture(error: error)
                 self.results = .failure(error)
             }
         }
