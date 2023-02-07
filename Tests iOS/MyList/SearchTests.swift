@@ -4,6 +4,7 @@
 
 import XCTest
 import Sails
+import NIO
 
 class SearchTests: XCTestCase {
     var server: Application!
@@ -243,5 +244,44 @@ class SearchTests: XCTestCase {
         app.saves.searchView.searchItemCell(at: 0).tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
+    }
+
+    // MARK: - Search Loading State
+    func test_search_showsSkeletonView() {
+        continueAfterFailure = true
+        var promises: [EventLoopPromise<Response>] = []
+
+        server.routes.post("/graphql") { request, eventLoop in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
+            } else if apiRequest.isForSearch(.saves) {
+                let promise = eventLoop.makePromise(of: Response.self)
+                promises.append(promise)
+                return promise.futureResult
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        app.launch()
+        tapSearch()
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+
+        app.saves.searchView.skeletonView.wait()
+
+        promises[0].completeWith(.success(Response.searchList(.saves)))
+
+        let searchView = app.saves.searchView.searchResultsView.wait()
+        XCTAssertEqual(searchView.cells.count, 2)
     }
 }

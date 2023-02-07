@@ -11,6 +11,7 @@ import Analytics
 import CoreData
 
 enum SearchViewState {
+    case loading
     case emptyState(EmptyStateViewModel)
     case recentSearches([String])
     case searchResults([SearchItem])
@@ -101,7 +102,6 @@ class SearchViewModel: ObservableObject {
     func updateScope(with scope: SearchScope, searchTerm: String? = nil) {
         selectedScope = scope
         if let searchTerm = searchTerm, !searchTerm.isEmpty {
-            resetSearch()
             updateSearchResults(with: searchTerm)
         } else {
             searchState = defaultState
@@ -116,6 +116,8 @@ class SearchViewModel: ObservableObject {
             return
         }
 
+        resetSearch(with: searchTerm)
+
         let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
         currentSearchTerm = term
         guard !term.isEmpty else { return }
@@ -123,7 +125,7 @@ class SearchViewModel: ObservableObject {
             searchState = .emptyState(searchResultState())
             return
         }
-
+        searchState = .loading
         submitSearch(with: term, scope: selectedScope)
         recentSearches = updateRecentSearches(with: term)
     }
@@ -131,7 +133,9 @@ class SearchViewModel: ObservableObject {
     func clear() {
         searchState = defaultState
         currentSearchTerm = nil
-        resetSearch()
+
+        showBanner = false
+        subscriptions = []
 
         savesLocalSearch = LocalSavesSearch(source: source)
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
@@ -139,9 +143,21 @@ class SearchViewModel: ObservableObject {
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
     }
 
-    private func resetSearch() {
+    private func resetSearch(with term: String) {
         showBanner = false
         subscriptions = []
+
+        if !savesOnlineSearch.hasCache(with: term) {
+            savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
+        }
+
+        if !archiveOnlineSearch.hasCache(with: term) {
+            archiveOnlineSearch = OnlineSearch(source: source, scope: .archive)
+        }
+
+        if !allOnlineSearch.hasCache(with: term) {
+            allOnlineSearch = OnlineSearch(source: source, scope: .all)
+        }
     }
 
     private func submitSearch(with term: String, scope: SearchScope) {
