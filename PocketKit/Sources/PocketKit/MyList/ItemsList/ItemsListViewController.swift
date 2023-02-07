@@ -161,7 +161,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
         }
 
-        let placeholderCellRegistration: UICollectionView.CellRegistration<ItemPlaceholderCell, Int> = .init { cell, indexPath, itemIndex in
+        let placeholderCellRegistration: UICollectionView.CellRegistration<ItemSkeletonCell, Int> = .init { cell, indexPath, itemIndex in
             // no op
         }
 

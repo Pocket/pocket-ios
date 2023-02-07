@@ -160,7 +160,7 @@ class SearchViewModelTests: XCTestCase {
 
         let searchExpectation = expectation(description: "search Expectation")
 
-        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
             guard case .searchResults(let results) = state else {
                 XCTFail("Should not have failed")
                 return
@@ -197,7 +197,7 @@ class SearchViewModelTests: XCTestCase {
 
         let searchExpectation = expectation(description: "search Expectation")
 
-        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
             guard case .searchResults(let results) = state else {
                 XCTFail("Should not have failed")
                 return
@@ -220,7 +220,7 @@ class SearchViewModelTests: XCTestCase {
         let viewModel = subject()
         let searchExpectation = expectation(description: "search Expectation")
 
-        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
             guard case .searchResults(let results) = state else {
                 XCTFail("Should not have failed")
                 return
@@ -243,7 +243,7 @@ class SearchViewModelTests: XCTestCase {
         let viewModel = subject()
         let searchExpectation = expectation(description: "search Expectation")
 
-        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
             guard case .searchResults(let results) = state else {
                 XCTFail("Should not have failed")
                 return
@@ -323,7 +323,7 @@ class SearchViewModelTests: XCTestCase {
 
         let searchExpectation = expectation(description: "search Expectation")
 
-        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
             guard case .searchResults(let results) = state else {
                 XCTFail("Should not have failed")
                 return
@@ -532,7 +532,7 @@ class SearchViewModelTests: XCTestCase {
         let recentSearchesExpectation = expectation(description: "show recent searches state")
 
         var count = 0
-        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
             count += 1
             if count == 1 {
                 guard case .searchResults(let results) = state else {
@@ -581,7 +581,7 @@ class SearchViewModelTests: XCTestCase {
 
                 XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
                 offlineExpectation.fulfill()
-            } else if count == 2 {
+            } else if count == 3 {
                 guard case .searchResults(let results) = state else {
                     XCTFail("Should not have failed")
                     return
@@ -611,7 +611,7 @@ class SearchViewModelTests: XCTestCase {
         let viewModel = subject()
         let localSavesExpectation = expectation(description: "handle local saves scenario")
 
-        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst(3).receive(on: DispatchQueue.main).sink { state in
             guard case .searchResults(let results) = state else {
                 XCTFail("Should not have failed")
                 return
@@ -634,7 +634,7 @@ class SearchViewModelTests: XCTestCase {
         let viewModel = subject()
         let errorExpectation = expectation(description: "handle apollo internet connection error")
 
-        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.dropFirst(3).receive(on: DispatchQueue.main).sink { state in
             guard case .emptyState(let emptyStateViewModel) = state else {
                 XCTFail("Should not have failed")
                 return

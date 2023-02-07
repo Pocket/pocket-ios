@@ -22,6 +22,10 @@ class OnlineSearch {
         self.scope = scope
     }
 
+    func hasCache(with term: String) -> Bool {
+        return cache[term] != nil
+    }
+
     func search(with term: String) {
         guard cache[term] == nil else {
             results = .success(cache[term] ?? [])
