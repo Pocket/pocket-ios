@@ -1,5 +1,6 @@
 import SwiftUI
 import Textile
+import SafariServices
 
 struct PremiumUpgradeView: View {
     @Environment(\.dismiss)
@@ -175,10 +176,28 @@ Refunds are not available for unused portions of a subscription.
 }
 
 private struct PremiumTermsView: View {
+    @State var showSafari = false
+    @State var urlString = "https://getpocket.com/en/privacy/"
+    // TODO: URLs need to be localized
+    let privacyPolicyUrlString = "https://getpocket.com/en/privacy/"
+    let toSUrlString = "https://getpocket.com/en/tos/"
+
     var body: some View {
         HStack(spacing: 16) {
-            Button { } label: { Text("Privacy Policy").style(.terms) }
-            Button { } label: { Text("Terms of Service").style(.terms) }
+            Button(action: {
+                self.urlString = privacyPolicyUrlString
+                self.showSafari = true
+            }, label: { Text("Privacy Policy").style(.terms) })
+                .sheet(isPresented: $showSafari) {
+                    SafariView(url: URL(string: self.urlString)!)
+                }
+            Button(action: {
+                self.urlString = toSUrlString
+                self.showSafari = true
+            }, label: { Text("Terms of Service").style(.terms) })
+                .sheet(isPresented: $showSafari) {
+                    SafariView(url: URL(string: self.urlString)!)
+                }
         }.padding(.bottom)
     }
 }
@@ -202,6 +221,17 @@ private struct PremiumBackgroundView: View {
 
     private var borderWidth: CGFloat {
         CGFloat(UIDevice.current.userInterfaceIdiom == .pad ? 18.0 : 13.0)
+    }
+}
+
+struct SafariView: UIViewControllerRepresentable {
+    let url: URL
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<SafariView>) -> SFSafariViewController {
+        return SFSafariViewController(url: url)
+    }
+
+    func updateUIViewController(_ uiViewController: SFSafariViewController, context: UIViewControllerRepresentableContext<SafariView>) {
     }
 }
 
