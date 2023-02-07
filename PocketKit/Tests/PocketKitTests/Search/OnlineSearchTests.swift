@@ -99,6 +99,20 @@ class OnlineSearchTests: XCTestCase {
         XCTAssertNil(searchService.searchCall(at: 1))
     }
 
+    func test_hasCache_withPreviousSearchTerm_returnsTrue() async {
+        let sut = subject()
+        let term = "search-term"
+        sut.search(with: term)
+        await setupOnlineSearch(with: "search-term")
+        XCTAssertTrue(sut.hasCache(with: term))
+    }
+
+    func test_hasCache_withNewSearch_returnsFalse() {
+        let sut = subject()
+        let term = "search-term"
+        XCTAssertFalse(sut.hasCache(with: term))
+    }
+
     private func setupOnlineSearch(with term: String) async {
         let itemParts = SavedItemParts(data: DataDict([
             "__typename": "SavedItem",

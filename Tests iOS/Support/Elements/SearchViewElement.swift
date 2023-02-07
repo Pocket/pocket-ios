@@ -35,6 +35,18 @@ struct SearchViewElement: PocketUIElement {
         return query["search-results"]
     }
 
+    var skeletonView: XCUIElement {
+        let query: XCUIElementQuery
+
+        if #available(iOS 16, *) {
+            query = element.collectionViews
+        } else {
+            query = element.tables
+        }
+
+        return query["skeleton-view"]
+    }
+
     func searchItemCell(at index: Int) -> XCUIElement {
         return searchResultsView.cells.element(boundBy: index)
     }

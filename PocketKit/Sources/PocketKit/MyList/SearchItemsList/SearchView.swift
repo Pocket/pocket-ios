@@ -11,12 +11,14 @@ struct SearchView: View {
 
     var body: some View {
         switch viewModel.searchState {
-        case .emptyState(let viewModel):
-            SearchEmptyView(viewModel: viewModel)
+        case .emptyState(let emptyStateViewModel):
+            SearchEmptyView(viewModel: emptyStateViewModel)
         case .recentSearches(let searches):
             RecentSearchView(viewModel: viewModel, recentSearches: searches)
         case .searchResults(let results):
             ResultsView(viewModel: viewModel, results: results)
+        case .loading:
+            SkeletonView()
         default:
             EmptyView()
         }
