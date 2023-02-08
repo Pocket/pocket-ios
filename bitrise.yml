@@ -76,6 +76,7 @@ workflows:
             - source: '$BITRISEIO_SECRETS_XCCONFIG_URL'
             - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
           title: Install production secrets.xcconfig
+      - cache-pull@2: {}
       - resource-archive@2:
           inputs:
             - extract_to_path: '$BITRISE_SOURCE_DIR/PocketKit/Sources/Textile/Style/Typography/Fonts'
@@ -223,6 +224,7 @@ workflows:
             - api_key_id: "$APP_STORE_API_ID"
             - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
       - deploy-to-bitrise-io@2: {}
+      - cache-push@2: {}
       - slack@3:
           inputs:
             - channel: '#log-ios-qa-builds'
@@ -245,6 +247,7 @@ workflows:
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_TEST_BUNDLE_PATH:BITRISE_TEST_BUNDLE_PATH'
+      - cache-push@2: {}
     before_run:
       - _setup
 
