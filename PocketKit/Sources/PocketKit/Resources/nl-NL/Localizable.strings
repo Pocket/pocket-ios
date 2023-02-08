@@ -1,0 +1,118 @@
+"Home" = "Homepagina";
+"Archive" = "Archief";
+"Pocket" = "Pocket";
+"Settings" = "Instellingen";
+
+// Alert
+"Are you sure you want to delete this item?" = "Weet je zeker dat je dit item wilt verwijderen?";
+"Yes" = "Ja";
+"No" = "Nee";
+
+// No internet
+"No Internet Connection" = "Geen internetverbinding";
+"Looks like you're offline. Try checking your mobile data or wifi." = "Het lijkt erop dat je offline bent. Controleer je verbinding met het mobiele of wifi-netwerk.";
+
+"Keep your list fresh and clean" = "Houd je lijst up-to-date en geordend";
+"Archive the saves you're finished with\n using the archive icon." = "Archiveer opgeslagen artikelen die je al hebt gelezen via het archief-pictogram.";
+"How to archive" = "Artikelen archiveren";
+
+"Find your favorites here" = "Vind hier je favorieten";
+"Hit the star icon to favorite an article and find it faster." = "Klik op het sterretje om een artikel aan je favorieten toe te voegen, zodat je het sneller terug kunt vinden.";
+
+"Start building your Pocket list" = "Begin met het samenstellen van je Pocket-lijst";
+"How to save" = "Opslaan";
+
+"No saves with this tag." = "Geen opgeslagen artikelen met deze tag.";
+"Tag your saves by topic to find them later." = "Voeg tags aan opgeslagen artikelen toe zodat je ze later makkelijk kunt vinden.";
+"How to tag" = "Tags gebruiken";
+
+"All" = "Alle";
+"Tagged" = "Getagd";
+"Favorites" = "Favorieten";
+"Sort/Filter" = "Sort/Filter";
+
+"Save" = "Opslaan";
+"Report" = "Rapporteren";
+"Delete" = "Verwijderen";
+"Archive" = "Archief";
+"Favorite" = "Favoriet";
+"Unfavorite" = "Verwijderen uit Favorieten";
+"Move to saves" = "Verplaatsen naar Opgeslagen";
+"Move to Saves" = "Verplaatsen naar Opgeslagen";
+"Add Tags" = "Tags toevoegen";
+"Share" = "Delen";
+
+"Saves" = "Opgeslagen";
+
+"Sort by" = "Gesorteerd op";
+"Newest saved" = "Als laatste opgeslagen";
+"Oldest saved" = "Als eerste opgeslagen";
+"Shortest to read" = "Kortste leestijd";
+"Longest to read" = "Langste leestijd";
+
+"Display Settings" = "Instellingen weergeven";
+"Font" = "Font";
+"Font Size" = "Font Size";
+
+"Copy link" = "Kopieer link";
+"Copy link with selection" = "Copy link with selection";
+"Open" = "Openen";
+
+"This element is currently unsupported." = "This element is currently unsupported.";
+"This video could not be loaded." = "This video could not be loaded.";
+
+"Open in Web View" = "Open in Web View";
+
+"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
+"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
+"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+
+"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"Recent Saves" = "Recent opgeslagen";
+"See All" = "Alles bekijken";
+
+"%@ min read" = "Leestijd %1$@ min.";
+"Saved" = "Opgeslagen";
+
+"Save what really interests you" = "Sla op wat je echt boeit";
+"Collect articles, videos or any online content you like." = "Verzamel artikelen, video's of andere content die je leuk vindt.";
+
+"Make the most of any moment" = "Benut elk moment optimaal";
+"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
+
+"Your quiet corner of the Internet" = "Je eigen rustige stukje internet";
+"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.";
+
+"Log In" = "Inloggen";
+"Sign Up" = "Aanmelden";
+
+"Tell us more" = "Licht het toe";
+"Report a concern" = "Een probleem rapporteren";
+"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+
+"Premium Status:" = "Premium Status:";
+
+"Your Account" = "Jouw account";
+"Sign Out" = "Sign Out";
+"Are you sure?" = "Weet je het zeker?";
+"Sign Out" = "Sign Out";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
+"App Customization" = "App Customization";
+"Show App Badge Count" = "Toon badge telling app";
+"About & Support" = "About & Support";
+"Help" = "Hulp";
+"Terms of Service" = "Gebruiksvoorwaarden";
+"Privacy Policy" = "Privacybeleid";
+
+"not tagged" = "Niet getagd";
+"Delete Tag?" = "Tag verwijderen?";
+"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
+"Delete" = "Verwijderen";
+"Cancel" = "Annuleren";
+"Rename Tag" = "Hernoem tag";
+"Enter a new name for this tag" = "Voer een nieuwe naam voor deze tag in";
+
+"not tagged" = "Niet getagd";
+"OK" = "OK";
+"An error occurred" = "An error occurred";
+
