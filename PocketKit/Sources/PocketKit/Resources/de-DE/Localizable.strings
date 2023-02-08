@@ -1,0 +1,118 @@
+"Home" = "Home";
+"Archive" = "Archiv";
+"Pocket" = "Pocket";
+"Settings" = "Einstellungen";
+
+// Alert
+"Are you sure you want to delete this item?" = "Möchtest du dieses Element wirklich löschen?";
+"Yes" = "Ja";
+"No" = "Nein";
+
+// No internet
+"No Internet Connection" = "Keine Internetverbindung";
+"Looks like you're offline. Try checking your mobile data or wifi." = "Wie's aussieht, bist du offline. Bitte überprüfe deine mobilen Daten oder dein WLAN.";
+
+"Keep your list fresh and clean" = "Sorge dafür, dass deine Liste aktuell und schön ordentlich bleibt";
+"Archive the saves you're finished with\n using the archive icon." = "Archiviere die gespeicherten Elemente, mit denen du fertig bist, über das Archivierungssymbol.";
+"How to archive" = "So funktioniert das Archivieren";
+
+"Find your favorites here" = "Finde hier deine Favoriten";
+"Hit the star icon to favorite an article and find it faster." = "Drücke das Stern-Symbol, um einen Artikel als Favoriten zu markieren und ihn schneller zu finden.";
+
+"Start building your Pocket list" = "Beginne mit dem Erstellen deiner Pocket-Liste";
+"How to save" = "Speichern";
+
+"No saves with this tag." = "Keine gespeicherten Elemente mit diesem Tag.";
+"Tag your saves by topic to find them later." = "Tagge deine gespeicherten Elemente nach Themen, um sie später wieder zu finden.";
+"How to tag" = "So funktionieren Tags";
+
+"All" = "Alles";
+"Tagged" = "Getaggt";
+"Favorites" = "Favoriten";
+"Sort/Filter" = "Sort/Filter";
+
+"Save" = "Speichern";
+"Report" = "Melden";
+"Delete" = "Löschen";
+"Archive" = "Archiv";
+"Favorite" = "Als Favorit markieren";
+"Unfavorite" = "Favorit aufheben";
+"Move to saves" = "Zu „Gespeichert“ verschieben";
+"Move to Saves" = "Zu „Gespeichert“ verschieben";
+"Add Tags" = "Tags hinzufügen";
+"Share" = "Teilen";
+
+"Saves" = "Gespeichert";
+
+"Sort by" = "Sortieren nach";
+"Newest saved" = "Zuletzt gespeichert";
+"Oldest saved" = "Zuerst gespeichert";
+"Shortest to read" = "Kürzeste Lesedauer";
+"Longest to read" = "Längste Lesedauer";
+
+"Display Settings" = "Anzeigeeinstellungen";
+"Font" = "Font";
+"Font Size" = "Font Size";
+
+"Copy link" = "Link kopieren";
+"Copy link with selection" = "Copy link with selection";
+"Open" = "Öffnen";
+
+"This element is currently unsupported." = "This element is currently unsupported.";
+"This video could not be loaded." = "This video could not be loaded.";
+
+"Open in Web View" = "Open in Web View";
+
+"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
+"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
+"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+
+"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"Recent Saves" = "Kürzlich gespeichert";
+"See All" = "Alle ansehen";
+
+"%@ min read" = "%1$@ min gelesen";
+"Saved" = "Gespeichert";
+
+"Save what really interests you" = "Speichere alles, was dich interessiert";
+"Collect articles, videos or any online content you like." = "Sammle Artikel, Videos oder andere Online-Inhalte, die dir gefallen.";
+
+"Make the most of any moment" = "Hol das Beste aus jedem Moment heraus";
+"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
+
+"Your quiet corner of the Internet" = "Dein ruhiges Plätzchen im Web";
+"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.";
+
+"Log In" = "Einloggen";
+"Sign Up" = "Registrieren";
+
+"Tell us more" = "Erzähl uns mehr";
+"Report a concern" = "Bedenken melden";
+"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+
+"Premium Status:" = "Premium Status:";
+
+"Your Account" = "Dein Konto";
+"Sign Out" = "Sign Out";
+"Are you sure?" = "Bist du sicher?";
+"Sign Out" = "Sign Out";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
+"App Customization" = "App Customization";
+"Show App Badge Count" = "App-Badge-Anzahl anzeigen";
+"About & Support" = "About & Support";
+"Help" = "Hilfe";
+"Terms of Service" = "AGB";
+"Privacy Policy" = "Datenschutzrichtlinie";
+
+"not tagged" = "Nicht getaggt";
+"Delete Tag?" = "Tag löschen?";
+"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
+"Delete" = "Löschen";
+"Cancel" = "Abbrechen";
+"Rename Tag" = "Tag umbenennen";
+"Enter a new name for this tag" = "Gib einen neuen Namen für dieses Tag ein.";
+
+"not tagged" = "Nicht getaggt";
+"OK" = "OK";
+"An error occurred" = "An error occurred";
+
