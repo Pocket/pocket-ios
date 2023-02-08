@@ -332,7 +332,7 @@ class HomeTests: XCTestCase {
         rec2Cell.savedButton.wait()
         rec1Cell.savedButton.wait()
     }
-    
+
     func test_returningFromSaves_maintainsHomePosition() {
         let home = app.launch().homeView
         home.overscroll()
@@ -341,7 +341,7 @@ class HomeTests: XCTestCase {
         app.tabBar.homeButton.tap()
         validateBottomMessage()
     }
-    
+
     func test_returningFromSettings_maintainsHomePosition() {
         let home = app.launch().homeView
         home.overscroll()
@@ -350,7 +350,7 @@ class HomeTests: XCTestCase {
         app.tabBar.homeButton.tap()
         validateBottomMessage()
     }
-    
+
     func test_returningFromReader_maintainsHomePosition() {
         let home = app.launch().homeView
         home.overscroll()
@@ -359,7 +359,7 @@ class HomeTests: XCTestCase {
         app.readerView.readerHomeButton.wait().tap()
         validateBottomMessage()
     }
-    
+
     func test_returningFromSeeAll_maintainsHomePosition() {
         let home = app.launch().homeView
         home.overscroll()
@@ -368,7 +368,7 @@ class HomeTests: XCTestCase {
         app.readerView.readerHomeButton.wait().tap()
         validateBottomMessage()
     }
-    
+
     func validateBottomMessage() {
         XCTAssertTrue(app.homeView.overscrollText.exists)
     }
