@@ -1,0 +1,118 @@
+"Home" = "首頁";
+"Archive" = "封存";
+"Pocket" = "Pocket";
+"Settings" = "設定";
+
+// Alert
+"Are you sure you want to delete this item?" = "確定要刪除此項目？";
+"Yes" = "是";
+"No" = "否";
+
+// No internet
+"No Internet Connection" = "暫無網際網路連線";
+"Looks like you're offline. Try checking your mobile data or wifi." = "您似乎已離線。請嘗試檢查您的行動數據或 WiFi。";
+
+"Keep your list fresh and clean" = "及時更新和整理您的清單";
+"Archive the saves you're finished with\n using the archive icon." = "使用封存圖示封存已讀完的儲存內容。";
+"How to archive" = "如何封存";
+
+"Find your favorites here" = "在此處查找您收藏的內容";
+"Hit the star icon to favorite an article and find it faster." = "點擊星號圖示以收藏文章並更快地查找。";
+
+"Start building your Pocket list" = "開始建立您的 Pocket 清單";
+"How to save" = "如何儲存";
+
+"No saves with this tag." = "沒有使用此標籤的儲存內容。";
+"Tag your saves by topic to find them later." = "按主題標記儲存的內容，以便日後查找。";
+"How to tag" = "如何標記";
+
+"All" = "全部";
+"Tagged" = "已標記";
+"Favorites" = "我的最愛";
+"Sort/Filter" = "Sort/Filter";
+
+"Save" = "儲存";
+"Report" = "舉報";
+"Delete" = "刪除";
+"Archive" = "封存";
+"Favorite" = "新增至我的最愛";
+"Unfavorite" = "移除最愛";
+"Move to saves" = "移至「儲存項目」";
+"Move to Saves" = "移至「儲存項目」";
+"Add Tags" = "新增標籤";
+"Share" = "分享";
+
+"Saves" = "儲存項目";
+
+"Sort by" = "排序依據";
+"Newest saved" = "最新儲存";
+"Oldest saved" = "最舊儲存";
+"Shortest to read" = "最短文章";
+"Longest to read" = "最長文章";
+
+"Display Settings" = "顯示設定";
+"Font" = "Font";
+"Font Size" = "Font Size";
+
+"Copy link" = "複製連結";
+"Copy link with selection" = "Copy link with selection";
+"Open" = "開啟";
+
+"This element is currently unsupported." = "This element is currently unsupported.";
+"This video could not be loaded." = "This video could not be loaded.";
+
+"Open in Web View" = "Open in Web View";
+
+"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
+"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
+"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+
+"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"Recent Saves" = "近期儲存";
+"See All" = "查看所有";
+
+"%@ min read" = "%1$@ 分鐘閱讀時間";
+"Saved" = "已儲存";
+
+"Save what really interests you" = "儲存您真心感興趣的項目";
+"Collect articles, videos or any online content you like." = "收集您喜愛的文章、影片或任何網路內容。";
+
+"Make the most of any moment" = "將每一刻發揮到淋漓盡致";
+"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
+
+"Your quiet corner of the Internet" = "您在網際網路中的寧靜角落";
+"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.";
+
+"Log In" = "登入";
+"Sign Up" = "註冊";
+
+"Tell us more" = "告訴我們更多詳情";
+"Report a concern" = "舉報問題";
+"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+
+"Premium Status:" = "Premium Status:";
+
+"Your Account" = "您的帳號";
+"Sign Out" = "Sign Out";
+"Are you sure?" = "您確定嗎？";
+"Sign Out" = "Sign Out";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
+"App Customization" = "App Customization";
+"Show App Badge Count" = "顯示應用程式標記數";
+"About & Support" = "About & Support";
+"Help" = "說明";
+"Terms of Service" = "服務條款";
+"Privacy Policy" = "隱私政策";
+
+"not tagged" = "未標記";
+"Delete Tag?" = "刪除標籤？";
+"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
+"Delete" = "刪除";
+"Cancel" = "取消";
+"Rename Tag" = "重新命名標籤";
+"Enter a new name for this tag" = "輸入此標籤的新名稱";
+
+"not tagged" = "未標記";
+"OK" = "確定";
+"An error occurred" = "An error occurred";
+
