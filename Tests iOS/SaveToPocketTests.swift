@@ -70,7 +70,7 @@ class SaveToPocketTests: XCTestCase {
         addTagsView.saveButton.tap()
         safari.staticTexts["Hello, world"].wait()
     }
-    
+
     func tapPocketShareMenuIcon() {
         let safariShareMenu = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         let activityView = safariShareMenu.descendants(matching: .other)["ActivityListView"].wait()
