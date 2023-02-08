@@ -147,6 +147,10 @@ workflows:
             - configuration: RELEASE
             - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - export_method: app-store
+            - automatic_code_signing: api-key
+            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
+            - api_key_id: "$APP_STORE_API_ID"
+            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
@@ -166,9 +170,10 @@ workflows:
             - artifact_sources: release-build.release-build
       - fastlane@3:
           inputs:
-            - connection: 'off'
-            - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
-            - api_issuer: '$API_KEY_ISSUER_ID'
+            - automatic_code_signing: api-key
+            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
+            - api_key_id: "$APP_STORE_API_ID"
+            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
             - verbose_log: 'yes'
             - lane: beta_internal
 
@@ -181,9 +186,10 @@ workflows:
       - deploy-to-itunesconnect-deliver@2:
           inputs:
             - app_id: '$APP_ID'
-            - connection: 'off'
-            - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
-            - api_issuer: '$API_KEY_ISSUER_ID'
+            - automatic_code_signing: api-key
+            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
+            - api_key_id: "$APP_STORE_API_ID"
+            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
       - github-release@0:
           inputs:
             - username: '$GITHUB_RELEASE_USERNAME'
@@ -213,9 +219,9 @@ workflows:
                 CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - configuration: Debug
             - automatic_code_signing: api-key
-            - api_key_path: '$BITRISEIO_APP_STORE_CONNECT_API_KEY_URL'
-            - api_key_issuer_id: '$API_KEY_ISSUER_ID'
-            - api_key_id: '$API_KEY_ID'
+            - api_key_path: "$BITRISEIO_APP_STORE_CONNECT_API_ID_URL"
+            - api_key_id: "$APP_STORE_API_ID"
+            - api_key_issuer_id: "$APP_STORE_API_ISSUER_ID"
       - deploy-to-bitrise-io@2: {}
       - slack@3:
           inputs:
