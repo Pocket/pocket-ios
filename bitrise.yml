@@ -39,6 +39,8 @@ stages:
       - test-build: {}
       # Build a qa build
       - qa-build: {}
+      # Build a release build
+      - release-build: {}
 
   run-test-groups:
     workflows:
@@ -145,7 +147,7 @@ workflows:
             - project_path: '$BITRISE_PROJECT_PATH'
             - scheme: '$BITRISE_SCHEME'
             - distribution_method: app-store
-            - configuration: RELEASE
+            - configuration: Release
             - xcconfig_content: CURRENT_PROJECT_VERSION = $BITRISE_BUILD_NUMBER
             - export_method: app-store
             - automatic_code_signing: api-key
@@ -155,6 +157,7 @@ workflows:
       - deploy-to-bitrise-io@2:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_IPA_PATH:BITRISE_IPA_PATH'
+      - cache-push@2: {}
     before_run:
       - _setup
     after_run:
