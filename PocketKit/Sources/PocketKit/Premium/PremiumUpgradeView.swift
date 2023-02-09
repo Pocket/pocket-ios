@@ -176,23 +176,24 @@ Refunds are not available for unused portions of a subscription.
 }
 
 private struct PremiumTermsView: View {
-    @State var showSafari = false
+    @State var showPrivacyPolicy = false
+    @State var showTermsOfService = false
 
     var body: some View {
         HStack(spacing: 16) {
             Button(action: {
-                self.showSafari = true
+                self.showPrivacyPolicy = true
             }, label: { Text("Privacy Policy").style(.terms) })
-            .sheet(isPresented: $showSafari) {
+            .sheet(isPresented: $showPrivacyPolicy) {
                 if let privacyUrl = getUrlFor(typeOf: .PrivacyPolicy) {
                     SFSafariView(url: privacyUrl)
                 }
             }
             .accessibilityIdentifier("privacy-policy")
             Button(action: {
-                self.showSafari = true
+                self.showTermsOfService = true
             }, label: { Text("Terms of Service").style(.terms) })
-            .sheet(isPresented: $showSafari) {
+            .sheet(isPresented: $showTermsOfService) {
                 if let toSUrl = getUrlFor(typeOf: .TermsOfService) {
                     SFSafariView(url: toSUrl)
                 }
