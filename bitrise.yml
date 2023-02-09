@@ -16,6 +16,7 @@ pipelines:
       - build-and-test: {}
       # Run multiple tests on simulators in parallel
       - run-test-groups: {}
+      - run-danger: {} 
       - deploy-test-results: {}
   # Will create an app store build and upload it to itunes connect
   app-store-pipeline:
@@ -46,6 +47,10 @@ stages:
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
       - run-tests-ui-3: {}
+
+  run-danger:
+    workflows: 
+      - run-danger: {} 
 
   deploy-test-results:
     workflows:
@@ -315,7 +320,9 @@ workflows:
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_XCRESULT_PATH'
-
+  run-danger:
+    steps:
+      _danger
   deploy-test-results:
     steps:
       - pull-intermediate-files@1:
