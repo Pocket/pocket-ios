@@ -45,7 +45,7 @@ class HomeViewController: UIViewController {
         view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
         view.attributedText = NSAttributedString(
-            string: "You're all caught up!\nCheck back later for more.".localized(),
+            string: L10n.youReAllCaughtUpCheckBackLaterForMore,
             style: .overscroll
         )
         return view
@@ -85,7 +85,7 @@ class HomeViewController: UIViewController {
 
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
-        navigationItem.title = "Home".localized()
+        navigationItem.title = L10n.home
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
             self?.setupOverflowView(contentSize: contentSize)
         }.store(in: &subscriptions)

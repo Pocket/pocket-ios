@@ -86,14 +86,14 @@ extension ReadableViewModel {
 
     func confirmDelete() {
         presentedAlert = PocketAlert(
-            title: "Are you sure you want to delete this item?".localized(),
+            title: L10n.areYouSureYouWantToDeleteThisItem,
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: "No".localized(), style: .default) { [weak self] _ in
+                UIAlertAction(title: L10n.no, style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: "Yes".localized(), style: .destructive) { [weak self] _ in self?._delete() },
+                UIAlertAction(title: L10n.yes, style: .destructive) { [weak self] _ in self?._delete() },
             ],
             preferredAction: nil
         )

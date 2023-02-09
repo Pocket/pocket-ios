@@ -69,6 +69,19 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return UIImage(asset: .sortFilter)
         }
     }
+    
+    var localized: String {
+        switch self {
+        case .all:
+            return L10n.all
+        case .tagged:
+            return L10n.tagged
+        case .favorites:
+            return L10n.favorites
+        case .sortAndFilter:
+            return L10n.sortFilter
+        }
+    }
 }
 
 enum ItemsListEvent<ItemIdentifier: Hashable> {

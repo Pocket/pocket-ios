@@ -9,7 +9,7 @@ class ArchivedItemsListViewModel: ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
 
-    let selectionItem: SelectionItem = SelectionItem(title: "Archive".localized(), image: .init(asset: .archive))
+    let selectionItem: SelectionItem = SelectionItem(title: L10n.archive, image: .init(asset: .archive))
 
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
@@ -195,7 +195,7 @@ extension ArchivedItemsListViewModel {
 extension ArchivedItemsListViewModel {
     func filterButton(with filter: ItemsListFilter) -> TopicChipPresenter {
         TopicChipPresenter(
-            title: filter.rawValue.localized(),
+            title: filter.localized,
             image: filter.image,
             isSelected: selectedFilters.contains(filter)
         )
@@ -304,14 +304,14 @@ extension ArchivedItemsListViewModel {
 extension ArchivedItemsListViewModel {
     private func confirmDelete(item: SavedItem) {
         presentedAlert = PocketAlert(
-            title: "Are you sure you want to delete this item?".localized(),
+            title: L10n.areYouSureYouWantToDeleteThisItem,
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: "No".localized(), style: .default) { [weak self] _ in
+                UIAlertAction(title: L10n.no, style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: "Yes".localized(), style: .destructive) { [weak self] _ in
+                UIAlertAction(title: L10n.yes, style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
                     self?.delete(item: item)
                 }

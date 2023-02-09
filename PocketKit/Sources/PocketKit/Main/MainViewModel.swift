@@ -42,11 +42,11 @@ class MainViewModel: ObservableObject {
         var navigationTitle: String {
             switch self {
             case .home:
-                return "Home".localized()
+                return L10n.home
             case .saves:
-                return "Saves".localized()
+                return L10n.saves
             case .account:
-                return "Settings".localized()
+                return L10n.settings
             }
         }
 

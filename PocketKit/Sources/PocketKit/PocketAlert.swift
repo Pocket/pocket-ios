@@ -11,11 +11,11 @@ struct PocketAlert {
 extension PocketAlert {
     init(_ error: Error, handler: @escaping () -> Void) {
         self.init(
-            title: "An error occurred".localized(),
+            title: L10n.anErrorOccurred,
             message: error.localizedDescription,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: "Ok".localized(), style: .default) { _ in
+                UIAlertAction(title: L10n.ok, style: .default) { _ in
                     handler()
                 }
             ],
