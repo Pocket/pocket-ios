@@ -25,8 +25,8 @@ struct ReaderSettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text("Display Settings".localized())) {
-                    Picker("Font".localized(), selection: settings.$fontFamily) {
+                Section(header: Text(L10n.displaySettings)) {
+                    Picker(L10n.font, selection: settings.$fontFamily) {
                         ForEach(Constants.allowedFontFamilies, id: \.name) { family in
                             Text(family.name)
                                 .tag(family)
@@ -34,7 +34,7 @@ struct ReaderSettingsView: View {
                     }
 
                     Stepper(
-                        "Font Size".localized(),
+                        L10n.fontSize,
                         value: settings.$fontSizeAdjustment,
                         in: Constants.allowedAdjustments,
                         step: Constants.adjustmentStep

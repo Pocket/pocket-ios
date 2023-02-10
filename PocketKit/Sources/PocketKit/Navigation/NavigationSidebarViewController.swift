@@ -96,7 +96,7 @@ class NavigationSidebarViewController: UIViewController {
         self.tracker = tracker
         super.init(nibName: nil, bundle: nil)
 
-        self.title = "Pocket".localized()
+        self.title = L10n.pocket
 
         collectionView.contentInset = UIEdgeInsets(top: 21, left: 0, bottom: 0, right: 0)
         collectionView.isScrollEnabled = false

@@ -28,6 +28,25 @@ enum WebActivityTitle: String {
             return .save
         }
     }
+
+    var localized: String {
+        switch self {
+        case .save:
+            return L10n.save
+        case .report:
+            return L10n.report
+        case .delete:
+            return L10n.delete
+        case .favorite:
+            return L10n.favorite
+        case .unfavorite:
+            return L10n.unfavorite
+        case .archive:
+            return L10n.archive
+        case .moveToSaves:
+            return L10n.moveToSaves
+        }
+    }
 }
 
 class ReaderActionsWebActivity: UIActivity {
@@ -49,7 +68,7 @@ class ReaderActionsWebActivity: UIActivity {
     let action: () -> Void
 
     init(title: WebActivityTitle, action: @escaping () -> Void) {
-        self.title = title.rawValue.localized()
+        self.title = title.localized
         self.iconAsset = title.imageAsset
         self.action = action
 

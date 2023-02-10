@@ -16,7 +16,7 @@ class CopyLinkActivity: UIActivity {
     }
 
     override var activityTitle: String? {
-        return "Copy link".localized()
+        return L10n.copyLink
     }
 
     override var activityImage: UIImage? {

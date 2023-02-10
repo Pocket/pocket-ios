@@ -14,7 +14,7 @@ extension ItemContextualAction {
     static func moveToSaves(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
         ItemContextualAction(
             style: .destructive,
-            title: "Move to Saves".localized(),
+            title: L10n.moveToSaves,
             image: UIImage(asset: .save),
             backgroundColor: UIColor(.ui.teal2),
             completion: completion
@@ -24,7 +24,7 @@ extension ItemContextualAction {
     static func archive(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
         ItemContextualAction(
             style: .destructive,
-            title: "Archive".localized(),
+            title: L10n.archive,
             image: UIImage(asset: .archive),
             backgroundColor: UIColor(.ui.teal2),
             completion: completion

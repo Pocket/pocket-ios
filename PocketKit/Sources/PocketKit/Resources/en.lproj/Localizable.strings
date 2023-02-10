@@ -37,7 +37,6 @@
 "Archive" = "Archive";
 "Favorite" = "Favorite";
 "Unfavorite" = "Unfavorite";
-"Move to saves" = "Move to saves";
 "Move to Saves" = "Move to Saves";
 "Add Tags" = "Add Tags";
 "Share" = "Share";
@@ -116,3 +115,15 @@
 "OK" = "OK";
 "An error occurred" = "An error occurred";
 
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"Sign up for Premium" = "Sign up for Premium";
+"Premium Subscriber" = "Premium Subscriber";
+
+"The title, link, or image is broken" = "The title, link, or image is broken";
+"It's in the wrong category" = "It's in the wrong category";
+"It's sexually explicit" = "It's sexually explicit";
+"It's rude, vulgar, or offensive" = "It's rude, vulgar, or offensive";
+"It contains misinformation" = "It contains misinformation";
+"Other" = "Other";

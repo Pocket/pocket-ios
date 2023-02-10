@@ -34,7 +34,7 @@ struct TagsFilterView: View {
         NavigationView {
             VStack {
                 List(selection: $selection) {
-                    Text("not tagged".localized())
+                    Text(L10n.notTagged)
                         .style(.tagsFilter.tag)
                         .accessibilityIdentifier("all-tags")
                         .onTapGesture {
@@ -64,21 +64,21 @@ struct TagsFilterView: View {
         }
         .alert(isPresented: $showDeleteAlert) {
             Alert(
-                title: Text("Delete Tag?".localized()),
-                message: Text("Are you sure you want to delete the tags and remove it from all items?".localized()),
-                primaryButton: .destructive(Text("Delete".localized()), action: {
+                title: Text(L10n.deleteTag),
+                message: Text(L10n.areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems),
+                primaryButton: .destructive(Text(L10n.delete), action: {
                     viewModel.delete(tags: Array(tagsSelected))
                     tagsSelected = Set<String>()
                 }),
-                secondaryButton: .cancel(Text("Cancel".localized()), action: {
+                secondaryButton: .cancel(Text(L10n.cancel), action: {
                 })
             )
         }
         .alert(
             isPresented: $showRenameAlert,
             TextAlert(
-                title: "Rename Tag".localized(),
-                message: "Enter a new name for this tag".localized()
+                title: L10n.renameTag,
+                message: L10n.enterANewNameForThisTag
             ) { result in
                 if let text = result, let oldName = tagsSelected.first {
                     viewModel.rename(from: oldName, to: text)

@@ -115,11 +115,11 @@ extension AuthorizationClient {
         var errorDescription: String? {
             switch self {
             case .invalidRedirect:
-                return "Could not successfully handle the server redirect.".localized()
+                return L10n.couldNotSuccessfullyHandleTheServerRedirect
             case .invalidComponents:
-                return "Could not generate correct URL for authentication.".localized()
+                return L10n.couldNotGenerateCorrectURLForAuthentication
             case .alreadyAuthenticating:
-                return "AuthorizationClient is already authenticating".localized()
+                return L10n.authorizationClientIsAlreadyAuthenticating
             case .other(let error):
                 return error.localizedDescription
             }

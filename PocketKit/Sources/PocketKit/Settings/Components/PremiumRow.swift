@@ -29,6 +29,13 @@ enum PremiumStatus: String {
         case .subscribed: return Color(UIColor.secondarySystemGroupedBackground)
         }
     }
+
+    var localized: String {
+        switch self {
+        case .notSubscribed: return L10n.signUpForPremium
+        case .subscribed: return L10n.premiumSubscriber
+        }
+    }
 }
 
 struct PremiumRow<Destination: View>: View {
@@ -46,7 +53,7 @@ struct PremiumRow<Destination: View>: View {
                 HStack(alignment: .center, spacing: 0) {
                     VStack(alignment: .leading, spacing: 5) {
                         if status.headerVisible {
-                            Text("Premium Status:".localized())
+                            Text(L10n.premiumStatus)
                                 .style(.settings.row.header)
                         }
                         Text(status.rawValue)

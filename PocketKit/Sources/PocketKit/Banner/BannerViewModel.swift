@@ -15,7 +15,7 @@ struct BannerViewModel {
     }
 
     var attributedButtonText: AttributedString {
-        return AttributedString(NSAttributedString(string: "Save".localized(), style: .button))
+        return AttributedString(NSAttributedString(string: L10n.save, style: .button))
     }
 }
 
