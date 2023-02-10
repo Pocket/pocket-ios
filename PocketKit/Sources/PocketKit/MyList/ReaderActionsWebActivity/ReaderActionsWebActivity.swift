@@ -28,7 +28,7 @@ enum WebActivityTitle: String {
             return .save
         }
     }
-    
+
     var localized: String {
         switch self {
         case .save:

@@ -69,7 +69,7 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return UIImage(asset: .sortFilter)
         }
     }
-    
+
     var localized: String {
         switch self {
         case .all:

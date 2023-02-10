@@ -78,7 +78,7 @@ extension ItemAction {
 
     static func favorite(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.favorites,
+            title: L10n.favorite,
             identifier: .favoriteItem,
             accessibilityIdentifier: "item-action-favorite",
             image: UIImage(asset: .favorite)

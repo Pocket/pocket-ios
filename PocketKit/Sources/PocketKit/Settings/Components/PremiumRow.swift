@@ -29,7 +29,7 @@ enum PremiumStatus: String {
         case .subscribed: return Color(UIColor.secondarySystemGroupedBackground)
         }
     }
-    
+
     var localized: String {
         switch self {
         case .notSubscribed: return L10n.signUpForPremium

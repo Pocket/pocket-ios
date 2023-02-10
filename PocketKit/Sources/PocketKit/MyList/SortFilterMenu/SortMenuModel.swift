@@ -15,7 +15,7 @@ enum SortOption: String, Hashable {
     case oldest = "Oldest saved"
     case shortestToRead = "Shortest to read"
     case longestToRead = "Longest to read"
-    
+
     var localized: String {
         switch self {
         case .newest:

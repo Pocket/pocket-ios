@@ -359,7 +359,7 @@ extension HomeViewModel {
         case .recentSaves:
             return .init(
                 name: L10n.recentSaves,
-                buttonTitle: L10n.saves,
+                buttonTitle: L10n.save,
                 buttonImage: nil
             ) { [weak self] in
                 self?.tappedSeeAll = .saves
