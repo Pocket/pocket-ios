@@ -29,7 +29,7 @@
 "All" = "すべて";
 "Tagged" = "タグ付けしました";
 "Favorites" = "お気に入り";
-"Sort/Filter" = "Sort/Filter";
+"Sort/Filter" = "並べ替え/フィルター";
 
 "Save" = "保存";
 "Report" = "報告する";
@@ -51,23 +51,23 @@
 "Longest to read" = "長いコンテンツ";
 
 "Display Settings" = "表示設定";
-"Font" = "Font";
-"Font Size" = "Font Size";
+"Font" = "フォント";
+"Font Size" = "フォントサイズ";
 
 "Copy link" = "リンクをコピー";
-"Copy link with selection" = "Copy link with selection";
+"Copy link with selection" = "選択してリンクをコピー";
 "Open" = "開く";
 
-"This element is currently unsupported." = "This element is currently unsupported.";
-"This video could not be loaded." = "This video could not be loaded.";
+"This element is currently unsupported." = "この要素は現在サポートされていません。";
+"This video could not be loaded." = "このビデオを読み込めませんでした。";
 
-"Open in Web View" = "Open in Web View";
+"Open in Web View" = "ウェブビューで開く";
 
-"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
-"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
-"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+"Could not successfully handle the server redirect." = "サーバーのリダイレクトを正常に処理できませんでした。";
+"Could not generate correct URL for authentication." = "正しい認証用 URL を生成できませんでした。";
+"AuthorizationClient is already authenticating" = "AuthorizationClient はすでに認証中です";
 
-"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"You're all caught up!\nCheck back later for more." = "すべて読みました！\n他に読むものがないか後でご確認ください。";
 "Recent Saves" = "最近保存したアイテム";
 "See All" = "すべて見る";
 
@@ -78,35 +78,35 @@
 "Collect articles, videos or any online content you like." = "気になる記事、ビデオ、オンラインコンテンツを集めましょう。";
 
 "Make the most of any moment" = "少ない時間を最大限に活用";
-"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
+"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "まずは Safari、Twitter、YouTube、お好きなニュースアプリなどから保存してみましょう。記事やビデオを Pocket で閲覧できるようになります";
 
 "Your quiet corner of the Internet" = "インターネット上の静寂";
-"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.";
+"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket は読みやすいレイアウトで記事を保存し、ポップアップなどの邪魔も入らないため、インターネット上のノイズを避けることができます。";
 
 "Log In" = "ログイン";
 "Sign Up" = "登録";
 
 "Tell us more" = "詳細を教えてください";
 "Report a concern" = "懸念事項を報告する";
-"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+"Add copied URL to your Saves?" = "コピーした URL を「保存アイテム」に追加しますか？";
 
-"Premium Status:" = "Premium Status:";
+"Premium Status:" = "Premium ステータス：";
 
 "Your Account" = "あなたのアカウント";
-"Sign Out" = "Sign Out";
+"Sign Out" = "サインアウト";
 "Are you sure?" = "よろしいですか？";
-"Sign Out" = "Sign Out";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
-"App Customization" = "App Customization";
+"Sign Out" = "サインアウト";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "強制的にアカウントからサインアウトされ、オフラインで表示するために保存されたファイルがすべて削除されます。";
+"App Customization" = "アプリのカスタマイズ";
 "Show App Badge Count" = "アプリのバッジ数を表示";
-"About & Support" = "About & Support";
+"About & Support" = "概要とサポート";
 "Help" = "ヘルプ";
 "Terms of Service" = "サービス利用規約";
 "Privacy Policy" = "プライバシーポリシー";
 
 "not tagged" = "タグ付けされていません";
 "Delete Tag?" = "タグを削除しますか？";
-"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
+"Are you sure you want to delete the tags and remove it from all items?" = "タグを削除し、すべてのアイテムから外してもよろしいですか？";
 "Delete" = "削除";
 "Cancel" = "キャンセル";
 "Rename Tag" = "タグの名前を変更する";
@@ -114,5 +114,5 @@
 
 "not tagged" = "タグ付けされていません";
 "OK" = "OK";
-"An error occurred" = "An error occurred";
+"An error occurred" = "エラーが発生しました";
 

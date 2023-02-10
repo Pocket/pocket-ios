@@ -29,7 +29,7 @@
 "All" = "Alle";
 "Tagged" = "Getagd";
 "Favorites" = "Favorieten";
-"Sort/Filter" = "Sort/Filter";
+"Sort/Filter" = "Sorteren/filteren";
 
 "Save" = "Opslaan";
 "Report" = "Rapporteren";
@@ -51,23 +51,23 @@
 "Longest to read" = "Langste leestijd";
 
 "Display Settings" = "Instellingen weergeven";
-"Font" = "Font";
-"Font Size" = "Font Size";
+"Font" = "Lettertype";
+"Font Size" = "Lettergrootte";
 
 "Copy link" = "Kopieer link";
-"Copy link with selection" = "Copy link with selection";
+"Copy link with selection" = "Link met selectie kopiëren";
 "Open" = "Openen";
 
-"This element is currently unsupported." = "This element is currently unsupported.";
-"This video could not be loaded." = "This video could not be loaded.";
+"This element is currently unsupported." = "Dit element wordt momenteel niet ondersteund.";
+"This video could not be loaded." = "Deze video kan niet worden geladen.";
 
-"Open in Web View" = "Open in Web View";
+"Open in Web View" = "In webweergave openen";
 
-"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
-"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
-"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+"Could not successfully handle the server redirect." = "Kan de doorverwijzing van de server niet succesvol verwerken.";
+"Could not generate correct URL for authentication." = "Kan geen juiste URL voor verificatie genereren.";
+"AuthorizationClient is already authenticating" = "AuthorizationClient is al aan het authenticeren";
 
-"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"You're all caught up!\nCheck back later for more." = "Je bent weer helemaal bij!\n Kom later terug voor meer informatie.";
 "Recent Saves" = "Recent opgeslagen";
 "See All" = "Alles bekijken";
 
@@ -78,35 +78,35 @@
 "Collect articles, videos or any online content you like." = "Verzamel artikelen, video's of andere content die je leuk vindt.";
 
 "Make the most of any moment" = "Benut elk moment optimaal";
-"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
+"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Sla content op vanuit Safari, Twitter, YouTube of je favoriete nieuws-app. Je artikelen en video's staan dan voor je klaar in Pocket";
 
 "Your quiet corner of the Internet" = "Je eigen rustige stukje internet";
-"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.";
+"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket slaat artikelen op in een strakke lay-out, ontworpen voor leesgemak, zonder onderbrekingen of pop-ups.";
 
 "Log In" = "Inloggen";
 "Sign Up" = "Aanmelden";
 
 "Tell us more" = "Licht het toe";
 "Report a concern" = "Een probleem rapporteren";
-"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+"Add copied URL to your Saves?" = "Gekopieerde URL toevoegen aan je opgeslagen items?";
 
-"Premium Status:" = "Premium Status:";
+"Premium Status:" = "Premium-status:";
 
 "Your Account" = "Jouw account";
-"Sign Out" = "Sign Out";
+"Sign Out" = "Afmelden";
 "Are you sure?" = "Weet je het zeker?";
-"Sign Out" = "Sign Out";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
-"App Customization" = "App Customization";
+"Sign Out" = "Afmelden";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "Je wordt afgemeld van je account en alle bestanden die opgeslagen zijn voor offline bekijken worden verwijderd.";
+"App Customization" = "App-aanpassing";
 "Show App Badge Count" = "Toon badge telling app";
-"About & Support" = "About & Support";
+"About & Support" = "Over en ondersteuning";
 "Help" = "Hulp";
 "Terms of Service" = "Gebruiksvoorwaarden";
 "Privacy Policy" = "Privacybeleid";
 
 "not tagged" = "Niet getagd";
 "Delete Tag?" = "Tag verwijderen?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
+"Are you sure you want to delete the tags and remove it from all items?" = "Weet je zeker dat je de tags wilt verwijderen en dat je deze van alle items wilt verwijderen?";
 "Delete" = "Verwijderen";
 "Cancel" = "Annuleren";
 "Rename Tag" = "Hernoem tag";
@@ -114,5 +114,5 @@
 
 "not tagged" = "Niet getagd";
 "OK" = "OK";
-"An error occurred" = "An error occurred";
+"An error occurred" = "Er is een fout opgetreden";
 

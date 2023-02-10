@@ -29,7 +29,7 @@
 "All" = "Все";
 "Tagged" = "Обозначено тегом";
 "Favorites" = "Избранное";
-"Sort/Filter" = "Sort/Filter";
+"Sort/Filter" = "Сортировка/фильтрация";
 
 "Save" = "Сохранить";
 "Report" = "Пожаловаться";
@@ -51,23 +51,23 @@
 "Longest to read" = "Самое длинное для прочтения";
 
 "Display Settings" = "Отобразить настройки";
-"Font" = "Font";
-"Font Size" = "Font Size";
+"Font" = "Шрифт";
+"Font Size" = "Размер шрифта";
 
 "Copy link" = "Скопировать ссылку";
-"Copy link with selection" = "Copy link with selection";
+"Copy link with selection" = "Скопировать ссылку с выделением";
 "Open" = "Открыть";
 
-"This element is currently unsupported." = "This element is currently unsupported.";
-"This video could not be loaded." = "This video could not be loaded.";
+"This element is currently unsupported." = "Этот элемент в настоящее время не поддерживается.";
+"This video could not be loaded." = "Не удалось загрузить это видео.";
 
-"Open in Web View" = "Open in Web View";
+"Open in Web View" = "Открыть в виде веб-страницы";
 
-"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
-"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
-"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+"Could not successfully handle the server redirect." = "Не удалось обработать переадресацию сервера.";
+"Could not generate correct URL for authentication." = "Не удалось сгенерировать правильный URL для аутентификации.";
+"AuthorizationClient is already authenticating" = "AuthorizationClient уже аутентифицируется";
 
-"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"You're all caught up!\nCheck back later for more." = "На этом пока всё!\nЗагляните чуть позже.";
 "Recent Saves" = "Недавно сохраненное";
 "See All" = "Смотреть все";
 
@@ -88,25 +88,25 @@
 
 "Tell us more" = "Расскажите нам подробнее";
 "Report a concern" = "Сообщить о проблеме";
-"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+"Add copied URL to your Saves?" = "Добавить к сохранениям скопированный URL-адрес?";
 
-"Premium Status:" = "Premium Status:";
+"Premium Status:" = "Premium-статус:";
 
 "Your Account" = "Учетная запись";
-"Sign Out" = "Sign Out";
+"Sign Out" = "Выйти";
 "Are you sure?" = "Вы уверены?";
-"Sign Out" = "Sign Out";
+"Sign Out" = "Выйти";
 "You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "Вы выйдете из своего аккаунта, и все сохраненные для просмотра в офлайне файлы будут удалены.";
-"App Customization" = "App Customization";
+"App Customization" = "Настройка приложения";
 "Show App Badge Count" = "Отображать счетчик значков приложения";
-"About & Support" = "About & Support";
+"About & Support" = "Информация и поддержка";
 "Help" = "Помощь";
 "Terms of Service" = "Условия использования";
 "Privacy Policy" = "Политика конфиденциальности";
 
 "not tagged" = "Без тегов";
 "Delete Tag?" = "Удалить тег?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
+"Are you sure you want to delete the tags and remove it from all items?" = "Вы действительно хотите удалить теги и снять их со всех элементов?";
 "Delete" = "Удалить";
 "Cancel" = "Отмена";
 "Rename Tag" = "Изменить тег";
@@ -114,5 +114,5 @@
 
 "not tagged" = "Без тегов";
 "OK" = "Хорошо";
-"An error occurred" = "An error occurred";
+"An error occurred" = "Произошла ошибка";
 

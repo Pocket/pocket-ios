@@ -29,7 +29,7 @@
 "All" = "Tutti";
 "Tagged" = "Con tag";
 "Favorites" = "Preferiti";
-"Sort/Filter" = "Sort/Filter";
+"Sort/Filter" = "Ordina/Filtra";
 
 "Save" = "Salva";
 "Report" = "Segnala";
@@ -51,23 +51,23 @@
 "Longest to read" = "Storie da leggere più lunghe";
 
 "Display Settings" = "Impostazioni di visualizzazione";
-"Font" = "Font";
-"Font Size" = "Font Size";
+"Font" = "Carattere";
+"Font Size" = "Dimensione carattere";
 
 "Copy link" = "Copia link";
-"Copy link with selection" = "Copy link with selection";
+"Copy link with selection" = "Copia link con selezione";
 "Open" = "Apri";
 
-"This element is currently unsupported." = "This element is currently unsupported.";
-"This video could not be loaded." = "This video could not be loaded.";
+"This element is currently unsupported." = "Questo elemento non è attualmente supportato.";
+"This video could not be loaded." = "Impossibile caricare questo video.";
 
-"Open in Web View" = "Open in Web View";
+"Open in Web View" = "Apri in visualizzazione web";
 
-"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
-"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
-"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+"Could not successfully handle the server redirect." = "Impossibile gestire il reindirizzamento del server.";
+"Could not generate correct URL for authentication." = "Impossibile generare l'URL corretto per l'autenticazione.";
+"AuthorizationClient is already authenticating" = "AuthorizationClient sta già effettuando l'autenticazione";
 
-"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"You're all caught up!\nCheck back later for more." = "È tutto aggiornato!\nControlla più tardi per ulteriori informazioni.";
 "Recent Saves" = "Salvataggi recenti";
 "See All" = "Vedi tutto";
 
@@ -78,35 +78,35 @@
 "Collect articles, videos or any online content you like." = "Raccogli online articoli, video o qualsiasi altro contenuto che ti piace.";
 
 "Make the most of any moment" = "Ottieni il meglio ogni momento";
-"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
+"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Salva da Safari, Twitter, YouTube o dalla tua app di notizie preferita (per cominciare). Gli articoli e i video saranno sempre disponibili per te in Pocket";
 
 "Your quiet corner of the Internet" = "Il tuo angolo di tranquillità in internet";
-"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.";
+"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket salva gli articoli con una grafica pulita, progettata per la lettura senza interruzioni e popup per evitare le distrazioni di internet.";
 
 "Log In" = "Accedi";
 "Sign Up" = "Registrati";
 
 "Tell us more" = "Fornisci maggiori informazioni";
 "Report a concern" = "Segnala un problema";
-"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+"Add copied URL to your Saves?" = "Aggiungere l'URL copiato ai contenuti salvati?";
 
-"Premium Status:" = "Premium Status:";
+"Premium Status:" = "Stato Premium:";
 
 "Your Account" = "Il tuo account";
-"Sign Out" = "Sign Out";
+"Sign Out" = "Disconnetti";
 "Are you sure?" = "Vuoi procedere?";
-"Sign Out" = "Sign Out";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
-"App Customization" = "App Customization";
+"Sign Out" = "Disconnetti";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "Verrai disconnesso dal tuo account e i file salvati per la visualizzazione offline saranno eliminati.";
+"App Customization" = "Personalizzazione app";
 "Show App Badge Count" = "Mostra conteggio simboli app";
-"About & Support" = "About & Support";
+"About & Support" = "Informazioni e assistenza";
 "Help" = "Guida";
 "Terms of Service" = "Condizioni d'uso";
 "Privacy Policy" = "Tutela della privacy";
 
 "not tagged" = "Senza tag";
 "Delete Tag?" = "Eliminare il tag?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
+"Are you sure you want to delete the tags and remove it from all items?" = "Eliminare i tag e rimuoverli da tutti i contenuti?";
 "Delete" = "Elimina";
 "Cancel" = "Annulla";
 "Rename Tag" = "Rinomina tag";
@@ -114,5 +114,5 @@
 
 "not tagged" = "Senza tag";
 "OK" = "OK";
-"An error occurred" = "An error occurred";
+"An error occurred" = "Si è verificato un errore";
 

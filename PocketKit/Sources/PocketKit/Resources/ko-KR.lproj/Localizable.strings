@@ -29,7 +29,7 @@
 "All" = "전체";
 "Tagged" = "태그 지정됨";
 "Favorites" = "즐겨찾기";
-"Sort/Filter" = "Sort/Filter";
+"Sort/Filter" = "정렬/필터";
 
 "Save" = "저장";
 "Report" = "보고서";
@@ -51,23 +51,23 @@
 "Longest to read" = "가장 긴 읽기 시간";
 
 "Display Settings" = "디스플레이 설정";
-"Font" = "Font";
-"Font Size" = "Font Size";
+"Font" = "폰트";
+"Font Size" = "폰트 크기";
 
 "Copy link" = "링크 복사";
-"Copy link with selection" = "Copy link with selection";
+"Copy link with selection" = "선택 항목이 있는 링크 복사";
 "Open" = "열기";
 
-"This element is currently unsupported." = "This element is currently unsupported.";
-"This video could not be loaded." = "This video could not be loaded.";
+"This element is currently unsupported." = "이 요소는 현재 지원되지 않습니다.";
+"This video could not be loaded." = "이 동영상을 로드할 수 없습니다.";
 
-"Open in Web View" = "Open in Web View";
+"Open in Web View" = "웹 보기에서 열기";
 
-"Could not successfully handle the server redirect." = "Could not successfully handle the server redirect.";
-"Could not generate correct URL for authentication." = "Could not generate correct URL for authentication.";
-"AuthorizationClient is already authenticating" = "AuthorizationClient is already authenticating";
+"Could not successfully handle the server redirect." = "서버 리디렉션을 성공적으로 처리할 수 없습니다.";
+"Could not generate correct URL for authentication." = "인증을 위한 올바른 URL을 생성할 수 없습니다.";
+"AuthorizationClient is already authenticating" = "AuthorizationClient가 이미 인증 중입니다.";
 
-"You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
+"You're all caught up!\nCheck back later for more." = "모두 완료했습니다!\n자세한 내용은 나중에 다시 확인해주십시오.";
 "Recent Saves" = "최근 저장한 내용";
 "See All" = "모두 보기";
 
@@ -78,35 +78,35 @@
 "Collect articles, videos or any online content you like." = "기사, 동영상 또는 좋아하는 온라인 콘텐츠를 수집합니다.";
 
 "Make the most of any moment" = "어떤 순간이든 최대한 활용할 수 있습니다";
-"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket";
+"Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket" = "Safari, Twitter, YouTube나 좋아하는 뉴스 앱에서 저장합니다(초보자의 경우). Pocket에 귀하를 위한 기사와 동영상이 준비됩니다";
 
 "Your quiet corner of the Internet" = "인터넷의 조용한 구석";
-"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise.";
+"Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise." = "Pocket은 중단이나 팝업 없이 읽기 편하게 설계된 깔끔한 레이아웃으로 기사를 저장하므로 주의를 흐트러뜨리는 인터넷상의 콘텐츠를 피할 수 있습니다.";
 
 "Log In" = "로그인";
 "Sign Up" = "등록";
 
 "Tell us more" = "자세히 말씀해 주십시오";
 "Report a concern" = "우려 사항 보고";
-"Add copied URL to your Saves?" = "Add copied URL to your Saves?";
+"Add copied URL to your Saves?" = "복사한 URL을 저장소에 추가하시겠습니까?";
 
-"Premium Status:" = "Premium Status:";
+"Premium Status:" = "Premium 상태:";
 
 "Your Account" = "귀하의 계정";
-"Sign Out" = "Sign Out";
+"Sign Out" = "로그아웃";
 "Are you sure?" = "계속하시겠습니까?";
-"Sign Out" = "Sign Out";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
-"App Customization" = "App Customization";
+"Sign Out" = "로그아웃";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "계정이 로그아웃되고 오프라인 보기용으로 저장된 모든 파일이 삭제됩니다.";
+"App Customization" = "앱 사용자 지정";
 "Show App Badge Count" = "앱 배지 카운트 표시";
-"About & Support" = "About & Support";
+"About & Support" = "정보 및 지원";
 "Help" = "도움말";
 "Terms of Service" = "서비스 약관";
 "Privacy Policy" = "개인정보 보호정책";
 
 "not tagged" = "태그 지정되지 않음";
 "Delete Tag?" = "태그를 삭제하시겠습니까?";
-"Are you sure you want to delete the tags and remove it from all items?" = "Are you sure you want to delete the tags and remove it from all items?";
+"Are you sure you want to delete the tags and remove it from all items?" = "태그를 삭제하고 모든 항목에서 제거하시겠습니까?";
 "Delete" = "삭제";
 "Cancel" = "취소";
 "Rename Tag" = "태그 이름 바꾸기";
@@ -114,5 +114,5 @@
 
 "not tagged" = "태그 지정되지 않음";
 "OK" = "확인";
-"An error occurred" = "An error occurred";
+"An error occurred" = "오류가 발생했습니다";
 
