@@ -285,7 +285,7 @@ class SavedItemViewModelTests: XCTestCase {
         }
 
         let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url!)
-        XCTAssertEqual(webViewActivityList[0].activityTitle, "Move to saves")
+        XCTAssertEqual(webViewActivityList[0].activityTitle, "Move to Saves")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
 

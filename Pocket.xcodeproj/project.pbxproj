@@ -184,6 +184,7 @@
 		650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		650FECCD28BA85F300A3CB0C /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		650FECCF28BA85F300A3CB0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		651D13652995967C0055F7EB /* swiftgen.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swiftgen.yml; sourceTree = "<group>"; };
 		65412E78299320CB007BDEBB /* PushNotificationServiceExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationServiceExtensionDebug.entitlements; sourceTree = "<group>"; };
 		65412E79299320DE007BDEBB /* PushNotificationStoryExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationStoryExtension.entitlements; sourceTree = "<group>"; };
 		65412E7A2993263E007BDEBB /* PushNotificationServiceExtensionRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationServiceExtensionRelease.entitlements; sourceTree = "<group>"; };
@@ -282,6 +283,7 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
+				651D13652995967C0055F7EB /* swiftgen.yml */,
 				16E881F129072663008B2E05 /* AllTests.xctestplan */,
 				655C274E28B67ED20040AEAB /* README.md */,
 				166DF27827E9172800C03BF4 /* Pocket (iOS).entitlements */,
@@ -446,6 +448,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 166A81DA2637406C0015AA1D /* Build configuration list for PBXNativeTarget "Pocket (iOS)" */;
 			buildPhases = (
+				651D13662995A0C10055F7EB /* Swiftgen */,
 				655C274F28B68AE40040AEAB /* Swiftlint */,
 				166A81AC2637406C0015AA1D /* Sources */,
 				166A81AD2637406C0015AA1D /* Frameworks */,
@@ -660,6 +663,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		651D13662995A0C10055F7EB /* Swiftgen */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = Swiftgen;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin\"\n\nif which swiftgen > /dev/null; then\n  if [ \"$CONFIGURATION\" = 'Debug' ]; then\n    swiftgen\n  else \n    echo \"Skipping swiftgen because it is not a local developer build.\"\n  fi  \nelse\n  echo \"warning: SwiftGen not installed, install via brew install swiftgen\"\nfi\n";
+		};
 		655C274F28B68AE40040AEAB /* Swiftlint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;

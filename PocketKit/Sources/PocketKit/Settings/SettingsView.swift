@@ -33,7 +33,7 @@ struct SettingsView: View {
                     .background(Color(.ui.white1))
             }
         }
-        .navigationBarTitle("Settings".localized(), displayMode: .large)
+        .navigationBarTitle(L10n.settings, displayMode: .large)
         .accessibilityIdentifier("account")
     }
 }
@@ -50,41 +50,41 @@ struct SettingsForm: View {
                 //                    SettingsRowLink(title: "Delete Account", destination: EmptyView())
                 //                }.textCase(nil)
 
-                Section(header: Text("Your Account".localized()).style(.settings.header)) {
-                    SettingsRowButton(title: "Sign Out".localized(), titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
+                Section(header: Text(L10n.yourAccount).style(.settings.header)) {
+                    SettingsRowButton(title: L10n.signOut, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
                         .accessibilityIdentifier("sign-out-button")
                 }
                 .alert(
-                    "Are you sure?".localized(),
+                    L10n.areYouSure,
                     isPresented: $model.isPresentingSignOutConfirm,
                     actions: {
-                        Button("Sign Out".localized(), role: .destructive) {
+                        Button(L10n.signOut, role: .destructive) {
                             model.signOut()
                         }
                     }, message: {
-                        Text("You will be signed out of your account and any files that have been saved for offline viewing will be deleted.".localized())
+                        Text(L10n.youWillBeSignedOutOfYourAccountAndAnyFilesThatHaveBeenSavedForOfflineViewingWillBeDeleted)
                     }
                 )
                 .textCase(nil)
 
-                Section(header: Text("App Customization".localized()).style(.settings.header)) {
-                    SettingsRowToggle(title: "Show App Badge Count".localized(), model: model) {
+                Section(header: Text(L10n.appCustomization).style(.settings.header)) {
+                    SettingsRowToggle(title: L10n.showAppBadgeCount, model: model) {
                         model.toggleAppBadge()
                     }
                 }.textCase(nil)
 
-                Section(header: Text("About & Support".localized()).style(.settings.header)) {
-                    SettingsRowButton(title: "Help".localized(), icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
+                Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
+                    SettingsRowButton(title: L10n.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
                             SFSafariView(url: URL(string: "https://help.getpocket.com")!)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
-                    SettingsRowButton(title: "Terms of Service".localized(), icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
+                    SettingsRowButton(title: L10n.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
                         .sheet(isPresented: $model.isPresentingTerms) {
                             SFSafariView(url: URL(string: "https://getpocket.com/en/tos/")!)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
-                    SettingsRowButton(title: "Privacy Policy".localized(), icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
+                    SettingsRowButton(title: L10n.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
                         .sheet(isPresented: $model.isPresentingPrivacy) {
                             SFSafariView(url: URL(string: "https://getpocket.com/en/privacy/")!)
                                 .edgesIgnoringSafeArea(.bottom)

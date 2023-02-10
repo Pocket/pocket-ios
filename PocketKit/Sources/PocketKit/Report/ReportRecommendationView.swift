@@ -45,10 +45,10 @@ struct ReportRecommendationView: View {
 
     var body: some View {
         List {
-            Section(header: Text("Report a concern".localized())) {
+            Section(header: Text(L10n.reportAConcern)) {
                 ForEach(ReportEvent.Reason.allCases, id: \.self) { reason in
                     ReportReasonRow(
-                        text: reason.displayString.localized(),
+                        text: reason.localized,
                         isSelected: reason == selectedReason
                     ) {
                         guard reason != selectedReason else {
@@ -75,7 +75,7 @@ struct ReportRecommendationView: View {
                 Button(action: submitReport) {
                     HStack {
                         Spacer()
-                        Text(isReported ? "Reported" : "Submit feedback")
+                        Text(isReported ? L10n.reported : L10n.submitFeedback)
                             .style(Style.submitButtonStyle)
                         Spacer()
                     }
@@ -176,7 +176,7 @@ private struct ReportCommentRow: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             if text.wrappedValue.isEmpty && isFocused.wrappedValue == false {
-                Text("Tell us more".localized())
+                Text(L10n.tellUsMore)
                     .style(.recommendationRowStyle)
                     .padding(Constants.placeholderPadding)
                     .opacity(Constants.placeholderOpacity)
@@ -200,7 +200,7 @@ private extension Style {
 }
 
 private extension ReportEvent.Reason {
-    var displayString: String {
+    var localized: String {
         switch self {
         case .brokenMeta: return "The title, link, or image is broken"
         case .wrongCategory: return "It's in the wrong category"

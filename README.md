@@ -103,3 +103,20 @@ You can run danger locally to see what it would output by running the following 
 ```bash
 swift run danger-swift pr [some-pr-url]
 ```
+
+### Localization
+
+Pocket localization is handled by Smartling. The project is currently setup in [Single Branch Mode](https://help.smartling.com/hc/en-us/articles/360008152513-GitHub-Connector-Overview#SingleBranchModeTranslationFlow) against the `develop` branch. Everytime a commit is made to `develop` Smartling will analyze the branch and determine if it needs to start a translation job. If it does, it will begin automatically and make a PR back against the repo with the needed translations.
+
+#### Adding Strings
+
+Pocket uses [swiftgen](https://github.com/SwiftGen/SwiftGen#strings) to generate a [Strings.swift](./PocketKit/Sources/PocketKit/Strings.swift) file from our English [Localizable.strings](./PocketKit/Sources/PocketKit/Resouces/en.lproj/Localizable.strings) file.
+
+Moving forward we also plan to use a reverse dns pattern for String keys.
+
+To make a new string follow the following steps:
+1. Ensure you have `swiftgen` installed (`brew install swiftgen`)
+2. Add your string to [Localizable.strings](./PocketKit/Sources/PocketKit/Resouces/en.lproj/Localizable.strings) _Note: If you add a comment above the string, it will be included for the Smartling translators and is useful if a word translated has different transalations based on the usage._
+3. Either a) Build the project or b) run `swiftgen` from the root of the Pocket project directory
+4. The new string enum should be available in the `L10n` enum for you to use.
+5. Once your PR lands in `develop` watch as Smartling will pick it up and translate it.

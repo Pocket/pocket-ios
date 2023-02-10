@@ -55,7 +55,7 @@ class RecentSavesItemCell: HomeCarouselItemCell {
                 return nil
             }
 
-            return "%d min read".localized(timeToRead)
+            return L10n.minRead(timeToRead)
         }
     }
 }

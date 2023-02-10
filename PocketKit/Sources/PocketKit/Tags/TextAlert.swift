@@ -6,8 +6,8 @@ public struct TextAlert {
     public var title: String
     public var message: String
     public var placeholder: String = ""
-    public var accept: String = "OK".localized()
-    public var cancel: String? = "Cancel".localized()
+    public var accept: String = L10n.ok
+    public var cancel: String? = L10n.cancel
     public var action: (String?) -> Void
 }
 
