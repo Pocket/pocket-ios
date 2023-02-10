@@ -15,7 +15,7 @@ public struct SnowplowEngagement: Event {
     let type: EngagementEvent
     let value: String?
 
-    public init(type: EngagementEvent, value: String?) {
+    public init(type: EngagementEvent = .general, value: String? = nil) {
         self.type = type
         self.value = value
     }

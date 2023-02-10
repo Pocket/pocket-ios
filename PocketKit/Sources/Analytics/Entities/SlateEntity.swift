@@ -8,13 +8,17 @@ public struct SlateEntity: Entity {
     let id: String
     let requestID: String
     let experiment: String
-    let index: UIIndex
+    let index: UInt
+    let displayName: String?
+    let description: String?
 
-    public init(id: String, requestID: String, experiment: String, index: UIIndex) {
+    public init(id: String, requestID: String, experiment: String, index: UInt, displayName: String? = nil, description: String? = nil) {
         self.id = id
         self.requestID = requestID
         self.experiment = experiment
         self.index = index
+        self.displayName = displayName
+        self.description = description
     }
 }
 
@@ -24,5 +28,7 @@ private extension SlateEntity {
         case requestID = "request_id"
         case experiment
         case index
+        case displayName = "display_name"
+        case description
     }
 }

@@ -7,6 +7,7 @@ import SnowplowTracker
 public protocol Tracker {
     func addPersistentContext(_ context: Entity)
     func track<T: Event>(event: T, _ contexts: [Entity]?)
+    func track(event: AppEvent)
     func childTracker(with contexts: [Entity]) -> Tracker
     func resetPersistentContexts(_ contexts: [Entity])
 }

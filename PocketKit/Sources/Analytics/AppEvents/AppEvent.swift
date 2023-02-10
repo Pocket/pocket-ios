@@ -10,7 +10,12 @@ import Foundation
 /**
  Base app event for Pocket
  */
-protocol AppEvent {
-    var event: Event { get }
-    var entities: [Entity] { get }
+public class AppEvent {
+    var event: Event
+    var entities: [Entity]
+
+    init(event: Event, entities: [Entity]) {
+        self.event = event
+        self.entities = entities
+    }
 }

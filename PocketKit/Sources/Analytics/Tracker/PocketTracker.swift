@@ -30,6 +30,10 @@ public class PocketTracker: Tracker {
         snowplow.track(event: event)
     }
 
+    public func track(event: AppEvent) {
+        track(event: event.event, event.entities)
+    }
+
     public func childTracker(with contexts: [Entity]) -> Tracker {
         return LinkedTracker(parent: self, contexts: contexts)
     }

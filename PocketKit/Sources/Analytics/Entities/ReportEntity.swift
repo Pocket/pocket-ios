@@ -2,19 +2,19 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public struct ReportEvent: Entity {
+public struct ReportEntity: Entity {
     public static let schema = "iglu:com.pocket/report/jsonschema/1-0-0"
 
     let reason: Reason
     let comment: String?
 
-    public init(reason: Reason, comment: String?) {
+    public init(reason: Reason, comment: String? = nil) {
         self.reason = reason
         self.comment = comment
     }
 }
 
-extension ReportEvent {
+extension ReportEntity {
     public enum Reason: String, CaseIterable, Encodable {
         case brokenMeta = "broken_meta"
         case wrongCategory = "wrong_category"

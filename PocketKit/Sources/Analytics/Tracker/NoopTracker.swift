@@ -13,6 +13,10 @@ public struct NoopTracker: Tracker {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }
 
+    public func track(event: AppEvent) {
+        track(event: event.event, event.entities)
+    }
+
     public func childTracker(with contexts: [Entity]) -> Tracker {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }

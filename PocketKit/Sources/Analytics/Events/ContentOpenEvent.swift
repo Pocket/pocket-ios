@@ -8,7 +8,7 @@ public struct ContentOpenEvent: Event {
     let destination: Destination
     let trigger: Trigger
 
-    public init(destination: Destination, trigger: Trigger) {
+    public init(destination: Destination = .internal, trigger: Trigger = .click) {
         self.destination = destination
         self.trigger = trigger
     }

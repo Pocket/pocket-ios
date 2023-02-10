@@ -20,6 +20,10 @@ class LinkedTracker: Tracker {
         parent.track(event: event, self.contexts + additional)
     }
 
+    func track(event: AppEvent) {
+        track(event: event.event, event.entities)
+    }
+
     func childTracker(with contexts: [Entity]) -> Tracker {
         LinkedTracker(parent: self, contexts: contexts)
     }

@@ -8,8 +8,10 @@ public struct ContentEntity: Entity {
     public static let schema = "iglu:com.pocket/content/jsonschema/1-0-0"
 
     let url: URL
+    let itemId: String?
 
-    public init(url: URL) {
+    public init(url: URL, itemId: String? = nil) {
         self.url = url
+        self.itemId = itemId
     }
 }
