@@ -208,7 +208,7 @@ extension SlateDetailViewModel {
                 id: remoteID,
                 requestID: requestID,
                 experiment: experimentID,
-                index: UIIndex(0)
+                index: 0
             )
             contexts.append(slateContext)
         }

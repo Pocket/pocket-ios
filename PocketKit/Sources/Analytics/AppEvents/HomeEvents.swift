@@ -8,7 +8,11 @@
 import Foundation
 
 public class HomeArticleContentOpen: AppEvent {
-    public init(slateTitle: String, positionInSlate: UInt, itemURL: URL) {
+    public init(
+        slateTitle: String,
+        positionInSlate: Int,
+        itemURL: URL
+    ) {
         super.init(
             event: ContentOpenEvent(),
             entities: [
@@ -25,24 +29,44 @@ public class HomeArticleContentOpen: AppEvent {
 }
 
 public class HomeArticleSave: AppEvent {
-    public init(slateTitle: String, positionInSlate: UInt, itemURL: URL) {
+    public init(
+        slateLineupId: String,
+        slateLineupRequestId: String,
+        slateLineupExperimentId: String,
+        slatedId: String,
+        slateRequestId: String,
+        slateExperimentId: String,
+        slateIndex: Int,
+        positionInSlate: Int,
+        itemURL: URL
+    ) {
         super.init(
             event: SnowplowEngagement(type: .save),
             entities: [
                 UiEntity(
                     type: .button,
                     identifier: "home.article.save",
-                    componentDetail: slateTitle,
                     index: positionInSlate
                 ),
-                ContentEntity(url: itemURL)
+                ContentEntity(url: itemURL),
+                SlateEntity(
+                    id: slatedId,
+                    requestID: slateRequestId,
+                    experiment: slateExperimentId,
+                    index: slateIndex
+                ),
+                SlateLineupEntity(
+                    id: slateLineupId,
+                    requestID: slateLineupRequestId,
+                    experiment: slateExperimentId
+                )
             ]
         )
     }
 }
 
 public class HomeArticleOverflowClick: AppEvent {
-    public init(slateTitle: String, positionInSlate: UInt, itemURL: URL) {
+    public init(slateTitle: String, positionInSlate: Int, itemURL: URL) {
         super.init(
             event: SnowplowEngagement(),
             entities: [

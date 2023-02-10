@@ -12,12 +12,12 @@ public struct UiEntity: Entity {
 
     let type: UiType
     let identifier: String
-    let hierarchy: UInt?
+    let hierarchy: Int?
     let componentDetail: String?
-    let index: UInt?
-    let label: UInt?
+    let index: Int?
+    let label: Int?
 
-    init(type: UiType, identifier: String, hierarchy: UInt? = nil, componentDetail: String? = nil, index: UInt? = nil, label: UInt? = nil) {
+    init(type: UiType, identifier: String, hierarchy: Int? = nil, componentDetail: String? = nil, index: Int? = nil, label: Int? = nil) {
         self.type = type
         self.identifier = identifier
         self.hierarchy = hierarchy

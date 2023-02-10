@@ -8,11 +8,11 @@ public struct SlateEntity: Entity {
     let id: String
     let requestID: String
     let experiment: String
-    let index: UInt
+    let index: Int
     let displayName: String?
     let description: String?
 
-    public init(id: String, requestID: String, experiment: String, index: UInt, displayName: String? = nil, description: String? = nil) {
+    public init(id: String, requestID: String, experiment: String, index: Int, displayName: String? = nil, description: String? = nil) {
         self.id = id
         self.requestID = requestID
         self.experiment = experiment

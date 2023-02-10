@@ -563,12 +563,17 @@ extension HomeViewModel {
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [OldUIEntity.button(identifier: .itemSave)]
-
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
+        tracker.track(event: HomeArticleSave(
+            slateLineupId: recommendation.slate!.slateLineup!.remoteID!,
+            slateLineupRequestId: recommendation.slate!.slateLineup!.requestID!,
+            slateLineupExperimentId: recommendation.slate!.slateLineup!.experimentID!,
+            slatedId: recommendation.slate!.remoteID!,
+            slateRequestId: recommendation.slate!.requestID!,
+            slateExperimentId: recommendation.slate!.experimentID!,
+            slateIndex: recommendation.slate!.slateLineup!.slates!.index(of: recommendation.slate),
+            positionInSlate: recommendation.slate!.recommendations!.index(of: recommendation),
+            itemURL: recommendation.item!.resolvedURL!
+        ))
 
         source.save(recommendation: recommendation)
     }
@@ -613,7 +618,7 @@ extension HomeViewModel {
                 id: slateID,
                 requestID: requestID,
                 experiment: experimentID,
-                index: UIIndex(slateIndex)
+                index: slateIndex
             )
             contexts.append(slateContext)
         }
