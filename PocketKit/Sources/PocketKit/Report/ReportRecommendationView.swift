@@ -27,7 +27,7 @@ struct ReportRecommendationView: View {
     private var dismiss
 
     @State
-    private var selectedReason: ReportEvent.Reason?
+    private var selectedReason: ReportEntity.Reason?
 
     @State
     private var reportComment = ""
@@ -96,17 +96,12 @@ struct ReportRecommendationView: View {
         .accessibilityIdentifier("report-recommendation")
     }
 
-    private func report(_ reason: ReportEvent.Reason) {
+    private func report(_ reason: ReportEntity.Reason) {
         guard let url = url(for: recommendation) else {
             return
         }
 
-        let button = OldUIEntity.button(identifier: .submit)
-        let content = ContentEntity(url: url)
-        let comment = reportComment.isEmpty ? nil : reportComment
-        let report = ReportEvent(reason: reason, comment: comment)
-        let engagement = SnowplowEngagement(type: .report, value: nil)
-        tracker.track(event: engagement, [button, content, report])
+        tracker.track(event: HomeArticleReport(itemURL: url, reason: reason, comment: reportComment.isEmpty ? nil : reportComment))
 
         isReported = true
 
@@ -119,7 +114,7 @@ struct ReportRecommendationView: View {
         recommendation.item?.resolvedURL ?? recommendation.item?.givenURL
     }
 
-    private func selectionColor(for reason: ReportEvent.Reason) -> Color {
+    private func selectionColor(for reason: ReportEntity.Reason) -> Color {
         return reason == selectedReason ? Constants.reasonRowSelectedColor : Constants.reasonRowDeselectedColor
     }
 
@@ -199,7 +194,7 @@ private extension Style {
     static let submitButtonStyle = Style.header.sansSerif.h6.with(color: .ui.white)
 }
 
-private extension ReportEvent.Reason {
+private extension ReportEntity.Reason {
     var localized: String {
         switch self {
         case .brokenMeta: return "The title, link, or image is broken"
