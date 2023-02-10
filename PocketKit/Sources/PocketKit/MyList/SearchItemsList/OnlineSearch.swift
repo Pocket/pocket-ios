@@ -23,11 +23,11 @@ class OnlineSearch {
     }
 
     func hasCache(with term: String) -> Bool {
-        return cache[term] != nil
+        cache[term] != nil
     }
 
     func search(with term: String) {
-        guard cache[term] == nil else {
+        guard !hasCache(with: term) else {
             results = .success(cache[term] ?? [])
             return
         }
