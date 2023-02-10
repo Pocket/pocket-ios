@@ -5,18 +5,23 @@
 import SwiftUI
 
 struct SkeletonView: View {
+    private enum Constants {
+        static let titleHeight: CGFloat = 60
+        static let spacing: CGFloat = 12
+    }
+
     var body: some View {
         List {
-            ForEach(0..<10) { _ in
+            ForEach(0..<15) { _ in
                 HStack {
                     VStack(alignment: .leading) {
                         Image(asset: .itemSkeletonTitle)
                             .resizable()
-                            .frame(height: 60)
+                            .frame(height: Constants.titleHeight)
                         Image(asset: .itemSkeletonTags)
                     }
                     Spacer()
-                    VStack(spacing: 12) {
+                    VStack(spacing: Constants.spacing) {
                         Image(asset: .itemSkeletonThumbnail)
                         Image(asset: .itemSkeletonActions)
                     }

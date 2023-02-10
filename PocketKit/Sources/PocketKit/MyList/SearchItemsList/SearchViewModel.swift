@@ -8,7 +8,6 @@ import Sync
 import Combine
 import SharedPocketKit
 import Analytics
-import CoreData
 
 enum SearchViewState {
     case loading
@@ -18,7 +17,6 @@ enum SearchViewState {
 }
 
 class SearchViewModel: ObservableObject {
-    typealias ItemIdentifier = NSManagedObjectID
     static let recentSearchesKey = "Search.recentSearches"
     private var subscriptions: [AnyCancellable] = []
     private let networkPathMonitor: NetworkPathMonitor
