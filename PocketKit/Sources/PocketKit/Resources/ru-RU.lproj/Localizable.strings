@@ -26,6 +26,7 @@
 "Tag your saves by topic to find them later." = "Отмечайте свои сохранения тегом по темам, чтобы найти их позже.";
 "How to tag" = "Как отметить тегом";
 
+"Search" = "Поиск";
 "All" = "Все";
 "Tagged" = "Обозначено тегом";
 "Favorites" = "Избранное";
@@ -37,7 +38,6 @@
 "Archive" = "Архив";
 "Favorite" = "Избранное";
 "Unfavorite" = "Удалить из Избранного";
-"Move to saves" = "Перейти к Сохраненному";
 "Move to Saves" = "Перейти к Сохраненному";
 "Add Tags" = "Добавить теги";
 "Share" = "Поделиться";
@@ -116,3 +116,15 @@
 "OK" = "Хорошо";
 "An error occurred" = "Произошла ошибка";
 
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"Sign up for Premium" = "Sign up for Premium";
+"Premium Subscriber" = "Premium Subscriber";
+
+"The title, link, or image is broken" = "Заголовок, ссылка или изображение не работает";
+"It's in the wrong category" = "Неправильная категория";
+"It's sexually explicit" = "Материал откровенно сексуального характера";
+"It's rude, vulgar, or offensive" = "Грубый, вульгарный или оскорбительный материал";
+"It contains misinformation" = "Содержит дезинформацию";
+"Other" = "Другое";
