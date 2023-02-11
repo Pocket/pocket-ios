@@ -5,37 +5,37 @@ import Analytics
 
 class MockTracker: Tracker {
     struct TrackCall {
-        let event: Event
-        let contexts: [Entity]?
+        let event: OldEvent
+        let contexts: [OldEntity]?
     }
 
-    private var persistentContexts: [Entity] = []
+    private var persistentContexts: [OldEntity] = []
 
     private(set) var trackCalls = Calls<TrackCall>()
 
-    func addPersistentContext(_ context: Entity) {
+    func addPersistentContext(_ context: OldEntity) {
     }
 
-    func resetPersistentContexts(_ contexts: [Entity]) {
+    func resetPersistentContexts(_ contexts: [OldEntity]) {
         persistentContexts = []
     }
 
-    func track<T: Event>(event: T, _ contexts: [Entity]?) {
+    func track<T: OldEvent>(event: T, _ contexts: [OldEntity]?) {
         trackCalls.add(TrackCall(event: event, contexts: contexts))
     }
 
-    func childTracker(with contexts: [Entity]) -> Tracker {
+    func childTracker(with contexts: [OldEntity]) -> Tracker {
         NoopTracker()
     }
 }
 
-struct MockEvent: Event {
+struct MockEvent: OldEvent {
     static var schema = "mock-event"
 
     let value: Int
 }
 
-struct MockContext: Entity {
+struct MockContext: OldEntity {
     static var schema = "mock-context"
 
     let value: String

@@ -7,17 +7,17 @@ import SnowplowTracker
 public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker
 
-    private var persistentContexts: [Entity] = []
+    private var persistentContexts: [OldEntity] = []
 
     public init(snowplow: SnowplowTracker) {
         self.snowplow = snowplow
     }
 
-    public func addPersistentContext(_ context: Entity) {
+    public func addPersistentContext(_ context: OldEntity) {
         persistentContexts.append(context)
     }
 
-    public func track<T: Event>(event: T, _ contexts: [Entity]?) {
+    public func track<T: OldEvent>(event: T, _ contexts: [OldEntity]?) {
         guard let event = Event(from: event) else {
             return
         }
@@ -30,21 +30,23 @@ public class PocketTracker: Tracker {
         snowplow.track(event: event)
     }
 
-    public func track(event: AppEvent) {
-        track(event: event.event, event.entities)
+    public func track(event: Event) {
+        let selfDescribing = event.toSelfDescribing()
+        persistentContexts.forEach { selfDescribing.contexts.add($0) }
+        snowplow.track(event: selfDescribing)
     }
 
-    public func childTracker(with contexts: [Entity]) -> Tracker {
+    public func childTracker(with contexts: [OldEntity]) -> Tracker {
         return LinkedTracker(parent: self, contexts: contexts)
     }
 
-    public func resetPersistentContexts(_ contexts: [Entity]) {
+    public func resetPersistentContexts(_ contexts: [OldEntity]) {
         persistentContexts = contexts
     }
 }
 
 extension PocketTracker {
-    private func Event<T: Event>(from event: T) -> SelfDescribing? {
+    private func Event<T: OldEvent>(from event: T) -> SelfDescribing? {
         guard let data = try? JSONEncoder().encode(event),
               let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
               let eventJSON = SelfDescribingJson(schema: type(of: event).schema, andData: deserialized as NSObject) else {
@@ -53,14 +55,14 @@ extension PocketTracker {
         return SelfDescribing(eventData: eventJSON)
     }
 
-    private func Contexts(from contexts: [Entity]) -> [SelfDescribingJson] {
+    private func Contexts(from contexts: [OldEntity]) -> [SelfDescribingJson] {
         var Hierarchy: UInt = 0
         // UIs are returned outside-in, such that the parent precedes the child.
         // However, in Snowplow, the hierarchy starts at the lowest-level of the contexts.
         // Since we don't know how deeply nested the view hierarchy will be up-front,
         // we have to reverse the contexts to go inside-out, such that the child precedes the parent,
         // and update the hierarchy appropriately.
-        let contexts = contexts.reversed().map { (context) -> Entity in
+        let contexts = contexts.reversed().map { (context) -> OldEntity in
             if let context = context as? OldUIEntity {
                 let context = context.with(hierarchy: Hierarchy)
                 Hierarchy += 1

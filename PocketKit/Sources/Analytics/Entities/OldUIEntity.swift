@@ -5,7 +5,7 @@
 public typealias UIHierarchy = UInt
 public typealias UIIndex = UInt
 
-public struct OldUIEntity: Entity {
+public struct OldUIEntity: OldEntity {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
 
     let type: OldUIType

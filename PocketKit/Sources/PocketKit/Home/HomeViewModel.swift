@@ -457,7 +457,7 @@ extension HomeViewModel {
         source.delete(item: item)
     }
 
-    func contexts(for savedItem: SavedItem, at indexPath: IndexPath) -> [Entity] {
+    func contexts(for savedItem: SavedItem, at indexPath: IndexPath) -> [OldEntity] {
         guard let url = savedItem.bestURL else { return [] }
 
         return [
@@ -563,17 +563,17 @@ extension HomeViewModel {
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        tracker.track(event: HomeArticleSave(
-            slateLineupId: recommendation.slate!.slateLineup!.remoteID!,
-            slateLineupRequestId: recommendation.slate!.slateLineup!.requestID!,
-            slateLineupExperimentId: recommendation.slate!.slateLineup!.experimentID!,
-            slatedId: recommendation.slate!.remoteID!,
-            slateRequestId: recommendation.slate!.requestID!,
-            slateExperimentId: recommendation.slate!.experimentID!,
-            slateIndex: recommendation.slate!.slateLineup!.slates!.index(of: recommendation.slate),
-            positionInSlate: recommendation.slate!.recommendations!.index(of: recommendation),
-            itemURL: recommendation.item!.resolvedURL!
-        ))
+//        tracker.track(event: HomeArticleSave(
+//            slateLineupId: recommendation.slate!.slateLineup!.remoteID!,
+//            slateLineupRequestId: recommendation.slate!.slateLineup!.requestID!,
+//            slateLineupExperimentId: recommendation.slate!.slateLineup!.experimentID!,
+//            slatedId: recommendation.slate!.remoteID!,
+//            slateRequestId: recommendation.slate!.requestID!,
+//            slateExperimentId: recommendation.slate!.experimentID!,
+//            slateIndex: recommendation.slate!.slateLineup!.slates!.index(of: recommendation.slate),
+//            positionInSlate: recommendation.slate!.recommendations!.index(of: recommendation),
+//            itemURL: recommendation.item!.resolvedURL!
+//        ))
 
         source.save(recommendation: recommendation)
     }
@@ -588,14 +588,14 @@ extension HomeViewModel {
         source.archive(recommendation: recommendation)
     }
 
-    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Entity] {
+    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [OldEntity] {
         guard let slate = recommendation.slate,
               let slateLineup = slate.slateLineup,
               let recommendationURL = recommendation.item?.bestURL else {
             return []
         }
 
-        var contexts: [Entity] = []
+        var contexts: [OldEntity] = []
 
         // SlateLineup Context
         if  let id = slateLineup.remoteID,

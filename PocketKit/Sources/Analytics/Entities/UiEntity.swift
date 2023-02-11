@@ -6,8 +6,9 @@
 //
 
 import Foundation
+import class SnowplowTracker.SelfDescribingJson
 
-public struct UiEntity: Entity {
+public struct UiEntity: Entity, Encodable {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
 
     let type: UiType
@@ -25,16 +26,30 @@ public struct UiEntity: Entity {
         self.index = index
         self.label = label
     }
-}
 
-private extension UiEntity {
-    enum CodingKeys: String, CodingKey {
-        case type
-        case hierarchy
-        case identifier
-        case componentDetail = "component_detail"
-        case index
-        case label
+    public func toSelfDescribingJson() -> SelfDescribingJson {
+        var data: [AnyHashable: Any] = [
+            "type": type.rawValue,
+            "identifier": identifier,
+        ]
+
+        if hierarchy != nil {
+            data["hierarchy"] = hierarchy
+        }
+
+        if componentDetail != nil {
+            data["component_detail"] = componentDetail
+        }
+
+        if index != nil {
+            data["index"] = index
+        }
+
+        if label != nil {
+            data["label"] = label
+        }
+
+        return SelfDescribingJson(schema: UiEntity.schema, andDictionary: data)
     }
 }
 

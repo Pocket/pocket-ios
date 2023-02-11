@@ -71,7 +71,7 @@ extension ReadableViewModel {
     }
 
     private func trackOpen(url: URL) {
-        let additionalContexts: [Entity] = [ContentEntity(url: url)]
+        let additionalContexts: [OldEntity] = [ContentEntity(url: url)]
 
         let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
         let link = OldUIEntity.articleView.link
@@ -110,7 +110,7 @@ extension ReadableViewModel {
             return
         }
 
-        let contexts: [Entity] = [
+        let contexts: [OldEntity] = [
             OldUIEntity.button(identifier: identifier),
             ContentEntity(url: url)
         ]

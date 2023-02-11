@@ -194,12 +194,12 @@ extension SlateDetailViewModel {
         selectedRecommendationToReport = recommendation
     }
 
-    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Entity] {
+    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [OldEntity] {
         guard let recommendationURL = recommendation.item?.bestURL else {
             return []
         }
 
-        var contexts: [Entity] = []
+        var contexts: [OldEntity] = []
 
         if let remoteID = slate.remoteID,
            let requestID = slate.requestID,

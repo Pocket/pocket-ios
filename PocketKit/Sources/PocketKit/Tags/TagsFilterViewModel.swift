@@ -67,14 +67,14 @@ class TagsFilterViewModel: ObservableObject {
         selectedTag = tag
     }
 
-    private func sendSelectedTagAnalytics(context: Entity) {
+    private func sendSelectedTagAnalytics(context: OldEntity) {
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, [context])
     }
 
     func delete(tags: [String]) {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Entity = OldUIEntity.button(identifier: .tagsDelete)
+        let contexts: OldEntity = OldUIEntity.button(identifier: .tagsDelete)
         tracker.track(event: event, [contexts])
         tags.forEach { tag in
             guard let tag: Tag = fetchedTags?.filter({ $0.name == tag }).first else { return }
@@ -84,7 +84,7 @@ class TagsFilterViewModel: ObservableObject {
 
     func rename(from oldName: String, to newName: String) {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Entity = OldUIEntity.button(identifier: .tagsSaveChanges)
+        let contexts: OldEntity = OldUIEntity.button(identifier: .tagsSaveChanges)
         tracker.track(event: event, [contexts])
         guard let tag: Tag = fetchedTags?.filter({ $0.name == oldName }).first else { return }
         source.renameTag(from: tag, to: newName)

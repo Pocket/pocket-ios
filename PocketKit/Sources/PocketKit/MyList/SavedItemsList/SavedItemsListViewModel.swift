@@ -206,7 +206,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func filterByTagAction() -> UIAction? {
         return UIAction(title: "", handler: { [weak self] action in
             let event = SnowplowEngagement(type: .general, value: nil)
-            let contexts: Entity = OldUIEntity.button(identifier: .tagBadge)
+            let contexts: OldEntity = OldUIEntity.button(identifier: .tagBadge)
             self?.tracker.track(event: event, [contexts])
 
             let button = action.sender as? UIButton
@@ -391,7 +391,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return
         }
 
-        var contexts: [Entity] = [
+        var contexts: [OldEntity] = [
             OldUIEntity.saves.item(index: UIIndex(indexPath.item)),
             OldUIEntity.button(identifier: identifier),
             ContentEntity(url: url)
@@ -410,7 +410,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return
         }
 
-        let contexts: [Entity] = [
+        let contexts: [OldEntity] = [
             ContentEntity(url: url)
         ]
 
@@ -423,7 +423,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return
         }
 
-        let contexts: [Entity] = [
+        let contexts: [OldEntity] = [
             OldUIEntity.button(identifier: identifier),
             ContentEntity(url: url)
         ]
@@ -437,7 +437,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return
         }
 
-        var contexts: [Entity] = [
+        var contexts: [OldEntity] = [
             OldUIEntity.saves.item(index: UIIndex(indexPath.item)),
             ContentEntity(url: url)
         ]
@@ -550,7 +550,7 @@ extension SavedItemsListViewModel {
 
     private func filterTagAnalytics() {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Entity = OldUIEntity.button(identifier: .taggedChip)
+        let contexts: OldEntity = OldUIEntity.button(identifier: .taggedChip)
         tracker.track(event: event, [contexts])
     }
 }

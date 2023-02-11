@@ -24,7 +24,7 @@ class ReadableViewController: UIViewController {
 
     weak var delegate: ReadableViewControllerDelegate?
 
-    private var contexts: [Entity] {
+    private var contexts: [OldEntity] {
         guard let url = readableViewModel.url else {
             return []
         }

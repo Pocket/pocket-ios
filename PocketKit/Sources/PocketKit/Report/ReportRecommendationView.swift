@@ -101,7 +101,7 @@ struct ReportRecommendationView: View {
             return
         }
 
-        tracker.track(event: HomeArticleReport(itemURL: url, reason: reason, comment: reportComment.isEmpty ? nil : reportComment))
+        tracker.track(event: Events.Home.ArticleReport(itemURL: url, reason: reason, comment: reportComment.isEmpty ? nil : reportComment))
 
         isReported = true
 

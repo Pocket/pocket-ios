@@ -5,15 +5,15 @@
 import SnowplowTracker
 
 public protocol Tracker {
-    func addPersistentContext(_ context: Entity)
-    func track<T: Event>(event: T, _ contexts: [Entity]?)
-    func track(event: AppEvent)
-    func childTracker(with contexts: [Entity]) -> Tracker
-    func resetPersistentContexts(_ contexts: [Entity])
+    func addPersistentContext(_ context: OldEntity)
+    func track<T: OldEvent>(event: T, _ contexts: [OldEntity]?)
+    func track(event: Event)
+    func childTracker(with contexts: [OldEntity]) -> Tracker
+    func resetPersistentContexts(_ contexts: [OldEntity])
 }
 
 public extension Tracker {
-    func addPersistentContexts(_ contexts: [Entity]) {
+    func addPersistentContexts(_ contexts: [OldEntity]) {
         contexts.forEach { addPersistentContext($0) }
     }
 

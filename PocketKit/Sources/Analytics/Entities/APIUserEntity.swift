@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct APIUserEntity: Entity {
+public struct APIUserEntity: OldEntity {
     public static var schema = "iglu:com.pocket/api_user/jsonschema/1-0-1"
 
     let id: UInt

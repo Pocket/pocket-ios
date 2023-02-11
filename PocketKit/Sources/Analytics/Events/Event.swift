@@ -1,7 +1,13 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.s
+//
+//  Event.swift
+//  
+//
+//  Created by Daniel Brooks on 2/10/23.
+//
 
-public protocol Event: Encodable {
-    static var schema: String { get }
+import Foundation
+import class SnowplowTracker.SelfDescribing
+
+public protocol Event {
+    func toSelfDescribing() -> SelfDescribing
 }

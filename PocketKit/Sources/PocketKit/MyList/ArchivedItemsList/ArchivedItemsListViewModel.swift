@@ -359,7 +359,7 @@ extension ArchivedItemsListViewModel {
     func filterByTagAction() -> UIAction? {
         return UIAction(title: "", handler: { [weak self] action in
             let event = SnowplowEngagement(type: .general, value: nil)
-            let contexts: Entity = OldUIEntity.button(identifier: .tagBadge)
+            let contexts: OldEntity = OldUIEntity.button(identifier: .tagBadge)
             self?.tracker.track(event: event, [contexts])
 
             let button = action.sender as? UIButton
@@ -464,7 +464,7 @@ extension ArchivedItemsListViewModel {
 
     private func filterTagAnalytics() {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Entity = OldUIEntity.button(identifier: .taggedChip)
+        let contexts: OldEntity = OldUIEntity.button(identifier: .taggedChip)
         tracker.track(event: event, [contexts])
     }
 
@@ -542,7 +542,7 @@ extension ArchivedItemsListViewModel {
             return
         }
 
-        var contexts: [Entity] = [
+        var contexts: [OldEntity] = [
             OldUIEntity.saves.item(index: UIIndex(index)),
             ContentEntity(url: url)
         ]
@@ -560,7 +560,7 @@ extension ArchivedItemsListViewModel {
             return
         }
 
-        var contexts: [Entity] = [
+        var contexts: [OldEntity] = [
             OldUIEntity.saves.item(index: UIIndex(index)),
             OldUIEntity.button(identifier: identifier),
             ContentEntity(url: url)
@@ -579,7 +579,7 @@ extension ArchivedItemsListViewModel {
             return
         }
 
-        let contexts: [Entity] = [
+        let contexts: [OldEntity] = [
             ContentEntity(url: url)
         ]
 
@@ -592,7 +592,7 @@ extension ArchivedItemsListViewModel {
             return
         }
 
-        let contexts: [Entity] = [
+        let contexts: [OldEntity] = [
             OldUIEntity.button(identifier: identifier),
             ContentEntity(url: url)
         ]

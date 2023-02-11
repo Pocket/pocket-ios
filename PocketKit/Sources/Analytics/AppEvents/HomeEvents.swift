@@ -7,29 +7,12 @@
 
 import Foundation
 
-public class HomeArticleContentOpen: AppEvent {
-    public init(
-        slateTitle: String,
-        positionInSlate: Int,
-        itemURL: URL
-    ) {
-        super.init(
-            event: ContentOpenEvent(),
-            entities: [
-                UiEntity(
-                    type: .card,
-                    identifier: "home.article.open",
-                    componentDetail: slateTitle,
-                    index: positionInSlate
-                ),
-                ContentEntity(url: itemURL)
-            ]
-        )
-    }
+public extension Events {
+    struct Home {}
 }
 
-public class HomeArticleSave: AppEvent {
-    public init(
+public extension Events.Home {
+    static func ArticleSave(
         slateLineupId: String,
         slateLineupRequestId: String,
         slateLineupExperimentId: String,
@@ -39,16 +22,15 @@ public class HomeArticleSave: AppEvent {
         slateIndex: Int,
         positionInSlate: Int,
         itemURL: URL
-    ) {
-        super.init(
-            event: SnowplowEngagement(type: .save),
-            entities: [
-                UiEntity(
-                    type: .button,
-                    identifier: "home.article.save",
-                    index: positionInSlate
-                ),
-                ContentEntity(url: itemURL),
+    ) -> Event {
+        return Engagement(
+            .save(contentEntity: ContentEntity(url: itemURL)),
+            uiEntity: UiEntity(
+                type: .button,
+                identifier: "home.article.save",
+                index: positionInSlate
+            ),
+            extraEntities: [
                 SlateEntity(
                     id: slatedId,
                     requestID: slateRequestId,
@@ -63,37 +45,21 @@ public class HomeArticleSave: AppEvent {
             ]
         )
     }
-}
 
-public class HomeArticleOverflowClick: AppEvent {
-    public init(slateTitle: String, positionInSlate: Int, itemURL: URL) {
-        super.init(
-            event: SnowplowEngagement(),
-            entities: [
-                UiEntity(
-                    type: .button,
-                    identifier: "home.article.overflow.click",
-                    componentDetail: slateTitle,
-                    index: positionInSlate
-                ),
-                ContentEntity(url: itemURL)
-            ]
-        )
-    }
-}
-
-public class HomeArticleReport: AppEvent {
-    public init(itemURL: URL, reason: ReportEntity.Reason, comment: String?) {
-        super.init(
-            event: SnowplowEngagement(type: .report),
-            entities: [
-                UiEntity(
-                    type: .button,
-                    identifier: "home.article.report"
-                ),
-                ContentEntity(url: itemURL),
-                ReportEntity(reason: reason, comment: comment)
-            ]
+    static func ArticleReport(
+        itemURL: URL,
+        reason: ReportEntity.Reason,
+        comment: String?
+    ) -> Event {
+        return Engagement(
+            .report(
+                reportEntity: ReportEntity(reason: reason, comment: comment),
+                contentEntity: ContentEntity(url: itemURL)
+            ),
+            uiEntity: UiEntity(
+                type: .button,
+                identifier: "home.article.report"
+            )
         )
     }
 }

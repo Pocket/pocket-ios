@@ -1,15 +1,12 @@
-// This Source Code Form is subject to the terms of the Mozilla Public
-// License, v. 2.0. If a copy of the MPL was not distributed with this
-// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+//
+//  Entity.swift
+//  
+//
+//  Created by Daniel Brooks on 2/10/23.
+//
 
-import Foundation
+import class SnowplowTracker.SelfDescribingJson
 
-public protocol Entity: Encodable {
-    static var schema: String { get }
-}
-
-extension Entity {
-    var jsonEncoded: Data? {
-        return try? JSONEncoder().encode(self)
-    }
+public protocol Entity {
+    func toSelfDescribingJson() -> SelfDescribingJson
 }
