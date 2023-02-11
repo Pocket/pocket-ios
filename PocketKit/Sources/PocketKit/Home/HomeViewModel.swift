@@ -308,14 +308,14 @@ extension HomeViewModel {
             selectedReadableType = .webViewRecommendation(viewModel)
 
             tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
+                event: OldContentOpenEvent(destination: .external, trigger: .click),
                 contexts(for: recommendation, at: indexPath)
             )
         } else {
             selectedReadableType = .recommendation(viewModel)
 
             tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
+                event: OldContentOpenEvent(destination: .internal, trigger: .click),
                 contexts(for: recommendation, at: indexPath)
             )
         }
@@ -338,14 +338,14 @@ extension HomeViewModel {
             selectedReadableType = .webViewSavedItem(viewModel)
 
             tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
+                event: OldContentOpenEvent(destination: .external, trigger: .click),
                 contexts(for: savedItem, at: indexPath)
             )
         } else {
             selectedReadableType = .savedItem(viewModel)
 
             tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
+                event: OldContentOpenEvent(destination: .internal, trigger: .click),
                 contexts(for: savedItem, at: indexPath)
             )
         }
@@ -652,7 +652,7 @@ extension HomeViewModel {
             }
 
             tracker.track(
-                event: ImpressionEvent(component: .content, requirement: .instant),
+                event: OldImpressionEvent(component: .content, requirement: .instant),
                 contexts(for: recommendation, at: indexPath)
             )
         }

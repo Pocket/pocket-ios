@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public struct ImpressionEvent: OldEvent {
+public struct OldImpressionEvent: OldEvent {
     public static let schema = "iglu:com.pocket/impression/jsonschema/1-0-1"
 
     let component: Component
@@ -14,7 +14,7 @@ public struct ImpressionEvent: OldEvent {
     }
 }
 
-extension ImpressionEvent {
+extension OldImpressionEvent {
     public enum Component: String, Encodable {
         case ui
         case card

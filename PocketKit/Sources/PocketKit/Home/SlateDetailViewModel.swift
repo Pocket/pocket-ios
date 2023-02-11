@@ -77,7 +77,7 @@ class SlateDetailViewModel {
             }
 
             tracker.track(
-                event: ImpressionEvent(component: .content, requirement: .instant),
+                event: OldImpressionEvent(component: .content, requirement: .instant),
                 contexts(for: recommendation, at: indexPath)
             )
         }
@@ -109,7 +109,7 @@ extension SlateDetailViewModel {
             presentedWebReaderURL = item.bestURL
 
             tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
+                event: OldContentOpenEvent(destination: .external, trigger: .click),
                 contexts(for: recommendation, at: indexPath)
             )
         } else {
@@ -121,7 +121,7 @@ extension SlateDetailViewModel {
             )
 
             tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
+                event: OldContentOpenEvent(destination: .internal, trigger: .click),
                 contexts(for: recommendation, at: indexPath)
             )
         }

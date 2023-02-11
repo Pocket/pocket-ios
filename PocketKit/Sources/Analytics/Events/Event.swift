@@ -8,6 +8,9 @@
 import Foundation
 import class SnowplowTracker.SelfDescribing
 
+/**
+ * A snowplow event
+ */
 public protocol Event {
     func toSelfDescribing() -> SelfDescribing
 }

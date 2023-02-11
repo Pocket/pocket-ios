@@ -1,9 +1,12 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-import class SnowplowTracker.SelfDescribing
 import Foundation
+import class SnowplowTracker.SelfDescribing
 
+/**
+ * Event triggered when a user engages with a UI element.
+ */
 public struct Engagement: Event {
     public static let schema = "iglu:com.pocket/engagement/jsonschema/1-0-1"
 

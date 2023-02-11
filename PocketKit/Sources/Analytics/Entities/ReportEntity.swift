@@ -3,10 +3,21 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import class SnowplowTracker.SelfDescribingJson
 
+/**
+ * Entity for a flag from a user to Pocket that an item is inappropriate or broken.
+ * Should be included with any engagement event where type = report.
+ */
 public struct ReportEntity: OldEntity, Entity {
     public static let schema = "iglu:com.pocket/report/jsonschema/1-0-0"
 
+    /**
+     * The reason for the report selected from a list of options.
+     */
     let reason: Reason
+
+    /**
+     * An optional user-provided comment on the reason for the report.
+     */
     let comment: String?
 
     public init(reason: Reason, comment: String? = nil) {

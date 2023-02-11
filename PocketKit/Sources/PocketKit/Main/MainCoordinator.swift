@@ -40,7 +40,7 @@ class MainCoordinator {
                     context = OldUIEntity.account.screen
                 }
 
-                let impression = ImpressionEvent(component: .screen, requirement: .instant)
+                let impression = OldImpressionEvent(component: .screen, requirement: .instant)
                 tracker.track(event: impression, [context])
             }
             .store(in: &subscriptions)

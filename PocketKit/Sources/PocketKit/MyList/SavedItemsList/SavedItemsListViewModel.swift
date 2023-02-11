@@ -405,7 +405,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         tracker.track(event: event, contexts)
     }
 
-    private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
+    private func trackContentOpen(destination: OldContentOpenEvent.Destination, item: SavedItem) {
         guard let url = item.bestURL else {
             return
         }
@@ -414,7 +414,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             ContentEntity(url: url)
         ]
 
-        let event = ContentOpenEvent(destination: destination, trigger: .click)
+        let event = OldContentOpenEvent(destination: destination, trigger: .click)
         tracker.track(event: event, contexts)
     }
 
@@ -446,7 +446,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             contexts.insert(OldUIEntity.saves.favorites, at: 0)
         }
 
-        let event = ImpressionEvent(component: .card, requirement: .instant)
+        let event = OldImpressionEvent(component: .card, requirement: .instant)
         self.tracker.track(event: event, contexts)
     }
 

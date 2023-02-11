@@ -3,8 +3,9 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import class SnowplowTracker.SelfDescribingJson
 
-public struct APIUserEntity: OldEntity {
+public struct APIUserEntity: OldEntity, Entity {
     public static var schema = "iglu:com.pocket/api_user/jsonschema/1-0-1"
 
     let id: UInt
@@ -27,6 +28,15 @@ public struct APIUserEntity: OldEntity {
         let clientVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as! String
 
         self.init(id: id, clientVersion: clientVersion)
+    }
+
+    public func toSelfDescribingJson() -> SelfDescribingJson {
+        var data: [AnyHashable: Any] = [
+            "api_id": id,
+            "client_version": clientVersion
+        ]
+
+        return SelfDescribingJson(schema: APIUserEntity.schema, andDictionary: data)
     }
 }
 

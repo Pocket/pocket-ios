@@ -5,10 +5,22 @@
 import Foundation
 import class SnowplowTracker.SelfDescribingJson
 
+/**
+ * A unique piece of content (item) within Pocket, usually represented by a URL.
+ * Should be included in all events that relate to content (primarily
+ * recommendation card impressions/engagements and item page impressions/engagements).
+ */
 public struct ContentEntity: OldEntity, Entity {
     public static let schema = "iglu:com.pocket/content/jsonschema/1-0-0"
 
+    /**
+     * The full URL of the content.
+     */
     let url: URL
+
+    /**
+     * The backend identifier for a URL.
+     */
     let itemId: String?
 
     public init(url: URL, itemId: String? = nil) {

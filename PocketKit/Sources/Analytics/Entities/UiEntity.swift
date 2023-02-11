@@ -8,20 +8,46 @@
 import Foundation
 import class SnowplowTracker.SelfDescribingJson
 
-public struct UiEntity: Entity, Encodable {
+/**
+ * Entity to describe a front-end user interface. Should be included with any
+ * impression, engagement, or custom engagement events.
+ */
+public struct UiEntity: Entity {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
 
+    /**
+     * The general UI component type.
+     */
     let type: UiType
-    let identifier: String
-    let hierarchy: Int?
-    let componentDetail: String?
-    let index: Int?
-    let label: Int?
 
-    init(type: UiType, identifier: String, hierarchy: Int? = nil, componentDetail: String? = nil, index: Int? = nil, label: Int? = nil) {
+    /**
+     * The detailed type of UI component (e.g. standard, radio, checkbox, etc).
+     */
+    let componentDetail: String?
+
+    /**
+     * The internal name for the specific UI.  The general pattern for naming events is
+     * screen.feature.drilldown.action
+     * This is a guideline, not a hard rule.
+     * And example:
+     * home.recentsaves.save.delete
+     * https://docs.google.com/spreadsheets/d/10DrvRWaRjHbhvdoetVqeScK452alaSUtXpgdLGtEs3A/edit#gid=778876482
+     */
+    let identifier: String
+
+    /**
+     * The zero-based index value of a UI, if found in a list of similar UI components (e.g. item in a feed).
+     */
+    let index: Int?
+
+    /**
+     * The en-US display name for the UI, if available.
+     */
+    let label: String?
+
+    init(_ type: UiType, identifier: String, componentDetail: String? = nil, index: Int? = nil, label: String? = nil) {
         self.type = type
         self.identifier = identifier
-        self.hierarchy = hierarchy
         self.componentDetail = componentDetail
         self.index = index
         self.label = label
@@ -32,10 +58,6 @@ public struct UiEntity: Entity, Encodable {
             "type": type.rawValue,
             "identifier": identifier,
         ]
-
-        if hierarchy != nil {
-            data["hierarchy"] = hierarchy
-        }
 
         if componentDetail != nil {
             data["component_detail"] = componentDetail

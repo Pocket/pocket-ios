@@ -119,7 +119,7 @@ class NavigationSidebarViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        let event = ImpressionEvent(component: .screen, requirement: .instant)
+        let event = OldImpressionEvent(component: .screen, requirement: .instant)
         tracker.track(event: event, nil)
     }
 

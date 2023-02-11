@@ -26,7 +26,7 @@ public extension Events.Home {
         return Engagement(
             .save(contentEntity: ContentEntity(url: itemURL)),
             uiEntity: UiEntity(
-                type: .button,
+                .button,
                 identifier: "home.article.save",
                 index: positionInSlate
             ),
@@ -57,7 +57,7 @@ public extension Events.Home {
                 contentEntity: ContentEntity(url: itemURL)
             ),
             uiEntity: UiEntity(
-                type: .button,
+                .button,
                 identifier: "home.article.report"
             )
         )
