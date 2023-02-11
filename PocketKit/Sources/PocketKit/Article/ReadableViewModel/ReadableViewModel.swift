@@ -54,7 +54,9 @@ extension ReadableViewModel {
 
 extension ReadableViewModel {
     func displaySettings() {
-        track(identifier: .switchToWebView)
+        if let url = url {
+            tracker.track(event: Events.Reader.ArticleViewOriginal(url: url))
+        }
         isPresentingReaderSettings = true
     }
 
@@ -80,7 +82,9 @@ extension ReadableViewModel {
     }
 
     func share(additionalText: String? = nil) {
-        track(identifier: .itemShare)
+        if let url = url {
+            tracker.track(event: Events.Reader.ArticleShare(url: url))
+        }
         sharedActivity = PocketItemActivity(url: url, additionalText: additionalText)
     }
 
@@ -100,7 +104,9 @@ extension ReadableViewModel {
     }
 
     private func _delete() {
-        track(identifier: .itemDelete)
+        if let url = url {
+            tracker.track(event: Events.Reader.ArticleDelete(url: url))
+        }
         presentedAlert = nil
         delete()
     }
