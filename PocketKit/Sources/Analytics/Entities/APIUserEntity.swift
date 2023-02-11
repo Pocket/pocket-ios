@@ -31,12 +31,10 @@ public struct APIUserEntity: OldEntity, Entity {
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
-        var data: [AnyHashable: Any] = [
+        return SelfDescribingJson(schema: APIUserEntity.schema, andDictionary: [
             "api_id": id,
             "client_version": clientVersion
-        ]
-
-        return SelfDescribingJson(schema: APIUserEntity.schema, andDictionary: data)
+        ])
     }
 }
 
