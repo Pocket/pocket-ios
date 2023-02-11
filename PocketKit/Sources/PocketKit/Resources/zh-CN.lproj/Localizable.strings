@@ -26,6 +26,7 @@
 "Tag your saves by topic to find them later." = "按主题标记您的已保存内容，以便稍后进行查找。";
 "How to tag" = "如何标记";
 
+"Search" = "搜索";
 "All" = "全部";
 "Tagged" = "已标记";
 "Favorites" = "收藏夹";
@@ -37,7 +38,6 @@
 "Archive" = "存档";
 "Favorite" = "添加到收藏夹";
 "Unfavorite" = "取消收藏";
-"Move to saves" = "移至“保存内容”";
 "Move to Saves" = "移至“保存内容”";
 "Add Tags" = "添加标记";
 "Share" = "分享";
@@ -116,3 +116,15 @@
 "OK" = "确定";
 "An error occurred" = "发生错误";
 
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"Sign up for Premium" = "Sign up for Premium";
+"Premium Subscriber" = "Premium Subscriber";
+
+"The title, link, or image is broken" = "标题、链接或图像损坏";
+"It's in the wrong category" = "类别错误";
+"It's sexually explicit" = "色情内容";
+"It's rude, vulgar, or offensive" = "粗鲁、粗俗或令人反感";
+"It contains misinformation" = "包含错误信息";
+"Other" = "其他";
