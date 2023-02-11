@@ -20,9 +20,9 @@ class SnowplowTrackerTests: XCTestCase {
 
         tracker.track(event: event, [contextA, contextB])
 
-        XCTAssertEqual(mock.trackCalls.last?.event.schema, MockEvent.schema)
-        XCTAssertEqual(mock.trackCalls.last?.event.payload, ["value": event.value as NSNumber])
-        let eventContexts = mock.trackCalls.last?.event.contexts as! [SelfDescribingJson]
+        XCTAssertEqual(mock.oldTrackCalls.last?.event.schema, MockEvent.schema)
+        XCTAssertEqual(mock.oldTrackCalls.last?.event.payload, ["value": event.value as NSNumber])
+        let eventContexts = mock.oldTrackCalls.last?.event.contexts as! [SelfDescribingJson]
 
         let eventContextData = eventContexts.map { $0.data as! [String: String] }
         XCTAssertEqual(eventContextData, [

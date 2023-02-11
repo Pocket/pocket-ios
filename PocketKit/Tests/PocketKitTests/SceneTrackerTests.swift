@@ -33,7 +33,7 @@ class SceneTrackerTests: XCTestCase {
     func test_trackAppOpenWithNoPreviousOpenOrBackground() {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
 
-        XCTAssertTrue(tracker.trackCalls.wasCalled)
+        XCTAssertTrue(tracker.oldTrackCalls.wasCalled)
 
         let event = tracker.trackCalls.last?.event as? AppOpenEvent
         XCTAssertNotNil(event)
@@ -46,7 +46,7 @@ class SceneTrackerTests: XCTestCase {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
 
-        XCTAssertEqual(tracker.trackCalls.count, 1)
+        XCTAssertEqual(tracker.oldTrackCalls.count, 1)
     }
 
     func test_trackAppOpenAfterPreviousOpenAndBackground() {
@@ -54,7 +54,7 @@ class SceneTrackerTests: XCTestCase {
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
 
-        let event = tracker.trackCalls.last?.event as? AppOpenEvent
+        let event = tracker.oldTrackCalls.last?.event as? AppOpenEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)
         XCTAssertNotNil(event!.secondsSinceLastBackground)
@@ -66,7 +66,7 @@ class SceneTrackerTests: XCTestCase {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
 
-        let event = tracker.trackCalls.last?.event as? AppBackgroundEvent
+        let event = tracker.oldTrackCalls.last?.event as? AppBackgroundEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)
         XCTAssertNil(event!.secondsSinceLastBackground)
@@ -78,7 +78,7 @@ class SceneTrackerTests: XCTestCase {
         notificationCenter.post(name: UIScene.didActivateNotification, object: nil)
         notificationCenter.post(name: UIScene.didEnterBackgroundNotification, object: nil)
 
-        let event = tracker.trackCalls.last?.event as? AppBackgroundEvent
+        let event = tracker.oldTrackCalls.last?.event as? AppBackgroundEvent
         XCTAssertNotNil(event)
         XCTAssertNotNil(event!.secondsSinceLastOpen)
         XCTAssertNotNil(event!.secondsSinceLastBackground)
