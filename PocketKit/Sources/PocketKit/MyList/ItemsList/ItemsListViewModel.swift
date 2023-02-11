@@ -83,6 +83,8 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return L10n.favorites
         case .sortAndFilter:
             return L10n.sortFilter
+        case .search:
+            return L10n.search
         }
     }
 }
