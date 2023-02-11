@@ -17,6 +17,7 @@ public class PocketTracker: Tracker {
         persistentContexts.append(context)
     }
 
+    @available(*, deprecated, message: "Use track with an explict Event defintion")
     public func track<T: OldEvent>(event: T, _ contexts: [OldEntity]?) {
         guard let event = Event(from: event) else {
             return
