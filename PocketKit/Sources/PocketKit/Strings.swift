@@ -147,6 +147,8 @@ internal enum L10n {
   internal static let saved = L10n.tr("Localizable", "Saved", fallback: "Saved")
   /// Saves
   internal static let saves = L10n.tr("Localizable", "Saves", fallback: "Saves")
+  /// Search
+  internal static let search = L10n.tr("Localizable", "Search", fallback: "Search")
   /// See All
   internal static let seeAll = L10n.tr("Localizable", "See All", fallback: "See All")
   /// Settings
