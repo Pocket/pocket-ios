@@ -5,10 +5,10 @@
 public typealias UIHierarchy = UInt
 public typealias UIIndex = UInt
 
-public struct UIEntity: Entity {
+public struct OldUIEntity: Entity {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
 
-    let type: UIType
+    let type: OldUIType
     let hierarchy: UIHierarchy
     let identifier: Identifier
     let componentDetail: ComponentDetail?
@@ -16,7 +16,7 @@ public struct UIEntity: Entity {
     let label: Label?
 
     public init(
-        type: UIType,
+        type: OldUIType,
         hierarchy: UIHierarchy = 0,
         identifier: Identifier,
         componentDetail: ComponentDetail? = nil,
@@ -31,8 +31,8 @@ public struct UIEntity: Entity {
         self.label = label
     }
 
-    func with(hierarchy: UIHierarchy) -> UIEntity {
-        UIEntity(
+    func with(hierarchy: UIHierarchy) -> OldUIEntity {
+        OldUIEntity(
             type: type,
             hierarchy: hierarchy,
             identifier: identifier,
@@ -43,7 +43,7 @@ public struct UIEntity: Entity {
     }
 }
 
-private extension UIEntity {
+private extension OldUIEntity {
     enum CodingKeys: String, CodingKey {
         case type
         case hierarchy
@@ -54,8 +54,8 @@ private extension UIEntity {
     }
 }
 
-extension UIEntity {
-    public enum UIType: String, Encodable {
+extension OldUIEntity {
+    public enum OldUIType: String, Encodable {
         case card
         case list
         case screen
@@ -66,7 +66,7 @@ extension UIEntity {
     }
 }
 
-extension UIEntity {
+extension OldUIEntity {
     public enum Identifier: String, Encodable {
         case home
         case saves = "saves"
@@ -112,7 +112,7 @@ extension UIEntity {
     }
 }
 
-extension UIEntity {
+extension OldUIEntity {
     public enum ComponentDetail: String, Encodable {
         case itemRow = "item_row"
         case homeCard = "discover_tile"
@@ -122,23 +122,23 @@ extension UIEntity {
     }
 }
 
-extension UIEntity {
+extension OldUIEntity {
     public enum Label: String, Encodable {
         case saveToPocket = "Save to Pocket"
         case tagsAdded = "Tags Added"
     }
 }
 
-extension UIEntity {
+extension OldUIEntity {
     public struct LoggedOut {
-        public let screen = UIEntity(type: .screen, identifier: .loggedOut)
+        public let screen = OldUIEntity(type: .screen, identifier: .loggedOut)
     }
 
     public struct Home {
-        public let screen = UIEntity(type: .screen, identifier: .home)
+        public let screen = OldUIEntity(type: .screen, identifier: .home)
 
-        public func item(index: UIIndex) -> UIEntity {
-            UIEntity(
+        public func item(index: UIIndex) -> OldUIEntity {
+            OldUIEntity(
                 type: .card,
                 hierarchy: 0,
                 identifier: .item,
@@ -147,8 +147,8 @@ extension UIEntity {
             )
         }
 
-        public func recentSave(index: UIIndex) -> UIEntity {
-            UIEntity(
+        public func recentSave(index: UIIndex) -> OldUIEntity {
+            OldUIEntity(
                 type: .card,
                 hierarchy: 0,
                 identifier: .item,
@@ -159,41 +159,41 @@ extension UIEntity {
     }
 
     public struct Saves {
-        public let screen = UIEntity(type: .screen, hierarchy: 0, identifier: .saves)
-        public let saves = UIEntity(type: .list, hierarchy: 0, identifier: .saves)
-        public let archive = UIEntity(type: .list, hierarchy: 0, identifier: .archive)
-        public let search = UIEntity(type: .list, hierarchy: 0, identifier: .search)
-        public let favorites = UIEntity(type: .list, hierarchy: 0, identifier: .favorites)
-        public let sortFilterSheet = UIEntity(type: .screen, identifier: .sortFilterSheet)
+        public let screen = OldUIEntity(type: .screen, hierarchy: 0, identifier: .saves)
+        public let saves = OldUIEntity(type: .list, hierarchy: 0, identifier: .saves)
+        public let archive = OldUIEntity(type: .list, hierarchy: 0, identifier: .archive)
+        public let search = OldUIEntity(type: .list, hierarchy: 0, identifier: .search)
+        public let favorites = OldUIEntity(type: .list, hierarchy: 0, identifier: .favorites)
+        public let sortFilterSheet = OldUIEntity(type: .screen, identifier: .sortFilterSheet)
 
-        public func item(index: UIIndex) -> UIEntity {
-            UIEntity(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
+        public func item(index: UIIndex) -> OldUIEntity {
+            OldUIEntity(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
         }
     }
 
     public struct Account {
-        public let screen = UIEntity(type: .screen, hierarchy: 0, identifier: .account)
+        public let screen = OldUIEntity(type: .screen, hierarchy: 0, identifier: .account)
     }
 
     public struct ArticleView {
-        public let screen = UIEntity(type: .screen, hierarchy: 0, identifier: .reader)
-        public let link = UIEntity(type: .link, hierarchy: 0, identifier: .articleLink)
-        public let switchToWebView = UIEntity(type: .button, hierarchy: 0, identifier: .switchToWebView)
+        public let screen = OldUIEntity(type: .screen, hierarchy: 0, identifier: .reader)
+        public let link = OldUIEntity(type: .link, hierarchy: 0, identifier: .articleLink)
+        public let switchToWebView = OldUIEntity(type: .button, hierarchy: 0, identifier: .switchToWebView)
     }
 
     public struct SlateDetail {
-        public let screen = UIEntity(type: .screen, identifier: .slateDetail)
+        public let screen = OldUIEntity(type: .screen, identifier: .slateDetail)
 
-        public func recommendation(index: UIIndex) -> UIEntity {
-            UIEntity(type: .card, hierarchy: 0, identifier: .recommendation, componentDetail: .homeCard, index: index)
+        public func recommendation(index: UIIndex) -> OldUIEntity {
+            OldUIEntity(type: .card, hierarchy: 0, identifier: .recommendation, componentDetail: .homeCard, index: index)
         }
     }
 
     public struct SaveExtension {
-        public let screen = UIEntity(type: .screen, hierarchy: 0, identifier: .externalApp)
-        public let saveDialog = UIEntity(type: .dialog, hierarchy: 0, identifier: .saveExtension, componentDetail: .overlay, label: .saveToPocket)
-        public let addTagsButton = UIEntity(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTags)
-        public let addTagsDone = UIEntity(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTagsDone, label: .tagsAdded)
+        public let screen = OldUIEntity(type: .screen, hierarchy: 0, identifier: .externalApp)
+        public let saveDialog = OldUIEntity(type: .dialog, hierarchy: 0, identifier: .saveExtension, componentDetail: .overlay, label: .saveToPocket)
+        public let addTagsButton = OldUIEntity(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTags)
+        public let addTagsDone = OldUIEntity(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTagsDone, label: .tagsAdded)
     }
 
     public static let loggedOut = LoggedOut()
@@ -204,12 +204,12 @@ extension UIEntity {
     public static let slateDetail = SlateDetail()
     public static let saveExtension = SaveExtension()
 
-    public static let reportDialog = UIEntity(type: .dialog, identifier: .reportItem)
+    public static let reportDialog = OldUIEntity(type: .dialog, identifier: .reportItem)
 
-    public static let navigationDrawer = UIEntity(type: .screen, identifier: .navigationDrawer)
+    public static let navigationDrawer = OldUIEntity(type: .screen, identifier: .navigationDrawer)
 
-    public static func button(identifier: Identifier) -> UIEntity {
-        UIEntity(
+    public static func button(identifier: Identifier) -> OldUIEntity {
+        OldUIEntity(
             type: .button,
             hierarchy: 0,
             identifier: identifier

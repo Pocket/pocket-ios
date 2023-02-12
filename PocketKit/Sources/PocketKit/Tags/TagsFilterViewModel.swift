@@ -54,14 +54,14 @@ class TagsFilterViewModel: ObservableObject {
 
     func trackEditAsOverflowAnalytics() {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let context = UIEntity.button(identifier: .tagsOverflow)
+        let context = OldUIEntity.button(identifier: .tagsOverflow)
         tracker.track(event: event, [context])
     }
 
     func selectTag(_ tag: SelectedTag) {
-        var tagContext = UIEntity.button(identifier: .selectedTag)
+        var tagContext = OldUIEntity.button(identifier: .selectedTag)
         if case .notTagged = tag {
-            tagContext = UIEntity.button(identifier: .notTagged)
+            tagContext = OldUIEntity.button(identifier: .notTagged)
         }
         sendSelectedTagAnalytics(context: tagContext)
         selectedTag = tag
@@ -74,7 +74,7 @@ class TagsFilterViewModel: ObservableObject {
 
     func delete(tags: [String]) {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Entity = UIEntity.button(identifier: .tagsDelete)
+        let contexts: Entity = OldUIEntity.button(identifier: .tagsDelete)
         tracker.track(event: event, [contexts])
         tags.forEach { tag in
             guard let tag: Tag = fetchedTags?.filter({ $0.name == tag }).first else { return }
@@ -84,7 +84,7 @@ class TagsFilterViewModel: ObservableObject {
 
     func rename(from oldName: String, to newName: String) {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Entity = UIEntity.button(identifier: .tagsSaveChanges)
+        let contexts: Entity = OldUIEntity.button(identifier: .tagsSaveChanges)
         tracker.track(event: event, [contexts])
         guard let tag: Tag = fetchedTags?.filter({ $0.name == oldName }).first else { return }
         source.renameTag(from: tag, to: newName)

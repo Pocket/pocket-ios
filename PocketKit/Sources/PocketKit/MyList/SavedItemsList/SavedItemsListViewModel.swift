@@ -206,7 +206,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func filterByTagAction() -> UIAction? {
         return UIAction(title: "", handler: { [weak self] action in
             let event = SnowplowEngagement(type: .general, value: nil)
-            let contexts: Entity = UIEntity.button(identifier: .tagBadge)
+            let contexts: Entity = OldUIEntity.button(identifier: .tagBadge)
             self?.tracker.track(event: event, [contexts])
 
             let button = action.sender as? UIButton
@@ -386,19 +386,19 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
-    private func track(item: SavedItem, identifier: UIEntity.Identifier) {
+    private func track(item: SavedItem, identifier: OldUIEntity.Identifier) {
         guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
             return
         }
 
         var contexts: [Entity] = [
-            UIEntity.saves.item(index: UIIndex(indexPath.item)),
-            UIEntity.button(identifier: identifier),
+            OldUIEntity.saves.item(index: UIIndex(indexPath.item)),
+            OldUIEntity.button(identifier: identifier),
             ContentEntity(url: url)
         ]
 
         if selectedFilters.contains(.favorites) {
-            contexts.insert(UIEntity.saves.favorites, at: 0)
+            contexts.insert(OldUIEntity.saves.favorites, at: 0)
         }
 
         let event = SnowplowEngagement(type: .general, value: nil)
@@ -418,13 +418,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         tracker.track(event: event, contexts)
     }
 
-    private func trackButton(item: SavedItem, identifier: UIEntity.Identifier) {
+    private func trackButton(item: SavedItem, identifier: OldUIEntity.Identifier) {
         guard let url = item.bestURL else {
             return
         }
 
         let contexts: [Entity] = [
-            UIEntity.button(identifier: identifier),
+            OldUIEntity.button(identifier: identifier),
             ContentEntity(url: url)
         ]
 
@@ -438,12 +438,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         var contexts: [Entity] = [
-            UIEntity.saves.item(index: UIIndex(indexPath.item)),
+            OldUIEntity.saves.item(index: UIIndex(indexPath.item)),
             ContentEntity(url: url)
         ]
 
         if selectedFilters.contains(.favorites) {
-            contexts.insert(UIEntity.saves.favorites, at: 0)
+            contexts.insert(OldUIEntity.saves.favorites, at: 0)
         }
 
         let event = ImpressionEvent(component: .card, requirement: .instant)
@@ -550,7 +550,7 @@ extension SavedItemsListViewModel {
 
     private func filterTagAnalytics() {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Entity = UIEntity.button(identifier: .taggedChip)
+        let contexts: Entity = OldUIEntity.button(identifier: .taggedChip)
         tracker.track(event: event, [contexts])
     }
 }

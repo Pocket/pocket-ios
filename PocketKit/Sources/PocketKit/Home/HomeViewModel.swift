@@ -462,7 +462,7 @@ extension HomeViewModel {
 
         return [
             ContentEntity(url: url),
-            UIEntity.home.recentSave(index: UIIndex(indexPath.item))
+            OldUIEntity.home.recentSave(index: UIIndex(indexPath.item))
         ]
     }
 }
@@ -563,7 +563,7 @@ extension HomeViewModel {
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIEntity.button(identifier: .itemSave)]
+        let contexts = contexts(for: recommendation, at: indexPath) + [OldUIEntity.button(identifier: .itemSave)]
 
         tracker.track(
             event: SnowplowEngagement(type: .save, value: nil),
@@ -574,7 +574,7 @@ extension HomeViewModel {
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIEntity.button(identifier: .itemArchive)]
+        let contexts = contexts(for: recommendation, at: indexPath) + [OldUIEntity.button(identifier: .itemArchive)]
         tracker.track(
             event: SnowplowEngagement(type: .save, value: nil),
             contexts
@@ -630,7 +630,7 @@ extension HomeViewModel {
 
         return contexts + [
             ContentEntity(url: recommendationURL),
-            UIEntity.home.item(index: UIIndex(indexPath.item))
+            OldUIEntity.home.item(index: UIIndex(indexPath.item))
         ]
     }
 }

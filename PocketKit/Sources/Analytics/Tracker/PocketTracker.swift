@@ -57,7 +57,7 @@ extension PocketTracker {
         // we have to reverse the contexts to go inside-out, such that the child precedes the parent,
         // and update the hierarchy appropriately.
         let contexts = contexts.reversed().map { (context) -> Entity in
-            if let context = context as? UIEntity {
+            if let context = context as? OldUIEntity {
                 let context = context.with(hierarchy: Hierarchy)
                 Hierarchy += 1
                 return context

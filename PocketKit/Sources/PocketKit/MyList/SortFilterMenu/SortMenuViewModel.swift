@@ -59,14 +59,14 @@ extension SortMenuViewModel {
     }
 
     private func track(sortOption: SortOption) {
-        let selection = UIEntity(type: .button, identifier: sortOption.uiContextIdentifier)
+        let selection = OldUIEntity(type: .button, identifier: sortOption.uiContextIdentifier)
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, [selection])
     }
 }
 
 extension SortOption {
-    var uiContextIdentifier: UIEntity.Identifier {
+    var uiContextIdentifier: OldUIEntity.Identifier {
         switch self {
         case .newest: return .sortByNewest
         case .oldest: return .sortByOldest

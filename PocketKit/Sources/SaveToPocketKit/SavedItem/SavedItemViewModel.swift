@@ -147,7 +147,7 @@ extension SavedItemViewModel {
         return nil
     }
 
-    private func track(context: UIEntity) {
+    private func track(context: OldUIEntity) {
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, [context])
     }

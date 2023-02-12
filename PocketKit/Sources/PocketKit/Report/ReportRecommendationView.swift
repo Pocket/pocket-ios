@@ -101,7 +101,7 @@ struct ReportRecommendationView: View {
             return
         }
 
-        let button = UIEntity.button(identifier: .submit)
+        let button = OldUIEntity.button(identifier: .submit)
         let content = ContentEntity(url: url)
         let comment = reportComment.isEmpty ? nil : reportComment
         let report = ReportEvent(reason: reason, comment: comment)

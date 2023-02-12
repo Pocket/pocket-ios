@@ -166,7 +166,7 @@ extension SlateDetailViewModel {
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIEntity.button(identifier: .itemSave)]
+        let contexts = contexts(for: recommendation, at: indexPath) + [OldUIEntity.button(identifier: .itemSave)]
         tracker.track(
             event: SnowplowEngagement(type: .save, value: nil),
             contexts
@@ -176,7 +176,7 @@ extension SlateDetailViewModel {
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIEntity.button(identifier: .itemArchive)]
+        let contexts = contexts(for: recommendation, at: indexPath) + [OldUIEntity.button(identifier: .itemArchive)]
         tracker.track(
             event: SnowplowEngagement(type: .save, value: nil),
             contexts
@@ -223,7 +223,7 @@ extension SlateDetailViewModel {
 
         return contexts + [
             ContentEntity(url: recommendationURL),
-            UIEntity.slateDetail.recommendation(index: UIIndex(indexPath.item))
+            OldUIEntity.slateDetail.recommendation(index: UIIndex(indexPath.item))
         ]
     }
 }

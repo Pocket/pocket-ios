@@ -16,7 +16,7 @@ public extension Tracker {
         contexts.forEach { addPersistentContext($0) }
     }
 
-    func childTracker(hosting context: UIEntity) -> Tracker {
+    func childTracker(hosting context: OldUIEntity) -> Tracker {
         childTracker(with: [context])
     }
 }
