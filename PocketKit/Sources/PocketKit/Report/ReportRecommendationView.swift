@@ -46,7 +46,7 @@ struct ReportRecommendationView: View {
     var body: some View {
         List {
             Section(header: Text(L10n.reportAConcern)) {
-                ForEach(ReportEvent.Reason.allCases, id: \.self) { reason in
+                ForEach(ReportEntity.Reason.allCases, id: \.self) { reason in
                     ReportReasonRow(
                         text: reason.localized,
                         isSelected: reason == selectedReason
