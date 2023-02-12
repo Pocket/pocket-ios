@@ -7,17 +7,17 @@ import SnowplowTracker
 public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker
 
-    private var persistentContexts: [Context] = []
+    private var persistentContexts: [Entity] = []
 
     public init(snowplow: SnowplowTracker) {
         self.snowplow = snowplow
     }
 
-    public func addPersistentContext(_ context: Context) {
+    public func addPersistentContext(_ context: Entity) {
         persistentContexts.append(context)
     }
 
-    public func track<T: Event>(event: T, _ contexts: [Context]?) {
+    public func track<T: Event>(event: T, _ contexts: [Entity]?) {
         guard let event = Event(from: event) else {
             return
         }
@@ -30,11 +30,11 @@ public class PocketTracker: Tracker {
         snowplow.track(event: event)
     }
 
-    public func childTracker(with contexts: [Context]) -> Tracker {
+    public func childTracker(with contexts: [Entity]) -> Tracker {
         return LinkedTracker(parent: self, contexts: contexts)
     }
 
-    public func resetPersistentContexts(_ contexts: [Context]) {
+    public func resetPersistentContexts(_ contexts: [Entity]) {
         persistentContexts = contexts
     }
 }
@@ -49,15 +49,15 @@ extension PocketTracker {
         return SelfDescribing(eventData: eventJSON)
     }
 
-    private func Contexts(from contexts: [Context]) -> [SelfDescribingJson] {
+    private func Contexts(from contexts: [Entity]) -> [SelfDescribingJson] {
         var Hierarchy: UInt = 0
         // UIs are returned outside-in, such that the parent precedes the child.
         // However, in Snowplow, the hierarchy starts at the lowest-level of the contexts.
         // Since we don't know how deeply nested the view hierarchy will be up-front,
         // we have to reverse the contexts to go inside-out, such that the child precedes the parent,
         // and update the hierarchy appropriately.
-        let contexts = contexts.reversed().map { (context) -> Context in
-            if let context = context as? UIContext {
+        let contexts = contexts.reversed().map { (context) -> Entity in
+            if let context = context as? UIEntity {
                 let context = context.with(hierarchy: Hierarchy)
                 Hierarchy += 1
                 return context

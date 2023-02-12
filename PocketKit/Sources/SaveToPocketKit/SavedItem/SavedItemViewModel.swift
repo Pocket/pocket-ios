@@ -33,9 +33,9 @@ class SavedItemViewModel {
         guard let session = appSession.currentSession else { return }
 
         tracker.resetPersistentContexts([
-            APIUserContext(consumerKey: consumerKey)
+            APIUserEntity(consumerKey: consumerKey)
         ])
-        tracker.addPersistentContext(UserContext(guid: session.guid, userID: session.userIdentifier))
+        tracker.addPersistentContext(UserEntity(guid: session.guid, userID: session.userIdentifier))
     }
 
     func save(from context: ExtensionContext?) async {
@@ -52,7 +52,7 @@ class SavedItemViewModel {
                 break
             }
 
-            tracker.addPersistentContext(ContentContext(url: url))
+            tracker.addPersistentContext(ContentEntity(url: url))
             track(context: .saveExtension.saveDialog)
 
             let result = saveService.save(url: url)
@@ -147,7 +147,7 @@ extension SavedItemViewModel {
         return nil
     }
 
-    private func track(context: UIContext) {
+    private func track(context: UIEntity) {
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, [context])
     }

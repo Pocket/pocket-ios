@@ -10,9 +10,9 @@ public struct TrackableView<T: View>: View {
     @Environment(\.tracker)
     private var tracker: Tracker
 
-    private var context: UIContext
+    private var context: UIEntity
 
-    init(_ context: UIContext, _ content: () -> T) {
+    init(_ context: UIEntity, _ content: () -> T) {
         self.content = content()
         self.context = context
     }
@@ -24,7 +24,7 @@ public struct TrackableView<T: View>: View {
 
 public extension View {
     @ViewBuilder
-    func trackable(_ context: UIContext) -> TrackableView<Self> {
+    func trackable(_ context: UIEntity) -> TrackableView<Self> {
         TrackableView(context) { self }
     }
 }

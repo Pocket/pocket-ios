@@ -30,14 +30,14 @@ class MainCoordinator {
 
         model.$selectedSection
             .sink { section in
-                let context: UIContext
+                let context: UIEntity
                 switch section {
                 case .home:
-                    context = UIContext.home.screen
+                    context = UIEntity.home.screen
                 case .saves:
-                    context = UIContext.saves.screen
+                    context = UIEntity.saves.screen
                 case .account:
-                    context = UIContext.account.screen
+                    context = UIEntity.account.screen
                 }
 
                 let impression = ImpressionEvent(component: .screen, requirement: .instant)

@@ -166,7 +166,7 @@ extension SlateDetailViewModel {
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemSave)]
+        let contexts = contexts(for: recommendation, at: indexPath) + [UIEntity.button(identifier: .itemSave)]
         tracker.track(
             event: SnowplowEngagement(type: .save, value: nil),
             contexts
@@ -176,7 +176,7 @@ extension SlateDetailViewModel {
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
+        let contexts = contexts(for: recommendation, at: indexPath) + [UIEntity.button(identifier: .itemArchive)]
         tracker.track(
             event: SnowplowEngagement(type: .save, value: nil),
             contexts
@@ -194,17 +194,17 @@ extension SlateDetailViewModel {
         selectedRecommendationToReport = recommendation
     }
 
-    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Context] {
+    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Entity] {
         guard let recommendationURL = recommendation.item?.bestURL else {
             return []
         }
 
-        var contexts: [Context] = []
+        var contexts: [Entity] = []
 
         if let remoteID = slate.remoteID,
            let requestID = slate.requestID,
            let experimentID = slate.experimentID {
-            let slateContext = SlateContext(
+            let slateContext = SlateEntity(
                 id: remoteID,
                 requestID: requestID,
                 experiment: experimentID,
@@ -214,7 +214,7 @@ extension SlateDetailViewModel {
         }
 
         if let remoteID = recommendation.remoteID {
-            let recommendationContext = RecommendationContext(
+            let recommendationContext = RecommendationEntity(
                 id: remoteID,
                 index: UIIndex(indexPath.item)
             )
@@ -222,8 +222,8 @@ extension SlateDetailViewModel {
         }
 
         return contexts + [
-            ContentContext(url: recommendationURL),
-            UIContext.slateDetail.recommendation(index: UIIndex(indexPath.item))
+            ContentEntity(url: recommendationURL),
+            UIEntity.slateDetail.recommendation(index: UIIndex(indexPath.item))
         ]
     }
 }

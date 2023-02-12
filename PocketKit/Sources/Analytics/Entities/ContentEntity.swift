@@ -4,12 +4,12 @@
 
 import Foundation
 
-public protocol Context: Encodable {
-    static var schema: String { get }
-}
+public struct ContentEntity: Entity {
+    public static let schema = "iglu:com.pocket/content/jsonschema/1-0-0"
 
-extension Context {
-    var jsonEncoded: Data? {
-        return try? JSONEncoder().encode(self)
+    let url: URL
+
+    public init(url: URL) {
+        self.url = url
     }
 }

@@ -71,10 +71,10 @@ extension ReadableViewModel {
     }
 
     private func trackOpen(url: URL) {
-        let additionalContexts: [Context] = [ContentContext(url: url)]
+        let additionalContexts: [Entity] = [ContentEntity(url: url)]
 
         let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
-        let link = UIContext.articleView.link
+        let link = UIEntity.articleView.link
         let contexts = additionalContexts + [link]
         tracker.track(event: contentOpen, contexts)
     }
@@ -105,14 +105,14 @@ extension ReadableViewModel {
         delete()
     }
 
-    func track(identifier: UIContext.Identifier) {
+    func track(identifier: UIEntity.Identifier) {
         guard let url = url else {
             return
         }
 
-        let contexts: [Context] = [
-            UIContext.button(identifier: identifier),
-            ContentContext(url: url)
+        let contexts: [Entity] = [
+            UIEntity.button(identifier: identifier),
+            ContentEntity(url: url)
         ]
 
         let event = SnowplowEngagement(type: .general, value: nil)

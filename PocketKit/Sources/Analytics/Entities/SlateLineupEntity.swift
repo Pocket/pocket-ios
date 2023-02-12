@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public struct SlateLineupContext: Context {
+public struct SlateLineupEntity: Entity {
     public static let schema = "iglu:com.pocket/slate_lineup/jsonschema/1-0-0"
 
     let id: String
@@ -16,7 +16,7 @@ public struct SlateLineupContext: Context {
     }
 }
 
-private extension SlateLineupContext {
+private extension SlateLineupEntity {
     enum CodingKeys: String, CodingKey {
         case id = "slate_lineup_id"
         case requestID = "request_id"

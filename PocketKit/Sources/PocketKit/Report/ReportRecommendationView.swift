@@ -101,8 +101,8 @@ struct ReportRecommendationView: View {
             return
         }
 
-        let button = UIContext.button(identifier: .submit)
-        let content = ContentContext(url: url)
+        let button = UIEntity.button(identifier: .submit)
+        let content = ContentEntity(url: url)
         let comment = reportComment.isEmpty ? nil : reportComment
         let report = ReportEvent(reason: reason, comment: comment)
         let engagement = SnowplowEngagement(type: .report, value: nil)

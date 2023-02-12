@@ -4,7 +4,7 @@
 
 import Foundation
 
-public struct APIUserContext: Context {
+public struct APIUserEntity: Entity {
     public static var schema = "iglu:com.pocket/api_user/jsonschema/1-0-1"
 
     let id: UInt
@@ -30,7 +30,7 @@ public struct APIUserContext: Context {
     }
 }
 
-private extension APIUserContext {
+private extension APIUserEntity {
     enum CodingKeys: String, CodingKey {
         case id = "api_id"
         case clientVersion = "client_version"

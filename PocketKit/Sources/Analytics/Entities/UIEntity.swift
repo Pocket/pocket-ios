@@ -5,7 +5,7 @@
 public typealias UIHierarchy = UInt
 public typealias UIIndex = UInt
 
-public struct UIContext: Context {
+public struct UIEntity: Entity {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
 
     let type: UIType
@@ -31,8 +31,8 @@ public struct UIContext: Context {
         self.label = label
     }
 
-    func with(hierarchy: UIHierarchy) -> UIContext {
-        UIContext(
+    func with(hierarchy: UIHierarchy) -> UIEntity {
+        UIEntity(
             type: type,
             hierarchy: hierarchy,
             identifier: identifier,
@@ -43,7 +43,7 @@ public struct UIContext: Context {
     }
 }
 
-private extension UIContext {
+private extension UIEntity {
     enum CodingKeys: String, CodingKey {
         case type
         case hierarchy
@@ -54,7 +54,7 @@ private extension UIContext {
     }
 }
 
-extension UIContext {
+extension UIEntity {
     public enum UIType: String, Encodable {
         case card
         case list
@@ -66,7 +66,7 @@ extension UIContext {
     }
 }
 
-extension UIContext {
+extension UIEntity {
     public enum Identifier: String, Encodable {
         case home
         case saves = "saves"
@@ -112,7 +112,7 @@ extension UIContext {
     }
 }
 
-extension UIContext {
+extension UIEntity {
     public enum ComponentDetail: String, Encodable {
         case itemRow = "item_row"
         case homeCard = "discover_tile"
@@ -122,23 +122,23 @@ extension UIContext {
     }
 }
 
-extension UIContext {
+extension UIEntity {
     public enum Label: String, Encodable {
         case saveToPocket = "Save to Pocket"
         case tagsAdded = "Tags Added"
     }
 }
 
-extension UIContext {
+extension UIEntity {
     public struct LoggedOut {
-        public let screen = UIContext(type: .screen, identifier: .loggedOut)
+        public let screen = UIEntity(type: .screen, identifier: .loggedOut)
     }
 
     public struct Home {
-        public let screen = UIContext(type: .screen, identifier: .home)
+        public let screen = UIEntity(type: .screen, identifier: .home)
 
-        public func item(index: UIIndex) -> UIContext {
-            UIContext(
+        public func item(index: UIIndex) -> UIEntity {
+            UIEntity(
                 type: .card,
                 hierarchy: 0,
                 identifier: .item,
@@ -147,8 +147,8 @@ extension UIContext {
             )
         }
 
-        public func recentSave(index: UIIndex) -> UIContext {
-            UIContext(
+        public func recentSave(index: UIIndex) -> UIEntity {
+            UIEntity(
                 type: .card,
                 hierarchy: 0,
                 identifier: .item,
@@ -159,41 +159,41 @@ extension UIContext {
     }
 
     public struct Saves {
-        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .saves)
-        public let saves = UIContext(type: .list, hierarchy: 0, identifier: .saves)
-        public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
-        public let search = UIContext(type: .list, hierarchy: 0, identifier: .search)
-        public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
-        public let sortFilterSheet = UIContext(type: .screen, identifier: .sortFilterSheet)
+        public let screen = UIEntity(type: .screen, hierarchy: 0, identifier: .saves)
+        public let saves = UIEntity(type: .list, hierarchy: 0, identifier: .saves)
+        public let archive = UIEntity(type: .list, hierarchy: 0, identifier: .archive)
+        public let search = UIEntity(type: .list, hierarchy: 0, identifier: .search)
+        public let favorites = UIEntity(type: .list, hierarchy: 0, identifier: .favorites)
+        public let sortFilterSheet = UIEntity(type: .screen, identifier: .sortFilterSheet)
 
-        public func item(index: UIIndex) -> UIContext {
-            UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
+        public func item(index: UIIndex) -> UIEntity {
+            UIEntity(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
         }
     }
 
     public struct Account {
-        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .account)
+        public let screen = UIEntity(type: .screen, hierarchy: 0, identifier: .account)
     }
 
     public struct ArticleView {
-        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .reader)
-        public let link = UIContext(type: .link, hierarchy: 0, identifier: .articleLink)
-        public let switchToWebView = UIContext(type: .button, hierarchy: 0, identifier: .switchToWebView)
+        public let screen = UIEntity(type: .screen, hierarchy: 0, identifier: .reader)
+        public let link = UIEntity(type: .link, hierarchy: 0, identifier: .articleLink)
+        public let switchToWebView = UIEntity(type: .button, hierarchy: 0, identifier: .switchToWebView)
     }
 
     public struct SlateDetail {
-        public let screen = UIContext(type: .screen, identifier: .slateDetail)
+        public let screen = UIEntity(type: .screen, identifier: .slateDetail)
 
-        public func recommendation(index: UIIndex) -> UIContext {
-            UIContext(type: .card, hierarchy: 0, identifier: .recommendation, componentDetail: .homeCard, index: index)
+        public func recommendation(index: UIIndex) -> UIEntity {
+            UIEntity(type: .card, hierarchy: 0, identifier: .recommendation, componentDetail: .homeCard, index: index)
         }
     }
 
     public struct SaveExtension {
-        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .externalApp)
-        public let saveDialog = UIContext(type: .dialog, hierarchy: 0, identifier: .saveExtension, componentDetail: .overlay, label: .saveToPocket)
-        public let addTagsButton = UIContext(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTags)
-        public let addTagsDone = UIContext(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTagsDone, label: .tagsAdded)
+        public let screen = UIEntity(type: .screen, hierarchy: 0, identifier: .externalApp)
+        public let saveDialog = UIEntity(type: .dialog, hierarchy: 0, identifier: .saveExtension, componentDetail: .overlay, label: .saveToPocket)
+        public let addTagsButton = UIEntity(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTags)
+        public let addTagsDone = UIEntity(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTagsDone, label: .tagsAdded)
     }
 
     public static let loggedOut = LoggedOut()
@@ -204,12 +204,12 @@ extension UIContext {
     public static let slateDetail = SlateDetail()
     public static let saveExtension = SaveExtension()
 
-    public static let reportDialog = UIContext(type: .dialog, identifier: .reportItem)
+    public static let reportDialog = UIEntity(type: .dialog, identifier: .reportItem)
 
-    public static let navigationDrawer = UIContext(type: .screen, identifier: .navigationDrawer)
+    public static let navigationDrawer = UIEntity(type: .screen, identifier: .navigationDrawer)
 
-    public static func button(identifier: Identifier) -> UIContext {
-        UIContext(
+    public static func button(identifier: Identifier) -> UIEntity {
+        UIEntity(
             type: .button,
             hierarchy: 0,
             identifier: identifier

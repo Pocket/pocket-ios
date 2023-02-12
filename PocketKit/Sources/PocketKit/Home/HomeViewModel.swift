@@ -457,12 +457,12 @@ extension HomeViewModel {
         source.delete(item: item)
     }
 
-    func contexts(for savedItem: SavedItem, at indexPath: IndexPath) -> [Context] {
+    func contexts(for savedItem: SavedItem, at indexPath: IndexPath) -> [Entity] {
         guard let url = savedItem.bestURL else { return [] }
 
         return [
-            ContentContext(url: url),
-            UIContext.home.recentSave(index: UIIndex(indexPath.item))
+            ContentEntity(url: url),
+            UIEntity.home.recentSave(index: UIIndex(indexPath.item))
         ]
     }
 }
@@ -563,7 +563,7 @@ extension HomeViewModel {
     }
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemSave)]
+        let contexts = contexts(for: recommendation, at: indexPath) + [UIEntity.button(identifier: .itemSave)]
 
         tracker.track(
             event: SnowplowEngagement(type: .save, value: nil),
@@ -574,7 +574,7 @@ extension HomeViewModel {
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
+        let contexts = contexts(for: recommendation, at: indexPath) + [UIEntity.button(identifier: .itemArchive)]
         tracker.track(
             event: SnowplowEngagement(type: .save, value: nil),
             contexts
@@ -583,20 +583,20 @@ extension HomeViewModel {
         source.archive(recommendation: recommendation)
     }
 
-    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Context] {
+    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Entity] {
         guard let slate = recommendation.slate,
               let slateLineup = slate.slateLineup,
               let recommendationURL = recommendation.item?.bestURL else {
             return []
         }
 
-        var contexts: [Context] = []
+        var contexts: [Entity] = []
 
         // SlateLineup Context
         if  let id = slateLineup.remoteID,
             let requestID = slateLineup.requestID,
             let experimentID = slateLineup.experimentID {
-            let context = SlateLineupContext(
+            let context = SlateLineupEntity(
                 id: id,
                 requestID: requestID,
                 experiment: experimentID
@@ -609,7 +609,7 @@ extension HomeViewModel {
            let requestID = slate.requestID,
            let experimentID = slate.experimentID,
            let slateIndex = slateLineup.slates?.index(of: slate) {
-            let slateContext = SlateContext(
+            let slateContext = SlateEntity(
                 id: slateID,
                 requestID: requestID,
                 experiment: experimentID,
@@ -621,7 +621,7 @@ extension HomeViewModel {
         // Recommendation context
         if let recommendationID = recommendation.remoteID,
            let recommendationIndex = slate.recommendations?.index(of: recommendation) {
-            let recommendationContext = RecommendationContext(
+            let recommendationContext = RecommendationEntity(
                 id: recommendationID,
                 index: UIIndex(recommendationIndex)
             )
@@ -629,8 +629,8 @@ extension HomeViewModel {
         }
 
         return contexts + [
-            ContentContext(url: recommendationURL),
-            UIContext.home.item(index: UIIndex(indexPath.item))
+            ContentEntity(url: recommendationURL),
+            UIEntity.home.item(index: UIIndex(indexPath.item))
         ]
     }
 }

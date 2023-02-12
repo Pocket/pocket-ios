@@ -2,7 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public struct RecommendationContext: Context {
+public struct RecommendationEntity: Entity {
     public static let schema = "iglu:com.pocket/recommendation/jsonschema/1-0-0"
 
     let id: String
@@ -14,7 +14,7 @@ public struct RecommendationContext: Context {
     }
 }
 
-private extension RecommendationContext {
+private extension RecommendationEntity {
     enum CodingKeys: String, CodingKey {
         case id = "recommendation_id"
         case index

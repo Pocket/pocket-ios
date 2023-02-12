@@ -359,7 +359,7 @@ extension ArchivedItemsListViewModel {
     func filterByTagAction() -> UIAction? {
         return UIAction(title: "", handler: { [weak self] action in
             let event = SnowplowEngagement(type: .general, value: nil)
-            let contexts: Context = UIContext.button(identifier: .tagBadge)
+            let contexts: Entity = UIEntity.button(identifier: .tagBadge)
             self?.tracker.track(event: event, [contexts])
 
             let button = action.sender as? UIButton
@@ -464,7 +464,7 @@ extension ArchivedItemsListViewModel {
 
     private func filterTagAnalytics() {
         let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Context = UIContext.button(identifier: .taggedChip)
+        let contexts: Entity = UIEntity.button(identifier: .taggedChip)
         tracker.track(event: event, [contexts])
     }
 
@@ -542,32 +542,32 @@ extension ArchivedItemsListViewModel {
             return
         }
 
-        var contexts: [Context] = [
-            UIContext.saves.item(index: UIIndex(index)),
-            ContentContext(url: url)
+        var contexts: [Entity] = [
+            UIEntity.saves.item(index: UIIndex(index)),
+            ContentEntity(url: url)
         ]
 
         if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.saves.favorites, at: 0)
+            contexts.insert(UIEntity.saves.favorites, at: 0)
         }
 
         let event = ImpressionEvent(component: .card, requirement: .instant)
         self.tracker.track(event: event, contexts)
     }
 
-    private func track(item: SavedItem, identifier: UIContext.Identifier) {
+    private func track(item: SavedItem, identifier: UIEntity.Identifier) {
         guard let url = item.bestURL, let index = archiveService.index(of: item) else {
             return
         }
 
-        var contexts: [Context] = [
-            UIContext.saves.item(index: UIIndex(index)),
-            UIContext.button(identifier: identifier),
-            ContentContext(url: url)
+        var contexts: [Entity] = [
+            UIEntity.saves.item(index: UIIndex(index)),
+            UIEntity.button(identifier: identifier),
+            ContentEntity(url: url)
         ]
 
         if selectedFilters.contains(.favorites) {
-            contexts.insert(UIContext.saves.favorites, at: 0)
+            contexts.insert(UIEntity.saves.favorites, at: 0)
         }
 
         let event = SnowplowEngagement(type: .general, value: nil)
@@ -579,22 +579,22 @@ extension ArchivedItemsListViewModel {
             return
         }
 
-        let contexts: [Context] = [
-            ContentContext(url: url)
+        let contexts: [Entity] = [
+            ContentEntity(url: url)
         ]
 
         let event = ContentOpenEvent(destination: destination, trigger: .click)
         tracker.track(event: event, contexts)
     }
 
-    private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
+    private func trackButton(item: SavedItem, identifier: UIEntity.Identifier) {
         guard let url = item.bestURL else {
             return
         }
 
-        let contexts: [Context] = [
-            UIContext.button(identifier: identifier),
-            ContentContext(url: url)
+        let contexts: [Entity] = [
+            UIEntity.button(identifier: identifier),
+            ContentEntity(url: url)
         ]
 
         let event = SnowplowEngagement(type: .general, value: nil)
