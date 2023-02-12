@@ -25,7 +25,7 @@ public struct Impression: Event {
 
     let extraEntities: [Entity]
 
-    public init(component: Component, requirement: Requirement, uiEntity: UiEntity, extraEntities: [Entity]) {
+    public init(component: Component, requirement: Requirement, uiEntity: UiEntity, extraEntities: [Entity] = []) {
         self.component = component
         self.requirement = requirement
         self.uiEntity = uiEntity

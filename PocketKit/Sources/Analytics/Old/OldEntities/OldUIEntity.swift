@@ -189,20 +189,12 @@ extension OldUIEntity {
         }
     }
 
-    public struct SaveExtension {
-        public let screen = OldUIEntity(type: .screen, hierarchy: 0, identifier: .externalApp)
-        public let saveDialog = OldUIEntity(type: .dialog, hierarchy: 0, identifier: .saveExtension, componentDetail: .overlay, label: .saveToPocket)
-        public let addTagsButton = OldUIEntity(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTags)
-        public let addTagsDone = OldUIEntity(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTagsDone, label: .tagsAdded)
-    }
-
     public static let loggedOut = LoggedOut()
     public static let home = Home()
     public static let saves = Saves()
     public static let account = Account()
     public static let articleView = ArticleView()
     public static let slateDetail = SlateDetail()
-    public static let saveExtension = SaveExtension()
 
     public static let reportDialog = OldUIEntity(type: .dialog, identifier: .reportItem)
 

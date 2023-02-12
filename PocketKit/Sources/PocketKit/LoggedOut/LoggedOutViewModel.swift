@@ -73,10 +73,7 @@ class LoggedOutViewModel: ObservableObject {
 
         lastAction = .logIn
 
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            [OldUIEntity.button(identifier: .logIn)]
-        )
+        tracker.track(event: Events.LoggedOut.LoggedIn())
 
         guard !isOffline else {
             automaticallyDismissed = false
@@ -97,10 +94,7 @@ class LoggedOutViewModel: ObservableObject {
 
         lastAction = .signUp
 
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            [OldUIEntity.button(identifier: .signUp)]
-        )
+        tracker.track(event: Events.LoggedOut.SignedUp())
 
         guard !isOffline else {
             automaticallyDismissed = false

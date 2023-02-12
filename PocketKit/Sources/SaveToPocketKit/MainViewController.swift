@@ -29,7 +29,7 @@ class MainViewController: UIViewController {
                     appSession: appSession,
                     saveService: services.saveService,
                     dismissTimer: Timer.TimerPublisher(interval: 3.0, runLoop: .main, mode: .default),
-                    tracker: Services.shared.tracker.childTracker(hosting: .saveExtension.screen),
+                    tracker: Services.shared.tracker,
                     consumerKey: Keys.shared.pocketApiConsumerKey
                 )
             )

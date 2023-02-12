@@ -33,9 +33,10 @@ class SavedItemViewModel {
         guard let session = appSession.currentSession else { return }
 
         tracker.resetPersistentContexts([
-            APIUserEntity(consumerKey: consumerKey)
+            APIUserEntity(consumerKey: consumerKey),
+            UserEntity(guid: session.guid, userID: session.userIdentifier)
         ])
-        tracker.addPersistentContext(UserEntity(guid: session.guid, userID: session.userIdentifier))
+        tracker.track(event: Events.SaveExtension.Shown())
     }
 
     func save(from context: ExtensionContext?) async {
@@ -52,8 +53,7 @@ class SavedItemViewModel {
                 break
             }
 
-            tracker.addPersistentContext(ContentEntity(url: url))
-            track(context: .saveExtension.saveDialog)
+            tracker.track(event: Events.SaveExtension.Saved(url: url))
 
             let result = saveService.save(url: url)
             switch result {
@@ -82,7 +82,7 @@ class SavedItemViewModel {
                 self?.addTags(tags: tags, from: context)
             }
         )
-        track(context: .saveExtension.addTagsButton)
+        tracker.track(event: Events.SaveExtension.AddTagsShown(url: savedItem!.url!))
     }
 
     func addTags(tags: [String], from context: ExtensionContext?) {
@@ -91,8 +91,7 @@ class SavedItemViewModel {
         if case let .taggedItem(savedItem) = result {
             self.savedItem = savedItem
             infoViewModel = .taggedItem
-
-            track(context: .saveExtension.addTagsDone)
+            tracker.track(event: Events.SaveExtension.AddTagsDone(url: savedItem.url!))
         }
         finish(context: context)
     }
@@ -145,11 +144,6 @@ extension SavedItemViewModel {
         }
 
         return nil
-    }
-
-    private func track(context: OldUIEntity) {
-        let event = SnowplowEngagement(type: .general, value: nil)
-        tracker.track(event: event, [context])
     }
 }
 
