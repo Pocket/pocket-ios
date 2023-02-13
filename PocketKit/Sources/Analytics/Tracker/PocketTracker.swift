@@ -17,7 +17,7 @@ public class PocketTracker: Tracker {
         persistentContexts.append(context)
     }
 
-    public func track<T: Event>(event: T, _ contexts: [Context]?) {
+    public func track<T: OldEvent>(event: T, _ contexts: [Context]?) {
         guard let event = Event(from: event) else {
             return
         }
@@ -40,7 +40,7 @@ public class PocketTracker: Tracker {
 }
 
 extension PocketTracker {
-    private func Event<T: Event>(from event: T) -> SelfDescribing? {
+    private func Event<T: OldEvent>(from event: T) -> SelfDescribing? {
         guard let data = try? JSONEncoder().encode(event),
               let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
               let eventJSON = SelfDescribingJson(schema: type(of: event).schema, andData: deserialized as NSObject) else {

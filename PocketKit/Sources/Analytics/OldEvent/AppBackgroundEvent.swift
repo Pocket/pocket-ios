@@ -2,8 +2,8 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-public struct AppOpenEvent: Event {
-    public static let schema = "iglu:com.pocket/app_open/jsonschema/1-0-0"
+public struct AppBackgroundEvent: OldEvent {
+    public static let schema = "iglu:com.pocket/app_background/jsonschema/1-0-0"
 
     let secondsSinceLastOpen: UInt64?
     let secondsSinceLastBackground: UInt64?
@@ -30,7 +30,7 @@ public struct AppOpenEvent: Event {
     }
 }
 
-private extension AppOpenEvent {
+private extension AppBackgroundEvent {
     enum CodingKeys: String, CodingKey {
         case secondsSinceLastOpen = "seconds_since_last_open"
         case secondsSinceLastBackground = "seconds_since_last_background"

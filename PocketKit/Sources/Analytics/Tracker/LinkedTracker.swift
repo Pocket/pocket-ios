@@ -15,7 +15,7 @@ class LinkedTracker: Tracker {
         parent.addPersistentContext(context)
     }
 
-    func track<T>(event: T, _ contexts: [Context]?) where T: Event {
+    func track<T>(event: T, _ contexts: [Context]?) where T: OldEvent {
         let additional = contexts ?? []
         parent.track(event: event, self.contexts + additional)
     }

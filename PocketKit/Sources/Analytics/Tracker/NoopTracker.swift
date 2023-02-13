@@ -9,7 +9,7 @@ public struct NoopTracker: Tracker {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }
 
-    public func track<T: Event>(event: T, _ contexts: [Context]?) {
+    public func track<T: OldEvent>(event: T, _ contexts: [Context]?) {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }
 

@@ -5,7 +5,7 @@ import Analytics
 
 class MockTracker: Tracker {
     struct TrackCall {
-        let event: Event
+        let event: OldEvent
         let contexts: [Context]?
     }
 
@@ -20,7 +20,7 @@ class MockTracker: Tracker {
         persistentContexts = []
     }
 
-    func track<T: Event>(event: T, _ contexts: [Context]?) {
+    func track<T: OldEvent>(event: T, _ contexts: [Context]?) {
         trackCalls.add(TrackCall(event: event, contexts: contexts))
     }
 
@@ -29,7 +29,7 @@ class MockTracker: Tracker {
     }
 }
 
-struct MockEvent: Event {
+struct MockEvent: OldEvent {
     static var schema = "mock-event"
 
     let value: Int
