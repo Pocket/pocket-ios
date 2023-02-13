@@ -4,6 +4,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use Entities moving forward")
 public protocol Context: Encodable {
     static var schema: String { get }
 }

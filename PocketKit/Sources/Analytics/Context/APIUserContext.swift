@@ -4,6 +4,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use Entities moving forward")
 public struct APIUserContext: Context {
     public static var schema = "iglu:com.pocket/api_user/jsonschema/1-0-1"
 
