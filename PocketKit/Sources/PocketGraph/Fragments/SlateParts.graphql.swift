@@ -61,13 +61,13 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
 
     public static var __parentType: ParentType { PocketGraph.Objects.Recommendation }
     public static var __selections: [Selection] { [
-      .field("id", ID?.self),
+      .field("id", ID.self),
       .field("item", Item.self),
       .field("curatedInfo", CuratedInfo?.self),
     ] }
 
     /// A generated id from the Data and Learning team that represents the Recommendation
-    public var id: ID? { __data["id"] }
+    public var id: ID { __data["id"] }
     /// The Recommendation entity is owned by the Recommendation API service.
     /// We extend it in this service to add an extra field ('curationInfo') to the Recommendation entity.
     /// The key for this entity is the 'itemId' found within the Item entity which is owned by the Parser service.

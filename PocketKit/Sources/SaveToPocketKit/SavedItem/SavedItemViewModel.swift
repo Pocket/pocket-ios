@@ -91,7 +91,6 @@ class SavedItemViewModel {
         if case let .taggedItem(savedItem) = result {
             self.savedItem = savedItem
             infoViewModel = .taggedItem
-
             track(context: .saveExtension.addTagsDone)
         }
         finish(context: context)

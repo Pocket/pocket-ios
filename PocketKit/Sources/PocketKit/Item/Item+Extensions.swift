@@ -11,20 +11,22 @@ public extension SavedItem {
         TextAlignment(language: item?.language)
     }
 
-    var bestURL: URL? {
-        item?.bestURL ?? url
+    var bestURL: URL {
+        item.bestURL
     }
 
     var isPending: Bool {
-        item == nil
+        //As of 2/12/2023, an Item can never be pending.
+        //The CoreData model needs updating to support PendingItem
+        return false
     }
 
     var shouldOpenInWebView: Bool {
-        item?.shouldOpenInWebView == true
+        item.shouldOpenInWebView == true
     }
 
     var isSyndicated: Bool {
-        item?.isSyndicated == true
+        item.isSyndicated == true
     }
 }
 

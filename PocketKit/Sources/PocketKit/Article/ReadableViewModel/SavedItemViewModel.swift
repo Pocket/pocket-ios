@@ -61,7 +61,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     var components: [ArticleComponent]? {
-        item.item?.article?.components
+        item.item.article?.components
     }
 
     var textAlignment: Textile.TextAlignment {
@@ -69,19 +69,19 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     var title: String? {
-        item.item?.title
+        item.item.title
     }
 
     var authors: [ReadableAuthor]? {
-        item.item?.authors?.compactMap { $0 as? Author }
+        item.item.authors?.compactMap { $0 as? Author }
     }
 
     var domain: String? {
-        item.item?.domainMetadata?.name ?? item.item?.domain ?? item.host
+        item.item.domainMetadata?.name ?? item.item.domain ?? item.host
     }
 
     var publishDate: Date? {
-        item.item?.datePublished
+        item.item.datePublished
     }
 
     var url: URL? {
@@ -102,7 +102,7 @@ class SavedItemViewModel: ReadableViewModel {
     }
 
     func fetchDetailsIfNeeded() {
-        guard item.item?.article == nil else {
+        guard item.item.article == nil else {
             _events.send(.contentUpdated)
             return
         }

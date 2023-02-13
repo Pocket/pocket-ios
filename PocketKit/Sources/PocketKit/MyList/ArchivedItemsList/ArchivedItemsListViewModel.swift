@@ -538,9 +538,10 @@ extension ArchivedItemsListViewModel {
 // MARK: - Tracking
 extension ArchivedItemsListViewModel {
     private func trackImpression(of item: SavedItem) {
-        guard let url = item.bestURL, let index = archiveService.index(of: item) else {
+        guard let index = archiveService.index(of: item) else {
             return
         }
+        let url = item.bestURL
 
         var contexts: [Context] = [
             UIContext.saves.item(index: UIIndex(index)),
@@ -556,9 +557,11 @@ extension ArchivedItemsListViewModel {
     }
 
     private func track(item: SavedItem, identifier: UIContext.Identifier) {
-        guard let url = item.bestURL, let index = archiveService.index(of: item) else {
+        guard let index = archiveService.index(of: item) else {
             return
         }
+
+        let url = item.bestURL
 
         var contexts: [Context] = [
             UIContext.saves.item(index: UIIndex(index)),
@@ -575,9 +578,7 @@ extension ArchivedItemsListViewModel {
     }
 
     private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
-        guard let url = item.bestURL else {
-            return
-        }
+        let url = item.bestURL
 
         let contexts: [Context] = [
             ContentContext(url: url)
@@ -588,10 +589,7 @@ extension ArchivedItemsListViewModel {
     }
 
     private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
-        guard let url = item.bestURL else {
-            return
-        }
-
+        let url = item.bestURL
         let contexts: [Context] = [
             UIContext.button(identifier: identifier),
             ContentContext(url: url)

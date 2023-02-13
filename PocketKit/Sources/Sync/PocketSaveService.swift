@@ -101,7 +101,8 @@ public class PocketSaveService: SaveService {
             return
         }
 
-        guard let tags = savedItem.tags, let remoteID = savedItem.remoteID else { return }
+        let remoteID = savedItem.remoteID
+        guard let tags = savedItem.tags else { return }
         let names = Array(tags).compactMap { ($0 as? Tag)?.name }
 
         if names.isEmpty {
@@ -142,7 +143,7 @@ public class PocketSaveService: SaveService {
             return
         }
 
-        guard let url = savedItem.url else { return }
+        let url = savedItem.url
         let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: url.absoluteString))
 
         let operation = SaveOperation<SaveItemMutation>(

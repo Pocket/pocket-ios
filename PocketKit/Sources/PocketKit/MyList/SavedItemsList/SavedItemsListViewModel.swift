@@ -387,9 +387,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func track(item: SavedItem, identifier: UIContext.Identifier) {
-        guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
+        guard let indexPath = itemsController.indexPath(forObject: item) else {
             return
         }
+        let url = item.bestURL
 
         var contexts: [Context] = [
             UIContext.saves.item(index: UIIndex(indexPath.item)),
@@ -406,12 +407,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
-        guard let url = item.bestURL else {
-            return
-        }
-
         let contexts: [Context] = [
-            ContentContext(url: url)
+            ContentContext(url: item.bestURL)
         ]
 
         let event = ContentOpenEvent(destination: destination, trigger: .click)
@@ -419,9 +416,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackButton(item: SavedItem, identifier: UIContext.Identifier) {
-        guard let url = item.bestURL else {
-            return
-        }
+        let url = item.bestURL
 
         let contexts: [Context] = [
             UIContext.button(identifier: identifier),
@@ -433,9 +428,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackImpression(of item: SavedItem) {
-        guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
+        guard let indexPath = self.itemsController.indexPath(forObject: item) else {
             return
         }
+        let url = item.bestURL
 
         var contexts: [Context] = [
             UIContext.saves.item(index: UIIndex(indexPath.item)),
@@ -503,7 +499,7 @@ extension SavedItemsListViewModel {
 
         switch listOptions.selectedSortOption {
         case .longestToRead, .shortestToRead:
-            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
+            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
         case .newest, .oldest:
             sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
         }

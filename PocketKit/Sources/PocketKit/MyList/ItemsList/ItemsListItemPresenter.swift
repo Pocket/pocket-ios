@@ -66,7 +66,7 @@ class ItemsListItemPresenter {
     private var title: String {
         [
             item.title,
-            item.bestURL?.absoluteString
+            item.bestURL.absoluteString
         ]
             .compactMap { $0 }
             .first { !$0.isEmpty } ?? ""

@@ -2,32 +2,32 @@ import Sync
 import Foundation
 
 extension SavedItem: ItemsListItem {
-    var id: String? {
-        item?.remoteID
+    var id: String {
+        item.remoteID
     }
 
     var domain: String? {
-        item?.domain
+        item.domain
     }
 
     var title: String? {
-        item?.title
+        item.title
     }
 
     var topImageURL: URL? {
-        item?.topImageURL
+        item.topImageURL
     }
 
     var timeToRead: Int? {
-        item.flatMap { Int($0.timeToRead) }
+        item.timeToRead?.intValue
     }
 
     var domainMetadata: ItemsListItemDomainMetadata? {
-        return item?.domainMetadata
+        return item.domainMetadata
     }
 
     var host: String? {
-        bestURL?.host
+        bestURL.host
     }
 
     var tagNames: [String]? {

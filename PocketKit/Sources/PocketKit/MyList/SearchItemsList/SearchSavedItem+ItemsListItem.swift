@@ -7,8 +7,12 @@ extension SearchSavedItem: ItemsListItem {
         return remoteItem
     }
 
-    var id: String? {
-        item.asItem?.remoteID
+    var id: String {
+        guard let itemParts = item.asItem else {
+            // Returning url as an id for pending an id for now.
+            return item.asPendingItem!.url
+        }
+        return itemParts.remoteID
     }
 
     var isFavorite: Bool {
@@ -19,10 +23,10 @@ extension SearchSavedItem: ItemsListItem {
         item.asItem?.title
     }
 
-    var bestURL: URL? {
-        guard let itemParts = item.asItem else { return nil }
+    var bestURL: URL {
+        guard let itemParts = item.asItem else { return URL(string:item.asPendingItem!.url)! }
         let resolvedURL = itemParts.resolvedUrl.flatMap(URL.init)
-        let givenURL = URL(string: itemParts.givenUrl)
+        let givenURL = URL(string: itemParts.givenUrl)!
         return resolvedURL ?? givenURL
     }
 
@@ -48,7 +52,7 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var host: String? {
-        bestURL?.host
+        bestURL.host
     }
 
     var tagNames: [String]? {
