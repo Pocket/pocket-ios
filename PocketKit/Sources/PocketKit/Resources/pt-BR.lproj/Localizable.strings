@@ -26,6 +26,7 @@
 "Tag your saves by topic to find them later." = "Use tags para organizar seus itens salvos por tópico e encontrá-los com mais facilidade.";
 "How to tag" = "Como adicionar uma tag";
 
+"Search" = "Procurar";
 "All" = "Todos";
 "Tagged" = "Com tag ";
 "Favorites" = "Favoritos";
@@ -37,7 +38,6 @@
 "Archive" = "Arquivar";
 "Favorite" = "Curtir";
 "Unfavorite" = "Descurtir";
-"Move to saves" = "Mover para Salvos";
 "Move to Saves" = "Mover para Salvos";
 "Add Tags" = "Adicionar tags";
 "Share" = "Compartilhar";
@@ -116,3 +116,15 @@
 "OK" = "OK";
 "An error occurred" = "Ocorreu um erro";
 
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"Sign up for Premium" = "Sign up for Premium";
+"Premium Subscriber" = "Premium Subscriber";
+
+"The title, link, or image is broken" = "O título, link ou imagem está corrompido";
+"It's in the wrong category" = "Está na categoria errada";
+"It's sexually explicit" = "É de teor sexual explícito";
+"It's rude, vulgar, or offensive" = "É rude, vulgar ou ofensivo";
+"It contains misinformation" = "Contém desinformação";
+"Other" = "Outro";
