@@ -8,6 +8,7 @@ public protocol Tracker {
     func addPersistentContext(_ context: Context)
     @available(*, deprecated, message: "Use track with an explict Event defintion")
     func track<T: OldEvent>(event: T, _ contexts: [Context]?)
+    func track(event: Event)
     @available(*, deprecated, message: "No need to longer use a child tracker")
     func childTracker(with contexts: [Context]) -> Tracker
     func resetPersistentContexts(_ contexts: [Context])

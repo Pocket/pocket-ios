@@ -4,13 +4,18 @@
 import Analytics
 
 class MockTracker: Tracker {
-    struct TrackCall {
+    struct OldTrackCall {
         let event: OldEvent
         let contexts: [Context]?
     }
 
+    struct TrackCall {
+        let event: Event
+    }
+
     private var persistentContexts: [Context] = []
 
+    private(set) var oldTrackCalls = Calls<OldTrackCall>()
     private(set) var trackCalls = Calls<TrackCall>()
 
     func addPersistentContext(_ context: Context) {
@@ -21,7 +26,11 @@ class MockTracker: Tracker {
     }
 
     func track<T: OldEvent>(event: T, _ contexts: [Context]?) {
-        trackCalls.add(TrackCall(event: event, contexts: contexts))
+        oldTrackCalls.add(OldTrackCall(event: event, contexts: contexts))
+    }
+
+    func track(event: Event) {
+        trackCalls.add(TrackCall(event: event))
     }
 
     func childTracker(with contexts: [Context]) -> Tracker {

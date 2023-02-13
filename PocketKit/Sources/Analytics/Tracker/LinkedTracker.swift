@@ -20,6 +20,10 @@ class LinkedTracker: Tracker {
         parent.track(event: event, self.contexts + additional)
     }
 
+    func track(event: Event) {
+        parent.track(event: event)
+    }
+
     @available(*, deprecated, message: "No longer need to use a child trackers")
     func childTracker(with contexts: [Context]) -> Tracker {
         LinkedTracker(parent: self, contexts: contexts)

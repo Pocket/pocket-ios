@@ -23,7 +23,7 @@ class LinkedTrackerTests: XCTestCase {
         let tracker = LinkedTracker(parent: mockTracker, contexts: [])
         tracker.track(event: event, nil)
 
-        XCTAssertEqual(mockTracker.trackCalls.last?.event as? MockEvent, event)
+        XCTAssertEqual(mockTracker.oldTrackCalls.last?.event as? MockEvent, event)
     }
 
     func test_track_multipleChildren_forwardAllContexts() {
@@ -39,6 +39,6 @@ class LinkedTrackerTests: XCTestCase {
         let mockContext = MockContext(value: "mock-context")
         childB.track(event: mockEvent, [mockContext])
 
-        XCTAssertEqual(mockTracker.trackCalls.last?.contexts as? [MockContext], [contextA, contextB, mockContext])
+        XCTAssertEqual(mockTracker.oldTrackCalls.last?.contexts as? [MockContext], [contextA, contextB, mockContext])
     }
 }
