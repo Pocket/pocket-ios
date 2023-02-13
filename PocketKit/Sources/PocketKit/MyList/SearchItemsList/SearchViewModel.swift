@@ -306,12 +306,8 @@ extension SearchViewModel {
     }
 
     private func trackContentOpen(destination: OldContentOpenEvent.Destination, item: SavedItem) {
-        guard let url = item.bestURL else {
-            return
-        }
-
         let contexts: [OldEntity] = [
-            ContentEntity(url: url)
+            ContentEntity(url: item.bestURL)
         ]
 
         let event = OldContentOpenEvent(destination: destination, trigger: .click)

@@ -23,7 +23,7 @@ extension SavedItem {
 
     public func update(from remote: RemoteSavedItem, with space: Space) {
         remoteID = remote.remoteID
-        url = URL(string: remote.url)
+        url = URL(string: remote.url)!
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
         deletedAt = remote._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         archivedAt = remote.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -47,13 +47,13 @@ extension SavedItem {
 
         let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteID)
         fetchRequest.fetchLimit = 1
-        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
-        itemToUpdate?.update(remote: itemParts)
+        let itemToUpdate = (try? context.fetch(fetchRequest).first) ?? Item(context: context, givenURL: url, remoteID: remoteID)
+        itemToUpdate.update(remote: itemParts)
         item = itemToUpdate
     }
 
     public func update(from recommendation: Recommendation) {
-        self.url = recommendation.item?.bestURL
+        self.url = recommendation.item.bestURL
         self.createdAt = Date()
 
         item = recommendation.item
@@ -61,7 +61,7 @@ extension SavedItem {
 
     public func update(from summary: SavedItemSummary, with space: Space) {
         remoteID = summary.remoteID
-        url = URL(string: summary.url)
+        url = URL(string: summary.url)!
         createdAt = Date(timeIntervalSince1970: TimeInterval(summary._createdAt))
         deletedAt = summary._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         archivedAt = summary.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -83,8 +83,8 @@ extension SavedItem {
 
         let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteID)
         fetchRequest.fetchLimit = 1
-        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
-        itemToUpdate?.update(from: itemSummary)
+        let itemToUpdate = (try? context.fetch(fetchRequest).first) ?? Item(context: context, givenURL: url, remoteID: remoteID)
+        itemToUpdate.update(from: itemSummary)
         item = itemToUpdate
     }
 }

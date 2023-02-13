@@ -82,7 +82,7 @@ class SavedItemViewModel {
                 self?.addTags(tags: tags, from: context)
             }
         )
-        tracker.track(event: Events.SaveExtension.AddTagsShown(url: savedItem!.url!))
+        tracker.track(event: Events.SaveExtension.AddTagsShown(url: savedItem!.url))
     }
 
     func addTags(tags: [String], from context: ExtensionContext?) {
@@ -91,7 +91,7 @@ class SavedItemViewModel {
         if case let .taggedItem(savedItem) = result {
             self.savedItem = savedItem
             infoViewModel = .taggedItem
-            tracker.track(event: Events.SaveExtension.AddTagsDone(url: savedItem.url!))
+            tracker.track(event: Events.SaveExtension.AddTagsDone(url: savedItem.url))
         }
         finish(context: context)
     }

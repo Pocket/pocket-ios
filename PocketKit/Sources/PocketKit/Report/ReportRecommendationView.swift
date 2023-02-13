@@ -111,7 +111,7 @@ struct ReportRecommendationView: View {
     }
 
     private func url(for recommendation: Recommendation) -> URL? {
-        recommendation.item?.resolvedURL ?? recommendation.item?.givenURL
+        recommendation.item.resolvedURL ?? recommendation.item.givenURL
     }
 
     private func selectionColor(for reason: ReportEntity.Reason) -> Color {

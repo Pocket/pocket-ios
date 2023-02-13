@@ -94,7 +94,7 @@ class HomeViewControllerSectionProvider {
         let heroItem = NSCollectionLayoutItem(layoutSize: heroItemSize)
 
         let slate = viewModel.slateModel(for: slateID)
-        let recommendations: [Recommendation] = slate?.recommendations?.compactMap { $0 as? Recommendation } ?? []
+        let recommendations: [Recommendation] = slate?.recommendations.compactMap { $0 as? Recommendation } ?? []
 
         guard !recommendations.isEmpty,
               let hero = viewModel.recommendationHeroViewModel(for: recommendations[0].objectID) else {

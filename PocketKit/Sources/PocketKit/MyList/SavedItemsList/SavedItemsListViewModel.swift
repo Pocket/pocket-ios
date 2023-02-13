@@ -387,9 +387,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func track(item: SavedItem, identifier: OldUIEntity.Identifier) {
-        guard let url = item.bestURL, let indexPath = itemsController.indexPath(forObject: item) else {
+        guard let indexPath = itemsController.indexPath(forObject: item) else {
             return
         }
+        let url = item.bestURL
 
         var contexts: [OldEntity] = [
             OldUIEntity.saves.item(index: UIIndex(indexPath.item)),
@@ -406,12 +407,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackContentOpen(destination: OldContentOpenEvent.Destination, item: SavedItem) {
-        guard let url = item.bestURL else {
-            return
-        }
-
         let contexts: [OldEntity] = [
-            ContentEntity(url: url)
+            ContentEntity(url: item.bestURL)
         ]
 
         let event = OldContentOpenEvent(destination: destination, trigger: .click)
@@ -419,13 +416,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackButton(item: SavedItem, identifier: OldUIEntity.Identifier) {
-        guard let url = item.bestURL else {
-            return
-        }
-
         let contexts: [OldEntity] = [
             OldUIEntity.button(identifier: identifier),
-            ContentEntity(url: url)
+            ContentEntity(url: item.bestURL)
         ]
 
         let event = SnowplowEngagement(type: .general, value: nil)
@@ -433,9 +426,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func trackImpression(of item: SavedItem) {
-        guard let url = item.bestURL, let indexPath = self.itemsController.indexPath(forObject: item) else {
+        guard let indexPath = self.itemsController.indexPath(forObject: item) else {
             return
         }
+        let url = item.bestURL
 
         var contexts: [OldEntity] = [
             OldUIEntity.saves.item(index: UIIndex(indexPath.item)),
@@ -503,7 +497,7 @@ extension SavedItemsListViewModel {
 
         switch listOptions.selectedSortOption {
         case .longestToRead, .shortestToRead:
-            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
+            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
         case .newest, .oldest:
             sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
         }
