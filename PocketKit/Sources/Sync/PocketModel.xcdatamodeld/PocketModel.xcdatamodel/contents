@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21279" systemVersion="21G115" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="22D49" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Author" representedClassName="Author" syncable="YES" codeGenerationType="class">
         <attribute name="id" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -21,12 +21,12 @@
         <attribute name="datePublished" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="domain" optional="YES" attributeType="String"/>
         <attribute name="excerpt" optional="YES" attributeType="String"/>
-        <attribute name="givenURL" optional="YES" attributeType="URI"/>
+        <attribute name="givenURL" attributeType="URI"/>
         <attribute name="imageness" optional="YES" attributeType="String"/>
         <attribute name="isArticle" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="language" optional="YES" attributeType="String"/>
-        <attribute name="remoteID" optional="YES" attributeType="String"/>
-        <attribute name="resolvedURL" optional="YES" attributeType="URI"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="resolvedURL" attributeType="URI"/>
         <attribute name="timeToRead" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="title" optional="YES" attributeType="String"/>
         <attribute name="topImageURL" optional="YES" attributeType="URI"/>
@@ -47,8 +47,8 @@
         <attribute name="imageURL" optional="YES" attributeType="URI"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <attribute name="title" optional="YES" attributeType="String"/>
-        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="recommendation" inverseEntity="Item"/>
-        <relationship name="slate" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Slate" inverseName="recommendations" inverseEntity="Slate"/>
+        <relationship name="item" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="recommendation" inverseEntity="Item"/>
+        <relationship name="slate" maxCount="1" deletionRule="Nullify" destinationEntity="Slate" inverseName="recommendations" inverseEntity="Slate"/>
     </entity>
     <entity name="SavedItem" representedClassName="SavedItem" syncable="YES" codeGenerationType="class">
         <attribute name="archivedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -57,8 +57,8 @@
         <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isArchived" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="isFavorite" optional="YES" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
-        <attribute name="remoteID" optional="YES" attributeType="String"/>
-        <attribute name="url" optional="YES" attributeType="URI"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="url" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="savedItem" inverseEntity="Item"/>
         <relationship name="savedItemUpdatedNotification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItemUpdatedNotification" inverseName="savedItem" inverseEntity="SavedItemUpdatedNotification"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="Tag" inverseName="savedItems" inverseEntity="Tag"/>
@@ -68,19 +68,19 @@
         <relationship name="savedItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItem" inverseName="savedItemUpdatedNotification" inverseEntity="SavedItem"/>
     </entity>
     <entity name="Slate" representedClassName="Slate" syncable="YES" codeGenerationType="class">
-        <attribute name="experimentID" optional="YES" attributeType="String"/>
-        <attribute name="name" optional="YES" attributeType="String"/>
-        <attribute name="remoteID" optional="YES" attributeType="String"/>
-        <attribute name="requestID" optional="YES" attributeType="String"/>
-        <attribute name="slateDescription" optional="YES" attributeType="String"/>
+        <attribute name="experimentID" attributeType="String"/>
+        <attribute name="name" attributeType="String"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="requestID" attributeType="String"/>
+        <attribute name="slateDescription" attributeType="String"/>
         <relationship name="recommendations" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Recommendation" inverseName="slate" inverseEntity="Recommendation"/>
         <relationship name="slateLineup" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SlateLineup" inverseName="slates" inverseEntity="SlateLineup"/>
     </entity>
     <entity name="SlateLineup" representedClassName="SlateLineup" syncable="YES" codeGenerationType="class">
-        <attribute name="experimentID" optional="YES" attributeType="String"/>
-        <attribute name="remoteID" optional="YES" attributeType="String"/>
-        <attribute name="requestID" optional="YES" attributeType="String"/>
-        <relationship name="slates" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Slate" inverseName="slateLineup" inverseEntity="Slate"/>
+        <attribute name="experimentID" attributeType="String"/>
+        <attribute name="remoteID" attributeType="String"/>
+        <attribute name="requestID" attributeType="String"/>
+        <relationship name="slates" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Slate" inverseName="slateLineup" inverseEntity="Slate"/>
     </entity>
     <entity name="SyndicatedArticle" representedClassName="SyndicatedArticle" syncable="YES" codeGenerationType="class">
         <attribute name="excerpt" optional="YES" attributeType="String"/>
