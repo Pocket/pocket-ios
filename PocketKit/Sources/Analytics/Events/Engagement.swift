@@ -13,7 +13,7 @@ public struct Engagement: Event {
     /**
      * Indicates the type of engagement.
      */
-    let type: Engagement.`Type`
+    let type: Engagement.EngagementType
 
     /**
      * The new value of a setting/filter, if the user engaged with something and modified its state in doing so.
@@ -24,7 +24,7 @@ public struct Engagement: Event {
 
     let extraEntities: [Entity]
 
-    public init(_ type: Engagement.`Type` = .general, value: String? = nil, uiEntity: UiEntity, extraEntities: [Entity] = []) {
+    public init(_ type: Engagement.EngagementType = .general, value: String? = nil, uiEntity: UiEntity, extraEntities: [Entity] = []) {
         self.type = type
         self.value = value
         self.uiEntity = uiEntity
@@ -48,27 +48,27 @@ public struct Engagement: Event {
         return base
     }
 
-    public enum `Type` {
+    public enum EngagementType {
         case general
         case save(contentEntity: ContentEntity)
         case report(reportEntity: ReportEntity, contentEntity: ContentEntity)
         case dismiss
 
-        struct `Type` {
+        struct EngagementType {
             let value: String
             let requiredEntities: [Entity]
         }
 
-        func toType() -> `Type` {
+        func toType() -> EngagementType {
             switch self {
             case .general:
-                return `Type`(value: "general", requiredEntities: [])
+                return EngagementType(value: "general", requiredEntities: [])
             case .save(let contentEntity):
-                return `Type`(value: "save", requiredEntities: [contentEntity])
+                return EngagementType(value: "save", requiredEntities: [contentEntity])
             case .report(let reportEntity, let contentEntity):
-                return `Type`(value: "report", requiredEntities: [reportEntity, contentEntity])
+                return EngagementType(value: "report", requiredEntities: [reportEntity, contentEntity])
             case .dismiss:
-                return `Type`(value: "dismiss", requiredEntities: [])
+                return EngagementType(value: "dismiss", requiredEntities: [])
             }
         }
     }

@@ -1,9 +1,6 @@
-//
-//  UiEntity.swift
-//
-//
-//  Created by Daniel Brooks on 2/9/23.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import Foundation
 import class SnowplowTracker.SelfDescribingJson
 
@@ -62,22 +59,23 @@ public struct UiEntity: Entity {
         var data: [AnyHashable: Any] = [
             "type": type.rawValue,
             "identifier": identifier,
+            "hierarchy": 0
         ]
 
-        if componentDetail != nil {
+        if let componentDetail {
             data["component_detail"] = componentDetail
         }
 
-        if index != nil {
+        if let index {
             data["index"] = index
         }
 
-        if label != nil {
+        if let label {
             data["label"] = label
         }
 
-        if value != nil {
-            data["value"] = label
+        if let value {
+            data["value"] = value
         }
 
         return SelfDescribingJson(schema: UiEntity.schema, andDictionary: data)

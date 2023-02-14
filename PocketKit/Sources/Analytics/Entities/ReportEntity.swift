@@ -30,7 +30,7 @@ public struct ReportEntity: Entity {
             "reason": reason.rawValue,
         ]
 
-        if comment != nil {
+        if let comment {
             data["comment"] = comment
         }
 

@@ -32,7 +32,7 @@ public struct ContentEntity: Entity {
             "url": url.absoluteString,
         ]
 
-        if itemId != nil {
+        if let itemId {
             data["item_id"] = itemId
         }
 

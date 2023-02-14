@@ -8,7 +8,7 @@ import class SnowplowTracker.SelfDescribing
  * Event triggered when a user views a UI element.
  */
 public struct Impression: Event {
-    public static let schema = "iglu:com.pocket/impression/jsonschema/1-0-1"
+    public static let schema = "iglu:com.pocket/impression/jsonschema/1-0-2"
 
     /**
      * Indicator of the component that is being viewed.

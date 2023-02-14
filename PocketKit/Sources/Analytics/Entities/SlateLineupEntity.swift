@@ -17,7 +17,7 @@ public struct SlateLineupEntity: Entity {
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
-        return SelfDescribingJson(schema: SlateEntity.schema, andDictionary: [
+        return SelfDescribingJson(schema: SlateLineupEntity.schema, andDictionary: [
             "slate_lineup_id": id,
             "request_id": requestID,
             "experiment": experiment,

@@ -57,11 +57,11 @@ public struct SlateEntity: Entity {
             "index": index
         ]
 
-        if displayName != nil {
+        if let displayName {
             data["display_name"] = displayName
         }
 
-        if description != nil {
+        if let description {
             data["description"] = description
         }
 
