@@ -5,6 +5,12 @@ struct PremiumUpgradeView: View {
     @Environment(\.dismiss)
     private var dismiss
 
+    @StateObject var viewModel: PremiumUpgradeViewModel
+
+    init(viewModel: PremiumUpgradeViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             dismissButton
@@ -12,6 +18,14 @@ struct PremiumUpgradeView: View {
         }
         .padding([.top, .bottom], 20)
         .background(PremiumBackgroundView())
+        .task {
+            do {
+                try await viewModel.requestSubscriptions()
+            } catch {
+                // TODO: Here we will handle any error providing user feedback if/when needed
+                print(error)
+            }
+        }
     }
 
     private var dismissButton: some View {
@@ -39,12 +53,30 @@ struct PremiumUpgradeView: View {
                 Divider().background(Color(.ui.grey1))
                 PremiumUpgradeFeaturesView()
                 HStack {
-                    PremiumUpgradeButton(text: "TBD", pricing: "$0.00/month", isYearly: false)
+                    if viewModel.monthlySubscriptionName.isEmpty {
+                        PremiumUpgradeButton(isYearly: false)
+                            .redacted(reason: .placeholder)
+                    } else {
+                        PremiumUpgradeButton(
+                            text: viewModel.monthlySubscriptionName,
+                            pricing: viewModel.monthlySubscriptionPriceDescription,
+                            isYearly: false
+                        )
+                    }
                     Spacer().frame(width: 28)
                     ZStack(alignment: .topTrailing) {
-                        PremiumUpgradeButton(text: "TBD", pricing: "$0.00/year", isYearly: true)
-                        PremiumYearlyPercent()
-                            .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
+                        if viewModel.annualSubscriptionName.isEmpty {
+                            PremiumUpgradeButton(isYearly: true)
+                                .redacted(reason: .placeholder)
+                        } else {
+                            PremiumUpgradeButton(
+                                text: viewModel.annualSubscriptionName,
+                                pricing: viewModel.annualSubscriptionPriceDescription,
+                                isYearly: true
+                            )
+                            PremiumYearlyPercent()
+                                .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
+                        }
                     }
                 }
                 PremiumInfoView()
@@ -106,7 +138,11 @@ private struct PremiumUpgradeButton: View {
     private let pricing: String
     private let isYearly: Bool
 
-    init(text: String, pricing: String, isYearly: Bool) {
+    /// The default values are used as placeholders while the actual values are being loaded
+    ///  Useful for redacting the Text views while loading
+    init(text: String = String(repeating: " ", count: 8),
+         pricing: String = String(repeating: " ", count: 10),
+         isYearly: Bool) {
         self.text = text
         self.pricing = pricing
         self.isYearly = isYearly
