@@ -202,12 +202,12 @@ private extension Style {
 private extension ReportEvent.Reason {
     var localized: String {
         switch self {
-        case .brokenMeta: return "The title, link, or image is broken"
-        case .wrongCategory: return "It's in the wrong category"
-        case .sexuallyExplicit: return "It's sexually explicit"
-        case .offensive: return "It's rude, vulgar, or offensive"
-        case .misinformation: return "It contains misinformation"
-        case .other: return "Other"
+        case .brokenMeta: return L10n.theTitleLinkOrImageIsBroken
+        case .wrongCategory: return L10n.itSInTheWrongCategory
+        case .sexuallyExplicit: return L10n.itSSexuallyExplicit
+        case .offensive: return L10n.itSRudeVulgarOrOffensive
+        case .misinformation: return L10n.itContainsMisinformation
+        case .other: return L10n.other
         }
     }
 
