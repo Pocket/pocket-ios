@@ -6,10 +6,9 @@
 import Foundation
 import CoreData
 
-
 extension SavedItem {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SavedItem> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<SavedItem> {
         return NSFetchRequest<SavedItem>(entityName: "SavedItem")
     }
 
@@ -25,12 +24,10 @@ extension SavedItem {
     @NSManaged public var savedItemUpdatedNotification: SavedItemUpdatedNotification?
     @NSManaged public var tags: NSOrderedSet?
     @NSManaged public var unresolvedSavedItem: UnresolvedSavedItem?
-
 }
 
 // MARK: Generated accessors for tags
 extension SavedItem {
-
     @objc(insertObject:inTagsAtIndex:)
     @NSManaged public func insertIntoTags(_ value: Tag, at idx: Int)
 
@@ -60,5 +57,4 @@ extension SavedItem {
 
     @objc(removeTags:)
     @NSManaged public func removeFromTags(_ values: NSOrderedSet)
-
 }

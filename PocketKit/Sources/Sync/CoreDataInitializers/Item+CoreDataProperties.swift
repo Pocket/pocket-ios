@@ -6,10 +6,9 @@
 import Foundation
 import CoreData
 
-
 extension Item {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Item> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Item> {
         return NSFetchRequest<Item>(entityName: "Item")
     }
 
@@ -33,12 +32,10 @@ extension Item {
     @NSManaged public var recommendations: NSSet
     @NSManaged public var savedItem: SavedItem?
     @NSManaged public var syndicatedArticle: SyndicatedArticle?
-
 }
 
 // MARK: Generated accessors for authors
 extension Item {
-
     @objc(insertObject:inAuthorsAtIndex:)
     @NSManaged public func insertIntoAuthors(_ value: Author, at idx: Int)
 
@@ -68,12 +65,10 @@ extension Item {
 
     @objc(removeAuthors:)
     @NSManaged public func removeFromAuthors(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for images
 extension Item {
-
     @objc(insertObject:inImagesAtIndex:)
     @NSManaged public func insertIntoImages(_ value: Image, at idx: Int)
 
@@ -103,12 +98,10 @@ extension Item {
 
     @objc(removeImages:)
     @NSManaged public func removeFromImages(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for recommendations
 extension Item {
-
     @objc(addRecommendationsObject:)
     @NSManaged public func addToRecommendations(_ value: Recommendation)
 
@@ -120,5 +113,4 @@ extension Item {
 
     @objc(removeRecommendations:)
     @NSManaged public func removeFromRecommendations(_ values: NSSet)
-
 }

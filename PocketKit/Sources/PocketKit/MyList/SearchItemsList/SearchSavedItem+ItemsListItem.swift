@@ -24,7 +24,7 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var bestURL: URL {
-        guard let itemParts = item.asItem else { return URL(string:item.asPendingItem!.url)! }
+        guard let itemParts = item.asItem else { return URL(string: item.asPendingItem!.url)! }
         let resolvedURL = itemParts.resolvedUrl.flatMap(URL.init)
         let givenURL = URL(string: itemParts.givenUrl)!
         return resolvedURL ?? givenURL

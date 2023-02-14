@@ -12,7 +12,7 @@ extension SlateLineup {
 
         slates = NSOrderedSet(array: remote.slates.compactMap { remoteSlate in
             guard let slate = try? space.fetchOrCreateSlate(byRemoteID: remote.id) else {
-                //TODO: Log error
+                // TODO: Log error
                 return nil
             }
             slate.update(from: remoteSlate.fragments.slateParts, in: space)
@@ -20,4 +20,3 @@ extension SlateLineup {
         })
     }
 }
-

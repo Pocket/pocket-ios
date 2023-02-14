@@ -6,10 +6,9 @@
 import Foundation
 import CoreData
 
-
 extension Slate {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Slate> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Slate> {
         return NSFetchRequest<Slate>(entityName: "Slate")
     }
 
@@ -20,12 +19,10 @@ extension Slate {
     @NSManaged public var slateDescription: String?
     @NSManaged public var recommendations: NSOrderedSet
     @NSManaged public var slateLineup: SlateLineup
-
 }
 
 // MARK: Generated accessors for recommendations
 extension Slate {
-
     @objc(insertObject:inRecommendationsAtIndex:)
     @NSManaged public func insertIntoRecommendations(_ value: Recommendation, at idx: Int)
 
@@ -55,5 +52,4 @@ extension Slate {
 
     @objc(removeRecommendations:)
     @NSManaged public func removeFromRecommendations(_ values: NSOrderedSet)
-
 }

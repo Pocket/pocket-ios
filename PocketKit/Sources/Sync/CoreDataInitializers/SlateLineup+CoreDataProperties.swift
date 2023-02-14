@@ -6,10 +6,9 @@
 import Foundation
 import CoreData
 
-
 extension SlateLineup {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<SlateLineup> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<SlateLineup> {
         return NSFetchRequest<SlateLineup>(entityName: "SlateLineup")
     }
 
@@ -17,12 +16,10 @@ extension SlateLineup {
     @NSManaged public var remoteID: String
     @NSManaged public var requestID: String
     @NSManaged public var slates: NSOrderedSet
-
 }
 
 // MARK: Generated accessors for slates
 extension SlateLineup {
-
     @objc(insertObject:inSlatesAtIndex:)
     @NSManaged public func insertIntoSlates(_ value: Slate, at idx: Int)
 
@@ -52,5 +49,4 @@ extension SlateLineup {
 
     @objc(removeSlates:)
     @NSManaged public func removeFromSlates(_ values: NSOrderedSet)
-
 }

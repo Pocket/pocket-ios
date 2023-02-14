@@ -6,10 +6,9 @@
 import Foundation
 import CoreData
 
-
 extension Recommendation {
-
-    @nonobjc public class func fetchRequest() -> NSFetchRequest<Recommendation> {
+    @nonobjc
+    public class func fetchRequest() -> NSFetchRequest<Recommendation> {
         return NSFetchRequest<Recommendation>(entityName: "Recommendation")
     }
 
@@ -19,5 +18,4 @@ extension Recommendation {
     @NSManaged public var title: String?
     @NSManaged public var item: Item
     @NSManaged public var slate: Slate
-
 }

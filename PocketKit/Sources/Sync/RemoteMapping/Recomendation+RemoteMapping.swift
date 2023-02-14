@@ -12,7 +12,7 @@ extension Recommendation {
         imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init)
 
         guard let recommendationItem = try? space.fetchOrCreateItem(byRemoteID: remote.item.remoteID) else {
-            //TODO: Log error.
+            // TODO: Log error.
             return
         }
         recommendationItem.update(from: remote.item.fragments.itemSummary)

@@ -16,8 +16,8 @@ public extension SavedItem {
     }
 
     var isPending: Bool {
-        //As of 2/12/2023, an Item can never be pending.
-        //The CoreData model needs updating to support PendingItem
+        // As of 2/12/2023, an Item can never be pending.
+        // The CoreData model needs updating to support PendingItem
         return false
     }
 

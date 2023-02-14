@@ -17,7 +17,7 @@ public class Item: NSManagedObject {
     public init(context: NSManagedObjectContext) {
         fatalError()
     }
-    
+
     public init(context: NSManagedObjectContext,
                 givenURL: URL,
                 remoteID: String) {
