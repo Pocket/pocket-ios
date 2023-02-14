@@ -116,11 +116,11 @@
 "OK" = "Хорошо";
 "An error occurred" = "Произошла ошибка";
 
-"Reported" = "Reported";
-"Submit feedback" = "Submit feedback";
+"Reported" = "Отчет отправлен";
+"Submit feedback" = "Отправить отзыв";
 
-"Sign up for Premium" = "Sign up for Premium";
-"Premium Subscriber" = "Premium Subscriber";
+"Sign up for Premium" = "Зарегистрироваться на Premium";
+"Premium Subscriber" = "Подписчик Premium";
 
 "The title, link, or image is broken" = "Заголовок, ссылка или изображение не работает";
 "It's in the wrong category" = "Неправильная категория";
