@@ -260,8 +260,28 @@ extension PocketArchiveService: FetchArchivePagesOperationDelegate {
                   let summary = edge.node?.fragments.savedItemSummary else {
                 continue
             }
+            
+            guard let remoteItem = summary.item.asItem else {
+                //TODO: Ignore pending item for now.
+                //TODO: Daniel: add back support for pending item in future pr. as of now Pending item is very very rare.
+                continue
+            }
+            
+            let item = (try? space.fetchItem(byRemoteID: remoteItem.remoteID)) ??
+            Item(
+                context: space.context,
+                givenURL: URL(string: remoteItem.givenUrl)!,
+                remoteID: remoteItem.remoteID
+            )
+            item.update(from: remoteItem.fragments.itemSummary)
 
-            let savedItem = try space.fetchOrCreateSavedItem(byRemoteID: summary.remoteID)
+            let savedItem = (try? space.fetchSavedItem(byRemoteID: summary.remoteID)) ??
+            SavedItem(
+                context: space.context,
+                url: URL(string: summary.url)!,
+                remoteID: summary.remoteID,
+                item: item
+            )
             savedItem.cursor = edge.cursor
             savedItem.update(from: summary, with: space)
 

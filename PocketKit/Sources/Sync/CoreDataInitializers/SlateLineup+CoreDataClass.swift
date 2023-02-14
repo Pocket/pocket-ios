@@ -17,4 +17,18 @@ public class SlateLineup: NSManagedObject {
     public init(context: NSManagedObjectContext) {
         fatalError()
     }
+
+    public init(
+        context: NSManagedObjectContext,
+        remoteID: String,
+        expermimentID: String,
+        requestID: String
+    ) {
+        let entity = NSEntityDescription.entity(forEntityName: "SlateLineup", in: context)!
+        super.init(entity: entity, insertInto: context)
+        self.remoteID = remoteID
+        self.experimentID = expermimentID
+        self.requestID = requestID
+        self.slates = NSOrderedSet()
+    }
 }

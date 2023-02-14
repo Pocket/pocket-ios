@@ -145,12 +145,32 @@ class FetchList: SyncOperation {
                 level: .info,
                 message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"
             )
+            
+            guard let remoteItem = node.item.asItem else {
+                //TODO: Ignore pending item for now.
+                //TODO: Daniel: add back support for pending item in future pr. as of now Pending item is very very rare.
+                continue
+            }
+            
+            let item = (try? space.fetchItem(byRemoteID: remoteItem.remoteID)) ??
+            Item(
+                context: space.context,
+                givenURL: URL(string: remoteItem.givenUrl)!,
+                remoteID: remoteItem.remoteID
+            )
+            item.update(remote: remoteItem.fragments.itemParts)
 
-            let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteID)
-            item.update(from: edge, with: space)
+            let savedItem = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ??
+            SavedItem(
+                context: space.context,
+                url: URL(string: node.url)!,
+                remoteID: node.remoteID,
+                item: item
+            )
+            savedItem.update(from: edge, with: space)
 
-            if item.deletedAt != nil {
-                space.delete(item)
+            if savedItem.deletedAt != nil {
+                space.delete(savedItem)
             }
         }
 

@@ -47,6 +47,7 @@ extension SavedItem {
 
         let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteID)
         fetchRequest.fetchLimit = 1
+        //TODO: Daniel check if we need to use context or if we can use space.fetchItem
         let itemToUpdate = (try? context.fetch(fetchRequest).first) ?? Item(context: context, givenURL: url, remoteID: remoteID)
         itemToUpdate.update(remote: itemParts)
         item = itemToUpdate
@@ -83,6 +84,7 @@ extension SavedItem {
 
         let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteID)
         fetchRequest.fetchLimit = 1
+        //TODO: Daniel check if we need to use context or if we can use space.fetchItem
         let itemToUpdate = (try? context.fetch(fetchRequest).first) ?? Item(context: context, givenURL: url, remoteID: remoteID)
         itemToUpdate.update(from: itemSummary)
         item = itemToUpdate

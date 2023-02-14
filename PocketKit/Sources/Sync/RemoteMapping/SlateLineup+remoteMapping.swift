@@ -11,10 +11,14 @@ extension SlateLineup {
         experimentID = remote.experimentId
 
         slates = NSOrderedSet(array: remote.slates.compactMap { remoteSlate in
-            guard let slate = try? space.fetchOrCreateSlate(byRemoteID: remote.id) else {
-                // TODO: Log error
-                return nil
-            }
+            let slate = (try? space.fetchOrCreateSlate(byRemoteID: remote.id)) ??
+                Slate(
+                    context: space.context,
+                    remoteID: remoteSlate.id,
+                    expermimentID: remoteSlate.experimentId,
+                    requestID: remoteSlate.requestId,
+                    slateLineup: self
+                )
             slate.update(from: remoteSlate.fragments.slateParts, in: space)
             return slate
         })

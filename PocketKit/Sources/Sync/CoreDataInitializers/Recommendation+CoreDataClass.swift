@@ -17,4 +17,17 @@ public class Recommendation: NSManagedObject {
     public init(context: NSManagedObjectContext) {
         fatalError()
     }
+
+    public init(
+        context: NSManagedObjectContext,
+        remoteID: String,
+        item: Item,
+        slate: Slate
+    ) {
+        let entity = NSEntityDescription.entity(forEntityName: "Recommendation", in: context)!
+        super.init(entity: entity, insertInto: context)
+        self.remoteID = remoteID
+        self.slate = slate
+        self.item = item
+    }
 }

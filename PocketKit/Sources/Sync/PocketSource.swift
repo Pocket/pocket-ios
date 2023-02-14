@@ -402,8 +402,8 @@ extension PocketSource {
         try await slateService.fetchSlateLineup(identifier)
     }
 
-    public func fetchSlate(_ slateID: String) async throws {
-        try await slateService.fetchSlate(slateID)
+    public func fetchSlate(_ slateID: String, slateLineup: SlateLineup) async throws {
+        try await slateService.fetchSlate(slateID, slateLineup: slateLineup)
     }
 
     public func fetchDetails(for recommendation: Recommendation) async throws {
@@ -426,7 +426,7 @@ extension PocketSource {
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
     private func enqueue(operation: SyncOperation, task: SyncTask, completion: (() -> Void)? = nil) {
-        let persistentTask: PersistentSyncTask = space.new()
+        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.context)
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
         try? space.save()

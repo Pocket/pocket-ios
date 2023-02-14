@@ -17,4 +17,20 @@ public class Slate: NSManagedObject {
     public init(context: NSManagedObjectContext) {
         fatalError()
     }
+
+    public init(
+        context: NSManagedObjectContext,
+        remoteID: String,
+        expermimentID: String,
+        requestID: String,
+        slateLineup: SlateLineup
+    ) {
+        let entity = NSEntityDescription.entity(forEntityName: "Slate", in: context)!
+        super.init(entity: entity, insertInto: context)
+        self.remoteID = remoteID
+        self.experimentID = expermimentID
+        self.requestID = requestID
+        self.slateLineup = slateLineup
+        self.recommendations = NSOrderedSet()
+    }
 }

@@ -58,7 +58,7 @@ class SlateDetailViewModel {
 
     func refresh(_ completion: @escaping () -> Void) {
         Task {
-            try await source.fetchSlate(slate.remoteID)
+            try await source.fetchSlate(slate.remoteID, withLineup: slate.slateLineup.remoteID)
             completion()
         }
     }

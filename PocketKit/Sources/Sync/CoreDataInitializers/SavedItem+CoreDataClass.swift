@@ -17,4 +17,17 @@ public class SavedItem: NSManagedObject {
     public init(context: NSManagedObjectContext) {
         fatalError()
     }
+
+    public init(
+        context: NSManagedObjectContext,
+        url: URL,
+        remoteID: String,
+        item: Item
+    ) {
+        let entity = NSEntityDescription.entity(forEntityName: "SavedItem", in: context)!
+        super.init(entity: entity, insertInto: context)
+        self.url = url
+        self.remoteID = remoteID
+        self.item = item
+    }
 }
