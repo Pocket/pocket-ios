@@ -178,7 +178,7 @@ private extension SlateDetailViewController {
         case .slate(let slate):
             let width = environment.container.effectiveContentSize.width
             let margin: CGFloat = Margins.normal.rawValue
-            let recommendations = slate.recommendations?.compactMap { $0 as? Recommendation } ?? []
+            let recommendations = slate.recommendations.map { $0 as! Recommendation }
 
             let components = recommendations.reduce((CGFloat(0), [NSCollectionLayoutItem]())) { result, recommendation in
                 guard let viewModel = self.model.recommendationViewModel(for: recommendation.objectID) else {

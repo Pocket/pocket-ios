@@ -26,6 +26,7 @@
 "Tag your saves by topic to find them later." = "按主題標記儲存的內容，以便日後查找。";
 "How to tag" = "如何標記";
 
+"Search" = "搜尋";
 "All" = "全部";
 "Tagged" = "已標記";
 "Favorites" = "我的最愛";
@@ -37,7 +38,6 @@
 "Archive" = "封存";
 "Favorite" = "新增至我的最愛";
 "Unfavorite" = "移除最愛";
-"Move to saves" = "移至「儲存項目」";
 "Move to Saves" = "移至「儲存項目」";
 "Add Tags" = "新增標籤";
 "Share" = "分享";
@@ -116,3 +116,15 @@
 "OK" = "確定";
 "An error occurred" = "發生錯誤";
 
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"Sign up for Premium" = "Sign up for Premium";
+"Premium Subscriber" = "Premium Subscriber";
+
+"The title, link, or image is broken" = "標題、連結或影像已損壞";
+"It's in the wrong category" = "類別有誤";
+"It's sexually explicit" = "包含色情露骨內容";
+"It's rude, vulgar, or offensive" = "包含無禮、粗俗或令人反感的內容";
+"It contains misinformation" = "包含錯誤資訊";
+"Other" = "其他";

@@ -460,8 +460,6 @@ extension HomeViewModel {
     }
 
     func contexts(for savedItem: SavedItem, at indexPath: IndexPath) -> [Context] {
-        guard let url = savedItem.bestURL else { return [] }
-
         return [
             ContentContext(url: savedItem.bestURL),
             UIContext.home.recentSave(index: UIIndex(indexPath.item))
@@ -530,7 +528,7 @@ extension HomeViewModel {
         
         return [
             .share { [weak self] sender in
-                self?.sharedActivity = PocketItemActivity(url: recommendation.item?.bestURL, sender: sender)
+                self?.sharedActivity = PocketItemActivity(url: recommendation.item.bestURL, sender: sender)
             },
             .report { [weak self] _ in
                 self?.report(recommendation, at: indexPath)
@@ -605,7 +603,7 @@ extension HomeViewModel {
             id: slate.remoteID,
             requestID: slate.requestID,
             experiment: slate.experimentID,
-            index: UIIndex(slateLineup.slates?.index(of: slate))
+            index: UIIndex(slateLineup.slates.index(of: slate))
         )
         contexts.append(slateContext)
 

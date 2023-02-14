@@ -26,6 +26,7 @@
 "Tag your saves by topic to find them later." = "Voeg tags aan opgeslagen artikelen toe zodat je ze later makkelijk kunt vinden.";
 "How to tag" = "Tags gebruiken";
 
+"Search" = "Zoeken";
 "All" = "Alle";
 "Tagged" = "Getagd";
 "Favorites" = "Favorieten";
@@ -37,7 +38,6 @@
 "Archive" = "Archief";
 "Favorite" = "Favoriet";
 "Unfavorite" = "Verwijderen uit Favorieten";
-"Move to saves" = "Verplaatsen naar Opgeslagen";
 "Move to Saves" = "Verplaatsen naar Opgeslagen";
 "Add Tags" = "Tags toevoegen";
 "Share" = "Delen";
@@ -116,3 +116,15 @@
 "OK" = "OK";
 "An error occurred" = "Er is een fout opgetreden";
 
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"Sign up for Premium" = "Sign up for Premium";
+"Premium Subscriber" = "Premium Subscriber";
+
+"The title, link, or image is broken" = "De titel, link of afbeelding is beschadigd";
+"It's in the wrong category" = "Het is verkeerd gecategoriseerd";
+"It's sexually explicit" = "Het is seksueel expliciet";
+"It's rude, vulgar, or offensive" = "Het is grof, vulgair of aanstootgevend";
+"It contains misinformation" = "Het bevat informatie die niet klopt";
+"Other" = "Overige";

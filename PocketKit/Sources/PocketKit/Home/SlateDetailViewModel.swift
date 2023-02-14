@@ -56,13 +56,9 @@ class SlateDetailViewModel {
         self.snapshot = snapshot
     }
     
-    func refresh(_ completion: @escaping () -> Void) {
-        guard let slateID = slate.remoteID else {
-            return
-        }
-        
+    func refresh(_ completion: @escaping () -> Void) {       
         Task {
-            try await source.fetchSlate(slateID)
+            try await source.fetchSlate(slate.remoteID)
             completion()
         }
     }

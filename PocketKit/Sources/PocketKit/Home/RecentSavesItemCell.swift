@@ -37,13 +37,13 @@ class RecentSavesItemCell: HomeCarouselItemCell {
         }
 
         private var domain: String? {
-            item.domainMetadata?.name ?? item.domain ?? item.bestURL?.host
+            item.domainMetadata?.name ?? item.domain ?? item.bestURL.host
         }
 
         private var title: String {
             [
                 item.title,
-                item.bestURL?.absoluteString
+                item.bestURL.absoluteString
             ]
                 .compactMap { $0 }
                 .first { !$0.isEmpty } ?? ""

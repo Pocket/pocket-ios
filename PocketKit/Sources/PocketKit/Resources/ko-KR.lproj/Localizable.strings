@@ -26,6 +26,7 @@
 "Tag your saves by topic to find them later." = "나중에 찾아볼 수 있도록 저장된 항목에 주제별로 태그를 지정하세요.";
 "How to tag" = "태그 지정 방법";
 
+"Search" = "검색";
 "All" = "전체";
 "Tagged" = "태그 지정됨";
 "Favorites" = "즐겨찾기";
@@ -37,7 +38,6 @@
 "Archive" = "보관소";
 "Favorite" = "즐겨찾기";
 "Unfavorite" = "즐겨찾기 해제";
-"Move to saves" = "저장소로 이동";
 "Move to Saves" = "저장소로 이동";
 "Add Tags" = "태그 추가";
 "Share" = "공유";
@@ -116,3 +116,15 @@
 "OK" = "확인";
 "An error occurred" = "오류가 발생했습니다";
 
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"Sign up for Premium" = "Sign up for Premium";
+"Premium Subscriber" = "Premium Subscriber";
+
+"The title, link, or image is broken" = "제목, 링크 또는 이미지가 손상되었습니다";
+"It's in the wrong category" = "잘못된 카테고리에 있습니다";
+"It's sexually explicit" = "성적으로 노골적입니다";
+"It's rude, vulgar, or offensive" = "무례하거나, 저속하거나, 모욕적입니다";
+"It contains misinformation" = "잘못된 정보가 포함되어 있습니다";
+"Other" = "기타";

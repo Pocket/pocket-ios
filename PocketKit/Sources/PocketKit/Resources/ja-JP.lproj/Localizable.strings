@@ -26,6 +26,7 @@
 "Tag your saves by topic to find them later." = "保存内容にトピック別のタグをつければ、後で見つけやすくなります。";
 "How to tag" = "タグを付ける方法";
 
+"Search" = "検索";
 "All" = "すべて";
 "Tagged" = "タグ付けしました";
 "Favorites" = "お気に入り";
@@ -37,7 +38,6 @@
 "Archive" = "アーカイブ";
 "Favorite" = "お気に入り";
 "Unfavorite" = "お気に入り解除";
-"Move to saves" = "保存アイテムに移動";
 "Move to Saves" = "保存アイテムに移動";
 "Add Tags" = "タグを追加";
 "Share" = "共有";
@@ -116,3 +116,15 @@
 "OK" = "OK";
 "An error occurred" = "エラーが発生しました";
 
+"Reported" = "Reported";
+"Submit feedback" = "Submit feedback";
+
+"Sign up for Premium" = "Sign up for Premium";
+"Premium Subscriber" = "Premium Subscriber";
+
+"The title, link, or image is broken" = "タイトル、リンク、または画像が破損しています";
+"It's in the wrong category" = "カテゴリーが間違っています";
+"It's sexually explicit" = "性的に露骨な表現です";
+"It's rude, vulgar, or offensive" = "失礼、下品、または攻撃的な内容です";
+"It contains misinformation" = "誤った情報が含まれています";
+"Other" = "その他";
