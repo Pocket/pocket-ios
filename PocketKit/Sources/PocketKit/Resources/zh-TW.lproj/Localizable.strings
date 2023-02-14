@@ -116,11 +116,11 @@
 "OK" = "確定";
 "An error occurred" = "發生錯誤";
 
-"Reported" = "Reported";
-"Submit feedback" = "Submit feedback";
+"Reported" = "已舉報";
+"Submit feedback" = "提交回饋意見";
 
-"Sign up for Premium" = "Sign up for Premium";
-"Premium Subscriber" = "Premium Subscriber";
+"Sign up for Premium" = "註冊 Premium";
+"Premium Subscriber" = "Premium 訂戶";
 
 "The title, link, or image is broken" = "標題、連結或影像已損壞";
 "It's in the wrong category" = "類別有誤";
