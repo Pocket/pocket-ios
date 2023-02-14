@@ -1,7 +1,6 @@
 import Sync
 import Analytics
 import Textile
-import Foundation
 import SharedPocketKit
 import SwiftUI
 
@@ -12,6 +11,12 @@ class AccountViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
 
+    @Published var isPresentingHelp = false
+    @Published var isPresentingTerms = false
+    @Published var isPresentingPrivacy = false
+    @Published var isPresentingSignOutConfirm = false
+    @Published var isPresentingPremiumUpgrade = false
+
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
 
@@ -19,7 +24,10 @@ class AccountViewModel: ObservableObject {
         user.status == .premium
     }
 
-    init(appSession: AppSession, user: User, userDefaults: UserDefaults, notificationCenter: NotificationCenter) {
+    init(appSession: AppSession,
+         user: User,
+         userDefaults: UserDefaults,
+         notificationCenter: NotificationCenter) {
         self.appSession = appSession
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
@@ -49,10 +57,19 @@ class AccountViewModel: ObservableObject {
             self.notificationCenter.post(name: .listUpdated, object: nil)
         }
     }
+}
 
-    @Published var isPresentingHelp = false
-    @Published var isPresentingTerms = false
-    @Published var isPresentingPrivacy = false
-    @Published var isPresentingSignOutConfirm = false
-    @Published var isUpgrading = false
+// MARK: Premium upgrades
+extension AccountViewModel {
+    @MainActor
+    func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
+        PremiumUpgradeViewModel {
+            try await PremiumSubscriptionStore()
+        }
+    }
+
+    /// Ttoggle the presentation of `PremiumUpgradeView`
+    func showPremiumUpgrade() {
+        self.isPresentingPremiumUpgrade = true
+    }
 }
