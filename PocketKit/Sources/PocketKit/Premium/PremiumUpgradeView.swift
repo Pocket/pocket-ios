@@ -1,6 +1,5 @@
 import SwiftUI
 import Textile
-import SafariServices
 
 struct PremiumUpgradeView: View {
     @Environment(\.dismiss)
@@ -185,7 +184,7 @@ private struct PremiumTermsView: View {
                 self.showPrivacyPolicy = true
             }, label: { Text("Privacy Policy").style(.terms) })
             .sheet(isPresented: $showPrivacyPolicy) {
-                if let privacyUrl = getUrlFor(typeOf: .PrivacyPolicy) {
+                if let privacyUrl = getUrlFor(typeOf: .privacyPolicy) {
                     SFSafariView(url: privacyUrl)
                 }
             }
@@ -194,7 +193,7 @@ private struct PremiumTermsView: View {
                 self.showTermsOfService = true
             }, label: { Text("Terms of Service").style(.terms) })
             .sheet(isPresented: $showTermsOfService) {
-                if let toSUrl = getUrlFor(typeOf: .TermsOfService) {
+                if let toSUrl = getUrlFor(typeOf: .termsOfService) {
                     SFSafariView(url: toSUrl)
                 }
             }
@@ -203,18 +202,18 @@ private struct PremiumTermsView: View {
     }
 
     enum Link {
-        case PrivacyPolicy
-        case TermsOfService
+        case privacyPolicy
+        case termsOfService
     }
 
     private func getUrlFor(typeOf: Link) -> URL? {
         switch typeOf {
-        case .PrivacyPolicy:
+        case .privacyPolicy:
             guard let privacyUrl = URL(string: "https://getpocket.com/privacy/") else {
                 return nil
             }
             return privacyUrl
-        case .TermsOfService:
+        case .termsOfService:
             guard let toSUrl = URL(string: "https://getpocket.com/tos/") else {
                 return nil
             }
