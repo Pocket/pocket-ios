@@ -116,11 +116,11 @@
 "OK" = "确定";
 "An error occurred" = "发生错误";
 
-"Reported" = "Reported";
-"Submit feedback" = "Submit feedback";
+"Reported" = "已报告";
+"Submit feedback" = "提交反馈";
 
-"Sign up for Premium" = "Sign up for Premium";
-"Premium Subscriber" = "Premium Subscriber";
+"Sign up for Premium" = "注册 Premium";
+"Premium Subscriber" = "Premium 订户";
 
 "The title, link, or image is broken" = "标题、链接或图像损坏";
 "It's in the wrong category" = "类别错误";
