@@ -116,11 +116,11 @@
 "OK" = "OK";
 "An error occurred" = "エラーが発生しました";
 
-"Reported" = "Reported";
-"Submit feedback" = "Submit feedback";
+"Reported" = "報告しました";
+"Submit feedback" = "フィードバックを送信";
 
-"Sign up for Premium" = "Sign up for Premium";
-"Premium Subscriber" = "Premium Subscriber";
+"Sign up for Premium" = "Premium に登録";
+"Premium Subscriber" = "Premium 購読者";
 
 "The title, link, or image is broken" = "タイトル、リンク、または画像が破損しています";
 "It's in the wrong category" = "カテゴリーが間違っています";
