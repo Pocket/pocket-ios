@@ -5,15 +5,20 @@ import Analytics
 import SnowplowTracker
 
 class MockTracker: Analytics.Tracker {
+    struct OldTrackCall {
+        let event: Analytics.OldEvent
+        let contexts: [Context]?
+    }
+
     struct TrackCall {
         let event: Analytics.Event
-        let contexts: [Context]?
     }
 
     struct AddPersistentCall {
         let context: Context
     }
 
+    private(set) var oldTrackCalls = Calls<OldTrackCall>()
     private(set) var trackCalls = Calls<TrackCall>()
     private(set) var addPersistentCalls = Calls<AddPersistentCall>()
     private(set) var clearPersistentContextsCalls = Calls<[Context]>()
@@ -22,8 +27,12 @@ class MockTracker: Analytics.Tracker {
         addPersistentCalls.add(AddPersistentCall(context: context))
     }
 
-    func track<T: Analytics.Event>(event: T, _ contexts: [Context]?) {
-        trackCalls.add(TrackCall(event: event, contexts: contexts))
+    func track<T: Analytics.OldEvent>(event: T, _ contexts: [Context]?) {
+        oldTrackCalls.add(OldTrackCall(event: event, contexts: contexts))
+    }
+
+    func track(event: Analytics.Event) {
+        trackCalls.add(TrackCall(event: event))
     }
 
     func resetPersistentContexts(_ contexts: [Context]) {
@@ -47,7 +56,7 @@ class MockSnowplow: Analytics.SnowplowTracker {
     }
 }
 
-struct MockEvent: Analytics.Event, Equatable {
+struct MockEvent: Analytics.OldEvent, Equatable {
     static var schema = "mock-event"
 
     let value: Int

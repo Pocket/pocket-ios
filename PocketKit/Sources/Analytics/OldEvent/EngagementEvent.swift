@@ -9,7 +9,7 @@ public enum EngagementEvent: String, Encodable {
     case dismiss
 }
 
-public struct SnowplowEngagement: Event {
+public struct SnowplowEngagement: OldEvent {
     public static let schema = "iglu:com.pocket/engagement/jsonschema/1-0-1"
 
     let type: EngagementEvent

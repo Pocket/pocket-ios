@@ -15,11 +15,16 @@ class LinkedTracker: Tracker {
         parent.addPersistentContext(context)
     }
 
-    func track<T>(event: T, _ contexts: [Context]?) where T: Event {
+    func track<T>(event: T, _ contexts: [Context]?) where T: OldEvent {
         let additional = contexts ?? []
         parent.track(event: event, self.contexts + additional)
     }
 
+    func track(event: Event) {
+        parent.track(event: event)
+    }
+
+    @available(*, deprecated, message: "No longer need to use a child trackers")
     func childTracker(with contexts: [Context]) -> Tracker {
         LinkedTracker(parent: self, contexts: contexts)
     }

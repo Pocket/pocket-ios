@@ -4,6 +4,7 @@
 
 import Foundation
 
+@available(*, deprecated, message: "Use Entities moving forward")
 public struct ContentContext: Context {
     public static let schema = "iglu:com.pocket/content/jsonschema/1-0-0"
 

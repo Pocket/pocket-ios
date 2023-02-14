@@ -1,11 +1,10 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 import Foundation
+import class SnowplowTracker.SelfDescribingJson
 
-@available(*, deprecated, message: "Use Entities moving forward")
-public struct APIUserContext: Context {
+public struct APIUserEntity: Entity {
     public static var schema = "iglu:com.pocket/api_user/jsonschema/1-0-1"
 
     let id: UInt
@@ -29,11 +28,11 @@ public struct APIUserContext: Context {
 
         self.init(id: id, clientVersion: clientVersion)
     }
-}
 
-private extension APIUserContext {
-    enum CodingKeys: String, CodingKey {
-        case id = "api_id"
-        case clientVersion = "client_version"
+    public func toSelfDescribingJson() -> SelfDescribingJson {
+        return SelfDescribingJson(schema: APIUserEntity.schema, andDictionary: [
+            "api_id": id,
+            "client_version": clientVersion
+        ])
     }
 }
