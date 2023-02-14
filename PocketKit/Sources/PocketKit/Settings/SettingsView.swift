@@ -44,19 +44,13 @@ struct SettingsForm: View {
     var body: some View {
         Form {
             Group {
-                //                Section(header: Text("Your Account").style(.settings.header)) {
-                //                    PremiumRow(status: .notSubscribed, destination: EmptyView())
-                //                    SettingsRowLink(title: "Reset Password", destination: EmptyView())
-                //                    SettingsRowLink(title: "Delete Account", destination: EmptyView())
-                //                }.textCase(nil)
-
                 Section(header: Text(L10n.yourAccount).style(.settings.header)) {
                     if !model.isPremium {
                         SettingsRowButton(title: "Go Premium", icon: nil) {
-                            model.isUpgrading.toggle()
+                            model.showPremiumUpgrade()
                         }
-                        .sheet(isPresented: $model.isUpgrading) {
-                            PremiumUpgradeView()
+                        .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
+                            PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
                         }
                     }
                     SettingsRowButton(title: L10n.signOut, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
