@@ -116,11 +116,11 @@
 "OK" = "확인";
 "An error occurred" = "오류가 발생했습니다";
 
-"Reported" = "Reported";
-"Submit feedback" = "Submit feedback";
+"Reported" = "보고됨";
+"Submit feedback" = "피드백 제출";
 
-"Sign up for Premium" = "Sign up for Premium";
-"Premium Subscriber" = "Premium Subscriber";
+"Sign up for Premium" = "Premium 가입";
+"Premium Subscriber" = "Premium 구독자";
 
 "The title, link, or image is broken" = "제목, 링크 또는 이미지가 손상되었습니다";
 "It's in the wrong category" = "잘못된 카테고리에 있습니다";

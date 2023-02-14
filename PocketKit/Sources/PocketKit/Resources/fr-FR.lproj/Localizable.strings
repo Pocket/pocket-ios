@@ -116,11 +116,11 @@
 "OK" = "OK";
 "An error occurred" = "Une erreur s'est produite";
 
-"Reported" = "Reported";
-"Submit feedback" = "Submit feedback";
+"Reported" = "Signalé";
+"Submit feedback" = "Envoyer des commentaires";
 
-"Sign up for Premium" = "Sign up for Premium";
-"Premium Subscriber" = "Premium Subscriber";
+"Sign up for Premium" = "S'inscrire à Premium";
+"Premium Subscriber" = "Abonné Premium";
 
 "The title, link, or image is broken" = "Le titre, le lien ou l'image ne fonctionne plus";
 "It's in the wrong category" = "La catégorie n'est pas correcte";
