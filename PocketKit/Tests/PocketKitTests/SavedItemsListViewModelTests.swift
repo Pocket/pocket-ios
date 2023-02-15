@@ -78,7 +78,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
         let viewModel = subject()
-        let item = space.buildPendingSavedItem()
+        let item = space.buildSavedItem()
 
         source.stubObject { _ in
             item
@@ -99,7 +99,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
         let viewModel = subject()
-        let item = space.buildPendingSavedItem()
+        let item = space.buildSavedItem()
 
         source.stubObject { _ in item }
         viewModel.selectCell(with: .item(item.objectID), sender: UIView())

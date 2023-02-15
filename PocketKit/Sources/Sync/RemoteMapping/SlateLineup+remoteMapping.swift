@@ -11,7 +11,7 @@ extension SlateLineup {
         experimentID = remote.experimentId
 
         slates = try? NSOrderedSet(array: remote.slates.map { remoteSlate in
-            let slate = try space.fetchSlate(byRemoteID: remoteSlate.id) ?? space.new()
+            let slate = try space.fetchSlate(byRemoteID: remoteSlate.id) ?? Slate(context: space.context, remoteID: remoteSlate.id, expermimentID: remoteSlate.experimentId, requestID: remoteSlate.requestId)
             slate.update(from: remoteSlate.fragments.slateParts, in: space)
 
             return slate
@@ -31,7 +31,7 @@ extension Slate {
 
         recommendations = NSOrderedSet(array: remote.recommendations.compactMap { remote in
             guard let remoteID = remote.id,
-                  let recommendation = try? space.fetchOrCreateRecommendation(byRemoteID: remoteID) else {
+                  let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID) ?? Recommendation(context: space.context, remoteID: remoteID) else {
                 return nil
             }
             recommendation.update(from: remote, in: space)
@@ -44,7 +44,7 @@ extension Recommendation {
     public typealias RemoteRecommendation = SlateParts.Recommendation
 
     func update(from remote: RemoteRecommendation, in space: Space) {
-        guard let id = remote.id else {
+        guard let id = remote.id, let url = URL(string: remote.item.givenUrl) else {
             //TODO: Daniel log, also daniel work to make this non-null in the API.
             return
         }
@@ -54,8 +54,8 @@ extension Recommendation {
         excerpt = remote.curatedInfo?.excerpt
         imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init)
 
-        let recommendationItem = try? space.fetchOrCreateItem(byRemoteID: remote.item.remoteID)
-        recommendationItem?.update(from: remote.item.fragments.itemSummary)
+        let recommendationItem = (try? space.fetchItem(byRemoteID: remote.item.remoteID)) ?? Item(context: space.context, givenURL: url, remoteID: remoteID)
+        recommendationItem.update(from: remote.item.fragments.itemSummary)
         item = recommendationItem
     }
 }

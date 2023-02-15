@@ -81,7 +81,7 @@ extension APISlateServiceTests {
                 let item = recommendation.item
                 XCTAssertNotNil(item)
                 XCTAssertEqual(item!.remoteID, "item-1")
-                XCTAssertEqual(item!.givenURL?.absoluteString, "https://given.example.com/rec-1")
+                XCTAssertEqual(item!.givenURL.absoluteString, "https://given.example.com/rec-1")
                 XCTAssertEqual(item!.resolvedURL?.absoluteString, "https://resolved.example.com/rec-1")
                 XCTAssertEqual(item!.title, "Slate 1, Recommendation 1")
                 XCTAssertEqual(item!.language, "en")
@@ -144,20 +144,20 @@ extension APISlateServiceTests {
 
         // 2. Old slates should be deleted
         let fetchedSlates = try space.fetchSlates()
-        let fetchedSlateIDs = fetchedSlates.map { $0.remoteID! }
+        let fetchedSlateIDs = fetchedSlates.map { $0.remoteID }
         XCTAssertEqual(fetchedSlates.count, 2)
         XCTAssertEqual(Set(fetchedSlateIDs), ["slate-1", "slate-2"])
 
         // 3. Old recommendations should be deleted
         let fetchedRecommendations = try space.fetchRecommendations()
         XCTAssertEqual(fetchedRecommendations.count, 3)
-        let fetchedRecommendationIDs = fetchedRecommendations.map { $0.remoteID! }
+        let fetchedRecommendationIDs = fetchedRecommendations.map { $0.remoteID }
         XCTAssertFalse(fetchedRecommendationIDs.contains("slate-1-recommendation-1-seed"))
 
         // 4. Old items should be removed
         let items = try space.fetchItems()
         XCTAssertEqual(items.count, 3)
-        let itemIDs = items.map { $0.remoteID! }
+        let itemIDs = items.map { $0.remoteID }
         XCTAssertEqual(Set(itemIDs), ["item-1", "item-2", "item-3"])
     }
 
@@ -237,7 +237,7 @@ extension APISlateServiceTests {
             let item = recommendation.item
             XCTAssertNotNil(item)
             XCTAssertEqual(item!.remoteID, "item-1")
-            XCTAssertEqual(item!.givenURL?.absoluteString, "https://given.example.com/rec-1")
+            XCTAssertEqual(item!.givenURL.absoluteString, "https://given.example.com/rec-1")
             XCTAssertEqual(item!.resolvedURL?.absoluteString, "https://resolved.example.com/rec-1")
             XCTAssertEqual(item!.title, "Slate 1, Recommendation 1")
             XCTAssertEqual(item!.language, "en")

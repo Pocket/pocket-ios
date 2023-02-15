@@ -257,11 +257,12 @@ extension PocketArchiveService: FetchArchivePagesOperationDelegate {
 
         for edge in edges {
             guard let edge = edge,
-                  let summary = edge.node?.fragments.savedItemSummary else {
+                  let summary = edge.node?.fragments.savedItemSummary,
+                  let url = URL(string: summary.url) else {
                 continue
             }
 
-            let savedItem = try space.fetchOrCreateSavedItem(byRemoteID: summary.remoteID)
+            let savedItem = (try? space.fetchSavedItem(byRemoteID: summary.remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: summary.remoteID)
             savedItem.cursor = edge.cursor
             savedItem.update(from: summary, with: space)
 

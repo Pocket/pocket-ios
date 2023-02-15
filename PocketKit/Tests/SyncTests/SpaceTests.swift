@@ -32,7 +32,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchTagsForSavedAndArchivedItems() throws {
         let space = subject()
-        let tag: Tag = space.new()
+        let tag: Tag = Tag(context: space.context)
         tag.name = "tag 0"
         _ = space.buildSavedItem(tags: [tag])
         _ = createItemsWithTags(2, isArchived: true)
@@ -43,7 +43,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchOrCreateTags() throws {
         let space = subject()
-        let tag1: Tag = space.new()
+        let tag1: Tag = Tag(context: space.context)
         tag1.name = "tag 1"
 
         let fetchedTag1 = space.fetchOrCreateTag(byName: "tag 1")
@@ -56,7 +56,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchTagsByID() throws {
         let space = subject()
-        let tag1: Tag = space.new()
+        let tag1: Tag = Tag(context: space.context)
         tag1.remoteID = "id 1"
         tag1.name = "tag 1"
 
@@ -85,7 +85,7 @@ class SpaceTests: XCTestCase {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in
             let space = subject()
-            let tag: Tag = space.new()
+            let tag: Tag = Tag(context: space.context)
             tag.remoteID = "id \(num)"
             tag.name = "tag \(num)"
             return space.buildSavedItem(isArchived: isArchived, tags: [tag])

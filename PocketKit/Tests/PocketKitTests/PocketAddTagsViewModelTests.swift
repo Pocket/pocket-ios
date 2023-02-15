@@ -74,10 +74,9 @@ class PocketAddTagsViewModelTests: XCTestCase {
         let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
 
         source.stubRetrieveTags { [weak self] _ in
-            guard let self = self else { return nil }
             defer { expectRetrieveTagsCall.fulfill() }
-            let tag2: Tag = self.space.new()
-            let tag3: Tag = self.space.new()
+            let tag2: Tag = Tag(context: self!.space.context)
+            let tag3: Tag = Tag(context: self!.space.context)
             tag2.name = "tag 2"
             tag3.name = "tag 3"
             return [tag2, tag3]

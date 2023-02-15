@@ -79,7 +79,7 @@ class SaveItemOperationTests: XCTestCase {
             toReturnError: TestError.anError
         )
 
-        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url!)
+        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url)
         let result = await service.execute()
 
         guard case .failure = result else {
@@ -93,7 +93,7 @@ class SaveItemOperationTests: XCTestCase {
         apollo.stubPerform(ofMutationType: SaveItemMutation.self, toReturnError: initialError)
 
         let savedItem = try space.createSavedItem()
-        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url!)
+        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url)
         let result = await service.execute()
 
         guard case .retry = result else {
@@ -112,7 +112,7 @@ class SaveItemOperationTests: XCTestCase {
         apollo.stubPerform(ofMutationType: SaveItemMutation.self, toReturnError: initialError)
 
         let savedItem = try space.createSavedItem()
-        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url!)
+        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url)
         let result = await service.execute()
 
         guard case .retry = result else {

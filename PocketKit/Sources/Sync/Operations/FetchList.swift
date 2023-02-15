@@ -136,7 +136,7 @@ class FetchList: SyncOperation {
         }
 
         for edge in edges {
-            guard let edge = edge, let node = edge.node else {
+            guard let edge = edge, let node = edge.node, let url = URL(string: node.url) else {
                 return
             }
 
@@ -146,7 +146,7 @@ class FetchList: SyncOperation {
                 message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"
             )
 
-            let item = try space.fetchOrCreateSavedItem(byRemoteID: node.remoteID)
+            let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: node.remoteID)
             item.update(from: edge, with: space)
 
             if item.deletedAt != nil {

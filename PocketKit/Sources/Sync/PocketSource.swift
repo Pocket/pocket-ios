@@ -208,31 +208,42 @@ extension PocketSource {
     }
 
     public func favorite(item: SavedItem) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+
         item.isFavorite = true
         try? space.save()
 
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: FavoriteItemMutation(itemID: item.remoteID)
+            mutation: FavoriteItemMutation(itemID: remoteID)
         )
 
-        enqueue(operation: operation, task: .favorite(remoteID: item.remoteID))
+        enqueue(operation: operation, task: .favorite(remoteID: remoteID))
     }
 
     public func unfavorite(item: SavedItem) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+
         item.isFavorite = false
         try? space.save()
 
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: UnfavoriteItemMutation(itemID: item.remoteID)
+            mutation: UnfavoriteItemMutation(itemID: remoteID)
         )
-        enqueue(operation: operation, task: .unfavorite(remoteID: item.remoteID))
+        enqueue(operation: operation, task: .unfavorite(remoteID: remoteID))
     }
 
     public func delete(item savedItem: SavedItem) {
+        guard let remoteID = savedItem.remoteID else {
+            return
+        }
 
         let item = savedItem.item
 
@@ -247,13 +258,17 @@ extension PocketSource {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: DeleteItemMutation(itemID: savedItem.remoteID)
+            mutation: DeleteItemMutation(itemID: remoteID)
         )
 
-        enqueue(operation: operation, task: .delete(remoteID: savedItem.remoteID))
+        enqueue(operation: operation, task: .delete(remoteID: remoteID))
     }
 
     public func archive(item: SavedItem) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+
         item.isArchived = true
         item.archivedAt = Date()
         try? space.save()
@@ -261,10 +276,10 @@ extension PocketSource {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: ArchiveItemMutation(itemID: item.remoteID)
+            mutation: ArchiveItemMutation(itemID: remoteID)
         )
 
-        enqueue(operation: operation, task: .archive(remoteID: item.remoteID))
+        enqueue(operation: operation, task: .archive(remoteID: remoteID))
     }
 
     public func unarchive(item: SavedItem) {
@@ -295,6 +310,10 @@ extension PocketSource {
     }
 
     public func addTags(item: SavedItem, tags: [String]) {
+        guard let remoteID = item.remoteID else {
+            return
+        }
+
         item.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
            space.fetchOrCreateTag(byName: tag)
         }))
@@ -304,10 +323,10 @@ extension PocketSource {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: getMutation(for: tags, and: item.remoteID)
+            mutation: getMutation(for: tags, and: remoteID)
         )
 
-        enqueue(operation: operation, task: .addTags(remoteID: item.remoteID, tags: tags))
+        enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
     }
 
     public func deleteTag(tag: Tag) {
@@ -354,8 +373,12 @@ extension PocketSource {
     }
 
     public func fetchDetails(for savedItem: SavedItem) async throws {
+        guard let remoteID = savedItem.remoteID else {
+            return
+        }
+        
         guard let remoteSavedItem = try await apollo
-            .fetch(query: SavedItemByIDQuery(id: savedItem.remoteID))
+            .fetch(query: SavedItemByIDQuery(id: remoteID))
             .data?.user?.savedItemById else {
             return
         }
@@ -412,7 +435,7 @@ extension PocketSource {
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
     private func enqueue(operation: SyncOperation, task: SyncTask, completion: (() -> Void)? = nil) {
-        let persistentTask: PersistentSyncTask = space.new()
+        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.context)
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
         try? space.save()
@@ -568,7 +591,7 @@ extension PocketSource {
         if let savedItem = recommendation.item?.savedItem {
             unarchive(item: savedItem)
         } else {
-            let savedItem: SavedItem = space.new()
+            let savedItem: SavedItem = SavedItem(context: space.context, url: item.givenURL)
             savedItem.update(from: recommendation)
             try? space.save()
 
@@ -607,7 +630,7 @@ extension PocketSource {
         if let savedItem = try? space.fetchSavedItem(byURL: url) {
             unarchive(item: savedItem)
         } else {
-            let savedItem: SavedItem = space.new()
+            let savedItem: SavedItem = SavedItem(context: space.context, url: url)
             savedItem.url = url
             savedItem.createdAt = Date()
             try? space.save()
@@ -624,14 +647,15 @@ extension PocketSource {
     }
 
     public func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
-        var savedItem: SavedItem? = try? space.fetchSavedItem(byRemoteID: remoteID)
-        guard savedItem == nil else { return savedItem }
-        savedItem = space.new()
+        guard let remoteParts, let url = URL(string: remoteParts.url) else {
+            //TODO: Daniel log error
+            return nil
+        }
+        
+        let savedItem = (try? space.fetchSavedItem(byRemoteID: remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: remoteID)
+        savedItem.update(from: remoteParts, with: space)
         try? space.save()
 
-        if let remoteParts = remoteParts {
-            savedItem?.update(from: remoteParts, with: space)
-        }
         return savedItem
     }
 }
