@@ -29,7 +29,7 @@ extension Item {
     @NSManaged public var authors: NSOrderedSet?
     @NSManaged public var domainMetadata: DomainMetadata?
     @NSManaged public var images: NSOrderedSet?
-    @NSManaged public var recommendations: NSSet?
+    @NSManaged public var recommendation: Recommendation?
     @NSManaged public var savedItem: SavedItem?
     @NSManaged public var syndicatedArticle: SyndicatedArticle?
 }
@@ -98,19 +98,4 @@ extension Item {
 
     @objc(removeImages:)
     @NSManaged public func removeFromImages(_ values: NSOrderedSet)
-}
-
-// MARK: Generated accessors for recommendations
-extension Item {
-    @objc(addRecommendationsObject:)
-    @NSManaged public func addToRecommendations(_ value: Recommendation)
-
-    @objc(removeRecommendationsObject:)
-    @NSManaged public func removeFromRecommendations(_ value: Recommendation)
-
-    @objc(addRecommendations:)
-    @NSManaged public func addToRecommendations(_ values: NSSet)
-
-    @objc(removeRecommendations:)
-    @NSManaged public func removeFromRecommendations(_ values: NSSet)
 }

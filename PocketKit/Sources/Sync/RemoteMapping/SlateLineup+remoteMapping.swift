@@ -44,7 +44,12 @@ extension Recommendation {
     public typealias RemoteRecommendation = SlateParts.Recommendation
 
     func update(from remote: RemoteRecommendation, in space: Space) {
-        remoteID = remote.id
+        guard let id = remote.id else {
+            //TODO: Daniel log, also daniel work to make this non-null in the API.
+            return
+        }
+        
+        remoteID = id
         title = remote.curatedInfo?.title
         excerpt = remote.curatedInfo?.excerpt
         imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init)

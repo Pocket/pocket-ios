@@ -593,36 +593,28 @@ extension HomeViewModel {
         var contexts: [Context] = []
 
         // SlateLineup Context
-        if  let id = slateLineup.remoteID,
-            let requestID = slateLineup.requestID,
-            let experimentID = slateLineup.experimentID {
-            let context = SlateLineupContext(
-                id: id,
-                requestID: requestID,
-                experiment: experimentID
-            )
-            contexts.append(context)
-        }
+        let context = SlateLineupContext(
+            id: slateLineup.remoteID,
+            requestID: slateLineup.requestID,
+            experiment: slateLineup.experimentID
+        )
+        contexts.append(context)
 
         // Slate context
-        if let slateID = slate.remoteID,
-           let requestID = slate.requestID,
-           let experimentID = slate.experimentID,
-           let slateIndex = slateLineup.slates?.index(of: slate) {
+        if let slateIndex = slateLineup.slates?.index(of: slate) {
             let slateContext = SlateContext(
-                id: slateID,
-                requestID: requestID,
-                experiment: experimentID,
+                id: slate.remoteID,
+                requestID: slate.requestID,
+                experiment: slate.experimentID,
                 index: UIIndex(slateIndex)
             )
             contexts.append(slateContext)
         }
 
         // Recommendation context
-        if let recommendationID = recommendation.remoteID,
-           let recommendationIndex = slate.recommendations?.index(of: recommendation) {
+        if let recommendationIndex = slate.recommendations?.index(of: recommendation) {
             let recommendationContext = RecommendationContext(
-                id: recommendationID,
+                id: recommendation.remoteID,
                 index: UIIndex(recommendationIndex)
             )
             contexts.append(recommendationContext)

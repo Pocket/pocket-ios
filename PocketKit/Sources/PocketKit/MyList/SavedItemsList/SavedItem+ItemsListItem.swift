@@ -19,7 +19,7 @@ extension SavedItem: ItemsListItem {
     }
 
     var timeToRead: Int? {
-        item.flatMap { Int($0.timeToRead) }
+        item?.timeToRead?.intValue
     }
 
     var domainMetadata: ItemsListItemDomainMetadata? {

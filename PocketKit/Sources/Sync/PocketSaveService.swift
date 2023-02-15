@@ -101,11 +101,11 @@ public class PocketSaveService: SaveService {
             return
         }
 
-        guard let tags = savedItem.tags, let remoteID = savedItem.remoteID else { return }
+        guard let tags = savedItem.tags else { return }
         let names = Array(tags).compactMap { ($0 as? Tag)?.name }
 
         if names.isEmpty {
-            let mutation = UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID)
+            let mutation = UpdateSavedItemRemoveTagsMutation(savedItemId: savedItem.remoteID)
 
             let operation = SaveOperation<UpdateSavedItemRemoveTagsMutation>(
                 apollo: apollo,
@@ -119,7 +119,7 @@ public class PocketSaveService: SaveService {
             queue.addOperation(operation)
             queue.waitUntilAllOperationsAreFinished()
         } else {
-            let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: names)])
+            let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: savedItem.remoteID, tags: names)])
 
             let operation = SaveOperation<ReplaceSavedItemTagsMutation>(
                 apollo: apollo,
@@ -142,8 +142,7 @@ public class PocketSaveService: SaveService {
             return
         }
 
-        guard let url = savedItem.url else { return }
-        let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: url.absoluteString))
+        let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: savedItem.url.absoluteString))
 
         let operation = SaveOperation<SaveItemMutation>(
             apollo: apollo,

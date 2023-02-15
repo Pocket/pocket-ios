@@ -56,7 +56,7 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
 
     var timeToRead: String? {
         guard let timeToRead = recommendation.item?.timeToRead,
-              timeToRead > 0 else {
+              timeToRead.intValue > 0 else {
             return nil
         }
 

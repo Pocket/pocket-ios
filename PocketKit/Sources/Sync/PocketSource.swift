@@ -208,42 +208,31 @@ extension PocketSource {
     }
 
     public func favorite(item: SavedItem) {
-        guard let remoteID = item.remoteID else {
-            return
-        }
-
         item.isFavorite = true
         try? space.save()
 
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: FavoriteItemMutation(itemID: remoteID)
+            mutation: FavoriteItemMutation(itemID: item.remoteID)
         )
 
-        enqueue(operation: operation, task: .favorite(remoteID: remoteID))
+        enqueue(operation: operation, task: .favorite(remoteID: item.remoteID))
     }
 
     public func unfavorite(item: SavedItem) {
-        guard let remoteID = item.remoteID else {
-            return
-        }
-
         item.isFavorite = false
         try? space.save()
 
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: UnfavoriteItemMutation(itemID: remoteID)
+            mutation: UnfavoriteItemMutation(itemID: item.remoteID)
         )
-        enqueue(operation: operation, task: .unfavorite(remoteID: remoteID))
+        enqueue(operation: operation, task: .unfavorite(remoteID: item.remoteID))
     }
 
     public func delete(item savedItem: SavedItem) {
-        guard let remoteID = savedItem.remoteID else {
-            return
-        }
 
         let item = savedItem.item
 
@@ -258,17 +247,13 @@ extension PocketSource {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: DeleteItemMutation(itemID: remoteID)
+            mutation: DeleteItemMutation(itemID: savedItem.remoteID)
         )
 
-        enqueue(operation: operation, task: .delete(remoteID: remoteID))
+        enqueue(operation: operation, task: .delete(remoteID: savedItem.remoteID))
     }
 
     public func archive(item: SavedItem) {
-        guard let remoteID = item.remoteID else {
-            return
-        }
-
         item.isArchived = true
         item.archivedAt = Date()
         try? space.save()
@@ -276,50 +261,40 @@ extension PocketSource {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: ArchiveItemMutation(itemID: remoteID)
+            mutation: ArchiveItemMutation(itemID: item.remoteID)
         )
 
-        enqueue(operation: operation, task: .archive(remoteID: remoteID))
+        enqueue(operation: operation, task: .archive(remoteID: item.remoteID))
     }
 
     public func unarchive(item: SavedItem) {
-        guard let url = item.url else { return }
-
         item.isArchived = false
         item.createdAt = Date()
         try? space.save()
 
         let operation = operations.saveItemOperation(
             managedItemID: item.objectID,
-            url: url,
+            url: item.url,
             events: _events,
             apollo: apollo,
             space: space
         )
 
-        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
+        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url))
     }
 
     public func save(item: SavedItem) {
-        guard let url = item.url else {
-            return
-        }
-
         let operation = operations.saveItemOperation(
             managedItemID: item.objectID,
-            url: url,
+            url: item.url,
             events: _events,
             apollo: apollo,
             space: space
         )
-        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
+        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url))
     }
 
     public func addTags(item: SavedItem, tags: [String]) {
-        guard let remoteID = item.remoteID else {
-            return
-        }
-
         item.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
            space.fetchOrCreateTag(byName: tag)
         }))
@@ -329,10 +304,10 @@ extension PocketSource {
         let operation = operations.savedItemMutationOperation(
             apollo: apollo,
             events: _events,
-            mutation: getMutation(for: tags, and: remoteID)
+            mutation: getMutation(for: tags, and: item.remoteID)
         )
 
-        enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
+        enqueue(operation: operation, task: .addTags(remoteID: item.remoteID, tags: tags))
     }
 
     public func deleteTag(tag: Tag) {
@@ -379,12 +354,8 @@ extension PocketSource {
     }
 
     public func fetchDetails(for savedItem: SavedItem) async throws {
-        guard let remoteID = savedItem.remoteID else {
-            return
-        }
-
         guard let remoteSavedItem = try await apollo
-            .fetch(query: SavedItemByIDQuery(id: remoteID))
+            .fetch(query: SavedItemByIDQuery(id: savedItem.remoteID))
             .data?.user?.savedItemById else {
             return
         }
@@ -421,13 +392,12 @@ extension PocketSource {
     }
 
     public func fetchDetails(for recommendation: Recommendation) async throws {
-        guard let item = recommendation.item,
-              let remoteID = item.remoteID else {
+        guard let item = recommendation.item else {
             return
         }
 
         guard let remoteItem = try await apollo
-            .fetch(query: ItemByIDQuery(id: remoteID))
+            .fetch(query: ItemByIDQuery(id: recommendation.remoteID))
             .data?.itemByItemId?.fragments.itemParts else {
             return
         }
