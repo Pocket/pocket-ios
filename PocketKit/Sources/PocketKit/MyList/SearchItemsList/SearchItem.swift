@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import PocketGraph
+import Sync
 
 struct SearchItem {
     private let item: ItemsListItem
@@ -36,20 +37,20 @@ struct SearchItem {
     }
 
     var shareAction: ItemAction {
-        ItemAction.share { _ in print("Share button tapped!") }
+        ItemAction.share { _ in Log.info("Share button tapped!") }
     }
 
     var favoriteAction: ItemAction {
-        ItemAction.favorite { _ in print("Favorite button tapped!") }
+        ItemAction.favorite { _ in Log.info("Favorite button tapped!") }
     }
 
     var overflowActions: [ItemAction] {
-        [ItemAction.addTags { _ in print("Add tags button tapped!") }, ItemAction.archive { _ in print("Archive button tapped!") }, ItemAction.delete { _ in print("Delete button tapped!") }]
+        [ItemAction.addTags { _ in Log.info("Add tags button tapped!") }, ItemAction.archive { _ in Log.info("Archive button tapped!") }, ItemAction.delete { _ in Log.info("Delete button tapped!") }]
     }
 
     var trackOverflow: ItemAction {
         ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil, handler: {_ in
-            print("Overflow button tapped!")
+            Log.info("Overflow button tapped!")
         })
     }
 

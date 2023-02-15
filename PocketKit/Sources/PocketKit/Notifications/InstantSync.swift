@@ -70,7 +70,7 @@ extension InstantSync: InstantSyncProtocol {
             do {
                 _ = try await self?.v3Client.deregisterPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, session: session)
             } catch {
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
             }
         }
     }
@@ -80,7 +80,7 @@ extension InstantSync: InstantSyncProtocol {
         guard let session = appSession.currentSession else {
             // We do not have a session so we can not register for push notifications.
             // Capture the message for later use and move on.
-            Crashlogger.capture(message: "Push Notification Service has no current session to use to register a push token with")
+            Log.capture(message: "Push Notification Service has no current session to use to register a push token with")
             return
         }
 
@@ -88,7 +88,7 @@ extension InstantSync: InstantSyncProtocol {
             do {
                 _ = try await self?.v3Client.registerPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, token: deviceToken.base64EncodedString(), session: session)
             } catch {
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
             }
         }
     }

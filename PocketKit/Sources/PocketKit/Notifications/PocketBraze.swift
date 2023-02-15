@@ -4,6 +4,7 @@ import BrazeKit
 import UserNotifications
 import SharedPocketKit
 import UIKit
+import Sync
 
 protocol BrazeSDKProtocol {
     func didReceiveUserNotification(
@@ -68,7 +69,7 @@ extension PocketBraze: BrazeProtocol {
         // Developer Note: Since we are registering provisional push, the user will never see the pop up to allow push notifications.
         // This can make it challenging to test push notification registration flows because you will not see push registration appear, so you may want to remove this during active development.
         center.requestAuthorization(options: [.badge, .sound, .alert, .provisional]) { granted, error in
-            print("Notification authorization, granted: \(granted), error: \(String(describing: error))")
+            Log.info("Notification authorization, granted: \(granted), error: \(String(describing: error))")
         }
     }
 
