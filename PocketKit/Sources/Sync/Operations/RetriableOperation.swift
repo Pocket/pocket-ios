@@ -43,8 +43,8 @@ class RetriableOperation: AsyncOperation {
             case .retry(let error):
                 retry(error)
             case .failure(let error):
-                Crashlogger.breadcrumb(category: "sync", level: .error, message: error.localizedDescription)
-                Crashlogger.capture(error: error)
+                Log.breadcrumb(category: "sync", level: .error, message: error.localizedDescription)
+                Log.capture(error: error)
                 finishOperation()
             case .success:
                 finishOperation()
@@ -61,14 +61,14 @@ class RetriableOperation: AsyncOperation {
 
     private func _retry(_ error: Error?) {
         guard retries < 2 else {
-            Crashlogger.breadcrumb(
+            Log.breadcrumb(
                 category: "sync",
                 level: .error,
                 message: "Retriable operation \"\(operation)\" exceeded maximum number of retries"
             )
 
             if let error = error {
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
             }
 
             finishOperation()

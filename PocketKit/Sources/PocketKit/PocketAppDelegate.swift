@@ -33,7 +33,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
-        Crashlogger.start(dsn: Keys.shared.sentryDSN)
+        Log.start(dsn: Keys.shared.sentryDSN)
 
         if CommandLine.arguments.contains("clearKeychain") {
             appSession.currentSession = nil

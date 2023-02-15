@@ -45,7 +45,7 @@ class RefreshCoordinator {
 
             try taskScheduler.submit(request)
         } catch {
-            print(error)
+            Log.capture(error: error)
         }
     }
 

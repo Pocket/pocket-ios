@@ -82,7 +82,7 @@ class PushNotificationService: NSObject {
             for: .userLoggedIn
         ).sink { [weak self] notification in
             guard let session = notification.object as? SharedPocketKit.Session  else {
-                Crashlogger.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
+                Log.capture(message: "Logged in publisher in PocketNotificationService could not convert to session")
                 return
             }
             self?.loggedIn(session: session)
@@ -93,7 +93,7 @@ class PushNotificationService: NSObject {
             for: .userLoggedOut
         ).sink { [weak self] notification in
             guard let session = notification.object as? SharedPocketKit.Session  else {
-                Crashlogger.capture(message: "Logged out publisher in PocketNotificationService could not convert to session")
+                Log.capture(message: "Logged out publisher in PocketNotificationService could not convert to session")
                 return
             }
             self?.loggedOut(session: session)

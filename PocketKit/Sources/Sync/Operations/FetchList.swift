@@ -44,7 +44,7 @@ class FetchList: SyncOperation {
         } catch {
             switch error {
             case is URLSessionClient.URLSessionClientError:
-                Crashlogger.breadcrumb(
+                Log.breadcrumb(
                     category: "sync",
                     level: .error,
                     message: "URLSessionClient.URLSessionClientError with Error: \(error.localizedDescription)"
@@ -53,7 +53,7 @@ class FetchList: SyncOperation {
             case ResponseCodeInterceptor.ResponseCodeError.invalidResponseCode(let response, _):
                 switch response?.statusCode {
                 case .some((500...)):
-                    Crashlogger.breadcrumb(
+                    Log.breadcrumb(
                         category: "sync",
                         level: .error,
                         message: "ResponseCodeInterceptor.ResponseCodeError with Error: \(error.localizedDescription) and status code \(String(describing: response?.statusCode))"
@@ -63,7 +63,7 @@ class FetchList: SyncOperation {
                     return .failure(error)
                 }
             default:
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
                 events.send(.error(error))
                 return .failure(error)
             }
@@ -140,7 +140,7 @@ class FetchList: SyncOperation {
                 return
             }
 
-            Crashlogger.breadcrumb(
+            Log.breadcrumb(
                 category: "sync",
                 level: .info,
                 message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"

@@ -33,7 +33,7 @@ extension PocketAppDelegate {
     public func application(
         _ application: UIApplication,
         didFailToRegisterForRemoteNotificationsWithError error: Error) {
-            print("Error registering for push notifications")
-            Crashlogger.capture(error: error)
+            Log.warning("Error registering for push notifications")
+            Log.capture(error: error)
         }
 }

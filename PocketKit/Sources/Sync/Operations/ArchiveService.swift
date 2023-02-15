@@ -335,7 +335,7 @@ private class FetchArchivePagesOperation: AsyncOperation {
         do {
             try await fetch()
         } catch {
-            print(error)
+            Log.capture(error: error)
         }
 
         finishOperation()
