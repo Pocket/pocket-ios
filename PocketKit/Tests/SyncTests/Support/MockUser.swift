@@ -1,8 +1,7 @@
 import SharedPocketKit
 
 class MockUser: User {
-    var status: SharedPocketKit.Status = .free
-
+    var status: SharedPocketKit.Status?
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 }
