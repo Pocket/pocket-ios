@@ -23,7 +23,13 @@ extension SavedItem {
 
     public func update(from remote: RemoteSavedItem, with space: Space) {
         remoteID = remote.remoteID
-        url = URL(string: remote.url)
+        
+        guard let url = URL(string: remote.url) else {
+            //TODO: Daniel log an error.
+            return
+        }
+        
+        self.url = url
         createdAt = Date(timeIntervalSince1970: TimeInterval(remote._createdAt))
         deletedAt = remote._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         archivedAt = remote.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -31,7 +37,9 @@ extension SavedItem {
         isFavorite = remote.isFavorite
 
         guard let context = managedObjectContext,
-              let itemParts = remote.item.asItem?.fragments.itemParts else {
+              let itemParts = remote.item.asItem?.fragments.itemParts,
+              let itemUrl = URL(string: itemParts.givenUrl)
+        else {
             return
         }
 
@@ -47,13 +55,18 @@ extension SavedItem {
 
         let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteID)
         fetchRequest.fetchLimit = 1
-        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
+        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
         itemToUpdate?.update(remote: itemParts)
         item = itemToUpdate
     }
 
     public func update(from recommendation: Recommendation) {
-        self.url = recommendation.item?.bestURL
+        guard let url = recommendation.item?.bestURL else {
+            //TODO: Daniel log an error.
+            return
+        }
+        
+        self.url = url
         self.createdAt = Date()
 
         item = recommendation.item
@@ -61,7 +74,12 @@ extension SavedItem {
 
     public func update(from summary: SavedItemSummary, with space: Space) {
         remoteID = summary.remoteID
-        url = URL(string: summary.url)
+        guard let url = URL(string: summary.url) else {
+            //TODO: Daniel log an error.
+            return
+        }
+        
+        self.url = url
         createdAt = Date(timeIntervalSince1970: TimeInterval(summary._createdAt))
         deletedAt = summary._deletedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
         archivedAt = summary.archivedAt.flatMap(TimeInterval.init).flatMap(Date.init(timeIntervalSince1970:))
@@ -69,7 +87,9 @@ extension SavedItem {
         isFavorite = summary.isFavorite
 
         guard let context = managedObjectContext,
-              let itemSummary = summary.item.asItem?.fragments.itemSummary else {
+              let itemSummary = summary.item.asItem?.fragments.itemSummary,
+              let itemUrl =  URL(string: itemSummary.givenUrl)
+        else {
             return
         }
 
@@ -83,7 +103,7 @@ extension SavedItem {
 
         let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteID)
         fetchRequest.fetchLimit = 1
-        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
+        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
         itemToUpdate?.update(from: itemSummary)
         item = itemToUpdate
     }

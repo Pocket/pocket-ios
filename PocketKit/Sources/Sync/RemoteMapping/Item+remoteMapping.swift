@@ -6,13 +6,19 @@ import PocketGraph
 extension Item {
     func update(remote: ItemParts) {
         remoteID = remote.remoteID
-        givenURL = URL(string: remote.givenUrl)
+        
+        guard let url = URL(string: remote.givenUrl) else {
+            //TODO: Daniel log an error.
+            return
+        }
+        
+        givenURL = url
         resolvedURL = remote.resolvedUrl.flatMap(URL.init)
         title = remote.title
         topImageURL = remote.topImageUrl.flatMap(URL.init)
         domain = remote.domain
         language = remote.language
-        timeToRead = remote.timeToRead.flatMap(Int32.init) ?? 0
+        timeToRead = remote.timeToRead.flatMap(NSNumber.init) ?? 0
         excerpt = remote.excerpt
         datePublished = remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         isArticle = remote.isArticle ?? false
@@ -63,13 +69,19 @@ extension Item {
 
     func update(from summary: ItemSummary) {
         remoteID = summary.remoteID
-        givenURL = URL(string: summary.givenUrl)
+        
+        guard let url = URL(string: summary.givenUrl) else {
+            //TODO: Daniel log an error.
+            return
+        }
+        
+        givenURL = url
         resolvedURL = summary.resolvedUrl.flatMap(URL.init)
         title = summary.title
         topImageURL = summary.topImageUrl.flatMap(URL.init)
         domain = summary.domain
         language = summary.language
-        timeToRead = summary.timeToRead.flatMap(Int32.init) ?? 0
+        timeToRead = summary.timeToRead.flatMap(NSNumber.init) ?? 0
         excerpt = summary.excerpt
         datePublished = summary.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         isArticle = summary.isArticle ?? false
