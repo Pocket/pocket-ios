@@ -81,6 +81,7 @@ extension InstantSync: InstantSyncProtocol {
             // We do not have a session so we can not register for push notifications.
             // Capture the message for later use and move on.
             Log.capture(message: "Push Notification Service has no current session to use to register a push token with")
+            Log.breadcrumb(category: "sync", level: .error, message: "AppSession.CurrentSession failed with error")
             return
         }
 
@@ -89,6 +90,7 @@ extension InstantSync: InstantSyncProtocol {
                 _ = try await self?.v3Client.registerPushToken(for: DeviceUtilities.deviceIdentifer(), pushType: pushType, token: deviceToken.base64EncodedString(), session: session)
             } catch {
                 Log.capture(error: error)
+                Log.breadcrumb(category: "sync", level: .error, message: "Registering Push notification failed with session: \(session)")
             }
         }
     }
