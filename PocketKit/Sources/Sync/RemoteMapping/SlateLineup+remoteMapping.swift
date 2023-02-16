@@ -45,10 +45,11 @@ extension Recommendation {
 
     func update(from remote: RemoteRecommendation, in space: Space) {
         guard let id = remote.id, let url = URL(string: remote.item.givenUrl) else {
-            //TODO: Daniel log, also daniel work to make this non-null in the API.
+            // TODO: Daniel work to make id non-null in the API Layer.
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Recomendation because \(remote.item.givenUrl) is not valid url")
             return
         }
-        
+
         remoteID = id
         title = remote.curatedInfo?.title
         excerpt = remote.curatedInfo?.excerpt

@@ -20,7 +20,7 @@ public class Item: NSManagedObject {
     internal override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
         super.init(entity: entity, insertInto: context)
     }
-    
+
     public init(context: NSManagedObjectContext,
                 givenURL: URL,
                 remoteID: String) {

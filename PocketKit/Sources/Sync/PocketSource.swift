@@ -376,7 +376,7 @@ extension PocketSource {
         guard let remoteID = savedItem.remoteID else {
             return
         }
-        
+
         guard let remoteSavedItem = try await apollo
             .fetch(query: SavedItemByIDQuery(id: remoteID))
             .data?.user?.savedItemById else {
@@ -648,10 +648,10 @@ extension PocketSource {
 
     public func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
         guard let remoteParts, let url = URL(string: remoteParts.url) else {
-            //TODO: Daniel log error
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem because we do not have a valid url or we have no remoteParts")
             return nil
         }
-        
+
         let savedItem = (try? space.fetchSavedItem(byRemoteID: remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: remoteID)
         savedItem.update(from: remoteParts, with: space)
         try? space.save()

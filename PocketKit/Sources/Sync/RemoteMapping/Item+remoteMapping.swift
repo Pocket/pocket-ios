@@ -6,12 +6,12 @@ import PocketGraph
 extension Item {
     func update(remote: ItemParts) {
         remoteID = remote.remoteID
-        
+
         guard let url = URL(string: remote.givenUrl) else {
-            //TODO: Daniel log an error.
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Item \(remoteID) because \(givenURL) is not valid url")
             return
         }
-        
+
         givenURL = url
         resolvedURL = remote.resolvedUrl.flatMap(URL.init)
         title = remote.title
@@ -69,12 +69,12 @@ extension Item {
 
     func update(from summary: ItemSummary) {
         remoteID = summary.remoteID
-        
+
         guard let url = URL(string: summary.givenUrl) else {
-            //TODO: Daniel log an error.
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Item \(remoteID) because \(summary.givenUrl) is not valid url")
             return
         }
-        
+
         givenURL = url
         resolvedURL = summary.resolvedUrl.flatMap(URL.init)
         title = summary.title
