@@ -14,7 +14,7 @@ struct Services {
     private let persistentContainer: PersistentContainer
 
     private init() {
-        Crashlogger.start(dsn: Keys.shared.sentryDSN)
+        Log.start(dsn: Keys.shared.sentryDSN)
         persistentContainer = .init(storage: .shared)
 
         appSession = AppSession()

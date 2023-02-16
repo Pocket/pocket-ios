@@ -52,7 +52,7 @@ public class PocketSearchService: SearchService {
             try await fetch(for: term, scope: scope)
         } catch {
             // TODO: How to handle errors
-            Crashlogger.capture(error: error)
+            Log.capture(error: error)
             if case URLSessionClient.URLSessionClientError.networkError(_, _, let underlying) = error {
                 switch (underlying as NSError).code {
                 case Constants.noConnectionErrorCode:

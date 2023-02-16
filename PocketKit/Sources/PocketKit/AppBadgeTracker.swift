@@ -52,7 +52,6 @@ class AppBadgeSetup {
         } else {
             do {
                 numberOfSaves = try source.mainContext.fetch(numberOfSavesRequest).count
-                print(numberOfSaves)
             } catch {
                 numberOfSaves = 0
             }

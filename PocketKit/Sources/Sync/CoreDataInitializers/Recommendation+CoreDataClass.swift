@@ -18,6 +18,10 @@ public class Recommendation: NSManagedObject {
         fatalError()
     }
 
+    internal override init(entity: NSEntityDescription, insertInto context: NSManagedObjectContext?) {
+        super.init(entity: entity, insertInto: context)
+    }
+    
     public init(
         context: NSManagedObjectContext,
         remoteID: String

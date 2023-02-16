@@ -52,7 +52,7 @@ class SavedItemMutationOperation: SyncOperation {
                     return .failure(error)
                 }
             default:
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
                 events.send(.error(error))
                 return .failure(error)
             }

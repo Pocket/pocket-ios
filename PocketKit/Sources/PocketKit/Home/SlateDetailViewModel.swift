@@ -45,7 +45,7 @@ class SlateDetailViewModel {
             do {
                 try self?.handle(notification: notification)
             } catch {
-                print(error)
+                Log.capture(error: error)
             }
         }.store(in: &subscriptions)
     }

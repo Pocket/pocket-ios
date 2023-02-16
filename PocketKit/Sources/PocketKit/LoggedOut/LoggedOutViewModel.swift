@@ -152,7 +152,7 @@ class LoggedOutViewModel: ObservableObject {
         } catch {
             // AuthorizationClient should only ever throw an AuthorizationClient.error
             guard let error = error as? AuthorizationClient.Error else {
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
                 return
             }
 
@@ -161,9 +161,9 @@ class LoggedOutViewModel: ObservableObject {
                 // If component generation failed, we should alert the user (to hopefully reach out),
                 // as well as capture the error
                 await present(error)
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
             case .alreadyAuthenticating:
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
             case .other(let nested):
                 // All other errors will be throws by the AuthenticationSession,
                 // which in production will be ASWebAuthenticationSessionError.
@@ -173,14 +173,14 @@ class LoggedOutViewModel: ObservableObject {
                     // but the other errors should never occur, so they should be captured.
                     switch nested.code {
                     case .presentationContextInvalid, .presentationContextNotProvided:
-                        Crashlogger.breadcrumb(category: "auth", level: .error, message: "ASWebAuthenticationSessionError: \(nested.localizedDescription)")
-                        Crashlogger.capture(error: nested)
+                        Log.breadcrumb(category: "auth", level: .error, message: "ASWebAuthenticationSessionError: \(nested.localizedDescription)")
+                        Log.capture(error: nested)
                     default:
                         return
                     }
                 } else {
-                    Crashlogger.breadcrumb(category: "auth", level: .error, message: "Error: \(nested.localizedDescription)")
-                    Crashlogger.capture(error: error)
+                    Log.breadcrumb(category: "auth", level: .error, message: "Error: \(nested.localizedDescription)")
+                    Log.capture(error: error)
                 }
             }
         }

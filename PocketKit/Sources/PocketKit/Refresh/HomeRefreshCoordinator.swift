@@ -34,9 +34,9 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
                     isRefreshing = true
                     try await source.fetchSlateLineup(HomeViewModel.lineupIdentifier)
                     userDefaults.setValue(Date(), forKey: Self.dateLastRefreshKey)
-                    Crashlogger.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
+                    Log.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
                 } catch {
-                    Crashlogger.capture(error: error)
+                    Log.capture(error: error)
                 }
                 completion()
                 isRefreshing = false

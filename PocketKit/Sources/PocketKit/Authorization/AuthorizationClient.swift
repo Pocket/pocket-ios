@@ -68,7 +68,7 @@ public class AuthorizationClient {
         return try await withCheckedThrowingContinuation { continuation in
             var session = authenticationSessionFactory(requestURL, requestRedirect) { url, error in
                 if let error = error {
-                    Crashlogger.breadcrumb(category: "auth", level: .error, message: "Error: \(error.localizedDescription) with url \(String(describing: url))")
+                    Log.breadcrumb(category: "auth", level: .error, message: "Error: \(error.localizedDescription) with url \(String(describing: url))")
                     continuation.resume(throwing: AuthorizationClient.Error.other(error))
                 } else if let url = url {
                     guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),

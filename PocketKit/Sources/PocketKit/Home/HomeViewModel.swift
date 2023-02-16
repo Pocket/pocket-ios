@@ -128,7 +128,7 @@ class HomeViewModel {
             do {
                 try self?.handle(notification: notification)
             } catch {
-                print(error)
+                Log.capture(error: error)
             }
         }.store(in: &subscriptions)
 
@@ -149,7 +149,7 @@ class HomeViewModel {
             guard snapshot.numberOfSections != 0 else { return }
             self.snapshot = snapshot
         } catch {
-            print(error)
+            Log.capture(error: error)
         }
     }
 
@@ -158,7 +158,7 @@ class HomeViewModel {
             do {
                 snapshot = try rebuildSnapshot()
             } catch {
-                print(error)
+                Log.capture(error: error)
             }
 
             completion()
