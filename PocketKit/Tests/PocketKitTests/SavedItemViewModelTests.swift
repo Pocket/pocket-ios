@@ -264,7 +264,7 @@ class SavedItemViewModelTests: XCTestCase {
             return savedItem.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url!)
+        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
@@ -284,7 +284,7 @@ class SavedItemViewModelTests: XCTestCase {
             return savedItem.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url!)
+        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Move to Saves")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")

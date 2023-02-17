@@ -380,7 +380,7 @@ class RecommendationViewModelTests: XCTestCase {
             return recommendation.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL!)
+        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Save")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Report")
 
@@ -402,7 +402,7 @@ class RecommendationViewModelTests: XCTestCase {
             return recommendation.item
         }
 
-        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL!)
+        let webViewActivityList = viewModel.webViewActivityItems(url: recommendation.item!.givenURL)
         XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
         XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
         XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")

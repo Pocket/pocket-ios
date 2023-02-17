@@ -133,7 +133,7 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsView.wait()
         app.addTagsView.allTagsView.wait()
     }
-    
+
     func selectTaggedFilterButton() {
         app.saves.filterButton(for: "Tagged").tap()
     }
