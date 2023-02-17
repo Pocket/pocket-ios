@@ -322,11 +322,6 @@ extension HomeViewModel {
     }
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            contexts(for: savedItem, at: indexPath)
-        )
-
         let viewModel = SavedItemViewModel(
             item: savedItem,
             source: source,
@@ -336,19 +331,10 @@ extension HomeViewModel {
 
         if let item = savedItem.item, item.shouldOpenInWebView {
             selectedReadableType = .webViewSavedItem(viewModel)
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
-                contexts(for: savedItem, at: indexPath)
-            )
         } else {
             selectedReadableType = .savedItem(viewModel)
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
-                contexts(for: savedItem, at: indexPath)
-            )
         }
+        tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath.item, itemId: savedItem.remoteID))
     }
 }
 
@@ -631,10 +617,20 @@ extension HomeViewModel {
 extension HomeViewModel {
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading, .recentSaves, .offline:
+        case .loading, .offline:
+            return
+        case .recentSaves(let objectID):    
+            guard let savedItem = source.mainContext.object(with: objectID) as? SavedItem else {
+                Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recent save into Saved Item from objectID: \(String(describing: objectID))")
+                Log.capture(message: "SavedItem is null on willDisplay Home Recent Saves")
+                return
+            }
+            tracker.track(event: Events.Home.RecentSavesCardImpression(url: savedItem.url, positionInList: indexPath.item, itemId: savedItem.remoteID))
             return
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+                Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recomendation into Recommendation from objectID: \(String(describing: objectID))")
+                Log.capture(message: "Recommendation is null on willDisplay Home Recommendation")
                 return
             }
 
