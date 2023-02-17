@@ -67,7 +67,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             XCTAssert(true, "expect call to save action")
             var tags: [Tag] = []
             for index in 1...2 {
-                let tag: Tag = self.space.new()
+                let tag: Tag = Tag(context: self.space.context)
                 tag.name = "tag \(index)"
                 tags.append(tag)
             }
@@ -85,7 +85,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             retrieveAction: { _ in
             var tags: [Tag] = []
             for index in 2...3 {
-                let tag: Tag = self.space.new()
+                let tag: Tag = Tag(context: self.space.context)
                 tag.name = "tag \(index)"
                 tags.append(tag)
             }

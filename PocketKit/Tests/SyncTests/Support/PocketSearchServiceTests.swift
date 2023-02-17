@@ -89,6 +89,18 @@ class PocketSearchServiceTests: XCTestCase {
 
         XCTAssertEqual(self.apollo.fetchCalls(withQueryType: SearchSavedItemsQuery.self).count, 3)
     }
+
+    // MARK: Error
+    func test_search_whenFetchFails_throwsError() async throws {
+        apollo.stubFetch(ofQueryType: SearchSavedItemsQuery.self, toReturnError: TestError.anError)
+        let service = subject()
+        do {
+            try await service.search(for: "search-term", scope: .all)
+            XCTFail("Should have failed")
+        } catch {
+            XCTAssertEqual(error as? TestError, .anError)
+        }
+    }
 }
 
 extension MockApolloClient {

@@ -3,6 +3,11 @@ import Textile
 import UIKit
 
 struct BannerModifier: ViewModifier {
+    enum Constants {
+        static let imageMaxWidth: CGFloat = 83
+        static let spacing: CGFloat = 20
+    }
+
     struct BannerData {
         var image: ImageAsset
         var title: String
@@ -20,8 +25,9 @@ struct BannerModifier: ViewModifier {
                     HStack {
                         Image(asset: data.image)
                             .resizable()
-                            .frame(width: 83, height: 50, alignment: .leading)
-                        Spacer(minLength: 10)
+                            .scaledToFit()
+                            .frame(maxWidth: Constants.imageMaxWidth)
+                        Spacer(minLength: Constants.spacing)
                         VStack(alignment: .leading, spacing: 8) {
                             Text(data.title)
                                 .style(.title)
@@ -36,6 +42,7 @@ struct BannerModifier: ViewModifier {
                             .stroke(Color(.branding.amber3), lineWidth: 1)
                     )
                 }
+                .accessibilityIdentifier("banner")
                 .padding()
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .animation(.easeInOut, value: show)

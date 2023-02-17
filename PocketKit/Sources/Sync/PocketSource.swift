@@ -283,36 +283,30 @@ extension PocketSource {
     }
 
     public func unarchive(item: SavedItem) {
-        guard let url = item.url else { return }
-
         item.isArchived = false
         item.createdAt = Date()
         try? space.save()
 
         let operation = operations.saveItemOperation(
             managedItemID: item.objectID,
-            url: url,
+            url: item.url,
             events: _events,
             apollo: apollo,
             space: space
         )
 
-        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
+        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url))
     }
 
     public func save(item: SavedItem) {
-        guard let url = item.url else {
-            return
-        }
-
         let operation = operations.saveItemOperation(
             managedItemID: item.objectID,
-            url: url,
+            url: item.url,
             events: _events,
             apollo: apollo,
             space: space
         )
-        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: url))
+        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url))
     }
 
     public func addTags(item: SavedItem, tags: [String]) {
@@ -421,13 +415,12 @@ extension PocketSource {
     }
 
     public func fetchDetails(for recommendation: Recommendation) async throws {
-        guard let item = recommendation.item,
-              let remoteID = item.remoteID else {
+        guard let item = recommendation.item else {
             return
         }
 
         guard let remoteItem = try await apollo
-            .fetch(query: ItemByIDQuery(id: remoteID))
+            .fetch(query: ItemByIDQuery(id: recommendation.remoteID))
             .data?.itemByItemId?.fragments.itemParts else {
             return
         }
@@ -442,7 +435,7 @@ extension PocketSource {
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
     private func enqueue(operation: SyncOperation, task: SyncTask, completion: (() -> Void)? = nil) {
-        let persistentTask: PersistentSyncTask = space.new()
+        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.context)
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
         try? space.save()
@@ -598,7 +591,7 @@ extension PocketSource {
         if let savedItem = recommendation.item?.savedItem {
             unarchive(item: savedItem)
         } else {
-            let savedItem: SavedItem = space.new()
+            let savedItem: SavedItem = SavedItem(context: space.context, url: item.givenURL)
             savedItem.update(from: recommendation)
             try? space.save()
 
@@ -637,7 +630,7 @@ extension PocketSource {
         if let savedItem = try? space.fetchSavedItem(byURL: url) {
             unarchive(item: savedItem)
         } else {
-            let savedItem: SavedItem = space.new()
+            let savedItem: SavedItem = SavedItem(context: space.context, url: url)
             savedItem.url = url
             savedItem.createdAt = Date()
             try? space.save()
@@ -654,14 +647,15 @@ extension PocketSource {
     }
 
     public func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
-        var savedItem: SavedItem? = try? space.fetchSavedItem(byRemoteID: remoteID)
-        guard savedItem == nil else { return savedItem }
-        savedItem = space.new()
+        guard let remoteParts, let url = URL(string: remoteParts.url) else {
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem because we do not have a valid url or we have no remoteParts")
+            return nil
+        }
+
+        let savedItem = (try? space.fetchSavedItem(byRemoteID: remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: remoteID)
+        savedItem.update(from: remoteParts, with: space)
         try? space.save()
 
-        if let remoteParts = remoteParts {
-            savedItem?.update(from: remoteParts, with: space)
-        }
         return savedItem
     }
 }

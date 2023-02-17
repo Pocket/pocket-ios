@@ -34,7 +34,7 @@ extension PocketSourceTests {
             receivedNotification.fulfill()
         }.store(in: &subscriptions)
 
-        let notification: SavedItemUpdatedNotification = space.new()
+        let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
         notification.savedItem = savedItem
         try! space.save()
 
@@ -57,7 +57,7 @@ extension PocketSourceTests {
         var source: PocketSource? = subject()
 
         let savedItem = try! space.createSavedItem()
-        let unresolved: UnresolvedSavedItem = space.new()
+        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.context)
         unresolved.savedItem = savedItem
         try space.save()
 
@@ -78,11 +78,11 @@ extension PocketSourceTests {
         let source = subject()
 
         let savedItem = try! space.createSavedItem()
-        let notification1: SavedItemUpdatedNotification = space.new()
+        let notification1: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
         notification1.savedItem = savedItem
         try! space.save()
 
-        let notification2: SavedItemUpdatedNotification = space.new()
+        let notification2: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
         notification2.savedItem = savedItem
         try space.save()
 
