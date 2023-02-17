@@ -12,11 +12,13 @@ class PremiumUpgradeViewModel: ObservableObject {
 
     private var store: PremiumSubscriptionStore?
 
-    @Published var monthlySubscriptionName = ""
-    @Published var monthlySubscriptionPriceDescription = ""
+    @Published private(set) var monthlyName = ""
+    @Published private(set) var monthlyPrice = ""
+    @Published private(set) var monthlyPriceDescription = ""
 
-    @Published var annualSubscriptionName = ""
-    @Published var annualSubscriptionPriceDescription = ""
+    @Published private(set) var annualName = ""
+    @Published private(set) var annualPrice = ""
+    @Published private(set) var annualPriceDescription = ""
 
     private var cancellable: AnyCancellable?
 
@@ -34,11 +36,13 @@ class PremiumUpgradeViewModel: ObservableObject {
             subscriptions.forEach {
                 switch $0.type {
                 case .monthly:
-                    self?.monthlySubscriptionName = $0.name
-                    self?.monthlySubscriptionPriceDescription = $0.priceDescription
+                    self?.monthlyName = $0.name
+                    self?.monthlyPrice = $0.price
+                    self?.monthlyPriceDescription = $0.priceDescription
                 case .annual:
-                    self?.annualSubscriptionName = $0.name
-                    self?.annualSubscriptionPriceDescription = $0.priceDescription
+                    self?.annualName = $0.name
+                    self?.annualPrice = $0.price
+                    self?.annualPriceDescription = $0.priceDescription
                 case .none:
                     break
                 }

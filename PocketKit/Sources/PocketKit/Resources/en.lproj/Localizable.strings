@@ -128,3 +128,14 @@
 "It's rude, vulgar, or offensive" = "It's rude, vulgar, or offensive";
 "It contains misinformation" = "It contains misinformation";
 "Other" = "Other";
+
+// Short name of the monthly premium subscription
+"Monthly" = "Monthly";
+// Suffix of the monthly premium subscription price description
+"month" = "month";
+// Suffix of the annual premium subscription price description
+"year" = "year";
+// Short name of the annual premium subscription
+"Annual" = "Annual";
+// Description of the premium uprgade view
+"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";

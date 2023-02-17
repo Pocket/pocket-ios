@@ -11,8 +11,8 @@ struct Keys {
     let sentryDSN: String
     let brazeAPIEndpoint: String
     let brazeAPIKey: String
-    let pocketPremiumMonthlyAlpha: String
-    let pocketPremiumAnnualAlpha: String
+    let pocketPremiumMonthly: String
+    let pocketPremiumAnnual: String
 
     private init() {
         guard let info = Bundle.main.infoDictionary else {
@@ -35,11 +35,11 @@ struct Keys {
             fatalError("Unable to extract BrazeAPIKey from main bundle")
         }
 
-        guard let pocketPremiumMonthlyAlpha = info["PocketPremiumMonthlyAlpha"] as? String else {
+        guard let pocketPremiumMonthly = info["PocketPremiumMonthly"] as? String else {
             fatalError("Unable to extract PocketPremiumMonthlyAlpha from main bundle")
         }
 
-        guard let pocketPremiumAnnualAlpha = info["PocketPremiumAnnualAlpha"] as? String else {
+        guard let pocketPremiumAnnual = info["PocketPremiumAnnual"] as? String else {
             fatalError("Unable to extract PocketPremiumAnnualAlpha from main bundle")
         }
 
@@ -47,7 +47,7 @@ struct Keys {
         self.sentryDSN = sentryDSN
         self.brazeAPIEndpoint = brazeAPIEndpoint
         self.brazeAPIKey = brazeAPIKey
-        self.pocketPremiumMonthlyAlpha = pocketPremiumMonthlyAlpha
-        self.pocketPremiumAnnualAlpha = pocketPremiumAnnualAlpha
+        self.pocketPremiumMonthly = pocketPremiumMonthly
+        self.pocketPremiumAnnual = pocketPremiumAnnual
     }
 }

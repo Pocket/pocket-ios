@@ -56,10 +56,10 @@
 	<string>$(POCKET_API_BASE_URL)</string>
 	<key>PocketAPIConsumerKey</key>
 	<string>$(POCKET_API_CONSUMER_KEY)</string>
-	<key>PocketPremiumMonthlyAlpha</key>
-	<string>$(POCKET_PREMIUM_MONTHLY_ALPHA)</string>
-	<key>PocketPremiumAnnualAlpha</key>
-	<string>$(POCKET_PREMIUM_ANNUAL_ALPHA)</string>
+	<key>PocketPremiumMonthly</key>
+	<string>$(POCKET_PREMIUM_MONTHLY)</string>
+	<key>PocketPremiumAnnual</key>
+	<string>$(POCKET_PREMIUM_ANNUAL)</string>
 	<key>SentryDSN</key>
 	<string>$(SENTRY_DSN)</string>
 	<key>SnowplowEndpoint</key>
