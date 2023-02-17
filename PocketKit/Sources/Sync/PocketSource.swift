@@ -420,7 +420,7 @@ extension PocketSource {
         }
 
         guard let remoteItem = try await apollo
-            .fetch(query: ItemByIDQuery(id: recommendation.remoteID))
+            .fetch(query: ItemByIDQuery(id: item.remoteID))
             .data?.itemByItemId?.fragments.itemParts else {
             return
         }
