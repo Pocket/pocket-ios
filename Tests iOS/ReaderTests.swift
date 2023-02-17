@@ -37,6 +37,13 @@ class ReaderTests: XCTestCase {
             }
         }
 
+        server.routes.get("/hello") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+        
         try server.start()
     }
 
@@ -104,10 +111,32 @@ class ReaderTests: XCTestCase {
     }
 
     func test_longPressingHyperlink_showsPreview_andMenu() {
-        launchApp_andOpenItem()
-        scrollDownToHyperlink()
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("list-for-web-view-actions")
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        app.launch().tabBar.savesButton.wait().tap()
+
+        app
+            .saves
+            .itemView(at: 0)
+            .wait()
+            .tap()
+
         let hyperlink = XCUIApplication()
-        hyperlink.collectionViews.staticTexts["Pocket: The place to absorb great content."].press(forDuration: 3)
+        hyperlink.webViews.staticTexts["Hello, world"].press(forDuration: 3)
         XCTAssertTrue(hyperlink.staticTexts["Hide preview"].exists)
         XCTAssertTrue(hyperlink.buttons["Share…"].exists)
     }
@@ -147,10 +176,5 @@ class ReaderTests: XCTestCase {
             .itemView(at: 0)
             .wait()
             .tap()
-    }
-
-    func scrollDownToHyperlink() {
-        let reader = XCUIApplication()
-        reader.swipeUp()
     }
 }
