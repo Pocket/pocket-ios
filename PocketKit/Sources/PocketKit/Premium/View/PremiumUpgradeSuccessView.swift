@@ -12,15 +12,15 @@ struct PremiumUpgradeSuccessView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: 350, height: 350)
-            Text("Hooray!")
+            Text(L10n.hooray)
                 .style(.title)
-            Text("You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.")
+            Text(L10n.Premium.Success.message)
                 .style(.paragraph)
             Button(action: {
                 dismiss()
             }) {
                 VStack {
-                    Text("Back to Pocket")
+                    Text(L10n.Back.To.pocket)
                         .style(.button)
                 }
             }

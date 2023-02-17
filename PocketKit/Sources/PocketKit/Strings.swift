@@ -77,6 +77,8 @@ internal enum L10n {
   internal static let hitTheStarIconToFavoriteAnArticleAndFindItFaster = L10n.tr("Localizable", "Hit the star icon to favorite an article and find it faster.", fallback: "Hit the star icon to favorite an article and find it faster.")
   /// Home
   internal static let home = L10n.tr("Localizable", "Home", fallback: "Home")
+  /// Hooray!
+  internal static let hooray = L10n.tr("Localizable", "Hooray!", fallback: "Hooray!")
   /// How to archive
   internal static let howToArchive = L10n.tr("Localizable", "How to archive", fallback: "How to archive")
   /// How to save
@@ -216,7 +218,17 @@ internal enum L10n {
     /// Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket
     internal static let yourArticlesAndVideosWillBeReadyForYouInPocket = L10n.tr("Localizable", "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket", fallback: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket")
   }
+  internal enum Back {
+    internal enum To {
+      /// Back to Pocket
+      internal static let pocket = L10n.tr("Localizable", "back.to.pocket", fallback: "Back to Pocket")
+    }
+  }
   internal enum Premium {
+    internal enum Success {
+      /// You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.
+      internal static let message = L10n.tr("Localizable", "premium.success.message", fallback: "You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.")
+    }
     internal enum Upgradeview {
       /// Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.
       internal static func description(_ p1: Any, _ p2: Any) -> String {
