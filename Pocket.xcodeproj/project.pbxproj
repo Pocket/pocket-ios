@@ -214,6 +214,7 @@
 		8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewElement.swift; sourceTree = "<group>"; };
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
 		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
+		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
 		D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTests.swift; sourceTree = "<group>"; };
 		F204A76027E22EC50010E155 /* SaveToPocket.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SaveToPocket.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F204A76727E22EC50010E155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -407,6 +408,7 @@
 			children = (
 				AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */,
 				16973355263CBB3F0003DE2A /* secrets.xcconfig */,
+				AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */,
 			);
 			path = Config;
 			sourceTree = "<group>";
