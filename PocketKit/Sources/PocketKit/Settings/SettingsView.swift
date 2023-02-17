@@ -100,8 +100,8 @@ struct SettingsForm: View {
 // MARK: Top Section
 // These methods should be removed once we support iOS 16+
 extension SettingsForm {
-    @ViewBuilder
     /// Handles top section separator on different versions of iOS
+    @ViewBuilder
     private func topSectionWithLeadingDivider() -> some View {
         if #available(iOS 16.0, *) {
             topSection()
