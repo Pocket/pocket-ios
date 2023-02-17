@@ -74,7 +74,6 @@ struct PremiumSubscription {
             return ""
         }
     }
-
     private static let separator = "/"
 }
 
