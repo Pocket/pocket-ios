@@ -57,7 +57,6 @@ extension ImageAsset {
     public static let searchNoResults = ImageAsset("search.noresults")
     public static let searchRecent = ImageAsset("search.recent")
     public static let diamond = ImageAsset("diamond")
-    public static let premiumHooray = ImageAsset("premium.hooray")
 
     public static let readerSkeleton = ReaderSkeleton()
 }
