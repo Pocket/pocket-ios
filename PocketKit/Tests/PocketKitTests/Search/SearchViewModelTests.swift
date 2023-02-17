@@ -606,37 +606,37 @@ class SearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Error Handling
-//    func test_updateSearchResults_forPremiumUser_withOnlineSavesError_showsLocalSaves() throws {
-//        user.status = .premium
-//        networkPathMonitor.update(status: .unsatisfied)
-//        try setupLocalSavesSearch()
-//
-//        searchService.stubSearch { _, _ in
-//            throw TestError.anError
-//        }
-//
-//        let viewModel = subject()
-//        let localSavesExpectation = expectation(description: "handle local saves scenario")
-//
-//        viewModel.$searchState.dropFirst(3).receive(on: DispatchQueue.main).sink { state in
-//            guard case .searchResults(let results) = state else {
-//                XCTFail("Should not have failed")
-//                return
-//            }
-//            XCTAssertEqual(results.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
-//            XCTAssertTrue(viewModel.showBanner)
-//            localSavesExpectation.fulfill()
-//        }.store(in: &subscriptions)
-//
-//        viewModel.updateScope(with: .saves, searchTerm: "saved")
-//        wait(for: [localSavesExpectation], timeout: 1)
-//    }
-
-    func test_updateSearchResults_withInternetConnectionError_showsOfflineView() throws {
+    func test_updateSearchResults_forPremiumUser_withOnlineSavesError_showsLocalSaves() async throws {
         user.status = .premium
-        searchService.stubSearch { _, _ in
-            throw SearchServiceError.noInternet
+        networkPathMonitor.update(status: .unsatisfied)
+        try setupLocalSavesSearch()
+
+        let viewModel = subject()
+        let localSavesExpectation = expectation(description: "handle local saves scenario")
+
+        viewModel.$searchState.dropFirst(3).receive(on: DispatchQueue.main).sink { state in
+            guard case .searchResults(let results) = state else {
+                XCTFail("Should not have failed")
+                return
+            }
+            XCTAssertEqual(results.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
+            XCTAssertTrue(viewModel.showBanner)
+            localSavesExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.updateScope(with: .saves, searchTerm: "saved")
+
+        await withCheckedContinuation { continuation in
+            searchService.stubSearch { _, _ in
+                continuation.resume()
+                throw TestError.anError
+            }
         }
+        wait(for: [localSavesExpectation], timeout: 1)
+    }
+
+    func test_updateSearchResults_withInternetConnectionError_showsOfflineView() async throws {
+        user.status = .premium
 
         let viewModel = subject()
         let errorExpectation = expectation(description: "handle apollo internet connection error")
@@ -651,6 +651,14 @@ class SearchViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.updateScope(with: .archive, searchTerm: "search-term")
+
+        await withCheckedContinuation { continuation in
+            searchService.stubSearch { _, _ in
+                continuation.resume()
+                throw SearchServiceError.noInternet
+            }
+        }
+
         wait(for: [errorExpectation], timeout: 1)
     }
 

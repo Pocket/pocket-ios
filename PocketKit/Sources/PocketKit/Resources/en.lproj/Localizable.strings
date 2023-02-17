@@ -128,3 +128,10 @@
 "It's rude, vulgar, or offensive" = "It's rude, vulgar, or offensive";
 "It contains misinformation" = "It contains misinformation";
 "Other" = "Other";
+
+// Search
+"Oops! Try again?" = "Oops! Try again?";
+"We’re experiencing an error and temporarily can’t get you what you need. Please try again later." = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
+"Limited search results" = "Limited search results";
+"You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search." = "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.";
+"We’re experiencing an error and can’t show you full search results. Please try again later." = "We’re experiencing an error and can’t show you full search results. Please try again later.";

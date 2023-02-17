@@ -284,4 +284,43 @@ class SearchTests: XCTestCase {
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
     }
+
+    // MARK: - Search Error State
+    func test_search_showsErrorView() {
+        server.routes.post("/graphql") { request, _ in
+            Response(status: .internalServerError)
+        }
+        app.launch()
+        tapSearch(fromArchive: true)
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+
+        XCTAssertTrue(app.saves.searchEmptyStateView(for: "error-empty-state").exists)
+    }
+
+    func test_search_forSaves_showsErrorBanner() {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
+            } else if apiRequest.isForSearch(.saves) {
+                return Response(status: .internalServerError)
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+        app.launch()
+        tapSearch()
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+
+        XCTAssertTrue(app.saves.searchView.hasBanner(with: "Limited search results"))
+    }
 }

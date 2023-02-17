@@ -113,6 +113,27 @@ class OnlineSearchTests: XCTestCase {
         XCTAssertFalse(sut.hasCache(with: term))
     }
 
+    // MARK: Error
+    func test_search_whenFetchFails_throwsError() async {
+        let sut = subject()
+        let term = "search-term"
+        sut.search(with: term)
+
+        await withCheckedContinuation { continuation in
+            searchService.stubSearch { _, _ in
+                continuation.resume()
+                throw TestError.anError
+            }
+        }
+
+        guard case .failure(let error) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(error as? TestError, .anError)
+    }
+
     private func setupOnlineSearch(with term: String) async {
         let itemParts = SavedItemParts(data: DataDict([
             "__typename": "SavedItem",
