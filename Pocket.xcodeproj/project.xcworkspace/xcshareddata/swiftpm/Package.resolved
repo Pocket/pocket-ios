@@ -129,10 +129,10 @@
     {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections.git",
+      "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "937e904258d22af6e447a0b72c0bc67583ef64a2",
-        "version" : "1.0.4"
+        "revision" : "f504716c27d2e5d4144fa4794b12129301d17729",
+        "version" : "1.0.3"
       }
     },
     {
@@ -140,8 +140,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "45167b8006448c79dda4b7bd604e07a034c15c49",
-        "version" : "2.48.0"
+        "revision" : "4ad2c3733845abd9ee8892a323b0fa0d80f37e34",
+        "version" : "2.47.0"
       }
     },
     {
