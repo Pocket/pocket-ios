@@ -41,34 +41,50 @@ struct SettingsView: View {
 struct SettingsForm: View {
     @ObservedObject
     var model: AccountViewModel
+
+    @ViewBuilder
+    func topSection() -> some View {
+            Section(header: Text(L10n.yourAccount).style(.settings.header)) {
+                if !model.isPremium {
+                    SettingsRowButton(title: "Go Premium", leadingImage: UIImage(asset: .premiumIcon), trailingImage: UIImage(asset: .chevronRight)) {
+                        model.showPremiumUpgrade()
+                    }
+                    .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
+                        PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
+                    }
+                }
+                SettingsRowButton(title: L10n.signOut, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
+                    .accessibilityIdentifier("sign-out-button")
+                    .alert(
+                        L10n.areYouSure,
+                        isPresented: $model.isPresentingSignOutConfirm,
+                        actions: {
+                            Button(L10n.signOut, role: .destructive) {
+                                model.signOut()
+                            }
+                        }, message: {
+                            Text(L10n.youWillBeSignedOutOfYourAccountAndAnyFilesThatHaveBeenSavedForOfflineViewingWillBeDeleted)
+                        }
+                    )
+            }
+    }
+
+    @ViewBuilder
+    func topSectionWithLeadingDivider() -> some View {
+        if #available(iOS 16.0, *) {
+            topSection()
+                .alignmentGuide(.listRowSeparatorLeading) { _ in
+                    return 0
+                }
+        } else {
+            topSection()
+        }
+    }
+
     var body: some View {
         Form {
             Group {
-                Section(header: Text(L10n.yourAccount).style(.settings.header)) {
-                    if !model.isPremium {
-                        SettingsRowButton(title: "Go Premium", leadingImage: UIImage(asset: .premiumIcon), trailingImage: UIImage(asset: .chevronRight)) {
-                            model.showPremiumUpgrade()
-                        }
-                        .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
-                            PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
-                        }
-                    }
-                    Divider()
-                    SettingsRowButton(title: L10n.signOut, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
-                        .accessibilityIdentifier("sign-out-button")
-                        .alert(
-                            L10n.areYouSure,
-                            isPresented: $model.isPresentingSignOutConfirm,
-                            actions: {
-                                Button(L10n.signOut, role: .destructive) {
-                                    model.signOut()
-                                }
-                            }, message: {
-                                Text(L10n.youWillBeSignedOutOfYourAccountAndAnyFilesThatHaveBeenSavedForOfflineViewingWillBeDeleted)
-                            }
-                        )
-                }
-                .listRowSeparator(.hidden)
+                topSectionWithLeadingDivider()
                 .textCase(nil)
 
                 Section(header: Text(L10n.appCustomization).style(.settings.header)) {
