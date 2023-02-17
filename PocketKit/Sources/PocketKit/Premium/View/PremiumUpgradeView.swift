@@ -53,25 +53,25 @@ struct PremiumUpgradeView: View {
                 Divider().background(Color(.ui.grey1))
                 PremiumUpgradeFeaturesView()
                 HStack {
-                    if viewModel.monthlySubscriptionName.isEmpty {
+                    if viewModel.monthlyName.isEmpty {
                         PremiumUpgradeButton(isYearly: false)
                             .redacted(reason: .placeholder)
                     } else {
                         PremiumUpgradeButton(
-                            text: viewModel.monthlySubscriptionName,
-                            pricing: viewModel.monthlySubscriptionPriceDescription,
+                            text: viewModel.monthlyName,
+                            pricing: viewModel.monthlyPriceDescription,
                             isYearly: false
                         )
                     }
                     Spacer().frame(width: 28)
                     ZStack(alignment: .topTrailing) {
-                        if viewModel.annualSubscriptionName.isEmpty {
+                        if viewModel.annualName.isEmpty {
                             PremiumUpgradeButton(isYearly: true)
                                 .redacted(reason: .placeholder)
                         } else {
                             PremiumUpgradeButton(
-                                text: viewModel.annualSubscriptionName,
-                                pricing: viewModel.annualSubscriptionPriceDescription,
+                                text: viewModel.annualName,
+                                pricing: viewModel.annualPriceDescription,
                                 isYearly: true
                             )
                             PremiumYearlyPercent()
@@ -79,7 +79,12 @@ struct PremiumUpgradeView: View {
                         }
                     }
                 }
-                PremiumInfoView()
+                if viewModel.monthlyPrice.isEmpty, viewModel.annualPrice.isEmpty {
+                    PremiumInfoView(monthlyPrice: viewModel.monthlyPrice, annualPrice: viewModel.annualPrice)
+                        .redacted(reason: .placeholder)
+                } else {
+                    PremiumInfoView(monthlyPrice: viewModel.monthlyPrice, annualPrice: viewModel.annualPrice)
+                }
                 PremiumTermsView()
             }
             .padding([.leading, .trailing], 32)
@@ -196,14 +201,15 @@ private struct PremiumYearlyPercent: View {
 }
 
 private struct PremiumInfoView: View {
-    private let text = """
-Subscriptions will be charged to your credit card through your iTunes account. \
-Your account will be charged $TBD (monthly) or $TBD (yearly) for renewal within 24 hours prior to the end of the current period. \
-Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. \
-It will not be possible to immediately cancel a subscription. \
-You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. \
-Refunds are not available for unused portions of a subscription.
-"""
+    let monthlyPrice: String
+    let annualPrice: String
+    private let text: String
+
+    init(monthlyPrice: String, annualPrice: String) {
+        self.monthlyPrice = monthlyPrice
+        self.annualPrice = annualPrice
+        self.text = L10n.Premium.Upgradeview.description(monthlyPrice, annualPrice)
+    }
 
     var body: some View {
         Text(text).style(.info)
