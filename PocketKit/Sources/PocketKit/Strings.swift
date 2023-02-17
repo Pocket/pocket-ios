@@ -208,6 +208,20 @@ internal enum L10n {
     /// Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket
     internal static let yourArticlesAndVideosWillBeReadyForYouInPocket = L10n.tr("Localizable", "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket", fallback: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket")
   }
+  internal enum Search {
+    /// Oops! Try again?
+    internal static let errorHeadline = L10n.tr("Localizable", "search.errorHeadline", fallback: "Oops! Try again?")
+    /// We’re experiencing an error and temporarily can’t get you what you need. Please try again later.
+    internal static let errorMessage = L10n.tr("Localizable", "search.errorMessage", fallback: "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.")
+    /// Limited search results
+    internal static let limitedResults = L10n.tr("Localizable", "search.limitedResults", fallback: "Limited search results")
+    /// You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.
+    internal static let offlineMessage = L10n.tr("Localizable", "search.offlineMessage", fallback: "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.")
+    internal enum Banner {
+      /// We’re experiencing an error and can’t show you full search results. Please try again later.
+      internal static let errorMessage = L10n.tr("Localizable", "search.banner.errorMessage.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
