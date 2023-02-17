@@ -122,7 +122,7 @@ public enum Requests {
         request.fetchLimit = 1
         return request
     }
-    
+
     public static func fetchSyndicatedArticles() -> NSFetchRequest<SyndicatedArticle> {
         SyndicatedArticle.fetchRequest()
     }
@@ -133,7 +133,7 @@ public enum Requests {
         request.fetchLimit = 1
         return request
     }
-    
+
     public static func fetchTags() -> NSFetchRequest<Tag> {
         Tag.fetchRequest()
     }
