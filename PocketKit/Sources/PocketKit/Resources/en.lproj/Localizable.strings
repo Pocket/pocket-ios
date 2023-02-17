@@ -135,3 +135,6 @@
 "search.limitedResults" = "Limited search results";
 "search.offlineMessage" = "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.";
 "search.banner.errorMessage." = "We’re experiencing an error and can’t show you full search results. Please try again later.";
+
+"settings.thankyou.credits" = "Thank you for using Pocket";
+"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";
