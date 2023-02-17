@@ -12,17 +12,17 @@ enum PremiumSubscriptionType: CaseIterable {
     var id: String {
         switch self {
         case .monthly:
-            return Keys.shared.pocketPremiumMonthlyAlpha
+            return Keys.shared.pocketPremiumMonthly
         case .annual:
-            return Keys.shared.pocketPremiumAnnualAlpha
+            return Keys.shared.pocketPremiumAnnual
         }
     }
 
     static func type(from productId: String) -> Self? {
         switch productId {
-        case Keys.shared.pocketPremiumMonthlyAlpha:
+        case Keys.shared.pocketPremiumMonthly:
             return .monthly
-        case Keys.shared.pocketPremiumAnnualAlpha:
+        case Keys.shared.pocketPremiumAnnual:
             return .annual
         default:
             return .none
