@@ -47,10 +47,8 @@ class AddTagsItemTests: XCTestCase {
 
     func test_addTagsToItemFromSaves_savesNewTags() {
         app.tabBar.savesButton.wait().tap()
-
         let itemCell = app.saves.itemView(matching: "Item 1")
         itemCell.itemActionButton.wait().tap()
-
         app.addTagsButton.wait().tap()
         let addTagsView = app.addTagsView.wait()
         addTagsView.clearTagsTextfield()
