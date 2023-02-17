@@ -92,6 +92,30 @@ struct SettingsForm: View {
                 }.textCase(nil)
             }
             .listRowBackground(Color(.ui.grey7))
+            settingsCredits()
         }
     }
+
+    private struct settingsCredits: View {
+        let appVersion = Bundle.main.infoDictionary!["CFBundleVersion"] as! String
+        let buildNumber = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+
+        var body: some View {
+            HStack {
+                Spacer()
+                VStack(spacing: 0) {
+                    Text(L10n.Settings.pocketForiOS(buildNumber, appVersion))
+                        .style(.credits)
+                        .padding([.bottom], 6)
+                    Text(L10n.Settings.Thankyou.credits)
+                        .style(.credits)
+                }
+                Spacer()
+            }
+        }
+    }
+}
+
+private extension Style {
+    static let credits = Style.header.sansSerif.p4.with(color: .ui.grey5)
 }
