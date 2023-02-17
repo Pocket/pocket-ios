@@ -65,6 +65,14 @@ extension Space {
             return savedItem
         }
     }
+
+    @discardableResult
+        func buildPendingSavedItem() -> SavedItem {
+            context.performAndWait {
+                let savedItem: SavedItem = SavedItem(context: context, url: URL(string: "https://mozilla.com/example")!)
+                return savedItem
+            }
+        }
 }
 
 // MARK: - Item
@@ -77,11 +85,16 @@ extension Space {
         isArticle: Bool = true,
         article: Article? = nil
     ) throws -> Item {
-        try context.performAndWait {
+        var url = givenURL
+        if url == nil {
+            url = URL(string: "https://example.com/items/item-1")
+        }
+
+        return try context.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
                 title: title,
-                givenURL: givenURL,
+                givenURL: url,
                 isArticle: isArticle,
                 article: article
             )
@@ -103,8 +116,13 @@ extension Space {
         article: Article? = nil,
         syndicatedArticle: SyndicatedArticle? = nil
     ) -> Item {
-        context.performAndWait {
-            let item: Item = Item(context: context, givenURL: givenURL!, remoteID: remoteID)
+        var url = givenURL
+        if url == nil {
+            url = URL(string: "https://example.com/items/item-1")
+        }
+
+        return context.performAndWait {
+            let item: Item = Item(context: context, givenURL: url!, remoteID: remoteID)
             item.remoteID = remoteID
             item.title = title
             item.resolvedURL = resolvedURL

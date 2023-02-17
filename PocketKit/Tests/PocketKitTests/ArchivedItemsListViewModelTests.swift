@@ -283,7 +283,7 @@ class ArchivedItemsListViewModelTests: XCTestCase {
     }
 
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
-        let items = [space.buildSavedItem(), space.buildSavedItem()]
+        let items = [space.buildPendingSavedItem(), space.buildSavedItem()]
         archiveService._results = items.map { .loaded($0) }
 
         let viewModel = subject()

@@ -87,12 +87,17 @@ extension Space {
     func buildItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL? = URL(string: "https://example.com/items/item-1")!,
+        givenURL: URL? = URL(string: "https://example.com/items/item-1"),
         resolvedURL: URL? = nil,
         isArticle: Bool = true
     ) -> Item {
-        context.performAndWait {
-            let item: Item = Item(context: context, givenURL: givenURL!, remoteID: remoteID)
+        var url = givenURL
+        if url == nil {
+            url = URL(string: "https://example.com/items/item-1")
+        }
+
+        return context.performAndWait {
+            let item: Item = Item(context: context, givenURL: url!, remoteID: remoteID)
             item.title = title
             item.resolvedURL = resolvedURL
             item.isArticle = isArticle

@@ -18,7 +18,13 @@ extension Item {
         topImageURL = remote.topImageUrl.flatMap(URL.init)
         domain = remote.domain
         language = remote.language
-        timeToRead = remote.timeToRead.flatMap(NSNumber.init) ?? 0
+
+        if let readTime = remote.timeToRead {
+            timeToRead = NSNumber(value: readTime)
+        } else {
+            timeToRead = 0
+        }
+
         excerpt = remote.excerpt
         datePublished = remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         isArticle = remote.isArticle ?? false
@@ -81,7 +87,11 @@ extension Item {
         topImageURL = summary.topImageUrl.flatMap(URL.init)
         domain = summary.domain
         language = summary.language
-        timeToRead = summary.timeToRead.flatMap(NSNumber.init) ?? 0
+        if let readTime = summary.timeToRead {
+            timeToRead = NSNumber(value: readTime)
+        } else {
+            timeToRead = 0
+        }
         excerpt = summary.excerpt
         datePublished = summary.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         isArticle = summary.isArticle ?? false
