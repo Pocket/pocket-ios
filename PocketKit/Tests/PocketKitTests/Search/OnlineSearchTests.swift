@@ -114,7 +114,7 @@ class OnlineSearchTests: XCTestCase {
     }
 
     private func setupOnlineSearch(with term: String) async {
-        let itemParts = SavedItemParts(data: DataDict([
+        let itemReaderView = SavedItemReaderView(data: DataDict([
             "__typename": "SavedItem",
             "item": [
                 "__typename": "Item",
@@ -124,7 +124,7 @@ class OnlineSearchTests: XCTestCase {
             ]
         ], variables: nil))
 
-        let item = SearchSavedItem(remoteItem: itemParts)
+        let item = SearchSavedItem(remoteItem: itemReaderView)
         await withCheckedContinuation { continuation in
             searchService.stubSearch { _, _ in
                 self.searchService._results = [item, item]

@@ -75,7 +75,7 @@ public class PocketSearchService: SearchService {
             let query = SearchSavedItemsQuery(term: term, pagination: .init(pagination), filter: .some(filter))
             let result = try await apollo.fetch(query: query)
             result.data?.user?.searchSavedItems?.edges.forEach { edge in
-                var searchSavedItem = SearchSavedItem(remoteItem: edge.node.savedItem.fragments.savedItemParts)
+                var searchSavedItem = SearchSavedItem(remoteItem: edge.node.savedItem.fragments.savedItemReaderView)
                 searchSavedItem.cursor = edge.cursor
                 items.append(searchSavedItem)
             }

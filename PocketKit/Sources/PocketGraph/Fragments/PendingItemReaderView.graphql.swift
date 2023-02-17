@@ -3,9 +3,9 @@
 
 @_exported import ApolloAPI
 
-public struct PendingItemParts: PocketGraph.SelectionSet, Fragment {
+public struct PendingItemReaderView: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString { """
-    fragment PendingItemParts on PendingItem {
+    fragment PendingItemReaderView on PendingItem {
       __typename
       url
       status

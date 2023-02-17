@@ -24,14 +24,14 @@ public class SavedItemSummariesQuery: GraphQLQuery {
               cursor
               node {
                 __typename
-                ...SavedItemSummary
+                ...SavedItemSummaryView
               }
             }
           }
         }
       }
       """,
-      fragments: [SavedItemSummary.self, ItemSummary.self, DomainMetadataParts.self]
+      fragments: [SavedItemSummaryView.self, ItemSummaryView.self, DomainMetadataParts.self]
     ))
 
   public var pagination: GraphQLNullable<PaginationInput>
@@ -152,7 +152,7 @@ public class SavedItemSummariesQuery: GraphQLQuery {
 
             public static var __parentType: ParentType { PocketGraph.Objects.SavedItem }
             public static var __selections: [Selection] { [
-              .fragment(SavedItemSummary.self),
+              .fragment(SavedItemSummaryView.self),
             ] }
 
             /// The url the user saved to their list
@@ -170,7 +170,7 @@ public class SavedItemSummariesQuery: GraphQLQuery {
             /// Timestamp that the SavedItem became archied, null if not archived
             public var archivedAt: Int? { __data["archivedAt"] }
             /// The Tags associated with this SavedItem
-            public var tags: [SavedItemSummary.Tag]? { __data["tags"] }
+            public var tags: [SavedItemSummaryView.Tag]? { __data["tags"] }
             /// Link to the underlying Pocket Item for the URL
             public var item: Item { __data["item"] }
 
@@ -178,7 +178,7 @@ public class SavedItemSummariesQuery: GraphQLQuery {
               public let __data: DataDict
               public init(data: DataDict) { __data = data }
 
-              public var savedItemSummary: SavedItemSummary { _toFragment() }
+              public var savedItemSummaryView: SavedItemSummaryView { _toFragment() }
             }
 
             /// User.SavedItems.Edge.Node.Item
@@ -229,21 +229,21 @@ public class SavedItemSummariesQuery: GraphQLQuery {
                 /// 0=no videos, 1=contains video, 2=is a video
                 public var hasVideo: GraphQLEnum<Videoness>? { __data["hasVideo"] }
                 /// List of Authors involved with this article
-                public var authors: [ItemSummary.Author?]? { __data["authors"] }
+                public var authors: [ItemSummaryView.Author?]? { __data["authors"] }
                 /// A snippet of text from the article
                 public var excerpt: String? { __data["excerpt"] }
                 /// Additional information about the item domain, when present, use this for displaying the domain name
                 public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
                 /// Array of images within an article
-                public var images: [ItemSummary.Image?]? { __data["images"] }
+                public var images: [ItemSummaryView.Image?]? { __data["images"] }
                 /// If the item has a syndicated counterpart the syndication information
-                public var syndicatedArticle: ItemSummary.SyndicatedArticle? { __data["syndicatedArticle"] }
+                public var syndicatedArticle: ItemSummaryView.SyndicatedArticle? { __data["syndicatedArticle"] }
 
                 public struct Fragments: FragmentContainer {
                   public let __data: DataDict
                   public init(data: DataDict) { __data = data }
 
-                  public var itemSummary: ItemSummary { _toFragment() }
+                  public var itemSummaryView: ItemSummaryView { _toFragment() }
                 }
 
                 /// User.SavedItems.Edge.Node.Item.AsItem.DomainMetadata

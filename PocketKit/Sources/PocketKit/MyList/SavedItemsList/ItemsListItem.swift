@@ -13,11 +13,11 @@ protocol ItemsListItem {
     var isPending: Bool { get }
     var host: String? { get }
     var tagNames: [String]? { get }
-    var remoteItemParts: SavedItemParts? { get }
+    var remoteItemReaderView: SavedItemReaderView? { get }
 }
 
 extension ItemsListItem {
-    var remoteItemParts: SavedItemParts? {
+    var remoteItemReaderView: SavedItemReaderView? {
         return nil
     }
 }

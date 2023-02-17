@@ -1,4 +1,4 @@
-fragment SavedItemParts on SavedItem {
+fragment SavedItemReaderView on SavedItem {
   url
   remoteID: id
   isArchived
@@ -10,8 +10,8 @@ fragment SavedItemParts on SavedItem {
     ...TagParts
   }
   item {
-    ...ItemParts
-    ...PendingItemParts
+    ...ItemReaderView
+    ...PendingItemReaderView
   }
 }
 
@@ -32,7 +32,7 @@ query FetchSaves($token: String!, $pagination: PaginationInput, $savedItemsFilte
       edges {
         cursor
         node {
-          ...SavedItemParts
+          ...SavedItemReaderView
         }
       }
     }
@@ -41,7 +41,7 @@ query FetchSaves($token: String!, $pagination: PaginationInput, $savedItemsFilte
 
 mutation SaveItem($input: SavedItemUpsertInput!) {
   upsertSavedItem(input: $input) {
-    ...SavedItemParts
+    ...SavedItemReaderView
   }
 }
 
@@ -80,27 +80,27 @@ mutation TagUpdate($input: TagUpdateInput!) {
 
 mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
   replaceSavedItemTags(input: $input) {
-    ...SavedItemParts
+    ...SavedItemReaderView
   }
 }
 
 mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
   updateSavedItemRemoveTags(savedItemId: $savedItemId) {
-    ...SavedItemParts
+    ...SavedItemReaderView
   }
 }
 
 query SavedItemByID($id: ID!) {
   user {
     savedItemById(id: $id) {
-      ...SavedItemParts
+      ...SavedItemReaderView
     }
   }
 }
 
 query ItemByID($id: ID!) {
   itemByItemId(id: $id) {
-    ...ItemParts
+    ...ItemReaderView
   }
 }
 
@@ -130,7 +130,7 @@ query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: Se
       edges {
         node {
             savedItem {
-                ...SavedItemParts
+                ...SavedItemReaderView
             }
         }
         cursor

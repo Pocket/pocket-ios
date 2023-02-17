@@ -7,7 +7,7 @@ fragment SlateParts on Slate {
   recommendations {
     id
     item {
-      ...ItemSummary
+      ...ItemSummaryView
     }
     curatedInfo {
       ...CuratedInfoParts

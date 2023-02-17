@@ -4,7 +4,7 @@ import Apollo
 import PocketGraph
 
 extension Item {
-    func update(remote: ItemParts) {
+    func update(remote: ItemReaderView) {
         remoteID = remote.remoteID
         givenURL = URL(string: remote.givenUrl)
         resolvedURL = remote.resolvedUrl.flatMap(URL.init)
@@ -61,7 +61,7 @@ extension Item {
         }
     }
 
-    func update(from summary: ItemSummary) {
+    func update(from summary: ItemSummaryView) {
         remoteID = summary.remoteID
         givenURL = URL(string: summary.givenUrl)
         resolvedURL = summary.resolvedUrl.flatMap(URL.init)

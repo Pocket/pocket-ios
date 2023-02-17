@@ -281,7 +281,7 @@ extension SearchViewModel {
             let id = searchItem.id,
             let savedItem = source.fetchOrCreateSavedItem(
                 with: id,
-                and: searchItem.remoteItemParts
+                and: searchItem.remoteItemReaderView
             )
         else {
             return

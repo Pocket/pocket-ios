@@ -3,7 +3,7 @@ import PocketGraph
 import Sync
 
 extension SearchSavedItem: ItemsListItem {
-    var remoteItemParts: PocketGraph.SavedItemParts? {
+    var remoteItemReaderView: PocketGraph.SavedItemReaderView? {
         return remoteItem
     }
 
@@ -20,9 +20,9 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var bestURL: URL? {
-        guard let itemParts = item.asItem else { return nil }
-        let resolvedURL = itemParts.resolvedUrl.flatMap(URL.init)
-        let givenURL = URL(string: itemParts.givenUrl)
+        guard let itemReaderView = item.asItem else { return nil }
+        let resolvedURL = itemReaderView.resolvedUrl.flatMap(URL.init)
+        let givenURL = URL(string: itemReaderView.givenUrl)
         return resolvedURL ?? givenURL
     }
 
@@ -56,4 +56,4 @@ extension SearchSavedItem: ItemsListItem {
     }
 }
 
-extension SavedItemParts.Item.AsItem.DomainMetadata: ItemsListItemDomainMetadata { }
+extension SavedItemReaderView.Item.AsItem.DomainMetadata: ItemsListItemDomainMetadata { }

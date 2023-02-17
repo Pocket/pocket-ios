@@ -54,7 +54,7 @@ struct SearchItem {
         })
     }
 
-    var remoteItemParts: SavedItemParts? {
-        item.remoteItemParts
+    var remoteItemReaderView: SavedItemReaderView? {
+        item.remoteItemReaderView
     }
 }

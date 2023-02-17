@@ -390,7 +390,7 @@ extension PocketSource {
         }
 
         try space.context.performAndWait {
-            savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
+            savedItem.update(from: remoteSavedItem.fragments.savedItemReaderView, with: space)
             try space.save()
         }
     }
@@ -428,7 +428,7 @@ extension PocketSource {
 
         guard let remoteItem = try await apollo
             .fetch(query: ItemByIDQuery(id: remoteID))
-            .data?.itemByItemId?.fragments.itemParts else {
+            .data?.itemByItemId?.fragments.itemReaderView else {
             return
         }
 

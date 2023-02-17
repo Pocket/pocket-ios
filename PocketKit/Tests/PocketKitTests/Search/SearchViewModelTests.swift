@@ -668,7 +668,7 @@ class SearchViewModelTests: XCTestCase {
 
     private func setupOnlineSearch(with term: String) async {
         searchService.stubSearch { _, _ in }
-        let itemParts = SavedItemParts(data: DataDict([
+        let itemReaderView = SavedItemReaderView(data: DataDict([
             "__typename": "SavedItem",
             "item": [
                 "__typename": "Item",
@@ -677,7 +677,7 @@ class SearchViewModelTests: XCTestCase {
                 "resolvedUrl": "http://localhost:8080/hello"
             ]
         ], variables: nil))
-        let item = SearchSavedItem(remoteItem: itemParts)
+        let item = SearchSavedItem(remoteItem: itemReaderView)
         searchService._results = [item]
     }
 }

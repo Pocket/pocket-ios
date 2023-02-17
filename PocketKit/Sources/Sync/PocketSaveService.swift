@@ -114,7 +114,7 @@ public class PocketSaveService: SaveService {
                 savedItem: savedItem,
                 mutation: mutation
             ) { graphQLResultData in
-                return (graphQLResultData as? UpdateSavedItemRemoveTagsMutation.Data)?.updateSavedItemRemoveTags.fragments.savedItemParts
+                return (graphQLResultData as? UpdateSavedItemRemoveTagsMutation.Data)?.updateSavedItemRemoveTags.fragments.savedItemReaderView
             }
             queue.addOperation(operation)
             queue.waitUntilAllOperationsAreFinished()
@@ -128,7 +128,7 @@ public class PocketSaveService: SaveService {
                 savedItem: savedItem,
                 mutation: mutation
             ) { graphQLResultData in
-                return (graphQLResultData as? ReplaceSavedItemTagsMutation.Data)?.replaceSavedItemTags.first?.fragments.savedItemParts
+                return (graphQLResultData as? ReplaceSavedItemTagsMutation.Data)?.replaceSavedItemTags.first?.fragments.savedItemReaderView
             }
             queue.addOperation(operation)
             queue.waitUntilAllOperationsAreFinished()
@@ -152,7 +152,7 @@ public class PocketSaveService: SaveService {
             savedItem: savedItem,
             mutation: mutation
         ) { graphQLResultData in
-            return (graphQLResultData as? SaveItemMutation.Data)?.upsertSavedItem.fragments.savedItemParts
+            return (graphQLResultData as? SaveItemMutation.Data)?.upsertSavedItem.fragments.savedItemReaderView
         }
 
         queue.addOperation(operation)
@@ -166,7 +166,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let space: Space
     private let savedItem: SavedItem
     private let mutation: any GraphQLMutation
-    private let savedItemParts: (AnySelectionSet) -> SavedItemParts?
+    private let savedItemReaderView: (AnySelectionSet) -> SavedItemReaderView?
 
     private var task: Cancellable?
 
@@ -176,14 +176,14 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
         space: Space,
         savedItem: SavedItem,
         mutation: Mutation,
-        savedItemParts: @escaping (AnySelectionSet) -> SavedItemParts?
+        savedItemReaderView: @escaping (AnySelectionSet) -> SavedItemReaderView?
     ) {
         self.apollo = apollo
         self.osNotifications = osNotifications
         self.space = space
         self.savedItem = savedItem
         self.mutation = mutation
-        self.savedItemParts = savedItemParts
+        self.savedItemReaderView = savedItemReaderView
     }
 
     override func start() {
@@ -203,17 +203,17 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
         task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .main) { [weak self] result in
             guard case .success(let graphQLResult) = result,
                     let data = graphQLResult.data,
-                    let savedItemParts = self?.savedItemParts(data) else {
+                    let savedItemReaderView = self?.savedItemReaderView(data) else {
                 self?.storeUnresolvedSavedItem()
                 self?.finishOperation()
                 return
             }
-            self?.updateSavedItem(savedItemParts: savedItemParts)
+            self?.updateSavedItem(savedItemReaderView: savedItemReaderView)
         }
     }
 
-    private func updateSavedItem(savedItemParts: SavedItemParts) {
-        savedItem.update(from: savedItemParts, with: space)
+    private func updateSavedItem(savedItemReaderView: SavedItemReaderView) {
+        savedItem.update(from: savedItemReaderView, with: space)
         let notification: SavedItemUpdatedNotification = space.new()
         notification.savedItem = savedItem
         try? space.save()

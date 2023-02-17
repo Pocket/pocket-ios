@@ -8,17 +8,17 @@ import PocketGraph
 
 extension SavedItem {
     typealias SavedItemEdge = FetchSavesQuery.Data.UserByToken.SavedItems.Edge
-    public typealias RemoteSavedItem = SavedItemParts
-    typealias RemoteItem = ItemParts
+    public typealias RemoteSavedItem = SavedItemReaderView
+    typealias RemoteItem = ItemReaderView
 
     func update(from edge: SavedItemEdge, with space: Space) {
         cursor = edge.cursor
 
-        guard let savedItemParts = edge.node?.fragments.savedItemParts else {
+        guard let savedItemReaderView = edge.node?.fragments.savedItemReaderView else {
             return
         }
 
-        update(from: savedItemParts, with: space)
+        update(from: savedItemReaderView, with: space)
     }
 
     public func update(from remote: RemoteSavedItem, with space: Space) {
@@ -31,7 +31,7 @@ extension SavedItem {
         isFavorite = remote.isFavorite
 
         guard let context = managedObjectContext,
-              let itemParts = remote.item.asItem?.fragments.itemParts else {
+              let itemReaderView = remote.item.asItem?.fragments.itemReaderView else {
             return
         }
 
@@ -45,10 +45,10 @@ extension SavedItem {
             return fetchedTag
         } ?? [])
 
-        let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteID)
+        let fetchRequest = Requests.fetchItem(byRemoteID: itemReaderView.remoteID)
         fetchRequest.fetchLimit = 1
         let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
-        itemToUpdate?.update(remote: itemParts)
+        itemToUpdate?.update(remote: itemReaderView)
         item = itemToUpdate
     }
 
@@ -59,7 +59,7 @@ extension SavedItem {
         item = recommendation.item
     }
 
-    public func update(from summary: SavedItemSummary, with space: Space) {
+    public func update(from summary: SavedItemSummaryView, with space: Space) {
         remoteID = summary.remoteID
         url = URL(string: summary.url)
         createdAt = Date(timeIntervalSince1970: TimeInterval(summary._createdAt))
@@ -69,7 +69,7 @@ extension SavedItem {
         isFavorite = summary.isFavorite
 
         guard let context = managedObjectContext,
-              let itemSummary = summary.item.asItem?.fragments.itemSummary else {
+              let itemSummaryView = summary.item.asItem?.fragments.itemSummaryView else {
             return
         }
 
@@ -81,10 +81,10 @@ extension SavedItem {
             space.fetchOrCreateTag(byName: summaryTag.name)
         } ?? [])
 
-        let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteID)
+        let fetchRequest = Requests.fetchItem(byRemoteID: itemSummaryView.remoteID)
         fetchRequest.fetchLimit = 1
         let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context)
-        itemToUpdate?.update(from: itemSummary)
+        itemToUpdate?.update(from: itemSummaryView)
         item = itemToUpdate
     }
 }

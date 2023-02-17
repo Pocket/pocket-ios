@@ -3,28 +3,11 @@
 
 @_exported import ApolloAPI
 
-public struct ItemParts: PocketGraph.SelectionSet, Fragment {
+public struct ItemReaderView: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString { """
-    fragment ItemParts on Item {
+    fragment ItemReaderView on Item {
       __typename
-      remoteID: itemId
-      givenUrl
-      resolvedUrl
-      title
-      language
-      topImageUrl
-      timeToRead
-      domain
-      datePublished
-      isArticle
-      hasImage
-      hasVideo
-      authors {
-        __typename
-        id
-        name
-        url
-      }
+      ...ItemSummaryView
       marticle {
         __typename
         ...MarticleTextParts
@@ -38,22 +21,6 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
         ...MarticleNumberedListParts
         ...MarticleBlockquoteParts
       }
-      excerpt
-      domainMetadata {
-        __typename
-        ...DomainMetadataParts
-      }
-      images {
-        __typename
-        height
-        width
-        src
-        imageId
-      }
-      syndicatedArticle {
-        __typename
-        itemId
-      }
     }
     """ }
 
@@ -62,26 +29,12 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
   public static var __parentType: ParentType { PocketGraph.Objects.Item }
   public static var __selections: [Selection] { [
-    .field("itemId", alias: "remoteID", String.self),
-    .field("givenUrl", Url.self),
-    .field("resolvedUrl", Url?.self),
-    .field("title", String?.self),
-    .field("language", String?.self),
-    .field("topImageUrl", Url?.self),
-    .field("timeToRead", Int?.self),
-    .field("domain", String?.self),
-    .field("datePublished", DateString?.self),
-    .field("isArticle", Bool?.self),
-    .field("hasImage", GraphQLEnum<Imageness>?.self),
-    .field("hasVideo", GraphQLEnum<Videoness>?.self),
-    .field("authors", [Author?]?.self),
     .field("marticle", [Marticle]?.self),
-    .field("excerpt", String?.self),
-    .field("domainMetadata", DomainMetadata?.self),
-    .field("images", [Image?]?.self),
-    .field("syndicatedArticle", SyndicatedArticle?.self),
+    .fragment(ItemSummaryView.self),
   ] }
 
+  /// The Marticle format of the article, used by clients for native article view.
+  public var marticle: [Marticle]? { __data["marticle"] }
   /// The Item entity is owned by the Parser service.
   /// We only extend it in this service to make this service's schema valid.
   /// The key for this entity is the 'itemId'
@@ -110,38 +63,21 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   /// 0=no videos, 1=contains video, 2=is a video
   public var hasVideo: GraphQLEnum<Videoness>? { __data["hasVideo"] }
   /// List of Authors involved with this article
-  public var authors: [Author?]? { __data["authors"] }
-  /// The Marticle format of the article, used by clients for native article view.
-  public var marticle: [Marticle]? { __data["marticle"] }
+  public var authors: [ItemSummaryView.Author?]? { __data["authors"] }
   /// A snippet of text from the article
   public var excerpt: String? { __data["excerpt"] }
   /// Additional information about the item domain, when present, use this for displaying the domain name
   public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
   /// Array of images within an article
-  public var images: [Image?]? { __data["images"] }
+  public var images: [ItemSummaryView.Image?]? { __data["images"] }
   /// If the item has a syndicated counterpart the syndication information
-  public var syndicatedArticle: SyndicatedArticle? { __data["syndicatedArticle"] }
+  public var syndicatedArticle: ItemSummaryView.SyndicatedArticle? { __data["syndicatedArticle"] }
 
-  /// Author
-  ///
-  /// Parent Type: `Author`
-  public struct Author: PocketGraph.SelectionSet {
+  public struct Fragments: FragmentContainer {
     public let __data: DataDict
     public init(data: DataDict) { __data = data }
 
-    public static var __parentType: ParentType { PocketGraph.Objects.Author }
-    public static var __selections: [Selection] { [
-      .field("id", ID.self),
-      .field("name", String?.self),
-      .field("url", String?.self),
-    ] }
-
-    /// Unique id for that Author
-    public var id: ID { __data["id"] }
-    /// Display name
-    public var name: String? { __data["name"] }
-    /// A url to that Author's site
-    public var url: String? { __data["url"] }
+    public var itemSummaryView: ItemSummaryView { _toFragment() }
   }
 
   /// Marticle
@@ -431,7 +367,6 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
       }
     }
   }
-
   /// DomainMetadata
   ///
   /// Parent Type: `DomainMetadata`
@@ -440,9 +375,6 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     public init(data: DataDict) { __data = data }
 
     public static var __parentType: ParentType { PocketGraph.Objects.DomainMetadata }
-    public static var __selections: [Selection] { [
-      .fragment(DomainMetadataParts.self),
-    ] }
 
     /// The name of the domain (e.g., The New York Times)
     public var name: String? { __data["name"] }
@@ -455,47 +387,5 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public var domainMetadataParts: DomainMetadataParts { _toFragment() }
     }
-  }
-
-  /// Image
-  ///
-  /// Parent Type: `Image`
-  public struct Image: PocketGraph.SelectionSet {
-    public let __data: DataDict
-    public init(data: DataDict) { __data = data }
-
-    public static var __parentType: ParentType { PocketGraph.Objects.Image }
-    public static var __selections: [Selection] { [
-      .field("height", Int?.self),
-      .field("width", Int?.self),
-      .field("src", String.self),
-      .field("imageId", Int.self),
-    ] }
-
-    /// The determined height of the image at the url
-    public var height: Int? { __data["height"] }
-    /// The determined width of the image at the url
-    public var width: Int? { __data["width"] }
-    /// Absolute url to the image
-    @available(*, deprecated, message: "use url property moving forward")
-    public var src: String { __data["src"] }
-    /// The id for placing within an Article View. {articleView.article} will have placeholders of <div id='RIL_IMG_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
-    public var imageId: Int { __data["imageId"] }
-  }
-
-  /// SyndicatedArticle
-  ///
-  /// Parent Type: `SyndicatedArticle`
-  public struct SyndicatedArticle: PocketGraph.SelectionSet {
-    public let __data: DataDict
-    public init(data: DataDict) { __data = data }
-
-    public static var __parentType: ParentType { PocketGraph.Objects.SyndicatedArticle }
-    public static var __selections: [Selection] { [
-      .field("itemId", ID?.self),
-    ] }
-
-    /// The item id of this Syndicated Article
-    public var itemId: ID? { __data["itemId"] }
   }
 }

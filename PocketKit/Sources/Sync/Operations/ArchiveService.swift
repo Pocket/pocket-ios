@@ -257,7 +257,7 @@ extension PocketArchiveService: FetchArchivePagesOperationDelegate {
 
         for edge in edges {
             guard let edge = edge,
-                  let summary = edge.node?.fragments.savedItemSummary else {
+                  let summary = edge.node?.fragments.savedItemSummaryView else {
                 continue
             }
 

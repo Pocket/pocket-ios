@@ -167,7 +167,7 @@ extension ArticleComponent {
         self = .blockquote(BlockquoteComponent(marticle))
     }
 
-    init(_ marticle: ItemParts.Marticle) {
+    init(_ marticle: ItemReaderView.Marticle) {
         if let parts = marticle.asMarticleText {
             self.init(parts.fragments.marticleTextParts)
             return

@@ -3,9 +3,9 @@
 
 @_exported import ApolloAPI
 
-public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
+public struct SavedItemReaderView: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString { """
-    fragment SavedItemParts on SavedItem {
+    fragment SavedItemReaderView on SavedItem {
       __typename
       url
       remoteID: id
@@ -20,8 +20,8 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       }
       item {
         __typename
-        ...ItemParts
-        ...PendingItemParts
+        ...ItemReaderView
+        ...PendingItemReaderView
       }
     }
     """ }
@@ -111,7 +111,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
 
       public static var __parentType: ParentType { PocketGraph.Objects.Item }
       public static var __selections: [Selection] { [
-        .fragment(ItemParts.self),
+        .fragment(ItemReaderView.self),
       ] }
 
       /// The Item entity is owned by the Parser service.
@@ -142,23 +142,46 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
       /// 0=no videos, 1=contains video, 2=is a video
       public var hasVideo: GraphQLEnum<Videoness>? { __data["hasVideo"] }
       /// List of Authors involved with this article
-      public var authors: [ItemParts.Author?]? { __data["authors"] }
-      /// The Marticle format of the article, used by clients for native article view.
-      public var marticle: [Marticle]? { __data["marticle"] }
+      public var authors: [ItemSummaryView.Author?]? { __data["authors"] }
       /// A snippet of text from the article
       public var excerpt: String? { __data["excerpt"] }
       /// Additional information about the item domain, when present, use this for displaying the domain name
       public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
       /// Array of images within an article
-      public var images: [ItemParts.Image?]? { __data["images"] }
+      public var images: [ItemSummaryView.Image?]? { __data["images"] }
       /// If the item has a syndicated counterpart the syndication information
-      public var syndicatedArticle: ItemParts.SyndicatedArticle? { __data["syndicatedArticle"] }
+      public var syndicatedArticle: ItemSummaryView.SyndicatedArticle? { __data["syndicatedArticle"] }
+      /// The Marticle format of the article, used by clients for native article view.
+      public var marticle: [Marticle]? { __data["marticle"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
         public init(data: DataDict) { __data = data }
 
-        public var itemParts: ItemParts { _toFragment() }
+        public var itemReaderView: ItemReaderView { _toFragment() }
+        public var itemSummaryView: ItemSummaryView { _toFragment() }
+      }
+
+      /// Item.AsItem.DomainMetadata
+      ///
+      /// Parent Type: `DomainMetadata`
+      public struct DomainMetadata: PocketGraph.SelectionSet {
+        public let __data: DataDict
+        public init(data: DataDict) { __data = data }
+
+        public static var __parentType: ParentType { PocketGraph.Objects.DomainMetadata }
+
+        /// The name of the domain (e.g., The New York Times)
+        public var name: String? { __data["name"] }
+        /// Url for the logo image
+        public var logo: Url? { __data["logo"] }
+
+        public struct Fragments: FragmentContainer {
+          public let __data: DataDict
+          public init(data: DataDict) { __data = data }
+
+          public var domainMetadataParts: DomainMetadataParts { _toFragment() }
+        }
       }
 
       /// Item.AsItem.Marticle
@@ -406,28 +429,6 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
           }
         }
       }
-
-      /// Item.AsItem.DomainMetadata
-      ///
-      /// Parent Type: `DomainMetadata`
-      public struct DomainMetadata: PocketGraph.SelectionSet {
-        public let __data: DataDict
-        public init(data: DataDict) { __data = data }
-
-        public static var __parentType: ParentType { PocketGraph.Objects.DomainMetadata }
-
-        /// The name of the domain (e.g., The New York Times)
-        public var name: String? { __data["name"] }
-        /// Url for the logo image
-        public var logo: Url? { __data["logo"] }
-
-        public struct Fragments: FragmentContainer {
-          public let __data: DataDict
-          public init(data: DataDict) { __data = data }
-
-          public var domainMetadataParts: DomainMetadataParts { _toFragment() }
-        }
-      }
     }
 
     /// Item.AsPendingItem
@@ -439,7 +440,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
 
       public static var __parentType: ParentType { PocketGraph.Objects.PendingItem }
       public static var __selections: [Selection] { [
-        .fragment(PendingItemParts.self),
+        .fragment(PendingItemReaderView.self),
       ] }
 
       /// URL of the item that the user gave for the SavedItem
@@ -451,7 +452,7 @@ public struct SavedItemParts: PocketGraph.SelectionSet, Fragment {
         public let __data: DataDict
         public init(data: DataDict) { __data = data }
 
-        public var pendingItemParts: PendingItemParts { _toFragment() }
+        public var pendingItemReaderView: PendingItemReaderView { _toFragment() }
       }
     }
   }

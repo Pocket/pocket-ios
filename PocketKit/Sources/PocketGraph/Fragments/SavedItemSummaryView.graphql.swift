@@ -3,9 +3,9 @@
 
 @_exported import ApolloAPI
 
-public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
+public struct SavedItemSummaryView: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString { """
-    fragment SavedItemSummary on SavedItem {
+    fragment SavedItemSummaryView on SavedItem {
       __typename
       url
       remoteID: id
@@ -20,7 +20,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       }
       item {
         __typename
-        ...ItemSummary
+        ...ItemSummaryView
       }
     }
     """ }
@@ -99,7 +99,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
 
       public static var __parentType: ParentType { PocketGraph.Objects.Item }
       public static var __selections: [Selection] { [
-        .fragment(ItemSummary.self),
+        .fragment(ItemSummaryView.self),
       ] }
 
       /// The Item entity is owned by the Parser service.
@@ -130,21 +130,21 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       /// 0=no videos, 1=contains video, 2=is a video
       public var hasVideo: GraphQLEnum<Videoness>? { __data["hasVideo"] }
       /// List of Authors involved with this article
-      public var authors: [ItemSummary.Author?]? { __data["authors"] }
+      public var authors: [ItemSummaryView.Author?]? { __data["authors"] }
       /// A snippet of text from the article
       public var excerpt: String? { __data["excerpt"] }
       /// Additional information about the item domain, when present, use this for displaying the domain name
       public var domainMetadata: DomainMetadata? { __data["domainMetadata"] }
       /// Array of images within an article
-      public var images: [ItemSummary.Image?]? { __data["images"] }
+      public var images: [ItemSummaryView.Image?]? { __data["images"] }
       /// If the item has a syndicated counterpart the syndication information
-      public var syndicatedArticle: ItemSummary.SyndicatedArticle? { __data["syndicatedArticle"] }
+      public var syndicatedArticle: ItemSummaryView.SyndicatedArticle? { __data["syndicatedArticle"] }
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
         public init(data: DataDict) { __data = data }
 
-        public var itemSummary: ItemSummary { _toFragment() }
+        public var itemSummaryView: ItemSummaryView { _toFragment() }
       }
 
       /// Item.AsItem.DomainMetadata

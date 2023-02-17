@@ -17,14 +17,14 @@ query SavedItemSummaries(
       edges {
         cursor
         node {
-          ...SavedItemSummary
+          ...SavedItemSummaryView
         }
       }
     }
   }
 }
 
-fragment SavedItemSummary on SavedItem {
+fragment SavedItemSummaryView on SavedItem {
   url
   remoteID: id
   isArchived
@@ -36,7 +36,7 @@ fragment SavedItemSummary on SavedItem {
     name
   }
   item {
-    ...ItemSummary
+    ...ItemSummaryView
   }
 }
 

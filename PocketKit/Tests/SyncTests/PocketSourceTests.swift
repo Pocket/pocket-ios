@@ -709,7 +709,7 @@ extension PocketSourceTests {
     }
 
     func test_fetchOrCreateSavedItem_retrievesItem() throws {
-        let itemParts = SavedItemParts(data: DataDict([
+        let itemReaderView = SavedItemReaderView(data: DataDict([
             "__typename": "SavedItem",
             "remoteID": "saved-item",
             "url": "http://localhost:8080/hello",
@@ -726,7 +726,7 @@ extension PocketSourceTests {
         ], variables: nil))
 
         let source = subject()
-        let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemParts)
+        let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemReaderView)
 
         XCTAssertEqual(savedItem?.remoteID, "saved-item")
         XCTAssertEqual(savedItem?.item?.title, "item-title")

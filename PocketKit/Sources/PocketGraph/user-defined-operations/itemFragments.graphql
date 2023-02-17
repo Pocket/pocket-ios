@@ -1,21 +1,5 @@
-fragment ItemParts on Item {
-  remoteID: itemId
-  givenUrl
-  resolvedUrl
-  title
-  language
-  topImageUrl
-  timeToRead
-  domain
-  datePublished
-  isArticle
-  hasImage
-  hasVideo
-  authors {
-    id
-    name
-    url
-  }
+fragment ItemReaderView on Item {
+  ...ItemSummaryView
   marticle {
     ...MarticleTextParts
     ...ImageParts
@@ -28,19 +12,6 @@ fragment ItemParts on Item {
     ...MarticleNumberedListParts
     ...MarticleBlockquoteParts
   }
-  excerpt
-  domainMetadata {
-    ...DomainMetadataParts
-  }
-  images {
-    height
-    width
-    src
-    imageId
-  }
-  syndicatedArticle {
-    itemId
-  }
 }
 
 fragment DomainMetadataParts on DomainMetadata {
@@ -48,12 +19,12 @@ fragment DomainMetadataParts on DomainMetadata {
   logo
 }
 
-fragment PendingItemParts on PendingItem {
+fragment PendingItemReaderView on PendingItem {
   url
   status
 }
 
-fragment ItemSummary on Item {
+fragment ItemSummaryView on Item {
   remoteID: itemId
   givenUrl
   resolvedUrl

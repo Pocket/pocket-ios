@@ -3,9 +3,9 @@
 
 @_exported import ApolloAPI
 
-public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
+public struct ItemSummaryView: PocketGraph.SelectionSet, Fragment {
   public static var fragmentDefinition: StaticString { """
-    fragment ItemSummary on Item {
+    fragment ItemSummaryView on Item {
       __typename
       remoteID: itemId
       givenUrl
