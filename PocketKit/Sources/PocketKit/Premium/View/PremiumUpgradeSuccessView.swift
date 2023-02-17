@@ -16,7 +16,6 @@ struct PremiumUpgradeSuccessView: View {
                 .style(.title)
             Text("You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.")
                 .style(.paragraph)
-            // TODO: unknown how to center text with style modifier
             Button(action: {
                 dismiss()
             }) {
@@ -53,7 +52,7 @@ struct PremiumUpgradeSuccessView: View {
 private extension Style {
     static let title = Style.header.serif.title
 
-    static let paragraph = Style.header.serif.p2
+    static let paragraph = Style.header.serif.p2.with(alignment: .center)
 
     static let button = Style.header.sansSerif.p3.with(color: .ui.white).with(weight: .medium)
 }
