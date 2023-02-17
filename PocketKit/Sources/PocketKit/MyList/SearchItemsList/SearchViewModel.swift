@@ -47,6 +47,12 @@ class SearchViewModel: ObservableObject {
     @Published
     var showBanner: Bool = false
 
+    var bannerData: BannerModifier.BannerData {
+        let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.limitedSearchResults, detail: L10n.YouCanOnlySearchTitlesAndURLsWhileOffline.connectToTheInternetToUsePremiumSFullTextSearch)
+        let errorView = BannerModifier.BannerData(image: .warning, title: L10n.limitedSearchResults, detail: L10n.WeReExperiencingAnErrorAndCanTShowYouFullSearchResults.pleaseTryAgainLater)
+        return isOffline ? offlineView : errorView
+    }
+
     @Published
     var searchState: SearchViewState?
 
@@ -192,7 +198,7 @@ class SearchViewModel: ObservableObject {
                 } else {
                     let results = self.savesLocalSearch.search(with: term)
                     self.searchState = .searchResults(results)
-                    self.showBanner = self.isPremium && self.isOffline
+                    self.showBanner = self.isPremium
                 }
             }
             .store(in: &subscriptions)
@@ -206,7 +212,10 @@ class SearchViewModel: ObservableObject {
                 if case .success(let items) = result {
                     self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
                 } else if case .failure(let error) = result {
-                    guard case SearchServiceError.noInternet = error else { return }
+                    guard case SearchServiceError.noInternet = error else {
+                        self.searchState = .emptyState(ErrorEmptyState())
+                        return
+                    }
                     self.searchState = .emptyState(OfflineEmptyState(type: scope))
                 }
             }

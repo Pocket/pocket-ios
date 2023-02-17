@@ -47,6 +47,10 @@ struct SearchViewElement: PocketUIElement {
         return query["skeleton-view"]
     }
 
+    func hasBanner(with message: String) -> Bool {
+        element.staticTexts["banner"].exists && element.staticTexts[message].exists
+    }
+
     func searchItemCell(at index: Int) -> XCUIElement {
         return searchResultsView.cells.element(boundBy: index)
     }

@@ -43,7 +43,6 @@ class OnlineSearch {
             do {
                 try await searchService.search(for: term, scope: scope)
             } catch {
-                // TODO: How to handle errors
                 self.results = .failure(error)
             }
         }
