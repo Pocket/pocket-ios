@@ -9,8 +9,8 @@ struct ErrorEmptyState: EmptyStateViewModel {
     let imageAsset: ImageAsset = .warning
     let maxWidth: CGFloat = Width.normal.rawValue
     let icon: ImageAsset? = nil
-    let headline: String? = L10n.oopsTryAgain
-    let detailText: String? = L10n.WeReExperiencingAnErrorAndTemporarilyCanTGetYouWhatYouNeed.pleaseTryAgainLater
+    let headline: String? = L10n.Search.errorHeadline
+    let detailText: String? = L10n.Search.errorMessage
     let buttonText: String? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "error-empty-state"
