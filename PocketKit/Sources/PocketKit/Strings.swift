@@ -24,6 +24,8 @@ internal enum L10n {
   internal static let all = L10n.tr("Localizable", "All", fallback: "All")
   /// An error occurred
   internal static let anErrorOccurred = L10n.tr("Localizable", "An error occurred", fallback: "An error occurred")
+  /// Annual
+  internal static let annual = L10n.tr("Localizable", "Annual", fallback: "Annual")
   /// App Customization
   internal static let appCustomization = L10n.tr("Localizable", "App Customization", fallback: "App Customization")
   /// Archive
@@ -97,6 +99,10 @@ internal enum L10n {
   internal static let longestToRead = L10n.tr("Localizable", "Longest to read", fallback: "Longest to read")
   /// Make the most of any moment
   internal static let makeTheMostOfAnyMoment = L10n.tr("Localizable", "Make the most of any moment", fallback: "Make the most of any moment")
+  /// month
+  internal static let month = L10n.tr("Localizable", "month", fallback: "month")
+  /// Monthly
+  internal static let monthly = L10n.tr("Localizable", "Monthly", fallback: "Monthly")
   /// Move to Saves
   internal static let moveToSaves = L10n.tr("Localizable", "Move to Saves", fallback: "Move to Saves")
   /// Newest saved
@@ -189,6 +195,8 @@ internal enum L10n {
   internal static let thisVideoCouldNotBeLoaded = L10n.tr("Localizable", "This video could not be loaded.", fallback: "This video could not be loaded.")
   /// Unfavorite
   internal static let unfavorite = L10n.tr("Localizable", "Unfavorite", fallback: "Unfavorite")
+  /// year
+  internal static let year = L10n.tr("Localizable", "year", fallback: "year")
   /// Yes
   internal static let yes = L10n.tr("Localizable", "Yes", fallback: "Yes")
   /// You will be signed out of your account and any files that have been saved for offline viewing will be deleted.

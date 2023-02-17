@@ -36,15 +36,33 @@ struct PremiumSubscription {
     var isPurchased = false
 
     var name: String {
-        product.displayName
+        switch type {
+        case .monthly:
+            return L10n.monthly
+        case .annual:
+            return L10n.annual
+        case .none:
+            return ""
+        }
     }
 
     var priceDescription: String {
-        product.displayPrice + product.description
+        product.displayPrice + priceDescriptionSuffix
     }
 
     var type: PremiumSubscriptionType? {
         PremiumSubscriptionType.type(from: product.id)
+    }
+
+    private var priceDescriptionSuffix: String {
+        switch type {
+        case .monthly:
+            return "/" + L10n.month
+        case .annual:
+            return "/" + L10n.year
+        case .none:
+            return ""
+        }
     }
 }
 
