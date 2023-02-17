@@ -98,7 +98,7 @@ extension SettingsForm {
             Section(header: Text(L10n.yourAccount).style(.settings.header)) {
                 if !model.isPremium {
                     SettingsRowButton(
-                        title: L10n.Settings.goPremium,
+                        title: L10n.Settings.premiumRow,
                         leadingImageAsset: .premiumIcon,
                         trailingImageAsset: .chevronRight,
                         tintColor: Color(.ui.black1)

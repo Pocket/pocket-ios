@@ -224,6 +224,10 @@ internal enum L10n {
       }
     }
   }
+  internal enum Settings {
+    /// Go Premium
+    internal static let premiumRow = L10n.tr("Localizable", "settings.premiumRow", fallback: "Go Premium")
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
