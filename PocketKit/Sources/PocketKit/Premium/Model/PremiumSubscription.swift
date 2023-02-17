@@ -55,7 +55,7 @@ struct PremiumSubscription {
         product.displayPrice
     }
 
-    /// Descriptive representation of the subscription price; format: `price_frequency`, where:
+    /// Descriptive representation of the subscription type; format: `price_frequency`, where:
     ///  - `price` is the localized subscription price (e. g. $ 4.99)
     ///  - `frequency` is the renewal time, (e. g. /month)
     /// In the above example, the returned value would be $4.99/month.
