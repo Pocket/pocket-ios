@@ -1,0 +1,77 @@
+{
+  "identifier" : "C203F756",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "7BB42CF1",
+      "localizations" : [
+
+      ],
+      "name" : "Pocket Premium Alpha",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "4.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "EAB5EDEA",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "monthly.subscription.pocket",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pocket Premium Monthly",
+          "subscriptionGroupID" : "7BB42CF1",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "44.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "B7F87368",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "",
+              "displayName" : "",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "annual.subscription.pocket",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Pocket Premium Annual",
+          "subscriptionGroupID" : "7BB42CF1",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 2,
+    "minor" : 0
+  }
+}
