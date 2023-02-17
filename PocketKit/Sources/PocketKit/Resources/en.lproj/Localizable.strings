@@ -128,3 +128,12 @@
 "It's rude, vulgar, or offensive" = "It's rude, vulgar, or offensive";
 "It contains misinformation" = "It contains misinformation";
 "Other" = "Other";
+
+// Short name of the monthly premium subscription
+"Monthly" = "Monthly";
+// Suffix of the monthly premium subscription price description
+"month" = "month";
+// Suffix of the annual premium subscription price description
+"year" = "year";
+// Short name of the annual premium subscription
+"Annual" = "Annual";
