@@ -91,8 +91,6 @@ internal enum L10n {
   internal static let itSSexuallyExplicit = L10n.tr("Localizable", "It's sexually explicit", fallback: "It's sexually explicit")
   /// Keep your list fresh and clean
   internal static let keepYourListFreshAndClean = L10n.tr("Localizable", "Keep your list fresh and clean", fallback: "Keep your list fresh and clean")
-  /// Limited search results
-  internal static let limitedSearchResults = L10n.tr("Localizable", "Limited search results", fallback: "Limited search results")
   /// Log In
   internal static let logIn = L10n.tr("Localizable", "Log In", fallback: "Log In")
   /// Longest to read
@@ -115,8 +113,6 @@ internal enum L10n {
   internal static let ok = L10n.tr("Localizable", "OK", fallback: "OK")
   /// Oldest saved
   internal static let oldestSaved = L10n.tr("Localizable", "Oldest saved", fallback: "Oldest saved")
-  /// Oops! Try again?
-  internal static let oopsTryAgain = L10n.tr("Localizable", "Oops! Try again?", fallback: "Oops! Try again?")
   /// Open
   internal static let `open` = L10n.tr("Localizable", "Open", fallback: "Open")
   /// Open in Web View
@@ -212,17 +208,19 @@ internal enum L10n {
     /// Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket
     internal static let yourArticlesAndVideosWillBeReadyForYouInPocket = L10n.tr("Localizable", "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket", fallback: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket")
   }
-  internal enum WeReExperiencingAnErrorAndCanTShowYouFullSearchResults {
-    /// We’re experiencing an error and can’t show you full search results. Please try again later.
-    internal static let pleaseTryAgainLater = L10n.tr("Localizable", "We’re experiencing an error and can’t show you full search results. Please try again later.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")
-  }
-  internal enum WeReExperiencingAnErrorAndTemporarilyCanTGetYouWhatYouNeed {
+  internal enum Search {
+    /// Oops! Try again?
+    internal static let errorHeadline = L10n.tr("Localizable", "search.errorHeadline", fallback: "Oops! Try again?")
     /// We’re experiencing an error and temporarily can’t get you what you need. Please try again later.
-    internal static let pleaseTryAgainLater = L10n.tr("Localizable", "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.", fallback: "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.")
-  }
-  internal enum YouCanOnlySearchTitlesAndURLsWhileOffline {
+    internal static let errorMessage = L10n.tr("Localizable", "search.errorMessage", fallback: "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.")
+    /// Limited search results
+    internal static let limitedResults = L10n.tr("Localizable", "search.limitedResults", fallback: "Limited search results")
     /// You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.
-    internal static let connectToTheInternetToUsePremiumSFullTextSearch = L10n.tr("Localizable", "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.", fallback: "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.")
+    internal static let offlineMessage = L10n.tr("Localizable", "search.offlineMessage", fallback: "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.")
+    internal enum Banner {
+      /// We’re experiencing an error and can’t show you full search results. Please try again later.
+      internal static let errorMessage = L10n.tr("Localizable", "search.banner.errorMessage.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")
+    }
   }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length

@@ -48,8 +48,8 @@ class SearchViewModel: ObservableObject {
     var showBanner: Bool = false
 
     var bannerData: BannerModifier.BannerData {
-        let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.limitedSearchResults, detail: L10n.YouCanOnlySearchTitlesAndURLsWhileOffline.connectToTheInternetToUsePremiumSFullTextSearch)
-        let errorView = BannerModifier.BannerData(image: .warning, title: L10n.limitedSearchResults, detail: L10n.WeReExperiencingAnErrorAndCanTShowYouFullSearchResults.pleaseTryAgainLater)
+        let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.Search.limitedResults, detail: L10n.Search.offlineMessage)
+        let errorView = BannerModifier.BannerData(image: .warning, title: L10n.Search.limitedResults, detail: L10n.Search.Banner.errorMessage)
         return isOffline ? offlineView : errorView
     }
 
