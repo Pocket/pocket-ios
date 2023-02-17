@@ -74,7 +74,7 @@
                                 "hasImage": "HAS_IMAGES",
                                 "hasVideo": "HAS_VIDEOS",
                                 "syndicatedArticle": {
-                                    "__typename": "[type-name-here]",
+                                    "__typename": "SyndicatedArticle",
                                     "itemId": "syndicated-article-item-id"
                                 }
                             }

@@ -4,7 +4,7 @@ import Apollo
 import PocketGraph
 
 extension Item {
-    func update(remote: ItemParts) {
+    func update(remote: ItemParts, with space: Space) {
         remoteID = remote.remoteID
         givenURL = URL(string: remote.givenUrl)
         resolvedURL = remote.resolvedUrl.flatMap(URL.init)
@@ -55,13 +55,13 @@ extension Item {
             addToImages(Image(remote: remoteImage, context: context))
         }
 
-        if let syndicatedArticle = remote.syndicatedArticle {
-            self.syndicatedArticle = SyndicatedArticle(context: context)
-            self.syndicatedArticle?.itemID = syndicatedArticle.itemId
+        if let syndicatedArticle = remote.syndicatedArticle, let itemId = syndicatedArticle.itemId {
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle?.itemID = itemId
         }
     }
 
-    func update(from summary: ItemSummary) {
+    func update(from summary: ItemSummary, with space: Space) {
         remoteID = summary.remoteID
         givenURL = URL(string: summary.givenUrl)
         resolvedURL = summary.resolvedUrl.flatMap(URL.init)
@@ -109,9 +109,9 @@ extension Item {
             addToImages(Image(remote: remoteImage, context: context))
         }
 
-        if let syndicatedArticle = summary.syndicatedArticle {
-            self.syndicatedArticle = SyndicatedArticle(context: context)
-            self.syndicatedArticle?.itemID = syndicatedArticle.itemId
+        if let syndicatedArticle = summary.syndicatedArticle, let itemId = syndicatedArticle.itemId {
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle?.itemID = itemId
             self.syndicatedArticle?.publisherName = syndicatedArticle.publisher?.name
             self.syndicatedArticle?.title = syndicatedArticle.title
             self.syndicatedArticle?.excerpt = syndicatedArticle.excerpt
