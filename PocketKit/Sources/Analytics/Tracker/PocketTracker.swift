@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SnowplowTracker
+import Sync
 
 public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker
@@ -30,9 +31,10 @@ public class PocketTracker: Tracker {
         snowplow.track(event: event)
     }
 
-    public func track(event: Event) {
+    public func track(event: Event, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
         let selfDescribing = event.toSelfDescribing()
         persistentContexts.forEach { selfDescribing.contexts.add($0) }
+        Log.debug("Tracking \(String(describing: event))", filename: filename, line: line, column: column, funcName: funcName)
         snowplow.track(event: selfDescribing)
     }
 

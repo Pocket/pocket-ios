@@ -8,7 +8,7 @@ public protocol Tracker {
     func addPersistentContext(_ context: Context)
     @available(*, deprecated, message: "Use track with an explict Event defintion")
     func track<T: OldEvent>(event: T, _ contexts: [Context]?)
-    func track(event: Event)
+    func track(event: Event, filename: String, line: Int, column: Int, funcName: String)
     @available(*, deprecated, message: "No need to longer use a child tracker")
     func childTracker(with contexts: [Context]) -> Tracker
     func resetPersistentContexts(_ contexts: [Context])
@@ -21,5 +21,9 @@ public extension Tracker {
 
     func childTracker(hosting context: UIContext) -> Tracker {
         childTracker(with: [context])
+    }
+
+    func track(event: Event, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
+        track(event: event, filename: filename, line: line, column: column, funcName: funcName)
     }
 }

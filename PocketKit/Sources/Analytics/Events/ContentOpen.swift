@@ -8,7 +8,7 @@ import Foundation
  * Event created when an app initiates the opening a piece of content
  * (triggered by the intent to open an item and does not guarantee that the item was viewed).
  */
-public struct ContentOpen: Event {
+public struct ContentOpen: Event, CustomStringConvertible {
     public static let schema = "iglu:com.pocket/content_open/jsonschema/1-0-0"
 
     /**
@@ -33,6 +33,10 @@ public struct ContentOpen: Event {
         self.contentEntity = contentEntity
         self.uiEntity = uiEntity
         self.extraEntities = extraEntities
+    }
+
+    public var description: String {
+        self.uiEntity.identifier
     }
 
     public func toSelfDescribing() -> SelfDescribing {
