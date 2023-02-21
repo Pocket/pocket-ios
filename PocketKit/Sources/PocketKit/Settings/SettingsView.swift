@@ -41,25 +41,12 @@ struct SettingsView: View {
 struct SettingsForm: View {
     @ObservedObject
     var model: AccountViewModel
+
     var body: some View {
         Form {
             Group {
-                Section(header: Text(L10n.yourAccount).style(.settings.header)) {
-                    SettingsRowButton(title: L10n.Settings.logout, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
-                        .accessibilityIdentifier("log-out-button")
-                }
-                .alert(
-                    L10n.Settings.Logout.areyousure,
-                    isPresented: $model.isPresentingSignOutConfirm,
-                    actions: {
-                        Button(L10n.Settings.logout, role: .destructive) {
-                            model.signOut()
-                        }
-                    }, message: {
-                        Text(L10n.Settings.Logout.areYouSureMessage)
-                    }
-                )
-                .textCase(nil)
+                topSectionWithLeadingDivider()
+                    .textCase(nil)
 
                 Section(header: Text(L10n.appCustomization).style(.settings.header)) {
                     SettingsRowToggle(title: L10n.showAppBadgeCount, model: model) {
@@ -68,7 +55,7 @@ struct SettingsForm: View {
                 }.textCase(nil)
 
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
-                    SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
+                    SettingsRowButton(title: L10n.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
                             SFSafariView(url: URL(string: "https://help.getpocket.com")!)
                                 .edgesIgnoringSafeArea(.bottom)
@@ -112,6 +99,83 @@ struct SettingsForm: View {
                 Spacer()
             }
         }
+    }
+}
+
+// MARK: Top Section
+// These methods should be removed once we support iOS 16+
+extension SettingsForm {
+    /// Handles top section separator on different versions of iOS
+    @ViewBuilder
+    private func topSectionWithLeadingDivider() -> some View {
+        if #available(iOS 16.0, *) {
+            topSection()
+                .alignmentGuide(.listRowSeparatorLeading) { _ in
+                    return 0
+                }
+        } else {
+            topSection()
+        }
+    }
+    /// Provides the standard top section view
+    private func topSection() -> some View {
+        Section(header: Text(L10n.yourAccount).style(.settings.header)) {
+            if model.isPremium {
+                makePremiumSubscriptionRow()
+            } else {
+                makeGoPremiumRow()
+            }
+            SettingsRowButton(
+                title: L10n.Settings.logout,
+                titleStyle: .settings.button.signOut,
+                icon: SFIconModel(
+                    "rectangle.portrait.and.arrow.right",
+                    weight: .semibold,
+                    color: Color(.ui.apricot1)
+                )
+            ) {
+                model.isPresentingSignOutConfirm.toggle()
+            }
+                .accessibilityIdentifier("sign-out-button")
+                .alert(
+                    L10n.Settings.Logout.areyousure,
+                    isPresented: $model.isPresentingSignOutConfirm,
+                    actions: {
+                        Button(L10n.Settings.logout, role: .destructive) {
+                            model.signOut()
+                        }
+                    }, message: {
+                        Text(L10n.Settings.Logout.areYouSureMessage)
+                    }
+                )
+        }
+    }
+
+    private func makePremiumRowContent(_ isPremium: Bool) -> some View {
+        let title = isPremium ? L10n.Settings.premiumSubscriptionRow : L10n.Settings.goPremiumRow
+        let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
+        let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
+        let action = isPremium ? { } : { model.showPremiumUpgrade() }
+        return SettingsRowButton(
+            title: title,
+            titleStyle: titleStyle,
+            leadingImageAsset: .premiumIcon,
+            trailingImageAsset: .chevronRight,
+            leadingTintColor: leadingTintColor,
+            action: action
+        )
+    }
+
+    private func makeGoPremiumRow() -> some View {
+        makePremiumRowContent(false)
+            .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
+                PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
+            }
+    }
+
+    private func makePremiumSubscriptionRow() -> some View {
+        makePremiumRowContent(true)
+        // TODO: add logic to present the premium subscription sheet here
     }
 }
 

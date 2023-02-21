@@ -7,7 +7,7 @@ struct SettingsRowLink<Destination: View>: View {
 
     var title: String
     var titleStyle: Style = .settings.row.default
-    var icon: SFIconModel = SFIconModel("chevron.right", color: Color(.ui.black1))
+    var icon: SFIconModel? = SFIconModel("chevron.right", color: Color(.ui.black1))
     var destination: Destination
 
     var body: some View {
@@ -19,7 +19,9 @@ struct SettingsRowLink<Destination: View>: View {
                     Text(title)
                         .style(titleStyle)
                     Spacer()
-                    SFIcon(icon)
+                    if let icon = icon {
+                        SFIcon(icon)
+                    }
                 }
                 .padding(.vertical, 5)
                 NavigationLink(destination: destination, isActive: $isActive) { EmptyView() }.hidden()
