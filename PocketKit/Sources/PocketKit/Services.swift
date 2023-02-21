@@ -34,9 +34,9 @@ struct Services {
     private let persistentContainer: PersistentContainer
 
     private init() {
-        persistentContainer = .init(storage: .shared)
-
         userDefaults = .standard
+        persistentContainer = .init(storage: .shared, userDefaults: userDefaults)
+
         firstLaunchDefaults = UserDefaults(
             suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
         )!
