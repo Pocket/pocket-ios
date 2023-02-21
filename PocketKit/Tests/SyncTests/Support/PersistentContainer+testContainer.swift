@@ -3,7 +3,7 @@ import CoreData
 @testable import Sync
 
 extension PersistentContainer {
-    static let testContainer = PersistentContainer(storage: .inMemory)
+    static let testContainer = PersistentContainer(storage: .inMemory, userDefaults: .standard)
 }
 
 extension Space {
