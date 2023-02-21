@@ -146,3 +146,11 @@
 
 //List view
 "item.list.min" = "%@ min";
+// Short name of the monthly premium subscription
+"Monthly" = "Monthly";
+// Suffix of the monthly premium subscription price description
+"month" = "month";
+// Suffix of the annual premium subscription price description
+"year" = "year";
+// Short name of the annual premium subscription
+"Annual" = "Annual";
