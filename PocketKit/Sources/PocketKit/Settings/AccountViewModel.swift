@@ -1,9 +1,9 @@
-import Sync
 import Analytics
-import Textile
-import Foundation
+import Combine
 import SharedPocketKit
 import SwiftUI
+import Sync
+import Textile
 
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
@@ -11,15 +11,40 @@ class AccountViewModel: ObservableObject {
     private let user: User
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
+    private let premiumUpgradeViewModelFactory: () -> PremiumUpgradeViewModel
+
+    @Published var isPresentingHelp = false
+    @Published var isPresentingTerms = false
+    @Published var isPresentingPrivacy = false
+    @Published var isPresentingSignOutConfirm = false
+    @Published var isPresentingPremiumUpgrade = false
+    @Published var isPresentingLicenses = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
 
-    init(appSession: AppSession, user: User, userDefaults: UserDefaults, notificationCenter: NotificationCenter) {
+    private var userStatusListener: AnyCancellable?
+
+    @Published var isPremium: Bool
+
+    init(appSession: AppSession,
+         user: User,
+         userDefaults: UserDefaults,
+         notificationCenter: NotificationCenter,
+         premiumUpgradeViewModelFactory: @escaping () -> PremiumUpgradeViewModel) {
         self.appSession = appSession
         self.user = user
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
+        self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
+        self.isPremium = user.status == .premium
+
+        userStatusListener = user
+            .statusPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] status in
+                self?.isPremium = status == .premium
+            }
     }
 
     func signOut() {
@@ -45,10 +70,17 @@ class AccountViewModel: ObservableObject {
             self.notificationCenter.post(name: .listUpdated, object: nil)
         }
     }
+}
 
-    @Published var isPresentingHelp = false
-    @Published var isPresentingTerms = false
-    @Published var isPresentingPrivacy = false
-    @Published var isPresentingSignOutConfirm = false
-    @Published var isPresentingLicenses = false
+// MARK: Premium upgrades
+extension AccountViewModel {
+    @MainActor
+    func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
+        premiumUpgradeViewModelFactory()
+    }
+
+    /// Ttoggle the presentation of `PremiumUpgradeView`
+    func showPremiumUpgrade() {
+        self.isPresentingPremiumUpgrade = true
+    }
 }
