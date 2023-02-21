@@ -138,3 +138,12 @@
 
 "settings.thankyou.credits" = "Thank you for using Pocket";
 "settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";
+
+// Short name of the monthly premium subscription
+"Monthly" = "Monthly";
+// Suffix of the monthly premium subscription price description
+"month" = "month";
+// Suffix of the annual premium subscription price description
+"year" = "year";
+// Short name of the annual premium subscription
+"Annual" = "Annual";
