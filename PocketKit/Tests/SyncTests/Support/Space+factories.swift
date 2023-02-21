@@ -74,7 +74,7 @@ extension Space {
         item: Item? = nil
     ) throws -> SyndicatedArticle {
         try context.performAndWait {
-            let sydnicatedArticle = buildSyndicatedArticle(
+            let syndicatedArticle = buildSyndicatedArticle(
                 excerpt: excerpt,
                 imageURL: imageURL,
                 itemID: itemID,
@@ -84,7 +84,7 @@ extension Space {
             )
             try save()
 
-            return sydnicatedArticle
+            return syndicatedArticle
         }
     }
 
@@ -98,14 +98,14 @@ extension Space {
         item: Item? = nil
     ) -> SyndicatedArticle {
         context.performAndWait {
-            let sydnicatedArticle: SyndicatedArticle = SyndicatedArticle(context: context)
-            sydnicatedArticle.excerpt = excerpt
-            sydnicatedArticle.imageURL = imageURL
-            sydnicatedArticle.itemID = itemID
-            sydnicatedArticle.publisherName = publisherName
-            sydnicatedArticle.title = title
-            sydnicatedArticle.item = item
-            return sydnicatedArticle
+            let syndicatedArticle: SyndicatedArticle = SyndicatedArticle(context: context)
+            syndicatedArticle.excerpt = excerpt
+            syndicatedArticle.imageURL = imageURL
+            syndicatedArticle.itemID = itemID
+            syndicatedArticle.publisherName = publisherName
+            syndicatedArticle.title = title
+            syndicatedArticle.item = item
+            return syndicatedArticle
         }
     }
 }
