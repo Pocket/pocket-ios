@@ -128,3 +128,10 @@
 "It's rude, vulgar, or offensive" = "무례하거나, 저속하거나, 모욕적입니다";
 "It contains misinformation" = "잘못된 정보가 포함되어 있습니다";
 "Other" = "기타";
+
+// Search
+"search.errorHeadline" = "죄송합니다! 다시 시도하시겠습니까?";
+"search.errorMessage" = "오류가 발생하여 일시적으로 필요한 정보를 얻을 수 없습니다. 나중에 다시 시도하십시오.";
+"search.limitedResults" = "제한된 검색 결과";
+"search.offlineMessage" = "오프라인 상태에서는 제목과 URL만 검색할 수 있습니다. Premium의 전체 텍스트 검색을 사용하려면 인터넷에 연결하십시오.";
+"search.banner.errorMessage." = "오류가 발생하여 전체 검색 결과를 표시할 수 없습니다. 나중에 다시 시도하십시오.";

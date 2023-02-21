@@ -128,3 +128,10 @@
 "It's rude, vulgar, or offensive" = "Het is grof, vulgair of aanstootgevend";
 "It contains misinformation" = "Het bevat informatie die niet klopt";
 "Other" = "Overige";
+
+// Search
+"search.errorHeadline" = "Oeps! Opnieuw proberen?";
+"search.errorMessage" = "Er is een fout opgetreden waardoor we je tijdelijk niet kunnen leveren wat je nodig hebt. Probeer het later opnieuw.";
+"search.limitedResults" = "Beperkte zoekresultaten";
+"search.offlineMessage" = "Je kunt alleen titels en URL's zoeken als je offline bent. Maak verbinding met het internet om in Premium op basis van volledige tekst te zoeken.";
+"search.banner.errorMessage." = "Er is een fout opgetreden waardoor we je geen volledige zoekresultaten kunnen tonen. Probeer het later opnieuw.";

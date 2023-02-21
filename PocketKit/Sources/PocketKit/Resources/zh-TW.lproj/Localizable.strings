@@ -128,3 +128,10 @@
 "It's rude, vulgar, or offensive" = "包含無禮、粗俗或令人反感的內容";
 "It contains misinformation" = "包含錯誤資訊";
 "Other" = "其他";
+
+// Search
+"search.errorHeadline" = "哎呀！要再試一次嗎？";
+"search.errorMessage" = "我們遇到錯誤，暫時無法為您提供所需資訊。請稍後重試。";
+"search.limitedResults" = "搜尋結果有限";
+"search.offlineMessage" = "您只能在離線時搜尋標題和 URL。連線至網際網路，以使用 Premium 的全文搜尋功能。";
+"search.banner.errorMessage." = "我們遇到錯誤，無法顯示您完整的搜尋結果。請稍後重試。";
