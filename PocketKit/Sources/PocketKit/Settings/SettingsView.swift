@@ -112,27 +112,12 @@ extension SettingsForm {
             topSection()
         }
     }
-
     /// Provides the standard top section view
     private func topSection() -> some View {
         Section(header: Text(L10n.yourAccount).style(.settings.header)) {
             if !model.isPremium {
-            Section(header: Text(L10n.yourAccount).style(.settings.header)) {
-                if !model.isPremium {
-                    SettingsRowButton(
-                        title: L10n.Settings.premiumRow,
-                        leadingImageAsset: .premiumIcon,
-                        trailingImageAsset: .chevronRight,
-                        tintColor: Color(.ui.black1)
-                    ) {
-                        model.showPremiumUpgrade()
-                    }
-                    .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
-                        PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
-                    }
-                }
                 SettingsRowButton(
-                    title: L10n.Settings.goPremium,
+                    title: L10n.Settings.premiumRow,
                     leadingImageAsset: .premiumIcon,
                     trailingImageAsset: .chevronRight,
                     tintColor: Color(.ui.black1)
