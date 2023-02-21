@@ -60,7 +60,6 @@ extension ImageAsset {
     public static let diamond = ImageAsset("diamond")
     public static let warning = ImageAsset("warning")
     public static let premiumHooray = ImageAsset("premium.hooray")
-    public static let premiumHooray = ImageAsset("premium.hooray")
     public static let readerSkeleton = ReaderSkeleton()
 }
 
