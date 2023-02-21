@@ -12,7 +12,7 @@
     {
       "identity" : "braze-swift-sdk",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/braze-inc/braze-swift-sdk",
+      "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
       "state" : {
         "revision" : "3f322b0ca1ec2f53bc87192a39377be7e8f142db",
         "version" : "5.8.1"
