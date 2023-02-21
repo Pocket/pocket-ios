@@ -58,8 +58,8 @@ class AddTagsItemTests: XCTestCase {
         }
         addTagsView.saveButton.tap()
         selectTaggedFilterButton()
-        let tagsFilterView = app.saves.tagsFilterView.wait()
-        tagsFilterView.tag(matching: randomTagName).wait()
+        app.saves.tagsFilterView.wait()
+        XCTAssertEqual(app.saves.tagsFilterView.tagCells.count, 5)
     }
 
     func test_addTagsToItemFromSaves_savesFromExistingTags() {
