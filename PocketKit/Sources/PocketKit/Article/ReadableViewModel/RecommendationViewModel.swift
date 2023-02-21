@@ -61,7 +61,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var title: String? {
-        recommendation.item?.title
+        recommendation.bestTitle
     }
 
     var authors: [ReadableAuthor]? {
@@ -69,7 +69,7 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var domain: String? {
-        recommendation.item?.domainMetadata?.name ?? recommendation.item?.domain ?? recommendation.item?.bestURL?.host
+        recommendation.bestDomain
     }
 
     var publishDate: Date? {

@@ -26,8 +26,8 @@ class AddTagsItemTests: XCTestCase {
                 return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
-            } else if apiRequest.isForRecommendationDetail {
-                return Response.recommendationDetail()
+            } else if apiRequest.isForRecommendationDetail(1) {
+                return Response.recommendationDetail(1)
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
