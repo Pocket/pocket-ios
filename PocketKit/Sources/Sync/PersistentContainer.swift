@@ -5,20 +5,18 @@
 import CoreData
 
 public class PersistentContainer: NSPersistentContainer {
-    
     public lazy var rootSpace = { Space(context: viewContext) }()
 
     public enum Storage {
         case inMemory
         case shared
     }
-    
+
     let userDefaults: UserDefaults
 
     public init(storage: Storage = .shared, userDefaults: UserDefaults) {
         self.userDefaults = userDefaults
 
-        
         ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
         ValueTransformer.setValueTransformer(SyncTaskTransformer(), forName: .syncTaskTransformer)
 
@@ -62,7 +60,7 @@ public extension PersistentContainer {
             userDefaults.set(newValue, forKey: Self.hasResetData2212023Key)
         }
     }
-    
+
     /**
      During our Testflight, we merged a change that made values non-null in CoreData. Turns out that we were unknowningly saving null values in fields that should have been required.
      Instead of coding a whole core data migration, this wipes the core data store and sets a flag to not wipe it again.
@@ -73,7 +71,7 @@ public extension PersistentContainer {
             do {
                 try FileManager.default.removeItem(at: sharedContainerURL)
             } catch {
-                //Capture error and move on.
+                // Capture error and move on.
                 Log.capture(error: error)
             }
             hasResetData2212023 = true
