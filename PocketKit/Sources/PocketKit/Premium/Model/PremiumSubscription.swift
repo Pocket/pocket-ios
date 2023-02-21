@@ -46,24 +46,36 @@ struct PremiumSubscription {
         }
     }
 
-    var priceDescription: String {
-        product.displayPrice + priceDescriptionSuffix
-    }
-
     var type: PremiumSubscriptionType? {
         PremiumSubscriptionType.type(from: product.id)
     }
 
-    private var priceDescriptionSuffix: String {
+    /// Localized subscription price
+    var price: String {
+        product.displayPrice
+    }
+
+    /// Descriptive representation of the subscription type; format: `price_frequency`, where:
+    ///  - `price` is the localized subscription price (e. g. $ 4.99)
+    ///  - `frequency` is the renewal time, (e. g. /month)
+    /// In the above example, the returned value would be $4.99/month.
+    var priceDescription: String {
+        price + frequency
+    }
+
+    /// Suffix of the price description
+    private var frequency: String {
         switch type {
         case .monthly:
-            return "/" + L10n.month
+            return Self.separator + L10n.month
         case .annual:
-            return "/" + L10n.year
+            return Self.separator + L10n.year
         case .none:
             return ""
         }
     }
+
+    private static let separator = "/"
 }
 
 extension Array where Element == PremiumSubscription {
