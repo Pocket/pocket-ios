@@ -15,7 +15,7 @@ struct Services {
 
     private init() {
         Log.start(dsn: Keys.shared.sentryDSN)
-        persistentContainer = .init(storage: .shared)
+        persistentContainer = .init(storage: .shared, userDefaults: .standard)
 
         appSession = AppSession()
 
