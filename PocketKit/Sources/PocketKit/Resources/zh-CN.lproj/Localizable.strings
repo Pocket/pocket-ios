@@ -128,3 +128,10 @@
 "It's rude, vulgar, or offensive" = "粗鲁、粗俗或令人反感";
 "It contains misinformation" = "包含错误信息";
 "Other" = "其他";
+
+// Search
+"search.errorHeadline" = "糟糕！再试一次？";
+"search.errorMessage" = "我们遇到了错误，暂时无法为您提供所需的信息。请稍后重试。";
+"search.limitedResults" = "有限搜索结果";
+"search.offlineMessage" = "您只能在脱机时搜索标题和 URL。连接到互联网即可使用 Premium 的全文搜索。";
+"search.banner.errorMessage." = "我们遇到了错误，无法显示完整的搜索结果。请稍后重试。";
