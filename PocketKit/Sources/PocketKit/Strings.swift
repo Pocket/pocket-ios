@@ -231,6 +231,7 @@ internal enum L10n {
       internal static let errorMessage = L10n.tr("Localizable", "search.banner.errorMessage.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")
     }
   }
+
     internal enum Settings {
         /// Pocket for iOS %@ (%@)
         internal static func pocketForiOS(_ p1: Any, _ p2: Any) -> String {
@@ -240,6 +241,9 @@ internal enum L10n {
             /// Thank you for using Pocket
             internal static let credits = L10n.tr("Localizable", "settings.thankyou.credits", fallback: "Thank you for using Pocket")
         }
+
+        /// Go Premium
+        internal static let premiumRow = L10n.tr("Localizable", "settings.premiumRow", fallback: "Go Premium")
     }
     
     internal enum Premium {
