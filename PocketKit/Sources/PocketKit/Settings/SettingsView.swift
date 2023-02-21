@@ -50,8 +50,7 @@ struct SettingsForm: View {
                             model.showPremiumUpgrade()
                         }
                         .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
-                            PremiumUpgradeSuccessView()
-//                            PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
+                            PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
                         }
                     }
                     SettingsRowButton(title: L10n.signOut, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
