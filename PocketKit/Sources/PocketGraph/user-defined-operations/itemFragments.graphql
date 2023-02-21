@@ -60,7 +60,6 @@ fragment ItemSummary on Item {
   title
   language
   topImageUrl
-  topImageUrl
   timeToRead
   domain
   datePublished

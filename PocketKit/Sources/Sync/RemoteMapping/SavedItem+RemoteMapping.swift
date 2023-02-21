@@ -53,10 +53,8 @@ extension SavedItem {
             return fetchedTag
         } ?? [])
 
-        let fetchRequest = Requests.fetchItem(byRemoteID: itemParts.remoteID)
-        fetchRequest.fetchLimit = 1
-        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
-        itemToUpdate?.update(remote: itemParts)
+        let itemToUpdate = try? space.fetchItem(byRemoteID: itemParts.remoteID) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
+        itemToUpdate?.update(remote: itemParts, with: space)
         item = itemToUpdate
     }
 
@@ -101,10 +99,8 @@ extension SavedItem {
             space.fetchOrCreateTag(byName: summaryTag.name)
         } ?? [])
 
-        let fetchRequest = Requests.fetchItem(byRemoteID: itemSummary.remoteID)
-        fetchRequest.fetchLimit = 1
-        let itemToUpdate = try? context.fetch(fetchRequest).first ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
-        itemToUpdate?.update(from: itemSummary)
+        let itemToUpdate = try? space.fetchItem(byRemoteID: itemSummary.remoteID) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
+        itemToUpdate?.update(from: itemSummary, with: space)
         item = itemToUpdate
     }
 }

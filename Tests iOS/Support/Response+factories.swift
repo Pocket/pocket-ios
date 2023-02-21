@@ -71,8 +71,8 @@ extension Response {
         fixture(named: "item-detail")
     }
 
-    static func recommendationDetail() -> Response {
-        fixture(named: "recommendation-detail")
+    static func recommendationDetail(_ number: Int = 1) -> Response {
+        fixture(named: "recommendation-detail-\(number)")
     }
 
     static func savedItemWithTag() -> Response {

@@ -71,8 +71,8 @@ struct ClientAPIRequest {
         contains("savedItemById(")
     }
 
-    var isForRecommendationDetail: Bool {
-        contains("itemByItemId(")
+    func isForRecommendationDetail(_ number: Int = 1) -> Bool {
+        contains("itemByItemId(") && contains("recommended-item-\(number)")
     }
 
     var isForReplacingSavedItemTags: Bool {
