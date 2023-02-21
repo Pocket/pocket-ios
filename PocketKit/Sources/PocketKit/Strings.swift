@@ -223,6 +223,8 @@ internal enum L10n {
     }
   }
   internal enum Settings {
+    /// Open Source Licenses
+    internal static let openSourceLicenses = L10n.tr("Localizable", "settings.openSourceLicenses", fallback: "Open Source Licenses")
     /// Pocket for iOS %@ (%@)
     internal static func pocketForiOS(_ p1: Any, _ p2: Any) -> String {
       return L10n.tr("Localizable", "settings.PocketForiOS %@ (%@)", String(describing: p1), String(describing: p2), fallback: "Pocket for iOS %@ (%@)")
