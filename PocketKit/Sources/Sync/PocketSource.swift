@@ -415,7 +415,9 @@ extension PocketSource {
     }
 
     public func fetchDetails(for recommendation: Recommendation) async throws {
+        Log.breadcrumb(category: "detail-loading", level: .debug, message: "Loading details for Recomendation: \(String(describing: recommendation.remoteID))")
         guard let item = recommendation.item else {
+            Log.capture(message: "Could not fetch details for recommendation due to no item")
             return
         }
 
