@@ -56,7 +56,7 @@ extension Recommendation {
         imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init)
 
         let recommendationItem = (try? space.fetchItem(byRemoteID: remote.item.remoteID)) ?? Item(context: space.context, givenURL: url, remoteID: remoteID)
-        recommendationItem.update(from: remote.item.fragments.itemSummary)
+        recommendationItem.update(from: remote.item.fragments.itemSummary, with: space)
         item = recommendationItem
     }
 }

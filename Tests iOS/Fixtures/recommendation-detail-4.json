@@ -1,0 +1,40 @@
+{
+  "data": {
+    "__typename": "[type-name-here]",
+    "itemByItemId": {
+      "remoteID": "recommended-item-4",
+      "__typename": "[some-type-name]",
+      "givenUrl": "https://getpocket.com/explore/item/article-4",
+      "resolvedUrl": "https://getpocket.com/explore/item/article-4",
+      "title": "Slate 2, Recommendation 2",
+      "language": "en",
+      "topImageUrl": "http://example.com/slate-2-rec-2/top-image.png",
+      "timeToRead": 3,
+      "authors": [
+        
+      ],
+      "datePublished": "2021-01-01 12:01:01",
+      "images": [
+        
+      ],
+      "excerpt": "Cursus Aenean Elit",
+      "domain": "slate-2-rec-2.example.com",
+      "domainMetadata": {
+        "__typename": "DomainMetadata",
+        "name": "Pocket",
+        "logo": "https://getpocket.com/logo.png"
+      },
+      "isArticle": true,
+      "hasImage": "HAS_IMAGES",
+      "hasVideo": "HAS_VIDEOS",
+      "syndicatedArticle": {
+        "__typename": "SyndicatedArticle",
+        "itemId": "recommended-item-4"
+      },
+      "datePublished": "2021-01-01 12:01:01",
+      "marticle": [
+        
+      ],
+    }
+  }
+}

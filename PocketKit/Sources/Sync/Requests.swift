@@ -123,6 +123,17 @@ public enum Requests {
         return request
     }
 
+    public static func fetchSyndicatedArticles() -> NSFetchRequest<SyndicatedArticle> {
+        SyndicatedArticle.fetchRequest()
+    }
+
+    public static func fetchSyndicatedArticle(byItemId id: String) -> NSFetchRequest<SyndicatedArticle> {
+        let request = self.fetchSyndicatedArticles()
+        request.predicate = NSPredicate(format: "itemID = %@", id)
+        request.fetchLimit = 1
+        return request
+    }
+
     public static func fetchTags() -> NSFetchRequest<Tag> {
         Tag.fetchRequest()
     }

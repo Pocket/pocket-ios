@@ -61,6 +61,57 @@ extension Space {
     }
 }
 
+// MARK: - SyndicatedArticle
+
+extension Space {
+    @discardableResult
+    func createSyndicatedArticle(
+        excerpt: String? = nil,
+        imageURL: URL? = nil,
+        itemID: String? = nil,
+        publisherName: String? = nil,
+        title: String? = nil,
+        item: Item? = nil
+    ) throws -> SyndicatedArticle {
+        try context.performAndWait {
+            let syndicatedArticle = buildSyndicatedArticle(
+                excerpt: excerpt,
+                imageURL: imageURL,
+                itemID: itemID,
+                publisherName: publisherName,
+                title: title,
+                item: item
+            )
+            try save()
+
+            return syndicatedArticle
+        }
+    }
+
+    @discardableResult
+    func buildSyndicatedArticle(
+        excerpt: String? = nil,
+        imageURL: URL? = nil,
+        itemID: String? = nil,
+        publisherName: String? = nil,
+        title: String? = nil,
+        item: Item? = nil
+    ) -> SyndicatedArticle {
+        context.performAndWait {
+            let syndicatedArticle: SyndicatedArticle = SyndicatedArticle(context: context)
+            syndicatedArticle.excerpt = excerpt
+            syndicatedArticle.imageURL = imageURL
+            syndicatedArticle.itemID = itemID
+            syndicatedArticle.publisherName = publisherName
+            syndicatedArticle.title = title
+            syndicatedArticle.item = item
+            return syndicatedArticle
+        }
+    }
+}
+
+
+
 // MARK: - Item
 extension Space {
     @discardableResult
@@ -68,14 +119,16 @@ extension Space {
         remoteID: String = "item-1",
         title: String = "Item 1",
         givenURL: URL = URL(string: "https://example.com/items/item-1")!,
-        isArticle: Bool = true
+        isArticle: Bool = true,
+        syndicatedArticle: SyndicatedArticle? = nil
     ) throws -> Item {
         try context.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
                 title: title,
                 givenURL: givenURL,
-                isArticle: isArticle
+                isArticle: isArticle,
+                syndicatedArticle: syndicatedArticle
             )
             try save()
 
@@ -89,7 +142,8 @@ extension Space {
         title: String = "Item 1",
         givenURL: URL? = URL(string: "https://example.com/items/item-1"),
         resolvedURL: URL? = nil,
-        isArticle: Bool = true
+        isArticle: Bool = true,
+        syndicatedArticle: SyndicatedArticle? = nil
     ) -> Item {
         var url = givenURL
         if url == nil {
@@ -101,6 +155,7 @@ extension Space {
             item.title = title
             item.resolvedURL = resolvedURL
             item.isArticle = isArticle
+            item.syndicatedArticle = syndicatedArticle
 
             return item
         }

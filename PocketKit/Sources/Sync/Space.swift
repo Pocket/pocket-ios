@@ -104,6 +104,10 @@ public class Space {
         return try fetch(Requests.fetchItem(byURL: url)).first
     }
 
+    func fetchSyndicatedArticle(byItemId id: String) throws -> SyndicatedArticle? {
+        return try fetch(Requests.fetchSyndicatedArticle(byItemId: id)).first
+    }
+
     func fetchAllTags() throws -> [Tag] {
         return try fetch(Requests.fetchTags())
     }
