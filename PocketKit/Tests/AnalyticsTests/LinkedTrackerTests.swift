@@ -13,7 +13,7 @@ class LinkedTrackerTests: XCTestCase {
         let tracker = LinkedTracker(parent: mockTracker, contexts: [context])
         tracker.addPersistentContext(context)
 
-        XCTAssertEqual(mockTracker.addPersistentCalls.last?.context as? MockContext, context)
+        XCTAssertEqual(mockTracker.oldAddPersistentCalls.last?.context as? MockContext, context)
     }
 
     func test_track_forwardsEventToParent() {

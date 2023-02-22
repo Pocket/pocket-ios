@@ -198,14 +198,6 @@ class SearchTests: XCTestCase {
         XCTAssertEqual(searchView.cells.count, 1)
     }
 
-    private func tapSearch(fromArchive: Bool = false) {
-        app.tabBar.savesButton.wait().tap()
-        if fromArchive {
-            app.saves.selectionSwitcher.archiveButton.wait().tap()
-        }
-        app.saves.filterButton(for: "Search").wait().tap()
-    }
-
     // MARK: - Recent Search
     func test_submitSearch_fromRecentSearch() {
         app.launch()
@@ -322,5 +314,56 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
 
         XCTAssertTrue(app.saves.searchView.hasBanner(with: "Limited search results"))
+    }
+
+    func test_favoritingAndUnfavoritingAnItemFromSearch_showsFavoritedIcon() {
+        app.launch()
+        tapSearch()
+
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        app.saves.searchView.searchResultsView.wait()
+
+        let itemCell = app
+            .saves.searchView
+            .searchItemCell(at: 1)
+            .wait()
+
+        let expectRequest = expectation(description: "A request to the server")
+        server.routes.post("/graphql") { request, loop in
+            defer { expectRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToFavoriteAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
+
+            return Response.favorite()
+        }
+
+        itemCell.favoriteButton.tap()
+        wait(for: [expectRequest])
+        XCTAssertTrue(itemCell.favoriteButton.isFilled)
+
+        let expectUnfavoriteRequest = expectation(description: "A request to the server")
+        server.routes.post("/graphql") { request, loop in
+            defer { expectUnfavoriteRequest.fulfill() }
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToUnfavoriteAnItem)
+            XCTAssertTrue(apiRequest.contains("item-2"))
+
+            return Response.unfavorite()
+        }
+
+        itemCell.favoriteButton.tap()
+        wait(for: [expectUnfavoriteRequest])
+        XCTAssertFalse(itemCell.favoriteButton.isFilled)
+    }
+
+    private func tapSearch(fromArchive: Bool = false) {
+        app.tabBar.savesButton.wait().tap()
+        if fromArchive {
+            app.saves.selectionSwitcher.archiveButton.wait().tap()
+        }
+        app.saves.filterButton(for: "Search").wait().tap()
     }
 }

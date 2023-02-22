@@ -10,6 +10,7 @@ import SharedPocketKit
 
 class LocalSavesSearchTests: XCTestCase {
     private var source: MockSource!
+    private var tracker: MockTracker!
     private var user: MockUser!
     private var space: Space!
 

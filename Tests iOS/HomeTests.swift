@@ -225,7 +225,7 @@ class HomeTests: XCTestCase {
 
         app.readerView.cell(containing: "Jacob and David").wait()
     }
-    
+
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_andUserGoesBack_SyndicationInfoStays() {
         app.launch()
             .homeView.recommendationCell("Slate 1, Recommendation 1")
@@ -235,12 +235,11 @@ class HomeTests: XCTestCase {
             .wait().tap()
 
         app.readerView.cell(containing: "Syndicated Article Slate 2, Rec 2").wait()
-        
+
         app.navigationBar.buttons["Home"].tap()
-        
+
         XCTAssertTrue(app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").element.staticTexts["Mozilla"].exists)
     }
-
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
         let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
