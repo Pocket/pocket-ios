@@ -10,12 +10,16 @@ struct Services {
     let appSession: AppSession
     let saveService: PocketSaveService
     let tracker: Tracker
+    let firstLaunchDefaults: UserDefaults
 
     private let persistentContainer: PersistentContainer
 
     private init() {
         Log.start(dsn: Keys.shared.sentryDSN)
-        persistentContainer = .init(storage: .shared, userDefaults: .standard)
+        firstLaunchDefaults = UserDefaults(
+            suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
+        )!
+        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults)
 
         appSession = AppSession()
 

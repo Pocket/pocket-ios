@@ -10,11 +10,11 @@ class OnlineSearch {
     private let source: Source
     private let searchService: SearchService
     private var subscriptions: [AnyCancellable] = []
-    private var cache: [String: [SearchItem]] = [:]
+    private var cache: [String: [PocketItem]] = [:]
     private let scope: SearchScope
 
     @Published
-    var results: Result<[SearchItem], Error>?
+    var results: Result<[PocketItem], Error>?
 
     init(source: Source, scope: SearchScope) {
         self.source = source
@@ -34,7 +34,7 @@ class OnlineSearch {
 
         searchService.results.sink { [weak self] items in
             guard let self, let items else { return }
-            let searchItems = items.compactMap { SearchItem(item: $0) }
+            let searchItems = items.compactMap { PocketItem(item: $0) }
             self.cache[term] = searchItems
             self.results = .success(self.cache[term] ?? [])
         }.store(in: &subscriptions)
