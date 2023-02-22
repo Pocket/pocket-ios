@@ -13,7 +13,7 @@ enum SearchViewState {
     case loading
     case emptyState(EmptyStateViewModel)
     case recentSearches([String])
-    case searchResults([SearchItem])
+    case searchResults([PocketItem])
 }
 
 class SearchViewModel: ObservableObject {
@@ -42,7 +42,7 @@ class SearchViewModel: ObservableObject {
         return user.status == .premium
     }
 
-    private var selectedScope: SearchScope = .saves
+    var selectedScope: SearchScope = .saves
 
     @Published
     var showBanner: Bool = false
@@ -285,7 +285,11 @@ class SearchViewModel: ObservableObject {
 }
 
 extension SearchViewModel {
-    func select(_ searchItem: SearchItem) {
+    func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
+        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker)
+    }
+
+    func select(_ searchItem: PocketItem) {
         guard
             let id = searchItem.id,
             let savedItem = source.fetchOrCreateSavedItem(
@@ -293,6 +297,7 @@ extension SearchViewModel {
                 and: searchItem.remoteItemParts
             )
         else {
+            Log.capture(message: "Saved Item not created")
             return
         }
 

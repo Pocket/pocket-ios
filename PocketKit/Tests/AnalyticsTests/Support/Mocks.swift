@@ -14,17 +14,27 @@ class MockTracker: Analytics.Tracker {
         let event: Analytics.Event
     }
 
-    struct AddPersistentCall {
+    struct OldAddPersistentCall {
         let context: Context
+    }
+
+    struct AddPersistentCall {
+        let entity: Entity
     }
 
     private(set) var oldTrackCalls = Calls<OldTrackCall>()
     private(set) var trackCalls = Calls<TrackCall>()
+    private(set) var oldAddPersistentCalls = Calls<OldAddPersistentCall>()
     private(set) var addPersistentCalls = Calls<AddPersistentCall>()
-    private(set) var clearPersistentContextsCalls = Calls<[Context]>()
+    private(set) var oldClearPersistentContextsCalls = Calls<[Context]>()
+    private(set) var clearPersistentContextsCalls = Calls<[Entity]>()
 
     func addPersistentContext(_ context: Context) {
-        addPersistentCalls.add(AddPersistentCall(context: context))
+        oldAddPersistentCalls.add(OldAddPersistentCall(context: context))
+    }
+
+    func addPersistentEntity(_ entity: Analytics.Entity) {
+        addPersistentCalls.add(AddPersistentCall(entity: entity))
     }
 
     func track<T: Analytics.OldEvent>(event: T, _ contexts: [Context]?) {
@@ -36,7 +46,11 @@ class MockTracker: Analytics.Tracker {
     }
 
     func resetPersistentContexts(_ contexts: [Context]) {
-        clearPersistentContextsCalls.add(contexts)
+        oldClearPersistentContextsCalls.add(contexts)
+    }
+
+    func resetPersistentEntities(_ entities: [Analytics.Entity]) {
+        clearPersistentContextsCalls.add(entities)
     }
 
     func childTracker(with contexts: [Context]) -> Analytics.Tracker {

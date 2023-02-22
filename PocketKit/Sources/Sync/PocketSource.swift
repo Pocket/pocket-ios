@@ -649,15 +649,21 @@ extension PocketSource {
     }
 
     public func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
-        guard let remoteParts, let url = URL(string: remoteParts.url) else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of SavedItem because we do not have a valid url or we have no remoteParts")
-            return nil
+        let savedItem = (try? space.fetchSavedItem(byRemoteID: remoteID))
+
+        if let remoteParts {
+            savedItem?.update(from: remoteParts, with: space)
         }
 
-        let savedItem = (try? space.fetchSavedItem(byRemoteID: remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: remoteID)
-        savedItem.update(from: remoteParts, with: space)
+        guard savedItem == nil, let remoteParts, let url = URL(string: remoteParts.url) else {
+            Log.breadcrumb(category: "sync", level: .debug, message: "SavedItem found and don't need to create one")
+            return savedItem
+        }
+
+        let remoteSavedItem = SavedItem(context: space.context, url: url, remoteID: remoteID)
+        remoteSavedItem.update(from: remoteParts, with: space)
         try? space.save()
 
-        return savedItem
+        return remoteSavedItem
     }
 }

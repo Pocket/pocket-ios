@@ -110,8 +110,6 @@ extension Space {
     }
 }
 
-
-
 // MARK: - Item
 extension Space {
     @discardableResult

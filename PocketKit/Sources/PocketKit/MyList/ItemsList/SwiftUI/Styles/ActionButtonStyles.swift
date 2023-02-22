@@ -7,7 +7,7 @@ extension Image {
         self
             .renderingMode(.template)
             .resizable()
-            .foregroundColor(selected ? Color(.branding.amber5) : Color(.ui.grey5))
+            .foregroundColor(selected ? Color(.branding.amber4) : Color(.ui.grey5))
             .scaledToFit()
             .frame(width: constants.imageSize, height: constants.imageSize, alignment: .center)
             .padding(trailingPadding ? [.all] : [.vertical, .leading], constants.padding)
