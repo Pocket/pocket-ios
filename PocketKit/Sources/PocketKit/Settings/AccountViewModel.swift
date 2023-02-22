@@ -3,6 +3,7 @@ import Analytics
 import Textile
 import SharedPocketKit
 import SwiftUI
+import Combine
 
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
@@ -10,6 +11,7 @@ class AccountViewModel: ObservableObject {
     private let user: User
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
+    private let premiumUpgradeViewModelFactory: () -> PremiumUpgradeViewModel
 
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
@@ -27,11 +29,13 @@ class AccountViewModel: ObservableObject {
     init(appSession: AppSession,
          user: User,
          userDefaults: UserDefaults,
-         notificationCenter: NotificationCenter) {
+         notificationCenter: NotificationCenter,
+         premiumUpgradeViewModelFactory: @escaping () -> PremiumUpgradeViewModel) {
         self.appSession = appSession
         self.user = user
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
+        self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
     }
 
     func signOut() {
@@ -63,9 +67,7 @@ class AccountViewModel: ObservableObject {
 extension AccountViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
-        PremiumUpgradeViewModel {
-            try await PremiumSubscriptionStore()
-        }
+        premiumUpgradeViewModelFactory()
     }
 
     /// Ttoggle the presentation of `PremiumUpgradeView`
