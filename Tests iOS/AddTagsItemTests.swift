@@ -47,10 +47,8 @@ class AddTagsItemTests: XCTestCase {
 
     func test_addTagsToItemFromSaves_savesNewTags() {
         app.tabBar.savesButton.wait().tap()
-
         let itemCell = app.saves.itemView(matching: "Item 1")
         itemCell.itemActionButton.wait().tap()
-
         app.addTagsButton.wait().tap()
         let addTagsView = app.addTagsView.wait()
         addTagsView.clearTagsTextfield()
@@ -59,10 +57,9 @@ class AddTagsItemTests: XCTestCase {
             Response.savedItemWithTag()
         }
         addTagsView.saveButton.tap()
-        itemCell.itemActionButton.wait().tap()
-        app.addTagsButton.wait().tap()
-        app.addTagsView.wait()
-        addTagsView.tag(matching: randomTagName).wait()
+        selectTaggedFilterButton()
+        app.saves.tagsFilterView.wait()
+        XCTAssertEqual(app.saves.tagsFilterView.tagCells.count, 5)
     }
 
     func test_addTagsToItemFromSaves_savesFromExistingTags() {
@@ -135,5 +132,9 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
         app.addTagsView.allTagsView.wait()
+    }
+
+    func selectTaggedFilterButton() {
+        app.saves.filterButton(for: "Tagged").tap()
     }
 }

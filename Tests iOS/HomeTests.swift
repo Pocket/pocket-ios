@@ -82,13 +82,11 @@ class HomeTests: XCTestCase {
 
     func test_navigatingToHomeTab_showsRecentlySavedItems() {
         let home = app.launch().homeView.wait()
-
         home.savedItemCell("Item 1").wait()
         home.savedItemCell("Item 2").wait()
-
         home.savedItemCell("Item 1").swipeLeft(velocity: .fast)
         home.savedItemCell("Item 3").swipeLeft(velocity: .fast)
-        waitForDisappearance(of: home.savedItemCell("Item 6"))
+        waitForDisappearance(of: home.savedItemCell("Item 3"))
     }
 
     func test_tappingRecentSavesItem_showsReader() {

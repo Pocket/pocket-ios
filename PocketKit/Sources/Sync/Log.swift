@@ -137,17 +137,17 @@ public class Log {
     public class func log( _ object: Any, level: Level = .info, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
         switch level {
         case .verbose:
-            Log.verbose(object)
+            Log.verbose(object, filename: filename, line: line, column: column, funcName: funcName)
         case .debug:
-            Log.debug(object)
+            Log.debug(object, filename: filename, line: line, column: column, funcName: funcName)
         case .info:
-            Log.info(object)
+            Log.info(object, filename: filename, line: line, column: column, funcName: funcName)
         case .warning:
-            Log.warning(object)
+            Log.warning(object, filename: filename, line: line, column: column, funcName: funcName)
         case .error:
-            Log.error(object)
+            Log.error(object, filename: filename, line: line, column: column, funcName: funcName)
         case .fatal:
-            Log.fatal(object)
+            Log.fatal(object, filename: filename, line: line, column: column, funcName: funcName)
         }
     }
 
@@ -285,14 +285,14 @@ extension Log {
         - level: The level to log at
         - message: The message to show in the sentry console
      */
-    public class func breadcrumb(category: String, level: Level, message: String) {
+    public class func breadcrumb(category: String, level: Level, message: String, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
         let crumb = Breadcrumb()
         crumb.category = category
         crumb.level = SentryLevel(rawValue: level.toSentry()) ?? .none
         crumb.message = message
 
         SentrySDK.addBreadcrumb(crumb: crumb)
-        Log.log("Sentry - \(category): \(message)", level: level)
+        Log.log("Sentry - \(category): \(message)", level: level, filename: filename, line: line, column: column, funcName: funcName)
     }
 
     /**

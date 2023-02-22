@@ -50,10 +50,6 @@ public class Space {
         return try fetch(Requests.fetchAllSavedItems())
     }
 
-    func fetchOrCreateSavedItem(byRemoteID itemID: String) throws -> SavedItem {
-        try fetchSavedItem(byRemoteID: itemID) ?? new()
-    }
-
     func fetchPersistentSyncTasks() throws -> [PersistentSyncTask] {
         return try fetch(Requests.fetchPersistentSyncTasks())
     }
@@ -74,10 +70,6 @@ public class Space {
         return try fetch(Requests.fetchSlateLineup(byID: id)).first
     }
 
-    func fetchOrCreateSlateLineup(byRemoteID id: String) throws -> SlateLineup {
-        try fetchSlateLineup(byRemoteID: id) ?? new()
-    }
-
     func fetchSlates() throws -> [Slate] {
         return try fetch(Requests.fetchSlates())
     }
@@ -89,10 +81,6 @@ public class Space {
         return try fetch(request).first
     }
 
-    func fetchOrCreateSlate(byRemoteID id: String) throws -> Slate {
-        return try fetchSlate(byRemoteID: id) ?? new()
-    }
-
     func fetchRecommendations() throws -> [Recommendation] {
         return try fetch(Requests.fetchRecommendations())
     }
@@ -102,10 +90,6 @@ public class Space {
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1
         return try fetch(request).first
-    }
-
-    func fetchOrCreateRecommendation(byRemoteID id: String) throws -> Recommendation {
-        return try fetchRecommendation(byRemoteID: id) ?? new()
     }
 
     func fetchItems() throws -> [Item] {
@@ -156,20 +140,12 @@ public class Space {
         delete(tag)
     }
 
-    func fetchOrCreateItem(byRemoteID id: String) throws -> Item {
-        return try fetchItem(byRemoteID: id) ?? new()
-    }
-
     func fetchUnsavedItems() throws -> [Item] {
         return try fetch(Requests.fetchUnsavedItems())
     }
 
     func fetch<T>(_ request: NSFetchRequest<T>) throws -> [T] {
         try context.fetch(request)
-    }
-
-    func new<T: NSManagedObject>() -> T {
-        return T(context: context)
     }
 
     func delete(_ object: NSManagedObject) {

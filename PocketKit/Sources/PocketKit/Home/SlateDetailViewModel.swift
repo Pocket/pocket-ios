@@ -57,12 +57,8 @@ class SlateDetailViewModel {
     }
 
     func refresh(_ completion: @escaping () -> Void) {
-        guard let slateID = slate.remoteID else {
-            return
-        }
-
         Task {
-            try await source.fetchSlate(slateID)
+            try await source.fetchSlate(slate.remoteID)
             completion()
         }
     }
@@ -201,25 +197,19 @@ extension SlateDetailViewModel {
 
         var contexts: [Context] = []
 
-        if let remoteID = slate.remoteID,
-           let requestID = slate.requestID,
-           let experimentID = slate.experimentID {
-            let slateContext = SlateContext(
-                id: remoteID,
-                requestID: requestID,
-                experiment: experimentID,
-                index: UIIndex(0)
-            )
-            contexts.append(slateContext)
-        }
+        let slateContext = SlateContext(
+            id: slate.remoteID,
+            requestID: slate.requestID,
+            experiment: slate.experimentID,
+            index: UIIndex(0)
+        )
+        contexts.append(slateContext)
 
-        if let remoteID = recommendation.remoteID {
-            let recommendationContext = RecommendationContext(
-                id: remoteID,
-                index: UIIndex(indexPath.item)
-            )
-            contexts.append(recommendationContext)
-        }
+        let recommendationContext = RecommendationContext(
+            id: recommendation.remoteID,
+            index: UIIndex(indexPath.item)
+        )
+        contexts.append(recommendationContext)
 
         return contexts + [
             ContentContext(url: recommendationURL),

@@ -76,7 +76,7 @@ public class PocketSaveService: SaveService {
         if let existingItem = try! space.fetchSavedItem(byURL: url) {
             existingItem.createdAt = Date()
 
-            let notification: SavedItemUpdatedNotification = space.new()
+            let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
             notification.savedItem = existingItem
 
             try? space.save()
@@ -84,7 +84,7 @@ public class PocketSaveService: SaveService {
             osNotifications.post(name: .savedItemUpdated)
             return .existingItem(existingItem)
         } else {
-            let savedItem: SavedItem = space.new()
+            let savedItem: SavedItem = SavedItem(context: space.context, url: url)
             savedItem.url = url
             savedItem.createdAt = Date()
             try? space.save()
@@ -142,8 +142,7 @@ public class PocketSaveService: SaveService {
             return
         }
 
-        guard let url = savedItem.url else { return }
-        let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: url.absoluteString))
+        let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: savedItem.url.absoluteString))
 
         let operation = SaveOperation<SaveItemMutation>(
             apollo: apollo,
@@ -214,7 +213,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
 
     private func updateSavedItem(savedItemParts: SavedItemParts) {
         savedItem.update(from: savedItemParts, with: space)
-        let notification: SavedItemUpdatedNotification = space.new()
+        let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
         notification.savedItem = savedItem
         try? space.save()
 
@@ -224,7 +223,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
 
     private func storeUnresolvedSavedItem() {
         try? space.context.performAndWait {
-            let unresolved: UnresolvedSavedItem = space.new()
+            let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.context)
             unresolved.savedItem = savedItem
             try space.save()
         }

@@ -39,7 +39,7 @@ class SavedItemViewModelTests: XCTestCase {
         consumerKey = "test-key"
         space = .testSpace()
 
-        let savedItem = SavedItem()
+        let savedItem = SavedItem(context: space.context, url: URL(string: "http://mozilla.com")!)
         saveService.stubSave { _ in .newItem(savedItem) }
     }
 
@@ -183,7 +183,7 @@ extension SavedItemViewModelTests {
             accessToken: "mock-access-token",
             userIdentifier: "mock-user-identifier"
         )
-        let savedItem = SavedItem()
+        let savedItem = SavedItem(context: self.space.context, url: URL(string: "http://mozilla.com")!)
         saveService.stubSave { _ in .existingItem(savedItem) }
 
         let provider = MockItemProvider()
@@ -288,7 +288,7 @@ extension SavedItemViewModelTests {
     func test_retrieveTags_updatesInfoViewModel() async {
         let viewModel = subject()
         saveService.stubRetrieveTags { _ in
-            let tag: Tag = self.space.new()
+            let tag: Tag = Tag(context: self.space.context)
             tag.name = "tag 1"
             return [tag]
         }

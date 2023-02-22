@@ -129,6 +129,16 @@
 "It contains misinformation" = "It contains misinformation";
 "Other" = "Other";
 
+// Search
+"search.errorHeadline" = "Oops! Try again?";
+"search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
+"search.limitedResults" = "Limited search results";
+"search.offlineMessage" = "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.";
+"search.banner.errorMessage." = "We’re experiencing an error and can’t show you full search results. Please try again later.";
+
+"settings.thankyou.credits" = "Thank you for using Pocket";
+"settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";
+
 // Short name of the monthly premium subscription
 "Monthly" = "Monthly";
 // Suffix of the monthly premium subscription price description
@@ -143,3 +153,4 @@
 "Hooray!" = "Hooray!";
 "premium.success.message" = "You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.";
 "back.to.pocket" = "Back to Pocket";
+"settings.premiumRow" = "Go Premium";

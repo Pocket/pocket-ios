@@ -128,3 +128,10 @@
 "It's rude, vulgar, or offensive" = "Niegrzeczne, wulgarne lub obraźliwe";
 "It contains misinformation" = "Zawiera nieprawdziwe informacje";
 "Other" = "Inne";
+
+// Search
+"search.errorHeadline" = "Ups! Spróbować ponownie?";
+"search.errorMessage" = "Wystąpił błąd i chwilowo nie możemy dostarczyć Ci tego, czego potrzebujesz. Spróbuj ponownie później.";
+"search.limitedResults" = "Ograniczone wyniki wyszukiwania";
+"search.offlineMessage" = "W trybie offline możesz wyszukiwać tylko tytuły i adresy URL. Połącz się z internetem, aby korzystać z wyszukiwania pełnotekstowego Premium.";
+"search.banner.errorMessage." = "Wystąpił błąd i nie możemy pokazać Ci pełnych wyników wyszukiwania. Spróbuj ponownie później.";

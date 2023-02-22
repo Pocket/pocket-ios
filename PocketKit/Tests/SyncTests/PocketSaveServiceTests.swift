@@ -383,9 +383,9 @@ extension PocketSaveServiceTests {
     }
 
     func test_retrieveTags_updatesInfoViewModel() {
-        let tag: Tag = space.new()
+        let tag: Tag = Tag(context: space.context)
         tag.name = "tag 1"
-        let tag2: Tag = space.new()
+        let tag2: Tag = Tag(context: space.context)
         tag2.name = "tag 2"
         let service = subject()
         let tags = service.retrieveTags(excluding: ["tag 1"])

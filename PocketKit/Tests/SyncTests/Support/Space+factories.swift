@@ -46,16 +46,15 @@ extension Space {
         item: Item? = nil
     ) -> SavedItem {
         context.performAndWait {
-            let savedItem: SavedItem = new()
+            let savedItem: SavedItem = SavedItem(context: context, url: URL(string: url)!)
             savedItem.remoteID = remoteID
             savedItem.isFavorite = isFavorite
             savedItem.isArchived = isArchived
             savedItem.createdAt = createdAt
             savedItem.archivedAt = archivedAt
-            savedItem.url = URL(string: url)!
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? new()
+            savedItem.item = item ?? Item(context: context, givenURL: URL(string: url)!, remoteID: remoteID)
 
             return savedItem
         }
@@ -68,7 +67,7 @@ extension Space {
     func createItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL? = URL(string: "https://example.com/items/item-1"),
+        givenURL: URL = URL(string: "https://example.com/items/item-1")!,
         isArticle: Bool = true
     ) throws -> Item {
         try context.performAndWait {
@@ -92,11 +91,14 @@ extension Space {
         resolvedURL: URL? = nil,
         isArticle: Bool = true
     ) -> Item {
-        context.performAndWait {
-            let item: Item = new()
-            item.remoteID = remoteID
+        var url = givenURL
+        if url == nil {
+            url = URL(string: "https://example.com/items/item-1")
+        }
+
+        return context.performAndWait {
+            let item: Item = Item(context: context, givenURL: url!, remoteID: remoteID)
             item.title = title
-            item.givenURL = givenURL
             item.resolvedURL = resolvedURL
             item.isArticle = isArticle
 
@@ -135,10 +137,7 @@ extension Space {
         slates: [Slate] = []
     ) -> SlateLineup {
         context.performAndWait {
-            let lineup: SlateLineup = new()
-            lineup.remoteID = remoteID
-            lineup.requestID = requestID
-            lineup.experimentID = experimentID
+            let lineup: SlateLineup = SlateLineup(context: context, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             lineup.slates = NSOrderedSet(array: slates)
 
             return lineup
@@ -182,11 +181,8 @@ extension Space {
         recommendations: [Recommendation] = []
     ) -> Slate {
         context.performAndWait {
-            let slate: Slate = new()
-            slate.experimentID = experimentID
-            slate.remoteID = remoteID
+            let slate: Slate = Slate(context: context, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             slate.name = name
-            slate.requestID = requestID
             slate.slateDescription = slateDescription
             slate.recommendations = NSOrderedSet(array: recommendations)
 
@@ -219,8 +215,7 @@ extension Space {
         item: Item? = nil
     ) -> Recommendation {
         context.performAndWait {
-            let recommendation: Recommendation = new()
-            recommendation.remoteID = remoteID
+            let recommendation: Recommendation = Recommendation(context: context, remoteID: remoteID)
             recommendation.item = item
 
             return recommendation

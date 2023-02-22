@@ -183,7 +183,7 @@ class PocketSourceTests: XCTestCase {
         let item = savedItem.item!
         item.recommendation = space.buildRecommendation()
 
-        let remoteItemID = item.remoteID!
+        let remoteItemID = item.remoteID
 
         let source = subject()
         source.delete(item: savedItem)
@@ -200,7 +200,7 @@ class PocketSourceTests: XCTestCase {
         let savedItem = try space.createSavedItem(item: space.buildItem())
         let item = savedItem.item!
 
-        let remoteItemID = item.remoteID!
+        let remoteItemID = item.remoteID
 
         let source = subject()
         source.delete(item: savedItem)
@@ -295,7 +295,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
 
         let savedItem = try! space.createSavedItem()
-        let unresolved: UnresolvedSavedItem = space.new()
+        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.context)
         unresolved.savedItem = savedItem
         try space.save()
 
@@ -392,7 +392,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_downloadImage_updatesIsDownloadedProperty() throws {
-        let image: Image = space.new()
+        let image: Image = Image(context: space.context)
 
         let source = subject()
         source.download(images: [image])
@@ -596,7 +596,7 @@ extension PocketSourceTests {
     }
 
     func test_renameTag_executesUpdateTagMutation() throws {
-        let tag1: Tag = space.new()
+        let tag1: Tag = Tag(context: space.context)
         tag1.remoteID = "id 1"
         tag1.name = "tag 1"
         let source = subject()
@@ -618,7 +618,7 @@ extension PocketSourceTests {
     private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [SavedItem] {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in
-            let tag: Tag = space.new()
+            let tag: Tag = Tag(context: space.context)
             tag.remoteID = "id \(num)"
             tag.name = "tag \(num)"
             return space.buildSavedItem(isArchived: isArchived, tags: [tag])
