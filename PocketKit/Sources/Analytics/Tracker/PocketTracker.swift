@@ -32,7 +32,8 @@ public class PocketTracker: Tracker {
 
     public func track(event: Event) {
         let selfDescribing = event.toSelfDescribing()
-        persistentContexts.forEach { selfDescribing.contexts.add($0) }
+        // Temp disabling until Cyndi merges a PR to fix persistent contexts
+        // persistentContexts.forEach { selfDescribing.contexts.add($0) }
         snowplow.track(event: selfDescribing)
     }
 
