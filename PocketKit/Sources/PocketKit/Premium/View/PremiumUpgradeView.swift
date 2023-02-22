@@ -2,9 +2,7 @@ import SwiftUI
 import Textile
 
 struct PremiumUpgradeView: View {
-    @Environment(\.dismiss)
-    private var dismiss
-
+    @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: PremiumUpgradeViewModel
 
     init(viewModel: PremiumUpgradeViewModel) {
@@ -24,6 +22,11 @@ struct PremiumUpgradeView: View {
             } catch {
                 // TODO: Here we will handle any error providing user feedback if/when needed
                 print(error)
+            }
+        }
+        .onChange(of: viewModel.shouldDismiss) { shouldDismiss in
+            if shouldDismiss {
+                dismiss()
             }
         }
     }
@@ -61,7 +64,11 @@ struct PremiumUpgradeView: View {
                             text: viewModel.monthlyName,
                             pricing: viewModel.monthlyPriceDescription,
                             isYearly: false
-                        )
+                        ) {
+                            Task {
+                                await viewModel.purchaseMonthlySubscription()
+                            }
+                        }
                     }
                     Spacer().frame(width: 28)
                     ZStack(alignment: .topTrailing) {
@@ -73,7 +80,11 @@ struct PremiumUpgradeView: View {
                                 text: viewModel.annualName,
                                 pricing: viewModel.annualPriceDescription,
                                 isYearly: true
-                            )
+                            ) {
+                                Task {
+                                    await viewModel.purchaseAnnualSubscription()
+                                }
+                            }
                             PremiumYearlyPercent()
                                 .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
                         }
@@ -142,20 +153,23 @@ private struct PremiumUpgradeButton: View {
     private let text: String
     private let pricing: String
     private let isYearly: Bool
+    private var action: (() -> Void)?
 
     /// The default values are used as placeholders while the actual values are being loaded
     ///  Useful for redacting the Text views while loading
     init(text: String = String(repeating: " ", count: 8),
          pricing: String = String(repeating: " ", count: 10),
-         isYearly: Bool) {
+         isYearly: Bool,
+         action: (() -> Void)? = nil) {
         self.text = text
         self.pricing = pricing
         self.isYearly = isYearly
+        self.action = action
     }
 
     var body: some View {
         if isYearly {
-            Button(action: {}) {
+            Button(action: { action?() }) {
                 VStack(spacing: 8) {
                     Text(text)
                         .style(.yearlyPremiumRow)
@@ -170,7 +184,7 @@ private struct PremiumUpgradeButton: View {
                 )
             }
         } else {
-            Button(action: {}) {
+            Button(action: { action?() }) {
                 VStack(spacing: 8) {
                     Text(text)
                         .style(.monthlyPremiumRow)
