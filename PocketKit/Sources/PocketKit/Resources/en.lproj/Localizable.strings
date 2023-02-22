@@ -138,3 +138,4 @@
 
 "settings.thankyou.credits" = "Thank you for using Pocket";
 "settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";
+"settings.openSourceLicenses" = "Open Source Licenses";
