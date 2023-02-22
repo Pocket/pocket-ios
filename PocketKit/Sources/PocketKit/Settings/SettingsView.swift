@@ -45,32 +45,9 @@ struct SettingsForm: View {
     var body: some View {
         Form {
             Group {
-                Section(header: Text(L10n.yourAccount).style(.settings.header)) {
-                    if !model.isPremium {
-                        SettingsRowButton(title: "Go Premium", icon: nil) {
-                            model.showPremiumUpgrade()
-                        }
-                        .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
-                            PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
-                        }
-                    }
-                    SettingsRowButton(title: L10n.signOut, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
-                        .accessibilityIdentifier("sign-out-button")
-                }
-                .alert(
-                    L10n.areYouSure,
-                    isPresented: $model.isPresentingSignOutConfirm,
-                    actions: {
-                        Button(L10n.signOut, role: .destructive) {
-                            model.signOut()
-                        }
-                    }, message: {
-                        Text(L10n.youWillBeSignedOutOfYourAccountAndAnyFilesThatHaveBeenSavedForOfflineViewingWillBeDeleted)
-                    }
-                )
-                .textCase(nil)
                 topSectionWithLeadingDivider()
                     .textCase(nil)
+
                 Section(header: Text(L10n.appCustomization).style(.settings.header)) {
                     SettingsRowToggle(title: L10n.showAppBadgeCount, model: model) {
                         model.toggleAppBadge()
