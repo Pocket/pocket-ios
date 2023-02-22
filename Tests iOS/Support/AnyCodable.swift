@@ -83,9 +83,8 @@ extension AnyCodable: Encodable {
       } else if let stringVal = value as? String {
         try container.encode(stringVal)
       } else {
-        throw EncodingError.invalidValue(value, EncodingError.Context.init(codingPath: [], debugDescription: "The value is not encodable"))
+        throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: [], debugDescription: "The value is not encodable"))
       }
-
     }
   }
 }

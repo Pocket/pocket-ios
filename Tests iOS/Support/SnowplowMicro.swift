@@ -1,8 +1,8 @@
 // This Source Code Form is subject to the terms of the Mozilla Public
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
 import Foundation
+import XCTest
 
 struct SnowplowAllEvents: Codable {
     var total: Int
@@ -21,7 +21,7 @@ struct SnowplowMicroEventData: Codable {
     var contexts: SnowplowMicroEventContext
 }
 
-struct SnowplowMicroEventContext : Codable {
+struct SnowplowMicroEventContext: Codable {
     var schema: String
     var data: [SnowplowMicroContext]
 }
@@ -31,10 +31,10 @@ struct SnowplowMicroUnstructEvent: Codable {
     var data: SnowplowMicroContext
 }
 
-struct SnowplowMicroContext : Codable {
+struct SnowplowMicroContext: Codable {
     var schema: String
     var data: AnyCodable
-    
+
     func dataDict() -> [String: Any?] {
         return data.value as! [String: Any?]
     }
@@ -44,7 +44,7 @@ class SnowplowMicro {
     private lazy var decoder: JSONDecoder = {
         let aDecoder = JSONDecoder()
         aDecoder.dateDecodingStrategy = .millisecondsSince1970
-        
+
         return aDecoder
     }()
 
@@ -60,7 +60,7 @@ class SnowplowMicro {
     }
 
     func resetSnowplowEvents() async {
-      let _ = await snowplowRequest(path: "/micro/reset", method: "POST")
+      _ = await snowplowRequest(path: "/micro/reset", method: "POST")
     }
 
     func getAllSnowplowEvents() async -> SnowplowAllEvents {
@@ -90,5 +90,12 @@ class SnowplowMicro {
 
     internal func getContext(from event: SnowplowMicroEvent, of type: String) -> SnowplowMicroContext? {
         return event.event.contexts.data.first(where: { $0.schema == type })
+    }
+}
+
+extension SnowplowMicro {
+    func assertNoBadEvents() async {
+       let badEvents = await self.getAllSnowplowEvents().bad
+       XCTAssertEqual(badEvents, 0, "Bad events were found in snowplow micro")
     }
 }

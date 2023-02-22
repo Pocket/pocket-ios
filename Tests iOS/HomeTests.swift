@@ -64,6 +64,10 @@ class HomeTests: XCTestCase {
         try server.start()
     }
 
+    override func tearDown() async throws {
+       await snowplowMicro.assertNoBadEvents()
+    }
+
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
@@ -75,10 +79,7 @@ class HomeTests: XCTestCase {
 
         home.sectionHeader("Slate 1").wait()
         home.element.swipeUp()
-        _ = XCTWaiter.wait(for: [expectation(description: "Wait for n seconds")], timeout: 5.0)
- 
-        let data = await snowplowMicro.getGoodSnowplowEvents()
-        
+
         home.recommendationCell("Slate 1, Recommendation 1").verify()
         home.recommendationCell("Slate 1, Recommendation 2").verify()
 
@@ -86,6 +87,10 @@ class HomeTests: XCTestCase {
 
         home.sectionHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
+
+        _ = XCTWaiter.wait(for: [expectation(description: "Wait for n seconds")], timeout: 5.0)
+
+        let data = await snowplowMicro.getFirstEvent(with: "home.recent.impression")
     }
 
     func test_navigatingToHomeTab_showsRecentlySavedItems() {
