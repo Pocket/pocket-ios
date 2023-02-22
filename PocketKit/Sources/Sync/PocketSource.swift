@@ -664,6 +664,6 @@ extension PocketSource {
         remoteSavedItem.update(from: remoteParts, with: space)
         try? space.save()
 
-        return savedItem
+        return remoteSavedItem
     }
 }
