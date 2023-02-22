@@ -9,12 +9,6 @@
     }
   ],
   "defaultOptions" : {
-    "environmentVariableEntries" : [
-      {
-        "key" : "SNOWPLOW_ENDPOINT",
-        "value" : "http:\/\/localhost:9090"
-      }
-    ],
     "testTimeoutsEnabled" : true
   },
   "testTargets" : [
