@@ -4,6 +4,10 @@
 import Foundation
 import XCTest
 
+
+/**
+ Represents the response from /micro/all
+ */
 struct SnowplowAllEvents: Codable {
     var total: Int
     var good: Int
@@ -17,7 +21,7 @@ struct SnowplowMicroEvent: Codable {
     var schema: String // The type of top level event
     var contexts: [String] // list of included schemas
     var event: SnowplowMicroEventData // the main data to validate
-    
+
     /**
      Get all the contexts attached to an event
      */
@@ -25,18 +29,21 @@ struct SnowplowMicroEvent: Codable {
         return event.contexts.data
     }
     
+    /**
+     Finds the first context of the specified schema type. There is only ever 1 of each type on any given event.
+     */
     func getContext(of type: String) -> SnowplowMicroContext? {
         return getContexts().first(where: { $0.schema == type })
     }
-    
+
     func getAPIUserContext() -> SnowplowMicroContext? {
         return getContext(of: "iglu:com.pocket/api_user/jsonschema/1-0-1")
     }
-    
+
     func getUserContext() -> SnowplowMicroContext? {
         return getContext(of: "iglu:com.pocket/user/jsonschema/1-0-0")
     }
-    
+
     func getUIContext() -> SnowplowMicroContext? {
         return getContext(of: "iglu:com.pocket/ui/jsonschema/1-0-3")
     }
@@ -63,7 +70,7 @@ struct SnowplowMicroUnstructEvent: Codable {
 struct SnowplowMicroContext: Codable {
     var schema: String
     var data: AnyCodable
-    
+
     func dataDict() -> [String: Any?] {
         return data.value as! [String: Any?]
     }
@@ -73,40 +80,42 @@ class SnowplowMicro {
     private lazy var decoder: JSONDecoder = {
         let aDecoder = JSONDecoder()
         aDecoder.dateDecodingStrategy = .millisecondsSince1970
-        
+
         return aDecoder
     }()
-    
+
     var client: any HTTPDataDownloader
-    
+
     init(client: any HTTPDataDownloader = URLSession.shared) {
         self.client = client
     }
-    
+
     internal func snowplowRequest(path: String, method: String = "GET") async -> Data {
+        // For now we wait 2 seconds for snowplow data to be available because the iOS app flushes it to the server. In the future we could poll or find a way to make the make instant calls to snowplow.
+        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait 2 seconds for snowplow data to be available.")], timeout: 2.0)
         let data = try! await self.client.httpData(from: URL(string: "http://localhost:9090\(path)")!, method: method)
         return data
     }
-    
+
     func resetSnowplowEvents() async {
         _ = await snowplowRequest(path: "/micro/reset", method: "POST")
     }
-    
+
     func getAllSnowplowEvents() async -> SnowplowAllEvents {
         let data = await snowplowRequest(path: "/micro/all")
         return try! decoder.decode(SnowplowAllEvents.self, from: data)
     }
-    
+
     func getGoodSnowplowEvents() async -> [SnowplowMicroEvent] {
         let data = await snowplowRequest(path: "/micro/good")
         return try! decoder.decode([SnowplowMicroEvent].self, from: data)
     }
-    
+
     func getBadSnowplowEvents() async -> [[String: Any]] {
         let data = await snowplowRequest(path: "/micro/bad")
         return try! JSONSerialization.jsonObject(with: data, options: []) as! [[String: Any]]
     }
-    
+
     func getFirstEvent(with uiIdentifier: String) async -> SnowplowMicroEvent? {
         let events = await getGoodSnowplowEvents()
         return events.first(where: {
@@ -116,10 +125,18 @@ class SnowplowMicro {
             return ((uiContext.data.value as! [String: Any])["identifier"] as? String) == uiIdentifier
         })
     }
-    
 }
 
 extension SnowplowMicro {
+    
+    /**
+     Runs a baseline assertion on all the snowplow events to ensure we are in compliance.
+     */
+    func assertBaselineSnowplowExpectation() async {
+        let _ = await [assertNoBadEvents(), assertAllEventsHaveUserAndApiUser()]
+    }
+    
+    
     /**
      Ensure that Snowplow micro does not have any bad events.
      */
@@ -127,12 +144,12 @@ extension SnowplowMicro {
         let badEvents = await self.getAllSnowplowEvents().bad
         XCTAssertEqual(badEvents, 0, "Bad events were found in snowplow micro")
     }
-    
+
     /**
      Ensure that Snowplow micro does not have any bad events.
      */
     func assertAllEventsHaveUserAndApiUser() async {
-        let allGoodEvents : [SnowplowMicroEvent] = await self.getGoodSnowplowEvents()
+        let allGoodEvents: [SnowplowMicroEvent] = await self.getGoodSnowplowEvents()
         allGoodEvents.forEach { event in
             XCTAssertNotNil(event.getAPIUserContext(), "API User not found in analytics event")
             XCTAssertNotNil(event.getUserContext(), "User not found in analytics event")

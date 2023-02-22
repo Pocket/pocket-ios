@@ -87,8 +87,8 @@ class HomeTests: XCTestCase {
 
         home.sectionHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
-
-        _ = XCTWaiter.wait(for: [expectation(description: "Wait for n seconds")], timeout: 5.0)
+        
+        await snowplowMicro.assertBaselineSnowplowExpectation()
 
         let data = await snowplowMicro.getFirstEvent(with: "home.recent.impression")
     }
