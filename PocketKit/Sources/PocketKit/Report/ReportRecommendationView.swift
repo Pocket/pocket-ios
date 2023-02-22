@@ -112,7 +112,7 @@ struct ReportRecommendationView: View {
             return
         }
         // NOTE: As of 2/17/2023 The report view can only be called from the Home screen, so we assume that the SlateArticleReport event is the correct one.
-        tracker.track(event: Events.Home.SlateArticleReport(url: item.givenURL, reason: reason, comment: comment, itemId: item.remoteID))
+        tracker.track(event: Events.Home.SlateArticleReport(url: item.givenURL, reason: reason, comment: comment))
     }
 
     private func selectionColor(for reason: ReportEntity.Reason) -> Color {
