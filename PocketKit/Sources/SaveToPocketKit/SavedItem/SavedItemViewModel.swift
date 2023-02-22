@@ -35,7 +35,12 @@ class SavedItemViewModel {
         tracker.resetPersistentContexts([
             APIUserContext(consumerKey: consumerKey)
         ])
+        tracker.resetPersistentEntities([
+            APIUserEntity(consumerKey: consumerKey)
+        ])
         tracker.addPersistentContext(UserContext(guid: session.guid, userID: session.userIdentifier))
+
+        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
     }
 
     func save(from context: ExtensionContext?) async {

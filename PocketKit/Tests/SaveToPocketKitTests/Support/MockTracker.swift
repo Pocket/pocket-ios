@@ -13,7 +13,8 @@ class MockTracker: Tracker {
         let event: Event
     }
 
-    private var persistentContexts: [Context] = []
+    private var oldPersistentContexts: [Context] = []
+    private var persistentContexts: [Entity] = []
 
     private(set) var oldTrackCalls = Calls<OldTrackCall>()
     private(set) var trackCalls = Calls<TrackCall>()
@@ -21,7 +22,14 @@ class MockTracker: Tracker {
     func addPersistentContext(_ context: Context) {
     }
 
+    func addPersistentEntity(_ entity: Entity) {
+    }
+
     func resetPersistentContexts(_ contexts: [Context]) {
+        oldPersistentContexts = []
+    }
+
+    func resetPersistentEntities(_ entities: [Entity]) {
         persistentContexts = []
     }
 

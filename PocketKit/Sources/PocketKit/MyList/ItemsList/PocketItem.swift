@@ -1,9 +1,11 @@
-import Foundation
-import UIKit
-import PocketGraph
-import Sync
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
-struct SearchItem {
+import Foundation
+import PocketGraph
+
+struct PocketItem {
     private let item: ItemsListItem
     private let itemPresenter: ItemsListItemPresenter
 
@@ -14,6 +16,10 @@ struct SearchItem {
 
     var id: String? {
         item.id
+    }
+
+    var isFavorite: Bool {
+        item.isFavorite
     }
 
     var title: NSAttributedString {
@@ -34,24 +40,6 @@ struct SearchItem {
 
     var thumbnailURL: URL? {
         itemPresenter.thumbnailURL
-    }
-
-    var shareAction: ItemAction {
-        ItemAction.share { _ in Log.info("Share button tapped!") }
-    }
-
-    var favoriteAction: ItemAction {
-        ItemAction.favorite { _ in Log.info("Favorite button tapped!") }
-    }
-
-    var overflowActions: [ItemAction] {
-        [ItemAction.addTags { _ in Log.info("Add tags button tapped!") }, ItemAction.archive { _ in Log.info("Archive button tapped!") }, ItemAction.delete { _ in Log.info("Delete button tapped!") }]
-    }
-
-    var trackOverflow: ItemAction {
-        ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil, handler: {_ in
-            Log.info("Overflow button tapped!")
-        })
     }
 
     var remoteItemParts: SavedItemParts? {

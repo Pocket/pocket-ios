@@ -220,10 +220,10 @@ class HomeTests: XCTestCase {
             .homeView.recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
-        app.homeView.recommendationCell("Syndicated Article Rec, 1")
+        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2")
             .wait().tap()
 
-        app.readerView.cell(containing: "Jacob and David").wait()
+        app.readerView.cell(containing: "Mozilla").wait()
     }
 
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_andUserGoesBack_SyndicationInfoStays() {
@@ -370,7 +370,7 @@ class HomeTests: XCTestCase {
         let home = app.launch().homeView
         home.overscroll()
         validateBottomMessage()
-        home.recommendationCell("Syndicated Article Rec, 1").tap()
+        home.recommendationCell("Syndicated Article Slate 2, Rec 2").tap()
         app.readerView.readerHomeButton.wait().tap()
         validateBottomMessage()
     }

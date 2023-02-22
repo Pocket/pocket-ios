@@ -34,7 +34,8 @@ public class PersistentContainer: NSPersistentContainer {
                 .containerURL(forSecurityApplicationGroupIdentifier: "group.com.ideashower.ReadItLaterProAlphaNeue")!
                 .appendingPathComponent("PocketModel.sqlite")
 
-            removeDatabaseIfNeeded(sharedContainerURL: sharedContainerURL)
+            removeDatabaseIfNeeded(sharedContainerURL: FileManager.default
+                .containerURL(forSecurityApplicationGroupIdentifier: "group.com.ideashower.ReadItLaterProAlphaNeue")!)
 
             persistentStoreDescriptions = [
                 NSPersistentStoreDescription(url: sharedContainerURL)
@@ -69,7 +70,9 @@ public extension PersistentContainer {
     func removeDatabaseIfNeeded(sharedContainerURL: URL!) {
         if !hasResetData2212023 {
             do {
-                try FileManager.default.removeItem(at: sharedContainerURL)
+                try FileManager.default.removeItem(at: sharedContainerURL.appendingPathComponent("PocketModel.sqlite"))
+                try FileManager.default.removeItem(at: sharedContainerURL.appendingPathComponent("PocketModel.sqlite-shm"))
+                try FileManager.default.removeItem(at: sharedContainerURL.appendingPathComponent("PocketModel.sqlite-wal"))
             } catch {
                 // Capture error and move on.
                 Log.capture(error: error)

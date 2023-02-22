@@ -35,11 +35,11 @@ struct Services {
 
     private init() {
         userDefaults = .standard
-        persistentContainer = .init(storage: .shared, userDefaults: userDefaults)
-
         firstLaunchDefaults = UserDefaults(
             suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
         )!
+        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults)
+
         urlSession = URLSession.shared
 
         appSession = AppSession()

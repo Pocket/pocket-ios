@@ -30,6 +30,8 @@ class ReportARecommendationTests: XCTestCase {
                 return Response.archive()
             } else if apiRequest.isForRecommendationDetail(1) {
                 return Response.recommendationDetail(1)
+            } else if apiRequest.isForRecommendationDetail(4) {
+                return Response.recommendationDetail(4)
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
@@ -160,7 +162,7 @@ class ReportARecommendationTests: XCTestCase {
 
         // Swipe down to a syndicated item
         app.homeView.element.swipeUp()
-        app.homeView.recommendationCell("Syndicated Article Rec, 1").wait().tap()
+        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").wait().tap()
         app.readerView.readerToolbar.moreButton.tap()
         app.reportButton.wait().tap()
         app.reportView.wait()

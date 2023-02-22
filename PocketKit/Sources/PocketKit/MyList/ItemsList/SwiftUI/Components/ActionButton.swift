@@ -2,9 +2,9 @@ import SwiftUI
 import Textile
 
 struct ActionButton: View {
-    var itemAction: ItemAction?
-    var selected: Bool = false
-    var trailingPadding: Bool = true
+    private var itemAction: ItemAction?
+    private var selected: Bool = false
+    private var trailingPadding: Bool = true
 
     init(_ itemAction: ItemAction?, selected: Bool = false, trailingPadding: Bool = true) {
         self.itemAction = itemAction
@@ -20,6 +20,7 @@ struct ActionButton: View {
                 Image(uiImage: image)
                     .actionButtonStyle(selected: selected, trailingPadding: trailingPadding)
                     .accessibilityIdentifier(action.accessibilityIdentifier)
+                    .accessibilityLabel(action.title)
             }.buttonStyle(.borderless)
         }
     }
