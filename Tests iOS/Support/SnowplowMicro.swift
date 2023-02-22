@@ -127,6 +127,10 @@ struct SnowplowMicroContext: Codable {
         return (self.dataDict()["url"] as? String) == url
     }
 
+    func has(index: Int) -> Bool {
+        return (self.dataDict()["index"] as? Int) == index
+    }
+
     func assertHas(url: String) {
         return XCTAssertEqual((self.dataDict()["url"] as? String), url)
     }
@@ -141,6 +145,14 @@ struct SnowplowMicroContext: Codable {
 
     func assertHas(reason: String) {
         return XCTAssertEqual((self.dataDict()["reason"] as? String), reason)
+    }
+
+    func assertHas(type: String) {
+        return XCTAssertEqual((self.dataDict()["type"] as? String), type)
+    }
+
+    func assertHas(componentDetail: String) {
+        return XCTAssertEqual((self.dataDict()["component_detail"] as? String), componentDetail)
     }
 }
 
@@ -241,6 +253,20 @@ class SnowplowMicro {
             }
 
             return uiContext.has(identifier: uiIdentifier) && recommendationContext.has(recomendationId: recommendationId)
+        })
+    }
+
+    /**
+     Gets the first event we can find with the given UI identifier and position index in a list
+     */
+    func getFirstEvent(with uiIdentifier: String, index: Int) async -> SnowplowMicroEvent? {
+        let events = await getGoodSnowplowEvents()
+        return events.first(where: {
+            guard let uiContext = $0.getUIContext() else {
+                return false
+            }
+
+            return uiContext.has(identifier: uiIdentifier) && uiContext.has(index: index)
         })
     }
 }

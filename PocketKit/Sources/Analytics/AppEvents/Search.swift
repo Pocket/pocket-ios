@@ -21,6 +21,9 @@ public extension Events.Search {
         }
     }
 
+    /**
+     Fired when a user clicks the Favorite icon in a card for `Search`
+     */
     static func favoriteItem(
         itemUrl: URL,
         positionInList: Int,
@@ -42,6 +45,9 @@ public extension Events.Search {
         )
     }
 
+    /**
+     Fired when a user clicks the Un-Favorite icon in a card for `Search`
+     */
     static func unfavoriteItem(
         itemUrl: URL,
         positionInList: Int,
@@ -63,6 +69,9 @@ public extension Events.Search {
         )
     }
 
+    /**
+     Fired when a user shares a card in `Search`
+     */
     static func shareItem(
         itemUrl: URL,
         positionInList: Int,
@@ -81,6 +90,96 @@ public extension Events.Search {
                     url: itemUrl
                 )
             ]
+        )
+    }
+
+    /**
+     Fired when a user opens `Search` experience
+     */
+    static func openSearch(
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search",
+                componentDetail: getScopeIdentifier(scope: scope)
+            )
+        )
+    }
+
+    /**
+     Fired when a user submits a search term
+     */
+    static func submitSearch(
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.submit",
+                componentDetail: getScopeIdentifier(scope: scope)
+            )
+        )
+    }
+    /**
+     Fired when a user changes `Search` scope
+     */
+    static func switchScope(
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.switchscope",
+                componentDetail: getScopeIdentifier(scope: scope)
+            )
+        )
+    }
+
+    /**
+     Fired when a card in the `Search` comes into view
+     */
+    static func searchCardImpression(
+        url: URL,
+        positionInList: Int,
+        scope: SearchScope
+    ) -> Impression {
+        return Impression(
+            component: .card,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .card,
+                identifier: "global-nav.search.impression",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+
+    /**
+     Fired when a user clicks a card in the `Search`
+     */
+    static func searchCardContentOpen(
+        url: URL,
+        positionInList: Int,
+        scope: SearchScope
+    ) -> ContentOpen {
+        return ContentOpen(
+            contentEntity:
+                ContentEntity(url: url),
+            uiEntity: UiEntity(
+                .card,
+                identifier: "global-nav.search.card.open",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: positionInList
+            )
         )
     }
 }
