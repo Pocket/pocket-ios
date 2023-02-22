@@ -35,7 +35,7 @@ public struct Impression: Event, CustomStringConvertible {
     public func toSelfDescribing() -> SelfDescribing {
         let componentValue = component.toComponent()
 
-        let base = SelfDescribing(schema: Engagement.schema, payload: [
+        let base = SelfDescribing(schema: Impression.schema, payload: [
             "component": NSString(string: componentValue.value),
             "requirement": NSString(string: requirement.rawValue),
         ])

@@ -89,6 +89,11 @@ struct SettingsForm: View {
                             SFSafariView(url: URL(string: "https://getpocket.com/en/privacy/")!)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
+                    SettingsRowButton(title: L10n.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle() }
+                        .sheet(isPresented: $model.isPresentingLicenses) {
+                            SFSafariView(url: URL(string: "https://getpocket.com/opensource_notices_ios")!)
+                                .edgesIgnoringSafeArea(.bottom)
+                        }
                 }.textCase(nil)
             }
             .listRowBackground(Color(.ui.grey7))

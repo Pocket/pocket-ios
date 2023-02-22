@@ -50,4 +50,5 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingTerms = false
     @Published var isPresentingPrivacy = false
     @Published var isPresentingSignOutConfirm = false
+    @Published var isPresentingLicenses = false
 }

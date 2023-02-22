@@ -9,6 +9,7 @@ public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker
 
     private var persistentContexts: [Context] = []
+    private var persistentEntities: [Entity] = []
 
     public init(snowplow: SnowplowTracker) {
         self.snowplow = snowplow
@@ -16,6 +17,10 @@ public class PocketTracker: Tracker {
 
     public func addPersistentContext(_ context: Context) {
         persistentContexts.append(context)
+    }
+
+    public func addPersistentEntity(_ entity: Entity) {
+        persistentEntities.append(entity)
     }
 
     public func track<T: OldEvent>(event: T, _ contexts: [Context]?) {
@@ -32,9 +37,9 @@ public class PocketTracker: Tracker {
     }
 
     public func track(event: Event, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
-        let selfDescribing = event.toSelfDescribing()
-        persistentContexts.forEach { selfDescribing.contexts.add($0) }
         Log.debug("Tracking \(String(describing: event))", filename: filename, line: line, column: column, funcName: funcName)
+        let selfDescribing = event.toSelfDescribing()
+        persistentEntities.forEach { selfDescribing.contexts.add($0.toSelfDescribingJson()) }
         snowplow.track(event: selfDescribing)
     }
 
@@ -44,6 +49,10 @@ public class PocketTracker: Tracker {
 
     public func resetPersistentContexts(_ contexts: [Context]) {
         persistentContexts = contexts
+    }
+
+    public func resetPersistentEntities(_ entities: [Entity]) {
+        persistentEntities = entities
     }
 }
 

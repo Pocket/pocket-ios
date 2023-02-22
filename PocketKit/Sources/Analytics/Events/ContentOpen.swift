@@ -40,7 +40,7 @@ public struct ContentOpen: Event, CustomStringConvertible {
     }
 
     public func toSelfDescribing() -> SelfDescribing {
-        let base = SelfDescribing(schema: Engagement.schema, payload: [
+        let base = SelfDescribing(schema: ContentOpen.schema, payload: [
             "destination": NSString(string: destination.rawValue),
             "trigger": NSString(string: trigger.rawValue),
         ])
