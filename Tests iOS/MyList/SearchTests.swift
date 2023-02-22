@@ -9,12 +9,14 @@ import NIO
 class SearchTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -44,23 +46,39 @@ class SearchTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        Task {
+            await snowplowMicro.assertNoBadEvents()
+        }
         try server.stop()
         app.terminate()
     }
 
     // MARK: - Saves: Search
-    func test_enterSavesSearch_fromCarouselGoIntoSearch() {
+    @MainActor
+    func test_enterSavesSearch_fromCarouselGoIntoSearch() async {
         app.launch()
         tapSearch()
+
         XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
-    func test_enterSavesSearch_fromSwipeDownSearch() {
+    @MainActor
+    func test_enterSavesSearch_fromSwipeDownSearch() async {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.element.swipeDown()
 
         app.navigationBar.searchFields["Search"].wait().tap()
         XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     func test_searchSaves_forFreeUser_showsEmptyStateView() {
@@ -127,7 +145,8 @@ class SearchTests: XCTestCase {
     }
 
     // MARK: - Online Search
-    func test_submitSearch_forFreeUser_withArchive_showsResults() {
+    @MainActor
+    func test_submitSearch_forFreeUser_withArchive_showsResults() async {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSearch(.archive) {
@@ -143,9 +162,15 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 1)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "archive")
     }
 
-    func test_submitSearch_forPremiumUser_withSaves_showsResults() {
+    @MainActor
+    func test_submitSearch_forPremiumUser_withSaves_showsResults() async {
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -153,9 +178,25 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
+
+        async let impression0 = snowplowMicro.getFirstEvent(with: "global-nav.search.impression", index: 0)
+        async let impression1 = snowplowMicro.getFirstEvent(with: "global-nav.search.impression", index: 1)
+
+        let impressions = await [impression0, impression1]
+
+        impressions[0]!.getUIContext()!.assertHas(type: "card")
+        impressions[0]!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        impressions[1]!.getUIContext()!.assertHas(type: "card")
+        impressions[1]!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    func test_submitSearch_forPremiumUser_withArchive_showsResults() {
+    @MainActor
+    func test_submitSearch_forPremiumUser_withArchive_showsResults() async {
         app.launch()
         tapSearch(fromArchive: true)
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -163,9 +204,15 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 1)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "archive")
     }
 
-    func test_submitSearch_forPremiumUser_withAllItems_showsResults() {
+    @MainActor
+    func test_submitSearch_forPremiumUser_withAllItems_showsResults() async {
         app.launch()
         tapSearch()
         app.navigationBar.buttons["All items"].wait().tap()
@@ -174,9 +221,15 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 3)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "all_items")
     }
 
-    func test_switchingScopes_showsResultsWithCache() {
+    @MainActor
+    func test_switchingScopes_showsResultsWithCache() async {
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -188,18 +241,36 @@ class SearchTests: XCTestCase {
         app.navigationBar.buttons["All items"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 3)
 
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "all_items")
+
         app.navigationBar.buttons["Archive"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 1)
+
+        let openSearch2 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
+        openSearch2!.getUIContext()!.assertHas(type: "button")
+        openSearch2!.getUIContext()!.assertHas(componentDetail: "archive")
 
         app.navigationBar.buttons["All items"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 3)
 
+        let openSearch3 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
+        openSearch3!.getUIContext()!.assertHas(type: "button")
+        openSearch3!.getUIContext()!.assertHas(componentDetail: "all_items")
+
         app.navigationBar.buttons["Archive"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 1)
+
+        let openSearch4 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
+        openSearch4!.getUIContext()!.assertHas(type: "button")
+        openSearch4!.getUIContext()!.assertHas(componentDetail: "archive")
     }
 
     // MARK: - Recent Search
-    func test_submitSearch_fromRecentSearch() {
+    @MainActor
+    func test_submitSearch_fromRecentSearch() async {
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -221,10 +292,16 @@ class SearchTests: XCTestCase {
         app.saves.searchView.recentSearchesView.staticTexts["item"].tap()
         XCTAssertEqual(searchView.cells.count, 2)
         XCTAssertFalse(app.saves.itemView(at: 0).element.isHittable)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     // MARK: - Select a Search Item
-    func test_selectSearchItem_showsReaderView() {
+    @MainActor
+    func test_selectSearchItem_showsReaderView() async {
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -236,6 +313,12 @@ class SearchTests: XCTestCase {
         app.saves.searchView.searchItemCell(at: 0).tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.card.open")
+        openSearch!.getUIContext()!.assertHas(type: "card")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
+        openSearch!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     // MARK: - Search Loading State
@@ -316,7 +399,8 @@ class SearchTests: XCTestCase {
         XCTAssertTrue(app.saves.searchView.hasBanner(with: "Limited search results"))
     }
 
-    func test_favoritingAndUnfavoritingAnItemFromSearch_showsFavoritedIcon() {
+    @MainActor
+    func test_favoritingAndUnfavoritingAnItemFromSearch_showsFavoritedIcon() async {
         app.launch()
         tapSearch()
 
@@ -344,6 +428,12 @@ class SearchTests: XCTestCase {
         wait(for: [expectRequest])
         XCTAssertTrue(itemCell.favoriteButton.isFilled)
 
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.favorite")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
+        openSearch!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+
         let expectUnfavoriteRequest = expectation(description: "A request to the server")
         server.routes.post("/graphql") { request, loop in
             defer { expectUnfavoriteRequest.fulfill() }
@@ -357,9 +447,15 @@ class SearchTests: XCTestCase {
         itemCell.favoriteButton.tap()
         wait(for: [expectUnfavoriteRequest])
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
+
+        let openSearch2 = await snowplowMicro.getFirstEvent(with: "global-nav.search.unfavorite")
+        openSearch2!.getUIContext()!.assertHas(type: "button")
+        openSearch2!.getUIContext()!.assertHas(componentDetail: "saves")
+        openSearch2!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    func test_sharingAnItemFromSearch_presentsShareSheet() {
+    @MainActor
+    func test_sharingAnItemFromSearch_presentsShareSheet() async {
         app.launch()
         tapSearch()
 
@@ -376,6 +472,12 @@ class SearchTests: XCTestCase {
         itemCell.shareButton.tap()
 
         app.shareSheet.wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.share")
+        openSearch!.getUIContext()!.assertHas(type: "button")
+        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
+        openSearch!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     private func tapSearch(fromArchive: Bool = false) {
