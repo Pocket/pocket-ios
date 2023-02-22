@@ -48,6 +48,7 @@ class PocketItemViewModel: ObservableObject {
             return
         }
 
+        // This view model should be reusable, aside from this tracking call. We can refactor this call when we reuse this for other lists.
         tracker.track(event: Events.Search.unfavoriteItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
         source.favorite(item: savedItem)
         isFavorite = savedItem.isFavorite
