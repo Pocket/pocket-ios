@@ -649,7 +649,7 @@ extension PocketSource {
     }
 
     public func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
-        var savedItem = (try? space.fetchSavedItem(byRemoteID: remoteID))
+        let savedItem = (try? space.fetchSavedItem(byRemoteID: remoteID))
 
         if let remoteParts {
             savedItem?.update(from: remoteParts, with: space)
@@ -660,8 +660,8 @@ extension PocketSource {
             return savedItem
         }
 
-        savedItem = SavedItem(context: space.context, url: url, remoteID: remoteID)
-        savedItem?.update(from: remoteParts, with: space)
+        let remoteSavedItem = SavedItem(context: space.context, url: url, remoteID: remoteID)
+        remoteSavedItem.update(from: remoteParts, with: space)
         try? space.save()
 
         return savedItem
