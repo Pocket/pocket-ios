@@ -50,6 +50,9 @@
 		650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		65167B6F2909904200343FA8 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B6E2909904200343FA8 /* BrazeNotificationService */; };
 		65167B712909904200343FA8 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B702909904200343FA8 /* BrazePushStory */; };
+		658140EA29A5993C00346848 /* SnowplowMicro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140E929A5993C00346848 /* SnowplowMicro.swift */; };
+		658140EC29A59A0C00346848 /* HTTPDataDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140EB29A59A0C00346848 /* HTTPDataDownloader.swift */; };
+		65BE918E29A5B9AF00B13BF1 /* AnyCodable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65BE918D29A5B9AF00B13BF1 /* AnyCodable.swift */; };
 		65EC272728BA8AD50075E1DF /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272628BA8AD50075E1DF /* UserNotifications.framework */; };
 		65EC272928BA8AD50075E1DF /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */; };
 		65EC272C28BA8AD50075E1DF /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC272B28BA8AD50075E1DF /* NotificationViewController.swift */; };
@@ -62,9 +65,9 @@
 		8A7765A2288EE80900127BB4 /* RecentSavesCellElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7765A1288EE80900127BB4 /* RecentSavesCellElement.swift */; };
 		8A8F5EFE28CB740000124B6D /* EditTagsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A8F5EFD28CB740000124B6D /* EditTagsTests.swift */; };
 		8ADAC6B028AD4E7500DE9A62 /* AddTagsViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADAC6AF28AD4E7500DE9A62 /* AddTagsViewElement.swift */; };
-		D26A5EF4297F1D8400FA5A88 /* ReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */; };
 		8ADD6A9F292C189C007F419D /* SearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6A9E292C189C007F419D /* SearchTests.swift */; };
 		8ADD6AA1292C1B2C007F419D /* SearchViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */; };
+		D26A5EF4297F1D8400FA5A88 /* ReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */; };
 		F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = F20BB0382744542F00AE5E70 /* AlertElement.swift */; };
 		F24B1E1C27ECB55600C75487 /* SaveToPocket.swift in Sources */ = {isa = PBXBuildFile; fileRef = F24B1E1B27ECB55600C75487 /* SaveToPocket.swift */; };
 		F2675EAB27D9424B0016769E /* HomeWebViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2675EAA27D9424B0016769E /* HomeWebViewTests.swift */; };
@@ -195,6 +198,9 @@
 		6551C9D62900B27D00247C40 /* UITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UITests.xctestplan; sourceTree = "<group>"; };
 		6551C9D72900B46000247C40 /* bitrise.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = bitrise.yml; sourceTree = "<group>"; };
 		655C274E28B67ED20040AEAB /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		658140E929A5993C00346848 /* SnowplowMicro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnowplowMicro.swift; sourceTree = "<group>"; };
+		658140EB29A59A0C00346848 /* HTTPDataDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HTTPDataDownloader.swift; sourceTree = "<group>"; };
+		65BE918D29A5B9AF00B13BF1 /* AnyCodable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyCodable.swift; sourceTree = "<group>"; };
 		65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PushNotificationStoryExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		65EC272628BA8AD50075E1DF /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		65EC272828BA8AD50075E1DF /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
@@ -209,9 +215,9 @@
 		8A7765A1288EE80900127BB4 /* RecentSavesCellElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecentSavesCellElement.swift; sourceTree = "<group>"; };
 		8A8F5EFD28CB740000124B6D /* EditTagsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTagsTests.swift; sourceTree = "<group>"; };
 		8ADAC6AF28AD4E7500DE9A62 /* AddTagsViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTagsViewElement.swift; sourceTree = "<group>"; };
-		D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTests.swift; sourceTree = "<group>"; };
 		8ADD6A9E292C189C007F419D /* SearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTests.swift; sourceTree = "<group>"; };
 		8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewElement.swift; sourceTree = "<group>"; };
+		D26A5EF3297F1D8400FA5A88 /* ReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderTests.swift; sourceTree = "<group>"; };
 		F204A76027E22EC50010E155 /* SaveToPocket.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SaveToPocket.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		F204A76727E22EC50010E155 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F20BB0382744542F00AE5E70 /* AlertElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertElement.swift; sourceTree = "<group>"; };
@@ -363,6 +369,9 @@
 				16E4B16E27A3212900E01746 /* Response+factories.swift */,
 				1605237D27A4627F00E09FD2 /* XCTestCase+extensions.swift */,
 				3E7349DE2930F6D200EEEA36 /* String+Localization.swift */,
+				658140E929A5993C00346848 /* SnowplowMicro.swift */,
+				658140EB29A59A0C00346848 /* HTTPDataDownloader.swift */,
+				65BE918D29A5B9AF00B13BF1 /* AnyCodable.swift */,
 			);
 			path = Support;
 			sourceTree = "<group>";
@@ -723,11 +732,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				8A3E3DBC2864DB0500483564 /* EmptyStateTests.swift in Sources */,
+				658140EA29A5993C00346848 /* SnowplowMicro.swift in Sources */,
 				1674057726CAC35F0061434E /* DeleteAnItemTests.swift in Sources */,
 				D26A5EF4297F1D8400FA5A88 /* ReaderTests.swift in Sources */,
 				1613B2B12755696B0014F301 /* SignOutTests.swift in Sources */,
 				8ADD6A9F292C189C007F419D /* SearchTests.swift in Sources */,
 				8A3EAA5128AACC9500392057 /* AddTagsItemTests.swift in Sources */,
+				65BE918E29A5B9AF00B13BF1 /* AnyCodable.swift in Sources */,
 				16E4B16D27A31BEC00E01746 /* RequestMatchers.swift in Sources */,
 				166BAD0C2656E76B00E401F0 /* SavesElement.swift in Sources */,
 				F20BB0392744542F00AE5E70 /* AlertElement.swift in Sources */,
@@ -773,6 +784,7 @@
 				166BACF82656E3C600E401F0 /* Fixture.swift in Sources */,
 				166F8F2926D0494F00F898E3 /* PocketUIElement.swift in Sources */,
 				F2A5B6B6271E03C400FB8BF2 /* LaunchEnvironment.swift in Sources */,
+				658140EC29A59A0C00346848 /* HTTPDataDownloader.swift in Sources */,
 				166BAD092656E76B00E401F0 /* ItemRowElement.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

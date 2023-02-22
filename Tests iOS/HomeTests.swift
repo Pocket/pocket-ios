@@ -9,12 +9,14 @@ import NIO
 class HomeTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -67,12 +69,16 @@ class HomeTests: XCTestCase {
         app.terminate()
     }
 
-    func test_navigatingToHomeTab_showsASectionForEachSlate() {
+    @MainActor
+    func test_navigatingToHomeTab_showsASectionForEachSlate() async {
         let home = app.launch().homeView
 
         home.sectionHeader("Slate 1").wait()
         home.element.swipeUp()
-
+        _ = XCTWaiter.wait(for: [expectation(description: "Wait for n seconds")], timeout: 5.0)
+ 
+        let data = await snowplowMicro.getGoodSnowplowEvents()
+        
         home.recommendationCell("Slate 1, Recommendation 1").verify()
         home.recommendationCell("Slate 1, Recommendation 2").verify()
 
