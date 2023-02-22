@@ -15,7 +15,7 @@ public struct RecommendationEntity: Entity {
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
-        return SelfDescribingJson(schema: ReportEntity.schema, andDictionary: [
+        return SelfDescribingJson(schema: RecommendationEntity.schema, andDictionary: [
             "recommendation_id": self.id,
             "index": self.index,
         ])
