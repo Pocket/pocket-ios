@@ -135,3 +135,7 @@
 "search.limitedResults" = "検索結果が制限されています";
 "search.offlineMessage" = "オフラインの状態では、タイトルと URL の検索のみ可能です。Premium の全文検索を使用するには、インターネットに接続してください。";
 "search.banner.errorMessage." = "エラーが発生し、完全な検索結果を表示することができません。後ほどもう一度お試しください。";
+
+"settings.thankyou.credits" = "Pocket をご利用いただきありがとうございます";
+"settings.PocketForiOS %@ (%@)" = "iOS 向け Pocket %1$@ (%2$@)";
+"settings.openSourceLicenses" = "Open Source Licenses";
