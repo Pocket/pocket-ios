@@ -629,7 +629,7 @@ extension PocketSourceTests {
 // MARK: - Search Term
 extension PocketSourceTests {
     func test_savesSearches_withFreeUser_showSearchResults_searchTitle() throws {
-        user.status = .free
+        user.setPremiumStatus(false)
 
         try setupLocalSavesSearch()
         let source = subject()
@@ -641,7 +641,7 @@ extension PocketSourceTests {
     }
 
     func test_savesSearches_withPremiumUser_showSearchResults_searchTitle() throws {
-        user.status = .premium
+        user.setPremiumStatus(true)
         try setupLocalSavesSearch()
         let source = subject()
         let results = source.searchSaves(search: "saved")
@@ -652,7 +652,7 @@ extension PocketSourceTests {
     }
 
     func test_savesSearches_withFreeUser_showSearchResults_searchUrl() throws {
-        user.status = .free
+        user.setPremiumStatus(false)
         let url = URL(string: "testUrl.saved")
         try setupLocalSavesSearch(with: url)
 
@@ -665,7 +665,7 @@ extension PocketSourceTests {
     }
 
     func test_savesSearches_withPremiumUser_showSearchResults_searchUrl() throws {
-        user.status = .premium
+        user.setPremiumStatus(true)
 
         let url = URL(string: "testUrl.saved")
         try setupLocalSavesSearch(with: url)
@@ -679,7 +679,7 @@ extension PocketSourceTests {
     }
 
     func test_savesSearches_withFreeUser_showSearchResults_doesNotSearchTag() throws {
-        user.status = .free
+        user.setPremiumStatus(false)
 
          _ = createItemsWithTags(2)
 
@@ -694,7 +694,7 @@ extension PocketSourceTests {
     }
 
     func test_savesSearches_withPremiumUser_showSearchResults_searchTag() throws {
-        user.status = .premium
+        user.setPremiumStatus(true)
 
         _ = createItemsWithTags(2)
 
