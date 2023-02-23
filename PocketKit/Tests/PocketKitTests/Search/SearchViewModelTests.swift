@@ -96,7 +96,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateScope_forPremiumUser_withSaves_showsRecentSearchEmptyState() {
-        user.status = .premium
+        user.setPremiumStatus(true)
 
         source.stubSearchItems { _ in return [] }
 
@@ -110,7 +110,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateScope_forPremiumUser_withArchive_showsRecentSearchEmptyState() {
-        user.status = .premium
+        user.setPremiumStatus(true)
 
         source.stubSearchItems { _ in return [] }
 
@@ -124,7 +124,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateScope_forPremiumUser_withAll_showsRecentSearchEmptyState() {
-        user.status = .premium
+        user.setPremiumStatus(true)
 
         source.stubSearchItems { _ in return [] }
 
@@ -153,7 +153,7 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateScope_forFreeUser_withArchiveAndTerm_showsResults() async {
         let term = "search-term"
-        user.status = .free
+        user.setPremiumStatus(false)
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
@@ -190,7 +190,7 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateScope_forPremiumUser_withSavesAndTerm_showsResults() async {
         let term = "search-term"
-        user.status = .premium
+        user.setPremiumStatus(true)
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
@@ -214,7 +214,7 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateScope_forPremiumUser_withArchiveAndTerm_showsResults() async {
         let term = "search-term"
-        user.status = .premium
+        user.setPremiumStatus(true)
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
@@ -237,7 +237,7 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateScope_forPremiumUser_withAllAndTerm_showsResults() async {
         let term = "search-term"
-        user.status = .premium
+        user.setPremiumStatus(true)
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
@@ -301,7 +301,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_forPremiumUser_withNoItems_showsNoResultsEmptyState() {
-        user.status = .premium
+        user.setPremiumStatus(true)
         searchService.stubSearch { _, _ in }
         searchService._results = []
 
@@ -324,7 +324,7 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateSearchResults_forPremiumUser_withItems_showsResults() async {
         let term = "search-term"
-        user.status = .premium
+        user.setPremiumStatus(true)
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
@@ -360,7 +360,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_forPremiumUser_withOfflineArchive_showsOfflineEmptyState() async {
-        user.status = .premium
+        user.setPremiumStatus(true)
         networkPathMonitor.update(status: .unsatisfied)
         await setupOnlineSearch(with: "search-term")
 
@@ -384,7 +384,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_forPremiumUser_withOfflineAll_showsOfflineEmptyState() async {
-        user.status = .premium
+        user.setPremiumStatus(true)
         networkPathMonitor.update(status: .unsatisfied)
         await setupOnlineSearch(with: "search-term")
 
@@ -398,7 +398,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_selectingScope_whenOffline_showsOfflineEmptyState() async {
-        user.status = .premium
+        user.setPremiumStatus(true)
         await setupOnlineSearch(with: "search-term")
 
         let viewModel = subject()
@@ -421,7 +421,7 @@ class SearchViewModelTests: XCTestCase {
 
     // MARK: - Recent Searches
     func test_recentSearches_withFreeUser_hasNoRecentSearches() {
-        user.status = .free
+        user.setPremiumStatus(false)
         source.stubSearchItems { _ in [] }
 
         let viewModel = subject()
@@ -438,7 +438,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_recentSearches_withNewTerm_showsRecentSearches() {
-        user.status = .premium
+        user.setPremiumStatus(true)
         searchService.stubSearch { _, _ in }
 
         let viewModel = subject()
@@ -454,7 +454,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_recentSearches_withDuplicateTerm_showsRecentSearches() {
-        user.status = .premium
+        user.setPremiumStatus(true)
         searchService.stubSearch { _, _ in }
 
         let viewModel = subject()
@@ -471,7 +471,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_recentSearches_withEmptyTerm_showsRecentSearchEmptyState() {
-        user.status = .premium
+        user.setPremiumStatus(true)
         searchService.stubSearch { _, _ in }
 
         let viewModel = subject()
@@ -487,7 +487,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_recentSearches_withNewTerms_showsMaxSearches() {
-        user.status = .premium
+        user.setPremiumStatus(true)
         searchService.stubSearch { _, _ in }
 
         let viewModel = subject()
@@ -508,7 +508,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_recentSearches_withPreviousSearch_updatesSearches() {
-        user.status = .premium
+        user.setPremiumStatus(true)
         searchService.stubSearch { _, _ in }
 
         let viewModel = subject()
@@ -531,7 +531,7 @@ class SearchViewModelTests: XCTestCase {
     // MARK: - Clear
     func test_clear_resetsSearchResults() async {
         let term = "search-term"
-        user.status = .premium
+        user.setPremiumStatus(true)
         await setupOnlineSearch(with: term)
 
         let viewModel = subject()
@@ -607,7 +607,7 @@ class SearchViewModelTests: XCTestCase {
 
     // MARK: - Error Handling
     func test_updateSearchResults_forPremiumUser_withOnlineSavesError_showsLocalSaves() async throws {
-        user.status = .premium
+        user.setPremiumStatus(true)
         networkPathMonitor.update(status: .unsatisfied)
         try setupLocalSavesSearch()
 
@@ -636,7 +636,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_withInternetConnectionError_showsOfflineView() async throws {
-        user.status = .premium
+        user.setPremiumStatus(true)
 
         let viewModel = subject()
         let errorExpectation = expectation(description: "handle apollo internet connection error")
