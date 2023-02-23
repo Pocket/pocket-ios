@@ -135,3 +135,7 @@
 "search.limitedResults" = "Resultados de búsqueda limitados";
 "search.offlineMessage" = "Si no tienes conexión, solo puedes buscar títulos y URL. Conéctate a internet para usar la búsqueda de texto completo de Premium.";
 "search.banner.errorMessage." = "Debido a un error no podemos mostrarte los resultados de búsqueda completos. Vuelve a intentarlo más tarde.";
+
+"settings.thankyou.credits" = "Gracias por utilizar Pocket";
+"settings.PocketForiOS %@ (%@)" = "Pocket para iOS %1$@ (%2$@)";
+"settings.openSourceLicenses" = "Open Source Licenses";
