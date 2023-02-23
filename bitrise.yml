@@ -138,6 +138,25 @@ workflows:
           inputs:
             - artifact_sources: build-and-test.test-build
 
+  # Helper step to start snowplow
+  _start_snowplow:
+    steps:
+        - script@1:
+           inputs:
+             - content: |
+                #!/usr/bin/env bash
+
+                # fail if any commands fails
+                set -e
+                
+                ## Usually Pocket runs snowplow via our docker image, but Bitrise does not support docker in Mac environments so we use their built jar.
+                ## It uses the values in MICRO_IGLU_REGISTRY_URL and MICRO_IGLU_API_KEY
+                echo "Run snowplow"
+                brew install wget openjdk
+                wget https://github.com/snowplow-incubator/snowplow-micro/releases/download/micro-1.5.0/snowplow-micro-1.5.0.jar
+                java -jar snowplow-micro-1.5.0.jar &
+                
+
   #Builds a release build that could be uploaded to App Store Connect
   release-build:
     steps:
@@ -274,6 +293,7 @@ workflows:
         machine_type_id: g2-m1.8core
     before_run:
       - _pull_test_bundle
+      - _start_snowplow
     steps:
       - xcode-test-without-building:
           title: UI Test Suite 1
@@ -291,6 +311,7 @@ workflows:
         machine_type_id: g2-m1.8core
     before_run:
       - _pull_test_bundle
+      - _start_snowplow
     steps:
       - xcode-test-without-building:
           title: UI Test Suite 2
@@ -308,6 +329,7 @@ workflows:
         machine_type_id: g2-m1.8core
     before_run:
       - _pull_test_bundle
+      - _start_snowplow
     steps:
       - xcode-test-without-building:
           title: UI Test Suite 3
