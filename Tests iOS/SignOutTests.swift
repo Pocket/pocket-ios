@@ -50,7 +50,7 @@ class SignOutTests: XCTestCase {
         tap_SignOut()
 
         let account = XCUIApplication()
-        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Sign Out"].wait().tap()
+        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Log Out"].wait().tap()
         XCTAssertTrue(app.loggedOutView.exists)
     }
 
@@ -64,6 +64,6 @@ class SignOutTests: XCTestCase {
     }
 
     func tap_SignOut() {
-        app.accountView.signOutButton.tap()
+        app.accountView.logOutButton.tap()
     }
 }
