@@ -2,8 +2,11 @@ import Analytics
 import Combine
 import SharedPocketKit
 import SwiftUI
+<<<<<<< HEAD
 import Sync
 import Textile
+=======
+>>>>>>> 96210a6e (feat(premium): update AccountViewModel, remove unused import)
 
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
