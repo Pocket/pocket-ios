@@ -135,3 +135,7 @@
 "search.limitedResults" = "Ограниченные результаты поиска";
 "search.offlineMessage" = "В автономном режиме возможен только поиск по заголовкам и URL-адресам. Подключитесь к Интернету, чтобы использовать полнотекстовый поиск Premium-подписки.";
 "search.banner.errorMessage." = "Из-за возникшей ошибки мы не можем показать вам полные результаты поиска. Попробуйте позже.";
+
+"settings.thankyou.credits" = "Спасибо, что пользуетесь Pocket";
+"settings.PocketForiOS %@ (%@)" = "Pocket для iOS %1$@ (%2$@)";
+"settings.openSourceLicenses" = "Лицензии с открытым кодом";
