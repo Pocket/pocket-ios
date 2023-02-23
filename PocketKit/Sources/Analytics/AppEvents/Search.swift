@@ -10,26 +10,28 @@ public extension Events {
 }
 
 public extension Events.Search {
+    private static func getScopeIdentifier(scope: SearchScope) -> String {
+        switch scope {
+        case .saves:
+            return "saves"
+        case .archive:
+            return "archive"
+        case .all:
+            return "all_items"
+        }
+    }
+
     static func favoriteItem(
         itemUrl: URL,
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
-        var identifier = ""
-        switch scope {
-        case .saves:
-            identifier = "global-nav.search.saves.favorite"
-        case .archive:
-            identifier = "global-nav.search.archive.favorite"
-        case .all:
-            identifier = "global-nav.search.all.favorite"
-        }
-
         return Engagement(
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: identifier,
+                identifier: "global-nav.search.favorite",
+                componentDetail: getScopeIdentifier(scope: scope),
                 index: positionInList
             ),
             extraEntities: [
@@ -45,21 +47,33 @@ public extension Events.Search {
         positionInList: Int,
         scope: SearchScope
     ) -> Event {
-        var identifier = ""
-        switch scope {
-        case .saves:
-            identifier = "global-nav.search.saves.unfavorite"
-        case .archive:
-            identifier = "global-nav.search.archive.unfavorite"
-        case .all:
-            identifier = "global-nav.search.all.unfavorite"
-        }
-
         return Engagement(
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: identifier,
+                identifier: "global-nav.search.unfavorite",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(
+                    url: itemUrl
+                )
+            ]
+        )
+    }
+
+    static func shareItem(
+        itemUrl: URL,
+        positionInList: Int,
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.share",
+                componentDetail: getScopeIdentifier(scope: scope),
                 index: positionInList
             ),
             extraEntities: [

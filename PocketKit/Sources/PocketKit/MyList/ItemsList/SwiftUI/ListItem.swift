@@ -27,7 +27,18 @@ struct ListItem: View {
                 ItemTags(tags: viewModel.item.tags, tagCount: viewModel.item.tagCount)
                 Spacer()
                 ActionButton(viewModel.favoriteAction(index: viewModel.index, scope: scope), selected: viewModel.isFavorite)
-                ActionButton(viewModel.shareAction)
+
+                ActionButton(viewModel.shareAction(index: viewModel.index, scope: scope))
+                    .sheet(isPresented: $viewModel.presentShareSheet) {
+                        if #available(iOS 16.0, *) {
+                            ShareSheetView(activity: PocketItemActivity(url: viewModel.item.url))
+                                .presentationDetents([.medium])
+                        } else {
+                            // For now, iOS 15 will be full screen as weird bug and presentationDetents not available
+                            ShareSheetView(activity: PocketItemActivity(url: viewModel.item.url))
+                        }
+                    }
+
                 OverflowMenu(overflowActions: viewModel.overflowActions, trackOverflow: viewModel.trackOverflow, trailingPadding: false)
             }
         }
