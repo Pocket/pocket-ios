@@ -51,18 +51,18 @@ struct SettingsForm: View {
                 //                }.textCase(nil)
 
                 Section(header: Text(L10n.yourAccount).style(.settings.header)) {
-                    SettingsRowButton(title: L10n.signOut, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
-                        .accessibilityIdentifier("sign-out-button")
+                    SettingsRowButton(title: L10n.Settings.logout, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
+                        .accessibilityIdentifier("log-out-button")
                 }
                 .alert(
-                    L10n.areYouSure,
+                    L10n.Settings.Logout.areyousure,
                     isPresented: $model.isPresentingSignOutConfirm,
                     actions: {
-                        Button(L10n.signOut, role: .destructive) {
+                        Button(L10n.Settings.logout, role: .destructive) {
                             model.signOut()
                         }
                     }, message: {
-                        Text(L10n.youWillBeSignedOutOfYourAccountAndAnyFilesThatHaveBeenSavedForOfflineViewingWillBeDeleted)
+                        Text(L10n.Settings.Logout.areYouSureMessage)
                     }
                 )
                 .textCase(nil)
