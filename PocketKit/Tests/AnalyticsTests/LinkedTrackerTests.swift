@@ -8,12 +8,12 @@ import XCTest
 class LinkedTrackerTests: XCTestCase {
     func test_track_withPersistentContexts_forwardsPersistentContextsToParent() {
         let mockTracker = MockTracker()
-        let context = MockContext(value: "persistent")
+        let context = MockEntity(value: "persistent")
 
         let tracker = LinkedTracker(parent: mockTracker, contexts: [context])
-        tracker.addPersistentContext(context)
+        tracker.addPersistentEntity(context)
 
-        XCTAssertEqual(mockTracker.oldAddPersistentCalls.last?.context as? MockContext, context)
+        XCTAssertEqual(mockTracker.addPersistentCalls.last?.entity as? MockEntity, context)
     }
 
     func test_track_forwardsEventToParent() {
@@ -29,16 +29,16 @@ class LinkedTrackerTests: XCTestCase {
     func test_track_multipleChildren_forwardAllContexts() {
         let mockTracker = MockTracker()
 
-        let contextA = MockContext(value: "context-a")
+        let contextA = MockEntity(value: "context-a")
         let childA = LinkedTracker(parent: mockTracker, contexts: [contextA])
 
-        let contextB = MockContext(value: "context-b")
+        let contextB = MockEntity(value: "context-b")
         let childB = LinkedTracker(parent: childA, contexts: [contextB])
 
         let mockEvent = MockEvent(value: 1337)
-        let mockContext = MockContext(value: "mock-context")
+        let mockContext = MockEntity(value: "mock-context")
         childB.track(event: mockEvent, [mockContext])
 
-        XCTAssertEqual(mockTracker.oldTrackCalls.last?.contexts as? [MockContext], [contextA, contextB, mockContext])
+        XCTAssertEqual(mockTracker.oldTrackCalls.last?.contexts as? [MockEntity], [contextA, contextB, mockContext])
     }
 }

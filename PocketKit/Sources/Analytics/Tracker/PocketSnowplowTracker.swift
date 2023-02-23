@@ -7,6 +7,8 @@ import SnowplowTracker
 public class PocketSnowplowTracker: SnowplowTracker {
     private let tracker: TrackerController
 
+    private var persistentEntities: [Entity] = []
+
     public init() {
         let endpoint = ProcessInfo.processInfo.environment["SNOWPLOW_ENDPOINT"] ?? "d.getpocket.com"
         let appID = ProcessInfo.processInfo.environment["SNOWPLOW_IDENTIFIER"] ?? "pocket-ios-next"
@@ -35,9 +37,21 @@ public class PocketSnowplowTracker: SnowplowTracker {
             configurations: [trackerConfiguration]
         )
 
+        tracker.globalContexts.add(tag: "persistent-entities", contextGenerator: GlobalContext(generator: {  event in
+            return self.persistentEntities.map({ $0.toSelfDescribingJson() })
+        }))
+
         if CommandLine.arguments.contains("disableSnowplow") {
             tracker.pause()
         }
+    }
+
+    public func addPersistentEntity(_ entity: Entity) {
+        persistentEntities.append(entity)
+    }
+
+    public func resetPersistentEntities(_ entities: [Entity]) {
+        persistentEntities = entities
     }
 
     public func track(event: SelfDescribing) {
