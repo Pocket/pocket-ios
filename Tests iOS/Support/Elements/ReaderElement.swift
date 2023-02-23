@@ -87,6 +87,14 @@ struct ReaderElement: PocketUIElement {
         element.buttons["Open in Web View"]
     }
 
+    var articleView: XCUIElement {
+        element.collectionViews["article-view"]
+    }
+
+    var articleTextViews: [XCUIElement] {
+        articleView.textViews.allElementsBoundByIndex
+    }
+
     func cell(containing string: String) -> XCUIElement {
         let predicate = NSPredicate(format: "label CONTAINS %@", string)
         return element

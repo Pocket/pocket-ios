@@ -90,6 +90,52 @@ class ReaderTests: XCTestCase {
         XCTAssertTrue(app.readerView.fontSelection(fontName: "Blanco OSF").exists)
     }
 
+    func test_tappingDisplaySettings_fontStepperIncreasesFont() {
+        launchApp_andOpenItem()
+        openReaderOverflowMenu()
+        openDisplaySettings()
+
+        // XCUITests do not let us access TextView font sizes. 👎🏻
+        // So we instead grab all text views within reader mode and expect them to increase in height.
+
+        let textViews = app.readerView.articleTextViews
+        let currentHeights: [Double] = textViews.map { textElement in
+            textElement.frame.height
+        }
+        self.tapFontSizeIncreaseButton()
+        self.tapFontSizeIncreaseButton()
+        self.tapFontSizeIncreaseButton()
+
+        var i = 0
+        textViews.forEach({ text in
+            XCTAssertGreaterThan(text.frame.height, currentHeights[i], "Article text view did not grow in height")
+            i+=1
+        })
+    }
+
+    func test_tappingDisplaySettings_fontStepperDecreasesFont() {
+        launchApp_andOpenItem()
+        openReaderOverflowMenu()
+        openDisplaySettings()
+
+        // XCUITests do not let us access TextView font sizes. 👎🏻
+        // So we instead grab all text views within reader mode and expect them to decrease in height.
+
+        let textViews = app.readerView.articleTextViews
+        let currentHeights: [Double] = textViews.map { textElement in
+            textElement.frame.height
+        }
+        self.tapFontSizeDecreaseButton()
+        self.tapFontSizeDecreaseButton()
+        self.tapFontSizeDecreaseButton()
+
+        var i = 0
+        textViews.forEach({ text in
+            XCTAssertLessThan(text.frame.height, currentHeights[i], "Article text view did not shrink in height")
+            i+=1
+        })
+    }
+
     func test_tappingWebViewButton_showsSafari() {
         launchApp_andOpenItem()
         tapSafariButton()
