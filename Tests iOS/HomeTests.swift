@@ -103,8 +103,8 @@ class HomeTests: XCTestCase {
 
         snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/hello")
         snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/item-2")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "https://example.com/item-1")
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "https://example.com/item-2")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec1, url: "https://example.com/item-1")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec2, url: "https://example.com/item-2")
     }
 
     @MainActor
