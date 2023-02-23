@@ -39,7 +39,7 @@ struct ItemRowElement: PocketUIElement {
     }
 
     var shareButton: XCUIElement {
-        element.buttons["share"]
+        element.buttons["item-action-share"]
     }
 }
 

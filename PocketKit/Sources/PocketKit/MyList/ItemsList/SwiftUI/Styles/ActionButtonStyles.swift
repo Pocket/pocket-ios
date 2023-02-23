@@ -3,7 +3,7 @@ import SwiftUI
 private let constants = ListItem.Constants.actionButton
 
 extension Image {
-    func actionButtonStyle(selected: Bool, trailingPadding: Bool) -> some View {
+    func actionButtonStyle(selected: Bool = false, trailingPadding: Bool = true) -> some View {
         self
             .renderingMode(.template)
             .resizable()

@@ -20,7 +20,11 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var bestURL: URL? {
-        guard let itemParts = item.asItem else { return nil }
+        guard let itemParts = item.asItem else {
+            Log.breadcrumb(category: "search", level: .warning, message: "Skipping updating of Item \(remoteItem.remoteID) because \(item) does not have itemParts")
+            return nil
+        }
+
         let resolvedURL = itemParts.resolvedUrl.flatMap(URL.init)
         let givenURL = URL(string: itemParts.givenUrl)
         return resolvedURL ?? givenURL

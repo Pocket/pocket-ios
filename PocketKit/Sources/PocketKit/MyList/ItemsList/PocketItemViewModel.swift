@@ -16,6 +16,9 @@ class PocketItemViewModel: ObservableObject {
     @Published
     var isFavorite: Bool
 
+    @Published
+    var presentShareSheet: Bool = false
+
     init(item: PocketItem, index: Int, source: Source, tracker: Tracker) {
         self.item = item
         self.index = index
@@ -49,7 +52,7 @@ class PocketItemViewModel: ObservableObject {
         }
 
         // This view model should be reusable, aside from this tracking call. We can refactor this call when we reuse this for other lists.
-        tracker.track(event: Events.Search.unfavoriteItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
+        tracker.track(event: Events.Search.favoriteItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
         source.favorite(item: savedItem)
         isFavorite = savedItem.isFavorite
     }
@@ -66,13 +69,22 @@ class PocketItemViewModel: ObservableObject {
             return
         }
 
-        tracker.track(event: Events.Search.favoriteItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
+        tracker.track(event: Events.Search.unfavoriteItem(itemUrl: savedItem.url, positionInList: index, scope: scope))
         source.unfavorite(item: savedItem)
         isFavorite = savedItem.isFavorite
     }
 
-    var shareAction: ItemAction {
-        ItemAction.share { _ in Log.info("Share button tapped!") }
+    func shareAction(index: Int, scope: SearchScope) -> ItemAction {
+        return .share { [weak self] sender in self?._share(scope: scope) }
+    }
+
+    func _share(scope: SearchScope) {
+        if let url = item.url {
+            tracker.track(event: Events.Search.shareItem(itemUrl: url, positionInList: index, scope: scope))
+        } else {
+            Log.breadcrumb(category: "analytics", level: .warning, message: "Skipping tracking of Item \(item) because url is missing")
+        }
+        presentShareSheet = true
     }
 
     var overflowActions: [ItemAction] {

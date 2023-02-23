@@ -82,4 +82,14 @@ class PocketItemViewModelTests: XCTestCase {
         XCTAssertEqual(source.unfavoriteSavedItemCall(at: 0)?.item, item)
         XCTAssertFalse(viewModel.isFavorite)
     }
+
+    func test_shareAction_presentsShareSheet() {
+        let item = space.buildSavedItem()
+
+        let viewModel = subject(item: PocketItem(item: item))
+
+        _ = viewModel.shareAction(index: 0, scope: .saves).handler?(nil)
+
+        XCTAssertTrue(viewModel.presentShareSheet)
+    }
 }
