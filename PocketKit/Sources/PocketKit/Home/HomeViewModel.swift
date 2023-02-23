@@ -292,11 +292,6 @@ extension HomeViewModel {
     }
 
     private func select(recommendation: Recommendation, at indexPath: IndexPath) {
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            contexts(for: recommendation, at: indexPath)
-        )
-
         let viewModel = RecommendationViewModel(
             recommendation: recommendation,
             source: source,
@@ -304,29 +299,29 @@ extension HomeViewModel {
             pasteboard: UIPasteboard.general
         )
 
-        if let item = recommendation.item, item.shouldOpenInWebView {
-            selectedReadableType = .webViewRecommendation(viewModel)
+        guard let item = recommendation.item else {
+            Log.capture(message: "Selected recommendation without an associated item")
+            return
+        }
 
-            tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
-                contexts(for: recommendation, at: indexPath)
-            )
+        if item.shouldOpenInWebView {
+            selectedReadableType = .webViewRecommendation(viewModel)
         } else {
             selectedReadableType = .recommendation(viewModel)
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
-                contexts(for: recommendation, at: indexPath)
-            )
         }
+
+        guard
+            let slate = recommendation.slate,
+            let slateLineup = slate.slateLineup
+        else {
+            Log.capture(message: "Selected recommendation without an associated slate and slatelineup, not logging analytics")
+            return
+        }
+
+        tracker.track(event: Events.Home.SlateArticleContentOpen(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.remoteID))
     }
 
     private func select(savedItem: SavedItem, at indexPath: IndexPath) {
-        tracker.track(
-            event: SnowplowEngagement(type: .general, value: nil),
-            contexts(for: savedItem, at: indexPath)
-        )
-
         let viewModel = SavedItemViewModel(
             item: savedItem,
             source: source,
@@ -336,19 +331,10 @@ extension HomeViewModel {
 
         if let item = savedItem.item, item.shouldOpenInWebView {
             selectedReadableType = .webViewSavedItem(viewModel)
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .external, trigger: .click),
-                contexts(for: savedItem, at: indexPath)
-            )
         } else {
             selectedReadableType = .savedItem(viewModel)
-
-            tracker.track(
-                event: ContentOpenEvent(destination: .internal, trigger: .click),
-                contexts(for: savedItem, at: indexPath)
-            )
         }
+        tracker.track(event: Events.Home.RecentSavesCardContentOpen(url: savedItem.url, positionInList: indexPath.item))
     }
 }
 
@@ -422,19 +408,19 @@ extension HomeViewModel {
             favoriteAction: favoriteAction,
             overflowActions: [
                 .share { [weak self] sender in
-                    self?.sharedActivity = PocketItemActivity(url: savedItem.url, sender: sender)
+                    self?.share(savedItem, at: indexPath, with: sender)
                 },
                 .archive { [weak self] _ in
-                    self?.source.archive(item: savedItem)
+                    self?.archive(savedItem, at: indexPath)
                 },
                 .delete { [weak self] _ in
-                    self?.confirmDelete(item: savedItem)
+                    self?.confirmDelete(item: savedItem, indexPath: indexPath)
                 }
             ]
         )
     }
 
-    private func confirmDelete(item: SavedItem) {
+    private func confirmDelete(item: SavedItem, indexPath: IndexPath) {
         presentedAlert = PocketAlert(
             title: L10n.areYouSureYouWantToDeleteThisItem,
             message: nil,
@@ -445,25 +431,17 @@ extension HomeViewModel {
                 },
                 UIAlertAction(title: L10n.yes, style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
-                    self?.delete(item: item)
+                    self?.delete(item: item, indexPath: indexPath)
                 }
             ],
             preferredAction: nil
         )
     }
 
-    private func delete(item: SavedItem) {
+    private func delete(item: SavedItem, indexPath: IndexPath) {
         presentedAlert = nil
+        tracker.track(event: Events.Home.RecentSavesCardDelete(url: item.url, positionInList: indexPath.item))
         source.delete(item: item)
-    }
-
-    func contexts(for savedItem: SavedItem, at indexPath: IndexPath) -> [Context] {
-        guard let url = savedItem.bestURL else { return [] }
-
-        return [
-            ContentContext(url: url),
-            UIContext.home.recentSave(index: UIIndex(indexPath.item))
-        ]
     }
 }
 
@@ -528,7 +506,7 @@ extension HomeViewModel {
 
         return [
             .share { [weak self] sender in
-                self?.sharedActivity = PocketItemActivity(url: recommendation.item?.bestURL, sender: sender)
+                self?.share(recommendation, at: indexPath, with: sender)
             },
             .report { [weak self] _ in
                 self?.report(recommendation, at: indexPath)
@@ -554,76 +532,62 @@ extension HomeViewModel {
     }
 
     private func report(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        tracker.track(
-            event: SnowplowEngagement(type: .report, value: nil),
-            contexts(for: recommendation, at: indexPath)
-        )
-
         selectedRecommendationToReport = recommendation
     }
 
+    private func share(_ recommendation: Recommendation, at indexPath: IndexPath, with sender: Any?) {
+        self.sharedActivity = PocketItemActivity(url: recommendation.item?.bestURL, sender: sender)
+
+        guard
+            let item = recommendation.item,
+            let slate = recommendation.slate,
+            let slateLineup = slate.slateLineup
+        else {
+            Log.capture(message: "Shared recommendation without an associated item, slate and slatelineup, not logging analytics")
+            return
+        }
+
+        tracker.track(event: Events.Home.SlateArticleShare(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.remoteID))
+    }
+
+    private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) {
+        self.sharedActivity = PocketItemActivity(url: savedItem.url, sender: sender)
+        tracker.track(event: Events.Home.RecentSavesCardShare(url: savedItem.url, positionInList: indexPath.item))
+    }
+
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemSave)]
-
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
         source.save(recommendation: recommendation)
+
+        guard
+            let item = recommendation.item,
+            let slate = recommendation.slate,
+            let slateLineup = slate.slateLineup
+        else {
+            Log.capture(message: "Saved recommendation without an associated item, slate and slatelineup, not logging analytics")
+            return
+        }
+
+        tracker.track(event: Events.Home.SlateArticleSave(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.remoteID))
     }
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
-        let contexts = contexts(for: recommendation, at: indexPath) + [UIContext.button(identifier: .itemArchive)]
-        tracker.track(
-            event: SnowplowEngagement(type: .save, value: nil),
-            contexts
-        )
-
         source.archive(recommendation: recommendation)
+
+        guard
+            let item = recommendation.item,
+            let slate = recommendation.slate,
+            let slateLineup = slate.slateLineup
+        else {
+            Log.capture(message: "Archived recommendation without an associated item, slate and slatelineup, not logging analytics")
+            return
+        }
+
+        tracker.track(event: Events.Home.SlateArticleArchive(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.remoteID))
     }
 
-    private func contexts(for recommendation: Recommendation, at indexPath: IndexPath) -> [Context] {
-        guard let slate = recommendation.slate,
-              let slateLineup = slate.slateLineup,
-              let recommendationURL = recommendation.item?.bestURL else {
-            return []
-        }
-
-        var contexts: [Context] = []
-
-        // SlateLineup Context
-        let context = SlateLineupContext(
-            id: slateLineup.remoteID,
-            requestID: slateLineup.requestID,
-            experiment: slateLineup.experimentID
-        )
-        contexts.append(context)
-
-        // Slate context
-        if let slateIndex = slateLineup.slates?.index(of: slate) {
-            let slateContext = SlateContext(
-                id: slate.remoteID,
-                requestID: slate.requestID,
-                experiment: slate.experimentID,
-                index: UIIndex(slateIndex)
-            )
-            contexts.append(slateContext)
-        }
-
-        // Recommendation context
-        if let recommendationIndex = slate.recommendations?.index(of: recommendation) {
-            let recommendationContext = RecommendationContext(
-                id: recommendation.remoteID,
-                index: UIIndex(recommendationIndex)
-            )
-            contexts.append(recommendationContext)
-        }
-
-        return contexts + [
-            ContentContext(url: recommendationURL),
-            UIContext.home.item(index: UIIndex(indexPath.item))
-        ]
+    private func archive(_ savedItem: SavedItem, at indexPath: IndexPath) {
+        self.source.archive(item: savedItem)
+        tracker.track(event: Events.Home.RecentSavesCardArchive(url: savedItem.url, positionInList: indexPath.item))
     }
 }
 
@@ -631,17 +595,33 @@ extension HomeViewModel {
 extension HomeViewModel {
     func willDisplay(_ cell: HomeViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
-        case .loading, .recentSaves, .offline:
+        case .loading, .offline:
+            return
+        case .recentSaves(let objectID):
+            guard let savedItem = source.mainContext.object(with: objectID) as? SavedItem else {
+                Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recent save into Saved Item from objectID: \(String(describing: objectID))")
+                Log.capture(message: "SavedItem is null on willDisplay Home Recent Saves")
+                return
+            }
+            tracker.track(event: Events.Home.RecentSavesCardImpression(url: savedItem.url, positionInList: indexPath.item))
             return
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
             guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+                Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recomendation into Recommendation from objectID: \(String(describing: objectID))")
+                Log.capture(message: "Recommendation is null on willDisplay Home Recommendation")
                 return
             }
 
-            tracker.track(
-                event: ImpressionEvent(component: .content, requirement: .instant),
-                contexts(for: recommendation, at: indexPath)
-            )
+            guard
+                let item = recommendation.item,
+                let slate = recommendation.slate,
+                let slateLineup = slate.slateLineup
+            else {
+                Log.capture(message: "Tried to display recommendation without an associated item, slate and slatelineup, not logging analytics")
+                return
+            }
+
+            tracker.track(event: Events.Home.SlateArticleImpression(url: item.givenURL, positionInList: indexPath.item, slateId: slate.remoteID, slateRequestId: slate.requestID, slateExperimentId: slate.experimentID, slateIndex: indexPath.section, slateLineupId: slateLineup.remoteID, slateLineupRequestId: slateLineup.requestID, slateLineupExperimentId: slateLineup.experimentID, recommendationId: recommendation.remoteID))
         }
     }
 }
