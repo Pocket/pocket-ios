@@ -3,7 +3,6 @@ import Analytics
 import Textile
 import SharedPocketKit
 import SwiftUI
-import Combine
 
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
