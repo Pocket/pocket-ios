@@ -83,6 +83,13 @@ struct SnowplowMicroEvent: Codable {
     func getRecommendationContext() -> SnowplowMicroContext? {
         return getContext(of: "iglu:com.pocket/recommendation/jsonschema/1-0-0")
     }
+
+    /**
+     Pulls the report out of the event
+     */
+    func getReportContext() -> SnowplowMicroContext? {
+        return getContext(of: "iglu:com.pocket/report/jsonschema/1-0-0")
+    }
 }
 
 struct SnowplowMicroEventData: Codable {
@@ -120,8 +127,20 @@ struct SnowplowMicroContext: Codable {
         return (self.dataDict()["url"] as? String) == url
     }
 
+    func assertHas(url: String) {
+        return XCTAssertEqual((self.dataDict()["url"] as? String), url)
+    }
+
     func has(recomendationId: String) -> Bool {
         return (self.dataDict()["recommendation_id"] as? String) == recomendationId
+    }
+
+    func has(reason: String) -> Bool {
+        return (self.dataDict()["reason"] as? String) == reason
+    }
+
+    func assertHas(reason: String) {
+        return XCTAssertEqual((self.dataDict()["reason"] as? String), reason)
     }
 }
 
