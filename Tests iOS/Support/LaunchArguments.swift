@@ -98,7 +98,7 @@ extension LaunchArguments {
         clearCoreData: false,
         clearImageCache: false,
         disableSentry: true,
-        disableSnowplow: true
+        disableSnowplow: false
     )
 
     static let firstLaunch = LaunchArguments(
@@ -108,7 +108,7 @@ extension LaunchArguments {
         clearCoreData: true,
         clearImageCache: true,
         disableSentry: true,
-        disableSnowplow: true
+        disableSnowplow: false
     )
 
     static let bypassSignIn = LaunchArguments(
@@ -118,6 +118,6 @@ extension LaunchArguments {
         clearCoreData: true,
         clearImageCache: true,
         disableSentry: true,
-        disableSnowplow: true
+        disableSnowplow: false
     )
 }

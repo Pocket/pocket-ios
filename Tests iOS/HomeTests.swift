@@ -9,12 +9,14 @@ import NIO
 class HomeTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -62,12 +64,17 @@ class HomeTests: XCTestCase {
         try server.start()
     }
 
+    override func tearDown() async throws {
+       await snowplowMicro.assertNoBadEvents()
+    }
+
     override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
     }
 
-    func test_navigatingToHomeTab_showsASectionForEachSlate() {
+    @MainActor
+    func test_navigatingToHomeTab_showsASectionForEachSlate() async {
         let home = app.launch().homeView
 
         home.sectionHeader("Slate 1").wait()
@@ -80,22 +87,44 @@ class HomeTests: XCTestCase {
 
         home.sectionHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+
+        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-1")
+        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-2")
+        async let slate2Rec1 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-2-rec-1")
+        async let slate2Rec2 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-2")
+
+        let recs = await [slate1Rec1, slate1Rec2, slate2Rec1, slate2Rec2]
+        let loadedSlate1Rec1 = recs[0]!
+        let loadedSlate1Rec2 = recs[1]!
+        let loadedSlate2Rec1 = recs[2]!
+        let loadedSlate2Rec2 = recs[3]!
+
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/hello")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/item-2")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec1, url: "https://example.com/item-1")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec2, url: "https://example.com/item-2")
     }
 
-    func test_navigatingToHomeTab_showsRecentlySavedItems() {
+    @MainActor
+    func test_navigatingToHomeTab_showsRecentlySavedItems() async {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
         home.savedItemCell("Item 2").wait()
         home.savedItemCell("Item 1").swipeLeft(velocity: .fast)
         home.savedItemCell("Item 3").swipeLeft(velocity: .fast)
         waitForDisappearance(of: home.savedItemCell("Item 3"))
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
-    func test_tappingRecentSavesItem_showsReader() {
+    @MainActor
+    func test_tappingRecentSavesItem_showsReader() async {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait().tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     func test_tappingRecentSavesItem_showsWebViewWhenItemIsImage() {

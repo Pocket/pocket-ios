@@ -528,8 +528,8 @@ class HomeViewModelTests: XCTestCase {
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
-        let heroRec = space.buildRecommendation()
-        let carouselRec = space.buildRecommendation()
+        let heroRec = space.buildRecommendation(item: space.buildItem())
+        let carouselRec = space.buildRecommendation(item: space.buildItem())
         let recommendations = [heroRec, carouselRec]
         try space.createSlateLineup(
             remoteID: HomeViewModel.lineupIdentifier,

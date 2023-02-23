@@ -17,7 +17,7 @@ struct LaunchEnvironment {
         v3BaseURL: String = "http://localhost:8080",
         clientAPIURL: String = "http://localhost:8080/graphql",
         snowplowIdentifier: String = "pocket-ios-next-dev",
-        snowplowEndpoint: String = "http://localhost:8080",
+        snowplowEndpoint: String = "http://localhost:9090",
         accessToken: String?,
         sessionGUID: String?,
         sessionUserID: String?
