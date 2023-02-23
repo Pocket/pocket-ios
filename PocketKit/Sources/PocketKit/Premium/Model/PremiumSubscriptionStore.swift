@@ -4,6 +4,7 @@
 
 import SharedPocketKit
 import StoreKit
+import Sync
 
 /// Subscription store error(s)
 enum SubscriptionStoreError: Error {
@@ -109,8 +110,8 @@ final class PremiumSubscriptionStore: ObservableObject {
                         user.setPremiumStatus(true)
                     }
                 default:
-                    // We do not have other product types as of now. In the future, who knows..
-                    break
+                    // We do not have other product types as of now.
+                    Log.capture(message: "Received invalid product type")
                 }
             } catch {
                 // TODO: use logger here
