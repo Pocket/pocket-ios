@@ -77,6 +77,8 @@ public extension PersistentContainer {
                 // Capture error and move on.
                 Log.capture(error: error)
             }
+            // Uses the .standard user defaults here because thats where we store it in PocketSource.
+            UserDefaultsLastRefresh(defaults: .standard).reset()
             hasResetData2212023 = true
         }
     }

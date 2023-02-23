@@ -135,3 +135,7 @@
 "search.limitedResults" = "有限搜索结果";
 "search.offlineMessage" = "您只能在脱机时搜索标题和 URL。连接到互联网即可使用 Premium 的全文搜索。";
 "search.banner.errorMessage." = "我们遇到了错误，无法显示完整的搜索结果。请稍后重试。";
+
+"settings.thankyou.credits" = "感谢您使用 Pocket";
+"settings.PocketForiOS %@ (%@)" = "iOS 版 Pocket %1$@ (%2$@)";
+"settings.openSourceLicenses" = "Open Source Licenses";
