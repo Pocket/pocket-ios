@@ -97,10 +97,6 @@ class RootViewModel {
     }
 
     private func setUpSession(_ session: SharedPocketKit.Session) {
-        tracker.resetPersistentContexts([
-            APIUserContext(consumerKey: Keys.shared.pocketApiConsumerKey)
-        ])
-        tracker.addPersistentContext(UserContext(guid: session.guid, userID: session.userIdentifier))
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
@@ -113,9 +109,6 @@ class RootViewModel {
         source.clear()
 
         userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        tracker.resetPersistentContexts([
-            APIUserContext(consumerKey: Keys.shared.pocketApiConsumerKey)
-        ])
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])

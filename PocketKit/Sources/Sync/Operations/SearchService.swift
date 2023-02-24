@@ -71,7 +71,8 @@ public class PocketSearchService: SearchService {
 
         while shouldFetchNextPage {
             let filter = getSearchFilter(with: scope)
-            let query = SearchSavedItemsQuery(term: term, pagination: .init(pagination), filter: .some(filter))
+            let sortOrder = getSortOrder()
+            let query = SearchSavedItemsQuery(term: term, pagination: .init(pagination), filter: .some(filter), sort: .some(sortOrder))
             let result = try await apollo.fetch(query: query)
             result.data?.user?.searchSavedItems?.edges.forEach { edge in
                 var searchSavedItem = SearchSavedItem(remoteItem: edge.node.savedItem.fragments.savedItemParts)
@@ -98,5 +99,9 @@ public class PocketSearchService: SearchService {
         case .all:
             return SearchFilterInput()
         }
+    }
+
+    private func getSortOrder() -> SearchSortInput {
+        return SearchSortInput(sortBy: .init(.createdAt), sortOrder: .init(.desc))
     }
 }

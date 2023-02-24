@@ -11,11 +11,8 @@ class SnowplowTrackerTests: XCTestCase {
         let mock = MockSnowplow()
         let tracker = PocketTracker(snowplow: mock)
 
-        let persistent = PersistentContext(value: "persistent")
-        tracker.addPersistentContext(persistent)
-
-        let contextA = MockContext(value: "A")
-        let contextB = MockContext(value: "B")
+        let contextA = MockEntity(value: "A")
+        let contextB = MockEntity(value: "B")
         let event = MockEvent(value: 0)
 
         tracker.track(event: event, [contextA, contextB])
@@ -26,13 +23,11 @@ class SnowplowTrackerTests: XCTestCase {
 
         let eventContextData = eventContexts.map { $0.data as! [String: String] }
         XCTAssertEqual(eventContextData, [
-            ["value": persistent.value],
             ["value": contextB.value],
             ["value": contextA.value]
         ])
         let eventContextSchemas = eventContexts.map { $0.schema }
         XCTAssertEqual(eventContextSchemas, [
-            "persistent-context",
             "mock-context",
             "mock-context"
         ])

@@ -17,25 +17,13 @@ public struct ContentEntity: Entity {
      */
     let url: URL
 
-    /**
-     * The backend identifier for a URL.
-     */
-    let itemId: String?
-
-    public init(url: URL, itemId: String? = nil) {
+    public init(url: URL) {
         self.url = url
-        self.itemId = itemId
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
-        var data: [AnyHashable: Any] = [
+        return SelfDescribingJson(schema: ContentEntity.schema, andDictionary: [
             "url": url.absoluteString,
-        ]
-
-        if let itemId {
-            data["item_id"] = itemId
-        }
-
-        return SelfDescribingJson(schema: ContentEntity.schema, andDictionary: data)
+        ])
     }
 }

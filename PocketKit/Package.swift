@@ -104,7 +104,8 @@ let package = Package(
         .target(
             name: "Analytics",
             dependencies: [
-                .product(name: "SnowplowTracker", package: "snowplow-objc-tracker")
+                .product(name: "SnowplowTracker", package: "snowplow-objc-tracker"),
+                "Sync"
             ]
         ),
         .testTarget(

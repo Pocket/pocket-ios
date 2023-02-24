@@ -5,10 +5,6 @@
 public struct NoopTracker: Tracker {
     public init() { }
 
-    public func addPersistentContext(_ context: Context) {
-        fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
-    }
-
     public func addPersistentEntity(_ entity: Entity) {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }
@@ -17,15 +13,11 @@ public struct NoopTracker: Tracker {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }
 
-    public func track(event: Event) {
+    public func track(event: Event, filename: String, line: Int, column: Int, funcName: String) {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }
 
     public func childTracker(with contexts: [Context]) -> Tracker {
-        fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
-    }
-
-    public func resetPersistentContexts(_ contexts: [Context]) {
         fatalError("\(Self.self) cannot be used. Please set your environment's tracker to a valid tracker.")
     }
 

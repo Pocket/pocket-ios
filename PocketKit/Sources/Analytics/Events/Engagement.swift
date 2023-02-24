@@ -7,7 +7,7 @@ import class SnowplowTracker.SelfDescribing
 /**
  * Event triggered when a user engages with a UI element.
  */
-public struct Engagement: Event {
+public struct Engagement: Event, CustomStringConvertible {
     public static let schema = "iglu:com.pocket/engagement/jsonschema/1-0-1"
 
     /**
@@ -29,6 +29,10 @@ public struct Engagement: Event {
         self.value = value
         self.uiEntity = uiEntity
         self.extraEntities = extraEntities
+    }
+
+    public var description: String {
+        self.uiEntity.identifier
     }
 
     public func toSelfDescribing() -> SelfDescribing {

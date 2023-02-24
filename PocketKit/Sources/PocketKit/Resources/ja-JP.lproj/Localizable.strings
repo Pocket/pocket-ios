@@ -93,10 +93,6 @@
 "Premium Status:" = "Premium ステータス：";
 
 "Your Account" = "あなたのアカウント";
-"Sign Out" = "サインアウト";
-"Are you sure?" = "よろしいですか？";
-"Sign Out" = "サインアウト";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "強制的にアカウントからサインアウトされ、オフラインで表示するために保存されたファイルがすべて削除されます。";
 "App Customization" = "アプリのカスタマイズ";
 "Show App Badge Count" = "アプリのバッジ数を表示";
 "About & Support" = "概要とサポート";
@@ -135,3 +131,11 @@
 "search.limitedResults" = "検索結果が制限されています";
 "search.offlineMessage" = "オフラインの状態では、タイトルと URL の検索のみ可能です。Premium の全文検索を使用するには、インターネットに接続してください。";
 "search.banner.errorMessage." = "エラーが発生し、完全な検索結果を表示することができません。後ほどもう一度お試しください。";
+
+// Settings
+"settings.thankyou.credits" = "Pocket をご利用いただきありがとうございます";
+"settings.PocketForiOS %@ (%@)" = "iOS 向け Pocket %1$@ (%2$@)";
+"settings.openSourceLicenses" = "オープンソースライセンス";
+"settings.logout" = "ログアウト";
+"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areyousure" = "よろしいですか？";

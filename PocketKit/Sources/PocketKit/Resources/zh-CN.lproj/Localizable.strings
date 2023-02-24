@@ -93,10 +93,6 @@
 "Premium Status:" = "Premium 状态：";
 
 "Your Account" = "您的帐户";
-"Sign Out" = "退出";
-"Are you sure?" = "您确定吗？";
-"Sign Out" = "退出";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "您的帐号将被注销，所有已保存供脱机阅读的文件将被删除。";
 "App Customization" = "应用定制";
 "Show App Badge Count" = "显示应用程序标记数";
 "About & Support" = "关于与支持";
@@ -135,3 +131,11 @@
 "search.limitedResults" = "有限搜索结果";
 "search.offlineMessage" = "您只能在脱机时搜索标题和 URL。连接到互联网即可使用 Premium 的全文搜索。";
 "search.banner.errorMessage." = "我们遇到了错误，无法显示完整的搜索结果。请稍后重试。";
+
+// Settings
+"settings.thankyou.credits" = "感谢您使用 Pocket";
+"settings.PocketForiOS %@ (%@)" = "iOS 版 Pocket %1$@ (%2$@)";
+"settings.openSourceLicenses" = "开源许可证";
+"settings.logout" = "注销";
+"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areyousure" = "您确定吗？";

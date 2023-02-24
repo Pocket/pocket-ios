@@ -75,7 +75,7 @@ class ItemsListItemCell: UICollectionViewListCell {
             .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
 
         let button = UIButton(configuration: config, primaryAction: nil)
-        button.accessibilityIdentifier = "share"
+        button.accessibilityIdentifier = "item-action-share"
         return button
     }()
 

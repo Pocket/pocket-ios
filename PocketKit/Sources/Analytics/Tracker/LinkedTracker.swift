@@ -11,10 +11,6 @@ class LinkedTracker: Tracker {
         self.contexts = contexts
     }
 
-    func addPersistentContext(_ context: Context) {
-        parent.addPersistentContext(context)
-    }
-
     func addPersistentEntity(_ entity: Entity) {
         parent.addPersistentEntity(entity)
     }
@@ -24,17 +20,13 @@ class LinkedTracker: Tracker {
         parent.track(event: event, self.contexts + additional)
     }
 
-    func track(event: Event) {
-        parent.track(event: event)
+    func track(event: Event, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
+        parent.track(event: event, filename: filename, line: line, column: column, funcName: funcName)
     }
 
     @available(*, deprecated, message: "No longer need to use a child trackers")
     func childTracker(with contexts: [Context]) -> Tracker {
         LinkedTracker(parent: self, contexts: contexts)
-    }
-
-    func resetPersistentContexts(_ contexts: [Context]) {
-        parent.resetPersistentContexts(contexts)
     }
 
     func resetPersistentEntities(_ entities: [Entity]) {

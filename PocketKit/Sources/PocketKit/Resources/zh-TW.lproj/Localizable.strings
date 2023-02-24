@@ -93,10 +93,6 @@
 "Premium Status:" = "Premium 狀態：";
 
 "Your Account" = "您的帳號";
-"Sign Out" = "登出";
-"Are you sure?" = "您確定嗎？";
-"Sign Out" = "登出";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "將登出您的帳號，並會刪除所有已儲存供離線檢視的檔案。";
 "App Customization" = "應用程式自訂";
 "Show App Badge Count" = "顯示應用程式標記數";
 "About & Support" = "簡介和支援";
@@ -135,3 +131,11 @@
 "search.limitedResults" = "搜尋結果有限";
 "search.offlineMessage" = "您只能在離線時搜尋標題和 URL。連線至網際網路，以使用 Premium 的全文搜尋功能。";
 "search.banner.errorMessage." = "我們遇到錯誤，無法顯示您完整的搜尋結果。請稍後重試。";
+
+// Settings
+"settings.thankyou.credits" = "感謝您使用 Pocket";
+"settings.PocketForiOS %@ (%@)" = "iOS %1$@ 版 Pocket (%2$@)";
+"settings.openSourceLicenses" = "開放原始碼授權";
+"settings.logout" = "登出";
+"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areyousure" = "您確定嗎？";

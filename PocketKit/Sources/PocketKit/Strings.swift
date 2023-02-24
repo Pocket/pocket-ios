@@ -35,8 +35,6 @@ internal enum L10n {
   internal static let areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems = L10n.tr("Localizable", "Are you sure you want to delete the tags and remove it from all items?", fallback: "Are you sure you want to delete the tags and remove it from all items?")
   /// Are you sure you want to delete this item?
   internal static let areYouSureYouWantToDeleteThisItem = L10n.tr("Localizable", "Are you sure you want to delete this item?", fallback: "Are you sure you want to delete this item?")
-  /// Are you sure?
-  internal static let areYouSure = L10n.tr("Localizable", "Are you sure?", fallback: "Are you sure?")
   /// AuthorizationClient is already authenticating
   internal static let authorizationClientIsAlreadyAuthenticating = L10n.tr("Localizable", "AuthorizationClient is already authenticating", fallback: "AuthorizationClient is already authenticating")
   /// Cancel
@@ -159,8 +157,6 @@ internal enum L10n {
   internal static let shortestToRead = L10n.tr("Localizable", "Shortest to read", fallback: "Shortest to read")
   /// Show App Badge Count
   internal static let showAppBadgeCount = L10n.tr("Localizable", "Show App Badge Count", fallback: "Show App Badge Count")
-  /// Sign Out
-  internal static let signOut = L10n.tr("Localizable", "Sign Out", fallback: "Sign Out")
   /// Sign Up
   internal static let signUp = L10n.tr("Localizable", "Sign Up", fallback: "Sign Up")
   /// Sign up for Premium
@@ -191,8 +187,6 @@ internal enum L10n {
   internal static let unfavorite = L10n.tr("Localizable", "Unfavorite", fallback: "Unfavorite")
   /// Yes
   internal static let yes = L10n.tr("Localizable", "Yes", fallback: "Yes")
-  /// You will be signed out of your account and any files that have been saved for offline viewing will be deleted.
-  internal static let youWillBeSignedOutOfYourAccountAndAnyFilesThatHaveBeenSavedForOfflineViewingWillBeDeleted = L10n.tr("Localizable", "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.", fallback: "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.")
   /// You're all caught up!
   /// Check back later for more.
   internal static let youReAllCaughtUpCheckBackLaterForMore = L10n.tr("Localizable", "You're all caught up!\nCheck back later for more.", fallback: "You're all caught up!\nCheck back later for more.")
@@ -223,11 +217,19 @@ internal enum L10n {
     }
   }
   internal enum Settings {
+    /// Log Out
+    internal static let logout = L10n.tr("Localizable", "settings.logout", fallback: "Log Out")
     /// Open Source Licenses
     internal static let openSourceLicenses = L10n.tr("Localizable", "settings.openSourceLicenses", fallback: "Open Source Licenses")
     /// Pocket for iOS %@ (%@)
     internal static func pocketForiOS(_ p1: Any, _ p2: Any) -> String {
       return L10n.tr("Localizable", "settings.PocketForiOS %@ (%@)", String(describing: p1), String(describing: p2), fallback: "Pocket for iOS %@ (%@)")
+    }
+    internal enum Logout {
+      /// Are you sure?
+      internal static let areyousure = L10n.tr("Localizable", "settings.logout.areyousure", fallback: "Are you sure?")
+      /// You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.
+      internal static let areYouSureMessage = L10n.tr("Localizable", "settings.logout.areYouSureMessage", fallback: "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.")
     }
     internal enum Thankyou {
       /// Thank you for using Pocket

@@ -4,12 +4,10 @@ import Textile
 struct ActionButton: View {
     private var itemAction: ItemAction?
     private var selected: Bool = false
-    private var trailingPadding: Bool = true
 
-    init(_ itemAction: ItemAction?, selected: Bool = false, trailingPadding: Bool = true) {
+    init(_ itemAction: ItemAction?, selected: Bool = false) {
         self.itemAction = itemAction
         self.selected = selected
-        self.trailingPadding = trailingPadding
     }
 
     var body: some View {
@@ -18,7 +16,7 @@ struct ActionButton: View {
                 handler {}
             } label: {
                 Image(uiImage: image)
-                    .actionButtonStyle(selected: selected, trailingPadding: trailingPadding)
+                    .actionButtonStyle(selected: selected)
                     .accessibilityIdentifier(action.accessibilityIdentifier)
                     .accessibilityLabel(action.title)
             }.buttonStyle(.borderless)

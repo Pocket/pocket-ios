@@ -32,13 +32,9 @@ class SavedItemViewModel {
 
         guard let session = appSession.currentSession else { return }
 
-        tracker.resetPersistentContexts([
-            APIUserContext(consumerKey: consumerKey)
-        ])
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: consumerKey)
         ])
-        tracker.addPersistentContext(UserContext(guid: session.guid, userID: session.userIdentifier))
 
         tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
     }
@@ -57,7 +53,8 @@ class SavedItemViewModel {
                 break
             }
 
-            tracker.addPersistentContext(ContentContext(url: url))
+            // TODO: Add this to all track calls not the global call.
+            tracker.addPersistentEntity(ContentEntity(url: url))
             track(context: .saveExtension.saveDialog)
 
             let result = saveService.save(url: url)
