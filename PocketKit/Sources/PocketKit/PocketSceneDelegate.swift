@@ -21,7 +21,9 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                             userDefaults: Services.shared.userDefaults,
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
-                        ),
+                        ) {
+                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore)
+                        },
                         savedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
