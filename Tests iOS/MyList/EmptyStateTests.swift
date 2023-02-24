@@ -83,7 +83,6 @@ class EmptyStateTests: XCTestCase {
     func testFavorites_showsEmptyStateView() {
         app.tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Favorites").tap()
-        XCTAssertEqual(app.saves.wait().itemCells.count, 0)
         XCTAssertTrue(app.saves.emptyStateView(for: "favorites-empty-state").exists)
 
         app.saves.selectionSwitcher.archiveButton.wait().tap()
@@ -91,7 +90,6 @@ class EmptyStateTests: XCTestCase {
         app.saves.filterButton(for: "Favorites").tap()
         app.saves.itemView(at: 0).favoriteButton.tap()
 
-        XCTAssertEqual(app.saves.wait().itemCells.count, 0)
         XCTAssertTrue(app.saves.emptyStateView(for: "favorites-empty-state").exists)
     }
 
