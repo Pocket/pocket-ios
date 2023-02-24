@@ -8,10 +8,15 @@ public class SearchSavedItemsQuery: GraphQLQuery {
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       """
-      query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: SearchFilterInput) {
+      query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: SearchFilterInput, $sort: SearchSortInput) {
         user {
           __typename
-          searchSavedItems(term: $term, pagination: $pagination, filter: $filter) {
+          searchSavedItems(
+            term: $term
+            pagination: $pagination
+            filter: $filter
+            sort: $sort
+          ) {
             __typename
             edges {
               __typename
@@ -42,21 +47,25 @@ public class SearchSavedItemsQuery: GraphQLQuery {
   public var term: String
   public var pagination: GraphQLNullable<PaginationInput>
   public var filter: GraphQLNullable<SearchFilterInput>
+  public var sort: GraphQLNullable<SearchSortInput>
 
   public init(
     term: String,
     pagination: GraphQLNullable<PaginationInput>,
-    filter: GraphQLNullable<SearchFilterInput>
+    filter: GraphQLNullable<SearchFilterInput>,
+    sort: GraphQLNullable<SearchSortInput>
   ) {
     self.term = term
     self.pagination = pagination
     self.filter = filter
+    self.sort = sort
   }
 
   public var __variables: Variables? { [
     "term": term,
     "pagination": pagination,
-    "filter": filter
+    "filter": filter,
+    "sort": sort
   ] }
 
   public struct Data: PocketGraph.SelectionSet {
@@ -83,7 +92,8 @@ public class SearchSavedItemsQuery: GraphQLQuery {
         .field("searchSavedItems", SearchSavedItems?.self, arguments: [
           "term": .variable("term"),
           "pagination": .variable("pagination"),
-          "filter": .variable("filter")
+          "filter": .variable("filter"),
+          "sort": .variable("sort")
         ]),
       ] }
 

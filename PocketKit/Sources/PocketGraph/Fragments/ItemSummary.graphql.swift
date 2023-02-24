@@ -13,7 +13,6 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
       title
       language
       topImageUrl
-      topImageUrl
       timeToRead
       domain
       datePublished

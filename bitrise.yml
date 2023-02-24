@@ -288,9 +288,6 @@ workflows:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
 
   run-tests-ui-1:
-    meta:
-      bitrise.io:
-        machine_type_id: g2-m1.8core
     before_run:
       - _pull_test_bundle
       - _start_snowplow
@@ -306,9 +303,6 @@ workflows:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_1_XCRESULT_PATH'
 
   run-tests-ui-2:
-    meta:
-      bitrise.io:
-        machine_type_id: g2-m1.8core
     before_run:
       - _pull_test_bundle
       - _start_snowplow
@@ -324,9 +318,6 @@ workflows:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_2_XCRESULT_PATH'
 
   run-tests-ui-3:
-    meta:
-      bitrise.io:
-        machine_type_id: g2-m1.8core
     before_run:
       - _pull_test_bundle
       - _start_snowplow
@@ -383,5 +374,5 @@ app:
 
 meta:
   bitrise.io:
-    machine_type_id: g2.4core
+    machine_type_id: g2-m1-max.5core
     stack: osx-xcode-14.2.x-ventura

@@ -10,10 +10,12 @@ public class PocketSnowplowTracker: SnowplowTracker {
     private var persistentEntities: [Entity] = []
 
     public init() {
-        let endpoint = ProcessInfo.processInfo.environment["SNOWPLOW_ENDPOINT"] ?? "d.getpocket.com"
+        let endpoint = ProcessInfo.processInfo.environment["SNOWPLOW_ENDPOINT"] ?? "getpocket.com"
         let appID = ProcessInfo.processInfo.environment["SNOWPLOW_IDENTIFIER"] ?? "pocket-ios-next"
+        let postPath = ProcessInfo.processInfo.environment["SNOWPLOW_POST_PATH"] ?? "t/e"
 
         let networkConfiguration = NetworkConfiguration(endpoint: endpoint, method: .post)
+        networkConfiguration.customPostPath = postPath
 
         let trackerConfiguration = TrackerConfiguration()
         trackerConfiguration.appId = appID

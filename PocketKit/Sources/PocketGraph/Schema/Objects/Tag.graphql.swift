@@ -7,6 +7,6 @@ public extension Objects {
   /// Represents a Tag that a User has created for their list
   static let Tag = Object(
     typename: "Tag",
-    implementedInterfaces: [Interfaces.RemoteEntity.self]
+    implementedInterfaces: []
   )
 }

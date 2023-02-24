@@ -45,4 +45,8 @@ struct PocketItem {
     var remoteItemParts: SavedItemParts? {
         item.remoteItemParts
     }
+
+    var url: URL? {
+        item.bestURL
+    }
 }

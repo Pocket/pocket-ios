@@ -359,6 +359,25 @@ class SearchTests: XCTestCase {
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
     }
 
+    func test_sharingAnItemFromSearch_presentsShareSheet() {
+        app.launch()
+        tapSearch()
+
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        app.saves.searchView.searchResultsView.wait()
+
+        let itemCell = app
+            .saves.searchView
+            .searchItemCell(at: 1)
+            .wait()
+
+        itemCell.shareButton.tap()
+
+        app.shareSheet.wait()
+    }
+
     private func tapSearch(fromArchive: Bool = false) {
         app.tabBar.savesButton.wait().tap()
         if fromArchive {
