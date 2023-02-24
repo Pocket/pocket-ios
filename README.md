@@ -120,3 +120,22 @@ To make a new string follow the following steps:
 3. Either a) Build the project or b) run `swiftgen` from the root of the Pocket project directory
 4. The new string enum should be available in the `L10n` enum for you to use.
 5. Once your PR lands in `develop` watch as Smartling will pick it up and translate it.
+
+
+### UI Tests
+
+UI Tests are split into 3 test plans. As you built UI tests you should ensure that your test is enabled in 1 of the UI test plans to be run on CI.
+
+#### UI Tests & Analytics
+
+All UI Tests rely on [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) to be run. This is because we do validation of our analytics as the UI Tests run and execute them.
+
+To run UI tests ensure you have Docker installed, a part of the Pocket Docker organization and are logged into Docker. Then you can run `docker compose up` from the root of the Pocket directory. This will make Snowplow micro available at http://localhost:9090.
+
+Snowplow micro has 4 endpoints of note:
+1. http://localhost:9090/micro/all - Lists the total number of events received and whether they are bad or good.
+2. http://localhost:9090/micro/good - Returns all the good (passed validation) events snowplow received and the data within.
+3. http://localhost:9090/micro/bad - Returns all the bad (failed validation) events snowplow received and the reason why.
+3. http://localhost:9090/micro/reset - Resets snowplow to 0 events received. Should be ran at the start of each test.
+
+[SnowplowMicro](./Tests iOS/Support/SnowplowMicro) class is used to interact with Snowplow and provide helper assertions to make testing events easier.

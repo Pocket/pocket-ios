@@ -1,0 +1,7 @@
+version: '3'
+
+services:
+  snowplow:
+    image: pocket/snowplow-micro:prod
+    ports:
+      - '9090:9090'

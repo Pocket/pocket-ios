@@ -20,8 +20,8 @@ class LinkedTracker: Tracker {
         parent.track(event: event, self.contexts + additional)
     }
 
-    func track(event: Event) {
-        parent.track(event: event)
+    func track(event: Event, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
+        parent.track(event: event, filename: filename, line: line, column: column, funcName: funcName)
     }
 
     @available(*, deprecated, message: "No longer need to use a child trackers")

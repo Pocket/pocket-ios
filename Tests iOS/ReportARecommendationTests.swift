@@ -4,6 +4,11 @@ import Sails
 class ReportARecommendationTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
+
+    override func setUp() async throws {
+        await snowplowMicro.resetSnowplowEvents()
+    }
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -39,18 +44,9 @@ class ReportARecommendationTests: XCTestCase {
             }
         }
 
-        server.routes.post("/com.snowplowanalytics.snowplow/tp2") { _, _ in
-            return Response {
-                Status.ok
-                Data()
-            }
-        }
-
         try server.start()
 
-        app.launch(
-            arguments: .bypassSignIn.with(disableSnowplow: false)
-        )
+        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -58,23 +54,8 @@ class ReportARecommendationTests: XCTestCase {
         app.terminate()
     }
 
-    func test_reportingARecommendationfromHero_asBrokenMeta_sendsEvent() {
-        let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
-        var requestBody: String?
-        server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
-            requestBody = body(of: request)
-            if requestBody?.contains("engagement") == true
-                && requestBody?.contains("report") == true
-                && requestBody?.contains("reason") == true {
-                reportExpectation.fulfill()
-            }
-
-            return Response {
-                Status.ok
-                Data()
-            }
-        }
-
+    @MainActor
+    func test_reportingARecommendationfromHero_asBrokenMeta_sendsEvent() async {
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .overflowButton.wait().tap()
@@ -91,32 +72,14 @@ class ReportARecommendationTests: XCTestCase {
         report.commentEntry.wait()
         report.submitButton.wait().tap()
 
-        wait(for: [reportExpectation])
-        guard let requestBody = requestBody else {
-            XCTFail("Expected request body to not be nil")
-            return
-        }
-
-        XCTAssertTrue(requestBody.contains("reason"))
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let event = await snowplowMicro.getFirstEvent(with: "discover.report")
+        event!.getReportContext()!.assertHas(reason: "other")
+        event!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
-    func test_reportingARecommendationFromCarousel_asBrokenMeta_sendsEvent() {
-        let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
-        var requestBody: String?
-        server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
-            requestBody = body(of: request)
-            if requestBody?.contains("engagement") == true
-                && requestBody?.contains("report") == true
-                && requestBody?.contains("reason") == true {
-                reportExpectation.fulfill()
-            }
-
-            return Response {
-                Status.ok
-                Data()
-            }
-        }
-
+    @MainActor
+    func test_reportingARecommendationFromCarousel_asBrokenMeta_sendsEvent() async {
         let coordinateToScroll = app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .element.coordinate(
@@ -146,16 +109,14 @@ class ReportARecommendationTests: XCTestCase {
         report.commentEntry.wait()
         report.submitButton.wait().tap()
 
-        wait(for: [reportExpectation])
-        guard let requestBody = requestBody else {
-            XCTFail("Expected request body to not be nil")
-            return
-        }
-
-        XCTAssertTrue(requestBody.contains("reason"))
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let event = await snowplowMicro.getFirstEvent(with: "discover.report")
+        event!.getReportContext()!.assertHas(reason: "other")
+        event!.getContentContext()!.assertHas(url: "https://example.com/item-2")
     }
 
-    func test_reportingARecommendation_fromReader_showsReportView() {
+    @MainActor
+    func test_reportingARecommendation_fromReader_showsReportView() async {
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .wait()
@@ -166,5 +127,7 @@ class ReportARecommendationTests: XCTestCase {
         app.readerView.readerToolbar.moreButton.tap()
         app.reportButton.wait().tap()
         app.reportView.wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 }

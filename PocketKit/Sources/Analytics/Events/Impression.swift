@@ -7,7 +7,7 @@ import class SnowplowTracker.SelfDescribing
 /**
  * Event triggered when a user views a UI element.
  */
-public struct Impression: Event {
+public struct Impression: Event, CustomStringConvertible {
     public static let schema = "iglu:com.pocket/impression/jsonschema/1-0-2"
 
     /**
@@ -44,6 +44,10 @@ public struct Impression: Event {
         componentValue.requiredEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
 
         return base
+    }
+
+    public var description: String {
+        self.uiEntity.identifier
     }
 }
 
