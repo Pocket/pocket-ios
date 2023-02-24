@@ -124,9 +124,9 @@ query Tags($pagination: PaginationInput) {
   }
 }
 
-query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: SearchFilterInput) {
+query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: SearchFilterInput, $sort: SearchSortInput) {
   user {
-    searchSavedItems(term: $term, pagination: $pagination, filter: $filter) {
+    searchSavedItems(term: $term, pagination: $pagination, filter: $filter, sort: $sort) {
       edges {
         node {
             savedItem {
