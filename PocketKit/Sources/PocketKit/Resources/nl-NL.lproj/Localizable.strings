@@ -93,10 +93,6 @@
 "Premium Status:" = "Premium-status:";
 
 "Your Account" = "Jouw account";
-"Sign Out" = "Afmelden";
-"Are you sure?" = "Weet je het zeker?";
-"Sign Out" = "Afmelden";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "Je wordt afgemeld van je account en alle bestanden die opgeslagen zijn voor offline bekijken worden verwijderd.";
 "App Customization" = "App-aanpassing";
 "Show App Badge Count" = "Toon badge telling app";
 "About & Support" = "Over en ondersteuning";
@@ -136,6 +132,10 @@
 "search.offlineMessage" = "Je kunt alleen titels en URL's zoeken als je offline bent. Maak verbinding met het internet om in Premium op basis van volledige tekst te zoeken.";
 "search.banner.errorMessage." = "Er is een fout opgetreden waardoor we je geen volledige zoekresultaten kunnen tonen. Probeer het later opnieuw.";
 
+// Settings
 "settings.thankyou.credits" = "Bedankt dat je Pocket gebruikt";
 "settings.PocketForiOS %@ (%@)" = "Pocket voor iOS %1$@ (%2$@)";
 "settings.openSourceLicenses" = "Open source-licenties";
+"settings.logout" = "Afmelden";
+"settings.logout.areYouSureMessage" = "Je wordt afgemeld bij je account en alle items die zijn opgeslagen voor offline weergave worden verwijderd van je apparaat.";
+"settings.logout.areyousure" = "Weet je het zeker?";
