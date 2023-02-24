@@ -93,10 +93,6 @@
 "Premium Status:" = "Premium-статус:";
 
 "Your Account" = "Учетная запись";
-"Sign Out" = "Выйти";
-"Are you sure?" = "Вы уверены?";
-"Sign Out" = "Выйти";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "Вы выйдете из своего аккаунта, и все сохраненные для просмотра в офлайне файлы будут удалены.";
 "App Customization" = "Настройка приложения";
 "Show App Badge Count" = "Отображать счетчик значков приложения";
 "About & Support" = "Информация и поддержка";
@@ -136,6 +132,10 @@
 "search.offlineMessage" = "В автономном режиме возможен только поиск по заголовкам и URL-адресам. Подключитесь к Интернету, чтобы использовать полнотекстовый поиск Premium-подписки.";
 "search.banner.errorMessage." = "Из-за возникшей ошибки мы не можем показать вам полные результаты поиска. Попробуйте позже.";
 
+// Settings
 "settings.thankyou.credits" = "Спасибо, что пользуетесь Pocket";
 "settings.PocketForiOS %@ (%@)" = "Pocket для iOS %1$@ (%2$@)";
 "settings.openSourceLicenses" = "Лицензии с открытым кодом";
+"settings.logout" = "Выход";
+"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areyousure" = "Вы уверены?";

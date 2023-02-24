@@ -93,10 +93,6 @@
 "Premium Status:" = "Statut Premium :";
 
 "Your Account" = "Votre compte";
-"Sign Out" = "Déconnexion";
-"Are you sure?" = "Êtes-vous certain?";
-"Sign Out" = "Déconnexion";
-"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "Vous serez déconnecté de votre compte et tout fichier qui a été sauvegardé pour être consulté hors ligne sera supprimé.";
 "App Customization" = "Personnalisation de l'application";
 "Show App Badge Count" = "Afficher le compteur de notification de l'application";
 "About & Support" = "À propos et assistance";
@@ -136,6 +132,10 @@
 "search.offlineMessage" = "Vous pouvez seulement rechercher des titres et des URL lorsque vous êtes hors ligne. Connectez-vous à Internet pour vous servir de la recherche plein texte de Premium.";
 "search.banner.errorMessage." = "Nous avons rencontré une erreur et ne pouvons pas afficher tous les résultats de recherche. Veuillez réessayer plus tard.";
 
+// Settings
 "settings.thankyou.credits" = "Merci d'utiliser Pocket";
 "settings.PocketForiOS %@ (%@)" = "Pocket pour iOS %1$@ (%2$@)";
-"settings.openSourceLicenses" = "Open Source Licenses";
+"settings.openSourceLicenses" = "Licences Open Source";
+"settings.logout" = "Déconnexion";
+"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areyousure" = "Êtes-vous certain?";
