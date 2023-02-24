@@ -13,7 +13,16 @@ enum SearchViewState {
     case loading
     case emptyState(EmptyStateViewModel)
     case recentSearches([String])
-    case searchResults([PocketItem])
+    case searchResults([SearchItem])
+
+    var isEmptyState: Bool {
+        switch self {
+        case .emptyState:
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 class SearchViewModel: ObservableObject {
@@ -24,11 +33,14 @@ class SearchViewModel: ObservableObject {
     private let user: User
     private let userDefaults: UserDefaults
     private let source: Source
+    private let premiumUpgradeViewModelFactory: () -> PremiumUpgradeViewModel
 
     private var savesLocalSearch: LocalSavesSearch
     private var savesOnlineSearch: OnlineSearch
     private var archiveOnlineSearch: OnlineSearch
     private var allOnlineSearch: OnlineSearch
+    // separated from the subscriptions array as that one gets cleared between searches
+    private var userStatusListener: AnyCancellable?
 
     private let tracker: Tracker
 
@@ -42,10 +54,10 @@ class SearchViewModel: ObservableObject {
         return user.status == .premium
     }
 
-    var selectedScope: SearchScope = .saves
+    private var selectedScope: SearchScope = .saves
 
-    @Published
-    var showBanner: Bool = false
+    @Published var showBanner: Bool = false
+    @Published var isPresentingPremiumUpgrade = false
 
     var bannerData: BannerModifier.BannerData {
         let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.Search.limitedResults, detail: L10n.Search.offlineMessage)
@@ -85,12 +97,18 @@ class SearchViewModel: ObservableObject {
         }
     }
 
-    init(networkPathMonitor: NetworkPathMonitor, user: User, userDefaults: UserDefaults, source: Source, tracker: Tracker) {
+    init(networkPathMonitor: NetworkPathMonitor,
+         user: User,
+         userDefaults: UserDefaults,
+         source: Source,
+         tracker: Tracker,
+         premiumUpgradeViewModelFactory: @escaping () -> PremiumUpgradeViewModel) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
         self.source = source
         self.tracker = tracker
+        self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
 
         savesLocalSearch = LocalSavesSearch(source: source)
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
@@ -101,6 +119,16 @@ class SearchViewModel: ObservableObject {
 
         networkPathMonitor.start(queue: .global())
         observeNetworkChanges()
+
+        userStatusListener = user
+            .statusPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] status in
+                guard self?.searchState?.isEmptyState == true else {
+                    return
+                }
+                self?.searchState = self?.defaultState
+            }
     }
 
     func updateScope(with scope: SearchScope, searchTerm: String? = nil) {
@@ -119,6 +147,7 @@ class SearchViewModel: ObservableObject {
             searchState = .emptyState(GetPremiumEmptyState())
             return
         }
+
         resetSearch(with: searchTerm)
 
         let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
@@ -128,7 +157,6 @@ class SearchViewModel: ObservableObject {
             searchState = .emptyState(searchResultState())
             return
         }
-        trackPerformSearch()
         searchState = .loading
         submitSearch(with: term, scope: selectedScope)
         recentSearches = updateRecentSearches(with: term)
@@ -359,5 +387,19 @@ extension SearchViewModel {
 
     func trackOpenSearchItem(url: URL, index: Int) {
         tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope))
+    }
+}
+
+
+// MARK: Premium upgrades
+extension SearchViewModel {
+    @MainActor
+    func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
+        premiumUpgradeViewModelFactory()
+    }
+
+    /// Ttoggle the presentation of `PremiumUpgradeView`
+    func showPremiumUpgrade() {
+        self.isPresentingPremiumUpgrade = true
     }
 }

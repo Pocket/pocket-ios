@@ -14,6 +14,7 @@ struct SearchView: View {
             switch viewModel.searchState {
             case .emptyState(let emptyStateViewModel):
                 SearchEmptyView(viewModel: emptyStateViewModel)
+                    .environmentObject(viewModel)
             case .recentSearches(let searches):
                 RecentSearchView(viewModel: viewModel, recentSearches: searches)
             case .searchResults(let results):
@@ -23,8 +24,6 @@ struct SearchView: View {
             default:
                 EmptyView()
             }
-        }.onAppear {
-            viewModel.trackOpenSearch()
         }
     }
 }
@@ -33,28 +32,24 @@ struct SearchView: View {
 struct ResultsView: View {
     @ObservedObject
     var viewModel: SearchViewModel
-    var results: [PocketItem]
+    var results: [SearchItem]
 
     @State private var showingAlert = false
 
     var body: some View {
-        List {
-            ForEach(Array(results.enumerated()), id: \.offset) { index, item in
-                HStack {
-                    ListItem(viewModel: viewModel.itemViewModel(item, index: index), scope: viewModel.selectedScope)
-                    Spacer()
-                }
-                .contentShape(Rectangle())
-                .onTapGesture {
-                    if viewModel.isOffline {
-                        showingAlert = true
-                    } else {
-                        viewModel.select(item, index: index)
-                    }
-                }.onAppear {
-                    viewModel.trackViewResults(url: item.url, index: index)
-                }
+        List(results, id: \.id) { item in
+            HStack {
+                ListItem(model: item)
+                Spacer()
             }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                if viewModel.isOffline {
+                    showingAlert = true
+                } else {
+                    viewModel.select(item)
+                }
+            }.accessibilityIdentifier("search-results-item")
         }
         .zIndex(-1)
         .listStyle(.plain)
@@ -68,11 +63,45 @@ struct ResultsView: View {
 
 // MARK: - Search Empty States Component
 struct SearchEmptyView: View {
-    var viewModel: EmptyStateViewModel
+    private var viewModel: EmptyStateViewModel
+
+    init(viewModel: EmptyStateViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
-        EmptyStateView(viewModel: viewModel)
+        if let text = viewModel.buttonText {
+            EmptyStateView(viewModel: viewModel) {
+                GetPocketPremiumButton(text: text)
+            }
             .padding(Margins.normal.rawValue)
+        } else {
+            EmptyStateView<EmptyView>(viewModel: viewModel)
+                .padding(Margins.normal.rawValue)
+        }
+    }
+}
+
+struct GetPocketPremiumButton: View {
+    @EnvironmentObject private var searchViewModel: SearchViewModel
+    private let text: String
+
+    init(text: String) {
+        self.text = text
+    }
+
+    var body: some View {
+        Button(action: {
+            searchViewModel.showPremiumUpgrade()
+        }, label: {
+            Text(text)
+                .style(.header.sansSerif.h7.with(color: .ui.white))
+                .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
+                .frame(maxWidth: 320)
+        }).buttonStyle(GetPocketPremiumButtonStyle())
+            .sheet(isPresented: $searchViewModel.isPresentingPremiumUpgrade) {
+                PremiumUpgradeView(viewModel: searchViewModel.makePremiumUpgradeViewModel())
+            }
     }
 }
 
