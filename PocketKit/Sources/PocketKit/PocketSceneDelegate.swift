@@ -45,7 +45,9 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         user: Services.shared.user,
                         userDefaults: Services.shared.userDefaults,
                         notificationCenter: .default
-                    )
+                    ) {
+                        PremiumUpgradeViewModel(store: Services.shared.subscriptionStore)
+                    }
                 ),
                 source: Services.shared.source,
                 tracker: Services.shared.tracker

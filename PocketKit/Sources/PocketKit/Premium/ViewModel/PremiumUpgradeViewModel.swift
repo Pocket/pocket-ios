@@ -8,9 +8,7 @@ import SharedPocketKit
 
 @MainActor
 class PremiumUpgradeViewModel: ObservableObject {
-    private let storeFactory: () async throws -> PremiumSubscriptionStore
-
-    private var store: PremiumSubscriptionStore?
+    let store: PremiumSubscriptionStore
 
     @Published private(set) var monthlyName = ""
     @Published private(set) var monthlyPrice = ""
@@ -19,34 +17,59 @@ class PremiumUpgradeViewModel: ObservableObject {
     @Published private(set) var annualName = ""
     @Published private(set) var annualPrice = ""
     @Published private(set) var annualPriceDescription = ""
+    @Published private(set) var shouldDismiss = false
 
-    private var cancellable: AnyCancellable?
+    private var cancellables: Set<AnyCancellable> = []
 
-    init(storeFactory: @escaping () async throws -> PremiumSubscriptionStore) {
-        self.storeFactory = storeFactory
-    }
+    init(store: PremiumSubscriptionStore) {
+        self.store = store
 
-    /// Initialize the subscription store and retrieve subscriptions
-    func requestSubscriptions() async throws {
-        self.store = try await storeFactory()
-
-        cancellable = store?.$subscriptions
+        store.$subscriptions
             .receive(on: DispatchQueue.main)
             .sink { [weak self] subscriptions in
-            subscriptions.forEach {
-                switch $0.type {
-                case .monthly:
-                    self?.monthlyName = $0.name
-                    self?.monthlyPrice = $0.price
-                    self?.monthlyPriceDescription = $0.priceDescription
-                case .annual:
-                    self?.annualName = $0.name
-                    self?.annualPrice = $0.price
-                    self?.annualPriceDescription = $0.priceDescription
-                case .none:
-                    break
+                subscriptions.forEach {
+                    switch $0.type {
+                    case .monthly:
+                        self?.monthlyName = $0.name
+                        self?.monthlyPrice = $0.price
+                        self?.monthlyPriceDescription = $0.priceDescription
+                    case .annual:
+                        self?.annualName = $0.name
+                        self?.annualPrice = $0.price
+                        self?.annualPriceDescription = $0.priceDescription
+                    case .none:
+                        break
+                    }
                 }
             }
+            .store(in: &cancellables)
+        // Dismiss premium upgrade view if user is successfully upgraded to premium
+        store.$purchasedSubscription
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self]  subscription in
+                if subscription != nil {
+                    self?.shouldDismiss = true
+                }
+            }
+            .store(in: &cancellables)
+    }
+
+    /// Request purchaseable subscriptions to the subscription store
+    func requestSubscriptions() async throws {
+        try await store.requestSubscriptions()
+    }
+
+    func purchaseMonthlySubscription() async {
+        guard let monthlySubscription = store.subscriptions.first(where: { $0.type == .monthly }) else {
+            return
         }
+        await store.purchase(monthlySubscription)
+    }
+
+    func purchaseAnnualSubscription() async {
+        guard let annualSubscription = store.subscriptions.first(where: { $0.type == .annual }) else {
+            return
+        }
+        await store.purchase(annualSubscription)
     }
 }
