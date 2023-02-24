@@ -176,4 +176,15 @@ public struct Style {
             backgroundColor: backgroundColorAsset
         )
     }
+    
+    public func with(alignment: TextAlignment) -> Style {
+        Style(
+            fontDescriptor: fontDescriptor,
+            color: colorAsset,
+            underlineStyle: underlineStyle,
+            strike: strike,
+            paragraph: ParagraphStyle(alignment: alignment),
+            backgroundColor: backgroundColorAsset
+        )
+    }
 }

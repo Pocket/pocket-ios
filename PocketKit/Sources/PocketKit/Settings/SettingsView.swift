@@ -136,7 +136,9 @@ extension SettingsForm {
                     weight: .semibold,
                     color: Color(.ui.apricot1)
                 )
-            ) { model.isPresentingSignOutConfirm.toggle() }
+            ) {
+                model.isPresentingSignOutConfirm.toggle()
+            }
                 .accessibilityIdentifier("sign-out-button")
                 .alert(
                     L10n.areYouSure,
