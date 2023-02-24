@@ -13,6 +13,7 @@ struct SearchView: View {
         switch viewModel.searchState {
         case .emptyState(let emptyStateViewModel):
             SearchEmptyView(viewModel: emptyStateViewModel)
+                .environmentObject(viewModel)
         case .recentSearches(let searches):
             RecentSearchView(viewModel: viewModel, recentSearches: searches)
         case .searchResults(let results):
