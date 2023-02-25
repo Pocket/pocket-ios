@@ -92,13 +92,14 @@ struct GetPocketPremiumButton: View {
         Button(action: {
             searchViewModel.showPremiumUpgrade()
         }, label: {
-            Text(text).style(.header.sansSerif.h7.with(color: .ui.white))
+            Text(text)
+                .style(.header.sansSerif.h7.with(color: .ui.white))
                 .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                 .frame(maxWidth: 320)
-        }).buttonStyle(ActionsPrimaryButtonStyle())
+        }).buttonStyle(GetPocketPremiumButtonStyle())
             .sheet(isPresented: $searchViewModel.isPresentingPremiumUpgrade) {
-            PremiumUpgradeView(viewModel: searchViewModel.makePremiumUpgradeViewModel())
-        }
+                PremiumUpgradeView(viewModel: searchViewModel.makePremiumUpgradeViewModel())
+            }
     }
 }
 
