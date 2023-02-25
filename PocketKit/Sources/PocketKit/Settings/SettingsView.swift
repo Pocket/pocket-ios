@@ -115,18 +115,10 @@ extension SettingsForm {
     /// Provides the standard top section view
     private func topSection() -> some View {
         Section(header: Text(L10n.yourAccount).style(.settings.header)) {
-            if !model.isPremium {
-                SettingsRowButton(
-                    title: L10n.Settings.premiumRow,
-                    leadingImageAsset: .premiumIcon,
-                    trailingImageAsset: .chevronRight,
-                    tintColor: Color(.ui.black1)
-                ) {
-                    model.showPremiumUpgrade()
-                }
-                .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
-                    PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
-                }
+            if model.isPremium {
+                makePremiumSubscriptionRow()
+            } else {
+                makeGoPremiumRow()
             }
             SettingsRowButton(
                 title: L10n.signOut,
@@ -152,6 +144,33 @@ extension SettingsForm {
                     }
                 )
         }
+    }
+
+    private func makePremiumRowContent(_ isPremium: Bool) -> some View {
+        let title = isPremium ? L10n.Settings.premiumSubscriptionRow : L10n.Settings.goPremiumRow
+        let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
+        let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
+        let action = isPremium ? { } : { model.showPremiumUpgrade() }
+        return SettingsRowButton(
+            title: title,
+            titleStyle: titleStyle,
+            leadingImageAsset: .premiumIcon,
+            trailingImageAsset: .chevronRight,
+            leadingTintColor: leadingTintColor,
+            action: action
+        )
+    }
+
+    private func makeGoPremiumRow() -> some View {
+        makePremiumRowContent(false)
+            .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
+                PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
+            }
+    }
+
+    private func makePremiumSubscriptionRow() -> some View {
+        makePremiumRowContent(true)
+        // TODO: add logic to present the premium subscription sheet here
     }
 }
 
