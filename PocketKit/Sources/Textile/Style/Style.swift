@@ -176,7 +176,7 @@ public struct Style {
             backgroundColor: backgroundColorAsset
         )
     }
-    
+
     public func with(alignment: TextAlignment) -> Style {
         Style(
             fontDescriptor: fontDescriptor,
