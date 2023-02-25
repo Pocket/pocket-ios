@@ -239,7 +239,7 @@ internal enum L10n {
                 return L10n.tr("Localizable", "premium.upgradeview.description", String(describing: p1), String(describing: p2), fallback: "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.")
             }
         }
-    }
+  }
     internal enum Search {
         /// Oops! Try again?
         internal static let errorHeadline = L10n.tr("Localizable", "search.errorHeadline", fallback: "Oops! Try again?")
@@ -270,7 +270,10 @@ internal enum L10n {
         /// Open Source Licenses
         internal static let openSourceLicenses = L10n.tr("Localizable", "settings.openSourceLicenses", fallback: "Open Source Licenses")
         /// Go Premium
-        internal static let premiumRow = L10n.tr("Localizable", "settings.premiumRow", fallback: "Go Premium")
+        internal static let goPremiumRow = L10n.tr("Localizable", "settings.goPremiumRow", fallback: "Go Premium")
+        /// Pocket for iOS %@ (%@)
+        /// Premium Subscription
+        internal static let premiumSubscriptionRow = L10n.tr("Localizable", "settings.premiumSubscriptionRow", fallback: "Premium Subscription")
         /// Pocket for iOS %@ (%@)
         internal static func pocketForiOS(_ p1: Any, _ p2: Any) -> String {
             return L10n.tr("Localizable", "settings.PocketForiOS %@ (%@)", String(describing: p1), String(describing: p2), fallback: "Pocket for iOS %@ (%@)")
