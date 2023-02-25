@@ -251,12 +251,14 @@ internal enum L10n {
     }
   }
   internal enum Settings {
+    /// Go Premium
+    internal static let goPremiumRow = L10n.tr("Localizable", "settings.goPremiumRow", fallback: "Go Premium")
     /// Pocket for iOS %@ (%@)
     internal static func pocketForiOS(_ p1: Any, _ p2: Any) -> String {
       return L10n.tr("Localizable", "settings.PocketForiOS %@ (%@)", String(describing: p1), String(describing: p2), fallback: "Pocket for iOS %@ (%@)")
     }
-    /// Go Premium
-    internal static let premiumRow = L10n.tr("Localizable", "settings.premiumRow", fallback: "Go Premium")
+    /// Premium Subscription
+    internal static let premiumSubscriptionRow = L10n.tr("Localizable", "settings.premiumSubscriptionRow", fallback: "Premium Subscription")
     internal enum Thankyou {
       /// Thank you for using Pocket
       internal static let credits = L10n.tr("Localizable", "settings.thankyou.credits", fallback: "Thank you for using Pocket")
