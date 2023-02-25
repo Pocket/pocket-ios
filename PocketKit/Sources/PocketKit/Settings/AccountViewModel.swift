@@ -1,8 +1,9 @@
-import Sync
 import Analytics
-import Textile
+import Combine
 import SharedPocketKit
 import SwiftUI
+import Sync
+import Textile
 
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
@@ -21,9 +22,9 @@ class AccountViewModel: ObservableObject {
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
 
-    public var isPremium: Bool {
-        user.status == .premium
-    }
+    private var userStatusListener: AnyCancellable?
+
+    @Published var isPremium: Bool
 
     init(appSession: AppSession,
          user: User,
@@ -35,6 +36,14 @@ class AccountViewModel: ObservableObject {
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
+        self.isPremium = user.status == .premium
+
+        userStatusListener = user
+            .statusPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] status in
+                self?.isPremium = status == .premium
+            }
     }
 
     func signOut() {
