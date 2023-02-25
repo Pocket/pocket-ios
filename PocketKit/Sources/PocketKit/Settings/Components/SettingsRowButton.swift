@@ -7,7 +7,8 @@ struct SettingsRowButton: View {
     var icon: SFIconModel?
     var leadingImageAsset: ImageAsset?
     var trailingImageAsset: ImageAsset?
-    var tintColor: Color?
+    var leadingTintColor: Color = Color(.ui.black1)
+    var trailingTintColor: Color = Color(.ui.black1)
 
     let action: () -> Void
 
@@ -16,8 +17,8 @@ struct SettingsRowButton: View {
             self.action()
         } label: {
             HStack(spacing: 0) {
-                if let leadingImageAsset, let tintColor {
-                    SettingsButtonImage(color: tintColor, asset: leadingImageAsset)
+                if let leadingImageAsset {
+                    SettingsButtonImage(color: leadingTintColor, asset: leadingImageAsset)
                         .padding(.trailing)
                 }
                 Text(title)
@@ -27,8 +28,8 @@ struct SettingsRowButton: View {
                 if let icon = icon {
                     SFIcon(icon)
                 }
-                if let trailingImageAsset, let tintColor {
-                    SettingsButtonImage(color: tintColor, asset: trailingImageAsset)
+                if let trailingImageAsset {
+                    SettingsButtonImage(color: trailingTintColor, asset: trailingImageAsset)
                 }
             }
             .padding(.vertical, 5)
