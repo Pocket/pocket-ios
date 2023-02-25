@@ -17,7 +17,7 @@ enum SearchViewState {
 
     var isEmptyState: Bool {
         switch self {
-        case .emptyState( _):
+        case .emptyState:
             return true
         default:
             return false
