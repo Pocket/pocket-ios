@@ -25,7 +25,7 @@ open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Conten
     }
 }
 
-class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView> {
+class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView<EmptyView>> {
     func configure(parent: UIViewController, _ viewModel: EmptyStateViewModel) {
         embed(in: parent, withView: EmptyStateView(viewModel: viewModel))
         host?.view.frame = self.contentView.bounds
@@ -34,14 +34,16 @@ class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView> {
     }
 }
 
-struct EmptyStateView: View {
-    private var viewModel: EmptyStateViewModel
+struct EmptyStateView<Content: View>: View {
+    private let viewModel: EmptyStateViewModel
+    private var content: Content?
 
     @State
     private var showSafariView = false
 
-    init(viewModel: EmptyStateViewModel) {
+    init(viewModel: EmptyStateViewModel, content: (() -> Content)? = nil) {
         self.viewModel = viewModel
+        self.content = content?()
     }
 
     var body: some View {
@@ -64,8 +66,9 @@ struct EmptyStateView: View {
                         }
                     } else { Text(subtitle).style(.detail) }
                 }
-
-                if let buttonText = viewModel.buttonText, let webURL = viewModel.webURL {
+                if let content {
+                    content
+                } else if let buttonText = viewModel.buttonText, let webURL = viewModel.webURL {
                     Button(action: {
                         self.showSafariView = true
                     }, label: {
