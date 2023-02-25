@@ -27,6 +27,7 @@ class PocketSourceTests: XCTestCase {
     override func setUpWithError() throws {
         space = .testSpace()
         user = MockUser()
+        user.stubStandardSetStatus()
         apollo = MockApolloClient()
         operations = MockOperationFactory()
         lastRefresh = MockLastRefresh()

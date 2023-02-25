@@ -25,6 +25,7 @@ class SearchViewModelTests: XCTestCase {
     override func setUpWithError() throws {
         networkPathMonitor = MockNetworkPathMonitor()
         user = MockUser()
+        user.stubStandardSetStatus()
         source = MockSource()
         tracker = MockTracker()
         userDefaults = UserDefaults(suiteName: "SearchViewModelTests")
