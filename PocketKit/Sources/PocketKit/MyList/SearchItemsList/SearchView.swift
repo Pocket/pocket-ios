@@ -61,11 +61,44 @@ struct ResultsView: View {
 
 // MARK: - Search Empty States Component
 struct SearchEmptyView: View {
-    var viewModel: EmptyStateViewModel
+    private var viewModel: EmptyStateViewModel
+
+    init(viewModel: EmptyStateViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
-        EmptyStateView(viewModel: viewModel)
+        if let text = viewModel.buttonText {
+            EmptyStateView(viewModel: viewModel) {
+                GetPocketPremiumButton(text: text)
+            }
             .padding(Margins.normal.rawValue)
+        } else {
+            EmptyStateView<EmptyView>(viewModel: viewModel)
+                .padding(Margins.normal.rawValue)
+        }
+    }
+}
+
+struct GetPocketPremiumButton: View {
+    @EnvironmentObject private var searchViewModel: SearchViewModel
+    private let text: String
+
+    init(text: String) {
+        self.text = text
+    }
+
+    var body: some View {
+        Button(action: {
+            searchViewModel.showPremiumUpgrade()
+        }, label: {
+            Text(text).style(.header.sansSerif.h7.with(color: .ui.white))
+                .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
+                .frame(maxWidth: 320)
+        }).buttonStyle(ActionsPrimaryButtonStyle())
+            .sheet(isPresented: $searchViewModel.isPresentingPremiumUpgrade) {
+            PremiumUpgradeView(viewModel: searchViewModel.makePremiumUpgradeViewModel())
+        }
     }
 }
 
