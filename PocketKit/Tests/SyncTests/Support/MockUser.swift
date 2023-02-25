@@ -22,6 +22,12 @@ extension MockUser {
         implementations[Self.setStatus] = impl
     }
 
+    func stubStandardSetStatus() {
+        implementations[Self.setStatus] = { isPremium in
+            self.status = isPremium ? .premium : .free
+        }
+    }
+
     func setPremiumStatus(_ isPremium: Bool) {
         guard let impl = implementations[Self.setStatus] as? SetStatusImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
