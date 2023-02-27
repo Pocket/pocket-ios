@@ -82,7 +82,7 @@ class PocketItemViewModel: ObservableObject {
         if let url = item.url {
             tracker.track(event: Events.Search.shareItem(itemUrl: url, positionInList: index, scope: scope))
         } else {
-            Log.breadcrumb(category: "analytics", level: .warning, message: "Skipping tracking of Item \(item) because url is missing")
+            Log.capture(message: "Selected search item without an associated url, not logging analytics for shareItem")
         }
         presentShareSheet = true
     }

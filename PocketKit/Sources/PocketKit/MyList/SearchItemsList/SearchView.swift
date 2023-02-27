@@ -10,17 +10,21 @@ struct SearchView: View {
     var viewModel: SearchViewModel
 
     var body: some View {
-        switch viewModel.searchState {
-        case .emptyState(let emptyStateViewModel):
-            SearchEmptyView(viewModel: emptyStateViewModel)
-        case .recentSearches(let searches):
-            RecentSearchView(viewModel: viewModel, recentSearches: searches)
-        case .searchResults(let results):
-            ResultsView(viewModel: viewModel, results: results)
-        case .loading:
-            SkeletonView()
-        default:
-            EmptyView()
+        Group {
+            switch viewModel.searchState {
+            case .emptyState(let emptyStateViewModel):
+                SearchEmptyView(viewModel: emptyStateViewModel)
+            case .recentSearches(let searches):
+                RecentSearchView(viewModel: viewModel, recentSearches: searches)
+            case .searchResults(let results):
+                ResultsView(viewModel: viewModel, results: results)
+            case .loading:
+                SkeletonView()
+            default:
+                EmptyView()
+            }
+        }.onAppear {
+            viewModel.trackOpenSearch()
         }
     }
 }
@@ -45,8 +49,10 @@ struct ResultsView: View {
                     if viewModel.isOffline {
                         showingAlert = true
                     } else {
-                        viewModel.select(item)
+                        viewModel.select(item, index: index)
                     }
+                }.onAppear {
+                    viewModel.trackViewResults(url: item.url, index: index)
                 }
             }
         }

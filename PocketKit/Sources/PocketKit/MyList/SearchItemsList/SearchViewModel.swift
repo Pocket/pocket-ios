@@ -119,7 +119,6 @@ class SearchViewModel: ObservableObject {
             searchState = .emptyState(GetPremiumEmptyState())
             return
         }
-
         resetSearch(with: searchTerm)
 
         let term = searchTerm.trimmingCharacters(in: .whitespaces).lowercased()
@@ -129,6 +128,7 @@ class SearchViewModel: ObservableObject {
             searchState = .emptyState(searchResultState())
             return
         }
+        trackPerformSearch()
         searchState = .loading
         submitSearch(with: term, scope: selectedScope)
         recentSearches = updateRecentSearches(with: term)
@@ -289,7 +289,7 @@ extension SearchViewModel {
         return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker)
     }
 
-    func select(_ searchItem: PocketItem) {
+    func select(_ searchItem: PocketItem, index: Int) {
         guard
             let id = searchItem.id,
             let savedItem = source.fetchOrCreateSavedItem(
@@ -307,6 +307,8 @@ extension SearchViewModel {
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general
         )
+
+        trackOpenSearchItem(url: savedItem.url, index: index)
 
         if savedItem.shouldOpenInWebView {
             selectedItem = .webView(readable)
@@ -330,5 +332,32 @@ extension SearchViewModel {
 
         let event = ContentOpenEvent(destination: destination, trigger: .click)
         tracker.track(event: event, contexts)
+    }
+}
+
+// MARK: Analytics
+extension SearchViewModel {
+    func trackOpenSearch() {
+        tracker.track(event: Events.Search.openSearch(scope: selectedScope))
+    }
+
+    func trackPerformSearch() {
+        tracker.track(event: Events.Search.submitSearch(scope: selectedScope))
+    }
+
+    func trackSwitchScope(with scope: SearchScope) {
+        tracker.track(event: Events.Search.switchScope(scope: scope))
+    }
+
+    func trackViewResults(url: URL?, index: Int) {
+        guard let url else {
+            Log.capture(message: "Selected search item without an associated url, not logging analytics for searchCardImpression")
+            return
+        }
+        tracker.track(event: Events.Search.searchCardImpression(url: url, positionInList: index, scope: selectedScope))
+    }
+
+    func trackOpenSearchItem(url: URL, index: Int) {
+        tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope))
     }
 }
