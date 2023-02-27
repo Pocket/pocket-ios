@@ -19,6 +19,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingSignOutConfirm = false
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingLicenses = false
+    @Published var isPresentingAccountManagement = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false

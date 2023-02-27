@@ -146,6 +146,9 @@
 "settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
 "settings.logout.areyousure" = "Are you sure?";
 "settings.help" = "Get Help and Support";
+"settings.accountManagement" = "Account Management";
+"settings.accountManagement.deleteAccount" = "Delete Account";
+"settings.accountManagement.deleteYourAccount" = "Delete your account";
 
 //List view
 "item.list.min" = "%@ min";

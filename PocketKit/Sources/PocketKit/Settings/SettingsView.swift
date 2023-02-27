@@ -148,6 +148,17 @@ extension SettingsForm {
                         Text(L10n.Settings.Logout.areYouSureMessage)
                     }
                 )
+
+            SettingsRowButton(title: L10n.Settings.accountManagement, icon: SFIconModel("chevron.right")) {
+                model.isPresentingAccountManagement.toggle()
+            }
+            .accessibilityIdentifier("account-management-button")
+
+            // TODO: This should be a push on the nav stack but unclear which pattern we are using for this.
+            // Using a sheet for now.
+            .sheet(isPresented: $model.isPresentingAccountManagement, content: {
+                AccountManagementView()
+            })
         }
     }
 

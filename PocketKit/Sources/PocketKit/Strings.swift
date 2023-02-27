@@ -269,6 +269,8 @@ internal enum L10n {
     }
   }
   internal enum Settings {
+    /// Account Management
+    internal static let accountManagement = L10n.tr("Localizable", "settings.accountManagement", fallback: "Account Management")
     /// Go Premium
     internal static let goPremiumRow = L10n.tr("Localizable", "settings.goPremiumRow", fallback: "Go Premium")
     /// Get Help and Support
@@ -283,6 +285,12 @@ internal enum L10n {
     }
     /// Premium Subscription
     internal static let premiumSubscriptionRow = L10n.tr("Localizable", "settings.premiumSubscriptionRow", fallback: "Premium Subscription")
+    internal enum AccountManagement {
+      /// Delete Account
+      internal static let deleteAccount = L10n.tr("Localizable", "settings.accountManagement.deleteAccount", fallback: "Delete Account")
+      /// Delete your account
+      internal static let deleteYourAccount = L10n.tr("Localizable", "settings.accountManagement.deleteYourAccount", fallback: "Delete your account")
+    }
     internal enum Logout {
       /// Are you sure?
       internal static let areyousure = L10n.tr("Localizable", "settings.logout.areyousure", fallback: "Are you sure?")
