@@ -129,6 +129,8 @@ internal enum L10n {
   internal static let privacyPolicy = L10n.tr("Localizable", "Privacy Policy", fallback: "Privacy Policy")
   /// Recent Saves
   internal static let recentSaves = L10n.tr("Localizable", "Recent Saves", fallback: "Recent Saves")
+  /// Rename
+  internal static let rename = L10n.tr("Localizable", "Rename", fallback: "Rename")
   /// Rename Tag
   internal static let renameTag = L10n.tr("Localizable", "Rename Tag", fallback: "Rename Tag")
   /// Report
@@ -173,6 +175,8 @@ internal enum L10n {
   internal static let tagYourSavesByTopicToFindThemLater = L10n.tr("Localizable", "Tag your saves by topic to find them later.", fallback: "Tag your saves by topic to find them later.")
   /// Tagged
   internal static let tagged = L10n.tr("Localizable", "Tagged", fallback: "Tagged")
+  /// Tags
+  internal static let tags = L10n.tr("Localizable", "Tags", fallback: "Tags")
   /// Tell us more
   internal static let tellUsMore = L10n.tr("Localizable", "Tell us more", fallback: "Tell us more")
   /// Terms of Service
@@ -202,6 +206,14 @@ internal enum L10n {
     /// Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket
     internal static let yourArticlesAndVideosWillBeReadyForYouInPocket = L10n.tr("Localizable", "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket", fallback: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket")
   }
+  internal enum Item {
+    internal enum List {
+      /// %@ min
+      internal static func min(_ p1: Any) -> String {
+        return L10n.tr("Localizable", "item.list.min", String(describing: p1), fallback: "%@ min")
+      }
+    }
+  }
   internal enum Search {
     /// Oops! Try again?
     internal static let errorHeadline = L10n.tr("Localizable", "search.errorHeadline", fallback: "Oops! Try again?")
@@ -211,9 +223,17 @@ internal enum L10n {
     internal static let limitedResults = L10n.tr("Localizable", "search.limitedResults", fallback: "Limited search results")
     /// You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.
     internal static let offlineMessage = L10n.tr("Localizable", "search.offlineMessage", fallback: "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.")
+    /// Recent Searches
+    internal static let recent = L10n.tr("Localizable", "search.recent", fallback: "Recent Searches")
     internal enum Banner {
       /// We’re experiencing an error and can’t show you full search results. Please try again later.
       internal static let errorMessage = L10n.tr("Localizable", "search.banner.errorMessage.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")
+    }
+    internal enum Error {
+      internal enum View {
+        /// You must have an internet connection to view this item.
+        internal static let needsInternet = L10n.tr("Localizable", "search.error.view.needsInternet", fallback: "You must have an internet connection to view this item.")
+      }
     }
   }
   internal enum Settings {

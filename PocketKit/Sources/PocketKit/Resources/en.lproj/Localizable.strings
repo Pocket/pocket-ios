@@ -40,6 +40,7 @@
 "Unfavorite" = "Unfavorite";
 "Move to Saves" = "Move to Saves";
 "Add Tags" = "Add Tags";
+"Tags" = "Tags";
 "Share" = "Share";
 
 "Saves" = "Saves";
@@ -106,6 +107,7 @@
 "Delete" = "Delete";
 "Cancel" = "Cancel";
 "Rename Tag" = "Rename Tag";
+"Rename" = "Rename";
 "Enter a new name for this tag" = "Enter a new name for this tag";
 
 "not tagged" = "not tagged";
@@ -131,6 +133,8 @@
 "search.limitedResults" = "Limited search results";
 "search.offlineMessage" = "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.";
 "search.banner.errorMessage." = "We’re experiencing an error and can’t show you full search results. Please try again later.";
+"search.error.view.needsInternet" = "You must have an internet connection to view this item.";
+"search.recent" = "Recent Searches";
 
 // Settings
 "settings.thankyou.credits" = "Thank you for using Pocket";
@@ -139,3 +143,6 @@
 "settings.logout" = "Log Out";
 "settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
 "settings.logout.areyousure" = "Are you sure?";
+
+//List view
+"item.list.min" = "%@ min";
