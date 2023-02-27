@@ -15,8 +15,8 @@ public struct MarticleCodeBlockParts: PocketGraph.SelectionSet, Fragment {
   public let __data: DataDict
   public init(data: DataDict) { __data = data }
 
-  public static var __parentType: ParentType { PocketGraph.Objects.MarticleCodeBlock }
-  public static var __selections: [Selection] { [
+  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
+  public static var __selections: [ApolloAPI.Selection] { [
     .field("text", String.self),
     .field("language", Int?.self),
   ] }

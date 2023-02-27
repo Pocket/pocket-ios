@@ -15,14 +15,12 @@ public struct PendingItemParts: PocketGraph.SelectionSet, Fragment {
   public let __data: DataDict
   public init(data: DataDict) { __data = data }
 
-  public static var __parentType: ParentType { PocketGraph.Objects.PendingItem }
-  public static var __selections: [Selection] { [
-    .field("url", Url.self),
-    .field("status", GraphQLEnum<PendingItemStatus>?.self),
+  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
+  public static var __selections: [ApolloAPI.Selection] { [
+    .field("url", PocketGraph.Url.self),
+    .field("status", GraphQLEnum<PocketGraph.PendingItemStatus>?.self),
   ] }
 
-  /// URL of the item that the user gave for the SavedItem
-  /// that is pending processing by parser
-  public var url: Url { __data["url"] }
-  public var status: GraphQLEnum<PendingItemStatus>? { __data["status"] }
+  public var url: PocketGraph.Url { __data["url"] }
+  public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 }

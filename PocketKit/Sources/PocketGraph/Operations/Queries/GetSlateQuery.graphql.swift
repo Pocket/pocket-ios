@@ -7,14 +7,14 @@ public class GetSlateQuery: GraphQLQuery {
   public static let operationName: String = "GetSlate"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
-      """
+      #"""
       query GetSlate($slateID: String!, $recommendationCount: Int!) {
         getSlate(slateId: $slateID, recommendationCount: $recommendationCount) {
           __typename
           ...SlateParts
         }
       }
-      """,
+      """#,
       fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, CuratedInfoParts.self]
     ))
 
@@ -38,8 +38,8 @@ public class GetSlateQuery: GraphQLQuery {
     public let __data: DataDict
     public init(data: DataDict) { __data = data }
 
-    public static var __parentType: ParentType { PocketGraph.Objects.Query }
-    public static var __selections: [Selection] { [
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
+    public static var __selections: [ApolloAPI.Selection] { [
       .field("getSlate", GetSlate.self, arguments: [
         "slateId": .variable("slateID"),
         "recommendationCount": .variable("recommendationCount")
@@ -57,16 +57,16 @@ public class GetSlateQuery: GraphQLQuery {
       public let __data: DataDict
       public init(data: DataDict) { __data = data }
 
-      public static var __parentType: ParentType { PocketGraph.Objects.Slate }
-      public static var __selections: [Selection] { [
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Slate }
+      public static var __selections: [ApolloAPI.Selection] { [
         .fragment(SlateParts.self),
       ] }
 
       public var id: String { __data["id"] }
       /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API.
-      public var requestId: ID { __data["requestId"] }
+      public var requestId: PocketGraph.ID { __data["requestId"] }
       /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing.
-      public var experimentId: ID { __data["experimentId"] }
+      public var experimentId: PocketGraph.ID { __data["experimentId"] }
       /// The name to show to the user for this set of recommendations
       public var displayName: String? { __data["displayName"] }
       /// The description of the the slate

@@ -16,14 +16,14 @@ public struct CuratedInfoParts: PocketGraph.SelectionSet, Fragment {
   public let __data: DataDict
   public init(data: DataDict) { __data = data }
 
-  public static var __parentType: ParentType { PocketGraph.Objects.CuratedInfo }
-  public static var __selections: [Selection] { [
+  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.CuratedInfo }
+  public static var __selections: [ApolloAPI.Selection] { [
     .field("excerpt", String?.self),
-    .field("imageSrc", Url?.self),
+    .field("imageSrc", PocketGraph.Url?.self),
     .field("title", String?.self),
   ] }
 
   public var excerpt: String? { __data["excerpt"] }
-  public var imageSrc: Url? { __data["imageSrc"] }
+  public var imageSrc: PocketGraph.Url? { __data["imageSrc"] }
   public var title: String? { __data["title"] }
 }

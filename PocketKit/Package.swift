@@ -16,14 +16,14 @@ let package = Package(
         .library(name: "Analytics", targets: ["Analytics"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.0.5"),
-        .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.4.1"),
-        .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "7.31.5"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.0.7"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.6.2"),
+        .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.2.0"),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "4.1.0"),
-        .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "3.5.0"),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.1.3"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
-        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.1.12"),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.8.1")
+        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.3.1"),
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.11.0")
     ],
     targets: [
         .target(

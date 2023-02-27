@@ -13,7 +13,7 @@ public enum VideoType: String, EnumType {
   /// video iframe (v3 value is 4)
   case vimeoIframe = "VIMEO_IFRAME"
   /// html5 (v3 value is 5)
-  case hTML5 = "HTML5"
+  case html5 = "HTML5"
   /// Flash (v3 value is 6)
   case flash = "FLASH"
   /// iframe (v3 value is 7)

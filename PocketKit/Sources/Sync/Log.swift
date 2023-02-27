@@ -291,7 +291,7 @@ extension Log {
         crumb.level = SentryLevel(rawValue: level.toSentry()) ?? .none
         crumb.message = message
 
-        SentrySDK.addBreadcrumb(crumb: crumb)
+        SentrySDK.addBreadcrumb(crumb)
         Log.log("Sentry - \(category): \(message)", level: level, filename: filename, line: line, column: column, funcName: funcName)
     }
 

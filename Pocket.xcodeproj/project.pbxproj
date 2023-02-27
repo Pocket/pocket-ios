@@ -1550,7 +1550,7 @@
 			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk.git";
 			requirement = {
 				kind = exactVersion;
-				version = 5.8.1;
+				version = 5.11.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
