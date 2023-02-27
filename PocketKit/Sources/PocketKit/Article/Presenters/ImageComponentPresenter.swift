@@ -57,7 +57,7 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
 
         if let attributedCredit = attributedCredit {
             if !base.string.isEmpty {
-                base.append(NSAttributedString(string: " ", style: .imageCredit.adjustingSize(by: readerSettings.fontSizeAdjustment)))
+                base.append(NSAttributedString(string: " ", style: .imageCredit.modified(by: readerSettings)))
             }
 
             base.append(attributedCredit)
@@ -129,7 +129,7 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
         cachedAttributedCredit = component.credit.flatMap {
             NSAttributedString(
                 string: $0,
-                style: .imageCredit.adjustingSize(by: readerSettings.fontSizeAdjustment)
+                style: .imageCredit.modified(by: readerSettings)
             )
         }
 
@@ -140,7 +140,7 @@ class ImageComponentPresenter: ArticleComponentPresenter, ImageComponentCellMode
         cachedAttributedCaption = component.caption.flatMap {
             NSAttributedString(
                 string: $0,
-                style: .imageCaption.adjustingSize(by: readerSettings.fontSizeAdjustment)
+                style: .imageCaption.modified(by: readerSettings)
             )
         }
 

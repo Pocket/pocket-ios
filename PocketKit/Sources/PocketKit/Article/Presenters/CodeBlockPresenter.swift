@@ -44,7 +44,7 @@ class CodeBlockPresenter: ArticleComponentPresenter {
     private func loadCodeBlock() -> NSAttributedString? {
         cachedCodeBlock = NSAttributedString(
             string: component.text,
-            style: .codeBlock.adjustingSize(by: readerSettings.fontSizeAdjustment)
+            style: .codeBlock.modified(by: readerSettings)
         )
 
         return cachedCodeBlock
