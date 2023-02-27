@@ -18,6 +18,11 @@ Then replace values in `Config/secrets.xcconfig` with the values you have receiv
 
 After you will need to run the API Generation steps below.
 
+## Setup Fonts
+
+Pocket use's a custom font called Graphik for it's UI. In order for the styles to present as expected in your local build you need to obtain the font files from the iOS manager and install them in [`PocketKit/Sources/Textile/Style/Typography/Fonts`](./PocketKit/Sources/Textile/Style/Typography/Fonts)
+
+
 ## Pocket Graph (API) Schema
 
 Pocket for iOS uses Apollo client to autogenerate its API schema code. You will need to run the following commands every time the APIs you use change or if you change your API queries.
