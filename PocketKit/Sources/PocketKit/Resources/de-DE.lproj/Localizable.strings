@@ -137,5 +137,5 @@
 "settings.PocketForiOS %@ (%@)" = "Pocket für iOS %1$@ (%2$@)";
 "settings.openSourceLicenses" = "Open-Source-Lizenzen";
 "settings.logout" = "Ausloggen";
-"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areYouSureMessage" = "Du wirst aus deinem Konto ausgeloggt und sämtliche Elemente, die du zur Offline-Anzeige gespeichert hast, werden von deinem Gerät entfernt.";
 "settings.logout.areyousure" = "Bist du sicher?";
