@@ -137,5 +137,5 @@
 "settings.PocketForiOS %@ (%@)" = "iOS 向け Pocket %1$@ (%2$@)";
 "settings.openSourceLicenses" = "オープンソースライセンス";
 "settings.logout" = "ログアウト";
-"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areYouSureMessage" = "アカウントからログアウトされ、オフライン表示用に保存されたアイテムがすべてデバイスから削除されます。";
 "settings.logout.areyousure" = "よろしいですか？";

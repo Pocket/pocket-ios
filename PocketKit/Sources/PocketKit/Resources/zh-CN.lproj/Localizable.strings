@@ -137,5 +137,5 @@
 "settings.PocketForiOS %@ (%@)" = "iOS 版 Pocket %1$@ (%2$@)";
 "settings.openSourceLicenses" = "开源许可证";
 "settings.logout" = "注销";
-"settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
+"settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
 "settings.logout.areyousure" = "您确定吗？";
