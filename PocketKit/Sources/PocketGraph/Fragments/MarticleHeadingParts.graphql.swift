@@ -15,14 +15,14 @@ public struct MarticleHeadingParts: PocketGraph.SelectionSet, Fragment {
   public let __data: DataDict
   public init(data: DataDict) { __data = data }
 
-  public static var __parentType: ParentType { PocketGraph.Objects.MarticleHeading }
-  public static var __selections: [Selection] { [
-    .field("content", Markdown.self),
+  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
+  public static var __selections: [ApolloAPI.Selection] { [
+    .field("content", PocketGraph.Markdown.self),
     .field("level", Int.self),
   ] }
 
   /// Heading text, in markdown.
-  public var content: Markdown { __data["content"] }
+  public var content: PocketGraph.Markdown { __data["content"] }
   /// Heading level. Restricted to values 1-6.
   public var level: Int { __data["level"] }
 }

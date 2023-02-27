@@ -7,14 +7,14 @@ public class ItemByIDQuery: GraphQLQuery {
   public static let operationName: String = "ItemByID"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
-      """
+      #"""
       query ItemByID($id: ID!) {
         itemByItemId(id: $id) {
           __typename
           ...ItemParts
         }
       }
-      """,
+      """#,
       fragments: [ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self]
     ))
 
@@ -30,8 +30,8 @@ public class ItemByIDQuery: GraphQLQuery {
     public let __data: DataDict
     public init(data: DataDict) { __data = data }
 
-    public static var __parentType: ParentType { PocketGraph.Objects.Query }
-    public static var __selections: [Selection] { [
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
+    public static var __selections: [ApolloAPI.Selection] { [
       .field("itemByItemId", ItemByItemId?.self, arguments: ["id": .variable("id")]),
     ] }
 
@@ -45,8 +45,8 @@ public class ItemByIDQuery: GraphQLQuery {
       public let __data: DataDict
       public init(data: DataDict) { __data = data }
 
-      public static var __parentType: ParentType { PocketGraph.Objects.Item }
-      public static var __selections: [Selection] { [
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
+      public static var __selections: [ApolloAPI.Selection] { [
         .fragment(ItemParts.self),
       ] }
 
@@ -55,28 +55,28 @@ public class ItemByIDQuery: GraphQLQuery {
       /// The key for this entity is the 'itemId'
       public var remoteID: String { __data["remoteID"] }
       /// key field to identify the Item entity in the Parser service
-      public var givenUrl: Url { __data["givenUrl"] }
+      public var givenUrl: PocketGraph.Url { __data["givenUrl"] }
       /// If the givenUrl redirects (once or many times), this is the final url. Otherwise, same as givenUrl
-      public var resolvedUrl: Url? { __data["resolvedUrl"] }
+      public var resolvedUrl: PocketGraph.Url? { __data["resolvedUrl"] }
       /// The title as determined by the parser.
       public var title: String? { __data["title"] }
       /// The detected language of the article
       public var language: String? { __data["language"] }
       /// The page's / publisher's preferred thumbnail image
       @available(*, deprecated, message: "use the topImage object")
-      public var topImageUrl: Url? { __data["topImageUrl"] }
+      public var topImageUrl: PocketGraph.Url? { __data["topImageUrl"] }
       /// How long it will take to read the article (TODO in what time unit? and by what calculation?)
       public var timeToRead: Int? { __data["timeToRead"] }
       /// The domain, such as 'getpocket.com' of the {.resolved_url}
       public var domain: String? { __data["domain"] }
       /// The date the article was published
-      public var datePublished: DateString? { __data["datePublished"] }
+      public var datePublished: PocketGraph.DateString? { __data["datePublished"] }
       /// true if the item is an article
       public var isArticle: Bool? { __data["isArticle"] }
       /// 0=no images, 1=contains images, 2=is an image
-      public var hasImage: GraphQLEnum<Imageness>? { __data["hasImage"] }
+      public var hasImage: GraphQLEnum<PocketGraph.Imageness>? { __data["hasImage"] }
       /// 0=no videos, 1=contains video, 2=is a video
-      public var hasVideo: GraphQLEnum<Videoness>? { __data["hasVideo"] }
+      public var hasVideo: GraphQLEnum<PocketGraph.Videoness>? { __data["hasVideo"] }
       /// List of Authors involved with this article
       public var authors: [ItemParts.Author?]? { __data["authors"] }
       /// The Marticle format of the article, used by clients for native article view.
@@ -104,7 +104,7 @@ public class ItemByIDQuery: GraphQLQuery {
         public let __data: DataDict
         public init(data: DataDict) { __data = data }
 
-        public static var __parentType: ParentType { PocketGraph.Unions.MarticleComponent }
+        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Unions.MarticleComponent }
 
         public var asMarticleText: AsMarticleText? { _asInlineFragment() }
         public var asImage: AsImage? { _asInlineFragment() }
@@ -124,10 +124,10 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.MarticleText }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
 
           /// Markdown text content. Typically, a paragraph.
-          public var content: Markdown { __data["content"] }
+          public var content: PocketGraph.Markdown { __data["content"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -144,7 +144,7 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.Image }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
 
           /// A caption or description of the image
           public var caption: String? { __data["caption"] }
@@ -175,10 +175,10 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.MarticleDivider }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleDivider }
 
           /// Always '---'; provided for convenience if building a markdown string
-          public var content: Markdown { __data["content"] }
+          public var content: PocketGraph.Markdown { __data["content"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -195,7 +195,7 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.MarticleTable }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
 
           /// Raw HTML representation of the table.
           public var html: String { __data["html"] }
@@ -215,10 +215,10 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.MarticleHeading }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
 
           /// Heading text, in markdown.
-          public var content: Markdown { __data["content"] }
+          public var content: PocketGraph.Markdown { __data["content"] }
           /// Heading level. Restricted to values 1-6.
           public var level: Int { __data["level"] }
 
@@ -237,7 +237,7 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.MarticleCodeBlock }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
 
           /// Content of a pre tag
           public var text: String { __data["text"] }
@@ -259,14 +259,14 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.Video }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
 
           /// If known, the height of the video in px
           public var height: Int? { __data["height"] }
           /// Absolute url to the video
           public var src: String { __data["src"] }
           /// The type of video
-          public var type: GraphQLEnum<VideoType> { __data["type"] }
+          public var type: GraphQLEnum<PocketGraph.VideoType> { __data["type"] }
           /// The video's id within the service defined by type
           public var vid: String? { __data["vid"] }
           /// The id of the video within Article View. {articleView.article} will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.
@@ -291,7 +291,7 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.MarticleBulletedList }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
 
           public var rows: [MarticleBulletedListParts.Row] { __data["rows"] }
 
@@ -310,7 +310,7 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.MarticleNumberedList }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
 
           public var rows: [MarticleNumberedListParts.Row] { __data["rows"] }
 
@@ -329,10 +329,10 @@ public class ItemByIDQuery: GraphQLQuery {
           public let __data: DataDict
           public init(data: DataDict) { __data = data }
 
-          public static var __parentType: ParentType { PocketGraph.Objects.MarticleBlockquote }
+          public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBlockquote }
 
           /// Markdown text content.
-          public var content: Markdown { __data["content"] }
+          public var content: PocketGraph.Markdown { __data["content"] }
 
           public struct Fragments: FragmentContainer {
             public let __data: DataDict
@@ -350,12 +350,12 @@ public class ItemByIDQuery: GraphQLQuery {
         public let __data: DataDict
         public init(data: DataDict) { __data = data }
 
-        public static var __parentType: ParentType { PocketGraph.Objects.DomainMetadata }
+        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.DomainMetadata }
 
         /// The name of the domain (e.g., The New York Times)
         public var name: String? { __data["name"] }
         /// Url for the logo image
-        public var logo: Url? { __data["logo"] }
+        public var logo: PocketGraph.Url? { __data["logo"] }
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict

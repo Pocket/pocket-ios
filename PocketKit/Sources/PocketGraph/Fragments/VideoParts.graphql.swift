@@ -20,11 +20,11 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
   public let __data: DataDict
   public init(data: DataDict) { __data = data }
 
-  public static var __parentType: ParentType { PocketGraph.Objects.Video }
-  public static var __selections: [Selection] { [
+  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
+  public static var __selections: [ApolloAPI.Selection] { [
     .field("height", Int?.self),
     .field("src", String.self),
-    .field("type", GraphQLEnum<VideoType>.self),
+    .field("type", GraphQLEnum<PocketGraph.VideoType>.self),
     .field("vid", String?.self),
     .field("videoId", alias: "videoID", Int.self),
     .field("width", Int?.self),
@@ -36,7 +36,7 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
   /// Absolute url to the video
   public var src: String { __data["src"] }
   /// The type of video
-  public var type: GraphQLEnum<VideoType> { __data["type"] }
+  public var type: GraphQLEnum<PocketGraph.VideoType> { __data["type"] }
   /// The video's id within the service defined by type
   public var vid: String? { __data["vid"] }
   /// The id of the video within Article View. {articleView.article} will have placeholders of <div id='RIL_VID_X' /> where X is this id. Apps can download those images as needed and populate them in their article view.

@@ -19,8 +19,8 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
   public let __data: DataDict
   public init(data: DataDict) { __data = data }
 
-  public static var __parentType: ParentType { PocketGraph.Objects.Image }
-  public static var __selections: [Selection] { [
+  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
+  public static var __selections: [ApolloAPI.Selection] { [
     .field("caption", String?.self),
     .field("credit", String?.self),
     .field("imageId", alias: "imageID", Int.self),

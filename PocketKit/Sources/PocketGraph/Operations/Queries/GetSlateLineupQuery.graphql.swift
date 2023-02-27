@@ -7,7 +7,7 @@ public class GetSlateLineupQuery: GraphQLQuery {
   public static let operationName: String = "GetSlateLineup"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
-      """
+      #"""
       query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
         getSlateLineup(
           slateLineupId: $lineupID
@@ -23,7 +23,7 @@ public class GetSlateLineupQuery: GraphQLQuery {
           }
         }
       }
-      """,
+      """#,
       fragments: [SlateParts.self, ItemSummary.self, DomainMetadataParts.self, CuratedInfoParts.self]
     ))
 
@@ -47,8 +47,8 @@ public class GetSlateLineupQuery: GraphQLQuery {
     public let __data: DataDict
     public init(data: DataDict) { __data = data }
 
-    public static var __parentType: ParentType { PocketGraph.Objects.Query }
-    public static var __selections: [Selection] { [
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
+    public static var __selections: [ApolloAPI.Selection] { [
       .field("getSlateLineup", GetSlateLineup.self, arguments: [
         "slateLineupId": .variable("lineupID"),
         "recommendationCount": .variable("maxRecommendations")
@@ -66,20 +66,20 @@ public class GetSlateLineupQuery: GraphQLQuery {
       public let __data: DataDict
       public init(data: DataDict) { __data = data }
 
-      public static var __parentType: ParentType { PocketGraph.Objects.SlateLineup }
-      public static var __selections: [Selection] { [
-        .field("id", ID.self),
-        .field("requestId", ID.self),
-        .field("experimentId", ID.self),
+      public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SlateLineup }
+      public static var __selections: [ApolloAPI.Selection] { [
+        .field("id", PocketGraph.ID.self),
+        .field("requestId", PocketGraph.ID.self),
+        .field("experimentId", PocketGraph.ID.self),
         .field("slates", [Slate].self),
       ] }
 
       /// A unique slug/id that describes a SlateLineup. The Data & Learning team will provide apps what id to use here for specific cases.
-      public var id: ID { __data["id"] }
+      public var id: PocketGraph.ID { __data["id"] }
       /// A guid that is unique to every API request that returned slates, such as `getRecommendationSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API.
-      public var requestId: ID { __data["requestId"] }
+      public var requestId: PocketGraph.ID { __data["requestId"] }
       /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing.
-      public var experimentId: ID { __data["experimentId"] }
+      public var experimentId: PocketGraph.ID { __data["experimentId"] }
       /// An ordered list of slates for the client to display
       public var slates: [Slate] { __data["slates"] }
 
@@ -90,16 +90,16 @@ public class GetSlateLineupQuery: GraphQLQuery {
         public let __data: DataDict
         public init(data: DataDict) { __data = data }
 
-        public static var __parentType: ParentType { PocketGraph.Objects.Slate }
-        public static var __selections: [Selection] { [
+        public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Slate }
+        public static var __selections: [ApolloAPI.Selection] { [
           .fragment(SlateParts.self),
         ] }
 
         public var id: String { __data["id"] }
         /// A guid that is unique to every API request that returned slates, such as `getSlateLineup` or `getSlate`. The API will provide a new request id every time apps hit the API.
-        public var requestId: ID { __data["requestId"] }
+        public var requestId: PocketGraph.ID { __data["requestId"] }
         /// A unique guid/slug, provided by the Data & Learning team that can identify a specific experiment. Production apps typically won't request a specific one, but can for QA or during a/b testing.
-        public var experimentId: ID { __data["experimentId"] }
+        public var experimentId: PocketGraph.ID { __data["experimentId"] }
         /// The name to show to the user for this set of recommendations
         public var displayName: String? { __data["displayName"] }
         /// The description of the the slate

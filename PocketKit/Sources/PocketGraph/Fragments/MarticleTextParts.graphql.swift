@@ -14,11 +14,11 @@ public struct MarticleTextParts: PocketGraph.SelectionSet, Fragment {
   public let __data: DataDict
   public init(data: DataDict) { __data = data }
 
-  public static var __parentType: ParentType { PocketGraph.Objects.MarticleText }
-  public static var __selections: [Selection] { [
-    .field("content", Markdown.self),
+  public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
+  public static var __selections: [ApolloAPI.Selection] { [
+    .field("content", PocketGraph.Markdown.self),
   ] }
 
   /// Markdown text content. Typically, a paragraph.
-  public var content: Markdown { __data["content"] }
+  public var content: PocketGraph.Markdown { __data["content"] }
 }

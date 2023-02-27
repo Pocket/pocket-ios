@@ -7,11 +7,11 @@ public class DeleteItemMutation: GraphQLMutation {
   public static let operationName: String = "DeleteItem"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
-      """
+      #"""
       mutation DeleteItem($itemID: ID!) {
         deleteSavedItem(id: $itemID)
       }
-      """
+      """#
     ))
 
   public var itemID: ID
@@ -26,13 +26,13 @@ public class DeleteItemMutation: GraphQLMutation {
     public let __data: DataDict
     public init(data: DataDict) { __data = data }
 
-    public static var __parentType: ParentType { PocketGraph.Objects.Mutation }
-    public static var __selections: [Selection] { [
-      .field("deleteSavedItem", ID.self, arguments: ["id": .variable("itemID")]),
+    public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Mutation }
+    public static var __selections: [ApolloAPI.Selection] { [
+      .field("deleteSavedItem", PocketGraph.ID.self, arguments: ["id": .variable("itemID")]),
     ] }
 
     /// Deletes a SavedItem from the users list. Returns ID of the
     /// deleted SavedItem
-    public var deleteSavedItem: ID { __data["deleteSavedItem"] }
+    public var deleteSavedItem: PocketGraph.ID { __data["deleteSavedItem"] }
   }
 }
