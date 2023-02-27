@@ -97,7 +97,6 @@
 "App Customization" = "App Customization";
 "Show App Badge Count" = "Show App Badge Count";
 "About & Support" = "About & Support";
-"Help" = "Help";
 "Terms of Service" = "Terms of Service";
 "Privacy Policy" = "Privacy Policy";
 
@@ -143,6 +142,7 @@
 "settings.logout" = "Log Out";
 "settings.logout.areYouSureMessage" = "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.";
 "settings.logout.areyousure" = "Are you sure?";
+"settings.help" = "Get Help and Support";
 
 //List view
 "item.list.min" = "%@ min";

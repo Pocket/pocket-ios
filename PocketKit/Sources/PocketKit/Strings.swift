@@ -67,8 +67,6 @@ internal enum L10n {
   internal static let font = L10n.tr("Localizable", "Font", fallback: "Font")
   /// Font Size
   internal static let fontSize = L10n.tr("Localizable", "Font Size", fallback: "Font Size")
-  /// Help
-  internal static let help = L10n.tr("Localizable", "Help", fallback: "Help")
   /// Hit the star icon to favorite an article and find it faster.
   internal static let hitTheStarIconToFavoriteAnArticleAndFindItFaster = L10n.tr("Localizable", "Hit the star icon to favorite an article and find it faster.", fallback: "Hit the star icon to favorite an article and find it faster.")
   /// Home
@@ -237,6 +235,8 @@ internal enum L10n {
     }
   }
   internal enum Settings {
+    /// Get Help and Support
+    internal static let help = L10n.tr("Localizable", "settings.help", fallback: "Get Help and Support")
     /// Log Out
     internal static let logout = L10n.tr("Localizable", "settings.logout", fallback: "Log Out")
     /// Open Source Licenses

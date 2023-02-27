@@ -44,12 +44,6 @@ struct SettingsForm: View {
     var body: some View {
         Form {
             Group {
-                //                Section(header: Text("Your Account").style(.settings.header)) {
-                //                    PremiumRow(status: .notSubscribed, destination: EmptyView())
-                //                    SettingsRowLink(title: "Reset Password", destination: EmptyView())
-                //                    SettingsRowLink(title: "Delete Account", destination: EmptyView())
-                //                }.textCase(nil)
-
                 Section(header: Text(L10n.yourAccount).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.logout, titleStyle: .settings.button.signOut, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) { model.isPresentingSignOutConfirm.toggle() }
                         .accessibilityIdentifier("log-out-button")
@@ -74,7 +68,7 @@ struct SettingsForm: View {
                 }.textCase(nil)
 
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
-                    SettingsRowButton(title: L10n.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
+                    SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
                             SFSafariView(url: URL(string: "https://help.getpocket.com")!)
                                 .edgesIgnoringSafeArea(.bottom)
