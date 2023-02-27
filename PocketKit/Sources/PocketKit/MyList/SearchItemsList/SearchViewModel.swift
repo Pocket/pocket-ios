@@ -13,7 +13,7 @@ enum SearchViewState {
     case loading
     case emptyState(EmptyStateViewModel)
     case recentSearches([String])
-    case searchResults([SearchItem])
+    case searchResults([PocketItem])
 
     var isEmptyState: Bool {
         switch self {
@@ -54,7 +54,7 @@ class SearchViewModel: ObservableObject {
         return user.status == .premium
     }
 
-    private var selectedScope: SearchScope = .saves
+    var selectedScope: SearchScope = .saves
 
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
