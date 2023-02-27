@@ -61,7 +61,7 @@ struct ResultsView: View {
         .accessibilityIdentifier("search-results")
         .banner(data: viewModel.bannerData, show: $viewModel.showBanner)
         .alert(isPresented: $showingAlert) {
-            Alert(title: Text("You must have an internet connection to view this item."), dismissButton: .default(Text("OK")))
+            Alert(title: Text(L10n.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
         }
     }
 }
@@ -84,7 +84,7 @@ struct RecentSearchView: View {
 
     var body: some View {
         List {
-            Section(header: Text("Recent Searches").style(.search.header)) {
+            Section(header: Text(L10n.Search.recent).style(.search.header)) {
                 ForEach(recentSearches.reversed(), id: \.self) { recentSearch in
                     HStack {
                         Text(recentSearch)

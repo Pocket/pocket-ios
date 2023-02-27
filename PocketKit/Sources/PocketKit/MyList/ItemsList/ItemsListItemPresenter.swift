@@ -96,6 +96,6 @@ class ItemsListItemPresenter {
     private var timeToRead: String? {
         item.timeToRead
             .flatMap { $0 > 0 ? $0 : nil }
-            .flatMap { "\($0) min" }
+            .flatMap { L10n.Item.List.min($0) }
     }
 }

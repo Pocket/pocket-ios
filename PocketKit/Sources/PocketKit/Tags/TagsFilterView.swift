@@ -119,14 +119,14 @@ struct EditBottomBar: View {
 
     var body: some View {
         HStack {
-            Button("Rename") {
+            Button(L10n.rename) {
                 tagsSelected = selection
                 showRenameAlert = true
             }
             .disabled(selection.count != 1)
             .accessibilityIdentifier("rename-button")
             Spacer()
-            Button("Delete") {
+            Button(L10n.delete) {
                 tagsSelected = selection
                 showDeleteAlert = true
             }
@@ -145,7 +145,7 @@ struct TagsHeaderToolBar: ViewModifier {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack {
-                        Text("Tags").style(.tagsFilter.sectionHeader)
+                        Text(L10n.tags).style(.tagsFilter.sectionHeader)
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
