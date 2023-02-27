@@ -23,7 +23,7 @@ let package = Package(
         .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.1.3"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.1.12"),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.8.1")
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.11.0")
     ],
     targets: [
         .target(
