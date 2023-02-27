@@ -32,24 +32,28 @@ struct SearchView: View {
 struct ResultsView: View {
     @ObservedObject
     var viewModel: SearchViewModel
-    var results: [SearchItem]
+    var results: [PocketItem]
 
     @State private var showingAlert = false
 
     var body: some View {
-        List(results, id: \.id) { item in
-            HStack {
-                ListItem(model: item)
-                Spacer()
-            }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                if viewModel.isOffline {
-                    showingAlert = true
-                } else {
-                    viewModel.select(item)
+        List {
+            ForEach(Array(results.enumerated()), id: \.offset) { index, item in
+                HStack {
+                    ListItem(viewModel: viewModel.itemViewModel(item, index: index), scope: viewModel.selectedScope)
+                    Spacer()
                 }
-            }.accessibilityIdentifier("search-results-item")
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if viewModel.isOffline {
+                        showingAlert = true
+                    } else {
+                        viewModel.select(item, index: index)
+                    }
+                }.onAppear {
+                    viewModel.trackViewResults(url: item.url, index: index)
+                }
+            }
         }
         .zIndex(-1)
         .listStyle(.plain)

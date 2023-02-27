@@ -94,6 +94,9 @@
 "Premium Status:" = "Premium Status:";
 
 "Your Account" = "Your Account";
+"Sign Out" = "Sign Out";
+"Are you sure?" = "Are you sure?";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "You will be signed out of your account and any files that have been saved for offline viewing will be deleted.";
 "App Customization" = "App Customization";
 "Show App Badge Count" = "Show App Badge Count";
 "About & Support" = "About & Support";
