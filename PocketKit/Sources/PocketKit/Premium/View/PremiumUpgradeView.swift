@@ -2,7 +2,7 @@ import SwiftUI
 import Textile
 
 struct PremiumUpgradeView: View {
-    static let shouldAllowUpgrade = false
+    static let shouldAllowUpgrade = true
     @State private var showingMonthlyAlert = false
     @State private var showingAnnualAlert = false
     @Environment(\.dismiss) private var dismiss
