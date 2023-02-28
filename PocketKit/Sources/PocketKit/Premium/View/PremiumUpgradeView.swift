@@ -2,6 +2,9 @@ import SwiftUI
 import Textile
 
 struct PremiumUpgradeView: View {
+    static let shouldAllowUpgrade = false
+    @State private var showingMonthlyAlert = false
+    @State private var showingAnnualAlert = false
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: PremiumUpgradeViewModel
 
@@ -66,8 +69,15 @@ struct PremiumUpgradeView: View {
                             isYearly: false
                         ) {
                             Task {
-                                await viewModel.purchaseMonthlySubscription()
+                                if Self.shouldAllowUpgrade {
+                                    await viewModel.purchaseMonthlySubscription()
+                                } else {
+                                    showingMonthlyAlert = true
+                                }
                             }
+                        }
+                        .alert("Comiing Soon!", isPresented: $showingMonthlyAlert) {
+                            Button("OK", role: .cancel) { }
                         }
                     }
                     Spacer().frame(width: 28)
@@ -82,8 +92,15 @@ struct PremiumUpgradeView: View {
                                 isYearly: true
                             ) {
                                 Task {
-                                    await viewModel.purchaseAnnualSubscription()
+                                    if Self.shouldAllowUpgrade {
+                                        await viewModel.purchaseAnnualSubscription()
+                                    } else {
+                                        showingAnnualAlert = true
+                                    }
                                 }
+                            }
+                            .alert("Comiing Soon!", isPresented: $showingAnnualAlert) {
+                                Button("OK", role: .cancel) { }
                             }
                             PremiumYearlyPercent()
                                 .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
