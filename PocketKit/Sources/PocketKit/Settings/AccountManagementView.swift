@@ -21,8 +21,8 @@ struct AccountManagementView: View {
                     .background(Color(.ui.white1))
             }
         }
-        .navigationBarTitle(L10n.settings, displayMode: .large)
-        .accessibilityIdentifier("account")
+        .navigationBarTitle(L10n.Settings.accountManagement, displayMode: .large)
+        .accessibilityIdentifier("account-management")
     }
 }
 
@@ -33,7 +33,7 @@ struct AccountManagementForm: View {
         Form {
             Group {
                 Section(header: Text(L10n.yourAccount).style(.settings.header)) {
-                    SettingsRowButton(title: L10n.Settings.accountManagement, icon: SFIconModel("chevron.right")) {
+                    SettingsRowButton(title: L10n.Settings.AccountManagement.deleteAccount, titleStyle: .settings.button.delete, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) {
                     }
                 }
 //                .alert(

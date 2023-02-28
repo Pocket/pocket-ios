@@ -20,6 +20,7 @@ extension Style {
         struct Button {
             let `default`: Style = Style.header.sansSerif.p3.with(weight: .medium).with(color: .ui.black1)
             let signOut: Style = Style.header.sansSerif.p3.with(weight: .medium).with(color: .ui.apricot1)
+            let delete: Style = Style.header.sansSerif.p3.with(weight: .medium).with(color: .ui.apricot1)
             let darkBackground: Style = Style.header.sansSerif.p3.with(weight: .medium).with(color: .ui.white)
         }
 
