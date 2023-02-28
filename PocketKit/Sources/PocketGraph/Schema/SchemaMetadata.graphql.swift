@@ -36,6 +36,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Image": return PocketGraph.Objects.Image
     case "SyndicatedArticle": return PocketGraph.Objects.SyndicatedArticle
     case "Publisher": return PocketGraph.Objects.Publisher
+    case "Mutation": return PocketGraph.Objects.Mutation
     case "SlateLineup": return PocketGraph.Objects.SlateLineup
     case "Slate": return PocketGraph.Objects.Slate
     case "Recommendation": return PocketGraph.Objects.Recommendation
@@ -52,7 +53,6 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "UnMarseable": return PocketGraph.Objects.UnMarseable
     case "BulletedListElement": return PocketGraph.Objects.BulletedListElement
     case "NumberedListElement": return PocketGraph.Objects.NumberedListElement
-    case "Mutation": return PocketGraph.Objects.Mutation
     case "TagConnection": return PocketGraph.Objects.TagConnection
     case "TagEdge": return PocketGraph.Objects.TagEdge
     case "SavedItemSearchResultConnection": return PocketGraph.Objects.SavedItemSearchResultConnection
