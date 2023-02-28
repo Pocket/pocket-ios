@@ -55,7 +55,7 @@ struct SettingsForm: View {
                 }.textCase(nil)
 
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
-                    SettingsRowButton(title: L10n.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
+                    SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
                             SFSafariView(url: URL(string: "https://help.getpocket.com")!)
                                 .edgesIgnoringSafeArea(.bottom)
