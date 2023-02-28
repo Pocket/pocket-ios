@@ -42,7 +42,8 @@ let package = Package(
         ),
         .testTarget(
             name: "PocketKitTests",
-            dependencies: ["PocketKit", "SharedPocketKit"]
+            dependencies: ["PocketKit", "SharedPocketKit"],
+            resources: [.copy("StoreKit")]
         ),
         .target(
             name: "SaveToPocketKit",
