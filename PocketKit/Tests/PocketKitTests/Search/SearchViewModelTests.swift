@@ -50,12 +50,16 @@ class SearchViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil
     ) -> SearchViewModel {
-        SearchViewModel(
+        let premiumViewModel = PremiumUpgradeViewModel(store: PremiumSubscriptionStore(user: MockUser(), subscriptionMap: ["monthly": .monthly, "annual": .annual]))
+        return SearchViewModel(
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user ?? self.user,
             userDefaults: userDefaults ?? self.userDefaults,
             source: source ?? self.source,
-            tracker: tracker ?? self.tracker
+            tracker: tracker ?? self.tracker,
+            premiumUpgradeViewModelFactory: {
+                premiumViewModel
+            }
         )
     }
 

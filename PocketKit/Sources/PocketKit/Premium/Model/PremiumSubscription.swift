@@ -5,29 +5,10 @@
 import StoreKit
 
 /// An enum that maps all available subscription IDs on the App Store
-enum PremiumSubscriptionType: CaseIterable {
+enum PremiumSubscriptionType {
     case monthly
     case annual
-
-    var id: String {
-        switch self {
-        case .monthly:
-            return Keys.shared.pocketPremiumMonthly
-        case .annual:
-            return Keys.shared.pocketPremiumAnnual
-        }
-    }
-
-    static func type(from productId: String) -> Self? {
-        switch productId {
-        case Keys.shared.pocketPremiumMonthly:
-            return .monthly
-        case Keys.shared.pocketPremiumAnnual:
-            return .annual
-        default:
-            return .none
-        }
-    }
+    case unknown
 }
 
 /// A type that maps to a subscription product on the App Store
@@ -41,14 +22,12 @@ struct PremiumSubscription {
             return L10n.monthly
         case .annual:
             return L10n.annual
-        case .none:
+        case .unknown:
             return ""
         }
     }
 
-    var type: PremiumSubscriptionType? {
-        PremiumSubscriptionType.type(from: product.id)
-    }
+    var type: PremiumSubscriptionType
 
     /// Localized subscription price
     var price: String {
@@ -70,7 +49,7 @@ struct PremiumSubscription {
             return Self.separator + L10n.month
         case .annual:
             return Self.separator + L10n.year
-        case .none:
+        case .unknown:
             return ""
         }
     }
@@ -78,11 +57,12 @@ struct PremiumSubscription {
 }
 
 extension Array where Element == PremiumSubscription {
-    init() async throws {
+    init(subscriptionMap: [String: PremiumSubscriptionType]) async throws {
+        let productIDs = subscriptionMap.keys
         self = try await Product
-            .products(for: PremiumSubscriptionType.allCases.map { $0.id })
-            .map {
-                PremiumSubscription(product: $0)
+            .products(for: productIDs)
+            .map { product in
+                PremiumSubscription(product: product, type: subscriptionMap[product.id] ?? .unknown)
             }
     }
 }
