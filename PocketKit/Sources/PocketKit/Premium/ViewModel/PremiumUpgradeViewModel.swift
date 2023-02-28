@@ -6,7 +6,7 @@ import Combine
 import Foundation
 import SharedPocketKit
 
-@MainActor
+//@MainActor
 class PremiumUpgradeViewModel: ObservableObject {
     let store: PremiumSubscriptionStore
 
@@ -37,7 +37,7 @@ class PremiumUpgradeViewModel: ObservableObject {
                         self?.annualName = $0.name
                         self?.annualPrice = $0.price
                         self?.annualPriceDescription = $0.priceDescription
-                    case .none:
+                    case .unknown:
                         break
                     }
                 }

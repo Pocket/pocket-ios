@@ -18,11 +18,14 @@ final class PremiumSubscriptionStore: ObservableObject {
     /// Will listen for transaction updates while the app is running
     private var transactionListener: Task<Void, Error>?
 
+    private let subscriptionMap: [String: PremiumSubscriptionType]
+
     // TODO: determine what we actually need to store here
     /// For premium users, this property contains details of the purchased subscription
     @Published private(set) var purchasedSubscription: PremiumSubscription?
 
-    init(user: User) {
+    init(user: User, subscriptionMap: [String: PremiumSubscriptionType]? = nil) {
+        self.subscriptionMap = subscriptionMap ?? [Keys.shared.pocketPremiumMonthly: .monthly, Keys.shared.pocketPremiumAnnual: .annual]
         self.user = user
         transactionListener = makeTransactionListener()
 
@@ -38,7 +41,7 @@ final class PremiumSubscriptionStore: ObservableObject {
 
     /// Fetch available subscriptions from the App Store
     func requestSubscriptions() async throws {
-        subscriptions = try await .init()
+        subscriptions = try await .init(subscriptionMap: subscriptionMap)
     }
 
     /// Return a detached Task to lListen for transaction updates from the App Store
