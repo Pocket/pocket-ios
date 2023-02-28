@@ -7,17 +7,17 @@ import SwiftUI
 import Textile
 
 struct AccountManagementView: View {
-//    @ObservedObject
-//    var model: AccountViewModel
+    @ObservedObject
+    var model: AccountViewModel
 
     var body: some View {
         VStack(spacing: 0) {
             if #available(iOS 16.0, *) {
-                AccountManagementForm()
+                AccountManagementForm(model: model)
                     .scrollContentBackground(.hidden)
                     .background(Color(.ui.white1))
             } else {
-                AccountManagementForm()
+                AccountManagementForm(model: model)
                     .background(Color(.ui.white1))
             }
         }
@@ -27,25 +27,20 @@ struct AccountManagementView: View {
 }
 
 struct AccountManagementForm: View {
-//    @ObservedObject
-//    var model: AccountViewModel
+    @ObservedObject
+    var model: AccountViewModel
     var body: some View {
         Form {
             Group {
                 Section(header: Text(L10n.yourAccount).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.AccountManagement.deleteAccount, titleStyle: .settings.button.delete, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) {
+                        model.isPresentingDeleteYourAccount.toggle()
                     }
+                    .accessibilityIdentifier("delete-your-account-button")
                 }
-//                .alert(
-//                    L10n.Settings.Logout.areyousure,
-//                    isPresented: $model.isPresentingSignOutConfirm,
-//                    actions: {
-//                        Button(L10n.Settings.logout, role: .destructive) {
-//                        }
-//                    }, message: {
-//                        Text(L10n.Settings.Logout.areYouSureMessage)
-//                    }
-//                )
+                .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
+                    DeleteAccountView(model: model)
+                }
                 .textCase(nil)
             }
             .listRowBackground(Color(.ui.grey7))

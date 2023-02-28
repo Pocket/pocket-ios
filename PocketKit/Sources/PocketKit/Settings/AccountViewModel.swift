@@ -20,6 +20,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingLicenses = false
     @Published var isPresentingAccountManagement = false
+    @Published var isPresentingDeleteYourAccount = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
@@ -46,6 +47,9 @@ class AccountViewModel: ObservableObject {
             .sink { [weak self] status in
                 self?.isPremium = status == .premium
             }
+    }
+
+    func deleteAccount() {
     }
 
     func signOut() {
