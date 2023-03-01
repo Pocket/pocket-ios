@@ -11,18 +11,30 @@ enum SubscriptionStoreError: Error {
     case unverifiedPurchase
 }
 
-/// A type that handles premium subscriptions purchases from the App Store
-final class PremiumSubscriptionStore: ObservableObject {
+/// Generic type representing a subscription store
+protocol SubscriptionStore {
+    var subscriptions: [PremiumSubscription] { get }
+    var subscriptionsPublisher: Published<[PremiumSubscription]>.Publisher { get }
+    var purchasedSubscription: PremiumSubscription? { get }
+    var purchasedSubscriptionPublisher: Published<PremiumSubscription?>.Publisher { get }
+    func requestSubscriptions() async throws
+    func purchase(_ subscription: PremiumSubscription) async
+}
+
+/// A concrete implementation of SubscriptionStore that handles premium subscriptions purchases from the App Store
+final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
     @Published private(set) var subscriptions: [PremiumSubscription] = []
+    var subscriptionsPublisher: Published<[PremiumSubscription]>.Publisher { $subscriptions }
+
+    /// For premium users, this property contains details of the purchased subscription
+    @Published private(set) var purchasedSubscription: PremiumSubscription?
+    var purchasedSubscriptionPublisher: Published<PremiumSubscription?>.Publisher { $purchasedSubscription }
+
     private var user: User
     /// Will listen for transaction updates while the app is running
     private var transactionListener: Task<Void, Error>?
 
     private let subscriptionMap: [String: PremiumSubscriptionType]
-
-    // TODO: determine what we actually need to store here
-    /// For premium users, this property contains details of the purchased subscription
-    @Published private(set) var purchasedSubscription: PremiumSubscription?
 
     init(user: User, subscriptionMap: [String: PremiumSubscriptionType]? = nil) {
         self.subscriptionMap = subscriptionMap ?? [Keys.shared.pocketPremiumMonthly: .monthly, Keys.shared.pocketPremiumAnnual: .annual]
@@ -46,7 +58,7 @@ final class PremiumSubscriptionStore: ObservableObject {
 
     /// Return a detached Task to lListen for transaction updates from the App Store
     /// that don't directly come from purchases on the active device.
-    func makeTransactionListener() -> Task<Void, Error> {
+    private func makeTransactionListener() -> Task<Void, Error> {
         return Task.detached {
             for await transaction in Transaction.updates {
                 do {
@@ -65,7 +77,7 @@ final class PremiumSubscriptionStore: ObservableObject {
     /// Varify the passed transaction
     /// - Parameter transaction: a new transaction to verify
     /// - Returns: a verified trnasaction, if verification is successful. Throws an error otherwise.
-    func verify(_ transaction: VerificationResult<Transaction>) throws -> Transaction {
+    private func verify(_ transaction: VerificationResult<Transaction>) throws -> Transaction {
         switch transaction {
         case .unverified:
             throw SubscriptionStoreError.unverifiedPurchase

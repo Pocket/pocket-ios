@@ -14,7 +14,6 @@ enum PremiumSubscriptionType {
 /// A type that maps to a subscription product on the App Store
 struct PremiumSubscription {
     let product: Product
-    var isPurchased = false
 
     var name: String {
         switch type {

@@ -30,7 +30,7 @@ struct Services {
     let instantSync: InstantSyncProtocol
     let braze: BrazeProtocol
     let appBadgeSetup: AppBadgeSetup
-    let subscriptionStore: PremiumSubscriptionStore
+    let subscriptionStore: SubscriptionStore
 
     private let persistentContainer: PersistentContainer
 
@@ -112,7 +112,7 @@ struct Services {
             userDefaults: userDefaults,
             badgeProvider: UIApplication.shared
         )
-        subscriptionStore = .init(user: user)
+        subscriptionStore = PocketSubscriptionStore(user: user)
     }
 }
 
