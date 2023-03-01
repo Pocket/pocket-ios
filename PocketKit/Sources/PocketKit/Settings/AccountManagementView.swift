@@ -39,7 +39,7 @@ struct AccountManagementForm: View {
                     .accessibilityIdentifier("delete-your-account-button")
                 }
                 .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
-                    DeleteAccountView(model: model)
+                    //   DeleteAccountView()
                 }
                 .textCase(nil)
             }
