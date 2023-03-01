@@ -10,7 +10,6 @@ public enum Status: String {
 public protocol User {
     var status: Status { get }
     var statusPublisher: Published<Status>.Publisher { get }
-    var publishedStatus: Published<Status> { get }
     func setPremiumStatus(_ isPremium: Bool)
     func clear()
 }
@@ -18,7 +17,6 @@ public protocol User {
 public class PocketUser: User, ObservableObject {
     @Published public private(set) var status: Status = .unknown
     public var statusPublisher: Published<Status>.Publisher { $status }
-    public var publishedStatus: Published<Status> { _status }
     @AppStorage private var storedStatus: Status
 
     private static let userStatusKey = "User.statusKey"

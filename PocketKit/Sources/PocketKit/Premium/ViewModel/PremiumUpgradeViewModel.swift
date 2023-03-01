@@ -8,7 +8,7 @@ import SharedPocketKit
 
 //@MainActor
 class PremiumUpgradeViewModel: ObservableObject {
-    let store: PremiumSubscriptionStore
+    let store: SubscriptionStore
 
     @Published private(set) var monthlyName = ""
     @Published private(set) var monthlyPrice = ""
@@ -21,10 +21,10 @@ class PremiumUpgradeViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(store: PremiumSubscriptionStore) {
+    init(store: SubscriptionStore) {
         self.store = store
 
-        store.$subscriptions
+        store.subscriptionsPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self] subscriptions in
                 subscriptions.forEach {
@@ -44,7 +44,7 @@ class PremiumUpgradeViewModel: ObservableObject {
             }
             .store(in: &cancellables)
         // Dismiss premium upgrade view if user is successfully upgraded to premium
-        store.$purchasedSubscription
+        store.purchasedSubscriptionPublisher
             .receive(on: DispatchQueue.main)
             .sink { [weak self]  subscription in
                 if subscription != nil {

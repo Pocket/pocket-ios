@@ -12,6 +12,17 @@ import Apollo
 @testable import Sync
 @testable import PocketKit
 
+class MockSubscriptionStore: SubscriptionStore {
+    @Published var subscriptions: [PocketKit.PremiumSubscription] = []
+    var subscriptionsPublisher: Published<[PocketKit.PremiumSubscription]>.Publisher { $subscriptions }
+    @Published var purchasedSubscription: PocketKit.PremiumSubscription?
+    var purchasedSubscriptionPublisher: Published<PocketKit.PremiumSubscription?>.Publisher { $purchasedSubscription }
+    func requestSubscriptions() async throws {
+    }
+    func purchase(_ subscription: PocketKit.PremiumSubscription) async {
+    }
+}
+
 class SearchViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var user: MockUser!
@@ -21,6 +32,7 @@ class SearchViewModelTests: XCTestCase {
     private var searchService: MockSearchService!
     private var tracker: MockTracker!
     private var subscriptions: [AnyCancellable] = []
+    private var subscriptionStore: SubscriptionStore!
 
     override func setUpWithError() throws {
         networkPathMonitor = MockNetworkPathMonitor()
@@ -32,6 +44,7 @@ class SearchViewModelTests: XCTestCase {
         space = .testSpace()
         searchService = MockSearchService()
         source.stubMakeSearchService { self.searchService }
+        subscriptionStore = MockSubscriptionStore()
     }
 
     override func tearDownWithError() throws {
@@ -50,7 +63,7 @@ class SearchViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil
     ) -> SearchViewModel {
-        let premiumViewModel = PremiumUpgradeViewModel(store: PremiumSubscriptionStore(user: MockUser(), subscriptionMap: ["monthly": .monthly, "annual": .annual]))
+        let premiumViewModel = PremiumUpgradeViewModel(store: subscriptionStore)
         return SearchViewModel(
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user ?? self.user,
