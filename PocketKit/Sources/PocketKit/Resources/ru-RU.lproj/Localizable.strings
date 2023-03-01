@@ -40,6 +40,7 @@
 "Unfavorite" = "Удалить из Избранного";
 "Move to Saves" = "Перейти к Сохраненному";
 "Add Tags" = "Добавить теги";
+"Tags" = "Теги";
 "Share" = "Поделиться";
 
 "Saves" = "Сохраненное";
@@ -93,10 +94,12 @@
 "Premium Status:" = "Premium-статус:";
 
 "Your Account" = "Учетная запись";
+"Sign Out" = "Выйти";
+"Are you sure?" = "Вы уверены?";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "Вы выйдете из своего аккаунта, и все сохраненные для просмотра в офлайне файлы будут удалены.";
 "App Customization" = "Настройка приложения";
 "Show App Badge Count" = "Отображать счетчик значков приложения";
 "About & Support" = "Информация и поддержка";
-"Help" = "Помощь";
 "Terms of Service" = "Условия использования";
 "Privacy Policy" = "Политика конфиденциальности";
 
@@ -106,6 +109,7 @@
 "Delete" = "Удалить";
 "Cancel" = "Отмена";
 "Rename Tag" = "Изменить тег";
+"Rename" = "Переименовать";
 "Enter a new name for this tag" = "Введите новое название этого тега";
 
 "not tagged" = "Без тегов";
@@ -131,6 +135,8 @@
 "search.limitedResults" = "Ограниченные результаты поиска";
 "search.offlineMessage" = "В автономном режиме возможен только поиск по заголовкам и URL-адресам. Подключитесь к Интернету, чтобы использовать полнотекстовый поиск Premium-подписки.";
 "search.banner.errorMessage." = "Из-за возникшей ошибки мы не можем показать вам полные результаты поиска. Попробуйте позже.";
+"search.error.view.needsInternet" = "Для просмотра этого материала требуется подключение к Интернету.";
+"search.recent" = "Недавно искали";
 
 // Settings
 "settings.thankyou.credits" = "Спасибо, что пользуетесь Pocket";
@@ -139,3 +145,22 @@
 "settings.logout" = "Выход";
 "settings.logout.areYouSureMessage" = "Будет выполнен выход из учетной записи, и все элементы, сохраненные для офлайн-просмотра, удалятся с вашего устройства.";
 "settings.logout.areyousure" = "Вы уверены?";
+"settings.help" = "Получить помощь и поддержку";
+
+//List view
+"item.list.min" = "%1$@ мин.";
+// Short name of the monthly premium subscription
+"Monthly" = "Ежемесячно";
+// Suffix of the monthly premium subscription price description
+"month" = "месяц";
+// Suffix of the annual premium subscription price description
+"year" = "год";
+// Short name of the annual premium subscription
+"Annual" = "Годовой";
+// Description of the premium uprgade view
+"premium.upgradeview.description" = "Плата за подписку будет списана с кредитной карты через ваш аккаунт iTunes. С вашего счета будет списываться %1$@ (ежемесячно) или %2$@ (ежегодно) в рамках продления подписки в течение последних 24 часов до окончания текущего периода. Если вы не отмените подписку по крайней мере за 24 часа до окончания текущего периода, она будет автоматически продлена. Отменить подписку мгновенно невозможно. Вы можете управлять подписками и выключить автоматическое продление в настройках аккаунта после покупки. Возмещение за неиспользованный период подписки не предоставляется.";
+"settings.goPremiumRow" = "Перейти на Premium";
+"settings.premiumSubscriptionRow" = "Премиальная подписка";
+"Hooray!" = "Поздравляем!";
+"premium.success.message" = "Теперь вы официально стали пользователем Pocket Premium. Добро пожаловать в новую настраиваемую и постоянную версию вашего Pocket без рекламы. Мы надеемся, что вам понравится.";
+"back.to.pocket" = "Назад к Pocket";
