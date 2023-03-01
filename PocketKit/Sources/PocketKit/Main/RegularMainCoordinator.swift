@@ -160,9 +160,22 @@ extension RegularMainCoordinator {
             self?.share(activity)
         }.store(in: &readerSubscriptions)
 
+        readable.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToHome()
+            }
+        }.store(in: &readerSubscriptions)
+
         let readableVC = ReadableHostViewController(readableViewModel: readable)
         readerRoot.viewControllers = [readableVC]
         splitController.setViewController(readerRoot, for: .secondary)
+    }
+
+    private func popToHome() {
+        splitController.setViewController(home.viewController, for: .secondary)
     }
 }
 
