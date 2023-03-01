@@ -40,6 +40,7 @@
 "Unfavorite" = "Desmarcar como Favorito";
 "Move to Saves" = "Mover para Guardados";
 "Add Tags" = "Adicionar etiquetas";
+"Tags" = "Etiquetas";
 "Share" = "Partilhar";
 
 "Saves" = "Guardados";
@@ -93,10 +94,12 @@
 "Premium Status:" = "Estado de Premium:";
 
 "Your Account" = "A Sua Conta";
+"Sign Out" = "Terminar sessão";
+"Are you sure?" = "Tem a certeza?";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "A sessão na sua conta será terminada e todos os ficheiros guardados para visualização offline serão eliminados.";
 "App Customization" = "Personalização da aplicação";
 "Show App Badge Count" = "Mostrar contagem de crachás de aplicação";
 "About & Support" = "Quem somos e Suporte";
-"Help" = "Ajuda";
 "Terms of Service" = "Condições do Serviço";
 "Privacy Policy" = "Política de privacidade";
 
@@ -106,6 +109,7 @@
 "Delete" = "Eliminar";
 "Cancel" = "Cancelar";
 "Rename Tag" = "Mudar o Nome da Etiqueta";
+"Rename" = "Mudar o nome";
 "Enter a new name for this tag" = "Introduza um nome novo para esta etiqueta";
 
 "not tagged" = "Não etiquetado";
@@ -131,6 +135,8 @@
 "search.limitedResults" = "Resultados de pesquisa limitados";
 "search.offlineMessage" = "Só pode pesquisar títulos e URLs quando estiver offline. Ligue-se à Internet para usar a pesquisa de texto completo do plano Premium.";
 "search.banner.errorMessage." = "Ocorreu um erro e não lhe podemos mostrar os resultados completos da pesquisa. Tente novamente mais tarde.";
+"search.error.view.needsInternet" = "Tem de ter uma ligação à Internet para ver este item.";
+"search.recent" = "Procuras Recentes";
 
 // Settings
 "settings.thankyou.credits" = "Obrigado por usar o Pocket";
@@ -139,3 +145,22 @@
 "settings.logout" = "Sair";
 "settings.logout.areYouSureMessage" = "Vai terminar a sessão na sua conta e todos os itens guardados para visualização offline serão removidos do seu dispositivo.";
 "settings.logout.areyousure" = "Tem a certeza?";
+"settings.help" = "Obter ajuda e assistência";
+
+//List view
+"item.list.min" = "%1$@ min";
+// Short name of the monthly premium subscription
+"Monthly" = "Mensal";
+// Suffix of the monthly premium subscription price description
+"month" = "mês";
+// Suffix of the annual premium subscription price description
+"year" = "ano";
+// Short name of the annual premium subscription
+"Annual" = "Anual";
+// Description of the premium uprgade view
+"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"settings.goPremiumRow" = "Tornar-se Premium";
+"settings.premiumSubscriptionRow" = "Premium Subscription";
+"Hooray!" = "Viva!";
+"premium.success.message" = "É oficialmente um membro Pocket Premium. Seja bem-vindo/a à nova versão permanente, personalizável e sem publicidade do seu Pocket. Achamos que vai gostar.";
+"back.to.pocket" = "Voltar ao Pocket";
