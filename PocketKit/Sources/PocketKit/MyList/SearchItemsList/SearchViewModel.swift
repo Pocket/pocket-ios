@@ -119,9 +119,11 @@ class SearchViewModel: ObservableObject {
 
         networkPathMonitor.start(queue: .global())
         observeNetworkChanges()
-
+        // Listen for user status changes and update the UI accordingly.
+        // Drop the first occurrence that happens when user is initialized.
         userStatusListener = user
             .statusPublisher
+            .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] status in
                 guard self?.searchState?.isEmptyState == true else {

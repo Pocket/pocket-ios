@@ -4,7 +4,6 @@ import Combine
 class MockUser: User {
     @Published public private(set) var status: Status = .unknown
     public var statusPublisher: Published<Status>.Publisher { $status }
-    public var publishedStatus: Published<Status> { _status }
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 }
