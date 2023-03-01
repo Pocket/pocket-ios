@@ -6,21 +6,6 @@ import SharedPocketKit
 import StoreKit
 import Sync
 
-/// Subscription store error(s)
-enum SubscriptionStoreError: Error {
-    case unverifiedPurchase
-}
-
-/// Generic type representing a subscription store
-protocol SubscriptionStore {
-    var subscriptions: [PremiumSubscription] { get }
-    var subscriptionsPublisher: Published<[PremiumSubscription]>.Publisher { get }
-    var purchasedSubscription: PremiumSubscription? { get }
-    var purchasedSubscriptionPublisher: Published<PremiumSubscription?>.Publisher { get }
-    func requestSubscriptions() async throws
-    func purchase(_ subscription: PremiumSubscription) async
-}
-
 /// A concrete implementation of SubscriptionStore that handles premium subscriptions purchases from the App Store
 final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
     @Published private(set) var subscriptions: [PremiumSubscription] = []
