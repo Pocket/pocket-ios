@@ -40,6 +40,7 @@
 "Unfavorite" = "즐겨찾기 해제";
 "Move to Saves" = "저장소로 이동";
 "Add Tags" = "태그 추가";
+"Tags" = "태그";
 "Share" = "공유";
 
 "Saves" = "저장";
@@ -93,10 +94,12 @@
 "Premium Status:" = "Premium 상태:";
 
 "Your Account" = "귀하의 계정";
+"Sign Out" = "로그아웃";
+"Are you sure?" = "계속하시겠습니까?";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "계정이 로그아웃되고 오프라인 보기용으로 저장된 모든 파일이 삭제됩니다.";
 "App Customization" = "앱 사용자 지정";
 "Show App Badge Count" = "앱 배지 카운트 표시";
 "About & Support" = "정보 및 지원";
-"Help" = "도움말";
 "Terms of Service" = "서비스 약관";
 "Privacy Policy" = "개인정보 보호정책";
 
@@ -106,6 +109,7 @@
 "Delete" = "삭제";
 "Cancel" = "취소";
 "Rename Tag" = "태그 이름 바꾸기";
+"Rename" = "이름 바꾸기";
 "Enter a new name for this tag" = "이 태그에 대한 새 이름 입력";
 
 "not tagged" = "태그 지정되지 않음";
@@ -131,6 +135,8 @@
 "search.limitedResults" = "제한된 검색 결과";
 "search.offlineMessage" = "오프라인 상태에서는 제목과 URL만 검색할 수 있습니다. Premium의 전체 텍스트 검색을 사용하려면 인터넷에 연결하십시오.";
 "search.banner.errorMessage." = "오류가 발생하여 전체 검색 결과를 표시할 수 없습니다. 나중에 다시 시도하십시오.";
+"search.error.view.needsInternet" = "이 항목을 보려면 인터넷에 연결되어 있어야 합니다.";
+"search.recent" = "최근 검색 결과";
 
 // Settings
 "settings.thankyou.credits" = "Pocket을 이용해 주셔서 감사합니다";
@@ -139,3 +145,22 @@
 "settings.logout" = "로그아웃";
 "settings.logout.areYouSureMessage" = "계정이 로그아웃되고 오프라인 보기용으로 저장된 모든 항목이 장치에서 제거됩니다.";
 "settings.logout.areyousure" = "계속하시겠습니까?";
+"settings.help" = "도움말 및 지원 받기";
+
+//List view
+"item.list.min" = "%1$@분";
+// Short name of the monthly premium subscription
+"Monthly" = "월간";
+// Suffix of the monthly premium subscription price description
+"month" = "월";
+// Suffix of the annual premium subscription price description
+"year" = "년";
+// Short name of the annual premium subscription
+"Annual" = "연간";
+// Description of the premium uprgade view
+"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"settings.goPremiumRow" = "Premium 으로 이동";
+"settings.premiumSubscriptionRow" = "Premium Subscription";
+"Hooray!" = "환영합니다!";
+"premium.success.message" = "공식적으로 Pocket Premium 회원이 되셨습니다. 광고가 없는 새로운 맞춤형, 영구 Pocket 버전에 오신 것을 환영합니다. 마음에 드실 것입니다.";
+"back.to.pocket" = "Pocket으로 돌아가기";

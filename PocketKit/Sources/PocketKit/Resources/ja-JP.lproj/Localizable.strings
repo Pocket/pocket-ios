@@ -40,6 +40,7 @@
 "Unfavorite" = "お気に入り解除";
 "Move to Saves" = "保存アイテムに移動";
 "Add Tags" = "タグを追加";
+"Tags" = "タグ";
 "Share" = "共有";
 
 "Saves" = "保存アイテム";
@@ -93,10 +94,12 @@
 "Premium Status:" = "Premium ステータス：";
 
 "Your Account" = "あなたのアカウント";
+"Sign Out" = "サインアウト";
+"Are you sure?" = "よろしいですか？";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "強制的にアカウントからサインアウトされ、オフラインで表示するために保存されたファイルがすべて削除されます。";
 "App Customization" = "アプリのカスタマイズ";
 "Show App Badge Count" = "アプリのバッジ数を表示";
 "About & Support" = "概要とサポート";
-"Help" = "ヘルプ";
 "Terms of Service" = "サービス利用規約";
 "Privacy Policy" = "プライバシーポリシー";
 
@@ -106,6 +109,7 @@
 "Delete" = "削除";
 "Cancel" = "キャンセル";
 "Rename Tag" = "タグの名前を変更する";
+"Rename" = "名前を変更";
 "Enter a new name for this tag" = "このタグの新しい名前を入力";
 
 "not tagged" = "タグ付けされていません";
@@ -131,6 +135,8 @@
 "search.limitedResults" = "検索結果が制限されています";
 "search.offlineMessage" = "オフラインの状態では、タイトルと URL の検索のみ可能です。Premium の全文検索を使用するには、インターネットに接続してください。";
 "search.banner.errorMessage." = "エラーが発生し、完全な検索結果を表示することができません。後ほどもう一度お試しください。";
+"search.error.view.needsInternet" = "このアイテムを見るには、インターネット接続が必要です。";
+"search.recent" = "最近の検索";
 
 // Settings
 "settings.thankyou.credits" = "Pocket をご利用いただきありがとうございます";
@@ -139,3 +145,22 @@
 "settings.logout" = "ログアウト";
 "settings.logout.areYouSureMessage" = "アカウントからログアウトされ、オフライン表示用に保存されたアイテムがすべてデバイスから削除されます。";
 "settings.logout.areyousure" = "よろしいですか？";
+"settings.help" = "サポートに問い合わせる";
+
+//List view
+"item.list.min" = "%1$@分";
+// Short name of the monthly premium subscription
+"Monthly" = "月次";
+// Suffix of the monthly premium subscription price description
+"month" = "月";
+// Suffix of the annual premium subscription price description
+"year" = "年";
+// Short name of the annual premium subscription
+"Annual" = "年次";
+// Description of the premium uprgade view
+"premium.upgradeview.description" = "購読料は iTunes のアカウントを通してクレジットカードに請求されます。購読は購読期間が終了する24時間前までにキャンセルしない限り自動的に更新され、アカウントごとに %1$@（月額）または %2$@（年額）が請求されます。購読は購読期間が終了する24時間前までにキャンセルしない限り、自動的に更新されます。購読をその場で中止することはできません。購読の管理および自動更新の無効化は、購読契約後にアカウント設定から行うことができます。残った購読期間の購読料の払い戻しはできません。";
+"settings.goPremiumRow" = "Premium に登録";
+"settings.premiumSubscriptionRow" = "Premium 購読";
+"Hooray!" = "やった～！";
+"premium.success.message" = "正式にPocket Premiumメンバーになりました。広告なし、カスタマイズ可能な、永久版のPocketにようこそ。きっと気に入っていただけるはず！思う存分お楽しみください。";
+"back.to.pocket" = "Pocket に戻る";
