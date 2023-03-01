@@ -40,6 +40,7 @@
 "Unfavorite" = "Verwijderen uit Favorieten";
 "Move to Saves" = "Verplaatsen naar Opgeslagen";
 "Add Tags" = "Tags toevoegen";
+"Tags" = "Tags";
 "Share" = "Delen";
 
 "Saves" = "Opgeslagen";
@@ -93,10 +94,12 @@
 "Premium Status:" = "Premium-status:";
 
 "Your Account" = "Jouw account";
+"Sign Out" = "Afmelden";
+"Are you sure?" = "Weet je het zeker?";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "Je wordt afgemeld van je account en alle bestanden die opgeslagen zijn voor offline bekijken worden verwijderd.";
 "App Customization" = "App-aanpassing";
 "Show App Badge Count" = "Toon badge telling app";
 "About & Support" = "Over en ondersteuning";
-"Help" = "Hulp";
 "Terms of Service" = "Gebruiksvoorwaarden";
 "Privacy Policy" = "Privacybeleid";
 
@@ -106,6 +109,7 @@
 "Delete" = "Verwijderen";
 "Cancel" = "Annuleren";
 "Rename Tag" = "Hernoem tag";
+"Rename" = "Naam wijzigen";
 "Enter a new name for this tag" = "Voer een nieuwe naam voor deze tag in";
 
 "not tagged" = "Niet getagd";
@@ -131,6 +135,8 @@
 "search.limitedResults" = "Beperkte zoekresultaten";
 "search.offlineMessage" = "Je kunt alleen titels en URL's zoeken als je offline bent. Maak verbinding met het internet om in Premium op basis van volledige tekst te zoeken.";
 "search.banner.errorMessage." = "Er is een fout opgetreden waardoor we je geen volledige zoekresultaten kunnen tonen. Probeer het later opnieuw.";
+"search.error.view.needsInternet" = "Je hebt een internetverbinding nodig om dit item te bekijken.";
+"search.recent" = "Recente zoekopdrachten";
 
 // Settings
 "settings.thankyou.credits" = "Bedankt dat je Pocket gebruikt";
@@ -139,3 +145,22 @@
 "settings.logout" = "Afmelden";
 "settings.logout.areYouSureMessage" = "Je wordt afgemeld bij je account en alle items die zijn opgeslagen voor offline weergave worden verwijderd van je apparaat.";
 "settings.logout.areyousure" = "Weet je het zeker?";
+"settings.help" = "Hulp en ondersteuning";
+
+//List view
+"item.list.min" = "%1$@ min.";
+// Short name of the monthly premium subscription
+"Monthly" = "Maandelijks";
+// Suffix of the monthly premium subscription price description
+"month" = "maand";
+// Suffix of the annual premium subscription price description
+"year" = "jaar";
+// Short name of the annual premium subscription
+"Annual" = "Jaarlijks";
+// Description of the premium uprgade view
+"premium.upgradeview.description" = "Abonnementen worden via je iTunes-account in rekening gebracht op je creditcard. Voor de verlenging van je account wordt er binnen 24 uur voor het aflopen van de huidige termijn %1$@ (maandelijks) of %2$@ (jaarlijks) in rekening gebracht. Je abonnement wordt automatisch verlengd tenzij je het minstens 24 uur voor het einde van de huidige termijn opzegt. Het is niet mogelijk om een abonnement direct te beëindigen. Na de aanschaf van een abonnement beheer je abonnementen in Accountinstellingen. Daar kun je ook automatisch verlengen uitschakelen. Het is niet mogelijk om restituties te krijgen voor ongebruikte delen van een abonnement.";
+"settings.goPremiumRow" = "Premium";
+"settings.premiumSubscriptionRow" = "Premium-abonnement";
+"Hooray!" = "Hoera!";
+"premium.success.message" = "Je bent officieel lid van Pocket Premium. Welkom bij de nieuwe advertentievrije, aanpasbare, permanente versie van je Pocket. We denken dat het je wel zal bevallen.";
+"back.to.pocket" = "Terug naar Pocket";
