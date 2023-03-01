@@ -2,12 +2,15 @@ import SharedPocketKit
 import Combine
 
 class MockUser: User {
-    @Published public private(set) var status: Status = .unknown
+    @Published public private(set) var status: Status
     public var statusPublisher: Published<Status>.Publisher { $status }
-    public var publishedStatus: Published<Status> { _status }
 
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
+
+    init(status: Status = .unknown) {
+        self.status = status
+    }
 }
 
 // MARK: - Set Status
@@ -21,12 +24,6 @@ extension MockUser {
 
     func stubSetStatus(impl: @escaping SetStatusImpl) {
         implementations[Self.setStatus] = impl
-    }
-
-    func stubStandardSetStatus() {
-        implementations[Self.setStatus] = { isPremium in
-            self.status = isPremium ? .premium : .free
-        }
     }
 
     func setPremiumStatus(_ isPremium: Bool) {
