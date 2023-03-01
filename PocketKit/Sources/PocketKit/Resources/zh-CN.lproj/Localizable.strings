@@ -40,6 +40,7 @@
 "Unfavorite" = "取消收藏";
 "Move to Saves" = "移至“保存内容”";
 "Add Tags" = "添加标记";
+"Tags" = "标记";
 "Share" = "分享";
 
 "Saves" = "保存内容";
@@ -93,10 +94,12 @@
 "Premium Status:" = "Premium 状态：";
 
 "Your Account" = "您的帐户";
+"Sign Out" = "退出";
+"Are you sure?" = "您确定吗？";
+"You will be signed out of your account and any files that have been saved for offline viewing will be deleted." = "您的帐号将被注销，所有已保存供脱机阅读的文件将被删除。";
 "App Customization" = "应用定制";
 "Show App Badge Count" = "显示应用程序标记数";
 "About & Support" = "关于与支持";
-"Help" = "帮助";
 "Terms of Service" = "服务条款";
 "Privacy Policy" = "隐私政策";
 
@@ -106,6 +109,7 @@
 "Delete" = "删除";
 "Cancel" = "取消";
 "Rename Tag" = "重命名标记";
+"Rename" = "重命名";
 "Enter a new name for this tag" = "为此标记输入新名称";
 
 "not tagged" = "未标记";
@@ -131,6 +135,8 @@
 "search.limitedResults" = "有限搜索结果";
 "search.offlineMessage" = "您只能在脱机时搜索标题和 URL。连接到互联网即可使用 Premium 的全文搜索。";
 "search.banner.errorMessage." = "我们遇到了错误，无法显示完整的搜索结果。请稍后重试。";
+"search.error.view.needsInternet" = "您必须有互联网连接才能查看此项目。";
+"search.recent" = "最近的搜索";
 
 // Settings
 "settings.thankyou.credits" = "感谢您使用 Pocket";
@@ -139,3 +145,22 @@
 "settings.logout" = "注销";
 "settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
 "settings.logout.areyousure" = "您确定吗？";
+"settings.help" = "获取帮助和支持";
+
+//List view
+"item.list.min" = "%1$@ 分钟";
+// Short name of the monthly premium subscription
+"Monthly" = "每月";
+// Suffix of the monthly premium subscription price description
+"month" = "月份";
+// Suffix of the annual premium subscription price description
+"year" = "年份";
+// Short name of the annual premium subscription
+"Annual" = "年度";
+// Description of the premium uprgade view
+"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"settings.goPremiumRow" = "获取 Premium";
+"settings.premiumSubscriptionRow" = "Premium Subscription";
+"Hooray!" = "好消息！";
+"premium.success.message" = "您现在已正式成为 Pocket Premium 会员。欢迎使用全新无广告、可自定义的永久版本 Pocket。您会喜欢上 Pocket 的。";
+"back.to.pocket" = "返回 Pocket";
