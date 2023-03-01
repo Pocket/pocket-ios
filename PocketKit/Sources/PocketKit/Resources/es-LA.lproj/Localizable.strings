@@ -145,7 +145,7 @@
 "settings.logout" = "Cerrar sesión";
 "settings.logout.areYouSureMessage" = "Tu sesión finalizará y cualquier elemento que se haya guardado para verse sin conexión se eliminará de tu dispositivo.";
 "settings.logout.areyousure" = "¿Estás seguro?";
-"settings.help" = "Get Help and Support";
+"settings.help" = "Obtener ayuda y soporte técnico";
 
 //List view
 "item.list.min" = "%1$@ min";
