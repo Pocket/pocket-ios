@@ -11,9 +11,6 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
     @ObservedObject
     var viewModel: ViewModel
 
-    @State
-    private var newTag: String = ""
-
     @Environment(\.dismiss)
     private var dismiss
 
@@ -31,13 +28,13 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                     InputTagsView(viewModel: viewModel, geometry: geometry)
                     OtherTagsView(viewModel: viewModel)
                     Spacer()
-                    TextField(viewModel.placeholderText, text: $newTag)
-                        .limitText($newTag, to: 25)
+                    TextField(viewModel.placeholderText, text: $viewModel.newTagInput)
+                        .limitText($viewModel.newTagInput, to: 25)
                         .textFieldStyle(.roundedBorder)
                         .padding(10)
                         .onSubmit {
-                            guard viewModel.addTag(with: newTag) else { return }
-                            newTag = ""
+                            guard viewModel.addTag(with: viewModel.newTagInput) else { return }
+                            viewModel.newTagInput = ""
                         }
                         .focused($isTextFieldFocused)
                         .accessibilityIdentifier("enter-tag-name")
@@ -146,10 +143,10 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
         var viewModel: ViewModel
 
         var body: some View {
-            if let otherTags = viewModel.allOtherTags(), !otherTags.isEmpty {
+            if !viewModel.otherTags.isEmpty {
                 List {
-                    Section(header: Text("All Tags").style(.addTags.sectionHeader)) {
-                        ForEach(otherTags, id: \.self) { tag in
+                    Section(header: Text(viewModel.sectionTitle.rawValue).style(.addTags.sectionHeader)) {
+                        ForEach(viewModel.otherTags, id: \.self) { tag in
                             HStack {
                                 Text(tag).style(.addTags.allTags)
                                 Spacer()

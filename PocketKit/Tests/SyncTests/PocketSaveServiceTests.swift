@@ -392,4 +392,15 @@ extension PocketSaveServiceTests {
         XCTAssertEqual(tags?.count, 1)
         XCTAssertEqual(tags?[0].name, "tag 2")
     }
+
+    func test_filterTags_retrievesFilteredTags() {
+        let tag: Tag = Tag(context: space.context)
+        tag.name = "tag 1"
+        let tag2: Tag = Tag(context: space.context)
+        tag2.name = "tag 2"
+        let service = subject()
+        let tags = service.filterTags(with: "t", excluding: ["tag 2"])
+        XCTAssertEqual(tags?.count, 1)
+        XCTAssertEqual(tags?[0].name, "tag 1")
+    }
 }
