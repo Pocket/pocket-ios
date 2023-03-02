@@ -59,7 +59,7 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.saveButton.tap()
         selectTaggedFilterButton()
         app.saves.tagsFilterView.wait()
-        XCTAssertEqual(app.saves.tagsFilterView.tagCells.count, 5)
+        XCTAssertEqual(app.saves.tagsFilterView.tagCells.count, 7)
     }
 
     func test_addTagsToItemFromSaves_savesFromExistingTags() {
@@ -132,6 +132,28 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
         app.addTagsView.allTagsView.wait()
+    }
+
+    func test_textField_withUserInput_showsFilteredTags() {
+        app.tabBar.savesButton.wait().tap()
+        app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
+
+        let itemCell = app
+            .saves
+            .itemView(matching: "Archived Item 2")
+
+        itemCell
+            .itemActionButton.wait()
+            .tap()
+
+        app.addTagsButton.wait().tap()
+        let addTagsView = app.addTagsView.wait()
+        addTagsView.wait()
+        addTagsView.newTagTextField.tap()
+        addTagsView.newTagTextField.typeText("f")
+
+        addTagsView.allTagsRow(matching: "filter tag 0").wait()
+        addTagsView.allTagsRow(matching: "filter tag 1").wait()
     }
 
     func selectTaggedFilterButton() {

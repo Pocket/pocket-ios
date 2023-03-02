@@ -80,6 +80,9 @@ class SavedItemViewModel {
             retrieveAction: { [weak self] tags in
                 self?.retrieveTags(excluding: tags)
             },
+            filterAction: { [weak self] text, tags in
+                self?.filterTags(with: text, excluding: tags)
+            },
             saveAction: { [weak self] tags in
                 self?.addTags(tags: tags, from: context)
             }
@@ -101,6 +104,10 @@ class SavedItemViewModel {
 
     func retrieveTags(excluding tags: [String]) -> [Tag]? {
         return saveService.retrieveTags(excluding: tags)
+    }
+
+    func filterTags(with text: String, excluding tags: [String]) -> [Tag]? {
+        return saveService.filterTags(with: text, excluding: tags)
     }
 
     func finish(context: ExtensionContext?, completionHandler: ((Bool) -> Void)? = nil) {

@@ -102,3 +102,38 @@ extension MockSaveService {
         return calls[index] as? AddTagsImplCall
     }
 }
+
+// MARK: - Retrieve Tags
+extension MockSaveService {
+    private static let filterTags = "filterTags"
+    typealias FilterTagsImpl = ([String]) -> [Tag]?
+
+    struct FilterTagsImplCall {
+        let tags: [String]
+    }
+
+    func stubFilterTags(impl: @escaping FilterTagsImpl) {
+        implementations[Self.filterTags] = impl
+    }
+
+    func filterTags(with text: String, excluding tags: [String]) -> [Tag]? {
+        guard let impl = implementations[Self.filterTags] as? FilterTagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.filterTags] = (calls[Self.filterTags] ?? []) + [
+            RetrieveTagsImplCall(tags: tags)
+        ]
+
+        return impl(tags)
+    }
+
+    func filterTagsCall(at index: Int) -> FilterTagsImplCall? {
+        guard let calls = calls[Self.filterTags],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? FilterTagsImplCall
+    }
+}

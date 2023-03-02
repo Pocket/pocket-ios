@@ -537,6 +537,7 @@ extension ArchivedItemsListViewModelTests {
     func test_addTagsAction_sendsAddTagsViewModel() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         archiveService._results = [.loaded(item)]
+        source.stubRetrieveTags { _ in return nil }
         let viewModel = subject()
 
         let expectAddTags = expectation(description: "expect add tags to present")

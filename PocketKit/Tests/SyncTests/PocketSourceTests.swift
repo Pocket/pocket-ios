@@ -545,6 +545,18 @@ extension PocketSourceTests {
         XCTAssertEqual(tags?[0].name, "tag 3")
     }
 
+    func test_filterTags_showsFilteredTags() throws {
+        _ = createItemsWithTags(3)
+        let source = subject()
+        guard let tags = source.filterTags(with: "t", excluding: ["tag 2"]) else {
+            XCTFail("Should not be nil")
+            return
+        }
+        XCTAssertEqual(tags.count, 2)
+        XCTAssertTrue(tags.compactMap { $0.name }.contains("tag 1"))
+        XCTAssertTrue(tags.compactMap { $0.name }.contains("tag 3"))
+    }
+
     func test_fetchTags_withSaved_returnsSavedTags() throws {
         let tagNames = ["tag 1", "tag 2", "tag 3"]
         _ = createItemsWithTags(3)
