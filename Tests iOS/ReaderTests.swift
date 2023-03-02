@@ -189,7 +189,7 @@ class ReaderTests: XCTestCase {
     }
 
     func validateSafariOpens() {
-        XCTAssertTrue(app.readerView.safariDoneButton.exists)
+        XCTAssertTrue(app.readerView.safariDoneButton.wait().exists)
     }
 
     func openReaderOverflowMenu() {
