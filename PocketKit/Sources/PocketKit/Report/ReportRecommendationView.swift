@@ -11,9 +11,6 @@ struct ReportRecommendationView: View {
         static let reasonRowDeselectedColor: Color = .clear
         static let reasonRowTint = Color(.ui.teal2)
         static let commentRowHeight: CGFloat = 92
-        static let submitButtonHeight: CGFloat = 52
-        static let submitButtonTintColor = Color(.ui.grey1)
-        static let submitButtonBackgroundColor = Color(.ui.teal2)
     }
 
     private let recommendation: Recommendation
@@ -73,17 +70,9 @@ struct ReportRecommendationView: View {
                 }
 
                 Button(action: submitReport) {
-                    HStack {
-                        Spacer()
-                        Text(isReported ? L10n.reported : L10n.submitFeedback)
-                            .style(Style.submitButtonStyle)
-                        Spacer()
-                    }
-                }
-                .frame(height: Constants.submitButtonHeight)
-                .tint(Constants.submitButtonTintColor)
-                .background(Constants.submitButtonBackgroundColor)
-                .cornerRadius(Constants.cornerRadius)
+                    Text(isReported ? L10n.reported : L10n.submitFeedback)
+                }.buttonStyle(SubmitButtonStyle())
+                .padding()
                 .listRowBackground(Rectangle().foregroundColor(.clear))
                 .listRowSeparator(.hidden)
                 .disabled(selectedReason == nil)
@@ -192,7 +181,6 @@ private struct ReportCommentRow: View {
 
 private extension Style {
     static let recommendationRowStyle = Style.header.sansSerif.p3
-    static let submitButtonStyle = Style.header.sansSerif.h6.with(color: .ui.white)
 }
 
 private extension ReportEntity.Reason {

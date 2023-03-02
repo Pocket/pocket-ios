@@ -46,8 +46,11 @@ struct DeleteAccountView: View {
 
                 Spacer()
 
-                Button("Delete account") {
-                }.buttonStyle(ActionsPrimaryButtonStyle())
+                Button(action: {}) {
+                    Text("Delete account")
+                }
+                .buttonStyle(SubmitButtonStyle())
+                .padding()
 
                 Button(L10n.cancel) {
                 }
