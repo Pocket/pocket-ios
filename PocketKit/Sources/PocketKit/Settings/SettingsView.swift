@@ -125,6 +125,15 @@ extension SettingsForm {
             } else {
                 makeGoPremiumRow()
             }
+
+
+            NavigationLink {
+                AccountManagementView(model: model)
+            } label: {
+                SettingsRowButton(title: L10n.Settings.accountManagement) {}
+                    .accessibilityIdentifier("account-management-button")
+            }
+
             SettingsRowButton(
                 title: L10n.Settings.logout,
                 titleStyle: .settings.button.signOut,
@@ -148,13 +157,6 @@ extension SettingsForm {
                         Text(L10n.Settings.Logout.areYouSureMessage)
                     }
                 )
-            
-            NavigationLink {
-                AccountManagementView(model: model)
-            } label: {
-                SettingsRowButton(title: L10n.Settings.accountManagement) {}
-                    .accessibilityIdentifier("account-management-button")
-            }
         }
     }
 
