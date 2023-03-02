@@ -136,7 +136,7 @@ extension SettingsForm {
             ) {
                 model.isPresentingSignOutConfirm.toggle()
             }
-                .accessibilityIdentifier("sign-out-button")
+                .accessibilityIdentifier("log-out-button")
                 .alert(
                     L10n.Settings.Logout.areyousure,
                     isPresented: $model.isPresentingSignOutConfirm,

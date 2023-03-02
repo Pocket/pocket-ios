@@ -159,6 +159,7 @@ class SearchViewModel: ObservableObject {
             searchState = .emptyState(searchResultState())
             return
         }
+        trackPerformSearch()
         searchState = .loading
         submitSearch(with: term, scope: selectedScope)
         recentSearches = updateRecentSearches(with: term)
@@ -391,7 +392,6 @@ extension SearchViewModel {
         tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope))
     }
 }
-
 
 // MARK: Premium upgrades
 extension SearchViewModel {

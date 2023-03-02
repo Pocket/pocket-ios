@@ -24,6 +24,8 @@ struct SearchView: View {
             default:
                 EmptyView()
             }
+        }.onAppear {
+            viewModel.trackOpenSearch()
         }
     }
 }
