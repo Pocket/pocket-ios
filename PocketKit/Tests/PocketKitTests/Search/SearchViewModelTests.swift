@@ -59,8 +59,8 @@ class SearchViewModelTests: XCTestCase {
         userDefaults: UserDefaults? = nil,
         source: Source? = nil,
         tracker: Tracker? = nil
-    ) -> SearchViewModel {
-        let premiumViewModel = PremiumUpgradeViewModel(store: subscriptionStore)
+    ) async -> SearchViewModel {
+        let premiumViewModel = await PremiumUpgradeViewModel(store: subscriptionStore)
         return SearchViewModel(
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user,
@@ -74,10 +74,10 @@ class SearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Update Scope
-    func test_updateScope_forFreeUser_withOnlineSaves_showsSearchEmptyState() {
+    func test_updateScope_forFreeUser_withOnlineSaves_showsSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
         viewModel.updateScope(with: .saves)
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
@@ -86,11 +86,11 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is SearchEmptyState)
     }
 
-    func test_updateScope_forFreeUser_withOnlineArchive_showsSearchEmptyState() {
+    func test_updateScope_forFreeUser_withOnlineArchive_showsSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
         viewModel.updateScope(with: .archive)
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
@@ -99,11 +99,11 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is SearchEmptyState)
     }
 
-    func test_updateScope_forFreeUser_withAll_showsGetPremiumEmptyState() {
+    func test_updateScope_forFreeUser_withAll_showsGetPremiumEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
         viewModel.updateScope(with: .all)
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
@@ -112,10 +112,10 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is GetPremiumEmptyState)
     }
 
-    func test_updateScope_forPremiumUser_withSaves_showsRecentSearchEmptyState() {
+    func test_updateScope_forPremiumUser_withSaves_showsRecentSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateScope(with: .saves)
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
@@ -124,10 +124,10 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is RecentSearchEmptyState)
     }
 
-    func test_updateScope_forPremiumUser_withArchive_showsRecentSearchEmptyState() {
+    func test_updateScope_forPremiumUser_withArchive_showsRecentSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateScope(with: .archive)
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
@@ -136,10 +136,10 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is RecentSearchEmptyState)
     }
 
-    func test_updateScope_forPremiumUser_withAll_showsRecentSearchEmptyState() {
+    func test_updateScope_forPremiumUser_withAll_showsRecentSearchEmptyState() async {
         source.stubSearchItems { _ in return [] }
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateScope(with: .all)
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
@@ -149,10 +149,10 @@ class SearchViewModelTests: XCTestCase {
     }
 
     // MARK: Select Search Scope
-    func test_updateScope_forFreeUser_withSavesAndTerm_showsResults() throws {
+    func test_updateScope_forFreeUser_withSavesAndTerm_showsResults() async throws {
         try setupLocalSavesSearch()
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
         viewModel.updateScope(with: .saves, searchTerm: "saved")
 
         guard case .searchResults(let results) = viewModel.searchState else {
@@ -167,7 +167,7 @@ class SearchViewModelTests: XCTestCase {
         let term = "search-term"
         await setupOnlineSearch(with: term)
 
-        let viewModel = subject(user: MockUser(status: .free))
+        let viewModel = await subject(user: MockUser(status: .free))
 
         let searchExpectation = expectation(description: "search Expectation")
 
@@ -186,11 +186,11 @@ class SearchViewModelTests: XCTestCase {
         wait(for: [searchExpectation], timeout: 1)
     }
 
-    func test_updateScope_forFreeUser_withAllAndTerm_showsGetPremiumEmptyState() {
+    func test_updateScope_forFreeUser_withAllAndTerm_showsGetPremiumEmptyState() async {
         let term = "search-term"
 
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
         viewModel.updateScope(with: .all, searchTerm: term)
 
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
@@ -204,7 +204,7 @@ class SearchViewModelTests: XCTestCase {
         let term = "search-term"
         await setupOnlineSearch(with: term)
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
 
         let searchExpectation = expectation(description: "search Expectation")
 
@@ -227,7 +227,7 @@ class SearchViewModelTests: XCTestCase {
         let term = "search-term"
         await setupOnlineSearch(with: term)
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         let searchExpectation = expectation(description: "search Expectation")
 
         viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
@@ -249,7 +249,7 @@ class SearchViewModelTests: XCTestCase {
         let term = "search-term"
         await setupOnlineSearch(with: term)
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         let searchExpectation = expectation(description: "search Expectation")
 
         viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
@@ -268,11 +268,11 @@ class SearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Update Search Results
-    func test_updateSearchResults_forFreeUser_withNoItems_showsNoResultsEmptyState() {
+    func test_updateSearchResults_forFreeUser_withNoItems_showsNoResultsEmptyState() async {
         source.stubSearchItems { _ in return [] }
         let term = "search-term"
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
 
         viewModel.updateSearchResults(with: term)
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
@@ -287,7 +287,7 @@ class SearchViewModelTests: XCTestCase {
         try setupLocalSavesSearch()
 
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
 
         viewModel.updateSearchResults(with: term)
 
@@ -299,9 +299,9 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(results.compactMap { $0.title.string }, ["saved-item-1", "saved-item-2"])
     }
 
-    func test_updateSearchResults_forFreeUser_withAll_showsGetPremiumForAllItems() {
+    func test_updateSearchResults_forFreeUser_withAll_showsGetPremiumForAllItems() async {
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
         viewModel.updateScope(with: .all)
         viewModel.updateSearchResults(with: "search-term")
 
@@ -312,14 +312,14 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is GetPremiumEmptyState)
     }
 
-    func test_updateSearchResults_forPremiumUser_withNoItems_showsNoResultsEmptyState() {
+    func test_updateSearchResults_forPremiumUser_withNoItems_showsNoResultsEmptyState() async {
         searchService.stubSearch { _, _ in }
         searchService._results = []
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateSearchResults(with: "search-term")
         let searchExpectation = expectation(description: "search Expectation")
-        viewModel.$searchState.dropFirst().receive(on: DispatchQueue.main).sink { state in
+        viewModel.$searchState.receive(on: DispatchQueue.main).sink { state in
             guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
                 XCTFail("Should not have failed")
                 return
@@ -337,7 +337,7 @@ class SearchViewModelTests: XCTestCase {
         let term = "search-term"
         await setupOnlineSearch(with: term)
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
 
         let searchExpectation = expectation(description: "search Expectation")
 
@@ -360,7 +360,7 @@ class SearchViewModelTests: XCTestCase {
     func test_updateSearchResults_forFreeUser_withOfflineArchive_showsOfflineEmptyState() async {
         networkPathMonitor.update(status: .unsatisfied)
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
         viewModel.updateScope(with: .archive, searchTerm: "search-term")
 
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
@@ -374,7 +374,7 @@ class SearchViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
         await setupOnlineSearch(with: "search-term")
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
 
         viewModel.updateScope(with: .archive)
 
@@ -397,7 +397,7 @@ class SearchViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
         await setupOnlineSearch(with: "search-term")
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateScope(with: .all, searchTerm: "search-term")
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
@@ -409,7 +409,7 @@ class SearchViewModelTests: XCTestCase {
     func test_selectingScope_whenOffline_showsOfflineEmptyState() async {
         await setupOnlineSearch(with: "search-term")
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         networkPathMonitor.update(status: .unsatisfied)
 
         viewModel.updateScope(with: .all, searchTerm: "search-term")
@@ -428,10 +428,10 @@ class SearchViewModelTests: XCTestCase {
     }
 
     // MARK: - Recent Searches
-    func test_recentSearches_withFreeUser_hasNoRecentSearches() {
+    func test_recentSearches_withFreeUser_hasNoRecentSearches() async {
         source.stubSearchItems { _ in [] }
 
-        let viewModel = subject(user: MockUser(status: .free))
+        let viewModel = await subject(user: MockUser(status: .free))
         viewModel.updateSearchResults(with: "search-term")
         guard case .recentSearches = viewModel.searchState else {
             guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
@@ -444,10 +444,10 @@ class SearchViewModelTests: XCTestCase {
         XCTFail("Should have failed")
     }
 
-    func test_recentSearches_withNewTerm_showsRecentSearches() {
+    func test_recentSearches_withNewTerm_showsRecentSearches() async {
         searchService.stubSearch { _, _ in }
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateSearchResults(with: "search-term")
         viewModel.updateScope(with: .saves)
 
@@ -459,10 +459,10 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(searches, ["search-term"])
     }
 
-    func test_recentSearches_withDuplicateTerm_showsRecentSearches() {
+    func test_recentSearches_withDuplicateTerm_showsRecentSearches() async {
         searchService.stubSearch { _, _ in }
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateSearchResults(with: "search-term")
         viewModel.updateSearchResults(with: "Search-term")
         viewModel.updateScope(with: .archive)
@@ -475,10 +475,10 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(searches, ["search-term"])
     }
 
-    func test_recentSearches_withEmptyTerm_showsRecentSearchEmptyState() {
+    func test_recentSearches_withEmptyTerm_showsRecentSearchEmptyState() async {
         searchService.stubSearch { _, _ in }
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateSearchResults(with: "     ")
         viewModel.updateScope(with: .all)
 
@@ -490,10 +490,10 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertTrue(emptyStateViewModel is RecentSearchEmptyState)
     }
 
-    func test_recentSearches_withNewTerms_showsMaxSearches() {
+    func test_recentSearches_withNewTerms_showsMaxSearches() async {
         searchService.stubSearch { _, _ in }
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateSearchResults(with: "search-term-1")
         viewModel.updateSearchResults(with: "search-term-2")
         viewModel.updateSearchResults(with: "search-term-3")
@@ -510,10 +510,10 @@ class SearchViewModelTests: XCTestCase {
         XCTAssertEqual(searches, ["search-term-2", "search-term-3", "search-term-4", "search-term-5", "search-term-6"])
     }
 
-    func test_recentSearches_withPreviousSearch_updatesSearches() {
+    func test_recentSearches_withPreviousSearch_updatesSearches() async {
         searchService.stubSearch { _, _ in }
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         viewModel.updateSearchResults(with: "search-term-1")
         viewModel.updateSearchResults(with: "search-term-2")
         viewModel.updateSearchResults(with: "search-term-3")
@@ -535,7 +535,7 @@ class SearchViewModelTests: XCTestCase {
         let term = "search-term"
         await setupOnlineSearch(with: term)
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
 
         let searchResultsExpectation = expectation(description: "show search results state")
         let recentSearchesExpectation = expectation(description: "show recent searches state")
@@ -575,7 +575,7 @@ class SearchViewModelTests: XCTestCase {
         await setupOnlineSearch(with: "search-term")
 
         let user = MockUser()
-        let viewModel = subject(user: user)
+        let viewModel = await subject(user: user)
         networkPathMonitor.update(status: .unsatisfied)
         let offlineExpectation = expectation(description: "handle offline scenario")
         let onlineExpectation = expectation(description: "handle online scenario")
@@ -612,7 +612,7 @@ class SearchViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
         try setupLocalSavesSearch()
 
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         let localSavesExpectation = expectation(description: "handle local saves scenario")
 
         viewModel.$searchState.dropFirst(3).receive(on: DispatchQueue.main).sink { state in
@@ -637,7 +637,7 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_withInternetConnectionError_showsOfflineView() async throws {
-        let viewModel = subject(user: MockUser(status: .premium))
+        let viewModel = await subject(user: MockUser(status: .premium))
         let errorExpectation = expectation(description: "handle apollo internet connection error")
 
         viewModel.$searchState.dropFirst(3).receive(on: DispatchQueue.main).sink { state in
