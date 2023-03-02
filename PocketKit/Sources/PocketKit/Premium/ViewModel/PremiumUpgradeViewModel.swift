@@ -6,6 +6,7 @@ import Combine
 import Foundation
 import SharedPocketKit
 
+@MainActor
 class PremiumUpgradeViewModel: ObservableObject {
     let store: SubscriptionStore
 
