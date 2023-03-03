@@ -158,9 +158,9 @@
 // Short name of the annual premium subscription
 "Annual" = "年度";
 // Description of the premium uprgade view
-"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"premium.upgradeview.description" = "系統會透過您的 iTunes 帳戶自您的信用卡收取訂閱費。當期結束前 24 小時內會自您的帳戶收取續訂的 %1$@（月費）或 %2$@（年費）。除非在本期結束前至少 24 小時取消訂閱，否則將會自動續約。訂閱無法立即取消。您可在購買後至「帳戶設定」管理訂閱並關閉自動續約。訂閱未用部份無法退款。";
 "settings.goPremiumRow" = "取得 Premium";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
+"settings.premiumSubscriptionRow" = "Premium 訂閱";
 "Hooray!" = "太棒了！";
 "premium.success.message" = "您已正式成為 Pocket Premium 會員。歡迎使用 Pocket 的無廣告、可自訂的永久新版本。我們認為您會樂於成為其中一員。";
 "back.to.pocket" = "返回 Pocket";
