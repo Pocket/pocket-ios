@@ -8,12 +8,12 @@ import Sync
 
 /// A concrete implementation of SubscriptionStore that handles premium subscriptions purchases from the App Store
 final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
+    // Available subscriptions on the App Store
     @Published private(set) var subscriptions: [PremiumSubscription] = []
     var subscriptionsPublisher: Published<[PremiumSubscription]>.Publisher { $subscriptions }
-
-    /// For premium users, this property contains details of the purchased subscription
-    @Published private(set) var purchasedSubscription: PremiumSubscription?
-    var purchasedSubscriptionPublisher: Published<PremiumSubscription?>.Publisher { $purchasedSubscription }
+    // Subscriber state
+    @Published private(set) var state: PurchaseState = .unsubscribed
+    var statePublisher: Published<PurchaseState>.Publisher { $state }
 
     private var user: User
     /// Will listen for transaction updates while the app is running
@@ -28,12 +28,16 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
 
         Task {
             do {
+                // Pull available subscriptions from the App Store
                 try await requestSubscriptions()
             } catch {
-                // TODO: use logger here
-                print(error)
+                state = .failed
+                Log.capture(error: error)
             }
+            // Restore a purchased subscription, if any
+            await self.updateSubscription()
         }
+        // TODO: Send the App Receipt to the backend
     }
 
     /// Fetch available subscriptions from the App Store
@@ -41,6 +45,24 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
         subscriptions = try await .init(subscriptionMap: subscriptionMap)
     }
 
+    /// Purchase a subscription
+    /// - Parameter subscription: the `PremiumSubscription` to purchase
+    func purchase(_ subscription: PremiumSubscription) async {
+        do {
+            try await purchase(product: subscription.product)
+        } catch {
+            print(error)
+        }
+    }
+
+    /// Manually restore a purchase in those (rare?) cases when the automatic sync fails
+    func restorePurchase() {
+        // TODO: Add implementation
+    }
+}
+
+// MARK: private methods
+extension PocketSubscriptionStore {
     /// Return a detached Task to lListen for transaction updates from the App Store
     /// that don't directly come from purchases on the active device.
     private func makeTransactionListener() -> Task<Void, Error> {
@@ -71,18 +93,10 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
         }
     }
 
-    func purchase(_ subscription: PremiumSubscription) async {
-        do {
-            try await purchase(product: subscription.product)
-        } catch {
-            print(error)
-        }
-    }
-
     /// Process the purchase of a product
     /// - Parameter product: the product to purchase
     private func purchase(product: Product) async throws {
-        // TODO: we might want to add `appAccountToken` in the options
+        // TODO: we might want to add `appAccountToken` in the purchase options
         let result = try await product.purchase()
 
         switch result {
@@ -91,8 +105,13 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
             await updateSubscription()
             // Always finish a transaction, otherwise it will return.
             await verifiedTransaction.finish()
+        case .userCancelled:
+            state = .cancelled
+        case .pending:
+            // TODO: check if we could have pending transactions for any reason
+            break
         default:
-            // TODO: we might want to handle states differently, e. g. when user cancels.
+            // future values might be available
             break
         }
     }
@@ -106,8 +125,9 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
                 switch verifiedTransaction.productType {
                 case .autoRenewable:
                     if let subscription = subscriptions.first(where: { $0.product.id == verifiedTransaction.productID }) {
-                        purchasedSubscription = subscription
+                        state = .subscribed(subscription.type)
                         user.setPremiumStatus(true)
+                        // TODO: update the backend
                     }
                 default:
                     // We do not have other product types as of now.

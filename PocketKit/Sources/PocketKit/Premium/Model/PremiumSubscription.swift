@@ -5,7 +5,7 @@
 import StoreKit
 
 /// An enum that maps all available subscription IDs on the App Store
-enum PremiumSubscriptionType {
+enum PremiumSubscriptionType: String {
     case monthly
     case annual
     case unknown
