@@ -33,7 +33,7 @@ class SearchViewModel: ObservableObject {
     private let user: User
     private let userDefaults: UserDefaults
     private let source: Source
-    private let premiumUpgradeViewModelFactory: () -> PremiumUpgradeViewModel
+    private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
 
     private var savesLocalSearch: LocalSavesSearch
     private var savesOnlineSearch: OnlineSearch
@@ -102,7 +102,7 @@ class SearchViewModel: ObservableObject {
          userDefaults: UserDefaults,
          source: Source,
          tracker: Tracker,
-         premiumUpgradeViewModelFactory: @escaping () -> PremiumUpgradeViewModel) {
+         premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
@@ -391,13 +391,27 @@ extension SearchViewModel {
     func trackOpenSearchItem(url: URL, index: Int) {
         tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope))
     }
+
+    /// track premium upgrade view dismissed
+    func trackPremiumDismissed(dismissReason: DismissReason) {
+        switch dismissReason {
+        case .swipe, .button:
+            tracker.track(event: Events.Premium.premiumUpgradeViewDismissed(reason: dismissReason))
+        case .system:
+            break
+        }
+    }
+    /// track premium upsell viewed
+    func trackPremiumUpsellViewed() {
+        tracker.track(event: Events.Search.premiumUpsellViewed())
+    }
 }
 
 // MARK: Premium upgrades
 extension SearchViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
-        premiumUpgradeViewModelFactory()
+        premiumUpgradeViewModelFactory(tracker, .search)
     }
 
     /// Ttoggle the presentation of `PremiumUpgradeView`
