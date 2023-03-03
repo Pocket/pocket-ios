@@ -22,6 +22,10 @@ struct PocketItem {
         item.isFavorite
     }
 
+    var isArchived: Bool {
+        item.isArchived
+    }
+
     var title: NSAttributedString {
         itemPresenter.attributedTitle
     }

@@ -32,6 +32,7 @@ class SearchViewModelTests: XCTestCase {
     private var tracker: MockTracker!
     private var subscriptions: [AnyCancellable] = []
     private var subscriptionStore: SubscriptionStore!
+    private var itemsController: MockSavedItemsController!
 
     override func setUpWithError() throws {
         networkPathMonitor = MockNetworkPathMonitor()
@@ -41,7 +42,17 @@ class SearchViewModelTests: XCTestCase {
         space = .testSpace()
         searchService = MockSearchService()
         source.stubMakeSearchService { self.searchService }
+
         subscriptionStore = MockSubscriptionStore()
+
+        itemsController = MockSavedItemsController()
+        itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
+        source.stubMakeItemsController {
+            self.itemsController
+        }
+        itemsController.stubPerformFetch {
+            self.itemsController.fetchedObjects = []
+        }
     }
 
     override func tearDownWithError() throws {

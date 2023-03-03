@@ -35,7 +35,8 @@ struct SearchView: View {
 struct ResultsView: View {
     @ObservedObject
     var viewModel: SearchViewModel
-    var results: [PocketItem]
+
+    let results: [PocketItem]
 
     @State private var showingAlert = false
 
@@ -43,7 +44,7 @@ struct ResultsView: View {
         List {
             ForEach(Array(results.enumerated()), id: \.offset) { index, item in
                 HStack {
-                    ListItem(viewModel: viewModel.itemViewModel(item, index: index), scope: viewModel.selectedScope)
+                    ListItem(viewModel: viewModel.itemViewModel(item, index: index))
                     Spacer()
                 }
                 .contentShape(Rectangle())

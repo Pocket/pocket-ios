@@ -8,7 +8,9 @@ import Sync
 import Combine
 import SharedPocketKit
 import Analytics
+import CoreData
 
+/// State for the search view
 enum SearchViewState {
     case loading
     case emptyState(EmptyStateViewModel)
@@ -25,6 +27,7 @@ enum SearchViewState {
     }
 }
 
+/// View model that holds business logic for the SearchView
 class SearchViewModel: ObservableObject {
     static let recentSearchesKey = "Search.recentSearches"
     private var subscriptions: [AnyCancellable] = []
@@ -43,7 +46,7 @@ class SearchViewModel: ObservableObject {
     private var userStatusListener: AnyCancellable?
 
     private let tracker: Tracker
-
+    private let itemsController: SavedItemsController
     private var currentSearchTerm: String?
 
     var isOffline: Bool {
@@ -109,6 +112,7 @@ class SearchViewModel: ObservableObject {
         self.source = source
         self.tracker = tracker
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
+        itemsController = source.makeItemsController()
 
         savesLocalSearch = LocalSavesSearch(source: source)
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)
@@ -116,6 +120,9 @@ class SearchViewModel: ObservableObject {
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
 
         searchState = defaultState
+        itemsController.delegate = self
+        self.itemsController.predicate = Predicates.allItems()
+        try? self.itemsController.performFetch()
 
         networkPathMonitor.start(queue: .global())
         observeNetworkChanges()
@@ -133,6 +140,10 @@ class SearchViewModel: ObservableObject {
             }
     }
 
+    /// Updates the scope user is in and presents an empty state or submits a search
+    /// - Parameters:
+    ///   - scope: the scope that the user is in (i.e. saves, archive, all)
+    ///   - searchTerm: the term the user enters in search bar
     func updateScope(with scope: SearchScope, searchTerm: String? = nil) {
         selectedScope = scope
         if let searchTerm = searchTerm, !searchTerm.isEmpty {
@@ -142,6 +153,8 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Handles logic for when a user enters a search, such as showing Get Premium for user in All Items, checking if user is Offline or submitting a search
+    /// - Parameter searchTerm: the term the user enters in search bar
     func updateSearchResults(with searchTerm: String) {
         let shouldShowUpsell = !isPremium && selectedScope == .all
 
@@ -165,6 +178,7 @@ class SearchViewModel: ObservableObject {
         recentSearches = updateRecentSearches(with: term)
     }
 
+    /// Resets the search objects and clears state
     func clear() {
         searchState = defaultState
         currentSearchTerm = nil
@@ -178,6 +192,7 @@ class SearchViewModel: ObservableObject {
         allOnlineSearch = OnlineSearch(source: source, scope: .all)
     }
 
+    /// Resets the search objects if it does not have a cache before each search
     private func resetSearch(with term: String) {
         showBanner = false
         subscriptions = []
@@ -195,6 +210,10 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Handles submitting a search for the different scopes
+    /// - Parameters:
+    ///   - term: the term the user enters in search bar
+    ///   - scope: the scope that the user is in (i.e. saves, archive, all)
     private func submitSearch(with term: String, scope: SearchScope) {
         switch scope {
         case .saves:
@@ -209,6 +228,8 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Submit search for saves (local for free user, online for premium user unless offline)
+    /// - Parameter term: the term the user enters in search bar
     private func searchSaves(with term: String) {
         guard isPremium else {
             guard selectedScope == .saves else { return }
@@ -219,6 +240,8 @@ class SearchViewModel: ObservableObject {
         savesOnlineSearch.search(with: term)
     }
 
+    /// Submit online search for saves and update `searchState` with proper view
+    /// - Parameter term: the term the user enters in search bar
     private func listenForSaveResults(with term: String) {
         savesOnlineSearch.$results
             .receive(on: DispatchQueue.main)
@@ -235,6 +258,14 @@ class SearchViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
+    /// Submit online search and update `searchState` with proper view
+    /// - Parameter term: the term the user enters in search bar
+
+    /// Submit online search and update `searchState` with proper view
+    /// - Parameters:
+    ///   - term: the term the user enters in search bar
+    ///   - onlineSearch: object for online search (archive, all)
+    ///   - scope: the scope that the user is in (i.e. saves, archive, all)
     private func listenForResults(with term: String, onlineSearch: OnlineSearch, scope: SearchScope) {
         onlineSearch.$results
             .receive(on: DispatchQueue.main)
@@ -253,6 +284,9 @@ class SearchViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
+    /// Updates recent searches after user submits a search up to 5 terms
+    /// - Parameter searchTerm: the term the user enters in search bar
+    /// - Returns: array of strings with the recent search terms
     private func updateRecentSearches(with searchTerm: String) -> [String] {
         guard isPremium else { return [] }
         var searches = recentSearches
@@ -268,8 +302,9 @@ class SearchViewModel: ObservableObject {
         return searches
     }
 
+    /// Retrieves empty state after submitting a search
+    /// - Returns: view model for the empty state
     private func searchResultState() -> EmptyStateViewModel {
-        // TODO: Add loading state
         switch selectedScope {
         case .saves:
             return NoResultsEmptyState()
@@ -278,6 +313,9 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Retrieves empty state when a free user enters search
+    /// - Parameter scope: the scope that the user is in (i.e. saves, archive, all)
+    /// - Returns: view model for the empty state
     private func freeEmptyState(for scope: SearchScope) -> EmptyStateViewModel {
         switch scope {
         case .saves:
@@ -289,6 +327,9 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Retrieves empty state when a premium user enters search
+    /// - Parameter scope: the scope that the user is in (i.e. saves, archive, all)
+    /// - Returns: view model for the empty state
     private func premiumEmptyState(for scope: SearchScope) -> EmptyStateViewModel? {
         guard !isOffline || selectedScope == .saves else {
             return OfflineEmptyState(type: scope)
@@ -303,6 +344,7 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Observes network changes and resubmit search when user returns online
     private func handleNetworkChange(_ path: NetworkPath?) {
         let currentPathStatus = path?.status
 
@@ -317,7 +359,7 @@ class SearchViewModel: ObservableObject {
 
 extension SearchViewModel {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
-        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker)
+        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, scope: selectedScope)
     }
 
     func select(_ searchItem: PocketItem, index: Int) {
@@ -404,6 +446,61 @@ extension SearchViewModel {
     /// track premium upsell viewed
     func trackPremiumUpsellViewed() {
         tracker.track(event: Events.Search.premiumUpsellViewed())
+    }
+}
+
+extension SearchViewModel: SavedItemsControllerDelegate {
+    func controller(
+        _ controller: SavedItemsController,
+        didChange savedItem: SavedItem,
+        at indexPath: IndexPath?,
+        for type: NSFetchedResultsChangeType,
+        newIndexPath: IndexPath?
+    ) {
+        switch type {
+        case .update:
+            guard case .searchResults(let items) = searchState, let index = items.firstIndex(where: { $0.id == savedItem.remoteID }) else { return }
+            // Check if the update is moving item between archives or saves
+            if savedItem.isArchived && selectedScope == .saves || !savedItem.isArchived && selectedScope == .archive {
+                removeItemFromView(savedItem, and: items, at: index)
+            } else {
+                updateItemInView(savedItem, and: items, at: index)
+            }
+        case .delete:
+            guard case .searchResults(let items) = searchState, let index = items.firstIndex(where: { $0.id == savedItem.remoteID }) else { return }
+            removeItemFromView(savedItem, and: items, at: index)
+        default:
+            return
+        }
+    }
+
+    func controllerDidChangeContent(_ controller: SavedItemsController) {
+        // no-op
+    }
+
+    /// Remove item from list of items in `SearchView`
+    /// - Parameters:
+    ///   - savedItem: savedItem that was changed in Core Data
+    ///   - items: list of `PocketItem` that is displayed as search results
+    private func removeItemFromView(_ savedItem: SavedItem, and items: [PocketItem], at index: Int) {
+        var items = items
+        items.remove(at: index)
+        Log.debug("Search item removed \(String(describing: savedItem.title))")
+        // Animations seen to work better when we don't wrap this around main thread
+        self.searchState = .searchResults(items)
+    }
+
+    /// Update item in list of items in `SearchView`
+    /// - Parameters:
+    ///   - savedItem: savedItem that was changed in Core Data
+    ///   - items: list of `PocketItem` that is displayed as search results
+    private func updateItemInView(_ savedItem: SavedItem, and items: [PocketItem], at index: Int) {
+        var items = items
+        items.remove(at: index)
+        items.insert(PocketItem(item: savedItem), at: index)
+        Log.debug("Search item updated \(String(describing: savedItem.title))")
+        // Animations seen to work better when we don't wrap this around main thread
+        self.searchState = .searchResults(items)
     }
 }
 
