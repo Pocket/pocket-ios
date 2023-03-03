@@ -158,9 +158,9 @@
 // Short name of the annual premium subscription
 "Annual" = "Anual";
 // Description of the premium uprgade view
-"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"premium.upgradeview.description" = "As subscrições serão cobradas no seu cartão de crédito através da sua conta no iTunes. Pela renovação será cobrado o montante de %1$@ (mensalmente) ou %2$@ (anualmente) na sua conta, no prazo de 24 horas antes do final do período atual.  As subscrições serão automaticamente renovadas a não ser que sejam canceladas pelo menos 24 horas antes do final do atual período. Não será possível efetuar o cancelamento imediato de uma subscrição. Pode gerir as subscrições e desligar a renovação automática nas definições da conta depois de efetuada a compra. Não há lugar ao reembolso de partes não utilizadas de uma subscrição.";
 "settings.goPremiumRow" = "Tornar-se Premium";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
+"settings.premiumSubscriptionRow" = "Subscrição Premium";
 "Hooray!" = "Viva!";
 "premium.success.message" = "É oficialmente um membro Pocket Premium. Seja bem-vindo/a à nova versão permanente, personalizável e sem publicidade do seu Pocket. Achamos que vai gostar.";
 "back.to.pocket" = "Voltar ao Pocket";

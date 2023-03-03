@@ -160,7 +160,7 @@
 // Description of the premium uprgade view
 "premium.upgradeview.description" = "Abonnementgebühren werden über dein iTunes-Konto von deiner Kreditkarte abgebucht. In den letzten 24 Stunden der jeweils aktuellen Laufzeit wird dein Konto zur Verlängerung mit einem Betrag von %1$@ (Monatsabonnement) oder %2$@ (Jahresabonnement) belastet. Abonnements werden automatisch verlängert, wenn sie nicht mindestens 24 Stunden vor Ende der aktuellen Laufzeit gekündigt werden. Du kannst ein Abonnement nicht mit sofortiger Wirkung kündigen. Du kannst deine Abonnements verwalten und die automatische Verlängerung nach dem Kauf in den Kontoeinstellungen deaktivieren. Rückerstattungen für ungenutzte Aboleistungen sind nicht möglich.";
 "settings.goPremiumRow" = "Premium";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
+"settings.premiumSubscriptionRow" = "Premium-Abonnement";
 "Hooray!" = "Hurra!";
 "premium.success.message" = "Du bist jetzt offiziell Pocket Premium-Mitglied. Willkommen bei deiner neuen, werbefreien, personalisierbaren, dauerhaften Version von Pocket. Wir glauben, dass es dir hier gefallen wird.";
 "back.to.pocket" = "Zurück zu Pocket";

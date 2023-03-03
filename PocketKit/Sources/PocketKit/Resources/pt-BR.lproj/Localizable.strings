@@ -160,7 +160,7 @@
 // Description of the premium uprgade view
 "premium.upgradeview.description" = "As assinaturas serão debitadas do seu cartão de crédito pela sua conta iTunes. Dentro de 24 horas antes do término do período atual, será debitado de sua conta %1$@ (mensal) ou %2$@ (anual) para fins de renovação. As assinaturas serão renovadas automaticamente, a menos que sejam canceladas no mínimo 24 horas antes do término do período atual. Não será possível cancelar uma assinatura de modo imediato. Após a compra, acesse as Configurações de conta para gerenciar suas assinaturas e desativar a opção de renovação automática. Partes de assinaturas não utilizadas não poderão ser reembolsadas.";
 "settings.goPremiumRow" = "Vá de Premium";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
+"settings.premiumSubscriptionRow" = "Assinatura Premium";
 "Hooray!" = "Parabéns!";
 "premium.success.message" = "Agora você é um membro oficial do Pocket Premium. Bem-vindo à nova versão permanente, personalizável e sem anúncios de seu Pocket. Certamente você vai gostar.";
 "back.to.pocket" = "Voltar ao Pocket";

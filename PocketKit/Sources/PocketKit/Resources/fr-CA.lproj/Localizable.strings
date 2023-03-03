@@ -160,7 +160,7 @@
 // Description of the premium uprgade view
 "premium.upgradeview.description" = "Les abonnements seront portés à votre carte de crédit par votre compte iTunes. Votre compte sera débité de %1$@ (mensuel) ou de %2$@ (annuel) pour le renouvellement dans les 24 heures avant la fin de la période en cours. Les abonnements seront automatiquement renouvelés à moins d'une annulation d'au moins 24 heures avant la fin de la période courante. Il est impossible d'annuler immédiatement un abonnement. Après l'achat, vous pouvez gérer les abonnements et désactiver le renouvellement automatique dans les paramètres de compte. Aucun remboursement n'est offert pour la période inutilisée d'un abonnement.";
 "settings.goPremiumRow" = "Premium";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
+"settings.premiumSubscriptionRow" = "Abonnement Premium";
 "Hooray!" = "Hourra!";
 "premium.success.message" = "Vous êtes officiellement un membre Pocket Premium. Bienvenue dans la nouvelle version sans publicité, personnalisable et permanente de votre Pocket. Nous pensons que vous vous plairez, ici.";
 "back.to.pocket" = "Retour à Pocket";

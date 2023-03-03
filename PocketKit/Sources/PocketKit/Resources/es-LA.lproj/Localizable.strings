@@ -160,7 +160,7 @@
 // Description of the premium uprgade view
 "premium.upgradeview.description" = "Las suscripciones se cobrarán a tu tarjeta de crédito a través de tu cuenta de iTunes. Se cargarán %1$@ (por mes) o %2$@ (por año) en tu cuenta por la renovación en el transcurso de las 24 horas previas a la finalización del período actual. Tus suscripciones se renovarán automáticamente, a menos que las canceles, como mínimo, 24 horas antes del final de período actual. No es posible cancelar una suscripción de forma inmediata. Puedes manejar las suscripciones y desactivar la renovación automática en la sección de configuración de cuenta una vez finalizada la compra. Tampoco podemos efectuar un reembolso para períodos no utilizados de una suscripción.";
 "settings.goPremiumRow" = "Premium";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
+"settings.premiumSubscriptionRow" = "Suscripción Premium";
 "Hooray!" = "¡Hurra!";
 "premium.success.message" = "Oficialmente eres un miembro de Pocket Premium. Bienvenido a la nueva versión permanente, personalizable y sin anuncios de Pocket. Creemos que te gustará estar aquí.";
 "back.to.pocket" = "Volver a Pocket";
