@@ -5,7 +5,6 @@
 import XCTest
 import Sails
 
-@MainActor
 class SettingsTest: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
@@ -35,7 +34,6 @@ class SettingsTest: XCTestCase {
 
         await snowplowMicro.resetSnowplowEvents()
         try server.start()
-        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -43,16 +41,27 @@ class SettingsTest: XCTestCase {
         app.terminate()
     }
 
+    @MainActor
     func test_tappingDeletingAccountShowsDeleteConfirmation() async {
+        app.launch()
         app.tabBar.settingsButton.wait().tap()
         XCTAssertTrue(app.settingsView.exists)
 
+        
         let settingsViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings")
         XCTAssertNotNil(settingsViewEvent)
 
         tap_AccountManagement()
 
         XCTAssertTrue(app.accountManagementView.exists)
+
+        tap_DeleteAccount()
+        
+        XCTAssertTrue(app.deleteConfirmationView.exists)
+
+        app.deleteConfirmationView.understandDeletionToggle.tap()
+       
+        app.deleteConfirmationView.deleteAccountButton.tap()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }

@@ -50,6 +50,7 @@
 		650FECD228BA85F300A3CB0C /* PushNotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 650FECCB28BA85F300A3CB0C /* PushNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		65167B6F2909904200343FA8 /* BrazeNotificationService in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B6E2909904200343FA8 /* BrazeNotificationService */; };
 		65167B712909904200343FA8 /* BrazePushStory in Frameworks */ = {isa = PBXBuildFile; productRef = 65167B702909904200343FA8 /* BrazePushStory */; };
+		6544202329B1B17C002B12F2 /* DeleteConfirmationViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */; };
 		656041EE29B18105007E7CD0 /* SettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041ED29B18105007E7CD0 /* SettingsTests.swift */; };
 		656041F029B182AF007E7CD0 /* AccountManagementViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */; };
 		658140EA29A5993C00346848 /* SnowplowMicro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 658140E929A5993C00346848 /* SnowplowMicro.swift */; };
@@ -196,6 +197,7 @@
 		65412E78299320CB007BDEBB /* PushNotificationServiceExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationServiceExtensionDebug.entitlements; sourceTree = "<group>"; };
 		65412E79299320DE007BDEBB /* PushNotificationStoryExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationStoryExtension.entitlements; sourceTree = "<group>"; };
 		65412E7A2993263E007BDEBB /* PushNotificationServiceExtensionRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationServiceExtensionRelease.entitlements; sourceTree = "<group>"; };
+		6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfirmationViewElement.swift; sourceTree = "<group>"; };
 		6551C9D42900B27D00247C40 /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTests.xctestplan; sourceTree = "<group>"; };
 		6551C9D52900B27D00247C40 /* UITests-2.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-2.xctestplan"; sourceTree = "<group>"; };
 		6551C9D62900B27D00247C40 /* UITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UITests.xctestplan; sourceTree = "<group>"; };
@@ -414,6 +416,7 @@
 				8A47CA8D28BD4A9C003DB4BD /* TagsFilterViewElement.swift */,
 				8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */,
 				656041EF29B182AF007E7CD0 /* AccountManagementViewElement.swift */,
+				6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */,
 			);
 			path = Elements;
 			sourceTree = "<group>";
@@ -780,6 +783,7 @@
 				16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */,
 				F2843C202714D97000E03ED5 /* ReportViewElement.swift in Sources */,
 				166EFAE8268281F300A027CD /* ReaderToolbarElement.swift in Sources */,
+				6544202329B1B17C002B12F2 /* DeleteConfirmationViewElement.swift in Sources */,
 				8A47CA8E28BD4A9C003DB4BD /* TagsFilterViewElement.swift in Sources */,
 				16D76883279F3C73004A3694 /* ArchiveTests.swift in Sources */,
 				1613B2B3275571940014F301 /* SettingsViewElement.swift in Sources */,

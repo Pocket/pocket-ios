@@ -46,6 +46,7 @@ struct DeleteAccountView: View {
                     .padding()
                     .foregroundColor(.black)
                     .toggleStyle(iOSCheckboxToggleStyle())
+                    .accessibilityIdentifier("confirm-cancelled")
                 }
 
                 Toggle(isOn: $understandsPermanentDeletion, label: {
@@ -55,13 +56,14 @@ struct DeleteAccountView: View {
                 .padding()
                 .foregroundColor(.black)
                 .toggleStyle(iOSCheckboxToggleStyle())
+                .accessibilityIdentifier("understand-deletion")
 
                 Spacer()
 
                 if isPremium {
                     Button(L10n.Settings.AccountManagement.DeleteAccount.howToCancel) {
                         isPresentingCancelationHelp.toggle()
-                    }
+                    }.accessibilityIdentifier("how-to-cancel")
 
                     Spacer()
                 }
@@ -76,12 +78,14 @@ struct DeleteAccountView: View {
                             !understandsPermanentDeletion
                 )
                 .padding()
+                .accessibilityIdentifier("delete-account")
 
                 Button(L10n.cancel) {
                     dismiss()
                 }
                 .buttonStyle(PocketButtonStyle(.secondary))
                 .padding()
+                .accessibilityIdentifier("cancel")
             }
             .navigationTitle(L10n.Settings.accountManagement)
             .navigationBarTitleDisplayMode(.inline)
@@ -91,12 +95,14 @@ struct DeleteAccountView: View {
                     dismiss()
                 }) {
                     Text(L10n.close)
-                }
+                }.accessibilityIdentifier("close")
             )
-        }.sheet(isPresented: $isPresentingCancelationHelp) {
+        }
+        .sheet(isPresented: $isPresentingCancelationHelp) {
             SFSafariView(url: LinkedExternalURLS.CancelingPremium)
                 .edgesIgnoringSafeArea(.bottom)
         }
+        .accessibilityIdentifier("delete-confirmation")
     }
 }
 
