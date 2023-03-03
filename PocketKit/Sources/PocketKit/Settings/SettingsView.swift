@@ -1,3 +1,4 @@
+import SharedPocketKit
 import SwiftUI
 import Textile
 
@@ -39,6 +40,7 @@ struct SettingsView: View {
 }
 
 struct SettingsForm: View {
+    @State var dismissReason: DismissReason = .swipe
     @ObservedObject
     var model: AccountViewModel
 
@@ -168,8 +170,16 @@ extension SettingsForm {
 
     private func makeGoPremiumRow() -> some View {
         makePremiumRowContent(false)
-            .sheet(isPresented: $model.isPresentingPremiumUpgrade) {
-                PremiumUpgradeView(viewModel: model.makePremiumUpgradeViewModel())
+            .sheet(
+                isPresented: $model.isPresentingPremiumUpgrade,
+                onDismiss: {
+                model.trackPremiumDismissed(dismissReason: dismissReason)
+            }
+            ) {
+                PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: model.makePremiumUpgradeViewModel())
+            }
+            .task {
+                model.trackPremiumUpsellViewed()
             }
     }
 

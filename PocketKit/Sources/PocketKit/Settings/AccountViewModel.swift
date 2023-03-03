@@ -9,9 +9,10 @@ class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
     private let appSession: AppSession
     private let user: User
+    private let tracker: Tracker
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
-    private let premiumUpgradeViewModelFactory: () -> PremiumUpgradeViewModel
+    private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
 
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
@@ -29,11 +30,13 @@ class AccountViewModel: ObservableObject {
 
     init(appSession: AppSession,
          user: User,
+         tracker: Tracker,
          userDefaults: UserDefaults,
          notificationCenter: NotificationCenter,
-         premiumUpgradeViewModelFactory: @escaping () -> PremiumUpgradeViewModel) {
+         premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
         self.appSession = appSession
         self.user = user
+        self.tracker = tracker
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
@@ -76,11 +79,28 @@ class AccountViewModel: ObservableObject {
 extension AccountViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
-        premiumUpgradeViewModelFactory()
+        premiumUpgradeViewModelFactory(tracker, .settings)
     }
 
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+}
+
+// MARK: Analytics
+extension AccountViewModel {
+    /// track premium upgrade view dismissed
+    func trackPremiumDismissed(dismissReason: DismissReason) {
+        switch dismissReason {
+        case .swipe, .button:
+            tracker.track(event: Events.Premium.premiumUpgradeViewDismissed(reason: dismissReason))
+        case .system:
+            break
+        }
+    }
+    /// track premium upsell viewed
+    func trackPremiumUpsellViewed() {
+        tracker.track(event: Events.Settings.premiumUpsellViewed())
     }
 }
