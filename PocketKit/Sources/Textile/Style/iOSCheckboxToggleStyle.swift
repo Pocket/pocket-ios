@@ -16,9 +16,11 @@ public struct iOSCheckboxToggleStyle: ToggleStyle {
             configuration.isOn.toggle()
         }, label: {
             HStack {
-                configuration.isOn ?
-                SFIcon(SFIconModel("checkmark.square.fill", color: Color(.ui.white), secondaryColor: Color(.ui.teal2)))
-                : SFIcon(SFIconModel("square", color: Color(.ui.grey3)))
+                if configuration.isOn {
+                    SFIcon(SFIconModel("checkmark.square.fill", color: Color(.ui.white), secondaryColor: Color(.ui.teal2)))
+                } else {
+                    SFIcon(SFIconModel("square", color: Color(.ui.grey3)))
+                }
                 configuration.label
             }
         })

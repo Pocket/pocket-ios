@@ -111,6 +111,7 @@
 "Rename Tag" = "Rename Tag";
 "Rename" = "Rename";
 "Enter a new name for this tag" = "Enter a new name for this tag";
+"Close" = "Close";
 
 "not tagged" = "not tagged";
 "OK" = "OK";
@@ -149,6 +150,13 @@
 "settings.accountManagement" = "Account Management";
 "settings.accountManagement.deleteAccount" = "Delete Account";
 "settings.accountManagement.deleteYourAccount" = "Delete your account";
+
+"settings.accountManagement.deleteAccount.warning" = "Warning: this can't be undone";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "To delete your account, you must first **cancel your Premium subscription.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "You understand your Pocket account and data will be **permanently deleted.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "How to cancel your Pocket Premium subscription";
+
 
 //List view
 "item.list.min" = "%@ min";

@@ -71,7 +71,7 @@ struct ReportRecommendationView: View {
 
                 Button(action: submitReport) {
                     Text(isReported ? L10n.reported : L10n.submitFeedback)
-                }.buttonStyle(SubmitButtonStyle())
+                }.buttonStyle(PocketButtonStyle(.primary))
                 .padding()
                 .listRowBackground(Rectangle().foregroundColor(.clear))
                 .listRowSeparator(.hidden)

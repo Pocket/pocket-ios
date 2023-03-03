@@ -57,22 +57,22 @@ struct SettingsForm: View {
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
-                            SFSafariView(url: URL(string: "https://help.getpocket.com")!)
+                            SFSafariView(url: LinkedExternalURLS.Help)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: L10n.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
                         .sheet(isPresented: $model.isPresentingTerms) {
-                            SFSafariView(url: URL(string: "https://getpocket.com/en/tos/")!)
+                            SFSafariView(url: LinkedExternalURLS.TermsOfService)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: L10n.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
                         .sheet(isPresented: $model.isPresentingPrivacy) {
-                            SFSafariView(url: URL(string: "https://getpocket.com/en/privacy/")!)
+                            SFSafariView(url: LinkedExternalURLS.PrivacyPolicy)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: L10n.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle() }
                         .sheet(isPresented: $model.isPresentingLicenses) {
-                            SFSafariView(url: URL(string: "https://getpocket.com/opensource_notices_ios")!)
+                            SFSafariView(url: LinkedExternalURLS.OpenSourceNotices)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                 }.textCase(nil)

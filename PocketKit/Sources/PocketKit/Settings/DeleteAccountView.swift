@@ -8,7 +8,19 @@ import Textile
 
 @MainActor
 struct DeleteAccountView: View {
+    /// If the user is premium
     @State var isPremium: Bool
+
+    /// Confirmation by the user that they have cancelled their premium account
+    @State var hasCancelledPremium: Bool = false
+
+    /// Confirmation by the user they they understand the deletion is permanent
+    @State var understandsPermanentDeletion: Bool = false
+
+    /// State variable listened on from our view model
+    @State var isPresentingCancelationHelp: Bool
+
+    var deleteAccount: () -> Void
 
     @Environment(\.dismiss)
     var dismiss
@@ -21,14 +33,14 @@ struct DeleteAccountView: View {
 
                 Spacer()
 
-                Text("Warning: this can't be undone")
+                Text(L10n.Settings.AccountManagement.DeleteAccount.warning)
                     .style(.body.sansSerif.with(weight: .bold))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
 
                 if isPremium {
-                    Toggle(isOn: $isPremium, label: {
-                        Text("To delete your account, you must first **cancel your Premium subscription here.**")
+                    Toggle(isOn: $hasCancelledPremium, label: {
+                        Text(L10n.Settings.AccountManagement.DeleteAccount.premiumConfirmation)
                             .multilineTextAlignment(.leading)
                     })
                     .padding()
@@ -36,8 +48,8 @@ struct DeleteAccountView: View {
                     .toggleStyle(iOSCheckboxToggleStyle())
                 }
 
-                Toggle(isOn: $isPremium, label: {
-                    Text("You understand your Pocket account and data will be **permanently deleted**")
+                Toggle(isOn: $understandsPermanentDeletion, label: {
+                    Text(L10n.Settings.AccountManagement.DeleteAccount.deletionConfirmation)
                         .multilineTextAlignment(.leading)
                 })
                 .padding()
@@ -46,40 +58,54 @@ struct DeleteAccountView: View {
 
                 Spacer()
 
-                Button(action: {}) {
-                    Text("Delete account")
+                if isPremium {
+                    Button(L10n.Settings.AccountManagement.DeleteAccount.howToCancel) {
+                        isPresentingCancelationHelp.toggle()
+                    }
+
+                    Spacer()
                 }
-                .buttonStyle(SubmitButtonStyle())
+
+                Button(L10n.Settings.AccountManagement.deleteAccount) {
+                    deleteAccount()
+                }
+                .buttonStyle(PocketButtonStyle(.primary))
+                .disabled(
+                    isPremium ?
+                          !(hasCancelledPremium && understandsPermanentDeletion) :
+                            !understandsPermanentDeletion
+                )
                 .padding()
 
                 Button(L10n.cancel) {
+                    dismiss()
                 }
+                .buttonStyle(PocketButtonStyle(.secondary))
+                .padding()
             }
             .navigationTitle(L10n.Settings.accountManagement)
             .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(trailing:
+            .navigationBarItems(
+                trailing:
                 Button(action: {
                     dismiss()
                 }) {
-                    Text("Close")
+                    Text(L10n.close)
                 }
             )
+        }.sheet(isPresented: $isPresentingCancelationHelp) {
+            SFSafariView(url: LinkedExternalURLS.CancelingPremium)
+                .edgesIgnoringSafeArea(.bottom)
         }
     }
 }
 
 struct DeleteAccountView_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        DeleteAccountView(isPremium: false)
+        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: false, deleteAccount: {})
             .previewDisplayName("Free User")
 
-        DeleteAccountView(isPremium: true)
-            .previewDisplayName("Apple Premium User")
-
-        DeleteAccountView(isPremium: true)
-            .previewDisplayName("Google Premium User")
-
-        DeleteAccountView(isPremium: true)
-            .previewDisplayName("Web Premium User")
+        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
+            .previewDisplayName("Premium User")
     }
 }

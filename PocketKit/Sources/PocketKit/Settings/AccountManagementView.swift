@@ -39,8 +39,9 @@ struct AccountManagementForm: View {
                     .accessibilityIdentifier("delete-your-account-button")
                 }
                 .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
-                    //   DeleteAccountView()
+                    DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: model.isPresentingCancelationHelp, deleteAccount: model.deleteAccount)
                 }
+
                 .textCase(nil)
             }
             .listRowBackground(Color(.ui.grey7))
