@@ -160,7 +160,7 @@
 // Description of the premium uprgade view
 "premium.upgradeview.description" = "Les échéances des abonnements seront débitées de votre carte bancaire via votre compte iTunes. En cas de renouvellement, votre compte sera débité de %1$@ (tous les mois) ou de %2$@ (tous les ans) dans les 24 heures précédant la fin de la période en cours. Les abonnements sont automatiquement renouvelés, sauf s'ils sont résiliés au moins 24 heures avant la fin de la période en cours. Il est impossible de résilier instantanément un abonnement. Vous pouvez gérer les abonnements et désactiver le renouvellement automatique en accédant aux paramètres de votre compte après l'achat. Aucun remboursement n'est effectué pour la fraction inutilisée d'un abonnement.";
 "settings.goPremiumRow" = "Passer à Premium";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
+"settings.premiumSubscriptionRow" = "Abonnement Premium";
 "Hooray!" = "Hourra !";
 "premium.success.message" = "Vous êtes officiellement membre de Pocket Premium. Bienvenue dans cette nouvelle version de Pocket qui est permanente, personnalisable et sans publicité. Nous sommes certains que vous allez l'apprécier.";
 "back.to.pocket" = "Revenir à Pocket";

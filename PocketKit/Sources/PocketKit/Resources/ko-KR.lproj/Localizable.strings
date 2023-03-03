@@ -158,9 +158,9 @@
 // Short name of the annual premium subscription
 "Annual" = "연간";
 // Description of the premium uprgade view
-"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"premium.upgradeview.description" = "구독은 iTunes 계정을 통해 신용 카드로 청구됩니다. 현재 기간이 종료되기 전 24시간 이내에 갱신을 위해 귀하의 계정에서 %1$@(월간) 또는 %2$@(연간)가 청구됩니다. 구독은 현재 구독 기간 종료 전 최소 24시간 전에 취소하지 않으면 자동으로 갱신됩니다. 구독을 즉시 취소할 수 없습니다. 구매 후 계정 설정으로 이동해서 구독을 관리하고 자동 갱신을 끌 수 있습니다. 사용하지 않고 남은 구독 기간에 대해서는 환불되지 않습니다.\n";
 "settings.goPremiumRow" = "Premium 으로 이동";
-"settings.premiumSubscriptionRow" = "Premium Subscription";
+"settings.premiumSubscriptionRow" = "프리미엄 구독";
 "Hooray!" = "환영합니다!";
 "premium.success.message" = "공식적으로 Pocket Premium 회원이 되셨습니다. 광고가 없는 새로운 맞춤형, 영구 Pocket 버전에 오신 것을 환영합니다. 마음에 드실 것입니다.";
 "back.to.pocket" = "Pocket으로 돌아가기";
