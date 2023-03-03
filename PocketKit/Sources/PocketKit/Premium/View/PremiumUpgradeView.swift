@@ -1,17 +1,15 @@
+import SharedPocketKit
 import SwiftUI
 import Textile
 
 struct PremiumUpgradeView: View {
     // TODO: remove this property and the two @State properties once we are ready to ship premium upgrades to beta users
-    static let shouldAllowUpgrade = false
+    static let shouldAllowUpgrade = true
     @State private var showingMonthlyAlert = false
     @State private var showingAnnualAlert = false
+    @Binding var dismissReason: DismissReason
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: PremiumUpgradeViewModel
-
-    init(viewModel: PremiumUpgradeViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -22,6 +20,7 @@ struct PremiumUpgradeView: View {
         .background(PremiumBackgroundView())
         .task {
             do {
+                dismissReason = .swipe
                 try await viewModel.requestSubscriptions()
             } catch {
                 // TODO: Here we will handle any error providing user feedback if/when needed
@@ -30,6 +29,7 @@ struct PremiumUpgradeView: View {
         }
         .onChange(of: viewModel.shouldDismiss) { shouldDismiss in
             if shouldDismiss {
+                dismissReason = .system
                 dismiss()
             }
         }
@@ -39,6 +39,7 @@ struct PremiumUpgradeView: View {
         HStack(spacing: 0) {
             Spacer()
             Button {
+                self.dismissReason = .button
                 dismiss()
             } label: {
                 Image(asset: .close).renderingMode(.template).foregroundColor(Color(.ui.grey5))
