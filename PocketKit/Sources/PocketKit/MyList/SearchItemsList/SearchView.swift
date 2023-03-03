@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import SharedPocketKit
 import SwiftUI
 import Textile
 
@@ -89,6 +90,7 @@ struct SearchEmptyView: View {
 }
 
 struct GetPocketPremiumButton: View {
+    @State var dismissReason: DismissReason = .swipe
     @EnvironmentObject private var searchViewModel: SearchViewModel
     private let text: String
 
@@ -105,8 +107,16 @@ struct GetPocketPremiumButton: View {
                 .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                 .frame(maxWidth: 320)
         }).buttonStyle(GetPocketPremiumButtonStyle())
-            .sheet(isPresented: $searchViewModel.isPresentingPremiumUpgrade) {
-                PremiumUpgradeView(viewModel: searchViewModel.makePremiumUpgradeViewModel())
+            .sheet(
+                isPresented: $searchViewModel.isPresentingPremiumUpgrade,
+                onDismiss: {
+                    searchViewModel.trackPremiumDismissed(dismissReason: dismissReason)
+            }
+            ) {
+                PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: searchViewModel.makePremiumUpgradeViewModel())
+            }
+            .task {
+                searchViewModel.trackPremiumUpsellViewed()
             }
     }
 }
