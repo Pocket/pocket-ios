@@ -182,4 +182,16 @@ public extension Events.Search {
             )
         )
     }
+
+    /// Premium upsell in Search visible
+    static func premiumUpsellViewed() -> Event {
+        return Impression(
+            component: .button,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.premium.upsell"
+            )
+        )
+    }
 }
