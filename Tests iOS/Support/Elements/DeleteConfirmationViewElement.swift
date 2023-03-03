@@ -12,31 +12,28 @@ struct DeleteConfirmationViewElement: PocketUIElement {
     init(_ element: XCUIElement) {
         self.element = element
     }
-    
-    
+
     var howToDeleteButton: XCUIElement {
         element.buttons["how-to-cancel"]
     }
-    
-    var understandDeletionToggle: XCUIElement {
-        element.buttons["understand-deletion"]
+
+    var understandDeletionSwitch: XCUIElement {
+        element.switches["understand-deletion"]
     }
-    
-    var confirmCancelledToggle: XCUIElement {
-        element.buttons["confirm-cancelled"]
+
+    var confirmCancelledSwitch: XCUIElement {
+        element.switches["confirm-cancelled"]
     }
-    
-    
+
     var deleteAccountButton: XCUIElement {
         element.buttons["delete-account"]
     }
-    
+
     var cancelButton: XCUIElement {
         element.buttons["cancel"]
     }
-    
+
     var closeButton: XCUIElement {
         element.buttons["close"]
     }
-    
 }

@@ -16,22 +16,6 @@ class SettingsTest: XCTestCase {
         app = PocketAppElement(app: XCUIApplication())
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
-            }
-        }
-
         await snowplowMicro.resetSnowplowEvents()
         try server.start()
     }
@@ -42,25 +26,34 @@ class SettingsTest: XCTestCase {
     }
 
     @MainActor
-    func test_tappingDeletingAccountShowsDeleteConfirmation() async {
+    func test_tappingDeletingAccountShowsDeleteConfirmation_freeUser() async {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSavesContent {
+                return Response.freeUserSaves()
+            }
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+
         app.launch()
         app.tabBar.settingsButton.wait().tap()
         XCTAssertTrue(app.settingsView.exists)
 
-        
         let settingsViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings")
         XCTAssertNotNil(settingsViewEvent)
 
         tap_AccountManagement()
 
         XCTAssertTrue(app.accountManagementView.exists)
-
         tap_DeleteAccount()
-        
         XCTAssertTrue(app.deleteConfirmationView.exists)
 
-        app.deleteConfirmationView.understandDeletionToggle.tap()
-       
+        XCTAssertFalse(app.deleteConfirmationView.deleteAccountButton.isEnabled)
+
+        app.deleteConfirmationView.understandDeletionSwitch.tap()
+
+        XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
+
         app.deleteConfirmationView.deleteAccountButton.tap()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()

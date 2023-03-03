@@ -38,7 +38,7 @@ struct PocketAppElement {
     var accountManagementView: AccountManagementViewElement {
         return AccountManagementViewElement(app.collectionViews["account-management"])
     }
-    
+
     var deleteConfirmationView: DeleteConfirmationViewElement {
         return DeleteConfirmationViewElement(app.otherElements["delete-confirmation"])
     }
