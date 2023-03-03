@@ -36,6 +36,43 @@ class SettingsTest: XCTestCase {
         }
 
         app.launch()
+        
+        await loadDeleteConfirmationView()
+
+        app.deleteConfirmationView.understandDeletionSwitch.tap()
+
+        XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
+
+        app.deleteConfirmationView.deleteAccountButton.tap()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+    }
+    
+    @MainActor
+    func test_tappingDeletingAccountShowsDeleteConfirmation_premiumUser() async {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSavesContent {
+                return Response.saves()
+            }
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+
+        app.launch()
+        await loadDeleteConfirmationView()
+
+        app.deleteConfirmationView.understandDeletionSwitch.tap()
+        app.deleteConfirmationView.confirmCancelledSwitch.tap()
+
+        XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
+
+        app.deleteConfirmationView.deleteAccountButton.tap()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+    }
+    
+    @MainActor
+    func loadDeleteConfirmationView() async {
         app.tabBar.settingsButton.wait().tap()
         XCTAssertTrue(app.settingsView.exists)
 
@@ -49,14 +86,6 @@ class SettingsTest: XCTestCase {
         XCTAssertTrue(app.deleteConfirmationView.exists)
 
         XCTAssertFalse(app.deleteConfirmationView.deleteAccountButton.isEnabled)
-
-        app.deleteConfirmationView.understandDeletionSwitch.tap()
-
-        XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
-
-        app.deleteConfirmationView.deleteAccountButton.tap()
-
-        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     func tap_AccountManagement() {
