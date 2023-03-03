@@ -5,6 +5,7 @@ protocol ItemsListItem {
     var id: String? { get }
     var title: String? { get }
     var isFavorite: Bool { get }
+    var isArchived: Bool { get }
     var bestURL: URL? { get }
     var topImageURL: URL? { get }
     var domain: String? { get }

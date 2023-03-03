@@ -27,8 +27,12 @@ class SearchTests: XCTestCase {
                 return Response.slateLineup()
             } else if apiRequest.isForSavesContent {
                 return Response.saves()
+            } else if apiRequest.isToSaveAnItem {
+                return Response.saveItem()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
+            } else if apiRequest.isToArchiveAnItem {
+                return Response.archive()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else if apiRequest.isForSearch(.saves) {
@@ -37,6 +41,10 @@ class SearchTests: XCTestCase {
                 return Response.searchList(.archive)
             } else if apiRequest.isForSearch(.all) {
                 return Response.searchList(.all)
+            } else if apiRequest.isToDeleteAnItem {
+                return Response.delete()
+            } else if apiRequest.isForItemDetail {
+                return Response.itemDetail()
             } else {
                 fatalError("Unexpected request")
             }
@@ -62,9 +70,9 @@ class SearchTests: XCTestCase {
         XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     @MainActor
@@ -76,9 +84,9 @@ class SearchTests: XCTestCase {
         XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     func test_searchSaves_forFreeUser_showsEmptyStateView() {
@@ -164,9 +172,9 @@ class SearchTests: XCTestCase {
         XCTAssertEqual(searchView.cells.count, 1)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "archive")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "archive")
     }
 
     @MainActor
@@ -180,9 +188,9 @@ class SearchTests: XCTestCase {
         XCTAssertEqual(searchView.cells.count, 2)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
 
         async let impression0 = snowplowMicro.getFirstEvent(with: "global-nav.search.impression", index: 0)
         async let impression1 = snowplowMicro.getFirstEvent(with: "global-nav.search.impression", index: 1)
@@ -206,9 +214,9 @@ class SearchTests: XCTestCase {
         XCTAssertEqual(searchView.cells.count, 1)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "archive")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "archive")
     }
 
     @MainActor
@@ -223,9 +231,9 @@ class SearchTests: XCTestCase {
         XCTAssertEqual(searchView.cells.count, 3)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "all_items")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "all_items")
     }
 
     @MainActor
@@ -242,30 +250,30 @@ class SearchTests: XCTestCase {
         XCTAssertEqual(searchView.cells.count, 3)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "all_items")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "all_items")
 
         app.navigationBar.buttons["Archive"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 1)
 
-        let openSearch2 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
-        openSearch2!.getUIContext()!.assertHas(type: "button")
-        openSearch2!.getUIContext()!.assertHas(componentDetail: "archive")
+        let searchEvent2 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
+        searchEvent2!.getUIContext()!.assertHas(type: "button")
+        searchEvent2!.getUIContext()!.assertHas(componentDetail: "archive")
 
         app.navigationBar.buttons["All items"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 3)
 
-        let openSearch3 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
-        openSearch3!.getUIContext()!.assertHas(type: "button")
-        openSearch3!.getUIContext()!.assertHas(componentDetail: "all_items")
+        let searchEvent3 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
+        searchEvent3!.getUIContext()!.assertHas(type: "button")
+        searchEvent3!.getUIContext()!.assertHas(componentDetail: "all_items")
 
         app.navigationBar.buttons["Archive"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 1)
 
-        let openSearch4 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
-        openSearch4!.getUIContext()!.assertHas(type: "button")
-        openSearch4!.getUIContext()!.assertHas(componentDetail: "archive")
+        let searchEvent4 = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
+        searchEvent4!.getUIContext()!.assertHas(type: "button")
+        searchEvent4!.getUIContext()!.assertHas(componentDetail: "archive")
     }
 
     // MARK: - Recent Search
@@ -294,9 +302,9 @@ class SearchTests: XCTestCase {
         XCTAssertFalse(app.saves.itemView(at: 0).element.isHittable)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     // MARK: - Select a Search Item
@@ -315,10 +323,10 @@ class SearchTests: XCTestCase {
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.card.open")
-        openSearch!.getUIContext()!.assertHas(type: "card")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
-        openSearch!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.card.open")
+        searchEvent!.getUIContext()!.assertHas(type: "card")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     // MARK: - Search Loading State
@@ -399,6 +407,7 @@ class SearchTests: XCTestCase {
         XCTAssertTrue(app.saves.searchView.hasBanner(with: "Limited search results"))
     }
 
+    // MARK: Search Actions
     @MainActor
     func test_favoritingAndUnfavoritingAnItemFromSearch_showsFavoritedIcon() async {
         app.launch()
@@ -429,10 +438,10 @@ class SearchTests: XCTestCase {
         XCTAssertTrue(itemCell.favoriteButton.isFilled)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.favorite")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
-        openSearch!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.favorite")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
 
         let expectUnfavoriteRequest = expectation(description: "A request to the server")
         server.routes.post("/graphql") { request, loop in
@@ -448,10 +457,10 @@ class SearchTests: XCTestCase {
         wait(for: [expectUnfavoriteRequest])
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
 
-        let openSearch2 = await snowplowMicro.getFirstEvent(with: "global-nav.search.unfavorite")
-        openSearch2!.getUIContext()!.assertHas(type: "button")
-        openSearch2!.getUIContext()!.assertHas(componentDetail: "saves")
-        openSearch2!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        let searchEvent2 = await snowplowMicro.getFirstEvent(with: "global-nav.search.unfavorite")
+        searchEvent2!.getUIContext()!.assertHas(type: "button")
+        searchEvent2!.getUIContext()!.assertHas(componentDetail: "saves")
+        searchEvent2!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     @MainActor
@@ -474,10 +483,113 @@ class SearchTests: XCTestCase {
         app.shareSheet.wait()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let openSearch = await snowplowMicro.getFirstEvent(with: "global-nav.search.share")
-        openSearch!.getUIContext()!.assertHas(type: "button")
-        openSearch!.getUIContext()!.assertHas(componentDetail: "saves")
-        openSearch!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.share")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+    }
+
+    @MainActor
+    func test_addTagsFromSearch_showsAddTagsView() async {
+        app.launch()
+        tapSearch()
+
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        app.saves.searchView.searchResultsView.wait()
+
+        let itemCell = app
+            .saves.searchView
+            .searchItemCell(at: 0)
+            .wait()
+
+        itemCell.overFlowMenu.tap()
+        app.addTagsButton.wait().tap()
+        app.addTagsView.wait()
+        app.addTagsView.allTagsView.wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.addTags")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+    }
+
+    @MainActor
+    func test_archivingAnItemFromSearch_removesItem() async {
+        app.launch()
+        tapSearch()
+
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        app.saves.searchView.searchResultsView.wait()
+
+        let itemCell = app
+            .saves.searchView
+            .searchItemCell(at: 0)
+            .wait()
+
+        itemCell.overFlowMenu.tap()
+        app.archiveButton.wait().tap()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.archive")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+    }
+
+    @MainActor
+    func test_unArchivingAnItemFromSearch_removesItem() async {
+        app.launch()
+        tapSearch(fromArchive: true)
+
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        app.saves.searchView.searchResultsView.wait()
+
+        let itemCell = app
+            .saves.searchView
+            .searchItemCell(at: 0)
+            .wait()
+
+        itemCell.overFlowMenu.tap()
+        app.reAddButton.wait().tap()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.unarchive")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "archive")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+    }
+
+    @MainActor
+    func test_deletingAnItemFromSearch_presentsOverflowMenu() async {
+        app.launch()
+        tapSearch()
+
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        app.saves.searchView.searchResultsView.wait()
+
+        let itemCell = app
+            .saves.searchView
+            .searchItemCell(at: 1)
+            .wait()
+
+        itemCell.overFlowMenu.tap()
+        app.deleteButton.wait().tap()
+        app.alert.yes.wait().tap()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.delete")
+        searchEvent!.getUIContext()!.assertHas(type: "button")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     private func tapSearch(fromArchive: Bool = false) {
