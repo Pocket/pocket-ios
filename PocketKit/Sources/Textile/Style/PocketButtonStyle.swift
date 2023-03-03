@@ -11,6 +11,7 @@ public struct PocketButtonStyle: ButtonStyle {
     public enum Variation {
         case primary
         case secondary
+        case internalInfoLink
     }
 
     let variation: Variation
@@ -18,16 +19,33 @@ public struct PocketButtonStyle: ButtonStyle {
     private struct Constants {
         static let cornerRadius: CGFloat = 4
         static let buttonHeight: CGFloat = 52
-        static let primaryButtonTintColor = Color(.ui.grey1)
-        static let primaryButtonBackgroundColor = Color(.ui.teal2)
-        static let primaryButtonPressedBackgroundColor = Color(.ui.teal1)
+        static let style = Style.header.sansSerif.h6
 
-        static let secondaryButtonTintColor = Color(.ui.grey1)
-        static let secondaryButtonBackgroundColor = Color(.clear)
-        static let secondaryButtonPressedBackgroundColor = Color(.ui.black)
+        struct Primary {
+            static let tintColor = Color(.ui.grey1)
+            static let backgroundColor = Color(.ui.teal2)
+            static let pressedBackgroundColor = Color(.ui.teal1)
+            static let foregroundColor = Color(.ui.white)
+            static let pressedForegroundColor = Color(.ui.white)
+        }
 
-        static let secondaryButtonForegorundColor = Color(.ui.black)
-        static let secondaryButtonPressedForegorundColor = Color(.ui.white)
+        struct Secondary {
+            static let tintColor = Color(.ui.grey1)
+            static let backgroundColor = Color(.clear)
+            static let pressedBackgroundColor = Color(.ui.black)
+            static let foregroundColor = Color(.ui.black)
+            static let pressedForegorundColor = Color(.ui.white)
+        }
+
+        struct InternalInfoLink {
+            static let tintColor = Color(.ui.grey5)
+            static let backgroundColor = Color(.ui.grey6)
+            static let pressedBackgroundColor = Color(.ui.black)
+            static let foregroundColor = Color(.ui.grey4)
+            static let pressedForegorundColor = Color(.ui.white)
+            static let buttonHeight: CGFloat = 34
+            static let style = Style.header.sansSerif.p4
+        }
     }
 
     public init(_ variation: Variation) {
@@ -43,9 +61,6 @@ public struct PocketButtonStyle: ButtonStyle {
 
         let variation: Variation
 
-        let baseStyle = Style.header.sansSerif.h6
-        let primaryStyle = Style.header.sansSerif.h6.with(color: .ui.white)
-
         @Environment(\.isEnabled)
         private var isEnabled: Bool
 
@@ -53,26 +68,42 @@ public struct PocketButtonStyle: ButtonStyle {
             HStack {
                 Spacer()
                 configuration.label
+                if variation == .internalInfoLink {
+                    SFIcon(SFIconModel("chevron.right", size: CGFloat(Constants.InternalInfoLink.style.fontDescriptor.size)-2, color: configuration.isPressed ? Constants.InternalInfoLink.pressedForegorundColor : Constants.InternalInfoLink.foregroundColor))
+                }
                 Spacer()
             }
-            .frame(height: Constants.buttonHeight)
-            .font(Font(baseStyle.fontDescriptor))
-            .multilineTextAlignment(SwiftUI.TextAlignment(baseStyle.paragraph.alignment))
-            .lineSpacing(baseStyle.paragraph.lineSpacing ?? 0)
+            .multilineTextAlignment(SwiftUI.TextAlignment(Constants.style.paragraph.alignment))
+            .lineSpacing(Constants.style.paragraph.lineSpacing ?? 0)
             .opacity(isEnabled ? 1.0 : 0.5)
             .if(variation == .secondary) {  view in
-               view.overlay(
-                    RoundedRectangle(cornerRadius: 4)
-                        .stroke(Color(.ui.black), lineWidth: 2)
-                )
-               .background( configuration.isPressed ? Constants.secondaryButtonPressedBackgroundColor : Constants.secondaryButtonBackgroundColor)
-               .foregroundColor(configuration.isPressed ? Constants.secondaryButtonPressedForegorundColor : Constants.secondaryButtonForegorundColor)
+               view
+                    .font(Font(Constants.style.fontDescriptor))
+                    .frame(height: Constants.buttonHeight)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 4)
+                            .stroke(Color(.ui.black), lineWidth: 2)
+                    )
+                   .background( configuration.isPressed ? Constants.Secondary.pressedBackgroundColor : Constants.Secondary.backgroundColor)
+                   .foregroundColor(configuration.isPressed ? Constants.Secondary.pressedForegorundColor: Constants.Secondary.foregroundColor)
             }
             .if(variation == .primary) { view in
-                view.tint(Constants.primaryButtonTintColor)
-                    .background( configuration.isPressed ? Constants.primaryButtonPressedBackgroundColor : Constants.primaryButtonBackgroundColor)
+                view
+                    .font(Font(Constants.style.fontDescriptor))
+                    .frame(height: Constants.buttonHeight)
+                    .tint(Constants.Primary.tintColor)
+                    .background( configuration.isPressed ? Constants.Primary.pressedBackgroundColor : Constants.Primary.backgroundColor)
+                    .foregroundColor(configuration.isPressed ? Constants.Primary.pressedForegroundColor : Constants.Primary.foregroundColor)
                     .cornerRadius(Constants.cornerRadius)
-                    .foregroundColor(Color(primaryStyle.colorAsset))
+            }
+            .if(variation == .internalInfoLink) { view in
+                view
+                    .font(Font(Constants.InternalInfoLink.style.fontDescriptor))
+                    .frame(height: Constants.InternalInfoLink.buttonHeight)
+                    .tint(Constants.InternalInfoLink.tintColor)
+                    .background( configuration.isPressed ? Constants.InternalInfoLink.pressedBackgroundColor : Constants.InternalInfoLink.backgroundColor)
+                    .foregroundColor(configuration.isPressed ? Constants.InternalInfoLink.pressedForegorundColor : Constants.InternalInfoLink.foregroundColor)
+                    .cornerRadius(Constants.cornerRadius)
             }
         }
     }
@@ -80,28 +111,37 @@ public struct PocketButtonStyle: ButtonStyle {
 
 struct PocketButton_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        Button("Primary Action") {
-        }.padding()
-            .buttonStyle(PocketButtonStyle(.primary))
-            .previewDisplayName("Primary - Enabled")
+        Button("Primary Action") {}
+        .padding()
+        .buttonStyle(PocketButtonStyle(.primary))
+        .previewDisplayName("Primary - Enabled")
 
-        Button("Primary Action") {
-        }
+        Button("Primary Action") {}
         .disabled(true)
         .padding()
         .buttonStyle(PocketButtonStyle(.primary))
-            .previewDisplayName("Primary - Disabled")
+        .previewDisplayName("Primary - Disabled")
 
-        Button("Secondary Action") {
-        }.padding()
-            .buttonStyle(PocketButtonStyle(.secondary))
-            .previewDisplayName("Secondary - Enabled")
+        Button("Secondary Action") {}
+        .padding()
+        .buttonStyle(PocketButtonStyle(.secondary))
+        .previewDisplayName("Secondary - Enabled")
 
-        Button("Secondary Action") {
-        }
+        Button("Secondary Action") {}
         .disabled(true)
         .padding()
         .buttonStyle(PocketButtonStyle(.secondary))
-            .previewDisplayName("Secondary - Disabled")
+        .previewDisplayName("Secondary - Disabled")
+
+        Button("Internal Info Link") {}
+        .padding()
+        .buttonStyle(PocketButtonStyle(.internalInfoLink))
+        .previewDisplayName("Internal Info Link - Enabled")
+
+        Button("Internal Info Link") {}
+        .disabled(true)
+        .padding()
+        .buttonStyle(PocketButtonStyle(.internalInfoLink))
+        .previewDisplayName("Internal Info Link - Disabled")
     }
 }

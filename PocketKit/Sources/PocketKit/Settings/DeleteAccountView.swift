@@ -29,43 +29,50 @@ struct DeleteAccountView: View {
         NavigationView {
             VStack(spacing: 0) {
                 Text(L10n.Settings.AccountManagement.deleteYourAccount)
-                    .style(.settings.header.with(weight: .bold))
-
-                Spacer()
+                    .style(.deleteAccountView.header)
+                    .padding(.top, 50)
+                    .padding()
 
                 Text(L10n.Settings.AccountManagement.DeleteAccount.warning)
-                    .style(.body.sansSerif.with(weight: .bold))
+                    .style(.deleteAccountView.warning)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
 
-                if isPremium {
-                    Toggle(isOn: $hasCancelledPremium, label: {
-                        Text(L10n.Settings.AccountManagement.DeleteAccount.premiumConfirmation)
+                /**
+                 Note below we use LocalizedStringKey. This is a total hack. This is because a SwiftUI text object treats Text("testing") differently then Text(someText). When passed as a variable, the Text view performs no localization, but it also does not render the embedded markdown. When cast to a LocalizedStringKey the Text field will try and localize the content (and fail) but it will render the markdown and bold the text.
+                 */
+
+                VStack {
+                    if isPremium {
+                        Toggle(isOn: $hasCancelledPremium, label: {
+                            Text(LocalizedStringKey(L10n.Settings.AccountManagement.DeleteAccount.premiumConfirmation))
+                                .multilineTextAlignment(.leading)
+                        })
+                        .foregroundColor(.black)
+                        .toggleStyle(iOSCheckboxToggleStyle())
+                        .accessibilityIdentifier("confirm-cancelled")
+                    }
+
+                    Toggle(isOn: $understandsPermanentDeletion, label: {
+                        Text(LocalizedStringKey(L10n.Settings.AccountManagement.DeleteAccount.deletionConfirmation))
                             .multilineTextAlignment(.leading)
                     })
-                    .padding()
                     .foregroundColor(.black)
                     .toggleStyle(iOSCheckboxToggleStyle())
-                    .accessibilityIdentifier("confirm-cancelled")
-                }
-
-                Toggle(isOn: $understandsPermanentDeletion, label: {
-                    Text(L10n.Settings.AccountManagement.DeleteAccount.deletionConfirmation)
-                        .multilineTextAlignment(.leading)
-                })
-                .padding()
-                .foregroundColor(.black)
-                .toggleStyle(iOSCheckboxToggleStyle())
-                .accessibilityIdentifier("understand-deletion")
-
-                Spacer()
+                    .accessibilityIdentifier("understand-deletion")
+                }.padding()
 
                 if isPremium {
                     Button(L10n.Settings.AccountManagement.DeleteAccount.howToCancel) {
                         isPresentingCancelationHelp.toggle()
-                    }.accessibilityIdentifier("how-to-cancel")
-
-                    Spacer()
+                    }
+                    .padding()
+                    .buttonStyle(PocketButtonStyle(.internalInfoLink))
+                    .accessibilityIdentifier("how-to-cancel")
+                    .if(hasCancelledPremium) { view in
+                        // We call hidden here, in an if statement so that the screen does not move the buttons when hasCancelledPremium changes.
+                        view.hidden()
+                    }
                 }
 
                 Button(L10n.Settings.AccountManagement.deleteAccount) {
@@ -86,6 +93,8 @@ struct DeleteAccountView: View {
                 .buttonStyle(PocketButtonStyle(.secondary))
                 .padding()
                 .accessibilityIdentifier("cancel")
+
+                Spacer()
             }
             .navigationTitle(L10n.Settings.accountManagement)
             .navigationBarTitleDisplayMode(.inline)
@@ -104,6 +113,16 @@ struct DeleteAccountView: View {
         }
         .accessibilityIdentifier("delete-confirmation")
     }
+}
+
+extension Style {
+    struct DeleteAccountView {
+        let header: Style = Style.header.sansSerif.h2.with(color: .ui.black1)
+        let warning: Style = Style.header.sansSerif.p2.with(color: .ui.black1).with(weight: .bold)
+        let body: Style = Style.header.sansSerif.p3.with(color: .ui.black1)
+    }
+
+    static let deleteAccountView = DeleteAccountView()
 }
 
 struct DeleteAccountView_PreviewProvider: PreviewProvider {

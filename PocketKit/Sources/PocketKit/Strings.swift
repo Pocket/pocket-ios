@@ -297,8 +297,8 @@ internal enum L10n {
         internal static let deletionConfirmation = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.deletionConfirmation", fallback: "You understand your Pocket account and data will be **permanently deleted.**")
         /// How to cancel your Pocket Premium subscription
         internal static let howToCancel = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.howToCancel", fallback: "How to cancel your Pocket Premium subscription")
-        /// To delete your account, you must first **cancel your Premium subscription.**
-        internal static let premiumConfirmation = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.premiumConfirmation", fallback: "To delete your account, you must first **cancel your Premium subscription.**")
+        /// To delete your account, you must first **cancel your Premium subscription here.**
+        internal static let premiumConfirmation = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.premiumConfirmation", fallback: "To delete your account, you must first **cancel your Premium subscription here.**")
         /// Warning: this can't be undone
         internal static let warning = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.warning", fallback: "Warning: this can't be undone")
       }

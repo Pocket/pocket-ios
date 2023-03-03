@@ -36,7 +36,7 @@ class SettingsTest: XCTestCase {
         }
 
         app.launch()
-        
+
         await loadDeleteConfirmationView()
 
         app.deleteConfirmationView.understandDeletionSwitch.tap()
@@ -47,7 +47,7 @@ class SettingsTest: XCTestCase {
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
-    
+
     @MainActor
     func test_tappingDeletingAccountShowsDeleteConfirmation_premiumUser() async {
         server.routes.post("/graphql") { request, _ in
@@ -70,7 +70,7 @@ class SettingsTest: XCTestCase {
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
-    
+
     @MainActor
     func loadDeleteConfirmationView() async {
         app.tabBar.settingsButton.wait().tap()
