@@ -4,7 +4,7 @@
 
 import XCTest
 
-struct AccountViewElement: PocketUIElement {
+struct SettingsViewElement: PocketUIElement {
     var element: XCUIElement
 
     init(_ element: XCUIElement) {
@@ -13,5 +13,9 @@ struct AccountViewElement: PocketUIElement {
 
     var logOutButton: XCUIElement {
         element.buttons["log-out-button"]
+    }
+
+    var accountManagementButton: XCUIElement {
+        element.buttons["account-management-button"]
     }
 }

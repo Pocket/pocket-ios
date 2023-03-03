@@ -8,6 +8,11 @@ class SettingsViewController: UIHostingController<SettingsView> {
         UITableView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = .clear
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        rootView.model.trackSettingsView()
+    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
@@ -34,7 +39,7 @@ struct SettingsView: View {
             }
         }
         .navigationBarTitle(L10n.settings, displayMode: .large)
-        .accessibilityIdentifier("account")
+        .accessibilityIdentifier("settings")
     }
 }
 
@@ -126,12 +131,18 @@ extension SettingsForm {
                 makeGoPremiumRow()
             }
 
+            // Custom implementation to hide the > arrow and let us use our own.
+            ZStack {
+                NavigationLink(destination: AccountManagementView(model: model)) {
+                    EmptyView()
+                }
+                .opacity(0.0)
+                .buttonStyle(PlainButtonStyle())
 
-            NavigationLink {
-                AccountManagementView(model: model)
-            } label: {
-                SettingsRowButton(title: L10n.Settings.accountManagement) {}
-                    .accessibilityIdentifier("account-management-button")
+                HStack {
+                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {}
+                        .accessibilityIdentifier("account-management-button")
+                }
             }
 
             SettingsRowButton(

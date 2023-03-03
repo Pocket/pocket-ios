@@ -5,12 +5,15 @@
 import XCTest
 import Sails
 
-class SignOutTests: XCTestCase {
+@MainActor
+class SettingsTest: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
+
         app = PocketAppElement(app: XCUIApplication())
         server = Application()
 
@@ -19,16 +22,10 @@ class SignOutTests: XCTestCase {
 
             if apiRequest.isForSlateLineup {
                 return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail() {
-                return Response.slateDetail()
             } else if apiRequest.isForSavesContent {
                 return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
@@ -36,6 +33,7 @@ class SignOutTests: XCTestCase {
             }
         }
 
+        await snowplowMicro.resetSnowplowEvents()
         try server.start()
         app.launch()
     }
@@ -45,25 +43,25 @@ class SignOutTests: XCTestCase {
         app.terminate()
     }
 
-    func test_tappingSignOutshowsLogin() {
+    func test_tappingDeletingAccountShowsDeleteConfirmation() async {
         app.tabBar.settingsButton.wait().tap()
-        tap_SignOut()
+        XCTAssertTrue(app.settingsView.exists)
 
-        let account = XCUIApplication()
-        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Log Out"].wait().tap()
-        XCTAssertTrue(app.loggedOutView.exists)
+        let settingsViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings")
+        XCTAssertNotNil(settingsViewEvent)
+
+        tap_AccountManagement()
+
+        XCTAssertTrue(app.accountManagementView.exists)
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
-    func test_tappingSignOutCancelshowsAccountsMenu() {
-        app.tabBar.settingsButton.wait().tap()
-        tap_SignOut()
-        let account = XCUIApplication()
-        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Cancel"].wait().tap()
-        let cellCount = account.cells.count
-        XCTAssertTrue(cellCount > 0)
+    func tap_AccountManagement() {
+        app.settingsView.accountManagementButton.tap()
     }
 
-    func tap_SignOut() {
-        app.settingsView.logOutButton.tap()
+    func tap_DeleteAccount() {
+        app.accountManagementView.deleteAccountButton.tap()
     }
 }

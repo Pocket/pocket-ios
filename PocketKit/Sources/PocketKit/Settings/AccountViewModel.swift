@@ -12,6 +12,7 @@ class AccountViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private let premiumUpgradeViewModelFactory: () -> PremiumUpgradeViewModel
+    private let tracker: Tracker
 
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
@@ -34,11 +35,13 @@ class AccountViewModel: ObservableObject {
          user: User,
          userDefaults: UserDefaults,
          notificationCenter: NotificationCenter,
+         tracker: Tracker,
          premiumUpgradeViewModelFactory: @escaping () -> PremiumUpgradeViewModel) {
         self.appSession = appSession
         self.user = user
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
+        self.tracker = tracker
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         self.isPremium = user.status == .premium
 
@@ -48,6 +51,10 @@ class AccountViewModel: ObservableObject {
             .sink { [weak self] status in
                 self?.isPremium = status == .premium
             }
+    }
+
+    func trackSettingsView() {
+        tracker.track(event: Events.Settings.SettingsView())
     }
 
     func deleteAccount() {
