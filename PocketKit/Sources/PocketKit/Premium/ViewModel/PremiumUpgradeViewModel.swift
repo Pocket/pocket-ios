@@ -109,7 +109,7 @@ extension PremiumUpgradeViewModel {
     /// track purchase success
     /// - Parameter type: "monthly" or "annual"
     func trackPurchaseSubscriptionSuccess(type: PremiumSubscriptionType) {
-        tracker.track(event: Events.Premium.purchaseSuccess(type: type.rawValue))
+        tracker.track(event: Events.Premium.purchaseSuccess(type: type))
     }
     /// track purchase subscription cancelled by the user
     func trackPurchaseSubscriptionCancelled() {
