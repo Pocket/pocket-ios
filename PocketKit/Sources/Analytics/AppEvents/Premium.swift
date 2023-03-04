@@ -47,13 +47,14 @@ public extension Events.Premium {
 
     /// Visual confirmation of successful subscription purchase
     /// - Parameter type: "monthly" or "annual
-    static func purchaseSuccess(type: String) -> Event {
+    static func purchaseSuccess(type: PremiumSubscriptionType) -> Event {
         return Impression(
             component: .dialog,
             requirement: .viewable,
             uiEntity: UiEntity(
                 .dialog,
-                identifier: "global-nav.premium.purchase.success"
+                identifier: "global-nav.premium.purchase.success",
+                componentDetail: type.rawValue
             )
         )
     }
