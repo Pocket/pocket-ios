@@ -19,8 +19,9 @@ struct PremiumUpgradeView: View {
         .padding([.top, .bottom], 20)
         .background(PremiumBackgroundView())
         .task {
+            viewModel.trackPremiumUpgradeViewShown()
+            dismissReason = .swipe
             do {
-                dismissReason = .swipe
                 try await viewModel.requestSubscriptions()
             } catch {
                 // TODO: Here we will handle any error providing user feedback if/when needed
@@ -72,6 +73,7 @@ struct PremiumUpgradeView: View {
                         ) {
                             Task {
                                 if Self.shouldAllowUpgrade {
+                                    viewModel.trackMonthlyButtonTapped()
                                     await viewModel.purchaseMonthlySubscription()
                                 } else {
                                     showingMonthlyAlert = true
@@ -95,6 +97,7 @@ struct PremiumUpgradeView: View {
                             ) {
                                 Task {
                                     if Self.shouldAllowUpgrade {
+                                        viewModel.trackAnnualButtonTapped()
                                         await viewModel.purchaseAnnualSubscription()
                                     } else {
                                         showingAnnualAlert = true
