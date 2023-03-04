@@ -12,13 +12,13 @@ public extension Events {
 public extension Events.Premium {
     /// Premium Upgrade View appears
     /// - Parameter source: "settings" or "search"
-    static func premiumUpgradeViewShown(source: String) -> Event {
+    static func premiumUpgradeViewShown(source: PremiumUpgradeSource) -> Event {
         return Engagement(
             .general,
             uiEntity: UiEntity(
                 .screen,
                 identifier: "global-nav.premium",
-                componentDetail: source
+                componentDetail: source.rawValue
             )
         )
     }
