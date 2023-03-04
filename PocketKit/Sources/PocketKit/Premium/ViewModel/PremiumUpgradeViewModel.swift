@@ -93,16 +93,10 @@ class PremiumUpgradeViewModel: ObservableObject {
 }
 
 // MARK: Analytics
-/// Used to track the upsell source
-enum PremiumUpgradeSource: String {
-    case search
-    case settings
-}
-
 extension PremiumUpgradeViewModel {
     /// track Premium Upgrade View shown
     func trackPremiumUpgradeViewShown() {
-        tracker.track(event: Events.Premium.premiumUpgradeViewShown(source: source.rawValue))
+        tracker.track(event: Events.Premium.premiumUpgradeViewShown(source: source))
     }
     /// track monthly button tapped
     func trackMonthlyButtonTapped() {

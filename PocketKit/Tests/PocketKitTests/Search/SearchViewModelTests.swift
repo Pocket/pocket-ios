@@ -15,8 +15,8 @@ import Apollo
 class MockSubscriptionStore: SubscriptionStore {
     @Published var subscriptions: [PocketKit.PremiumSubscription] = []
     var subscriptionsPublisher: Published<[PocketKit.PremiumSubscription]>.Publisher { $subscriptions }
-    @Published var purchasedSubscription: PocketKit.PremiumSubscription?
-    var purchasedSubscriptionPublisher: Published<PocketKit.PremiumSubscription?>.Publisher { $purchasedSubscription }
+    @Published var state: PurchaseState = .unsubscribed
+    var statePublisher: Published<PurchaseState>.Publisher { $state }
     func requestSubscriptions() async throws {
     }
     func purchase(_ subscription: PocketKit.PremiumSubscription) async {
@@ -60,14 +60,14 @@ class SearchViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil
     ) async -> SearchViewModel {
-        let premiumViewModel = await PremiumUpgradeViewModel(store: subscriptionStore)
+        let premiumViewModel = await PremiumUpgradeViewModel(store: subscriptionStore, tracker: MockTracker(), source: .search)
         return SearchViewModel(
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user,
             userDefaults: userDefaults ?? self.userDefaults,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            premiumUpgradeViewModelFactory: {
+            premiumUpgradeViewModelFactory: { _, _ in
                 premiumViewModel
             }
         )
