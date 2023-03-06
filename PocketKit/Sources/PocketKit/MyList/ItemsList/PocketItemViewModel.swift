@@ -56,12 +56,18 @@ class PocketItemViewModel: ObservableObject {
     func favoriteAction() -> ItemAction {
         if isFavorite {
             return .unfavorite { [weak self] _ in
-                guard let self else { return }
+                guard let self else {
+                    Log.capture(message: "Unfavorite action not taken; self is nil")
+                    return
+                }
                 self._unfavorite()
             }
         } else {
             return .favorite { [weak self] _ in
-                guard let self else { return }
+                guard let self else {
+                    Log.capture(message: "Favorite action not taken; self is nil")
+                    return
+                }
                 self._favorite()
             }
         }
