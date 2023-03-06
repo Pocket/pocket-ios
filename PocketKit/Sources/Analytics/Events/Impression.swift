@@ -64,6 +64,7 @@ extension Impression {
         case screen
         case pushNotification
         case button
+        case dialog
 
         func toComponent() -> Component {
             switch self {
@@ -79,6 +80,8 @@ extension Impression {
                 return Component(value: "push_notification", requiredEntities: [])
             case .button:
                 return Component(value: "button", requiredEntities: [])
+            case .dialog:
+                return Component(value: "dialog", requiredEntities: [])
             }
         }
     }

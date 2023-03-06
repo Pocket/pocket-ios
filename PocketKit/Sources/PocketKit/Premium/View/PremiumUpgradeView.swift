@@ -1,3 +1,4 @@
+import SharedPocketKit
 import SwiftUI
 import Textile
 
@@ -6,12 +7,9 @@ struct PremiumUpgradeView: View {
     static let shouldAllowUpgrade = false
     @State private var showingMonthlyAlert = false
     @State private var showingAnnualAlert = false
+    @Binding var dismissReason: DismissReason
     @Environment(\.dismiss) private var dismiss
     @StateObject var viewModel: PremiumUpgradeViewModel
-
-    init(viewModel: PremiumUpgradeViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -21,6 +19,8 @@ struct PremiumUpgradeView: View {
         .padding([.top, .bottom], 20)
         .background(PremiumBackgroundView())
         .task {
+            viewModel.trackPremiumUpgradeViewShown()
+            dismissReason = .swipe
             do {
                 try await viewModel.requestSubscriptions()
             } catch {
@@ -30,6 +30,7 @@ struct PremiumUpgradeView: View {
         }
         .onChange(of: viewModel.shouldDismiss) { shouldDismiss in
             if shouldDismiss {
+                dismissReason = .system
                 dismiss()
             }
         }
@@ -39,6 +40,7 @@ struct PremiumUpgradeView: View {
         HStack(spacing: 0) {
             Spacer()
             Button {
+                self.dismissReason = .button
                 dismiss()
             } label: {
                 Image(asset: .close).renderingMode(.template).foregroundColor(Color(.ui.grey5))
@@ -71,6 +73,7 @@ struct PremiumUpgradeView: View {
                         ) {
                             Task {
                                 if Self.shouldAllowUpgrade {
+                                    viewModel.trackMonthlyButtonTapped()
                                     await viewModel.purchaseMonthlySubscription()
                                 } else {
                                     showingMonthlyAlert = true
@@ -94,6 +97,7 @@ struct PremiumUpgradeView: View {
                             ) {
                                 Task {
                                     if Self.shouldAllowUpgrade {
+                                        viewModel.trackAnnualButtonTapped()
                                         await viewModel.purchaseAnnualSubscription()
                                     } else {
                                         showingAnnualAlert = true

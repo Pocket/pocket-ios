@@ -94,6 +94,126 @@ public extension Events.Search {
     }
 
     /**
+     Fired when a user clicks the Delete option in the overflow menu in a card for `Search`
+     */
+    static func deleteItem(
+        itemUrl: URL,
+        positionInList: Int,
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.delete",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(
+                    url: itemUrl
+                )
+            ]
+        )
+    }
+
+    /**
+     Fired when a user clicks the Archive option in the overflow menu in a card for `Search`
+     */
+    static func archiveItem(
+        itemUrl: URL,
+        positionInList: Int,
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.archive",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(
+                    url: itemUrl
+                )
+            ]
+        )
+    }
+
+    /**
+     Fired when a user clicks the Unarchive option in the overflow menu in a card for `Search`
+     */
+    static func unarchiveItem(
+        itemUrl: URL,
+        positionInList: Int,
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.unarchive",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(
+                    url: itemUrl
+                )
+            ]
+        )
+    }
+
+    /**
+     Fired when a user clicks the Unarchive option in the overflow menu in a card for `Search`
+     */
+    static func overFlowMenu(
+        itemUrl: URL,
+        positionInList: Int,
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.overflow",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(
+                    url: itemUrl
+                )
+            ]
+        )
+    }
+
+    /**
+     Fired when a user clicks the Add Tags option in the overflow menu in a card for `Search`
+     */
+    static func showAddTags(
+        itemUrl: URL,
+        positionInList: Int,
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.addTags",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: positionInList
+            ),
+            extraEntities: [
+                ContentEntity(
+                    url: itemUrl
+                )
+            ]
+        )
+    }
+
+    /**
      Fired when a user opens `Search` experience
      */
     static func openSearch(
@@ -179,6 +299,18 @@ public extension Events.Search {
                 identifier: "global-nav.search.card.open",
                 componentDetail: getScopeIdentifier(scope: scope),
                 index: positionInList
+            )
+        )
+    }
+
+    /// Premium upsell in Search visible
+    static func premiumUpsellViewed() -> Event {
+        return Impression(
+            component: .button,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.search.premium.upsell"
             )
         )
     }
