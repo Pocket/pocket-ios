@@ -156,6 +156,10 @@
 "settings.accountManagement.deleteAccount.deletionConfirmation" = "You understand your Pocket account and data will be **permanently deleted.**";
 //Links to a help article on how to cancel your subscription
 "settings.accountManagement.deleteAccount.howToCancel" = "How to cancel your Pocket Premium subscription";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Deleting your account";
+"settings.accountManagement.deleteAccount.error.headline" = "Oops! Try again?";
+"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
 
 
 //List view

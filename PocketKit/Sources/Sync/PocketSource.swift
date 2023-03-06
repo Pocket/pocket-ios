@@ -179,6 +179,11 @@ public class PocketSource: Source {
             completion()
         }
     }
+
+    /// Sends the delete call to Backend, you must still implement the logout and reset functionality.
+    public func deleteAccount() async throws {
+      _ = try await apollo.perform(mutation: DeleteUserMutation())
+    }
 }
 
 // MARK: - Saves/Archive items

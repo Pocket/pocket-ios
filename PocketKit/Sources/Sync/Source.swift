@@ -18,6 +18,8 @@ public protocol Source {
 
     func clear()
 
+    func deleteAccount() async throws
+
     func makeItemsController() -> SavedItemsController
 
     func makeArchiveService() -> ArchiveService

@@ -7,12 +7,12 @@ import Textile
 
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
-    private let appSession: AppSession
     private let user: User
     private let tracker: Tracker
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
+    private let userManagementService: UserManagementServiceProtocol
 
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
@@ -31,17 +31,24 @@ class AccountViewModel: ObservableObject {
 
     @Published var isPremium: Bool
 
+    /// Signals to the DeleteAccountView that there was an error deleting the account
+    @Published var hasError: Bool = false
+
+    /// Signals to the DeleteAccount View that the account is being deleted.
+    @Published var isDeletingAccount: Bool = false
+
     init(appSession: AppSession,
          user: User,
          tracker: Tracker,
          userDefaults: UserDefaults,
+         userManagementService: UserManagementServiceProtocol,
          notificationCenter: NotificationCenter,
          premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
-        self.appSession = appSession
         self.user = user
         self.tracker = tracker
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
+        self.userManagementService = userManagementService
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         self.isPremium = user.status == .premium
 
@@ -53,18 +60,23 @@ class AccountViewModel: ObservableObject {
             }
     }
 
-    func trackSettingsView() {
-        tracker.track(event: Events.Settings.SettingsView())
-    }
-
+    /// Calls the user management service to delete the account and log the user out.
     func deleteAccount() {
+        self.isDeletingAccount = true
+        Task {
+            do {
+                try await userManagementService.deleteAccount()
+            } catch {
+                Log.capture(error: error)
+                self.hasError = true
+            }
+            self.isDeletingAccount = false
+        }
     }
 
+    /// Calls the user management service to sign the user out.
     func signOut() {
-        // Post that we logged out to the rest of the app using the old session
-        NotificationCenter.default.post(name: .userLoggedOut, object: appSession.currentSession)
-        user.clear()
-        appSession.currentSession = nil
+        userManagementService.logout()
     }
 
     func toggleAppBadge() {
@@ -112,5 +124,10 @@ extension AccountViewModel {
     /// track premium upsell viewed
     func trackPremiumUpsellViewed() {
         tracker.track(event: Events.Settings.premiumUpsellViewed())
+    }
+
+    /// track settings screen was viewed
+    func trackSettingsViewed() {
+        tracker.track(event: Events.Settings.SettingsView())
     }
 }

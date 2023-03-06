@@ -17,7 +17,13 @@ struct DeleteAccountView: View {
     @State var understandsPermanentDeletion: Bool = false
 
     /// State variable listened on from our view model
-    @State var isPresentingCancelationHelp: Bool
+    @State var isPresentingCancelationHelp: Bool = false
+
+    /// State variable to indicate that there was an error and show it to the user
+    @State var hasError: Bool = false
+
+    /// State variable to indicate an account deletion is in progress
+    @State var isDeletingAccount: Bool = false
 
     var deleteAccount: () -> Void
 
@@ -40,7 +46,6 @@ struct DeleteAccountView: View {
                 /**
                  Note below we use LocalizedStringKey. This is a total hack. This is because a SwiftUI text object treats Text("testing") differently then Text(someText). When passed as a variable, the Text view performs no localization, but it also does not render the embedded markdown. When cast to a LocalizedStringKey the Text field will try and localize the content (and fail) but it will render the markdown and bold the text.
                  */
-
                 VStack {
                     if isPremium {
                         Toggle(isOn: $hasCancelledPremium, label: {
@@ -90,7 +95,6 @@ struct DeleteAccountView: View {
                 .buttonStyle(PocketButtonStyle(.secondary))
                 .padding()
                 .accessibilityIdentifier("cancel")
-
                 Spacer()
             }
             .navigationTitle(L10n.Settings.accountManagement)
@@ -109,6 +113,23 @@ struct DeleteAccountView: View {
                 .edgesIgnoringSafeArea(.bottom)
         }
         .accessibilityIdentifier("delete-confirmation")
+        .overlay {
+            if isDeletingAccount {
+                VStack {
+                    HStack {
+                       Spacer()
+                    }
+                    Spacer()
+                    ProgressView().progressViewStyle(.circular).tint(Color(.ui.white1))
+                    Text(L10n.Settings.AccountManagement.DeleteAccount.deleting)
+                    Spacer()
+                }
+                .background(Color(.ui.grey3))
+                .foregroundColor(Color(.ui.white1))
+                .opacity(0.9)
+            }
+        }
+        .banner(data: BannerModifier.BannerData(image: .warning, title: L10n.Settings.AccountManagement.DeleteAccount.Error.headline, detail: L10n.Settings.AccountManagement.DeleteAccount.Error.body), show: $hasError)
     }
 }
 
@@ -138,6 +159,22 @@ struct DeleteAccountView_PreviewProvider: PreviewProvider {
 
         DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
             .previewDisplayName("Premium User - Dark")
+            .preferredColorScheme(.dark)
+
+        DeleteAccountView(isPremium: false, understandsPermanentDeletion: true, isDeletingAccount: true, deleteAccount: {})
+            .previewDisplayName("Deleting Account - Light")
+            .preferredColorScheme(.light)
+
+        DeleteAccountView(isPremium: false, understandsPermanentDeletion: true, isDeletingAccount: true, deleteAccount: {})
+            .previewDisplayName("Deleting Account - Dark")
+            .preferredColorScheme(.dark)
+
+        DeleteAccountView(isPremium: false, understandsPermanentDeletion: true, hasError: true, isDeletingAccount: false, deleteAccount: {})
+            .previewDisplayName("Error - Light")
+            .preferredColorScheme(.light)
+
+        DeleteAccountView(isPremium: false, understandsPermanentDeletion: true, hasError: true, isDeletingAccount: false, deleteAccount: {})
+            .previewDisplayName("Error - Dark")
             .preferredColorScheme(.dark)
     }
 }

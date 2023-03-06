@@ -11,7 +11,7 @@ class SettingsViewController: UIHostingController<SettingsView> {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        rootView.model.trackSettingsView()
+        rootView.model.trackSettingsViewed()
     }
 
     required init?(coder aDecoder: NSCoder) {
