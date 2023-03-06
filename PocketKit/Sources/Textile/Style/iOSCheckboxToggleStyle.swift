@@ -24,7 +24,6 @@ public struct iOSCheckboxToggleStyle: ToggleStyle {
                 configuration.label
             }
             .foregroundColor(Color(.ui.black1))
-
         })
     }
 }
@@ -45,7 +44,7 @@ struct iOSCheckboxToggleStyle_PreviewProvider: PreviewProvider {
         }
         .previewDisplayName("Light")
         .preferredColorScheme(.light)
-        
+
         VStack {
             Toggle(isOn: .constant(true), label: {
                 Text("Toggle On")

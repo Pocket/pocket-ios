@@ -135,7 +135,7 @@ struct DeleteAccountView_PreviewProvider: PreviewProvider {
         DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
             .previewDisplayName("Premium User - Light")
             .preferredColorScheme(.light)
-        
+
         DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
             .previewDisplayName("Premium User - Dark")
             .preferredColorScheme(.dark)

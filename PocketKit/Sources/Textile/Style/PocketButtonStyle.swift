@@ -111,75 +111,67 @@ public struct PocketButtonStyle: ButtonStyle {
 
 struct PocketButton_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        
         VStack {
             Button("Primary Action") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.primary))
-            
+
             Button("Secondary Action") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
-            
+
             Button("Internal Info Link") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.internalInfoLink))
         }
         .previewDisplayName("Enabled - Light")
         .preferredColorScheme(.light)
-        
-        
+
         VStack {
             Button("Primary Action") {}
             .disabled(true)
             .padding()
             .buttonStyle(PocketButtonStyle(.primary))
-            
+
             Button("Secondary Action") {}
             .disabled(true)
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
-            
+
             Button("Internal Info Link") {}
             .disabled(true)
             .padding()
             .buttonStyle(PocketButtonStyle(.internalInfoLink))
-
         }
         .previewDisplayName("Disabled - Light")
         .preferredColorScheme(.light)
-      
-        
+
         VStack {
             Button("Primary Action") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.primary))
-            
+
             Button("Secondary Action") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
-            
+
             Button("Internal Info Link") {}
             .padding()
             .buttonStyle(PocketButtonStyle(.internalInfoLink))
         }
         .previewDisplayName("Enabled - Dark")
         .preferredColorScheme(.dark)
-        
-        
+
         VStack {
-            
             Button("Primary Action") {}
             .disabled(true)
             .padding()
             .buttonStyle(PocketButtonStyle(.primary))
 
-
             Button("Secondary Action") {}
             .disabled(true)
             .padding()
             .buttonStyle(PocketButtonStyle(.secondary))
-
 
             Button("Internal Info Link") {}
             .disabled(true)
