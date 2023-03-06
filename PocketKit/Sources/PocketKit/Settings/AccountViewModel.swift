@@ -42,7 +42,6 @@ class AccountViewModel: ObservableObject {
         self.tracker = tracker
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
-        self.tracker = tracker
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         self.isPremium = user.status == .premium
 
