@@ -13,7 +13,7 @@ enum SubscriptionStoreError: Error {
 }
 
 /// Describes the state of a purchase made from a `SubscriptionStore`
-enum PurchaseState {
+public enum PurchaseState {
     case unsubscribed
     case subscribed(PremiumSubscriptionType)
     case cancelled
@@ -21,7 +21,7 @@ enum PurchaseState {
 }
 
 /// Generic type representing a subscription store
-protocol SubscriptionStore {
+public protocol SubscriptionStore {
     var subscriptions: [PremiumSubscription] { get }
     var subscriptionsPublisher: Published<[PremiumSubscription]>.Publisher { get }
     var state: PurchaseState { get }

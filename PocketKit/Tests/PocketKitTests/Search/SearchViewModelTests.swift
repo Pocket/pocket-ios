@@ -12,17 +12,6 @@ import Apollo
 @testable import Sync
 @testable import PocketKit
 
-class MockSubscriptionStore: SubscriptionStore {
-    @Published var subscriptions: [PocketKit.PremiumSubscription] = []
-    var subscriptionsPublisher: Published<[PocketKit.PremiumSubscription]>.Publisher { $subscriptions }
-    @Published var state: PurchaseState = .unsubscribed
-    var statePublisher: Published<PurchaseState>.Publisher { $state }
-    func requestSubscriptions() async throws {
-    }
-    func purchase(_ subscription: PocketKit.PremiumSubscription) async {
-    }
-}
-
 class SearchViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!

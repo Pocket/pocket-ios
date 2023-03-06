@@ -5,7 +5,7 @@ import SharedPocketKit
 import StoreKit
 
 /// A type that maps to a subscription product on the App Store
-struct PremiumSubscription {
+public struct PremiumSubscription {
     let product: Product
 
     var name: String {
