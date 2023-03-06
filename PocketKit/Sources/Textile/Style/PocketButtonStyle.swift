@@ -32,17 +32,17 @@ public struct PocketButtonStyle: ButtonStyle {
         struct Secondary {
             static let tintColor = Color(.ui.grey1)
             static let backgroundColor = Color(.clear)
-            static let pressedBackgroundColor = Color(.ui.black)
-            static let foregroundColor = Color(.ui.black)
-            static let pressedForegorundColor = Color(.ui.white)
+            static let pressedBackgroundColor = Color(.ui.black1)
+            static let foregroundColor = Color(.ui.black1)
+            static let pressedForegorundColor = Color(.ui.white1)
         }
 
         struct InternalInfoLink {
             static let tintColor = Color(.ui.grey5)
             static let backgroundColor = Color(.ui.grey6)
-            static let pressedBackgroundColor = Color(.ui.black)
+            static let pressedBackgroundColor = Color(.ui.black1)
             static let foregroundColor = Color(.ui.grey4)
-            static let pressedForegorundColor = Color(.ui.white)
+            static let pressedForegorundColor = Color(.ui.white1)
             static let buttonHeight: CGFloat = 34
             static let style = Style.header.sansSerif.p4
         }
@@ -82,7 +82,7 @@ public struct PocketButtonStyle: ButtonStyle {
                     .frame(height: Constants.buttonHeight)
                     .overlay(
                         RoundedRectangle(cornerRadius: 4)
-                            .stroke(Color(.ui.black), lineWidth: 2)
+                            .stroke(Color(.ui.black1), lineWidth: 2)
                     )
                    .background( configuration.isPressed ? Constants.Secondary.pressedBackgroundColor : Constants.Secondary.backgroundColor)
                    .foregroundColor(configuration.isPressed ? Constants.Secondary.pressedForegorundColor: Constants.Secondary.foregroundColor)
@@ -111,37 +111,82 @@ public struct PocketButtonStyle: ButtonStyle {
 
 struct PocketButton_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        Button("Primary Action") {}
-        .padding()
-        .buttonStyle(PocketButtonStyle(.primary))
-        .previewDisplayName("Primary - Enabled")
+        
+        VStack {
+            Button("Primary Action") {}
+            .padding()
+            .buttonStyle(PocketButtonStyle(.primary))
+            
+            Button("Secondary Action") {}
+            .padding()
+            .buttonStyle(PocketButtonStyle(.secondary))
+            
+            Button("Internal Info Link") {}
+            .padding()
+            .buttonStyle(PocketButtonStyle(.internalInfoLink))
+        }
+        .previewDisplayName("Enabled - Light")
+        .preferredColorScheme(.light)
+        
+        
+        VStack {
+            Button("Primary Action") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.primary))
+            
+            Button("Secondary Action") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.secondary))
+            
+            Button("Internal Info Link") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.internalInfoLink))
 
-        Button("Primary Action") {}
-        .disabled(true)
-        .padding()
-        .buttonStyle(PocketButtonStyle(.primary))
-        .previewDisplayName("Primary - Disabled")
+        }
+        .previewDisplayName("Disabled - Light")
+        .preferredColorScheme(.light)
+      
+        
+        VStack {
+            Button("Primary Action") {}
+            .padding()
+            .buttonStyle(PocketButtonStyle(.primary))
+            
+            Button("Secondary Action") {}
+            .padding()
+            .buttonStyle(PocketButtonStyle(.secondary))
+            
+            Button("Internal Info Link") {}
+            .padding()
+            .buttonStyle(PocketButtonStyle(.internalInfoLink))
+        }
+        .previewDisplayName("Enabled - Dark")
+        .preferredColorScheme(.dark)
+        
+        
+        VStack {
+            
+            Button("Primary Action") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.primary))
 
-        Button("Secondary Action") {}
-        .padding()
-        .buttonStyle(PocketButtonStyle(.secondary))
-        .previewDisplayName("Secondary - Enabled")
 
-        Button("Secondary Action") {}
-        .disabled(true)
-        .padding()
-        .buttonStyle(PocketButtonStyle(.secondary))
-        .previewDisplayName("Secondary - Disabled")
+            Button("Secondary Action") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.secondary))
 
-        Button("Internal Info Link") {}
-        .padding()
-        .buttonStyle(PocketButtonStyle(.internalInfoLink))
-        .previewDisplayName("Internal Info Link - Enabled")
 
-        Button("Internal Info Link") {}
-        .disabled(true)
-        .padding()
-        .buttonStyle(PocketButtonStyle(.internalInfoLink))
-        .previewDisplayName("Internal Info Link - Disabled")
+            Button("Internal Info Link") {}
+            .disabled(true)
+            .padding()
+            .buttonStyle(PocketButtonStyle(.internalInfoLink))
+        }
+        .previewDisplayName("Disabled - Dark")
+        .preferredColorScheme(.dark)
     }
 }

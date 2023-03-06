@@ -47,7 +47,6 @@ struct DeleteAccountView: View {
                             Text(LocalizedStringKey(L10n.Settings.AccountManagement.DeleteAccount.premiumConfirmation))
                                 .multilineTextAlignment(.leading)
                         })
-                        .foregroundColor(.black)
                         .toggleStyle(iOSCheckboxToggleStyle())
                         .accessibilityIdentifier("confirm-cancelled")
                     }
@@ -56,7 +55,6 @@ struct DeleteAccountView: View {
                         Text(LocalizedStringKey(L10n.Settings.AccountManagement.DeleteAccount.deletionConfirmation))
                             .multilineTextAlignment(.leading)
                     })
-                    .foregroundColor(.black)
                     .toggleStyle(iOSCheckboxToggleStyle())
                     .accessibilityIdentifier("understand-deletion")
                 }.padding()
@@ -127,9 +125,19 @@ extension Style {
 struct DeleteAccountView_PreviewProvider: PreviewProvider {
     static var previews: some View {
         DeleteAccountView(isPremium: false, isPresentingCancelationHelp: false, deleteAccount: {})
-            .previewDisplayName("Free User")
+            .previewDisplayName("Free User - Light")
+            .preferredColorScheme(.light)
+
+        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: false, deleteAccount: {})
+            .previewDisplayName("Free User - Dark")
+            .preferredColorScheme(.dark)
 
         DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
-            .previewDisplayName("Premium User")
+            .previewDisplayName("Premium User - Light")
+            .preferredColorScheme(.light)
+        
+        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
+            .previewDisplayName("Premium User - Dark")
+            .preferredColorScheme(.dark)
     }
 }

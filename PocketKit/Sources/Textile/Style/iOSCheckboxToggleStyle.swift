@@ -17,12 +17,14 @@ public struct iOSCheckboxToggleStyle: ToggleStyle {
         }, label: {
             HStack {
                 if configuration.isOn {
-                    SFIcon(SFIconModel("checkmark.square.fill", color: Color(.ui.white), secondaryColor: Color(.ui.teal2)))
+                    SFIcon(SFIconModel("checkmark.square.fill", color: Color(.ui.white1), secondaryColor: Color(.ui.teal2)))
                 } else {
                     SFIcon(SFIconModel("square", color: Color(.ui.grey3)))
                 }
                 configuration.label
             }
+            .foregroundColor(Color(.ui.black1))
+
         })
     }
 }
@@ -41,5 +43,22 @@ struct iOSCheckboxToggleStyle_PreviewProvider: PreviewProvider {
             })
             .toggleStyle(iOSCheckboxToggleStyle())
         }
+        .previewDisplayName("Light")
+        .preferredColorScheme(.light)
+        
+        VStack {
+            Toggle(isOn: .constant(true), label: {
+                Text("Toggle On")
+            })
+            .padding()
+            .toggleStyle(iOSCheckboxToggleStyle())
+
+            Toggle(isOn: .constant(false), label: {
+                Text("Toggle Off")
+            })
+            .toggleStyle(iOSCheckboxToggleStyle())
+        }
+        .previewDisplayName("Dark")
+        .preferredColorScheme(.dark)
     }
 }
