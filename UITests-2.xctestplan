@@ -84,6 +84,7 @@
         "SavesFiltersTests",
         "SavesTests",
         "SearchTests",
+        "SettingsTest",
         "ShareAnItemTests",
         "SignOutTests"
       ],

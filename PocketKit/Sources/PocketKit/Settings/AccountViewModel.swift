@@ -20,6 +20,9 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingSignOutConfirm = false
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingLicenses = false
+    @Published var isPresentingAccountManagement = false
+    @Published var isPresentingDeleteYourAccount = false
+    @Published var isPresentingCancelationHelp = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
@@ -48,6 +51,13 @@ class AccountViewModel: ObservableObject {
             .sink { [weak self] status in
                 self?.isPremium = status == .premium
             }
+    }
+
+    func trackSettingsView() {
+        tracker.track(event: Events.Settings.SettingsView())
+    }
+
+    func deleteAccount() {
     }
 
     func signOut() {

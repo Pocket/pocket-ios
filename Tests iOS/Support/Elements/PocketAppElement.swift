@@ -31,8 +31,16 @@ struct PocketAppElement {
         return SavesElement(app)
     }
 
-    var accountView: AccountViewElement {
-        return AccountViewElement(app.collectionViews["account"])
+    var settingsView: SettingsViewElement {
+        return SettingsViewElement(app.collectionViews["settings"])
+    }
+
+    var accountManagementView: AccountManagementViewElement {
+        return AccountManagementViewElement(app.collectionViews["account-management"])
+    }
+
+    var deleteConfirmationView: DeleteConfirmationViewElement {
+        return DeleteConfirmationViewElement(app.otherElements["delete-confirmation"])
     }
 
     var slateDetailView: SlateDetailElement {

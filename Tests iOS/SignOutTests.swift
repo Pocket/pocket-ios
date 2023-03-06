@@ -64,6 +64,6 @@ class SignOutTests: XCTestCase {
     }
 
     func tap_SignOut() {
-        app.accountView.logOutButton.tap()
+        app.settingsView.logOutButton.tap()
     }
 }

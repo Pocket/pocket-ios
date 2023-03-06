@@ -15,6 +15,10 @@ extension Response {
         }
     }
 
+    static func freeUserSaves(_ fixtureName: String = "initial-list") -> Response {
+        saves("initial-list-free-user")
+    }
+
     static func archivedContent() -> Response {
         saves("archived-items")
     }
@@ -106,6 +110,20 @@ extension Response {
         Response {
             Status.ok
             Fixture.data(name: fixtureName)
+        }
+    }
+
+    static func fallbackResponses(apiRequest: ClientAPIRequest) -> Response {
+        if apiRequest.isForSlateLineup {
+            return Response.slateLineup()
+        } else if apiRequest.isForArchivedContent {
+            return Response.archivedContent()
+        } else if apiRequest.isForTags {
+            return Response.emptyTags()
+        } else if apiRequest.isForSavesContent {
+            return Response.saves()
+        } else {
+            fatalError("Unexpected request")
         }
     }
 }

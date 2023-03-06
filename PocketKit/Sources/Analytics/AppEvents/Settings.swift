@@ -10,6 +10,18 @@ public extension Events {
 }
 
 public extension Events.Settings {
+    /**
+     Fired when a user views the settings screen
+     */
+    static func SettingsView() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.settings"
+            )
+        )
+    }
     /// "Go Premium" button viewed
     static func premiumUpsellViewed() -> Event {
         return Impression(

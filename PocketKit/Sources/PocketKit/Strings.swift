@@ -43,6 +43,8 @@ internal enum L10n {
   internal static let authorizationClientIsAlreadyAuthenticating = L10n.tr("Localizable", "AuthorizationClient is already authenticating", fallback: "AuthorizationClient is already authenticating")
   /// Cancel
   internal static let cancel = L10n.tr("Localizable", "Cancel", fallback: "Cancel")
+  /// Close
+  internal static let close = L10n.tr("Localizable", "Close", fallback: "Close")
   /// Collect articles, videos or any online content you like.
   internal static let collectArticlesVideosOrAnyOnlineContentYouLike = L10n.tr("Localizable", "Collect articles, videos or any online content you like.", fallback: "Collect articles, videos or any online content you like.")
   /// Copy link
@@ -269,6 +271,8 @@ internal enum L10n {
     }
   }
   internal enum Settings {
+    /// Account Management
+    internal static let accountManagement = L10n.tr("Localizable", "settings.accountManagement", fallback: "Account Management")
     /// Go Premium
     internal static let goPremiumRow = L10n.tr("Localizable", "settings.goPremiumRow", fallback: "Go Premium")
     /// Get Help and Support
@@ -283,6 +287,22 @@ internal enum L10n {
     }
     /// Premium Subscription
     internal static let premiumSubscriptionRow = L10n.tr("Localizable", "settings.premiumSubscriptionRow", fallback: "Premium Subscription")
+    internal enum AccountManagement {
+      /// Delete Account
+      internal static let deleteAccount = L10n.tr("Localizable", "settings.accountManagement.deleteAccount", fallback: "Delete Account")
+      /// Delete your account
+      internal static let deleteYourAccount = L10n.tr("Localizable", "settings.accountManagement.deleteYourAccount", fallback: "Delete your account")
+      internal enum DeleteAccount {
+        /// You understand your Pocket account and data will be **permanently deleted.**
+        internal static let deletionConfirmation = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.deletionConfirmation", fallback: "You understand your Pocket account and data will be **permanently deleted.**")
+        /// How to cancel your Pocket Premium subscription
+        internal static let howToCancel = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.howToCancel", fallback: "How to cancel your Pocket Premium subscription")
+        /// To delete your account, you must first **cancel your Premium subscription here.**
+        internal static let premiumConfirmation = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.premiumConfirmation", fallback: "To delete your account, you must first **cancel your Premium subscription here.**")
+        /// Warning: this can't be undone
+        internal static let warning = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.warning", fallback: "Warning: this can't be undone")
+      }
+    }
     internal enum Logout {
       /// Are you sure?
       internal static let areyousure = L10n.tr("Localizable", "settings.logout.areyousure", fallback: "Are you sure?")

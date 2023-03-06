@@ -9,6 +9,11 @@ class SettingsViewController: UIHostingController<SettingsView> {
         UITableView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = .clear
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        rootView.model.trackSettingsView()
+    }
+
     required init?(coder aDecoder: NSCoder) {
         fatalError()
     }
@@ -35,7 +40,7 @@ struct SettingsView: View {
             }
         }
         .navigationBarTitle(L10n.settings, displayMode: .large)
-        .accessibilityIdentifier("account")
+        .accessibilityIdentifier("settings")
     }
 }
 
@@ -59,22 +64,22 @@ struct SettingsForm: View {
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
-                            SFSafariView(url: URL(string: "https://help.getpocket.com")!)
+                            SFSafariView(url: LinkedExternalURLS.Help)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: L10n.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
                         .sheet(isPresented: $model.isPresentingTerms) {
-                            SFSafariView(url: URL(string: "https://getpocket.com/en/tos/")!)
+                            SFSafariView(url: LinkedExternalURLS.TermsOfService)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: L10n.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
                         .sheet(isPresented: $model.isPresentingPrivacy) {
-                            SFSafariView(url: URL(string: "https://getpocket.com/en/privacy/")!)
+                            SFSafariView(url: LinkedExternalURLS.PrivacyPolicy)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: L10n.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle() }
                         .sheet(isPresented: $model.isPresentingLicenses) {
-                            SFSafariView(url: URL(string: "https://getpocket.com/opensource_notices_ios")!)
+                            SFSafariView(url: LinkedExternalURLS.OpenSourceNotices)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                 }.textCase(nil)
@@ -127,6 +132,21 @@ extension SettingsForm {
             } else {
                 makeGoPremiumRow()
             }
+
+            // Custom implementation to hide the > arrow and let us use our own.
+            ZStack {
+                NavigationLink(destination: AccountManagementView(model: model)) {
+                    EmptyView()
+                }
+                .opacity(0.0)
+                .buttonStyle(PlainButtonStyle())
+
+                HStack {
+                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {}
+                        .accessibilityIdentifier("account-management-button")
+                }
+            }
+
             SettingsRowButton(
                 title: L10n.Settings.logout,
                 titleStyle: .settings.button.signOut,

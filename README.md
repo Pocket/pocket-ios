@@ -144,3 +144,9 @@ Snowplow micro has 4 endpoints of note:
 3. http://localhost:9090/micro/reset - Resets snowplow to 0 events received. Should be ran at the start of each test.
 
 [SnowplowMicro](./Tests iOS/Support/SnowplowMicro) class is used to interact with Snowplow and provide helper assertions to make testing events easier.
+
+### Swift Previews
+
+Due to the project structure being a Package within an app, Swift previews do not work in the way you would expect. When working on SwiftUI with previews you need to select the build scheme in the xcode menu bar for the package you are working on. I.E. If you are working on a SwiftUI view under PocketKit ensure PocketKit is selected in the scheme editor, if you are working in Textile, make sure Textile is selected.
+
+Also in order to support SwiftUI Previews, view models should not be passed directly into the View and instead the properties and actions should be passed directly. [See this opinion piece for more on the subject.](https://medium.com/swift2go/swiftui-opinion-viewmodel-doesnt-belong-in-previews-62d9e1485b38)

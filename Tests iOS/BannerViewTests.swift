@@ -60,7 +60,7 @@ class BannerViewTests: XCTestCase {
         app.bannerView.wait()
 
         XCUIDevice.shared.press(.home)
-        _ = app.launch().accountView
+        _ = app.launch().settingsView
         app.bannerView.wait()
     }
 
@@ -99,7 +99,7 @@ class BannerViewTests: XCTestCase {
         waitForDisappearance(of: app.bannerView)
 
         XCUIDevice.shared.press(.home)
-        _ = app.launch().accountView
+        _ = app.launch().settingsView
         waitForDisappearance(of: app.bannerView)
     }
 
