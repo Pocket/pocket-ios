@@ -26,7 +26,7 @@ class SettingsTest: XCTestCase {
     }
 
     @MainActor
-    func test_tappingDeletingAccountShowsDeleteConfirmation_freeUser() async {
+    func test_deleteAccount_free_succeeds() async {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
@@ -39,17 +39,13 @@ class SettingsTest: XCTestCase {
 
         await loadDeleteConfirmationView()
 
-        app.deleteConfirmationView.understandDeletionSwitch.tap()
-
-        XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
-
-        app.deleteConfirmationView.deleteAccountButton.tap()
+        freeUser_tapDeleteToggles()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
-    func test_tappingDeletingAccountShowsDeleteConfirmation_premiumUser() async {
+    func test_deleteAccount_premium_succeeds() async {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
@@ -61,17 +57,70 @@ class SettingsTest: XCTestCase {
         app.launch()
         await loadDeleteConfirmationView()
 
-        app.deleteConfirmationView.understandDeletionSwitch.tap()
-        app.deleteConfirmationView.confirmCancelledSwitch.tap()
-
-        XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
-
-        app.deleteConfirmationView.deleteAccountButton.tap()
+        premiumUser_tapDeleteToggles()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
+    func test_deleteAccount_premium_showsError() async {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSavesContent {
+                return Response.saves()
+            } else if apiRequest.isForDeleteUser {
+                return Response.deleteUserError()
+            }
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+
+        app.launch()
+        await loadDeleteConfirmationView()
+        premiumUser_tapDeleteToggles()
+        app.deleteConfirmationView.deleteAccountButton.tap()
+
+        // check loading screen
+        // wait for errror message
+    }
+
+    @MainActor
+    func test_deleteAccount_free_showsError() async {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSavesContent {
+                return Response.freeUserSaves()
+            } else if apiRequest.isForDeleteUser {
+                return Response.deleteUserError()
+            }
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+
+        app.launch()
+        await loadDeleteConfirmationView()
+        premiumUser_tapDeleteToggles()
+        app.deleteConfirmationView.deleteAccountButton.tap()
+
+        // check loading screen
+        // wait for errror message
+    }
+
+    /// Utillity to tap and assert the toggles for delete confirmation screen for premium users
+    func premiumUser_tapDeleteToggles() {
+        app.deleteConfirmationView.understandDeletionSwitch.tap()
+        app.deleteConfirmationView.confirmCancelledSwitch.tap()
+
+        XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
+    }
+
+    /// Utillity to tap and assert the toggles for delete confirmation screen for free users
+    func freeUser_tapDeleteToggles() {
+        app.deleteConfirmationView.understandDeletionSwitch.tap()
+
+        XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
+    }
+
+    @MainActor
+    /// Helper to load and assert the basics of the delete confirmation view
     func loadDeleteConfirmationView() async {
         app.tabBar.settingsButton.wait().tap()
         XCTAssertTrue(app.settingsView.exists)
