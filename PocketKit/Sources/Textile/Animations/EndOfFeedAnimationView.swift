@@ -1,8 +1,7 @@
 import UIKit
 import Lottie
-import Textile
 
-class EndOfFeedAnimationView: UIView {
+public class EndOfFeedAnimationView: UIView {
     private lazy var textLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.numberOfLines = 0
@@ -10,7 +9,7 @@ class EndOfFeedAnimationView: UIView {
         return label
     }()
 
-    var attributedText: NSAttributedString? {
+    public var attributedText: NSAttributedString? {
         get { textLabel.attributedText }
         set { textLabel.attributedText = newValue }
     }
@@ -21,7 +20,7 @@ class EndOfFeedAnimationView: UIView {
         return view
     }()
 
-    var isAnimating: Bool {
+    public var isAnimating: Bool {
         get { animationView.isAnimationPlaying }
         set {
             if newValue == true {
@@ -36,9 +35,9 @@ class EndOfFeedAnimationView: UIView {
         }
     }
 
-    private(set) var didFinishPreviousAnimation: Bool = false
+    private(set) public var didFinishPreviousAnimation: Bool = false
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
 
         textLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
@@ -71,7 +70,7 @@ class EndOfFeedAnimationView: UIView {
         fatalError()
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    override public func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         updatePageColors()
     }
 

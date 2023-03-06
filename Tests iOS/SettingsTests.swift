@@ -78,8 +78,8 @@ class SettingsTest: XCTestCase {
         await loadDeleteConfirmationView()
         premiumUser_tapDeleteToggles()
         app.deleteConfirmationView.deleteAccountButton.tap()
+        _ = app.deleteConfirmationView.deletingOverlay.waitForExistence(timeout: 5)
 
-        // check loading screen
         // wait for errror message
     }
 

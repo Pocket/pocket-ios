@@ -120,13 +120,14 @@ struct DeleteAccountView: View {
                        Spacer()
                     }
                     Spacer()
-                    ProgressView().progressViewStyle(.circular).tint(Color(.ui.white1))
+                    LottieView(.loading).aspectRatio(contentMode: .fit).frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 300)
                     Text(L10n.Settings.AccountManagement.DeleteAccount.deleting)
                     Spacer()
                 }
                 .background(Color(.ui.grey3))
                 .foregroundColor(Color(.ui.white1))
                 .opacity(0.9)
+                .accessibilityIdentifier("deleting-overlay")
             }
         }
         .banner(data: BannerModifier.BannerData(image: .warning, title: L10n.Settings.AccountManagement.DeleteAccount.Error.headline, detail: L10n.Settings.AccountManagement.DeleteAccount.Error.body), show: $hasError)
