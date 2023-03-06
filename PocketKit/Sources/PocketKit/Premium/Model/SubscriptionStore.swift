@@ -28,4 +28,5 @@ protocol SubscriptionStore {
     var statePublisher: Published<PurchaseState>.Publisher { get }
     func requestSubscriptions() async throws
     func purchase(_ subscription: PremiumSubscription) async
+    func restoreSubscription() async throws
 }
