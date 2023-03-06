@@ -15,6 +15,10 @@ extension SearchSavedItem: ItemsListItem {
         remoteItem.isFavorite
     }
 
+    var isArchived: Bool {
+        remoteItem.isArchived
+    }
+
     var title: String? {
         item.asItem?.title
     }

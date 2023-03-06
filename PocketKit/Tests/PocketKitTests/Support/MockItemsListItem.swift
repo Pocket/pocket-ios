@@ -5,6 +5,7 @@ struct MockItemsListItem: ItemsListItem {
     let id: String?
     let title: String?
     let isFavorite: Bool
+    let isArchived: Bool
     let bestURL: URL?
     let topImageURL: URL?
     let domain: String?
@@ -18,6 +19,7 @@ struct MockItemsListItem: ItemsListItem {
         id: String? = nil,
         title: String? = nil,
         isFavorite: Bool = false,
+        isArchived: Bool = false,
         bestURL: URL? = nil,
         topImageURL: URL? = nil,
         domain: String? = nil,
@@ -31,6 +33,7 @@ struct MockItemsListItem: ItemsListItem {
             id: id,
             title: title,
             isFavorite: isFavorite,
+            isArchived: isArchived,
             bestURL: bestURL,
             topImageURL: topImageURL,
             domain: domain,

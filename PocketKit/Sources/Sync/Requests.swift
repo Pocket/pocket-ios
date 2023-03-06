@@ -215,4 +215,9 @@ public enum Predicates {
         let predicates = filters + [NSPredicate(format: "isArchived = true && deletedAt = nil")]
         return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
     }
+
+    public static func allItems(filters: [NSPredicate] = []) -> NSPredicate {
+        let predicates = filters + [NSPredicate(format: "deletedAt = nil")]
+        return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+    }
 }

@@ -3,7 +3,7 @@ import Foundation
 
 extension SavedItem: ItemsListItem {
     var id: String? {
-        item?.remoteID
+        remoteID
     }
 
     var domain: String? {

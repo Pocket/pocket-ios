@@ -3,6 +3,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
+import SharedPocketKit
+
 public extension Events {
     struct Settings {}
 }
@@ -17,6 +19,17 @@ public extension Events.Settings {
             uiEntity: UiEntity(
                 .screen,
                 identifier: "global-nav.settings"
+            )
+        )
+    }
+    /// "Go Premium" button viewed
+    static func premiumUpsellViewed() -> Event {
+        return Impression(
+            component: .button,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "account.premium.upsell"
             )
         )
     }

@@ -41,6 +41,10 @@ struct ItemRowElement: PocketUIElement {
     var shareButton: XCUIElement {
         element.buttons["item-action-share"]
     }
+
+    var overFlowMenu: XCUIElement {
+        element.buttons["overflow-menu"]
+    }
 }
 
 extension ItemRowElement {

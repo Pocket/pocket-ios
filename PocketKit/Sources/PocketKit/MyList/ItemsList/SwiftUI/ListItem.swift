@@ -7,8 +7,6 @@ struct ListItem: View {
     @ObservedObject
     var viewModel: PocketItemViewModel
 
-    let scope: SearchScope
-
     let constants = Constants.self
 
     var body: some View {
@@ -26,9 +24,8 @@ struct ListItem: View {
             HStack(alignment: .center, spacing: constants.tags.horizontalSpacing) {
                 ItemTags(tags: viewModel.item.tags, tagCount: viewModel.item.tagCount)
                 Spacer()
-                ActionButton(viewModel.favoriteAction(index: viewModel.index, scope: scope), selected: viewModel.isFavorite)
-
-                ActionButton(viewModel.shareAction(index: viewModel.index, scope: scope))
+                ActionButton(viewModel.favoriteAction(), selected: viewModel.isFavorite)
+                ActionButton(viewModel.shareAction())
                     .sheet(isPresented: $viewModel.presentShareSheet) {
                         if #available(iOS 16.0, *) {
                             ShareSheetView(activity: PocketItemActivity(url: viewModel.item.url))
@@ -38,8 +35,9 @@ struct ListItem: View {
                             ShareSheetView(activity: PocketItemActivity(url: viewModel.item.url))
                         }
                     }
-
-                OverflowMenu(overflowActions: viewModel.overflowActions, trackOverflow: viewModel.trackOverflow, trailingPadding: false)
+                // Instead of using existing code of overflow, we created a new SwiftUI view
+                OverflowMenu()
+                    .environmentObject(viewModel)
             }
         }
         .padding(.vertical, constants.verticalPadding)
