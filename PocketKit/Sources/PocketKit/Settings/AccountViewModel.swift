@@ -4,6 +4,7 @@ import SharedPocketKit
 import SwiftUI
 import Sync
 import Textile
+import Network
 
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
@@ -13,6 +14,7 @@ class AccountViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
+    private let networkPathMonitor: NetworkPathMonitor
 
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
@@ -23,6 +25,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingAccountManagement = false
     @Published var isPresentingDeleteYourAccount = false
     @Published var isPresentingCancelationHelp = false
+    @Published var isPresentingOfflineView = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
@@ -31,11 +34,16 @@ class AccountViewModel: ObservableObject {
 
     @Published var isPremium: Bool
 
+    var isOffline: Bool {
+        return networkPathMonitor.currentNetworkPath.status == .unsatisfied
+    }
+
     init(appSession: AppSession,
          user: User,
          tracker: Tracker,
          userDefaults: UserDefaults,
          notificationCenter: NotificationCenter,
+         networkPathMonitor: NetworkPathMonitor,
          premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
         self.appSession = appSession
         self.user = user
@@ -44,6 +52,7 @@ class AccountViewModel: ObservableObject {
         self.notificationCenter = notificationCenter
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         self.isPremium = user.status == .premium
+        self.networkPathMonitor = networkPathMonitor
 
         userStatusListener = user
             .statusPublisher
@@ -95,6 +104,15 @@ extension AccountViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+}
+
+extension AccountViewModel {
+    func showOfflinePremiumAlert() {
+        isPresentingOfflineView = true
+//        if isOffline {
+//            isPresentingOfflineView = true
+//        }
     }
 }
 

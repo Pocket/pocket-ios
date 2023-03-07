@@ -157,6 +157,10 @@
 //Links to a help article on how to cancel your subscription
 "settings.accountManagement.deleteAccount.howToCancel" = "How to cancel your Pocket Premium subscription";
 
+"settings.noInternet.connection" = "No Internet Connection";
+"settings.noInternet.youMust BeOnline" = "You must be online to upgrade to Pocket Premium. Please check your connection and try again.";
+"settings.noInternet.ok" = "OK";
+"settings.noInternet.goToSettings" = "Go to Settings";
 
 //List view
 "item.list.min" = "%@ min";

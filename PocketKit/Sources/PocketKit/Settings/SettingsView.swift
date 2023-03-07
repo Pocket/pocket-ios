@@ -177,7 +177,14 @@ extension SettingsForm {
         let title = isPremium ? L10n.Settings.premiumSubscriptionRow : L10n.Settings.goPremiumRow
         let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
         let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
-        let action = isPremium ? { } : { model.showPremiumUpgrade() }
+        let action = isPremium ? { model.showOfflinePremiumAlert() } : {
+            model.showOfflinePremiumAlert()
+//            if model.isOffline {
+//                model.showOfflinePremiumAlert()
+//            } else {
+//                model.showPremiumUpgrade()
+//            }
+        }
         return SettingsRowButton(
             title: title,
             titleStyle: titleStyle,
@@ -201,6 +208,21 @@ extension SettingsForm {
             .task {
                 model.trackPremiumUpsellViewed()
             }
+    }
+
+    private func showOfflinePremiumUpgrade() -> some View {
+        VStack {}
+            .alert(
+                L10n.Settings.NoInternet.connection,
+                   isPresented: $model.isPresentingOfflineView,
+                   actions: {
+                Button(L10n.Settings.NoInternet.ok, role: nil, action: {})
+                Button(L10n.Settings.NoInternet.goToSettings, role: nil, action: {
+                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                })
+            }, message: {
+                Text(L10n.Settings.NoInternet.youMustBeOnline)
+            })
     }
 
     private func makePremiumSubscriptionRow() -> some View {

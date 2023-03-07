@@ -47,7 +47,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         user: Services.shared.user,
                         tracker: Services.shared.tracker,
                         userDefaults: Services.shared.userDefaults,
-                        notificationCenter: .default
+                        notificationCenter: .default,
+                        networkPathMonitor: NWPathMonitor()
                     ) { tracker, source in
                         PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
                     }
