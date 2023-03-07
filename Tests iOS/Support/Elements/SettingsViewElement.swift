@@ -18,4 +18,12 @@ struct SettingsViewElement: PocketUIElement {
     var accountManagementButton: XCUIElement {
         element.buttons["account-management-button"]
     }
+
+    var goPremiumButton: XCUIElement {
+        element.buttons["go-premium-button"]
+    }
+
+    var premiumSubscriptionButton: XCUIElement {
+        element.buttons["premium-subscription-button"]
+    }
 }
