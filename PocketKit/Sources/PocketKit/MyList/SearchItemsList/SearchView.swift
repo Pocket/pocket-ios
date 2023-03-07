@@ -119,6 +119,7 @@ struct GetPocketPremiumButton: View {
             .task {
                 searchViewModel.trackPremiumUpsellViewed()
             }
+            .accessibilityIdentifier("get-pocket-premium-button")
     }
 }
 
