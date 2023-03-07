@@ -5,13 +5,25 @@ import Combine
 import UIKit
 
 class SavedItemsListViewModel: NSObject, ItemsListViewModel {
+    enum SavesViewType {
+        case saves
+        case archive
+    }
+
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
 
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
 
-    let selectionItem: SelectionItem = SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+    var selectionItem: SelectionItem {
+        switch self.viewType {
+            case .saves:
+                return SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+            case .archive:
+                return SelectionItem(title: L10n.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
+        }
+    }
 
     @Published
     private var _snapshot = Snapshot()
@@ -50,8 +62,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return FavoritesEmptyStateViewModel()
         } else if selectedFilters.contains(.tagged) {
             return TagsEmptyStateViewModel()
-        } else {
-            return SavesEmptyStateViewModel()
+        }
+
+        switch self.viewType {
+            case .saves:
+                return SavesEmptyStateViewModel()
+            case .archive:
+                return ArchiveEmptyStateViewModel()
         }
     }
 
@@ -63,14 +80,24 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
+    private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, listOptions: ListOptions, notificationCenter: NotificationCenter) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, notificationCenter: NotificationCenter) {
         self.source = source
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
-        self.itemsController = source.makeItemsController()
-        self.listOptions = listOptions
+        self.viewType = viewType
+
+        switch self.viewType {
+        case .saves:
+            self.itemsController = source.makeSavesController()
+            self.listOptions = .saved
+        case .archive:
+            self.itemsController = source.makeArchiveController()
+            self.listOptions = .archived
+        }
+
         self.notificationCenter = notificationCenter
 
         super.init()
@@ -146,7 +173,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func fetchItems(with predicates: [NSPredicate]) {
-        self.itemsController.predicate = Predicates.savedItems(filters: predicates)
+        switch self.viewType {
+            case .saves:
+                self.itemsController.predicate = Predicates.savedItems(filters: predicates)
+            case .archive:
+                self.itemsController.predicate = Predicates.archivedItems(filters: predicates)
+        }
 
         try? self.itemsController.performFetch()
         self.itemsLoaded()
@@ -257,17 +289,21 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         guard let item = bareItem(with: objectID) else {
             return []
         }
-        return [
-            .addTags { [weak self] _ in
-                self?.showAddTagsView(item: item)
-            },
-            .archive { [weak self] _ in
-                self?._archive(item: item)
-            },
-            .delete { [weak self] _ in
-                self?.confirmDelete(item: item)
-            }
-        ]
+
+        switch self.viewType {
+        case .saves:
+            return [
+                .addTags { [weak self] _ in self?.showAddTagsView(item: item) },
+                .archive { [weak self] _ in self?._archive(item: item) },
+                .delete { [weak self] _ in self?.confirmDelete(item: item) }
+            ]
+        case .archive:
+            return [
+                .addTags { [weak self] _ in self?.showAddTagsView(item: item) },
+                .moveToSaves { [weak self] _ in self?._moveToSaves(item: item) },
+                .delete { [weak self] _ in self?.confirmDelete(item: item) }
+            ]
+        }
     }
 
     func trackOverflow(for objectID: NSManagedObjectID) -> UIAction? {
@@ -293,17 +329,32 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return []
         }
 
-        return [
-            .archive { [weak self] completion in
-                self?._archive(item: item)
-                completion(true)
-            }
-        ]
+        switch self.viewType {
+        case .saves:
+            return [
+                .archive { [weak self] completion in
+                    self?._archive(item: item)
+                    completion(true)
+                }
+            ]
+        case .archive:
+            return [
+                .moveToSaves { [weak self] completion in
+                    self?._moveToSaves(item: item)
+                    completion(true)
+                }
+            ]
+        }
     }
 
     private func _archive(item: SavedItem) {
         track(item: item, identifier: .itemArchive)
         source.archive(item: item)
+    }
+
+    private func _moveToSaves(item: SavedItem) {
+        track(item: item, identifier: .itemSave)
+        source.unarchive(item: item)
     }
 
     private func confirmDelete(item: SavedItem) {

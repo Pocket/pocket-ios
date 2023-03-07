@@ -126,9 +126,15 @@ public class PocketSource: Source {
         try? space.clear()
     }
 
-    public func makeItemsController() -> SavedItemsController {
+    public func makeSavesController() -> SavedItemsController {
         FetchedSavedItemsController(
             resultsController: space.makeItemsController()
+        )
+    }
+
+    public func makeArchiveController() -> SavedItemsController {
+        FetchedSavedItemsController(
+            resultsController: space.makeArchivedItemsController()
         )
     }
 

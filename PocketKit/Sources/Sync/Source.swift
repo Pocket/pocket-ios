@@ -18,7 +18,9 @@ public protocol Source {
 
     func clear()
 
-    func makeItemsController() -> SavedItemsController
+    func makeSavesController() -> SavedItemsController
+
+    func makeArchiveController() -> SavedItemsController
 
     func makeArchiveService() -> ArchiveService
 

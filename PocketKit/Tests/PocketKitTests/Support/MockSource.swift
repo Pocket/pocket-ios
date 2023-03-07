@@ -100,7 +100,7 @@ extension MockSource {
         implementations[Self.makeItemsController] = impl
     }
 
-    func makeItemsController() -> SavedItemsController {
+    func makeSavesController() -> SavedItemsController {
         guard let impl = implementations[Self.makeItemsController] as? MakeItemsControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

@@ -269,7 +269,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         let item1 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
 
-        let itemResultsController = source.makeItemsController()
+        let itemResultsController = source.makeSavesController()
         try itemResultsController.performFetch()
         XCTAssertEqual(itemResultsController.fetchedObjects, [item1])
 
