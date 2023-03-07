@@ -81,7 +81,9 @@ struct EmptyStateView<Content: View>: View {
                     }
                 }
             }
-        }.accessibilityIdentifier(viewModel.accessibilityIdentifier)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(viewModel.accessibilityIdentifier)
     }
 }
 
