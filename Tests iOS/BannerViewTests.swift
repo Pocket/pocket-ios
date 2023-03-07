@@ -43,11 +43,11 @@ class BannerViewTests: XCTestCase {
         let banner = app.bannerView.wait()
 
         banner.buttons.firstMatch.tap()
-        waitForDisappearance(of: banner)
-
+        
         home.recentSavesView(matching: "Slate 1, Recommendation 1").wait()
         app.tabBar.savesButton.tap()
         app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
+        waitForDisappearance(of: banner)
     }
 
     func test_foregroundingTheApp_withURL_showsSaveFromClipboardBanner() {

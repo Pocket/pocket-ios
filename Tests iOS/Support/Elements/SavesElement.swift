@@ -99,6 +99,10 @@ struct SavesElement: PocketUIElement {
                 )
             )
     }
+    
+    func savesViewTag(matching string: String) -> XCUIElement {
+        return element.buttons[string]
+    }
 
     @discardableResult
     func wait(
