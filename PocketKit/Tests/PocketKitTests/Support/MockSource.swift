@@ -357,9 +357,9 @@ extension MockSource {
     typealias DeleteAccountImpl = () -> Void
     struct DeleteAccountCall { }
 
-//    func stubDeleteAccount(impl: @escaping DeleteAccountImpl) {
-//        implementations[Self.deleteAccount] = impl
-//    }
+    func stubDeleteAccount(impl: @escaping DeleteAccountImpl) {
+        implementations[Self.deleteAccount] = impl
+    }
 
     func deleteAccount() async throws {
         guard let impl = implementations[Self.deleteAccount] as? DeleteAccountImpl else {
@@ -372,15 +372,15 @@ extension MockSource {
 
         return impl()
     }
-//
-//    func deleteAccountCall(at index: Int) -> DeleteAccountCall? {
-//        guard let calls = calls[Self.deleteAccount],
-//              calls.count > index else {
-//                  return nil
-//              }
-//
-//        return calls[index] as? DeleteAccountCall
-//    }
+
+    func deleteAccountCall(at index: Int) -> DeleteAccountCall? {
+        guard let calls = calls[Self.deleteAccount],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? DeleteAccountCall
+    }
 }
 
 // MARK: - Fetch All Tags
