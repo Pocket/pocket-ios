@@ -49,7 +49,7 @@ public extension Events.Premium {
     /// - Parameter type: "monthly" or "annual
     static func purchaseSuccess(type: PremiumSubscriptionType) -> Event {
         return Impression(
-            component: .dialog,
+            component: .ui,
             requirement: .viewable,
             uiEntity: UiEntity(
                 .dialog,
@@ -62,7 +62,7 @@ public extension Events.Premium {
     /// Visual confirmation of subscription purchase failed
     static func purchaseFailed() -> Event {
         return Impression(
-            component: .dialog,
+            component: .ui,
             requirement: .viewable,
             uiEntity: UiEntity(
                 .dialog,
