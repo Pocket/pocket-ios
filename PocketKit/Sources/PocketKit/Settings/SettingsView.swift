@@ -156,6 +156,7 @@ extension SettingsForm {
                     color: Color(.ui.apricot1)
                 )
             ) {
+                model.trackLogoutRowTapped()
                 model.isPresentingSignOutConfirm.toggle()
             }
                 .accessibilityIdentifier("log-out-button")
@@ -164,6 +165,7 @@ extension SettingsForm {
                     isPresented: $model.isPresentingSignOutConfirm,
                     actions: {
                         Button(L10n.Settings.logout, role: .destructive) {
+                            model.trackLogoutConfirmTapped()
                             model.signOut()
                         }
                     }, message: {

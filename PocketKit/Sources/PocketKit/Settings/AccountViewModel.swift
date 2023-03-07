@@ -29,6 +29,8 @@ class AccountViewModel: ObservableObject {
 
     private var userStatusListener: AnyCancellable?
 
+    private var isPresentingCancelationHelpListener: AnyCancellable?
+
     @Published var isPremium: Bool
 
     /// Signals to the DeleteAccountView that there was an error deleting the account
@@ -58,10 +60,24 @@ class AccountViewModel: ObservableObject {
             .sink { [weak self] status in
                 self?.isPremium = status == .premium
             }
+
+        // Set up a listener to track analytics if the user taps cancelation help
+        isPresentingCancelationHelpListener = $isPresentingCancelationHelp
+            .receive(on: DispatchQueue.global(qos: .utility))
+            .sink {  [weak self] isPresentingCancelationHelp in
+                guard let strongSelf = self else {
+                    Log.warning("weak self when logging analytics for settings")
+                    return
+                }
+                if isPresentingCancelationHelp {
+                    strongSelf.trackHelpCancelingPremiumTapped()
+                }
+            }
     }
 
     /// Calls the user management service to delete the account and log the user out.
     func deleteAccount() {
+        self.trackDeleteTapped()
         self.isDeletingAccount = true
         Task {
             do {
@@ -132,6 +148,36 @@ extension AccountViewModel {
 
     /// track settings screen was viewed
     func trackSettingsViewed() {
-        tracker.track(event: Events.Settings.SettingsView())
+        tracker.track(event: Events.Settings.settingsViewed())
+    }
+
+    /// track logout row tapped
+    func trackLogoutRowTapped() {
+        tracker.track(event: Events.Settings.logoutRowTapped())
+    }
+
+    /// track logout confirm tapped
+    func trackLogoutConfirmTapped() {
+        tracker.track(event: Events.Settings.logoutConfirmTapped())
+    }
+
+    /// track account management viewed
+    func trackAccountManagementViewed() {
+        tracker.track(event: Events.Settings.accountManagementViewed())
+    }
+
+    /// track delete confirmation viewed
+    func trackDeleteConfirmationViewed() {
+        tracker.track(event: Events.Settings.deleteConfirmationViewed())
+    }
+
+    /// track premium help tapped
+    func trackHelpCancelingPremiumTapped() {
+        tracker.track(event: Events.Settings.helpCancelingPremiumTapped())
+    }
+
+    /// track delete tapped
+    func trackDeleteTapped() {
+        tracker.track(event: Events.Settings.deleteTapped())
     }
 }

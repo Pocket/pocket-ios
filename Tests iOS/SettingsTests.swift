@@ -42,7 +42,7 @@ class SettingsTest: XCTestCase {
 
         await loadDeleteConfirmationView()
         freeUser_tapDeleteToggles()
-        tap_deleteOnDeleteConfirmation()
+        await tap_deleteOnDeleteConfirmation()
         _ = app.loggedOutView.waitForExistence(timeout: 10)
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
@@ -63,7 +63,7 @@ class SettingsTest: XCTestCase {
         app.launch()
         await loadDeleteConfirmationView()
         premiumUser_tapDeleteToggles()
-        tap_deleteOnDeleteConfirmation()
+        await tap_deleteOnDeleteConfirmation()
         _ = app.loggedOutView.waitForExistence(timeout: 10)
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
@@ -84,8 +84,29 @@ class SettingsTest: XCTestCase {
         app.launch()
         await loadDeleteConfirmationView()
         premiumUser_tapDeleteToggles()
-        tap_deleteOnDeleteConfirmation()
+        await tap_deleteOnDeleteConfirmation()
         assertsError()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+    }
+
+    @MainActor
+    func test_deleteAccount_premium_showsHelp() async {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSavesContent {
+                return Response.saves()
+            }
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+
+        app.launch()
+        await loadDeleteConfirmationView()
+        app.deleteConfirmationView.howToDeleteButton.tap()
+        _ = app.webView.waitForExistence(timeout: 5)
+
+        let helpCancelingPremiumEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.delete-confirmation.help-cancel-premium")
+        XCTAssertNotNil(helpCancelingPremiumEvent)
+
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
@@ -105,7 +126,7 @@ class SettingsTest: XCTestCase {
         app.launch()
         await loadDeleteConfirmationView()
         freeUser_tapDeleteToggles()
-        tap_deleteOnDeleteConfirmation()
+        await tap_deleteOnDeleteConfirmation()
         assertsError()
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
@@ -135,17 +156,27 @@ class SettingsTest: XCTestCase {
         XCTAssertNotNil(settingsViewEvent)
 
         tap_AccountManagement()
-
         XCTAssertTrue(app.accountManagementView.exists)
+        let accountManagementViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management")
+        XCTAssertNotNil(accountManagementViewEvent)
+
         tap_DeleteAccount()
         XCTAssertTrue(app.deleteConfirmationView.exists)
+        let deleteConfirmationViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.delete-confirmation")
+        XCTAssertNotNil(deleteConfirmationViewEvent)
 
         XCTAssertFalse(app.deleteConfirmationView.deleteAccountButton.isEnabled)
     }
 
-    func tap_deleteOnDeleteConfirmation() {
+    @MainActor
+    func tap_deleteOnDeleteConfirmation() async {
         app.deleteConfirmationView.deleteAccountButton.tap()
+        // Performing async, so we catch the delete overlay in time.
+        async let deleteButtonEventCall = snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.delete-confirmation.delete")
         _ = app.deletingAccountOverlay.waitForExistence(timeout: 5)
+
+        let deleteButtonEvent = await deleteButtonEventCall
+        XCTAssertNotNil(deleteButtonEvent)
     }
 
     func assertsError() {

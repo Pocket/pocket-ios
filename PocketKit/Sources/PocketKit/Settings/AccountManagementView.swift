@@ -22,6 +22,9 @@ struct AccountManagementView: View {
         }
         .navigationBarTitle(L10n.Settings.accountManagement, displayMode: .large)
         .accessibilityIdentifier("account-management")
+        .onAppear {
+            model.trackAccountManagementViewed()
+        }
     }
 }
 
@@ -38,7 +41,9 @@ struct AccountManagementForm: View {
                     .accessibilityIdentifier("delete-your-account-button")
                 }
                 .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
-                    DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: $model.isPresentingCancelationHelp, hasError: $model.hasError, isDeletingAccount: $model.isDeletingAccount, deleteAccount: model.deleteAccount)
+                    DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: $model.isPresentingCancelationHelp, hasError: $model.hasError, isDeletingAccount: $model.isDeletingAccount, deleteAccount: model.deleteAccount).onAppear {
+                        model.trackDeleteConfirmationViewed()
+                    }
                 }
 
                 .textCase(nil)
