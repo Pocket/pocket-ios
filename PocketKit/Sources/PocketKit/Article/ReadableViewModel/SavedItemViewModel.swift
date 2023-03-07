@@ -169,6 +169,7 @@ extension SavedItemViewModel {
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
             source: source,
+            tracker: tracker,
             saveAction: { [weak self] in
                 self?.fetchDetailsIfNeeded()
             }

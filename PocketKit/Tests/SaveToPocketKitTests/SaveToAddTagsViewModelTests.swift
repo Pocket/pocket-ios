@@ -1,11 +1,13 @@
 import XCTest
 import Combine
+import Analytics
 
 @testable import Sync
 @testable import SaveToPocketKit
 
 class SaveToAddTagsViewModelTests: XCTestCase {
     private var space: Space!
+    private var tracker: MockTracker!
     private var subscriptions: [AnyCancellable] = []
     private let retrieveAction: ([String]) -> [Tag]? = { _ in
         return nil
@@ -15,6 +17,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
     }
 
     override func setUp() {
+        tracker = MockTracker()
         space = .testSpace()
     }
 
@@ -22,9 +25,10 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         try space.clear()
     }
 
-    private func subject(item: SavedItem, retrieveAction: (([String]) -> [Tag]?)? = nil, filterAction: ((String, [String]) -> [Tag]?)? = nil, saveAction: @escaping ([String]) -> Void) -> SaveToAddTagsViewModel {
+    private func subject(item: SavedItem, tracker: Tracker? = nil, retrieveAction: (([String]) -> [Tag]?)? = nil, filterAction: ((String, [String]) -> [Tag]?)? = nil, saveAction: @escaping ([String]) -> Void) -> SaveToAddTagsViewModel {
         SaveToAddTagsViewModel(
             item: item,
+            tracker: tracker ?? self.tracker,
             retrieveAction: retrieveAction ?? self.retrieveAction,
             filterAction: filterAction ?? self.filterAction,
             saveAction: saveAction

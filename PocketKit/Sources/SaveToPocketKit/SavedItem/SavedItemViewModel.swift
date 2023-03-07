@@ -77,6 +77,7 @@ class SavedItemViewModel {
     func showAddTagsView(from context: ExtensionContext?) {
         presentedAddTags = SaveToAddTagsViewModel(
             item: savedItem,
+            tracker: tracker,
             retrieveAction: { [weak self] tags in
                 self?.retrieveTags(excluding: tags)
             },
