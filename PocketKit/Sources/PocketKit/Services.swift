@@ -31,6 +31,7 @@ struct Services {
     let braze: BrazeProtocol
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
+    let userManagementService: UserManagementServiceProtocol
 
     private let persistentContainer: PersistentContainer
 
@@ -113,6 +114,8 @@ struct Services {
             badgeProvider: UIApplication.shared
         )
         subscriptionStore = PocketSubscriptionStore(user: user)
+
+        userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
     }
 }
 

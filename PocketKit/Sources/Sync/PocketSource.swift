@@ -179,6 +179,19 @@ public class PocketSource: Source {
             completion()
         }
     }
+
+    /// Sends the delete call to Backend, you must still implement the logout and reset functionality.
+    public func deleteAccount() async throws {
+        let result = try await apollo.perform(mutation: DeleteUserMutation())
+
+        guard let errors = result.errors, let firstError = errors.first else {
+            // No error! Yay!
+            return
+        }
+
+        // Throw the first error because this mutation does not allow parital success.
+        throw firstError
+    }
 }
 
 // MARK: - Saves/Archive items

@@ -10,10 +10,8 @@ public extension Events {
 }
 
 public extension Events.Settings {
-    /**
-     Fired when a user views the settings screen
-     */
-    static func SettingsView() -> Engagement {
+    /// Fired when a user views the settings screen
+    static func settingsViewed() -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
@@ -22,6 +20,73 @@ public extension Events.Settings {
             )
         )
     }
+
+    /// Logout tapped
+    static func logoutRowTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.logout"
+            )
+        )
+    }
+
+    /// Logout tapped
+    static func logoutConfirmTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.logout-confirmed"
+            )
+        )
+    }
+
+    /// Account management screen viewed
+    static func accountManagementViewed() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.settings.account-management"
+            )
+        )
+    }
+
+    /// Delete confirmation screen viewed
+    static func deleteConfirmationViewed() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.settings.account-management.delete-confirmation"
+            )
+        )
+    }
+
+    /// Help cancel premium button tapped
+    static func helpCancelingPremiumTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.delete-confirmation.help-cancel-premium"
+            )
+        )
+    }
+
+    /// Delete tapped
+    static func deleteTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.delete-confirmation.delete"
+            )
+        )
+    }
+
     /// "Go Premium" button viewed
     static func premiumUpsellViewed() -> Event {
         return Impression(

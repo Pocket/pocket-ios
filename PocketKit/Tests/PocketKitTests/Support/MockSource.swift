@@ -386,6 +386,38 @@ extension MockSource {
     }
 }
 
+// MARK: - Delete Account
+extension MockSource {
+    static let deleteAccount = "deleteAccount"
+    typealias DeleteAccountImpl = () -> Void
+    struct DeleteAccountCall { }
+
+    func stubDeleteAccount(impl: @escaping DeleteAccountImpl) {
+        implementations[Self.deleteAccount] = impl
+    }
+
+    func deleteAccount() async throws {
+        guard let impl = implementations[Self.deleteAccount] as? DeleteAccountImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.deleteAccount] = (calls[Self.deleteAccount] ?? []) + [
+            DeleteAccountCall()
+        ]
+
+        return impl()
+    }
+
+    func deleteAccountCall(at index: Int) -> DeleteAccountCall? {
+        guard let calls = calls[Self.deleteAccount],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? DeleteAccountCall
+    }
+}
+
 // MARK: - Fetch All Tags
 extension MockSource {
     static let fetchAllTags = "fetchAllTags"

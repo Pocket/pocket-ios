@@ -228,6 +228,10 @@ internal enum L10n {
       internal static let pocket = L10n.tr("Localizable", "back.to.pocket", fallback: "Back to Pocket")
     }
   }
+  internal enum General {
+    /// Oops! Try again?
+    internal static let oops = L10n.tr("Localizable", "general.oops", fallback: "Oops! Try again?")
+  }
   internal enum Item {
     internal enum List {
       /// %@ min
@@ -249,8 +253,6 @@ internal enum L10n {
     }
   }
   internal enum Search {
-    /// Oops! Try again?
-    internal static let errorHeadline = L10n.tr("Localizable", "search.errorHeadline", fallback: "Oops! Try again?")
     /// We’re experiencing an error and temporarily can’t get you what you need. Please try again later.
     internal static let errorMessage = L10n.tr("Localizable", "search.errorMessage", fallback: "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.")
     /// Limited search results
@@ -293,6 +295,8 @@ internal enum L10n {
       /// Delete your account
       internal static let deleteYourAccount = L10n.tr("Localizable", "settings.accountManagement.deleteYourAccount", fallback: "Delete your account")
       internal enum DeleteAccount {
+        /// Deleting your account
+        internal static let deleting = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.deleting", fallback: "Deleting your account")
         /// You understand your Pocket account and data will be **permanently deleted.**
         internal static let deletionConfirmation = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.deletionConfirmation", fallback: "You understand your Pocket account and data will be **permanently deleted.**")
         /// How to cancel your Pocket Premium subscription
@@ -301,6 +305,10 @@ internal enum L10n {
         internal static let premiumConfirmation = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.premiumConfirmation", fallback: "To delete your account, you must first **cancel your Premium subscription here.**")
         /// Warning: this can't be undone
         internal static let warning = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.warning", fallback: "Warning: this can't be undone")
+        internal enum Error {
+          /// We’re experiencing an error and can't delete your account. Please try again later.
+          internal static let body = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.error.body", fallback: "We’re experiencing an error and can't delete your account. Please try again later.")
+        }
       }
     }
     internal enum Logout {
