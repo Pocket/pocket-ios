@@ -84,7 +84,7 @@ extension PocketAddTagsViewModel {
     func trackAddTag() {
         tracker.track(event: Events.Tags.addTag(itemUrl: item.url))
     }
-    
+
     func trackRemoveTag() {
         tracker.track(event: Events.Tags.remoteInputTag(itemUrl: item.url))
     }
