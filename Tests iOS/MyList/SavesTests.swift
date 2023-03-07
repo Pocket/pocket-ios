@@ -355,7 +355,7 @@ class SavesTests: XCTestCase {
         XCTAssertEqual(listView.itemCount, 2)
         let item = listView.itemView(at: 1)
         XCTAssertTrue(item.tagButton.firstMatch.label == "tag 0")
-        XCTAssertTrue(item.contains(string: "+1"))
+        XCTAssertTrue(item.contains(string: "+3"))
         item.tagButton.firstMatch.tap()
         app.saves.selectedTagChip(for: "tag 0").wait()
     }

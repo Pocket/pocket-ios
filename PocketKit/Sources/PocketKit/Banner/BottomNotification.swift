@@ -72,10 +72,32 @@ extension View {
 }
 
 private extension Style {
-    static let title: Self = .header.sansSerif.p2.with(weight: .semibold).with { paragraph in
+    static let title: Self = .header.sansSerif.p2.with(weight: .semibold).with(color: .ui.black).with { paragraph in
         paragraph.with(lineSpacing: 4)
     }
-    static let subtitle: Self = .header.sansSerif.p4.with(weight: .regular).with { paragraph in
+    static let subtitle: Self = .header.sansSerif.p4.with(weight: .regular).with(color: .ui.black).with { paragraph in
         paragraph.with(lineSpacing: 4)
+    }
+}
+
+struct BannerModifier_PreviewProvider: PreviewProvider {
+    static var previews: some View {
+        VStack {
+            Spacer()
+            Text("Some Screen!")
+            Spacer()
+        }
+        .banner(data: BannerModifier.BannerData(image: .warning, title: "Title", detail: "Detail Message"), show: .constant(true))
+        .previewDisplayName("Warning - Light")
+        .preferredColorScheme(.light)
+
+        VStack {
+            Spacer()
+            Text("Some Screen!")
+            Spacer()
+        }
+        .banner(data: BannerModifier.BannerData(image: .warning, title: "Title", detail: "Detail Message"), show: .constant(true))
+        .previewDisplayName("Warning - Dark")
+        .preferredColorScheme(.dark)
     }
 }

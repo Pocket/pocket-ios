@@ -18,6 +18,8 @@ public protocol Source {
 
     func clear()
 
+    func deleteAccount() async throws
+
     func makeItemsController() -> SavedItemsController
 
     func makeArchiveService() -> ArchiveService
@@ -51,6 +53,8 @@ public protocol Source {
     func retrieveTags(excluding: [String]) -> [Tag]?
 
     func fetchAllTags() -> [Tag]?
+
+    func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
 
     func fetchTags(isArchived: Bool) -> [Tag]?
 

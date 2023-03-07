@@ -56,6 +56,10 @@ public class PocketSaveService: SaveService {
         try? space.retrieveTags(excluding: tags)
     }
 
+    public func filterTags(with input: String, excluding tags: [String]) -> [Tag]? {
+        try? space.filterTags(with: input, excluding: tags)
+    }
+
     public func addTags(savedItem: SavedItem, tags: [String]) -> SaveServiceStatus {
         savedItem.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
             space.fetchOrCreateTag(byName: tag)
