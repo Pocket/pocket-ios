@@ -9,13 +9,14 @@ import StoreKitTest
 class PremiumTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var storeSession: SKTestSession!
     var snowplowMicro = SnowplowMicro()
 
     override func setUp() async throws {
         continueAfterFailure = false
-        let session = try SKTestSession(configurationFileNamed: "Test_Subscriptions")
-        session.disableDialogs = true
-        session.clearTransactions()
+        storeSession = try! SKTestSession(configurationFileNamed: "Test_Subscriptions")
+        storeSession.disableDialogs = true
+        storeSession.clearTransactions()
         app = PocketAppElement(app: XCUIApplication())
         server = Application()
 
@@ -25,6 +26,8 @@ class PremiumTests: XCTestCase {
 
     override func tearDownWithError() throws {
         try server.stop()
+        storeSession.clearTransactions()
+        storeSession = nil
         app.terminate()
     }
 
@@ -94,14 +97,14 @@ class PremiumTests: XCTestCase {
         let settingsViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings")
         XCTAssertNotNil(settingsViewEvent)
 
-        tap_GoPremium()
+        tapGoPremium()
         XCTAssertTrue(app.premiumUpgradeView.exists)
 
         let premiumViewShownEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium")
         XCTAssertNotNil(premiumViewShownEvent)
     }
 
-    func tap_GoPremium() {
+    func tapGoPremium() {
         app.settingsView.goPremiumButton.tap()
     }
 }
