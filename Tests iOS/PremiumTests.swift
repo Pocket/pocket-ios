@@ -33,21 +33,25 @@ class PremiumTests: XCTestCase {
         app.terminate()
     }
 
-
     /// Test that tapping "Go Premium" in Settings presents the Premium Upgrade view
-    @MainActor func test_tapGoPremiumShowsUpgradeView() async {
+    @MainActor func test_tapSettingsUpsellShowsUpgradeView() async {
         configureFreeUser()
         app.launch()
-        await loadPremiumUpgradeView()
+        await loadPremiumUpgradeViewFromSettings()
     }
 
+    @MainActor func test_tapSearchPremiumUpsellShowsUpgradeView() async {
+        configureFreeUser()
+        app.launch()
+        await loadPremiumUpgradeViewFromSearch()
+    }
 
     /// Test that Premium Upgrade view dismisses when tapping the dismiss button
     @MainActor func test_tapDismissDismissPremiumView() async {
         // Given
         configureFreeUser()
         app.launch()
-        await loadPremiumUpgradeView()
+        await loadPremiumUpgradeViewFromSettings()
         // When
         app.premiumUpgradeView.dismissPremiumButton.wait().tap()
         // Then
@@ -56,13 +60,12 @@ class PremiumTests: XCTestCase {
         XCTAssertFalse(app.premiumUpgradeView.exists)
     }
 
-
     /// Test that monthly button tapped triggers the right event
     @MainActor func test_monthlyButtonTapped() async {
         // Given
         configureFreeUser()
         app.launch()
-        await loadPremiumUpgradeView()
+        await loadPremiumUpgradeViewFromSettings()
         // When
         app.premiumUpgradeView.premiumUpgradeMonthlyButton.wait().tap()
         // Then
@@ -70,13 +73,12 @@ class PremiumTests: XCTestCase {
         XCTAssertNotNil(monthlyButtonTappedEvent)
     }
 
-
     /// Test that annual button tapped triggers the right event
     @MainActor func test_annualButtonTapped() async {
         // Given
         configureFreeUser()
         app.launch()
-        await loadPremiumUpgradeView()
+        await loadPremiumUpgradeViewFromSettings()
         // When
         app.premiumUpgradeView.premiumUpgradeAnnualButton.wait().tap()
         // Then
@@ -84,18 +86,19 @@ class PremiumTests: XCTestCase {
         XCTAssertNotNil(monthlyButtonTappedEvent)
     }
 
-
     /// Test that purchase monthly subscription succeeds
     @MainActor func test_purchaseMonthlySubscriptionSuccess() async {
         // Given
         configureFreeUser()
         app.launch()
-        await loadPremiumUpgradeView()
+        await loadPremiumUpgradeViewFromSettings()
         // When
         try! storeSession.buyProduct(productIdentifier: "monthly.subscription.pocket")
         // Then
         let purchaseSuccessEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium.purchase.success")
         XCTAssertNotNil(purchaseSuccessEvent)
+
+        purchaseSuccessEvent!.getUIContext()!.assertHas(type: "dialog")
     }
 
     /// Test that purchase annual subscription succeeds
@@ -103,12 +106,14 @@ class PremiumTests: XCTestCase {
         // Given
         configureFreeUser()
         app.launch()
-        await loadPremiumUpgradeView()
+        await loadPremiumUpgradeViewFromSettings()
         // When
         try! storeSession.buyProduct(productIdentifier: "annual.subscription.pocket")
         // Then
         let purchaseSuccessEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium.purchase.success")
         XCTAssertNotNil(purchaseSuccessEvent)
+
+        purchaseSuccessEvent!.getUIContext()!.assertHas(type: "dialog")
     }
 
     @MainActor func configureFreeUser() {
@@ -121,21 +126,48 @@ class PremiumTests: XCTestCase {
         }
     }
 
-    @MainActor func loadPremiumUpgradeView() async {
+    @MainActor private func loadPremiumUpgradeViewFromSettings() async {
         app.tabBar.settingsButton.wait().tap()
         XCTAssertTrue(app.settingsView.exists)
 
         let settingsViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings")
         XCTAssertNotNil(settingsViewEvent)
 
-        tapGoPremium()
+        let goPremiumButtonImpression = await snowplowMicro.getFirstEvent(with: "account.premium.upsell")
+        XCTAssertNotNil(goPremiumButtonImpression)
+
+        goPremiumButtonImpression!.getUIContext()!.assertHas(type: "button")
+
+        tapSettingsPremiumUpsell()
         XCTAssertTrue(app.premiumUpgradeView.exists)
 
         let premiumViewShownEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium")
         XCTAssertNotNil(premiumViewShownEvent)
     }
 
-    func tapGoPremium() {
+    private func tapSettingsPremiumUpsell() {
         app.settingsView.goPremiumButton.tap()
+    }
+
+    @MainActor private func loadPremiumUpgradeViewFromSearch() async {
+        app.tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Search").wait().tap()
+        app.navigationBar.buttons["All items"].wait().tap()
+        XCTAssertTrue(app.searchGetPremiumEmptyView.exists)
+
+        let goPremiumButtonImpression = await snowplowMicro.getFirstEvent(with: "global-nav.search.premium.upsell")
+        XCTAssertNotNil(goPremiumButtonImpression)
+
+        goPremiumButtonImpression!.getUIContext()!.assertHas(type: "button")
+
+        tapSearchPremiumUpsell()
+        XCTAssertTrue(app.premiumUpgradeView.exists)
+
+        let searchUpsellEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.premium.upsell")
+        XCTAssertNotNil(searchUpsellEvent)
+    }
+
+    private func tapSearchPremiumUpsell() {
+        app.searchGetPremiumEmptyView.getPocketPremiumButton.tap()
     }
 }
