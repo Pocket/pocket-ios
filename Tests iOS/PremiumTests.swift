@@ -79,6 +79,32 @@ class PremiumTests: XCTestCase {
     }
 
     @MainActor
+    func test_purchaseMonthlySubscriptionSuccess() async {
+        // Given
+        configureFreeUser()
+        app.launch()
+        await loadPremiumUpgradeView()
+        // When
+        try! storeSession.buyProduct(productIdentifier: "monthly.subscription.pocket")
+        // Then
+        let purchaseSuccessEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium.purchase.success")
+        XCTAssertNotNil(purchaseSuccessEvent)
+    }
+
+    @MainActor
+    func test_purchaseAnnualSubscriptionSuccess() async {
+        // Given
+        configureFreeUser()
+        app.launch()
+        await loadPremiumUpgradeView()
+        // When
+        try! storeSession.buyProduct(productIdentifier: "annual.subscription.pocket")
+        // Then
+        let purchaseSuccessEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium.purchase.success")
+        XCTAssertNotNil(purchaseSuccessEvent)
+    }
+
+    @MainActor
     func configureFreeUser() {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
