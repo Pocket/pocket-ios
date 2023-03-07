@@ -324,15 +324,16 @@ extension SnowplowMicro {
     internal func assertUser(for event: SnowplowMicroEvent) {
         // Screens in the app that are allowed to not have a userId because the user is logged out.
         let noUserIdScreens = ["PocketKit.LoggedOutViewController"]
+        let user = event.getUserContext()
 
         if let currentScreenContext = event.getScreenContext(),
            let currentScreen = currentScreenContext.dataDict()["viewController"] as? String,
            noUserIdScreens.contains(currentScreen) {
             // If the screen is in in the list of allowed no user screens, lets return.
+            XCTAssertNil(user, "User found in analytics event, and not expected")
             return
         }
 
-        let user = event.getUserContext()
         XCTAssertNotNil(user, "User not found in analytics event")
         XCTAssertEqual(user!.dataDict()["hashed_user_id"] as! String, "session-user-id")
         XCTAssertEqual(user!.dataDict()["hashed_guid"] as! String, "test-access-token")

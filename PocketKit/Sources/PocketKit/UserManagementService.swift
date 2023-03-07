@@ -21,7 +21,6 @@ struct UserManagementService: UserManagementServiceProtocol {
     func deleteAccount() async throws {
         try await source.deleteAccount()
         await logout()
-        self.notificationCenter.post(name: .userDeleted, object: nil)
     }
 
     @MainActor

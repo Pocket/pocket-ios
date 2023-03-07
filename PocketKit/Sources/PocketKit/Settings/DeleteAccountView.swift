@@ -115,27 +115,34 @@ struct DeleteAccountView: View {
         .accessibilityIdentifier("delete-confirmation")
         .overlay {
             if isDeletingAccount {
-                VStack {
-                    HStack {
-                       Spacer()
-                    }
-                    Spacer()
-                    LottieView(.loading)
-                        .frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 100)
-                    Text(L10n.Settings.AccountManagement.DeleteAccount.deleting)
-                    Spacer()
-                }
-                .background(Color(.ui.grey3))
-                .foregroundColor(Color(.ui.white1))
-                .opacity(0.9)
-                .accessibilityIdentifier("deleting-overlay")
+                DeleteLoadingView()
             }
         }
         .alert(isPresented: $hasError) {
-            Alert(title: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.headline), message: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.body), dismissButton: .cancel(Text(L10n.ok)))
+            Alert(title: Text(L10n.General.oops), message: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.body), dismissButton: .cancel(Text(L10n.ok)))
         }
     }
 }
+
+private struct DeleteLoadingView : View {
+    var body: some View {
+        VStack {
+            HStack {
+               Spacer()
+            }
+            Spacer()
+            LottieView(.loading)
+                .frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 100)
+            Text(L10n.Settings.AccountManagement.DeleteAccount.deleting)
+            Spacer()
+        }
+        .background(Color(.ui.grey3))
+        .foregroundColor(Color(.ui.white1))
+        .opacity(0.9)
+        .accessibilityIdentifier("deleting-overlay")
+    }
+}
+
 
 extension Style {
     struct DeleteAccountView {

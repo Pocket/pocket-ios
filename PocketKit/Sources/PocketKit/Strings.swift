@@ -228,6 +228,10 @@ internal enum L10n {
       internal static let pocket = L10n.tr("Localizable", "back.to.pocket", fallback: "Back to Pocket")
     }
   }
+  internal enum General {
+    /// Oops! Try again?
+    internal static let oops = L10n.tr("Localizable", "general.oops", fallback: "Oops! Try again?")
+  }
   internal enum Item {
     internal enum List {
       /// %@ min
@@ -249,8 +253,6 @@ internal enum L10n {
     }
   }
   internal enum Search {
-    /// Oops! Try again?
-    internal static let errorHeadline = L10n.tr("Localizable", "search.errorHeadline", fallback: "Oops! Try again?")
     /// We’re experiencing an error and temporarily can’t get you what you need. Please try again later.
     internal static let errorMessage = L10n.tr("Localizable", "search.errorMessage", fallback: "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.")
     /// Limited search results
@@ -306,8 +308,6 @@ internal enum L10n {
         internal enum Error {
           /// We’re experiencing an error and can't delete your account. Please try again later.
           internal static let body = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.error.body", fallback: "We’re experiencing an error and can't delete your account. Please try again later.")
-          /// Oops! Try again?
-          internal static let headline = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.error.headline", fallback: "Oops! Try again?")
         }
       }
     }

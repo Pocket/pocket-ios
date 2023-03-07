@@ -51,6 +51,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         notificationCenter: .default
                     ) { tracker, source in
                         PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                    } { tracker in
+                        DeleteAccountViewModel(tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService )
                     }
                 ),
                 source: Services.shared.source,
