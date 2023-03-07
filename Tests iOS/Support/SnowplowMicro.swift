@@ -90,6 +90,13 @@ struct SnowplowMicroEvent: Codable {
     func getReportContext() -> SnowplowMicroContext? {
         return getContext(of: "iglu:com.pocket/report/jsonschema/1-0-0")
     }
+
+    /**
+     Pulls the screen out of the event
+     */
+    func getScreenContext() -> SnowplowMicroContext? {
+        return getContext(of: "iglu:com.snowplowanalytics.mobile/screen/jsonschema/1-0-0")
+    }
 }
 
 struct SnowplowMicroEventData: Codable {
@@ -315,6 +322,16 @@ extension SnowplowMicro {
      Ensure that the user on the event has the expected default test values
      */
     internal func assertUser(for event: SnowplowMicroEvent) {
+        // Screens in the app that are allowed to not have a userId because the user is logged out.
+        let noUserIdScreens = ["PocketKit.LoggedOutViewController"]
+
+        if let currentScreenContext = event.getScreenContext(),
+           let currentScreen = currentScreenContext.dataDict()["viewController"] as? String,
+           noUserIdScreens.contains(currentScreen) {
+            // If the screen is in in the list of allowed no user screens, lets return.
+            return
+        }
+
         let user = event.getUserContext()
         XCTAssertNotNil(user, "User not found in analytics event")
         XCTAssertEqual(user!.dataDict()["hashed_user_id"] as! String, "session-user-id")

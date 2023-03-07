@@ -31,6 +31,9 @@ class SettingsTest: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
                 return Response.freeUserSaves()
+            } else if apiRequest.isForDeleteUser {
+                _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Making the server response slow so we can see the loading screen")], timeout: 5.0)
+                return Response.deleteUser()
             }
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
@@ -38,9 +41,9 @@ class SettingsTest: XCTestCase {
         app.launch()
 
         await loadDeleteConfirmationView()
-
         freeUser_tapDeleteToggles()
-
+        tap_deleteOnDeleteConfirmation()
+        _ = app.loggedOutView.waitForExistence(timeout: 10)
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
@@ -50,15 +53,18 @@ class SettingsTest: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
                 return Response.saves()
+            } else if apiRequest.isForDeleteUser {
+                _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Making the server response slow so we can see the loading screen")], timeout: 5.0)
+                return Response.deleteUser()
             }
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch()
         await loadDeleteConfirmationView()
-
         premiumUser_tapDeleteToggles()
-
+        tap_deleteOnDeleteConfirmation()
+        _ = app.loggedOutView.waitForExistence(timeout: 10)
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
@@ -69,6 +75,7 @@ class SettingsTest: XCTestCase {
             if apiRequest.isForSavesContent {
                 return Response.saves()
             } else if apiRequest.isForDeleteUser {
+                _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Making the server response slow so we can see the loading screen")], timeout: 5.0)
                 return Response.deleteUserError()
             }
             return Response.fallbackResponses(apiRequest: apiRequest)
@@ -77,10 +84,9 @@ class SettingsTest: XCTestCase {
         app.launch()
         await loadDeleteConfirmationView()
         premiumUser_tapDeleteToggles()
-        app.deleteConfirmationView.deleteAccountButton.tap()
-        _ = app.deleteConfirmationView.deletingOverlay.waitForExistence(timeout: 5)
-
-        // wait for errror message
+        tap_deleteOnDeleteConfirmation()
+        assertsError()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
@@ -90,6 +96,7 @@ class SettingsTest: XCTestCase {
             if apiRequest.isForSavesContent {
                 return Response.freeUserSaves()
             } else if apiRequest.isForDeleteUser {
+                _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Making the server response slow so we can see the loading screen")], timeout: 5.0)
                 return Response.deleteUserError()
             }
             return Response.fallbackResponses(apiRequest: apiRequest)
@@ -97,25 +104,24 @@ class SettingsTest: XCTestCase {
 
         app.launch()
         await loadDeleteConfirmationView()
-        premiumUser_tapDeleteToggles()
-        app.deleteConfirmationView.deleteAccountButton.tap()
-
-        // check loading screen
-        // wait for errror message
+        freeUser_tapDeleteToggles()
+        tap_deleteOnDeleteConfirmation()
+        assertsError()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     /// Utillity to tap and assert the toggles for delete confirmation screen for premium users
     func premiumUser_tapDeleteToggles() {
+        XCTAssertTrue(app.deleteConfirmationView.howToDeleteButton.isHittable)
         app.deleteConfirmationView.understandDeletionSwitch.tap()
         app.deleteConfirmationView.confirmCancelledSwitch.tap()
-
+        XCTAssertFalse(app.deleteConfirmationView.howToDeleteButton.isHittable)
         XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
     }
 
     /// Utillity to tap and assert the toggles for delete confirmation screen for free users
     func freeUser_tapDeleteToggles() {
         app.deleteConfirmationView.understandDeletionSwitch.tap()
-
         XCTAssertTrue(app.deleteConfirmationView.deleteAccountButton.isEnabled)
     }
 
@@ -135,6 +141,17 @@ class SettingsTest: XCTestCase {
         XCTAssertTrue(app.deleteConfirmationView.exists)
 
         XCTAssertFalse(app.deleteConfirmationView.deleteAccountButton.isEnabled)
+    }
+
+    func tap_deleteOnDeleteConfirmation() {
+        app.deleteConfirmationView.deleteAccountButton.tap()
+        _ = app.deletingAccountOverlay.waitForExistence(timeout: 5)
+    }
+
+    func assertsError() {
+        let alert = app.alert.wait(timeout: 5.0)
+        XCTAssertTrue(alert.exists)
+        alert.ok.tap()
     }
 
     func tap_AccountManagement() {

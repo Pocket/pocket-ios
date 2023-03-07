@@ -23,6 +23,11 @@ struct PocketAppElement {
         return app.otherElements["banner"]
     }
 
+    /// Gets the delete overlay view, for some reason this is in the main app element.
+    var deletingAccountOverlay: XCUIElement {
+        return app.otherElements["deleting-overlay"]
+    }
+
     var homeView: HomeViewElement {
         return HomeViewElement(app.otherElements["home"])
     }

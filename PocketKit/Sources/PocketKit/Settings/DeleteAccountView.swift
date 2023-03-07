@@ -17,13 +17,13 @@ struct DeleteAccountView: View {
     @State var understandsPermanentDeletion: Bool = false
 
     /// State variable listened on from our view model
-    @State var isPresentingCancelationHelp: Bool = false
+    @Binding var isPresentingCancelationHelp: Bool
 
     /// State variable to indicate that there was an error and show it to the user
-    @State var hasError: Bool = false
+    @Binding var hasError: Bool
 
     /// State variable to indicate an account deletion is in progress
-    @State var isDeletingAccount: Bool = false
+    @Binding var isDeletingAccount: Bool
 
     var deleteAccount: () -> Void
 
@@ -120,7 +120,8 @@ struct DeleteAccountView: View {
                        Spacer()
                     }
                     Spacer()
-                    LottieView(.loading).aspectRatio(contentMode: .fit).frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 300)
+                    LottieView(.loading)
+                        .frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 100)
                     Text(L10n.Settings.AccountManagement.DeleteAccount.deleting)
                     Spacer()
                 }
@@ -130,7 +131,9 @@ struct DeleteAccountView: View {
                 .accessibilityIdentifier("deleting-overlay")
             }
         }
-        .banner(data: BannerModifier.BannerData(image: .warning, title: L10n.Settings.AccountManagement.DeleteAccount.Error.headline, detail: L10n.Settings.AccountManagement.DeleteAccount.Error.body), show: $hasError)
+        .alert(isPresented: $hasError) {
+            Alert(title: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.headline), message: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.body), dismissButton: .cancel(Text(L10n.ok)))
+        }
     }
 }
 
@@ -146,35 +149,35 @@ extension Style {
 
 struct DeleteAccountView_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: false, deleteAccount: {})
+        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(false), deleteAccount: {})
             .previewDisplayName("Free User - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: false, deleteAccount: {})
+        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(false), deleteAccount: {})
             .previewDisplayName("Free User - Dark")
             .preferredColorScheme(.dark)
 
-        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
+        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(false), deleteAccount: {})
             .previewDisplayName("Premium User - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
+        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(false), deleteAccount: {})
             .previewDisplayName("Premium User - Dark")
             .preferredColorScheme(.dark)
 
-        DeleteAccountView(isPremium: false, understandsPermanentDeletion: true, isDeletingAccount: true, deleteAccount: {})
+        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(true), deleteAccount: {})
             .previewDisplayName("Deleting Account - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: false, understandsPermanentDeletion: true, isDeletingAccount: true, deleteAccount: {})
+        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(true), deleteAccount: {})
             .previewDisplayName("Deleting Account - Dark")
             .preferredColorScheme(.dark)
 
-        DeleteAccountView(isPremium: false, understandsPermanentDeletion: true, hasError: true, isDeletingAccount: false, deleteAccount: {})
+        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(true), isDeletingAccount: .constant(false), deleteAccount: {})
             .previewDisplayName("Error - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: false, understandsPermanentDeletion: true, hasError: true, isDeletingAccount: false, deleteAccount: {})
+        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(true), isDeletingAccount: .constant(false), deleteAccount: {})
             .previewDisplayName("Error - Dark")
             .preferredColorScheme(.dark)
     }

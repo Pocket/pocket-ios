@@ -68,9 +68,13 @@ class AccountViewModel: ObservableObject {
                 try await userManagementService.deleteAccount()
             } catch {
                 Log.capture(error: error)
-                self.hasError = true
+                DispatchQueue.main.async {
+                    self.hasError = true
+                }
             }
-            self.isDeletingAccount = false
+            DispatchQueue.main.async {
+               self.isDeletingAccount = false
+            }
         }
     }
 

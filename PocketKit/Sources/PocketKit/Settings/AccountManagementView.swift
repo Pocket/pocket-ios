@@ -38,7 +38,7 @@ struct AccountManagementForm: View {
                     .accessibilityIdentifier("delete-your-account-button")
                 }
                 .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
-                    DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: model.isPresentingCancelationHelp, deleteAccount: model.deleteAccount)
+                    DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: $model.isPresentingCancelationHelp, hasError: $model.hasError, isDeletingAccount: $model.isDeletingAccount, deleteAccount: model.deleteAccount)
                 }
 
                 .textCase(nil)

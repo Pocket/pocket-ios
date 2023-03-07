@@ -36,12 +36,4 @@ struct DeleteConfirmationViewElement: PocketUIElement {
     var closeButton: XCUIElement {
         element.buttons["close"]
     }
-
-    var errorBanner: XCUIElement {
-        element.collectionViews["banner"]
-    }
-
-    var deletingOverlay: XCUIElement {
-        element.collectionViews["deleting-overlay"]
-    }
 }

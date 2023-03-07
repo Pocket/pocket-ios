@@ -351,36 +351,36 @@ extension MockSource {
     }
 }
 
-// MARK: - Delete User
+// MARK: - Delete Account
 extension MockSource {
-    static let deleteUser = "deleteUser"
-    typealias DeleteUserImpl = () -> Void
-    struct DeleteUserCall { }
+    static let deleteAccount = "deleteAccount"
+    typealias DeleteAccountImpl = () -> Void
+    struct DeleteAccountCall { }
 
-    func stubDeleteUser(impl: @escaping DeleteUserImpl) {
-        implementations[Self.deleteUser] = impl
-    }
+//    func stubDeleteAccount(impl: @escaping DeleteAccountImpl) {
+//        implementations[Self.deleteAccount] = impl
+//    }
 
-    func deleteUser() async throws {
-        guard let impl = implementations[Self.deleteUser] as? DeleteUserImpl else {
+    func deleteAccount() async throws {
+        guard let impl = implementations[Self.deleteAccount] as? DeleteAccountImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
 
-        calls[Self.deleteUser] = (calls[Self.deleteUser] ?? []) + [
-            DeleteUserCall()
+        calls[Self.deleteAccount] = (calls[Self.deleteAccount] ?? []) + [
+            DeleteAccountCall()
         ]
 
         return impl()
     }
-
-    func fetchTagsCall(at index: Int) -> DeleteUserCall? {
-        guard let calls = calls[Self.deleteUser],
-              calls.count > index else {
-                  return nil
-              }
-
-        return calls[index] as? DeleteUserCall
-    }
+//
+//    func deleteAccountCall(at index: Int) -> DeleteAccountCall? {
+//        guard let calls = calls[Self.deleteAccount],
+//              calls.count > index else {
+//                  return nil
+//              }
+//
+//        return calls[index] as? DeleteAccountCall
+//    }
 }
 
 // MARK: - Fetch All Tags
