@@ -17,7 +17,8 @@ public class PocketSource: Source {
         _events.eraseToAnyPublisher()
     }
 
-    public var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
+    public var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never>
+    public var initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never>
 
     private let space: Space
     private let user: User
@@ -90,10 +91,15 @@ public class PocketSource: Source {
         self.sessionProvider = sessionProvider
         self.backgroundTaskManager = backgroundTaskManager
         self.osNotificationCenter = osNotificationCenter
-        self.initialDownloadState = .init(.unknown)
+        self.initialSavesDownloadState = .init(.unknown)
+        self.initialArchiveDownloadState = .init(.unknown)
 
-        if lastRefresh.lastRefresh != nil {
-            initialDownloadState.send(.completed)
+        if lastRefresh.lastRefreshSaves != nil {
+            initialSavesDownloadState.send(.completed)
+        }
+
+        if lastRefresh.lastRefreshArchive != nil {
+            initialArchiveDownloadState.send(.completed)
         }
 
         osNotificationCenter.add(observer: notificationObserver, name: .savedItemCreated) { [weak self] in
@@ -136,10 +142,6 @@ public class PocketSource: Source {
         FetchedSavedItemsController(
             resultsController: space.makeArchivedItemsController()
         )
-    }
-
-    public func makeArchiveService() -> ArchiveService {
-        PocketArchiveService(apollo: apollo, space: space)
     }
 
     public func makeSearchService() -> SearchService {
@@ -189,9 +191,9 @@ public class PocketSource: Source {
 
 // MARK: - Saves/Archive items
 extension PocketSource {
-    public func refresh(maxItems: Int = 400, completion: (() -> Void)? = nil) {
-        if lastRefresh.lastRefresh == nil {
-            initialDownloadState.send(.started)
+    public func refreshSaves(maxItems: Int = 400, completion: (() -> Void)? = nil) {
+        if lastRefresh.lastRefreshSaves == nil {
+            initialSavesDownloadState.send(.started)
         }
 
         guard let token = sessionProvider.session?.accessToken else {
@@ -199,18 +201,42 @@ extension PocketSource {
             return
         }
 
-        let operation = operations.fetchList(
+        let operation = operations.fetchSaves(
             user: user,
             token: token,
             apollo: apollo,
             space: space,
             events: _events,
-            initialDownloadState: initialDownloadState,
+            initialDownloadState: initialSavesDownloadState,
             maxItems: maxItems,
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchList(maxItems: maxItems), completion: completion)
+        enqueue(operation: operation, task: .fetchSaves(maxItems: maxItems), completion: completion)
+    }
+
+    public func refreshArchive(maxItems: Int = 400, completion: (() -> Void)? = nil) {
+        if lastRefresh.lastRefreshArchive == nil {
+            initialArchiveDownloadState.send(.started)
+        }
+
+        guard let token = sessionProvider.session?.accessToken else {
+            completion?()
+            return
+        }
+
+        let operation = operations.fetchArchive(
+            user: user,
+            token: token,
+            apollo: apollo,
+            space: space,
+            events: _events,
+            initialDownloadState: initialArchiveDownloadState,
+            maxItems: maxItems,
+            lastRefresh: lastRefresh
+        )
+
+        enqueue(operation: operation, task: .fetchSaves(maxItems: maxItems), completion: completion)
     }
 
     public func favorite(item: SavedItem) {
@@ -486,15 +512,28 @@ extension PocketSource {
                     mutation: FavoriteItemMutation(itemID: remoteID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
-            case .fetchList(let maxItems):
+            case .fetchSaves(let maxItems):
                 guard let token = sessionProvider.session?.accessToken else { return }
-                let operation = operations.fetchList(
+                let operation = operations.fetchSaves(
                     user: user,
                     token: token,
                     apollo: apollo,
                     space: space,
                     events: _events,
-                    initialDownloadState: initialDownloadState,
+                    initialDownloadState: initialSavesDownloadState,
+                    maxItems: maxItems,
+                    lastRefresh: lastRefresh
+                )
+                enqueue(operation: operation, persistentTask: persistentTask)
+            case .fetchArchive(let maxItems):
+                guard let token = sessionProvider.session?.accessToken else { return }
+                let operation = operations.fetchArchive(
+                    user: user,
+                    token: token,
+                    apollo: apollo,
+                    space: space,
+                    events: _events,
+                    initialDownloadState: initialArchiveDownloadState,
                     maxItems: maxItems,
                     lastRefresh: lastRefresh
                 )

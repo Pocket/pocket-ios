@@ -18,10 +18,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     var selectionItem: SelectionItem {
         switch self.viewType {
-            case .saves:
-                return SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
-            case .archive:
-                return SelectionItem(title: L10n.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
+        case .saves:
+            return SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+        case .archive:
+            return SelectionItem(title: L10n.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
         }
     }
 
@@ -65,10 +65,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         switch self.viewType {
-            case .saves:
-                return SavesEmptyStateViewModel()
-            case .archive:
-                return ArchiveEmptyStateViewModel()
+        case .saves:
+            return SavesEmptyStateViewModel()
+        case .archive:
+            return ArchiveEmptyStateViewModel()
         }
     }
 
@@ -174,10 +174,10 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private func fetchItems(with predicates: [NSPredicate]) {
         switch self.viewType {
-            case .saves:
-                self.itemsController.predicate = Predicates.savedItems(filters: predicates)
-            case .archive:
-                self.itemsController.predicate = Predicates.archivedItems(filters: predicates)
+        case .saves:
+            self.itemsController.predicate = Predicates.savedItems(filters: predicates)
+        case .archive:
+            self.itemsController.predicate = Predicates.archivedItems(filters: predicates)
         }
 
         try? self.itemsController.performFetch()
@@ -185,7 +185,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func refresh(_ completion: (() -> Void)? = nil) {
-        source.refresh(completion: completion)
+        switch self.viewType {
+        case .saves:
+            source.refreshSaves(completion: completion)
+        case .archive:
+            source.refreshArchive(completion: completion)
+        }
+
         source.retryImmediately()
     }
 
@@ -400,7 +406,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
-        switch source.initialDownloadState.value {
+        switch source.initialSavesDownloadState.value {
         case .unknown, .completed:
             itemCellIDs = itemsController
                 .fetchedObjects?

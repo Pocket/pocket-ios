@@ -355,14 +355,14 @@ class SavedItemsListViewModelTests: XCTestCase {
             )
         }.store(in: &subscriptions)
 
-        source.initialDownloadState.send(.paginating(totalCount: 2))
+        source.initialSavesDownloadState.send(.paginating(totalCount: 2))
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
         wait(for: [receivedSnapshot], timeout: 1)
     }
 
     func test_receivedSnapshots_whenInitialDownloadIsStarted_insertsPlaceholderCells() throws {
-        source.initialDownloadState.send(.started)
+        source.initialSavesDownloadState.send(.started)
         itemsController.stubPerformFetch { [unowned self] in
             self.itemsController.fetchedObjects = []
         }

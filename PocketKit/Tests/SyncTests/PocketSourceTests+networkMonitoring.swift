@@ -19,7 +19,7 @@ extension PocketSourceTests {
         let source = subject()
         networkMonitor.update(status: .unsatisfied)
 
-        source.refresh()
+        source.refreshSaves()
     }
 
     func test_enqueueingOperations_whenNetworkBecomesSatisfied_executesPendingOperations() {
@@ -43,7 +43,7 @@ extension PocketSourceTests {
         networkMonitor.update(status: .unsatisfied)
 
         source.save(item: space.buildSavedItem())
-        source.refresh()
+        source.refreshSaves()
 
         networkMonitor.update(status: .satisfied)
         wait(for: [expectSaveItem, expectFetchList], timeout: 1, enforceOrder: true)

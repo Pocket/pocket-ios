@@ -8,7 +8,7 @@ class MockLastRefresh: LastRefresh {
         getLastRefreshImpl = impl
     }
 
-    var lastRefresh: Int? {
+    var lastRefreshSaves: Int? {
         guard let impl = getLastRefreshImpl else {
             return nil
         }
@@ -24,7 +24,7 @@ class MockLastRefresh: LastRefresh {
     }
 
     var refreshedCallCount = 0
-    func refreshed() {
+    func refreshedSaves() {
         refreshedCallCount += 1
 
         guard let impl = refreshedImpl else {

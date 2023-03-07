@@ -87,7 +87,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
 
-        source.refresh()
+        source.refreshSaves()
         waitForExpectations(timeout: 1)
 
         XCTAssertEqual(operations.fetchListCall(at: 0)?.token, session.accessToken)
@@ -102,7 +102,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
 
         let expectationToRunOperation = expectation(description: "Run operation")
-        source.refresh {
+        source.refreshSaves {
             expectationToRunOperation.fulfill()
         }
 
@@ -118,7 +118,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
 
         let expectationToRunOperation = expectation(description: "Run operation")
-        source.refresh {
+        source.refreshSaves {
             expectationToRunOperation.fulfill()
         }
 

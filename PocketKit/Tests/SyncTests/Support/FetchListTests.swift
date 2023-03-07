@@ -41,8 +41,8 @@ class FetchListTests: XCTestCase {
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>? = nil,
         maxItems: Int = 400,
         lastRefresh: LastRefresh? = nil
-    ) -> FetchList {
-        FetchList(
+    ) -> FetchSaves {
+        FetchSaves(
             user: user ?? self.user,
             token: token,
             apollo: apollo ?? self.apollo,

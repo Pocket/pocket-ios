@@ -39,7 +39,7 @@ extension MockOperationFactory {
         implementations["fetchList"] = impl
     }
 
-    func fetchList(
+    func fetchSaves(
         user: User,
         token: String,
         apollo: ApolloClientProtocol,

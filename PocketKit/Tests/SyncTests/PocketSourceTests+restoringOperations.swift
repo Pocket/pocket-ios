@@ -27,7 +27,7 @@ extension PocketSourceTests {
         var source: PocketSource! = subject()
         networkMonitor.update(status: .unsatisfied)
 
-        source.refresh()
+        source.refreshSaves()
         source.favorite(item: item)
         source.archive(item: item)
 

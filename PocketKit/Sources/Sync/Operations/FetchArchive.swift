@@ -4,9 +4,7 @@ import Combine
 import PocketGraph
 import SharedPocketKit
 
-class FetchList: SyncOperation {
-    private let user: User
-    private let token: String
+class FetchArchive: SyncOperation {
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let events: SyncEvents
@@ -15,8 +13,6 @@ class FetchList: SyncOperation {
     private let lastRefresh: LastRefresh
 
     init(
-        user: User,
-        token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
@@ -24,8 +20,6 @@ class FetchList: SyncOperation {
         maxItems: Int,
         lastRefresh: LastRefresh
     ) {
-        self.user = user
-        self.token = token
         self.apollo = apollo
         self.space = space
         self.events = events
@@ -36,10 +30,9 @@ class FetchList: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
-            try await fetchList()
-            try await fetchTags()
+            try await fetchArchive()
 
-            lastRefresh.refreshed()
+            lastRefresh.refreshedArchive()
             return .success
         } catch {
             switch error {
@@ -70,17 +63,14 @@ class FetchList: SyncOperation {
         }
     }
 
-    private func fetchList() async throws {
+    private func fetchArchive() async throws {
         var pagination = PaginationSpec(maxItems: maxItems)
 
         repeat {
             let result = try await fetchPage(pagination)
-            if let isPremium = result.data?.userByToken?.isPremium as? Bool {
-                user.setPremiumStatus(isPremium)
-             }
 
             if case .started = initialDownloadState.value,
-               let totalCount = result.data?.userByToken?.savedItems?.totalCount,
+               let totalCount = result.data?.user?.savedItems?.totalCount,
                pagination.cursor == nil {
                 initialDownloadState.send(.paginating(totalCount: totalCount))
             }
@@ -92,46 +82,28 @@ class FetchList: SyncOperation {
         initialDownloadState.send(.completed)
     }
 
-    private func fetchTags() async throws {
-        var shouldFetchNextPage = true
-        var pagination = PaginationInput(first: .null)
-
-        while shouldFetchNextPage {
-            let query = TagsQuery(pagination: .init(pagination))
-            let result = try await apollo.fetch(query: query)
-            try await updateLocalTags(result)
-
-            if let pageInfo = result.data?.user?.tags?.pageInfo {
-                pagination.after = pageInfo.endCursor ?? .none
-                shouldFetchNextPage = pageInfo.hasNextPage
-            } else {
-                shouldFetchNextPage = false
-            }
-        }
-    }
-
-    private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
-        let query = FetchSavesQuery(
-            token: token,
+    private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchArchiveQuery.Data> {
+        let query = FetchArchiveQuery(
             pagination: .some(PaginationInput(
                 after: pagination.cursor ?? .none,
                 first: .some(pagination.maxItems)
             )),
-            savedItemsFilter: .none
+            filter: .none,
+            sort: .some(SavedItemsSort(sortBy: .init(.archivedAt), sortOrder: .init(.desc)))
         )
 
-        if let updatedSince = lastRefresh.lastRefresh {
-            query.savedItemsFilter = .some(SavedItemsFilter(updatedSince: .some(updatedSince)))
+        if let updatedSince = lastRefresh.lastRefreshArchive {
+            query.filter = .some(SavedItemsFilter(updatedSince: .some(updatedSince)))
         } else {
-            query.savedItemsFilter = .some(SavedItemsFilter(status: .init(.unread)))
+            query.filter = .some(SavedItemsFilter(statuses: .some([.init(.archived)])))
         }
 
         return try await apollo.fetch(query: query)
     }
 
     @MainActor
-    private func updateLocalStorage(result: GraphQLResult<FetchSavesQuery.Data>) throws {
-        guard let edges = result.data?.userByToken?.savedItems?.edges else {
+    private func updateLocalStorage(result: GraphQLResult<FetchArchiveQuery.Data>) throws {
+        guard let edges = result.data?.user?.savedItems?.edges else {
             return
         }
 
@@ -147,22 +119,12 @@ class FetchList: SyncOperation {
             )
 
             let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: node.remoteID)
-            item.update(from: edge, with: space)
+
+            item.update(from: node.fragments.savedItemSummary, with: space)
 
             if item.deletedAt != nil {
                 space.delete(item)
             }
-        }
-
-        try space.save()
-    }
-
-    @MainActor
-    func updateLocalTags(_ result: GraphQLResult<TagsQuery.Data>) throws {
-        result.data?.user?.tags?.edges?.forEach { edge in
-            guard let node = edge?.node else { return }
-            let tag = space.fetchOrCreateTag(byName: node.name)
-            tag.update(remote: node.fragments.tagParts)
         }
 
         try space.save()
@@ -183,8 +145,8 @@ class FetchList: SyncOperation {
             self.maxItems = maxItems
         }
 
-        func nextPage(result: GraphQLResult<FetchSavesQuery.Data>) -> PaginationSpec {
-            guard let savedItems = result.data?.userByToken?.savedItems,
+        func nextPage(result: GraphQLResult<FetchArchiveQuery.Data>) -> PaginationSpec {
+            guard let savedItems = result.data?.user?.savedItems,
                   let itemCount = savedItems.edges?.count,
                   let endCursor = savedItems.pageInfo.endCursor else {
                       return PaginationSpec(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems)

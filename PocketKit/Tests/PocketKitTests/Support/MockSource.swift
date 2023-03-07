@@ -9,7 +9,7 @@ class MockSource: Source {
         _events.eraseToAnyPublisher()
     }
 
-    var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never> = .init(.unknown)
+    var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never> = .init(.unknown)
 
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
@@ -67,7 +67,7 @@ extension MockSource {
         implementations[Self.refresh] = impl
     }
 
-    func refresh(maxItems: Int, completion: (() -> Void)?) {
+    func refreshSaves(maxItems: Int, completion: (() -> Void)?) {
         guard let impl = implementations[Self.refresh] as? RefreshImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
