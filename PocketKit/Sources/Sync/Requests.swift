@@ -176,6 +176,14 @@ public enum Requests {
         return request
     }
 
+    public static func filterTags(with input: String, excluding tags: [String]) -> NSFetchRequest<Tag> {
+        let request = fetchTags()
+        let filterPredicate = NSPredicate(format: "name BEGINSWITH %@", input)
+        let excludePredicate = NSPredicate(format: "NOT (self.name IN %@)", tags)
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filterPredicate, excludePredicate])
+        return request
+    }
+
     public static func fetchUnsavedItems() -> NSFetchRequest<Item> {
         let request = self.fetchItems()
         request.predicate = NSPredicate(format: "savedItem = nil")

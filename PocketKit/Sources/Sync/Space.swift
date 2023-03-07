@@ -137,6 +137,10 @@ public class Space {
         return try fetch(Requests.fetchTags(excluding: tags))
     }
 
+    func filterTags(with input: String, excluding tags: [String]) throws -> [Tag] {
+        return try fetch(Requests.filterTags(with: input, excluding: tags))
+    }
+
     func deleteTag(byID id: String) throws {
         let fetchRequest = Requests.fetchTag(byID: id)
         fetchRequest.fetchLimit = 1

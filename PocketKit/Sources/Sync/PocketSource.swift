@@ -385,6 +385,10 @@ extension PocketSource {
         try? space.fetchTags(isArchived: isArchived)
     }
 
+    public func filterTags(with input: String, excluding tags: [String]) -> [Tag]? {
+        try? space.filterTags(with: input, excluding: tags)
+    }
+
     public func fetchDetails(for savedItem: SavedItem) async throws {
         guard let remoteID = savedItem.remoteID else {
             return

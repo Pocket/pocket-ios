@@ -54,6 +54,8 @@ public protocol Source {
 
     func fetchAllTags() -> [Tag]?
 
+    func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
+
     func fetchTags(isArchived: Bool) -> [Tag]?
 
     func fetchSlateLineup(_ identifier: String) async throws
