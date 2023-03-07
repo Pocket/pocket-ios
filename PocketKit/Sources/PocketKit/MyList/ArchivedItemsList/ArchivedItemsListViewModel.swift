@@ -344,6 +344,7 @@ extension ArchivedItemsListViewModel {
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
             source: source,
+            tracker: tracker,
             saveAction: { [weak self] in
                 self?.archiveService.fetch()
             }

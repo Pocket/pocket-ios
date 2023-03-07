@@ -1,16 +1,19 @@
 import XCTest
 import Combine
+import Analytics
 
 @testable import Sync
 @testable import PocketKit
 
 class PocketAddTagsViewModelTests: XCTestCase {
     private var source: MockSource!
+    private var tracker: MockTracker!
     private var space: Space!
     private var subscriptions: [AnyCancellable] = []
 
     override func setUp() {
         source = MockSource()
+        tracker = MockTracker()
         space = .testSpace()
     }
 
@@ -19,8 +22,18 @@ class PocketAddTagsViewModelTests: XCTestCase {
         try space.clear()
     }
 
-    private func subject(item: SavedItem, source: Source? = nil, saveAction: @escaping () -> Void) -> PocketAddTagsViewModel {
-        PocketAddTagsViewModel(item: item, source: source ?? self.source, saveAction: saveAction)
+    private func subject(
+        item: SavedItem,
+        source: Source? = nil,
+        tracker: Tracker? = nil,
+        saveAction: @escaping () -> Void
+    ) -> PocketAddTagsViewModel {
+        PocketAddTagsViewModel(
+            item: item,
+            source: source ?? self.source,
+            tracker: tracker ?? self.tracker,
+            saveAction: saveAction
+        )
     }
 
     func test_addTag_withValidName_updatesTags() {

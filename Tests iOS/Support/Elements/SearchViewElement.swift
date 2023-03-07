@@ -48,7 +48,7 @@ struct SearchViewElement: PocketUIElement {
     }
 
     func hasBanner(with message: String) -> Bool {
-        element.staticTexts["banner"].exists && element.staticTexts[message].exists
+        element.staticTexts["banner"].wait().exists && element.staticTexts[message].wait().exists
     }
 
     func searchItemCell(at index: Int) -> ItemRowElement {
