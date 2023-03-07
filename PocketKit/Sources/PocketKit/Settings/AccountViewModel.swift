@@ -12,7 +12,6 @@ class AccountViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let notificationCenter: NotificationCenter
     private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
-    private let deleteAccountViewModelFactory: () -> DeleteAccountViewModel
     private let userManagementService: UserManagementServiceProtocol
 
     @Published var isPresentingHelp = false
@@ -22,6 +21,8 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingLicenses = false
     @Published var isPresentingAccountManagement = false
+    @Published var isPresentingDeleteYourAccount = false
+    @Published var isPresentingCancelationHelp = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
@@ -44,15 +45,13 @@ class AccountViewModel: ObservableObject {
          userDefaults: UserDefaults,
          userManagementService: UserManagementServiceProtocol,
          notificationCenter: NotificationCenter,
-         premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel,
-         deleteAccountViewModelFactory: @escaping () -> DeleteAccountViewModel) {
+         premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
         self.user = user
         self.tracker = tracker
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.userManagementService = userManagementService
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
-        self.deleteAccountViewModelFactory = deleteAccountViewModelFactory
         self.isPremium = user.status == .premium
 
         userStatusListener = user
@@ -62,7 +61,18 @@ class AccountViewModel: ObservableObject {
                 self?.isPremium = status == .premium
             }
 
-
+        // Set up a listener to track analytics if the user taps cancelation help
+        isPresentingCancelationHelpListener = $isPresentingCancelationHelp
+            .receive(on: DispatchQueue.global(qos: .utility))
+            .sink {  [weak self] isPresentingCancelationHelp in
+                guard let strongSelf = self else {
+                    Log.warning("weak self when logging analytics for settings")
+                    return
+                }
+                if isPresentingCancelationHelp {
+                    strongSelf.trackHelpCancelingPremiumTapped()
+                }
+            }
     }
 
     /// Calls the user management service to delete the account and log the user out.
@@ -117,14 +127,6 @@ extension AccountViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
-    }
-}
-
-// MARK: Delete Account
-extension AccountViewModel {
-    @MainActor
-    func makeDeleteAccountViewModel() -> DeleteAccountViewModel {
-        deleteAccountViewModelFactory()
     }
 }
 

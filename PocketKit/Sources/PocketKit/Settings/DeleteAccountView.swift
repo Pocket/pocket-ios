@@ -124,7 +124,7 @@ struct DeleteAccountView: View {
     }
 }
 
-private struct DeleteLoadingView : View {
+private struct DeleteLoadingView: View {
     var body: some View {
         VStack {
             HStack {
@@ -142,7 +142,6 @@ private struct DeleteLoadingView : View {
         .accessibilityIdentifier("deleting-overlay")
     }
 }
-
 
 extension Style {
     struct DeleteAccountView {
