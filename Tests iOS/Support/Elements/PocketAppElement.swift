@@ -44,6 +44,10 @@ struct PocketAppElement {
         PremiumUpgradeViewElement(app.otherElements["premium-upgrade-view"])
     }
 
+    var searchGetPremiumEmptyView: SearchGetPremiumEmptyViewElement {
+        SearchGetPremiumEmptyViewElement(app.otherElements["get-premium-empty-state"])
+    }
+
     var accountManagementView: AccountManagementViewElement {
         return AccountManagementViewElement(app.collectionViews["account-management"])
     }
