@@ -58,6 +58,8 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
     /// Manually restore a purchase in those (rare?) cases when the automatic sync fails
     func restoreSubscription() async throws {
         try await AppStore.sync()
+        // TODO: double check if we still need the following call when dealing with the real App Store
+        await updateSubscription()
     }
 }
 
