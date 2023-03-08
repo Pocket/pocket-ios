@@ -111,6 +111,7 @@
 "Rename Tag" = "Renommer la balise";
 "Rename" = "Renommer";
 "Enter a new name for this tag" = "Entrez un nouveau nom pour cette balise";
+"Close" = "Fermer";
 
 "not tagged" = "Non balisé";
 "OK" = "OK";
@@ -129,8 +130,11 @@
 "It contains misinformation" = "Il contient de la fausse information";
 "Other" = "Autre";
 
+//General Messages
+"general.oops" = "Oups! Réessayer?";
+
+
 // Search
-"search.errorHeadline" = "Oups! Réessayer?";
 "search.errorMessage" = "Nous avons rencontré une erreur et ne pouvons pas vous fournir ce dont vous avez besoin pour le moment. Veuillez réessayer plus tard.";
 "search.limitedResults" = "Résultats de recherche limités";
 "search.offlineMessage" = "Vous pouvez seulement rechercher des titres et des URL lorsque vous êtes hors ligne. Connectez-vous à Internet pour vous servir de la recherche plein texte de Premium.";
@@ -146,6 +150,19 @@
 "settings.logout.areYouSureMessage" = "Vous serez déconnecté de votre compte et tous les éléments qui ont été sauvegardés pour être consultés hors ligne seront supprimés de votre appareil.";
 "settings.logout.areyousure" = "Êtes-vous certain?";
 "settings.help" = "Obtenir de l'aide et du soutien";
+"settings.accountManagement" = "Gestion des comptes";
+"settings.accountManagement.deleteAccount" = "Supprimer le compte";
+"settings.accountManagement.deleteYourAccount" = "Supprimer votre compte";
+
+"settings.accountManagement.deleteAccount.warning" = "Avertissement : vous ne pourrez pas revenir en arrière";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "Pour supprimer votre compte, vous devez d'abord **annuler votre abonnement Premium ici.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "Vous comprenez que votre compte Pocket et vos données seront **supprimés de façon définitive.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "Pour annuler votre abonnement à Pocket Premium";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Suppression de votre compte";
+"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+
 
 //List view
 "item.list.min" = "%1$@ min";

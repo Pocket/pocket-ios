@@ -170,6 +170,8 @@ class SavesTests: XCTestCase {
                 return promise!.futureResult
             } else if apiRequest.isForSavesContent {
                 return Response.saves()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {

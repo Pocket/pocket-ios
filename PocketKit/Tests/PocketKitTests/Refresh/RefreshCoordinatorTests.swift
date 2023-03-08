@@ -58,7 +58,7 @@ class RefreshCoordinatorTests: XCTestCase {
         taskScheduler.stubRegisterHandler { handler = $2; return true }
         taskScheduler.stubSubmit { _ in }
 
-        source.stubRefresh { _, completion in
+        source.stubRefreshSaves { _, completion in
             completion?()
         }
 
@@ -70,7 +70,7 @@ class RefreshCoordinatorTests: XCTestCase {
         task.stubSetTaskCompleted { _ in }
         handler?(task)
 
-        XCTAssertNotNil(source.refreshCall(at: 0))
+        XCTAssertNotNil(source.refreshSavesCall(at: 0))
         XCTAssertNotNil(task.setTaskCompletedCall(at: 0))
     }
 
@@ -80,7 +80,7 @@ class RefreshCoordinatorTests: XCTestCase {
         taskScheduler.stubRegisterHandler { handler = $2; return true }
         taskScheduler.stubSubmit { _ in }
 
-        source.stubRefresh { _, completion in
+        source.stubRefreshSaves { _, completion in
             // completion callback never fires
         }
 
@@ -94,14 +94,15 @@ class RefreshCoordinatorTests: XCTestCase {
 
         task.expirationHandler?()
 
-        XCTAssertNotNil(source.refreshCall(at: 0))
+        XCTAssertNotNil(source.refreshSavesCall(at: 0))
         XCTAssertNotNil(task.setTaskCompletedCall(at: 0))
         XCTAssertEqual(task.setTaskCompletedCall(at: 0)?.success, false)
     }
 
     func test_receivingAppWillEnterForegroundNotification_refreshesSource_andResolvesUnresolvedSavedItems() {
         taskScheduler.stubRegisterHandler { _, _, _ in true }
-        source.stubRefresh { _, _ in }
+        source.stubRefreshSaves { _, _ in }
+        source.stubRefreshArchive { _, _ in }
         source.stubResolveUnresolvedSavedItems { }
 
         let coordinator = subject()
@@ -109,7 +110,8 @@ class RefreshCoordinatorTests: XCTestCase {
 
         notificationCenter?.post(name: UIScene.willEnterForegroundNotification, object: nil)
 
-        XCTAssertNotNil(source.refreshCall(at: 0))
+        XCTAssertNotNil(source.refreshSavesCall(at: 0))
         XCTAssertNotNil(source.resolveUnresolvedSavedItemsCall(at: 0))
+        XCTAssertNotNil(source.refreshArchiveCall(at: 0))
     }
 }

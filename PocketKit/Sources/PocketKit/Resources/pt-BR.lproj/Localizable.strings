@@ -111,6 +111,7 @@
 "Rename Tag" = "Renomear tag";
 "Rename" = "Renomear";
 "Enter a new name for this tag" = "Digite um novo nome para esta tag";
+"Close" = "Fechar";
 
 "not tagged" = "Não marcado";
 "OK" = "OK";
@@ -129,8 +130,11 @@
 "It contains misinformation" = "Contém desinformação";
 "Other" = "Outro";
 
+//General Messages
+"general.oops" = "Quer tentar novamente?";
+
+
 // Search
-"search.errorHeadline" = "Quer tentar novamente?";
 "search.errorMessage" = "Ocorreu um problema e não é possível obter o que você precisa no momento. Tente novamente mais tarde.";
 "search.limitedResults" = "Resultados de pesquisa limitados";
 "search.offlineMessage" = "Se estiver offline, somente títulos e URLs podem ser pesquisados. Conecte-se à internet para usar a pesquisa de texto completo do Premium.";
@@ -146,6 +150,19 @@
 "settings.logout.areYouSureMessage" = "Você será desconectado da sua conta e todos os itens que foram salvos para visualização off-line serão removidos do seu dispositivo.";
 "settings.logout.areyousure" = "Tem certeza?";
 "settings.help" = "Obter ajuda e suporte";
+"settings.accountManagement" = "Gerenciamento de contas";
+"settings.accountManagement.deleteAccount" = "Excluir conta";
+"settings.accountManagement.deleteYourAccount" = "Excluir sua conta";
+
+"settings.accountManagement.deleteAccount.warning" = "Aviso: esta ação não pode ser desfeita";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "Para excluir sua conta, você deve primeiro **cancelar sua assinatura Premium aqui.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "Você entende que sua conta Pocket e seus dados serão **excluídos permanentemente.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "Como cancelar sua assinatura do Pocket Premium";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Excluindo sua conta";
+"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+
 
 //List view
 "item.list.min" = "%1$@ min";

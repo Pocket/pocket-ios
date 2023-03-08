@@ -20,6 +20,8 @@ class BannerViewTests: XCTestCase {
                 return Response.saves("initial-list-recent-saves")
             } else if apiRequest.isToSaveAnItem {
                 return Response.saveItem()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {

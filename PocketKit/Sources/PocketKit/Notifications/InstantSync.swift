@@ -42,7 +42,7 @@ class InstantSync: NSObject {
      Triggers our sync process when told to via a remote push
      */
     func triggerSyncFromRemotePush(fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        self.source.refresh {
+        self.source.refreshSaves {
             completionHandler(.newData)
         }
         self.source.retryImmediately()

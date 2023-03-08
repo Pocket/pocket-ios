@@ -3,12 +3,12 @@
 
 @_exported import ApolloAPI
 
-public class SavedItemSummariesQuery: GraphQLQuery {
-  public static let operationName: String = "SavedItemSummaries"
+public class FetchArchiveQuery: GraphQLQuery {
+  public static let operationName: String = "FetchArchive"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      query SavedItemSummaries($pagination: PaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) {
+      query FetchArchive($pagination: PaginationInput, $filter: SavedItemsFilter, $sort: SavedItemsSort) {
         user {
           __typename
           savedItems(pagination: $pagination, filter: $filter, sort: $sort) {

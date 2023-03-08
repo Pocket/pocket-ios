@@ -1,4 +1,4 @@
-query SavedItemSummaries(
+query FetchArchive(
     $pagination: PaginationInput,
     $filter: SavedItemsFilter,
     $sort: SavedItemsSort
