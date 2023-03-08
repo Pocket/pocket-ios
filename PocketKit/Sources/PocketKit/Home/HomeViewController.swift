@@ -82,7 +82,7 @@ class HomeViewController: UIViewController {
             self?.handleRefresh(isForced: true)
         }
 
-        collectionView.refreshControl = LottieRefreshControl(.loading, frame: .zero, primaryAction: action)
+        collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
         navigationItem.title = L10n.home
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in

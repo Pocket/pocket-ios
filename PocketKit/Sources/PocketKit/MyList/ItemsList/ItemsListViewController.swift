@@ -136,8 +136,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         )
 
         collectionView.delegate = self
-        collectionView.refreshControl = LottieRefreshControl(
-            .loading,
+        collectionView.refreshControl = UIRefreshControl(
             frame: .zero,
             primaryAction: UIAction(handler: { [weak self] _ in
                 self?.handleRefresh()
