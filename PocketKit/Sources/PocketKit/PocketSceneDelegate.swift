@@ -52,9 +52,12 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         userDefaults: Services.shared.userDefaults,
                         userManagementService: Services.shared.userManagementService,
                         notificationCenter: .default
-                    ) { tracker, source in
-                        PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                    ) {
+                        try await Services.shared.subscriptionStore.restoreSubscription()
                     }
+                    premiumUpgradeViewModelFactory: { tracker, source in
+                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                        }
                 ),
                 source: Services.shared.source,
                 tracker: Services.shared.tracker
