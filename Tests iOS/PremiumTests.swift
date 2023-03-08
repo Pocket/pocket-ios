@@ -116,7 +116,8 @@ class PremiumTests: XCTestCase {
         purchaseSuccessEvent!.getUIContext()!.assertHas(type: "dialog")
     }
 
-    @MainActor func configureFreeUser() {
+    /// Set user to free
+    @MainActor private func configureFreeUser() {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
@@ -126,6 +127,7 @@ class PremiumTests: XCTestCase {
         }
     }
 
+    /// Load premium upgrade view from Settings
     @MainActor private func loadPremiumUpgradeViewFromSettings() async {
         app.tabBar.settingsButton.wait().tap()
         XCTAssertTrue(app.settingsView.exists)
@@ -138,17 +140,14 @@ class PremiumTests: XCTestCase {
 
         goPremiumButtonImpression!.getUIContext()!.assertHas(type: "button")
 
-        tapSettingsPremiumUpsell()
+        app.settingsView.goPremiumButton.tap()
         XCTAssertTrue(app.premiumUpgradeView.exists)
 
         let premiumViewShownEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium")
         XCTAssertNotNil(premiumViewShownEvent)
     }
 
-    private func tapSettingsPremiumUpsell() {
-        app.settingsView.goPremiumButton.tap()
-    }
-
+    /// Load premium upgrade view from Saves > Search > All Items
     @MainActor private func loadPremiumUpgradeViewFromSearch() async {
         app.tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Search").wait().tap()
@@ -160,14 +159,10 @@ class PremiumTests: XCTestCase {
 
         goPremiumButtonImpression!.getUIContext()!.assertHas(type: "button")
 
-        tapSearchPremiumUpsell()
+        app.searchGetPremiumEmptyView.getPocketPremiumButton.tap()
         XCTAssertTrue(app.premiumUpgradeView.exists)
 
         let searchUpsellEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.premium.upsell")
         XCTAssertNotNil(searchUpsellEvent)
-    }
-
-    private func tapSearchPremiumUpsell() {
-        app.searchGetPremiumEmptyView.getPocketPremiumButton.tap()
     }
 }
