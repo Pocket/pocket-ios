@@ -3,6 +3,7 @@ import Sync
 import CoreData
 import Combine
 import Kingfisher
+import Textile
 
 class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     private let model: ViewModel
@@ -135,7 +136,8 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         )
 
         collectionView.delegate = self
-        collectionView.refreshControl = UIRefreshControl(
+        collectionView.refreshControl = LottieRefreshControl(
+            .loading,
             frame: .zero,
             primaryAction: UIAction(handler: { [weak self] _ in
                 self?.handleRefresh()

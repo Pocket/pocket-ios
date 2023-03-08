@@ -6,7 +6,6 @@ import Analytics
 import Combine
 import SwiftUI
 import BackgroundTasks
-import Lottie
 
 class HomeViewController: UIViewController {
     private let model: HomeViewModel
@@ -83,7 +82,7 @@ class HomeViewController: UIViewController {
             self?.handleRefresh(isForced: true)
         }
 
-        collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
+        collectionView.refreshControl = LottieRefreshControl(.loading, frame: .zero, primaryAction: action)
 
         navigationItem.title = L10n.home
         collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
