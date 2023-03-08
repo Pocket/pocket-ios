@@ -133,7 +133,7 @@ extension AccountViewModel {
 
     /// track settings screen was viewed
     func trackSettingsViewed() {
-        tracker.track(event: Events.Settings.settingsViewed())
+        tracker.track(event: Events.Settings.settingsImpression())
     }
 
     /// track logout row tapped

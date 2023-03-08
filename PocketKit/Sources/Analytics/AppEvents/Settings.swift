@@ -11,9 +11,10 @@ public extension Events {
 
 public extension Events.Settings {
     /// Fired when a user views the settings screen
-    static func settingsViewed() -> Engagement {
-        return Engagement(
-            .general,
+    static func settingsImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
             uiEntity: UiEntity(
                 .screen,
                 identifier: "global-nav.settings"
