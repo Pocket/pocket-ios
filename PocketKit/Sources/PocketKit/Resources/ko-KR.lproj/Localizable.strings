@@ -111,6 +111,7 @@
 "Rename Tag" = "태그 이름 바꾸기";
 "Rename" = "이름 바꾸기";
 "Enter a new name for this tag" = "이 태그에 대한 새 이름 입력";
+"Close" = "닫기";
 
 "not tagged" = "태그 지정되지 않음";
 "OK" = "확인";
@@ -129,8 +130,11 @@
 "It contains misinformation" = "잘못된 정보가 포함되어 있습니다";
 "Other" = "기타";
 
+//General Messages
+"general.oops" = "죄송합니다! 다시 시도하시겠습니까?";
+
+
 // Search
-"search.errorHeadline" = "죄송합니다! 다시 시도하시겠습니까?";
 "search.errorMessage" = "오류가 발생하여 일시적으로 필요한 정보를 얻을 수 없습니다. 나중에 다시 시도하십시오.";
 "search.limitedResults" = "제한된 검색 결과";
 "search.offlineMessage" = "오프라인 상태에서는 제목과 URL만 검색할 수 있습니다. Premium의 전체 텍스트 검색을 사용하려면 인터넷에 연결하십시오.";
@@ -146,6 +150,19 @@
 "settings.logout.areYouSureMessage" = "계정이 로그아웃되고 오프라인 보기용으로 저장된 모든 항목이 장치에서 제거됩니다.";
 "settings.logout.areyousure" = "계속하시겠습니까?";
 "settings.help" = "도움말 및 지원 받기";
+"settings.accountManagement" = "계정 관리";
+"settings.accountManagement.deleteAccount" = "계정 삭제";
+"settings.accountManagement.deleteYourAccount" = "계정 삭제";
+
+"settings.accountManagement.deleteAccount.warning" = "경고: 이 작업은 취소할 수 없습니다";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "계정을 삭제하려면 먼저 **여기에서 Premium 구독을 취소해야 합니다.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "귀하는 귀하의 Pocket 계정과 데이터가 **영구적으로 삭제됨을 이해합니다.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "Pocket Premium 구독을 취소하는 방법";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "계정 삭제";
+"settings.accountManagement.deleteAccount.error.body" = "오류가 발생하여 계정을 삭제할 수 없습니다. 나중에 다시 시도하십시오.";
+
 
 //List view
 "item.list.min" = "%1$@분";
