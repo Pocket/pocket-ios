@@ -8,10 +8,10 @@ import UIKit
 import Lottie
 
 public class LottieRefreshControl: UIRefreshControl {
-    fileprivate let animationView: LottieAnimationView
-    fileprivate var isAnimating = false
+    private let animationView: LottieAnimationView
+    private var isAnimating = false
 
-    fileprivate let maxPullDistance: CGFloat = 150
+    private let maxPullDistance: CGFloat = 150
 
     public init(_ pocketAnimation: PocketAnimation, frame: CGRect, primaryAction: UIAction?) {
         animationView = LottieAnimationView(animation: pocketAnimation.animation())
@@ -62,7 +62,7 @@ private extension LottieRefreshControl {
         NSLayoutConstraint.activate([
             animationView.centerXAnchor.constraint(equalTo: centerXAnchor),
             animationView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            animationView.widthAnchor.constraint(equalToConstant: 50),
+            animationView.widthAnchor.constraint(equalTo: widthAnchor),
             animationView.heightAnchor.constraint(equalToConstant: 32)
         ])
     }
