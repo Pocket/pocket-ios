@@ -35,18 +35,40 @@ struct AccountManagementForm: View {
         Form {
             Group {
                 Section(header: Text(L10n.yourAccount).style(.settings.header)) {
+                    if !model.isPremium {
+                        SettingsRowButton(title: L10n.Settings.AccountManagement.restoreSubscription, titleStyle: .settings.button.default) {
+                            model.attemptRestoreSubscription()
+                        }
+                        // NOTE: SwiftUI does not play well with more than one alert attached to the same view, that's why we have one here
+                        // and one attached to the button below...
+                        // ref https://www.hackingwithswift.com/quick-start/swiftui/how-to-show-multiple-alerts-in-a-single-view
+                        .alert(isPresented: $model.isPresentingRestoreNotSuccessful) {
+                            Alert(
+                                title: Text(L10n.Settings.AccountManagement.RestoreSubscription.RestoreNotSuccessful.title),
+                                message: Text(L10n.Settings.AccountManagement.RestoreSubscription.RestoreNotSuccessful.message),
+                                dismissButton: .default(Text(L10n.ok))
+                            )
+                        }
+                        .accessibilityIdentifier("restore-existing-subscription-button")
+                    }
                     SettingsRowButton(title: L10n.Settings.AccountManagement.deleteAccount, titleStyle: .settings.button.delete, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) {
                         model.trackDeleteTapped()
                         model.isPresentingDeleteYourAccount.toggle()
                     }
+                    .alert(isPresented: $model.isPresentingRestoreSuccessful) {
+                        Alert(
+                            title: Text(L10n.Settings.AccountManagement.RestoreSubscription.RestoreSuccessful.title),
+                            message: Text(L10n.Settings.AccountManagement.RestoreSubscription.RestoreSuccessful.message),
+                            dismissButton: .default(Text(L10n.ok))
+                        )
+                    }
+                    .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
+                        DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: $model.isPresentingCancelationHelp, hasError: $model.hasError, isDeletingAccount: $model.isDeletingAccount, deleteAccount: model.deleteAccount, helpCancelPremium: model.helpCancelPremium, dismissDelete: { dismiss in model.trackDeleteDismissed(dismissReason: dismiss) }, helpAppeared: model.trackHelpCancelingPremiumImpression ).onAppear {
+                            model.trackDeleteConfirmationImpression()
+                        }
+                    }
                     .accessibilityIdentifier("delete-your-account-button")
                 }
-                .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
-                    DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: $model.isPresentingCancelationHelp, hasError: $model.hasError, isDeletingAccount: $model.isDeletingAccount, deleteAccount: model.deleteAccount, helpCancelPremium: model.helpCancelPremium, dismissDelete: { dismiss in model.trackDeleteDismissed(dismissReason: dismiss) }, helpAppeared: model.trackHelpCancelingPremiumImpression ).onAppear {
-                        model.trackDeleteConfirmationImpression()
-                    }
-                }
-
                 .textCase(nil)
             }
             .listRowBackground(Color(.ui.grey7))
