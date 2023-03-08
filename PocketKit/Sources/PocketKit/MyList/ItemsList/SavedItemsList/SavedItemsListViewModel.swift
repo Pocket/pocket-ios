@@ -405,7 +405,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
-        switch source.initialSavesDownloadState.value {
+        var stateValue: InitialDownloadState
+        switch self.viewType {
+        case .saves:
+            stateValue = source.initialSavesDownloadState.value
+        case .archive:
+            stateValue = source.initialArchiveDownloadState.value
+        }
+
+        switch stateValue {
         case .unknown, .completed:
             itemCellIDs = itemsController
                 .fetchedObjects?
