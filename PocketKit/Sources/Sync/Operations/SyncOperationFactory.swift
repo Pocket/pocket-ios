@@ -8,7 +8,6 @@ import SharedPocketKit
 protocol SyncOperationFactory {
     func fetchSaves(
         user: User,
-        token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
@@ -18,8 +17,6 @@ protocol SyncOperationFactory {
     ) -> SyncOperation
 
     func fetchArchive(
-        user: User,
-        token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
@@ -52,7 +49,6 @@ protocol SyncOperationFactory {
 class OperationFactory: SyncOperationFactory {
     func fetchSaves(
         user: User,
-        token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
@@ -72,8 +68,6 @@ class OperationFactory: SyncOperationFactory {
     }
 
     func fetchArchive(
-        user: User,
-        token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,

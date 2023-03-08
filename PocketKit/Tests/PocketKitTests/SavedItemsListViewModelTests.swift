@@ -11,6 +11,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var tracker: MockTracker!
     var itemsController: MockSavedItemsController!
     var listOptions: ListOptions!
+    var viewType: SavesViewType!
     var subscriptions: [AnyCancellable]!
 
     override func setUp() {
@@ -21,6 +22,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         itemsController = MockSavedItemsController()
         listOptions = .saved
         listOptions.selectedSortOption = .newest
+        viewType = .saves
 
         itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
         source.stubMakeItemsController {
@@ -41,6 +43,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         SavedItemsListViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
+            viewType: .saves,
             listOptions: listOptions ?? self.listOptions,
             notificationCenter: .default
         )
@@ -327,8 +330,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
-    func test_refresh_callsRetryImmediatelyOnSource() {
-        source.stubRefresh { _, _ in }
+    func test_refreshSaves_callsRetryImmediatelyOnSource() {
+        source.stubRefreshSaves { _, _ in }
         source.stubRetryImmediately { }
 
         let viewModel = subject()

@@ -38,7 +38,8 @@ class PocketSourceTests: XCTestCase {
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
         subscriptions = []
 
-        lastRefresh.stubGetLastRefresh { nil }
+        lastRefresh.stubGetLastRefreshSaves { nil }
+        lastRefresh.stubGetLastRefreshArchive { nil }
 
         backgroundTaskManager.stubBeginTask { _, _ in return 0 }
         backgroundTaskManager.stubEndTask { _ in }
@@ -75,11 +76,11 @@ class PocketSourceTests: XCTestCase {
         )
     }
 
-    func test_refresh_addsFetchListOperationToQueue() {
+    func test_refresh_addsFetchSavesOperationToQueue() {
         let session = MockSession()
         sessionProvider.session = session
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubFetchList { _, _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _, _  in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -89,13 +90,11 @@ class PocketSourceTests: XCTestCase {
 
         source.refreshSaves()
         waitForExpectations(timeout: 1)
-
-        XCTAssertEqual(operations.fetchListCall(at: 0)?.token, session.accessToken)
     }
 
     func test_refreshWithCompletion_callsCompletionWhenFinished() {
         sessionProvider.session = MockSession()
-        operations.stubFetchList { _, _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _, _  in
             TestSyncOperation { }
         }
 
@@ -111,7 +110,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_refresh_whenTokenIsNil_callsCompletion() {
         sessionProvider.session = nil
-        operations.stubFetchList { _, _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _, _  in
             TestSyncOperation { }
         }
 

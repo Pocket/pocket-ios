@@ -4,12 +4,12 @@ import Analytics
 import Combine
 import UIKit
 
-class SavedItemsListViewModel: NSObject, ItemsListViewModel {
-    enum SavesViewType {
-        case saves
-        case archive
-    }
+public enum SavesViewType {
+    case saves
+    case archive
+}
 
+class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
 
@@ -82,20 +82,19 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, notificationCenter: NotificationCenter) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter) {
         self.source = source
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
         self.viewType = viewType
+        self.listOptions = listOptions
 
         switch self.viewType {
         case .saves:
             self.itemsController = source.makeSavesController()
-            self.listOptions = .saved
         case .archive:
             self.itemsController = source.makeArchiveController()
-            self.listOptions = .archived
         }
 
         self.notificationCenter = notificationCenter

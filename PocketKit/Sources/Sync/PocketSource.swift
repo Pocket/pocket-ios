@@ -196,14 +196,8 @@ extension PocketSource {
             initialSavesDownloadState.send(.started)
         }
 
-        guard let token = sessionProvider.session?.accessToken else {
-            completion?()
-            return
-        }
-
         let operation = operations.fetchSaves(
             user: user,
-            token: token,
             apollo: apollo,
             space: space,
             events: _events,
@@ -220,14 +214,7 @@ extension PocketSource {
             initialArchiveDownloadState.send(.started)
         }
 
-        guard let token = sessionProvider.session?.accessToken else {
-            completion?()
-            return
-        }
-
         let operation = operations.fetchArchive(
-            user: user,
-            token: token,
             apollo: apollo,
             space: space,
             events: _events,
@@ -513,10 +500,8 @@ extension PocketSource {
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             case .fetchSaves(let maxItems):
-                guard let token = sessionProvider.session?.accessToken else { return }
                 let operation = operations.fetchSaves(
                     user: user,
-                    token: token,
                     apollo: apollo,
                     space: space,
                     events: _events,
@@ -526,10 +511,7 @@ extension PocketSource {
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
             case .fetchArchive(let maxItems):
-                guard let token = sessionProvider.session?.accessToken else { return }
                 let operation = operations.fetchArchive(
-                    user: user,
-                    token: token,
                     apollo: apollo,
                     space: space,
                     events: _events,

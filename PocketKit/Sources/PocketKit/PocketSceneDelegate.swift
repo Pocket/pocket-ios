@@ -28,12 +28,14 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
                             viewType: .saves,
+                            listOptions: .saved,
                             notificationCenter: .default
                         ),
                         archivedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
                             viewType: .archive,
+                            listOptions: .archived,
                             notificationCenter: .default
                         )
                     ),

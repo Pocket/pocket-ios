@@ -20,15 +20,15 @@ struct ClientAPIRequest {
     }
 
     var isForSavesContent: Bool {
-        contains("userByToken") && !contains(#""isArchived":true"#)
+        contains("user") && !contains(#"ARCHIVED"#)
     }
 
     var isForArchivedContent: Bool {
-        contains("savedItems(") && contains(#""isArchived":true"#)
+        contains("savedItems(") && contains(#"ARCHIVED"#)
     }
 
     var isForFavoritedArchivedContent: Bool {
-        contains("savedItems(") && contains(#""isArchived":true"#) && contains(#""isFavorite":true"#)
+        contains("savedItems(") && contains(#"ARCHIVED"#) && contains(#""isFavorite":true"#)
     }
 
     var isForSlateLineup: Bool {

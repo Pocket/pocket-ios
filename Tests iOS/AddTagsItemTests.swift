@@ -105,10 +105,6 @@ class AddTagsItemTests: XCTestCase {
 
         addTagsView.saveButton.tap()
 
-        server.routes.post("/graphql") { request, _ in
-            Response.archivedContent()
-        }
-
         itemCell.itemActionButton.wait().tap()
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
