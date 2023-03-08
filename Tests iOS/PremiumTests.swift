@@ -38,6 +38,7 @@ class PremiumTests: XCTestCase {
         configureFreeUser()
         app.launch()
         await loadPremiumUpgradeViewFromSettings()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor func test_tapSearchPremiumUpsellShowsUpgradeView() async {
@@ -58,6 +59,7 @@ class PremiumTests: XCTestCase {
         let dismissPremiumEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium.dismiss")
         XCTAssertNotNil(dismissPremiumEvent)
         XCTAssertFalse(app.premiumUpgradeView.exists)
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     /// Test that monthly button tapped triggers the right event
@@ -71,6 +73,7 @@ class PremiumTests: XCTestCase {
         // Then
         let monthlyButtonTappedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium.monthly")
         XCTAssertNotNil(monthlyButtonTappedEvent)
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     /// Test that annual button tapped triggers the right event
@@ -84,6 +87,7 @@ class PremiumTests: XCTestCase {
         // Then
         let monthlyButtonTappedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.premium.annual")
         XCTAssertNotNil(monthlyButtonTappedEvent)
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     /// Test that purchase monthly subscription succeeds
@@ -99,6 +103,7 @@ class PremiumTests: XCTestCase {
         XCTAssertNotNil(purchaseSuccessEvent)
 
         purchaseSuccessEvent!.getUIContext()!.assertHas(type: "dialog")
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     /// Test that purchase annual subscription succeeds
@@ -114,6 +119,7 @@ class PremiumTests: XCTestCase {
         XCTAssertNotNil(purchaseSuccessEvent)
 
         purchaseSuccessEvent!.getUIContext()!.assertHas(type: "dialog")
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     /// Set user to free
