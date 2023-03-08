@@ -14,12 +14,12 @@ class SavesContainerViewModel {
 
     let searchList: SearchViewModel
     let savedItemsList: SavedItemsListViewModel
-    let archivedItemsList: ArchivedItemsListViewModel
+    let archivedItemsList: SavedItemsListViewModel
 
     init(
         searchList: SearchViewModel,
         savedItemsList: SavedItemsListViewModel,
-        archivedItemsList: ArchivedItemsListViewModel
+        archivedItemsList: SavedItemsListViewModel
     ) {
         self.searchList = searchList
         self.savedItemsList = savedItemsList

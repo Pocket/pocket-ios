@@ -1,6 +1,6 @@
 {
     "data": {
-        "userByToken": {
+        "user": {
             "__typename": "[type-name-here]",
             "isPremium": false,
             "savedItems": {
