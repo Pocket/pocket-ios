@@ -668,7 +668,13 @@ extension SavedItemsListViewModel {
                 source.refresh($0, mergeChanges: true)
             }
             var snapshot = buildSnapshot()
-            snapshot.reloadItems(updatedSavedItems.map { .item($0.objectID) })
+
+            switch self.viewType {
+            case .saves:
+                snapshot.reloadItems(updatedSavedItems.filter({ $0.isArchived == false }).map { .item($0.objectID) })
+            case .archive:
+                snapshot.reloadItems(updatedSavedItems.filter({ $0.isArchived }).map { .item($0.objectID) })
+            }
             _snapshot = snapshot
         }
     }

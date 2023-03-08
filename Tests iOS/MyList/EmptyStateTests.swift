@@ -64,14 +64,18 @@ class EmptyStateTests: XCTestCase {
         XCTAssertTrue(app.saves.emptyStateView(for: "saves-empty-state").exists)
 
         app.saves.selectionSwitcher.archiveButton.wait().tap()
-        XCTAssertEqual(app.saves.wait().itemCells.count, 2)
+        XCTAssertEqual(app.saves.wait().itemCells.count, 4)
 
         do {
-            let itemCell2 = app.saves.itemView(matching: "Archived Item 2")
-            let itemCell1 = app.saves.itemView(matching: "Archived Item 1")
+            let itemCell1 = app.saves.itemView(matching: "Item 2")
+            let itemCell2 = app.saves.itemView(matching: "Item 1")
+            let itemCell3 = app.saves.itemView(matching: "Archived Item 2")
+            let itemCell4 = app.saves.itemView(matching: "Archived Item 1")
 
-            swipeItemToSaves(with: itemCell2)
             swipeItemToSaves(with: itemCell1)
+            swipeItemToSaves(with: itemCell2)
+            swipeItemToSaves(with: itemCell3)
+            swipeItemToSaves(with: itemCell4)
         }
 
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
