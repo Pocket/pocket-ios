@@ -23,8 +23,6 @@ class EmptyStateTests: XCTestCase {
                 return Response.slateLineup()
             } else if apiRequest.isForSavesContent {
                 return Response.saves()
-            } else if apiRequest.isForFavoritedArchivedContent {
-                return Response.favoritedArchivedContent()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToUnfavoriteAnItem {

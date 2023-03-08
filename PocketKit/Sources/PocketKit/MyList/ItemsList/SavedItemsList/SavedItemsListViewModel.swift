@@ -561,7 +561,13 @@ extension SavedItemsListViewModel {
         case .longestToRead, .shortestToRead:
             sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
         case .newest, .oldest:
-            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
+
+            switch self.viewType {
+            case .saves:
+                sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
+            case .archive:
+                sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.archivedAt, ascending: (listOptions.selectedSortOption == .oldest))
+            }
         }
 
         guard let sortDescriptor = sortDescriptorTemp else {

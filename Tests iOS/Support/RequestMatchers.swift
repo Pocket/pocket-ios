@@ -20,15 +20,11 @@ struct ClientAPIRequest {
     }
 
     var isForSavesContent: Bool {
-        contains("user") && !contains(#"ARCHIVED"#)
+        contains("FetchSaves") && !contains(#"ARCHIVED"#)
     }
 
     var isForArchivedContent: Bool {
-        contains("savedItems(") && contains(#"ARCHIVED"#)
-    }
-
-    var isForFavoritedArchivedContent: Bool {
-        contains("savedItems(") && contains(#"ARCHIVED"#) && contains(#""isFavorite":true"#)
+        contains("FetchArchive") && contains(#"ARCHIVED"#)
     }
 
     var isForSlateLineup: Bool {
