@@ -4,6 +4,7 @@ import SwiftUI
 import Combine
 import SafariServices
 import Analytics
+import Textile
 
 class RootCoordinator {
     private var window: UIWindow?

@@ -7,6 +7,7 @@ public struct ImageAsset {
 }
 
 extension ImageAsset {
+    public static let accountDeleted = ImageAsset("accountDeleted")
     public static let save = ImageAsset("save")
     public static let saved = ImageAsset("saved")
     public static let alert = ImageAsset("alert")

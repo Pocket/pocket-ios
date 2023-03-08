@@ -9,6 +9,7 @@ import Combine
 import SharedPocketKit
 import Analytics
 import CoreData
+import Textile
 
 /// State for the search view
 enum SearchViewState {

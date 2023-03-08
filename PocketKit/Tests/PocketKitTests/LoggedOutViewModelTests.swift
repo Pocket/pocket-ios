@@ -12,6 +12,8 @@ class LoggedOutViewModelTests: XCTestCase {
     private var networkPathMonitor: MockNetworkPathMonitor!
     private var tracker: MockTracker!
     private var mockAuthenticationSession: MockAuthenticationSession!
+    private var userManagementService: MockUserManagementService!
+
     private var subscriptions: Set<AnyCancellable>!
 
     override func setUp() {
@@ -48,7 +50,8 @@ class LoggedOutViewModelTests: XCTestCase {
             authorizationClient: authorizationClient ?? self.authorizationClient,
             appSession: appSession ?? self.appSession,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
-            tracker: tracker ?? self.tracker
+            tracker: tracker ?? self.tracker,
+            userManagementService: userManagementService ?? self.userManagementService
         )
         viewModel.contextProvider = self
         return viewModel

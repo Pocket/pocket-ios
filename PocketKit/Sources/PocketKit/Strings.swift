@@ -240,6 +240,18 @@ internal enum L10n {
       }
     }
   }
+  internal enum Login {
+    internal enum DeletedAccount {
+      internal enum Banner {
+        /// Quick survey
+        internal static let action = L10n.tr("Localizable", "login.deletedAccount.banner.action", fallback: "Quick survey")
+        /// What could we have done better?
+        internal static let detail = L10n.tr("Localizable", "login.deletedAccount.banner.detail", fallback: "What could we have done better?")
+        /// You’ve deleted your Pocket account
+        internal static let title = L10n.tr("Localizable", "login.deletedAccount.banner.title", fallback: "You’ve deleted your Pocket account")
+      }
+    }
+  }
   internal enum Premium {
     internal enum Success {
       /// You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.

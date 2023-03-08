@@ -44,6 +44,7 @@ class SettingsTest: XCTestCase {
         freeUser_tapDeleteToggles()
         await tap_deleteOnDeleteConfirmation()
         _ = app.loggedOutView.waitForExistence(timeout: 10)
+        await loadExitSurvey()
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
@@ -65,6 +66,7 @@ class SettingsTest: XCTestCase {
         premiumUser_tapDeleteToggles()
         await tap_deleteOnDeleteConfirmation()
         _ = app.loggedOutView.waitForExistence(timeout: 10)
+        await loadExitSurvey()
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
@@ -177,6 +179,19 @@ class SettingsTest: XCTestCase {
 
         let deleteButtonEvent = await deleteButtonEventCall
         XCTAssertNotNil(deleteButtonEvent)
+    }
+
+    @MainActor
+    func loadExitSurvey() async {
+        _ = app.surveyBannerButton.waitForExistence(timeout: 5.0)
+        let bannerImpression = await snowplowMicro.getFirstEvent(with: "login.accountdelete.banner")
+        XCTAssertNotNil(bannerImpression)
+        let surveyButton = app.surveyBannerButton
+        surveyButton.tap()
+        _ = app.webView.waitForExistence(timeout: 5.0)
+        let events =  await [snowplowMicro.getFirstEvent(with: "login.accountdelete.banner.exitsurvey.click"), snowplowMicro.getFirstEvent(with: "login.accountdelete.exitsurvey")]
+        XCTAssertNotNil(events[0])
+        XCTAssertNotNil(events[1])
     }
 
     func assertsError() {
