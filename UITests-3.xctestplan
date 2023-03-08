@@ -78,7 +78,8 @@
         "EmptyStateTests",
         "FavoriteAnItemTests",
         "HomeTests",
-        "HomeWebViewTests"
+        "HomeWebViewTests",
+        "PremiumTests"
       ],
       "target" : {
         "containerPath" : "container:Pocket.xcodeproj",
