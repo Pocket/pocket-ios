@@ -4,7 +4,7 @@ import Textile
 
 struct PremiumUpgradeView: View {
     // TODO: remove this property and the two @State properties once we are ready to ship premium upgrades to beta users
-    static let shouldAllowUpgrade = false
+    static let shouldAllowUpgrade = true
     @State private var showingMonthlyAlert = false
     @State private var showingAnnualAlert = false
     @Binding var dismissReason: DismissReason
@@ -16,6 +16,8 @@ struct PremiumUpgradeView: View {
             dismissButton
             upgradeView
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("premium-upgrade-view")
         .padding([.top, .bottom], 20)
         .background(PremiumBackgroundView())
         .task {
@@ -45,6 +47,7 @@ struct PremiumUpgradeView: View {
             } label: {
                 Image(asset: .close).renderingMode(.template).foregroundColor(Color(.ui.grey5))
             }
+            .accessibilityIdentifier("premium-upgrade-view-dismiss-button")
             .padding(.top, 10)
             .padding([.leading, .trailing], 32)
         }
@@ -80,6 +83,7 @@ struct PremiumUpgradeView: View {
                                 }
                             }
                         }
+                        .accessibilityIdentifier("premium-upgrade-view-monthly-button")
                         .alert("Comiing Soon!", isPresented: $showingMonthlyAlert) {
                             Button("OK", role: .cancel) { }
                         }
@@ -104,6 +108,7 @@ struct PremiumUpgradeView: View {
                                     }
                                 }
                             }
+                            .accessibilityIdentifier("premium-upgrade-view-annual-button")
                             .alert("Comiing Soon!", isPresented: $showingAnnualAlert) {
                                 Button("OK", role: .cancel) { }
                             }

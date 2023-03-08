@@ -52,6 +52,7 @@ struct EmptyStateView<Content: View>: View {
                 .resizable()
                 .aspectRatio(contentMode: .fit)
                 .frame(maxWidth: viewModel.maxWidth)
+                .accessibilityIdentifier(viewModel.accessibilityIdentifier)
 
             VStack(alignment: .center, spacing: 20) {
                 if let headline = viewModel.headline {
@@ -81,7 +82,9 @@ struct EmptyStateView<Content: View>: View {
                     }
                 }
             }
-        }.accessibilityIdentifier(viewModel.accessibilityIdentifier)
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(viewModel.accessibilityIdentifier)
     }
 }
 
