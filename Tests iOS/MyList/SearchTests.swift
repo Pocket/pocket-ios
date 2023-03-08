@@ -390,6 +390,8 @@ class SearchTests: XCTestCase {
                 return Response.slateLineup()
             } else if apiRequest.isForSavesContent {
                 return Response.saves()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else if apiRequest.isForSearch(.saves) {

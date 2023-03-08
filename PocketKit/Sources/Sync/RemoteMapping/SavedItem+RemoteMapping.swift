@@ -7,7 +7,7 @@ import CoreData
 import PocketGraph
 
 extension SavedItem {
-    typealias SavedItemEdge = FetchSavesQuery.Data.UserByToken.SavedItems.Edge
+    typealias SavedItemEdge = FetchSavesQuery.Data.User.SavedItems.Edge
     public typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
 

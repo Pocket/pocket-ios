@@ -8,8 +8,8 @@ public class FetchSavesQuery: GraphQLQuery {
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      query FetchSaves($token: String!, $pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
-        userByToken(token: $token) {
+      query FetchSaves($pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
+        user {
           __typename
           isPremium
           savedItems(pagination: $pagination, filter: $savedItemsFilter) {
@@ -35,22 +35,18 @@ public class FetchSavesQuery: GraphQLQuery {
       fragments: [SavedItemParts.self, TagParts.self, ItemParts.self, MarticleTextParts.self, ImageParts.self, MarticleDividerParts.self, MarticleTableParts.self, MarticleHeadingParts.self, MarticleCodeBlockParts.self, VideoParts.self, MarticleBulletedListParts.self, MarticleNumberedListParts.self, MarticleBlockquoteParts.self, DomainMetadataParts.self, PendingItemParts.self]
     ))
 
-  public var token: String
   public var pagination: GraphQLNullable<PaginationInput>
   public var savedItemsFilter: GraphQLNullable<SavedItemsFilter>
 
   public init(
-    token: String,
     pagination: GraphQLNullable<PaginationInput>,
     savedItemsFilter: GraphQLNullable<SavedItemsFilter>
   ) {
-    self.token = token
     self.pagination = pagination
     self.savedItemsFilter = savedItemsFilter
   }
 
   public var __variables: Variables? { [
-    "token": token,
     "pagination": pagination,
     "savedItemsFilter": savedItemsFilter
   ] }
@@ -61,16 +57,16 @@ public class FetchSavesQuery: GraphQLQuery {
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("userByToken", UserByToken?.self, arguments: ["token": .variable("token")]),
+      .field("user", User?.self),
     ] }
 
-    /// Gets a user entity for a given access token
-    public var userByToken: UserByToken? { __data["userByToken"] }
+    /// Get a user entity for an authenticated client
+    public var user: User? { __data["user"] }
 
-    /// UserByToken
+    /// User
     ///
     /// Parent Type: `User`
-    public struct UserByToken: PocketGraph.SelectionSet {
+    public struct User: PocketGraph.SelectionSet {
       public let __data: DataDict
       public init(data: DataDict) { __data = data }
 
@@ -88,7 +84,7 @@ public class FetchSavesQuery: GraphQLQuery {
       /// Get a general paginated listing of all SavedItems for the user
       public var savedItems: SavedItems? { __data["savedItems"] }
 
-      /// UserByToken.SavedItems
+      /// User.SavedItems
       ///
       /// Parent Type: `SavedItemConnection`
       public struct SavedItems: PocketGraph.SelectionSet {
@@ -109,7 +105,7 @@ public class FetchSavesQuery: GraphQLQuery {
         /// A list of edges.
         public var edges: [Edge?]? { __data["edges"] }
 
-        /// UserByToken.SavedItems.PageInfo
+        /// User.SavedItems.PageInfo
         ///
         /// Parent Type: `PageInfo`
         public struct PageInfo: PocketGraph.SelectionSet {
@@ -128,7 +124,7 @@ public class FetchSavesQuery: GraphQLQuery {
           public var endCursor: String? { __data["endCursor"] }
         }
 
-        /// UserByToken.SavedItems.Edge
+        /// User.SavedItems.Edge
         ///
         /// Parent Type: `SavedItemEdge`
         public struct Edge: PocketGraph.SelectionSet {
@@ -146,7 +142,7 @@ public class FetchSavesQuery: GraphQLQuery {
           /// The SavedItem at the end of the edge.
           public var node: Node? { __data["node"] }
 
-          /// UserByToken.SavedItems.Edge.Node
+          /// User.SavedItems.Edge.Node
           ///
           /// Parent Type: `SavedItem`
           public struct Node: PocketGraph.SelectionSet {
@@ -184,7 +180,7 @@ public class FetchSavesQuery: GraphQLQuery {
               public var savedItemParts: SavedItemParts { _toFragment() }
             }
 
-            /// UserByToken.SavedItems.Edge.Node.Tag
+            /// User.SavedItems.Edge.Node.Tag
             ///
             /// Parent Type: `Tag`
             public struct Tag: PocketGraph.SelectionSet {
@@ -206,7 +202,7 @@ public class FetchSavesQuery: GraphQLQuery {
               }
             }
 
-            /// UserByToken.SavedItems.Edge.Node.Item
+            /// User.SavedItems.Edge.Node.Item
             ///
             /// Parent Type: `ItemResult`
             public struct Item: PocketGraph.SelectionSet {
@@ -218,7 +214,7 @@ public class FetchSavesQuery: GraphQLQuery {
               public var asItem: AsItem? { _asInlineFragment() }
               public var asPendingItem: AsPendingItem? { _asInlineFragment() }
 
-              /// UserByToken.SavedItems.Edge.Node.Item.AsItem
+              /// User.SavedItems.Edge.Node.Item.AsItem
               ///
               /// Parent Type: `Item`
               public struct AsItem: PocketGraph.InlineFragment {
@@ -274,7 +270,7 @@ public class FetchSavesQuery: GraphQLQuery {
                   public var itemParts: ItemParts { _toFragment() }
                 }
 
-                /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle
+                /// User.SavedItems.Edge.Node.Item.AsItem.Marticle
                 ///
                 /// Parent Type: `MarticleComponent`
                 public struct Marticle: PocketGraph.SelectionSet {
@@ -294,7 +290,7 @@ public class FetchSavesQuery: GraphQLQuery {
                   public var asMarticleNumberedList: AsMarticleNumberedList? { _asInlineFragment() }
                   public var asMarticleBlockquote: AsMarticleBlockquote? { _asInlineFragment() }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleText
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleText
                   ///
                   /// Parent Type: `MarticleText`
                   public struct AsMarticleText: PocketGraph.InlineFragment {
@@ -314,7 +310,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsImage
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsImage
                   ///
                   /// Parent Type: `Image`
                   public struct AsImage: PocketGraph.InlineFragment {
@@ -345,7 +341,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleDivider
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleDivider
                   ///
                   /// Parent Type: `MarticleDivider`
                   public struct AsMarticleDivider: PocketGraph.InlineFragment {
@@ -365,7 +361,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleTable
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleTable
                   ///
                   /// Parent Type: `MarticleTable`
                   public struct AsMarticleTable: PocketGraph.InlineFragment {
@@ -385,7 +381,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleHeading
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleHeading
                   ///
                   /// Parent Type: `MarticleHeading`
                   public struct AsMarticleHeading: PocketGraph.InlineFragment {
@@ -407,7 +403,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleCodeBlock
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleCodeBlock
                   ///
                   /// Parent Type: `MarticleCodeBlock`
                   public struct AsMarticleCodeBlock: PocketGraph.InlineFragment {
@@ -429,7 +425,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsVideo
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsVideo
                   ///
                   /// Parent Type: `Video`
                   public struct AsVideo: PocketGraph.InlineFragment {
@@ -461,7 +457,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleBulletedList
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleBulletedList
                   ///
                   /// Parent Type: `MarticleBulletedList`
                   public struct AsMarticleBulletedList: PocketGraph.InlineFragment {
@@ -480,7 +476,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleNumberedList
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleNumberedList
                   ///
                   /// Parent Type: `MarticleNumberedList`
                   public struct AsMarticleNumberedList: PocketGraph.InlineFragment {
@@ -499,7 +495,7 @@ public class FetchSavesQuery: GraphQLQuery {
                     }
                   }
 
-                  /// UserByToken.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleBlockquote
+                  /// User.SavedItems.Edge.Node.Item.AsItem.Marticle.AsMarticleBlockquote
                   ///
                   /// Parent Type: `MarticleBlockquote`
                   public struct AsMarticleBlockquote: PocketGraph.InlineFragment {
@@ -520,7 +516,7 @@ public class FetchSavesQuery: GraphQLQuery {
                   }
                 }
 
-                /// UserByToken.SavedItems.Edge.Node.Item.AsItem.DomainMetadata
+                /// User.SavedItems.Edge.Node.Item.AsItem.DomainMetadata
                 ///
                 /// Parent Type: `DomainMetadata`
                 public struct DomainMetadata: PocketGraph.SelectionSet {
@@ -543,7 +539,7 @@ public class FetchSavesQuery: GraphQLQuery {
                 }
               }
 
-              /// UserByToken.SavedItems.Edge.Node.Item.AsPendingItem
+              /// User.SavedItems.Edge.Node.Item.AsPendingItem
               ///
               /// Parent Type: `PendingItem`
               public struct AsPendingItem: PocketGraph.InlineFragment {

@@ -112,7 +112,7 @@ class SearchViewModel: ObservableObject {
         self.source = source
         self.tracker = tracker
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
-        itemsController = source.makeItemsController()
+        itemsController = source.makeSavesController()
 
         savesLocalSearch = LocalSavesSearch(source: source)
         savesOnlineSearch = OnlineSearch(source: source, scope: .saves)

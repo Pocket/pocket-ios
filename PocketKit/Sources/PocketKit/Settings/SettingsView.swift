@@ -129,8 +129,10 @@ extension SettingsForm {
         Section(header: Text(L10n.yourAccount).style(.settings.header)) {
             if model.isPremium {
                 makePremiumSubscriptionRow()
+                    .accessibilityIdentifier("premium-subscription-button")
             } else {
                 makeGoPremiumRow()
+                    .accessibilityIdentifier("go-premium-button")
             }
 
             // Custom implementation to hide the > arrow and let us use our own.

@@ -1,7 +1,7 @@
 extension Source {
     public func refresh(maxItems: Int = 400) async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            refresh(maxItems: maxItems) {
+            refreshSaves(maxItems: maxItems) {
                 continuation.resume(returning: ())
             }
         }

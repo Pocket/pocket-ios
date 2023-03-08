@@ -7,7 +7,7 @@ import SharedPocketKit
 
 @testable import Sync
 
-class FetchListTests: XCTestCase {
+class FetchSavesTests: XCTestCase {
     var apollo: MockApolloClient!
     var user: MockUser!
     var space: Space!
@@ -34,17 +34,15 @@ class FetchListTests: XCTestCase {
 
     func subject(
         user: User? = nil,
-        token: String = "test-token",
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil,
         events: SyncEvents? = nil,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>? = nil,
         maxItems: Int = 400,
         lastRefresh: LastRefresh? = nil
-    ) -> FetchList {
-        FetchList(
+    ) -> FetchSaves {
+        FetchSaves(
             user: user ?? self.user,
-            token: token,
             apollo: apollo ?? self.apollo,
             space: space ?? self.space,
             events: events ?? self.events,
@@ -62,10 +60,9 @@ class FetchListTests: XCTestCase {
         _ = await service.execute()
 
         XCTAssertFalse(apollo.fetchCalls(withQueryType: FetchSavesQuery.self).isEmpty)
-        let call: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
-        XCTAssertEqual(call?.query.token, "test-token")
+        let _: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
 
-        XCTAssertEqual(lastRefresh.refreshedCallCount, 1)
+        XCTAssertEqual(lastRefresh.refreshedSavesCallCount, 1)
     }
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() async throws {
@@ -165,7 +162,7 @@ class FetchListTests: XCTestCase {
         _ = await service.execute()
 
         XCTAssertEqual(error as? TestError, .anError)
-        XCTAssertEqual(lastRefresh.refreshedCallCount, 0)
+        XCTAssertEqual(lastRefresh.refreshedSavesCallCount, 0)
     }
 
     func test_refresh_whenResponseIncludesMultiplePages_fetchesNextPage() async throws {
@@ -244,7 +241,7 @@ class FetchListTests: XCTestCase {
 
     func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() async {
         user.stubSetStatus { _ in }
-        lastRefresh.stubGetLastRefresh { 123456789 }
+        lastRefresh.stubGetLastRefreshSaves { 123456789 }
         apollo.setupSyncResponse()
 
         let service = subject()
@@ -358,7 +355,7 @@ class FetchListTests: XCTestCase {
         let service = subject()
         _ = await service.execute()
 
-        XCTAssertEqual(lastRefresh.refreshedCallCount, 1)
+        XCTAssertEqual(lastRefresh.refreshedSavesCallCount, 1)
     }
 
     func test_execute_whenClientSideNetworkFails_retries() async {

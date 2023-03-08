@@ -11,6 +11,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var tracker: MockTracker!
     var itemsController: MockSavedItemsController!
     var listOptions: ListOptions!
+    var viewType: SavesViewType!
     var subscriptions: [AnyCancellable]!
 
     override func setUp() {
@@ -21,9 +22,14 @@ class SavedItemsListViewModelTests: XCTestCase {
         itemsController = MockSavedItemsController()
         listOptions = .saved
         listOptions.selectedSortOption = .newest
+        viewType = .saves
 
         itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
         source.stubMakeItemsController {
+            self.itemsController
+        }
+
+        source.stubMakeArchiveController {
             self.itemsController
         }
     }
@@ -36,11 +42,13 @@ class SavedItemsListViewModelTests: XCTestCase {
     func subject(
         source: Source? = nil,
         tracker: Tracker? = nil,
-        listOptions: ListOptions? = nil
+        listOptions: ListOptions? = nil,
+        viewType: SavesViewType? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
+            viewType: viewType ?? self.viewType,
             listOptions: listOptions ?? self.listOptions,
             notificationCenter: .default
         )
@@ -327,8 +335,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
-    func test_refresh_callsRetryImmediatelyOnSource() {
-        source.stubRefresh { _, _ in }
+    func test_refreshSaves_callsRetryImmediatelyOnSource() {
+        source.stubRefreshSaves { _, _ in }
         source.stubRetryImmediately { }
 
         let viewModel = subject()
@@ -355,19 +363,41 @@ class SavedItemsListViewModelTests: XCTestCase {
             )
         }.store(in: &subscriptions)
 
-        source.initialDownloadState.send(.paginating(totalCount: 2))
+        source.initialSavesDownloadState.send(.paginating(totalCount: 2))
         itemsController.delegate?.controllerDidChangeContent(itemsController)
 
         wait(for: [receivedSnapshot], timeout: 1)
     }
 
-    func test_receivedSnapshots_whenInitialDownloadIsStarted_insertsPlaceholderCells() throws {
-        source.initialDownloadState.send(.started)
+    func test_receivedSnapshots_whenSavesInitialDownloadIsStarted_insertsPlaceholderCells() throws {
+        source.initialSavesDownloadState.send(.started)
         itemsController.stubPerformFetch { [unowned self] in
             self.itemsController.fetchedObjects = []
         }
 
         let viewModel = subject()
+
+        let receivedSnapshot = expectation(description: "receivedSnapshot")
+        viewModel.snapshot.dropFirst().sink { snapshot in
+            defer { receivedSnapshot.fulfill() }
+            XCTAssertEqual(
+                snapshot.itemIdentifiers(inSection: .items),
+                (0...3).map { .placeholder($0) }
+            )
+        }.store(in: &subscriptions)
+
+        viewModel.fetch()
+
+        wait(for: [receivedSnapshot], timeout: 1)
+    }
+
+    func test_receivedSnapshots_whenArchiveInitialDownloadIsStarted_insertsPlaceholderCells() throws {
+        source.initialArchiveDownloadState.send(.started)
+        itemsController.stubPerformFetch { [unowned self] in
+            self.itemsController.fetchedObjects = []
+        }
+
+        let viewModel = subject(listOptions: .archived, viewType: .archive)
 
         let receivedSnapshot = expectation(description: "receivedSnapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in

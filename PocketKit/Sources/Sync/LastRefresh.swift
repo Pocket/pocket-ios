@@ -1,8 +1,10 @@
 import Foundation
 
 protocol LastRefresh {
-    var lastRefresh: Int? { get }
-    func refreshed()
+    var lastRefreshSaves: Int? { get }
+    var lastRefreshArchive: Int? { get }
+    func refreshedSaves()
+    func refreshedArchive()
     func reset()
 }
 
@@ -13,25 +15,51 @@ struct UserDefaultsLastRefresh: LastRefresh {
         self.defaults = defaults
     }
 
-    var lastRefresh: Int? {
-        if hasRefreshed {
-            return defaults.integer(forKey: Self.lastRefreshedAtKey)
+    func reset() {
+        defaults.set(nil, forKey: Self.lastRefreshedSavesAtKey)
+        defaults.set(nil, forKey: Self.lastRefreshedArchiveAtKey)
+    }
+}
+
+// MARK: Saves
+
+extension UserDefaultsLastRefresh {
+    private static let lastRefreshedSavesAtKey = "lastRefreshedSavesAt"
+
+    var lastRefreshSaves: Int? {
+        if hasRefreshedSaves {
+            return defaults.integer(forKey: Self.lastRefreshedSavesAtKey)
         } else {
             return nil
         }
     }
 
-    var hasRefreshed: Bool {
-        defaults.value(forKey: Self.lastRefreshedAtKey) != nil
+    var hasRefreshedSaves: Bool {
+        defaults.value(forKey: Self.lastRefreshedSavesAtKey) != nil
     }
 
-    func refreshed() {
-        defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedAtKey)
+    func refreshedSaves() {
+        defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedSavesAtKey)
+    }
+}
+
+// MARK: Archive
+extension UserDefaultsLastRefresh {
+    private static let lastRefreshedArchiveAtKey = "lastRefreshedArchiveAt"
+
+    var lastRefreshArchive: Int? {
+        if hasRefreshedArchive {
+            return defaults.integer(forKey: Self.lastRefreshedArchiveAtKey)
+        } else {
+            return nil
+        }
     }
 
-    func reset() {
-        defaults.set(nil, forKey: Self.lastRefreshedAtKey)
+    var hasRefreshedArchive: Bool {
+        defaults.value(forKey: Self.lastRefreshedArchiveAtKey) != nil
     }
 
-    private static let lastRefreshedAtKey = "lastRefreshedAt"
+    func refreshedArchive() {
+        defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedArchiveAtKey)
+    }
 }

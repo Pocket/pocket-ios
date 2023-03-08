@@ -9,7 +9,8 @@ class MockSource: Source {
         _events.eraseToAnyPublisher()
     }
 
-    var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never> = .init(.unknown)
+    var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never> = .init(.unknown)
+    var initialArchiveDownloadState: CurrentValueSubject<Sync.InitialDownloadState, Never> = .init(.unknown)
 
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
@@ -53,38 +54,73 @@ extension MockSource {
     }
 }
 
-// MARK: - Refresh
+// MARK: - Refresh Saves
 extension MockSource {
-    private static let refresh = "refresh"
-    typealias RefreshImpl = (Int, (() -> Void)?) -> Void
+    private static let refreshSaves = "refreshSaves"
+    typealias RefreshSavesImpl = (Int, (() -> Void)?) -> Void
 
-    struct RefreshCall {
+    struct RefreshSavesCall {
         let maxItems: Int
         let completion: (() -> Void)?
     }
 
-    func stubRefresh(impl: @escaping RefreshImpl) {
-        implementations[Self.refresh] = impl
+    func stubRefreshSaves(impl: @escaping RefreshSavesImpl) {
+        implementations[Self.refreshSaves] = impl
     }
 
-    func refresh(maxItems: Int, completion: (() -> Void)?) {
-        guard let impl = implementations[Self.refresh] as? RefreshImpl else {
+    func refreshSaves(maxItems: Int, completion: (() -> Void)?) {
+        guard let impl = implementations[Self.refreshSaves] as? RefreshSavesImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
 
-        calls[Self.refresh] = (calls[Self.refresh] ?? []) + [
-            RefreshCall(maxItems: maxItems, completion: completion)
+        calls[Self.refreshSaves] = (calls[Self.refreshSaves] ?? []) + [
+            RefreshSavesCall(maxItems: maxItems, completion: completion)
         ]
 
         impl(maxItems, completion)
     }
 
-    func refreshCall(at index: Int) -> RefreshCall? {
-        guard let calls = calls[Self.refresh], calls.count > index else {
+    func refreshSavesCall(at index: Int) -> RefreshSavesCall? {
+        guard let calls = calls[Self.refreshSaves], calls.count > index else {
             return nil
         }
 
-        return calls[index] as? RefreshCall
+        return calls[index] as? RefreshSavesCall
+    }
+}
+
+// MARK: - Refresh Archive
+extension MockSource {
+    private static let refreshArchive = "refreshArchive"
+    typealias RefreshArchiveImpl = (Int, (() -> Void)?) -> Void
+
+    struct RefreshArchiveCall {
+        let maxItems: Int
+        let completion: (() -> Void)?
+    }
+
+    func stubRefreshArchive(impl: @escaping RefreshArchiveImpl) {
+        implementations[Self.refreshArchive] = impl
+    }
+
+    func refreshArchive(maxItems: Int, completion: (() -> Void)?) {
+        guard let impl = implementations[Self.refreshArchive] as? RefreshArchiveImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.refreshArchive] = (calls[Self.refreshArchive] ?? []) + [
+            RefreshArchiveCall(maxItems: maxItems, completion: completion)
+        ]
+
+        impl(maxItems, completion)
+    }
+
+    func refreshArchiveCall(at index: Int) -> RefreshArchiveCall? {
+        guard let calls = calls[Self.refreshArchive], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshArchiveCall
     }
 }
 
@@ -100,7 +136,7 @@ extension MockSource {
         implementations[Self.makeItemsController] = impl
     }
 
-    func makeItemsController() -> SavedItemsController {
+    func makeSavesController() -> SavedItemsController {
         guard let impl = implementations[Self.makeItemsController] as? MakeItemsControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
@@ -119,25 +155,34 @@ extension MockSource {
     }
 }
 
-// MARK: - Make archive service
+// MARK: - Make archive controller
 extension MockSource {
-    static let makeArchiveService = "makeArchiveService"
-    typealias MakeArchiveServiceImpl = () -> ArchiveService
+    static let makeArchiveController = "makeArchiveController"
+    typealias MakeArchiveControllerImpl = () -> SavedItemsController
 
-    struct MakeArchivedServiceCall { }
-
-    func stubMakeArchiveService(impl: @escaping MakeArchiveServiceImpl) {
-        implementations[Self.makeArchiveService] = impl
+    struct MakeArchiveControllerCall {
     }
 
-    func makeArchiveService() -> ArchiveService {
-        guard let impl = implementations[Self.makeArchiveService] as? MakeArchiveServiceImpl else {
+    func stubMakeArchiveController(impl: @escaping MakeArchiveControllerImpl) {
+        implementations[Self.makeArchiveController] = impl
+    }
+
+    func makeArchiveController() -> SavedItemsController {
+        guard let impl = implementations[Self.makeArchiveController] as? MakeArchiveControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.makeArchiveService] = (calls[Self.makeArchiveService] ?? []) + [MakeArchivedServiceCall()]
+        calls[Self.makeArchiveController] = (calls[Self.makeArchiveController] ?? []) + [MakeArchiveControllerCall()]
 
         return impl()
+    }
+
+    func makeArchiveControllerCall(at index: Int) -> MakeArchiveControllerCall? {
+        guard let calls = calls[Self.makeArchiveController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeArchiveControllerCall
     }
 }
 

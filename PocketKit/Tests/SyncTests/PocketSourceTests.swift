@@ -38,7 +38,8 @@ class PocketSourceTests: XCTestCase {
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
         subscriptions = []
 
-        lastRefresh.stubGetLastRefresh { nil }
+        lastRefresh.stubGetLastRefreshSaves { nil }
+        lastRefresh.stubGetLastRefreshArchive { nil }
 
         backgroundTaskManager.stubBeginTask { _, _ in return 0 }
         backgroundTaskManager.stubEndTask { _ in }
@@ -75,11 +76,11 @@ class PocketSourceTests: XCTestCase {
         )
     }
 
-    func test_refresh_addsFetchListOperationToQueue() {
+    func test_refresh_addsFetchSavesOperationToQueue() {
         let session = MockSession()
         sessionProvider.session = session
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubFetchList { _, _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _, _  in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -87,22 +88,20 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
 
-        source.refresh()
+        source.refreshSaves()
         waitForExpectations(timeout: 1)
-
-        XCTAssertEqual(operations.fetchListCall(at: 0)?.token, session.accessToken)
     }
 
     func test_refreshWithCompletion_callsCompletionWhenFinished() {
         sessionProvider.session = MockSession()
-        operations.stubFetchList { _, _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _, _  in
             TestSyncOperation { }
         }
 
         let source = subject()
 
         let expectationToRunOperation = expectation(description: "Run operation")
-        source.refresh {
+        source.refreshSaves {
             expectationToRunOperation.fulfill()
         }
 
@@ -111,14 +110,14 @@ class PocketSourceTests: XCTestCase {
 
     func test_refresh_whenTokenIsNil_callsCompletion() {
         sessionProvider.session = nil
-        operations.stubFetchList { _, _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _, _  in
             TestSyncOperation { }
         }
 
         let source = subject()
 
         let expectationToRunOperation = expectation(description: "Run operation")
-        source.refresh {
+        source.refreshSaves {
             expectationToRunOperation.fulfill()
         }
 
@@ -269,7 +268,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         let item1 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
 
-        let itemResultsController = source.makeItemsController()
+        let itemResultsController = source.makeSavesController()
         try itemResultsController.performFetch()
         XCTAssertEqual(itemResultsController.fetchedObjects, [item1])
 

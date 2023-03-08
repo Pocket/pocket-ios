@@ -33,7 +33,8 @@ class RefreshCoordinator {
         }.store(in: &subscriptions)
 
         notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
-            self?.source.refresh()
+            self?.source.refreshSaves()
+            self?.source.refreshArchive()
             self?.source.resolveUnresolvedSavedItems()
         }.store(in: &subscriptions)
     }
@@ -54,7 +55,7 @@ class RefreshCoordinator {
             task.setTaskCompleted(success: false)
         }
 
-        source.refresh {
+        source.refreshSaves {
             task.setTaskCompleted(success: true)
         }
     }
