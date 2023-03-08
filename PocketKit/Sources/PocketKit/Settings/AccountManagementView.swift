@@ -23,7 +23,7 @@ struct AccountManagementView: View {
         .navigationBarTitle(L10n.Settings.accountManagement, displayMode: .large)
         .accessibilityIdentifier("account-management")
         .onAppear {
-            model.trackAccountManagementViewed()
+            model.trackAccountManagementImpression()
         }
     }
 }
@@ -36,13 +36,14 @@ struct AccountManagementForm: View {
             Group {
                 Section(header: Text(L10n.yourAccount).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.AccountManagement.deleteAccount, titleStyle: .settings.button.delete, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) {
+                        model.trackDeleteTapped()
                         model.isPresentingDeleteYourAccount.toggle()
                     }
                     .accessibilityIdentifier("delete-your-account-button")
                 }
                 .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
-                    DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: $model.isPresentingCancelationHelp, hasError: $model.hasError, isDeletingAccount: $model.isDeletingAccount, deleteAccount: model.deleteAccount).onAppear {
-                        model.trackDeleteConfirmationViewed()
+                    DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: $model.isPresentingCancelationHelp, hasError: $model.hasError, isDeletingAccount: $model.isDeletingAccount, deleteAccount: model.deleteAccount, helpCancelPremium: model.helpCancelPremium, dismissDelete: { dismiss in model.trackDeleteDismissed(dismissReason: dismiss) }, helpAppeared: model.trackHelpCancelingPremiumImpression ).onAppear {
+                        model.trackDeleteConfirmationImpression()
                     }
                 }
 

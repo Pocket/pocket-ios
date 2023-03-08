@@ -144,7 +144,9 @@ extension SettingsForm {
                 .buttonStyle(PlainButtonStyle())
 
                 HStack {
-                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {}
+                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {
+                        model.trackAccountManagementTapped()
+                    }
                         .accessibilityIdentifier("account-management-button")
                 }
             }

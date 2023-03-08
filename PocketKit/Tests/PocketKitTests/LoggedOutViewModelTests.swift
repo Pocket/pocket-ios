@@ -25,6 +25,8 @@ class LoggedOutViewModelTests: XCTestCase {
         networkPathMonitor = MockNetworkPathMonitor()
         tracker = MockTracker()
         mockAuthenticationSession = MockAuthenticationSession()
+        userManagementService = MockUserManagementService()
+
         subscriptions = []
 
         mockAuthenticationSession.stubStart {

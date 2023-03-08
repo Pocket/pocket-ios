@@ -43,10 +43,22 @@ public extension Events.Settings {
         )
     }
 
-    /// Account management screen viewed
-    static func accountManagementViewed() -> Engagement {
+    /// Account management screen settings row tapped
+    static func accountManagementRowTapped() -> Engagement {
         return Engagement(
             .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.click"
+            )
+        )
+    }
+
+    /// Account management screen viewed
+    static func accountManagementImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
             uiEntity: UiEntity(
                 .screen,
                 identifier: "global-nav.settings.account-management"
@@ -54,13 +66,25 @@ public extension Events.Settings {
         )
     }
 
-    /// Delete confirmation screen viewed
-    static func deleteConfirmationViewed() -> Engagement {
+    /// Delete user settings row tapped
+    static func deleteRowTapped() -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.delete.click"
+            )
+        )
+    }
+
+    /// Delete confirmation screen impression
+    static func deleteConfirmationImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
                 .screen,
-                identifier: "global-nav.settings.account-management.delete-confirmation"
+                identifier: "global-nav.settings.account-management.delete"
             )
         )
     }
@@ -71,18 +95,42 @@ public extension Events.Settings {
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: "global-nav.settings.account-management.delete-confirmation.help-cancel-premium"
+                identifier: "global-nav.settings.account-management.delete.help-cancel-premium.click"
             )
         )
     }
 
-    /// Delete tapped
-    static func deleteTapped() -> Engagement {
+    /// Help canceling premium impression
+    static func helpCancelingPremiumImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.settings.account-management.delete.help-cancel-premium"
+            )
+        )
+    }
+
+    /// Delete confirmation tapped
+    static func deleteConfirmationTapped() -> Engagement {
         return Engagement(
             .general,
             uiEntity: UiEntity(
                 .button,
-                identifier: "global-nav.settings.account-management.delete-confirmation.delete"
+                identifier: "global-nav.settings.account-management.delete.confirm.click"
+            )
+        )
+    }
+
+    /// Delete cancel tapped
+    static func deleteDismissed(reason: DismissReason) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.delete.dismissed",
+                componentDetail: reason.rawValue
             )
         )
     }

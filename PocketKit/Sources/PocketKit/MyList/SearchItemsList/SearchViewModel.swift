@@ -438,7 +438,7 @@ extension SearchViewModel {
     /// track premium upgrade view dismissed
     func trackPremiumDismissed(dismissReason: DismissReason) {
         switch dismissReason {
-        case .swipe, .button:
+        case .swipe, .button, .closeButton:
             tracker.track(event: Events.Premium.premiumUpgradeViewDismissed(reason: dismissReason))
         case .system:
             break
