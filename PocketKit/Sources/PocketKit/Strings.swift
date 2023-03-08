@@ -306,6 +306,8 @@ internal enum L10n {
       internal static let deleteAccount = L10n.tr("Localizable", "settings.accountManagement.deleteAccount", fallback: "Delete Account")
       /// Delete your account
       internal static let deleteYourAccount = L10n.tr("Localizable", "settings.accountManagement.deleteYourAccount", fallback: "Delete your account")
+      /// Restore Existing Subscription
+      internal static let restoreSubscription = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription", fallback: "Restore Existing Subscription")
       internal enum DeleteAccount {
         /// Deleting your account
         internal static let deleting = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.deleting", fallback: "Deleting your account")
@@ -320,6 +322,20 @@ internal enum L10n {
         internal enum Error {
           /// We’re experiencing an error and can't delete your account. Please try again later.
           internal static let body = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.error.body", fallback: "We’re experiencing an error and can't delete your account. Please try again later.")
+        }
+      }
+      internal enum RestoreSubscription {
+        internal enum RestoreNotSuccessful {
+          /// We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.
+          internal static let message = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message", fallback: "We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.")
+          /// Restore not successful
+          internal static let title = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription.restoreNotSuccessful.title", fallback: "Restore not successful")
+        }
+        internal enum RestoreSuccessful {
+          /// Your Pocket Premium subscription has been restored.
+          internal static let message = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription.restoreSuccessful.message", fallback: "Your Pocket Premium subscription has been restored.")
+          /// Restore successful
+          internal static let title = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription.restoreSuccessful.title", fallback: "Restore successful")
         }
       }
     }
