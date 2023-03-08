@@ -91,7 +91,7 @@ class ArchiveFiltersTests: XCTestCase {
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 4)
+        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
         tagsFilterView.tag(matching: "tag 0").wait().tap()
 
@@ -110,7 +110,7 @@ class ArchiveFiltersTests: XCTestCase {
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 4)
+        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
         tagsFilterView.tag(matching: "not tagged").wait().tap()
         waitForDisappearance(of: tagsFilterView)

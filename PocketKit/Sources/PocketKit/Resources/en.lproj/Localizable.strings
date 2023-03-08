@@ -130,8 +130,11 @@
 "It contains misinformation" = "It contains misinformation";
 "Other" = "Other";
 
+//General Messages
+"general.oops" = "Oops! Try again?";
+
+
 // Search
-"search.errorHeadline" = "Oops! Try again?";
 "search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
 "search.limitedResults" = "Limited search results";
 "search.offlineMessage" = "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.";
@@ -156,6 +159,9 @@
 "settings.accountManagement.deleteAccount.deletionConfirmation" = "You understand your Pocket account and data will be **permanently deleted.**";
 //Links to a help article on how to cancel your subscription
 "settings.accountManagement.deleteAccount.howToCancel" = "How to cancel your Pocket Premium subscription";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Deleting your account";
+"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
 
 
 //List view

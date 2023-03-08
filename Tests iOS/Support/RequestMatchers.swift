@@ -79,6 +79,10 @@ struct ClientAPIRequest {
         contains("Tags")
     }
 
+    var isForDeleteUser: Bool {
+        contains("deleteUser")
+    }
+
     func isForSearch(_ type: SearchScope) -> Bool {
         switch type {
         case .saves:

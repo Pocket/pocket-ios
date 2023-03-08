@@ -246,7 +246,7 @@ extension SavedItemViewModelTests {
 extension SavedItemViewModelTests {
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject()
-
+        saveService.stubRetrieveTags { _ in return nil }
         let expectAddTags = expectation(description: "expect add tags to present")
         let subscription = viewModel.$presentedAddTags.dropFirst().sink { viewModel in
             defer { expectAddTags.fulfill() }
