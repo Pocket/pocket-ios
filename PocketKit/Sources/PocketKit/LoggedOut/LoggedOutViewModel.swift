@@ -75,13 +75,13 @@ class LoggedOutViewModel: ObservableObject {
         $isPresentingExitSurveyBanner
             .receive(on: DispatchQueue.global(qos: .background))
             .sink { [weak self] value in
-                guard let strongSelf = self else {
+                guard let self else {
                     Log.capture(message: "Not tracking deletion banner impression, due to a weak self")
                     return
                 }
 
                 if value {
-                    strongSelf.trackExitSurveyBannerImpression()
+                    self.trackExitSurveyBannerImpression()
                 }
             }
             .store(in: &cancellables)
