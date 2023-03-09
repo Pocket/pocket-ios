@@ -161,7 +161,7 @@
 "settings.accountManagement.deleteAccount.howToCancel" = "如何取消您的 Pocket Premium 訂閱";
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "正在刪除您的帳號";
-"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.deleteAccount.error.body" = "我們遇到了錯誤，無法刪除您的帳戶。請稍後重試。";
 "settings.accountManagement.restoreSubscription" = "還原現有訂購";
 "settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "還原成功";
 "settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 訂購已還原。";
