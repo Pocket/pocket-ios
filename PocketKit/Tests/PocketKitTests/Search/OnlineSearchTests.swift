@@ -13,12 +13,16 @@ import SharedPocketKit
 class OnlineSearchTests: XCTestCase {
     private var source: MockSource!
     private var searchService: MockSearchService!
-    private var user: MockUser!
 
     override func setUpWithError() throws {
         source = MockSource()
         searchService = MockSearchService()
         source.stubMakeSearchService { self.searchService }
+    }
+
+    override func tearDownWithError() throws {
+        source = nil
+        searchService = nil
     }
 
     func subject(source: Source? = nil, scope: SearchScope? = nil) -> OnlineSearch {
@@ -111,6 +115,31 @@ class OnlineSearchTests: XCTestCase {
         let sut = subject()
         let term = "search-term"
         XCTAssertFalse(sut.hasCache(with: term))
+    }
+
+    func test_hasCache_withLoadMoreResults_returnsNewResults() async {
+        let sut = subject(scope: .archive)
+        sut.search(with: "search-term")
+        await setupOnlineSearch(with: "search-term")
+
+        guard case .success(let items) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(items.count, 2)
+        XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
+        XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .archive)
+
+        sut.search(with: "search-term", and: true)
+        await setupOnlineSearch(with: "search-term")
+        guard case .success(let items) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(items.count, 8)
+        XCTAssertNotNil(searchService.searchCall(at: 1))
     }
 
     // MARK: Error

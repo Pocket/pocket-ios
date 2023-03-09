@@ -211,6 +211,32 @@ class SearchViewModel: ObservableObject {
         }
     }
 
+    /// Used to load more results if a users scrolls down the list
+    /// - Parameter item: last item in the list to be used to fetch the next page
+    func loadMoreSearchResults(with item: PocketItem, at index: Int) {
+        guard let term = currentSearchTerm else {
+            Log.debug("Search should have a current term before submitting search")
+            return
+        }
+        switch selectedScope {
+        case .saves:
+            guard isPremium, !savesOnlineSearch.hasFinishedResults else { return }
+            savesOnlineSearch.search(with: term, and: true)
+            trackNextResultsPageTriggered(url: item.url, index: index, scope: .saves)
+            listenForSaveResults(with: term)
+        case .archive:
+            guard !archiveOnlineSearch.hasFinishedResults else { return }
+            archiveOnlineSearch.search(with: term, and: true)
+            listenForResults(with: term, onlineSearch: archiveOnlineSearch, scope: .archive)
+            trackNextResultsPageTriggered(url: item.url, index: index, scope: .archive)
+        case .all:
+            guard !allOnlineSearch.hasFinishedResults else { return }
+            allOnlineSearch.search(with: term, and: true)
+            listenForResults(with: term, onlineSearch: allOnlineSearch, scope: .all)
+            trackNextResultsPageTriggered(url: item.url, index: index, scope: .all)
+        }
+    }
+
     /// Handles submitting a search for the different scopes
     /// - Parameters:
     ///   - term: the term the user enters in search bar
@@ -411,18 +437,26 @@ extension SearchViewModel {
 
 // MARK: Analytics
 extension SearchViewModel {
+    /// Tracks when user opens search (magnifying glass or pull down)
     func trackOpenSearch() {
         tracker.track(event: Events.Search.openSearch(scope: selectedScope))
     }
 
+    /// Tracks when user submits a search
     func trackPerformSearch() {
         tracker.track(event: Events.Search.submitSearch(scope: selectedScope))
     }
 
+    /// Tracks when user switches search scope
+    /// - Parameter scope: scope that user switched to (saves, archive, all)
     func trackSwitchScope(with scope: SearchScope) {
         tracker.track(event: Events.Search.switchScope(scope: scope))
     }
 
+    /// Track item that user views on the search results page
+    /// - Parameters:
+    ///   - url: url associated with the item
+    ///   - index: position index of item in the list
     func trackViewResults(url: URL?, index: Int) {
         guard let url else {
             Log.capture(message: "Selected search item without an associated url, not logging analytics for searchCardImpression")
@@ -431,8 +465,24 @@ extension SearchViewModel {
         tracker.track(event: Events.Search.searchCardImpression(url: url, positionInList: index, scope: selectedScope))
     }
 
+    /// Track when user opens a search item
+    /// - Parameters:
+    ///   - url: url associated with the item
+    ///   - index: position index of item in the list
     func trackOpenSearchItem(url: URL, index: Int) {
         tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope))
+    }
+
+    /// Track when user scrolls down the search list and triggers another search call for the next page
+    /// - Parameters:
+    ///   - url: url associated with the item
+    ///   - index: position index of item in the list
+    func trackNextResultsPageTriggered(url: URL?, index: Int, scope: SearchScope) {
+        guard let url else {
+            Log.capture(message: "Triggered next search page without an associated url, not logging analytics for nextSearchResultsPage")
+            return
+        }
+        tracker.track(event: Events.Search.nextSearchResultsPage(url: url, positionInList: index, scope: scope))
     }
 
     /// track premium upgrade view dismissed
