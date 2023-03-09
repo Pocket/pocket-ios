@@ -10,9 +10,10 @@ class AccountViewModel: ObservableObject {
     private let user: User
     private let tracker: Tracker
     private let userDefaults: UserDefaults
-    private let notificationCenter: NotificationCenter
-    private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
     private let userManagementService: UserManagementServiceProtocol
+    private let notificationCenter: NotificationCenter
+    private let restoreSubscription: () async throws -> Void
+    private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
 
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
@@ -23,6 +24,8 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingAccountManagement = false
     @Published var isPresentingDeleteYourAccount = false
     @Published var isPresentingCancelationHelp = false
+    @Published var isPresentingRestoreSuccessful = false
+    @Published var isPresentingRestoreNotSuccessful = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
@@ -43,12 +46,14 @@ class AccountViewModel: ObservableObject {
          userDefaults: UserDefaults,
          userManagementService: UserManagementServiceProtocol,
          notificationCenter: NotificationCenter,
+         restoreSubscription: @escaping () async throws -> Void,
          premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
         self.user = user
         self.tracker = tracker
         self.userDefaults = userDefaults
-        self.notificationCenter = notificationCenter
         self.userManagementService = userManagementService
+        self.notificationCenter = notificationCenter
+        self.restoreSubscription = restoreSubscription
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         self.isPremium = user.status == .premium
 
@@ -112,6 +117,21 @@ extension AccountViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+}
+
+// MARK: Restore Subscription
+extension AccountViewModel {
+    @MainActor
+    func attemptRestoreSubscription() {
+        Task {
+            do {
+                try await self.restoreSubscription()
+                isPresentingRestoreSuccessful = true
+            } catch {
+                isPresentingRestoreNotSuccessful = true
+            }
+        }
     }
 }
 

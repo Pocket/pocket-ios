@@ -162,6 +162,18 @@
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "正在刪除您的帳號";
 "settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.restoreSubscription" = "還原現有訂購";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "還原成功";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 訂購已還原。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "還原未成功";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到訂購。如果確信您有訂購，請傳送電子郵件至 support@getpocket.com 告訴我們。";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "What could we have done better?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Quick survey";
 
 
 //List view
