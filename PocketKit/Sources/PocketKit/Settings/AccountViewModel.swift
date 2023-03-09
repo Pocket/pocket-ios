@@ -29,8 +29,6 @@ class AccountViewModel: ObservableObject {
 
     private var userStatusListener: AnyCancellable?
 
-    private var isPresentingCancelationHelpListener: AnyCancellable?
-
     @Published var isPremium: Bool
 
     /// Signals to the DeleteAccountView that there was an error deleting the account
@@ -60,24 +58,11 @@ class AccountViewModel: ObservableObject {
             .sink { [weak self] status in
                 self?.isPremium = status == .premium
             }
-
-        // Set up a listener to track analytics if the user taps cancelation help
-        isPresentingCancelationHelpListener = $isPresentingCancelationHelp
-            .receive(on: DispatchQueue.global(qos: .utility))
-            .sink {  [weak self] isPresentingCancelationHelp in
-                guard let strongSelf = self else {
-                    Log.warning("weak self when logging analytics for settings")
-                    return
-                }
-                if isPresentingCancelationHelp {
-                    strongSelf.trackHelpCancelingPremiumTapped()
-                }
-            }
     }
 
     /// Calls the user management service to delete the account and log the user out.
     func deleteAccount() {
-        self.trackDeleteTapped()
+        self.trackConfirmDeleteTapped()
         self.isDeletingAccount = true
         Task {
             do {
@@ -135,7 +120,7 @@ extension AccountViewModel {
     /// track premium upgrade view dismissed
     func trackPremiumDismissed(dismissReason: DismissReason) {
         switch dismissReason {
-        case .swipe, .button:
+        case .swipe, .button, .closeButton:
             tracker.track(event: Events.Premium.premiumUpgradeViewDismissed(reason: dismissReason))
         case .system:
             break
@@ -148,7 +133,7 @@ extension AccountViewModel {
 
     /// track settings screen was viewed
     func trackSettingsViewed() {
-        tracker.track(event: Events.Settings.settingsViewed())
+        tracker.track(event: Events.Settings.settingsImpression())
     }
 
     /// track logout row tapped
@@ -162,13 +147,26 @@ extension AccountViewModel {
     }
 
     /// track account management viewed
-    func trackAccountManagementViewed() {
-        tracker.track(event: Events.Settings.accountManagementViewed())
+    func trackAccountManagementImpression() {
+        tracker.track(event: Events.Settings.accountManagementImpression())
+    }
+
+    /// track account management viewed
+    func trackAccountManagementTapped() {
+        tracker.track(event: Events.Settings.accountManagementRowTapped())
+    }
+}
+
+// MARK: Delete Account Flow
+extension AccountViewModel {
+    /// track delete settings row tapped
+    func trackDeleteTapped() {
+        tracker.track(event: Events.Settings.deleteRowTapped())
     }
 
     /// track delete confirmation viewed
-    func trackDeleteConfirmationViewed() {
-        tracker.track(event: Events.Settings.deleteConfirmationViewed())
+    func trackDeleteConfirmationImpression() {
+        tracker.track(event: Events.Settings.deleteConfirmationImpression())
     }
 
     /// track premium help tapped
@@ -176,8 +174,29 @@ extension AccountViewModel {
         tracker.track(event: Events.Settings.helpCancelingPremiumTapped())
     }
 
+    /// track premium help viewed
+    func trackHelpCancelingPremiumImpression() {
+        tracker.track(event: Events.Settings.helpCancelingPremiumImpression())
+    }
+
     /// track delete tapped
-    func trackDeleteTapped() {
-        tracker.track(event: Events.Settings.deleteTapped())
+    func trackConfirmDeleteTapped() {
+        tracker.track(event: Events.Settings.deleteConfirmationTapped())
+    }
+
+    /// track cancel delete tapped
+    func trackDeleteDismissed(dismissReason: DismissReason) {
+        switch dismissReason {
+        case .swipe, .button, .closeButton:
+            tracker.track(event: Events.Settings.deleteDismissed(reason: dismissReason))
+        case .system:
+            break
+        }
+    }
+
+    /// Help canceling premium tapped
+    func helpCancelPremium() {
+        trackHelpCancelingPremiumTapped()
+        self.isPresentingCancelationHelp = true
     }
 }

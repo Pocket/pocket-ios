@@ -10,17 +10,35 @@ import Combine
 protocol UserManagementServiceProtocol {
     func deleteAccount() async throws
     func logout()
+    var accountDeletedPublisher: Published<Bool>.Publisher { get }
+    var accountDeleted: Bool { get }
 }
 
-struct UserManagementService: UserManagementServiceProtocol {
+final class UserManagementService: ObservableObject, UserManagementServiceProtocol {
     let appSession: AppSession
     let user: User
     let notificationCenter: NotificationCenter
     let source: Source
 
+    // Deletion state
+    @Published public private(set) var accountDeleted: Bool = false
+    var accountDeletedPublisher: Published<Bool>.Publisher { $accountDeleted }
+
+    init(appSession: AppSession, user: User, notificationCenter: NotificationCenter, source: Source) {
+        self.appSession = appSession
+        self.user = user
+        self.notificationCenter = notificationCenter
+        self.source = source
+    }
+
     func deleteAccount() async throws {
         try await source.deleteAccount()
+        accountDeleted = true
         await logout()
+    }
+
+    func loggedIn() {
+        accountDeleted = false
     }
 
     @MainActor

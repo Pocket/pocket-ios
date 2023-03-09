@@ -1,6 +1,6 @@
 import UIKit
 
-class BannerView: UIView {
+public class BannerView: UIView {
     private let borderView: UIView = {
         let view = UIView()
         view.backgroundColor = .clear
@@ -70,7 +70,7 @@ class BannerView: UIView {
     }
     private var gestureRecognizer: UISwipeGestureRecognizer
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         gestureRecognizer = UISwipeGestureRecognizer(target: nil, action: nil)
 
         super.init(frame: frame)
@@ -108,7 +108,7 @@ class BannerView: UIView {
         }
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    override public func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
             borderView.layer.borderColor = borderColor?.cgColor
@@ -121,7 +121,7 @@ class BannerView: UIView {
 }
 
 extension BannerView {
-    func configure(model: BannerViewModel) {
+    public func configure(model: BannerViewModel) {
         mainTextLabel.attributedText = model.attributedText
 
         backgroundColor = model.backgroundColor
@@ -140,14 +140,14 @@ extension BannerView {
     }
 
     @objc
-    func dismiss() {
+    public func dismiss() {
         guard let dismissAction = dismissAction else { return }
         dismissAction()
     }
 }
 
 extension BannerView {
-    override func paste(itemProviders: [NSItemProvider]) {
+    override public func paste(itemProviders: [NSItemProvider]) {
         for provider in itemProviders {
             if provider.canLoadObject(ofClass: URL.self) {
                 _ = provider.loadObject(ofClass: URL.self) { [weak self] url, error in
@@ -157,7 +157,7 @@ extension BannerView {
         }
     }
 
-    override func canPaste(_ itemProviders: [NSItemProvider]) -> Bool {
+    override public func canPaste(_ itemProviders: [NSItemProvider]) -> Bool {
         itemProviders.contains { $0.canLoadObject(ofClass: URL.self) }
     }
 }

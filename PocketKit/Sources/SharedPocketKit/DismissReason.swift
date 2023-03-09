@@ -7,4 +7,5 @@ public enum DismissReason: String {
     case swipe
     case button
     case system
+    case closeButton
 }
