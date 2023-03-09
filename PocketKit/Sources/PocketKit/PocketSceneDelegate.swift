@@ -67,7 +67,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     authorizationClient: Services.shared.authClient,
                     appSession: Services.shared.appSession,
                     networkPathMonitor: NWPathMonitor(),
-                    tracker: Services.shared.tracker.childTracker(hosting: .loggedOut.screen)
+                    tracker: Services.shared.tracker.childTracker(hosting: .loggedOut.screen),
+                    userManagementService: Services.shared.userManagementService
                 )
             )
         }

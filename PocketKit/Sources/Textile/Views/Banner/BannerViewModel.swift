@@ -1,10 +1,9 @@
 import Foundation
-import Sync
-import Textile
 import UIKit
 
-struct BannerViewModel {
+public struct BannerViewModel {
     let prompt: String
+    let buttonText: String
     let backgroundColor: UIColor
     let borderColor: UIColor
     let primaryAction: (URL?) -> Void
@@ -15,7 +14,16 @@ struct BannerViewModel {
     }
 
     var attributedButtonText: AttributedString {
-        return AttributedString(NSAttributedString(string: L10n.save, style: .button))
+        return AttributedString(NSAttributedString(string: buttonText, style: .button))
+    }
+
+    public init(prompt: String, buttonText: String, backgroundColor: UIColor, borderColor: UIColor, primaryAction: @escaping (URL?) -> Void, dismissAction: @escaping () -> Void) {
+        self.prompt = prompt
+        self.buttonText = buttonText
+        self.backgroundColor = backgroundColor
+        self.borderColor = borderColor
+        self.primaryAction = primaryAction
+        self.dismissAction = dismissAction
     }
 }
 
