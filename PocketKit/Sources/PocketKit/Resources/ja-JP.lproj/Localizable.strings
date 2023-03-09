@@ -162,6 +162,18 @@
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "アカウントを削除中";
 "settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.restoreSubscription" = "既存の購読を復元";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "復元しました";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Pocket Premium の購読が復元されました。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "復元できませんでした";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "購読が見つかりませんでした。既に購読済みであると確信している場合は、support@getpocket.com までメールにてお問い合わせください。";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "What could we have done better?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Quick survey";
 
 
 //List view
