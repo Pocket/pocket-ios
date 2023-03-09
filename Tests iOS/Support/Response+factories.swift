@@ -95,6 +95,10 @@ extension Response {
         fixture(named: "deleteUser-error")
     }
 
+    static func premiumStatus() -> Response {
+        fixture(named: "premium-status")
+    }
+
     static func searchList(_ type: SearchScope) -> Response {
         var fixtureName = "search-list"
         switch type {

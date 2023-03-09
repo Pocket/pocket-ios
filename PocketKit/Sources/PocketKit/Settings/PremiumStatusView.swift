@@ -24,6 +24,8 @@ struct PremiumStatusView: View {
             questionsOrFeedback
             Spacer()
         }
+        .accessibilityIdentifier("premium-status-view")
+        .accessibilityElement(children: .contain)
         .task {
             await viewModel.requestStatus()
         }
@@ -58,11 +60,13 @@ struct PremiumStatusView: View {
             HStack {
                 Text(L10n.Settings.Premium.Settings.subscriptionStatus)
                     .style(Style.subtitle)
+                    .accessibilityIdentifier("subscription_status")
                 Spacer()
             }
             HStack {
                 Text(L10n.Settings.Premium.Settings.subscription)
                     .style(Style.itemTitle)
+                    .accessibilityIdentifier("subscription_status_title")
                 Spacer()
                 Text(viewModel.subscription)
                     .style(Style.itemValue)
