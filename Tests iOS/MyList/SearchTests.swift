@@ -594,6 +594,48 @@ class SearchTests: XCTestCase {
         searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
+    // MARK: Pagination
+    @MainActor
+    func test_search_showsPagination() async {
+        app.launch()
+        tapSearch()
+
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+        app.saves.searchView.searchResultsView.wait()
+        app.saves.searchView.searchItemCell(at: 1).wait()
+        app.saves.searchView.searchItemCell(at: 1).element.swipeDown()
+//
+//        let firstExpectRequest = expectation(description: "First request to the server")
+//        server.routes.post("/graphql") { request, loop in
+//            defer { firstExpectRequest.fulfill() }
+//            let apiRequest = ClientAPIRequest(request)
+//            XCTAssertTrue(apiRequest.isToFavoriteAnItem)
+//            XCTAssertTrue(apiRequest.contains("item-2"))
+//
+//            return Response.searchPagination()
+//        }
+//
+//        itemCell.favoriteButton.tap()
+//        wait(for: [firstExpectRequest])
+//        XCTAssertTrue(itemCell.favoriteButton.isFilled)
+//
+//        let secondExpectRequest = expectation(description: "Second request to the server")
+//        server.routes.post("/graphql") { request, loop in
+//            defer { expectUnfavoriteRequest.fulfill() }
+//            let apiRequest = ClientAPIRequest(request)
+//            XCTAssertTrue(apiRequest.isToUnfavoriteAnItem)
+//            XCTAssertTrue(apiRequest.contains("item-2"))
+//
+//            return Response.unfavorite()
+//        }
+//
+//        itemCell.favoriteButton.tap()
+//        wait(for: [expectUnfavoriteRequest])
+//        XCTAssertFalse(itemCell.favoriteButton.isFilled)
+    }
+
     private func tapSearch(fromArchive: Bool = false) {
         app.tabBar.savesButton.wait().tap()
         if fromArchive {

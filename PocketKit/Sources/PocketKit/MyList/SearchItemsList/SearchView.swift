@@ -55,6 +55,9 @@ struct ResultsView: View {
                         viewModel.select(item, index: index)
                     }
                 }.onAppear {
+                    if index == results.count - 10 {
+                        viewModel.loadMoreSearchResults(with: item, at: index)
+                    }
                     viewModel.trackViewResults(url: item.url, index: index)
                 }
             }

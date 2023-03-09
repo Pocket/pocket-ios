@@ -661,6 +661,31 @@ class SearchViewModelTests: XCTestCase {
         wait(for: [errorExpectation], timeout: 1)
     }
 
+    // MARK: Load More Search Results (Pagination)
+    func test_loadMoreSearchResults_forItem_showsNextPaginationResults() async {
+        let item = space.buildSavedItem()
+        let pocketItem = PocketItem(item: item)
+        let term = "search-term"
+        await setupOnlineSearch(with: term)
+        let viewModel = await subject(user: MockUser(status: .free))
+        viewModel.updateScope(with: .archive, searchTerm: "search-term")
+
+        let searchExpectation = expectation(description: "search Expectation")
+        viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
+            guard case .searchResults(let results) = state else {
+                XCTFail("Should not have failed")
+                return
+            }
+
+            XCTAssertEqual(results.compactMap { $0.title.string }, ["search-term", "search-term"])
+            searchExpectation.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.loadMoreSearchResults(with: pocketItem, at: 0)
+
+        wait(for: [searchExpectation], timeout: 1)
+    }
+
     private func setupLocalSavesSearch(with url: URL? = nil) throws {
         let savedItems = (1...2).map {
             space.buildSavedItem(

@@ -26,8 +26,9 @@ class OnlineSearch {
         cache[term] != nil
     }
 
-    func search(with term: String) {
-        guard !hasCache(with: term) else {
+    func search(with term: String, and loadMoreResults: Bool = false) {
+        guard !hasCache(with: term) || loadMoreResults else {
+            Log.debug("Load cache for search")
             results = .success(cache[term] ?? [])
             return
         }
@@ -35,8 +36,14 @@ class OnlineSearch {
         searchService.results.sink { [weak self] items in
             guard let self, let items else { return }
             let searchItems = items.compactMap { PocketItem(item: $0) }
-            self.cache[term] = searchItems
-            self.results = .success(self.cache[term] ?? [])
+            guard let currentItems = self.cache[term] else {
+                self.cache[term] = searchItems
+                self.results = .success(searchItems)
+                return
+            }
+
+            self.cache[term] = currentItems + searchItems
+            self.results = .success(currentItems + searchItems)
         }.store(in: &subscriptions)
 
         Task {
@@ -46,5 +53,13 @@ class OnlineSearch {
                 self.results = .failure(error)
             }
         }
+    }
+
+    var hasFinishedResults: Bool {
+        searchService.hasFinishedResults
+    }
+
+    var lastEndCursor: String {
+        searchService.lastEndCursor
     }
 }
