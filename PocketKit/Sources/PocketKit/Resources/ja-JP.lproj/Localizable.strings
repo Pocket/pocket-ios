@@ -161,7 +161,7 @@
 "settings.accountManagement.deleteAccount.howToCancel" = "Pocket Premium の購読をキャンセルする方法";
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "アカウントを削除中";
-"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.deleteAccount.error.body" = "エラーが発生したため、お客様のアカウントを削除することができません。後ほどもう一度お試しください。";
 "settings.accountManagement.restoreSubscription" = "既存の購読を復元";
 "settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "復元しました";
 "settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Pocket Premium の購読が復元されました。";
