@@ -49,15 +49,15 @@ public struct BannerModifier: ViewModifier {
                             .resizable()
                             .scaledToFit()
                             .frame(maxWidth: Constants.imageMaxWidth)
-                            .id("banner-image")
+                            .accessibilityIdentifier("banner-image")
                             .padding(Constants.imagePadding)
                         VStack(alignment: .leading, spacing: 8) {
                             Text(data.title)
                                 .style(Constants.titleStyle)
-                                .id("banner-title")
+                                .accessibilityIdentifier("banner-title")
                             Text(data.detail)
                                 .style(Constants.detailStyle)
-                                .id("banner-detail")
+                                .accessibilityIdentifier("banner-detail")
                             if let action = data.action {
                                 Button(action.text) {
                                    action.action()
@@ -73,7 +73,7 @@ public struct BannerModifier: ViewModifier {
                             .stroke(Color(.branding.amber3), lineWidth: 1)
                     )
                 }
-                .id("banner")
+                .accessibilityIdentifier("banner")
                 .padding()
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .animation(.easeInOut, value: show)
