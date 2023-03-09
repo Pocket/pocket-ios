@@ -34,6 +34,7 @@ public class PersistentContainer: NSPersistentContainer {
                 .containerURL(forSecurityApplicationGroupIdentifier: "group.com.ideashower.ReadItLaterProAlphaNeue")!
                 .appendingPathComponent("PocketModel.sqlite")
 
+            Log.debug("Store URL: \(sharedContainerURL)")
             persistentStoreDescriptions = [
                 NSPersistentStoreDescription(url: sharedContainerURL)
             ]
