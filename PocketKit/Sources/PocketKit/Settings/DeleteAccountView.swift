@@ -47,7 +47,7 @@ struct DeleteAccountView: View {
 
                 Text(L10n.Settings.AccountManagement.DeleteAccount.warning)
                     .style(.deleteAccountView.warning)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
 
                 /**

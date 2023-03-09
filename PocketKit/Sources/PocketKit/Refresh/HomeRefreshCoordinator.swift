@@ -30,6 +30,7 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
+        Log.debug("Refresh home called, isForced: \(String(describing: isForced))")
         guard (sessionProvider.session) != nil else {
             Log.info("Not refreshing home because no active session")
             return
@@ -48,6 +49,9 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
                 completion()
                 isRefreshing = false
             }
+        } else {
+            Log.debug("Not refreshing Home, to early to ask for new data")
+            completion()
         }
     }
 
