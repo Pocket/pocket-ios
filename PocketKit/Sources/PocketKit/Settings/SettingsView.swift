@@ -31,12 +31,16 @@ struct SettingsView: View {
     var body: some View {
         VStack(spacing: 0) {
             if #available(iOS 16.0, *) {
-                SettingsForm(model: model)
-                    .scrollContentBackground(.hidden)
-                    .background(Color(.ui.white1))
+                NavigationStack {
+                    SettingsForm(model: model)
+                        .scrollContentBackground(.hidden)
+                        .background(Color(.ui.white1))
+                }
             } else {
-                SettingsForm(model: model)
-                    .background(Color(.ui.white1))
+                NavigationView {
+                    SettingsForm(model: model)
+                        .background(Color(.ui.white1))
+                }
             }
         }
         .navigationBarTitle(L10n.settings, displayMode: .large)

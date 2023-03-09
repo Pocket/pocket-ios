@@ -1,4 +1,5 @@
 import Combine
+import Network
 import Sync
 import Foundation
 import BackgroundTasks
@@ -14,6 +15,57 @@ class MainViewModel: ObservableObject {
     let home: HomeViewModel
     let saves: SavesContainerViewModel
     let account: AccountViewModel
+
+    @MainActor
+    convenience init() {
+        self.init(
+            saves: SavesContainerViewModel(
+                searchList: SearchViewModel(
+                    networkPathMonitor: NWPathMonitor(),
+                    user: Services.shared.user,
+                    userDefaults: Services.shared.userDefaults,
+                    source: Services.shared.source,
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
+                ) { tracker, source in
+                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                },
+                savedItemsList: SavedItemsListViewModel(
+                    source: Services.shared.source,
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
+                    viewType: .saves,
+                    listOptions: .saved,
+                    notificationCenter: .default
+                ),
+                archivedItemsList: SavedItemsListViewModel(
+                    source: Services.shared.source,
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
+                    viewType: .archive,
+                    listOptions: .archived,
+                    notificationCenter: .default
+                )
+            ),
+            home: HomeViewModel(
+                source: Services.shared.source,
+                tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
+                networkPathMonitor: NWPathMonitor(),
+                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator
+            ),
+            account: AccountViewModel(
+                appSession: Services.shared.appSession,
+                user: Services.shared.user,
+                tracker: Services.shared.tracker,
+                userDefaults: Services.shared.userDefaults,
+                userManagementService: Services.shared.userManagementService,
+                notificationCenter: .default,
+                restoreSubscription: {
+                    try await Services.shared.subscriptionStore.restoreSubscription()
+                },
+                premiumUpgradeViewModelFactory: { tracker, source in
+                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                }
+            )
+        )
+    }
 
     init(
         saves: SavesContainerViewModel,

@@ -7,7 +7,6 @@ import Combine
 import Foundation
 import SharedPocketKit
 
-@MainActor
 class PremiumUpgradeViewModel: ObservableObject {
     private let store: SubscriptionStore
     private let tracker: Tracker
@@ -55,7 +54,7 @@ class PremiumUpgradeViewModel: ObservableObject {
                 switch state {
                 case .subscribed(let type):
                     Task {
-                        self?.trackPurchaseSubscriptionSuccess(type: type)
+                        // self?.trackPurchaseSubscriptionSuccess(type: type)
                     }
                     self?.shouldDismiss = true
                 case .unsubscribed:

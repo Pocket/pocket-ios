@@ -86,18 +86,18 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    public func application(
-        _ application: UIApplication,
-        configurationForConnecting connectingSceneSession: UISceneSession,
-        options: UIScene.ConnectionOptions
-    ) -> UISceneConfiguration {
-        let config = UISceneConfiguration(
-            name: "Default Configuration",
-            sessionRole: connectingSceneSession.role
-        )
-        config.sceneClass = UIWindowScene.self
-        config.delegateClass = PocketSceneDelegate.self
-
-        return config
-    }
+//    public func application(
+//        _ application: UIApplication,
+//        configurationForConnecting connectingSceneSession: UISceneSession,
+//        options: UIScene.ConnectionOptions
+//    ) -> UISceneConfiguration {
+//        let config = UISceneConfiguration(
+//            name: "Default Configuration",
+//            sessionRole: connectingSceneSession.role
+//        )
+//        config.sceneClass = UIWindowScene.self
+//        //config.delegateClass = PocketSceneDelegate.self
+//
+//        return config
+//    }
 }

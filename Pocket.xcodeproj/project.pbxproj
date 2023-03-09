@@ -33,7 +33,7 @@
 		168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168292C726CC64C300830140 /* ShareAnItemTests.swift */; };
 		16A6807F26EBC71300A64545 /* TabBarElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A6807E26EBC71300A64545 /* TabBarElement.swift */; };
 		16A6808126EBC78800A64545 /* HomeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A6808026EBC78800A64545 /* HomeViewElement.swift */; };
-		16BA7D6326851513009A17C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA7D6226851513009A17C1 /* main.swift */; };
+		16BA7D6326851513009A17C1 /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA7D6226851513009A17C1 /* PocketApp.swift */; };
 		16BA7D6626851579009A17C1 /* PocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16BA7D6526851579009A17C1 /* PocketKit */; };
 		16BB40A8279F436100FE8650 /* SelectionSwitcherElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */; };
 		16C2B03F270CF82700D194AA /* RecommendationCellElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C2B03E270CF82700D194AA /* RecommendationCellElement.swift */; };
@@ -178,7 +178,7 @@
 		16973355263CBB3F0003DE2A /* secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets.xcconfig; sourceTree = "<group>"; };
 		16A6807E26EBC71300A64545 /* TabBarElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarElement.swift; sourceTree = "<group>"; };
 		16A6808026EBC78800A64545 /* HomeViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewElement.swift; sourceTree = "<group>"; };
-		16BA7D6226851513009A17C1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		16BA7D6226851513009A17C1 /* PocketApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketApp.swift; sourceTree = "<group>"; };
 		16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionSwitcherElement.swift; sourceTree = "<group>"; };
 		16C2B03E270CF82700D194AA /* RecommendationCellElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationCellElement.swift; sourceTree = "<group>"; };
 		16D47E7F26851AB40095D5A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -317,7 +317,7 @@
 				655C274E28B67ED20040AEAB /* README.md */,
 				166DF27827E9172800C03BF4 /* Pocket (iOS).entitlements */,
 				1624B85A268508180099B6EF /* PocketKit */,
-				16BA7D6226851513009A17C1 /* main.swift */,
+				16BA7D6226851513009A17C1 /* PocketApp.swift */,
 				6551C9D72900B46000247C40 /* bitrise.yml */,
 				6551C9D42900B27D00247C40 /* UnitTests.xctestplan */,
 				6551C9D62900B27D00247C40 /* UITests.xctestplan */,
@@ -751,7 +751,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16BA7D6326851513009A17C1 /* main.swift in Sources */,
+				16BA7D6326851513009A17C1 /* PocketApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

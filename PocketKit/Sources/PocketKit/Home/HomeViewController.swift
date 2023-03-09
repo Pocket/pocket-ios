@@ -8,6 +8,19 @@ import SwiftUI
 import BackgroundTasks
 import Lottie
 
+struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
+    var model: HomeViewModel
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> HomeViewController {
+        let v = HomeViewController(model: model)
+
+        return v
+    }
+
+    func updateUIViewController(_ uiViewController: HomeViewController, context: UIViewControllerRepresentableContext<Self>) {
+    }
+}
+
 class HomeViewController: UIViewController {
     private let model: HomeViewModel
     private let sectionProvider: HomeViewControllerSectionProvider

@@ -6,7 +6,7 @@ import Textile
 import SharedPocketKit
 import UIKit
 
-class RootViewModel {
+class RootViewModel: ObservableObject {
     @Published
     var isLoggedIn = false
 
@@ -19,6 +19,10 @@ class RootViewModel {
     private let userDefaults: UserDefaults
 
     private var subscriptions: Set<AnyCancellable> = []
+
+    convenience init() {
+        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: .standard)
+    }
 
     init(
         appSession: AppSession,

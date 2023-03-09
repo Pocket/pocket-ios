@@ -3,5 +3,15 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import PocketKit
+import SwiftUI
 
-PocketAppDelegate.main()
+@main
+struct PocketApp: App {
+    @UIApplicationDelegateAdaptor var delegate: PocketAppDelegate
+
+    var body: some Scene {
+        WindowGroup {
+            MainView()
+        }
+    }
+}

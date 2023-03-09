@@ -21,6 +21,19 @@ protocol SelectableViewController: UIViewController {
     func didBecomeSelected(by parent: SavesContainerViewController)
 }
 
+struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
+    var model: SavesContainerViewModel
+
+    func makeUIViewController(context: Context) -> SavesContainerViewController {
+        let v = SavesContainerViewController(model: model)
+//TODO: figure out how we can influence nav titel in swiftui
+        return v
+    }
+
+    func updateUIViewController(_ uiViewController: SavesContainerViewController, context: Context) {
+    }
+}
+
 class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var selectedIndex: Int {
         didSet {
@@ -35,6 +48,16 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     private var searchViewModel: SearchViewModel
     private var subscriptions: [AnyCancellable] = []
 
+    convenience init(model: SavesContainerViewModel) {
+        self.init(
+            searchViewModel: model.searchList,
+            viewControllers: [
+                ItemsListViewController(model: model.savedItemsList),
+                ItemsListViewController(model: model.archivedItemsList)
+            ]
+        )
+    }
+    
     init(searchViewModel: SearchViewModel, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
         self.searchViewModel = searchViewModel
