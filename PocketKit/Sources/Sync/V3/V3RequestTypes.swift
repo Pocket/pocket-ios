@@ -28,3 +28,11 @@ public struct DeregisterPushTokenRequest: Codable, Equatable, V3Request {
     let deviceIdentifier: String
     let pushType: String
 }
+
+public struct PremiumStatusRequest: Codable, Equatable, V3Request {
+    let accessToken: String
+
+    let consumerKey: String
+
+    let guid: String
+}
