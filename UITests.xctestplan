@@ -68,6 +68,7 @@
   "testTargets" : [
     {
       "skippedTests" : [
+        "AddTagsItemTests",
         "HomeTests",
         "HomeWebViewTests",
         "PremiumTests",

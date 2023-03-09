@@ -68,7 +68,6 @@
   "testTargets" : [
     {
       "skippedTests" : [
-        "AddTagsItemTests",
         "ArchiveAnItemTests",
         "ArchiveFiltersTests",
         "ArchiveTests",
