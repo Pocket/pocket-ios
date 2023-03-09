@@ -9,17 +9,20 @@ class RefreshCoordinator {
     private let notificationCenter: NotificationCenter
     private let taskScheduler: BGTaskSchedulerProtocol
     private let source: Source
+    private let sessionProvider: SessionProvider
 
     private var subscriptions: [AnyCancellable] = []
 
     init(
         notificationCenter: NotificationCenter,
         taskScheduler: BGTaskSchedulerProtocol,
-        source: Source
+        source: Source,
+        sessionProvider: SessionProvider
     ) {
         self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
         self.source = source
+        self.sessionProvider = sessionProvider
     }
 
     func initialize() {
@@ -33,10 +36,18 @@ class RefreshCoordinator {
         }.store(in: &subscriptions)
 
         notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
-            self?.source.refreshSaves()
-            self?.source.refreshArchive()
-            self?.source.resolveUnresolvedSavedItems()
+            self?.refreshData()
         }.store(in: &subscriptions)
+    }
+
+    private func refreshData() {
+        guard (sessionProvider.session) != nil else {
+            Log.info("Not refreshing saves & archive data because no active session")
+            return
+        }
+        self.source.refreshSaves()
+        self.source.refreshArchive()
+        self.source.resolveUnresolvedSavedItems()
     }
 
     private func submitRequest() {
