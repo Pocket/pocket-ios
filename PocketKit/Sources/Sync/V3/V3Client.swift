@@ -111,12 +111,18 @@ public class V3Client: NSObject, V3ClientProtocol {
             }
 
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            guard let response = try? decoder.decode(decodable, from: data) else {
+            decoder.keyDecodingStrategy = .useDefaultKeys
+            do {
+                let str = String(decoding: data, as: UTF8.self)
+                print(str)
+                let response = try decoder.decode(decodable, from: data)
+                return response
+            } catch {
+                print(String(describing: error))
+                Log.capture(error: error)
                 throw Error.invalidResponse
             }
 
-            return response
         case 300...399:
             throw Error.unexpectedRedirect
         case 400:
@@ -222,5 +228,22 @@ extension V3Client {
         )
 
         return try await executeRequest(request: request, decodable: DeregisterPushTokenResponse.self)
+    }
+}
+
+extension V3Client {
+    public func premiumStatus(session: Session) async throws -> PremiumStatusResponse {
+        let currentSession = try fallbackSession(session: session)
+
+        let request = try buildRequest(
+            path: "purchase_status",
+            request: PremiumStatusRequest(
+                accessToken: currentSession.accessToken,
+                consumerKey: consumerKey,
+                guid: currentSession.guid
+            )
+        )
+
+        return try await executeRequest(request: request, decodable: PremiumStatusResponse.self)
     }
 }

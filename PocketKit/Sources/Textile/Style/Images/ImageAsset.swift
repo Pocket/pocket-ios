@@ -54,6 +54,7 @@ extension ImageAsset {
     public static let premiumBorderLeft = ImageAsset("premium.border.left")
     public static let premiumBorderRight = ImageAsset("premium.border.right")
     public static let premiumIcon = ImageAsset("premium.icon")
+    public static let premiumIconColorful = ImageAsset("premium.icon.colorful")
     public static let magnifyingGlass = ImageAsset("magnifying-glass")
     public static let search = ImageAsset("search")
     public static let searchNoResults = ImageAsset("search.noresults")
