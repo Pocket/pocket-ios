@@ -61,6 +61,10 @@ struct PocketAppElement {
         return DeleteConfirmationViewElement(app.otherElements["delete-confirmation"])
     }
 
+    var premiumStatusView: PremiumStatusViewElement {
+        return PremiumStatusViewElement(app.otherElements["premium-status-view"])
+    }
+
     var slateDetailView: SlateDetailElement {
         return SlateDetailElement(app.otherElements["slate-detail"])
     }

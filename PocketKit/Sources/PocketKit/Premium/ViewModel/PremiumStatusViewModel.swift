@@ -28,7 +28,7 @@ class PremiumSettingsViewModel: ObservableObject {
         do {
             let result = try await v3Client.premiumStatus(session: session.session!)
             print(result)
-//            subscription = result.subscriptionInfo.subscriptionType
+            subscription = result.subscriptionInfo.subscriptionType
         } catch {
             print(error)
         }

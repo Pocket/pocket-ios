@@ -42,7 +42,7 @@ public struct DeregisterPushTokenResponse: Decodable, BasicV3Response {
 // MARK: Premium Status
 public struct PremiumStatusResponse: Decodable, BasicV3Response {
     var error, status: Int
-    let subscriptionInfo: SubscriptionInfo
+    public let subscriptionInfo: SubscriptionInfo
     let features: [Feature]
 
     enum CodingKeys: String, CodingKey {
@@ -53,7 +53,7 @@ public struct PremiumStatusResponse: Decodable, BasicV3Response {
 }
 
 // MARK: - Feature
-struct Feature: Codable {
+public struct Feature: Codable {
     let name, status, statusText: String
     let faqLink: String
 
@@ -65,12 +65,12 @@ struct Feature: Codable {
 }
 
 // MARK: - SubscriptionInfo
-struct SubscriptionInfo: Codable {
-    let source, sourceDisplay, subscriptionSource, subscriptionID: String
-    let orderID, purchaseDate, renewDate, activeUntilDate: String
-    let subscriptionTypeID, subscriptionType: String
-    let isActive: Int
-    let status, displayAmount, usdAmount: String
+public struct SubscriptionInfo: Codable {
+    public let source, sourceDisplay, subscriptionSource, subscriptionID: String
+    public let orderID, purchaseDate, renewDate, activeUntilDate: String
+    public let subscriptionTypeID, subscriptionType: String
+    public let isActive: Int
+    public let status, displayAmount, usdAmount: String
 
     enum CodingKeys: String, CodingKey {
         case source
