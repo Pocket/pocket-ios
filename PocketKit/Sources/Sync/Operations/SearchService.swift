@@ -12,6 +12,8 @@ public enum SearchServiceError: Error {
 public protocol SearchService: AnyObject {
     var results: Published<[SearchSavedItem]?>.Publisher { get }
     func search(for term: String, scope: SearchScope) async throws
+    var hasFinishedResults: Bool { get }
+    var lastEndCursor: String { get }
 }
 
 public struct SearchSavedItem {
@@ -38,8 +40,10 @@ public class PocketSearchService: SearchService {
 
     @Published
     private var _results: [SearchSavedItem]?
-
     public var results: Published<[SearchSavedItem]?>.Publisher { $_results }
+
+    public var hasFinishedResults: Bool = false
+    public var lastEndCursor: String = ""
 
     private let apollo: ApolloClientProtocol
 
@@ -47,6 +51,11 @@ public class PocketSearchService: SearchService {
         self.apollo = apollo
     }
 
+    /// Main search function to fetch items from GraphQL response
+    /// - Parameters:
+    ///   - term: search term that the user input in the text field
+    ///   - scope: search scope that the user is on (i.e. saves, archive, all items)
+    /// - Returns: list of items for a specific search term
     public func search(for term: String, scope: SearchScope) async throws {
         do {
             try await fetch(for: term, scope: scope)
@@ -65,29 +74,30 @@ public class PocketSearchService: SearchService {
     }
 
     private func fetch(for term: String, scope: SearchScope) async throws {
-        var shouldFetchNextPage = true
-        var items: [SearchSavedItem] = []
-        var pagination = PaginationInput(first: GraphQLNullable<Int>(integerLiteral: Constants.pageSize))
-
-        while shouldFetchNextPage {
-            let filter = getSearchFilter(with: scope)
-            let sortOrder = getSortOrder()
-            let query = SearchSavedItemsQuery(term: term, pagination: .init(pagination), filter: .some(filter), sort: .some(sortOrder))
-            let result = try await apollo.fetch(query: query)
-            result.data?.user?.searchSavedItems?.edges.forEach { edge in
-                var searchSavedItem = SearchSavedItem(remoteItem: edge.node.savedItem.fragments.savedItemParts)
-                searchSavedItem.cursor = edge.cursor
-                items.append(searchSavedItem)
-            }
-            if let pageInfo = result.data?.user?.searchSavedItems?.pageInfo {
-                pagination.after = pageInfo.endCursor ?? .none
-                shouldFetchNextPage = pageInfo.hasNextPage
-            } else {
-                shouldFetchNextPage = false
-            }
-
-            _results = items
+        guard !hasFinishedResults else {
+            Log.debug("Search has reached the end of paginated results")
+            return
         }
+
+        var items: [SearchSavedItem] = []
+        let pagination = PaginationInput(after: GraphQLNullable<String>(stringLiteral: lastEndCursor), first: GraphQLNullable<Int>(integerLiteral: Constants.pageSize))
+
+        let filter = getSearchFilter(with: scope)
+        let sortOrder = getSortOrder()
+        let query = SearchSavedItemsQuery(term: term, pagination: .init(pagination), filter: .some(filter), sort: .some(sortOrder))
+        let result = try await apollo.fetch(query: query)
+        result.data?.user?.searchSavedItems?.edges.forEach { edge in
+            var searchSavedItem = SearchSavedItem(remoteItem: edge.node.savedItem.fragments.savedItemParts)
+            searchSavedItem.cursor = edge.cursor
+            items.append(searchSavedItem)
+        }
+
+        if let pageInfo = result.data?.user?.searchSavedItems?.pageInfo {
+            hasFinishedResults = !pageInfo.hasNextPage
+            lastEndCursor = pageInfo.endCursor ?? ""
+        }
+
+        _results = items
     }
 
     private func getSearchFilter(with scope: SearchScope) -> SearchFilterInput {

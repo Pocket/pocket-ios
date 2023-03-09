@@ -8,6 +8,9 @@ class MockSearchService: SearchService {
     var _results: [SearchSavedItem]? = []
     var results: Published<[SearchSavedItem]?>.Publisher { $_results }
 
+    public var hasFinishedResults: Bool = false
+    public var lastEndCursor: String = ""
+
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 }

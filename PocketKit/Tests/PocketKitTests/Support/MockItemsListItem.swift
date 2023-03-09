@@ -14,6 +14,7 @@ struct MockItemsListItem: ItemsListItem {
     let isPending: Bool
     let host: String?
     let tagNames: [String]?
+    let cursor: String?
 
     static func build(
         id: String? = nil,
@@ -27,7 +28,8 @@ struct MockItemsListItem: ItemsListItem {
         timeToRead: Int? = nil,
         isPending: Bool = false,
         host: String? = nil,
-        tagNames: [String]? = nil
+        tagNames: [String]? = nil,
+        cursor: String? = nil
     ) -> MockItemsListItem {
         MockItemsListItem(
             id: id,
@@ -41,7 +43,8 @@ struct MockItemsListItem: ItemsListItem {
             timeToRead: timeToRead,
             isPending: isPending,
             host: host,
-            tagNames: tagNames
+            tagNames: tagNames,
+            cursor: cursor
         )
     }
 }
