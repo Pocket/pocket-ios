@@ -86,7 +86,7 @@ class FavoriteAnItemTests: XCTestCase {
             return Response.favorite()
         }
 
-        itemCell.favoriteButton.tap()
+        itemCell.favoriteButton.wait().tap()
         wait(for: [expectRequest])
         XCTAssertTrue(itemCell.favoriteButton.isFilled)
 
@@ -100,7 +100,7 @@ class FavoriteAnItemTests: XCTestCase {
             return Response.unfavorite()
         }
 
-        itemCell.favoriteButton.tap()
+        itemCell.favoriteButton.wait().tap()
         wait(for: [expectUnfavoriteRequest])
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
     }
