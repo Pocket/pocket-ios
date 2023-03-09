@@ -4,7 +4,7 @@ import Textile
 
 struct PremiumUpgradeView: View {
     // TODO: remove this property and the two @State properties once we are ready to ship premium upgrades to beta users
-    static let shouldAllowUpgrade = true
+    static let shouldAllowUpgrade = NSClassFromString("XCTest") != nil ? true : false
     @State private var showingMonthlyAlert = false
     @State private var showingAnnualAlert = false
     @Binding var dismissReason: DismissReason
