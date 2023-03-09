@@ -161,7 +161,7 @@
 "settings.accountManagement.deleteAccount.howToCancel" = "Pour annuler votre abonnement à Pocket Premium";
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "Suppression de votre compte";
-"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.deleteAccount.error.body" = "Nous avons rencontré une erreur et ne pouvons pas supprimer votre compte. Veuillez réessayer plus tard.";
 "settings.accountManagement.restoreSubscription" = "Rétablir l'abonnement existant";
 "settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Restauration réussie";
 "settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Votre abonnement à Pocket Premium a été restauré.";
