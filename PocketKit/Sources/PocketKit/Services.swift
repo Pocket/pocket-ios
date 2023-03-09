@@ -73,13 +73,15 @@ struct Services {
         refreshCoordinator = RefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            source: source
+            source: source,
+            sessionProvider: appSession
         )
 
         homeRefreshCoordinator = HomeRefreshCoordinator(
             notificationCenter: .default,
             userDefaults: userDefaults,
-            source: source
+            source: source,
+            sessionProvider: appSession
         )
 
         imageManager = ImageManager(

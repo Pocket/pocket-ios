@@ -162,6 +162,18 @@
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "Je account verwijderen";
 "settings.accountManagement.deleteAccount.error.body" = "Er is een fout opgetreden en we kunnen je account niet verwijderen. Probeer het later opnieuw.";
+"settings.accountManagement.restoreSubscription" = "Herstel bestaand abonnement";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Hersteld";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Je Pocket Premium-abonnement is hersteld.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Herstel niet succesvol";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "We konden geen abonnement vinden. Als je gelooft dat je er een hebt, stuur dan een e-mail naar support@getpocket.com om ons dit te laten weten.";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "What could we have done better?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Quick survey";
 
 
 //List view

@@ -15,12 +15,14 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
     private let minimumRefreshInterval: TimeInterval
     private var subscriptions: [AnyCancellable] = []
     private var isRefreshing: Bool = false
+    private var sessionProvider: SessionProvider
 
-    init(notificationCenter: NotificationCenter, userDefaults: UserDefaults, source: Source, minimumRefreshInterval: TimeInterval = 12 * 60 * 60) {
+    init(notificationCenter: NotificationCenter, userDefaults: UserDefaults, source: Source, minimumRefreshInterval: TimeInterval = 12 * 60 * 60, sessionProvider: SessionProvider) {
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.minimumRefreshInterval = minimumRefreshInterval
         self.source = source
+        self.sessionProvider = sessionProvider
 
         self.notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
             self?.refresh { }
@@ -28,6 +30,11 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
+        guard (sessionProvider.session) != nil else {
+            Log.info("Not refreshing home because no active session")
+            return
+        }
+
         if shouldRefresh(isForced: isForced), !isRefreshing {
             Task {
                 do {

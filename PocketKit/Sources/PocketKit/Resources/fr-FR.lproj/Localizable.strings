@@ -162,6 +162,18 @@
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "Suppression de votre compte";
 "settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.restoreSubscription" = "Restaurer l'abonnement existant";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Restauration réussie";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Votre abonnement Pocket Premium a été restauré.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Échec de la restauration";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Nous n'avons pas trouvé d'abonnement. Si vous pensez en avoir un, veuillez nous contacter en envoyant un e-mail à l'adresse support@getpocket.com.";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "What could we have done better?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Quick survey";
 
 
 //List view
