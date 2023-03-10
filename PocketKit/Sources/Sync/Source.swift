@@ -95,18 +95,18 @@ public protocol Source {
 
 public extension Source {
     func refreshSaves(completion: (() -> Void)?) {
-        self.refreshSaves(maxItems: 400, completion: completion)
+        self.refreshSaves(maxItems: SyncConstants.Saves.firstLoadMaxCount, completion: completion)
     }
 
     func refreshSaves() {
-        self.refreshSaves(maxItems: 400, completion: nil)
+        self.refreshSaves(maxItems: SyncConstants.Saves.firstLoadMaxCount, completion: nil)
     }
 
     func refreshArchive(completion: (() -> Void)?) {
-        self.refreshArchive(maxItems: 400, completion: completion)
+        self.refreshArchive(maxItems: SyncConstants.Archive.firstLoadMaxCount, completion: completion)
     }
 
     func refreshArchive() {
-        self.refreshArchive(maxItems: 400, completion: nil)
+        self.refreshArchive(maxItems: SyncConstants.Archive.firstLoadMaxCount, completion: nil)
     }
 }

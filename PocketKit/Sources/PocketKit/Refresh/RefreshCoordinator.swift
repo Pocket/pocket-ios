@@ -26,7 +26,7 @@ class RefreshCoordinator {
     }
 
     func initialize() {
-        _ = taskScheduler.registerHandler(forTaskWithIdentifier: Self.taskID, using: .main) { [weak self] task in
+        _ = taskScheduler.registerHandler(forTaskWithIdentifier: Self.taskID, using: .global(qos: .background)) { [weak self] task in
             self?.refresh(task)
             self?.submitRequest()
         }

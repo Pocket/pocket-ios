@@ -204,7 +204,7 @@ public class PocketSource: Source {
 
 // MARK: - Saves/Archive items
 extension PocketSource {
-    public func refreshSaves(maxItems: Int = 400, completion: (() -> Void)? = nil) {
+    public func refreshSaves(maxItems: Int, completion: (() -> Void)? = nil) {
         if lastRefresh.lastRefreshSaves == nil {
             initialSavesDownloadState.send(.started)
         }
@@ -222,7 +222,7 @@ extension PocketSource {
         enqueue(operation: operation, task: .fetchSaves(maxItems: maxItems), completion: completion)
     }
 
-    public func refreshArchive(maxItems: Int = 400, completion: (() -> Void)? = nil) {
+    public func refreshArchive(maxItems: Int, completion: (() -> Void)? = nil) {
         if lastRefresh.lastRefreshArchive == nil {
             initialArchiveDownloadState.send(.started)
         }
