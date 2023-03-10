@@ -94,7 +94,6 @@ public protocol Source {
 }
 
 public extension Source {
-
     func refreshSaves() {
         self.refreshSaves(completion: nil)
     }
