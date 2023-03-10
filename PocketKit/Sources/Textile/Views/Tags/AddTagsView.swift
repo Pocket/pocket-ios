@@ -28,9 +28,10 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                     InputTagsView(viewModel: viewModel, geometry: geometry)
                     OtherTagsView(viewModel: viewModel)
                     Spacer()
-                    TextField(viewModel.placeholderText, text: $viewModel.newTagInput)
+                    TextField(viewModel.placeholderText, text: Binding(get: { viewModel.newTagInput }, set: { string in viewModel.newTagInput = string.lowercased() }))
                         .limitText($viewModel.newTagInput, to: 25)
                         .textFieldStyle(.roundedBorder)
+                        .autocapitalization(.none)
                         .padding(10)
                         .onSubmit {
                             guard viewModel.addTag(with: viewModel.newTagInput) else { return }
