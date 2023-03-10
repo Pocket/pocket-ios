@@ -16,14 +16,17 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
     var statePublisher: Published<PurchaseState>.Publisher { $state }
 
     private var user: User
+    private let receiptService: ReceiptService
     /// Will listen for transaction updates while the app is running
     private var transactionListener: Task<Void, Error>?
 
     private let subscriptionMap: [String: PremiumSubscriptionType]
 
-    init(user: User, subscriptionMap: [String: PremiumSubscriptionType]? = nil) {
-        self.subscriptionMap = subscriptionMap ?? [Keys.shared.pocketPremiumMonthly: .monthly, Keys.shared.pocketPremiumAnnual: .annual]
+    init(user: User, receiptService: ReceiptService, subscriptionMap: [String: PremiumSubscriptionType]? = nil) {
         self.user = user
+        self.receiptService = receiptService
+        self.subscriptionMap = subscriptionMap ?? [Keys.shared.pocketPremiumMonthly: .monthly, Keys.shared.pocketPremiumAnnual: .annual]
+        receiptService.send()
         transactionListener = makeTransactionListener()
 
         Task {
@@ -98,7 +101,7 @@ extension PocketSubscriptionStore {
     /// Process the purchase of a product
     /// - Parameter product: the product to purchase
     private func purchase(product: Product) async throws {
-        // TODO: we might want to add `appAccountToken` in the purchase options
+        // TODO: we could add `appAccountToken` in the purchase options, but it needs an UUID
         let result = try await product.purchase()
 
         switch result {
@@ -129,7 +132,7 @@ extension PocketSubscriptionStore {
                     if let subscription = subscriptions.first(where: { $0.product.id == verifiedTransaction.productID }) {
                         state = .subscribed(subscription.type)
                         user.setPremiumStatus(true)
-                        // TODO: update the backend
+                        receiptService.send()
                     }
                 default:
                     // We do not have other product types as of now.
