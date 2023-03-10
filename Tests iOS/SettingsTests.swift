@@ -143,7 +143,6 @@ class SettingsTest: XCTestCase {
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
         server.routes.post("/purchase_status") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
             saveRequestExpectation.fulfill()
             return Response.premiumStatus()
         }
