@@ -193,3 +193,17 @@
 "Hooray!" = "Hurra!";
 "premium.success.message" = "Jesteś oficjalnie użytkownikiem wersji Pocket Premium. Witamy w nowej, pozbawionej reklam, modyfikowalnej i dostępnej na stałe wersji Pocket. Mamy nadzieję, że Ci się spodoba.";
 "back.to.pocket" = "Powrót do Pocket";
+"settings.premiumRow" = "Pobierz Premium";
+"settings.premium.settings.thanksForSubscribing" = "Dziękujemy za subskrybcję aplikacji Pocket Premium!";
+"settings.premium.settings.subscriptionStatus" = "Status subskrypcji";
+"settings.premium.settings.subscription" = "Subskrypcja";
+"settings.premium.settings.datePurchased" = "Data zakupu";
+"settings.premium.settings.renewalDate" = "Data odnowienia";
+"settings.premium.settings.purchaseLocation" = "Miejsce zakupu";
+"settings.premium.settings.price" = "Cena";
+"settings.premium.settings.yourSubscription" = "Twoja subskrypcja";
+"settings.premium.settings.manageYourSubscription" = "Zarządzaj subskrypcją";
+"settings.premium.settings.questionOrFeedback" = "Chcesz o coś zapytać lub wyrazić opinię?";
+"settings.premium.settings.pocketPremiumFAQ" = "Najczęściej zadawane pytania dotyczące aplikacji Pocket Premium";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Skontaktuj się z pomocą techniczną Pocket";
