@@ -184,14 +184,20 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.wait()
         addTagsView.newTagTextField.tap()
         addTagsView.newTagTextField.typeText("F")
-        addTagsView.newTagTextField.typeText("\n")
 
         addTagsView.allTagsRow(matching: "filter tag 0").wait()
         addTagsView.allTagsRow(matching: "filter tag 1").wait()
         app.addTagsView.allTagsView.wait()
 
+        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 0"))
+        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
+        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 2"))
+
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent1 = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.filteredTags")
+        let results = await snowplowMicro.getGoodSnowplowEvents()
+        print(results)
+        XCTAssertTrue(results.count > 0)
         guard let tagEvent1 = tagEvent1 else {
             XCTFail("Should not be nil")
             return
