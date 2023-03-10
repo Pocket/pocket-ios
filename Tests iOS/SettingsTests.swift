@@ -192,10 +192,10 @@ class SettingsTest: XCTestCase {
     @MainActor
     func tapSettings() async {
         app.tabBar.settingsButton.wait().tap()
-//        XCTAssertTrue(app.settingsView.exists)
+        XCTAssertTrue(app.settingsView.exists)
 
         let settingsViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings")
-//        XCTAssertNotNil(settingsViewEvent)
+        XCTAssertNotNil(settingsViewEvent)
     }
 
     @MainActor
