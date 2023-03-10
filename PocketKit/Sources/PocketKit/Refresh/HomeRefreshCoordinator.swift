@@ -36,11 +36,16 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
         }
 
         if shouldRefresh(isForced: isForced), !isRefreshing {
-            Task {
+            Task { [weak self] in
+                guard let self = self else {
+                    Log.capture(message: "Home refresh task - self is nil")
+                    return
+                }
+
                 do {
-                    isRefreshing = true
-                    try await source.fetchSlateLineup(HomeViewModel.lineupIdentifier)
-                    userDefaults.setValue(Date(), forKey: Self.dateLastRefreshKey)
+                    self.isRefreshing = true
+                    try await self.source.fetchSlateLineup(HomeViewModel.lineupIdentifier)
+                    self.userDefaults.setValue(Date(), forKey: Self.dateLastRefreshKey)
                     Log.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
                 } catch {
                     Log.capture(error: error)
@@ -48,6 +53,13 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
                 completion()
                 isRefreshing = false
             }
+        } else if isRefreshing {
+            Log.debug("Already refreshing Home, not going to add to the queue")
+            completion()
+            return
+        } else {
+            Log.debug("Not refreshing Home, to early to ask for new data")
+            completion()
         }
     }
 
