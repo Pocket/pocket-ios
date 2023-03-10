@@ -72,7 +72,7 @@ class FetchArchive: SyncOperation {
                 initialDownloadState.send(.paginating(totalCount: totalCount > pagination.maxItems ? pagination.maxItems : totalCount))
             }
 
-            try await updateLocalStorage(result: result)
+            try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Archive.pageSize)
         } while pagination.shouldFetchNextPage
 
