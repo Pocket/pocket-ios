@@ -89,7 +89,8 @@ public class V3Client: NSObject, V3ClientProtocol {
      */
     func executeRequest<T>(
         request: URLRequest,
-        decodable: T.Type
+        decodable: T.Type,
+        decodingStrategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase
     )  async throws -> T  where T: Decodable {
         let (data, response): (Data, URLResponse)
         do {
@@ -111,9 +112,8 @@ public class V3Client: NSObject, V3ClientProtocol {
             }
 
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .useDefaultKeys
+            decoder.keyDecodingStrategy = decodingStrategy
             do {
-                let str = String(decoding: data, as: UTF8.self)
                 let response = try decoder.decode(decodable, from: data)
                 return response
             } catch {
@@ -230,8 +230,8 @@ extension V3Client {
 }
 
 extension V3Client {
-    public func premiumStatus(session: Session) async throws -> PremiumStatusResponse {
-        let currentSession = try fallbackSession(session: session)
+    public func premiumStatus() async throws -> PremiumStatusResponse {
+        let currentSession = try fallbackSession(session: sessionProvider.session)
 
         let request = try buildRequest(
             path: "purchase_status",
@@ -242,6 +242,6 @@ extension V3Client {
             )
         )
 
-        return try await executeRequest(request: request, decodable: PremiumStatusResponse.self)
+        return try await executeRequest(request: request, decodable: PremiumStatusResponse.self, decodingStrategy: .useDefaultKeys)
     }
 }

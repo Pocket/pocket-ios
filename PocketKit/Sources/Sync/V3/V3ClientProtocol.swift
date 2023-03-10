@@ -51,7 +51,7 @@ public protocol V3ClientProtocol {
     /**
      - Returns: PremiumStatusResponse
      */
-    func premiumStatus(session: Session) async throws -> PremiumStatusResponse
+    func premiumStatus() async throws -> PremiumStatusResponse
 }
 
 

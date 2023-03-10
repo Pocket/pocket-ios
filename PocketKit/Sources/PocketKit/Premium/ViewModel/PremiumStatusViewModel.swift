@@ -16,18 +16,17 @@ class PremiumSettingsViewModel: ObservableObject {
     @Published var isNoMailSupport = false
 
     let v3Client = Services.shared.v3Client
-    let session = Services.shared.appSession
 
     func requestStatus() async {
         do {
-            let result = try await v3Client.premiumStatus(session: session.session!)
+            let result = try await v3Client.premiumStatus()
             subscription = result.subscriptionInfo.subscriptionType
             datePurchased = getDisplayedDate(datetime: result.subscriptionInfo.purchaseDate)
             renewalDate = getDisplayedDate(datetime: result.subscriptionInfo.renewDate)
             purchaseLocation = result.subscriptionInfo.source.capitalized
             price = result.subscriptionInfo.displayAmount
         } catch {
-            Log.breadcrumb(category: "premium_status", level: .error, message: "v3 premium status error: \(error.localizedDescription)")
+            Log.breadcrumb(category: "premium_status", level: .error, message: "v3 premium status error: \(error)")
         }
     }
 
