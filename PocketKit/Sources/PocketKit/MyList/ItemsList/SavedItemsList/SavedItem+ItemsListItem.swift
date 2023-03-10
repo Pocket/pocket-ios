@@ -33,6 +33,10 @@ extension SavedItem: ItemsListItem {
     var tagNames: [String]? {
         tags?.compactMap { $0 as? Tag }.compactMap { $0.name }
     }
+
+    var cursor: String? {
+        item?.savedItem?.cursor
+    }
 }
 
 extension DomainMetadata: ItemsListItemDomainMetadata {
