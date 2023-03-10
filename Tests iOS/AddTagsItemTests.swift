@@ -184,16 +184,20 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.wait()
         addTagsView.newTagTextField.tap()
         addTagsView.newTagTextField.typeText("F")
+        addTagsView.newTagTextField.typeText("\n")
 
         addTagsView.allTagsRow(matching: "filter tag 0").wait()
         addTagsView.allTagsRow(matching: "filter tag 1").wait()
         app.addTagsView.allTagsView.wait()
 
-//        Bitrise is failing, but this passes locally, commenting out for now
-//        await snowplowMicro.assertBaselineSnowplowExpectation()
-//        let tagEvent1 = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.filteredTags")
-//        tagEvent1!.getUIContext()!.assertHas(type: "screen")
-//        tagEvent1!.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let tagEvent1 = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.filteredTags")
+        guard let tagEvent1 = tagEvent1 else {
+            XCTFail("Should not be nil")
+            return
+        }
+        tagEvent1.getUIContext()!.assertHas(type: "screen")
+        tagEvent1.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
     }
 
     func selectTaggedFilterButton() {
