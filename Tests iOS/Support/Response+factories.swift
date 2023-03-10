@@ -118,6 +118,10 @@ extension Response {
         }
     }
 
+    static func searchPagination(_ fixtureName: String = "search-list-page-1") -> Response {
+        fixture(named: fixtureName)
+    }
+
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok

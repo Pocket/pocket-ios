@@ -13,6 +13,8 @@ class OnlineSearch {
     private var cache: [String: [PocketItem]] = [:]
     private let scope: SearchScope
 
+    var pageNumberLoaded: Int = 0
+
     @Published
     var results: Result<[PocketItem], Error>?
 
@@ -26,17 +28,25 @@ class OnlineSearch {
         cache[term] != nil
     }
 
-    func search(with term: String) {
-        guard !hasCache(with: term) else {
+    func search(with term: String, and loadMoreResults: Bool = false) {
+        guard !hasCache(with: term) || loadMoreResults else {
+            Log.debug("Load cache for search")
             results = .success(cache[term] ?? [])
             return
         }
-
-        searchService.results.sink { [weak self] items in
+        clear()
+        searchService.results.dropFirst().sink { [weak self] items in
             guard let self, let items else { return }
             let searchItems = items.compactMap { PocketItem(item: $0) }
-            self.cache[term] = searchItems
-            self.results = .success(self.cache[term] ?? [])
+            self.pageNumberLoaded += 1
+            guard let currentItems = self.cache[term] else {
+                self.cache[term] = searchItems
+                self.results = .success(searchItems)
+                return
+            }
+
+            self.cache[term] = currentItems + searchItems
+            self.results = .success(currentItems + searchItems)
         }.store(in: &subscriptions)
 
         Task {
@@ -46,5 +56,17 @@ class OnlineSearch {
                 self.results = .failure(error)
             }
         }
+    }
+
+    private func clear() {
+        subscriptions = []
+    }
+
+    var hasFinishedResults: Bool {
+        searchService.hasFinishedResults
+    }
+
+    var lastEndCursor: String {
+        searchService.lastEndCursor
     }
 }
