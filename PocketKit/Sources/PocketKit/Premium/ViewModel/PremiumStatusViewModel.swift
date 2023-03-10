@@ -27,7 +27,7 @@ class PremiumSettingsViewModel: ObservableObject {
             purchaseLocation = result.subscriptionInfo.source.capitalized
             price = result.subscriptionInfo.displayAmount
         } catch {
-            Log.breadcrumb(category: "premium_status", level: .error, message: "v3 premium status error: "\(error.localizedDescription)")
+            Log.breadcrumb(category: "premium_status", level: .error, message: "v3 premium status error: \(error.localizedDescription)")
         }
     }
 
