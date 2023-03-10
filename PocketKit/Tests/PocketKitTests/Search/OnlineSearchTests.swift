@@ -122,24 +122,25 @@ class OnlineSearchTests: XCTestCase {
         sut.search(with: "search-term")
         await setupOnlineSearch(with: "search-term")
 
-        guard case .success(let items) = sut.results else {
+        guard case .success(let pageOneItems) = sut.results else {
             XCTFail("should not have failed")
             return
         }
 
-        XCTAssertEqual(items.count, 2)
+        XCTAssertEqual(pageOneItems.count, 2)
         XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
         XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .archive)
 
         sut.search(with: "search-term", and: true)
-        await setupOnlineSearch(with: "search-term")
-        guard case .success(let items) = sut.results else {
+        await setupOnlineSearchPage2(with: "search-term")
+        guard case .success(let pageTwoItems) = sut.results else {
             XCTFail("should not have failed")
             return
         }
 
-        XCTAssertEqual(items.count, 8)
+        XCTAssertEqual(pageTwoItems.count, 5)
         XCTAssertNotNil(searchService.searchCall(at: 1))
+        XCTAssertNil(searchService.searchCall(at: 2))
     }
 
     // MARK: Error
@@ -178,6 +179,26 @@ class OnlineSearchTests: XCTestCase {
         await withCheckedContinuation { continuation in
             searchService.stubSearch { _, _ in
                 self.searchService._results = [item, item]
+                continuation.resume()
+            }
+        }
+    }
+
+    private func setupOnlineSearchPage2(with term: String) async {
+        let itemParts = SavedItemParts(data: DataDict([
+            "__typename": "SavedItem",
+            "item": [
+                "__typename": "Item",
+                "title": term,
+                "givenUrl": "http://localhost:8080/hello",
+                "resolvedUrl": "http://localhost:8080/hello"
+            ]
+        ], variables: nil))
+
+        let item = SearchSavedItem(remoteItem: itemParts)
+        await withCheckedContinuation { continuation in
+            searchService.stubSearch { _, _ in
+                self.searchService._results = [item, item, item]
                 continuation.resume()
             }
         }
