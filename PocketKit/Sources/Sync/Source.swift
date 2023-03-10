@@ -32,9 +32,9 @@ public protocol Source {
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
-    func refreshSaves(maxItems: Int, completion: (() -> Void)?)
+    func refreshSaves(completion: (() -> Void)?)
 
-    func refreshArchive(maxItems: Int, completion: (() -> Void)?)
+    func refreshArchive(completion: (() -> Void)?)
 
     func retryImmediately()
 
@@ -95,18 +95,18 @@ public protocol Source {
 
 public extension Source {
     func refreshSaves(completion: (() -> Void)?) {
-        self.refreshSaves(maxItems: SyncConstants.Saves.firstLoadMaxCount, completion: completion)
+        self.refreshSaves(completion: completion)
     }
 
     func refreshSaves() {
-        self.refreshSaves(maxItems: SyncConstants.Saves.firstLoadMaxCount, completion: nil)
+        self.refreshSaves(completion: nil)
     }
 
     func refreshArchive(completion: (() -> Void)?) {
-        self.refreshArchive(maxItems: SyncConstants.Archive.firstLoadMaxCount, completion: completion)
+        self.refreshArchive(completion: completion)
     }
 
     func refreshArchive() {
-        self.refreshArchive(maxItems: SyncConstants.Archive.firstLoadMaxCount, completion: nil)
+        self.refreshArchive(completion: nil)
     }
 }

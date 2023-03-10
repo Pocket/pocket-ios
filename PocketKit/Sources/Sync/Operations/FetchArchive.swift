@@ -69,7 +69,7 @@ class FetchArchive: SyncOperation {
             if case .started = initialDownloadState.value,
                let totalCount = result.data?.user?.savedItems?.totalCount,
                pagination.cursor == nil {
-                initialDownloadState.send(.paginating(totalCount: totalCount > pagination.maxItems ? pagination.maxItems : totalCount))
+                initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
             }
 
             try await updateLocalStorage(result: result)

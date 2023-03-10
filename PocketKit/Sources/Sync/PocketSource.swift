@@ -204,7 +204,7 @@ public class PocketSource: Source {
 
 // MARK: - Saves/Archive items
 extension PocketSource {
-    public func refreshSaves(maxItems: Int, completion: (() -> Void)? = nil) {
+    public func refreshSaves(completion: (() -> Void)? = nil) {
         if lastRefresh.lastRefreshSaves == nil {
             initialSavesDownloadState.send(.started)
         }
@@ -218,10 +218,10 @@ extension PocketSource {
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchSaves(maxItems: maxItems), completion: completion)
+        enqueue(operation: operation, task: .fetchSaves, completion: completion)
     }
 
-    public func refreshArchive(maxItems: Int, completion: (() -> Void)? = nil) {
+    public func refreshArchive(completion: (() -> Void)? = nil) {
         if lastRefresh.lastRefreshArchive == nil {
             initialArchiveDownloadState.send(.started)
         }
@@ -234,7 +234,7 @@ extension PocketSource {
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchSaves(maxItems: maxItems), completion: completion)
+        enqueue(operation: operation, task: .fetchSaves, completion: completion)
     }
 
     public func favorite(item: SavedItem) {
@@ -514,7 +514,7 @@ extension PocketSource {
                     mutation: FavoriteItemMutation(itemID: remoteID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
-            case .fetchSaves(let maxItems):
+            case .fetchSaves:
                 let operation = operations.fetchSaves(
                     user: user,
                     apollo: apollo,
@@ -524,7 +524,7 @@ extension PocketSource {
                     lastRefresh: lastRefresh
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
-            case .fetchArchive(let maxItems):
+            case .fetchArchive:
                 let operation = operations.fetchArchive(
                     apollo: apollo,
                     space: space,
