@@ -4,7 +4,7 @@ import Textile
 
 struct PremiumUpgradeView: View {
     // TODO: remove this property and the two @State properties once we are ready to ship premium upgrades to beta users
-    static let shouldAllowUpgrade = true
+    static let shouldAllowUpgrade = false
     @State private var showingMonthlyAlert = false
     @State private var showingAnnualAlert = false
     @Binding var dismissReason: DismissReason
@@ -75,8 +75,8 @@ struct PremiumUpgradeView: View {
                             isYearly: false
                         ) {
                             Task {
+                                viewModel.trackMonthlyButtonTapped()
                                 if Self.shouldAllowUpgrade {
-                                    viewModel.trackMonthlyButtonTapped()
                                     await viewModel.purchaseMonthlySubscription()
                                 } else {
                                     showingMonthlyAlert = true
@@ -100,8 +100,8 @@ struct PremiumUpgradeView: View {
                                 isYearly: true
                             ) {
                                 Task {
+                                    viewModel.trackAnnualButtonTapped()
                                     if Self.shouldAllowUpgrade {
-                                        viewModel.trackAnnualButtonTapped()
                                         await viewModel.purchaseAnnualSubscription()
                                     } else {
                                         showingAnnualAlert = true
