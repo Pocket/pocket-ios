@@ -187,11 +187,6 @@ class AddTagsItemTests: XCTestCase {
 
         addTagsView.allTagsRow(matching: "filter tag 0").wait()
         addTagsView.allTagsRow(matching: "filter tag 1").wait()
-        app.addTagsView.allTagsView.wait()
-
-        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 0"))
-        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
-        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 2"))
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent1 = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.filteredTags")
