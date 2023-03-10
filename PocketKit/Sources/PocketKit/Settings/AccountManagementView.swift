@@ -64,9 +64,7 @@ struct AccountManagementForm: View {
                         )
                     }
                     .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
-                        DeleteAccountView(isPremium: model.isPremium, isPresentingCancelationHelp: $model.isPresentingCancelationHelp, hasError: $model.hasError, isDeletingAccount: $model.isDeletingAccount, deleteAccount: model.deleteAccount, helpCancelPremium: model.helpCancelPremium, dismissDelete: { dismiss in model.trackDeleteDismissed(dismissReason: dismiss) }, helpAppeared: model.trackHelpCancelingPremiumImpression ).onAppear {
-                            model.trackDeleteConfirmationImpression()
-                        }
+                        DeleteAccountView(viewModel: model.makeDeleteAccountViewModel())
                     }
                     .accessibilityIdentifier("delete-your-account-button")
                 }

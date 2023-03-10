@@ -5,34 +5,14 @@
 import SwiftUI
 import Textile
 import SharedPocketKit
+import Analytics
 
-@MainActor
 struct DeleteAccountView: View {
-    /// If the user is premium
-    @State var isPremium: Bool
-
+    @ObservedObject var viewModel: DeleteAccountViewModel
     /// Confirmation by the user that they have cancelled their premium account
     @State var hasCancelledPremium: Bool = false
-
     /// Confirmation by the user they they understand the deletion is permanent
     @State var understandsPermanentDeletion: Bool = false
-
-    /// State variable listened on from our view model
-    @Binding var isPresentingCancelationHelp: Bool
-
-    /// State variable to indicate that there was an error and show it to the user
-    @Binding var hasError: Bool
-
-    /// State variable to indicate an account deletion is in progress
-    @Binding var isDeletingAccount: Bool
-
-    var deleteAccount: () -> Void
-
-    var helpCancelPremium: () -> Void
-
-    var dismissDelete: (_: DismissReason) -> Void
-
-    var helpAppeared: () -> Void
 
     @Environment(\.dismiss)
     var dismiss
@@ -54,7 +34,7 @@ struct DeleteAccountView: View {
                  Note below we use LocalizedStringKey. This is a total hack. This is because a SwiftUI text object treats Text("testing") differently then Text(someText). When passed as a variable, the Text view performs no localization, but it also does not render the embedded markdown. When cast to a LocalizedStringKey the Text field will try and localize the content (and fail) but it will render the markdown and bold the text.
                  */
                 VStack {
-                    if isPremium {
+                    if viewModel.isPremium {
                         Toggle(isOn: $hasCancelledPremium, label: {
                             Text(LocalizedStringKey(L10n.Settings.AccountManagement.DeleteAccount.premiumConfirmation))
                                 .multilineTextAlignment(.leading)
@@ -71,9 +51,9 @@ struct DeleteAccountView: View {
                     .accessibilityIdentifier("understand-deletion")
                 }.padding()
 
-                if isPremium {
+                if viewModel.isPremium {
                     Button(L10n.Settings.AccountManagement.DeleteAccount.howToCancel) {
-                        helpCancelPremium()
+                        viewModel.helpCancelPremium()
                     }
                     .padding()
                     .buttonStyle(PocketButtonStyle(.internalInfoLink))
@@ -85,11 +65,11 @@ struct DeleteAccountView: View {
                 }
 
                 Button(L10n.Settings.AccountManagement.deleteAccount) {
-                    deleteAccount()
+                    viewModel.deleteAccount()
                 }
                 .buttonStyle(PocketButtonStyle(.primary))
                 .disabled(
-                    isPremium ?
+                    viewModel.isPremium ?
                           !(hasCancelledPremium && understandsPermanentDeletion) :
                             !understandsPermanentDeletion
                 )
@@ -97,7 +77,7 @@ struct DeleteAccountView: View {
                 .accessibilityIdentifier("delete-account")
 
                 Button(L10n.cancel) {
-                    dismissDelete(.button)
+                    viewModel.trackDeleteDismissed(dismissReason: .button)
                     dismiss()
                 }
                 .buttonStyle(PocketButtonStyle(.secondary))
@@ -110,29 +90,32 @@ struct DeleteAccountView: View {
             .navigationBarItems(
                 trailing:
                 Button(action: {
-                    dismissDelete(.closeButton)
+                    viewModel.trackDeleteDismissed(dismissReason: .closeButton)
                     dismiss()
                 }) {
                     Text(L10n.close)
                 }.accessibilityIdentifier("close")
             )
         }
-        .sheet(isPresented: $isPresentingCancelationHelp) {
+        .sheet(isPresented: $viewModel.isPresentingCancelationHelp) {
             SFSafariView(url: LinkedExternalURLS.CancelingPremium)
-                .edgesIgnoringSafeArea(.bottom).onAppear {
-                    helpAppeared()
+                .edgesIgnoringSafeArea(.bottom)
+                .onAppear {
+                    viewModel.trackHelpCancelingPremiumImpression()
                 }
         }
         .accessibilityIdentifier("delete-confirmation")
         .overlay {
-            if isDeletingAccount {
+            if viewModel.isDeletingAccount {
                 DeleteLoadingView()
             }
         }
-        .alert(isPresented: $hasError) {
+        .alert(isPresented: $viewModel.showErrorAlert) {
             Alert(title: Text(L10n.General.oops), message: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.body), dismissButton: .cancel(Text(L10n.ok)))
         }
-        .onDisappear()
+        .onAppear {
+            viewModel.trackDeleteConfirmationImpression()
+        }
     }
 }
 
@@ -167,36 +150,52 @@ extension Style {
 }
 
 struct DeleteAccountView_PreviewProvider: PreviewProvider {
+    static func makePreview(isPremium: Bool = false,
+                            isPresentingCancellationHelp: Bool = false,
+                            isDeletingAccount: Bool = false,
+                            showErrorAlert: Bool = false) -> DeleteAccountView {
+        DeleteAccountView(
+            viewModel: DeleteAccountViewModel(
+                isPresentingCancellationHelp: isPresentingCancellationHelp,
+                isDeletingAccount: isDeletingAccount,
+                showErrorAlert: showErrorAlert,
+                isPremium: isPremium,
+                userManagementService: PreviewUserManagementService(),
+                tracker: PreviewTracker()
+            )
+        )
+    }
+
     static var previews: some View {
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(false), deleteAccount: {}, helpCancelPremium: {}, dismissDelete: { _ in }, helpAppeared: {})
+            makePreview()
             .previewDisplayName("Free User - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(false), deleteAccount: {}, helpCancelPremium: {}, dismissDelete: { _ in }, helpAppeared: {})
+        makePreview()
             .previewDisplayName("Free User - Dark")
             .preferredColorScheme(.dark)
 
-        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(false), deleteAccount: {}, helpCancelPremium: {}, dismissDelete: { _ in }, helpAppeared: {})
+        makePreview(isPremium: true)
             .previewDisplayName("Premium User - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(false), deleteAccount: {}, helpCancelPremium: {}, dismissDelete: { _ in }, helpAppeared: {})
+        makePreview(isPremium: true)
             .previewDisplayName("Premium User - Dark")
             .preferredColorScheme(.dark)
 
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(true), deleteAccount: {}, helpCancelPremium: {}, dismissDelete: { _ in }, helpAppeared: {})
+        makePreview(isDeletingAccount: true)
             .previewDisplayName("Deleting Account - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(false), isDeletingAccount: .constant(true), deleteAccount: {}, helpCancelPremium: {}, dismissDelete: { _ in }, helpAppeared: {})
+        makePreview(isDeletingAccount: true)
             .previewDisplayName("Deleting Account - Dark")
             .preferredColorScheme(.dark)
 
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(true), isDeletingAccount: .constant(false), deleteAccount: {}, helpCancelPremium: {}, dismissDelete: { _ in }, helpAppeared: {})
+        makePreview(showErrorAlert: true)
             .previewDisplayName("Error - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: .constant(false), hasError: .constant(true), isDeletingAccount: .constant(false), deleteAccount: {}, helpCancelPremium: {}, dismissDelete: { _ in }, helpAppeared: {})
+        makePreview(showErrorAlert: true)
             .previewDisplayName("Error - Dark")
             .preferredColorScheme(.dark)
     }
