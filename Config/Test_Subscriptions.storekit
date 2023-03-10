@@ -31,8 +31,8 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "",
-              "displayName" : "",
+              "description" : "Pocket Premium Rocks!!",
+              "displayName" : "Pocket Premium",
               "locale" : "en_US"
             }
           ],
@@ -56,13 +56,13 @@
           "introductoryOffer" : null,
           "localizations" : [
             {
-              "description" : "",
-              "displayName" : "",
+              "description" : "Pocket Premium rocks!!",
+              "displayName" : "Pocket Premium",
               "locale" : "en_US"
             }
           ],
           "productID" : "annual.subscription.pocket",
-          "recurringSubscriptionPeriod" : "P1M",
+          "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Pocket Premium Annual",
           "subscriptionGroupID" : "7BB42CF1",
           "type" : "RecurringSubscription"

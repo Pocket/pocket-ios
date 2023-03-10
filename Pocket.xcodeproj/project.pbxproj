@@ -879,7 +879,7 @@
 /* Begin XCBuildConfiguration section */
 		166A81D82637406C0015AA1D /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 16973355263CBB3F0003DE2A /* secrets.xcconfig */;
+			baseConfigurationReference = AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;

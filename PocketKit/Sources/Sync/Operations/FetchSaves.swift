@@ -73,7 +73,7 @@ class FetchSaves: SyncOperation {
         repeat {
             let result = try await fetchPage(pagination)
             if let isPremium = result.data?.user?.isPremium as? Bool {
-                user.setPremiumStatus(isPremium)
+                //user.setPremiumStatus(isPremium)
              }
 
             if case .started = initialDownloadState.value,
