@@ -318,7 +318,7 @@ class SearchTests: XCTestCase {
 
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
-        app.saves.searchView.searchItemCell(at: 0).tap()
+        app.saves.searchView.searchItemCell(matching: "Item 1").tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
 
@@ -422,7 +422,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 1)
+            .searchItemCell(matching: "Item 2")
             .wait()
 
         let expectRequest = expectation(description: "A request to the server")
@@ -477,7 +477,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 1)
+            .searchItemCell(matching: "Item 2")
             .wait()
 
         itemCell.shareButton.tap()
@@ -503,7 +503,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 0)
+            .searchItemCell(matching: "Item 1")
             .wait()
 
         itemCell.overFlowMenu.tap()
@@ -530,7 +530,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 0)
+            .searchItemCell(matching: "Item 1")
             .wait()
 
         itemCell.overFlowMenu.tap()
@@ -555,7 +555,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 0)
+            .searchItemCell(matching: "Item 3")
             .wait()
 
         itemCell.overFlowMenu.tap()
@@ -580,7 +580,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 1)
+            .searchItemCell(matching: "Item 2")
             .wait()
 
         itemCell.overFlowMenu.tap()
@@ -599,41 +599,39 @@ class SearchTests: XCTestCase {
     func test_search_showsPagination() async {
         app.launch()
         tapSearch()
+        let firstExpectRequest = expectation(description: "First request to the server")
+        let secondExpectRequest = expectation(description: "Second request to the server")
+        var count = 0
+        server.routes.post("/graphql") { request, loop in
+            count += 1
+            if count == 1 {
+                firstExpectRequest.fulfill()
+                return Response.searchPagination()
+            } else if count == 2 {
+                secondExpectRequest.fulfill()
+                return Response.searchPagination("search-list-page-2")
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
 
         let searchField = app.navigationBar.searchFields["Search"].wait()
         searchField.tap()
         searchField.typeText("item\n")
+
         app.saves.searchView.searchResultsView.wait()
-        app.saves.searchView.searchItemCell(at: 1).wait()
-        app.saves.searchView.searchItemCell(at: 1).element.swipeDown()
-//
-//        let firstExpectRequest = expectation(description: "First request to the server")
-//        server.routes.post("/graphql") { request, loop in
-//            defer { firstExpectRequest.fulfill() }
-//            let apiRequest = ClientAPIRequest(request)
-//            XCTAssertTrue(apiRequest.isToFavoriteAnItem)
-//            XCTAssertTrue(apiRequest.contains("item-2"))
-//
-//            return Response.searchPagination()
-//        }
-//
-//        itemCell.favoriteButton.tap()
-//        wait(for: [firstExpectRequest])
-//        XCTAssertTrue(itemCell.favoriteButton.isFilled)
-//
-//        let secondExpectRequest = expectation(description: "Second request to the server")
-//        server.routes.post("/graphql") { request, loop in
-//            defer { expectUnfavoriteRequest.fulfill() }
-//            let apiRequest = ClientAPIRequest(request)
-//            XCTAssertTrue(apiRequest.isToUnfavoriteAnItem)
-//            XCTAssertTrue(apiRequest.contains("item-2"))
-//
-//            return Response.unfavorite()
-//        }
-//
-//        itemCell.favoriteButton.tap()
-//        wait(for: [expectUnfavoriteRequest])
-//        XCTAssertFalse(itemCell.favoriteButton.isFilled)
+        app.saves.searchView.searchItemCell(matching: "Item 4").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 10").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 13").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 20").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 27").wait().element.swipeUp(velocity: .fast)
+
+        wait(for: [firstExpectRequest, secondExpectRequest])
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.searchPage")
+        searchEvent!.getUIContext()!.assertHas(type: "page")
+        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     private func tapSearch(fromArchive: Bool = false) {

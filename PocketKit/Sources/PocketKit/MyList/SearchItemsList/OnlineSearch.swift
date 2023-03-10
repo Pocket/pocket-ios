@@ -13,6 +13,8 @@ class OnlineSearch {
     private var cache: [String: [PocketItem]] = [:]
     private let scope: SearchScope
 
+    var numberOfItemsPerPage: Int = 0
+
     @Published
     var results: Result<[PocketItem], Error>?
 
@@ -32,10 +34,11 @@ class OnlineSearch {
             results = .success(cache[term] ?? [])
             return
         }
-
-        searchService.results.sink { [weak self] items in
+        clear()
+        searchService.results.dropFirst().sink { [weak self] items in
             guard let self, let items else { return }
             let searchItems = items.compactMap { PocketItem(item: $0) }
+            self.numberOfItemsPerPage = searchItems.count
             guard let currentItems = self.cache[term] else {
                 self.cache[term] = searchItems
                 self.results = .success(searchItems)
@@ -53,6 +56,10 @@ class OnlineSearch {
                 self.results = .failure(error)
             }
         }
+    }
+
+    private func clear() {
+        subscriptions = []
     }
 
     var hasFinishedResults: Bool {

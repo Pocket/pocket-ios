@@ -28,7 +28,7 @@ extension MockSearchService {
         implementations[Self.search] = impl
     }
 
-    func search(for term: String, scope: SharedPocketKit.SearchScope) throws {
+    func search(for term: String, scope: SharedPocketKit.SearchScope) async throws {
         guard let impl = implementations[Self.search] as? SearchImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }

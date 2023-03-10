@@ -306,27 +306,20 @@ public extension Events.Search {
     /**
      Fired when a user scrolls down the search list and triggers another results page call
      */
-    static func nextSearchResultsPage(
-        url: URL,
-        positionInList: Int,
+    static func searchResultsPage(
+        numberOfItems: Int,
         scope: SearchScope
     ) -> Event {
         return Engagement(
             .general,
             uiEntity: UiEntity(
-                .button,
-                identifier: "global-nav.search.nextResultsPage",
+                .page,
+                identifier: "global-nav.search.searchPage",
                 componentDetail: getScopeIdentifier(scope: scope),
-                index: positionInList
-            ),
-            extraEntities: [
-                ContentEntity(
-                    url: url
-                )
-            ]
+                index: numberOfItems
+            )
         )
     }
-
 
     /// Premium upsell in Search visible
     static func premiumUpsellViewed() -> Event {

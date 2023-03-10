@@ -222,18 +222,12 @@ class SearchViewModel: ObservableObject {
         case .saves:
             guard isPremium, !savesOnlineSearch.hasFinishedResults else { return }
             savesOnlineSearch.search(with: term, and: true)
-            trackNextResultsPageTriggered(url: item.url, index: index, scope: .saves)
-            listenForSaveResults(with: term)
         case .archive:
             guard !archiveOnlineSearch.hasFinishedResults else { return }
             archiveOnlineSearch.search(with: term, and: true)
-            listenForResults(with: term, onlineSearch: archiveOnlineSearch, scope: .archive)
-            trackNextResultsPageTriggered(url: item.url, index: index, scope: .archive)
         case .all:
             guard !allOnlineSearch.hasFinishedResults else { return }
             allOnlineSearch.search(with: term, and: true)
-            listenForResults(with: term, onlineSearch: allOnlineSearch, scope: .all)
-            trackNextResultsPageTriggered(url: item.url, index: index, scope: .all)
         }
     }
 
@@ -276,6 +270,7 @@ class SearchViewModel: ObservableObject {
                 guard let self, let result, self.selectedScope == .saves else { return }
                 if case .success(let items) = result {
                     self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+                    self.trackSearchResultsPage(numberOfItems: self.savesOnlineSearch.numberOfItemsPerPage, scope: .saves)
                 } else {
                     let results = self.savesLocalSearch.search(with: term)
                     self.searchState = .searchResults(results)
@@ -300,6 +295,7 @@ class SearchViewModel: ObservableObject {
                 guard let self, let result, self.selectedScope == scope else { return }
                 if case .success(let items) = result {
                     self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
+                    self.trackSearchResultsPage(numberOfItems: onlineSearch.numberOfItemsPerPage, scope: scope)
                 } else if case .failure(let error) = result {
                     guard case SearchServiceError.noInternet = error else {
                         self.searchState = .emptyState(ErrorEmptyState())
@@ -477,12 +473,8 @@ extension SearchViewModel {
     /// - Parameters:
     ///   - url: url associated with the item
     ///   - index: position index of item in the list
-    func trackNextResultsPageTriggered(url: URL?, index: Int, scope: SearchScope) {
-        guard let url else {
-            Log.capture(message: "Triggered next search page without an associated url, not logging analytics for nextSearchResultsPage")
-            return
-        }
-        tracker.track(event: Events.Search.nextSearchResultsPage(url: url, positionInList: index, scope: scope))
+    func trackSearchResultsPage(numberOfItems: Int, scope: SearchScope) {
+        tracker.track(event: Events.Search.searchResultsPage(numberOfItems: numberOfItems, scope: scope))
     }
 
     /// track premium upgrade view dismissed
