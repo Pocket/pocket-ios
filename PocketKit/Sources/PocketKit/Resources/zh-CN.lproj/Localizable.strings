@@ -169,11 +169,11 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到订购。如果您认为有订购，请发送电子邮件至 support@getpocket.com 并告知我们。";
 
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+"login.deletedAccount.banner.title" = "您已删除 Pocket 帐户";
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "What could we have done better?";
+"login.deletedAccount.banner.detail" = "我们还可以在哪些方面做得更好？";
 //Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Quick survey";
+"login.deletedAccount.banner.action" = "快速调查";
 
 
 //List view
