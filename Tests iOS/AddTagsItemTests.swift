@@ -197,7 +197,7 @@ class AddTagsItemTests: XCTestCase {
         let tagEvent1 = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.filteredTags")
         let results = await snowplowMicro.getGoodSnowplowEvents()
         print(results)
-        XCTAssertTrue(results.count > 0)
+        XCTAssertTrue(results.isEmpty)
         guard let tagEvent1 = tagEvent1 else {
             XCTFail("Should not be nil")
             return
