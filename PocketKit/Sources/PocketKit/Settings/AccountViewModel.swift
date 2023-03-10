@@ -26,6 +26,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingCancelationHelp = false
     @Published var isPresentingRestoreSuccessful = false
     @Published var isPresentingRestoreNotSuccessful = false
+    @Published var isPresentingPremiumStatus = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
@@ -92,6 +93,11 @@ extension AccountViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+
+    /// Show Premium Status on tap
+    func showPremiumStatus() {
+        self.isPresentingPremiumStatus = true
     }
 }
 
