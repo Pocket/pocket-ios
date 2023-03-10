@@ -270,7 +270,7 @@ class SearchViewModel: ObservableObject {
                 guard let self, let result, self.selectedScope == .saves else { return }
                 if case .success(let items) = result {
                     self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
-                    self.trackSearchResultsPage(numberOfItems: self.savesOnlineSearch.numberOfItemsPerPage, scope: .saves)
+                    self.trackSearchResultsPage(pageNumber: self.savesOnlineSearch.pageNumberLoaded, scope: .saves)
                 } else {
                     let results = self.savesLocalSearch.search(with: term)
                     self.searchState = .searchResults(results)
@@ -295,7 +295,7 @@ class SearchViewModel: ObservableObject {
                 guard let self, let result, self.selectedScope == scope else { return }
                 if case .success(let items) = result {
                     self.searchState = items.isEmpty ? .emptyState(self.searchResultState()) : .searchResults(items)
-                    self.trackSearchResultsPage(numberOfItems: onlineSearch.numberOfItemsPerPage, scope: scope)
+                    self.trackSearchResultsPage(pageNumber: onlineSearch.pageNumberLoaded, scope: scope)
                 } else if case .failure(let error) = result {
                     guard case SearchServiceError.noInternet = error else {
                         self.searchState = .emptyState(ErrorEmptyState())
@@ -469,12 +469,12 @@ extension SearchViewModel {
         tracker.track(event: Events.Search.searchCardContentOpen(url: url, positionInList: index, scope: selectedScope))
     }
 
-    /// Track when user scrolls down the search list and triggers another search call for the next page
+    /// Track when user triggers a search page call
     /// - Parameters:
-    ///   - url: url associated with the item
-    ///   - index: position index of item in the list
-    func trackSearchResultsPage(numberOfItems: Int, scope: SearchScope) {
-        tracker.track(event: Events.Search.searchResultsPage(numberOfItems: numberOfItems, scope: scope))
+    ///   - pageNumber: page number of search results that was loaded
+    ///   - scope: scope that the page was loaded in
+    func trackSearchResultsPage(pageNumber: Int, scope: SearchScope) {
+        tracker.track(event: Events.Search.searchResultsPage(pageNumber: pageNumber, scope: scope))
     }
 
     /// track premium upgrade view dismissed

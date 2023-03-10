@@ -629,9 +629,17 @@ class SearchTests: XCTestCase {
         wait(for: [firstExpectRequest, secondExpectRequest])
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.searchPage")
-        searchEvent!.getUIContext()!.assertHas(type: "page")
-        searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
+
+        async let event0 = snowplowMicro.getFirstEvent(with: "global-nav.search.searchPage", index: 1)
+        async let event1 = snowplowMicro.getFirstEvent(with: "global-nav.search.searchPage", index: 2)
+
+        let events = await [event0, event1]
+
+        events[0]!.getUIContext()!.assertHas(type: "page")
+        events[0]!.getUIContext()!.assertHas(componentDetail: "saves")
+
+        events[1]!.getUIContext()!.assertHas(type: "page")
+        events[1]!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     private func tapSearch(fromArchive: Bool = false) {
