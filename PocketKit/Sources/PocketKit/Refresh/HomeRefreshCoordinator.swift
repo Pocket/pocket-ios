@@ -55,11 +55,8 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
             }
         } else if isRefreshing {
             Log.debug("Already refreshing Home, not going to add to the queue")
-            completion()
-            return
         } else {
             Log.debug("Not refreshing Home, to early to ask for new data")
-            completion()
         }
     }
 
