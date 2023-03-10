@@ -4,6 +4,7 @@ import CoreData
 import Apollo
 import PocketGraph
 import SharedPocketKit
+import Foundation
 
 @testable import Sync
 
@@ -38,7 +39,6 @@ class FetchSavesTests: XCTestCase {
         space: Space? = nil,
         events: SyncEvents? = nil,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>? = nil,
-        maxItems: Int = 400,
         lastRefresh: LastRefresh? = nil
     ) -> FetchSaves {
         FetchSaves(
@@ -47,7 +47,6 @@ class FetchSavesTests: XCTestCase {
             space: space ?? self.space,
             events: events ?? self.events,
             initialDownloadState: initialDownloadState ?? self.initialDownloadState,
-            maxItems: maxItems,
             lastRefresh: lastRefresh ?? self.lastRefresh
         )
     }
@@ -199,6 +198,9 @@ class FetchSavesTests: XCTestCase {
 
     func test_refresh_whenItemCountExceedsMax_fetchesMaxNumberOfItems() async throws {
         var fetches = 0
+        let pages = Int(ceil(Double((SyncConstants.Saves.firstLoadMaxCount - SyncConstants.Saves.initalPageSize) / SyncConstants.Saves.pageSize))) + 2
+        print(pages)
+
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
         apollo.stubFetch { (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
@@ -207,17 +209,22 @@ class FetchSavesTests: XCTestCase {
             let result: Fixture
             switch fetches {
             case 0:
-                XCTAssertEqual(query.pagination.unwrapped?.first, 3)
+                XCTAssertEqual(query.pagination.unwrapped?.first, 15)
 
                 result = Fixture.load(name: "large-list-1")
             case 1:
                 XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-1")
-                XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 2)
+                XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 30)
 
                 result = Fixture.load(name: "large-list-2")
             case 2:
                 XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-2")
-                XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 1)
+                XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 30)
+
+                result = Fixture.load(name: "large-list-3")
+            case 3...pages:
+                XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-3")
+                XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 30)
 
                 result = Fixture.load(name: "large-list-3")
             default:
@@ -225,18 +232,14 @@ class FetchSavesTests: XCTestCase {
                 return MockCancellable()
             }
 
-            queue.async {
-                completion?(.success(result.asGraphQLResult(from: query)))
-            }
+            completion?(.success(result.asGraphQLResult(from: query)))
 
             return MockCancellable()
         }
 
-        let service = subject(maxItems: 3)
+        let service = subject()
         _ = await service.execute()
-
-        let items = try space.fetchSavedItems()
-        XCTAssertEqual(items.count, 3)
+        XCTAssertEqual(fetches, pages)
     }
 
     func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() async {
