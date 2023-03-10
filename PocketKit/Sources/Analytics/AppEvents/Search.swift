@@ -304,10 +304,10 @@ public extension Events.Search {
     }
 
     /**
-     Fired when a user scrolls down the search list and triggers another results page call
+     Fired when a user triggers a results page call in `Search`
      */
     static func searchResultsPage(
-        numberOfItems: Int,
+        pageNumber: Int,
         scope: SearchScope
     ) -> Event {
         return Engagement(
@@ -316,7 +316,7 @@ public extension Events.Search {
                 .page,
                 identifier: "global-nav.search.searchPage",
                 componentDetail: getScopeIdentifier(scope: scope),
-                index: numberOfItems
+                index: pageNumber
             )
         )
     }

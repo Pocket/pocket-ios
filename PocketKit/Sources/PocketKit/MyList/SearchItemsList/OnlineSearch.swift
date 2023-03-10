@@ -13,7 +13,7 @@ class OnlineSearch {
     private var cache: [String: [PocketItem]] = [:]
     private let scope: SearchScope
 
-    var numberOfItemsPerPage: Int = 0
+    var pageNumberLoaded: Int = 0
 
     @Published
     var results: Result<[PocketItem], Error>?
@@ -38,7 +38,7 @@ class OnlineSearch {
         searchService.results.dropFirst().sink { [weak self] items in
             guard let self, let items else { return }
             let searchItems = items.compactMap { PocketItem(item: $0) }
-            self.numberOfItemsPerPage = searchItems.count
+            self.pageNumberLoaded += 1
             guard let currentItems = self.cache[term] else {
                 self.cache[term] = searchItems
                 self.results = .success(searchItems)
