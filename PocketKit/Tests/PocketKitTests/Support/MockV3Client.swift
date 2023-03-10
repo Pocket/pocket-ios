@@ -78,23 +78,21 @@ extension MockV3Client {
 // MARK: premiumStatus
 extension MockV3Client {
     static let premiumStatus = "premiumStatus"
-    typealias PremiumStatusImpl = (Sync.Session) -> Sync.PremiumStatusResponse
-    struct PremiumStatusCall {
-        let session: Sync.Session
-    }
+    typealias PremiumStatusImpl = () -> Sync.PremiumStatusResponse
+    struct PremiumStatusCall { }
 
     func stubPremiumStatusImpl(impl: @escaping PremiumStatusImpl) {
         implementations[Self.premiumStatus] = impl
     }
 
-    func premiumStatus(session: Sync.Session) async throws -> Sync.PremiumStatusResponse {
+    func premiumStatus() async throws -> Sync.PremiumStatusResponse {
         guard let impl = implementations[Self.premiumStatus] as? PremiumStatusImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.premiumStatus] = (calls[Self.premiumStatus] ?? []) + [PremiumStatusCall(session: session)]
+        calls[Self.premiumStatus] = (calls[Self.premiumStatus] ?? []) + [PremiumStatusCall()]
 
-        return impl(session)
+        return impl()
     }
 
     func premiumStatusCall(at index: Int) -> PremiumStatusCall? {
