@@ -34,9 +34,9 @@ struct AccountManagementForm: View {
     var body: some View {
         Form {
             Group {
-                Section(header: Text(L10n.yourAccount).style(.settings.header)) {
+                Section {
                     if !model.isPremium {
-                        SettingsRowButton(title: L10n.Settings.AccountManagement.restoreSubscription, titleStyle: .settings.button.default) {
+                        SettingsRowButton(title: L10n.Settings.AccountManagement.restoreSubscription, trailingImageAsset: .chevronRight) {
                             model.attemptRestoreSubscription()
                         }
                         // NOTE: SwiftUI does not play well with more than one alert attached to the same view, that's why we have one here
@@ -51,7 +51,8 @@ struct AccountManagementForm: View {
                         }
                         .accessibilityIdentifier("restore-existing-subscription-button")
                     }
-                    SettingsRowButton(title: L10n.Settings.AccountManagement.deleteAccount, titleStyle: .settings.button.delete, icon: SFIconModel("rectangle.portrait.and.arrow.right", weight: .semibold, color: Color(.ui.apricot1))) {
+
+                    SettingsRowButton(title: L10n.Settings.AccountManagement.deleteAccount, trailingImageAsset: .chevronRight) {
                         model.trackDeleteTapped()
                         model.isPresentingDeleteYourAccount.toggle()
                     }
