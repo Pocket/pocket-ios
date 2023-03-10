@@ -37,7 +37,7 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
 
         if shouldRefresh(isForced: isForced), !isRefreshing {
             Task { [weak self] in
-                guard let self = self else {
+                guard let self else {
                     Log.capture(message: "Home refresh task - self is nil")
                     return
                 }
