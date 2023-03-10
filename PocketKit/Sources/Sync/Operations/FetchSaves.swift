@@ -10,7 +10,6 @@ class FetchSaves: SyncOperation {
     private let space: Space
     private let events: SyncEvents
     private let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
-    private let maxItems: Int
     private let lastRefresh: LastRefresh
 
     init(
@@ -19,21 +18,19 @@ class FetchSaves: SyncOperation {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) {
         self.user = user
         self.apollo = apollo
         self.space = space
         self.events = events
-        self.maxItems = maxItems
         self.lastRefresh = lastRefresh
         self.initialDownloadState = initialDownloadState
     }
 
     func execute() async -> SyncOperationResult {
         do {
-            try await fetchList()
+            try await fetchSaves()
             try await fetchTags()
 
             lastRefresh.refreshedSaves()
@@ -67,8 +64,8 @@ class FetchSaves: SyncOperation {
         }
     }
 
-    private func fetchList() async throws {
-        var pagination = PaginationSpec(maxItems: maxItems)
+    private func fetchSaves() async throws {
+        var pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize)
 
         repeat {
             let result = try await fetchPage(pagination)
@@ -79,11 +76,11 @@ class FetchSaves: SyncOperation {
             if case .started = initialDownloadState.value,
                let totalCount = result.data?.user?.savedItems?.totalCount,
                pagination.cursor == nil {
-                initialDownloadState.send(.paginating(totalCount: totalCount))
+                initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
             }
 
             try await updateLocalStorage(result: result)
-            pagination = pagination.nextPage(result: result)
+            pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Saves.pageSize)
         } while pagination.shouldFetchNextPage
 
         initialDownloadState.send(.completed)
@@ -111,7 +108,7 @@ class FetchSaves: SyncOperation {
         let query = FetchSavesQuery(
             pagination: .some(PaginationInput(
                 after: pagination.cursor ?? .none,
-                first: .some(pagination.maxItems)
+                first: .some(pagination.pageSize)
             )),
             savedItemsFilter: .none
         )
@@ -168,28 +165,31 @@ class FetchSaves: SyncOperation {
         let cursor: String?
         let shouldFetchNextPage: Bool
         let maxItems: Int
+        let pageSize: Int
 
-        init(maxItems: Int) {
-            self.init(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems)
+        init(maxItems: Int, pageSize: Int) {
+            self.init(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
         }
 
-        private init(cursor: String?, shouldFetchNextPage: Bool, maxItems: Int) {
+        private init(cursor: String?, shouldFetchNextPage: Bool, maxItems: Int, pageSize: Int) {
             self.cursor = cursor
             self.shouldFetchNextPage = shouldFetchNextPage
             self.maxItems = maxItems
+            self.pageSize = pageSize
         }
 
-        func nextPage(result: GraphQLResult<FetchSavesQuery.Data>) -> PaginationSpec {
+        func nextPage(result: GraphQLResult<FetchSavesQuery.Data>, pageSize: Int) -> PaginationSpec {
             guard let savedItems = result.data?.user?.savedItems,
                   let itemCount = savedItems.edges?.count,
                   let endCursor = savedItems.pageInfo.endCursor else {
-                      return PaginationSpec(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems)
+                      return PaginationSpec(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
                   }
 
             return PaginationSpec(
                 cursor: endCursor,
                 shouldFetchNextPage: savedItems.pageInfo.hasNextPage && itemCount < maxItems,
-                maxItems: maxItems - itemCount
+                maxItems: maxItems - itemCount,
+                pageSize: pageSize
             )
         }
     }
