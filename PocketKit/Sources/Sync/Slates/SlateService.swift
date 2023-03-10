@@ -24,6 +24,7 @@ class APISlateService: SlateService {
         let query = GetSlateLineupQuery(lineupID: identifier, maxRecommendations: SyncConstants.Home.recomendationsPerSlateFromSlateLineup)
 
         guard let remote = try await apollo.fetch(query: query).data?.getSlateLineup else {
+            Log.capture(message: "Error loading slate lineup")
             return
         }
 
