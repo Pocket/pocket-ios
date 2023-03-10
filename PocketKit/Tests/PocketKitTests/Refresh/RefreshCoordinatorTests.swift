@@ -62,7 +62,7 @@ class RefreshCoordinatorTests: XCTestCase {
         taskScheduler.stubRegisterHandler { handler = $2; return true }
         taskScheduler.stubSubmit { _ in }
 
-        source.stubRefreshSaves { _, completion in
+        source.stubRefreshSaves { completion in
             completion?()
         }
 
@@ -84,7 +84,7 @@ class RefreshCoordinatorTests: XCTestCase {
         taskScheduler.stubRegisterHandler { handler = $2; return true }
         taskScheduler.stubSubmit { _ in }
 
-        source.stubRefreshSaves { _, completion in
+        source.stubRefreshSaves { completion in
             // completion callback never fires
         }
 
@@ -105,8 +105,8 @@ class RefreshCoordinatorTests: XCTestCase {
 
     func test_receivingAppWillEnterForegroundNotification_refreshesSource_andResolvesUnresolvedSavedItems() {
         taskScheduler.stubRegisterHandler { _, _, _ in true }
-        source.stubRefreshSaves { _, _ in }
-        source.stubRefreshArchive { _, _ in }
+        source.stubRefreshSaves { _ in }
+        source.stubRefreshArchive { _ in }
         source.stubResolveUnresolvedSavedItems { }
 
         let coordinator = subject()
@@ -120,10 +120,10 @@ class RefreshCoordinatorTests: XCTestCase {
     }
 
     func test_coordinator_whenNoSession_doesNotRefreshSavesArchive() {
-        source.stubRefreshSaves {  _, _ in
+        source.stubRefreshSaves {  _ in
             XCTFail("Should not fetch saves")
         }
-        source.stubRefreshArchive {  _, _ in
+        source.stubRefreshArchive { _ in
             XCTFail("Should not fetch archive")
         }
         source.stubResolveUnresolvedSavedItems {

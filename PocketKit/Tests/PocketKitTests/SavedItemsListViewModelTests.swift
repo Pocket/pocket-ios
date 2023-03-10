@@ -336,7 +336,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     func test_refreshSaves_callsRetryImmediatelyOnSource() {
-        source.stubRefreshSaves { _, _ in }
+        source.stubRefreshSaves { _ in }
         source.stubRetryImmediately { }
 
         let viewModel = subject()

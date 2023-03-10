@@ -94,16 +94,9 @@ public protocol Source {
 }
 
 public extension Source {
-    func refreshSaves(completion: (() -> Void)?) {
-        self.refreshSaves(completion: completion)
-    }
 
     func refreshSaves() {
         self.refreshSaves(completion: nil)
-    }
-
-    func refreshArchive(completion: (() -> Void)?) {
-        self.refreshArchive(completion: completion)
     }
 
     func refreshArchive() {
