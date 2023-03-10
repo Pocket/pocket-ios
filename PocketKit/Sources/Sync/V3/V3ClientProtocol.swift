@@ -53,5 +53,3 @@ public protocol V3ClientProtocol {
      */
     func premiumStatus() async throws -> PremiumStatusResponse
 }
-
-
