@@ -115,7 +115,7 @@ struct Services {
             userDefaults: userDefaults,
             badgeProvider: UIApplication.shared
         )
-        subscriptionStore = PocketSubscriptionStore(user: user)
+        subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService())
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
     }
