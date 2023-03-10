@@ -114,11 +114,9 @@ public class V3Client: NSObject, V3ClientProtocol {
             decoder.keyDecodingStrategy = .useDefaultKeys
             do {
                 let str = String(decoding: data, as: UTF8.self)
-                print(str)
                 let response = try decoder.decode(decodable, from: data)
                 return response
             } catch {
-                print(String(describing: error))
                 Log.capture(error: error)
                 throw Error.invalidResponse
             }

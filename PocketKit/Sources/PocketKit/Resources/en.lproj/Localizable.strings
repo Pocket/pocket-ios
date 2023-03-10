@@ -205,4 +205,5 @@
 "settings.premium.settings.manageYourSubscription" = "Manage your Subscription";
 "settings.premium.settings.questionOrFeedback" = "Questions or Feedback?";
 "settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ";
+// this refers to an action to open an email
 "settings.premium.settings.contactPocketSupport" = "Contact Pocket Support";
