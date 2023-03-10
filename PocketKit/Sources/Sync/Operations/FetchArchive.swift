@@ -72,7 +72,7 @@ class FetchArchive: SyncOperation {
                 initialDownloadState.send(.paginating(totalCount: totalCount > pagination.maxItems ? pagination.maxItems : totalCount))
             }
 
-            try updateLocalStorage(result: result)
+            try await updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Archive.pageSize)
         } while pagination.shouldFetchNextPage
 
@@ -98,6 +98,7 @@ class FetchArchive: SyncOperation {
         return try await apollo.fetch(query: query)
     }
 
+    @MainActor
     private func updateLocalStorage(result: GraphQLResult<FetchArchiveQuery.Data>) throws {
         guard let edges = result.data?.user?.savedItems?.edges else {
             return

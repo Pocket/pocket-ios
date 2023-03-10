@@ -215,7 +215,6 @@ extension PocketSource {
             space: space,
             events: _events,
             initialDownloadState: initialSavesDownloadState,
-            maxItems: maxItems,
             lastRefresh: lastRefresh
         )
 
@@ -232,7 +231,6 @@ extension PocketSource {
             space: space,
             events: _events,
             initialDownloadState: initialArchiveDownloadState,
-            maxItems: maxItems,
             lastRefresh: lastRefresh
         )
 
@@ -523,7 +521,6 @@ extension PocketSource {
                     space: space,
                     events: _events,
                     initialDownloadState: initialSavesDownloadState,
-                    maxItems: maxItems,
                     lastRefresh: lastRefresh
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
@@ -533,7 +530,6 @@ extension PocketSource {
                     space: space,
                     events: _events,
                     initialDownloadState: initialArchiveDownloadState,
-                    maxItems: maxItems,
                     lastRefresh: lastRefresh
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)

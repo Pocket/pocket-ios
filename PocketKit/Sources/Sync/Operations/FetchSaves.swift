@@ -10,7 +10,6 @@ class FetchSaves: SyncOperation {
     private let space: Space
     private let events: SyncEvents
     private let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
-    private let maxItems: Int
     private let lastRefresh: LastRefresh
 
     init(
@@ -19,14 +18,12 @@ class FetchSaves: SyncOperation {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) {
         self.user = user
         self.apollo = apollo
         self.space = space
         self.events = events
-        self.maxItems = maxItems
         self.lastRefresh = lastRefresh
         self.initialDownloadState = initialDownloadState
     }
@@ -82,7 +79,7 @@ class FetchSaves: SyncOperation {
                 initialDownloadState.send(.paginating(totalCount: totalCount > pagination.maxItems ? pagination.maxItems : totalCount))
             }
 
-            try updateLocalStorage(result: result)
+            try await updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Saves.pageSize)
         } while pagination.shouldFetchNextPage
 
@@ -96,7 +93,7 @@ class FetchSaves: SyncOperation {
         while shouldFetchNextPage {
             let query = TagsQuery(pagination: .init(pagination))
             let result = try await apollo.fetch(query: query)
-            try updateLocalTags(result)
+            try await updateLocalTags(result)
 
             if let pageInfo = result.data?.user?.tags?.pageInfo {
                 pagination.after = pageInfo.endCursor ?? .none
@@ -125,6 +122,7 @@ class FetchSaves: SyncOperation {
         return try await apollo.fetch(query: query)
     }
 
+    @MainActor
     private func updateLocalStorage(result: GraphQLResult<FetchSavesQuery.Data>) throws {
         guard let edges = result.data?.user?.savedItems?.edges else {
             return
@@ -152,6 +150,7 @@ class FetchSaves: SyncOperation {
         try space.save()
     }
 
+    @MainActor
     func updateLocalTags(_ result: GraphQLResult<TagsQuery.Data>) throws {
         result.data?.user?.tags?.edges?.forEach { edge in
             guard let node = edge?.node else { return }
