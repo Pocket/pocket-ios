@@ -169,11 +169,11 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Не удалось найти подписку. Если вы считаете, что она у вас есть, сообщите нам по адресу support@getpocket.com.";
 
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+"login.deletedAccount.banner.title" = "Вы удалили свою учетную запись Pocket";
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "What could we have done better?";
+"login.deletedAccount.banner.detail" = "Что мы могли бы улучшить?";
 //Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Quick survey";
+"login.deletedAccount.banner.action" = "Быстрый опрос";
 
 
 //List view
@@ -193,3 +193,17 @@
 "Hooray!" = "Поздравляем!";
 "premium.success.message" = "Теперь вы официально стали пользователем Pocket Premium. Добро пожаловать в новую настраиваемую и постоянную версию вашего Pocket без рекламы. Мы надеемся, что вам понравится.";
 "back.to.pocket" = "Назад к Pocket";
+"settings.premiumRow" = "Перейти на Premium";
+"settings.premium.settings.thanksForSubscribing" = "Спасибо за подписку на Pocket Premium!";
+"settings.premium.settings.subscriptionStatus" = "Статус подписки";
+"settings.premium.settings.subscription" = "Подписка";
+"settings.premium.settings.datePurchased" = "Дата покупки";
+"settings.premium.settings.renewalDate" = "Дата обновления";
+"settings.premium.settings.purchaseLocation" = "Расположение покупки";
+"settings.premium.settings.price" = "Цена";
+"settings.premium.settings.yourSubscription" = "Ваша подписка";
+"settings.premium.settings.manageYourSubscription" = "Управление подпиской";
+"settings.premium.settings.questionOrFeedback" = "Вопросы или пожелания?";
+"settings.premium.settings.pocketPremiumFAQ" = "Часто задаваемые вопросы по Pocket Премиум";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Связаться со Службой поддержки Pocket";
