@@ -1,6 +1,7 @@
 import SwiftUI
 import Textile
 import MessageUI
+import StoreKit
 
 struct PremiumStatusView: View {
     @Environment(\.dismiss)
@@ -8,6 +9,7 @@ struct PremiumStatusView: View {
     @StateObject
     var viewModel: PremiumSettingsViewModel
     @State var result: Result<MFMailComposeResult, Error>?
+    @State private var presentManageSubscriptions = false
 
     init(viewModel: PremiumSettingsViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
@@ -24,6 +26,7 @@ struct PremiumStatusView: View {
             questionsOrFeedback
             Spacer()
         }
+        .manageSubscriptionsSheet(isPresented: $presentManageSubscription)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("premium-status-view")
         .task {
@@ -109,7 +112,7 @@ struct PremiumStatusView: View {
             }
             HStack {
                 PremiumStatusRow(title: L10n.Settings.Premium.Settings.manageYourSubscription) {
-                    // TODO: subscription switch
+                    presentManageSubscription = true
                 }
             }
         }
