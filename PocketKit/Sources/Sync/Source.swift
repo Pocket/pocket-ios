@@ -10,13 +10,17 @@ public enum InitialDownloadState {
 }
 
 public protocol Source {
-    var mainContext: NSManagedObjectContext { get }
+    var viewContext: NSManagedObjectContext { get }
 
     var events: AnyPublisher<SyncEvent, Never> { get }
 
     var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
 
     var initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
+
+//    func performAndWait<T>(_ block: () throws -> T) rethrows -> T
+//
+//    func perform<T>(schedule: NSManagedObjectContext.ScheduledTaskType, _ block: @escaping () throws -> T) async rethrows -> T
 
     func clear()
 
@@ -33,6 +37,8 @@ public protocol Source {
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refreshSaves(completion: (() -> Void)?)
+    
+    func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refreshArchive(completion: (() -> Void)?)
 
@@ -91,6 +97,22 @@ public protocol Source {
     func searchSaves(search: String) -> [SavedItem]?
 
     func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+
+    /// Gets the recent saves a User has made
+    /// - Parameter limit: Number of recent saves to fetch
+    /// - Returns: Recently saved items
+    func recentSaves(limit: Int) throws -> [SavedItem]
+
+    /// Fetches a slate lineup
+    /// - Parameter identifier: The identifier of the slate lineup to grab
+    /// - Returns: A slatelineup
+    func slateLineup(identifier: String) throws -> SlateLineup?
+
+    /// Get the count of unread saves
+    /// - Returns: Int of unread saves
+    func unreadSaves() throws -> Int
+
+    func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
 }
 
 public extension Source {

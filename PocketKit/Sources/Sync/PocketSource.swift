@@ -11,6 +11,8 @@ import SharedPocketKit
 
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
+/// Handles the network and database operations of the Pocket App
+/// All core data requests should occur through this class.
 public class PocketSource: Source {
     private let _events: SyncEvents = PassthroughSubject()
     public var events: AnyPublisher<SyncEvent, Never> {
@@ -123,8 +125,8 @@ public class PocketSource: Source {
         osNotificationCenter.remove(observer: notificationObserver, name: .unresolvedSavedItemCreated)
     }
 
-    public var mainContext: NSManagedObjectContext {
-        space.context
+    public var viewContext: NSManagedObjectContext {
+        space.viewContext
     }
 
     public func clear() {
@@ -154,6 +156,10 @@ public class PocketSource: Source {
 
     public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.object(with: id)
+    }
+
+    public func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
+        space.viewObject(with: id)
     }
 
     public func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
@@ -417,7 +423,7 @@ extension PocketSource {
             return
         }
 
-        try space.context.performAndWait {
+        try space.performAndWait {
             savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
             try space.save()
         }
@@ -461,7 +467,7 @@ extension PocketSource {
             return
         }
 
-        try space.context.performAndWait {
+        try space.performAndWait {
             item.update(remote: remoteItem, with: space)
             try space.save()
         }
@@ -471,7 +477,7 @@ extension PocketSource {
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
     private func enqueue(operation: SyncOperation, task: SyncTask, completion: (() -> Void)? = nil) {
-        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.context)
+        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.backgroundContext)
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
         try? space.save()
@@ -489,7 +495,7 @@ extension PocketSource {
         _operation.completionBlock = completion
         syncQ.addOperation(_operation)
         syncQ.addBarrierBlock { [weak self] in
-            self?.space.context.performAndWait { [weak self] in
+            self?.space.performAndWait { [weak self] in
                 self?.space.delete(persistentTask)
                 try? self?.space.save()
             }
@@ -633,7 +639,7 @@ extension PocketSource {
         if let savedItem = recommendation.item?.savedItem {
             unarchive(item: savedItem)
         } else {
-            let savedItem: SavedItem = SavedItem(context: space.context, url: item.givenURL)
+            let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: item.givenURL)
             savedItem.update(from: recommendation)
             try? space.save()
 
@@ -672,7 +678,7 @@ extension PocketSource {
         if let savedItem = try? space.fetchSavedItem(byURL: url) {
             unarchive(item: savedItem)
         } else {
-            let savedItem: SavedItem = SavedItem(context: space.context, url: url)
+            let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: url)
             savedItem.url = url
             savedItem.createdAt = Date()
             try? space.save()
@@ -700,10 +706,52 @@ extension PocketSource {
             return savedItem
         }
 
-        let remoteSavedItem = SavedItem(context: space.context, url: url, remoteID: remoteID)
+        let remoteSavedItem = SavedItem(context: space.backgroundContext, url: url, remoteID: remoteID)
         remoteSavedItem.update(from: remoteParts, with: space)
         try? space.save()
 
         return remoteSavedItem
+    }
+}
+
+extension PocketSource {
+//    public func performAndWait<T>(_ block: () throws -> T) rethrows -> T {
+//        return try space.performAndWait(block)
+//    }
+//    
+//    public func perform<T>(schedule: NSManagedObjectContext.ScheduledTaskType = .immediate, _ block: @escaping () throws -> T) async rethrows -> T {
+//        return try await space.perform(schedule: schedule, block)
+//    }
+
+    public func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool) {
+        space.viewContext.refresh(object, mergeChanges: flag)
+    }
+}
+
+// MARK: Home Helpers
+/// Functions for Home
+extension PocketSource {
+    /// Gets the recent saves a User has made
+    /// - Parameter limit: Number of recent saves to fetch
+    /// - Returns: Recently saved items
+    public func recentSaves(limit: Int) throws -> [SavedItem] {
+        return try space.fetch(Requests.fetchSavedItems(limit: 5))
+    }
+
+    /// Fetches a slate lineup
+    /// - Parameter identifier: The identifier of the slate lineup to grab
+    /// - Returns: A slatelineup
+    public func slateLineup(identifier: String) throws -> SlateLineup? {
+        return try space.fetchSlateLineup(byRemoteID: identifier)
+    }
+}
+
+// MARK: UI Helpers
+/// Functions used by the UI
+extension PocketSource {
+    /// Get the count of unread saves
+    /// - Returns: Int of unread saves
+    public func unreadSaves() throws -> Int {
+        return try space.fetch(Requests.fetchSavedItems()).count
     }
 }

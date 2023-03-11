@@ -80,7 +80,7 @@ public class PocketSaveService: SaveService {
         if let existingItem = try! space.fetchSavedItem(byURL: url) {
             existingItem.createdAt = Date()
 
-            let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
+            let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
             notification.savedItem = existingItem
 
             try? space.save()
@@ -88,7 +88,7 @@ public class PocketSaveService: SaveService {
             osNotifications.post(name: .savedItemUpdated)
             return .existingItem(existingItem)
         } else {
-            let savedItem: SavedItem = SavedItem(context: space.context, url: url)
+            let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: url)
             savedItem.url = url
             savedItem.createdAt = Date()
             try? space.save()
@@ -203,7 +203,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     }
 
     private func performMutation<Mutation: GraphQLMutation>(mutation: Mutation) {
-        task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .main) { [weak self] result in
+        task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .global(qos: .userInitiated)) { [weak self] result in
             guard case .success(let graphQLResult) = result,
                     let data = graphQLResult.data,
                     let savedItemParts = self?.savedItemParts(data) else {
@@ -217,7 +217,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
 
     private func updateSavedItem(savedItemParts: SavedItemParts) {
         savedItem.update(from: savedItemParts, with: space)
-        let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
+        let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
         notification.savedItem = savedItem
         try? space.save()
 
@@ -226,8 +226,8 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     }
 
     private func storeUnresolvedSavedItem() {
-        try? space.context.performAndWait {
-            let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.context)
+        try? space.performAndWait {
+            let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.backgroundContext)
             unresolved.savedItem = savedItem
             try space.save()
         }

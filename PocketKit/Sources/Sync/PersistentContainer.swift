@@ -5,7 +5,7 @@
 import CoreData
 
 public class PersistentContainer: NSPersistentContainer {
-    public lazy var rootSpace = { Space(context: viewContext) }()
+    public lazy var rootSpace = { Space(backgroundContext: newBackgroundContext(), viewContext: viewContext) }()
 
     public enum Storage {
         case inMemory
@@ -45,5 +45,7 @@ public class PersistentContainer: NSPersistentContainer {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         }
+
+        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
     }
 }

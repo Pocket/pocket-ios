@@ -44,16 +44,13 @@ class AppBadgeSetup {
     }
 
     func manualCheckForSavedCount() {
-        let numberOfSavesRequest = Requests.fetchSavedItems()
-        var numberOfSaves: Int
+        var numberOfSaves: Int = 0
         let currentValue = userDefaults.bool(forKey: AccountViewModel.ToggleAppBadgeKey)
-        if currentValue == false {
-            numberOfSaves = 0
-        } else {
+        if currentValue != false {
             do {
-                numberOfSaves = try source.mainContext.fetch(numberOfSavesRequest).count
+                numberOfSaves = try source.unreadSaves()
             } catch {
-                numberOfSaves = 0
+                Log.capture(error: error)
             }
         }
 

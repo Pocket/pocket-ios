@@ -71,6 +71,7 @@ private class AuthParamsInterceptor: ApolloInterceptor {
 
     private func appendAuthorizationQueryParameters(to url: URL) -> URL {
         guard var components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            Log.capture(message: "Error - could not break Apollo url into components")
             return url
         }
 
@@ -78,12 +79,14 @@ private class AuthParamsInterceptor: ApolloInterceptor {
         items.append(contentsOf: [
             URLQueryItem(name: "consumer_key", value: consumerKey),
         ])
-        if let guid = sessionProvider.session?.guid {
-            items.append(URLQueryItem(name: "guid", value: guid))
+
+        if let session = sessionProvider.session {
+            items.append(URLQueryItem(name: "guid", value: session.guid))
+            items.append(URLQueryItem(name: "access_token", value: session.accessToken))
+        } else {
+            Log.capture(message: "Error - making PocketGraph request without auth")
         }
-        if let accessToken = sessionProvider.session?.accessToken {
-            items.append(URLQueryItem(name: "access_token", value: accessToken))
-        }
+
         components.queryItems = items
 
         return components.url ?? url

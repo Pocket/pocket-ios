@@ -386,7 +386,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
-        source.object(id: id)
+        source.viewObject(id: id)
     }
 
     private func itemsLoaded() {

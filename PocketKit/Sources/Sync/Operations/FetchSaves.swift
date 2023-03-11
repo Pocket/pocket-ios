@@ -79,7 +79,7 @@ class FetchSaves: SyncOperation {
                 initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
             }
 
-            try await updateLocalStorage(result: result)
+            try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Saves.pageSize)
         } while pagination.shouldFetchNextPage
 
@@ -93,7 +93,7 @@ class FetchSaves: SyncOperation {
         while shouldFetchNextPage {
             let query = TagsQuery(pagination: .init(pagination))
             let result = try await apollo.fetch(query: query)
-            try await updateLocalTags(result)
+            try updateLocalTags(result)
 
             if let pageInfo = result.data?.user?.tags?.pageInfo {
                 pagination.after = pageInfo.endCursor ?? .none
@@ -122,7 +122,6 @@ class FetchSaves: SyncOperation {
         return try await apollo.fetch(query: query)
     }
 
-    @MainActor
     private func updateLocalStorage(result: GraphQLResult<FetchSavesQuery.Data>) throws {
         guard let edges = result.data?.user?.savedItems?.edges else {
             return
@@ -139,23 +138,26 @@ class FetchSaves: SyncOperation {
                 message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"
             )
 
-            let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: node.remoteID)
-            item.update(from: edge, with: space)
+            space.performAndWait {
+                let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ?? SavedItem(context: space.backgroundContext, url: url, remoteID: node.remoteID)
+                item.update(from: edge, with: space)
 
-            if item.deletedAt != nil {
-                space.delete(item)
+                if item.deletedAt != nil {
+                    space.delete(item)
+                }
             }
         }
 
         try space.save()
     }
 
-    @MainActor
     func updateLocalTags(_ result: GraphQLResult<TagsQuery.Data>) throws {
         result.data?.user?.tags?.edges?.forEach { edge in
             guard let node = edge?.node else { return }
-            let tag = space.fetchOrCreateTag(byName: node.name)
-            tag.update(remote: node.fragments.tagParts)
+            space.performAndWait {
+                let tag = space.fetchOrCreateTag(byName: node.name)
+                tag.update(remote: node.fragments.tagParts)
+            }
         }
 
         try space.save()

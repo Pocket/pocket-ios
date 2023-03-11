@@ -114,7 +114,7 @@ class HomeViewModel {
         self.source = source
         self.tracker = tracker
         self.networkPathMonitor = networkPathMonitor
-        networkPathMonitor.start(queue: .global())
+        networkPathMonitor.start(queue: .global(qos: .utility))
         self.homeRefreshCoordinator = homeRefreshCoordinator
 
         self.snapshot = {
@@ -123,7 +123,7 @@ class HomeViewModel {
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
-            object: source.mainContext
+            object: nil
         ).sink { [weak self] notification in
             do {
                 try self?.handle(notification: notification)
@@ -134,7 +134,9 @@ class HomeViewModel {
 
         networkPathMonitor.updateHandler = { [weak self] path in
             if path.status == .satisfied {
-                self?.refresh(isForced: true) { }
+                DispatchQueue.main.async {
+                    self?.refresh(isForced: true) { }
+                }
             }
         }
     }
@@ -210,10 +212,8 @@ extension HomeViewModel {
     }
 
     private func rebuildSnapshot() throws -> Snapshot {
-        let recentSavesRequest = Requests.fetchSavedItems(limit: 5)
-        let recentSaves = try source.mainContext.fetch(recentSavesRequest)
-        let slateLineupRequest = Requests.fetchSlateLineup(byID: Self.lineupIdentifier)
-        let slateLineup = try source.mainContext.fetch(slateLineupRequest).first
+        let recentSaves = try source.recentSaves(limit: 5)
+        let slateLineup = try source.slateLineup(identifier: Self.lineupIdentifier)
 
         var snapshot = Snapshot()
 
@@ -269,13 +269,13 @@ extension HomeViewModel {
         case .loading, .offline:
             return
         case .recentSaves(let objectID):
-            guard let savedItem = source.mainContext.object(with: objectID) as? SavedItem else {
+            guard let savedItem = source.object(id: objectID) as? SavedItem else {
                 return
             }
 
             select(savedItem: savedItem, at: indexPath)
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-            guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+            guard let recommendation = source.object(id: objectID) as? Recommendation else {
                 return
             }
 
@@ -351,7 +351,7 @@ extension HomeViewModel {
                 self?.tappedSeeAll = .saves
             }
         case .slateHero(let objectID):
-            guard let slate = source.mainContext.object(with: objectID) as? Slate else {
+            guard let slate = source.viewObject(id: objectID) as? Slate else {
                 return nil
             }
 
@@ -388,7 +388,7 @@ extension HomeViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath
     ) -> RecentSavesItemCell.Model? {
-        guard let savedItem = source.mainContext.object(with: objectID) as? SavedItem else {
+        guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
             return nil
         }
 
@@ -448,14 +448,14 @@ extension HomeViewModel {
 // MARK: - Slate Model
 extension HomeViewModel {
     func slateModel(for objectID: NSManagedObjectID) -> Slate? {
-        return source.mainContext.object(with: objectID) as? Slate
+        return source.viewObject(id: objectID) as? Slate
     }
 }
 
 // MARK: Recommendation View Model & Actions
 extension HomeViewModel {
     func numberOfCarouselItemsForSlate(with id: NSManagedObjectID) -> Int {
-        let count = (source.mainContext.object(with: id) as? Slate)?
+        let count = (source.viewObject(id: id) as? Slate)?
             .recommendations?.count ?? 0
 
         return max(0, count - 1)
@@ -465,7 +465,7 @@ extension HomeViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellViewModel? {
-        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 
@@ -480,7 +480,7 @@ extension HomeViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellHeroWideViewModel? {
-        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 
@@ -598,7 +598,7 @@ extension HomeViewModel {
         case .loading, .offline:
             return
         case .recentSaves(let objectID):
-            guard let savedItem = source.mainContext.object(with: objectID) as? SavedItem else {
+            guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
                 Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recent save into Saved Item from objectID: \(String(describing: objectID))")
                 Log.capture(message: "SavedItem is null on willDisplay Home Recent Saves")
                 return
@@ -606,7 +606,7 @@ extension HomeViewModel {
             tracker.track(event: Events.Home.RecentSavesCardImpression(url: savedItem.url, positionInList: indexPath.item))
             return
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-            guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+            guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
                 Log.breadcrumb(category: "home", level: .debug, message: "Could not turn recomendation into Recommendation from objectID: \(String(describing: objectID))")
                 Log.capture(message: "Recommendation is null on willDisplay Home Recommendation")
                 return

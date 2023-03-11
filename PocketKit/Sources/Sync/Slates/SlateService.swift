@@ -42,20 +42,22 @@ class APISlateService: SlateService {
         try await handle(remote: remote)
     }
 
-    @MainActor
     private func handle(remote: GetSlateLineupQuery.Data.GetSlateLineup) throws {
-        let lineup = (try? space.fetchSlateLineup(byRemoteID: remote.id)) ?? SlateLineup(context: space.context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
-        lineup.update(from: remote, in: space)
+        space.performAndWait {
+            let lineup = (try? space.fetchSlateLineup(byRemoteID: remote.id)) ?? SlateLineup(context: space.backgroundContext, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
+            lineup.update(from: remote, in: space)
+        }
 
         try space.save()
         try space.batchDeleteOrphanedSlates()
         try space.batchDeleteOrphanedItems()
     }
 
-    @MainActor
     private func handle(remote: SlateParts) throws {
-        let slate = (try? space.fetchSlate(byRemoteID: remote.id)) ?? Slate(context: space.context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
-        slate.update(from: remote, in: space)
+        space.performAndWait {
+            let slate = (try? space.fetchSlate(byRemoteID: remote.id)) ?? Slate(context: space.backgroundContext, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
+            slate.update(from: remote, in: space)
+        }
 
         try space.save()
     }
