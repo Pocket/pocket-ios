@@ -321,9 +321,9 @@ class FetchSavesTests: XCTestCase {
         let fetchCall2 = apollo.fetchCall(withQueryType: TagsQuery.self, at: 1)
         XCTAssertEqual(fetchCall2?.query.pagination.unwrapped?.after.unwrapped, "tag-2-cursor")
 
-        let tags = try space.context.fetch(Tag.fetchRequest())
+        let tags = try space.backgroundContext.fetch(Tag.fetchRequest())
         XCTAssertEqual(tags.count, 4)
-        XCTAssertFalse(space.context.hasChanges)
+        XCTAssertFalse(space.backgroundContext.hasChanges)
     }
 
     func test_refresh_whenIsInitialDownload_sendsAppropriateEvents() async {

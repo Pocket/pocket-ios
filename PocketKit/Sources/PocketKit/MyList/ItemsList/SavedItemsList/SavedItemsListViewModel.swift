@@ -386,7 +386,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
-        source.viewObject(id: id)
+        source.backgroundObject(id: id)
     }
 
     private func itemsLoaded() {
@@ -673,7 +673,7 @@ extension SavedItemsListViewModel {
         case .savedItemsUpdated(let updatedSavedItems):
             try? itemsController.performFetch()
             updatedSavedItems.forEach {
-                source.refresh($0, mergeChanges: true)
+                source.viewRefresh($0, mergeChanges: true)
             }
             var snapshot = buildSnapshot()
 

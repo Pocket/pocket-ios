@@ -65,13 +65,14 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tags, ["tag 1"])
     }
 
-    func test_addTags_delegatesToSaveServiceAndCallsSaveAction() {
+    func test_addTags_delegatesToSaveServiceAndCallsSaveAction() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
-        let viewModel = subject(item: item) { tags in
+        try space.save()
+        let viewModel = subject(item: space.viewObject(with: item.objectID) as! SavedItem) { tags in
             XCTAssert(true, "expect call to save action")
             var tags: [Tag] = []
             for index in 1...2 {
-                let tag: Tag = Tag(context: self.space.context)
+                let tag: Tag = Tag(context: self.space.viewContext)
                 tag.name = "tag \(index)"
                 tags.append(tag)
             }
@@ -82,14 +83,15 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(item.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"])
     }
 
-    func test_allOtherTags_retrievesValidTagNames() {
+    func test_allOtherTags_retrievesValidTagNames() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
+        try space.save()
         let viewModel = subject(
-            item: item,
+            item: space.viewObject(with: item.objectID) as! SavedItem,
             retrieveAction: { _ in
             var tags: [Tag] = []
             for index in 2...3 {
-                let tag: Tag = Tag(context: self.space.context)
+                let tag: Tag = Tag(context: self.space.viewContext)
                 tag.name = "tag \(index)"
                 tags.append(tag)
             }
@@ -103,9 +105,10 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.otherTags, ["tag 2", "tag 3"])
     }
 
-    func test_removeTag_withValidName_updatesTags() {
+    func test_removeTag_withValidName_updatesTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
-        let viewModel = subject(item: item) { _ in }
+        try space.save()
+        let viewModel = subject(item: space.viewObject(with: item.objectID) as! SavedItem) { _ in }
         viewModel.tags = ["tag 1", "tag 2", "tag 3"]
         viewModel.removeTag(with: "tag 2")
 
@@ -113,23 +116,25 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.otherTags, ["tag 2"])
     }
 
-    func test_removeTag_withNotExistingName_updatesTags() {
+    func test_removeTag_withNotExistingName_updatesTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
-        let viewModel = subject(item: item) { _ in }
+        try space.save()
+        let viewModel = subject(item: space.viewObject(with: item.objectID) as! SavedItem) { _ in }
         viewModel.tags = ["tag 1", "tag 2", "tag 3"]
         viewModel.removeTag(with: "tag 4")
 
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 2", "tag 3"])
     }
 
-    func test_newTagInput_withTags_showFiltersTags() {
+    func test_newTagInput_withTags_showFiltersTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
+        try space.save()
         let viewModel = subject(
-            item: item,
+            item: space.viewObject(with: item.objectID) as! SavedItem,
             filterAction: { _, _  in
                 var tags: [Tag] = []
                 for index in 2...3 {
-                    let tag: Tag = Tag(context: self.space.context)
+                    let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
                     tags.append(tag)
                 }
@@ -151,14 +156,15 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         wait(for: [expectFilterTagsCall], timeout: 1)
     }
 
-    func test_newTagInput_withNoTags_showAllTags() {
+    func test_newTagInput_withNoTags_showAllTags() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
+        try space.save()
         let viewModel = subject(
-            item: item,
+            item: space.viewObject(with: item.objectID) as! SavedItem,
             filterAction: { _, _  in
                 var tags: [Tag] = []
                 for index in 2...3 {
-                    let tag: Tag = Tag(context: self.space.context)
+                    let tag: Tag = Tag(context: self.space.viewContext)
                     tag.name = "tag \(index)"
                     tags.append(tag)
                 }

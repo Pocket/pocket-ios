@@ -272,13 +272,13 @@ extension HomeViewModel {
         case .loading, .offline:
             return
         case .recentSaves(let objectID):
-            guard let savedItem = source.object(id: objectID) as? SavedItem else {
+            guard let savedItem = source.viewObject(id: objectID) as? SavedItem else {
                 return
             }
 
             select(savedItem: savedItem, at: indexPath)
         case .recommendationHero(let objectID), .recommendationCarousel(let objectID):
-            guard let recommendation = source.object(id: objectID) as? Recommendation else {
+            guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
                 return
             }
 

@@ -3,17 +3,29 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import CoreData
-
+import Combine
 /// Handles all dabatabase operations within Pocket app.
 /// This should only ever be used and injected into the PocketSource class.
 /// Pocket Source should proxy all requests to this class and handle the updating of data.
 public class Space {
     let backgroundContext: NSManagedObjectContext
     let viewContext: NSManagedObjectContext
+    private var subscriptions: [AnyCancellable] = []
 
     required public init(backgroundContext: NSManagedObjectContext, viewContext: NSManagedObjectContext) {
         self.backgroundContext = backgroundContext
         self.viewContext = viewContext
+
+        // The background context automatically recieves saves from the view context,
+        // but the view context doesn't respond to background context saves by default.
+        NotificationCenter.default.publisher(
+            for: NSManagedObjectContext.didSaveObjectsNotification,
+            object: self.backgroundContext
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] notification in
+            self?.viewContext.mergeChanges(fromContextDidSave: notification)
+        }.store(in: &subscriptions)
     }
 
     func managedObjectID(forURL url: URL) -> NSManagedObjectID? {
@@ -155,11 +167,16 @@ public class Space {
     }
 
     func delete(_ object: NSManagedObject) {
-        backgroundContext.performAndWait { backgroundContext.delete(object) }
+        backgroundContext.performAndWait {
+            guard let object = backgroundObject(with: object.objectID) else {
+                return
+            }
+            backgroundContext.delete(object)
+        }
     }
 
     func delete(_ objects: [NSManagedObject]) {
-        backgroundContext.performAndWait { objects.forEach(backgroundContext.delete(_:)) }
+        backgroundContext.performAndWait { objects.compactMap({ backgroundObject(with: $0.objectID) }).forEach(backgroundContext.delete(_:)) }
     }
 
     func deleteUnsavedItems() throws {
@@ -248,7 +265,7 @@ public class Space {
         )
     }
 
-    func object<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
+    func backgroundObject<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
         backgroundContext.performAndWait {
             backgroundContext.object(with: id) as? T
         }
@@ -260,9 +277,15 @@ public class Space {
         }
     }
 
-    func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
+    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool) {
         backgroundContext.performAndWait {
             backgroundContext.refresh(object, mergeChanges: mergeChanges)
+        }
+    }
+
+    func viewRefresh(_ object: NSManagedObject, mergeChanges: Bool) {
+        viewContext.performAndWait {
+            viewContext.refresh(object, mergeChanges: mergeChanges)
         }
     }
 

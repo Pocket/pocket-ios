@@ -18,10 +18,6 @@ public protocol Source {
 
     var initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
 
-//    func performAndWait<T>(_ block: () throws -> T) rethrows -> T
-//
-//    func perform<T>(schedule: NSManagedObjectContext.ScheduledTaskType, _ block: @escaping () throws -> T) async rethrows -> T
-
     func clear()
 
     func deleteAccount() async throws
@@ -34,11 +30,15 @@ public protocol Source {
 
     func makeUndownloadedImagesController() -> ImagesController
 
-    func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
-
     func refreshSaves(completion: (() -> Void)?)
 
+    func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
+
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
+
+    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool)
+
+    func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
 
     func refreshArchive(completion: (() -> Void)?)
 
@@ -73,8 +73,6 @@ public protocol Source {
     func fetchSlate(_ slateID: String) async throws
 
     func restore()
-
-    func refresh(_ object: NSManagedObject, mergeChanges: Bool)
 
     func resolveUnresolvedSavedItems()
 
@@ -111,8 +109,6 @@ public protocol Source {
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
     func unreadSaves() throws -> Int
-
-    func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
 }
 
 public extension Source {

@@ -383,9 +383,9 @@ extension PocketSaveServiceTests {
     }
 
     func test_retrieveTags_updatesInfoViewModel() {
-        let tag: Tag = Tag(context: space.context)
+        let tag: Tag = Tag(context: space.backgroundContext)
         tag.name = "tag 1"
-        let tag2: Tag = Tag(context: space.context)
+        let tag2: Tag = Tag(context: space.backgroundContext)
         tag2.name = "tag 2"
         let service = subject()
         let tags = service.retrieveTags(excluding: ["tag 1"])
@@ -394,9 +394,9 @@ extension PocketSaveServiceTests {
     }
 
     func test_filterTags_retrievesFilteredTags() {
-        let tag: Tag = Tag(context: space.context)
+        let tag: Tag = Tag(context: space.backgroundContext)
         tag.name = "tag 1"
-        let tag2: Tag = Tag(context: space.context)
+        let tag2: Tag = Tag(context: space.backgroundContext)
         tag2.name = "tag 2"
         let service = subject()
         let tags = service.filterTags(with: "t", excluding: ["tag 2"])

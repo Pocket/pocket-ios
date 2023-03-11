@@ -18,11 +18,38 @@ class HomeViewModelTests: XCTestCase {
         subscriptions = []
         space = .testSpace()
         source = MockSource()
-        source.mainContext = space.context
         networkPathMonitor = MockNetworkPathMonitor()
         homeRefreshCoordinator = MockHomeRefreshCoordinator()
 
         tracker = MockTracker()
+
+        source.stubRecentSaves { limit in
+            do {
+                return try self.space.fetch(Requests.fetchSavedItems(limit: limit))
+            } catch {
+                XCTAssert(false, "Fail")
+            }
+            return []
+        }
+
+        source.stubSlateLineup { identifier in
+            do {
+                return try self.space.fetchSlateLineup(byRemoteID: identifier)
+            } catch {
+                XCTAssert(false, "Fail")
+            }
+            return nil
+        }
+
+        source.stubViewObject { identifier in
+            self.space.viewObject(with: identifier)
+        }
+
+        source.stubViewRefresh { _, _ in }
+
+        source.stubBackgroundObject { object in
+            self.space.backgroundObject(with: object)
+        }
     }
 
     override func tearDownWithError() throws {
@@ -758,6 +785,7 @@ class HomeViewModelTests: XCTestCase {
             remoteID: HomeViewModel.lineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
+        try space.save()
 
         let viewModel = subject()
 
@@ -767,8 +795,8 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertNotNil(action)
         action?.handler?(nil)
         XCTAssertEqual(
-            source.saveRecommendationCall(at: 0)?.recommendation,
-            recommendation
+            source.saveRecommendationCall(at: 0)?.recommendation.objectID,
+            recommendation.objectID
         )
     }
 
@@ -792,8 +820,8 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertNotNil(action)
         action?.handler?(nil)
         XCTAssertEqual(
-            source.archiveRecommendationCall(at: 0)?.recommendation,
-            recommendation
+            source.archiveRecommendationCall(at: 0)?.recommendation.objectID,
+            recommendation.objectID
         )
     }
 
