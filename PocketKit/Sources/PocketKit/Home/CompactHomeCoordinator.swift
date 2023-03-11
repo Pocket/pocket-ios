@@ -11,6 +11,7 @@ protocol CompactHomeCoordinatorDelegate: AnyObject {
     func compactHomeCoordinatorDidSelectRecentSaves(_ coordinator: CompactHomeCoordinator)
 }
 
+@MainActor
 class CompactHomeCoordinator: NSObject {
     var viewController: UIViewController {
         return navigationController

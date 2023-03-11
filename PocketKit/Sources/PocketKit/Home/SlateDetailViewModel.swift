@@ -41,7 +41,9 @@ class SlateDetailViewModel {
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
             object: nil
-        ).sink { [weak self] notification in
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] notification in
             do {
                 try self?.handle(notification: notification)
             } catch {

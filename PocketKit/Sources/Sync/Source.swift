@@ -37,7 +37,7 @@ public protocol Source {
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refreshSaves(completion: (() -> Void)?)
-    
+
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func refreshArchive(completion: (() -> Void)?)

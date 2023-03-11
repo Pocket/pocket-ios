@@ -2,6 +2,7 @@ import UIKit
 import Sync
 import CoreData
 
+@MainActor
 class HomeViewControllerSectionProvider {
     struct Constants {
         static let margin: CGFloat = Margins.thin.rawValue

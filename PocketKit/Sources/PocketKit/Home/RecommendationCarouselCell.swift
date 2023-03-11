@@ -2,6 +2,7 @@ import Foundation
 import UIKit
 import Textile
 
+@MainActor
 class RecommendationCarouselCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {
         private let viewModel: HomeRecommendationCellViewModel
