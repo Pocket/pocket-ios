@@ -16,7 +16,7 @@ class AccountViewModel: ObservableObject {
     // Factories
     typealias PremiumUpgradeViewModelFactory = (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
-    typealias PremiumStatusViewModelFactory = (Tracker) -> PremiumSettingsViewModel
+    typealias PremiumStatusViewModelFactory = (Tracker) -> PremiumStatusViewModel
     private let premiumStatusViewModelFactory: PremiumStatusViewModelFactory
     // Presented sheets
     // TODO: we might want to add a coordinator of some sort here
@@ -106,7 +106,7 @@ extension AccountViewModel {
 // MARK: premium statis fsctory
 extension AccountViewModel {
     @MainActor
-    func makePremiumStatusViewModel() -> PremiumSettingsViewModel {
+    func makePremiumStatusViewModel() -> PremiumStatusViewModel {
         premiumStatusViewModelFactory(tracker)
     }
 

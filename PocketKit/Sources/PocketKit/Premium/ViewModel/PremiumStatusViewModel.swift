@@ -9,7 +9,7 @@ import SharedPocketKit
 import Sync
 
 @MainActor
-class PremiumSettingsViewModel: ObservableObject {
+class PremiumStatusViewModel: ObservableObject {
     private let service: SubscriptionInfoService
     private let tracker: Tracker
 
