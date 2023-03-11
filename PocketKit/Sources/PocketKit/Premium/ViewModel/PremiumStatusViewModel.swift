@@ -1,3 +1,8 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+import Analytics
 import Combine
 import Foundation
 import SharedPocketKit
@@ -5,32 +10,90 @@ import Sync
 
 @MainActor
 class PremiumSettingsViewModel: ObservableObject {
-    @Published private(set) var subscription = ""
-    @Published private(set) var datePurchased = ""
-    @Published private(set) var renewalDate = ""
-    @Published private(set) var purchaseLocation = ""
-    @Published private(set) var price = ""
+    private let service: SubscriptionInfoService
+    private let tracker: Tracker
+
+    @Published var subscriptionInfoList = [LabeledText]()
+    @Published var subscriptionProvider: SubscriptionInfo.SubscriptionProvider = .unknown
 
     @Published var isPresentingFAQ = false
     @Published var isContactingSupport = false
     @Published var isNoMailSupport = false
+    @Published var isPresentingErrorAlert = false
 
-    let v3Client = Services.shared.v3Client
+    private var cancellable: AnyCancellable?
 
-    func requestStatus() async {
-        do {
-            let result = try await v3Client.premiumStatus()
-            subscription = result.subscriptionInfo.subscriptionType
-            datePurchased = getDisplayedDate(datetime: result.subscriptionInfo.purchaseDate)
-            renewalDate = getDisplayedDate(datetime: result.subscriptionInfo.renewDate)
-            purchaseLocation = result.subscriptionInfo.source.capitalized
-            price = result.subscriptionInfo.displayAmount
-        } catch {
-            Log.breadcrumb(category: "premium_status", level: .error, message: "v3 premium status error: \(error)")
+    init(service: SubscriptionInfoService, tracker: Tracker) {
+        self.service = service
+        self.tracker = tracker
+        cancellable = service
+            .infoPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] subscriptionInfo in
+                guard let self else { return }
+                self.subscriptionInfoList = self.makeLabeledList(subscriptionInfo)
+                self.subscriptionProvider = subscriptionInfo.subscriptionProvider
         }
     }
 
-    func getDisplayedDate(datetime: String) -> String {
+    func getInfo() async {
+        do {
+            try await service.getInfo()
+        } catch {
+            Log.capture(error: error)
+            isPresentingErrorAlert = true
+        }
+    }
+
+    /// Constructs a list of label + item from `SubscriptionInfo`
+    /// - Parameter labels: the list of labels
+    func makeLabeledList(_ info: SubscriptionInfo) -> [LabeledText] {
+        [LabeledText(title: Labels.subscriptionType, text: info.subscriptionType),
+         LabeledText(title: Labels.dateOfPurchase, text: info.dateOfPurchase),
+         LabeledText(title: Labels.dateOfRenewal, text: info.dateOfRenewal),
+         LabeledText(title: Labels.providerName, text: info.providerName),
+         LabeledText(title: Labels.displayAmount, text: info.displayAmount)]
+    }
+
+    private enum Labels {
+        static let subscriptionType = L10n.Settings.Premium.Settings.subscription
+        static let dateOfPurchase = L10n.Settings.Premium.Settings.datePurchased
+        static let dateOfRenewal = L10n.Settings.Premium.Settings.renewalDate
+        static let providerName = L10n.Settings.Premium.Settings.purchaseLocation
+        static let displayAmount = L10n.Settings.Premium.Settings.price
+    }
+}
+
+/// Formatted properties
+extension SubscriptionInfo {
+    /// Describes the provider of the subscription
+    enum SubscriptionProvider: String {
+        case apple
+        case web
+        case google
+        case unknown
+    }
+
+    var dateOfPurchase: String {
+        formatDate(purchaseDate)
+    }
+
+    var dateOfRenewal: String {
+        formatDate(renewDate)
+    }
+
+    var providerName: String {
+        source.capitalized
+    }
+
+    var subscriptionProvider: SubscriptionProvider {
+        SubscriptionProvider(rawValue: source) ?? .unknown
+    }
+}
+
+/// Formatter
+private extension SubscriptionInfo {
+    func formatDate(_ datetime: String) -> String {
         let dateFormatterGet = DateFormatter()
         dateFormatterGet.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
@@ -40,7 +103,7 @@ class PremiumSettingsViewModel: ObservableObject {
         if let date = dateFormatterGet.date(from: datetime) {
             return dateFormatterPrint.string(from: date)
         } else {
-            return "Invalid Date"
+            return ""
         }
     }
 }
