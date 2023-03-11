@@ -169,11 +169,11 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "No se ha encontrado una suscripción. Si crees que esto es un error, envíanos un correo electrónico a support@getpocket.com para avisarnos.";
 
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+"login.deletedAccount.banner.title" = "Has eliminado tu cuenta de Pocket";
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "What could we have done better?";
+"login.deletedAccount.banner.detail" = "¿Qué podríamos haber hecho mejor?";
 //Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Quick survey";
+"login.deletedAccount.banner.action" = "Encuesta rápida";
 
 
 //List view
@@ -193,3 +193,17 @@
 "Hooray!" = "¡Viva!";
 "premium.success.message" = "Acabas de convertirte oficialmente en miembro de Pocket Premium. Te damos la bienvenida a la nueva versión sin anuncios, personalizable y permanente de tu Pocket. Seguro que te va a encantar.";
 "back.to.pocket" = "Volver a Pocket";
+"settings.premiumRow" = "Pásate a Premium";
+"settings.premium.settings.thanksForSubscribing" = "¡Gracias por suscribirte a Pocket Premium!";
+"settings.premium.settings.subscriptionStatus" = "Estado de la suscripción";
+"settings.premium.settings.subscription" = "Suscripción";
+"settings.premium.settings.datePurchased" = "Fecha de compra";
+"settings.premium.settings.renewalDate" = "Fecha de renovación";
+"settings.premium.settings.purchaseLocation" = "Ubicación de la compra";
+"settings.premium.settings.price" = "Precio";
+"settings.premium.settings.yourSubscription" = "Tu suscripción";
+"settings.premium.settings.manageYourSubscription" = "Gestionar mi suscripción";
+"settings.premium.settings.questionOrFeedback" = "¿Alguna duda o comentario?";
+"settings.premium.settings.pocketPremiumFAQ" = "Preguntas y respuestas sobre Pocket Premium";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Contactar con el equipo de atención al cliente de Pocket";
