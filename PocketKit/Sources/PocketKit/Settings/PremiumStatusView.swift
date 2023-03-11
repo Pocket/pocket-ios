@@ -7,11 +7,11 @@ struct PremiumStatusView: View {
     @Environment(\.dismiss)
     private var dismiss
     @StateObject
-    var viewModel: PremiumSettingsViewModel
+    var viewModel: PremiumStatusViewModel
     @State var result: Result<MFMailComposeResult, Error>?
     @State private var presentManageSubscriptions = false
 
-    init(viewModel: PremiumSettingsViewModel) {
+    init(viewModel: PremiumStatusViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
