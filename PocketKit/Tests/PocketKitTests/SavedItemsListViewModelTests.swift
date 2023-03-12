@@ -224,7 +224,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         let snapshotSent = expectation(description: "snapshotSent")
         viewModel.snapshot.dropFirst().sink { [unowned self] snapshot in
-            XCTAssertEqual(self.source.fetchViewRefresh(at: 0)?.object, savedItem)
+            XCTAssertEqual(self.source.fetchViewRefresh(at: 0)?.object.objectID, savedItem.objectID)
             XCTAssertEqual(snapshot.reloadedItemIdentifiers, [.item(savedItem.objectID)])
             snapshotSent.fulfill()
         }.store(in: &subscriptions)

@@ -6,6 +6,7 @@ import PocketGraph
 @testable import Sync
 @testable import PocketKit
 
+@MainActor
 class HomeViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!

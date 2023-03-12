@@ -46,9 +46,9 @@ extension Space {
         item: Item? = nil
     ) -> SavedItem {
         backgroundContext.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: viewContext, url: URL(string: url)!, remoteID: remoteID)
+            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!, remoteID: remoteID)
             let tags: [Tag]? = tags?.map { tag -> Tag in
-                let newTag: Tag = Tag(context: viewContext)
+                let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
                 return newTag
             }
@@ -60,7 +60,7 @@ extension Space {
             savedItem.url = URL(string: url)!
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? Item(context: viewContext, givenURL: URL(string: url)!, remoteID: remoteID)
+            savedItem.item = item ?? Item(context: backgroundContext, givenURL: URL(string: url)!, remoteID: remoteID)
 
             return savedItem
         }
@@ -101,7 +101,7 @@ extension Space {
         article: Article? = nil
     ) -> Item {
         backgroundContext.performAndWait {
-            let item: Item = Item(context: viewContext, givenURL: givenURL!, remoteID: remoteID)
+            let item: Item = Item(context: backgroundContext, givenURL: givenURL!, remoteID: remoteID)
             item.remoteID = remoteID
             item.title = title
             item.resolvedURL = resolvedURL
@@ -143,7 +143,7 @@ extension Space {
         slates: [Slate] = []
     ) -> SlateLineup {
         backgroundContext.performAndWait {
-            let lineup: SlateLineup = SlateLineup(context: viewContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
+            let lineup: SlateLineup = SlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             lineup.slates = NSOrderedSet(array: slates)
 
             return lineup
@@ -187,7 +187,7 @@ extension Space {
         recommendations: [Recommendation] = []
     ) -> Slate {
         backgroundContext.performAndWait {
-            let slate: Slate = Slate(context: viewContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
+            let slate: Slate = Slate(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             slate.name = name
             slate.slateDescription = slateDescription
             slate.recommendations = NSOrderedSet(array: recommendations)
@@ -221,7 +221,7 @@ extension Space {
         item: Item? = nil
     ) -> Recommendation {
         backgroundContext.performAndWait {
-            let recommendation: Recommendation = Recommendation(context: viewContext, remoteID: remoteID)
+            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID)
             recommendation.item = item
 
             return recommendation
@@ -237,7 +237,7 @@ extension Space {
         isDownloaded: Bool = false
     ) -> Image {
         return backgroundContext.performAndWait {
-            let image: Image = Image(context: viewContext)
+            let image: Image = Image(context: backgroundContext)
             image.source = source
             image.isDownloaded = isDownloaded
 

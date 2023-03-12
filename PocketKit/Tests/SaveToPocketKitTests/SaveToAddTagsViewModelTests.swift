@@ -72,7 +72,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             XCTAssert(true, "expect call to save action")
             var tags: [Tag] = []
             for index in 1...2 {
-                let tag: Tag = Tag(context: self.space.viewContext)
+                let tag: Tag = Tag(context: self.space.backgroundContext)
                 tag.name = "tag \(index)"
                 tags.append(tag)
             }

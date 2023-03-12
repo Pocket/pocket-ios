@@ -640,7 +640,7 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
     ) {
         var snapshot = buildSnapshot()
         let id = ItemsListCell<ItemIdentifier>.item(savedItem.objectID)
-        if snapshot.itemIdentifiers.first(where: { $0 == id }) != nil {
+        if snapshot.itemIdentifiers.contains(id) {
             snapshot.reloadItems([id])
         }
         _snapshot = snapshot

@@ -74,6 +74,7 @@ enum SeeAll {
     }
 }
 
+@MainActor
 class HomeViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
     typealias ItemIdentifier = NSManagedObjectID
