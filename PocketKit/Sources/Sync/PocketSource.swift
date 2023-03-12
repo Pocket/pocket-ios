@@ -454,6 +454,10 @@ extension PocketSource {
         }
 
         try space.performAndWait {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+                Log.capture(message: "Could not get SavedItem from backgroundContext while fetching details")
+                return
+            }
             savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
             try space.save()
         }
@@ -643,15 +647,16 @@ extension PocketSource {
 // MARK: - Interprocess notifications
 extension PocketSource {
     func handleSavedItemsUpdatedNotification() {
-        guard let notifications = try? space.fetchSavedItemUpdatedNotifications() else {
-            return
+        space.performAndWait {
+            guard let notifications = try? space.fetchSavedItemUpdatedNotifications() else {
+                return
+            }
+
+            let updatedSavedItems = Set(notifications.compactMap(\.savedItem))
+            space.delete(notifications)
+            try? space.save()
+            _events.send(.savedItemsUpdated(updatedSavedItems))
         }
-
-        let updatedSavedItems = Set(notifications.compactMap(\.savedItem))
-        space.delete(notifications)
-        try? space.save()
-
-        _events.send(.savedItemsUpdated(updatedSavedItems))
     }
 
     func handleSavedItemCreatedNotification() {

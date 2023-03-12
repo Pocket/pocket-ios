@@ -10,22 +10,10 @@ import Combine
 public class Space {
     let backgroundContext: NSManagedObjectContext
     let viewContext: NSManagedObjectContext
-    private var subscriptions: [AnyCancellable] = []
 
     required public init(backgroundContext: NSManagedObjectContext, viewContext: NSManagedObjectContext) {
         self.backgroundContext = backgroundContext
         self.viewContext = viewContext
-
-        // The background context automatically recieves saves from the view context,
-        // but the view context doesn't respond to background context saves by default.
-        NotificationCenter.default.publisher(
-            for: NSManagedObjectContext.didSaveObjectsNotification,
-            object: self.backgroundContext
-        )
-        .receive(on: DispatchQueue.main)
-        .sink { [weak self] notification in
-            self?.viewContext.mergeChanges(fromContextDidSave: notification)
-        }.store(in: &subscriptions)
     }
 
     func managedObjectID(forURL url: URL) -> NSManagedObjectID? {

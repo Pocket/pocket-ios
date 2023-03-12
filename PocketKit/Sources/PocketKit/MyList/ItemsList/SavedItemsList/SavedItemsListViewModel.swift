@@ -109,16 +109,21 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             .receive(on: DispatchQueue.main).sink { [weak self] _ in
                 self?.fetch()
                 self?.presentedSortFilterViewModel = nil
-            }.store(in: &subscriptions)
+            }
+            .store(in: &subscriptions)
 
         $selectedItem.sink { [weak self] itemSelected in
             guard itemSelected == nil else { return }
             self?._events.send(.selectionCleared)
-        }.store(in: &subscriptions)
+        }
+        .store(in: &subscriptions)
 
-        source.events.sink { [weak self] event in
-            self?.handle(syncEvent: event)
-        }.store(in: &subscriptions)
+        source.events
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] event in
+                self?.handle(syncEvent: event)
+            }
+            .store(in: &subscriptions)
     }
 
     func fetch() {
@@ -386,7 +391,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func bareItem(with id: NSManagedObjectID) -> SavedItem? {
-        source.backgroundObject(id: id)
+        source.viewObject(id: id)
     }
 
     private func itemsLoaded() {
@@ -633,11 +638,11 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
     ) {
-        guard .update == type else {
-            return
-        }
         var snapshot = buildSnapshot()
-        snapshot.reloadItems([ItemsListCell<ItemIdentifier>.item(savedItem.objectID)])
+        let id = ItemsListCell<ItemIdentifier>.item(savedItem.objectID)
+        if snapshot.itemIdentifiers.first(where: { $0 == id }) != nil {
+            snapshot.reloadItems([id])
+        }
         _snapshot = snapshot
     }
 
@@ -672,16 +677,15 @@ extension SavedItemsListViewModel {
             fetch()
         case .savedItemsUpdated(let updatedSavedItems):
             try? itemsController.performFetch()
-            updatedSavedItems.forEach {
-                source.viewRefresh($0, mergeChanges: true)
-            }
+            let items = updatedSavedItems.compactMap({ source.viewObject(id: $0.objectID) as? SavedItem })
+            items.forEach({ source.viewRefresh($0, mergeChanges: true) })
             var snapshot = buildSnapshot()
 
             switch self.viewType {
             case .saves:
-                snapshot.reloadItems(updatedSavedItems.filter({ $0.isArchived == false }).map { .item($0.objectID) })
+                snapshot.reloadItems(items.filter({ $0.isArchived == false }).map { .item($0.objectID) })
             case .archive:
-                snapshot.reloadItems(updatedSavedItems.filter({ $0.isArchived }).map { .item($0.objectID) })
+                snapshot.reloadItems(items.filter({ $0.isArchived }).map { .item($0.objectID) })
             }
             _snapshot = snapshot
         }
