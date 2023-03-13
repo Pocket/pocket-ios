@@ -22,7 +22,7 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
                         ) { tracker, source in
-                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source, networkPathMonitor: NWPathMonitor())
                         },
                         savedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
@@ -57,7 +57,7 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                             try await Services.shared.subscriptionStore.restoreSubscription()
                         },
                         premiumUpgradeViewModelFactory: { tracker, source in
-                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source, networkPathMonitor: NWPathMonitor())
                         }
                     )
                 ),

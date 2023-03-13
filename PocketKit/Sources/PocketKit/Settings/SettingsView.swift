@@ -61,19 +61,6 @@ struct SettingsForm: View {
                     }
                 }
                 .textCase(nil)
-                .alert(
-                    L10n.Settings.NoInternet.connection,
-                    isPresented: $model.isPresentingOfflineView,
-                    actions: {
-                        Button(L10n.Settings.NoInternet.ok, role: nil, action: {})
-                        Button(L10n.Settings.NoInternet.goToSettings, role: nil, action: {
-                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                        })
-                    }, message: {
-                        Text(L10n.Settings.NoInternet.youMustBeOnline)
-                    }
-                )
-
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
@@ -196,13 +183,7 @@ extension SettingsForm {
         let title = isPremium ? L10n.Settings.premiumSubscriptionRow : L10n.Settings.goPremiumRow
         let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
         let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
-        let action = isPremium ? { model.showPremiumStatus() } : {
-            if model.isOffline {
-                model.showOfflinePremiumAlert()
-            } else {
-                model.showPremiumUpgrade()
-            }
-        }
+        let action = isPremium ? { model.showPremiumStatus() } : { model.showPremiumUpgrade() }
 
         return SettingsRowButton(
             title: title,

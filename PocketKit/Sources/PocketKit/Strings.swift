@@ -348,14 +348,8 @@ internal enum L10n {
       internal static let areYouSureMessage = L10n.tr("Localizable", "settings.logout.areYouSureMessage", fallback: "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.")
     }
     internal enum NoInternet {
-      /// No Internet Connection
-      internal static let connection = L10n.tr("Localizable", "settings.noInternet.connection", fallback: "No Internet Connection")
-      /// Go to Settings
-      internal static let goToSettings = L10n.tr("Localizable", "settings.noInternet.goToSettings", fallback: "Go to Settings")
-      /// OK
-      internal static let ok = L10n.tr("Localizable", "settings.noInternet.ok", fallback: "OK")
       /// You must be online to upgrade to Pocket Premium. Please check your connection and try again.
-      internal static let youMustBeOnline = L10n.tr("Localizable", "settings.noInternet.youMust BeOnline", fallback: "You must be online to upgrade to Pocket Premium. Please check your connection and try again.")
+      internal static let youMustBeOnline = L10n.tr("Localizable", "settings.noInternet.youMustBeOnline", fallback: "You must be online to upgrade to Pocket Premium. Please check your connection and try again.")
     }
     internal enum Premium {
       internal enum Settings {
