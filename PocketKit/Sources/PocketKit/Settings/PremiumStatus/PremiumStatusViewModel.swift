@@ -47,7 +47,7 @@ class PremiumStatusViewModel: ObservableObject {
 
     /// Constructs a list of label + item from `SubscriptionInfo`
     /// - Parameter labels: the list of labels
-    func makeLabeledList(_ info: SubscriptionInfo) -> [LabeledText] {
+    private func makeLabeledList(_ info: SubscriptionInfo) -> [LabeledText] {
         [LabeledText(title: Labels.subscriptionType, text: info.subscriptionType),
          LabeledText(title: Labels.dateOfPurchase, text: info.dateOfPurchase),
          LabeledText(title: Labels.dateOfRenewal, text: info.dateOfRenewal),
