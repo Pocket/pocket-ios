@@ -8,6 +8,9 @@ import Foundation
 import SharedPocketKit
 import Sync
 
+/// Factory to construct and inject `PremiumStatusViewModel` where needed
+typealias PremiumStatusViewModelFactory = () -> PremiumStatusViewModel
+
 @MainActor
 class PremiumStatusViewModel: ObservableObject {
     private let service: SubscriptionInfoService

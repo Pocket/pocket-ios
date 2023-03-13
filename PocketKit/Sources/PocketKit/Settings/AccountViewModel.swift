@@ -14,9 +14,7 @@ class AccountViewModel: ObservableObject {
     private let notificationCenter: NotificationCenter
     private let restoreSubscription: () async throws -> Void
     // Factories
-    typealias PremiumUpgradeViewModelFactory = (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
-    typealias PremiumStatusViewModelFactory = (Tracker) -> PremiumStatusViewModel
     private let premiumStatusViewModelFactory: PremiumStatusViewModelFactory
     // Presented sheets
     // TODO: we might want to add a coordinator of some sort here
@@ -94,7 +92,7 @@ class AccountViewModel: ObservableObject {
 extension AccountViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
-        premiumUpgradeViewModelFactory(tracker, .settings)
+        premiumUpgradeViewModelFactory(.settings)
     }
 
     /// Ttoggle the presentation of `PremiumUpgradeView`
@@ -107,7 +105,7 @@ extension AccountViewModel {
 extension AccountViewModel {
     @MainActor
     func makePremiumStatusViewModel() -> PremiumStatusViewModel {
-        premiumStatusViewModelFactory(tracker)
+        premiumStatusViewModelFactory()
     }
 
     /// Show Premium Status on tap

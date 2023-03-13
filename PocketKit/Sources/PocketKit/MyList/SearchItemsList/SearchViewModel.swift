@@ -37,7 +37,7 @@ class SearchViewModel: ObservableObject {
     private let user: User
     private let userDefaults: UserDefaults
     private let source: Source
-    private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
+    private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
 
     private var savesLocalSearch: LocalSavesSearch
     private var savesOnlineSearch: OnlineSearch
@@ -106,7 +106,7 @@ class SearchViewModel: ObservableObject {
          userDefaults: UserDefaults,
          source: Source,
          tracker: Tracker,
-         premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
+         premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
@@ -551,7 +551,7 @@ extension SearchViewModel: SavedItemsControllerDelegate {
 extension SearchViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
-        premiumUpgradeViewModelFactory(tracker, .search)
+        premiumUpgradeViewModelFactory(.search)
     }
 
     /// Ttoggle the presentation of `PremiumUpgradeView`

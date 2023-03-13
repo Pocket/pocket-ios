@@ -21,8 +21,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                             userDefaults: Services.shared.userDefaults,
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
-                        ) { tracker, source in
-                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                        ) { source in
+                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: Services.shared.tracker, source: source)
                         },
                         savedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
@@ -55,11 +55,11 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         restoreSubscription: {
                             try await Services.shared.subscriptionStore.restoreSubscription()
                         },
-                        premiumUpgradeViewModelFactory: { tracker, source in
-                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                        premiumUpgradeViewModelFactory: { source in
+                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: Services.shared.tracker, source: source)
                         },
-                        premiumStatusViewModelFactory: { tracker in
-                            PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: tracker)
+                        premiumStatusViewModelFactory: {
+                            PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)
                         }
                     )
                 ),
