@@ -53,7 +53,7 @@ public struct PremiumStatusResponse: Decodable, BasicV3Response {
 }
 
 // MARK: - Feature
-public struct Feature: Codable {
+public struct Feature: Decodable {
     let name, status, statusText: String
     let faqLink: String
 
