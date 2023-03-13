@@ -57,10 +57,9 @@ extension MockSource {
 // MARK: - Refresh Saves
 extension MockSource {
     private static let refreshSaves = "refreshSaves"
-    typealias RefreshSavesImpl = (Int, (() -> Void)?) -> Void
+    typealias RefreshSavesImpl = ((() -> Void)?) -> Void
 
     struct RefreshSavesCall {
-        let maxItems: Int
         let completion: (() -> Void)?
     }
 
@@ -68,16 +67,16 @@ extension MockSource {
         implementations[Self.refreshSaves] = impl
     }
 
-    func refreshSaves(maxItems: Int, completion: (() -> Void)?) {
+    func refreshSaves(completion: (() -> Void)?) {
         guard let impl = implementations[Self.refreshSaves] as? RefreshSavesImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
 
         calls[Self.refreshSaves] = (calls[Self.refreshSaves] ?? []) + [
-            RefreshSavesCall(maxItems: maxItems, completion: completion)
+            RefreshSavesCall(completion: completion)
         ]
 
-        impl(maxItems, completion)
+        impl(completion)
     }
 
     func refreshSavesCall(at index: Int) -> RefreshSavesCall? {
@@ -92,10 +91,9 @@ extension MockSource {
 // MARK: - Refresh Archive
 extension MockSource {
     private static let refreshArchive = "refreshArchive"
-    typealias RefreshArchiveImpl = (Int, (() -> Void)?) -> Void
+    typealias RefreshArchiveImpl = ((() -> Void)?) -> Void
 
     struct RefreshArchiveCall {
-        let maxItems: Int
         let completion: (() -> Void)?
     }
 
@@ -103,16 +101,16 @@ extension MockSource {
         implementations[Self.refreshArchive] = impl
     }
 
-    func refreshArchive(maxItems: Int, completion: (() -> Void)?) {
+    func refreshArchive(completion: (() -> Void)?) {
         guard let impl = implementations[Self.refreshArchive] as? RefreshArchiveImpl else {
             fatalError("\(Self.self)#\(#function) has not been stubbed")
         }
 
         calls[Self.refreshArchive] = (calls[Self.refreshArchive] ?? []) + [
-            RefreshArchiveCall(maxItems: maxItems, completion: completion)
+            RefreshArchiveCall(completion: completion)
         ]
 
-        impl(maxItems, completion)
+        impl(completion)
     }
 
     func refreshArchiveCall(at index: Int) -> RefreshArchiveCall? {

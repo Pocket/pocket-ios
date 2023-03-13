@@ -1,8 +1,8 @@
 import Foundation
 
 enum SyncTask: Codable {
-    case fetchSaves(maxItems: Int)
-    case fetchArchive(maxItems: Int)
+    case fetchSaves
+    case fetchArchive
     case favorite(remoteID: String)
     case unfavorite(remoteID: String)
     case delete(remoteID: String)

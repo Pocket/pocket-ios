@@ -169,11 +169,11 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Nie można odnaleźć subskrypcji. Jeśli masz ją wykupioną, wyślij wiadomość na adres support@getpocket.com, aby nas o tym poinformować.";
 
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+"login.deletedAccount.banner.title" = "Twoje konto Pocket zostało usunięte";
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "What could we have done better?";
+"login.deletedAccount.banner.detail" = "Co powinniśmy poprawić?";
 //Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Quick survey";
+"login.deletedAccount.banner.action" = "Krótka ankieta";
 
 
 //List view
