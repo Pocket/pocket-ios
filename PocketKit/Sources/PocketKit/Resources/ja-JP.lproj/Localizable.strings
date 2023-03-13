@@ -169,11 +169,11 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "購読が見つかりませんでした。既に購読済みであると確信している場合は、support@getpocket.com までメールにてお問い合わせください。";
 
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+"login.deletedAccount.banner.title" = "Pocket アカウントを削除しました";
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "What could we have done better?";
+"login.deletedAccount.banner.detail" = "どのような点を改善してほしいですか？";
 //Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Quick survey";
+"login.deletedAccount.banner.action" = "短いアンケートに回答する";
 
 
 //List view
@@ -193,3 +193,17 @@
 "Hooray!" = "やった～！";
 "premium.success.message" = "正式にPocket Premiumメンバーになりました。広告なし、カスタマイズ可能な、永久版のPocketにようこそ。きっと気に入っていただけるはず！思う存分お楽しみください。";
 "back.to.pocket" = "Pocket に戻る";
+"settings.premiumRow" = "Premium に登録";
+"settings.premium.settings.thanksForSubscribing" = "Pocket Premium のご購読ありがとうございます！";
+"settings.premium.settings.subscriptionStatus" = "購読状況";
+"settings.premium.settings.subscription" = "購読";
+"settings.premium.settings.datePurchased" = "購入日";
+"settings.premium.settings.renewalDate" = "更新日";
+"settings.premium.settings.purchaseLocation" = "購入場所";
+"settings.premium.settings.price" = "価格";
+"settings.premium.settings.yourSubscription" = "あなたの購読";
+"settings.premium.settings.manageYourSubscription" = "購読を管理";
+"settings.premium.settings.questionOrFeedback" = "ご意見やご感想がありますか？";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ（よくある質問）";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Pocket サポートに問い合わせ";
