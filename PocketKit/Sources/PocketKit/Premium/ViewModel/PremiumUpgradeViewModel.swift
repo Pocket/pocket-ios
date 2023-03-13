@@ -15,7 +15,7 @@ class PremiumUpgradeViewModel: ObservableObject {
     private let tracker: Tracker
     private let source: PremiumUpgradeSource
     private let networkPathMonitor: NetworkPathMonitor
-    
+
     var isOffline: Bool {
         return networkPathMonitor.currentNetworkPath.status == .unsatisfied
     }
