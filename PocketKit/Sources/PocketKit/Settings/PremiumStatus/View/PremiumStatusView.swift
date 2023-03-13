@@ -21,8 +21,10 @@ struct PremiumStatusView: View {
             subscriptionHeader
             subscriptionStatus
             Divider()
-            yourSubscription
-            Divider()
+            if viewModel.subscriptionProvider.isApple {
+                yourSubscription
+                Divider()
+            }
             questionsOrFeedback
             Spacer()
         }
