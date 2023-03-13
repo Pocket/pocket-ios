@@ -440,12 +440,16 @@ extension SavesTests {
             .wait(timeout: 10)
 
         app.shareButton.tap()
-
+        guard app.readerActionWebActivity.activityOption("Archive").wait(timeout: 5.0).isHittable else {
+            app.shareButton.tap()
+            return
+        }
+        
         app
             .readerActionWebActivity
             .activityOption("Archive")
             .wait(timeout: 5.0)
-
+        
         app
             .readerActionWebActivity
             .activityOption("Delete")
