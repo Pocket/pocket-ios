@@ -8,7 +8,7 @@ extension PocketSourceTests {
         sessionProvider.session = MockSession()
 
         let fetchList = expectation(description: "fetchList operation executed")
-        operations.stubFetchList { _, _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _  in
             TestSyncOperation { fetchList.fulfill() }
         }
 
@@ -27,7 +27,7 @@ extension PocketSourceTests {
         var source: PocketSource! = subject()
         networkMonitor.update(status: .unsatisfied)
 
-        source.refresh()
+        source.refreshSaves()
         source.favorite(item: item)
         source.archive(item: item)
 
@@ -42,7 +42,7 @@ extension PocketSourceTests {
         source.drain { done.fulfill() }
         wait(for: [done], timeout: 1)
 
-        operations.stubFetchList { _, _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _  in
             XCTFail("Operation should not be re-created after succeeding")
             return TestSyncOperation { }
         }

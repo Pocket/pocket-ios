@@ -86,8 +86,37 @@ class PocketSearchServiceTests: XCTestCase {
         let service = subject()
 
         try await service.search(for: "search-term", scope: .all)
+        service.hasFinishedResults = false
 
+        let firstPaginationExpectation = expectation(description: "first search page called")
+        let secondPaginationExpectation = expectation(description: "second page called")
+        let thirdPaginationExpectation = expectation(description: "third page called")
+        var count = 0
+        service.results.receive(on: DispatchQueue.main).sink { items in
+            count += 1
+            if count == 1 {
+                XCTAssertEqual(items?.count, 2)
+                firstPaginationExpectation.fulfill()
+            } else if count == 2 {
+                XCTAssertEqual(items?.count, 2)
+                secondPaginationExpectation.fulfill()
+            } else if count == 3 {
+                XCTAssertEqual(items?.count, 1)
+                thirdPaginationExpectation.fulfill()
+            }
+        }.store(in: &cancellables)
+
+        XCTAssertEqual(self.apollo.fetchCalls(withQueryType: SearchSavedItemsQuery.self).count, 1)
+
+        try await service.search(for: "search-term", scope: .all)
+
+        XCTAssertEqual(self.apollo.fetchCalls(withQueryType: SearchSavedItemsQuery.self).count, 2)
+
+        service.hasFinishedResults = false
+        try await service.search(for: "search-term", scope: .all)
         XCTAssertEqual(self.apollo.fetchCalls(withQueryType: SearchSavedItemsQuery.self).count, 3)
+
+        wait(for: [firstPaginationExpectation, secondPaginationExpectation, thirdPaginationExpectation], timeout: 1)
     }
 
     // MARK: Error
@@ -116,7 +145,7 @@ extension MockApolloClient {
                 resultFixtureName = "search-list-page-1"
             case .some(let cursor):
                 switch cursor {
-                case .none:
+                case .none, .some(""):
                     resultFixtureName = "search-list-page-1"
                 case .some(let cursor):
                     switch cursor {

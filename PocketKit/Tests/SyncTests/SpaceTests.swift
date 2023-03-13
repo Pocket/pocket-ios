@@ -81,6 +81,20 @@ class SpaceTests: XCTestCase {
         XCTAssertTrue(tags.contains(tag2))
     }
 
+    func testFilterTagsExcludingCertainTags() throws {
+        let space = subject()
+        let items = createItemsWithTags(3)
+        guard let tag0 = items[0].tags?[0] as? Tag, let tag2 = items[2].tags?[0] as? Tag else {
+            XCTFail("Should not be nil")
+            return
+        }
+        let tags = try space.filterTags(with: "t", excluding: ["tag 2"])
+
+        XCTAssertEqual(tags.count, 2)
+        XCTAssertTrue(tags.contains(tag0))
+        XCTAssertTrue(tags.contains(tag2))
+    }
+
     private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [SavedItem] {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in

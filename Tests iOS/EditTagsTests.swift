@@ -23,6 +23,8 @@ class EditTagsTests: XCTestCase {
                 return Response.slateLineup()
             } else if apiRequest.isForSavesContent {
                 return Response.saves()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else if apiRequest.isToUpdateTag("rename tag 1") {
                 return Response.updateTag()
             } else if apiRequest.isForTags {

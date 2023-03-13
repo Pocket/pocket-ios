@@ -68,18 +68,17 @@
   "testTargets" : [
     {
       "skippedTests" : [
+        "AddTagsItemTests",
         "HomeTests",
         "HomeWebViewTests",
+        "PremiumTests",
         "PullToRefreshTests",
         "ReaderTests",
         "ReportARecommendationTests",
         "SaveToPocketTests",
         "SavesFiltersTests",
-        "SavesTests",
         "SearchTests",
-        "SettingsTest",
-        "ShareAnItemTests",
-        "SignOutTests"
+        "ShareAnItemTests"
       ],
       "target" : {
         "containerPath" : "container:Pocket.xcodeproj",

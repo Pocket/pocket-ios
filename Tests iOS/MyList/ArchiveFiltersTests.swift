@@ -26,8 +26,6 @@ class ArchiveFiltersTests: XCTestCase {
                 return Response.slateLineup()
             } else if apiRequest.isForSavesContent {
                 return Response.saves()
-            } else if apiRequest.isForFavoritedArchivedContent {
-                return Response.favoritedArchivedContent()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToFavoriteAnItem {
@@ -59,7 +57,7 @@ class ArchiveFiltersTests: XCTestCase {
 
         app.saves.filterButton(for: "Favorites").tap()
         waitForDisappearance(of: saves.itemView(matching: "Archived Item 1"))
-        saves.itemView(matching: "Favorited Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
         app.saves.filterButton(for: "Favorites").tap()
 
         saves.itemView(matching: "Archived Item 1").wait()
@@ -77,7 +75,7 @@ class ArchiveFiltersTests: XCTestCase {
         saves.itemView(matching: "Archived Item 2").wait()
 
         app.saves.filterButton(for: "Favorites").tap()
-        saves.itemView(matching: "Favorited Archived Item 1").wait()
+        waitForDisappearance(of: saves.itemView(matching: "Archived Item 1"))
 
         app.saves.filterButton(for: "All").tap()
         saves.itemView(matching: "Archived Item 1").wait()
@@ -93,7 +91,7 @@ class ArchiveFiltersTests: XCTestCase {
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 4)
+        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
         tagsFilterView.tag(matching: "tag 0").wait().tap()
 
@@ -112,7 +110,7 @@ class ArchiveFiltersTests: XCTestCase {
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 4)
+        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
         tagsFilterView.tag(matching: "not tagged").wait().tap()
         waitForDisappearance(of: tagsFilterView)

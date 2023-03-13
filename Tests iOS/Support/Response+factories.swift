@@ -87,6 +87,18 @@ extension Response {
         fixture(named: "empty-tags")
     }
 
+    static func deleteUser() -> Response {
+        fixture(named: "deleteUser")
+    }
+
+    static func deleteUserError() -> Response {
+        fixture(named: "deleteUser-error")
+    }
+
+    static func premiumStatus() -> Response {
+        fixture(named: "premium-status")
+    }
+
     static func searchList(_ type: SearchScope) -> Response {
         var fixtureName = "search-list"
         switch type {
@@ -106,6 +118,10 @@ extension Response {
         }
     }
 
+    static func searchPagination(_ fixtureName: String = "search-list-page-1") -> Response {
+        fixture(named: fixtureName)
+    }
+
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok
@@ -122,6 +138,8 @@ extension Response {
             return Response.emptyTags()
         } else if apiRequest.isForSavesContent {
             return Response.saves()
+        } else if apiRequest.isForDeleteUser {
+            return Response.deleteUser()
         } else {
             fatalError("Unexpected request")
         }

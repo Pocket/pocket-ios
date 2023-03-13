@@ -13,12 +13,16 @@ import SharedPocketKit
 class OnlineSearchTests: XCTestCase {
     private var source: MockSource!
     private var searchService: MockSearchService!
-    private var user: MockUser!
 
     override func setUpWithError() throws {
         source = MockSource()
         searchService = MockSearchService()
         source.stubMakeSearchService { self.searchService }
+    }
+
+    override func tearDownWithError() throws {
+        source = nil
+        searchService = nil
     }
 
     func subject(source: Source? = nil, scope: SearchScope? = nil) -> OnlineSearch {
@@ -113,6 +117,32 @@ class OnlineSearchTests: XCTestCase {
         XCTAssertFalse(sut.hasCache(with: term))
     }
 
+    func test_hasCache_withLoadMoreResults_returnsNewResults() async {
+        let sut = subject(scope: .archive)
+        sut.search(with: "search-term")
+        await setupOnlineSearch(with: "search-term")
+
+        guard case .success(let pageOneItems) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(pageOneItems.count, 2)
+        XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
+        XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .archive)
+
+        sut.search(with: "search-term", and: true)
+        await setupOnlineSearchPage2(with: "search-term")
+        guard case .success(let pageTwoItems) = sut.results else {
+            XCTFail("should not have failed")
+            return
+        }
+
+        XCTAssertEqual(pageTwoItems.count, 5)
+        XCTAssertNotNil(searchService.searchCall(at: 1))
+        XCTAssertNil(searchService.searchCall(at: 2))
+    }
+
     // MARK: Error
     func test_search_whenFetchFails_throwsError() async {
         let sut = subject()
@@ -149,6 +179,26 @@ class OnlineSearchTests: XCTestCase {
         await withCheckedContinuation { continuation in
             searchService.stubSearch { _, _ in
                 self.searchService._results = [item, item]
+                continuation.resume()
+            }
+        }
+    }
+
+    private func setupOnlineSearchPage2(with term: String) async {
+        let itemParts = SavedItemParts(data: DataDict([
+            "__typename": "SavedItem",
+            "item": [
+                "__typename": "Item",
+                "title": term,
+                "givenUrl": "http://localhost:8080/hello",
+                "resolvedUrl": "http://localhost:8080/hello"
+            ]
+        ], variables: nil))
+
+        let item = SearchSavedItem(remoteItem: itemParts)
+        await withCheckedContinuation { continuation in
+            searchService.stubSearch { _, _ in
+                self.searchService._results = [item, item, item]
                 continuation.resume()
             }
         }

@@ -1,68 +1,1639 @@
 {
-    "data": {
-        "userByToken": {
+  "data": {
+    "user": {
+      "__typename": "[type-name-here]",
+      "isPremium": true,
+      "savedItems": {
+        "__typename": "[type-name-here]",
+        "totalCount": 1001,
+        "pageInfo": {
+          "__typename": "[type-name-here]",
+          "hasNextPage": true,
+          "endCursor": "cursor-3"
+        },
+        "edges": [
+          {
             "__typename": "[type-name-here]",
-            "isPremium": true,
-            "savedItems": {
-                "__typename": "[type-name-here]",
-                "totalCount": 3,
-                "pageInfo": {
-                    "__typename": "[type-name-here]",
-                    "hasNextPage": true,
-                    "endCursor": "cursor-3"
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
                 },
-                "edges": [
-                    {
-                        "__typename": "[type-name-here]",
-                        "cursor": "cursor-3",
-                        "node": {
-                            "__typename": "[type-name-here]",
-                            "remoteID": "saved-item-3",
-                            "url": "https://example.com/item-3",
-                            "_createdAt": 0,
-                            "_deletedAt": null,
-                            "archivedAt": null,
-                            "isArchived": false,
-                            "isFavorite": false,
-                            "tags": [],
-                            "item": {
-                                "__typename": "Item",
-                                "remoteID": "item-3",
-                                "givenUrl": "https://given.example.com/item-3",
-                                "resolvedUrl": "https://resolved.example.com/item-3",
-                                "title": "Item 3",
-                                "topImageUrl": "https://example.com/item-3/top-image.jpg",
-                                "domain": null,
-                                "language": "en",
-                                "timeToRead": 6,
-                                "marticle": [],
-                                "excerpt": "Cursus Aenean Elit",
-                                "datePublished": "2021-01-01 12:01:01",
-                                "authors": [],
-                                "domainMetadata": {
-                                    "__typename": "[type-name-here]",
-                                    "name": "WIRED",
-                                    "logo": "http://example.com/item-3/domain-logo.jpg"
-                                },
-                                "images": [
-                                    {
-                                        "__typename": "[type-name-here]",
-                                        "height": 1,
-                                        "width": 2,
-                                        "src": "http://example.com/item-3/image-1.jpg",
-                                        "imageId": 1
-                                    }
-                                ],
-                                "isArticle": true,
-                                "hasImage": "HAS_IMAGES",
-                                "hasVideo": "HAS_VIDEOS",
-                                "syndicatedArticle": null
-                            }
-                        }
-                    }
-                ]
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
             }
-        }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-3",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-3",
+              "url": "https://example.com/item-3",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [
+                
+              ],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-3",
+                "givenUrl": "https://given.example.com/item-3",
+                "resolvedUrl": "https://resolved.example.com/item-3",
+                "title": "Item 3",
+                "topImageUrl": "https://example.com/item-3/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "marticle": [
+                  
+                ],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [
+                  
+                ],
+                "domainMetadata": {
+                  "__typename": "[type-name-here]",
+                  "name": "WIRED",
+                  "logo": "http://example.com/item-3/domain-logo.jpg"
+                },
+                "images": [
+                  {
+                    "__typename": "[type-name-here]",
+                    "height": 1,
+                    "width": 2,
+                    "src": "http://example.com/item-3/image-1.jpg",
+                    "imageId": 1
+                  }
+                ],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          }
+        ]
+      }
     }
+  }
 }
-

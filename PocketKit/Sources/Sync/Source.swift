@@ -14,13 +14,17 @@ public protocol Source {
 
     var events: AnyPublisher<SyncEvent, Never> { get }
 
-    var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
+    var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
+
+    var initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
 
     func clear()
 
-    func makeItemsController() -> SavedItemsController
+    func deleteAccount() async throws
 
-    func makeArchiveService() -> ArchiveService
+    func makeSavesController() -> SavedItemsController
+
+    func makeArchiveController() -> SavedItemsController
 
     func makeSearchService() -> SearchService
 
@@ -28,7 +32,9 @@ public protocol Source {
 
     func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
-    func refresh(maxItems: Int, completion: (() -> Void)?)
+    func refreshSaves(completion: (() -> Void)?)
+
+    func refreshArchive(completion: (() -> Void)?)
 
     func retryImmediately()
 
@@ -51,6 +57,8 @@ public protocol Source {
     func retrieveTags(excluding: [String]) -> [Tag]?
 
     func fetchAllTags() -> [Tag]?
+
+    func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
 
     func fetchTags(isArchived: Bool) -> [Tag]?
 
@@ -86,11 +94,11 @@ public protocol Source {
 }
 
 public extension Source {
-    func refresh(completion: (() -> Void)?) {
-        self.refresh(maxItems: 400, completion: completion)
+    func refreshSaves() {
+        self.refreshSaves(completion: nil)
     }
 
-    func refresh() {
-        self.refresh(maxItems: 400, completion: nil)
+    func refreshArchive() {
+        self.refreshArchive(completion: nil)
     }
 }

@@ -111,6 +111,7 @@
 "Rename Tag" = "タグの名前を変更する";
 "Rename" = "名前を変更";
 "Enter a new name for this tag" = "このタグの新しい名前を入力";
+"Close" = "閉じる";
 
 "not tagged" = "タグ付けされていません";
 "OK" = "OK";
@@ -129,8 +130,11 @@
 "It contains misinformation" = "誤った情報が含まれています";
 "Other" = "その他";
 
+//General Messages
+"general.oops" = "エラーが発生しました。もう一度お試しください。";
+
+
 // Search
-"search.errorHeadline" = "エラーが発生しました。もう一度お試しください。";
 "search.errorMessage" = "エラーが発生したため、必要なデータを表示できません。後ほどもう一度お試しください。";
 "search.limitedResults" = "検索結果が制限されています";
 "search.offlineMessage" = "オフラインの状態では、タイトルと URL の検索のみ可能です。Premium の全文検索を使用するには、インターネットに接続してください。";
@@ -146,6 +150,31 @@
 "settings.logout.areYouSureMessage" = "アカウントからログアウトされ、オフライン表示用に保存されたアイテムがすべてデバイスから削除されます。";
 "settings.logout.areyousure" = "よろしいですか？";
 "settings.help" = "サポートに問い合わせる";
+"settings.accountManagement" = "アカウント管理";
+"settings.accountManagement.deleteAccount" = "アカウントを削除";
+"settings.accountManagement.deleteYourAccount" = "アカウントを削除";
+
+"settings.accountManagement.deleteAccount.warning" = "警告: この操作は取り消せません";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "アカウントを削除するには、**こちらから Premium の購読をキャンセルする**必要があります。";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "Pocket のアカウントとデータが**完全に削除**されることを理解したことになります。";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "Pocket Premium の購読をキャンセルする方法";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "アカウントを削除中";
+"settings.accountManagement.deleteAccount.error.body" = "エラーが発生したため、お客様のアカウントを削除することができません。後ほどもう一度お試しください。";
+"settings.accountManagement.restoreSubscription" = "既存の購読を復元";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "復元しました";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Pocket Premium の購読が復元されました。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "復元できませんでした";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "購読が見つかりませんでした。既に購読済みであると確信している場合は、support@getpocket.com までメールにてお問い合わせください。";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "What could we have done better?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Quick survey";
+
 
 //List view
 "item.list.min" = "%1$@分";

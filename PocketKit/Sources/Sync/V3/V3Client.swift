@@ -89,7 +89,8 @@ public class V3Client: NSObject, V3ClientProtocol {
      */
     func executeRequest<T>(
         request: URLRequest,
-        decodable: T.Type
+        decodable: T.Type,
+        decodingStrategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase
     )  async throws -> T  where T: Decodable {
         let (data, response): (Data, URLResponse)
         do {
@@ -111,12 +112,15 @@ public class V3Client: NSObject, V3ClientProtocol {
             }
 
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            guard let response = try? decoder.decode(decodable, from: data) else {
+            decoder.keyDecodingStrategy = decodingStrategy
+            do {
+                let response = try decoder.decode(decodable, from: data)
+                return response
+            } catch {
+                Log.capture(error: error)
                 throw Error.invalidResponse
             }
 
-            return response
         case 300...399:
             throw Error.unexpectedRedirect
         case 400:
@@ -222,5 +226,22 @@ extension V3Client {
         )
 
         return try await executeRequest(request: request, decodable: DeregisterPushTokenResponse.self)
+    }
+}
+
+extension V3Client {
+    public func premiumStatus() async throws -> PremiumStatusResponse {
+        let currentSession = try fallbackSession(session: sessionProvider.session)
+
+        let request = try buildRequest(
+            path: "purchase_status",
+            request: PremiumStatusRequest(
+                accessToken: currentSession.accessToken,
+                consumerKey: consumerKey,
+                guid: currentSession.guid
+            )
+        )
+
+        return try await executeRequest(request: request, decodable: PremiumStatusResponse.self, decodingStrategy: .useDefaultKeys)
     }
 }

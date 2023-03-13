@@ -16,6 +16,8 @@ struct PremiumUpgradeView: View {
             dismissButton
             upgradeView
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("premium-upgrade-view")
         .padding([.top, .bottom], 20)
         .background(PremiumBackgroundView())
         .task {
@@ -45,6 +47,7 @@ struct PremiumUpgradeView: View {
             } label: {
                 Image(asset: .close).renderingMode(.template).foregroundColor(Color(.ui.grey5))
             }
+            .accessibilityIdentifier("premium-upgrade-view-dismiss-button")
             .padding(.top, 10)
             .padding([.leading, .trailing], 32)
         }
@@ -72,14 +75,15 @@ struct PremiumUpgradeView: View {
                             isYearly: false
                         ) {
                             Task {
+                                viewModel.trackMonthlyButtonTapped()
                                 if Self.shouldAllowUpgrade {
-                                    viewModel.trackMonthlyButtonTapped()
                                     await viewModel.purchaseMonthlySubscription()
                                 } else {
                                     showingMonthlyAlert = true
                                 }
                             }
                         }
+                        .accessibilityIdentifier("premium-upgrade-view-monthly-button")
                         .alert("Comiing Soon!", isPresented: $showingMonthlyAlert) {
                             Button("OK", role: .cancel) { }
                         }
@@ -96,14 +100,15 @@ struct PremiumUpgradeView: View {
                                 isYearly: true
                             ) {
                                 Task {
+                                    viewModel.trackAnnualButtonTapped()
                                     if Self.shouldAllowUpgrade {
-                                        viewModel.trackAnnualButtonTapped()
                                         await viewModel.purchaseAnnualSubscription()
                                     } else {
                                         showingAnnualAlert = true
                                     }
                                 }
                             }
+                            .accessibilityIdentifier("premium-upgrade-view-annual-button")
                             .alert("Comiing Soon!", isPresented: $showingAnnualAlert) {
                                 Button("OK", role: .cancel) { }
                             }

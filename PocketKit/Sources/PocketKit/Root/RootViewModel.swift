@@ -77,6 +77,7 @@ class RootViewModel {
         if UIPasteboard.general.hasURLs, isLoggedIn {
             bannerViewModel = BannerViewModel(
                 prompt: L10n.addCopiedURLToYourSaves,
+                buttonText: L10n.saves,
                 backgroundColor: UIColor(.ui.teal6),
                 borderColor: UIColor(.ui.teal5),
                 primaryAction: { [weak self] url in
@@ -102,7 +103,8 @@ class RootViewModel {
         ])
         tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
         Log.setUserID(session.userIdentifier)
-        source.refresh()
+        source.refreshSaves()
+        source.refreshArchive()
     }
 
     private func tearDownSession() {

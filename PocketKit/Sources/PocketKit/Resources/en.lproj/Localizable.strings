@@ -130,8 +130,11 @@
 "It contains misinformation" = "It contains misinformation";
 "Other" = "Other";
 
+//General Messages
+"general.oops" = "Oops! Try again?";
+
+
 // Search
-"search.errorHeadline" = "Oops! Try again?";
 "search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
 "search.limitedResults" = "Limited search results";
 "search.offlineMessage" = "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.";
@@ -156,6 +159,21 @@
 "settings.accountManagement.deleteAccount.deletionConfirmation" = "You understand your Pocket account and data will be **permanently deleted.**";
 //Links to a help article on how to cancel your subscription
 "settings.accountManagement.deleteAccount.howToCancel" = "How to cancel your Pocket Premium subscription";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Deleting your account";
+"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.restoreSubscription" = "Restore Existing Subscription";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Restore successful";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Your Pocket Premium subscription has been restored.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Restore not successful";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "What could we have done better?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Quick survey";
 
 "settings.noInternet.connection" = "No Internet Connection";
 "settings.noInternet.youMust BeOnline" = "You must be online to upgrade to Pocket Premium. Please check your connection and try again.";
@@ -179,3 +197,17 @@
 "Hooray!" = "Hooray!";
 "premium.success.message" = "You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.";
 "back.to.pocket" = "Back to Pocket";
+"settings.premiumRow" = "Go Premium";
+"settings.premium.settings.thanksForSubscribing" = "Thanks for subscribing to Pocket Premium!";
+"settings.premium.settings.subscriptionStatus" = "Subscription Status";
+"settings.premium.settings.subscription" = "Subscription";
+"settings.premium.settings.datePurchased" = "Date Purchased";
+"settings.premium.settings.renewalDate" = "Renewal Date";
+"settings.premium.settings.purchaseLocation" = "Purchase Location";
+"settings.premium.settings.price" = "Price";
+"settings.premium.settings.yourSubscription" = "Your Subscription";
+"settings.premium.settings.manageYourSubscription" = "Manage your Subscription";
+"settings.premium.settings.questionOrFeedback" = "Questions or Feedback?";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Contact Pocket Support";

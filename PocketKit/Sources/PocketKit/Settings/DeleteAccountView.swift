@@ -4,22 +4,15 @@
 
 import SwiftUI
 import Textile
+import SharedPocketKit
+import Analytics
 
-@MainActor
 struct DeleteAccountView: View {
-    /// If the user is premium
-    @State var isPremium: Bool
-
+    @ObservedObject var viewModel: DeleteAccountViewModel
     /// Confirmation by the user that they have cancelled their premium account
     @State var hasCancelledPremium: Bool = false
-
     /// Confirmation by the user they they understand the deletion is permanent
     @State var understandsPermanentDeletion: Bool = false
-
-    /// State variable listened on from our view model
-    @State var isPresentingCancelationHelp: Bool
-
-    var deleteAccount: () -> Void
 
     @Environment(\.dismiss)
     var dismiss
@@ -34,15 +27,14 @@ struct DeleteAccountView: View {
 
                 Text(L10n.Settings.AccountManagement.DeleteAccount.warning)
                     .style(.deleteAccountView.warning)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
 
                 /**
                  Note below we use LocalizedStringKey. This is a total hack. This is because a SwiftUI text object treats Text("testing") differently then Text(someText). When passed as a variable, the Text view performs no localization, but it also does not render the embedded markdown. When cast to a LocalizedStringKey the Text field will try and localize the content (and fail) but it will render the markdown and bold the text.
                  */
-
                 VStack {
-                    if isPremium {
+                    if viewModel.isPremium {
                         Toggle(isOn: $hasCancelledPremium, label: {
                             Text(LocalizedStringKey(L10n.Settings.AccountManagement.DeleteAccount.premiumConfirmation))
                                 .multilineTextAlignment(.leading)
@@ -59,9 +51,9 @@ struct DeleteAccountView: View {
                     .accessibilityIdentifier("understand-deletion")
                 }.padding()
 
-                if isPremium {
+                if viewModel.isPremium {
                     Button(L10n.Settings.AccountManagement.DeleteAccount.howToCancel) {
-                        isPresentingCancelationHelp.toggle()
+                        viewModel.helpCancelPremium()
                     }
                     .padding()
                     .buttonStyle(PocketButtonStyle(.internalInfoLink))
@@ -73,11 +65,11 @@ struct DeleteAccountView: View {
                 }
 
                 Button(L10n.Settings.AccountManagement.deleteAccount) {
-                    deleteAccount()
+                    viewModel.deleteAccount()
                 }
                 .buttonStyle(PocketButtonStyle(.primary))
                 .disabled(
-                    isPremium ?
+                    viewModel.isPremium ?
                           !(hasCancelledPremium && understandsPermanentDeletion) :
                             !understandsPermanentDeletion
                 )
@@ -85,12 +77,12 @@ struct DeleteAccountView: View {
                 .accessibilityIdentifier("delete-account")
 
                 Button(L10n.cancel) {
+                    viewModel.trackDeleteDismissed(dismissReason: .button)
                     dismiss()
                 }
                 .buttonStyle(PocketButtonStyle(.secondary))
                 .padding()
                 .accessibilityIdentifier("cancel")
-
                 Spacer()
             }
             .navigationTitle(L10n.Settings.accountManagement)
@@ -98,17 +90,51 @@ struct DeleteAccountView: View {
             .navigationBarItems(
                 trailing:
                 Button(action: {
+                    viewModel.trackDeleteDismissed(dismissReason: .closeButton)
                     dismiss()
                 }) {
                     Text(L10n.close)
                 }.accessibilityIdentifier("close")
             )
         }
-        .sheet(isPresented: $isPresentingCancelationHelp) {
+        .sheet(isPresented: $viewModel.isPresentingCancelationHelp) {
             SFSafariView(url: LinkedExternalURLS.CancelingPremium)
                 .edgesIgnoringSafeArea(.bottom)
+                .onAppear {
+                    viewModel.trackHelpCancelingPremiumImpression()
+                }
         }
         .accessibilityIdentifier("delete-confirmation")
+        .overlay {
+            if viewModel.isDeletingAccount {
+                DeleteLoadingView()
+            }
+        }
+        .alert(isPresented: $viewModel.showErrorAlert) {
+            Alert(title: Text(L10n.General.oops), message: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.body), dismissButton: .cancel(Text(L10n.ok)))
+        }
+        .onAppear {
+            viewModel.trackDeleteConfirmationImpression()
+        }
+    }
+}
+
+private struct DeleteLoadingView: View {
+    var body: some View {
+        VStack {
+            HStack {
+               Spacer()
+            }
+            Spacer()
+            LottieView(.loading)
+                .frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 100)
+            Text(L10n.Settings.AccountManagement.DeleteAccount.deleting).style(.deleteAccountView.overlay)
+            Spacer()
+        }
+        .background(Color(.ui.grey3))
+        .foregroundColor(Color(.ui.white1))
+        .opacity(0.9)
+        .accessibilityIdentifier("deleting-overlay")
     }
 }
 
@@ -117,27 +143,60 @@ extension Style {
         let header: Style = Style.header.sansSerif.h2.with(color: .ui.black1)
         let warning: Style = Style.header.sansSerif.p2.with(color: .ui.black1).with(weight: .bold)
         let body: Style = Style.header.sansSerif.p3.with(color: .ui.black1)
+        let overlay: Style = Style.header.sansSerif.p2.with(color: .ui.white).with(weight: .bold)
     }
 
     static let deleteAccountView = DeleteAccountView()
 }
 
 struct DeleteAccountView_PreviewProvider: PreviewProvider {
+    static func makePreview(isPremium: Bool = false,
+                            isPresentingCancellationHelp: Bool = false,
+                            isDeletingAccount: Bool = false,
+                            showErrorAlert: Bool = false) -> DeleteAccountView {
+        DeleteAccountView(
+            viewModel: DeleteAccountViewModel(
+                isPresentingCancellationHelp: isPresentingCancellationHelp,
+                isDeletingAccount: isDeletingAccount,
+                showErrorAlert: showErrorAlert,
+                isPremium: isPremium,
+                userManagementService: PreviewUserManagementService(),
+                tracker: PreviewTracker()
+            )
+        )
+    }
+
     static var previews: some View {
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: false, deleteAccount: {})
+            makePreview()
             .previewDisplayName("Free User - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: false, isPresentingCancelationHelp: false, deleteAccount: {})
+        makePreview()
             .previewDisplayName("Free User - Dark")
             .preferredColorScheme(.dark)
 
-        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
+        makePreview(isPremium: true)
             .previewDisplayName("Premium User - Light")
             .preferredColorScheme(.light)
 
-        DeleteAccountView(isPremium: true, isPresentingCancelationHelp: false, deleteAccount: {})
+        makePreview(isPremium: true)
             .previewDisplayName("Premium User - Dark")
+            .preferredColorScheme(.dark)
+
+        makePreview(isDeletingAccount: true)
+            .previewDisplayName("Deleting Account - Light")
+            .preferredColorScheme(.light)
+
+        makePreview(isDeletingAccount: true)
+            .previewDisplayName("Deleting Account - Dark")
+            .preferredColorScheme(.dark)
+
+        makePreview(showErrorAlert: true)
+            .previewDisplayName("Error - Light")
+            .preferredColorScheme(.light)
+
+        makePreview(showErrorAlert: true)
+            .previewDisplayName("Error - Dark")
             .preferredColorScheme(.dark)
     }
 }

@@ -4,6 +4,11 @@ import Analytics
 import Combine
 import UIKit
 
+public enum SavesViewType {
+    case saves
+    case archive
+}
+
 class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     typealias ItemIdentifier = NSManagedObjectID
     typealias Snapshot = NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>>
@@ -11,7 +16,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let _events: PassthroughSubject<ItemsListEvent<ItemIdentifier>, Never> = .init()
     var events: AnyPublisher<ItemsListEvent<ItemIdentifier>, Never> { _events.eraseToAnyPublisher() }
 
-    let selectionItem: SelectionItem = SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+    var selectionItem: SelectionItem {
+        switch self.viewType {
+        case .saves:
+            return SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+        case .archive:
+            return SelectionItem(title: L10n.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
+        }
+    }
 
     @Published
     private var _snapshot = Snapshot()
@@ -50,8 +62,13 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return FavoritesEmptyStateViewModel()
         } else if selectedFilters.contains(.tagged) {
             return TagsEmptyStateViewModel()
-        } else {
+        }
+
+        switch self.viewType {
+        case .saves:
             return SavesEmptyStateViewModel()
+        case .archive:
+            return ArchiveEmptyStateViewModel()
         }
     }
 
@@ -63,14 +80,23 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
+    private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, listOptions: ListOptions, notificationCenter: NotificationCenter) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter) {
         self.source = source
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
-        self.itemsController = source.makeItemsController()
+        self.viewType = viewType
         self.listOptions = listOptions
+
+        switch self.viewType {
+        case .saves:
+            self.itemsController = source.makeSavesController()
+        case .archive:
+            self.itemsController = source.makeArchiveController()
+        }
+
         self.notificationCenter = notificationCenter
 
         super.init()
@@ -146,14 +172,25 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func fetchItems(with predicates: [NSPredicate]) {
-        self.itemsController.predicate = Predicates.savedItems(filters: predicates)
+        switch self.viewType {
+        case .saves:
+            self.itemsController.predicate = Predicates.savedItems(filters: predicates)
+        case .archive:
+            self.itemsController.predicate = Predicates.archivedItems(filters: predicates)
+        }
 
         try? self.itemsController.performFetch()
         self.itemsLoaded()
     }
 
     func refresh(_ completion: (() -> Void)? = nil) {
-        source.refresh(completion: completion)
+        switch self.viewType {
+        case .saves:
+            source.refreshSaves(completion: completion)
+        case .archive:
+            source.refreshArchive(completion: completion)
+        }
+
         source.retryImmediately()
     }
 
@@ -257,17 +294,21 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         guard let item = bareItem(with: objectID) else {
             return []
         }
-        return [
-            .addTags { [weak self] _ in
-                self?.showAddTagsView(item: item)
-            },
-            .archive { [weak self] _ in
-                self?._archive(item: item)
-            },
-            .delete { [weak self] _ in
-                self?.confirmDelete(item: item)
-            }
-        ]
+
+        switch self.viewType {
+        case .saves:
+            return [
+                .addTags { [weak self] _ in self?.showAddTagsView(item: item) },
+                .archive { [weak self] _ in self?._archive(item: item) },
+                .delete { [weak self] _ in self?.confirmDelete(item: item) }
+            ]
+        case .archive:
+            return [
+                .addTags { [weak self] _ in self?.showAddTagsView(item: item) },
+                .moveToSaves { [weak self] _ in self?._moveToSaves(item: item) },
+                .delete { [weak self] _ in self?.confirmDelete(item: item) }
+            ]
+        }
     }
 
     func trackOverflow(for objectID: NSManagedObjectID) -> UIAction? {
@@ -293,17 +334,32 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return []
         }
 
-        return [
-            .archive { [weak self] completion in
-                self?._archive(item: item)
-                completion(true)
-            }
-        ]
+        switch self.viewType {
+        case .saves:
+            return [
+                .archive { [weak self] completion in
+                    self?._archive(item: item)
+                    completion(true)
+                }
+            ]
+        case .archive:
+            return [
+                .moveToSaves { [weak self] completion in
+                    self?._moveToSaves(item: item)
+                    completion(true)
+                }
+            ]
+        }
     }
 
     private func _archive(item: SavedItem) {
         track(item: item, identifier: .itemArchive)
         source.archive(item: item)
+    }
+
+    private func _moveToSaves(item: SavedItem) {
+        track(item: item, identifier: .itemSave)
+        source.unarchive(item: item)
     }
 
     private func confirmDelete(item: SavedItem) {
@@ -349,7 +405,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
-        switch source.initialDownloadState.value {
+        var stateValue: InitialDownloadState
+        switch self.viewType {
+        case .saves:
+            stateValue = source.initialSavesDownloadState.value
+        case .archive:
+            stateValue = source.initialArchiveDownloadState.value
+        }
+
+        switch stateValue {
         case .unknown, .completed:
             itemCellIDs = itemsController
                 .fetchedObjects?
@@ -505,7 +569,13 @@ extension SavedItemsListViewModel {
         case .longestToRead, .shortestToRead:
             sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
         case .newest, .oldest:
-            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
+
+            switch self.viewType {
+            case .saves:
+                sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.createdAt, ascending: (listOptions.selectedSortOption == .oldest))
+            case .archive:
+                sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.archivedAt, ascending: (listOptions.selectedSortOption == .oldest))
+            }
         }
 
         guard let sortDescriptor = sortDescriptorTemp else {
@@ -583,6 +653,7 @@ extension SavedItemsListViewModel {
         presentedAddTags = PocketAddTagsViewModel(
             item: item,
             source: source,
+            tracker: tracker,
             saveAction: { [weak self] in
                 self?.refresh()
             }
@@ -605,7 +676,13 @@ extension SavedItemsListViewModel {
                 source.refresh($0, mergeChanges: true)
             }
             var snapshot = buildSnapshot()
-            snapshot.reloadItems(updatedSavedItems.map { .item($0.objectID) })
+
+            switch self.viewType {
+            case .saves:
+                snapshot.reloadItems(updatedSavedItems.filter({ $0.isArchived == false }).map { .item($0.objectID) })
+            case .archive:
+                snapshot.reloadItems(updatedSavedItems.filter({ $0.isArchived }).map { .item($0.objectID) })
+            }
             _snapshot = snapshot
         }
     }

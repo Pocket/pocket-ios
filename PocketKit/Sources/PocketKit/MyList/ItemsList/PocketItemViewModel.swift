@@ -37,6 +37,7 @@ class PocketItemViewModel: ObservableObject {
         let addTagsViewModel = PocketAddTagsViewModel(
             item: savedItem,
             source: source,
+            tracker: tracker,
             saveAction: {}
         )
         tracker.track(event: Events.Search.showAddTags(itemUrl: savedItem.url, positionInList: index, scope: scope))

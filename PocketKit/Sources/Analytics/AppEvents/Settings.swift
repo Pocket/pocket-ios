@@ -10,18 +10,132 @@ public extension Events {
 }
 
 public extension Events.Settings {
-    /**
-     Fired when a user views the settings screen
-     */
-    static func SettingsView() -> Engagement {
-        return Engagement(
-            .general,
+    /// Fired when a user views the settings screen
+    static func settingsImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
             uiEntity: UiEntity(
                 .screen,
                 identifier: "global-nav.settings"
             )
         )
     }
+
+    /// Logout tapped
+    static func logoutRowTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.logout"
+            )
+        )
+    }
+
+    /// Logout tapped
+    static func logoutConfirmTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.logout-confirmed"
+            )
+        )
+    }
+
+    /// Account management screen settings row tapped
+    static func accountManagementRowTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.click"
+            )
+        )
+    }
+
+    /// Account management screen viewed
+    static func accountManagementImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.settings.account-management"
+            )
+        )
+    }
+
+    /// Delete user settings row tapped
+    static func deleteRowTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.delete.click"
+            )
+        )
+    }
+
+    /// Delete confirmation screen impression
+    static func deleteConfirmationImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.settings.account-management.delete"
+            )
+        )
+    }
+
+    /// Help cancel premium button tapped
+    static func helpCancelingPremiumTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.delete.help-cancel-premium.click"
+            )
+        )
+    }
+
+    /// Help canceling premium impression
+    static func helpCancelingPremiumImpression() -> Impression {
+        return Impression(
+            component: .screen,
+            requirement: .viewable,
+            uiEntity: UiEntity(
+                .screen,
+                identifier: "global-nav.settings.account-management.delete.help-cancel-premium"
+            )
+        )
+    }
+
+    /// Delete confirmation tapped
+    static func deleteConfirmationTapped() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.delete.confirm.click"
+            )
+        )
+    }
+
+    /// Delete cancel tapped
+    static func deleteDismissed(reason: DismissReason) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.settings.account-management.delete.dismissed",
+                componentDetail: reason.rawValue
+            )
+        )
+    }
+
     /// "Go Premium" button viewed
     static func premiumUpsellViewed() -> Event {
         return Impression(

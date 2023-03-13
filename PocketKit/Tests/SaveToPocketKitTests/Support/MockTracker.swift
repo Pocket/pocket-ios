@@ -29,7 +29,7 @@ class MockTracker: Tracker {
         oldTrackCalls.add(OldTrackCall(event: event, contexts: contexts))
     }
 
-    func track(event: Event) {
+    public func track(event: Event, filename: String, line: Int, column: Int, funcName: String) {
         trackCalls.add(TrackCall(event: event))
     }
 

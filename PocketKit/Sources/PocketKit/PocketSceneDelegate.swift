@@ -27,13 +27,16 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         savedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
+                            viewType: .saves,
                             listOptions: .saved,
                             notificationCenter: .default
                         ),
-                        archivedItemsList: ArchivedItemsListViewModel(
+                        archivedItemsList: SavedItemsListViewModel(
                             source: Services.shared.source,
                             tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
-                            listOptions: .archived
+                            viewType: .archive,
+                            listOptions: .archived,
+                            notificationCenter: .default
                         )
                     ),
                     home: HomeViewModel(
@@ -47,11 +50,16 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                         user: Services.shared.user,
                         tracker: Services.shared.tracker,
                         userDefaults: Services.shared.userDefaults,
+                        userManagementService: Services.shared.userManagementService,
                         notificationCenter: .default,
-                        networkPathMonitor: NWPathMonitor()
-                    ) { tracker, source in
-                        PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
-                    }
+                        networkPathMonitor: NWPathMonitor(),
+                        restoreSubscription: {
+                            try await Services.shared.subscriptionStore.restoreSubscription()
+                        },
+                        premiumUpgradeViewModelFactory: { tracker, source in
+                            PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                        }
+                    )
                 ),
                 source: Services.shared.source,
                 tracker: Services.shared.tracker
@@ -64,7 +72,8 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                     authorizationClient: Services.shared.authClient,
                     appSession: Services.shared.appSession,
                     networkPathMonitor: NWPathMonitor(),
-                    tracker: Services.shared.tracker.childTracker(hosting: .loggedOut.screen)
+                    tracker: Services.shared.tracker.childTracker(hosting: .loggedOut.screen),
+                    userManagementService: Services.shared.userManagementService
                 )
             )
         }

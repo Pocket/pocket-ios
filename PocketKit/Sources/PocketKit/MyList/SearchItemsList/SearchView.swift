@@ -33,6 +33,10 @@ struct SearchView: View {
 
 // MARK: - Search Results Component
 struct ResultsView: View {
+    enum Constants {
+        static let indexToTriggerNextPage = 15
+    }
+
     @ObservedObject
     var viewModel: SearchViewModel
 
@@ -55,6 +59,10 @@ struct ResultsView: View {
                         viewModel.select(item, index: index)
                     }
                 }.onAppear {
+                    let triggerNextPage = index == results.count - Constants.indexToTriggerNextPage
+                    if triggerNextPage {
+                        viewModel.loadMoreSearchResults(with: item, at: index)
+                    }
                     viewModel.trackViewResults(url: item.url, index: index)
                 }
             }
@@ -119,6 +127,7 @@ struct GetPocketPremiumButton: View {
             .task {
                 searchViewModel.trackPremiumUpsellViewed()
             }
+            .accessibilityIdentifier("get-pocket-premium-button")
     }
 }
 

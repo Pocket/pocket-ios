@@ -137,6 +137,10 @@ public class Space {
         return try fetch(Requests.fetchTags(excluding: tags))
     }
 
+    func filterTags(with input: String, excluding tags: [String]) throws -> [Tag] {
+        return try fetch(Requests.filterTags(with: input, excluding: tags))
+    }
+
     func deleteTag(byID id: String) throws {
         let fetchRequest = Requests.fetchTag(byID: id)
         fetchRequest.fetchLimit = 1
@@ -243,22 +247,6 @@ public class Space {
 
     func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
         context.refresh(object, mergeChanges: mergeChanges)
-    }
-
-    func batchDeleteArchivedItems() throws {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = SavedItem.fetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "isArchived = 1")
-
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        deleteRequest.resultType = .resultTypeObjectIDs
-
-        let deleteResult = try context.execute(deleteRequest) as? NSBatchDeleteResult
-        if let deletedItemIDs = deleteResult?.result as? [NSManagedObjectID] {
-            NSManagedObjectContext.mergeChanges(
-                fromRemoteContextSave: [NSDeletedObjectsKey: deletedItemIDs],
-                into: [context]
-            )
-        }
     }
 
     func batchDeleteOrphanedSlates() throws {

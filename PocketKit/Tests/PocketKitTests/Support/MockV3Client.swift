@@ -74,3 +74,33 @@ extension MockV3Client {
         return calls[index] as? DeregisterPushTokenCall
     }
 }
+
+// MARK: premiumStatus
+extension MockV3Client {
+    static let premiumStatus = "premiumStatus"
+    typealias PremiumStatusImpl = () -> Sync.PremiumStatusResponse
+    struct PremiumStatusCall { }
+
+    func stubPremiumStatusImpl(impl: @escaping PremiumStatusImpl) {
+        implementations[Self.premiumStatus] = impl
+    }
+
+    func premiumStatus() async throws -> Sync.PremiumStatusResponse {
+        guard let impl = implementations[Self.premiumStatus] as? PremiumStatusImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.premiumStatus] = (calls[Self.premiumStatus] ?? []) + [PremiumStatusCall()]
+
+        return impl()
+    }
+
+    func premiumStatusCall(at index: Int) -> PremiumStatusCall? {
+        guard let calls = calls[Self.premiumStatus],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? PremiumStatusCall
+    }
+}

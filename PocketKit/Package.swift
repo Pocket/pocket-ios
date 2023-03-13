@@ -34,11 +34,9 @@ let package = Package(
                 "Analytics",
                 "SharedPocketKit",
                 .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
-                .product(name: "Lottie", package: "lottie-ios"),
                 .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "BrazeUI", package: "braze-swift-sdk")
-            ],
-            resources: [.copy("Assets")]
+            ]
         ),
         .testTarget(
             name: "PocketKitTests",
@@ -66,9 +64,11 @@ let package = Package(
             name: "Textile",
             dependencies: [
                 .product(name: "Kingfisher", package: "Kingfisher"),
-                .product(name: "Down", package: "Down")
+                .product(name: "Down", package: "Down"),
+                .product(name: "Lottie", package: "lottie-ios"),
             ],
             resources: [
+                .copy("Assets"),
                 .copy("Style/Typography/Fonts"),
                 .process("Style/Colors/Colors.xcassets"),
                 .process("Style/Images/Images.xcassets"),

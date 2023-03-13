@@ -1,6 +1,6 @@
 {
     "data": {
-        "userByToken": {
+        "user": {
             "__typename": "[type-name-here]",
             "isPremium": true,
             "savedItems": {
@@ -106,6 +106,16 @@
                                     "__typename": "Tag",
                                     "id": "id-2",
                                     "name": "tag 2"
+                                },
+                                {
+                                    "__typename": "Tag",
+                                    "id": "id-3",
+                                    "name": "filter tag 0"
+                                },
+                                {
+                                    "__typename": "Tag",
+                                    "id": "id-4",
+                                    "name": "filter tag 1"
                                 }
                             ],
                             "item": {

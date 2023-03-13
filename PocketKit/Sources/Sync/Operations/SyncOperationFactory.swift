@@ -6,14 +6,20 @@ import PocketGraph
 import SharedPocketKit
 
 protocol SyncOperationFactory {
-    func fetchList(
+    func fetchSaves(
         user: User,
-        token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation
+
+    func fetchArchive(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
         lastRefresh: LastRefresh
     ) -> SyncOperation
 
@@ -39,24 +45,36 @@ protocol SyncOperationFactory {
 }
 
 class OperationFactory: SyncOperationFactory {
-    func fetchList(
+    func fetchSaves(
         user: User,
-        token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
-        return FetchList(
+        return FetchSaves(
             user: user,
-            token: token,
             apollo: apollo,
             space: space,
             events: events,
             initialDownloadState: initialDownloadState,
-            maxItems: maxItems,
+            lastRefresh: lastRefresh
+        )
+    }
+
+    func fetchArchive(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation {
+        return FetchArchive(
+            apollo: apollo,
+            space: space,
+            events: events,
+            initialDownloadState: initialDownloadState,
             lastRefresh: lastRefresh
         )
     }

@@ -21,9 +21,10 @@ class APISlateService: SlateService {
     }
 
     func fetchSlateLineup(_ identifier: String) async throws {
-        let query = GetSlateLineupQuery(lineupID: identifier, maxRecommendations: 5)
+        let query = GetSlateLineupQuery(lineupID: identifier, maxRecommendations: SyncConstants.Home.recomendationsPerSlateFromSlateLineup)
 
         guard let remote = try await apollo.fetch(query: query).data?.getSlateLineup else {
+            Log.capture(message: "Error loading slate lineup")
             return
         }
 
@@ -31,7 +32,7 @@ class APISlateService: SlateService {
     }
 
     func fetchSlate(_ slateID: String) async throws {
-        let query = GetSlateQuery(slateID: slateID, recommendationCount: 25)
+        let query = GetSlateQuery(slateID: slateID, recommendationCount: SyncConstants.Home.recomendationsPerSlateDetail)
 
         guard let remote = try await apollo.fetch(query: query)
             .data?.getSlate.fragments.slateParts else {

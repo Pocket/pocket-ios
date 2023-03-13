@@ -31,6 +31,7 @@ struct Services {
     let braze: BrazeProtocol
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
+    let userManagementService: UserManagementServiceProtocol
 
     private let persistentContainer: PersistentContainer
 
@@ -72,13 +73,15 @@ struct Services {
         refreshCoordinator = RefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            source: source
+            source: source,
+            sessionProvider: appSession
         )
 
         homeRefreshCoordinator = HomeRefreshCoordinator(
             notificationCenter: .default,
             userDefaults: userDefaults,
-            source: source
+            source: source,
+            sessionProvider: appSession
         )
 
         imageManager = ImageManager(
@@ -113,6 +116,8 @@ struct Services {
             badgeProvider: UIApplication.shared
         )
         subscriptionStore = PocketSubscriptionStore(user: user)
+
+        userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
     }
 }
 

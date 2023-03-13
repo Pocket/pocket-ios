@@ -111,6 +111,7 @@
 "Rename Tag" = "Renommer le label";
 "Rename" = "Renommer";
 "Enter a new name for this tag" = "Saisissez le nouveau nom du label";
+"Close" = "Fermer";
 
 "not tagged" = "Sans label";
 "OK" = "OK";
@@ -129,8 +130,11 @@
 "It contains misinformation" = "Certaines des informations sont erronées";
 "Other" = "Autre";
 
+//General Messages
+"general.oops" = "Oups ! Vous voulez réessayer ?";
+
+
 // Search
-"search.errorHeadline" = "Oups ! Vous voulez réessayer ?";
 "search.errorMessage" = "Une erreur s'est produite. Veuillez réessayer ultérieurement.";
 "search.limitedResults" = "Résultats de recherche limités";
 "search.offlineMessage" = "Lorsque vous êtes hors ligne, vous pouvez uniquement rechercher des titres et des URL. Connectez-vous à Internet pour utiliser la recherche en texte intégral de Premium.";
@@ -146,6 +150,31 @@
 "settings.logout.areYouSureMessage" = "Vous allez être déconnecté(e) de votre compte et tous les éléments sauvegardés pour être consultés hors ligne seront supprimés de votre appareil.";
 "settings.logout.areyousure" = "Confirmer ?";
 "settings.help" = "Obtenir de l'aide et une assistance technique";
+"settings.accountManagement" = "Gestion du compte";
+"settings.accountManagement.deleteAccount" = "Supprimer le compte";
+"settings.accountManagement.deleteYourAccount" = "Supprimez votre compte";
+
+"settings.accountManagement.deleteAccount.warning" = "Attention : cette action est irréversible";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "Pour supprimer votre compte, vous devez d'abord **annuler votre abonnement Premium ici.**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "Vous comprenez que votre compte Pocket et vos données seront **définitivement supprimés.**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "Comment annuler votre abonnement Pocket Premium";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "Suppression de votre compte";
+"settings.accountManagement.deleteAccount.error.body" = "Une erreur s'est produite et nous ne pouvons pas supprimer votre compte. Veuillez réessayer ultérieurement.";
+"settings.accountManagement.restoreSubscription" = "Restaurer l'abonnement existant";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Restauration réussie";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Votre abonnement Pocket Premium a été restauré.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Échec de la restauration";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Nous n'avons pas trouvé d'abonnement. Si vous pensez en avoir un, veuillez nous contacter en envoyant un e-mail à l'adresse support@getpocket.com.";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "What could we have done better?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Quick survey";
+
 
 //List view
 "item.list.min" = "%1$@ min";

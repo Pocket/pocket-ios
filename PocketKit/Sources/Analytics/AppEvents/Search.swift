@@ -303,6 +303,24 @@ public extension Events.Search {
         )
     }
 
+    /**
+     Fired when a user triggers a results page call in `Search`
+     */
+    static func searchResultsPage(
+        pageNumber: Int,
+        scope: SearchScope
+    ) -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .page,
+                identifier: "global-nav.search.searchPage",
+                componentDetail: getScopeIdentifier(scope: scope),
+                index: pageNumber
+            )
+        )
+    }
+
     /// Premium upsell in Search visible
     static func premiumUpsellViewed() -> Event {
         return Impression(

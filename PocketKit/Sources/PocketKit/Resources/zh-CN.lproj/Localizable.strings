@@ -111,6 +111,7 @@
 "Rename Tag" = "重命名标记";
 "Rename" = "重命名";
 "Enter a new name for this tag" = "为此标记输入新名称";
+"Close" = "关闭";
 
 "not tagged" = "未标记";
 "OK" = "确定";
@@ -129,8 +130,11 @@
 "It contains misinformation" = "包含错误信息";
 "Other" = "其他";
 
+//General Messages
+"general.oops" = "糟糕！再试一次？";
+
+
 // Search
-"search.errorHeadline" = "糟糕！再试一次？";
 "search.errorMessage" = "我们遇到了错误，暂时无法为您提供所需的信息。请稍后重试。";
 "search.limitedResults" = "有限搜索结果";
 "search.offlineMessage" = "您只能在脱机时搜索标题和 URL。连接到互联网即可使用 Premium 的全文搜索。";
@@ -146,6 +150,31 @@
 "settings.logout.areYouSureMessage" = "您的帐号将被注销，所有已保存供脱机阅读的项目都将从您的设备中删除。";
 "settings.logout.areyousure" = "您确定吗？";
 "settings.help" = "获取帮助和支持";
+"settings.accountManagement" = "帐号管理";
+"settings.accountManagement.deleteAccount" = "删除帐号";
+"settings.accountManagement.deleteYourAccount" = "删除帐号";
+
+"settings.accountManagement.deleteAccount.warning" = "警告：此操作无法恢复";
+"settings.accountManagement.deleteAccount.premiumConfirmation" = "要删除您的帐号，您必须先**在此处取消您的 Premium 订购。**";
+"settings.accountManagement.deleteAccount.deletionConfirmation" = "您了解您的 Pocket 帐号和数据将被**永久删除。**";
+//Links to a help article on how to cancel your subscription
+"settings.accountManagement.deleteAccount.howToCancel" = "如何取消您的 Pocket Premium 订购";
+//Loading screen showing that the account deletion is in progress
+"settings.accountManagement.deleteAccount.deleting" = "删除帐号";
+"settings.accountManagement.deleteAccount.error.body" = "我们遇到了错误，无法删除您的帐号。请稍后重试。";
+"settings.accountManagement.restoreSubscription" = "恢复现有订购";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "恢复成功";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 订购已恢复。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "恢复未成功";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到订购。如果您认为有订购，请发送电子邮件至 support@getpocket.com 并告知我们。";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "您已删除 Pocket 帐户";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "我们还可以在哪些方面做得更好？";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "快速调查";
+
 
 //List view
 "item.list.min" = "%1$@ 分钟";

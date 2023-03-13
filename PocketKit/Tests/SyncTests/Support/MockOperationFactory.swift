@@ -12,69 +12,115 @@ class MockOperationFactory: SyncOperationFactory {
     private var calls: [String: [Any]] = [:]
 }
 
-// MARK: - fetchList
+// MARK: - fetchSaves
 extension MockOperationFactory {
-    typealias FetchListImpl = (
+    typealias FetchSavesImpl = (
         User,
-        String,
         ApolloClientProtocol,
         Space,
         SyncEvents,
-        CurrentValueSubject<InitialDownloadState, Never>,
-        Int
+        CurrentValueSubject<InitialDownloadState, Never>
     ) -> SyncOperation
 
-    struct FetchListCall {
+    struct FetchSavesCall {
         let user: User
-        let token: String
         let apollo: ApolloClientProtocol
         let space: Space
         let events: SyncEvents
         let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
-        let maxItems: Int
         let lastRefresh: LastRefresh
     }
 
-    func stubFetchList(impl: @escaping FetchListImpl) {
-        implementations["fetchList"] = impl
+    func stubFetchSaves(impl: @escaping FetchSavesImpl) {
+        implementations["fetchSaves"] = impl
     }
 
-    func fetchList(
+    func fetchSaves(
         user: User,
-        token: String,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
-        guard let impl = implementations["fetchList"] as? FetchListImpl else {
+        guard let impl = implementations["fetchSaves"] as? FetchSavesImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls["fetchList"] = (calls["fetchList"] ?? []) + [
-            FetchListCall(
+        calls["fetchSaves"] = (calls["fetchSaves"] ?? []) + [
+            FetchSavesCall(
                 user: user,
-                token: token,
                 apollo: apollo,
                 space: space,
                 events: events,
                 initialDownloadState: initialDownloadState,
-                maxItems: maxItems,
                 lastRefresh: lastRefresh
             )
         ]
 
-        return impl(user, token, apollo, space, events, initialDownloadState, maxItems)
+        return impl(user, apollo, space, events, initialDownloadState)
     }
 
-    func fetchListCall(at index: Int) -> FetchListCall? {
-        guard let fetchListCalls = calls["fetchList"], index < fetchListCalls.count else {
+    func fetchSavesCall(at index: Int) -> FetchSavesCall? {
+        guard let fetchSavesCalls = calls["fetchSaves"], index < fetchSavesCalls.count else {
             return nil
         }
 
-        return fetchListCalls[index] as? FetchListCall
+        return fetchSavesCalls[index] as? FetchSavesCall
+    }
+}
+
+// MARK: - fetchArchive
+extension MockOperationFactory {
+    typealias FetchArchiveImpl = (
+        ApolloClientProtocol,
+        Space,
+        SyncEvents,
+        CurrentValueSubject<InitialDownloadState, Never>
+    ) -> SyncOperation
+
+    struct FetchArchiveCall {
+        let apollo: ApolloClientProtocol
+        let space: Space
+        let events: SyncEvents
+        let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
+        let lastRefresh: LastRefresh
+    }
+
+    func stubFetchArchive(impl: @escaping FetchArchiveImpl) {
+        implementations["fetchArchive"] = impl
+    }
+
+    func fetchArchive(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation {
+        guard let impl = implementations["fetchArchive"] as? FetchArchiveImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls["fetchArchive"] = (calls["fetchArchive"] ?? []) + [
+            FetchArchiveCall(
+                apollo: apollo,
+                space: space,
+                events: events,
+                initialDownloadState: initialDownloadState,
+                lastRefresh: lastRefresh
+            )
+        ]
+
+        return impl(apollo, space, events, initialDownloadState)
+    }
+
+    func fetchArchiveCall(at index: Int) -> FetchArchiveCall? {
+        guard let fetchArchiveCalls = calls["fetchArchive"], index < fetchArchiveCalls.count else {
+            return nil
+        }
+
+        return fetchArchiveCalls[index] as? FetchArchiveCall
     }
 }
 

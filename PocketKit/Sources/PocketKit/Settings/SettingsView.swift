@@ -11,7 +11,7 @@ class SettingsViewController: UIHostingController<SettingsView> {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        rootView.model.trackSettingsView()
+        rootView.model.trackSettingsViewed()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -59,7 +59,20 @@ struct SettingsForm: View {
                     SettingsRowToggle(title: L10n.showAppBadgeCount, model: model) {
                         model.toggleAppBadge()
                     }
-                }.textCase(nil)
+                }
+                .textCase(nil)
+                .alert(
+                    L10n.Settings.NoInternet.connection,
+                    isPresented: $model.isPresentingOfflineView,
+                    actions: {
+                        Button(L10n.Settings.NoInternet.ok, role: nil, action: {})
+                        Button(L10n.Settings.NoInternet.goToSettings, role: nil, action: {
+                            UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
+                        })
+                    }, message: {
+                        Text(L10n.Settings.NoInternet.youMustBeOnline)
+                    }
+                )
 
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
@@ -129,8 +142,10 @@ extension SettingsForm {
         Section(header: Text(L10n.yourAccount).style(.settings.header)) {
             if model.isPremium {
                 makePremiumSubscriptionRow()
+                    .accessibilityIdentifier("premium-subscription-button")
             } else {
                 makeGoPremiumRow()
+                    .accessibilityIdentifier("go-premium-button")
             }
 
             // Custom implementation to hide the > arrow and let us use our own.
@@ -142,7 +157,9 @@ extension SettingsForm {
                 .buttonStyle(PlainButtonStyle())
 
                 HStack {
-                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {}
+                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {
+                        model.trackAccountManagementTapped()
+                    }
                         .accessibilityIdentifier("account-management-button")
                 }
             }
@@ -156,6 +173,7 @@ extension SettingsForm {
                     color: Color(.ui.apricot1)
                 )
             ) {
+                model.trackLogoutRowTapped()
                 model.isPresentingSignOutConfirm.toggle()
             }
                 .accessibilityIdentifier("log-out-button")
@@ -164,6 +182,7 @@ extension SettingsForm {
                     isPresented: $model.isPresentingSignOutConfirm,
                     actions: {
                         Button(L10n.Settings.logout, role: .destructive) {
+                            model.trackLogoutConfirmTapped()
                             model.signOut()
                         }
                     }, message: {
@@ -177,14 +196,14 @@ extension SettingsForm {
         let title = isPremium ? L10n.Settings.premiumSubscriptionRow : L10n.Settings.goPremiumRow
         let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
         let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
-        let action = isPremium ? { model.showOfflinePremiumAlert() } : {
-            model.showOfflinePremiumAlert()
-//            if model.isOffline {
-//                model.showOfflinePremiumAlert()
-//            } else {
-//                model.showPremiumUpgrade()
-//            }
+        let action = isPremium ? { model.showPremiumStatus() } : {
+            if model.isOffline {
+                model.showOfflinePremiumAlert()
+            } else {
+                model.showPremiumUpgrade()
+            }
         }
+
         return SettingsRowButton(
             title: title,
             titleStyle: titleStyle,
@@ -210,24 +229,11 @@ extension SettingsForm {
             }
     }
 
-    private func showOfflinePremiumUpgrade() -> some View {
-        VStack {}
-            .alert(
-                L10n.Settings.NoInternet.connection,
-                   isPresented: $model.isPresentingOfflineView,
-                   actions: {
-                Button(L10n.Settings.NoInternet.ok, role: nil, action: {})
-                Button(L10n.Settings.NoInternet.goToSettings, role: nil, action: {
-                    UIApplication.shared.open(URL(string: UIApplication.openSettingsURLString)!)
-                })
-            }, message: {
-                Text(L10n.Settings.NoInternet.youMustBeOnline)
-            })
-    }
-
     private func makePremiumSubscriptionRow() -> some View {
         makePremiumRowContent(true)
-        // TODO: add logic to present the premium subscription sheet here
+            .sheet(isPresented: $model.isPresentingPremiumStatus) {
+                PremiumStatusView(viewModel: PremiumSettingsViewModel())
+            }
     }
 }
 

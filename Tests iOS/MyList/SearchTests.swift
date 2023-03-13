@@ -318,7 +318,7 @@ class SearchTests: XCTestCase {
 
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
-        app.saves.searchView.searchItemCell(at: 0).tap()
+        app.saves.searchView.searchItemCell(matching: "Item 1").tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
 
@@ -390,6 +390,8 @@ class SearchTests: XCTestCase {
                 return Response.slateLineup()
             } else if apiRequest.isForSavesContent {
                 return Response.saves()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else if apiRequest.isForSearch(.saves) {
@@ -420,7 +422,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 1)
+            .searchItemCell(matching: "Item 2")
             .wait()
 
         let expectRequest = expectation(description: "A request to the server")
@@ -475,7 +477,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 1)
+            .searchItemCell(matching: "Item 2")
             .wait()
 
         itemCell.shareButton.tap()
@@ -501,7 +503,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 0)
+            .searchItemCell(matching: "Item 1")
             .wait()
 
         itemCell.overFlowMenu.tap()
@@ -528,7 +530,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 0)
+            .searchItemCell(matching: "Item 1")
             .wait()
 
         itemCell.overFlowMenu.tap()
@@ -553,7 +555,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 0)
+            .searchItemCell(matching: "Item 3")
             .wait()
 
         itemCell.overFlowMenu.tap()
@@ -578,7 +580,7 @@ class SearchTests: XCTestCase {
 
         let itemCell = app
             .saves.searchView
-            .searchItemCell(at: 1)
+            .searchItemCell(matching: "Item 2")
             .wait()
 
         itemCell.overFlowMenu.tap()
@@ -590,6 +592,54 @@ class SearchTests: XCTestCase {
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
         searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+    }
+
+    // MARK: Pagination
+    @MainActor
+    func test_search_showsPagination() async {
+        app.launch()
+        tapSearch()
+        let firstExpectRequest = expectation(description: "First request to the server")
+        let secondExpectRequest = expectation(description: "Second request to the server")
+        var count = 0
+        server.routes.post("/graphql") { request, loop in
+            count += 1
+            if count == 1 {
+                firstExpectRequest.fulfill()
+                return Response.searchPagination()
+            } else if count == 2 {
+                secondExpectRequest.fulfill()
+                return Response.searchPagination("search-list-page-2")
+            } else {
+                fatalError("Unexpected request")
+            }
+        }
+
+        let searchField = app.navigationBar.searchFields["Search"].wait()
+        searchField.tap()
+        searchField.typeText("item\n")
+
+        app.saves.searchView.searchResultsView.wait()
+        app.saves.searchView.searchItemCell(matching: "Item 4").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 10").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 13").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 20").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 27").wait().element.swipeUp(velocity: .fast)
+
+        wait(for: [firstExpectRequest, secondExpectRequest])
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+
+        async let event0 = snowplowMicro.getFirstEvent(with: "global-nav.search.searchPage", index: 1)
+        async let event1 = snowplowMicro.getFirstEvent(with: "global-nav.search.searchPage", index: 2)
+
+        let events = await [event0, event1]
+
+        events[0]!.getUIContext()!.assertHas(type: "page")
+        events[0]!.getUIContext()!.assertHas(componentDetail: "saves")
+
+        events[1]!.getUIContext()!.assertHas(type: "page")
+        events[1]!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     private func tapSearch(fromArchive: Bool = false) {

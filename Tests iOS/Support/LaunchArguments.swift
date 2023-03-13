@@ -55,9 +55,6 @@ struct LaunchArguments {
             args.append("disableSnowplow")
         }
 
-        // Skip deleting the core data store in PersistentContainer by setting user defaults key to true.
-        args.append("-PersistentContainer.reset.data.02.21.2023 true")
-
         return args
     }
 

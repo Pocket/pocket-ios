@@ -167,7 +167,7 @@ class SavedItemViewModelTests: XCTestCase {
 
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject(item: space.buildSavedItem(tags: ["tag 1"]))
-
+        source.stubRetrieveTags { _ in return nil }
         let expectAddTags = expectation(description: "expect add tags to present")
         viewModel.$presentedAddTags.dropFirst().sink { viewModel in
             expectAddTags.fulfill()
