@@ -59,7 +59,7 @@ public class PocketSceneDelegate: UIResponder, UIWindowSceneDelegate {
                             PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
                         },
                         premiumStatusViewModelFactory: { tracker in
-                            PremiumSettingsViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: tracker)
+                            PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: tracker)
                         }
                     )
                 ),
