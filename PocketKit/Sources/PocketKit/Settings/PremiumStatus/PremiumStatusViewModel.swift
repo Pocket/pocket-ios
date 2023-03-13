@@ -72,6 +72,15 @@ extension SubscriptionInfo {
         case web
         case google
         case unknown
+
+        var isApple: Bool {
+            switch self {
+            case .apple:
+                return true
+            default:
+                return false
+            }
+        }
     }
 
     var dateOfPurchase: String {
