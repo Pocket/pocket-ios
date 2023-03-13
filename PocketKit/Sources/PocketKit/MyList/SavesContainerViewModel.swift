@@ -3,6 +3,7 @@ import Sync
 import UIKit
 import SharedPocketKit
 
+@MainActor
 class SavesContainerViewModel {
     enum Selection {
         case saves

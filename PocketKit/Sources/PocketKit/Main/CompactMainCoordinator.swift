@@ -6,6 +6,7 @@ import Sync
 import Combine
 import Textile
 
+@MainActor
 class CompactMainCoordinator: NSObject {
     var viewController: UIViewController {
         tabBarController

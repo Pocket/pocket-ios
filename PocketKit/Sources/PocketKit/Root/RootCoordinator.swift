@@ -6,6 +6,7 @@ import SafariServices
 import Analytics
 import Textile
 
+@MainActor
 class RootCoordinator {
     private var window: UIWindow?
 

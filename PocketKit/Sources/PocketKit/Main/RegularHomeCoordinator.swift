@@ -9,6 +9,7 @@ protocol RegularHomeCoordinatorDelegate: ModalContentPresenting {
     func homeCoordinatorDidSelectSaves(_ coordinator: RegularHomeCoordinator)
 }
 
+@MainActor
 class RegularHomeCoordinator: NSObject {
     weak var delegate: RegularHomeCoordinatorDelegate?
 

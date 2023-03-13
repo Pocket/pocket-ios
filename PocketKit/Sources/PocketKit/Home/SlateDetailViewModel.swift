@@ -40,8 +40,10 @@ class SlateDetailViewModel {
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
-            object: source.mainContext
-        ).sink { [weak self] notification in
+            object: nil
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] notification in
             do {
                 try self?.handle(notification: notification)
             } catch {
@@ -68,7 +70,7 @@ class SlateDetailViewModel {
         case .loading:
             return
         case .recommendation(let objectID):
-            guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+            guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
                 return
             }
 
@@ -92,7 +94,7 @@ extension SlateDetailViewModel {
     }
 
     private func selectRecommendation(with objectID: NSManagedObjectID, at indexPath: IndexPath) {
-        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return
         }
 
@@ -130,7 +132,7 @@ extension SlateDetailViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellViewModel? {
-        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 
@@ -244,7 +246,7 @@ private extension SlateDetailViewModel {
     }
 
     private func handle(notification: Notification) throws {
-        source.mainContext.refresh(slate, mergeChanges: true)
+        source.viewRefresh(slate, mergeChanges: true)
         var snapshot = buildSnapshot()
 
         guard let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> else {
