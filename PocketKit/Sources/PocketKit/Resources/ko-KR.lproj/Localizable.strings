@@ -169,11 +169,11 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "구독을 찾을 수 없습니다. 구독하고 있다고 생각되면 support@getpocket.com으로 이메일을 보내 알려주십시오.";
 
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
+"login.deletedAccount.banner.title" = "Pocket 계정을 삭제하셨습니다";
 //Shown to the user after they deleted their account
-"login.deletedAccount.banner.detail" = "What could we have done better?";
+"login.deletedAccount.banner.detail" = "Pocket이 개선해야 할 부분이 있을까요?";
 //Action button for a user to take a survey
-"login.deletedAccount.banner.action" = "Quick survey";
+"login.deletedAccount.banner.action" = "약식 설문 조사";
 
 
 //List view
@@ -193,3 +193,17 @@
 "Hooray!" = "환영합니다!";
 "premium.success.message" = "공식적으로 Pocket Premium 회원이 되셨습니다. 광고가 없는 새로운 맞춤형, 영구 Pocket 버전에 오신 것을 환영합니다. 마음에 드실 것입니다.";
 "back.to.pocket" = "Pocket으로 돌아가기";
+"settings.premiumRow" = "Premium 으로 이동";
+"settings.premium.settings.thanksForSubscribing" = "Pocket Premium 에 구독해 주셔서 감사합니다!";
+"settings.premium.settings.subscriptionStatus" = "구독 상태";
+"settings.premium.settings.subscription" = "구독";
+"settings.premium.settings.datePurchased" = "구매 날짜";
+"settings.premium.settings.renewalDate" = "갱신 날짜";
+"settings.premium.settings.purchaseLocation" = "구매 위치";
+"settings.premium.settings.price" = "가격";
+"settings.premium.settings.yourSubscription" = "구독";
+"settings.premium.settings.manageYourSubscription" = "구독 관리";
+"settings.premium.settings.questionOrFeedback" = "질문 또는 피드백을 보내시겠습니까?";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium FAQ";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Pocket 지원팀 문의";
