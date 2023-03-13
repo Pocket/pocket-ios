@@ -26,6 +26,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingCancelationHelp = false
     @Published var isPresentingRestoreSuccessful = false
     @Published var isPresentingRestoreNotSuccessful = false
+    @Published var isPresentingPremiumStatus = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
@@ -33,12 +34,6 @@ class AccountViewModel: ObservableObject {
     private var userStatusListener: AnyCancellable?
 
     @Published var isPremium: Bool
-
-    /// Signals to the DeleteAccountView that there was an error deleting the account
-    @Published var hasError: Bool = false
-
-    /// Signals to the DeleteAccount View that the account is being deleted.
-    @Published var isDeletingAccount: Bool = false
 
     init(appSession: AppSession,
          user: User,
@@ -65,25 +60,6 @@ class AccountViewModel: ObservableObject {
             }
     }
 
-    /// Calls the user management service to delete the account and log the user out.
-    func deleteAccount() {
-        self.trackConfirmDeleteTapped()
-        self.isDeletingAccount = true
-        Task {
-            do {
-                try await userManagementService.deleteAccount()
-            } catch {
-                Log.capture(error: error)
-                DispatchQueue.main.async {
-                    self.hasError = true
-                }
-            }
-            DispatchQueue.main.async {
-               self.isDeletingAccount = false
-            }
-        }
-    }
-
     /// Calls the user management service to sign the user out.
     func signOut() {
         userManagementService.logout()
@@ -107,7 +83,7 @@ class AccountViewModel: ObservableObject {
     }
 }
 
-// MARK: Premium upgrades
+// MARK: Premium upgrades factory
 extension AccountViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
@@ -117,6 +93,11 @@ extension AccountViewModel {
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+
+    /// Show Premium Status on tap
+    func showPremiumStatus() {
+        self.isPresentingPremiumStatus = true
     }
 }
 
@@ -132,6 +113,14 @@ extension AccountViewModel {
                 isPresentingRestoreNotSuccessful = true
             }
         }
+    }
+}
+
+// MARK: delete account factory
+extension AccountViewModel {
+    @MainActor
+    func makeDeleteAccountViewModel() -> DeleteAccountViewModel {
+        DeleteAccountViewModel(isPremium: self.isPremium, userManagementService: userManagementService, tracker: tracker)
     }
 }
 
@@ -175,48 +164,8 @@ extension AccountViewModel {
     func trackAccountManagementTapped() {
         tracker.track(event: Events.Settings.accountManagementRowTapped())
     }
-}
-
-// MARK: Delete Account Flow
-extension AccountViewModel {
     /// track delete settings row tapped
     func trackDeleteTapped() {
         tracker.track(event: Events.Settings.deleteRowTapped())
-    }
-
-    /// track delete confirmation viewed
-    func trackDeleteConfirmationImpression() {
-        tracker.track(event: Events.Settings.deleteConfirmationImpression())
-    }
-
-    /// track premium help tapped
-    func trackHelpCancelingPremiumTapped() {
-        tracker.track(event: Events.Settings.helpCancelingPremiumTapped())
-    }
-
-    /// track premium help viewed
-    func trackHelpCancelingPremiumImpression() {
-        tracker.track(event: Events.Settings.helpCancelingPremiumImpression())
-    }
-
-    /// track delete tapped
-    func trackConfirmDeleteTapped() {
-        tracker.track(event: Events.Settings.deleteConfirmationTapped())
-    }
-
-    /// track cancel delete tapped
-    func trackDeleteDismissed(dismissReason: DismissReason) {
-        switch dismissReason {
-        case .swipe, .button, .closeButton:
-            tracker.track(event: Events.Settings.deleteDismissed(reason: dismissReason))
-        case .system:
-            break
-        }
-    }
-
-    /// Help canceling premium tapped
-    func helpCancelPremium() {
-        trackHelpCancelingPremiumTapped()
-        self.isPresentingCancelationHelp = true
     }
 }

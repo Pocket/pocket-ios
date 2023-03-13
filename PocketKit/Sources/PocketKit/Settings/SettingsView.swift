@@ -187,7 +187,7 @@ extension SettingsForm {
         let title = isPremium ? L10n.Settings.premiumSubscriptionRow : L10n.Settings.goPremiumRow
         let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
         let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
-        let action = isPremium ? { } : { model.showPremiumUpgrade() }
+        let action = isPremium ? { model.showPremiumStatus() } : { model.showPremiumUpgrade() }
         return SettingsRowButton(
             title: title,
             titleStyle: titleStyle,
@@ -215,7 +215,9 @@ extension SettingsForm {
 
     private func makePremiumSubscriptionRow() -> some View {
         makePremiumRowContent(true)
-        // TODO: add logic to present the premium subscription sheet here
+            .sheet(isPresented: $model.isPresentingPremiumStatus) {
+                PremiumStatusView(viewModel: PremiumSettingsViewModel())
+            }
     }
 }
 

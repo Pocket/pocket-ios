@@ -108,6 +108,7 @@ class RootViewModel: ObservableObject {
         tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
         Log.setUserID(session.userIdentifier)
         source.refreshSaves()
+        source.refreshArchive()
     }
 
     private func tearDownSession() {

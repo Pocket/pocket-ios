@@ -4,6 +4,7 @@ import SafariServices
 import SwiftUI
 import Textile
 
+@MainActor
 class CompactSavesContainerCoordinator: NSObject {
     var viewController: UIViewController {
         return navigationController

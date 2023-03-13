@@ -95,6 +95,10 @@ extension Response {
         fixture(named: "deleteUser-error")
     }
 
+    static func premiumStatus() -> Response {
+        fixture(named: "premium-status")
+    }
+
     static func searchList(_ type: SearchScope) -> Response {
         var fixtureName = "search-list"
         switch type {
@@ -112,6 +116,10 @@ extension Response {
                 .replacing("MARTICLE", withFixtureNamed: "marticle")
                 .data
         }
+    }
+
+    static func searchPagination(_ fixtureName: String = "search-list-page-1") -> Response {
+        fixture(named: fixtureName)
     }
 
     static func fixture(named fixtureName: String) -> Response {

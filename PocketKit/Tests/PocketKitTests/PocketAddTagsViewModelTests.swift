@@ -105,8 +105,8 @@ class PocketAddTagsViewModelTests: XCTestCase {
         expectRetrieveTagsCall.assertForOverFulfill = false
         source.stubRetrieveTags { [weak self] _ in
             defer { expectRetrieveTagsCall.fulfill() }
-            let tag2: Tag = Tag(context: self!.space.context)
-            let tag3: Tag = Tag(context: self!.space.context)
+            let tag2: Tag = Tag(context: self!.space.backgroundContext)
+            let tag3: Tag = Tag(context: self!.space.backgroundContext)
             tag2.name = "tag 2"
             tag3.name = "tag 3"
             return [tag2, tag3]
@@ -152,8 +152,8 @@ class PocketAddTagsViewModelTests: XCTestCase {
         }
 
         source.stubFilterTags { [weak self] _ in
-            let tag2: Tag = Tag(context: self!.space.context)
-            let tag3: Tag = Tag(context: self!.space.context)
+            let tag2: Tag = Tag(context: self!.space.backgroundContext)
+            let tag3: Tag = Tag(context: self!.space.backgroundContext)
             tag2.name = "tag 2"
             tag3.name = "tag 3"
             return [tag2, tag3]
@@ -181,8 +181,8 @@ class PocketAddTagsViewModelTests: XCTestCase {
         }
 
         source.stubFilterTags { [weak self] _ in
-            let tag2: Tag = Tag(context: self!.space.context)
-            let tag3: Tag = Tag(context: self!.space.context)
+            let tag2: Tag = Tag(context: self!.space.backgroundContext)
+            let tag3: Tag = Tag(context: self!.space.backgroundContext)
             tag2.name = "tag 2"
             tag3.name = "tag 3"
             return [tag2, tag3]

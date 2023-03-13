@@ -15,7 +15,7 @@ extension Space {
         tags: [String]? = nil,
         item: Item? = nil
     ) throws -> SavedItem {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let savedItem = buildSavedItem(
                 remoteID: remoteID,
                 url: url,
@@ -45,10 +45,10 @@ extension Space {
         tags: [String]? = nil,
         item: Item? = nil
     ) -> SavedItem {
-        context.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: context, url: URL(string: url)!, remoteID: remoteID)
+        backgroundContext.performAndWait {
+            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!, remoteID: remoteID)
             let tags: [Tag]? = tags?.map { tag -> Tag in
-                let newTag: Tag = Tag(context: context)
+                let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
                 return newTag
             }
@@ -60,7 +60,7 @@ extension Space {
             savedItem.url = URL(string: url)!
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? Item(context: context, givenURL: URL(string: url)!, remoteID: remoteID)
+            savedItem.item = item ?? Item(context: backgroundContext, givenURL: URL(string: url)!, remoteID: remoteID)
 
             return savedItem
         }
@@ -77,7 +77,7 @@ extension Space {
         isArticle: Bool = true,
         article: Article? = nil
     ) throws -> Item {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
                 title: title,
@@ -100,8 +100,8 @@ extension Space {
         isArticle: Bool = true,
         article: Article? = nil
     ) -> Item {
-        context.performAndWait {
-            let item: Item = Item(context: context, givenURL: givenURL!, remoteID: remoteID)
+        backgroundContext.performAndWait {
+            let item: Item = Item(context: backgroundContext, givenURL: givenURL!, remoteID: remoteID)
             item.remoteID = remoteID
             item.title = title
             item.resolvedURL = resolvedURL
@@ -122,7 +122,7 @@ extension Space {
         experimentID: String = "slate-lineup-1-experiment",
         slates: [Slate] = []
     ) throws -> SlateLineup {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let slateLineup = buildSlateLineup(
                 remoteID: remoteID,
                 requestID: requestID,
@@ -142,8 +142,8 @@ extension Space {
         experimentID: String = "slate-lineup-1-experiment",
         slates: [Slate] = []
     ) -> SlateLineup {
-        context.performAndWait {
-            let lineup: SlateLineup = SlateLineup(context: context, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
+        backgroundContext.performAndWait {
+            let lineup: SlateLineup = SlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             lineup.slates = NSOrderedSet(array: slates)
 
             return lineup
@@ -162,7 +162,7 @@ extension Space {
         slateDescription: String = "The description of slate 1",
         recommendations: [Recommendation] = []
     ) throws -> Slate {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let slate = buildSlate(
                 experimentID: experimentID,
                 remoteID: remoteID,
@@ -186,8 +186,8 @@ extension Space {
         slateDescription: String = "The description of slate 1",
         recommendations: [Recommendation] = []
     ) -> Slate {
-        context.performAndWait {
-            let slate: Slate = Slate(context: context, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
+        backgroundContext.performAndWait {
+            let slate: Slate = Slate(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             slate.name = name
             slate.slateDescription = slateDescription
             slate.recommendations = NSOrderedSet(array: recommendations)
@@ -204,7 +204,7 @@ extension Space {
         remoteID: String = "slate-1-rec-1",
         item: Item? = nil
     ) throws -> Recommendation {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
                 remoteID: remoteID,
                 item: item
@@ -220,8 +220,8 @@ extension Space {
         remoteID: String = "slate-1-rec-1",
         item: Item? = nil
     ) -> Recommendation {
-        context.performAndWait {
-            let recommendation: Recommendation = Recommendation(context: context, remoteID: remoteID)
+        backgroundContext.performAndWait {
+            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID)
             recommendation.item = item
 
             return recommendation
@@ -236,8 +236,8 @@ extension Space {
         source: URL?,
         isDownloaded: Bool = false
     ) -> Image {
-        return context.performAndWait {
-            let image: Image = Image(context: context)
+        return backgroundContext.performAndWait {
+            let image: Image = Image(context: backgroundContext)
             image.source = source
             image.isDownloaded = isDownloaded
 
@@ -250,7 +250,7 @@ extension Space {
         source: URL?,
         isDownloaded: Bool = false
     ) throws -> Image {
-        return try context.performAndWait {
+        return try backgroundContext.performAndWait {
             let image = buildImage(source: source, isDownloaded: isDownloaded)
             try save()
 

@@ -15,12 +15,14 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
     private let minimumRefreshInterval: TimeInterval
     private var subscriptions: [AnyCancellable] = []
     private var isRefreshing: Bool = false
+    private var sessionProvider: SessionProvider
 
-    init(notificationCenter: NotificationCenter, userDefaults: UserDefaults, source: Source, minimumRefreshInterval: TimeInterval = 12 * 60 * 60) {
+    init(notificationCenter: NotificationCenter, userDefaults: UserDefaults, source: Source, minimumRefreshInterval: TimeInterval = 12 * 60 * 60, sessionProvider: SessionProvider) {
         self.userDefaults = userDefaults
         self.notificationCenter = notificationCenter
         self.minimumRefreshInterval = minimumRefreshInterval
         self.source = source
+        self.sessionProvider = sessionProvider
 
         self.notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
             self?.refresh { }
@@ -28,12 +30,23 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
+        Log.debug("Refresh home called, isForced: \(String(describing: isForced))")
+        guard (sessionProvider.session) != nil else {
+            Log.info("Not refreshing home because no active session")
+            return
+        }
+
         if shouldRefresh(isForced: isForced), !isRefreshing {
-            Task {
+            Task { [weak self] in
+                guard let self else {
+                    Log.capture(message: "Home refresh task - self is nil")
+                    return
+                }
+
                 do {
-                    isRefreshing = true
-                    try await source.fetchSlateLineup(HomeViewModel.lineupIdentifier)
-                    userDefaults.setValue(Date(), forKey: Self.dateLastRefreshKey)
+                    self.isRefreshing = true
+                    try await self.source.fetchSlateLineup(HomeViewModel.lineupIdentifier)
+                    self.userDefaults.setValue(Date(), forKey: Self.dateLastRefreshKey)
                     Log.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
                 } catch {
                     Log.capture(error: error)
@@ -41,6 +54,10 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
                 completion()
                 isRefreshing = false
             }
+        } else if isRefreshing {
+            Log.debug("Already refreshing Home, not going to add to the queue")
+        } else {
+            Log.debug("Not refreshing Home, to early to ask for new data")
         }
     }
 

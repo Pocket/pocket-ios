@@ -5,6 +5,7 @@ import Foundation
 import BackgroundTasks
 import UIKit
 
+@MainActor
 class MainViewModel: ObservableObject {
     @Published
     var selectedSection: AppSection = .home

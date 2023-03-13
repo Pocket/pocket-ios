@@ -53,4 +53,8 @@ struct PocketItem {
     var url: URL? {
         item.bestURL
     }
+
+    var cursor: String? {
+        item.cursor
+    }
 }

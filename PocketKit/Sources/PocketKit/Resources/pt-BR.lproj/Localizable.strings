@@ -161,7 +161,19 @@
 "settings.accountManagement.deleteAccount.howToCancel" = "Como cancelar sua assinatura do Pocket Premium";
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "Excluindo sua conta";
-"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.deleteAccount.error.body" = "Devido a um erro, não foi possível excluir sua conta. Tente novamente mais tarde.";
+"settings.accountManagement.restoreSubscription" = "Restaurar assinatura existente";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "Restauração concluída";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "Sua assinatura do Pocket Premium foi restaurada.";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Restauração não concluída";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Não foi possível achar nenhuma assinatura. Caso acredite que possui uma assinatura, informe-nos no support@getpocket.com.";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "Você excluiu a sua conta do Pocket";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "De que forma sua experiência poderia ter sido melhor?";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "Pesquisa rápida";
 
 
 //List view
@@ -181,3 +193,17 @@
 "Hooray!" = "Parabéns!";
 "premium.success.message" = "Agora você é um membro oficial do Pocket Premium. Bem-vindo à nova versão permanente, personalizável e sem anúncios de seu Pocket. Certamente você vai gostar.";
 "back.to.pocket" = "Voltar ao Pocket";
+"settings.premiumRow" = "Vá de Premium";
+"settings.premium.settings.thanksForSubscribing" = "Obrigado por assinar o Pocket Premium!";
+"settings.premium.settings.subscriptionStatus" = "Status da assinatura";
+"settings.premium.settings.subscription" = "Assinatura";
+"settings.premium.settings.datePurchased" = "Data da Compra";
+"settings.premium.settings.renewalDate" = "Data da Renovação";
+"settings.premium.settings.purchaseLocation" = "Local da compra";
+"settings.premium.settings.price" = "Preço";
+"settings.premium.settings.yourSubscription" = "Sua assinatura";
+"settings.premium.settings.manageYourSubscription" = "Gerenciar sua assinatura";
+"settings.premium.settings.questionOrFeedback" = "Perguntas ou feedback?";
+"settings.premium.settings.pocketPremiumFAQ" = "FAQ do Pocket Premium";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "Fale com o Suporte do Pocket";

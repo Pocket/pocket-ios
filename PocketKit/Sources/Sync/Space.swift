@@ -3,43 +3,41 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import CoreData
-
+import Combine
+/// Handles all dabatabase operations within Pocket app.
+/// This should only ever be used and injected into the PocketSource class.
+/// Pocket Source should proxy all requests to this class and handle the updating of data.
 public class Space {
-    let context: NSManagedObjectContext
+    let backgroundContext: NSManagedObjectContext
+    let viewContext: NSManagedObjectContext
 
-    required public init(context: NSManagedObjectContext) {
-        self.context = context
-        context.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
+    required public init(backgroundContext: NSManagedObjectContext, viewContext: NSManagedObjectContext) {
+        self.backgroundContext = backgroundContext
+        self.viewContext = viewContext
     }
 
     func managedObjectID(forURL url: URL) -> NSManagedObjectID? {
-        context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)
+        backgroundContext.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)
     }
 
     func fetchSavedItem(byRemoteID remoteID: String) throws -> SavedItem? {
-        let request = Requests.fetchSavedItem(byRemoteID: remoteID)
-        return try context.fetch(request).first
+        return try fetch(Requests.fetchSavedItem(byRemoteID: remoteID)).first
     }
 
     func fetchSavedItem(byRemoteItemID remoteItemID: String) throws -> SavedItem? {
-        let request = Requests.fetchSavedItem(byRemoteItemID: remoteItemID)
-        return try context.fetch(request).first
+        return try fetch(Requests.fetchSavedItem(byRemoteItemID: remoteItemID)).first
     }
 
     func fetchSavedItem(byURL url: URL) throws -> SavedItem? {
-        let request = Requests.fetchSavedItem(byURL: url)
-        return try context.fetch(request).first
+        return try fetch(Requests.fetchSavedItem(byURL: url)).first
     }
 
     func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) throws -> [SavedItem]? {
-        let request = Requests.fetchSavedItems(bySearchTerm: searchTerm, userPremium: isPremium)
-        return try context.fetch(request)
+        return try fetch(Requests.fetchSavedItems(bySearchTerm: searchTerm, userPremium: isPremium))
     }
 
     func fetchSavedItems() throws -> [SavedItem] {
-        let request = Requests.fetchSavedItems()
-        let results = try context.fetch(request)
-        return results
+        return try fetch(Requests.fetchSavedItems())
     }
 
     func fetchArchivedItems() throws -> [SavedItem] {
@@ -123,7 +121,7 @@ public class Space {
     func fetchOrCreateTag(byName name: String) -> Tag {
         let fetchRequest = Requests.fetchTag(byName: name)
         fetchRequest.fetchLimit = 1
-        let fetchedTag = (try? fetch(fetchRequest).first) ?? Tag(context: context)
+        let fetchedTag = (try? fetch(fetchRequest).first) ?? Tag(context: backgroundContext)
         guard fetchedTag.name == nil else { return fetchedTag }
         fetchedTag.name = name
         return fetchedTag
@@ -144,7 +142,7 @@ public class Space {
     func deleteTag(byID id: String) throws {
         let fetchRequest = Requests.fetchTag(byID: id)
         fetchRequest.fetchLimit = 1
-        let tag = try context.fetch(fetchRequest)
+        let tag = try fetch(fetchRequest)
         delete(tag)
     }
 
@@ -153,15 +151,20 @@ public class Space {
     }
 
     func fetch<T>(_ request: NSFetchRequest<T>) throws -> [T] {
-        try context.fetch(request)
+        try backgroundContext.performAndWait { try backgroundContext.fetch(request) }
     }
 
     func delete(_ object: NSManagedObject) {
-        context.delete(object)
+        backgroundContext.performAndWait {
+            guard let object = backgroundObject(with: object.objectID) else {
+                return
+            }
+            backgroundContext.delete(object)
+        }
     }
 
     func delete(_ objects: [NSManagedObject]) {
-        objects.forEach(context.delete(_:))
+        backgroundContext.performAndWait { objects.compactMap({ backgroundObject(with: $0.objectID) }).forEach(backgroundContext.delete(_:)) }
     }
 
     func deleteUnsavedItems() throws {
@@ -169,30 +172,39 @@ public class Space {
     }
 
     func save() throws {
-        try context.obtainPermanentIDs(for: Array(context.insertedObjects))
-        try context.save()
+        try backgroundContext.performAndWait {
+            try backgroundContext.obtainPermanentIDs(for: Array(backgroundContext.insertedObjects))
+            try backgroundContext.save()
+        }
+    }
+
+    func performAndWait<T>(_ block: () throws -> T) rethrows -> T {
+        return try backgroundContext.performAndWait(block)
+    }
+
+    func perform<T>(schedule: NSManagedObjectContext.ScheduledTaskType = .immediate, _ block: @escaping () throws -> T) async rethrows -> T {
+        return try await backgroundContext.perform(schedule: schedule, block)
     }
 
     func clear() throws {
-        try context.performAndWait {
-            guard let objectModel = context.persistentStoreCoordinator?.managedObjectModel else {
+        try backgroundContext.performAndWait {
+            guard let objectModel = backgroundContext.persistentStoreCoordinator?.managedObjectModel else {
                 return
             }
 
             for entity in objectModel.entities {
                 let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
                 let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-                try context.execute(deleteRequest)
+                try backgroundContext.execute(deleteRequest)
             }
-
-            context.reset()
+            backgroundContext.reset()
         }
     }
 
     func makeItemsController() -> NSFetchedResultsController<SavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
-            managedObjectContext: context,
+            managedObjectContext: viewContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
@@ -201,7 +213,7 @@ public class Space {
     func makeArchivedItemsController(filters: [NSPredicate] = []) -> NSFetchedResultsController<SavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchArchivedItems(filters: filters),
-            managedObjectContext: context,
+            managedObjectContext: viewContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
@@ -213,7 +225,7 @@ public class Space {
         request.sortDescriptors = [NSSortDescriptor(key: "requestID", ascending: true)]
         return NSFetchedResultsController(
             fetchRequest: request,
-            managedObjectContext: context,
+            managedObjectContext: viewContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
@@ -224,7 +236,7 @@ public class Space {
         request.sortDescriptors = [NSSortDescriptor(key: "remoteID", ascending: true)]
         return NSFetchedResultsController(
             fetchRequest: request,
-            managedObjectContext: context,
+            managedObjectContext: viewContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
@@ -235,26 +247,43 @@ public class Space {
         request.sortDescriptors = [NSSortDescriptor(key: "source.absoluteString", ascending: true)]
         return NSFetchedResultsController(
             fetchRequest: request,
-            managedObjectContext: context,
+            managedObjectContext: viewContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
     }
 
-    func object<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
-        context.object(with: id) as? T
+    func backgroundObject<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
+        backgroundContext.performAndWait {
+            backgroundContext.object(with: id) as? T
+        }
     }
 
-    func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
-        context.refresh(object, mergeChanges: mergeChanges)
+    func viewObject<T: NSManagedObject>(with id: NSManagedObjectID) -> T? {
+        viewContext.performAndWait {
+            viewContext.object(with: id) as? T
+        }
+    }
+
+    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool) {
+        backgroundContext.performAndWait {
+            backgroundContext.refresh(object, mergeChanges: mergeChanges)
+        }
+    }
+
+    func viewRefresh(_ object: NSManagedObject, mergeChanges: Bool) {
+        viewContext.performAndWait {
+            viewContext.refresh(object, mergeChanges: mergeChanges)
+        }
     }
 
     func batchDeleteOrphanedSlates() throws {
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Slate.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "slateLineup = NULL")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-        try context.execute(deleteRequest)
+        _ = try backgroundContext.performAndWait {
+            try backgroundContext.execute(deleteRequest)
+        }
     }
 
     func batchDeleteOrphanedItems() throws {
@@ -262,6 +291,8 @@ public class Space {
         fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL")
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
 
-        try context.execute(deleteRequest)
+        _ = try backgroundContext.performAndWait {
+            try backgroundContext.execute(deleteRequest)
+        }
     }
 }

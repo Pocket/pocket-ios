@@ -63,12 +63,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             userDefaults: firstLaunchDefaults
         ).signOutOnFirstLaunch()
 
-        StaticDataCleaner(
-            bundle: Bundle.main,
-            source: source,
-            userDefaults: userDefaults
-        ).clearIfNecessary()
-
         if let guid = ProcessInfo.processInfo.environment["accessToken"],
            let accessToken = ProcessInfo.processInfo.environment["sessionGUID"],
            let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {

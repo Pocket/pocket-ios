@@ -47,4 +47,9 @@ public protocol V3ClientProtocol {
         pushType: PushType,
         session: Session
     ) async throws -> DeregisterPushTokenResponse?
+
+    /**
+     - Returns: PremiumStatusResponse
+     */
+    func premiumStatus() async throws -> PremiumStatusResponse
 }

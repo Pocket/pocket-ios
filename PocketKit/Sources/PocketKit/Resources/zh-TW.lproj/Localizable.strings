@@ -161,7 +161,19 @@
 "settings.accountManagement.deleteAccount.howToCancel" = "如何取消您的 Pocket Premium 訂閱";
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "正在刪除您的帳號";
-"settings.accountManagement.deleteAccount.error.body" = "We’re experiencing an error and can't delete your account. Please try again later.";
+"settings.accountManagement.deleteAccount.error.body" = "我們遇到了錯誤，無法刪除您的帳戶。請稍後重試。";
+"settings.accountManagement.restoreSubscription" = "還原現有訂購";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "還原成功";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 訂購已還原。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "還原未成功";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到訂購。如果確信您有訂購，請傳送電子郵件至 support@getpocket.com 告訴我們。";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "您已刪除 Pocket 帳號";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "我們有哪些可以改進的地方？";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "快速調查";
 
 
 //List view
@@ -181,3 +193,17 @@
 "Hooray!" = "太棒了！";
 "premium.success.message" = "您已正式成為 Pocket Premium 會員。歡迎使用 Pocket 的無廣告、可自訂的永久新版本。我們認為您會樂於成為其中一員。";
 "back.to.pocket" = "返回 Pocket";
+"settings.premiumRow" = "取得 Premium";
+"settings.premium.settings.thanksForSubscribing" = "謝謝訂購 Pocket Premium！";
+"settings.premium.settings.subscriptionStatus" = "訂購狀態";
+"settings.premium.settings.subscription" = "訂購";
+"settings.premium.settings.datePurchased" = "購買日期";
+"settings.premium.settings.renewalDate" = "續訂日期";
+"settings.premium.settings.purchaseLocation" = "購買地點";
+"settings.premium.settings.price" = "價格";
+"settings.premium.settings.yourSubscription" = "您的訂購";
+"settings.premium.settings.manageYourSubscription" = "管理訂購";
+"settings.premium.settings.questionOrFeedback" = "問題或回饋意見？";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium 常見問題";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "聯絡 Pocket 支援";

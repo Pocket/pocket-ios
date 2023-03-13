@@ -79,7 +79,10 @@
         "FavoriteAnItemTests",
         "HomeTests",
         "HomeWebViewTests",
-        "PremiumTests"
+        "PremiumTests",
+        "SavesTests",
+        "SettingsTest",
+        "SignOutTests"
       ],
       "target" : {
         "containerPath" : "container:Pocket.xcodeproj",

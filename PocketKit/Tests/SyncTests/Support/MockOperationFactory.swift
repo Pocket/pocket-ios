@@ -19,8 +19,7 @@ extension MockOperationFactory {
         ApolloClientProtocol,
         Space,
         SyncEvents,
-        CurrentValueSubject<InitialDownloadState, Never>,
-        Int
+        CurrentValueSubject<InitialDownloadState, Never>
     ) -> SyncOperation
 
     struct FetchSavesCall {
@@ -29,7 +28,6 @@ extension MockOperationFactory {
         let space: Space
         let events: SyncEvents
         let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
-        let maxItems: Int
         let lastRefresh: LastRefresh
     }
 
@@ -43,7 +41,6 @@ extension MockOperationFactory {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
         guard let impl = implementations["fetchSaves"] as? FetchSavesImpl else {
@@ -57,12 +54,11 @@ extension MockOperationFactory {
                 space: space,
                 events: events,
                 initialDownloadState: initialDownloadState,
-                maxItems: maxItems,
                 lastRefresh: lastRefresh
             )
         ]
 
-        return impl(user, apollo, space, events, initialDownloadState, maxItems)
+        return impl(user, apollo, space, events, initialDownloadState)
     }
 
     func fetchSavesCall(at index: Int) -> FetchSavesCall? {
@@ -80,8 +76,7 @@ extension MockOperationFactory {
         ApolloClientProtocol,
         Space,
         SyncEvents,
-        CurrentValueSubject<InitialDownloadState, Never>,
-        Int
+        CurrentValueSubject<InitialDownloadState, Never>
     ) -> SyncOperation
 
     struct FetchArchiveCall {
@@ -89,7 +84,6 @@ extension MockOperationFactory {
         let space: Space
         let events: SyncEvents
         let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
-        let maxItems: Int
         let lastRefresh: LastRefresh
     }
 
@@ -102,7 +96,6 @@ extension MockOperationFactory {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
         guard let impl = implementations["fetchArchive"] as? FetchArchiveImpl else {
@@ -115,12 +108,11 @@ extension MockOperationFactory {
                 space: space,
                 events: events,
                 initialDownloadState: initialDownloadState,
-                maxItems: maxItems,
                 lastRefresh: lastRefresh
             )
         ]
 
-        return impl(apollo, space, events, initialDownloadState, maxItems)
+        return impl(apollo, space, events, initialDownloadState)
     }
 
     func fetchArchiveCall(at index: Int) -> FetchArchiveCall? {
