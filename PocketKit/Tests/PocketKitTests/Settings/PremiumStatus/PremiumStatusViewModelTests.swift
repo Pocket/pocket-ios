@@ -48,7 +48,6 @@ class PremiumStatusViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.subscriptionInfoList[2].text, "02/23/33")
         XCTAssertEqual(viewModel.subscriptionInfoList[3].text, "Apple")
         XCTAssertEqual(viewModel.subscriptionInfoList[4].text, "$0")
-
     }
 
     @MainActor
