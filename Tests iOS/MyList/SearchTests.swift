@@ -621,10 +621,10 @@ class SearchTests: XCTestCase {
 
         app.saves.searchView.searchResultsView.wait()
         app.saves.searchView.searchItemCell(matching: "Item 4").wait().element.swipeUp(velocity: .fast)
-        app.saves.searchView.searchItemCell(matching: "Item 10").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 9").wait().element.swipeUp(velocity: .fast)
         app.saves.searchView.searchItemCell(matching: "Item 13").wait().element.swipeUp(velocity: .fast)
         app.saves.searchView.searchItemCell(matching: "Item 20").wait().element.swipeUp(velocity: .fast)
-        app.saves.searchView.searchItemCell(matching: "Item 27").wait().element.swipeUp(velocity: .fast)
+        app.saves.searchView.searchItemCell(matching: "Item 26").wait().element.swipeUp(velocity: .fast)
 
         wait(for: [firstExpectRequest, secondExpectRequest])
 

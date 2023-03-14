@@ -9,6 +9,9 @@ import SharedPocketKit
 import Textile
 import Sync
 
+/// Factory to construct and inject `PremiumUpgradeViewModel` where needed
+typealias PremiumUpgradeViewModelFactory = (PremiumUpgradeSource) -> PremiumUpgradeViewModel
+
 @MainActor
 class PremiumUpgradeViewModel: ObservableObject {
     private let store: SubscriptionStore

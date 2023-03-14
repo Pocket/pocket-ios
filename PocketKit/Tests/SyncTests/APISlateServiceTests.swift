@@ -14,7 +14,7 @@ class APISlateServiceTests: XCTestCase {
 
         apollo = MockApolloClient()
         space = .testSpace()
-        try space.context.performAndWait {
+        try space.backgroundContext.performAndWait {
             try space.clear()
             try space.save()
         }

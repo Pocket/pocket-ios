@@ -72,7 +72,7 @@ class FetchArchive: SyncOperation {
                 initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
             }
 
-            try await updateLocalStorage(result: result)
+            try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Archive.pageSize)
         } while pagination.shouldFetchNextPage
 
@@ -98,7 +98,6 @@ class FetchArchive: SyncOperation {
         return try await apollo.fetch(query: query)
     }
 
-    @MainActor
     private func updateLocalStorage(result: GraphQLResult<FetchArchiveQuery.Data>) throws {
         guard let edges = result.data?.user?.savedItems?.edges else {
             return
@@ -115,12 +114,12 @@ class FetchArchive: SyncOperation {
                 message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"
             )
 
-            let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ?? SavedItem(context: space.context, url: url, remoteID: node.remoteID)
-
-            item.update(from: node.fragments.savedItemSummary, with: space)
-
-            if item.deletedAt != nil {
-                space.delete(item)
+            space.performAndWait {
+                let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ?? SavedItem(context: space.backgroundContext, url: url, remoteID: node.remoteID)
+                item.update(from: node.fragments.savedItemSummary, with: space)
+                if item.deletedAt != nil {
+                    space.delete(item)
+                }
             }
         }
 

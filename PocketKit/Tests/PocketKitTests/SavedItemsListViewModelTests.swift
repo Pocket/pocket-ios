@@ -32,6 +32,14 @@ class SavedItemsListViewModelTests: XCTestCase {
         source.stubMakeArchiveController {
             self.itemsController
         }
+
+        source.stubViewObject { identifier in
+            self.space.viewObject(with: identifier)
+        }
+
+        source.stubBackgroundObject { identifier in
+            self.space.backgroundObject(with: identifier)
+        }
     }
 
     override func tearDownWithError() throws {
@@ -84,32 +92,27 @@ class SavedItemsListViewModelTests: XCTestCase {
         wait(for: [snapshotSent], timeout: 1)
     }
 
-    func test_shouldSelectCell_whenItemIsPending_returnsFalse() {
+    func test_shouldSelectCell_whenItemIsPending_returnsFalse() throws {
         let viewModel = subject()
         let item = space.buildPendingSavedItem()
-
-        source.stubObject { _ in
-            item
-        }
+        try space.save()
 
         XCTAssertFalse(viewModel.shouldSelectCell(with: .item(item.objectID)))
     }
 
-    func test_shouldSelectCell_whenItemIsNotPending_returnsFalse() {
+    func test_shouldSelectCell_whenItemIsNotPending_returnsFalse() throws {
         let viewModel = subject()
 
         let item = space.buildSavedItem(item: nil)
-
-        source.stubObject { _ in item }
+        try space.save()
 
         XCTAssertTrue(viewModel.shouldSelectCell(with: .item(item.objectID)))
     }
 
-    func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() {
+    func test_selectCell_whenItemIsArticle_setsSelectedItemToReaderView() throws {
         let viewModel = subject()
         let item = space.buildPendingSavedItem()
-
-        source.stubObject { _ in item }
+        try space.save()
         viewModel.selectCell(with: .item(item.objectID), sender: UIView())
 
         guard let selectedItem = viewModel.selectedItem else {
@@ -125,13 +128,13 @@ class SavedItemsListViewModelTests: XCTestCase {
         XCTAssertNotNil(item)
     }
 
-    func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() {
+    func test_selectCell_whenItemIsNotAnArticle_setsSelectedItemToWebView() throws {
         let viewModel = subject()
         let item = space.buildItem(isArticle: false)
         let savedItem = space.buildSavedItem(item: item)
+        try space.save()
 
-        source.stubObject { _ in savedItem }
-        viewModel.selectCell(with: .item(item.objectID), sender: UIView())
+        viewModel.selectCell(with: .item(savedItem.objectID), sender: UIView())
 
         guard let selectedItem = viewModel.selectedItem else {
             XCTFail("Received nil for selectedItem")
@@ -215,13 +218,13 @@ class SavedItemsListViewModelTests: XCTestCase {
         itemsController.stubPerformFetch {
             self.itemsController.fetchedObjects = [savedItem]
         }
-        source.stubRefreshObject { _, _ in }
+        source.stubViewRefresh { _, _ in }
 
         let viewModel = subject()
 
         let snapshotSent = expectation(description: "snapshotSent")
         viewModel.snapshot.dropFirst().sink { [unowned self] snapshot in
-            XCTAssertEqual(self.source.refreshObjectCall(at: 0)?.object, savedItem)
+            XCTAssertEqual(self.source.fetchViewRefresh(at: 0)?.object.objectID, savedItem.objectID)
             XCTAssertEqual(snapshot.reloadedItemIdentifiers, [.item(savedItem.objectID)])
             snapshotSent.fulfill()
         }.store(in: &subscriptions)
@@ -416,9 +419,10 @@ class SavedItemsListViewModelTests: XCTestCase {
 
 // MARK: - Tags
 extension SavedItemsListViewModelTests {
-    func test_addTagsAction_sendsAddTagsViewModel() {
+    func test_addTagsAction_sendsAddTagsViewModel() throws {
         let item = space.buildSavedItem(tags: ["tag 1"])
-        source.stubObject { _ in item }
+        try space.save()
+
         source.stubRetrieveTags { _ in return nil }
         let viewModel = subject()
 

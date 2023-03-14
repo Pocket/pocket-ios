@@ -213,7 +213,7 @@ extension SettingsForm {
     private func makePremiumSubscriptionRow() -> some View {
         makePremiumRowContent(true)
             .sheet(isPresented: $model.isPresentingPremiumStatus) {
-                PremiumStatusView(viewModel: PremiumSettingsViewModel())
+                PremiumStatusView(viewModel: model.makePremiumStatusViewModel())
             }
     }
 }

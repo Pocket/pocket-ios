@@ -53,14 +53,15 @@ class SaveItemOperation: SyncOperation {
         }
     }
 
-    @MainActor
     private func handle(result: GraphQLResult<SaveItemMutation.Data>) {
-        guard let remote = result.data?.upsertSavedItem.fragments.savedItemParts,
-              let savedItem: SavedItem = space.context.object(with: managedItemID) as? SavedItem else {
-            return
-        }
+        space.performAndWait {
+            guard let remote = result.data?.upsertSavedItem.fragments.savedItemParts,
+                  let savedItem: SavedItem = space.backgroundContext.object(with: managedItemID) as? SavedItem else {
+                return
+            }
 
-        savedItem.update(from: remote, with: space)
+            savedItem.update(from: remote, with: space)
+        }
 
         do {
             try space.save()

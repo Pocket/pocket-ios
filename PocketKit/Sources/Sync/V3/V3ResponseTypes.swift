@@ -53,7 +53,7 @@ public struct PremiumStatusResponse: Decodable, BasicV3Response {
 }
 
 // MARK: - Feature
-public struct Feature: Codable {
+public struct Feature: Decodable {
     let name, status, statusText: String
     let faqLink: String
 
@@ -65,27 +65,29 @@ public struct Feature: Codable {
 }
 
 // MARK: - SubscriptionInfo
-public struct SubscriptionInfo: Codable {
-    public let source, sourceDisplay, subscriptionSource, subscriptionID: String
-    public let orderID, purchaseDate, renewDate, activeUntilDate: String
-    public let subscriptionTypeID, subscriptionType: String
-    public let isActive: Int
-    public let status, displayAmount, usdAmount: String
+public struct SubscriptionInfo: Decodable {
+    public let source: String
+    public let purchaseDate: String
+    public let renewDate: String
+    public let subscriptionType: String
+    public let displayAmount: String
 
     enum CodingKeys: String, CodingKey {
         case source
-        case sourceDisplay = "source_display"
-        case subscriptionSource = "subscription_source"
-        case subscriptionID = "subscription_id"
-        case orderID = "order_id"
         case purchaseDate = "purchase_date"
         case renewDate = "renew_date"
-        case activeUntilDate = "active_until_date"
-        case subscriptionTypeID = "subscription_type_id"
         case subscriptionType = "subscription_type"
-        case isActive = "is_active"
-        case status
         case displayAmount = "display_amount"
-        case usdAmount = "usd_amount"
+    }
+
+    /// convenience property to provide an initial empty value of `SubscriptionInfo`
+    public static var emptyInfo: SubscriptionInfo {
+        SubscriptionInfo(
+            source: "",
+            purchaseDate: "",
+            renewDate: "",
+            subscriptionType: "",
+            displayAmount: ""
+        )
     }
 }

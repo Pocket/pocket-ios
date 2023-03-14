@@ -16,6 +16,7 @@ protocol ModalContentPresenting: AnyObject {
     func share(_ activity: PocketActivity?)
 }
 
+@MainActor
 class RegularMainCoordinator: NSObject {
     var viewController: UIViewController {
         splitController

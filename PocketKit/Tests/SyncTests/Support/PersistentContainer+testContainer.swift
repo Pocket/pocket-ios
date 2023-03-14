@@ -8,6 +8,6 @@ extension PersistentContainer {
 
 extension Space {
     static func testSpace() -> Space {
-        Space(context: PersistentContainer.testContainer.viewContext)
+        Space(backgroundContext: PersistentContainer.testContainer.newBackgroundContext(), viewContext: PersistentContainer.testContainer.viewContext)
     }
 }

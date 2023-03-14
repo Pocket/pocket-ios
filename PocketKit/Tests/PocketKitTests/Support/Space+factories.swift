@@ -15,7 +15,7 @@ extension Space {
         tags: [String]? = nil,
         item: Item? = nil
     ) throws -> SavedItem {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let savedItem = buildSavedItem(
                 remoteID: remoteID,
                 url: url,
@@ -27,7 +27,7 @@ extension Space {
                 tags: tags,
                 item: item
             )
-            try save()
+            try backgroundContext.save()
 
             return savedItem
         }
@@ -45,10 +45,10 @@ extension Space {
         tags: [String]? = nil,
         item: Item? = nil
     ) -> SavedItem {
-        context.performAndWait {
-            let savedItem: SavedItem = SavedItem(context: context, url: URL(string: url)!)
+        backgroundContext.performAndWait {
+            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!)
             let tags: [Tag]? = tags?.map { tag -> Tag in
-                let newTag: Tag = Tag(context: context)
+                let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
                 return newTag
             }
@@ -60,7 +60,7 @@ extension Space {
             savedItem.url = URL(string: url)!
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? Item(context: context, givenURL: URL(string: url)!, remoteID: remoteID)
+            savedItem.item = item ?? Item(context: backgroundContext, givenURL: URL(string: url)!, remoteID: remoteID)
 
             return savedItem
         }
@@ -68,8 +68,8 @@ extension Space {
 
     @discardableResult
         func buildPendingSavedItem() -> SavedItem {
-            context.performAndWait {
-                let savedItem: SavedItem = SavedItem(context: context, url: URL(string: "https://mozilla.com/example")!)
+            backgroundContext.performAndWait {
+                let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: "https://mozilla.com/example")!)
                 return savedItem
             }
         }
@@ -90,7 +90,7 @@ extension Space {
             url = URL(string: "https://example.com/items/item-1")
         }
 
-        return try context.performAndWait {
+        return try backgroundContext.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
                 title: title,
@@ -98,7 +98,7 @@ extension Space {
                 isArticle: isArticle,
                 article: article
             )
-            try save()
+            try backgroundContext.save()
 
             return item
         }
@@ -121,8 +121,8 @@ extension Space {
             url = URL(string: "https://example.com/items/item-1")
         }
 
-        return context.performAndWait {
-            let item: Item = Item(context: context, givenURL: url!, remoteID: remoteID)
+        return backgroundContext.performAndWait {
+            let item: Item = Item(context: backgroundContext, givenURL: url!, remoteID: remoteID)
             item.remoteID = remoteID
             item.title = title
             item.resolvedURL = resolvedURL
@@ -145,7 +145,7 @@ extension Space {
         experimentID: String = "slate-lineup-1-experiment",
         slates: [Slate] = []
     ) throws -> SlateLineup {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let slateLineup = buildSlateLineup(
                 remoteID: remoteID,
                 requestID: requestID,
@@ -153,7 +153,7 @@ extension Space {
                 slates: slates
             )
 
-            try save()
+            try backgroundContext.save()
             return slateLineup
         }
     }
@@ -165,8 +165,8 @@ extension Space {
         experimentID: String = "slate-lineup-1-experiment",
         slates: [Slate] = []
     ) -> SlateLineup {
-        context.performAndWait {
-            let lineup: SlateLineup = SlateLineup(context: context, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
+        backgroundContext.performAndWait {
+            let lineup: SlateLineup = SlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             lineup.slates = NSOrderedSet(array: slates)
 
             return lineup
@@ -185,7 +185,7 @@ extension Space {
         slateDescription: String = "The description of slate 1",
         recommendations: [Recommendation] = []
     ) throws -> Slate {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let slate = buildSlate(
                 experimentID: experimentID,
                 remoteID: remoteID,
@@ -195,7 +195,7 @@ extension Space {
                 recommendations: recommendations
             )
 
-            try save()
+            try backgroundContext.save()
             return slate
         }
     }
@@ -209,8 +209,8 @@ extension Space {
         slateDescription: String = "The description of slate 1",
         recommendations: [Recommendation] = []
     ) -> Slate {
-        context.performAndWait {
-            let slate: Slate = Slate(context: context, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
+        backgroundContext.performAndWait {
+            let slate: Slate = Slate(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             slate.name = name
             slate.slateDescription = slateDescription
             slate.recommendations = NSOrderedSet(array: recommendations)
@@ -227,13 +227,13 @@ extension Space {
         remoteID: String = "slate-1-rec-1",
         item: Item? = nil
     ) throws -> Recommendation {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
                 remoteID: remoteID,
                 item: item
             )
 
-            try save()
+            try backgroundContext.save()
             return recommendation
         }
     }
@@ -246,8 +246,8 @@ extension Space {
         title: String? = nil,
         excerpt: String?  = nil
     ) -> Recommendation {
-        context.performAndWait {
-            let recommendation: Recommendation = Recommendation(context: context, remoteID: remoteID)
+        backgroundContext.performAndWait {
+            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID)
             recommendation.item = item
             recommendation.title = title
             recommendation.excerpt = excerpt
@@ -267,8 +267,8 @@ extension Space {
         excerpt: String? = nil,
         publisherName: String? = nil
     ) -> SyndicatedArticle {
-        context.performAndWait {
-            let syndicatedArticle: SyndicatedArticle = SyndicatedArticle(context: context)
+        backgroundContext.performAndWait {
+            let syndicatedArticle: SyndicatedArticle = SyndicatedArticle(context: backgroundContext)
             syndicatedArticle.title = title
             syndicatedArticle.imageURL = imageURL
             syndicatedArticle.excerpt  = excerpt
@@ -285,8 +285,8 @@ extension Space {
         source: URL?,
         isDownloaded: Bool = false
     ) -> Image {
-        return context.performAndWait {
-            let image: Image = Image(context: context)
+        return backgroundContext.performAndWait {
+            let image: Image = Image(context: backgroundContext)
             image.source = source
             image.isDownloaded = isDownloaded
 
@@ -299,9 +299,9 @@ extension Space {
         source: URL?,
         isDownloaded: Bool = false
     ) throws -> Image {
-        return try context.performAndWait {
+        return try backgroundContext.performAndWait {
             let image = buildImage(source: source, isDownloaded: isDownloaded)
-            try save()
+            try backgroundContext.save()
 
             return image
         }
