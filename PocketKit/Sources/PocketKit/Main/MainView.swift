@@ -40,27 +40,7 @@ public struct MainView: View {
                     .tag(MainViewModel.AppSection.home.id)
                     .accessibilityIdentifier("home-tab-bar-button")
                 NavigationView {
-                    SavesContainerViewControllerSwiftUI(model: model.saves)
-                        .edgesIgnoringSafeArea(.top)
-                        .toolbar {
-                            ToolbarItem(placement: .navigation) {
-                                HStack(alignment: .center) {
-                                    Button(action: {
-                                        model.selectSavesTab()
-                                    }) {
-                                        Image(asset: .saves)
-                                        Text(L10n.saves)
-                                    }
-
-                                    Button(action: {
-                                        model.selectArchivesTab()
-                                    }) {
-                                        Image(asset: .archive)
-                                        Text(L10n.archive)
-                                    }
-                                }
-                            }
-                        }
+                    makeSaves()
                 }
                 .tabItem {
                     if model.selectedSection == .saves(.saves) || model.selectedSection == .saves(.archive) {
@@ -94,6 +74,29 @@ public struct MainView: View {
         }
     }
 
+    private func makeSaves() -> some View {
+        SavesContainerViewControllerSwiftUI(model: model.saves)
+            .toolbar {
+                ToolbarItem(placement: .navigation) {
+                    HStack(alignment: .center) {
+                        Button(action: {
+                            model.selectSavesTab()
+                        }) {
+                            Image(asset: .saves)
+                            Text(L10n.saves)
+                        }
+
+                        Button(action: {
+                            model.selectArchivesTab()
+                        }) {
+                            Image(asset: .archive)
+                            Text(L10n.archive)
+                        }
+                    }
+                }
+            }
+    }
+
     private func makeHome() -> some View {
         NavigationView {
             VStack {
@@ -123,7 +126,7 @@ public struct MainView: View {
 
                 if horizontalSizeClass == .regular {
                     NavigationLink(
-                        destination: SavesContainerViewControllerSwiftUI(model: model.saves),
+                        destination: makeSaves(),
                         isActive: Binding<Bool>(
                             get: {
                                 model.selectedSection.id == MainViewModel.AppSection.saves(.saves).id
