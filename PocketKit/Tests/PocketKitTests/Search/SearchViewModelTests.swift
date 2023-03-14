@@ -60,7 +60,7 @@ class SearchViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil
     ) async -> SearchViewModel {
-        let premiumViewModel = await PremiumUpgradeViewModel(store: subscriptionStore, tracker: MockTracker(), source: .search)
+        let premiumViewModel = await PremiumUpgradeViewModel(store: subscriptionStore, tracker: MockTracker(), source: .search, networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor)
         return SearchViewModel(
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             user: user,
