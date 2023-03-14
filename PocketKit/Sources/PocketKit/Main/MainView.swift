@@ -14,23 +14,17 @@ public struct MainView: View {
 
     @State private var selection = 0
 
-    public init() {
-        self.model = MainViewModel()
-    }
-
     public var body: some View {
         if horizontalSizeClass == .compact {
             TabView {
-                NavigationView {
-                    HomeViewControllerSwiftUI(model: model.home)
-                }
-
+                makeHome()
                     .tabItem {
                         selection == 1 ? Image(asset: .tabHomeSelected) : Image(asset: .tabHomeDeselected)
                         Text(L10n.home)
                     }
                     .accessibilityIdentifier("home-tab-bar-button")
-                SavesContainerViewControllerSwiftUI(model: model.saves)
+
+                    SavesContainerViewControllerSwiftUI(model: model.saves)
 
                     .tabItem {
                         selection == 0 ? Image(asset: .tabSavesSelected) : Image(asset: .tabSavesDeselected)
@@ -38,7 +32,9 @@ public struct MainView: View {
                     }
                     .accessibilityIdentifier("saves-tab-bar-button")
 
-                SettingsView(model: model.account)
+                NavigationView {
+                    SettingsView(model: model.account)
+                }
                     .tabItem {
                         selection == 2 ? Image(asset: .tabSettingsSelected) : Image(asset: .tabSettingsDeselected)
                         Text(L10n.settings)
@@ -50,18 +46,24 @@ public struct MainView: View {
             .foregroundColor(Color(.ui.grey1))
             .tint(Color(.ui.grey1))
         } else {
-            if #available(iOS 16.0, *) {
-                NavigationSplitView {
-                    SavesContainerViewControllerSwiftUI(model: model.saves)
-                } detail: {
-                    HomeViewControllerSwiftUI(model: model.home)
-                }
-            } else {
-                NavigationView {
-                    SavesContainerViewControllerSwiftUI(model: model.saves)
-                    HomeViewControllerSwiftUI(model: model.home)
-                }.navigationViewStyle(.stack)
-            }
+            makeHome()
         }
+    }
+
+    private func makeHome() -> some View {
+        NavigationView {
+            HomeViewControllerSwiftUI(model: model.home, savesModel: model.saves)
+                .navigationTitle(L10n.home)
+                .navigationBarTitleDisplayMode(.large)
+                .if(horizontalSizeClass != .compact) { view in
+                    view.navigationBarItems(trailing: NavigationLink(
+                        destination: SettingsView(model: model.account),
+                        label: {
+                            Image(asset: .tabSettingsDeselected)
+                        }
+                    ))
+                }
+        }
+        .navigationViewStyle(.stack)
     }
 }

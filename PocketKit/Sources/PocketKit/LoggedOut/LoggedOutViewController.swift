@@ -2,6 +2,19 @@ import UIKit
 import Textile
 import SwiftUI
 
+struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
+    var model: LoggedOutViewModel
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> LoggedOutViewController {
+        let v = LoggedOutCoordinator(viewModel: model)
+
+        return v.viewController
+    }
+
+    func updateUIViewController(_ uiViewController: LoggedOutViewController, context: UIViewControllerRepresentableContext<Self>) {
+    }
+}
+
 class LoggedOutViewController: UIHostingController<LoggedOutView> {
     convenience init(viewModel: LoggedOutViewModel) {
         self.init(rootView: LoggedOutView(viewModel: viewModel))

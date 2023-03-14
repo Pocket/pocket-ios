@@ -5,13 +5,13 @@ import Analytics
 import Sync
 
 // swiftlint:disable:next class_delegate_protocol
-protocol RegularSavesCoordinatorDelegate: ModalContentPresenting {
-    func savesCoordinator(_ coordinator: RegularSavesCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?)
-}
+// protocol RegularSavesCoordinatorDelegate: ModalContentPresenting {
+//    func savesCoordinator(_ coordinator: RegularSavesCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?)
+// }
 
 @MainActor
 class RegularSavesCoordinator: NSObject {
-    weak var delegate: RegularSavesCoordinatorDelegate?
+   // weak var delegate: RegularSavesCoordinatorDelegate?
 
     var viewController: UIViewController {
         savesViewController
@@ -147,7 +147,8 @@ extension RegularSavesCoordinator {
     private func show(_ selectedItem: SelectedItem) {
         switch selectedItem {
         case .readable(let savedItem):
-            delegate?.savesCoordinator(self, didSelectSavedItem: savedItem)
+            Log.debug("todo")
+           // delegate?.savesCoordinator(self, didSelectSavedItem: savedItem)
         case .webView(let item):
             guard let url = item?.url else { return }
             present(url)
@@ -158,23 +159,23 @@ extension RegularSavesCoordinator {
 // MARK: - Presenting modals
 extension RegularSavesCoordinator {
     private func present(_ url: URL?) {
-        delegate?.present(url)
+       // delegate?.present(url)
     }
 
     private func present(_ alert: PocketAlert?) {
-        delegate?.present(alert)
+       // delegate?.present(alert)
     }
 
     private func present(viewModel: PocketAddTagsViewModel?) {
-        delegate?.present(viewModel)
+      //  delegate?.present(viewModel)
     }
 
     private func present(_ tagsFilterViewModel: TagsFilterViewModel?) {
-        delegate?.present(tagsFilterViewModel)
+      //  delegate?.present(tagsFilterViewModel)
     }
 
     private func share(_ activity: PocketActivity?) {
-        delegate?.share(activity)
+       // delegate?.share(activity)
     }
 
     private func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {

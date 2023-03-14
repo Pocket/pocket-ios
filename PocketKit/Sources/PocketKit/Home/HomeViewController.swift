@@ -7,12 +7,15 @@ import Combine
 import SwiftUI
 import BackgroundTasks
 import Lottie
+import SafariServices
 
+@MainActor
 struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: HomeViewModel
+    var savesModel: SavesContainerViewModel
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> HomeViewController {
-        let v = HomeViewController(model: model)
+        let v = HomeViewController(model: model, savesModel: savesModel)
 
         return v
     }
@@ -23,8 +26,13 @@ struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
 
 class HomeViewController: UIViewController {
     private let model: HomeViewModel
+    private let savesModel: SavesContainerViewModel
+
     private let sectionProvider: HomeViewControllerSectionProvider
     private var subscriptions: [AnyCancellable] = []
+    private var readerSubscriptions: [AnyCancellable] = []
+    private var slateDetailSubscriptions: [AnyCancellable] = []
+    private var isResetting: Bool = false
 
     private lazy var layout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, env in
         guard let self = self,
@@ -67,8 +75,9 @@ class HomeViewController: UIViewController {
     private var overscrollTopConstraint: NSLayoutConstraint?
     private var overscrollOffset = 0
 
-    init(model: HomeViewModel) {
+    init(model: HomeViewModel, savesModel: SavesContainerViewModel) {
         self.model = model
+        self.savesModel = savesModel
 
         self.sectionProvider = HomeViewControllerSectionProvider()
 
@@ -114,6 +123,14 @@ class HomeViewController: UIViewController {
             }.store(in: &subscriptions)
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "home"
@@ -139,6 +156,7 @@ class HomeViewController: UIViewController {
 
         model.fetch()
         handleRefresh()
+        self.observeModelChanges()
     }
 
     private func handleRefresh(isForced: Bool = false) {
@@ -289,4 +307,335 @@ extension HomeViewController: UICollectionViewDelegate {
 
 private extension Style {
     static let overscroll = Style.header.sansSerif.p3.with { $0.with(alignment: .center) }
+}
+
+// Coordinator logix
+
+extension HomeViewController {
+    func observeModelChanges() {
+        navigationController?.popToRootViewController(animated: false)
+        isResetting = true
+
+        model.$selectedReadableType.sink { [weak self] readableType in
+            self?.show(readableType)
+        }.store(in: &subscriptions)
+
+        model.$selectedRecommendationToReport.sink { [weak self] recommendation in
+            self?.report(recommendation)
+        }.store(in: &subscriptions)
+
+        model.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &subscriptions)
+
+        model.$sharedActivity.sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &subscriptions)
+
+        model.$tappedSeeAll.sink { [weak self] seeAll in
+            self?.show(seeAll)
+        }.store(in: &subscriptions)
+        isResetting = false
+        navigationController?.delegate = self
+    }
+}
+
+extension HomeViewController {
+    func show(_ readableType: ReadableType?) {
+        switch readableType {
+        case .savedItem(let viewModel):
+            show(viewModel)
+        case .recommendation(let viewModel):
+            show(viewModel)
+        case .webViewRecommendation(let viewModel):
+            showRecommendation(forWebView: viewModel)
+            present(url: viewModel.url)
+        case .webViewSavedItem(let viewModel):
+            showSavedItem(forWebView: viewModel)
+            present(url: viewModel.url)
+        case .none:
+            readerSubscriptions = []
+        }
+    }
+
+    func show(_ viewModel: SlateDetailViewModel?) {
+        slateDetailSubscriptions = []
+
+        guard let viewModel = viewModel else {
+            return
+        }
+
+        navigationController?.pushViewController(
+            SlateDetailViewController(model: viewModel),
+            animated: !isResetting
+        )
+
+        viewModel.$selectedReadableViewModel.sink { [weak self] readable in
+            self?.show(readable)
+        }.store(in: &slateDetailSubscriptions)
+
+        viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
+            self?.report(recommendation)
+        }.store(in: &slateDetailSubscriptions)
+
+        viewModel.$presentedWebReaderURL.sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &slateDetailSubscriptions)
+
+        viewModel.$sharedActivity.sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &slateDetailSubscriptions)
+    }
+
+    func show(_ recommendation: RecommendationViewModel?) {
+        readerSubscriptions = []
+        guard let recommendation = recommendation else {
+            return
+        }
+
+        navigationController?.pushViewController(
+            ReadableHostViewController(readableViewModel: recommendation),
+            animated: !isResetting
+        )
+
+        recommendation.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        recommendation.$sharedActivity.sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &readerSubscriptions)
+
+        recommendation.$presentedWebReaderURL.sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &readerSubscriptions)
+
+        recommendation.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+            self?.presentReaderSettings(isPresenting, on: recommendation)
+        }.store(in: &readerSubscriptions)
+
+        recommendation.$selectedRecommendationToReport.sink { [weak self] selected in
+            self?.report(selected)
+        }.store(in: &readerSubscriptions)
+
+        recommendation.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    func show(_ savedItem: SavedItemViewModel) {
+        readerSubscriptions = []
+
+        navigationController?.pushViewController(
+            ReadableHostViewController(readableViewModel: savedItem),
+            animated: !isResetting
+        )
+
+        savedItem.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.$sharedActivity.sink { [weak self] activity in
+            self?.present(activity: activity)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.$presentedWebReaderURL.sink { [weak self] url in
+            self?.present(url: url)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+            self?.presentReaderSettings(isPresenting, on: savedItem)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.$presentedAddTags.sink { [weak self] addTagsViewModel in
+            self?.present(addTagsViewModel)
+        }.store(in: &readerSubscriptions)
+
+        savedItem.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
+        viewModel.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
+            self?.report(recommendation)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
+        viewModel.$presentedAlert.sink { [weak self] alert in
+            self?.present(alert: alert)
+        }.store(in: &readerSubscriptions)
+
+        viewModel.events.sink { [weak self] event in
+            switch event {
+            case .contentUpdated:
+                break
+            case .archive, .delete:
+                self?.popToPreviousScreen()
+            }
+        }.store(in: &readerSubscriptions)
+    }
+
+    func report(_ recommendation: Recommendation?) {
+        guard !isResetting, let recommendation = recommendation else {
+            return
+        }
+
+        let host = ReportRecommendationHostingController(
+            recommendation: recommendation,
+            tracker: Services.shared.tracker.childTracker(hosting: .reportDialog),
+            onDismiss: { [weak self] in self?.model.clearRecommendationToReport() }
+        )
+
+        host.modalPresentationStyle = .formSheet
+        guard let presentedVC = self.parent?.presentedViewController else {
+            self.parent?.present(host, animated: !isResetting)
+            return
+        }
+        presentedVC.present(host, animated: !isResetting)
+    }
+
+    func show(_ seeAll: SeeAll?) {
+        switch seeAll {
+        case .saves:
+             showSaves()
+        case .slate(let slateViewModel):
+            show(slateViewModel)
+        default:
+            return
+        }
+    }
+
+    private func showSaves() {
+        guard let tabBarController else {
+            navigationController?.pushViewController(SavesContainerViewController(model: savesModel)
+, animated: true)
+            return
+        }
+
+        tabBarController.selectedIndex = 1
+    }
+
+    private func present(activity: PocketActivity?) {
+        guard !isResetting, let activity = activity else { return }
+
+        let activityVC = UIActivityViewController(activity: activity)
+
+        activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
+            self?.model.clearSharedActivity()
+        }
+
+        self.present(activityVC, animated: !isResetting)
+    }
+
+    private func present(url: URL?) {
+        guard !isResetting, let url = url else { return }
+
+        let safariVC = SFSafariViewController(url: url)
+        safariVC.delegate = self
+        self.present(safariVC, animated: !isResetting)
+    }
+
+    private func presentReaderSettings(_ isPresenting: Bool?, on readable: ReadableViewModel?) {
+        guard !isResetting, isPresenting == true, let readable = readable else {
+            return
+        }
+
+        let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
+            self?.model.clearIsPresentingReaderSettings()
+        }
+        readerSettingsVC.configurePocketDefaultDetents()
+                self.present(readerSettingsVC, animated: !isResetting)
+    }
+
+    private func present(alert: PocketAlert?) {
+        guard !isResetting, let alert = alert else { return }
+        guard let presentedVC = self.presentedViewController else {
+            self.present(UIAlertController(alert), animated: !isResetting)
+            return
+        }
+        presentedVC.present(UIAlertController(alert), animated: !isResetting)
+    }
+
+    func present(_ viewModel: PocketAddTagsViewModel?) {
+        guard !isResetting, let viewModel = viewModel else { return }
+        let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
+        hostingController.modalPresentationStyle = .formSheet
+                self.present(hostingController, animated: !isResetting)
+    }
+}
+
+extension HomeViewController: SFSafariViewControllerDelegate {
+    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
+        return model.activityItemsForSelectedItem(url: URL)
+    }
+
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        model.clearPresentedWebReaderURL()
+    }
+}
+
+extension HomeViewController: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        // By default, when pushing the reader, switching to landscape, and popping,
+        // the list will remain in landscape despite only supporting portrait.
+        // We have to programatically force the device orientation back to portrait,
+        // if the view controller we want to show _only_ supports portrait
+        // (e.g when popping from the reader).
+        if viewController.supportedInterfaceOrientations == .portrait, UIDevice.current.orientation.isLandscape {
+            UIDevice.current.setValue(UIDeviceOrientation.portrait.rawValue, forKey: "orientation")
+        }
+    }
+
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        if viewController === self {
+            slateDetailSubscriptions = []
+            model.clearTappedSeeAll()
+            model.clearSelectedItem()
+        }
+
+        if viewController is SlateDetailViewController {
+            model.clearRecommendationToReport()
+            model.tappedSeeAll?.clearSelectedItem()
+        }
+    }
+
+    func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+        guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
+    }
+
+    private func popToPreviousScreen() {
+        if let presentedVC = navigationController?.presentedViewController {
+            presentedVC.dismiss(animated: true) { [weak self] in
+                self?.navigationController?.popToRootViewController(animated: true)
+            }
+        } else {
+            navigationController?.popViewController(animated: true)
+        }
+    }
 }

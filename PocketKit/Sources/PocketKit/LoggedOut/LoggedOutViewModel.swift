@@ -13,7 +13,7 @@ enum LoggedOutAction {
 }
 
 class LoggedOutViewModel: ObservableObject {
-    weak var contextProvider: ASWebAuthenticationPresentationContextProviding?
+    var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
     @Published
     var presentedAlert: PocketAlert?

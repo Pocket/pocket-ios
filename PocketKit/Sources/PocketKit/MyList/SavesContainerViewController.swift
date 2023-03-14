@@ -24,13 +24,13 @@ protocol SelectableViewController: UIViewController {
 struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: SavesContainerViewModel
 
-    func makeUIViewController(context: Context) -> SavesContainerViewController {
+    func makeUIViewController(context: Context) -> UINavigationController {
         let v = SavesContainerViewController(model: model)
-//TODO: figure out how we can influence nav titel in swiftui
-        return v
+        // Wrap in a UINavigationController, because the way we did saves/archive does not work if wrapped in a NavigationView
+        return UINavigationController(rootViewController: v)
     }
 
-    func updateUIViewController(_ uiViewController: SavesContainerViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
     }
 }
 
@@ -57,7 +57,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
             ]
         )
     }
-    
+
     init(searchViewModel: SearchViewModel, viewControllers: [SelectableViewController]) {
         selectedIndex = 0
         self.searchViewModel = searchViewModel

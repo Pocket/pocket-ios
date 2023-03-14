@@ -9,9 +9,9 @@ public struct RootView: View {
 
     public var body: some View {
         if model.isLoggedIn {
-            MainView()
+            MainView(model: MainViewModel())
         } else {
-            LoggedOutView(viewModel: LoggedOutViewModel())
+            LoggedOutViewControllerSwiftUI(model: LoggedOutViewModel())
         }
     }
 }
