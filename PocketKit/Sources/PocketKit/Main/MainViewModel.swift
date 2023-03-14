@@ -7,12 +7,15 @@ import UIKit
 
 @MainActor
 class MainViewModel: ObservableObject {
-    @Published
-    var selectedSection: AppSection = .home
-
     let home: HomeViewModel
     let saves: SavesContainerViewModel
     let account: AccountViewModel
+    var mainViewStore: MainViewStore
+
+    @Published
+    var selectedSection: AppSection
+
+    private var subscriptions: Set<AnyCancellable> = []
 
     @MainActor
     convenience init() {
@@ -40,7 +43,8 @@ class MainViewModel: ObservableObject {
                     viewType: .archive,
                     listOptions: .archived,
                     notificationCenter: .default
-                )
+                ),
+                mainViewStore: Services.shared.mainViewStore
             ),
             home: HomeViewModel(
                 source: Services.shared.source,
@@ -64,18 +68,29 @@ class MainViewModel: ObservableObject {
                 premiumStatusViewModelFactory: {
                     PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)
                 }
-            )
+            ),
+            mainViewStore: Services.shared.mainViewStore
         )
     }
 
     init(
         saves: SavesContainerViewModel,
         home: HomeViewModel,
-        account: AccountViewModel
+        account: AccountViewModel,
+        mainViewStore: MainViewStore
     ) {
         self.saves = saves
         self.home = home
         self.account = account
+        self.mainViewStore = mainViewStore
+        self.selectedSection = mainViewStore.mainSelection
+
+        self.mainViewStore
+            .mainSelectionPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] value in
+            self?.selectedSection = value
+        }.store(in: &subscriptions)
     }
 
     enum Subsection {
@@ -124,12 +139,18 @@ class MainViewModel: ObservableObject {
     }
 
     func selectSavesTab() {
-        selectedSection = .saves(.saves)
-        saves.selection = .saves
+        self.mainViewStore.mainSelection = .saves(.saves)
     }
 
     func selectArchivesTab() {
-        selectedSection = .saves(.archive)
-        saves.selection = .archive
+        self.mainViewStore.mainSelection = .saves(.archive)
+    }
+
+    func selectHomeTab() {
+        self.mainViewStore.mainSelection = .home
+    }
+
+    func selectAccountTab() {
+        self.mainViewStore.mainSelection = .account
     }
 }

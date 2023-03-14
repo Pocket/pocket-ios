@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Textile
 
 public struct MainView: View {
     @ObservedObject var model: MainViewModel
@@ -20,11 +21,11 @@ public struct MainView: View {
                 },
                 set: {
                     if $0 == MainViewModel.AppSection.saves(.saves).id {
-                        model.selectedSection = .saves(.saves)
+                        model.selectSavesTab()
                     } else if $0 == MainViewModel.AppSection.home.id {
-                        model.selectedSection = .home
+                        model.selectHomeTab()
                     } else if $0 == MainViewModel.AppSection.account.id {
-                        model.selectedSection = .account
+                        model.selectAccountTab()
                     }
                 }
             )) {
@@ -76,22 +77,51 @@ public struct MainView: View {
 
     private func makeSaves() -> some View {
         SavesContainerViewControllerSwiftUI(model: model.saves)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .navigation) {
+                ToolbarItemGroup(placement: .principal) {
                     HStack(alignment: .center) {
                         Button(action: {
                             model.selectSavesTab()
-                        }) {
-                            Image(asset: .saves)
-                            Text(L10n.saves)
-                        }
+                        }) {}
+                            .buttonStyle(SavesSelectorButtonStyle(
+                                isSelected: Binding<Bool>(
+                                    get: {
+                                        model.selectedSection == MainViewModel.AppSection.saves(.saves)
+                                    },
+                                    set: {
+                                        if $0 == true {
+                                            model.selectSavesTab()
+                                        } else {
+                                            model.selectArchivesTab()
+                                        }
+                                    }
+                                ),
+                                image: Image(asset: .saves),
+                                title: L10n.saves
+                            )
+                            )
 
                         Button(action: {
                             model.selectArchivesTab()
-                        }) {
-                            Image(asset: .archive)
-                            Text(L10n.archive)
-                        }
+                        }) {}
+                            .buttonStyle(SavesSelectorButtonStyle(
+                                isSelected: Binding<Bool>(
+                                    get: {
+                                        model.selectedSection == MainViewModel.AppSection.saves(.archive)
+                                    },
+                                    set: {
+                                        if $0 == true {
+                                            model.selectArchivesTab()
+                                        } else {
+                                            model.selectSavesTab()
+                                        }
+                                    }
+                                ),
+                                image: Image(asset: .archive),
+                                title: L10n.archive
+                            )
+                            )
                     }
                 }
             }
@@ -112,9 +142,9 @@ public struct MainView: View {
                                 },
                                 set: {
                                     if $0 == true {
-                                        model.selectedSection = MainViewModel.AppSection.account
+                                        model.selectAccountTab()
                                     } else {
-                                        model.selectedSection = MainViewModel.AppSection.home
+                                        model.selectHomeTab()
                                     }
                                 }
                             ),
@@ -133,9 +163,9 @@ public struct MainView: View {
                             },
                             set: {
                                 if $0 == true {
-                                    model.selectedSection = MainViewModel.AppSection.saves(.saves)
+                                    model.selectSavesTab()
                                 } else {
-                                    model.selectedSection = MainViewModel.AppSection.home
+                                    model.selectHomeTab()
                                 }
                             }
                         ),

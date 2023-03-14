@@ -45,36 +45,30 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
+    private let savesController: SelectableViewController
+    private let archiveController: SelectableViewController
+
     private var searchViewModel: SearchViewModel
     private var subscriptions: [AnyCancellable] = []
     private var readableSubscriptions: [AnyCancellable] = []
     private var isResetting: Bool = false
     private let model: SavesContainerViewModel
 
-    private lazy var titleView = {
-        let selections = viewControllers.map { vc in
-            SavesSelection(title: vc.selectionItem.title, image: vc.selectionItem.image) { [weak self] in
-                self?.select(child: vc)
-            }
-        }
-        return SavesTitleView(selections: selections)
-    }()
-
     convenience init(model: SavesContainerViewModel) {
         self.init(
             model: model,
-            viewControllers: [
-                ItemsListViewController(model: model.savedItemsList),
-                ItemsListViewController(model: model.archivedItemsList)
-            ]
+            savesController: ItemsListViewController(model: model.savedItemsList),
+            archiveController: ItemsListViewController(model: model.archivedItemsList)
         )
     }
 
-    init(model: SavesContainerViewModel, viewControllers: [SelectableViewController]) {
+    init(model: SavesContainerViewModel, savesController: SelectableViewController, archiveController: SelectableViewController) {
         selectedIndex = 0
         self.model = model
         self.searchViewModel = self.model.searchList
-        self.viewControllers = viewControllers
+        self.archiveController = archiveController
+        self.savesController = savesController
+        self.viewControllers = [savesController, archiveController]
         self.isFromSaves = true
 
         super.init(nibName: nil, bundle: nil)
@@ -93,7 +87,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        select(child: viewControllers.first)
+        select(child: savesController)
     }
 
     required init?(coder: NSCoder) {
@@ -108,6 +102,15 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     private func viewController(at index: Int) -> SelectableViewController? {
         guard index < viewControllers.count else { return nil }
         return viewControllers[index]
+    }
+
+    private func select(selectionItem: SelectionItem) {
+        switch selectionItem.selectedView {
+        case .saves:
+            select(child: savesController)
+        case .archive:
+            select(child: archiveController)
+        }
     }
 
     private func select(child: SelectableViewController?) {
