@@ -1,15 +1,17 @@
 import SwiftUI
 import Textile
 import MessageUI
+import StoreKit
 
 struct PremiumStatusView: View {
     @Environment(\.dismiss)
     private var dismiss
     @StateObject
-    var viewModel: PremiumSettingsViewModel
+    var viewModel: PremiumStatusViewModel
     @State var result: Result<MFMailComposeResult, Error>?
+    @State private var presentManageSubscriptions = false
 
-    init(viewModel: PremiumSettingsViewModel) {
+    init(viewModel: PremiumStatusViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -19,17 +21,26 @@ struct PremiumStatusView: View {
             subscriptionHeader
             subscriptionStatus
             Divider()
-            yourSubscription
-            Divider()
+            if viewModel.subscriptionProvider.isApple {
+                yourSubscription
+                Divider()
+            }
             questionsOrFeedback
             Spacer()
         }
+        .manageSubscriptionsSheet(isPresented: $presentManageSubscriptions)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("premium-status-view")
         .task {
-            await viewModel.requestStatus()
+            await viewModel.getInfo()
         }
         .padding([.leading, .trailing], Constants.verticalPadding)
+        .alert(
+            Text(L10n.General.oops),
+            isPresented: $viewModel.isPresentingErrorAlert,
+            actions: { Button( role: .cancel, action: { dismiss() }, label: { Text(L10n.ok) }) },
+            message: { Text(L10n.Search.errorMessage) }
+        )
     }
 
     private var dismissButton: some View {
@@ -62,40 +73,8 @@ struct PremiumStatusView: View {
                     .style(Style.subtitle)
                 Spacer()
             }
-            HStack {
-                Text(L10n.Settings.Premium.Settings.subscription)
-                    .style(Style.itemTitle)
-                Spacer()
-                Text(viewModel.subscription)
-                    .style(Style.itemValue)
-            }
-            HStack {
-                Text(L10n.Settings.Premium.Settings.datePurchased)
-                    .style(Style.itemTitle)
-                Spacer()
-                Text(viewModel.datePurchased)
-                    .style(Style.itemValue)
-            }
-            HStack {
-                Text(L10n.Settings.Premium.Settings.renewalDate)
-                    .style(Style.itemTitle)
-                Spacer()
-                Text(viewModel.renewalDate)
-                    .style(Style.itemValue)
-            }
-            HStack {
-                Text(L10n.Settings.Premium.Settings.purchaseLocation)
-                    .style(Style.itemTitle)
-                Spacer()
-                Text(viewModel.purchaseLocation)
-                    .style(Style.itemValue)
-            }
-            HStack {
-                Text(L10n.Settings.Premium.Settings.price)
-                    .style(Style.itemTitle)
-                Spacer()
-                Text(viewModel.price)
-                    .style(Style.itemValue)
+            ForEach(viewModel.subscriptionInfoList) {
+                SubscriptionIfoRow(item: $0)
             }
         }
     }
@@ -107,10 +86,8 @@ struct PremiumStatusView: View {
                     .style(Style.subtitle)
                 Spacer()
             }
-            HStack {
-                PremiumStatusRow(title: L10n.Settings.Premium.Settings.manageYourSubscription) {
-                    // TODO: subscription switch
-                }
+            PremiumStatusRow(title: L10n.Settings.Premium.Settings.manageYourSubscription) {
+                presentManageSubscriptions = true
             }
         }
     }
@@ -144,12 +121,7 @@ struct PremiumStatusView: View {
 
 private extension Style {
     static let title = Style.header.sansSerif.h4
-
     static let subtitle = Style.header.sansSerif.p4.with(color: .ui.grey3)
-
-    static let itemTitle = Style.header.sansSerif.h7.with(weight: .regular)
-
-    static let itemValue = Style.header.sansSerif.h7.with(weight: .medium)
 }
 
 private extension PremiumStatusView {

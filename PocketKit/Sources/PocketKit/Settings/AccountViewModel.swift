@@ -13,8 +13,11 @@ class AccountViewModel: ObservableObject {
     private let userManagementService: UserManagementServiceProtocol
     private let notificationCenter: NotificationCenter
     private let restoreSubscription: () async throws -> Void
-    private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
-
+    // Factories
+    private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
+    private let premiumStatusViewModelFactory: PremiumStatusViewModelFactory
+    // Presented sheets
+    // TODO: we might want to add a coordinator of some sort here
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
     @Published var isPresentingPrivacy = false
@@ -42,7 +45,8 @@ class AccountViewModel: ObservableObject {
          userManagementService: UserManagementServiceProtocol,
          notificationCenter: NotificationCenter,
          restoreSubscription: @escaping () async throws -> Void,
-         premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
+         premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory,
+         premiumStatusViewModelFactory: @escaping PremiumStatusViewModelFactory) {
         self.user = user
         self.tracker = tracker
         self.userDefaults = userDefaults
@@ -50,6 +54,7 @@ class AccountViewModel: ObservableObject {
         self.notificationCenter = notificationCenter
         self.restoreSubscription = restoreSubscription
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
+        self.premiumStatusViewModelFactory = premiumStatusViewModelFactory
         self.isPremium = user.status == .premium
 
         userStatusListener = user
@@ -83,16 +88,24 @@ class AccountViewModel: ObservableObject {
     }
 }
 
-// MARK: Premium upgrades factory
+// MARK: premium upgrades factory
 extension AccountViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
-        premiumUpgradeViewModelFactory(tracker, .settings)
+        premiumUpgradeViewModelFactory(.settings)
     }
 
     /// Ttoggle the presentation of `PremiumUpgradeView`
     func showPremiumUpgrade() {
         self.isPresentingPremiumUpgrade = true
+    }
+}
+
+// MARK: premium statis fsctory
+extension AccountViewModel {
+    @MainActor
+    func makePremiumStatusViewModel() -> PremiumStatusViewModel {
+        premiumStatusViewModelFactory()
     }
 
     /// Show Premium Status on tap

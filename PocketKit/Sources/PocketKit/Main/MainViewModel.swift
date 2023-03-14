@@ -61,8 +61,11 @@ class MainViewModel: ObservableObject {
                 restoreSubscription: {
                     try await Services.shared.subscriptionStore.restoreSubscription()
                 },
-                premiumUpgradeViewModelFactory: { tracker, source in
-                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                premiumUpgradeViewModelFactory: { source in
+                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: Services.shared.tracker, source: source)
+                },
+                premiumStatusViewModelFactory: {
+                    PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)
                 }
             )
         )
