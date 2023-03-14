@@ -20,7 +20,7 @@ class PremiumUpgradeViewModel: ObservableObject {
     private let networkPathMonitor: NetworkPathMonitor
 
     var isOffline: Bool {
-        return networkPathMonitor.currentNetworkPath.status != .unsatisfied
+        return networkPathMonitor.currentNetworkPath.status == .unsatisfied
     }
 
     @Published private(set) var monthlyName = ""
@@ -45,6 +45,8 @@ class PremiumUpgradeViewModel: ObservableObject {
         self.tracker = tracker
         self.source = source
         self.networkPathMonitor = networkPathMonitor
+
+        networkPathMonitor.start(queue: .global())
 
         store.subscriptionsPublisher
             .receive(on: DispatchQueue.main)
