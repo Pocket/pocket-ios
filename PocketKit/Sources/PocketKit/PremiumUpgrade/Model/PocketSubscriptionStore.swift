@@ -26,7 +26,7 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
         self.user = user
         self.receiptService = receiptService
         self.subscriptionMap = subscriptionMap ?? [Keys.shared.pocketPremiumMonthly: .monthly, Keys.shared.pocketPremiumAnnual: .annual]
-        receiptService.send()
+
         transactionListener = makeTransactionListener()
 
         Task {
@@ -39,8 +39,14 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
             }
             // Restore a purchased subscription, if any
             await self.updateSubscription()
+
+            do {
+                // send App Store receipt at launch
+                try await receiptService.send(nil)
+            } catch {
+                Log.capture(error: error)
+            }
         }
-        // TODO: Send the App Receipt to the backend
     }
 
     /// Fetch available subscriptions from the App Store
@@ -61,7 +67,6 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
     /// Manually restore a purchase in those (rare?) cases when the automatic sync fails
     func restoreSubscription() async throws {
         try await AppStore.sync()
-        // TODO: double check if we still need the following call when dealing with the real App Store
         await updateSubscription()
     }
 }
@@ -123,7 +128,6 @@ extension PocketSubscriptionStore {
 
     /// Updates app status when a new subscription is found
     private func updateSubscription() async {
-        // TODO: we need to handle the downgrade as well
         for await transaction in Transaction.currentEntitlements {
             do {
                 let verifiedTransaction = try verify(transaction)
@@ -132,7 +136,11 @@ extension PocketSubscriptionStore {
                     if let subscription = subscriptions.first(where: { $0.product.id == verifiedTransaction.productID }) {
                         state = .subscribed(subscription.type)
                         user.setPremiumStatus(true)
-                        receiptService.send()
+                        do {
+                            try await receiptService.send(subscription.product)
+                        } catch {
+                            Log.capture(error: error)
+                        }
                     }
                 default:
                     // We do not have other product types as of now.
