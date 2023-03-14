@@ -134,6 +134,39 @@ public class V3Client: NSObject, V3ClientProtocol {
         }
     }
 
+    /// Same as above but does not return a decoded type
+    func executeRequest(_ request: URLRequest) async throws {
+        let (_, response): (Data, URLResponse)
+        do {
+            (_, response) = try await urlSession.data(for: request, delegate: nil)
+        } catch {
+            throw Error.generic(error)
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw Error.unexpectedError
+        }
+
+        // TODO: V3 almost always returns a 200 even when errors, so we will need to check the x-status-code header in the future
+        switch httpResponse.statusCode {
+        case 200...299:
+            guard let source = httpResponse.value(forHTTPHeaderField: "X-Source"),
+                  source == "Pocket" else {
+                throw Error.invalidSource
+            }
+        case 300...399:
+            throw Error.unexpectedRedirect
+        case 400:
+            throw Error.badRequest
+        case 401...499:
+            throw Error.invalidCredentials
+        case 500...599:
+            throw Error.serverError
+        default:
+            throw Error.unexpectedError
+        }
+    }
+
     /**
      Given a path and parameters build a URL Request to be used on V3
      */
@@ -243,5 +276,29 @@ extension V3Client {
         )
 
         return try await executeRequest(request: request, decodable: PremiumStatusResponse.self, decodingStrategy: .useDefaultKeys)
+    }
+}
+
+extension V3Client {
+    public func sendAppstoreReceipt(source: String,
+                                    transactionInfo: String,
+                                    amount: String,
+                                    productId: String,
+                                    currency: String,
+                                    transactionType: String) async throws {
+        let currentSession = try fallbackSession(session: sessionProvider.session)
+        let requestBody = AppstoreReceiptRequest(
+            accessToken: currentSession.accessToken,
+            consumerKey: consumerKey,
+            guid: currentSession.guid,
+            source: source,
+            transactionInfo: transactionInfo,
+            amount: amount,
+            productId: productId,
+            currency: currency,
+            transactionType: transactionType
+        )
+        let request = try buildRequest(path: "purchase", request: requestBody)
+        return try await executeRequest(request)
     }
 }
