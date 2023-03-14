@@ -12,36 +12,80 @@ public struct MainView: View {
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @State private var selection = 0
-
     public var body: some View {
         if horizontalSizeClass == .compact {
-            TabView {
+            TabView(selection: Binding<String>(
+                get: {
+                    model.selectedSection.id
+                },
+                set: {
+                    if $0 == MainViewModel.AppSection.saves(.saves).id {
+                        model.selectedSection = .saves(.saves)
+                    } else if $0 == MainViewModel.AppSection.home.id {
+                        model.selectedSection = .home
+                    } else if $0 == MainViewModel.AppSection.account.id {
+                        model.selectedSection = .account
+                    }
+                }
+            )) {
                 makeHome()
                     .tabItem {
-                        selection == 1 ? Image(asset: .tabHomeSelected) : Image(asset: .tabHomeDeselected)
+                        if model.selectedSection == .home {
+                            Image(asset: .tabHomeSelected)
+                        } else {
+                            Image(asset: .tabHomeDeselected)
+                        }
                         Text(L10n.home)
                     }
+                    .tag(MainViewModel.AppSection.home.id)
                     .accessibilityIdentifier("home-tab-bar-button")
-
+                NavigationView {
                     SavesContainerViewControllerSwiftUI(model: model.saves)
+                        .edgesIgnoringSafeArea(.top)
+                        .toolbar {
+                            ToolbarItem(placement: .navigation) {
+                                HStack(alignment: .center) {
+                                    Button(action: {
+                                        model.selectSavesTab()
+                                    }) {
+                                        Image(asset: .saves)
+                                        Text(L10n.saves)
+                                    }
 
-                    .tabItem {
-                        selection == 0 ? Image(asset: .tabSavesSelected) : Image(asset: .tabSavesDeselected)
-                        Text(L10n.saves)
+                                    Button(action: {
+                                        model.selectArchivesTab()
+                                    }) {
+                                        Image(asset: .archive)
+                                        Text(L10n.archive)
+                                    }
+                                }
+                            }
+                        }
+                }
+                .tabItem {
+                    if model.selectedSection == .saves(.saves) || model.selectedSection == .saves(.archive) {
+                        Image(asset: .tabSavesSelected)
+                    } else {
+                        Image(asset: .tabSavesDeselected)
                     }
-                    .accessibilityIdentifier("saves-tab-bar-button")
-
+                    Text(L10n.saves)
+                }
+                .tag(MainViewModel.AppSection.saves(.saves).id)
+                .accessibilityIdentifier("saves-tab-bar-button")
                 NavigationView {
                     SettingsView(model: model.account)
                 }
-                    .tabItem {
-                        selection == 2 ? Image(asset: .tabSettingsSelected) : Image(asset: .tabSettingsDeselected)
-                        Text(L10n.settings)
+                .tabItem {
+                    if model.selectedSection == .account {
+                        Image(asset: .tabSettingsSelected)
+                    } else {
+                        Image(asset: .tabSettingsDeselected)
                     }
-                    .accessibilityIdentifier("account-tab-bar-button")
+                    Text(L10n.settings)
+                }
+                .tag(MainViewModel.AppSection.account.id)
+                .accessibilityIdentifier("account-tab-bar-button")
             }
-            // TODO: match old UITabBar styling.
             .background(Color(.ui.white1))
             .foregroundColor(Color(.ui.grey1))
             .tint(Color(.ui.grey1))
@@ -52,17 +96,50 @@ public struct MainView: View {
 
     private func makeHome() -> some View {
         NavigationView {
-            HomeViewControllerSwiftUI(model: model.home, savesModel: model.saves)
-                .navigationTitle(L10n.home)
-                .navigationBarTitleDisplayMode(.large)
-                .if(horizontalSizeClass != .compact) { view in
-                    view.navigationBarItems(trailing: NavigationLink(
-                        destination: SettingsView(model: model.account),
-                        label: {
-                            Image(asset: .tabSettingsDeselected)
-                        }
-                    ))
+            VStack {
+                HomeViewControllerSwiftUI(model: model)
+                    .navigationTitle(L10n.home)
+                    .navigationBarTitleDisplayMode(.large)
+                    .if(horizontalSizeClass == .regular) { view in
+                        view.navigationBarItems(trailing: NavigationLink(
+                            destination: SettingsView(model: model.account),
+                            isActive: Binding<Bool>(
+                                get: {
+                                    model.selectedSection == MainViewModel.AppSection.account
+                                },
+                                set: {
+                                    if $0 == true {
+                                        model.selectedSection = MainViewModel.AppSection.account
+                                    } else {
+                                        model.selectedSection = MainViewModel.AppSection.home
+                                    }
+                                }
+                            ),
+                            label: {
+                                Image(asset: .tabSettingsDeselected)
+                            }
+                        ))
+                    }
+
+                if horizontalSizeClass == .regular {
+                    NavigationLink(
+                        destination: SavesContainerViewControllerSwiftUI(model: model.saves),
+                        isActive: Binding<Bool>(
+                            get: {
+                                model.selectedSection.id == MainViewModel.AppSection.saves(.saves).id
+                            },
+                            set: {
+                                if $0 == true {
+                                    model.selectedSection = MainViewModel.AppSection.saves(.saves)
+                                } else {
+                                    model.selectedSection = MainViewModel.AppSection.home
+                                }
+                            }
+                        ),
+                        label: { EmptyView() }
+                    )
                 }
+            }
         }
         .navigationViewStyle(.stack)
     }

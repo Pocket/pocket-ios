@@ -4,7 +4,6 @@ import Sync
 import SharedPocketKit
 import Combine
 import SafariServices
-import SwiftUI
 import Textile
 
 struct SelectionItem {
@@ -27,20 +26,18 @@ protocol SelectableViewController: UIViewController {
 struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: SavesContainerViewModel
 
-    func makeUIViewController(context: Context) -> UINavigationController {
+    func makeUIViewController(context: Context) -> SavesContainerViewController {
         let v = SavesContainerViewController(model: model)
-        // Wrap in a UINavigationController, because the way we did saves/archive does not work if wrapped in a NavigationView
-        return UINavigationController(rootViewController: v)
+        return v
     }
 
-    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
+    func updateUIViewController(_ uiViewController: SavesContainerViewController, context: Context) {
     }
 }
 
 class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     var selectedIndex: Int {
         didSet {
-            resetTitleView()
             select(child: viewController(at: selectedIndex))
         }
     }
@@ -53,6 +50,15 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     private var readableSubscriptions: [AnyCancellable] = []
     private var isResetting: Bool = false
     private let model: SavesContainerViewModel
+
+    private lazy var titleView = {
+        let selections = viewControllers.map { vc in
+            SavesSelection(title: vc.selectionItem.title, image: vc.selectionItem.image) { [weak self] in
+                self?.select(child: vc)
+            }
+        }
+        return SavesTitleView(selections: selections)
+    }()
 
     convenience init(model: SavesContainerViewModel) {
         self.init(
@@ -77,17 +83,17 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
             addChild(vc)
             vc.didMove(toParent: vc)
         }
-
-        resetTitleView()
-        navigationItem.largeTitleDisplayMode = .never
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
         view.accessibilityIdentifier = "saves"
-        select(child: viewControllers.first)
         self.observeModelChanges()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        select(child: viewControllers.first)
     }
 
     required init?(coder: NSCoder) {
@@ -97,16 +103,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait
-    }
-
-    private func resetTitleView() {
-        let selections = viewControllers.map { vc in
-            SavesSelection(title: vc.selectionItem.title, image: vc.selectionItem.image) { [weak self] in
-                self?.select(child: vc)
-            }
-        }
-
-        navigationItem.titleView = SavesTitleView(selections: selections)
     }
 
     private func viewController(at index: Int) -> SelectableViewController? {
@@ -205,15 +201,12 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     }
 }
 
-
-
-// MARK: CompactSavesContainerCoordinator
-
 extension SavesContainerViewController {
     func observeModelChanges() {
         isResetting = true
+        navigationController?.delegate = self
 
-        //navigationController?.popToRootViewController(animated: false)
+        // navigationController?.popToRootViewController(animated: false)
 
         model.$selection.sink { [weak self] selection in
             switch selection {
@@ -410,7 +403,7 @@ extension SavesContainerViewController {
             self?.model.clearIsPresentingReaderSettings()
         }
         readerSettingsVC.configurePocketDefaultDetents()
-        navigationController?.present(readerSettingsVC, animated: !isResetting)
+        self.navigationController?.present(readerSettingsVC, animated: !isResetting)
     }
 
     func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
@@ -419,19 +412,19 @@ extension SavesContainerViewController {
         }
 
         guard let sortFilterVM = presentedSortFilterViewModel else {
-            if navigationController?.presentedViewController is SortMenuViewController {
-                navigationController?.dismiss(animated: true)
+            if self.navigationController?.presentedViewController is SortMenuViewController {
+                self.navigationController?.dismiss(animated: true)
             }
             return
         }
 
         let viewController = SortMenuViewController(viewModel: sortFilterVM)
         viewController.configurePocketDefaultDetents()
-        navigationController?.present(viewController, animated: true)
+        self.navigationController?.present(viewController, animated: true)
     }
 
     private func popToPreviousScreen(navigationController: UINavigationController?) {
-        guard let navController = navigationController else {
+        guard let navController = self.parent?.navigationController else {
             return
         }
 
@@ -452,5 +445,27 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
+    }
+}
+
+extension SavesContainerViewController: UINavigationControllerDelegate {
+    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        // By default, when pushing the reader, switching to landscape, and popping,
+        // the list will remain in landscape despite only supporting portrait.
+        // We have to programatically force the device orientation back to portrait,
+        // if the view controller we want to show _only_ supports portrait
+        // (e.g when popping from the reader).
+        if viewController.supportedInterfaceOrientations == .portrait, UIDevice.current.orientation.isLandscape {
+            UIDevice.current.setValue(UIDeviceOrientation.portrait.rawValue, forKey: "orientation")
+        }
+
+        if viewController === self {
+            model.clearSelectedItem()
+        }
+    }
+
+    func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+        guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
+        return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
     }
 }

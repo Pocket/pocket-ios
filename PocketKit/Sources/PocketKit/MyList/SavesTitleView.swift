@@ -1,10 +1,24 @@
 import UIKit
 import Textile
+import SwiftUI
 
 struct SavesSelection {
     let title: String
     let image: UIImage?
     let handler: () -> Void
+}
+
+struct SavesTitleViewSwiftUI: UIViewRepresentable {
+    // var model: SavesContainerViewModel
+
+    func makeUIView(context: Context) -> SavesTitleView {
+        // SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+        let v = SavesTitleView(selections: [SavesSelection(title: L10n.saves, image: .init(asset: .saves), handler: {}), SavesSelection(title: L10n.archive, image: .init(asset: .archive), handler: {})])
+        return v
+    }
+
+    func updateUIView(_ uiView: SavesTitleView, context: Context) {
+    }
 }
 
 class SavesTitleView: UIView {

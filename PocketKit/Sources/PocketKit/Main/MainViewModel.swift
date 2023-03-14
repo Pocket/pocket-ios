@@ -10,9 +10,6 @@ class MainViewModel: ObservableObject {
     @Published
     var selectedSection: AppSection = .home
 
-    @Published
-    var isCollapsed = UIDevice.current.userInterfaceIdiom == .phone
-
     let home: HomeViewModel
     let saves: SavesContainerViewModel
     let account: AccountViewModel
@@ -27,8 +24,8 @@ class MainViewModel: ObservableObject {
                     userDefaults: Services.shared.userDefaults,
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
-                ) { tracker, source in
-                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: tracker, source: source)
+                ) { source in
+                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: Services.shared.tracker, source: source)
                 },
                 savedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
@@ -95,19 +92,15 @@ class MainViewModel: ObservableObject {
         case saves(Subsection?)
         case account
 
-        var navigationTitle: String {
+        var id: String {
             switch self {
             case .home:
-                return L10n.home
+                return "home"
             case .saves:
-                return L10n.saves
+                return "saves"
             case .account:
-                return L10n.settings
+                return "account"
             }
-        }
-
-        var id: AppSection {
-            return self
         }
     }
 
@@ -130,19 +123,13 @@ class MainViewModel: ObservableObject {
         saves.clearPresentedWebReaderURL()
     }
 
-    func navigationSidebarCellViewModel(for appSection: AppSection) -> NavigationSidebarCellViewModel {
-        let isSelected: Bool = {
-            switch (selectedSection, appSection) {
-            case (.home, .home), (.saves, .saves), (.account, .account):
-                return true
-            default:
-                return false
-            }
-        }()
+    func selectSavesTab() {
+        selectedSection = .saves(.saves)
+        saves.selection = .saves
+    }
 
-        return NavigationSidebarCellViewModel(
-            section: appSection,
-            isSelected: isSelected
-        )
+    func selectArchivesTab() {
+        selectedSection = .saves(.archive)
+        saves.selection = .archive
     }
 }

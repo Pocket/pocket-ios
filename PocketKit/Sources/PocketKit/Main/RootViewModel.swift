@@ -6,12 +6,19 @@ import Textile
 import SharedPocketKit
 import UIKit
 
+@MainActor
 class RootViewModel: ObservableObject {
     @Published
     var isLoggedIn = false
 
     @Published
     var bannerViewModel: BannerViewModel?
+
+    @Published
+    var mainViewModel: MainViewModel
+
+    @Published
+    var loggedOutViewModel: LoggedOutViewModel
 
     private let appSession: AppSession
     private let tracker: Tracker
@@ -21,19 +28,23 @@ class RootViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     convenience init() {
-        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: .standard)
+        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: .standard, mainViewModel: MainViewModel(), loggedOutViewModel: LoggedOutViewModel())
     }
 
     init(
         appSession: AppSession,
         tracker: Tracker,
         source: Source,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        mainViewModel: MainViewModel,
+        loggedOutViewModel: LoggedOutViewModel
     ) {
         self.appSession = appSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
+        self.mainViewModel = mainViewModel
+        self.loggedOutViewModel = loggedOutViewModel
 
         // Register for login notifications
         NotificationCenter.default.publisher(

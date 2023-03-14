@@ -11,11 +11,10 @@ import SafariServices
 
 @MainActor
 struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
-    var model: HomeViewModel
-    var savesModel: SavesContainerViewModel
+    var model: MainViewModel
 
     func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> HomeViewController {
-        let v = HomeViewController(model: model, savesModel: savesModel)
+        let v = HomeViewController(model: model)
 
         return v
     }
@@ -25,8 +24,8 @@ struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
 }
 
 class HomeViewController: UIViewController {
-    private let model: HomeViewModel
-    private let savesModel: SavesContainerViewModel
+    private let homeModel: HomeViewModel
+    private let model: MainViewModel
 
     private let sectionProvider: HomeViewControllerSectionProvider
     private var subscriptions: [AnyCancellable] = []
@@ -44,11 +43,11 @@ class HomeViewController: UIViewController {
         case .loading:
             return self.sectionProvider.loadingSection()
         case .recentSaves:
-            return self.sectionProvider.recentSavesSection(in: self.model, env: env)
+            return self.sectionProvider.recentSavesSection(in: self.homeModel, env: env)
         case .slateHero(let slateID):
-            return self.sectionProvider.heroSection(for: slateID, in: self.model, env: env)
+            return self.sectionProvider.heroSection(for: slateID, in: self.homeModel, env: env)
         case .slateCarousel(let slateID):
-            return self.sectionProvider.additionalRecommendationsSection(for: slateID, in: self.model, env: env)
+            return self.sectionProvider.additionalRecommendationsSection(for: slateID, in: self.homeModel, env: env)
         case .offline:
             let hasRecentSaves = self.dataSource.index(for: .recentSaves) != nil
             return self.sectionProvider.offlineSection(environment: env, withRecentSaves: hasRecentSaves)
@@ -75,9 +74,9 @@ class HomeViewController: UIViewController {
     private var overscrollTopConstraint: NSLayoutConstraint?
     private var overscrollOffset = 0
 
-    init(model: HomeViewModel, savesModel: SavesContainerViewModel) {
+    init(model: MainViewModel) {
         self.model = model
-        self.savesModel = savesModel
+        self.homeModel = model.home
 
         self.sectionProvider = HomeViewControllerSectionProvider()
 
@@ -116,7 +115,7 @@ class HomeViewController: UIViewController {
             self?.updateOverflowView(contentOffset: contentOffset)
         }.store(in: &subscriptions)
 
-        model.$snapshot
+        homeModel.$snapshot
             .receive(on: DispatchQueue.main)
             .sink { [weak self] snapshot in
                 self?.dataSource.apply(snapshot)
@@ -125,6 +124,7 @@ class HomeViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        navigationController?.delegate = self
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -154,13 +154,13 @@ class HomeViewController: UIViewController {
             overscrollView.heightAnchor.constraint(equalToConstant: 96)
         ])
 
-        model.fetch()
+        homeModel.fetch()
         handleRefresh()
         self.observeModelChanges()
     }
 
     private func handleRefresh(isForced: Bool = false) {
-        model.refresh(isForced: isForced) { [weak self] in
+        homeModel.refresh(isForced: isForced) { [weak self] in
             DispatchQueue.main.async {
                 if self?.collectionView.refreshControl?.isRefreshing == true {
                     self?.collectionView.refreshControl?.endRefreshing()
@@ -170,7 +170,7 @@ class HomeViewController: UIViewController {
     }
 
     func handleBackgroundRefresh(task: BGTask) {
-        model.refresh {
+        homeModel.refresh {
             task.setTaskCompleted(success: true)
         }
     }
@@ -193,7 +193,7 @@ extension HomeViewController {
             return cell
         case .recentSaves(let objectID):
             let cell: RecentSavesItemCell = collectionView.dequeueCell(for: indexPath)
-            guard let viewModel = model.recentSavesViewModel(for: objectID, at: indexPath) else {
+            guard let viewModel = homeModel.recentSavesViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
 
@@ -202,7 +202,7 @@ extension HomeViewController {
         case .recommendationHero(let objectID):
             if sectionProvider.shouldUseWideLayout(traitCollection: traitCollection) {
                 let cell: RecommendationCellHeroWide = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.recommendationHeroWideViewModel(for: objectID, at: indexPath) else {
+                guard let viewModel = homeModel.recommendationHeroWideViewModel(for: objectID, at: indexPath) else {
                     return cell
                 }
 
@@ -210,7 +210,7 @@ extension HomeViewController {
                 return cell
             } else {
                 let cell: RecommendationCell = collectionView.dequeueCell(for: indexPath)
-                guard let viewModel = model.recommendationHeroViewModel(for: objectID, at: indexPath) else {
+                guard let viewModel = homeModel.recommendationHeroViewModel(for: objectID, at: indexPath) else {
                     return cell
                 }
 
@@ -219,7 +219,7 @@ extension HomeViewController {
             }
         case .recommendationCarousel(let objectID):
             let cell: RecommendationCarouselCell = collectionView.dequeueCell(for: indexPath)
-            guard let viewModel = model.recommendationCarouselViewModel(for: objectID, at: indexPath) else {
+            guard let viewModel = homeModel.recommendationCarouselViewModel(for: objectID, at: indexPath) else {
                 return cell
             }
 
@@ -239,7 +239,7 @@ extension HomeViewController {
             )
 
             if let section = dataSource.sectionIdentifier(for: indexPath.section),
-               let viewModel = model.sectionHeaderViewModel(for: section) {
+               let viewModel = homeModel.sectionHeaderViewModel(for: section) {
                 header.configure(model: viewModel)
             }
 
@@ -291,7 +291,7 @@ extension HomeViewController: UICollectionViewDelegate {
             return
         }
 
-        model.willDisplay(cell, at: indexPath)
+        homeModel.willDisplay(cell, at: indexPath)
     }
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -301,7 +301,7 @@ extension HomeViewController: UICollectionViewDelegate {
             return
         }
 
-        model.select(cell: cell, at: indexPath)
+        homeModel.select(cell: cell, at: indexPath)
     }
 }
 
@@ -316,23 +316,23 @@ extension HomeViewController {
         navigationController?.popToRootViewController(animated: false)
         isResetting = true
 
-        model.$selectedReadableType.sink { [weak self] readableType in
+        homeModel.$selectedReadableType.sink { [weak self] readableType in
             self?.show(readableType)
         }.store(in: &subscriptions)
 
-        model.$selectedRecommendationToReport.sink { [weak self] recommendation in
+        homeModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
             self?.report(recommendation)
         }.store(in: &subscriptions)
 
-        model.$presentedAlert.sink { [weak self] alert in
+        homeModel.$presentedAlert.sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &subscriptions)
 
-        model.$sharedActivity.sink { [weak self] activity in
+        homeModel.$sharedActivity.sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &subscriptions)
 
-        model.$tappedSeeAll.sink { [weak self] seeAll in
+        homeModel.$tappedSeeAll.sink { [weak self] seeAll in
             self?.show(seeAll)
         }.store(in: &subscriptions)
         isResetting = false
@@ -508,7 +508,7 @@ extension HomeViewController {
         let host = ReportRecommendationHostingController(
             recommendation: recommendation,
             tracker: Services.shared.tracker.childTracker(hosting: .reportDialog),
-            onDismiss: { [weak self] in self?.model.clearRecommendationToReport() }
+            onDismiss: { [weak self] in self?.homeModel.clearRecommendationToReport() }
         )
 
         host.modalPresentationStyle = .formSheet
@@ -531,13 +531,15 @@ extension HomeViewController {
     }
 
     private func showSaves() {
-        guard let tabBarController else {
-            navigationController?.pushViewController(SavesContainerViewController(model: savesModel)
-, animated: true)
-            return
-        }
+        // Ensure our model updates to the saves tab
+        self.model.selectSavesTab()
 
-        tabBarController.selectedIndex = 1
+//        // If we don't have a tab bar, we need to push Saves from this view.
+//        guard tabBarController != nil else {
+//            navigationController?.pushViewController(SavesContainerViewController(model: self.model.saves)
+// , animated: animated)
+//            return
+//        }
     }
 
     private func present(activity: PocketActivity?) {
@@ -546,7 +548,7 @@ extension HomeViewController {
         let activityVC = UIActivityViewController(activity: activity)
 
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
-            self?.model.clearSharedActivity()
+            self?.homeModel.clearSharedActivity()
         }
 
         self.present(activityVC, animated: !isResetting)
@@ -566,7 +568,7 @@ extension HomeViewController {
         }
 
         let readerSettingsVC = ReaderSettingsViewController(settings: readable.readerSettings) { [weak self] in
-            self?.model.clearIsPresentingReaderSettings()
+            self?.homeModel.clearIsPresentingReaderSettings()
         }
         readerSettingsVC.configurePocketDefaultDetents()
                 self.present(readerSettingsVC, animated: !isResetting)
@@ -591,11 +593,11 @@ extension HomeViewController {
 
 extension HomeViewController: SFSafariViewControllerDelegate {
     func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
-        return model.activityItemsForSelectedItem(url: URL)
+        return homeModel.activityItemsForSelectedItem(url: URL)
     }
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        model.clearPresentedWebReaderURL()
+        homeModel.clearPresentedWebReaderURL()
     }
 }
 
@@ -614,13 +616,13 @@ extension HomeViewController: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if viewController === self {
             slateDetailSubscriptions = []
-            model.clearTappedSeeAll()
-            model.clearSelectedItem()
+            homeModel.clearTappedSeeAll()
+            homeModel.clearSelectedItem()
         }
 
         if viewController is SlateDetailViewController {
-            model.clearRecommendationToReport()
-            model.tappedSeeAll?.clearSelectedItem()
+            homeModel.clearRecommendationToReport()
+            homeModel.tappedSeeAll?.clearSelectedItem()
         }
     }
 
