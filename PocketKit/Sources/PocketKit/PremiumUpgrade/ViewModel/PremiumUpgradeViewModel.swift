@@ -20,7 +20,7 @@ class PremiumUpgradeViewModel: ObservableObject {
     private let networkPathMonitor: NetworkPathMonitor
 
     var isOffline: Bool {
-        return networkPathMonitor.currentNetworkPath.status == .unsatisfied
+        return networkPathMonitor.currentNetworkPath.status != .unsatisfied
     }
 
     @Published private(set) var monthlyName = ""
