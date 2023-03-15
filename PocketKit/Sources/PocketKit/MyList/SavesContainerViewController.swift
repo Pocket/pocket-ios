@@ -153,6 +153,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
         if #available(iOS 16.0, *) {
             navigationItem.searchController?.scopeBarActivation = .onSearchActivation
+            navigationItem.preferredSearchBarPlacement = .stacked
         } else {
             navigationItem.searchController?.automaticallyShowsScopeBar = true
         }
@@ -201,6 +202,8 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         } else {
             navigationItem.searchController?.searchBar.selectedScopeButtonIndex = 1
         }
+        navigationItem.searchController?.isActive = true
+        navigationItem.searchController?.searchBar.becomeFirstResponder()
     }
 }
 
@@ -375,15 +378,10 @@ extension SavesContainerViewController {
     private func present(activity: PocketActivity?) {
         guard true, let activity = activity else { return }
 
-        let activityVC = UIActivityViewController(activity: activity)
-
-        // Prevent a crash on ipad by setting the view to the sender
-        activityVC.popoverPresentationController?.sourceView = activity.sender as? UIView
-
-        activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
-            self?.model.clearSharedActivity()
-        }
-
+        let activityVC = ShareSheetController(activity: activity, completion: { [weak self] _, _, _, _ in
+                              self?.model.clearSharedActivity()
+                          })
+         activityVC.modalPresentationStyle = .formSheet
         self.present(activityVC, animated: true)
     }
 

@@ -13,7 +13,7 @@ public struct MainView: View {
 
     public var body: some View {
         TabView(selection: $model.selectedSection) {
-            makeHome()
+            HomeViewControllerSwiftUI(model: model.home)
                 .tabItem {
                     if model.selectedSection == .home {
                         Image(asset: .tabHomeSelected)
@@ -25,7 +25,7 @@ public struct MainView: View {
                 .tag(MainViewModel.AppSection.home)
                 .accessibilityIdentifier("home-tab-bar-button")
 
-            makeSaves()
+            SavesContainerViewControllerSwiftUI(model: model.saves)
                 .edgesIgnoringSafeArea(.top)
                 .tabItem {
                     if model.selectedSection == .saves {
@@ -59,50 +59,6 @@ public struct MainView: View {
     private func makeSettings() -> some View {
         NavigationView {
             SettingsView(model: model.account)
-        }
-        .navigationViewStyle(.stack)
-    }
-
-    private func makeSaves() -> some View {
-            SavesContainerViewControllerSwiftUI(model: model.saves)
-// Leaving for the future. This is how we can do the saves/archive selector in SwiftUI
-//                .navigationBarTitleDisplayMode(.inline)
-//                .toolbar {
-//                    ToolbarItemGroup(placement: .principal) {
-//                        HStack(alignment: .center) {
-//                            Button(action: {
-//                            }) {}
-//                                .buttonStyle(
-//                                    SavesSelectorButtonStyle(
-//                                        isSelected: .constant(false),
-//                                        image: Image(asset: .saves),
-//                                        title: L10n.saves
-//                                    )
-//                                )
-//
-//                            Button(action: {
-//                            }) {}
-//                                .buttonStyle(
-//                                    SavesSelectorButtonStyle(
-//                                        isSelected: .constant(false),
-//                                        image: Image(asset: .archive),
-//                                        title: L10n.archive
-//                                    )
-//                                )
-//                        }
-//                    }
-//                }
-//        }
-//        .navigationViewStyle(.stack)
-    }
-
-    private func makeHome() -> some View {
-        NavigationView {
-            VStack {
-                HomeViewControllerSwiftUI(model: model)
-                    .navigationTitle(L10n.home)
-                    .navigationBarTitleDisplayMode(.large)
-            }
         }
         .navigationViewStyle(.stack)
     }
