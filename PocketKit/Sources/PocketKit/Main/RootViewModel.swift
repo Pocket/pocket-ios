@@ -51,6 +51,12 @@ class RootViewModel: ObservableObject {
             for: .userLoggedIn
         ).sink { [weak self] notification in
             self?.handleSession(session: notification.object as? SharedPocketKit.Session)
+            guard ((notification.object as? SharedPocketKit.Session) != nil) else {
+                return
+            }
+            // Call refresh on login of the app.
+            source.refreshSaves()
+            source.refreshArchive()
         }.store(in: &subscriptions)
 
         // Register for logout notifications
@@ -118,8 +124,6 @@ class RootViewModel: ObservableObject {
         ])
         tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
         Log.setUserID(session.userIdentifier)
-        source.refreshSaves()
-        source.refreshArchive()
     }
 
     private func tearDownSession() {

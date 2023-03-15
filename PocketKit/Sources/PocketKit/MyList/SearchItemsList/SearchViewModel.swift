@@ -62,6 +62,7 @@ class SearchViewModel: ObservableObject {
 
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
+    @Published var isPresentingHooray = false
 
     var bannerData: BannerModifier.BannerData {
         let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.Search.limitedResults, detail: L10n.Search.offlineMessage)
