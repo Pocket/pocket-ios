@@ -35,6 +35,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingRestoreSuccessful = false
     @Published var isPresentingRestoreNotSuccessful = false
     @Published var isPresentingPremiumStatus = false
+    @Published var isPresentingHooray = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false

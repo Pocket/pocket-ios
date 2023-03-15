@@ -25,7 +25,11 @@ struct SearchView: View {
             default:
                 EmptyView()
             }
-        }.onAppear {
+        }
+        .sheet(isPresented: $viewModel.isPresentingHooray) {
+            PremiumUpgradeSuccessView()
+        }
+        .onAppear {
             viewModel.trackOpenSearch()
         }
     }
@@ -120,6 +124,9 @@ struct GetPocketPremiumButton: View {
                 isPresented: $searchViewModel.isPresentingPremiumUpgrade,
                 onDismiss: {
                     searchViewModel.trackPremiumDismissed(dismissReason: dismissReason)
+                    if dismissReason == .system {
+                        searchViewModel.isPresentingHooray = true
+                    }
             }
             ) {
                 PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: searchViewModel.makePremiumUpgradeViewModel())

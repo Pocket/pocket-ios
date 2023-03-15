@@ -54,13 +54,15 @@ struct SettingsForm: View {
             Group {
                 topSectionWithLeadingDivider()
                     .textCase(nil)
-
                 Section(header: Text(L10n.appCustomization).style(.settings.header)) {
                     SettingsRowToggle(title: L10n.showAppBadgeCount, model: model) {
                         model.toggleAppBadge()
                     }
                 }
                 .textCase(nil)
+                .sheet(isPresented: $model.isPresentingHooray) {
+                    PremiumUpgradeSuccessView()
+                }
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
@@ -200,7 +202,10 @@ extension SettingsForm {
             .sheet(
                 isPresented: $model.isPresentingPremiumUpgrade,
                 onDismiss: {
-                model.trackPremiumDismissed(dismissReason: dismissReason)
+                    model.trackPremiumDismissed(dismissReason: dismissReason)
+                    if dismissReason == .system {
+                        model.isPresentingHooray = true
+                    }
             }
             ) {
                 PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: model.makePremiumUpgradeViewModel())
