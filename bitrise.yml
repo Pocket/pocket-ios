@@ -374,5 +374,5 @@ app:
 
 meta:
   bitrise.io:
-    machine_type_id: g2-m1-max.5core
+    machine_type_id: g2-m1.8core
     stack: osx-xcode-14.2.x-ventura
