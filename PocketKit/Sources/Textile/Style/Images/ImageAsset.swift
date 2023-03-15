@@ -61,7 +61,8 @@ extension ImageAsset {
     public static let searchRecent = ImageAsset("search.recent")
     public static let diamond = ImageAsset("diamond")
     public static let warning = ImageAsset("warning")
-    public static let premiumHooray = ImageAsset("premium.hooray")
+    public static let premiumHoorayLight = ImageAsset("premium.hooray.light")
+    public static let premiumHoorayDark = ImageAsset("premium.hooray.dark")
     public static let readerSkeleton = ReaderSkeleton()
 }
 

@@ -2,13 +2,13 @@ import SwiftUI
 import Textile
 
 struct PremiumUpgradeSuccessView: View {
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(\.dismiss) private var dismiss
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
         VStack(spacing: Constants.verticalPadding) {
             dismissButton
-            Image(uiImage: UIImage(asset: .premiumHooray))
+            Image(asset: colorScheme == .light ? .premiumHoorayLight : .premiumHoorayDark)
                 .resizable()
                 .scaledToFit()
                 .frame(width: Constants.frameSize.width, height: Constants.frameSize.height)
