@@ -14,21 +14,7 @@ public struct MainView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     public var body: some View {
-        if horizontalSizeClass == .compact {
-            TabView(selection: Binding<String>(
-                get: {
-                    model.selectedSection.id
-                },
-                set: {
-                    if $0 == MainViewModel.AppSection.saves(.saves).id {
-                        model.selectSavesTab()
-                    } else if $0 == MainViewModel.AppSection.home.id {
-                        model.selectHomeTab()
-                    } else if $0 == MainViewModel.AppSection.account.id {
-                        model.selectAccountTab()
-                    }
-                }
-            )) {
+            TabView(selection: $model.selectedSection) {
                 makeHome()
                     .tabItem {
                         if model.selectedSection == .home {
@@ -51,7 +37,7 @@ public struct MainView: View {
                     }
                     Text(L10n.saves)
                 }
-                .tag(MainViewModel.AppSection.saves(.saves).id)
+                .tag(MainViewModel.AppSection.saves(nil))
                 .accessibilityIdentifier("saves-tab-bar-button")
                 NavigationView {
                     SettingsView(model: model.account)
@@ -64,15 +50,12 @@ public struct MainView: View {
                     }
                     Text(L10n.settings)
                 }
-                .tag(MainViewModel.AppSection.account.id)
+                .tag(MainViewModel.AppSection.account)
                 .accessibilityIdentifier("account-tab-bar-button")
             }
             .background(Color(.ui.white1))
             .foregroundColor(Color(.ui.grey1))
             .tint(Color(.ui.grey1))
-        } else {
-            makeHome()
-        }
     }
 
     private func makeSaves() -> some View {
