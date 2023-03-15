@@ -89,7 +89,6 @@ public class V3Client: NSObject, V3ClientProtocol {
      */
     func executeRequest<T>(
         request: URLRequest,
-        decodable: T.Type,
         decodingStrategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase
     )  async throws -> T  where T: Decodable {
         let (data, response): (Data, URLResponse)
@@ -98,23 +97,17 @@ public class V3Client: NSObject, V3ClientProtocol {
         } catch {
             throw Error.generic(error)
         }
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw Error.unexpectedError
-        }
+        let httpResponse = try response.httpUrlResponse()
 
         // TODO: V3 almost always returns a 200 even when errors, so we will need to check the x-status-code header in the future
         switch httpResponse.statusCode {
         case 200...299:
-            guard let source = httpResponse.value(forHTTPHeaderField: "X-Source"),
-                  source == "Pocket" else {
-                throw Error.invalidSource
-            }
+            try httpResponse.isPocketSource()
 
             let decoder = JSONDecoder()
             decoder.keyDecodingStrategy = decodingStrategy
             do {
-                let response = try decoder.decode(decodable, from: data)
+                let response = try decoder.decode(T.self, from: data)
                 return response
             } catch {
                 Log.capture(error: error)
@@ -136,24 +129,12 @@ public class V3Client: NSObject, V3ClientProtocol {
 
     /// Same as above but does not return a decoded type
     func executeRequest(_ request: URLRequest) async throws {
-        let (_, response): (Data, URLResponse)
-        do {
-            (_, response) = try await urlSession.data(for: request, delegate: nil)
-        } catch {
-            throw Error.generic(error)
-        }
+        let (_, response) = try await urlSession.data(for: request, delegate: nil)
+        let httpResponse = try response.httpUrlResponse()
 
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw Error.unexpectedError
-        }
-
-        // TODO: V3 almost always returns a 200 even when errors, so we will need to check the x-status-code header in the future
         switch httpResponse.statusCode {
         case 200...299:
-            guard let source = httpResponse.value(forHTTPHeaderField: "X-Source"),
-                  source == "Pocket" else {
-                throw Error.invalidSource
-            }
+            try httpResponse.isPocketSource()
         case 300...399:
             throw Error.unexpectedRedirect
         case 400:
@@ -231,8 +212,7 @@ extension V3Client {
                 token: token
             )
         )
-
-        return try await executeRequest(request: request, decodable: RegisterPushTokenResponse.self)
+        return try await executeRequest(request: request)
     }
 
     /**
@@ -258,7 +238,7 @@ extension V3Client {
             )
         )
 
-        return try await executeRequest(request: request, decodable: DeregisterPushTokenResponse.self)
+        return try await executeRequest(request: request)
     }
 }
 
@@ -275,7 +255,7 @@ extension V3Client {
             )
         )
 
-        return try await executeRequest(request: request, decodable: PremiumStatusResponse.self, decodingStrategy: .useDefaultKeys)
+        return try await executeRequest(request: request, decodingStrategy: .useDefaultKeys)
     }
 }
 
@@ -299,6 +279,27 @@ extension V3Client {
             transactionType: transactionType
         )
         let request = try buildRequest(path: "purchase", request: requestBody)
-        return try await executeRequest(request)
+        try await executeRequest(request)
+    }
+}
+
+// MARK: Response helpers
+private extension HTTPURLResponse {
+    /// Validates that `X-Source` is `Pocket`
+    func isPocketSource() throws {
+        guard let source = self.value(forHTTPHeaderField: "X-Source"),
+              source == "Pocket" else {
+            throw V3Client.Error.invalidSource
+        }
+    }
+}
+
+private extension URLResponse {
+    /// Casts the response to an `HTTPURLResponse` or throws an error if it can't
+    func httpUrlResponse() throws -> HTTPURLResponse {
+        guard let response = self as? HTTPURLResponse else {
+            throw V3Client.Error.unexpectedError
+        }
+        return response
     }
 }
