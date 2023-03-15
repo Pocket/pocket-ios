@@ -30,20 +30,6 @@ class SavesContainerViewModel {
         self.savedItemsList = savedItemsList
         self.archivedItemsList = archivedItemsList
         self.mainViewStore = mainViewStore
-
-        mainViewStore
-            .mainSelectionPublisher
-            .receive(on: DispatchQueue.main).sink { [weak self] value in
-                guard let self else {
-                    Log.capture(message: "No strong self in publisher for saves container from main view")
-                    return
-                }
-                if value == MainViewModel.AppSection.saves(.saves) {
-                    self.selection = .saves
-                } else if value == MainViewModel.AppSection.saves(.archive) {
-                    self.selection = .archive
-                }
-            }.store(in: &subscriptions)
     }
 
     var selectedItem: SelectedItem? {

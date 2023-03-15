@@ -93,18 +93,13 @@ class MainViewModel: ObservableObject {
         }.store(in: &subscriptions)
     }
 
-    enum Subsection {
-        case saves
-        case archive
-    }
-
     enum AppSection: CaseIterable, Identifiable, Hashable {
         static var allCases: [MainViewModel.AppSection] {
-            return [.home, .saves(nil), .account]
+            return [.home, .saves, .account]
         }
 
         case home
-        case saves(Subsection?)
+        case saves
         case account
 
         var id: String {
@@ -139,11 +134,7 @@ class MainViewModel: ObservableObject {
     }
 
     func selectSavesTab() {
-        self.mainViewStore.mainSelection = .saves(.saves)
-    }
-
-    func selectArchivesTab() {
-        self.mainViewStore.mainSelection = .saves(.archive)
+        self.mainViewStore.mainSelection = .saves
     }
 
     func selectHomeTab() {
