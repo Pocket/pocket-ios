@@ -36,3 +36,15 @@ public struct PremiumStatusRequest: Codable, Equatable, V3Request {
 
     let guid: String
 }
+
+public struct AppstoreReceiptRequest: Codable, Equatable, V3Request {
+    let accessToken: String
+    let consumerKey: String
+    let guid: String
+    let source: String
+    let transactionInfo: String
+    let amount: String
+    let productId: String
+    let currency: String
+    let transactionType: String
+}

@@ -2,6 +2,8 @@ import Foundation
 import Sync
 
 class MockV3Client: V3ClientProtocol {
+    func sendAppstoreReceipt(source: String, transactionInfo: String, amount: String, productId: String, currency: String, transactionType: String) async throws {}
+
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 }
