@@ -242,7 +242,9 @@ extension V3Client {
     }
 }
 
+// MARK: Premium subscription info
 extension V3Client {
+    /// Fetch premium subscription details for the premium user
     public func premiumStatus() async throws -> PremiumStatusResponse {
         let currentSession = try fallbackSession(session: sessionProvider.session)
 
@@ -259,7 +261,9 @@ extension V3Client {
     }
 }
 
+// MARK: App Store receipt
 extension V3Client {
+    /// Send the App Store receipt to the backend
     public func sendAppstoreReceipt(source: String,
                                     transactionInfo: String,
                                     amount: String,
