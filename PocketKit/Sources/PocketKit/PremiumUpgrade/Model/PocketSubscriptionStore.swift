@@ -31,7 +31,7 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
 
         Task {
             do {
-                // Pull available subscriptions from the App Store
+                // Obtain purchaseable subscriptions from the App Store
                 try await requestSubscriptions()
             } catch {
                 state = .failed
