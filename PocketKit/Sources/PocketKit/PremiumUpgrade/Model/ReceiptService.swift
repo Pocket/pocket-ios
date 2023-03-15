@@ -15,6 +15,9 @@ public enum ReceiptError: Error {
 /// Concrete implementation that sends the App Store Receipt to the Pocket backend
 struct AppStoreReceiptService: ReceiptService {
     func send(_ product: Product?) async throws {
+    #if DEBUG
+        // TODO: at the moment we are not sending the receipt in debug
+    #else
         let transactionInfo = try getReceipt()
         let source = "itunes"
         let productId = product?.id ?? ""
@@ -30,6 +33,7 @@ struct AppStoreReceiptService: ReceiptService {
             currency: currency,
             transactionType: transactionType
         )
+        #endif
     }
 }
 
