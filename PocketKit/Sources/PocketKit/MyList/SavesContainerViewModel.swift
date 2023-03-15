@@ -13,8 +13,6 @@ class SavesContainerViewModel {
     @Published
     var selection: Selection = .saves
 
-    private var subscriptions: [AnyCancellable] = []
-
     let searchList: SearchViewModel
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: SavedItemsListViewModel

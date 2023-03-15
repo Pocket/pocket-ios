@@ -6,6 +6,28 @@ import Combine
 import SafariServices
 import Textile
 
+struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
+    var model: SavesContainerViewModel
+
+    func makeUIViewController(context: Context) -> UINavigationController {
+        let v = SavesContainerViewController(
+            savesContainerModel: model,
+            viewControllers: [
+                ItemsListViewController(model: model.savedItemsList),
+                ItemsListViewController(model: model.archivedItemsList)
+            ]
+        )
+        let navigationController = UINavigationController(rootViewController: v)
+        navigationController.navigationBar.prefersLargeTitles = true
+        navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
+        navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
+        return navigationController
+    }
+
+    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
+    }
+}
+
 struct SelectionItem {
     let title: String
     let image: UIImage
@@ -23,67 +45,48 @@ protocol SelectableViewController: UIViewController {
     func didBecomeSelected(by parent: SavesContainerViewController)
 }
 
-struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
-    var model: SavesContainerViewModel
-
-    func makeUIViewController(context: Context) -> UINavigationController {
-        let v = SavesContainerViewController(model: model)
-
-        let  navigationController = UINavigationController(rootViewController: v)
-        navigationController.navigationBar.prefersLargeTitles = true
-        navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
-        navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
-        return navigationController
-    }
-
-    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
-    }
-}
-
 class SavesContainerViewController: UIViewController, UISearchBarDelegate {
+    var selectedIndex: Int {
+        didSet {
+            resetTitleView()
+            select(child: viewController(at: selectedIndex))
+        }
+    }
+
     var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
-    private let savesController: SelectableViewController
-    private let archiveController: SelectableViewController
-
     private var searchViewModel: SearchViewModel
+    private var model: SavesContainerViewModel
+
     private var subscriptions: [AnyCancellable] = []
     private var readableSubscriptions: [AnyCancellable] = []
-    private var isResetting: Bool = false
-    private let model: SavesContainerViewModel
 
-    convenience init(model: SavesContainerViewModel) {
-        self.init(
-            model: model,
-            savesController: ItemsListViewController(model: model.savedItemsList),
-            archiveController: ItemsListViewController(model: model.archivedItemsList)
-        )
-    }
-
-    init(model: SavesContainerViewModel, savesController: SelectableViewController, archiveController: SelectableViewController) {
-        self.model = model
-        self.searchViewModel = self.model.searchList
-        self.archiveController = archiveController
-        self.savesController = savesController
-        self.viewControllers = [savesController, archiveController]
+    init(savesContainerModel: SavesContainerViewModel, viewControllers: [SelectableViewController]) {
+        selectedIndex = 0
+        self.model = savesContainerModel
+        self.searchViewModel = savesContainerModel.searchList
+        self.viewControllers = viewControllers
         self.isFromSaves = true
 
         super.init(nibName: nil, bundle: nil)
+
+        viewControllers.forEach { vc in
+            addChild(vc)
+            vc.didMove(toParent: vc)
+        }
+
         resetTitleView()
+        navigationItem.largeTitleDisplayMode = .never
+        self.observeModelChanges()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.accessibilityIdentifier = "saves"
-        self.observeModelChanges()
-        self.select(child: self.savesController)
-    }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        select(child: savesController)
-        resetTitleView()
+        view.accessibilityIdentifier = "saves"
+        select(child: viewControllers.first)
+        navigationController?.delegate = self
     }
 
     required init?(coder: NSCoder) {
@@ -110,35 +113,18 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         return viewControllers[index]
     }
 
-    private func select(selectionItem: SelectionItem) {
-        switch selectionItem.selectedView {
-        case .saves:
-            select(child: savesController)
-        case .archive:
-            select(child: archiveController)
-        }
-    }
-
     private func select(child: SelectableViewController?) {
         guard let child = child else {
             return
         }
 
-        viewControllers
-            .forEach { $0.removeFromParent() }
-
-        self.addChild(child)
-        child.willMove(toParent: self)
-
         navigationItem.backButtonTitle = child.selectionItem.title
         viewControllers
             .compactMap(\.viewIfLoaded)
             .forEach { $0.removeFromSuperview() }
-
-        child.view.frame = self.view.frame
         view.addSubview(child.view)
 
-        child.view.translatesAutoresizingMaskIntoConstraints = true
+        child.view.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             child.view.topAnchor.constraint(equalTo: view.topAnchor),
             child.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -147,7 +133,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         ])
 
         child.didBecomeSelected(by: self)
-        child.didMove(toParent: self)
 
         if child.selectionItem.selectedView == SelectedView.saves {
             isFromSaves = true
@@ -168,7 +153,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
         if #available(iOS 16.0, *) {
             navigationItem.searchController?.scopeBarActivation = .onSearchActivation
-            navigationItem.preferredSearchBarPlacement = .stacked
         } else {
             navigationItem.searchController?.automaticallyShowsScopeBar = true
         }
@@ -220,10 +204,19 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     }
 }
 
+// MARK: Coordination
 extension SavesContainerViewController {
     func observeModelChanges() {
-        isResetting = true
-        navigationController?.delegate = self
+        navigationController?.popToRootViewController(animated: false)
+
+        model.$selection.sink { [weak self] selection in
+            switch selection {
+            case .saves:
+                self?.selectedIndex = 0
+            case .archive:
+                self?.selectedIndex = 1
+            }
+        }.store(in: &subscriptions)
 
         // Saves navigation
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in
@@ -290,8 +283,6 @@ extension SavesContainerViewController {
             guard let selectedArchivedItem = selectedArchivedItem else { return }
             self?.navigate(selectedItem: selectedArchivedItem)
         }.store(in: &subscriptions)
-
-        isResetting = false
     }
 
     private func navigate(selectedItem: SelectedItem) {
@@ -354,56 +345,58 @@ extension SavesContainerViewController {
 
         navigationController?.pushViewController(
             ReadableHostViewController(readableViewModel: readable),
-            animated: !isResetting
+            animated: true
         )
     }
 
     private func present(alert: PocketAlert?) {
-        guard !isResetting, let alert = alert else { return }
-        guard let presentedVC = self.navigationController?.presentedViewController else {
-            self.navigationController?.present(UIAlertController(alert), animated: !isResetting)
+        guard let alert = alert else { return }
+        guard let presentedVC = self.presentedViewController else {
+            self.present(UIAlertController(alert), animated: true)
             return
         }
-        presentedVC.present(UIAlertController(alert), animated: !isResetting)
+        presentedVC.present(UIAlertController(alert), animated: true)
     }
 
     private func present(viewModel: PocketAddTagsViewModel?) {
-        guard !isResetting, let viewModel = viewModel else { return }
+        guard true, let viewModel = viewModel else { return }
         let hostingController = UIHostingController(rootView: AddTagsView(viewModel: viewModel))
         hostingController.modalPresentationStyle = .formSheet
-        self.navigationController?.present(hostingController, animated: !isResetting)
+        self.present(hostingController, animated: true)
     }
 
     private func present(tagsFilterViewModel: TagsFilterViewModel?) {
-        guard !isResetting, let tagsFilterViewModel = tagsFilterViewModel else { return }
+        guard true, let tagsFilterViewModel = tagsFilterViewModel else { return }
         let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel))
         hostingController.configurePocketDefaultDetents()
-        self.present(hostingController, animated: !isResetting)
+        self.present(hostingController, animated: true)
     }
 
     private func present(activity: PocketActivity?) {
-        guard !isResetting, let activity = activity else { return }
+        guard true, let activity = activity else { return }
 
         let activityVC = UIActivityViewController(activity: activity)
+
+        // Prevent a crash on ipad by setting the view to the sender
+        activityVC.popoverPresentationController?.sourceView = activity.sender as? UIView
 
         activityVC.completionWithItemsHandler = { [weak self] _, _, _, _ in
             self?.model.clearSharedActivity()
         }
 
-        self.navigationController?.present(activityVC, animated: !isResetting)
+        self.present(activityVC, animated: true)
     }
 
     private func present(url: URL?) {
-        guard !isResetting, let url = url else { return }
+        guard true, let url = url else { return }
 
         let safariVC = SFSafariViewController(url: url)
         safariVC.delegate = self
-        safariVC.modalPresentationStyle = .fullScreen
-        self.present(safariVC, animated: !isResetting)
+        self.present(safariVC, animated: true)
     }
 
     private func presentReaderSettings(_ isPresenting: Bool?, on readable: ReadableViewModel?) {
-        guard !isResetting, isPresenting == true, let readable = readable else {
+        guard true, isPresenting == true, let readable = readable else {
             return
         }
 
@@ -411,28 +404,28 @@ extension SavesContainerViewController {
             self?.model.clearIsPresentingReaderSettings()
         }
         readerSettingsVC.configurePocketDefaultDetents()
-        self.navigationController?.present(readerSettingsVC, animated: !isResetting)
+        self.present(readerSettingsVC, animated: true)
     }
 
     func presentSortMenu(presentedSortFilterViewModel: SortMenuViewModel?) {
-        guard !isResetting else {
+        guard true else {
             return
         }
 
         guard let sortFilterVM = presentedSortFilterViewModel else {
-            if self.navigationController?.presentedViewController is SortMenuViewController {
-                self.navigationController?.dismiss(animated: true)
+            if navigationController?.presentedViewController is SortMenuViewController {
+                navigationController?.dismiss(animated: true)
             }
             return
         }
 
         let viewController = SortMenuViewController(viewModel: sortFilterVM)
         viewController.configurePocketDefaultDetents()
-        self.navigationController?.present(viewController, animated: true)
+        navigationController?.present(viewController, animated: true)
     }
 
     private func popToPreviousScreen(navigationController: UINavigationController?) {
-        guard let navController = self.parent?.navigationController else {
+        guard let navController = navigationController else {
             return
         }
 
@@ -446,18 +439,14 @@ extension SavesContainerViewController {
     }
 }
 
-extension SavesContainerViewController: SFSafariViewControllerDelegate {
-    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
-        return model.activityItemsForSelectedItem(url: URL)
-    }
-
-    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        model.clearPresentedWebReaderURL()
-    }
-}
-
 extension SavesContainerViewController: UINavigationControllerDelegate {
-    func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+    func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        guard viewController === self else {
+            return
+        }
+
+        model.clearSelectedItem()
+
         // By default, when pushing the reader, switching to landscape, and popping,
         // the list will remain in landscape despite only supporting portrait.
         // We have to programatically force the device orientation back to portrait,
@@ -466,14 +455,20 @@ extension SavesContainerViewController: UINavigationControllerDelegate {
         if viewController.supportedInterfaceOrientations == .portrait, UIDevice.current.orientation.isLandscape {
             UIDevice.current.setValue(UIDeviceOrientation.portrait.rawValue, forKey: "orientation")
         }
-
-        if viewController === self {
-            model.clearSelectedItem()
-        }
     }
 
     func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
         guard navigationController.traitCollection.userInterfaceIdiom == .phone else { return .all }
         return navigationController.visibleViewController?.supportedInterfaceOrientations ?? .portrait
+    }
+}
+
+extension SavesContainerViewController: SFSafariViewControllerDelegate {
+    func safariViewController(_ controller: SFSafariViewController, activityItemsFor URL: URL, title: String?) -> [UIActivity] {
+        return model.activityItemsForSelectedItem(url: URL)
+    }
+
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        model.clearPresentedWebReaderURL()
     }
 }

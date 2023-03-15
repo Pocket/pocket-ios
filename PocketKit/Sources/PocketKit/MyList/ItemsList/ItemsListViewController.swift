@@ -191,7 +191,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }.store(in: &subscriptions)
 
         collectionView.prefetchDataSource = self
-        collectionView.backgroundColor = UIColor(.ui.white1)
     }
 
     required init?(coder: NSCoder) {
@@ -204,6 +203,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = UIColor(.ui.white1)
         model.fetch()
     }
 

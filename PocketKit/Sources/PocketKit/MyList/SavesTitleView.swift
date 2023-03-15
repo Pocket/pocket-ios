@@ -7,8 +7,6 @@ struct SavesSelection {
     let handler: () -> Void
 }
 
-/// Sets up a view that is used to filter between views in the top nav.
-/// For the SwiftUI version see SavesSelectorButtonStyle which can be used in combination with a SwiftUI toolbar
 class SavesTitleView: UIView {
     private let stackView: UIStackView = {
         let stackView = UIStackView()
