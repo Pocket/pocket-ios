@@ -52,6 +52,12 @@ cd PocketKit/
 ./apollo-ios-cli generate
 ```
 
+### Modifiying GraphQL query/mutation in code
+
+To modify/create a request, look into `PocketKit/Sources/PocketGraph/user-defined-operations`
+Any modifications done here, and after you generate above, will be auto-generated in our codebase for usage.
+To use it in code, prior, we had a singleton `PocketSource`, but we are moving away from that model and instead encourage the use of a protocol Service.  As an example, you can look at `SlateService`.
+
 ### Future
 
 We plan on implementing the following changes in the future:
