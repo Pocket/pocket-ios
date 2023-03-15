@@ -15,7 +15,6 @@ class SavesContainerViewModel {
 
     private var subscriptions: [AnyCancellable] = []
 
-    var mainViewStore: MainViewStore
     let searchList: SearchViewModel
     let savedItemsList: SavedItemsListViewModel
     let archivedItemsList: SavedItemsListViewModel
@@ -23,13 +22,11 @@ class SavesContainerViewModel {
     init(
         searchList: SearchViewModel,
         savedItemsList: SavedItemsListViewModel,
-        archivedItemsList: SavedItemsListViewModel,
-        mainViewStore: MainViewStore
+        archivedItemsList: SavedItemsListViewModel
     ) {
         self.searchList = searchList
         self.savedItemsList = savedItemsList
         self.archivedItemsList = archivedItemsList
-        self.mainViewStore = mainViewStore
     }
 
     var selectedItem: SelectedItem? {

@@ -10,7 +10,7 @@ import Textile
 
 public struct MainView: View {
     @ObservedObject var model: MainViewModel
-    
+
     public var body: some View {
         TabView(selection: $model.selectedSection) {
             makeHome()
@@ -24,8 +24,9 @@ public struct MainView: View {
                 }
                 .tag(MainViewModel.AppSection.home)
                 .accessibilityIdentifier("home-tab-bar-button")
-            
+
             makeSaves()
+                .edgesIgnoringSafeArea(.top)
                 .tabItem {
                     if model.selectedSection == .saves {
                         Image(asset: .tabSavesSelected)
@@ -34,10 +35,11 @@ public struct MainView: View {
                     }
                     Text(L10n.saves)
                 }
+
                 .tag(MainViewModel.AppSection.saves)
                 .accessibilityIdentifier("saves-tab-bar-button")
             makeSettings()
-            
+
                 .tabItem {
                     if model.selectedSection == .account {
                         Image(asset: .tabSettingsSelected)
@@ -53,47 +55,47 @@ public struct MainView: View {
         .foregroundColor(Color(.ui.grey1))
         .tint(Color(.ui.grey1))
     }
-    
+
     private func makeSettings() -> some View {
         NavigationView {
             SettingsView(model: model.account)
         }
         .navigationViewStyle(.stack)
     }
-    
+
     private func makeSaves() -> some View {
-        NavigationView {
             SavesContainerViewControllerSwiftUI(model: model.saves)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItemGroup(placement: .principal) {
-                        HStack(alignment: .center) {
-                            Button(action: {
-                            }) {}
-                                .buttonStyle(
-                                    SavesSelectorButtonStyle(
-                                        isSelected: .constant(false),
-                                        image: Image(asset: .saves),
-                                        title: L10n.saves
-                                    )
-                                )
-                            
-                            Button(action: {
-                            }) {}
-                                .buttonStyle(
-                                    SavesSelectorButtonStyle(
-                                        isSelected: .constant(false),
-                                        image: Image(asset: .archive),
-                                        title: L10n.archive
-                                    )
-                                )
-                        }
-                    }
-                }
-        }
-        .navigationViewStyle(.stack)
+// Leaving for the future. This is how we can do the saves/archive selector in SwiftUI
+//                .navigationBarTitleDisplayMode(.inline)
+//                .toolbar {
+//                    ToolbarItemGroup(placement: .principal) {
+//                        HStack(alignment: .center) {
+//                            Button(action: {
+//                            }) {}
+//                                .buttonStyle(
+//                                    SavesSelectorButtonStyle(
+//                                        isSelected: .constant(false),
+//                                        image: Image(asset: .saves),
+//                                        title: L10n.saves
+//                                    )
+//                                )
+//
+//                            Button(action: {
+//                            }) {}
+//                                .buttonStyle(
+//                                    SavesSelectorButtonStyle(
+//                                        isSelected: .constant(false),
+//                                        image: Image(asset: .archive),
+//                                        title: L10n.archive
+//                                    )
+//                                )
+//                        }
+//                    }
+//                }
+//        }
+//        .navigationViewStyle(.stack)
     }
-    
+
     private func makeHome() -> some View {
         NavigationView {
             VStack {

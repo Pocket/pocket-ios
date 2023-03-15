@@ -10,10 +10,9 @@ class MainViewModel: ObservableObject {
     let home: HomeViewModel
     let saves: SavesContainerViewModel
     let account: AccountViewModel
-    var mainViewStore: MainViewStore
 
     @Published
-    var selectedSection: AppSection
+    var selectedSection: AppSection = .home
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -43,8 +42,7 @@ class MainViewModel: ObservableObject {
                     viewType: .archive,
                     listOptions: .archived,
                     notificationCenter: .default
-                ),
-                mainViewStore: Services.shared.mainViewStore
+                )
             ),
             home: HomeViewModel(
                 source: Services.shared.source,
@@ -68,29 +66,18 @@ class MainViewModel: ObservableObject {
                 premiumStatusViewModelFactory: {
                     PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)
                 }
-            ),
-            mainViewStore: Services.shared.mainViewStore
+            )
         )
     }
 
     init(
         saves: SavesContainerViewModel,
         home: HomeViewModel,
-        account: AccountViewModel,
-        mainViewStore: MainViewStore
+        account: AccountViewModel
     ) {
         self.saves = saves
         self.home = home
         self.account = account
-        self.mainViewStore = mainViewStore
-        self.selectedSection = mainViewStore.mainSelection
-
-        self.mainViewStore
-            .mainSelectionPublisher
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] value in
-            self?.selectedSection = value
-        }.store(in: &subscriptions)
     }
 
     enum AppSection: CaseIterable, Identifiable, Hashable {
@@ -134,14 +121,6 @@ class MainViewModel: ObservableObject {
     }
 
     func selectSavesTab() {
-        self.mainViewStore.mainSelection = .saves
-    }
-
-    func selectHomeTab() {
-        self.mainViewStore.mainSelection = .home
-    }
-
-    func selectAccountTab() {
-        self.mainViewStore.mainSelection = .account
+        self.selectedSection = .saves
     }
 }

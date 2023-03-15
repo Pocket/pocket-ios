@@ -26,22 +26,21 @@ protocol SelectableViewController: UIViewController {
 struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: SavesContainerViewModel
 
-    func makeUIViewController(context: Context) -> SavesContainerViewController {
+    func makeUIViewController(context: Context) -> UINavigationController {
         let v = SavesContainerViewController(model: model)
-        return v
+
+        let  navigationController = UINavigationController(rootViewController: v)
+        navigationController.navigationBar.prefersLargeTitles = true
+        navigationController.navigationBar.barTintColor = UIColor(.ui.white1)
+        navigationController.navigationBar.tintColor = UIColor(.ui.grey1)
+        return navigationController
     }
 
-    func updateUIViewController(_ uiViewController: SavesContainerViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: UINavigationController, context: Context) {
     }
 }
 
 class SavesContainerViewController: UIViewController, UISearchBarDelegate {
-    var selectedIndex: Int {
-        didSet {
-            select(child: viewController(at: selectedIndex))
-        }
-    }
-
     var isFromSaves: Bool
 
     private let viewControllers: [SelectableViewController]
@@ -63,7 +62,6 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     }
 
     init(model: SavesContainerViewModel, savesController: SelectableViewController, archiveController: SelectableViewController) {
-        selectedIndex = 0
         self.model = model
         self.searchViewModel = self.model.searchList
         self.archiveController = archiveController
@@ -72,22 +70,20 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         self.isFromSaves = true
 
         super.init(nibName: nil, bundle: nil)
-
-        viewControllers.forEach { vc in
-            addChild(vc)
-            vc.didMove(toParent: vc)
-        }
+        resetTitleView()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.accessibilityIdentifier = "saves"
         self.observeModelChanges()
+        self.select(child: self.savesController)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         select(child: savesController)
+        resetTitleView()
     }
 
     required init?(coder: NSCoder) {
@@ -97,6 +93,16 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         guard traitCollection.userInterfaceIdiom == .phone else { return .all }
         return .portrait
+    }
+
+    private func resetTitleView() {
+        let selections = viewControllers.map { vc in
+            SavesSelection(title: vc.selectionItem.title, image: vc.selectionItem.image) { [weak self] in
+                self?.select(child: vc)
+            }
+        }
+
+        navigationItem.titleView = SavesTitleView(selections: selections)
     }
 
     private func viewController(at index: Int) -> SelectableViewController? {
@@ -118,13 +124,21 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
             return
         }
 
+        viewControllers
+            .forEach { $0.removeFromParent() }
+
+        self.addChild(child)
+        child.willMove(toParent: self)
+
         navigationItem.backButtonTitle = child.selectionItem.title
         viewControllers
             .compactMap(\.viewIfLoaded)
             .forEach { $0.removeFromSuperview() }
+
+        child.view.frame = self.view.frame
         view.addSubview(child.view)
 
-        child.view.translatesAutoresizingMaskIntoConstraints = false
+        child.view.translatesAutoresizingMaskIntoConstraints = true
         NSLayoutConstraint.activate([
             child.view.topAnchor.constraint(equalTo: view.topAnchor),
             child.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -133,6 +147,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         ])
 
         child.didBecomeSelected(by: self)
+        child.didMove(toParent: self)
 
         if child.selectionItem.selectedView == SelectedView.saves {
             isFromSaves = true
@@ -153,6 +168,7 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
         if #available(iOS 16.0, *) {
             navigationItem.searchController?.scopeBarActivation = .onSearchActivation
+            navigationItem.preferredSearchBarPlacement = .stacked
         } else {
             navigationItem.searchController?.automaticallyShowsScopeBar = true
         }
@@ -208,17 +224,6 @@ extension SavesContainerViewController {
     func observeModelChanges() {
         isResetting = true
         navigationController?.delegate = self
-
-        // navigationController?.popToRootViewController(animated: false)
-
-        model.$selection.sink { [weak self] selection in
-            switch selection {
-            case .saves:
-                self?.selectedIndex = 0
-            case .archive:
-                self?.selectedIndex = 1
-            }
-        }.store(in: &subscriptions)
 
         // Saves navigation
         model.savedItemsList.$presentedAlert.sink { [weak self] alert in

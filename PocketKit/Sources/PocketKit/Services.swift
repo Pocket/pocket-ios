@@ -32,7 +32,6 @@ struct Services {
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
-    let mainViewStore: MainViewStore
 
     private let persistentContainer: PersistentContainer
 
@@ -119,8 +118,6 @@ struct Services {
         subscriptionStore = PocketSubscriptionStore(user: user)
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
-
-        mainViewStore = PocketMainViewStore()
     }
 }
 
