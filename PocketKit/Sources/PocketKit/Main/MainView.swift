@@ -22,8 +22,8 @@ public struct MainView: View {
                     }
                     Text(L10n.home)
                 }
-                .tag(MainViewModel.AppSection.home)
                 .accessibilityIdentifier("home-tab-bar-button")
+                .tag(MainViewModel.AppSection.home)
 
             SavesContainerViewControllerSwiftUI(model: model.saves)
                 .edgesIgnoringSafeArea(.top)
@@ -35,9 +35,8 @@ public struct MainView: View {
                     }
                     Text(L10n.saves)
                 }
-
-                .tag(MainViewModel.AppSection.saves)
                 .accessibilityIdentifier("saves-tab-bar-button")
+                .tag(MainViewModel.AppSection.saves)
             makeSettings()
 
                 .tabItem {
@@ -48,8 +47,8 @@ public struct MainView: View {
                     }
                     Text(L10n.settings)
                 }
-                .tag(MainViewModel.AppSection.account)
                 .accessibilityIdentifier("account-tab-bar-button")
+                .tag(MainViewModel.AppSection.account)
         }
         .background(Color(.ui.white1))
         .foregroundColor(Color(.ui.grey1))

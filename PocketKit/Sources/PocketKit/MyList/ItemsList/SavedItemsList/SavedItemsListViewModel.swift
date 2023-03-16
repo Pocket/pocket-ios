@@ -695,7 +695,7 @@ extension SavedItemsListViewModel {
 // MARK: - Prefetching data
 extension SavedItemsListViewModel {
     func prefetch(itemsAt: [IndexPath]) {
-        // no op, prefetching is only needed in archive
+        // no op
     }
 }
 

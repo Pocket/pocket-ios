@@ -16,7 +16,8 @@ struct ReaderElement: PocketUIElement {
     }
 
     var savesBackButton: XCUIElement {
-        element.buttons["Saves"]
+        // This will always be a back button in the Navbar at index 0
+        element.navigationBars.buttons.element(boundBy: 0)
     }
 
     var archiveButton: XCUIElement {
