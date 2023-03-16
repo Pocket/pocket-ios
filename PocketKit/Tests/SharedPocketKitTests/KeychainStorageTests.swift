@@ -22,7 +22,7 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(query[kSecAttrService as String] as? String, service)
         XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
         XCTAssertEqual(query[kSecReturnData as String] as? Bool, true)
-        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterProAlphaNeue")
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterPro")
     }
 
     func test_set_whenInitialValue_callsAdd_withCorrectQuery() {
@@ -39,7 +39,7 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(query[kSecAttrService as String] as? String, service)
         XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
         XCTAssertEqual(query[kSecAttrAccessible as String] as? String, kSecAttrAccessibleAfterFirstUnlock as String)
-        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterProAlphaNeue")
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterPro")
     }
 
     func test_set_whenValueExists_callsUpdate_withCorrectQuery() {
@@ -61,7 +61,7 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(query[kSecClass as String] as? String, kSecClassGenericPassword as String)
         XCTAssertEqual(query[kSecAttrService as String] as? String, service)
         XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
-        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterProAlphaNeue")
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterPro")
     }
 
     func test_set_whenNil_callsDelete_withCorrectQuery() {
@@ -79,7 +79,7 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(query[kSecClass as String] as? String, kSecClassGenericPassword as String)
         XCTAssertEqual(query[kSecAttrService as String] as? String, service)
         XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
-        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterProAlphaNeue")
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterPro")
     }
 
     func test_read_usesCachedValue() {

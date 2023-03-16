@@ -40,7 +40,7 @@ struct Services {
         firstLaunchDefaults = UserDefaults(
             suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
         )!
-        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults)
+        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupId: Keys.shared.groupId)
 
         urlSession = URLSession.shared
 

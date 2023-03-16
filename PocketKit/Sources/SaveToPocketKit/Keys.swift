@@ -9,6 +9,7 @@ struct Keys {
 
     let pocketApiConsumerKey: String
     let sentryDSN: String
+    let groupdId: String
 
     private init() {
         guard let info = Bundle.main.infoDictionary else {
@@ -23,7 +24,12 @@ struct Keys {
             fatalError("Unable to extract SentryDSN from main bundle")
         }
 
+        guard let groupId = info["GroupId"] as? String else {
+            fatalError("Unable to extract GroupId from main bundle")
+        }
+
         self.pocketApiConsumerKey = pocketApiConsumerKey
         self.sentryDSN = sentryDSN
+        self.groupdId = groupId
     }
 }
