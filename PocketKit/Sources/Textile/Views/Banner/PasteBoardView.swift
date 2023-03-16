@@ -14,6 +14,7 @@ public struct PasteBoardModifier: ViewModifier {
         static let imageMaxWidth: CGFloat = 83
         static let spacing: CGFloat = 22
         static let titleStyle: Style = .header.sansSerif.p2.with(weight: .bold).with(color: .ui.black)
+        static let cornerRadius: CGFloat = 4
     }
 
     public struct PasteBoardData {
@@ -66,21 +67,16 @@ public struct PasteBoardModifier: ViewModifier {
                 .padding(13)
                 .background(Color(.ui.teal6))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 4)
+                    RoundedRectangle(cornerRadius: Constants.cornerRadius)
                         .stroke(Color(.ui.teal5), lineWidth: 1)
                 )
-
+                .accessibilityElement(children: .contain)
                 .accessibilityIdentifier("banner")
                 .padding()
                 .padding(.bottom, bottomOffset)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
                 .animation(.easeInOut, value: show)
-                .onTapGesture {
-                    withAnimation {
-                        self.show = false
-                        data.action.dismiss()
-                    }
-                }
+
                 .gesture(DragGesture(minimumDistance: 20, coordinateSpace: .global)
                     .onEnded { value in
                         let verticalAmount = value.translation.height
@@ -98,18 +94,33 @@ public struct PasteBoardModifier: ViewModifier {
     func title() -> some View {
         Text(data.title)
             .style(Constants.titleStyle)
+            .onTapGesture {
+                withAnimation {
+                    self.show = false
+                    data.action.dismiss()
+                }
+            }
             .accessibilityIdentifier("banner-title")
     }
 
     func button() -> some View {
-        Button(data.action.text) {
-            data.action.action(UIPasteboard.general.url)
-        }
-        .buttonStyle(.bordered)
-        .background(Color(.ui.teal2))
+        if #available(iOS 16.0, *) {
+            return PasteButton(payloadType: URL.self, onPaste: {urls in
+                guard let first = urls.first else { return }
+                data.action.action(first)
+            })
+            .tint(Color(.ui.teal2))
+            .labelStyle(.titleOnly)
+        } else {
+            return Button(data.action.text) {
+                data.action.action(UIPasteboard.general.url)
+            }
+            .buttonStyle(.bordered)
+            .background(Color(.ui.teal2))
             .foregroundColor(Color(.ui.white))
             .padding([.top, .bottom], 8)
             .padding([.trailing, .leading], 16)
+        }
     }
 }
 

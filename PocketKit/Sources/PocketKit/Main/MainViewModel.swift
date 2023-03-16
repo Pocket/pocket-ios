@@ -148,13 +148,17 @@ class MainViewModel: ObservableObject {
             bannerViewModel = PasteBoardModifier.PasteBoardData(title: L10n.addCopiedURLToYourSaves, action: PasteBoardModifier.PasteBoardData.PasteBoardAction(text: L10n.saves, action: { [weak self] url in
                 self?.handleBannerPrimaryAction(url: url)
             }, dismiss: { [weak self] in
-                self?.bannerViewModel = nil
+                DispatchQueue.main.async { [weak self] in
+                    self?.bannerViewModel = nil
+                }
             }))
         }
     }
 
     private func handleBannerPrimaryAction(url: URL?) {
-        bannerViewModel = nil
+        DispatchQueue.main.async { [weak self] in
+            self?.bannerViewModel = nil
+        }
 
         guard let url = url else { return }
         source.save(url: url)
