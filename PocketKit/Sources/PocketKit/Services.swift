@@ -99,7 +99,8 @@ struct Services {
 
         braze = PocketBraze(
             apiKey: Keys.shared.brazeAPIKey,
-            endpoint: Keys.shared.brazeAPIEndpoint
+            endpoint: Keys.shared.brazeAPIEndpoint,
+            groupdId: Keys.shared.groupId
         )
 
         notificationService = PushNotificationService(
