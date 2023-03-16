@@ -2,28 +2,6 @@ import SharedPocketKit
 import SwiftUI
 import Textile
 
-class SettingsViewController: UIHostingController<SettingsView> {
-    override init(rootView: SettingsView) {
-        super.init(rootView: rootView)
-
-        UITableView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = .clear
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        rootView.model.trackSettingsViewed()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError()
-    }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        guard traitCollection.userInterfaceIdiom == .phone else { return .all }
-        return .portrait
-    }
-}
-
 struct SettingsView: View {
     @ObservedObject
     var model: AccountViewModel

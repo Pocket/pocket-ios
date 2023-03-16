@@ -1,20 +1,15 @@
-//
-//  File.swift
-//  
-//
-//  Created by Daniel Brooks on 3/8/23.
-//
-
 import SwiftUI
 import Textile
 
 public struct MainView: View {
     @ObservedObject var model: MainViewModel
 
+    @State var tabBarHeightOffset: CGFloat = 0
+
     public var body: some View {
         TabView(selection: $model.selectedSection) {
             HomeViewControllerSwiftUI(model: model.home)
-                .accessibilityElement(children: .contain)
+                .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
                 .tabItem {
                     if model.selectedSection == .home {
                         Image(asset: .tabHomeSelected)
@@ -27,7 +22,7 @@ public struct MainView: View {
                 .tag(MainViewModel.AppSection.home)
 
             SavesContainerViewControllerSwiftUI(model: model.saves)
-                .edgesIgnoringSafeArea(.top)
+                .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
                 .tabItem {
                     if model.selectedSection == .saves {
                         Image(asset: .tabSavesSelected)
@@ -38,28 +33,32 @@ public struct MainView: View {
                 }
                 .accessibilityIdentifier("saves-tab-bar-button")
                 .tag(MainViewModel.AppSection.saves)
-            makeSettings()
-                .tabItem {
-                    if model.selectedSection == .account {
-                        Image(asset: .tabSettingsSelected)
-                    } else {
-                        Image(asset: .tabSettingsDeselected)
-                    }
-                    Text(L10n.settings)
+
+            NavigationView {
+                SettingsView(model: model.account)
+            }
+            .navigationViewStyle(.stack)
+            .background(Color(.ui.white1))
+            .tabBarHeightOffset { offset in tabBarHeightOffset = offset }
+            .tabItem {
+                if model.selectedSection == .account {
+                    Image(asset: .tabSettingsSelected)
+                } else {
+                    Image(asset: .tabSettingsDeselected)
                 }
-                .accessibilityIdentifier("account-tab-bar-button")
-                .tag(MainViewModel.AppSection.account)
+                Text(L10n.settings)
+            }
+            .accessibilityIdentifier("account-tab-bar-button")
+            .tag(MainViewModel.AppSection.account)
         }
+        .overlay(alignment: .bottomLeading, content: {
+            if let banner = model.bannerViewModel {
+                ZStack(alignment: .bottom) {}
+                    .pasteboard(data: banner, show: .constant(true), bottomOffset: tabBarHeightOffset)
+            }
+        })
         .background(Color(.ui.white1))
         .foregroundColor(Color(.ui.grey1))
         .tint(Color(.ui.grey1))
-    }
-
-    private func makeSettings() -> some View {
-        NavigationView {
-            SettingsView(model: model.account)
-                .accessibilityElement(children: .contain)
-        }
-        .navigationViewStyle(.stack)
     }
 }

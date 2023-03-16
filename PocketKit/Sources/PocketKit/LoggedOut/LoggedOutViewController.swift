@@ -55,7 +55,7 @@ struct LoggedOutView: View {
         .accessibilityIdentifier("logged-out")
         .banner(data: BannerModifier.BannerData(image: .accountDeleted, title: L10n.Login.DeletedAccount.Banner.title, detail: L10n.Login.DeletedAccount.Banner.detail, action: BannerModifier.BannerData.BannerAction(text: L10n.Login.DeletedAccount.Banner.action, style: PocketButtonStyle(.primary)) {
             viewModel.exitSurveyButtonClicked()
-        }), show: $viewModel.isPresentingExitSurveyBanner)
+        }), show: $viewModel.isPresentingExitSurveyBanner, bottomOffset: 0)
         .sheet(isPresented: $viewModel.isPresentingExitSurvey) {
             SFSafariView(url: LinkedExternalURLS.ExitSurvey)
                 .edgesIgnoringSafeArea(.bottom).onAppear {

@@ -1,6 +1,5 @@
 import UIKit
 import Sync
-import Kingfisher
 import Textile
 import Analytics
 import Combine

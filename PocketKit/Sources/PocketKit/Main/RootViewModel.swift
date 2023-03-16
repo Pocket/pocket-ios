@@ -12,9 +12,6 @@ class RootViewModel: ObservableObject {
     var isLoggedIn = false
 
     @Published
-    var bannerViewModel: BannerViewModel?
-
-    @Published
     var mainViewModel: MainViewModel
 
     @Published
@@ -68,14 +65,6 @@ class RootViewModel: ObservableObject {
 
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
-
-        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
-            self?.showSaveFromClipboardBanner()
-        }.store(in: &subscriptions)
-
-        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
-            self?.bannerViewModel = nil
-        }.store(in: &subscriptions)
     }
 
     /**
@@ -92,30 +81,6 @@ class RootViewModel: ObservableObject {
         // We have a session! Ensure the user is logged in.
         self.setUpSession(session)
         self.isLoggedIn = true
-    }
-
-    func showSaveFromClipboardBanner() {
-        if UIPasteboard.general.hasURLs, isLoggedIn {
-            bannerViewModel = BannerViewModel(
-                prompt: L10n.addCopiedURLToYourSaves,
-                buttonText: L10n.saves,
-                backgroundColor: UIColor(.ui.teal6),
-                borderColor: UIColor(.ui.teal5),
-                primaryAction: { [weak self] url in
-                    self?.handleBannerPrimaryAction(url: url)
-                },
-                dismissAction: { [weak self] in
-                    self?.bannerViewModel = nil
-                }
-            )
-        }
-    }
-
-    private func handleBannerPrimaryAction(url: URL?) {
-        bannerViewModel = nil
-
-        guard let url = url else { return }
-        source.save(url: url)
     }
 
     private func setUpSession(_ session: SharedPocketKit.Session) {

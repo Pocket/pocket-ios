@@ -4,15 +4,23 @@ import Sync
 import Foundation
 import BackgroundTasks
 import UIKit
+import Textile
 
 @MainActor
 class MainViewModel: ObservableObject {
     let home: HomeViewModel
     let saves: SavesContainerViewModel
     let account: AccountViewModel
+    let source: Source
 
     @Published
     var selectedSection: AppSection = .home
+
+    @Published
+    var bannerViewModel: PasteBoardModifier.PasteBoardData?
+
+    @Published
+    var showBanner: Bool = false
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -66,18 +74,29 @@ class MainViewModel: ObservableObject {
                 premiumStatusViewModelFactory: {
                     PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)
                 }
-            )
+            ),
+            source: Services.shared.source
         )
     }
 
     init(
         saves: SavesContainerViewModel,
         home: HomeViewModel,
-        account: AccountViewModel
+        account: AccountViewModel,
+        source: Source
     ) {
         self.saves = saves
         self.home = home
         self.account = account
+        self.source = source
+
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
+            self?.showSaveFromClipboardBanner()
+        }.store(in: &subscriptions)
+
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
+            self?.bannerViewModel = nil
+        }.store(in: &subscriptions)
     }
 
     enum AppSection: CaseIterable, Identifiable, Hashable {
@@ -122,5 +141,22 @@ class MainViewModel: ObservableObject {
 
     func selectSavesTab() {
         self.selectedSection = .saves
+    }
+
+    func showSaveFromClipboardBanner() {
+        if UIPasteboard.general.hasURLs {
+            bannerViewModel = PasteBoardModifier.PasteBoardData(title: L10n.addCopiedURLToYourSaves, action: PasteBoardModifier.PasteBoardData.PasteBoardAction(text: L10n.saves, action: { [weak self] url in
+                self?.handleBannerPrimaryAction(url: url)
+            }, dismiss: { [weak self] in
+                self?.bannerViewModel = nil
+            }))
+        }
+    }
+
+    private func handleBannerPrimaryAction(url: URL?) {
+        bannerViewModel = nil
+
+        guard let url = url else { return }
+        source.save(url: url)
     }
 }
