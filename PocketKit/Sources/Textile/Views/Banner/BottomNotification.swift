@@ -62,7 +62,7 @@ public struct BannerModifier: ViewModifier {
                                 .accessibilityIdentifier("banner-detail")
                             if let action = data.action {
                                 Button(action.text) {
-                                   action.action()
+                                    action.action()
                                 }.buttonStyle(action.style)
                             }
                         }
@@ -120,7 +120,15 @@ struct BannerModifier_PreviewProvider: PreviewProvider {
             Text("Some Screen!")
             Spacer()
         }
-        .banner(data: BannerModifier.BannerData(image: .warning, title: "Title", detail: "Detail Message"), show: .constant(true), bottomOffset: 0)
+        .banner(
+            data: BannerModifier.BannerData(
+            image: .warning,
+            title: "Title",
+            detail: "Detail Message"
+        ),
+                show: .constant(true),
+                bottomOffset: 0
+        )
         .previewDisplayName("Warning - Light")
         .preferredColorScheme(.light)
 
@@ -129,7 +137,15 @@ struct BannerModifier_PreviewProvider: PreviewProvider {
             Text("Some Screen!")
             Spacer()
         }
-        .banner(data: BannerModifier.BannerData(image: .warning, title: "Title", detail: "Detail Message"), show: .constant(true), bottomOffset: 0)
+        .banner(
+            data: BannerModifier.BannerData(
+            image: .warning,
+            title: "Title",
+            detail: "Detail Message"
+        ),
+                show: .constant(true),
+                bottomOffset: 0
+        )
         .previewDisplayName("Warning - Dark")
         .preferredColorScheme(.dark)
 
@@ -138,8 +154,20 @@ struct BannerModifier_PreviewProvider: PreviewProvider {
             Text("Some Screen!")
             Spacer()
         }
-        .banner(data: BannerModifier.BannerData(image: .warning, title: "Title", detail: "Detail Message", action: BannerModifier.BannerData.BannerAction(text: "Click!", style: PocketButtonStyle(.primary)) {
-        }), show: .constant(true), bottomOffset: 0)
+        .banner(
+            data: BannerModifier.BannerData(
+            image: .warning,
+            title: "Title",
+            detail: "Detail Message",
+            action: BannerModifier.BannerData.BannerAction(
+                text: "Click!",
+                style: PocketButtonStyle(.primary)
+            ) {
+            }
+            ),
+                show: .constant(true),
+                bottomOffset: 0
+        )
         .previewDisplayName("Action - Light")
         .preferredColorScheme(.light)
 
@@ -148,26 +176,52 @@ struct BannerModifier_PreviewProvider: PreviewProvider {
             Text("Some Screen!")
             Spacer()
         }
-        .banner(data: BannerModifier.BannerData(image: .accountDeleted, title: "You’ve deleted your Pocket account", detail: "What could we have done better?", action: BannerModifier.BannerData.BannerAction(text: "Quick survey", style: PocketButtonStyle(.primary)) {
-        }), show: .constant(true), bottomOffset: 0)
+        .banner(
+            data: BannerModifier.BannerData(
+            image: .accountDeleted,
+            title: "You’ve deleted your Pocket account",
+            detail: "What could we have done better?",
+            action: BannerModifier.BannerData.BannerAction(
+                text: "Quick survey",
+                style: PocketButtonStyle(.primary)
+            ) {
+            }
+            ),
+                show: .constant(true),
+                bottomOffset: 0
+        )
         .previewDisplayName("Action - Dark")
         .preferredColorScheme(.dark)
 
         TabView {
             VStack {
-            }.tabItem {
+            }
+            .tabItem {
                 Image(asset: .tabSettingsSelected)
                 Text("Settings")
             }
 
             VStack {
-            }.tabItem {
+            }
+            .tabItem {
                 Image(asset: .tabSettingsSelected)
                 Text("Settings")
             }
         }
-        .banner(data: BannerModifier.BannerData(image: .accountDeleted, title: "You’ve deleted your Pocket account", detail: "What could we have done better?", action: BannerModifier.BannerData.BannerAction(text: "Quick survey", style: PocketButtonStyle(.primary)) {
-        }), show: .constant(true), bottomOffset: 49)
+        .banner(
+            data: BannerModifier.BannerData(
+            image: .accountDeleted,
+            title: "You’ve deleted your Pocket account",
+            detail: "What could we have done better?",
+            action: BannerModifier.BannerData.BannerAction(
+                text: "Quick survey",
+                style: PocketButtonStyle(.primary)
+            ) {
+            }
+            ),
+                show: .constant(true),
+                bottomOffset: 49
+        )
         .previewDisplayName("TabBar")
     }
 }

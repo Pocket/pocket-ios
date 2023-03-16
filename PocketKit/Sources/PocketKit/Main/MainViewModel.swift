@@ -145,13 +145,19 @@ class MainViewModel: ObservableObject {
 
     func showSaveFromClipboardBanner() {
         if UIPasteboard.general.hasURLs {
-            bannerViewModel = PasteBoardModifier.PasteBoardData(title: L10n.addCopiedURLToYourSaves, action: PasteBoardModifier.PasteBoardData.PasteBoardAction(text: L10n.saves, action: { [weak self] url in
-                self?.handleBannerPrimaryAction(url: url)
-            }, dismiss: { [weak self] in
-                DispatchQueue.main.async { [weak self] in
-                    self?.bannerViewModel = nil
-                }
-            }))
+            bannerViewModel = PasteBoardModifier.PasteBoardData(
+                title: L10n.addCopiedURLToYourSaves,
+                action: PasteBoardModifier.PasteBoardData.PasteBoardAction(
+                    text: L10n.saves,
+                    action: { [weak self] url in
+                        self?.handleBannerPrimaryAction(url: url)
+                    }, dismiss: { [weak self] in
+                        DispatchQueue.main.async { [weak self] in
+                            self?.bannerViewModel = nil
+                        }
+                    }
+                )
+            )
         }
     }
 
