@@ -58,7 +58,7 @@ class PremiumUpgradeViewModel: ObservableObject {
                 switch state {
                 case .subscribed(let type):
                     Task {
-                        // self?.trackPurchaseSubscriptionSuccess(type: type)
+                        self?.trackPurchaseSubscriptionSuccess(type: type)
                     }
                     self?.shouldDismiss = true
                 case .unsubscribed:

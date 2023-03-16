@@ -1,9 +1,8 @@
-//
-//  File.swift
-//  
-//
-//  Created by Daniel Brooks on 3/15/23.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+// From https://stackoverflow.com/questions/59969911/programmatically-detect-tab-bar-or-tabview-height-in-swiftui
 
 import SwiftUI
 struct TabBarHeighOffsetViewModifier: ViewModifier {

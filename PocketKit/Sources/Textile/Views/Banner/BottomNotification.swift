@@ -169,22 +169,5 @@ struct BannerModifier_PreviewProvider: PreviewProvider {
         .banner(data: BannerModifier.BannerData(image: .accountDeleted, title: "You’ve deleted your Pocket account", detail: "What could we have done better?", action: BannerModifier.BannerData.BannerAction(text: "Quick survey", style: PocketButtonStyle(.primary)) {
         }), show: .constant(true), bottomOffset: 49)
         .previewDisplayName("TabBar")
-
-//        TabView {
-//            VStack {
-//            }.tabItem {
-//                Image(asset: .tabSettingsSelected)
-//                Text("Settings")
-//            }
-//
-//            VStack {
-//            }.tabItem {
-//                Image(asset: .tabSettingsSelected)
-//                Text("Settings")
-//            }
-//        }
-//        .banner(data: BannerModifier.BannerData(title: "You’ve deleted your Pocket account", action: BannerModifier.BannerData.BannerAction(text: "Paste", style: PocketButtonStyle(.primary)) {
-//        }), show: .constant(true), bottomOffset: 49)
-//        .previewDisplayName("Saves - Tab Bar")
     }
 }
