@@ -44,7 +44,7 @@ struct Services {
 
         urlSession = URLSession.shared
 
-        appSession = AppSession()
+        appSession = AppSession(groupId: Keys.shared.groupId)
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
             authenticationSessionFactory: ASWebAuthenticationSession.init

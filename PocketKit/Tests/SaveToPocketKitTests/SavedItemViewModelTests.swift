@@ -32,7 +32,7 @@ class SavedItemViewModelTests: XCTestCase {
     override func setUp() {
         self.continueAfterFailure = false
 
-        appSession = AppSession(keychain: MockKeychain())
+        appSession = AppSession(keychain: MockKeychain(), groupId: "group.com.ideashower.ReadItLaterPro")
         saveService = MockSaveService()
         dismissTimer = Timer.TimerPublisher(interval: 0, runLoop: .main, mode: .default)
         tracker = MockTracker()
@@ -51,7 +51,7 @@ class SavedItemViewModelTests: XCTestCase {
 // MARK: - Session, no URL
 extension SavedItemViewModelTests {
     func test_save_ifValidSessionAndNoURL_doesNotCallSave() async {
-        let appSession = AppSession(keychain: MockKeychain())
+        let appSession = AppSession(keychain: MockKeychain(), groupId: "group.com.ideashower.ReadItLaterPro")
         appSession.currentSession = Session(
             guid: "mock-guid",
             accessToken: "mock-access-token",
@@ -69,7 +69,7 @@ extension SavedItemViewModelTests {
     }
 
     func test_save_ifValidSessionAndNoURL_doesNotAutomaticallyCompleteRequest() async {
-        let appSession = AppSession(keychain: MockKeychain())
+        let appSession = AppSession(keychain: MockKeychain(), groupId: "group.com.ideashower.ReadItLaterPro")
         appSession.currentSession = Session(
             guid: "mock-guid",
             accessToken: "mock-access-token",
@@ -94,7 +94,7 @@ extension SavedItemViewModelTests {
 // MARK: - Session, URL
 extension SavedItemViewModelTests {
     func test_save_ifValidSessionAndURL_sendsCorrectURLToService() async {
-        let appSession = AppSession(keychain: MockKeychain())
+        let appSession = AppSession(keychain: MockKeychain(), groupId: "group.com.ideashower.ReadItLaterPro")
         appSession.currentSession = Session(
             guid: "mock-guid",
             accessToken: "mock-access-token",
@@ -121,7 +121,7 @@ extension SavedItemViewModelTests {
     }
 
     func test_save_ifValidSessionAndURLString_sendsCorrectURLToService() async {
-        let appSession = AppSession(keychain: MockKeychain())
+        let appSession = AppSession(keychain: MockKeychain(), groupId: "group.com.ideashower.ReadItLaterPro")
         appSession.currentSession = Session(
             guid: "mock-guid",
             accessToken: "mock-access-token",
@@ -147,7 +147,7 @@ extension SavedItemViewModelTests {
     }
 
     func test_save_ifValidSessionAndURL_automaticallyCompletesRequest() async {
-        let appSession = AppSession(keychain: MockKeychain())
+        let appSession = AppSession(keychain: MockKeychain(), groupId: "group.com.ideashower.ReadItLaterPro")
         appSession.currentSession = Session(
             guid: "mock-guid",
             accessToken: "mock-access-token",

@@ -18,8 +18,8 @@ internal enum L10n {
   internal static let aboutSupport = L10n.tr("Localizable", "About & Support", fallback: "About & Support")
   /// Add copied URL to your Saves?
   internal static let addCopiedURLToYourSaves = L10n.tr("Localizable", "Add copied URL to your Saves?", fallback: "Add copied URL to your Saves?")
-  /// Add Tags
-  internal static let addTags = L10n.tr("Localizable", "Add Tags", fallback: "Add Tags")
+  /// Add tags
+  internal static let addTags = L10n.tr("Localizable", "Add Tags", fallback: "Add tags")
   /// All
   internal static let all = L10n.tr("Localizable", "All", fallback: "All")
   /// An error occurred
@@ -159,8 +159,8 @@ internal enum L10n {
   internal static let saves = L10n.tr("Localizable", "Saves", fallback: "Saves")
   /// Search
   internal static let search = L10n.tr("Localizable", "Search", fallback: "Search")
-  /// See All
-  internal static let seeAll = L10n.tr("Localizable", "See All", fallback: "See All")
+  /// See all
+  internal static let seeAll = L10n.tr("Localizable", "See All", fallback: "See all")
   /// Settings
   internal static let settings = L10n.tr("Localizable", "Settings", fallback: "Settings")
   /// Share

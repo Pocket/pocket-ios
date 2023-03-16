@@ -22,7 +22,7 @@ struct Services {
         )!
         persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupId: Keys.shared.groupdId)
 
-        appSession = AppSession()
+        appSession = AppSession(groupId: Keys.shared.groupdId)
 
         let snowplow = PocketSnowplowTracker()
         tracker = PocketTracker(snowplow: snowplow)

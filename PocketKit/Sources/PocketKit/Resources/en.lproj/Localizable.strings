@@ -39,7 +39,7 @@
 "Favorite" = "Favorite";
 "Unfavorite" = "Unfavorite";
 "Move to Saves" = "Move to Saves";
-"Add Tags" = "Add Tags";
+"Add Tags" = "Add tags";
 "Tags" = "Tags";
 "Share" = "Share";
 
@@ -70,7 +70,7 @@
 
 "You're all caught up!\nCheck back later for more." = "You're all caught up!\nCheck back later for more.";
 "Recent Saves" = "Recent Saves";
-"See All" = "See All";
+"See All" = "See all";
 
 "%@ min read" = "%@ min read";
 "Saved" = "Saved";

@@ -29,19 +29,12 @@ public class KeychainStorage<T: Codable & Equatable> {
     init(
         keychain: Keychain = SecItemKeychain(),
         service: String = "pocket",
-        account: String
+        account: String,
+        groupId: String
     ) {
         self.keychain = keychain
         self.service = service
         self.account = account
-
-        guard let info = Bundle.main.infoDictionary else {
-            fatalError("Unable to load info dictionary for main bundle")
-        }
-
-        guard let groupId = info["GroupId"] as? String else {
-            fatalError("Unable to extract GroupId from main bundle")
-        }
         self.accessGroup = groupId
 
         _wrappedValue = read()
