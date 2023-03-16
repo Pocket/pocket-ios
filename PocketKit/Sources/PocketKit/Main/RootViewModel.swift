@@ -7,7 +7,7 @@ import SharedPocketKit
 import UIKit
 
 @MainActor
-class RootViewModel: ObservableObject {
+public class RootViewModel: ObservableObject {
     @Published
     var isLoggedIn = false
 
@@ -24,7 +24,7 @@ class RootViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    convenience init() {
+    public convenience init() {
         self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: .standard, mainViewModel: MainViewModel(), loggedOutViewModel: LoggedOutViewModel())
     }
 
