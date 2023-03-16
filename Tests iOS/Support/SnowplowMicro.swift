@@ -346,7 +346,7 @@ extension SnowplowMicro {
 
         XCTAssertNotNil(user, "User not found in analytics event")
         XCTAssertEqual(user!.dataDict()["hashed_user_id"] as! String, "session-user-id")
-        XCTAssertEqual(user!.dataDict()["hashed_guid"] as! String, "test-access-token")
+        XCTAssertEqual(user!.dataDict()["hashed_guid"] as! String, "session-guid")
     }
 }
 
