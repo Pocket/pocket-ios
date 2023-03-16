@@ -48,7 +48,7 @@ struct HomeViewElement: PocketUIElement {
 
     func pullToRefresh() {
         let topCenter = CGVector(dx: 0.5, dy: 0.1)
-        let centerCenter = CGVector(dx: 0.5, dy: 0.8)
+        let centerCenter = CGVector(dx: 0.5, dy: 2)
 
         element.cells
             .element(boundBy: 0)
