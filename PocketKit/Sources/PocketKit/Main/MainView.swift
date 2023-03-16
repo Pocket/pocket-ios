@@ -14,6 +14,7 @@ public struct MainView: View {
     public var body: some View {
         TabView(selection: $model.selectedSection) {
             HomeViewControllerSwiftUI(model: model.home)
+                .accessibilityElement(children: .contain)
                 .tabItem {
                     if model.selectedSection == .home {
                         Image(asset: .tabHomeSelected)
@@ -38,7 +39,6 @@ public struct MainView: View {
                 .accessibilityIdentifier("saves-tab-bar-button")
                 .tag(MainViewModel.AppSection.saves)
             makeSettings()
-
                 .tabItem {
                     if model.selectedSection == .account {
                         Image(asset: .tabSettingsSelected)
@@ -58,6 +58,7 @@ public struct MainView: View {
     private func makeSettings() -> some View {
         NavigationView {
             SettingsView(model: model.account)
+                .accessibilityElement(children: .contain)
         }
         .navigationViewStyle(.stack)
     }

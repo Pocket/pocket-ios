@@ -41,6 +41,9 @@ struct SettingsView: View {
         }
         .navigationBarTitle(L10n.settings, displayMode: .large)
         .accessibilityIdentifier("settings")
+        .onDidAppear {
+            model.trackSettingsViewed()
+        }
     }
 }
 
@@ -144,13 +147,10 @@ extension SettingsForm {
                 }
                 .opacity(0.0)
                 .buttonStyle(PlainButtonStyle())
-
-                HStack {
-                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {
-                        model.trackAccountManagementTapped()
-                    }
-                        .accessibilityIdentifier("account-management-button")
+                SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {
+                    model.trackAccountManagementTapped()
                 }
+                .accessibilityIdentifier("account-management-button")
             }
 
             SettingsRowButton(
