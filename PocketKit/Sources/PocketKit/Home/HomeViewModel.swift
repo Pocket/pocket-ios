@@ -126,7 +126,7 @@ class HomeViewModel {
             for: NSManagedObjectContext.didSaveObjectsNotification,
             object: nil
         )
-        .receive(on: DispatchQueue.main)
+        .receive(on: DispatchQueue.global(qos: .userInteractive))
         .sink { [weak self] notification in
             do {
                 try self?.handle(notification: notification)
@@ -182,7 +182,9 @@ extension HomeViewModel {
         var snapshot = try rebuildSnapshot()
 
         guard let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> else {
-            self.snapshot = snapshot
+            DispatchQueue.main.sync {
+                self.snapshot = snapshot
+            }
             return
         }
 
@@ -212,7 +214,9 @@ extension HomeViewModel {
                 .filter { snapshot.indexOfItem($0) != nil }
         )
 
-        self.snapshot = snapshot
+        DispatchQueue.main.sync {
+            self.snapshot = snapshot
+        }
     }
 
     private func rebuildSnapshot() throws -> Snapshot {
