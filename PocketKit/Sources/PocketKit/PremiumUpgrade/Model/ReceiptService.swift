@@ -14,6 +14,11 @@ public enum ReceiptError: Error {
 
 /// Concrete implementation that sends the App Store Receipt to the Pocket backend
 struct AppStoreReceiptService: ReceiptService {
+    private let client: V3ClientProtocol
+
+    init(client: V3ClientProtocol) {
+        self.client = client
+    }
     func send(_ product: Product?) async throws {
     #if DEBUG
         // TODO: at the moment we are not sending the receipt in debug
@@ -25,7 +30,7 @@ struct AppStoreReceiptService: ReceiptService {
         let transactionType = product != nil ? "purchase" : "restore"
         let currency = product?.priceFormatStyle.currencyCode ?? ""
 
-        try await Services.shared.v3Client.sendAppstoreReceipt(
+        try await client.sendAppstoreReceipt(
             source: source,
             transactionInfo: transactionInfo,
             amount: amount,
