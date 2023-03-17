@@ -28,7 +28,7 @@ final class InstantSyncTests: XCTestCase {
         let data = "data-to-register".data(using: .utf8)
         let registerExpectation = expectation(description: "register token called")
         v3Client.stubRegisterPushToken { _, pushType, token, session in
-            XCTAssertEqual(pushType, .alphadev)
+            XCTAssertEqual(pushType, .proddev)
             XCTAssertEqual(token, data!.base64EncodedString())
             XCTAssertEqual(session.guid, "test-guid")
             XCTAssertEqual(session.accessToken, "test-access-token")
@@ -45,7 +45,7 @@ final class InstantSyncTests: XCTestCase {
     func test_loggedOut_didCallSubscribers() {
         let deregisterExpectation = expectation(description: "deregister token called")
         v3Client.stubDeregisterPushToken { _, pushType, session in
-            XCTAssertEqual(pushType, .alphadev)
+            XCTAssertEqual(pushType, .proddev)
             XCTAssertEqual(session.guid, "test-guid")
             XCTAssertEqual(session.accessToken, "test-access-token")
             deregisterExpectation.fulfill()

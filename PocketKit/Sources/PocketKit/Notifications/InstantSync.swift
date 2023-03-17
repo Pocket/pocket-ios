@@ -24,9 +24,13 @@ class InstantSync: NSObject {
     let v3Client: V3ClientProtocol
 
     var pushType: PushType {
-        var type: PushType = .alpha
-#if DEBUG
+        var type: PushType = .prod
+#if ALPHA_NEUE && DEBUG
         type = .alphadev
+#elseif ALPHA_NEUE
+        type = .alpha
+#elseif DEBUG
+        type = .proddev
 #endif
         return type
     }
