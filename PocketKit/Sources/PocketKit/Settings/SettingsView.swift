@@ -2,28 +2,6 @@ import SharedPocketKit
 import SwiftUI
 import Textile
 
-class SettingsViewController: UIHostingController<SettingsView> {
-    override init(rootView: SettingsView) {
-        super.init(rootView: rootView)
-
-        UITableView.appearance(whenContainedInInstancesOf: [Self.self]).backgroundColor = .clear
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        rootView.model.trackSettingsViewed()
-    }
-
-    required init?(coder aDecoder: NSCoder) {
-        fatalError()
-    }
-
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        guard traitCollection.userInterfaceIdiom == .phone else { return .all }
-        return .portrait
-    }
-}
-
 struct SettingsView: View {
     @ObservedObject
     var model: AccountViewModel
@@ -31,16 +9,19 @@ struct SettingsView: View {
     var body: some View {
         VStack(spacing: 0) {
             if #available(iOS 16.0, *) {
-                SettingsForm(model: model)
-                    .scrollContentBackground(.hidden)
-                    .background(Color(.ui.white1))
+                    SettingsForm(model: model)
+                        .scrollContentBackground(.hidden)
+                        .background(Color(.ui.white1))
             } else {
-                SettingsForm(model: model)
-                    .background(Color(.ui.white1))
+                    SettingsForm(model: model)
+                        .background(Color(.ui.white1))
             }
         }
         .navigationBarTitle(L10n.settings, displayMode: .large)
         .accessibilityIdentifier("settings")
+        .onDidAppear {
+            model.trackSettingsViewed()
+        }
     }
 }
 
@@ -144,13 +125,10 @@ extension SettingsForm {
                 }
                 .opacity(0.0)
                 .buttonStyle(PlainButtonStyle())
-
-                HStack {
-                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {
-                        model.trackAccountManagementTapped()
-                    }
-                        .accessibilityIdentifier("account-management-button")
+                SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {
+                    model.trackAccountManagementTapped()
                 }
+                .accessibilityIdentifier("account-management-button")
             }
 
             SettingsRowButton(

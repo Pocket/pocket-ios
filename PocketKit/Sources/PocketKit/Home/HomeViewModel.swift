@@ -100,7 +100,7 @@ class HomeViewModel {
     var tappedSeeAll: SeeAll?
 
     private let source: Source
-    private let tracker: Tracker
+    let tracker: Tracker
     private let networkPathMonitor: NetworkPathMonitor
     private let homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
     private var subscriptions: [AnyCancellable] = []

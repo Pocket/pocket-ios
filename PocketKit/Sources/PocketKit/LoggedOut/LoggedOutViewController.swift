@@ -2,6 +2,19 @@ import UIKit
 import Textile
 import SwiftUI
 
+struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
+    var model: LoggedOutViewModel
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> LoggedOutViewController {
+        let v = LoggedOutCoordinator(viewModel: model)
+
+        return v.viewController
+    }
+
+    func updateUIViewController(_ uiViewController: LoggedOutViewController, context: UIViewControllerRepresentableContext<Self>) {
+    }
+}
+
 class LoggedOutViewController: UIHostingController<LoggedOutView> {
     convenience init(viewModel: LoggedOutViewModel) {
         self.init(rootView: LoggedOutView(viewModel: viewModel))
@@ -40,9 +53,21 @@ struct LoggedOutView: View {
                 .onDisappear { viewModel.offlineViewDidDisappear() }
         }
         .accessibilityIdentifier("logged-out")
-        .banner(data: BannerModifier.BannerData(image: .accountDeleted, title: L10n.Login.DeletedAccount.Banner.title, detail: L10n.Login.DeletedAccount.Banner.detail, action: BannerModifier.BannerData.BannerAction(text: L10n.Login.DeletedAccount.Banner.action, style: PocketButtonStyle(.primary)) {
-            viewModel.exitSurveyButtonClicked()
-        }), show: $viewModel.isPresentingExitSurveyBanner)
+        .banner(
+            data: BannerModifier.BannerData(
+                image: .accountDeleted,
+                title: L10n.Login.DeletedAccount.Banner.title,
+                detail: L10n.Login.DeletedAccount.Banner.detail,
+                action: BannerModifier.BannerData.BannerAction(
+                    text: L10n.Login.DeletedAccount.Banner.action,
+                    style: PocketButtonStyle(.primary)
+                ) {
+                    viewModel.exitSurveyButtonClicked()
+                }
+            ),
+            show: $viewModel.isPresentingExitSurveyBanner,
+            bottomOffset: 0
+        )
         .sheet(isPresented: $viewModel.isPresentingExitSurvey) {
             SFSafariView(url: LinkedExternalURLS.ExitSurvey)
                 .edgesIgnoringSafeArea(.bottom).onAppear {

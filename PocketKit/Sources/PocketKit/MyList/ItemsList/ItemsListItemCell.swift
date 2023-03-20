@@ -288,9 +288,12 @@ extension ItemsListItemCell {
         }
 
         thumbnailWidthConstraint.constant = Constants.thumbnailSize.width
+        thumbnailView.kf.indicatorType = .activity
         thumbnailView.kf.setImage(
             with: thumbnailURL,
             options: [
+                .callbackQueue(.dispatch(.global(qos: .userInteractive))),
+                .backgroundDecode,
                 .scaleFactor(UIScreen.main.scale),
                 .processor(
                     ResizingImageProcessor(
