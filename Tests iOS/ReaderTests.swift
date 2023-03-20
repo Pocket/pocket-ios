@@ -44,6 +44,13 @@ class ReaderTests: XCTestCase {
             }
         }
 
+        server.routes.get("/hello/item-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+        
         try server.start()
     }
 
