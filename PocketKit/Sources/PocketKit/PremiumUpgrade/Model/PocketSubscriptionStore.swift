@@ -135,7 +135,7 @@ extension PocketSubscriptionStore {
         }
         do {
             // in case no subscription was found,
-            // still send the receipt App Store receipt to the backend
+            // still send the App Store receipt to the backend
             try await receiptService.send(nil)
         } catch {
             Log.capture(error: error)
