@@ -119,7 +119,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         .store(in: &subscriptions)
 
         source.events
-            .receive(on: DispatchQueue.main)
+            .receive(on: DispatchQueue.global(qos: .userInteractive))
             .sink { [weak self] event in
                 self?.handle(syncEvent: event)
             }
@@ -643,7 +643,9 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         if snapshot.itemIdentifiers.contains(id) {
             snapshot.reloadItems([id])
         }
-        _snapshot = snapshot
+        DispatchQueue.main.async { [weak self] in
+            self?._snapshot = snapshot
+        }
     }
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {
@@ -687,7 +689,10 @@ extension SavedItemsListViewModel {
             case .archive:
                 snapshot.reloadItems(items.filter({ $0.isArchived }).map { .item($0.objectID) })
             }
-            _snapshot = snapshot
+            
+            DispatchQueue.main.sync { [weak self] in
+                self?._snapshot = snapshot
+            }
         }
     }
 }
