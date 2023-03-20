@@ -62,6 +62,7 @@ struct TagsFilterView: View {
                 }
             }
         }
+        .navigationViewStyle(.stack)
         .alert(isPresented: $showDeleteAlert) {
             Alert(
                 title: Text(L10n.deleteTag),

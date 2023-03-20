@@ -152,6 +152,8 @@ class RecommendationCell: UICollectionViewCell {
         thumbnailImageView.kf.setImage(
             with: model.imageURL,
             options: [
+                .callbackQueue(.dispatch(.global(qos: .userInteractive))),
+                .backgroundDecode,
                 .scaleFactor(UIScreen.main.scale),
                 .processor(
                     ResizingImageProcessor(

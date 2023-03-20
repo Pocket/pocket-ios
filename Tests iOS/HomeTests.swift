@@ -197,15 +197,6 @@ class HomeTests: XCTestCase {
         XCTAssertTrue(app.saves.selectionSwitcher.savesButton.isSelected)
     }
 
-    func test_tappingRecentSavesSavesButton_whenPreviouslyArchiveView_opensSavesView() {
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.selectionSwitcher.archiveButton.wait().tap()
-        app.tabBar.homeButton.wait().tap()
-        app.homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
-        app.saves.itemView(matching: "Item 1").wait()
-        XCTAssertTrue(app.saves.selectionSwitcher.savesButton.isSelected)
-    }
-
     func test_tappingSlatesSeeAllButton_showsSlateDetailView() {
         let home = app.launch().homeView
 

@@ -689,7 +689,7 @@ extension SavedItemsListViewModel {
             case .archive:
                 snapshot.reloadItems(items.filter({ $0.isArchived }).map { .item($0.objectID) })
             }
-            
+
             DispatchQueue.main.sync { [weak self] in
                 self?._snapshot = snapshot
             }
@@ -700,7 +700,7 @@ extension SavedItemsListViewModel {
 // MARK: - Prefetching data
 extension SavedItemsListViewModel {
     func prefetch(itemsAt: [IndexPath]) {
-        // no op, prefetching is only needed in archive
+        // no op
     }
 }
 

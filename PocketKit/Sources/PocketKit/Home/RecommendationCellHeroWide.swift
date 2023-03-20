@@ -179,6 +179,8 @@ class RecommendationCellHeroWide: UICollectionViewCell {
         imageView.kf.setImage(
             with: model.imageURL,
             options: [
+                .callbackQueue(.dispatch(.global(qos: .userInteractive))),
+                .backgroundDecode,
                 .scaleFactor(UIScreen.main.scale),
                 .processor(processor)
             ]

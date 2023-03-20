@@ -62,7 +62,8 @@ extension DeleteAccountViewModel {
 
     /// track delete confirmation viewed
     func trackDeleteConfirmationImpression() {
-        tracker.track(event: Events.Settings.deleteConfirmationImpression())
+        // TODO: SwiftUI is calling this after a user logs out. Disabling for now and will come back once the full app is in SwiftUI.
+        // tracker.track(event: Events.Settings.deleteConfirmationImpression())
     }
 
     /// track premium help viewed

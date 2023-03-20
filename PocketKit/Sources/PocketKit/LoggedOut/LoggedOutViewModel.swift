@@ -13,7 +13,7 @@ enum LoggedOutAction {
 }
 
 class LoggedOutViewModel: ObservableObject {
-    weak var contextProvider: ASWebAuthenticationPresentationContextProviding?
+    var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
     @Published
     var presentedAlert: PocketAlert?
@@ -41,6 +41,10 @@ class LoggedOutViewModel: ObservableObject {
     private let tracker: Tracker
     private let userManagementService: UserManagementServiceProtocol
     private var cancellables: Set<AnyCancellable> = []
+
+    convenience init() {
+        self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService)
+    }
 
     init(
         authorizationClient: AuthorizationClient,

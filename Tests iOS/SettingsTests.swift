@@ -183,9 +183,8 @@ class SettingsTest: XCTestCase {
         tap_DeleteAccount()
         XCTAssertTrue(app.deleteConfirmationView.exists)
         XCTAssertTrue(app.accountManagementView.exists)
-        let events2 =  await [snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.delete"), snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.delete.click")]
-        XCTAssertNotNil(events2[0])
-        XCTAssertNotNil(events2[1])
+        let events =  await [snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.delete.click")]
+        XCTAssertNotNil(events[0])
         XCTAssertFalse(app.deleteConfirmationView.deleteAccountButton.isEnabled)
     }
 
