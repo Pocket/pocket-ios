@@ -270,8 +270,8 @@ workflows:
       - file-downloader@1:
           inputs:
             - source: '$BITRISEIO_SECRETS_TEST_URL'
-            - destination: '$BITRISE_SOURCE_DIR/Config/secrets.xcconfig'
-          title: Install test secrets.xcconfig
+            - destination: '$BITRISE_SOURCE_DIR/Config/secrets_test.xcconfig'
+          title: Install test secrets_test.xcconfig
       - xcode-build-for-test:
           inputs:
             - destination: generic/platform=iOS Simulator
