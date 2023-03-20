@@ -11,7 +11,7 @@ import SharedPocketKit
 import Kingfisher
 
 struct Services {
-    static let shared = Services()
+    static let shared: Services = { Services() }()
 
     let userDefaults: UserDefaults
     let firstLaunchDefaults: UserDefaults
@@ -116,7 +116,7 @@ struct Services {
             userDefaults: userDefaults,
             badgeProvider: UIApplication.shared
         )
-        subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: Services.shared.v3Client))
+        subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
     }
