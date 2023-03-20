@@ -20,7 +20,7 @@ public class PersistentContainer: NSPersistentContainer {
 
     let userDefaults: UserDefaults
 
-    public init(storage: Storage = .shared, userDefaults: UserDefaults) {
+    public init(storage: Storage = .shared, userDefaults: UserDefaults, groupID: String) {
         self.userDefaults = userDefaults
 
         ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
@@ -37,7 +37,7 @@ public class PersistentContainer: NSPersistentContainer {
             ]
         case .shared:
             let sharedContainerURL = FileManager.default
-                .containerURL(forSecurityApplicationGroupIdentifier: "group.com.ideashower.ReadItLaterProAlphaNeue")!
+                .containerURL(forSecurityApplicationGroupIdentifier: groupID)!
                 .appendingPathComponent("PocketModel.sqlite")
 
             Log.debug("Store URL: \(sharedContainerURL)")

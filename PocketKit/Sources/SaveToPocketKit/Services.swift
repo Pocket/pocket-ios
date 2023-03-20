@@ -16,12 +16,13 @@ struct Services {
 
     private init() {
         Log.start(dsn: Keys.shared.sentryDSN)
+
         firstLaunchDefaults = UserDefaults(
             suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
         )!
-        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults)
+        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupID: Keys.shared.groupdId)
 
-        appSession = AppSession()
+        appSession = AppSession(groupID: Keys.shared.groupdId)
 
         let snowplow = PocketSnowplowTracker()
         tracker = PocketTracker(snowplow: snowplow)
