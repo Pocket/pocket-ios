@@ -40,11 +40,11 @@ struct Services {
         firstLaunchDefaults = UserDefaults(
             suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
         )!
-        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupId: Keys.shared.groupId)
+        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupID: Keys.shared.groupID)
 
         urlSession = URLSession.shared
 
-        appSession = AppSession(groupId: Keys.shared.groupId)
+        appSession = AppSession(groupID: Keys.shared.groupID)
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
             authenticationSessionFactory: ASWebAuthenticationSession.init
@@ -100,7 +100,7 @@ struct Services {
         braze = PocketBraze(
             apiKey: Keys.shared.brazeAPIKey,
             endpoint: Keys.shared.brazeAPIEndpoint,
-            groupdId: Keys.shared.groupId
+            groupdId: Keys.shared.groupID
         )
 
         notificationService = PushNotificationService(

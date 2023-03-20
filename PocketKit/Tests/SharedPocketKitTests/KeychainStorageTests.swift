@@ -10,7 +10,7 @@ class KeychainStorageTests: XCTestCase {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test?>(keychain: keychain, service: service, account: account, groupId: "group.com.ideashower.ReadItLaterPro")
+        let storage = KeychainStorage<Test?>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         _ = storage.wrappedValue
 
@@ -29,7 +29,7 @@ class KeychainStorageTests: XCTestCase {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupId: "group.com.ideashower.ReadItLaterPro")
+        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         storage.wrappedValue = Test(value: "test")
 
@@ -46,7 +46,7 @@ class KeychainStorageTests: XCTestCase {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupId: "group.com.ideashower.ReadItLaterPro")
+        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         let initialValue = Test(value: "test")
         storage.wrappedValue = initialValue
@@ -68,7 +68,7 @@ class KeychainStorageTests: XCTestCase {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupId: "group.com.ideashower.ReadItLaterPro")
+        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         storage.wrappedValue = nil
 
@@ -86,7 +86,7 @@ class KeychainStorageTests: XCTestCase {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupId: "group.com.ideashower.ReadItLaterPro")
+        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         // One read on init, one read if the current cached value is nil
         _ = storage.wrappedValue

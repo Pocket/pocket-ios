@@ -16,7 +16,7 @@ final class InstantSyncTests: XCTestCase {
 
     override func setUp() {
         source = MockSource()
-        appSession = AppSession(keychain: MockKeychain(), groupId: "test")
+        appSession = AppSession(keychain: MockKeychain(), groupID: "test")
         session = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
         appSession.currentSession = session
         v3Client = MockV3Client()

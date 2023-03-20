@@ -18,7 +18,7 @@ final class PushNotificationServiceTests: XCTestCase {
     override func setUp() {
         subscriptions = []
         source = MockSource()
-        appSession = AppSession(keychain: MockKeychain(), groupId: "group.com.ideashower.ReadItLaterPro")
+        appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
         session = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
         appSession.currentSession = session
 

@@ -30,12 +30,12 @@ public class KeychainStorage<T: Codable & Equatable> {
         keychain: Keychain = SecItemKeychain(),
         service: String = "pocket",
         account: String,
-        groupId: String
+        groupID: String
     ) {
         self.keychain = keychain
         self.service = service
         self.account = account
-        self.accessGroup = groupId
+        self.accessGroup = groupID
 
         _wrappedValue = read()
     }

@@ -13,7 +13,7 @@ struct Keys {
     let brazeAPIKey: String
     let pocketPremiumMonthly: String
     let pocketPremiumAnnual: String
-    let groupId: String
+    let groupID: String
 
     private init() {
         guard let info = Bundle.main.infoDictionary else {
@@ -44,7 +44,7 @@ struct Keys {
             fatalError("Unable to extract PocketPremiumAnnualAlpha from main bundle")
         }
 
-        guard let groupId = info["GroupId"] as? String else {
+        guard let groupID = info["GroupId"] as? String else {
             fatalError("Unable to extract GroupID from main bundle")
         }
 
@@ -54,6 +54,6 @@ struct Keys {
         self.brazeAPIKey = brazeAPIKey
         self.pocketPremiumMonthly = pocketPremiumMonthly
         self.pocketPremiumAnnual = pocketPremiumAnnual
-        self.groupId = groupId
+        self.groupID = groupID
     }
 }

@@ -24,12 +24,12 @@ struct Keys {
             fatalError("Unable to extract SentryDSN from main bundle")
         }
 
-        guard let groupId = info["GroupId"] as? String else {
+        guard let groupID = info["GroupId"] as? String else {
             fatalError("Unable to extract GroupId from main bundle")
         }
 
         self.pocketApiConsumerKey = pocketApiConsumerKey
         self.sentryDSN = sentryDSN
-        self.groupdId = groupId
+        self.groupdId = groupID
     }
 }

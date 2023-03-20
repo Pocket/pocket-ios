@@ -21,7 +21,7 @@ class LoggedOutViewModelTests: XCTestCase {
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }
-        appSession = AppSession(keychain: MockKeychain(), groupId: "group.com.ideashower.ReadItLaterPro")
+        appSession = AppSession(keychain: MockKeychain(), groupID: "group.com.ideashower.ReadItLaterPro")
         networkPathMonitor = MockNetworkPathMonitor()
         tracker = MockTracker()
         mockAuthenticationSession = MockAuthenticationSession()

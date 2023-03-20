@@ -20,9 +20,9 @@ struct Services {
         firstLaunchDefaults = UserDefaults(
             suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
         )!
-        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupId: Keys.shared.groupdId)
+        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupID: Keys.shared.groupdId)
 
-        appSession = AppSession(groupId: Keys.shared.groupdId)
+        appSession = AppSession(groupID: Keys.shared.groupdId)
 
         let snowplow = PocketSnowplowTracker()
         tracker = PocketTracker(snowplow: snowplow)
