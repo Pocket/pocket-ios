@@ -41,6 +41,7 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
     /// Note: if there is a new tag name in the SavedItemTagsInput, then the tag record will be created
     /// Inputs a list of SavedItemTagsInput(ie. savedItemId and list of tag names)
     /// Returns the SavedItem for which the tags have been modified.
+    @available(*, deprecated, message: "use saveBatchUpdateTags")
     public var replaceSavedItemTags: [ReplaceSavedItemTag] { __data["replaceSavedItemTags"] }
 
     /// ReplaceSavedItemTag

@@ -39,6 +39,7 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
     /// SavedItem that had its Tag associations cleared.
     /// Note that if this operation results in a Tag having no associations
     /// to a SavedItem, the Tag object will be deleted.
+    @available(*, deprecated, message: "use saveBatchUpdateTags")
     public var updateSavedItemRemoveTags: UpdateSavedItemRemoveTags { __data["updateSavedItemRemoveTags"] }
 
     /// UpdateSavedItemRemoveTags
