@@ -1554,7 +1554,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				GENERATE_INFOPLIST_FILE = YES;
-				GROUP_ID = group.com.ideashower.ReadItLaterProAlphaNeue;
 				INFOPLIST_FILE = PushNotificationStoryExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationStoryExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -1770,7 +1769,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				GENERATE_INFOPLIST_FILE = YES;
-				GROUP_ID = group.com.ideashower.ReadItLaterProAlphaNeue;
 				INFOPLIST_FILE = PushNotificationStoryExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationStoryExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -1802,7 +1800,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				GENERATE_INFOPLIST_FILE = YES;
-				GROUP_ID = group.com.ideashower.ReadItLaterPro;
 				INFOPLIST_FILE = PushNotificationStoryExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationStoryExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -1834,7 +1831,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				GENERATE_INFOPLIST_FILE = YES;
-				GROUP_ID = group.com.ideashower.ReadItLaterPro;
 				INFOPLIST_FILE = PushNotificationStoryExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationStoryExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
@@ -1866,7 +1862,6 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				GENERATE_INFOPLIST_FILE = YES;
-				GROUP_ID = group.com.ideashower.ReadItLaterPro;
 				INFOPLIST_FILE = PushNotificationStoryExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationStoryExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
