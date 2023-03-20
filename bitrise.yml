@@ -184,7 +184,7 @@ workflows:
       - git-clone@6: {}
       - pull-intermediate-files@1:
           inputs:
-            - artifact_sources: alpha-neue-release-build.alpha-neue-release-build
+            - artifact_sources: release-build.alpha-neue-release-build
       - fastlane@3:
           inputs:
             - automatic_code_signing: api-key
