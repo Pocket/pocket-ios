@@ -24,7 +24,6 @@ class MainViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    @MainActor
     convenience init() {
         self.init(
             saves: SavesContainerViewModel(

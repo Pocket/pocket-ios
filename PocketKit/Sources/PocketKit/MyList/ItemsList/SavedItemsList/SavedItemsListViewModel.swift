@@ -689,7 +689,7 @@ extension SavedItemsListViewModel {
             case .archive:
                 snapshot.reloadItems(items.filter({ $0.isArchived }).map { .item($0.objectID) })
             }
-            
+
             DispatchQueue.main.sync { [weak self] in
                 self?._snapshot = snapshot
             }
