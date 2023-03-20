@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/braze-inc/braze-swift-sdk.git",
       "state" : {
-        "revision" : "b97527a0087542eafc583d4990537e7b9b16d5a4",
-        "version" : "5.11.0"
+        "revision" : "5703119a2105c3dbc14e7a61c5b533e2de574d1e",
+        "version" : "5.11.2"
       }
     },
     {
@@ -86,8 +86,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/getsentry/sentry-cocoa.git",
       "state" : {
-        "revision" : "ccb70752c81850d659813f934973c93da48447bb",
-        "version" : "8.2.0"
+        "revision" : "2e7899aff930ed3b8d81be1909492f7684bbd481",
+        "version" : "8.3.1"
       }
     },
     {
@@ -158,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/SvenTiigi/YouTubePlayerKit.git",
       "state" : {
-        "revision" : "e3f0b0f407efa497da6aeedd0a4f9219159956ed",
-        "version" : "1.3.1"
+        "revision" : "b81f962b87105fd5e6b2b02aecebe482b84d749b",
+        "version" : "1.4.0"
       }
     }
   ],

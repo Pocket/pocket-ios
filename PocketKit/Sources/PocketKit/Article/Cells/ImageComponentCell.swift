@@ -71,6 +71,8 @@ extension ImageComponentCell {
         imageView.kf.setImage(
             with: imageSpec.source,
             options: [
+                .callbackQueue(.dispatch(.global(qos: .userInteractive))),
+                .backgroundDecode,
                 .processor(
                     OnlyResizeDownProcessor(
                         referenceSize: imageSpec.size,

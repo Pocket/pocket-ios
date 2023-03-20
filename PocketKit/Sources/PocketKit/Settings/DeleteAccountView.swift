@@ -113,7 +113,7 @@ struct DeleteAccountView: View {
         .alert(isPresented: $viewModel.showErrorAlert) {
             Alert(title: Text(L10n.General.oops), message: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.body), dismissButton: .cancel(Text(L10n.ok)))
         }
-        .onAppear {
+        .onDidAppear {
             viewModel.trackDeleteConfirmationImpression()
         }
     }

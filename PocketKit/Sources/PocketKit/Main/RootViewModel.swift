@@ -6,12 +6,16 @@ import Textile
 import SharedPocketKit
 import UIKit
 
-class RootViewModel {
+@MainActor
+public class RootViewModel: ObservableObject {
     @Published
     var isLoggedIn = false
 
     @Published
-    var bannerViewModel: BannerViewModel?
+    var mainViewModel: MainViewModel
+
+    @Published
+    var loggedOutViewModel: LoggedOutViewModel
 
     private let appSession: AppSession
     private let tracker: Tracker
@@ -20,16 +24,24 @@ class RootViewModel {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    public convenience init() {
+        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: .standard, mainViewModel: MainViewModel(), loggedOutViewModel: LoggedOutViewModel())
+    }
+
     init(
         appSession: AppSession,
         tracker: Tracker,
         source: Source,
-        userDefaults: UserDefaults
+        userDefaults: UserDefaults,
+        mainViewModel: MainViewModel,
+        loggedOutViewModel: LoggedOutViewModel
     ) {
         self.appSession = appSession
         self.tracker = tracker
         self.source = source
         self.userDefaults = userDefaults
+        self.mainViewModel = mainViewModel
+        self.loggedOutViewModel = loggedOutViewModel
 
         // Register for login notifications
         NotificationCenter.default.publisher(
@@ -53,14 +65,6 @@ class RootViewModel {
 
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
-
-        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
-            self?.showSaveFromClipboardBanner()
-        }.store(in: &subscriptions)
-
-        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
-            self?.bannerViewModel = nil
-        }.store(in: &subscriptions)
     }
 
     /**
@@ -77,30 +81,6 @@ class RootViewModel {
         // We have a session! Ensure the user is logged in.
         self.setUpSession(session)
         self.isLoggedIn = true
-    }
-
-    func showSaveFromClipboardBanner() {
-        if UIPasteboard.general.hasURLs, isLoggedIn {
-            bannerViewModel = BannerViewModel(
-                prompt: L10n.addCopiedURLToYourSaves,
-                buttonText: L10n.saves,
-                backgroundColor: UIColor(.ui.teal6),
-                borderColor: UIColor(.ui.teal5),
-                primaryAction: { [weak self] url in
-                    self?.handleBannerPrimaryAction(url: url)
-                },
-                dismissAction: { [weak self] in
-                    self?.bannerViewModel = nil
-                }
-            )
-        }
-    }
-
-    private func handleBannerPrimaryAction(url: URL?) {
-        bannerViewModel = nil
-
-        guard let url = url else { return }
-        source.save(url: url)
     }
 
     private func setUpSession(_ session: SharedPocketKit.Session) {

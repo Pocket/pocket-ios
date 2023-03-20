@@ -3,7 +3,7 @@ import Combine
 import AuthenticationServices
 
 class LoggedOutCoordinator: NSObject {
-    lazy var viewController: UIViewController = {
+    lazy var viewController: LoggedOutViewController = {
         LoggedOutViewController(viewModel: viewModel)
     }()
 
