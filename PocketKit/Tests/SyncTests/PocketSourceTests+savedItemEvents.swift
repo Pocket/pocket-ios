@@ -34,7 +34,7 @@ extension PocketSourceTests {
             receivedNotification.fulfill()
         }.store(in: &subscriptions)
 
-        let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
+        let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
         notification.savedItem = savedItem
         try! space.save()
 
@@ -43,7 +43,7 @@ extension PocketSourceTests {
 
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
         XCTAssertEqual(notifications, [])
-        XCTAssertFalse(space.context.hasChanges)
+        XCTAssertFalse(space.backgroundContext.hasChanges)
     }
 
     func test_events_whenOSNotificationCenterPostsUnresolvedItemCreatedNotification_enqueuesASaveItemOperation() throws {
@@ -57,7 +57,7 @@ extension PocketSourceTests {
         var source: PocketSource? = subject()
 
         let savedItem = try! space.createSavedItem()
-        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.context)
+        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.backgroundContext)
         unresolved.savedItem = savedItem
         try space.save()
 
@@ -78,11 +78,11 @@ extension PocketSourceTests {
         let source = subject()
 
         let savedItem = try! space.createSavedItem()
-        let notification1: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
+        let notification1: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
         notification1.savedItem = savedItem
         try! space.save()
 
-        let notification2: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.context)
+        let notification2: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
         notification2.savedItem = savedItem
         try space.save()
 

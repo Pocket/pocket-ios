@@ -11,6 +11,8 @@ import SharedPocketKit
 
 public typealias SyncEvents = PassthroughSubject<SyncEvent, Never>
 
+/// Handles the network and database operations of the Pocket App
+/// All core data requests should occur through this class.
 public class PocketSource: Source {
     private let _events: SyncEvents = PassthroughSubject()
     public var events: AnyPublisher<SyncEvent, Never> {
@@ -123,8 +125,8 @@ public class PocketSource: Source {
         osNotificationCenter.remove(observer: notificationObserver, name: .unresolvedSavedItemCreated)
     }
 
-    public var mainContext: NSManagedObjectContext {
-        space.context
+    public var viewContext: NSManagedObjectContext {
+        space.viewContext
     }
 
     public func clear() {
@@ -152,12 +154,20 @@ public class PocketSource: Source {
         FetchedImagesController(resultsController: space.makeUndownloadedImagesController())
     }
 
-    public func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
-        space.object(with: id)
+    public func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
+        space.backgroundObject(with: id)
     }
 
-    public func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
-        space.refresh(object, mergeChanges: mergeChanges)
+    public func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
+        space.viewObject(with: id)
+    }
+
+    public func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool) {
+        space.viewContext.refresh(object, mergeChanges: flag)
+    }
+
+    public func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool) {
+        space.backgroundRefresh(object, mergeChanges: mergeChanges)
     }
 
     public func retryImmediately() {
@@ -204,7 +214,7 @@ public class PocketSource: Source {
 
 // MARK: - Saves/Archive items
 extension PocketSource {
-    public func refreshSaves(maxItems: Int = 400, completion: (() -> Void)? = nil) {
+    public func refreshSaves(completion: (() -> Void)? = nil) {
         if lastRefresh.lastRefreshSaves == nil {
             initialSavesDownloadState.send(.started)
         }
@@ -215,14 +225,13 @@ extension PocketSource {
             space: space,
             events: _events,
             initialDownloadState: initialSavesDownloadState,
-            maxItems: maxItems,
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchSaves(maxItems: maxItems), completion: completion)
+        enqueue(operation: operation, task: .fetchSaves, completion: completion)
     }
 
-    public func refreshArchive(maxItems: Int = 400, completion: (() -> Void)? = nil) {
+    public func refreshArchive(completion: (() -> Void)? = nil) {
         if lastRefresh.lastRefreshArchive == nil {
             initialArchiveDownloadState.send(.started)
         }
@@ -232,102 +241,118 @@ extension PocketSource {
             space: space,
             events: _events,
             initialDownloadState: initialArchiveDownloadState,
-            maxItems: maxItems,
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchSaves(maxItems: maxItems), completion: completion)
+        enqueue(operation: operation, task: .fetchSaves, completion: completion)
     }
 
     public func favorite(item: SavedItem) {
-        guard let remoteID = item.remoteID else {
-            return
+        space.performAndWait {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
+                  let remoteID = item.remoteID else {
+                return
+            }
+
+            item.isFavorite = true
+            try? space.save()
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: FavoriteItemMutation(itemID: remoteID)
+            )
+
+            enqueue(operation: operation, task: .favorite(remoteID: remoteID))
         }
-
-        item.isFavorite = true
-        try? space.save()
-
-        let operation = operations.savedItemMutationOperation(
-            apollo: apollo,
-            events: _events,
-            mutation: FavoriteItemMutation(itemID: remoteID)
-        )
-
-        enqueue(operation: operation, task: .favorite(remoteID: remoteID))
     }
 
     public func unfavorite(item: SavedItem) {
-        guard let remoteID = item.remoteID else {
-            return
+        space.performAndWait {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
+                  let remoteID = item.remoteID else {
+                return
+            }
+
+            item.isFavorite = false
+            try? space.save()
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: UnfavoriteItemMutation(itemID: remoteID)
+            )
+            enqueue(operation: operation, task: .unfavorite(remoteID: remoteID))
         }
-
-        item.isFavorite = false
-        try? space.save()
-
-        let operation = operations.savedItemMutationOperation(
-            apollo: apollo,
-            events: _events,
-            mutation: UnfavoriteItemMutation(itemID: remoteID)
-        )
-        enqueue(operation: operation, task: .unfavorite(remoteID: remoteID))
     }
 
     public func delete(item savedItem: SavedItem) {
-        guard let remoteID = savedItem.remoteID else {
-            return
+        space.performAndWait {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem,
+                  let remoteID = savedItem.remoteID else {
+                return
+            }
+
+            let item = savedItem.item
+
+            space.delete(savedItem)
+
+            if let item = item, item.recommendation == nil {
+                space.delete(item)
+            }
+
+            try? space.save()
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: DeleteItemMutation(itemID: remoteID)
+            )
+
+            enqueue(operation: operation, task: .delete(remoteID: remoteID))
         }
-
-        let item = savedItem.item
-
-        space.delete(savedItem)
-
-        if let item = item, item.recommendation == nil {
-            space.delete(item)
-        }
-
-        try? space.save()
-
-        let operation = operations.savedItemMutationOperation(
-            apollo: apollo,
-            events: _events,
-            mutation: DeleteItemMutation(itemID: remoteID)
-        )
-
-        enqueue(operation: operation, task: .delete(remoteID: remoteID))
     }
 
     public func archive(item: SavedItem) {
-        guard let remoteID = item.remoteID else {
-            return
+        space.performAndWait {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
+                  let remoteID = item.remoteID else {
+                return
+            }
+
+            item.isArchived = true
+            item.archivedAt = Date()
+            try? space.save()
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: ArchiveItemMutation(itemID: remoteID)
+            )
+
+            enqueue(operation: operation, task: .archive(remoteID: remoteID))
         }
-
-        item.isArchived = true
-        item.archivedAt = Date()
-        try? space.save()
-
-        let operation = operations.savedItemMutationOperation(
-            apollo: apollo,
-            events: _events,
-            mutation: ArchiveItemMutation(itemID: remoteID)
-        )
-
-        enqueue(operation: operation, task: .archive(remoteID: remoteID))
     }
 
     public func unarchive(item: SavedItem) {
-        item.isArchived = false
-        item.createdAt = Date()
-        try? space.save()
+        space.performAndWait {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
+                return
+            }
+            item.isArchived = false
+            item.createdAt = Date()
+            try? space.save()
 
-        let operation = operations.saveItemOperation(
-            managedItemID: item.objectID,
-            url: item.url,
-            events: _events,
-            apollo: apollo,
-            space: space
-        )
+            let operation = operations.saveItemOperation(
+                managedItemID: item.objectID,
+                url: item.url,
+                events: _events,
+                apollo: apollo,
+                space: space
+            )
 
-        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url))
+            enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url))
+        }
     }
 
     public func save(item: SavedItem) {
@@ -342,54 +367,63 @@ extension PocketSource {
     }
 
     public func addTags(item: SavedItem, tags: [String]) {
-        guard let remoteID = item.remoteID else {
-            return
+        space.performAndWait {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
+                  let remoteID = item.remoteID else {
+                return
+            }
+
+            item.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
+                space.fetchOrCreateTag(byName: tag)
+            }))
+
+            try? space.save()
+
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: getMutation(for: tags, and: remoteID)
+            )
+
+            enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
         }
-
-        item.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
-           space.fetchOrCreateTag(byName: tag)
-        }))
-
-        try? space.save()
-
-        let operation = operations.savedItemMutationOperation(
-            apollo: apollo,
-            events: _events,
-            mutation: getMutation(for: tags, and: remoteID)
-        )
-
-        enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
     }
 
     public func deleteTag(tag: Tag) {
-        guard let remoteID = tag.remoteID else { return }
+        space.performAndWait {
+            guard let tag = space.backgroundObject(with: tag.objectID) as? Tag,
+                  let remoteID = tag.remoteID else { return }
 
-        try? space.deleteTag(byID: remoteID)
-        try? space.save()
+            try? space.deleteTag(byID: remoteID)
+            try? space.save()
 
-        let operation = operations.savedItemMutationOperation(
-            apollo: apollo,
-            events: _events,
-            mutation: DeleteTagMutation(id: remoteID)
-        )
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: DeleteTagMutation(id: remoteID)
+            )
 
-        enqueue(operation: operation, task: .deleteTag(remoteID: remoteID))
+            enqueue(operation: operation, task: .deleteTag(remoteID: remoteID))
+        }
     }
 
     public func renameTag(from oldTag: Tag, to name: String) {
-        guard let remoteID = oldTag.remoteID else { return }
+        space.performAndWait {
+            guard let oldTag = space.backgroundObject(with: oldTag.objectID) as? Tag,
+                  let remoteID = oldTag.remoteID else { return }
 
-        let fetchedTag = try? space.fetchTag(byID: remoteID)
-        fetchedTag?.name = name
-        try? space.save()
+            let fetchedTag = try? space.fetchTag(byID: remoteID)
+            fetchedTag?.name = name
+            try? space.save()
 
-        let operation = operations.savedItemMutationOperation(
-            apollo: apollo,
-            events: _events,
-            mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
-        )
+            let operation = operations.savedItemMutationOperation(
+                apollo: apollo,
+                events: _events,
+                mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
+            )
 
-        enqueue(operation: operation, task: .renameTag(remoteID: remoteID, name: name))
+            enqueue(operation: operation, task: .renameTag(remoteID: remoteID, name: name))
+        }
     }
 
     public func retrieveTags(excluding tags: [String]) -> [Tag]? {
@@ -419,7 +453,11 @@ extension PocketSource {
             return
         }
 
-        try space.context.performAndWait {
+        try space.performAndWait {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+                Log.capture(message: "Could not get SavedItem from backgroundContext while fetching details")
+                return
+            }
             savedItem.update(from: remoteSavedItem.fragments.savedItemParts, with: space)
             try space.save()
         }
@@ -463,8 +501,12 @@ extension PocketSource {
             return
         }
 
-        try space.context.performAndWait {
-            item.update(remote: remoteItem, with: space)
+        try space.performAndWait {
+            guard let backgroundItem = space.backgroundObject(with: item.objectID) as? Item else {
+                Log.capture(message: "Could not fetch a background item when fetching details for Recommendations")
+                return
+            }
+            backgroundItem.update(remote: remoteItem, with: space)
             try space.save()
         }
     }
@@ -473,7 +515,7 @@ extension PocketSource {
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
     private func enqueue(operation: SyncOperation, task: SyncTask, completion: (() -> Void)? = nil) {
-        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.context)
+        let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.backgroundContext)
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
         try? space.save()
@@ -491,7 +533,7 @@ extension PocketSource {
         _operation.completionBlock = completion
         syncQ.addOperation(_operation)
         syncQ.addBarrierBlock { [weak self] in
-            self?.space.context.performAndWait { [weak self] in
+            self?.space.performAndWait { [weak self] in
                 self?.space.delete(persistentTask)
                 try? self?.space.save()
             }
@@ -516,24 +558,22 @@ extension PocketSource {
                     mutation: FavoriteItemMutation(itemID: remoteID)
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
-            case .fetchSaves(let maxItems):
+            case .fetchSaves:
                 let operation = operations.fetchSaves(
                     user: user,
                     apollo: apollo,
                     space: space,
                     events: _events,
                     initialDownloadState: initialSavesDownloadState,
-                    maxItems: maxItems,
                     lastRefresh: lastRefresh
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
-            case .fetchArchive(let maxItems):
+            case .fetchArchive:
                 let operation = operations.fetchArchive(
                     apollo: apollo,
                     space: space,
                     events: _events,
                     initialDownloadState: initialArchiveDownloadState,
-                    maxItems: maxItems,
                     lastRefresh: lastRefresh
                 )
                 enqueue(operation: operation, persistentTask: persistentTask)
@@ -607,15 +647,16 @@ extension PocketSource {
 // MARK: - Interprocess notifications
 extension PocketSource {
     func handleSavedItemsUpdatedNotification() {
-        guard let notifications = try? space.fetchSavedItemUpdatedNotifications() else {
-            return
+        space.performAndWait {
+            guard let notifications = try? space.fetchSavedItemUpdatedNotifications() else {
+                return
+            }
+
+            let updatedSavedItems = Set(notifications.compactMap(\.savedItem))
+            space.delete(notifications)
+            try? space.save()
+            _events.send(.savedItemsUpdated(updatedSavedItems))
         }
-
-        let updatedSavedItems = Set(notifications.compactMap(\.savedItem))
-        space.delete(notifications)
-        try? space.save()
-
-        _events.send(.savedItemsUpdated(updatedSavedItems))
     }
 
     func handleSavedItemCreatedNotification() {
@@ -630,27 +671,33 @@ extension PocketSource {
 // MARK: - Recommendations
 extension PocketSource {
     public func save(recommendation: Recommendation) {
-        guard let item = recommendation.item, item.bestURL != nil else {
-            return
-        }
+        space.performAndWait {
+            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation,
+                  let item = recommendation.item, item.bestURL != nil else {
+                return
+            }
 
-        if let savedItem = recommendation.item?.savedItem {
-            unarchive(item: savedItem)
-        } else {
-            let savedItem: SavedItem = SavedItem(context: space.context, url: item.givenURL)
-            savedItem.update(from: recommendation)
-            try? space.save()
+            if let savedItem = recommendation.item?.savedItem {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: item.givenURL)
+                savedItem.update(from: recommendation)
+                try? space.save()
 
-            save(item: savedItem)
+                save(item: savedItem)
+            }
         }
     }
 
     public func archive(recommendation: Recommendation) {
-        guard let savedItem = recommendation.item?.savedItem, savedItem.isArchived == false else {
-            return
-        }
+        space.performAndWait {
+            guard let recommendation = space.backgroundObject(with: recommendation.objectID) as? Recommendation,
+                  let savedItem = recommendation.item?.savedItem, savedItem.isArchived == false else {
+                return
+            }
 
-        archive(item: savedItem)
+            archive(item: savedItem)
+        }
     }
 
     public func remove(recommendation: Recommendation) {
@@ -673,15 +720,17 @@ extension PocketSource {
 // MARK: - URL
 extension PocketSource {
     public func save(url: URL) {
-        if let savedItem = try? space.fetchSavedItem(byURL: url) {
-            unarchive(item: savedItem)
-        } else {
-            let savedItem: SavedItem = SavedItem(context: space.context, url: url)
-            savedItem.url = url
-            savedItem.createdAt = Date()
-            try? space.save()
+        space.performAndWait {
+            if let savedItem = try? space.fetchSavedItem(byURL: url) {
+                unarchive(item: savedItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: url)
+                savedItem.url = url
+                savedItem.createdAt = Date()
+                try? space.save()
 
-            save(item: savedItem)
+                save(item: savedItem)
+            }
         }
     }
 }
@@ -704,10 +753,38 @@ extension PocketSource {
             return savedItem
         }
 
-        let remoteSavedItem = SavedItem(context: space.context, url: url, remoteID: remoteID)
+        let remoteSavedItem = SavedItem(context: space.backgroundContext, url: url, remoteID: remoteID)
         remoteSavedItem.update(from: remoteParts, with: space)
         try? space.save()
 
         return remoteSavedItem
+    }
+}
+
+// MARK: Home Helpers
+/// Functions for Home
+extension PocketSource {
+    /// Gets the recent saves a User has made
+    /// - Parameter limit: Number of recent saves to fetch
+    /// - Returns: Recently saved items
+    public func recentSaves(limit: Int) throws -> [SavedItem] {
+        return try space.fetch(Requests.fetchSavedItems(limit: 5))
+    }
+
+    /// Fetches a slate lineup
+    /// - Parameter identifier: The identifier of the slate lineup to grab
+    /// - Returns: A slatelineup
+    public func slateLineup(identifier: String) throws -> SlateLineup? {
+        return try space.fetchSlateLineup(byRemoteID: identifier)
+    }
+}
+
+// MARK: UI Helpers
+/// Functions used by the UI
+extension PocketSource {
+    /// Get the count of unread saves
+    /// - Returns: Int of unread saves
+    public func unreadSaves() throws -> Int {
+        return try space.fetch(Requests.fetchSavedItems()).count
     }
 }

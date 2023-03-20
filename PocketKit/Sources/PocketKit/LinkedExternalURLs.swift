@@ -11,4 +11,5 @@ struct LinkedExternalURLS {
     static let PrivacyPolicy = URL(string: "https://getpocket.com/en/privacy/")!
     static let Help = URL(string: "https://help.getpocket.com")!
     static let OpenSourceNotices = URL(string: "https://getpocket.com/opensource_notices_ios")!
+    static let ExitSurvey = URL(string: "https://survey.alchemer.com/s3/7169338/Pocket-exit-survey")!
 }

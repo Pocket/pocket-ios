@@ -7,6 +7,7 @@ public struct ImageAsset {
 }
 
 extension ImageAsset {
+    public static let accountDeleted = ImageAsset("accountDeleted")
     public static let save = ImageAsset("save")
     public static let saved = ImageAsset("saved")
     public static let alert = ImageAsset("alert")
@@ -53,13 +54,15 @@ extension ImageAsset {
     public static let premiumBorderLeft = ImageAsset("premium.border.left")
     public static let premiumBorderRight = ImageAsset("premium.border.right")
     public static let premiumIcon = ImageAsset("premium.icon")
+    public static let premiumIconColorful = ImageAsset("premium.icon.colorful")
     public static let magnifyingGlass = ImageAsset("magnifying-glass")
     public static let search = ImageAsset("search")
     public static let searchNoResults = ImageAsset("search.noresults")
     public static let searchRecent = ImageAsset("search.recent")
     public static let diamond = ImageAsset("diamond")
     public static let warning = ImageAsset("warning")
-    public static let premiumHooray = ImageAsset("premium.hooray")
+    public static let premiumHoorayLight = ImageAsset("premium.hooray.light")
+    public static let premiumHoorayDark = ImageAsset("premium.hooray.dark")
     public static let readerSkeleton = ReaderSkeleton()
 }
 

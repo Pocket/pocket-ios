@@ -9,6 +9,7 @@ protocol RegularSavesCoordinatorDelegate: ModalContentPresenting {
     func savesCoordinator(_ coordinator: RegularSavesCoordinator, didSelectSavedItem savedItem: SavedItemViewModel?)
 }
 
+@MainActor
 class RegularSavesCoordinator: NSObject {
     weak var delegate: RegularSavesCoordinatorDelegate?
 

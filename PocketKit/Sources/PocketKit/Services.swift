@@ -11,7 +11,7 @@ import SharedPocketKit
 import Kingfisher
 
 struct Services {
-    static let shared = Services()
+    static let shared: Services = { Services() }()
 
     let userDefaults: UserDefaults
     let firstLaunchDefaults: UserDefaults
@@ -73,13 +73,15 @@ struct Services {
         refreshCoordinator = RefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            source: source
+            source: source,
+            sessionProvider: appSession
         )
 
         homeRefreshCoordinator = HomeRefreshCoordinator(
             notificationCenter: .default,
             userDefaults: userDefaults,
-            source: source
+            source: source,
+            sessionProvider: appSession
         )
 
         imageManager = ImageManager(
@@ -113,7 +115,7 @@ struct Services {
             userDefaults: userDefaults,
             badgeProvider: UIApplication.shared
         )
-        subscriptionStore = PocketSubscriptionStore(user: user)
+        subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
     }

@@ -47,4 +47,10 @@ public protocol V3ClientProtocol {
         pushType: PushType,
         session: Session
     ) async throws -> DeregisterPushTokenResponse?
+
+    /**
+     - Returns: PremiumStatusResponse
+     */
+    func premiumStatus() async throws -> PremiumStatusResponse
+    func sendAppstoreReceipt(source: String, transactionInfo: String, amount: String, productId: String, currency: String, transactionType: String) async throws
 }

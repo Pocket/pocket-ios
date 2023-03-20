@@ -12,7 +12,6 @@ protocol SyncOperationFactory {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation
 
@@ -21,7 +20,6 @@ protocol SyncOperationFactory {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation
 
@@ -53,7 +51,6 @@ class OperationFactory: SyncOperationFactory {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
         return FetchSaves(
@@ -62,7 +59,6 @@ class OperationFactory: SyncOperationFactory {
             space: space,
             events: events,
             initialDownloadState: initialDownloadState,
-            maxItems: maxItems,
             lastRefresh: lastRefresh
         )
     }
@@ -72,7 +68,6 @@ class OperationFactory: SyncOperationFactory {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
         return FetchArchive(
@@ -80,7 +75,6 @@ class OperationFactory: SyncOperationFactory {
             space: space,
             events: events,
             initialDownloadState: initialDownloadState,
-            maxItems: maxItems,
             lastRefresh: lastRefresh
         )
     }

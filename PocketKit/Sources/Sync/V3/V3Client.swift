@@ -89,7 +89,7 @@ public class V3Client: NSObject, V3ClientProtocol {
      */
     func executeRequest<T>(
         request: URLRequest,
-        decodable: T.Type
+        decodingStrategy: JSONDecoder.KeyDecodingStrategy = .convertFromSnakeCase
     )  async throws -> T  where T: Decodable {
         let (data, response): (Data, URLResponse)
         do {
@@ -97,26 +97,44 @@ public class V3Client: NSObject, V3ClientProtocol {
         } catch {
             throw Error.generic(error)
         }
-
-        guard let httpResponse = response as? HTTPURLResponse else {
-            throw Error.unexpectedError
-        }
+        let httpResponse = try response.httpUrlResponse()
 
         // TODO: V3 almost always returns a 200 even when errors, so we will need to check the x-status-code header in the future
         switch httpResponse.statusCode {
         case 200...299:
-            guard let source = httpResponse.value(forHTTPHeaderField: "X-Source"),
-                  source == "Pocket" else {
-                throw Error.invalidSource
-            }
+            try httpResponse.isPocketSource()
 
             let decoder = JSONDecoder()
-            decoder.keyDecodingStrategy = .convertFromSnakeCase
-            guard let response = try? decoder.decode(decodable, from: data) else {
+            decoder.keyDecodingStrategy = decodingStrategy
+            do {
+                let response = try decoder.decode(T.self, from: data)
+                return response
+            } catch {
+                Log.capture(error: error)
                 throw Error.invalidResponse
             }
 
-            return response
+        case 300...399:
+            throw Error.unexpectedRedirect
+        case 400:
+            throw Error.badRequest
+        case 401...499:
+            throw Error.invalidCredentials
+        case 500...599:
+            throw Error.serverError
+        default:
+            throw Error.unexpectedError
+        }
+    }
+
+    /// Same as above but does not return a decoded type
+    func executeRequest(_ request: URLRequest) async throws {
+        let (_, response) = try await urlSession.data(for: request, delegate: nil)
+        let httpResponse = try response.httpUrlResponse()
+
+        switch httpResponse.statusCode {
+        case 200...299:
+            try httpResponse.isPocketSource()
         case 300...399:
             throw Error.unexpectedRedirect
         case 400:
@@ -194,8 +212,7 @@ extension V3Client {
                 token: token
             )
         )
-
-        return try await executeRequest(request: request, decodable: RegisterPushTokenResponse.self)
+        return try await executeRequest(request: request)
     }
 
     /**
@@ -221,6 +238,72 @@ extension V3Client {
             )
         )
 
-        return try await executeRequest(request: request, decodable: DeregisterPushTokenResponse.self)
+        return try await executeRequest(request: request)
+    }
+}
+
+// MARK: Premium subscription info
+extension V3Client {
+    /// Fetch premium subscription details for the premium user
+    public func premiumStatus() async throws -> PremiumStatusResponse {
+        let currentSession = try fallbackSession(session: sessionProvider.session)
+
+        let request = try buildRequest(
+            path: "purchase_status",
+            request: PremiumStatusRequest(
+                accessToken: currentSession.accessToken,
+                consumerKey: consumerKey,
+                guid: currentSession.guid
+            )
+        )
+
+        return try await executeRequest(request: request, decodingStrategy: .useDefaultKeys)
+    }
+}
+
+// MARK: App Store receipt
+extension V3Client {
+    /// Send the App Store receipt to the backend
+    public func sendAppstoreReceipt(source: String,
+                                    transactionInfo: String,
+                                    amount: String,
+                                    productId: String,
+                                    currency: String,
+                                    transactionType: String) async throws {
+        let currentSession = try fallbackSession(session: sessionProvider.session)
+        let requestBody = AppstoreReceiptRequest(
+            accessToken: currentSession.accessToken,
+            consumerKey: consumerKey,
+            guid: currentSession.guid,
+            source: source,
+            transactionInfo: transactionInfo,
+            amount: amount,
+            productId: productId,
+            currency: currency,
+            transactionType: transactionType
+        )
+        let request = try buildRequest(path: "purchase", request: requestBody)
+        try await executeRequest(request)
+    }
+}
+
+// MARK: Response helpers
+private extension HTTPURLResponse {
+    /// Validates that `X-Source` is `Pocket`
+    func isPocketSource() throws {
+        guard let source = self.value(forHTTPHeaderField: "X-Source"),
+              source == "Pocket" else {
+            throw V3Client.Error.invalidSource
+        }
+    }
+}
+
+private extension URLResponse {
+    /// Casts the response to an `HTTPURLResponse` or throws an error if it can't
+    func httpUrlResponse() throws -> HTTPURLResponse {
+        guard let response = self as? HTTPURLResponse else {
+            throw V3Client.Error.unexpectedError
+        }
+        return response
     }
 }

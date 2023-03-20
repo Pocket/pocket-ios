@@ -23,6 +23,11 @@ struct PocketAppElement {
         return app.otherElements["banner"]
     }
 
+    var surveyBannerButton: XCUIElement {
+        // Some reason the banner view when used on Logout does not keep its accessibility identifiers...
+        return app.buttons.element(matching: NSPredicate(format: "label == %@", "Quick survey"))
+    }
+
     /// Gets the delete overlay view, for some reason this is in the main app element.
     var deletingAccountOverlay: XCUIElement {
         return app.otherElements["deleting-overlay"]
@@ -54,6 +59,10 @@ struct PocketAppElement {
 
     var deleteConfirmationView: DeleteConfirmationViewElement {
         return DeleteConfirmationViewElement(app.otherElements["delete-confirmation"])
+    }
+
+    var premiumStatusView: PremiumStatusViewElement {
+        return PremiumStatusViewElement(app.otherElements["premium-status-view"])
     }
 
     var slateDetailView: SlateDetailElement {

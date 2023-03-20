@@ -36,6 +36,12 @@ class RootViewModel {
             for: .userLoggedIn
         ).sink { [weak self] notification in
             self?.handleSession(session: notification.object as? SharedPocketKit.Session)
+            guard ((notification.object as? SharedPocketKit.Session) != nil) else {
+                return
+            }
+            // Call refresh on login of the app.
+            source.refreshSaves()
+            source.refreshArchive()
         }.store(in: &subscriptions)
 
         // Register for logout notifications
@@ -77,6 +83,7 @@ class RootViewModel {
         if UIPasteboard.general.hasURLs, isLoggedIn {
             bannerViewModel = BannerViewModel(
                 prompt: L10n.addCopiedURLToYourSaves,
+                buttonText: L10n.saves,
                 backgroundColor: UIColor(.ui.teal6),
                 borderColor: UIColor(.ui.teal5),
                 primaryAction: { [weak self] url in
@@ -102,7 +109,6 @@ class RootViewModel {
         ])
         tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
         Log.setUserID(session.userIdentifier)
-        source.refreshSaves()
     }
 
     private func tearDownSession() {

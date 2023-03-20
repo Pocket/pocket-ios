@@ -54,13 +54,15 @@ struct SettingsForm: View {
             Group {
                 topSectionWithLeadingDivider()
                     .textCase(nil)
-
                 Section(header: Text(L10n.appCustomization).style(.settings.header)) {
                     SettingsRowToggle(title: L10n.showAppBadgeCount, model: model) {
                         model.toggleAppBadge()
                     }
-                }.textCase(nil)
-
+                }
+                .textCase(nil)
+                .sheet(isPresented: $model.isPresentingHooray) {
+                    PremiumUpgradeSuccessView()
+                }
                 Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
                     SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
@@ -144,7 +146,9 @@ extension SettingsForm {
                 .buttonStyle(PlainButtonStyle())
 
                 HStack {
-                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {}
+                    SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {
+                        model.trackAccountManagementTapped()
+                    }
                         .accessibilityIdentifier("account-management-button")
                 }
             }
@@ -181,7 +185,7 @@ extension SettingsForm {
         let title = isPremium ? L10n.Settings.premiumSubscriptionRow : L10n.Settings.goPremiumRow
         let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
         let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
-        let action = isPremium ? { } : { model.showPremiumUpgrade() }
+        let action = isPremium ? { model.showPremiumStatus() } : { model.showPremiumUpgrade() }
         return SettingsRowButton(
             title: title,
             titleStyle: titleStyle,
@@ -197,7 +201,10 @@ extension SettingsForm {
             .sheet(
                 isPresented: $model.isPresentingPremiumUpgrade,
                 onDismiss: {
-                model.trackPremiumDismissed(dismissReason: dismissReason)
+                    model.trackPremiumDismissed(dismissReason: dismissReason)
+                    if dismissReason == .system {
+                        model.isPresentingHooray = true
+                    }
             }
             ) {
                 PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: model.makePremiumUpgradeViewModel())
@@ -209,7 +216,9 @@ extension SettingsForm {
 
     private func makePremiumSubscriptionRow() -> some View {
         makePremiumRowContent(true)
-        // TODO: add logic to present the premium subscription sheet here
+            .sheet(isPresented: $model.isPresentingPremiumStatus) {
+                PremiumStatusView(viewModel: model.makePremiumStatusViewModel())
+            }
     }
 }
 

@@ -162,6 +162,18 @@
 //Loading screen showing that the account deletion is in progress
 "settings.accountManagement.deleteAccount.deleting" = "删除帐号";
 "settings.accountManagement.deleteAccount.error.body" = "我们遇到了错误，无法删除您的帐号。请稍后重试。";
+"settings.accountManagement.restoreSubscription" = "恢复现有订购";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.title" = "恢复成功";
+"settings.accountManagement.restoreSubscription.restoreSuccessful.message" = "您的 Pocket Premium 订购已恢复。";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "恢复未成功";
+"settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到订购。如果您认为有订购，请发送电子邮件至 support@getpocket.com 并告知我们。";
+
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.title" = "您已删除 Pocket 帐户";
+//Shown to the user after they deleted their account
+"login.deletedAccount.banner.detail" = "我们还可以在哪些方面做得更好？";
+//Action button for a user to take a survey
+"login.deletedAccount.banner.action" = "快速调查";
 
 
 //List view
@@ -181,3 +193,17 @@
 "Hooray!" = "好消息！";
 "premium.success.message" = "您现在已正式成为 Pocket Premium 会员。欢迎使用全新无广告、可自定义的永久版本 Pocket。您会喜欢上 Pocket 的。";
 "back.to.pocket" = "返回 Pocket";
+"settings.premiumRow" = "获取 Premium";
+"settings.premium.settings.thanksForSubscribing" = "谢谢订购 Pocket Premium！";
+"settings.premium.settings.subscriptionStatus" = "订购状态";
+"settings.premium.settings.subscription" = "订购";
+"settings.premium.settings.datePurchased" = "购买日期";
+"settings.premium.settings.renewalDate" = "续订日期";
+"settings.premium.settings.purchaseLocation" = "购买地点";
+"settings.premium.settings.price" = "价格";
+"settings.premium.settings.yourSubscription" = "您的订购";
+"settings.premium.settings.manageYourSubscription" = "管理订购";
+"settings.premium.settings.questionOrFeedback" = "问题或反馈？";
+"settings.premium.settings.pocketPremiumFAQ" = "Pocket Premium 常见问题";
+// this refers to an action to open an email
+"settings.premium.settings.contactPocketSupport" = "联系 Pocket 支持";

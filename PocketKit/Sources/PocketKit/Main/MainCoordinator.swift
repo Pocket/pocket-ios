@@ -4,6 +4,7 @@ import Sync
 import Combine
 import BackgroundTasks
 
+@MainActor
 class MainCoordinator {
     var viewController: UIViewController {
         regular.viewController

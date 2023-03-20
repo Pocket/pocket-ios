@@ -25,7 +25,11 @@ struct SearchView: View {
             default:
                 EmptyView()
             }
-        }.onAppear {
+        }
+        .sheet(isPresented: $viewModel.isPresentingHooray) {
+            PremiumUpgradeSuccessView()
+        }
+        .onAppear {
             viewModel.trackOpenSearch()
         }
     }
@@ -33,6 +37,10 @@ struct SearchView: View {
 
 // MARK: - Search Results Component
 struct ResultsView: View {
+    enum Constants {
+        static let indexToTriggerNextPage = 15
+    }
+
     @ObservedObject
     var viewModel: SearchViewModel
 
@@ -55,6 +63,10 @@ struct ResultsView: View {
                         viewModel.select(item, index: index)
                     }
                 }.onAppear {
+                    let triggerNextPage = index == results.count - Constants.indexToTriggerNextPage
+                    if triggerNextPage {
+                        viewModel.loadMoreSearchResults(with: item, at: index)
+                    }
                     viewModel.trackViewResults(url: item.url, index: index)
                 }
             }
@@ -112,6 +124,9 @@ struct GetPocketPremiumButton: View {
                 isPresented: $searchViewModel.isPresentingPremiumUpgrade,
                 onDismiss: {
                     searchViewModel.trackPremiumDismissed(dismissReason: dismissReason)
+                    if dismissReason == .system {
+                        searchViewModel.isPresentingHooray = true
+                    }
             }
             ) {
                 PremiumUpgradeView(dismissReason: self.$dismissReason, viewModel: searchViewModel.makePremiumUpgradeViewModel())

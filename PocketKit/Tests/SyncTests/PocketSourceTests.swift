@@ -80,7 +80,7 @@ class PocketSourceTests: XCTestCase {
         let session = MockSession()
         sessionProvider.session = session
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubFetchSaves { _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _  in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -94,7 +94,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_refreshWithCompletion_callsCompletionWhenFinished() {
         sessionProvider.session = MockSession()
-        operations.stubFetchSaves { _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _  in
             TestSyncOperation { }
         }
 
@@ -110,7 +110,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_refresh_whenTokenIsNil_callsCompletion() {
         sessionProvider.session = nil
-        operations.stubFetchSaves { _, _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _, _  in
             TestSyncOperation { }
         }
 
@@ -267,10 +267,11 @@ class PocketSourceTests: XCTestCase {
     func test_itemsController_returnsAFetchedResultsController() throws {
         let source = subject()
         let item1 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
+        try space.save()
 
         let itemResultsController = source.makeSavesController()
         try itemResultsController.performFetch()
-        XCTAssertEqual(itemResultsController.fetchedObjects, [item1])
+        XCTAssertEqual(itemResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID])
 
         let expectationForUpdatedItems = expectation(description: "updated items")
         let delegate = TestSavedItemsControllerDelegate {
@@ -279,9 +280,10 @@ class PocketSourceTests: XCTestCase {
         itemResultsController.delegate = delegate
 
         let item2 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(title: "Item 2"))
+        try space.save()
 
         wait(for: [expectationForUpdatedItems], timeout: 1)
-        XCTAssertEqual(itemResultsController.fetchedObjects, [item1, item2])
+        XCTAssertEqual(itemResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID, item2.objectID])
     }
 
     func test_resolveUnresolvedSavedItems_enqueuesSaveItemOperation() throws {
@@ -295,7 +297,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
 
         let savedItem = try! space.createSavedItem()
-        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.context)
+        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.backgroundContext)
         unresolved.savedItem = savedItem
         try space.save()
 
@@ -392,7 +394,7 @@ class PocketSourceTests: XCTestCase {
     }
 
     func test_downloadImage_updatesIsDownloadedProperty() throws {
-        let image: Image = Image(context: space.context)
+        let image: Image = Image(context: space.backgroundContext)
 
         let source = subject()
         source.download(images: [image])
@@ -414,7 +416,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         try await source.fetchDetails(for: savedItem)
 
-        space.refresh(savedItem, mergeChanges: true)
+        space.backgroundRefresh(savedItem, mergeChanges: true)
         XCTAssertNotNil(savedItem.item)
         XCTAssertFalse(savedItem.hasChanges)
     }
@@ -433,7 +435,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         try await source.fetchDetails(for: recommendation)
 
-        space.refresh(recommendation, mergeChanges: true)
+        space.backgroundRefresh(recommendation, mergeChanges: true)
         XCTAssertNotNil(recommendation.item?.article)
         XCTAssertFalse(recommendation.hasChanges)
     }
@@ -608,7 +610,7 @@ extension PocketSourceTests {
     }
 
     func test_renameTag_executesUpdateTagMutation() throws {
-        let tag1: Tag = Tag(context: space.context)
+        let tag1: Tag = Tag(context: space.backgroundContext)
         tag1.remoteID = "id 1"
         tag1.name = "tag 1"
         let source = subject()
@@ -630,7 +632,7 @@ extension PocketSourceTests {
     private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [SavedItem] {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in
-            let tag: Tag = Tag(context: space.context)
+            let tag: Tag = Tag(context: space.backgroundContext)
             tag.remoteID = "id \(num)"
             tag.name = "tag \(num)"
             return space.buildSavedItem(isArchived: isArchived, tags: [tag])

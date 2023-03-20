@@ -75,8 +75,8 @@ struct PremiumUpgradeView: View {
                             isYearly: false
                         ) {
                             Task {
+                                viewModel.trackMonthlyButtonTapped()
                                 if Self.shouldAllowUpgrade {
-                                    viewModel.trackMonthlyButtonTapped()
                                     await viewModel.purchaseMonthlySubscription()
                                 } else {
                                     showingMonthlyAlert = true
@@ -100,8 +100,8 @@ struct PremiumUpgradeView: View {
                                 isYearly: true
                             ) {
                                 Task {
+                                    viewModel.trackAnnualButtonTapped()
                                     if Self.shouldAllowUpgrade {
-                                        viewModel.trackAnnualButtonTapped()
                                         await viewModel.purchaseAnnualSubscription()
                                     } else {
                                         showingAnnualAlert = true

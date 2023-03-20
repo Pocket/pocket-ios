@@ -240,6 +240,18 @@ internal enum L10n {
       }
     }
   }
+  internal enum Login {
+    internal enum DeletedAccount {
+      internal enum Banner {
+        /// Quick survey
+        internal static let action = L10n.tr("Localizable", "login.deletedAccount.banner.action", fallback: "Quick survey")
+        /// What could we have done better?
+        internal static let detail = L10n.tr("Localizable", "login.deletedAccount.banner.detail", fallback: "What could we have done better?")
+        /// You’ve deleted your Pocket account
+        internal static let title = L10n.tr("Localizable", "login.deletedAccount.banner.title", fallback: "You’ve deleted your Pocket account")
+      }
+    }
+  }
   internal enum Premium {
     internal enum Success {
       /// You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.
@@ -287,6 +299,8 @@ internal enum L10n {
     internal static func pocketForiOS(_ p1: Any, _ p2: Any) -> String {
       return L10n.tr("Localizable", "settings.PocketForiOS %@ (%@)", String(describing: p1), String(describing: p2), fallback: "Pocket for iOS %@ (%@)")
     }
+    /// Go Premium
+    internal static let premiumRow = L10n.tr("Localizable", "settings.premiumRow", fallback: "Go Premium")
     /// Premium Subscription
     internal static let premiumSubscriptionRow = L10n.tr("Localizable", "settings.premiumSubscriptionRow", fallback: "Premium Subscription")
     internal enum AccountManagement {
@@ -294,6 +308,8 @@ internal enum L10n {
       internal static let deleteAccount = L10n.tr("Localizable", "settings.accountManagement.deleteAccount", fallback: "Delete Account")
       /// Delete your account
       internal static let deleteYourAccount = L10n.tr("Localizable", "settings.accountManagement.deleteYourAccount", fallback: "Delete your account")
+      /// Restore Existing Subscription
+      internal static let restoreSubscription = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription", fallback: "Restore Existing Subscription")
       internal enum DeleteAccount {
         /// Deleting your account
         internal static let deleting = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.deleting", fallback: "Deleting your account")
@@ -310,12 +326,54 @@ internal enum L10n {
           internal static let body = L10n.tr("Localizable", "settings.accountManagement.deleteAccount.error.body", fallback: "We’re experiencing an error and can't delete your account. Please try again later.")
         }
       }
+      internal enum RestoreSubscription {
+        internal enum RestoreNotSuccessful {
+          /// We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.
+          internal static let message = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message", fallback: "We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.")
+          /// Restore not successful
+          internal static let title = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription.restoreNotSuccessful.title", fallback: "Restore not successful")
+        }
+        internal enum RestoreSuccessful {
+          /// Your Pocket Premium subscription has been restored.
+          internal static let message = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription.restoreSuccessful.message", fallback: "Your Pocket Premium subscription has been restored.")
+          /// Restore successful
+          internal static let title = L10n.tr("Localizable", "settings.accountManagement.restoreSubscription.restoreSuccessful.title", fallback: "Restore successful")
+        }
+      }
     }
     internal enum Logout {
       /// Are you sure?
       internal static let areyousure = L10n.tr("Localizable", "settings.logout.areyousure", fallback: "Are you sure?")
       /// You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.
       internal static let areYouSureMessage = L10n.tr("Localizable", "settings.logout.areYouSureMessage", fallback: "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.")
+    }
+    internal enum Premium {
+      internal enum Settings {
+        /// Contact Pocket Support
+        internal static let contactPocketSupport = L10n.tr("Localizable", "settings.premium.settings.contactPocketSupport", fallback: "Contact Pocket Support")
+        /// Date Purchased
+        internal static let datePurchased = L10n.tr("Localizable", "settings.premium.settings.datePurchased", fallback: "Date Purchased")
+        /// Manage your Subscription
+        internal static let manageYourSubscription = L10n.tr("Localizable", "settings.premium.settings.manageYourSubscription", fallback: "Manage your Subscription")
+        /// Pocket Premium FAQ
+        internal static let pocketPremiumFAQ = L10n.tr("Localizable", "settings.premium.settings.pocketPremiumFAQ", fallback: "Pocket Premium FAQ")
+        /// Price
+        internal static let price = L10n.tr("Localizable", "settings.premium.settings.price", fallback: "Price")
+        /// Purchase Location
+        internal static let purchaseLocation = L10n.tr("Localizable", "settings.premium.settings.purchaseLocation", fallback: "Purchase Location")
+        /// Questions or Feedback?
+        internal static let questionOrFeedback = L10n.tr("Localizable", "settings.premium.settings.questionOrFeedback", fallback: "Questions or Feedback?")
+        /// Renewal Date
+        internal static let renewalDate = L10n.tr("Localizable", "settings.premium.settings.renewalDate", fallback: "Renewal Date")
+        /// Subscription
+        internal static let subscription = L10n.tr("Localizable", "settings.premium.settings.subscription", fallback: "Subscription")
+        /// Subscription Status
+        internal static let subscriptionStatus = L10n.tr("Localizable", "settings.premium.settings.subscriptionStatus", fallback: "Subscription Status")
+        /// Thanks for subscribing to Pocket Premium!
+        internal static let thanksForSubscribing = L10n.tr("Localizable", "settings.premium.settings.thanksForSubscribing", fallback: "Thanks for subscribing to Pocket Premium!")
+        /// Your Subscription
+        internal static let yourSubscription = L10n.tr("Localizable", "settings.premium.settings.yourSubscription", fallback: "Your Subscription")
+      }
     }
     internal enum Thankyou {
       /// Thank you for using Pocket

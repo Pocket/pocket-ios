@@ -11,7 +11,7 @@ extension SlateLineup {
         experimentID = remote.experimentId
 
         slates = try? NSOrderedSet(array: remote.slates.map { remoteSlate in
-            let slate = try space.fetchSlate(byRemoteID: remoteSlate.id) ?? Slate(context: space.context, remoteID: remoteSlate.id, expermimentID: remoteSlate.experimentId, requestID: remoteSlate.requestId)
+            let slate = try space.fetchSlate(byRemoteID: remoteSlate.id) ?? Slate(context: space.backgroundContext, remoteID: remoteSlate.id, expermimentID: remoteSlate.experimentId, requestID: remoteSlate.requestId)
             slate.update(from: remoteSlate.fragments.slateParts, in: space)
 
             return slate
@@ -31,7 +31,7 @@ extension Slate {
 
         recommendations = NSOrderedSet(array: remote.recommendations.compactMap { remote in
             guard let remoteID = remote.id,
-                  let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID) ?? Recommendation(context: space.context, remoteID: remoteID) else {
+                  let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID) ?? Recommendation(context: space.backgroundContext, remoteID: remoteID) else {
                 return nil
             }
             recommendation.update(from: remote, in: space)
@@ -55,7 +55,7 @@ extension Recommendation {
         excerpt = remote.curatedInfo?.excerpt
         imageURL = remote.curatedInfo?.imageSrc.flatMap(URL.init)
 
-        let recommendationItem = (try? space.fetchItem(byRemoteID: remote.item.remoteID)) ?? Item(context: space.context, givenURL: url, remoteID: remoteID)
+        let recommendationItem = (try? space.fetchItem(byRemoteID: remote.item.remoteID)) ?? Item(context: space.backgroundContext, givenURL: url, remoteID: remoteID)
         recommendationItem.update(from: remote.item.fragments.itemSummary, with: space)
         item = recommendationItem
     }

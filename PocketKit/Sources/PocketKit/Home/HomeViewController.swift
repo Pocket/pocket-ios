@@ -93,9 +93,11 @@ class HomeViewController: UIViewController {
             self?.updateOverflowView(contentOffset: contentOffset)
         }.store(in: &subscriptions)
 
-        model.$snapshot.sink { [weak self] snapshot in
-            self?.dataSource.apply(snapshot)
-        }.store(in: &subscriptions)
+        model.$snapshot
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] snapshot in
+                self?.dataSource.apply(snapshot)
+            }.store(in: &subscriptions)
     }
 
     override func viewDidLoad() {

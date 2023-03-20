@@ -10,7 +10,7 @@ public enum InitialDownloadState {
 }
 
 public protocol Source {
-    var mainContext: NSManagedObjectContext { get }
+    var viewContext: NSManagedObjectContext { get }
 
     var events: AnyPublisher<SyncEvent, Never> { get }
 
@@ -30,11 +30,17 @@ public protocol Source {
 
     func makeUndownloadedImagesController() -> ImagesController
 
-    func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
+    func refreshSaves(completion: (() -> Void)?)
 
-    func refreshSaves(maxItems: Int, completion: (() -> Void)?)
+    func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
-    func refreshArchive(maxItems: Int, completion: (() -> Void)?)
+    func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
+
+    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool)
+
+    func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
+
+    func refreshArchive(completion: (() -> Void)?)
 
     func retryImmediately()
 
@@ -68,8 +74,6 @@ public protocol Source {
 
     func restore()
 
-    func refresh(_ object: NSManagedObject, mergeChanges: Bool)
-
     func resolveUnresolvedSavedItems()
 
     func save(recommendation: Recommendation)
@@ -91,22 +95,28 @@ public protocol Source {
     func searchSaves(search: String) -> [SavedItem]?
 
     func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+
+    /// Gets the recent saves a User has made
+    /// - Parameter limit: Number of recent saves to fetch
+    /// - Returns: Recently saved items
+    func recentSaves(limit: Int) throws -> [SavedItem]
+
+    /// Fetches a slate lineup
+    /// - Parameter identifier: The identifier of the slate lineup to grab
+    /// - Returns: A slatelineup
+    func slateLineup(identifier: String) throws -> SlateLineup?
+
+    /// Get the count of unread saves
+    /// - Returns: Int of unread saves
+    func unreadSaves() throws -> Int
 }
 
 public extension Source {
-    func refreshSaves(completion: (() -> Void)?) {
-        self.refreshSaves(maxItems: 400, completion: completion)
-    }
-
     func refreshSaves() {
-        self.refreshSaves(maxItems: 400, completion: nil)
-    }
-
-    func refreshArchive(completion: (() -> Void)?) {
-        self.refreshArchive(maxItems: 400, completion: completion)
+        self.refreshSaves(completion: nil)
     }
 
     func refreshArchive() {
-        self.refreshArchive(maxItems: 400, completion: nil)
+        self.refreshArchive(completion: nil)
     }
 }

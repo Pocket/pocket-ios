@@ -10,10 +10,14 @@ class AccountViewModel: ObservableObject {
     private let user: User
     private let tracker: Tracker
     private let userDefaults: UserDefaults
-    private let notificationCenter: NotificationCenter
-    private let premiumUpgradeViewModelFactory: (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel
     private let userManagementService: UserManagementServiceProtocol
-
+    private let notificationCenter: NotificationCenter
+    private let restoreSubscription: () async throws -> Void
+    // Factories
+    private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
+    private let premiumStatusViewModelFactory: PremiumStatusViewModelFactory
+    // Presented sheets
+    // TODO: we might want to add a coordinator of some sort here
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
     @Published var isPresentingPrivacy = false
@@ -23,21 +27,17 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingAccountManagement = false
     @Published var isPresentingDeleteYourAccount = false
     @Published var isPresentingCancelationHelp = false
+    @Published var isPresentingRestoreSuccessful = false
+    @Published var isPresentingRestoreNotSuccessful = false
+    @Published var isPresentingPremiumStatus = false
+    @Published var isPresentingHooray = false
 
     @AppStorage("Settings.ToggleAppBadge")
     public var appBadgeToggle: Bool = false
 
     private var userStatusListener: AnyCancellable?
 
-    private var isPresentingCancelationHelpListener: AnyCancellable?
-
     @Published var isPremium: Bool
-
-    /// Signals to the DeleteAccountView that there was an error deleting the account
-    @Published var hasError: Bool = false
-
-    /// Signals to the DeleteAccount View that the account is being deleted.
-    @Published var isDeletingAccount: Bool = false
 
     init(appSession: AppSession,
          user: User,
@@ -45,13 +45,17 @@ class AccountViewModel: ObservableObject {
          userDefaults: UserDefaults,
          userManagementService: UserManagementServiceProtocol,
          notificationCenter: NotificationCenter,
-         premiumUpgradeViewModelFactory: @escaping (Tracker, PremiumUpgradeSource) -> PremiumUpgradeViewModel) {
+         restoreSubscription: @escaping () async throws -> Void,
+         premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory,
+         premiumStatusViewModelFactory: @escaping PremiumStatusViewModelFactory) {
         self.user = user
         self.tracker = tracker
         self.userDefaults = userDefaults
-        self.notificationCenter = notificationCenter
         self.userManagementService = userManagementService
+        self.notificationCenter = notificationCenter
+        self.restoreSubscription = restoreSubscription
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
+        self.premiumStatusViewModelFactory = premiumStatusViewModelFactory
         self.isPremium = user.status == .premium
 
         userStatusListener = user
@@ -60,38 +64,6 @@ class AccountViewModel: ObservableObject {
             .sink { [weak self] status in
                 self?.isPremium = status == .premium
             }
-
-        // Set up a listener to track analytics if the user taps cancelation help
-        isPresentingCancelationHelpListener = $isPresentingCancelationHelp
-            .receive(on: DispatchQueue.global(qos: .utility))
-            .sink {  [weak self] isPresentingCancelationHelp in
-                guard let strongSelf = self else {
-                    Log.warning("weak self when logging analytics for settings")
-                    return
-                }
-                if isPresentingCancelationHelp {
-                    strongSelf.trackHelpCancelingPremiumTapped()
-                }
-            }
-    }
-
-    /// Calls the user management service to delete the account and log the user out.
-    func deleteAccount() {
-        self.trackDeleteTapped()
-        self.isDeletingAccount = true
-        Task {
-            do {
-                try await userManagementService.deleteAccount()
-            } catch {
-                Log.capture(error: error)
-                DispatchQueue.main.async {
-                    self.hasError = true
-                }
-            }
-            DispatchQueue.main.async {
-               self.isDeletingAccount = false
-            }
-        }
     }
 
     /// Calls the user management service to sign the user out.
@@ -117,11 +89,11 @@ class AccountViewModel: ObservableObject {
     }
 }
 
-// MARK: Premium upgrades
+// MARK: premium upgrades factory
 extension AccountViewModel {
     @MainActor
     func makePremiumUpgradeViewModel() -> PremiumUpgradeViewModel {
-        premiumUpgradeViewModelFactory(tracker, .settings)
+        premiumUpgradeViewModelFactory(.settings)
     }
 
     /// Ttoggle the presentation of `PremiumUpgradeView`
@@ -130,12 +102,48 @@ extension AccountViewModel {
     }
 }
 
+// MARK: premium statis fsctory
+extension AccountViewModel {
+    @MainActor
+    func makePremiumStatusViewModel() -> PremiumStatusViewModel {
+        premiumStatusViewModelFactory()
+    }
+
+    /// Show Premium Status on tap
+    func showPremiumStatus() {
+        self.isPresentingPremiumStatus = true
+    }
+}
+
+// MARK: Restore Subscription
+extension AccountViewModel {
+    @MainActor
+    func attemptRestoreSubscription() {
+        Task {
+            do {
+                try await self.restoreSubscription()
+                isPresentingRestoreSuccessful = true
+            } catch {
+                isPresentingRestoreNotSuccessful = true
+            }
+        }
+    }
+}
+
+// MARK: delete account factory
+extension AccountViewModel {
+    @MainActor
+    func makeDeleteAccountViewModel() -> DeleteAccountViewModel {
+        DeleteAccountViewModel(isPremium: self.isPremium, userManagementService: userManagementService, tracker: tracker)
+    }
+}
+
 // MARK: Analytics
 extension AccountViewModel {
     /// track premium upgrade view dismissed
     func trackPremiumDismissed(dismissReason: DismissReason) {
         switch dismissReason {
-        case .swipe, .button:
+        case .swipe, .button, .closeButton:
             tracker.track(event: Events.Premium.premiumUpgradeViewDismissed(reason: dismissReason))
         case .system:
             break
@@ -148,7 +156,7 @@ extension AccountViewModel {
 
     /// track settings screen was viewed
     func trackSettingsViewed() {
-        tracker.track(event: Events.Settings.settingsViewed())
+        tracker.track(event: Events.Settings.settingsImpression())
     }
 
     /// track logout row tapped
@@ -162,22 +170,16 @@ extension AccountViewModel {
     }
 
     /// track account management viewed
-    func trackAccountManagementViewed() {
-        tracker.track(event: Events.Settings.accountManagementViewed())
+    func trackAccountManagementImpression() {
+        tracker.track(event: Events.Settings.accountManagementImpression())
     }
 
-    /// track delete confirmation viewed
-    func trackDeleteConfirmationViewed() {
-        tracker.track(event: Events.Settings.deleteConfirmationViewed())
+    /// track account management viewed
+    func trackAccountManagementTapped() {
+        tracker.track(event: Events.Settings.accountManagementRowTapped())
     }
-
-    /// track premium help tapped
-    func trackHelpCancelingPremiumTapped() {
-        tracker.track(event: Events.Settings.helpCancelingPremiumTapped())
-    }
-
-    /// track delete tapped
+    /// track delete settings row tapped
     func trackDeleteTapped() {
-        tracker.track(event: Events.Settings.deleteTapped())
+        tracker.track(event: Events.Settings.deleteRowTapped())
     }
 }
