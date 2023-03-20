@@ -1249,7 +1249,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-AlphaNeue";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = Pocket_iOS_AlphaNeue.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Pocket_iOS_Release_AlphaNeue.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
