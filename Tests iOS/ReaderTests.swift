@@ -50,7 +50,7 @@ class ReaderTests: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
-        
+
         try server.start()
     }
 
