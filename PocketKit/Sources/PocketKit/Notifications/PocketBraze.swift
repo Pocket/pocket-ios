@@ -27,7 +27,7 @@ class PocketBraze: NSObject {
      */
     let braze: Braze
 
-    init(apiKey: String, endpoint: String) {
+    init(apiKey: String, endpoint: String, groupdId: String) {
         // Init Braze with our information.
         var configuration = Braze.Configuration(
             apiKey: apiKey,
@@ -36,7 +36,7 @@ class PocketBraze: NSObject {
 
         // Enable logging of general SDK information (e.g. user changes, etc.)
         configuration.logger.level = .info
-        configuration.push.appGroup = "group.com.ideashower.ReadItLaterProAlp"
+        configuration.push.appGroup = groupdId
         braze = Braze(configuration: configuration)
 
         super.init()

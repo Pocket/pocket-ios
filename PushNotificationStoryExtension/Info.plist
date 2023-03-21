@@ -5,7 +5,7 @@
 	<key>Braze</key>
 	<dict>
 		<key>AppGroup</key>
-		<string>group.com.ideashower.ReadItLaterProAlp</string>
+		<string>$(GROUP_ID)</string>
 	</dict>
 	<key>NSExtension</key>
 	<dict>

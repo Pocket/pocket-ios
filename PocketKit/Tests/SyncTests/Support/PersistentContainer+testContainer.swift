@@ -3,7 +3,7 @@ import CoreData
 @testable import Sync
 
 extension PersistentContainer {
-    static let testContainer = PersistentContainer(storage: .inMemory, userDefaults: .standard)
+    static let testContainer = PersistentContainer(storage: .inMemory, userDefaults: .standard, groupID: "group.com.ideashower.ReadItLaterPro")
 }
 
 extension Space {

@@ -63,8 +63,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             userDefaults: firstLaunchDefaults
         ).signOutOnFirstLaunch()
 
-        if let guid = ProcessInfo.processInfo.environment["accessToken"],
-           let accessToken = ProcessInfo.processInfo.environment["sessionGUID"],
+        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
+           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
            let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
             appSession.currentSession = Session(
                 guid: guid,
