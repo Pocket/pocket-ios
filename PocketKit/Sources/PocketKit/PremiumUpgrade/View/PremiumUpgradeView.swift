@@ -20,6 +20,7 @@ struct PremiumUpgradeView: View {
         .accessibilityIdentifier("premium-upgrade-view")
         .padding([.top, .bottom], 20)
         .background(PremiumBackgroundView())
+        .banner(data: viewModel.offlineView, show: $viewModel.shouldShowOffline, bottomOffset: CGFloat(4))
         .task {
             viewModel.trackPremiumUpgradeViewShown()
             dismissReason = .swipe
@@ -64,66 +65,73 @@ struct PremiumUpgradeView: View {
                 PremiumUpgradeHeader()
                 Divider().background(Color(.ui.grey1))
                 PremiumUpgradeFeaturesView()
-                HStack {
-                    if viewModel.monthlyName.isEmpty {
-                        PremiumUpgradeButton(isYearly: false)
-                            .redacted(reason: .placeholder)
-                    } else {
-                        PremiumUpgradeButton(
-                            text: viewModel.monthlyName,
-                            pricing: viewModel.monthlyPriceDescription,
-                            isYearly: false
-                        ) {
-                            Task {
-                                viewModel.trackMonthlyButtonTapped()
-                                if Self.shouldAllowUpgrade {
-                                    await viewModel.purchaseMonthlySubscription()
-                                } else {
-                                    showingMonthlyAlert = true
-                                }
-                            }
-                        }
-                        .accessibilityIdentifier("premium-upgrade-view-monthly-button")
-                        .alert("Comiing Soon!", isPresented: $showingMonthlyAlert) {
-                            Button("OK", role: .cancel) { }
-                        }
-                    }
-                    Spacer().frame(width: 28)
-                    ZStack(alignment: .topTrailing) {
-                        if viewModel.annualName.isEmpty {
-                            PremiumUpgradeButton(isYearly: true)
+                if !viewModel.isOffline {
+                    HStack {
+                        if viewModel.monthlyName.isEmpty {
+                            PremiumUpgradeButton(isYearly: false)
                                 .redacted(reason: .placeholder)
                         } else {
                             PremiumUpgradeButton(
-                                text: viewModel.annualName,
-                                pricing: viewModel.annualPriceDescription,
-                                isYearly: true
+                                text: viewModel.monthlyName,
+                                pricing: viewModel.monthlyPriceDescription,
+                                isYearly: false
                             ) {
                                 Task {
-                                    viewModel.trackAnnualButtonTapped()
+                                    viewModel.trackMonthlyButtonTapped()
                                     if Self.shouldAllowUpgrade {
-                                        await viewModel.purchaseAnnualSubscription()
+                                        await viewModel.purchaseMonthlySubscription()
                                     } else {
-                                        showingAnnualAlert = true
+                                        showingMonthlyAlert = true
                                     }
                                 }
                             }
-                            .accessibilityIdentifier("premium-upgrade-view-annual-button")
-                            .alert("Comiing Soon!", isPresented: $showingAnnualAlert) {
+                            .accessibilityIdentifier("premium-upgrade-view-monthly-button")
+                            .alert("Comiing Soon!", isPresented: $showingMonthlyAlert) {
                                 Button("OK", role: .cancel) { }
                             }
-                            PremiumYearlyPercent()
-                                .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
+                        }
+                        Spacer().frame(width: 28)
+                        ZStack(alignment: .topTrailing) {
+                            if viewModel.annualName.isEmpty {
+                                PremiumUpgradeButton(isYearly: true)
+                                    .redacted(reason: .placeholder)
+                            } else {
+                                PremiumUpgradeButton(
+                                    text: viewModel.annualName,
+                                    pricing: viewModel.annualPriceDescription,
+                                    isYearly: true
+                                ) {
+                                    Task {
+                                        viewModel.trackAnnualButtonTapped()
+                                        if Self.shouldAllowUpgrade {
+                                            await viewModel.purchaseAnnualSubscription()
+                                        } else {
+                                            showingAnnualAlert = true
+                                        }
+                                    }
+                                }
+                                .accessibilityIdentifier("premium-upgrade-view-annual-button")
+                                .alert("Comiing Soon!", isPresented: $showingAnnualAlert) {
+                                    Button("OK", role: .cancel) { }
+                                }
+                                PremiumYearlyPercent()
+                                    .offset(x: OffsetConstant.offsetX, y: OffsetConstant.offsetY)
+                            }
                         }
                     }
-                }
-                if viewModel.monthlyPrice.isEmpty, viewModel.annualPrice.isEmpty {
-                    PremiumInfoView(monthlyPrice: viewModel.monthlyPrice, annualPrice: viewModel.annualPrice)
-                        .redacted(reason: .placeholder)
+                    if viewModel.monthlyPrice.isEmpty, viewModel.annualPrice.isEmpty {
+                        PremiumInfoView(monthlyPrice: viewModel.monthlyPrice, annualPrice: viewModel.annualPrice)
+                            .redacted(reason: .placeholder)
+                    } else {
+                        PremiumInfoView(monthlyPrice: viewModel.monthlyPrice, annualPrice: viewModel.annualPrice)
+                    }
+                    PremiumTermsView()
                 } else {
-                    PremiumInfoView(monthlyPrice: viewModel.monthlyPrice, annualPrice: viewModel.annualPrice)
+                    VStack {}
+                        .task {
+                            viewModel.shouldShowOfflineBanner()
+                        }
                 }
-                PremiumTermsView()
             }
             .padding([.leading, .trailing], 32)
         }

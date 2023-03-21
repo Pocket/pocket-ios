@@ -6,6 +6,8 @@ import Analytics
 import Combine
 import Foundation
 import SharedPocketKit
+import Textile
+import Sync
 
 /// Factory to construct and inject `PremiumUpgradeViewModel` where needed
 typealias PremiumUpgradeViewModelFactory = (PremiumUpgradeSource) -> PremiumUpgradeViewModel
@@ -15,6 +17,11 @@ class PremiumUpgradeViewModel: ObservableObject {
     private let store: SubscriptionStore
     private let tracker: Tracker
     private let source: PremiumUpgradeSource
+    private let networkPathMonitor: NetworkPathMonitor
+
+    var isOffline: Bool {
+        return networkPathMonitor.currentNetworkPath.status == .unsatisfied
+    }
 
     @Published private(set) var monthlyName = ""
     @Published private(set) var monthlyPrice = ""
@@ -25,12 +32,21 @@ class PremiumUpgradeViewModel: ObservableObject {
     @Published private(set) var annualPriceDescription = ""
     @Published private(set) var shouldDismiss = false
 
+    @Published var shouldShowOffline = false
+
     private var cancellables: Set<AnyCancellable> = []
 
-    init(store: SubscriptionStore, tracker: Tracker, source: PremiumUpgradeSource) {
+    let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.noInternetConnection, detail: L10n.Settings.NoInternet.youMustBeOnline)
+
+    init(store: SubscriptionStore, tracker: Tracker,
+         source: PremiumUpgradeSource,
+         networkPathMonitor: NetworkPathMonitor) {
         self.store = store
         self.tracker = tracker
         self.source = source
+        self.networkPathMonitor = networkPathMonitor
+
+        networkPathMonitor.start(queue: .global())
 
         store.subscriptionsPublisher
             .receive(on: DispatchQueue.main)
@@ -92,6 +108,12 @@ class PremiumUpgradeViewModel: ObservableObject {
             return
         }
         await store.purchase(annualSubscription)
+    }
+}
+
+extension PremiumUpgradeViewModel {
+    func shouldShowOfflineBanner() {
+        shouldShowOffline = true
     }
 }
 

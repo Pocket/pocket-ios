@@ -164,6 +164,7 @@ extension SettingsForm {
         let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
         let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
         let action = isPremium ? { model.showPremiumStatus() } : { model.showPremiumUpgrade() }
+
         return SettingsRowButton(
             title: title,
             titleStyle: titleStyle,

@@ -347,6 +347,10 @@ internal enum L10n {
       /// You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.
       internal static let areYouSureMessage = L10n.tr("Localizable", "settings.logout.areYouSureMessage", fallback: "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.")
     }
+    internal enum NoInternet {
+      /// You must be online to upgrade to Pocket Premium. Please check your connection and try again.
+      internal static let youMustBeOnline = L10n.tr("Localizable", "settings.noInternet.youMustBeOnline", fallback: "You must be online to upgrade to Pocket Premium. Please check your connection and try again.")
+    }
     internal enum Premium {
       internal enum Settings {
         /// Contact Pocket Support

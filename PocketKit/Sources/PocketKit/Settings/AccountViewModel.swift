@@ -4,6 +4,7 @@ import SharedPocketKit
 import SwiftUI
 import Sync
 import Textile
+import Network
 
 class AccountViewModel: ObservableObject {
     static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
@@ -13,11 +14,14 @@ class AccountViewModel: ObservableObject {
     private let userManagementService: UserManagementServiceProtocol
     private let notificationCenter: NotificationCenter
     private let restoreSubscription: () async throws -> Void
+    private let networkPathMonitor: NetworkPathMonitor
+
     // Factories
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
     private let premiumStatusViewModelFactory: PremiumStatusViewModelFactory
     // Presented sheets
     // TODO: we might want to add a coordinator of some sort here
+
     @Published var isPresentingHelp = false
     @Published var isPresentingTerms = false
     @Published var isPresentingPrivacy = false
@@ -27,6 +31,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingAccountManagement = false
     @Published var isPresentingDeleteYourAccount = false
     @Published var isPresentingCancelationHelp = false
+    @Published var isPresentingOfflineView = false
     @Published var isPresentingRestoreSuccessful = false
     @Published var isPresentingRestoreNotSuccessful = false
     @Published var isPresentingPremiumStatus = false
@@ -39,12 +44,17 @@ class AccountViewModel: ObservableObject {
 
     @Published var isPremium: Bool
 
+    var isOffline: Bool {
+        return networkPathMonitor.currentNetworkPath.status == .unsatisfied
+    }
+
     init(appSession: AppSession,
          user: User,
          tracker: Tracker,
          userDefaults: UserDefaults,
          userManagementService: UserManagementServiceProtocol,
          notificationCenter: NotificationCenter,
+         networkPathMonitor: NetworkPathMonitor,
          restoreSubscription: @escaping () async throws -> Void,
          premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory,
          premiumStatusViewModelFactory: @escaping PremiumStatusViewModelFactory) {
@@ -57,6 +67,7 @@ class AccountViewModel: ObservableObject {
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         self.premiumStatusViewModelFactory = premiumStatusViewModelFactory
         self.isPremium = user.status == .premium
+        self.networkPathMonitor = networkPathMonitor
 
         userStatusListener = user
             .statusPublisher
@@ -112,6 +123,13 @@ extension AccountViewModel {
     /// Show Premium Status on tap
     func showPremiumStatus() {
         self.isPresentingPremiumStatus = true
+    }
+}
+
+// MARK: Premium upgrade offline
+extension AccountViewModel {
+    func showOfflinePremiumAlert() {
+        isPresentingOfflineView = true
     }
 }
 

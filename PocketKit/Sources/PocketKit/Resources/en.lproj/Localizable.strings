@@ -168,13 +168,14 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Restore not successful";
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.";
 
+"settings.noInternet.youMustBeOnline" = "You must be online to upgrade to Pocket Premium. Please check your connection and try again.";
+
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.detail" = "What could we have done better?";
 //Action button for a user to take a survey
 "login.deletedAccount.banner.action" = "Quick survey";
-
 
 //List view
 "item.list.min" = "%@ min";
