@@ -34,7 +34,12 @@ class MainViewModel: ObservableObject {
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
                 ) { source in
-                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: Services.shared.tracker, source: source)
+                    PremiumUpgradeViewModel(
+                        store: Services.shared.subscriptionStore,
+                        tracker: Services.shared.tracker,
+                        source: source,
+                        networkPathMonitor: NWPathMonitor()
+                    )
                 },
                 savedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
@@ -64,11 +69,17 @@ class MainViewModel: ObservableObject {
                 userDefaults: Services.shared.userDefaults,
                 userManagementService: Services.shared.userManagementService,
                 notificationCenter: .default,
+                networkPathMonitor: NWPathMonitor(),
                 restoreSubscription: {
                     try await Services.shared.subscriptionStore.restoreSubscription()
                 },
                 premiumUpgradeViewModelFactory: { source in
-                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: Services.shared.tracker, source: source)
+                    PremiumUpgradeViewModel(
+                        store: Services.shared.subscriptionStore,
+                        tracker: Services.shared.tracker,
+                        source: source,
+                        networkPathMonitor: NWPathMonitor()
+                    )
                 },
                 premiumStatusViewModelFactory: {
                     PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)

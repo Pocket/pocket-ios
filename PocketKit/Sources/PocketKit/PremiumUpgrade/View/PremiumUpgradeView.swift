@@ -20,7 +20,7 @@ struct PremiumUpgradeView: View {
         .accessibilityIdentifier("premium-upgrade-view")
         .padding([.top, .bottom], 20)
         .background(PremiumBackgroundView())
-        .banner(data: viewModel.offlineView, show: $viewModel.shouldShowOffline)
+        .banner(data: viewModel.offlineView, show: $viewModel.shouldShowOffline, bottomOffset: CGFloat(4))
         .task {
             viewModel.trackPremiumUpgradeViewShown()
             dismissReason = .swipe
