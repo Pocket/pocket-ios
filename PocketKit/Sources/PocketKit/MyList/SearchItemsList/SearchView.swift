@@ -74,7 +74,7 @@ struct ResultsView: View {
         .zIndex(-1)
         .listStyle(.plain)
         .accessibilityIdentifier("search-results")
-        .banner(data: viewModel.bannerData, show: $viewModel.showBanner)
+        .banner(data: viewModel.bannerData, show: $viewModel.showBanner, bottomOffset: 0)
         .alert(isPresented: $showingAlert) {
             Alert(title: Text(L10n.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
         }

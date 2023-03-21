@@ -33,7 +33,7 @@
 		168292C826CC64C300830140 /* ShareAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 168292C726CC64C300830140 /* ShareAnItemTests.swift */; };
 		16A6807F26EBC71300A64545 /* TabBarElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A6807E26EBC71300A64545 /* TabBarElement.swift */; };
 		16A6808126EBC78800A64545 /* HomeViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A6808026EBC78800A64545 /* HomeViewElement.swift */; };
-		16BA7D6326851513009A17C1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA7D6226851513009A17C1 /* main.swift */; };
+		16BA7D6326851513009A17C1 /* PocketApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BA7D6226851513009A17C1 /* PocketApp.swift */; };
 		16BA7D6626851579009A17C1 /* PocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 16BA7D6526851579009A17C1 /* PocketKit */; };
 		16BB40A8279F436100FE8650 /* SelectionSwitcherElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */; };
 		16C2B03F270CF82700D194AA /* RecommendationCellElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16C2B03E270CF82700D194AA /* RecommendationCellElement.swift */; };
@@ -168,8 +168,6 @@
 		166BAD062656E76B00E401F0 /* ReaderElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderElement.swift; sourceTree = "<group>"; };
 		166BAD072656E76B00E401F0 /* SavesElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavesElement.swift; sourceTree = "<group>"; };
 		166BAD082656E76B00E401F0 /* PocketAppElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PocketAppElement.swift; sourceTree = "<group>"; };
-		166DF27827E9172800C03BF4 /* Pocket (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Pocket (iOS).entitlements"; sourceTree = "<group>"; };
-		166DF27927E9173500C03BF4 /* SaveToPocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaveToPocket.entitlements; sourceTree = "<group>"; };
 		166EFAE7268281F300A027CD /* ReaderToolbarElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderToolbarElement.swift; sourceTree = "<group>"; };
 		166EFAE92682821300A027CD /* WebReaderElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebReaderElement.swift; sourceTree = "<group>"; };
 		166F8F2626D0488900F898E3 /* XCUIElement+wait.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIElement+wait.swift"; sourceTree = "<group>"; };
@@ -179,7 +177,7 @@
 		16973355263CBB3F0003DE2A /* secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets.xcconfig; sourceTree = "<group>"; };
 		16A6807E26EBC71300A64545 /* TabBarElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarElement.swift; sourceTree = "<group>"; };
 		16A6808026EBC78800A64545 /* HomeViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewElement.swift; sourceTree = "<group>"; };
-		16BA7D6226851513009A17C1 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		16BA7D6226851513009A17C1 /* PocketApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PocketApp.swift; sourceTree = "<group>"; };
 		16BB40A7279F436100FE8650 /* SelectionSwitcherElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionSwitcherElement.swift; sourceTree = "<group>"; };
 		16C2B03E270CF82700D194AA /* RecommendationCellElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationCellElement.swift; sourceTree = "<group>"; };
 		16D47E7F26851AB40095D5A4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -200,9 +198,17 @@
 		650FECCD28BA85F300A3CB0C /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		650FECCF28BA85F300A3CB0C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		651D13652995967C0055F7EB /* swiftgen.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = swiftgen.yml; sourceTree = "<group>"; };
-		65412E78299320CB007BDEBB /* PushNotificationServiceExtensionDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationServiceExtensionDebug.entitlements; sourceTree = "<group>"; };
+		653DA72F29C3BBCB00123847 /* Pocket_iOS_Release_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocket_iOS_Release_AlphaNeue.entitlements; sourceTree = "<group>"; };
+		653DA73629C3BC0200123847 /* Pocket_iOS_Debug_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocket_iOS_Debug_AlphaNeue.entitlements; sourceTree = "<group>"; };
+		653DA73729C3BC0A00123847 /* Pocket_iOS_Debug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocket_iOS_Debug.entitlements; sourceTree = "<group>"; };
+		653DA73829C3BC1500123847 /* Pocket_iOS_Release.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Pocket_iOS_Release.entitlements; sourceTree = "<group>"; };
+		653DA73929C3BC6800123847 /* SaveToPocket.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaveToPocket.entitlements; sourceTree = "<group>"; };
+		653DA73C29C3BCA600123847 /* SaveToPocket_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SaveToPocket_AlphaNeue.entitlements; sourceTree = "<group>"; };
+		653DA74229C3BF8000123847 /* PushNotificationServiceExtension_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationServiceExtension_AlphaNeue.entitlements; sourceTree = "<group>"; };
+		653DA74329C3BF8000123847 /* PushNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
+		653DA74429C3C04F00123847 /* PushNotificationStoryExtension_AlphaNeue.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationStoryExtension_AlphaNeue.entitlements; sourceTree = "<group>"; };
+		653DA74529C3C11200123847 /* secrets_alpha_neue.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_alpha_neue.xcconfig; sourceTree = "<group>"; };
 		65412E79299320DE007BDEBB /* PushNotificationStoryExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationStoryExtension.entitlements; sourceTree = "<group>"; };
-		65412E7A2993263E007BDEBB /* PushNotificationServiceExtensionRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PushNotificationServiceExtensionRelease.entitlements; sourceTree = "<group>"; };
 		6544202229B1B17C002B12F2 /* DeleteConfirmationViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteConfirmationViewElement.swift; sourceTree = "<group>"; };
 		6551C9D42900B27D00247C40 /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = UnitTests.xctestplan; sourceTree = "<group>"; };
 		6551C9D52900B27D00247C40 /* UITests-2.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "UITests-2.xctestplan"; sourceTree = "<group>"; };
@@ -314,12 +320,15 @@
 		166A81A32637406B0015AA1D = {
 			isa = PBXGroup;
 			children = (
+				653DA73829C3BC1500123847 /* Pocket_iOS_Release.entitlements */,
+				653DA73729C3BC0A00123847 /* Pocket_iOS_Debug.entitlements */,
+				653DA73629C3BC0200123847 /* Pocket_iOS_Debug_AlphaNeue.entitlements */,
+				653DA72F29C3BBCB00123847 /* Pocket_iOS_Release_AlphaNeue.entitlements */,
 				651D13652995967C0055F7EB /* swiftgen.yml */,
 				16E881F129072663008B2E05 /* AllTests.xctestplan */,
 				655C274E28B67ED20040AEAB /* README.md */,
-				166DF27827E9172800C03BF4 /* Pocket (iOS).entitlements */,
 				1624B85A268508180099B6EF /* PocketKit */,
-				16BA7D6226851513009A17C1 /* main.swift */,
+				16BA7D6226851513009A17C1 /* PocketApp.swift */,
 				6551C9D72900B46000247C40 /* bitrise.yml */,
 				6551C9D42900B27D00247C40 /* UnitTests.xctestplan */,
 				6551C9D62900B27D00247C40 /* UITests.xctestplan */,
@@ -437,6 +446,7 @@
 		16973354263CBB290003DE2A /* Config */ = {
 			isa = PBXGroup;
 			children = (
+				653DA74529C3C11200123847 /* secrets_alpha_neue.xcconfig */,
 				AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */,
 				16973355263CBB3F0003DE2A /* secrets.xcconfig */,
 				AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */,
@@ -447,8 +457,8 @@
 		650FECCC28BA85F300A3CB0C /* PushNotificationServiceExtension */ = {
 			isa = PBXGroup;
 			children = (
-				65412E7A2993263E007BDEBB /* PushNotificationServiceExtensionRelease.entitlements */,
-				65412E78299320CB007BDEBB /* PushNotificationServiceExtensionDebug.entitlements */,
+				653DA74229C3BF8000123847 /* PushNotificationServiceExtension_AlphaNeue.entitlements */,
+				653DA74329C3BF8000123847 /* PushNotificationServiceExtension.entitlements */,
 				650FECCD28BA85F300A3CB0C /* NotificationService.swift */,
 				650FECCF28BA85F300A3CB0C /* Info.plist */,
 			);
@@ -458,6 +468,7 @@
 		65EC272A28BA8AD50075E1DF /* PushNotificationStoryExtension */ = {
 			isa = PBXGroup;
 			children = (
+				653DA74429C3C04F00123847 /* PushNotificationStoryExtension_AlphaNeue.entitlements */,
 				65412E79299320DE007BDEBB /* PushNotificationStoryExtension.entitlements */,
 				65EC272B28BA8AD50075E1DF /* NotificationViewController.swift */,
 				65EC273028BA8AD50075E1DF /* Info.plist */,
@@ -468,8 +479,9 @@
 		F204A76127E22EC50010E155 /* SaveToPocket */ = {
 			isa = PBXGroup;
 			children = (
+				653DA73C29C3BCA600123847 /* SaveToPocket_AlphaNeue.entitlements */,
+				653DA73929C3BC6800123847 /* SaveToPocket.entitlements */,
 				F24B1E1B27ECB55600C75487 /* SaveToPocket.swift */,
-				166DF27927E9173500C03BF4 /* SaveToPocket.entitlements */,
 				F204A76727E22EC50010E155 /* Info.plist */,
 			);
 			path = SaveToPocket;
@@ -754,7 +766,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				16BA7D6326851513009A17C1 /* main.swift in Sources */,
+				16BA7D6326851513009A17C1 /* PocketApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -915,6 +927,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -979,6 +992,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1005,7 +1019,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pocket (iOS).entitlements";
+				CODE_SIGN_ENTITLEMENTS = Pocket_iOS_Debug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
@@ -1017,7 +1031,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1034,7 +1048,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pocket (iOS).entitlements";
+				CODE_SIGN_ENTITLEMENTS = Pocket_iOS_Release.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
@@ -1046,7 +1060,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro;
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1086,7 +1100,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				INFOPLIST_FILE = "Tests iOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1105,9 +1119,284 @@
 			};
 			name = Release;
 		};
-		1676E5A727FBC89A00F9283A /* Debug_Test */ = {
+		650FECD428BA85F300A3CB0C /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = PushNotificationServiceExtension/PushNotificationServiceExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PushNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		650FECD628BA85F300A3CB0C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = PushNotificationServiceExtension/PushNotificationServiceExtension.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PushNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		653DA72629C3BB0C00123847 /* Release_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653DA74529C3C11200123847 /* secrets_alpha_neue.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MARKETING_VERSION = 8.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				POCKET_API_BASE_URL = "https://getpocket.com/graphql";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release_AlphaNeue;
+		};
+		653DA72729C3BB0C00123847 /* Release_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-AlphaNeue";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = Pocket_iOS_Release_AlphaNeue.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_BITCODE = NO;
+				ENABLE_PREVIEWS = YES;
+				INFOPLIST_FILE = Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue;
+				PRODUCT_NAME = Pocket;
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALPHA_NEUE;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release_AlphaNeue;
+		};
+		653DA72829C3BB0C00123847 /* Release_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				INFOPLIST_FILE = "Tests iOS/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ideashower.ReadItLaterProAlphaNeue.Tests-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Pocket (iOS)";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release_AlphaNeue;
+		};
+		653DA72929C3BB0C00123847 /* Release_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket_AlphaNeue.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				ENABLE_BITCODE = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Save to Pocket";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.SaveTo;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release_AlphaNeue;
+		};
+		653DA72A29C3BB0C00123847 /* Release_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = PushNotificationServiceExtension/PushNotificationServiceExtension_AlphaNeue.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PushNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release_AlphaNeue;
+		};
+		653DA72B29C3BB0C00123847 /* Release_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = PushNotificationStoryExtension/PushNotificationStoryExtension_AlphaNeue.entitlements;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PushNotificationStoryExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationStoryExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 8.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release_AlphaNeue;
+		};
+		653DA73029C3BBE800123847 /* Debug_AlphaNeue */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 653DA74529C3C11200123847 /* secrets_alpha_neue.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
@@ -1143,6 +1432,7 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1163,20 +1453,20 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				POCKET_API_BASE_URL = "http://localhost:8080/graphql";
+				POCKET_API_BASE_URL = "https://getpocket.com/graphql";
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
-			name = Debug_Test;
+			name = Debug_AlphaNeue;
 		};
-		1676E5A827FBC89A00F9283A /* Debug_Test */ = {
+		653DA73129C3BBE800123847 /* Debug_AlphaNeue */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = "AppIcon-AlphaNeue";
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = "Pocket (iOS).entitlements";
+				CODE_SIGN_ENTITLEMENTS = Pocket_iOS_Debug_AlphaNeue.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
@@ -1192,13 +1482,14 @@
 				PRODUCT_NAME = Pocket;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG ALPHA_NEUE";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Debug_Test;
+			name = Debug_AlphaNeue;
 		};
-		1676E5A927FBC89A00F9283A /* Debug_Test */ = {
+		653DA73229C3BBE800123847 /* Debug_AlphaNeue */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
@@ -1220,14 +1511,14 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = "Pocket (iOS)";
 			};
-			name = Debug_Test;
+			name = Debug_AlphaNeue;
 		};
-		1676E5AB27FBC89A00F9283A /* Debug_Test */ = {
+		653DA73329C3BBE800123847 /* Debug_AlphaNeue */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
 				CLANG_ENABLE_MODULES = YES;
-				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket.entitlements;
+				CODE_SIGN_ENTITLEMENTS = SaveToPocket/SaveToPocket_AlphaNeue.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
@@ -1252,14 +1543,14 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Debug_Test;
+			name = Debug_AlphaNeue;
 		};
-		650FECD428BA85F300A3CB0C /* Debug */ = {
+		653DA73429C3BBE800123847 /* Debug_AlphaNeue */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = PushNotificationServiceExtension/PushNotificationServiceExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PushNotificationServiceExtension/PushNotificationServiceExtension_AlphaNeue.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1284,21 +1575,20 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Debug;
+			name = Debug_AlphaNeue;
 		};
-		650FECD528BA85F300A3CB0C /* Debug_Test */ = {
+		653DA73529C3BBE800123847 /* Debug_AlphaNeue */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = PushNotificationServiceExtension/PushNotificationServiceExtension.entitlements;
+				CODE_SIGN_ENTITLEMENTS = PushNotificationStoryExtension/PushNotificationStoryExtension_AlphaNeue.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = EX3VH4YFCH;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PushNotificationServiceExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationServiceExtension;
+				INFOPLIST_FILE = PushNotificationStoryExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationStoryExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1307,49 +1597,16 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationServiceExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
-			name = Debug_Test;
-		};
-		650FECD628BA85F300A3CB0C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = PushNotificationServiceExtension/PushNotificationServiceExtension.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EX3VH4YFCH;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PushNotificationServiceExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationServiceExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationServiceExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
+			name = Debug_AlphaNeue;
 		};
 		65EC273528BA8AD50075E1DF /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1371,7 +1628,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1381,37 +1638,6 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
-		};
-		65EC273628BA8AD50075E1DF /* Debug_Test */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
-				CODE_SIGN_ENTITLEMENTS = PushNotificationStoryExtension/PushNotificationStoryExtension.entitlements;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = EX3VH4YFCH;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = PushNotificationStoryExtension/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = PushNotificationStoryExtension;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 15.5;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = "";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug_Test;
 		};
 		65EC273728BA8AD50075E1DF /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1433,7 +1659,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 8.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.PushNotificationStoryExtension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.PushNotificationStoryExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1465,7 +1691,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.SaveTo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.SaveTo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1497,7 +1723,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterProAlphaNeue.SaveTo;
+				PRODUCT_BUNDLE_IDENTIFIER = com.ideashower.ReadItLaterPro.SaveTo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -1516,8 +1742,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				166A81D82637406C0015AA1D /* Debug */,
-				1676E5A727FBC89A00F9283A /* Debug_Test */,
+				653DA73029C3BBE800123847 /* Debug_AlphaNeue */,
 				166A81D92637406C0015AA1D /* Release */,
+				653DA72629C3BB0C00123847 /* Release_AlphaNeue */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1526,8 +1753,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				166A81DB2637406C0015AA1D /* Debug */,
-				1676E5A827FBC89A00F9283A /* Debug_Test */,
+				653DA73129C3BBE800123847 /* Debug_AlphaNeue */,
 				166A81DC2637406C0015AA1D /* Release */,
+				653DA72729C3BB0C00123847 /* Release_AlphaNeue */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1536,8 +1764,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				166A81E12637406C0015AA1D /* Debug */,
-				1676E5A927FBC89A00F9283A /* Debug_Test */,
+				653DA73229C3BBE800123847 /* Debug_AlphaNeue */,
 				166A81E22637406C0015AA1D /* Release */,
+				653DA72829C3BB0C00123847 /* Release_AlphaNeue */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1546,8 +1775,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				650FECD428BA85F300A3CB0C /* Debug */,
-				650FECD528BA85F300A3CB0C /* Debug_Test */,
+				653DA73429C3BBE800123847 /* Debug_AlphaNeue */,
 				650FECD628BA85F300A3CB0C /* Release */,
+				653DA72A29C3BB0C00123847 /* Release_AlphaNeue */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1556,8 +1786,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				65EC273528BA8AD50075E1DF /* Debug */,
-				65EC273628BA8AD50075E1DF /* Debug_Test */,
+				653DA73529C3BBE800123847 /* Debug_AlphaNeue */,
 				65EC273728BA8AD50075E1DF /* Release */,
+				653DA72B29C3BB0C00123847 /* Release_AlphaNeue */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1566,8 +1797,9 @@
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F204A76C27E22EC50010E155 /* Debug */,
-				1676E5AB27FBC89A00F9283A /* Debug_Test */,
+				653DA73329C3BBE800123847 /* Debug_AlphaNeue */,
 				F204A76D27E22EC50010E155 /* Release */,
+				653DA72929C3BB0C00123847 /* Release_AlphaNeue */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -3,6 +3,7 @@ import Sync
 import CoreData
 import Combine
 import Kingfisher
+import Textile
 
 class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     private let model: ViewModel

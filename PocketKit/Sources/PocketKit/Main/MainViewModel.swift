@@ -1,58 +1,121 @@
 import Combine
+import Network
 import Sync
 import Foundation
 import BackgroundTasks
 import UIKit
+import Textile
 
 @MainActor
 class MainViewModel: ObservableObject {
+    let home: HomeViewModel
+    let saves: SavesContainerViewModel
+    let account: AccountViewModel
+    let source: Source
+
     @Published
     var selectedSection: AppSection = .home
 
     @Published
-    var isCollapsed = UIDevice.current.userInterfaceIdiom == .phone
+    var bannerViewModel: PasteBoardModifier.PasteBoardData?
 
-    let home: HomeViewModel
-    let saves: SavesContainerViewModel
-    let account: AccountViewModel
+    @Published
+    var showBanner: Bool = false
+
+    private var subscriptions: Set<AnyCancellable> = []
+
+    convenience init() {
+        self.init(
+            saves: SavesContainerViewModel(
+                searchList: SearchViewModel(
+                    networkPathMonitor: NWPathMonitor(),
+                    user: Services.shared.user,
+                    userDefaults: Services.shared.userDefaults,
+                    source: Services.shared.source,
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
+                ) { source in
+                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: Services.shared.tracker, source: source)
+                },
+                savedItemsList: SavedItemsListViewModel(
+                    source: Services.shared.source,
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
+                    viewType: .saves,
+                    listOptions: .saved,
+                    notificationCenter: .default
+                ),
+                archivedItemsList: SavedItemsListViewModel(
+                    source: Services.shared.source,
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
+                    viewType: .archive,
+                    listOptions: .archived,
+                    notificationCenter: .default
+                )
+            ),
+            home: HomeViewModel(
+                source: Services.shared.source,
+                tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
+                networkPathMonitor: NWPathMonitor(),
+                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator
+            ),
+            account: AccountViewModel(
+                appSession: Services.shared.appSession,
+                user: Services.shared.user,
+                tracker: Services.shared.tracker,
+                userDefaults: Services.shared.userDefaults,
+                userManagementService: Services.shared.userManagementService,
+                notificationCenter: .default,
+                restoreSubscription: {
+                    try await Services.shared.subscriptionStore.restoreSubscription()
+                },
+                premiumUpgradeViewModelFactory: { source in
+                    PremiumUpgradeViewModel(store: Services.shared.subscriptionStore, tracker: Services.shared.tracker, source: source)
+                },
+                premiumStatusViewModelFactory: {
+                    PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)
+                }
+            ),
+            source: Services.shared.source
+        )
+    }
 
     init(
         saves: SavesContainerViewModel,
         home: HomeViewModel,
-        account: AccountViewModel
+        account: AccountViewModel,
+        source: Source
     ) {
         self.saves = saves
         self.home = home
         self.account = account
-    }
+        self.source = source
 
-    enum Subsection {
-        case saves
-        case archive
+        NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
+            self?.showSaveFromClipboardBanner()
+        }.store(in: &subscriptions)
+
+        NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
+            self?.bannerViewModel = nil
+        }.store(in: &subscriptions)
     }
 
     enum AppSection: CaseIterable, Identifiable, Hashable {
         static var allCases: [MainViewModel.AppSection] {
-            return [.home, .saves(nil), .account]
+            return [.home, .saves, .account]
         }
 
         case home
-        case saves(Subsection?)
+        case saves
         case account
 
-        var navigationTitle: String {
+        var id: String {
             switch self {
             case .home:
-                return L10n.home
+                return "home"
             case .saves:
-                return L10n.saves
+                return "saves"
             case .account:
-                return L10n.settings
+                return "account"
             }
-        }
-
-        var id: AppSection {
-            return self
         }
     }
 
@@ -75,19 +138,34 @@ class MainViewModel: ObservableObject {
         saves.clearPresentedWebReaderURL()
     }
 
-    func navigationSidebarCellViewModel(for appSection: AppSection) -> NavigationSidebarCellViewModel {
-        let isSelected: Bool = {
-            switch (selectedSection, appSection) {
-            case (.home, .home), (.saves, .saves), (.account, .account):
-                return true
-            default:
-                return false
-            }
-        }()
+    func selectSavesTab() {
+        self.selectedSection = .saves
+    }
 
-        return NavigationSidebarCellViewModel(
-            section: appSection,
-            isSelected: isSelected
-        )
+    func showSaveFromClipboardBanner() {
+        if UIPasteboard.general.hasURLs {
+            bannerViewModel = PasteBoardModifier.PasteBoardData(
+                title: L10n.addCopiedURLToYourSaves,
+                action: PasteBoardModifier.PasteBoardData.PasteBoardAction(
+                    text: L10n.saves,
+                    action: { [weak self] url in
+                        self?.handleBannerPrimaryAction(url: url)
+                    }, dismiss: { [weak self] in
+                        DispatchQueue.main.async { [weak self] in
+                            self?.bannerViewModel = nil
+                        }
+                    }
+                )
+            )
+        }
+    }
+
+    private func handleBannerPrimaryAction(url: URL?) {
+        DispatchQueue.main.async { [weak self] in
+            self?.bannerViewModel = nil
+        }
+
+        guard let url = url else { return }
+        source.save(url: url)
     }
 }

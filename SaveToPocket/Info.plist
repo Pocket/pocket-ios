@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>GroupId</key>
+	<string>$(GROUP_ID)</string>
 	<key>NSExtension</key>
 	<dict>
 		<key>NSExtensionAttributes</key>
@@ -19,6 +21,6 @@
 	<key>PocketAPIConsumerKey</key>
 	<string>$(POCKET_API_CONSUMER_KEY)</string>
 	<key>SentryDSN</key>
-	<string>${SENTRY_DSN}</string>
+	<string>$(SENTRY_DSN)</string>
 </dict>
 </plist>

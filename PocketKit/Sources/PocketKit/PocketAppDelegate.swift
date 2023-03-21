@@ -63,8 +63,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             userDefaults: firstLaunchDefaults
         ).signOutOnFirstLaunch()
 
-        if let guid = ProcessInfo.processInfo.environment["accessToken"],
-           let accessToken = ProcessInfo.processInfo.environment["sessionGUID"],
+        if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
+           let accessToken = ProcessInfo.processInfo.environment["accessToken"],
            let userIdentifier = ProcessInfo.processInfo.environment["sessionUserID"] {
             appSession.currentSession = Session(
                 guid: guid,
@@ -78,20 +78,5 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         refreshCoordinator.initialize()
 
         return true
-    }
-
-    public func application(
-        _ application: UIApplication,
-        configurationForConnecting connectingSceneSession: UISceneSession,
-        options: UIScene.ConnectionOptions
-    ) -> UISceneConfiguration {
-        let config = UISceneConfiguration(
-            name: "Default Configuration",
-            sessionRole: connectingSceneSession.role
-        )
-        config.sceneClass = UIWindowScene.self
-        config.delegateClass = PocketSceneDelegate.self
-
-        return config
     }
 }

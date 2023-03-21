@@ -324,7 +324,7 @@ extension SnowplowMicro {
     internal func assertUser(for event: SnowplowMicroEvent) {
         // Screens in the app that are allowed to not have a userId because the user is logged out.
         let noUserIdScreens = ["PocketKit.LoggedOutViewController"]
-        let noUserIdEventIds = ["login.accountdelete.banner", "login.accountdelete.banner.exitsurvey.click", "login.accountdelete.exitsurvey"]
+        let noUserIdEventIds = ["login.accountdelete.banner.exitsurvey.click", "login.accountdelete.exitsurvey"]
 
         let user = event.getUserContext()
 
@@ -344,9 +344,14 @@ extension SnowplowMicro {
             return
         }
 
+        if event.getUIContext() == nil && event.getUserContext() == nil {
+            // There are cases (account deletion) where Snowplow auto sends events, without a User context. This is ok so we return without asserting.
+            return
+        }
+
         XCTAssertNotNil(user, "User not found in analytics event")
         XCTAssertEqual(user!.dataDict()["hashed_user_id"] as! String, "session-user-id")
-        XCTAssertEqual(user!.dataDict()["hashed_guid"] as! String, "test-access-token")
+        XCTAssertEqual(user!.dataDict()["hashed_guid"] as! String, "session-guid")
     }
 }
 
