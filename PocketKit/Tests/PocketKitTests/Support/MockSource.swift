@@ -160,32 +160,32 @@ extension MockSource {
 
 // MARK: - Make items controller
 extension MockSource {
-    static let makeItemsController = "makeItemsController"
-    typealias MakeItemsControllerImpl = () -> SavedItemsController
+    static let makeSavesController = "makeSavesController"
+    typealias MakeSavesControllerImpl = () -> SavedItemsController
 
-    struct MakeItemsControllerCall {
+    struct MakeSavesControllerCall {
     }
 
-    func stubMakeItemsController(impl: @escaping MakeItemsControllerImpl) {
-        implementations[Self.makeItemsController] = impl
+    func stubMakeSavesController(impl: @escaping MakeSavesControllerImpl) {
+        implementations[Self.makeSavesController] = impl
     }
 
     func makeSavesController() -> SavedItemsController {
-        guard let impl = implementations[Self.makeItemsController] as? MakeItemsControllerImpl else {
+        guard let impl = implementations[Self.makeSavesController] as? MakeSavesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.makeItemsController] = (calls[Self.makeItemsController] ?? []) + [MakeItemsControllerCall()]
+        calls[Self.makeSavesController] = (calls[Self.makeSavesController] ?? []) + [MakeSavesControllerCall()]
 
         return impl()
     }
 
-    func makeItemsControllerCall(at index: Int) -> MakeItemsControllerCall? {
-        guard let calls = calls[Self.makeItemsController], calls.count > index else {
+    func makeSavesControllerCall(at index: Int) -> MakeSavesControllerCall? {
+        guard let calls = calls[Self.makeSavesController], calls.count > index else {
             return nil
         }
 
-        return calls[index] as? MakeItemsControllerCall
+        return calls[index] as? MakeSavesControllerCall
     }
 }
 

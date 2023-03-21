@@ -1,4 +1,5 @@
 import XCTest
+import CoreData
 import Analytics
 import Combine
 
@@ -9,7 +10,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
     var space: Space!
     var tracker: MockTracker!
-    var itemsController: MockSavedItemsController!
+    var itemsController: FetchedSavedItemsController!
     var listOptions: ListOptions!
     var viewType: SavesViewType!
     var subscriptions: [AnyCancellable]!
@@ -19,13 +20,19 @@ class SavedItemsListViewModelTests: XCTestCase {
         tracker = MockTracker()
         space = .testSpace()
         subscriptions = []
-        itemsController = MockSavedItemsController()
         listOptions = .saved
         listOptions.selectedSortOption = .newest
         viewType = .saves
 
-        itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
-        source.stubMakeItemsController {
+        itemsController = FetchedSavedItemsController(resultsController: NSFetchedResultsController(
+            fetchRequest: Requests.fetchSavedItems(),
+            managedObjectContext: space.backgroundContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        ))
+
+       // itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
+        source.stubMakeSavesController {
             self.itemsController
         }
 
@@ -45,6 +52,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        try space.save()
     }
 
     func subject(
@@ -63,17 +71,13 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     func test_applySortingOnSavesSavedItems() throws {
-        let savedItems = (1...2).map {
+        _ = (1...2).map {
             space.buildSavedItem(
                 remoteID: "saved-item-\($0)",
                 createdAt: Date(timeIntervalSince1970: TimeInterval($0))
             )
         }
         try space.save()
-
-        itemsController.stubPerformFetch {
-            self.itemsController.fetchedObjects = savedItems
-        }
 
         let viewModel = subject()
 
@@ -195,9 +199,6 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_sourceEvents_whenEventIsSavedItemCreated_sendsSnapshotWithNewItem() {
         let savedItem = space.buildSavedItem()
-        itemsController.stubPerformFetch {
-            self.itemsController.fetchedObjects = [savedItem]
-        }
 
         let viewModel = subject()
 
@@ -208,6 +209,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             snapshotSent.fulfill()
         }.store(in: &subscriptions)
 
+        try? space.save()
         source._events.send(.savedItemCreated)
 
         wait(for: [snapshotSent], timeout: 1)
@@ -215,17 +217,13 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_sourceEvents_whenEventIsSavedItemUpdated_sendsSnapshotWithUpdatedItem() {
         let savedItem = space.buildSavedItem()
-        itemsController.stubPerformFetch {
-            self.itemsController.fetchedObjects = [savedItem]
-        }
-        source.stubViewRefresh { _, _ in }
+        try? space.save()
 
         let viewModel = subject()
 
         let snapshotSent = expectation(description: "snapshotSent")
         viewModel.snapshot.dropFirst().sink { [unowned self] snapshot in
-            XCTAssertEqual(self.source.fetchViewRefresh(at: 0)?.object.objectID, savedItem.objectID)
-            XCTAssertEqual(snapshot.reloadedItemIdentifiers, [.item(savedItem.objectID)])
+            XCTAssertEqual(snapshot.itemIdentifiers(inSection: .items).first, .item(savedItem.objectID))
             snapshotSent.fulfill()
         }.store(in: &subscriptions)
 
@@ -235,7 +233,6 @@ class SavedItemsListViewModelTests: XCTestCase {
     }
 
     func test_receivedSnapshots_withNoItems_includesSavesEmptyState() {
-        itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [] }
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
@@ -248,14 +245,12 @@ class SavedItemsListViewModelTests: XCTestCase {
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        try? itemsController.performFetch()
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
-        itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [] }
-
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites), sender: UIView())
 
@@ -269,13 +264,12 @@ class SavedItemsListViewModelTests: XCTestCase {
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        try? itemsController.performFetch()
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
     func test_receivedSnapshots_withNoItems_includesTagsEmptyState() {
-        itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [] }
         source.stubFetchAllTags {
             []
         }
@@ -292,14 +286,14 @@ class SavedItemsListViewModelTests: XCTestCase {
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        try? itemsController.performFetch()
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeSavesEmptyState() {
-        let savedItem = space.buildSavedItem()
-        itemsController.fetchedObjects = [savedItem]
+        _ = space.buildSavedItem()
+        try? space.save()
 
         let viewModel = subject()
         let snapshotExpectation = expectation(description: "expected snapshot to update")
@@ -311,15 +305,14 @@ class SavedItemsListViewModelTests: XCTestCase {
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        try? itemsController.performFetch()
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
-        let savedItem = space.buildSavedItem()
-
-        itemsController.stubPerformFetch { [unowned self] in self.itemsController.fetchedObjects = [savedItem] }
+        _ = space.buildSavedItem(isFavorite: true)
+        try? space.save()
 
         let viewModel = subject()
         viewModel.selectCell(with: .filterButton(.favorites), sender: UIView())
@@ -333,7 +326,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        try? itemsController.performFetch()
 
         wait(for: [snapshotExpectation], timeout: 1)
     }
@@ -350,9 +343,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_receivedSnapshots_whenInitialDownloadIsInProgress_insertsPlaceholderCells() throws {
         let savedItem = space.buildSavedItem()
-        itemsController.stubPerformFetch { [unowned self] in
-            self.itemsController.fetchedObjects = [savedItem]
-        }
+        try? space.save()
 
         let viewModel = subject()
         viewModel.fetch()
@@ -367,16 +358,13 @@ class SavedItemsListViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         source.initialSavesDownloadState.send(.paginating(totalCount: 2))
-        itemsController.delegate?.controllerDidChangeContent(itemsController)
+        try? itemsController.performFetch()
 
         wait(for: [receivedSnapshot], timeout: 1)
     }
 
     func test_receivedSnapshots_whenSavesInitialDownloadIsStarted_insertsPlaceholderCells() throws {
         source.initialSavesDownloadState.send(.started)
-        itemsController.stubPerformFetch { [unowned self] in
-            self.itemsController.fetchedObjects = []
-        }
 
         let viewModel = subject()
 
@@ -396,9 +384,6 @@ class SavedItemsListViewModelTests: XCTestCase {
 
     func test_receivedSnapshots_whenArchiveInitialDownloadIsStarted_insertsPlaceholderCells() throws {
         source.initialArchiveDownloadState.send(.started)
-        itemsController.stubPerformFetch { [unowned self] in
-            self.itemsController.fetchedObjects = []
-        }
 
         let viewModel = subject(listOptions: .archived, viewType: .archive)
 
@@ -440,9 +425,6 @@ extension SavedItemsListViewModelTests {
     }
 
     func test_fetch_whenTaggedSelected_sendsTagsFilterViewModel() throws {
-        itemsController.stubPerformFetch {
-            self.itemsController.fetchedObjects = []
-        }
         source.stubFetchAllTags {
             []
         }

@@ -36,7 +36,7 @@ class SearchViewModelTests: XCTestCase {
 
         itemsController = MockSavedItemsController()
         itemsController.stubIndexPathForObject { _ in IndexPath(item: 0, section: 0) }
-        source.stubMakeItemsController {
+        source.stubMakeSavesController {
             self.itemsController
         }
         itemsController.stubPerformFetch {

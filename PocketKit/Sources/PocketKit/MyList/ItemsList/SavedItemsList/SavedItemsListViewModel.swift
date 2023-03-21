@@ -106,7 +106,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         listOptions
             .objectWillChange
             .dropFirst()
-            .receive(on: DispatchQueue.main).sink { [weak self] _ in
+            .receive(on: DispatchQueue.global(qos: .userInitiated)).sink { [weak self] _ in
                 self?.fetch()
                 self?.presentedSortFilterViewModel = nil
             }
@@ -185,7 +185,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         try? self.itemsController.performFetch()
-        self.itemsLoaded()
     }
 
     func refresh(_ completion: (() -> Void)? = nil) {
@@ -394,10 +393,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.viewObject(id: id)
     }
 
-    private func itemsLoaded() {
-        _snapshot = buildSnapshot()
-    }
-
     private func buildSnapshot() -> NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> {
         var snapshot: NSDiffableDataSourceSnapshot<ItemsListSection, ItemsListCell<ItemIdentifier>> = .init()
         let sections: [ItemsListSection] = [.filters]
@@ -408,6 +403,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             toSection: .filters
         )
 
+        let filters = snapshot.itemIdentifiers(inSection: .filters)
+        snapshot.reloadItems(filters)
         let itemCellIDs: [ItemsListCell<ItemIdentifier>]
 
         var stateValue: InitialDownloadState
@@ -439,6 +436,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         guard !itemCellIDs.isEmpty else {
             snapshot.appendSections([.emptyState])
             snapshot.appendItems([ItemsListCell<ItemIdentifier>.emptyState], toSection: .emptyState)
+            snapshot.reloadSections([.emptyState])
             return snapshot
         }
 
@@ -556,15 +554,6 @@ extension SavedItemsListViewModel {
         handleFilterSelection(with: filter, sender: sender)
 
         fetch()
-
-        var snapshot = buildSnapshot()
-        if snapshot.sectionIdentifiers.contains(.emptyState) {
-            snapshot.reloadSections([.emptyState])
-        }
-
-        let cells = snapshot.itemIdentifiers(inSection: .filters)
-        snapshot.reloadItems(cells)
-        _snapshot = snapshot
     }
 
     private func applySorting() {
@@ -638,18 +627,25 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         for type: NSFetchedResultsChangeType,
         newIndexPath: IndexPath?
     ) {
-        var snapshot = buildSnapshot()
-        let id = ItemsListCell<ItemIdentifier>.item(savedItem.objectID)
-        if snapshot.itemIdentifiers.contains(id) {
-            snapshot.reloadItems([id])
-        }
-        DispatchQueue.main.async { [weak self] in
-            self?._snapshot = snapshot
-        }
+        // no-op
     }
 
-    func controllerDidChangeContent(_ controller: SavedItemsController) {
-        itemsLoaded()
+    /**
+     Sets our custom snapshot to reload certain identifiers based on the NSFetched Results controller.
+     When reloading data in this view, always call itemController.performFetch which will end up calling this function.
+     */
+    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        // Build up a snapshot for us to use
+        var newSnapshot = buildSnapshot()
+
+        // Grab any ids that have changed, map them to .item and then setup our custom snapshot to reload them
+        let idsToReload: [ItemsListCell<ItemIdentifier>] =  snapshot.reloadedItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+        let idsToReconfigure: [ItemsListCell<ItemIdentifier>] =  snapshot.reconfiguredItemIdentifiers.compactMap({ .item($0 as! NSManagedObjectID) })
+        newSnapshot.reloadItems(idsToReload)
+        newSnapshot.reconfigureItems(idsToReconfigure)
+
+        // Set the new snapshot which is subscribed to in ItemListController and will apply this snapshot over the existing one
+        _snapshot = newSnapshot
         notificationCenter.post(name: .listUpdated, object: nil)
     }
 }
@@ -675,24 +671,8 @@ extension SavedItemsListViewModel {
         switch syncEvent {
         case .error, .loadedArchivePage:
             break
-        case .savedItemCreated:
+        case .savedItemCreated, .savedItemsUpdated:
             fetch()
-        case .savedItemsUpdated(let updatedSavedItems):
-            try? itemsController.performFetch()
-            let items = updatedSavedItems.compactMap({ source.viewObject(id: $0.objectID) as? SavedItem })
-            items.forEach({ source.viewRefresh($0, mergeChanges: true) })
-            var snapshot = buildSnapshot()
-
-            switch self.viewType {
-            case .saves:
-                snapshot.reloadItems(items.filter({ $0.isArchived == false }).map { .item($0.objectID) })
-            case .archive:
-                snapshot.reloadItems(items.filter({ $0.isArchived }).map { .item($0.objectID) })
-            }
-
-            DispatchQueue.main.sync { [weak self] in
-                self?._snapshot = snapshot
-            }
         }
     }
 }

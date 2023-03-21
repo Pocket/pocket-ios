@@ -264,26 +264,27 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(slateService.fetchSlateCall(at: 0)?.identifier, "slate-identifier")
     }
 
-    func test_itemsController_returnsAFetchedResultsController() throws {
+    func test_savesController_returnsAFetchedResultsController() throws {
         let source = subject()
         let item1 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
         try space.save()
 
-        let itemResultsController = source.makeSavesController()
-        try itemResultsController.performFetch()
-        XCTAssertEqual(itemResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID])
+        let savesResultsController = source.makeSavesController()
+        try savesResultsController.performFetch()
+        XCTAssertEqual(savesResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID])
 
         let expectationForUpdatedItems = expectation(description: "updated items")
         let delegate = TestSavedItemsControllerDelegate {
             expectationForUpdatedItems.fulfill()
         }
-        itemResultsController.delegate = delegate
+        savesResultsController.delegate = delegate
 
         let item2 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(title: "Item 2"))
         try space.save()
+        try savesResultsController.performFetch()
 
         wait(for: [expectationForUpdatedItems], timeout: 1)
-        XCTAssertEqual(itemResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID, item2.objectID])
+        XCTAssertEqual(savesResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID, item2.objectID])
     }
 
     func test_resolveUnresolvedSavedItems_enqueuesSaveItemOperation() throws {
