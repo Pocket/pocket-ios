@@ -168,13 +168,14 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "還原未成功";
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "找不到訂購。如果確信您有訂購，請傳送電子郵件至 support@getpocket.com 告訴我們。";
 
+"settings.noInternet.youMustBeOnline" = "必須處於線上才可升級到 Pocket Premium。請檢查您的連線，然後重試。";
+
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.title" = "您已刪除 Pocket 帳號";
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.detail" = "我們有哪些可以改進的地方？";
 //Action button for a user to take a survey
 "login.deletedAccount.banner.action" = "快速調查";
-
 
 //List view
 "item.list.min" = "%1$@ 分鐘";
