@@ -168,13 +168,14 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Восстановление не удалось";
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "Не удалось найти подписку. Если вы считаете, что она у вас есть, сообщите нам по адресу support@getpocket.com.";
 
+"settings.noInternet.youMustBeOnline" = "Для перехода на Premium вы должны быть онлайн. Проверьте подключение и попробуйте еще раз.";
+
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.title" = "Вы удалили свою учетную запись Pocket";
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.detail" = "Что мы могли бы улучшить?";
 //Action button for a user to take a survey
 "login.deletedAccount.banner.action" = "Быстрый опрос";
-
 
 //List view
 "item.list.min" = "%1$@ мин.";
