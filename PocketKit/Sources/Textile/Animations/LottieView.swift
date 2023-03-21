@@ -10,33 +10,19 @@ import Lottie
 import SwiftUI
 
 public struct LottieView: UIViewRepresentable {
-    public enum PocketAnimations {
-        case endOfFeed
-        case loading
-
-        func name() -> String {
-            switch self {
-            case .endOfFeed:
-                return "end-of-feed.json"
-            case .loading:
-                return "loading.json"
-            }
-        }
-    }
-
-    public init(_ name: PocketAnimations, loopMode: LottieLoopMode = .loop) {
-        self.name = name
+    public init(_ pocketAnimation: PocketAnimation, loopMode: LottieLoopMode = .loop) {
+        self.pocketAnimation = pocketAnimation
         self.loopMode = loopMode
     }
 
-    var name: PocketAnimations
+    var pocketAnimation: PocketAnimation
     var loopMode: LottieLoopMode = .loop
 
     public func makeUIView(context: UIViewRepresentableContext<LottieView>) -> UIView {
         let view = UIView(frame: .zero)
 
         let animationView = LottieAnimationView()
-        let animation = LottieAnimation.named(name.name(), bundle: .module, subdirectory: "Assets")
+        let animation = pocketAnimation.animation()
         animationView.animation = animation
         animationView.contentMode = .scaleAspectFit
         animationView.loopMode = loopMode

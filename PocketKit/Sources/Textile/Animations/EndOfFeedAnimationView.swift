@@ -16,7 +16,7 @@ public class EndOfFeedAnimationView: UIView {
 
     private lazy var animationView: LottieAnimationView = {
         let view = LottieAnimationView(animation: nil, configuration: LottieConfiguration(renderingEngine: .automatic))
-        view.animation = LottieAnimation.named("end-of-feed", bundle: .module, subdirectory: "Assets", animationCache: nil)
+        view.animation = PocketAnimation.endOfFeed.animation()
         return view
     }()
 
