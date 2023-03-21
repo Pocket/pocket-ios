@@ -26,10 +26,7 @@ struct AppStoreReceiptService: ReceiptService {
         let amount = product?.price != nil ? "\(product!.price)" : ""
         let transactionType = product != nil ? "purchase" : "restore"
         let currency = product?.priceFormatStyle.currencyCode ?? ""
-#if DEBUG
-        // TODO: at the moment we are not sending the receipt in debug
-        print(transactionInfo)
-#else
+
         try await client.sendAppstoreReceipt(
             source: source,
             transactionInfo: transactionInfo,
@@ -38,7 +35,6 @@ struct AppStoreReceiptService: ReceiptService {
             currency: currency,
             transactionType: transactionType
         )
-#endif
     }
 }
 
@@ -56,15 +52,6 @@ private extension AppStoreReceiptService {
         /// `.addingPercentEncoding(withAllowedCharacters: .alphanumerics)`,
         /// as this would always ensure `.utf8`, and we `CFURLCreateStringByAddingPercentEscapes` is deprecated since iOS 9.0.
         /// At most it would result with a few more percent-encoded (non alpha) characters, which should still be decoded correctly.
-        guard let legacyReceipt = CFURLCreateStringByAddingPercentEscapes(
-            kCFAllocatorDefault,
-            receiptString as CFString,
-            nil,
-            "!*'();:@&=+$,/?%#[]" as CFString,
-            CFStringBuiltInEncodings.UTF8.rawValue
-        ) else {
-            throw ReceiptError.invalidReceipt
-        }
-        return legacyReceipt as String
+        return receiptString
     }
 }
