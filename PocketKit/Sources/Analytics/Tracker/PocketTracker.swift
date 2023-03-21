@@ -20,14 +20,19 @@ public class PocketTracker: Tracker {
         let contexts = contexts ?? []
         let Contexts = Contexts(from: contexts)
         event.contexts.addObjects(from: Contexts)
-
-        snowplow.track(event: event)
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self else { Log.weakSelf(); return }
+            self.snowplow.track(event: event)
+        }
     }
 
     public func track(event: Event, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
-        Log.debug("Tracking \(String(describing: event))", filename: filename, line: line, column: column, funcName: funcName)
-        let selfDescribing = event.toSelfDescribing()
-        snowplow.track(event: selfDescribing)
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            guard let self else { Log.weakSelf(); return }
+            Log.debug("Tracking \(String(describing: event))", filename: filename, line: line, column: column, funcName: funcName)
+            let selfDescribing = event.toSelfDescribing()
+            self.snowplow.track(event: selfDescribing)
+        }
     }
 
     public func childTracker(with contexts: [Context]) -> Tracker {
@@ -48,8 +53,8 @@ extension PocketTracker {
         guard let data = try? JSONEncoder().encode(event),
               let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
               let eventJSON = SelfDescribingJson(schema: type(of: event).schema, andData: deserialized as NSObject) else {
-                  return nil
-              }
+            return nil
+        }
         return SelfDescribing(eventData: eventJSON)
     }
 
@@ -74,8 +79,8 @@ extension PocketTracker {
             guard let data = context.jsonEncoded,
                   let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
                   let context = SelfDescribingJson(schema: type(of: context).schema, andData: deserialized as NSObject) else {
-                      return nil
-                  }
+                return nil
+            }
             return context
         }
     }

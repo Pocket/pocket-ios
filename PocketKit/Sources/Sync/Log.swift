@@ -181,6 +181,11 @@ public class Log {
         Log.sentryCapture(message: message)
         Log.warning(message, filename: filename, line: line, column: column, funcName: funcName)
     }
+
+    public class func weakSelf(filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
+        Log.sentryCapture(message: "Weak Self nil, when it should not be")
+        Log.warning("Weak Self nil, when it should not be", filename: filename, line: line, column: column, funcName: funcName)
+    }
 }
 
 /// Wrapping Swift.print() within DEBUG flag

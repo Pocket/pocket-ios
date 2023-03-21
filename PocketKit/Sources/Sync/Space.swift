@@ -204,7 +204,7 @@ public class Space {
     func makeItemsController() -> NSFetchedResultsController<SavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
-            managedObjectContext: viewContext,
+            managedObjectContext: backgroundContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
@@ -213,7 +213,7 @@ public class Space {
     func makeArchivedItemsController(filters: [NSPredicate] = []) -> NSFetchedResultsController<SavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchArchivedItems(filters: filters),
-            managedObjectContext: viewContext,
+            managedObjectContext: backgroundContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )

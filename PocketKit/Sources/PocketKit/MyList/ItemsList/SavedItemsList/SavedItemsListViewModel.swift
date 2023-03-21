@@ -26,6 +26,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     @Published
+    @MainActor
     private var _snapshot = Snapshot()
     var snapshot: Published<Snapshot>.Publisher { $_snapshot }
 
@@ -106,9 +107,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         listOptions
             .objectWillChange
             .dropFirst()
-            .receive(on: DispatchQueue.main).sink { [weak self] _ in
+            .receive(on: DispatchQueue.global(qos: .userInteractive)).sink { [weak self] _ in
                 self?.fetch()
-                self?.presentedSortFilterViewModel = nil
+                DispatchQueue.main.async {
+                    self?.presentedSortFilterViewModel = nil
+                }
             }
             .store(in: &subscriptions)
 
@@ -134,28 +137,32 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             case .favorites:
                 return NSPredicate(format: "isFavorite = true")
             case .tagged:
-                presentedTagsFilter = TagsFilterViewModel(
-                    source: source,
-                    tracker: tracker,
-                    fetchedTags: { [weak self] in
-                        self?.source.fetchAllTags()
-                    }(),
-                    selectAllAction: { [weak self] in
-                        self?.selectCell(with: .filterButton(.all))
-                    }
-                )
-                presentedTagsFilter?.$selectedTag.sink { [weak self] selectedTag in
-                    guard let selectedTag = selectedTag else { return }
-                    let predicate: NSPredicate
-                    switch selectedTag {
-                    case .notTagged:
-                        predicate = NSPredicate(format: "tags.@count = 0")
-                    case .tag(let name):
-                        predicate = NSPredicate(format: "%@ IN tags.name", name)
-                    }
-                    self?.fetchItems(with: [predicate])
-                    self?.updateSnapshotForTagFilter(with: selectedTag.name)
-                }.store(in: &subscriptions)
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { Log.weakSelf(); return }
+                    self.presentedTagsFilter = TagsFilterViewModel(
+                        source: self.source,
+                        tracker: self.tracker,
+                        fetchedTags: { [weak self] in
+                            self?.source.fetchAllTags()
+                        }(),
+                        selectAllAction: { [weak self] in
+                            self?.selectCell(with: .filterButton(.all))
+                        }
+                    )
+                    self.presentedTagsFilter?.$selectedTag.sink { [weak self] selectedTag in
+                        guard let selectedTag = selectedTag else { return }
+                        let predicate: NSPredicate
+                        switch selectedTag {
+                        case .notTagged:
+                            predicate = NSPredicate(format: "tags.@count = 0")
+                        case .tag(let name):
+                            predicate = NSPredicate(format: "%@ IN tags.name", name)
+                        }
+                        self?.fetchItems(with: [predicate])
+                        self?.updateSnapshotForTagFilter(with: selectedTag.name)
+                    }.store(in: &self.subscriptions)
+                }
+
                 return nil
             case .all:
                 return nil
@@ -168,12 +175,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private func updateSnapshotForTagFilter(with name: String) {
-        var snapshot = _snapshot
+        var snapshot = buildSnapshot()
         let cells = snapshot.itemIdentifiers(inSection: .filters)
         snapshot.reloadItems(cells)
         snapshot.insertSections([.tags], afterSection: .filters)
         snapshot.appendItems([.tag(name)], toSection: .tags)
-        self._snapshot = snapshot
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { Log.weakSelf(); return }
+            self._snapshot = snapshot
+        }
     }
 
     private func fetchItems(with predicates: [NSPredicate]) {
@@ -185,7 +196,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
 
         try? self.itemsController.performFetch()
-        self.itemsLoaded()
+        DispatchQueue.main.async {
+            self.itemsLoaded()
+        }
     }
 
     func refresh(_ completion: (() -> Void)? = nil) {
@@ -245,18 +258,20 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
+    @MainActor
     func filterByTagAction() -> UIAction? {
         return UIAction(title: "", handler: { [weak self] action in
+            guard let self else { Log.weakSelf(); return }
             let event = SnowplowEngagement(type: .general, value: nil)
             let contexts: Context = UIContext.button(identifier: .tagBadge)
-            self?.tracker.track(event: event, [contexts])
+            self.tracker.track(event: event, [contexts])
 
             let button = action.sender as? UIButton
             guard let name = button?.titleLabel?.text else { return }
             let predicate = NSPredicate(format: "%@ IN tags.name", name)
-            self?.fetchItems(with: [predicate])
-            self?.handleFilterSelection(with: .tagged)
-            self?.updateSnapshotForTagFilter(with: name)
+            self.fetchItems(with: [predicate])
+            self.handleFilterSelection(with: .tagged)
+            self.updateSnapshotForTagFilter(with: name)
         })
     }
 
@@ -394,6 +409,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.viewObject(id: id)
     }
 
+    @MainActor
     private func itemsLoaded() {
         _snapshot = buildSnapshot()
     }
@@ -554,17 +570,19 @@ extension SavedItemsListViewModel {
 
     private func apply(filter: ItemsListFilter, from cell: ItemsListCell<ItemIdentifier>, sender: Any? = nil) {
         handleFilterSelection(with: filter, sender: sender)
+        self.fetch()
 
-        fetch()
-
-        var snapshot = buildSnapshot()
+        var snapshot = self.buildSnapshot()
         if snapshot.sectionIdentifiers.contains(.emptyState) {
             snapshot.reloadSections([.emptyState])
         }
 
         let cells = snapshot.itemIdentifiers(inSection: .filters)
         snapshot.reloadItems(cells)
-        _snapshot = snapshot
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { Log.weakSelf(); return }
+            self._snapshot = snapshot
+        }
     }
 
     private func applySorting() {
@@ -630,6 +648,8 @@ extension SavedItemsListViewModel {
     }
 }
 
+// MARK: NSFetchedResults
+/*** Note: The fetched results controller here operates in a background thread */
 extension SavedItemsListViewModel: SavedItemsControllerDelegate {
     func controller(
         _ controller: SavedItemsController,
@@ -643,13 +663,17 @@ extension SavedItemsListViewModel: SavedItemsControllerDelegate {
         if snapshot.itemIdentifiers.contains(id) {
             snapshot.reloadItems([id])
         }
-        DispatchQueue.main.async { [weak self] in
-            self?._snapshot = snapshot
+        DispatchQueue.main.sync { [weak self] in
+            guard let self else { Log.weakSelf(); return }
+            self._snapshot = snapshot
         }
     }
 
     func controllerDidChangeContent(_ controller: SavedItemsController) {
-        itemsLoaded()
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { Log.weakSelf(); return }
+            self.itemsLoaded()
+        }
         notificationCenter.post(name: .listUpdated, object: nil)
     }
 }
@@ -690,8 +714,9 @@ extension SavedItemsListViewModel {
                 snapshot.reloadItems(items.filter({ $0.isArchived }).map { .item($0.objectID) })
             }
 
-            DispatchQueue.main.sync { [weak self] in
-                self?._snapshot = snapshot
+            DispatchQueue.main.async { [weak self] in
+                guard let self else { Log.weakSelf(); return }
+                self._snapshot = snapshot
             }
         }
     }
