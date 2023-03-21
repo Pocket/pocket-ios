@@ -48,10 +48,6 @@ private extension AppStoreReceiptService {
         }
         let receiptString = try Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped)
             .base64EncodedString(options: [])
-        /// replicates exactly the encoding in the legacy app. It's probably safe to replace with
-        /// `.addingPercentEncoding(withAllowedCharacters: .alphanumerics)`,
-        /// as this would always ensure `.utf8`, and we `CFURLCreateStringByAddingPercentEscapes` is deprecated since iOS 9.0.
-        /// At most it would result with a few more percent-encoded (non alpha) characters, which should still be decoded correctly.
         return receiptString
     }
 }
