@@ -518,7 +518,7 @@ extension SearchViewModel: SavedItemsControllerDelegate {
         }
     }
 
-    func controllerDidChangeContent(_ controller: SavedItemsController) {
+    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
         // no-op
     }
 

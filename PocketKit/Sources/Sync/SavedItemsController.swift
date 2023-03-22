@@ -1,5 +1,6 @@
 import Foundation
 import CoreData
+import UIKit
 
 public protocol SavedItemsControllerDelegate: AnyObject {
     func controller(
@@ -10,7 +11,7 @@ public protocol SavedItemsControllerDelegate: AnyObject {
         newIndexPath: IndexPath?
     )
 
-    func controllerDidChangeContent(_ controller: SavedItemsController)
+    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference)
 }
 
 public protocol SavedItemsController: AnyObject {
@@ -78,7 +79,7 @@ extension FetchedSavedItemsController: NSFetchedResultsControllerDelegate {
         delegate?.controller(self, didChange: savedItem, at: indexPath, for: type, newIndexPath: newIndexPath)
     }
 
-    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        delegate?.controllerDidChangeContent(self)
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        delegate?.controller(self, didChangeContentWith: snapshot)
     }
 }
