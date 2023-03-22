@@ -39,13 +39,6 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
             }
             // Restore a purchased subscription, if any
             await self.fetchActiveSubscription()
-
-            do {
-                // send App Store receipt at launch
-                try await receiptService.send(nil)
-            } catch {
-                Log.capture(error: error)
-            }
         }
     }
 
@@ -135,9 +128,17 @@ extension PocketSubscriptionStore {
         for await transaction in Transaction.currentEntitlements {
             do {
                 try await processTransaction(transaction)
+                return
             } catch {
                 Log.capture(error: error)
             }
+        }
+        do {
+            // in case no subscription was found,
+            // still send the App Store receipt to the backend
+            try await receiptService.send(nil)
+        } catch {
+            Log.capture(error: error)
         }
     }
 
@@ -154,6 +155,7 @@ extension PocketSubscriptionStore {
             if let subscription = subscriptions.first(where: { $0.product.id == verifiedTransaction.productID }) {
                 state = .subscribed(subscription.type)
                 user.setPremiumStatus(true)
+                // send the App Store receipt to the backend with the current subscription
                 do {
                     try await receiptService.send(subscription.product)
                 } catch {

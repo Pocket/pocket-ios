@@ -20,9 +20,6 @@ struct AppStoreReceiptService: ReceiptService {
         self.client = client
     }
     func send(_ product: Product?) async throws {
-    #if DEBUG
-        // TODO: at the moment we are not sending the receipt in debug
-    #else
         let transactionInfo = try getReceipt()
         let source = "itunes"
         let productId = product?.id ?? ""
@@ -38,7 +35,6 @@ struct AppStoreReceiptService: ReceiptService {
             currency: currency,
             transactionType: transactionType
         )
-        #endif
     }
 }
 
@@ -52,11 +48,6 @@ private extension AppStoreReceiptService {
         }
         let receiptString = try Data(contentsOf: appStoreReceiptURL, options: .alwaysMapped)
             .base64EncodedString(options: [])
-
-        guard let receipt = receiptString
-            .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) else {
-            throw ReceiptError.invalidReceipt
-        }
-        return receipt
+        return receiptString
     }
 }
