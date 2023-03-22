@@ -168,13 +168,14 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "復元できませんでした";
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "購読が見つかりませんでした。既に購読済みであると確信している場合は、support@getpocket.com までメールにてお問い合わせください。";
 
+"settings.noInternet.youMustBeOnline" = "Pocket Premium にアップグレードするにはオンラインである必要があります。接続をご確認のうえ、もう一度お試しください。";
+
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.title" = "Pocket アカウントを削除しました";
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.detail" = "どのような点を改善してほしいですか？";
 //Action button for a user to take a survey
 "login.deletedAccount.banner.action" = "短いアンケートに回答する";
-
 
 //List view
 "item.list.min" = "%1$@分";
