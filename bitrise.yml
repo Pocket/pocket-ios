@@ -147,7 +147,7 @@ workflows:
   # Helper step to pull the built test bundle.
   _pull_test_bundle:
     steps:
-      - pull-intermediate-files@1:
+      - pull-intermediate-files@1.0.2:
           inputs:
             - artifact_sources: build-and-test.test-build
 
