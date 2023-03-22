@@ -40,7 +40,7 @@ class SignOutTests: XCTestCase {
 
         let account = XCUIApplication()
         account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Log Out"].wait().tap()
-        XCTAssertTrue(app.loggedOutView.exists)
+        app.loggedOutView.wait()
 
         let logoutConfirmedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.logout-confirmed")
         XCTAssertNotNil(logoutConfirmedEvent)
@@ -58,10 +58,12 @@ class SignOutTests: XCTestCase {
         let cellCount = account.cells.count
         XCTAssertTrue(cellCount > 0)
 
-        let logoutRowTappedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.logout")
+        let events = await [snowplowMicro.getFirstEvent(with: "global-nav.settings.logout"), snowplowMicro.getFirstEvent(with: "global-nav.settings.logout-confirmed")]
+
+        let logoutRowTappedEvent = events[0]
         XCTAssertNotNil(logoutRowTappedEvent)
 
-        let logoutConfirmedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.logout-confirmed")
+        let logoutConfirmedEvent = events[1]
         XCTAssertNil(logoutConfirmedEvent)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
