@@ -292,7 +292,6 @@ workflows:
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UnitTests_iphonesimulator16.2.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16.2
-            - test_repetition_mode: retry_on_failure
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UNIT_XCRESULT_PATH'
@@ -311,7 +310,6 @@ workflows:
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests_iphonesimulator16.2-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16.2
-            - test_repetition_mode: retry_on_failure
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_1_XCRESULT_PATH'
@@ -330,7 +328,6 @@ workflows:
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-2_iphonesimulator16.2-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16.2
-            - test_repetition_mode: retry_on_failure
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_2_XCRESULT_PATH'
@@ -349,7 +346,6 @@ workflows:
           inputs:
             - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITests-3_iphonesimulator16.2-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16.2
-            - test_repetition_mode: retry_on_failure
       - deploy-to-bitrise-io@2.1.1:
           inputs:
             - pipeline_intermediate_files: '$BITRISE_XCRESULT_PATH:BITRISE_UITESTS_3_XCRESULT_PATH'
