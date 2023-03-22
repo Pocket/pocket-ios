@@ -75,11 +75,9 @@ enum SeeAll {
 }
 
 @MainActor
-class HomeViewModel {
+class HomeViewModel: NSObject {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
     typealias ItemIdentifier = NSManagedObjectID
-
-    static let lineupIdentifier = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
 
     @Published
     var snapshot: Snapshot
@@ -106,6 +104,9 @@ class HomeViewModel {
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
 
+    private let recentSavesController: NSFetchedResultsController<SavedItem>
+    private let recomendationsController: NSFetchedResultsController<Recommendation>
+
     init(
         source: Source,
         tracker: Tracker,
@@ -122,18 +123,12 @@ class HomeViewModel {
             return Self.loadingSnapshot()
         }()
 
-        NotificationCenter.default.publisher(
-            for: NSManagedObjectContext.didSaveObjectsNotification,
-            object: nil
-        )
-        .receive(on: DispatchQueue.global(qos: .userInteractive))
-        .sink { [weak self] notification in
-            do {
-                try self?.handle(notification: notification)
-            } catch {
-                Log.capture(error: error)
-            }
-        }.store(in: &subscriptions)
+        self.recentSavesController = source.makeRecentSavesController()
+        self.recomendationsController = source.makeHomeController()
+
+        super.init()
+        self.recentSavesController.delegate = self
+        self.recomendationsController.delegate = self
 
         networkPathMonitor.updateHandler = { [weak self] path in
             if path.status == .satisfied {
@@ -142,30 +137,31 @@ class HomeViewModel {
                 }
             }
         }
+        fetch()
     }
 
     var isOffline: Bool {
         networkPathMonitor.currentNetworkPath.status != .satisfied
     }
 
+    /// Fetch the latest data from core data and get the NSFetechedResults Controllers subscribing to updates
     func fetch() {
         do {
-            let snapshot = try rebuildSnapshot()
-            guard snapshot.numberOfSections != 0 else { return }
-            self.snapshot = snapshot
+            try self.recentSavesController.performFetch()
+            try self.recomendationsController.performFetch()
         } catch {
             Log.capture(error: error)
         }
     }
 
+    /// Refresh of data triggered
+    /// - Parameters:
+    ///   - isForced: Whether or not the user forced the refresh
+    ///   - completion: Completion block to call
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
-        guard !isOffline else {
-            do {
-                snapshot = try rebuildSnapshot()
-            } catch {
-                Log.capture(error: error)
-            }
+        fetch()
 
+        guard !isOffline else {
             completion()
             return
         }
@@ -178,55 +174,13 @@ class HomeViewModel {
 
 // MARK: - Snapshot building
 extension HomeViewModel {
-    private func handle(notification: Notification) throws {
-        var snapshot = try rebuildSnapshot()
-
-        guard let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> else {
-            DispatchQueue.main.sync {
-                self.snapshot = snapshot
-            }
-            return
-        }
-
-        var itemsToReload: [Cell] = []
-        // Reload recent saves whose SaveItems have updated
-        // e.g. the SavedItem was favorited
-        itemsToReload += updatedObjects
-            .compactMap { $0 as? SavedItem }
-            .map { .recentSaves($0.objectID) }
-
-        // Reload recommendations whose Items or SavedItems have changed
-        // e.g.
-        // - Item.savedItem was set to nil or a new object
-        // - SavedItem was archived
-        itemsToReload += (
-            updatedObjects.compactMap { $0 as? Item }
-            + updatedObjects.compactMap { ($0 as? SavedItem)?.item }
-        )
-        .compactMap(\.recommendation)
-        .flatMap {[
-            .recommendationHero($0.objectID),
-            .recommendationCarousel($0.objectID)
-        ]}
-
-        snapshot.reloadItems(
-            Set(itemsToReload)
-                .filter { snapshot.indexOfItem($0) != nil }
-        )
-
-        DispatchQueue.main.sync {
-            self.snapshot = snapshot
-        }
-    }
-
-    private func rebuildSnapshot() throws -> Snapshot {
-        let recentSaves = try source.recentSaves(limit: 5)
-        let slateLineup = try source.slateLineup(identifier: Self.lineupIdentifier)
+    private func buildSnapshot() -> Snapshot {
+        let recentSaves = self.recentSavesController.fetchedObjects
 
         var snapshot = Snapshot()
 
-        recentSavesCount = recentSaves.count
-        if !recentSaves.isEmpty {
+        if let recentSaves, !recentSaves.isEmpty {
+            recentSavesCount = recentSaves.count
             snapshot.appendSections([.recentSaves])
             snapshot.appendItems(
                 recentSaves.map { .recentSaves($0.objectID) },
@@ -240,30 +194,49 @@ extension HomeViewModel {
             return snapshot
         }
 
-        if let slateLineup = slateLineup,
-           let slates = slateLineup.slates?.compactMap({ $0 as? Slate }) {
-            for slate in slates {
-                guard var recs = slate.recommendations?.compactMap({ $0 as? Recommendation }),
-                      !recs.isEmpty else {
-                    continue
-                }
+        guard let slateSections = self.recomendationsController.sections, !slateSections.isEmpty else {
+            snapshot.appendSections([.loading])
+            snapshot.appendItems([.loading], toSection: .loading)
+            return snapshot
+        }
 
-                let hero = recs.removeFirst()
-                snapshot.appendSections([.slateHero(slate.objectID)])
-                snapshot.appendItems(
-                    [.recommendationHero(hero.objectID)],
-                    toSection: .slateHero(slate.objectID)
-                )
-
-                guard !recs.isEmpty else {
-                    continue
-                }
-                snapshot.appendSections([.slateCarousel(slate.objectID)])
-                snapshot.appendItems(
-                    recs[0...min(3, recs.endIndex - 1)].map { .recommendationCarousel($0.objectID) },
-                    toSection: .slateCarousel(slate.objectID)
-                )
+        for slateSection in slateSections {
+            guard var recommendations = slateSection.objects as? [Recommendation],
+                    !recommendations.isEmpty,
+                  let firstRecommendation = recommendations.first,
+                  let slate = firstRecommendation.slate
+            else {
+                continue
             }
+
+            let slateId: NSManagedObjectID = slate.objectID
+
+            let slateSectionId: Section = .slateHero(slateId)
+
+            let hero = recommendations.removeFirst()
+            if snapshot.indexOfSection(slateSectionId) == nil {
+                snapshot.appendSections([slateSectionId])
+            }
+            snapshot.appendItems(
+                [.recommendationHero(hero.objectID)],
+                toSection: slateSectionId
+            )
+            // Set a rec to always reload so it gets the latest save state. This is because NSFetchedResultsController is not listening for SavedItem changes on recs
+            snapshot.reloadItems([.recommendationHero(hero.objectID)])
+
+            guard !recommendations.isEmpty else {
+                continue
+            }
+
+            if snapshot.indexOfSection(.slateCarousel(slate.objectID)) == nil {
+                snapshot.appendSections([.slateCarousel(slate.objectID)])
+            }
+            snapshot.appendItems(
+                recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
+                toSection: .slateCarousel(slateId)
+            )
+            // Set a rec to always reload so it gets the latest save state. This is because NSFetchedResultsController is not listening for SavedItem changes on recs
+            snapshot.reloadItems(recommendations.prefix(4).map { .recommendationCarousel($0.objectID) })
         }
 
         return snapshot
@@ -694,5 +667,46 @@ extension HomeViewModel {
         case .none:
             return []
         }
+    }
+}
+
+extension HomeViewModel: NSFetchedResultsControllerDelegate {
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        var newSnapshot = buildSnapshot()
+
+        if controller == self.recentSavesController {
+            let reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+            let reconfiguredItemdIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recentSaves($0 as! NSManagedObjectID) })
+            newSnapshot.reloadItems(reloadedItemIdentifiers)
+            newSnapshot.reconfigureItems(reconfiguredItemdIdentifiers)
+        }
+
+        if isOffline {
+            // If we are offline don't try and do anything with Slates, and let the snapshot show the offline
+            self.snapshot = newSnapshot
+            return
+        }
+
+        if controller == self.recomendationsController {
+            let existingItemIdentifiers = newSnapshot.itemIdentifiers
+
+            // Gather all variations a recomendation could exist in for reloaded identifiers
+            var reloadedItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
+            reloadedItemIdentifiers.append(contentsOf: snapshot.reloadedItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
+            // Filter to just the ones that exist in our snapshot
+            reloadedItemIdentifiers = reloadedItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
+            // Tell the new snapshot to reload just the ones that exist
+            newSnapshot.reloadItems(reloadedItemIdentifiers)
+
+            // Gather all variations a recomendation could exist in for reconfigured identifiers
+            var reconfiguredItemIdentifiers: [Cell] = snapshot.reloadedItemIdentifiers.compactMap({ .recommendationHero($0 as! NSManagedObjectID) })
+            reconfiguredItemIdentifiers.append(contentsOf: snapshot.reloadedItemIdentifiers.compactMap({ .recommendationCarousel($0 as! NSManagedObjectID) }))
+            // Filter to just the ones that exist in our snapshot
+            reconfiguredItemIdentifiers = reconfiguredItemIdentifiers.filter({ existingItemIdentifiers.contains($0) })
+            // Tell the new snapshot to reconfigure just the ones that exist
+            newSnapshot.reconfigureItems(reconfiguredItemIdentifiers)
+        }
+
+        self.snapshot = newSnapshot
     }
 }

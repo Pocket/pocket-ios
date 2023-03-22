@@ -18,6 +18,7 @@ extension Slate {
     @NSManaged public var slateDescription: String?
     @NSManaged public var recommendations: NSOrderedSet?
     @NSManaged public var slateLineup: SlateLineup?
+    @NSManaged public var sortIndex: NSNumber?
 }
 
 // MARK: Generated accessors for recommendations

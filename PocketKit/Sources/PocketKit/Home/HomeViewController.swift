@@ -104,11 +104,17 @@ class HomeViewController: UIViewController {
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
         navigationItem.title = L10n.home
-        collectionView.publisher(for: \.contentSize, options: [.new]).sink { [weak self] contentSize in
+        collectionView
+            .publisher(for: \.contentSize, options: [.new])
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] contentSize in
             self?.setupOverflowView(contentSize: contentSize)
         }.store(in: &subscriptions)
 
-        collectionView.publisher(for: \.contentOffset, options: [.new]).sink { [weak self] contentOffset in
+        collectionView
+            .publisher(for: \.contentOffset, options: [.new])
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] contentOffset in
             self?.updateOverflowView(contentOffset: contentOffset)
         }.store(in: &subscriptions)
 
@@ -373,27 +379,27 @@ extension HomeViewController {
             animated: true
         )
 
-        recommendation.$presentedAlert.sink { [weak self] alert in
+        recommendation.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$sharedActivity.sink { [weak self] activity in
+        recommendation.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$presentedWebReaderURL.sink { [weak self] url in
+        recommendation.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+        recommendation.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: recommendation)
         }.store(in: &readerSubscriptions)
 
-        recommendation.$selectedRecommendationToReport.sink { [weak self] selected in
+        recommendation.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] selected in
             self?.report(selected)
         }.store(in: &readerSubscriptions)
 
-        recommendation.events.sink { [weak self] event in
+        recommendation.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated:
                 break
@@ -411,27 +417,27 @@ extension HomeViewController {
             animated: true
         )
 
-        savedItem.$presentedAlert.sink { [weak self] alert in
+        savedItem.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
-        savedItem.$sharedActivity.sink { [weak self] activity in
+        savedItem.$sharedActivity.receive(on: DispatchQueue.main).sink { [weak self] activity in
             self?.present(activity: activity)
         }.store(in: &readerSubscriptions)
 
-        savedItem.$presentedWebReaderURL.sink { [weak self] url in
+        savedItem.$presentedWebReaderURL.receive(on: DispatchQueue.main).sink { [weak self] url in
             self?.present(url: url)
         }.store(in: &readerSubscriptions)
 
-        savedItem.$isPresentingReaderSettings.sink { [weak self] isPresenting in
+        savedItem.$isPresentingReaderSettings.receive(on: DispatchQueue.main).sink { [weak self] isPresenting in
             self?.presentReaderSettings(isPresenting, on: savedItem)
         }.store(in: &readerSubscriptions)
 
-        savedItem.$presentedAddTags.sink { [weak self] addTagsViewModel in
+        savedItem.$presentedAddTags.receive(on: DispatchQueue.main).sink { [weak self] addTagsViewModel in
             self?.present(addTagsViewModel)
         }.store(in: &readerSubscriptions)
 
-        savedItem.events.sink { [weak self] event in
+        savedItem.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated:
                 break
@@ -442,15 +448,15 @@ extension HomeViewController {
     }
 
     private func showRecommendation(forWebView viewModel: RecommendationViewModel) {
-        viewModel.$presentedAlert.sink { [weak self] alert in
+        viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
-        viewModel.$selectedRecommendationToReport.sink { [weak self] recommendation in
+        viewModel.$selectedRecommendationToReport.receive(on: DispatchQueue.main).sink { [weak self] recommendation in
             self?.report(recommendation)
         }.store(in: &readerSubscriptions)
 
-        viewModel.events.sink { [weak self] event in
+        viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated:
                 break
@@ -461,11 +467,11 @@ extension HomeViewController {
     }
 
     private func showSavedItem(forWebView viewModel: SavedItemViewModel) {
-        viewModel.$presentedAlert.sink { [weak self] alert in
+        viewModel.$presentedAlert.receive(on: DispatchQueue.main).sink { [weak self] alert in
             self?.present(alert: alert)
         }.store(in: &readerSubscriptions)
 
-        viewModel.events.sink { [weak self] event in
+        viewModel.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             switch event {
             case .contentUpdated:
                 break
