@@ -45,7 +45,7 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
 
                 do {
                     self.isRefreshing = true
-                    try await self.source.fetchSlateLineup(HomeViewModel.lineupIdentifier)
+                    try await self.source.fetchSlateLineup(SyncConstants.Home.slateLineupIdentifier)
                     self.userDefaults.setValue(Date(), forKey: Self.dateLastRefreshKey)
                     Log.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
                 } catch {

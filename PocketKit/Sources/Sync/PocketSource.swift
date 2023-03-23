@@ -154,6 +154,14 @@ public class PocketSource: Source {
         FetchedImagesController(resultsController: space.makeUndownloadedImagesController())
     }
 
+    public func makeRecentSavesController() -> NSFetchedResultsController<SavedItem> {
+        space.makeRecentSavesController(limit: SyncConstants.Home.recentSaves)
+    }
+
+    public func makeHomeController() -> NSFetchedResultsController<Recommendation> {
+        space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
+    }
+
     public func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.backgroundObject(with: id)
     }
@@ -758,24 +766,6 @@ extension PocketSource {
         try? space.save()
 
         return remoteSavedItem
-    }
-}
-
-// MARK: Home Helpers
-/// Functions for Home
-extension PocketSource {
-    /// Gets the recent saves a User has made
-    /// - Parameter limit: Number of recent saves to fetch
-    /// - Returns: Recently saved items
-    public func recentSaves(limit: Int) throws -> [SavedItem] {
-        return try space.fetch(Requests.fetchSavedItems(limit: 5))
-    }
-
-    /// Fetches a slate lineup
-    /// - Parameter identifier: The identifier of the slate lineup to grab
-    /// - Returns: A slatelineup
-    public func slateLineup(identifier: String) throws -> SlateLineup? {
-        return try space.fetchSlateLineup(byRemoteID: identifier)
     }
 }
 

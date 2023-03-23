@@ -210,6 +210,24 @@ public class Space {
         )
     }
 
+    func makeRecentSavesController(limit: Int) -> NSFetchedResultsController<SavedItem> {
+        NSFetchedResultsController(
+            fetchRequest: Requests.fetchSavedItems(limit: limit),
+            managedObjectContext: viewContext,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+    }
+
+    func makeRecomendationsSlateLineupController(by lineupIdentifier: String) -> NSFetchedResultsController<Recommendation> {
+        NSFetchedResultsController(
+            fetchRequest: Requests.fetchRecomendations(by: lineupIdentifier),
+            managedObjectContext: viewContext,
+            sectionNameKeyPath: "slate.remoteID",
+            cacheName: nil
+        )
+    }
+
     func makeArchivedItemsController(filters: [NSPredicate] = []) -> NSFetchedResultsController<SavedItem> {
         NSFetchedResultsController(
             fetchRequest: Requests.fetchArchivedItems(filters: filters),

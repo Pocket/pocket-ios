@@ -4,19 +4,19 @@
 
 import Foundation
 
-struct SyncConstants {
-    struct Saves {
+public struct SyncConstants {
+    public  struct Saves {
         /// How many saves we load when a user logs in. As they save and use pocket they may accumilate more, but we only download the amount of latest saves here to start.
-        static let firstLoadMaxCount = 1000
+        public static let firstLoadMaxCount = 1000
 
         /// How many saves we should load on the first login request for saves, we use a small value here so the user immediately sees content.
-        static let initalPageSize = 15
+        public  static let initalPageSize = 15
 
         /// How many saves to load per subsequent page until we hit our load count.
-        static let pageSize = 30
+        public  static let pageSize = 30
     }
 
-    struct Archive {
+    public struct Archive {
         /// How many archives we load when a user logs in. As they save and use pocket they may accumilate more, but we only download the amount of latest archives here to start.
         static let firstLoadMaxCount = 1000
 
@@ -27,11 +27,16 @@ struct SyncConstants {
         static let pageSize = 30
     }
 
-    struct Home {
+    public struct Home {
         /// How many recomendations to pull in when we load them via getSlateLineup (ie. Home)
-        static let recomendationsPerSlateFromSlateLineup = 5
+        public static let recomendationsPerSlateFromSlateLineup = 5
 
         /// How many recomendations to pull in when we load them via getSlate (ie. a detail view)
-        static let recomendationsPerSlateDetail = 25
+        public static let recomendationsPerSlateDetail = 25
+
+        /// How many recent saves to show
+        public static let recentSaves = 5
+
+        public static let slateLineupIdentifier = "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1"
     }
 }

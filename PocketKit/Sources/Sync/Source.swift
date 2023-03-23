@@ -22,6 +22,10 @@ public protocol Source {
 
     func deleteAccount() async throws
 
+    func makeRecentSavesController() -> NSFetchedResultsController<SavedItem>
+
+    func makeHomeController() -> NSFetchedResultsController<Recommendation>
+
     func makeSavesController() -> SavedItemsController
 
     func makeArchiveController() -> SavedItemsController
@@ -95,16 +99,6 @@ public protocol Source {
     func searchSaves(search: String) -> [SavedItem]?
 
     func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
-
-    /// Gets the recent saves a User has made
-    /// - Parameter limit: Number of recent saves to fetch
-    /// - Returns: Recently saved items
-    func recentSaves(limit: Int) throws -> [SavedItem]
-
-    /// Fetches a slate lineup
-    /// - Parameter identifier: The identifier of the slate lineup to grab
-    /// - Returns: A slatelineup
-    func slateLineup(identifier: String) throws -> SlateLineup?
 
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
