@@ -260,7 +260,7 @@ public class Space {
         )
     }
 
-    func makeUndownloadedImagesController() -> NSFetchedResultsController<Image> {
+    func makeImagesController() -> NSFetchedResultsController<Image> {
         let request = Requests.fetchUndownloadedImages()
         request.sortDescriptors = [NSSortDescriptor(key: "source.absoluteString", ascending: true)]
         return NSFetchedResultsController(

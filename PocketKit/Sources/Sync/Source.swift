@@ -32,7 +32,7 @@ public protocol Source {
 
     func makeSearchService() -> SearchService
 
-    func makeUndownloadedImagesController() -> ImagesController
+    func makeImagesController() -> ImagesController
 
     func refreshSaves(completion: (() -> Void)?)
 
@@ -86,7 +86,7 @@ public protocol Source {
 
     func remove(recommendation: Recommendation)
 
-    func download(images: [Image])
+    func delete(images: [Image])
 
     func fetchDetails(for savedItem: SavedItem) async throws
 

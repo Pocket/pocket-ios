@@ -150,8 +150,8 @@ public class PocketSource: Source {
         PocketSearchService(apollo: apollo)
     }
 
-    public func makeUndownloadedImagesController() -> ImagesController {
-        FetchedImagesController(resultsController: space.makeUndownloadedImagesController())
+    public func makeImagesController() -> ImagesController {
+        FetchedImagesController(resultsController: space.makeImagesController())
     }
 
     public func makeRecentSavesController() -> NSFetchedResultsController<SavedItem> {
@@ -716,11 +716,8 @@ extension PocketSource {
 
 // MARK: - Image
 extension PocketSource {
-    public func download(images: [Image]) {
-        images.forEach {
-            $0.isDownloaded = true
-        }
-
+    public func delete(images: [Image]) {
+        space.delete(images)
         try? space.save()
     }
 }
