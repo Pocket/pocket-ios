@@ -85,7 +85,7 @@ struct Services {
         )
 
         imageManager = ImageManager(
-            imagesController: source.makeUndownloadedImagesController(),
+            imagesController: source.makeImagesController(),
             imageRetriever: KingfisherManager.shared,
             source: source
         )
