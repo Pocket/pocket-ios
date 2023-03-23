@@ -29,10 +29,10 @@ public struct SyncConstants {
 
     public struct Home {
         /// How many recomendations to pull in when we load them via getSlateLineup (ie. Home)
-        public static let recomendationsPerSlateFromSlateLineup = 5
+        static let recomendationsPerSlateFromSlateLineup = 15
 
         /// How many recomendations to pull in when we load them via getSlate (ie. a detail view)
-        public static let recomendationsPerSlateDetail = 25
+        static let recomendationsPerSlateDetail = 15
 
         /// How many recent saves to show
         public static let recentSaves = 5
