@@ -10,10 +10,12 @@ extension SlateLineup {
         requestID = remote.requestId
         experimentID = remote.experimentId
 
+        var i = 1
         slates = try? NSOrderedSet(array: remote.slates.map { remoteSlate in
             let slate = try space.fetchSlate(byRemoteID: remoteSlate.id) ?? Slate(context: space.backgroundContext, remoteID: remoteSlate.id, expermimentID: remoteSlate.experimentId, requestID: remoteSlate.requestId)
             slate.update(from: remoteSlate.fragments.slateParts, in: space)
-
+            slate.sortIndex = NSNumber(value: i)
+            i = i + 1
             return slate
         })
     }
@@ -29,12 +31,15 @@ extension Slate {
         requestID = remote.requestId
         slateDescription = remote.description
 
+        var i = 1
         recommendations = NSOrderedSet(array: remote.recommendations.compactMap { remote in
             guard let remoteID = remote.id,
                   let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID) ?? Recommendation(context: space.backgroundContext, remoteID: remoteID) else {
                 return nil
             }
             recommendation.update(from: remote, in: space)
+            recommendation.sortIndex = NSNumber(value: i)
+            i = i + 1
             return recommendation
         })
     }

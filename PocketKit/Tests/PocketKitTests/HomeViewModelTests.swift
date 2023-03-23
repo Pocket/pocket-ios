@@ -14,6 +14,8 @@ class HomeViewModelTests: XCTestCase {
     var networkPathMonitor: MockNetworkPathMonitor!
     var homeRefreshCoordinator: MockHomeRefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
+    var homeController: NSFetchedResultsController<Recommendation>!
+    var recentSavesController: NSFetchedResultsController<SavedItem>!
 
     override func setUp() async throws {
         subscriptions = []
@@ -21,25 +23,17 @@ class HomeViewModelTests: XCTestCase {
         source = MockSource()
         networkPathMonitor = MockNetworkPathMonitor()
         homeRefreshCoordinator = MockHomeRefreshCoordinator()
+        homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
+        recentSavesController = space.makeRecentSavesController(limit: 5)
 
         tracker = MockTracker()
 
-        source.stubRecentSaves { limit in
-            do {
-                return try self.space.fetch(Requests.fetchSavedItems(limit: limit))
-            } catch {
-                XCTAssert(false, "Fail")
-            }
-            return []
+        source.stubMakeHomeController {
+            self.homeController
         }
 
-        source.stubSlateLineup { identifier in
-            do {
-                return try self.space.fetchSlateLineup(byRemoteID: identifier)
-            } catch {
-                XCTAssert(false, "Fail")
-            }
-            return nil
+        source.stubMakeRecentSavesController {
+            self.recentSavesController
         }
 
         source.stubViewObject { identifier in
@@ -89,7 +83,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
-        viewModel.$snapshot.sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
             defer { receivedLoadingSnapshot.fulfill() }
             XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
         }.store(in: &subscriptions)
@@ -105,19 +99,20 @@ class HomeViewModelTests: XCTestCase {
         }
 
         let slates = try [
-            space.createSlate(recommendations: Array(recommendations[0...1])),
-            space.createSlate(recommendations: Array(recommendations[2...3])),
+            space.createSlate(remoteID: "slate-1", recommendations: Array(recommendations[0...1])),
+            space.createSlate(remoteID: "slate-2", recommendations: Array(recommendations[2...3])),
         ]
 
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
+        try space.save()
 
         let viewModel = subject()
-        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
+        let receivedSnapshot = expectation(description: "receivedSnapshot")
         viewModel.$snapshot.dropFirst().first().sink { snapshot in
-            defer { receivedEmptySnapshot.fulfill() }
+            defer { receivedSnapshot.fulfill() }
             XCTAssertEqual(
                 snapshot.sectionIdentifiers,
                 slates.flatMap { slate in
@@ -145,7 +140,7 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedSnapshot], timeout: 1)
     }
 
     func test_fetch_whenRecentSavesAreAvailable_andSlateLineupIsUnavailable_sendsSnapshotWithRecentSaves() throws {
@@ -157,6 +152,7 @@ class HomeViewModelTests: XCTestCase {
                 item: items[$0 - 1]
             )
         }
+        try space.save()
 
         let viewModel = subject()
         let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
@@ -164,7 +160,7 @@ class HomeViewModelTests: XCTestCase {
             defer { receivedEmptySnapshot.fulfill() }
             XCTAssertEqual(
                 snapshot.sectionIdentifiers,
-                [.recentSaves]
+                [.recentSaves, .loading]
             )
 
             XCTAssertEqual(
@@ -182,11 +178,11 @@ class HomeViewModelTests: XCTestCase {
         let items = (1...4).map { space.buildItem(remoteID: "item-\($0)") }
         let recommendations = items.map { space.buildRecommendation(item: $0) }
         let slates = [
-            space.buildSlate(recommendations: Array(recommendations[0...1])),
-            space.buildSlate(recommendations: Array(recommendations[2...3])),
+            space.buildSlate(remoteID: "slate-1", recommendations: Array(recommendations[0...1])),
+            space.buildSlate(remoteID: "slate-2", recommendations: Array(recommendations[2...3])),
         ]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
 
@@ -197,6 +193,7 @@ class HomeViewModelTests: XCTestCase {
                 item: items[$0 - 1]
             )
         }
+        try space.save()
 
         let viewModel = subject()
         let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
@@ -242,7 +239,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendations = try items.map { try space.createRecommendation(item: $0) }
         let slate = space.buildSlate(recommendations: recommendations)
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [slate]
         )
 
@@ -268,7 +265,7 @@ class HomeViewModelTests: XCTestCase {
 
     func test_snapshot_whenSlateLineupIsUpdated_updatesSnapshot() throws {
         let lineup = try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [
                 space.createSlate(
                     remoteID: "slate-1",
@@ -283,6 +280,7 @@ class HomeViewModelTests: XCTestCase {
                 )
             ]
         )
+        try space.save()
 
         let viewModel = subject()
         viewModel.fetch()
@@ -291,7 +289,7 @@ class HomeViewModelTests: XCTestCase {
         var rec: Recommendation!
 
         let snapshotSent = expectation(description: "snapshotSent")
-        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { snapshotSent.fulfill() }
 
             XCTAssertEqual(
@@ -316,7 +314,7 @@ class HomeViewModelTests: XCTestCase {
         )
 
         _ = space.buildSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [slate]
         )
         try space.save()
@@ -332,9 +330,10 @@ class HomeViewModelTests: XCTestCase {
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
+        try space.save()
 
         var savedItem: SavedItem!
         let viewModel = subject()
@@ -357,7 +356,7 @@ class HomeViewModelTests: XCTestCase {
             )
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID)]
+                [.recommendationHero(recommendations[0].objectID), .recommendationCarousel(recommendations[1].objectID)]
             )
         }.store(in: &subscriptions)
 
@@ -377,7 +376,7 @@ class HomeViewModelTests: XCTestCase {
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
 
@@ -401,7 +400,7 @@ class HomeViewModelTests: XCTestCase {
             )
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID)]
+                [.recommendationHero(recommendations[0].objectID), .recommendationCarousel(recommendations[1].objectID)]
             )
         }.store(in: &subscriptions)
 
@@ -421,7 +420,7 @@ class HomeViewModelTests: XCTestCase {
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
 
@@ -446,7 +445,7 @@ class HomeViewModelTests: XCTestCase {
 
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID)]
+                [.recommendationHero(recommendations[0].objectID), .recommendationCarousel(recommendations[1].objectID)]
             )
         }.store(in: &subscriptions)
 
@@ -470,7 +469,7 @@ class HomeViewModelTests: XCTestCase {
 
             XCTAssertEqual(
                 snapshot.sectionIdentifiers,
-                [.recentSaves]
+                [.recentSaves, .loading]
             )
 
             XCTAssertEqual(
@@ -507,7 +506,7 @@ class HomeViewModelTests: XCTestCase {
 
          let snapshotExpectation = expectation(description: "expect a snapshot")
          let viewModel = subject()
-         viewModel.$snapshot.dropFirst().sink { snapshot in
+         viewModel.$snapshot.dropFirst(2).sink { snapshot in
              XCTAssertEqual(
                  snapshot.itemIdentifiers(inSection: .recentSaves),
                  [
@@ -531,7 +530,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected a snapshot update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
             XCTAssertNotNil(snapshot.indexOfSection(.offline))
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
             snapshotExpectation.fulfill()
@@ -560,7 +559,7 @@ class HomeViewModelTests: XCTestCase {
         let carouselRec = space.buildRecommendation(item: space.buildItem())
         let recommendations = [heroRec, carouselRec]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
@@ -597,7 +596,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let recommendations = [recommendation]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
@@ -648,7 +647,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let recommendations = [recommendation]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
@@ -677,7 +676,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let recommendations = [recommendation]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
@@ -727,7 +726,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendations = [recommendation]
         let slate = space.buildSlate(name: "My Awesome Slate", recommendations: recommendations)
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [slate]
         )
 
@@ -752,7 +751,7 @@ class HomeViewModelTests: XCTestCase {
         let heroRec = space.buildRecommendation()
         let carouselRec = space.buildRecommendation()
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: [heroRec, carouselRec])]
         )
 
@@ -783,7 +782,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let recommendations = [recommendation]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
         try space.save()
@@ -809,7 +808,7 @@ class HomeViewModelTests: XCTestCase {
 
         space.buildSavedItem(item: item)
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
@@ -834,7 +833,7 @@ class HomeViewModelTests: XCTestCase {
         ]
 
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
 
