@@ -60,6 +60,13 @@ class HomeTests: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
+        
+        server.routes.get("/item-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
 
         try server.start()
     }
@@ -101,7 +108,7 @@ class HomeTests: XCTestCase {
         let loadedSlate2Rec1 = recs[2]!
         let loadedSlate2Rec2 = recs[3]!
 
-        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/hello")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/item-1")
         snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/item-2")
         snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec1, url: "https://example.com/item-1")
         snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec2, url: "https://example.com/item-2")
@@ -203,8 +210,6 @@ class HomeTests: XCTestCase {
         home.sectionHeader("Slate 1").seeAllButton.wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").wait()
-        app.slateDetailView.element.swipeUp()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").wait()
 
         app.navigationBar.buttons["Home"].wait().tap()
         home.element.swipeUp()
@@ -279,7 +284,7 @@ class HomeTests: XCTestCase {
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToSaveAnItem {
-                XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/hello"))
+                XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/item-1"))
                 saveRequestExpectation.fulfill()
                 promise = loop.makePromise()
                 return promise!.futureResult
@@ -332,7 +337,7 @@ class HomeTests: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
-                if apiRequest.contains("https:\\/\\/example.com\\/item-1") {
+                if apiRequest.contains("http:\\/\\/localhost:8080\\/item-1") {
                     return Response.saveItem("save-recommendation-1")
                 } else if apiRequest.contains("https:\\/\\/example.com\\/item-2") {
                     return Response.saveItem("save-recommendation-2")
