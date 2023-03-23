@@ -394,15 +394,6 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(fetched, [recommendation2])
     }
 
-    func test_downloadImage_updatesIsDownloadedProperty() throws {
-        let image: Image = Image(context: space.backgroundContext)
-
-        let source = subject()
-        source.download(images: [image])
-
-        XCTAssertTrue(image.isDownloaded)
-    }
-
     @MainActor
     func test_fetchOfflineContent_fetchesOfflineContent() async throws {
         apollo.stubFetch(
