@@ -306,15 +306,15 @@ extension MockSource {
 
 // MARK: - Make images controller
 extension MockSource {
-    static let makeUndownloadedImagesController = "makeUndownloadedImagesController"
-    typealias MakeUndownloadedImagesControllerImpl = () -> ImagesController
+    static let makeImagesController = "makeImagesController"
+    typealias MakeImagesControllerImpl = () -> ImagesController
 
-    func stubMakeUndownloadedImagesController(impl: @escaping MakeUndownloadedImagesControllerImpl) {
-        implementations[Self.makeUndownloadedImagesController] = impl
+    func stubMakeImagesController(impl: @escaping MakeImagesControllerImpl) {
+        implementations[Self.makeImagesController] = impl
     }
 
-    func makeUndownloadedImagesController() -> ImagesController {
-        guard let impl = implementations[Self.makeUndownloadedImagesController] as? MakeUndownloadedImagesControllerImpl else {
+    func makeImagesController() -> ImagesController {
+        guard let impl = implementations[Self.makeImagesController] as? MakeImagesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
@@ -1012,33 +1012,33 @@ extension MockSource {
 }
 
 extension MockSource {
-    private static let downloadImages = "downloadImages"
-    typealias DownloadImagesImpl = ([Image]) -> Void
-    struct DownloadImagesCall {
+    private static let deleteImages = "deleteImages"
+    typealias DeleteImagesImpl = ([Image]) -> Void
+    struct DeleteImagesCall {
         let images: [Image]
     }
 
-    func stubDownloadImages(_ impl: @escaping DownloadImagesImpl) {
-        implementations[Self.downloadImages] = impl
+    func stubDeleteImages(_ impl: @escaping DeleteImagesImpl) {
+        implementations[Self.deleteImages] = impl
     }
 
-    func downloadImagesCall(at index: Int) -> DownloadImagesCall? {
-        guard let calls = calls[Self.downloadImages],
+    func deleteImagesCall(at index: Int) -> DeleteImagesCall? {
+        guard let calls = calls[Self.deleteImages],
               index < calls.count,
-              let call = calls[index] as? DownloadImagesCall else {
+              let call = calls[index] as? DeleteImagesCall else {
             return nil
         }
 
         return call
     }
 
-    func download(images: [Image]) {
-        guard let impl = implementations[Self.downloadImages] as? DownloadImagesImpl else {
+    func delete(images: [Image]) {
+        guard let impl = implementations[Self.deleteImages] as? DeleteImagesImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.downloadImages] = (calls[Self.downloadImages] ?? []) + [
-            DownloadImagesCall(images: images)
+        calls[Self.deleteImages] = (calls[Self.deleteImages] ?? []) + [
+            DeleteImagesCall(images: images)
         ]
 
         impl(images)

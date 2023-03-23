@@ -296,12 +296,14 @@ extension Space {
     @discardableResult
     func buildImage(
         source: URL?,
-        isDownloaded: Bool = false
+        isDownloaded: Bool = false,
+        item: Item? = nil
     ) -> Image {
         return backgroundContext.performAndWait {
             let image: Image = Image(context: backgroundContext)
             image.source = source
             image.isDownloaded = isDownloaded
+            image.item = item
 
             return image
         }
@@ -310,10 +312,15 @@ extension Space {
     @discardableResult
     func createImage(
         source: URL?,
-        isDownloaded: Bool = false
+        isDownloaded: Bool = false,
+        item: Item? = nil
     ) throws -> Image {
         return try backgroundContext.performAndWait {
-            let image = buildImage(source: source, isDownloaded: isDownloaded)
+            let image = buildImage(
+                source: source,
+                isDownloaded: isDownloaded,
+                item: item
+            )
             try backgroundContext.save()
 
             return image

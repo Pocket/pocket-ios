@@ -22,7 +22,7 @@ class ImageManagerTests: XCTestCase {
         imagesController.stubPerformFetch { }
         imageCache.stubRemoveImage { _, _, _, _, _, _ in }
         imageRetriever.stubRetrieveImage { _, _, _, _, _ in return nil }
-        source.stubDownloadImages { _ in }
+        source.stubDeleteImages { _ in }
     }
 
     override func tearDownWithError() throws {
@@ -41,103 +41,92 @@ class ImageManagerTests: XCTestCase {
         )
     }
 
-    func test_whenImagesInsertedOrUpdated_downloadsEachImage() {
-        imageRetriever.stubRetrieveImage { _, _, _, _, completion in
-            let result = RetrieveImageResult(
-                image: UIImage(),
-                cacheType: .memory,
-                source: .network(URL(string: "https://getpocket.com/example-image.png")!),
-                originalSource: .network(URL(string: "https://getpocket.com/example-image.png")!),
-                data: {
-                    return nil
-                }
+    func test_onStart_withNoOrphans_andNoCachedImages_downloadsImages() {
+        imagesController.images = [
+            try! space.createImage(
+                source: URL(string: "https://getpocket.com"),
+                item: try! space.createItem()
             )
-            completion?(.success(result))
-            return nil
+        ]
+
+        imageCache.stubIsCached { _, _ in
+            return false
         }
 
-        let prefetcher = subject()
-        prefetcher.start()
+        let subject = subject()
 
-        let images: [Image] = [
-            space.buildImage(source: URL(string: "https://example.com/image-1.png")),
-            space.buildImage(source: URL(string: "https://example.com/image-2.png")),
-            space.buildImage(source: URL(string: "https://example.com/image-3.png")),
-            space.buildImage(source: URL(string: "https://example.com/image-4.png")),
-        ]
-        imagesController.images = Array(images[0...1])
+        subject.start()
 
-        imagesController.delegate?.controllerDidChangeContent(imagesController)
+        let resource = imageRetriever.retrieveImageCall(at: 0)?.resource
+        let expectedURL = imageCacheURL(for: imagesController.images!.first!.source)
 
-        XCTAssertEqual(imageRetriever.retrieveImageCall(at: 0)?.resource as? URL, imageCacheURL(for: images[0].source))
-        XCTAssertEqual(source.downloadImagesCall(at: 0)?.images.first, images[0])
-        XCTAssertEqual(imageRetriever.retrieveImageCall(at: 1)?.resource as? URL, imageCacheURL(for: images[1].source))
-        XCTAssertEqual(source.downloadImagesCall(at: 0)?.images, imagesController.images)
-
-        imagesController.delegate?.controller(
-            imagesController,
-            didChange: images[2],
-            at: nil,
-            for: .insert,
-            newIndexPath: nil
-        )
-
-        XCTAssertEqual(imageRetriever.retrieveImageCall(at: 2)?.resource as? URL, imageCacheURL(for: images[2].source))
-        XCTAssertEqual(source.downloadImagesCall(at: 1)?.images, [images[2]])
-
-        imagesController.delegate?.controller(
-            imagesController,
-            didChange: images[3],
-            at: nil,
-            for: .update,
-            newIndexPath: nil
-        )
-
-        XCTAssertEqual(imageRetriever.retrieveImageCall(at: 3)?.resource as? URL, imageCacheURL(for: images[3].source))
-        XCTAssertEqual(source.downloadImagesCall(at: 2)?.images, [images[3]])
+        // Force unwrapping also tests for nil; two-in-one
+        XCTAssertEqual(resource!.downloadURL, expectedURL)
     }
 
-    func test_whenImagesAreMoved_doesNothing() {
-        let prefetcher = subject()
-        prefetcher.start()
-
-        let images: [Image] = [
-            space.buildImage(source: URL(string: "https://example.com/image-1.png")),
+    func test_onStart_withNoOrphans_andCachedImages_doesNothing() {
+        imagesController.images = [
+            try! space.createImage(
+                source: URL(string: "https://getpocket.com"),
+                item: try! space.createItem()
+            )
         ]
-        imagesController.images = images
 
-        imagesController.delegate?.controller(
-            imagesController,
-            didChange: images[0],
-            at: nil,
-            for: .move,
-            newIndexPath: nil
-        )
+        imageCache.stubIsCached { _, _ in
+            return true
+        }
+
+        let subject = subject()
+
+        subject.start()
 
         XCTAssertNil(imageRetriever.retrieveImageCall(at: 0))
-        XCTAssertNil(source.downloadImagesCall(at: 0))
     }
 
-    func test_whenImagesAreDeleted_removesImageFromCache() {
-        let prefetcher = subject()
-        prefetcher.start()
-
-        let images: [Image] = [
-            space.buildImage(source: URL(string: "https://example.com/image-1.png")),
+    func test_onStart_withOrphans_andNoCachedImages_deletesImagesFromSource() {
+        imagesController.images = [
+            try! space.createImage(
+                source: URL(string: "https://getpocket.com/"),
+                item: try! space.createItem()
+            ),
+            try! space.createImage(
+                source: URL(string: "https://getpocket.com/orphan")
+            )
         ]
-        imagesController.images = images
 
-        imagesController.delegate?.controller(
-            imagesController,
-            didChange: images[0],
-            at: nil,
-            for: .delete,
-            newIndexPath: nil
-        )
+        imageCache.stubIsCached { _, _ in
+            return false
+        }
+
+        let subject = subject()
+
+        subject.start()
 
         XCTAssertEqual(
-            imageCache.removeImageCall(at: 0)?.key,
-            imageCacheURL(for: images[0].source!)!.cacheKey
+            source.deleteImagesCall(at: 0)!.images[0],
+            imagesController.images![1]
+        )
+    }
+
+    func test_onStart_withOrphans_andCachedImages_removesOrphansFromCache() {
+        imagesController.images = [
+            try! space.createImage(
+                source: URL(string: "https://getpocket.com/orphan")
+            )
+        ]
+
+        imageCache.stubIsCached { _, _ in
+            return true
+        }
+
+        let subject = subject()
+
+        subject.start()
+
+        let expectedKey = imageCacheURL(for: imagesController.images![0].source!)!.absoluteString
+        XCTAssertEqual(
+            imageCache.removeImageCall(at: 0)!.key,
+            expectedKey
         )
     }
 }

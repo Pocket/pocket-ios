@@ -67,6 +67,41 @@ extension MockImageCache {
     }
 }
 
+extension MockImageCache {
+    private static let isCached = "isCached"
+
+    typealias IsCachedImpl = (String, String) -> Bool
+
+    struct IsCachedCall {
+        let key: String
+        let processIdentifier: String
+    }
+
+    func stubIsCached(_ impl: @escaping IsCachedImpl) {
+        implementations[Self.isCached] = impl
+    }
+
+    func isCachedCall(at index: Int) -> IsCachedCall? {
+        guard let calls = calls[Self.isCached], index < calls.count else {
+            return nil
+        }
+
+        return calls[index] as? IsCachedCall
+    }
+
+    func isCached(forKey key: String, processorIdentifier identifier: String) -> Bool {
+        guard let impl = implementations[Self.isCached] as? IsCachedImpl else {
+            fatalError("\(Self.self).\(#function) is not stubbed")
+        }
+
+        calls[Self.isCached] = (calls[Self.isCached] ?? []) + [
+            IsCachedCall(key: key, processIdentifier: identifier)
+        ]
+
+        return impl(key, identifier)
+    }
+}
+
 class MockImageRetriever: ImageRetriever {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
