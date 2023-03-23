@@ -168,6 +168,12 @@ extension Space {
         backgroundContext.performAndWait {
             let lineup: SlateLineup = SlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             lineup.slates = NSOrderedSet(array: slates)
+            var i = 1
+            lineup.slates?.forEach { slate in
+                let slate = slate as! Slate
+                slate.sortIndex = NSNumber(value: i)
+                i = i + 1
+            }
 
             return lineup
         }
@@ -214,6 +220,13 @@ extension Space {
             slate.name = name
             slate.slateDescription = slateDescription
             slate.recommendations = NSOrderedSet(array: recommendations)
+
+            var i = 1
+            slate.recommendations?.forEach { rec in
+                var rec = rec as! Recommendation
+                rec.sortIndex = NSNumber(value: i)
+                i = i + 1
+            }
 
             return slate
         }

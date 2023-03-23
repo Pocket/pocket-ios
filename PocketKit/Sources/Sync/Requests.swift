@@ -101,6 +101,18 @@ public enum Requests {
         Slate.fetchRequest()
     }
 
+    public static func fetchRecomendations(by lineupIdentifier: String) -> NSFetchRequest<Recommendation> {
+        let request = Recommendation.fetchRequest()
+        request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@", lineupIdentifier)
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Recommendation.slate?.sortIndex, ascending: true),
+            NSSortDescriptor(keyPath: \Recommendation.sortIndex, ascending: true),
+            NSSortDescriptor(keyPath: \Recommendation.item?.title, ascending: true),
+            NSSortDescriptor(keyPath: \Recommendation.item?.savedItem?.url, ascending: true),
+        ]
+        return request
+    }
+
     public static func fetchSlate(byID id: String) -> NSFetchRequest<Slate> {
         let request = Self.fetchSlates()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
