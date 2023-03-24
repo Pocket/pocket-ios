@@ -32,6 +32,7 @@ struct Services {
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
+    let listen: ListenRuntime
 
     private let persistentContainer: PersistentContainer
 
@@ -119,6 +120,8 @@ struct Services {
         subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
+        
+        listen = ListenRuntime()
     }
 }
 

@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "PocketKit",
     defaultLocalization: "en",
-    platforms: [.iOS("15"), .macOS("11")],
+    platforms: [.iOS("15")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
         .library(name: "SaveToPocketKit", targets: ["SaveToPocketKit"]),
@@ -14,6 +14,7 @@ let package = Package(
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
         .library(name: "Analytics", targets: ["Analytics"]),
+        .library(name: "PKTListen", targets: ["PKTListen"])
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.0.7"),
@@ -23,9 +24,11 @@ let package = Package(
         .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.1.3"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.4.0"),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.11.2")
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.11.2"),
     ],
     targets: [
+        .binaryTarget(name: "PKTListen", path: "./Frameworks/PKTListen.xcframework"),
+
         .target(
             name: "PocketKit",
             dependencies: [
@@ -33,10 +36,12 @@ let package = Package(
                 "Textile",
                 "Analytics",
                 "SharedPocketKit",
+                "PKTListen",
                 .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
                 .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "BrazeUI", package: "braze-swift-sdk")
-            ]
+            ],
+            linkerSettings: [.unsafeFlags(["-ObjC"])] // Needed to load categories in PKTListen
         ),
         .testTarget(
             name: "PocketKitTests",
