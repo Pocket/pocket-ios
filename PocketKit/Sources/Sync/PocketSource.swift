@@ -33,6 +33,7 @@ public class PocketSource: Source {
     private let backgroundTaskManager: BackgroundTaskManager
     private let osNotificationCenter: OSNotificationCenter
     private let notificationObserver = UUID()
+    private let userService: UserService
 
     private let operations: SyncOperationFactory
     private let syncQ: OperationQueue = {
@@ -66,7 +67,8 @@ public class PocketSource: Source {
             backgroundTaskManager: backgroundTaskManager,
             osNotificationCenter: OSNotificationCenter(
                 notifications: CFNotificationCenterGetDarwinNotifyCenter()
-            )
+            ),
+            userService: APIUserService(apollo: apollo, space: space, user: user)
         )
     }
 
@@ -80,7 +82,8 @@ public class PocketSource: Source {
         networkMonitor: NetworkPathMonitor,
         sessionProvider: SessionProvider,
         backgroundTaskManager: BackgroundTaskManager,
-        osNotificationCenter: OSNotificationCenter
+        osNotificationCenter: OSNotificationCenter,
+        userService: UserService
     ) {
         self.space = space
         self.user = user
@@ -95,6 +98,7 @@ public class PocketSource: Source {
         self.osNotificationCenter = osNotificationCenter
         self.initialSavesDownloadState = .init(.unknown)
         self.initialArchiveDownloadState = .init(.unknown)
+        self.userService = userService
 
         if lastRefresh.lastRefreshSaves != nil {
             initialSavesDownloadState.send(.completed)
@@ -475,6 +479,13 @@ extension PocketSource {
 
     public func fetchItem(_ url: URL) -> Item? {
         return try? space.fetchItem(byURL: url)
+    }
+}
+
+// MARK: - User Info
+extension PocketSource {
+    public func fetchUserData() async throws {
+        try await userService.fetchUser()
     }
 }
 

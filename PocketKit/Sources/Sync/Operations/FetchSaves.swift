@@ -69,9 +69,6 @@ class FetchSaves: SyncOperation {
 
         repeat {
             let result = try await fetchPage(pagination)
-            if let isPremium = result.data?.user?.isPremium as? Bool {
-                user.setPremiumStatus(isPremium)
-             }
 
             if case .started = initialDownloadState.value,
                let totalCount = result.data?.user?.savedItems?.totalCount,

@@ -11,7 +11,6 @@ public class FetchSavesQuery: GraphQLQuery {
       query FetchSaves($pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
         user {
           __typename
-          isPremium
           savedItems(pagination: $pagination, filter: $savedItemsFilter) {
             __typename
             totalCount
@@ -72,15 +71,12 @@ public class FetchSavesQuery: GraphQLQuery {
 
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.User }
       public static var __selections: [ApolloAPI.Selection] { [
-        .field("isPremium", Bool?.self),
         .field("savedItems", SavedItems?.self, arguments: [
           "pagination": .variable("pagination"),
           "filter": .variable("savedItemsFilter")
         ]),
       ] }
 
-      /// The user's premium status
-      public var isPremium: Bool? { __data["isPremium"] }
       /// Get a general paginated listing of all SavedItems for the user
       public var savedItems: SavedItems? { __data["savedItems"] }
 
@@ -548,6 +544,8 @@ public class FetchSavesQuery: GraphQLQuery {
 
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
 
+                /// URL of the item that the user gave for the SavedItem
+                /// that is pending processing by parser
                 public var url: PocketGraph.Url { __data["url"] }
                 public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 

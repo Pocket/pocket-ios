@@ -39,7 +39,6 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
     /// SavedItem that had its Tag associations cleared.
     /// Note that if this operation results in a Tag having no associations
     /// to a SavedItem, the Tag object will be deleted.
-    @available(*, deprecated, message: "use saveBatchUpdateTags")
     public var updateSavedItemRemoveTags: UpdateSavedItemRemoveTags { __data["updateSavedItemRemoveTags"] }
 
     /// UpdateSavedItemRemoveTags
@@ -448,6 +447,8 @@ public class UpdateSavedItemRemoveTagsMutation: GraphQLMutation {
 
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
 
+          /// URL of the item that the user gave for the SavedItem
+          /// that is pending processing by parser
           public var url: PocketGraph.Url { __data["url"] }
           public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 

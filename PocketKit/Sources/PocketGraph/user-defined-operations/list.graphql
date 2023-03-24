@@ -22,7 +22,6 @@ fragment TagParts on Tag {
 
 query FetchSaves($pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
   user {
-    isPremium
     savedItems(pagination: $pagination, filter: $savedItemsFilter) {
       totalCount
       pageInfo {
