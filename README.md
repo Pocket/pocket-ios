@@ -158,3 +158,13 @@ Snowplow micro has 4 endpoints of note:
 Due to the project structure being a Package within an app, Swift previews do not work in the way you would expect. When working on SwiftUI with previews you need to select the build scheme in the xcode menu bar for the package you are working on. I.E. If you are working on a SwiftUI view under PocketKit ensure PocketKit is selected in the scheme editor, if you are working in Textile, make sure Textile is selected.
 
 Also in order to support SwiftUI Previews, view models should not be passed directly into the View and instead the properties and actions should be passed directly. [See this opinion piece for more on the subject.](https://medium.com/swift2go/swiftui-opinion-viewmodel-doesnt-belong-in-previews-62d9e1485b38)
+
+### License Acknowledgements
+
+When you add a dependncy we need to ensure that our [OpenSource Licenses](https://getpocket.com/opensource_licenses_ios) are up to date with all licenses we are using. 
+
+The following are the high level steps to update the notices page:
+
+1. Install [LicensePlist](https://github.com/mono0926/LicensePlist) `brew install licenseplist`
+2. Run `license-plist --markdown-path Acknowledgements.markdown`
+3. Open an issue on [Bedrock](https://github.com/mozilla/bedrock/) with a description and the requested page to update with a link to a document of the generated `Acknowledgements.markdown`
