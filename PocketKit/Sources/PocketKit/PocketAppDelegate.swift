@@ -130,7 +130,10 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             legacyUserMigration.forceSkip()
             Log.capture(error: error)
         }
-
+        // Legacy cleanup
+        // TODO: remove this code once we are "fully" migrated
+        let service = LegacyCleanupService()
+        service.cleanUp()
         return true
     }
 
@@ -144,3 +147,4 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         return PocketAppDelegate.phoneOrientationLock
     }
 }
+
