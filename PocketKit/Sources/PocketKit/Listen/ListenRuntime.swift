@@ -54,14 +54,15 @@ class ListenRuntime: NSObject {
     private func setUpSession(_ session: SharedPocketKit.Session) {
        PKTSetAccessToken(session.accessToken)
        PKTSetGUID(session.guid)
+       // TODO: make consumer key setable
 
         PKTListen.updateSettings()
         PKTUser.loggedIn().hasSignedUp = false
     }
 
     private func tearDownSession() {
-       // TODO: Wipe session
-       // HOW?
+        PKTSetAccessToken(nil)
+        PKTSetGUID(nil)
     }
 }
 
