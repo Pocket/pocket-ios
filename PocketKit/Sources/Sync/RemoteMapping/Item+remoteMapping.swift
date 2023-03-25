@@ -25,6 +25,12 @@ extension Item {
             timeToRead = 0
         }
 
+        if let words = remote.wordCount {
+            wordCount = NSNumber(value: words)
+        } else {
+            wordCount = 0
+        }
+
         excerpt = remote.excerpt
         datePublished = remote.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }
         isArticle = remote.isArticle ?? false
@@ -91,6 +97,11 @@ extension Item {
             timeToRead = NSNumber(value: readTime)
         } else {
             timeToRead = 0
+        }
+        if let words = summary.wordCount {
+            wordCount = NSNumber(value: words)
+        } else {
+            wordCount = 0
         }
         excerpt = summary.excerpt
         datePublished = summary.datePublished.flatMap { DateFormatter.clientAPI.date(from: $0) }

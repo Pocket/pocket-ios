@@ -232,7 +232,10 @@ extension SavesContainerViewController {
         }.store(in: &subscriptions)
 
         model.savedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
-            self?.showListen()
+            guard let listenViewModel else {
+                return
+            }
+            self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
@@ -267,7 +270,10 @@ extension SavesContainerViewController {
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
-            self?.showListen()
+            guard let listenViewModel else {
+                return
+            }
+            self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
@@ -481,13 +487,9 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 }
 
 extension SavesContainerViewController {
-    private func showListen() {
-        let config =  PKTListenAppKusariConfiguration()
-        let source = PKTRemoteListSource(["offset": NSNumber(value: 0), "count": NSNumber(value: 50), "state": "unread", "contentType": "article", "authors": NSNumber(value: 1)], configuration: config)
-        let appConfig = PKTListenAppConfiguration(source: source)
-
+    private func showListen(listenViewModel: ListenViewModel) {
+        let appConfig = PKTListenAppConfiguration(source: listenViewModel)
         let listen = PKTListenDrawerViewController.drawer(with: appConfig)
-
         self.present(listen, animated: true)
     }
 }

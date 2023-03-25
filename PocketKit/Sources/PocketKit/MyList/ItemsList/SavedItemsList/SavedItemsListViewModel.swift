@@ -590,7 +590,7 @@ extension SavedItemsListViewModel {
 
         switch filter {
         case .listen:
-            presentedListenViewModel = ListenViewModel(savedItems: self.itemsController.fetchedObjects)
+            presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects)
             selectedFilters.remove(.listen)
             // passin models
         case .search:

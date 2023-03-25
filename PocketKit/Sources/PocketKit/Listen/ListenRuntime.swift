@@ -6,15 +6,17 @@ import Foundation
 import SharedPocketKit
 import Combine
 import PKTListen
+import Sync
 
 class ListenRuntime: NSObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     static let colors = PKTListenAppTheme()
 
-    init(appSession: AppSession) {
+    init(appSession: AppSession, consumerKey: String) {
         super.init()
         PKTLocalRuntime.shared().start()
+        PKTSetConsumerKey(consumerKey)
         PKTListen.sharedInstance().sessionDelegate = self
 
         // Register for login notifications
@@ -68,6 +70,13 @@ class ListenRuntime: NSObject {
 
 extension ListenRuntime: PKTListenServiceDelegate {
     func postAction(_ actionName: String, kusari: PKTKusari<PKTListenItem>?, data userInfo: [AnyHashable: Any]) {
+        Log.debug("Listen action: \(actionName)")
+        // listen_opened
+        // listen_clised
+        // list_item_impression
+        // reach_end_listen
+        // See PKTListenItemSession for full list.
+        // kusari?.album.
     }
 
     func listenDidPresentPlayer(_ player: PKTListenAudibleQueuePresentationContext) {

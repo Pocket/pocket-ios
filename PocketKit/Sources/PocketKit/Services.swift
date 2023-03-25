@@ -121,7 +121,7 @@ struct Services {
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
 
-        listen = ListenRuntime(appSession: appSession)
+        listen = ListenRuntime(appSession: appSession, consumerKey: Keys.shared.pocketApiConsumerKey)
     }
 }
 
