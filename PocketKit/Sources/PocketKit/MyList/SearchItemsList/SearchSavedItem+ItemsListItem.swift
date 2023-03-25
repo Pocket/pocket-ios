@@ -3,6 +3,31 @@ import PocketGraph
 import Sync
 
 extension SearchSavedItem: ItemsListItem {
+    var displayTitle: String {
+        title ?? ""
+    }
+
+    var displayDetail: String {
+        [displayDomain, displayTimeToRead]
+            .compactMap { $0 }
+            .joined(separator: " • ")
+    }
+
+    var displayDomain: String? {
+        item.asItem?.domainMetadata?.name ?? item.asItem?.domain ?? host
+    }
+
+    var displayAuthors: String? {
+        let authors = item.asItem?.authors?.compactMap { $0?.name }
+        return authors?.joined(separator: ", ")
+    }
+
+    var displayTimeToRead: String? {
+        timeToRead
+            .flatMap { $0 > 0 ? $0 : nil }
+            .flatMap { L10n.Item.List.min($0) }
+    }
+
     var remoteItemParts: PocketGraph.SavedItemParts? {
         return remoteItem
     }

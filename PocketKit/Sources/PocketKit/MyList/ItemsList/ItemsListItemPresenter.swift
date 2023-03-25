@@ -64,22 +64,15 @@ class ItemsListItemPresenter {
     }
 
     private var title: String {
-        [
-            item.title,
-            item.bestURL?.absoluteString
-        ]
-            .compactMap { $0 }
-            .first { !$0.isEmpty } ?? ""
+        item.displayTitle
     }
 
     private var detail: String {
-        [domain, timeToRead]
-            .compactMap { $0 }
-            .joined(separator: " • ")
+        item.displayDetail
     }
 
     private var domain: String? {
-        item.domainMetadata?.name ?? item.domain ?? item.host
+        item.displayDomain
     }
 
     private var tags: [String]? {
@@ -91,11 +84,5 @@ class ItemsListItemPresenter {
     private var otherTagsCount: Int? {
         guard let count = item.tagNames?.count else { return nil }
         return count > 2 ? count - 2 : nil
-    }
-
-    private var timeToRead: String? {
-        item.timeToRead
-            .flatMap { $0 > 0 ? $0 : nil }
-            .flatMap { L10n.Item.List.min($0) }
     }
 }

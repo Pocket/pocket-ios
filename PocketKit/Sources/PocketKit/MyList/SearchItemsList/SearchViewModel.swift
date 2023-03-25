@@ -529,7 +529,7 @@ extension SearchViewModel: SavedItemsControllerDelegate {
     private func removeItemFromView(_ savedItem: SavedItem, and items: [PocketItem], at index: Int) {
         var items = items
         items.remove(at: index)
-        Log.debug("Search item removed \(String(describing: savedItem.title))")
+        Log.debug("Search item removed \(String(describing: savedItem.displayTitle))")
         // Animations seen to work better when we don't wrap this around main thread
         self.searchState = .searchResults(items)
     }
@@ -542,7 +542,7 @@ extension SearchViewModel: SavedItemsControllerDelegate {
         var items = items
         items.remove(at: index)
         items.insert(PocketItem(item: savedItem), at: index)
-        Log.debug("Search item updated \(String(describing: savedItem.title))")
+        Log.debug("Search item updated \(String(describing: savedItem.displayTitle))")
         // Animations seen to work better when we don't wrap this around main thread
         self.searchState = .searchResults(items)
     }

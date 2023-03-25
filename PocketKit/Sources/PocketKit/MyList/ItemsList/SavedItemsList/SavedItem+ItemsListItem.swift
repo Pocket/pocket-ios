@@ -10,8 +10,8 @@ extension SavedItem: ItemsListItem {
         item?.domain
     }
 
-    var title: String? {
-        item?.title
+    var displayTitle: String {
+        item?.title ?? item?.bestURL?.absoluteString ?? ""
     }
 
     var topImageURL: URL? {
@@ -22,8 +22,25 @@ extension SavedItem: ItemsListItem {
         item?.timeToRead?.intValue
     }
 
-    var domainMetadata: ItemsListItemDomainMetadata? {
-        return item?.domainMetadata
+    var displayDomain: String? {
+        item?.domainMetadata?.name ?? item?.domain ?? host
+    }
+
+    var displayDetail: String {
+        [displayDomain, displayTimeToRead]
+            .compactMap { $0 }
+            .joined(separator: " • ")
+    }
+
+    var displayTimeToRead: String? {
+        timeToRead
+            .flatMap { $0 > 0 ? $0 : nil }
+            .flatMap { L10n.Item.List.min($0) }
+    }
+
+    var displayAuthors: String? {
+        let authors: [String]? = item?.authors?.compactMap { ($0 as? Author)?.name }
+        return authors?.joined(separator: ", ")
     }
 
     var host: String? {
