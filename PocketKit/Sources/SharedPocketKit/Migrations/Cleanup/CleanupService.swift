@@ -9,7 +9,7 @@ public enum CleanupError: Error {
 }
 
 /// Service that cleans up legacy data
-public class LegacyCleanupService {
+public struct LegacyCleanupService {
     public func cleanUp() {
         cleanupLegacyUserDefaults()
         deleteSqliteDataBase()

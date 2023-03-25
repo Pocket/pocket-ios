@@ -117,6 +117,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             let attempted = try legacyUserMigration.perform()
             if attempted {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
+                // Legacy cleanup
+                LegacyCleanupService().cleanUp()
             } else {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
@@ -130,10 +132,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             legacyUserMigration.forceSkip()
             Log.capture(error: error)
         }
-        // Legacy cleanup
-        // TODO: remove this code once we are "fully" migrated
-        let service = LegacyCleanupService()
-        service.cleanUp()
         return true
     }
 
@@ -147,4 +145,3 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         return PocketAppDelegate.phoneOrientationLock
     }
 }
-
