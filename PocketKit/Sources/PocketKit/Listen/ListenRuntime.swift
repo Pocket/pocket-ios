@@ -18,6 +18,7 @@ class ListenRuntime: NSObject {
         PKTLocalRuntime.shared().start()
         PKTSetConsumerKey(consumerKey)
         PKTListen.sharedInstance().sessionDelegate = self
+        PKTListen.sharedInstance().pocketProxy = self
 
         // Register for login notifications
         NotificationCenter.default.publisher(
@@ -54,9 +55,8 @@ class ListenRuntime: NSObject {
     }
 
     private func setUpSession(_ session: SharedPocketKit.Session) {
-       PKTSetAccessToken(session.accessToken)
-       PKTSetGUID(session.guid)
-       // TODO: make consumer key setable
+        PKTSetAccessToken(session.accessToken)
+        PKTSetGUID(session.guid)
 
         PKTListen.updateSettings()
         PKTUser.loggedIn().hasSignedUp = false
@@ -103,5 +103,28 @@ extension ListenRuntime: PKTListenServiceDelegate {
 
     func currentColors() -> PKTUITheme {
         return ListenRuntime.colors
+    }
+}
+
+extension ListenRuntime: PKTListenPocketProxy {
+    func archiveKusari(_ kusari: PKTKusari<PKTListenItem>, userInfo: [AnyHashable: Any] = [:]) {
+        // TODO: Implement archiving
+        Log.debug("Archive listen album: \(String(describing: kusari.albumID))")
+    }
+
+    func add(_ kusari: PKTKusari<PKTListenItem>, userInfo: [AnyHashable: Any] = [:]) {
+        // TODO: Implement add
+        Log.debug("Add listen album: \(String(describing: kusari.albumID))")
+    }
+
+    func refreshAlbum(_ album: PKTListenItem) async -> PKTListenItem {
+        // TODO: Implement refresh?
+        // TODO: Ask nicole when this can happen
+        Log.debug("Refresh listen album: \(String(describing: album.albumID))")
+        return album
+    }
+
+    func store() -> PKTKeyValueStore {
+        PKTLocalRuntime.shared().store()
     }
 }

@@ -9,7 +9,6 @@ import Foundation
 import Sync
 import PKTListen
 
-
 extension SavedItem: PKTListenItem {
     public var albumID: String? {
         self.remoteID
