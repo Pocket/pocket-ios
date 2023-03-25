@@ -8,7 +8,7 @@ import Combine
 import PKTListen
 import Sync
 
-class ListenRuntime: NSObject {
+class Listen: NSObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     static let colors = PKTListenAppTheme()
@@ -68,7 +68,7 @@ class ListenRuntime: NSObject {
     }
 }
 
-extension ListenRuntime: PKTListenServiceDelegate {
+extension Listen: PKTListenServiceDelegate {
     func postAction(_ actionName: String, kusari: PKTKusari<PKTListenItem>?, data userInfo: [AnyHashable: Any]) {
         Log.debug("Listen action: \(actionName)")
         // listen_opened
@@ -102,11 +102,11 @@ extension ListenRuntime: PKTListenServiceDelegate {
     }
 
     func currentColors() -> PKTUITheme {
-        return ListenRuntime.colors
+        return Listen.colors
     }
 }
 
-extension ListenRuntime: PKTListenPocketProxy {
+extension Listen: PKTListenPocketProxy {
     func archiveKusari(_ kusari: PKTKusari<PKTListenItem>, userInfo: [AnyHashable: Any] = [:]) {
         // TODO: Implement archiving
         Log.debug("Archive listen album: \(String(describing: kusari.albumID))")

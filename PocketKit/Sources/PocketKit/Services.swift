@@ -32,7 +32,7 @@ struct Services {
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
-    let listen: ListenRuntime
+    let listen: Listen
 
     private let persistentContainer: PersistentContainer
 
@@ -121,7 +121,7 @@ struct Services {
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
 
-        listen = ListenRuntime(appSession: appSession, consumerKey: Keys.shared.pocketApiConsumerKey)
+        listen = Listen(appSession: appSession, consumerKey: Keys.shared.pocketApiConsumerKey)
     }
 }
 
