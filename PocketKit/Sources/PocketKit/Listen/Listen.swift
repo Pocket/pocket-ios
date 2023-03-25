@@ -15,8 +15,8 @@ class Listen: NSObject {
 
     init(appSession: AppSession, consumerKey: String) {
         super.init()
-        PKTLocalRuntime.shared().start()
         PKTSetConsumerKey(consumerKey)
+        PKTLocalRuntime.shared().start()
         PKTListen.sharedInstance().sessionDelegate = self
         PKTListen.sharedInstance().pocketProxy = self
 

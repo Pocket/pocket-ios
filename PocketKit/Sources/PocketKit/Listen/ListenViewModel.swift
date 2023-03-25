@@ -19,12 +19,6 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
         }) ?? []
 
         return ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
-           // let index = (context!["index"] as! NSNumber).intValue
-           // let length = min(max(allItems.count-index, 0), 100)
-           // var kusari = allItems[index...length]
-//            var newKusari = kusari.map { k in
-//                return k.merge(context?.merge(["index": NSNumber(value: index+length)], uniquingKeysWith: { (_, new) in new }))
-//            }
             source.hasMore = false
             Log.debug("Loaded Listen with \(allItems.count)")
             complete(nil, ["index": NSNumber(value: allItems.count)], allItems)
