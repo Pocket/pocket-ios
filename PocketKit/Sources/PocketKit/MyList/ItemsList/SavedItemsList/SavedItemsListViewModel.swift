@@ -50,6 +50,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     @Published
     var presentedSearch: Bool?
 
+    @Published
+    var presentedListenViewModel: ListenViewModel?
+
     private let listOptions: ListOptions
 
     var emptyState: EmptyStateViewModel? {
@@ -129,6 +132,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     func fetch() {
         let filters = selectedFilters.compactMap { filter -> NSPredicate? in
             switch filter {
+            case.listen:
+                return nil
             case.search:
                 return nil
             case .favorites:
@@ -584,6 +589,10 @@ extension SavedItemsListViewModel {
         guard !reTappedTagFilter else { return }
 
         switch filter {
+        case .listen:
+            presentedListenViewModel = ListenViewModel(savedItems: self.itemsController.fetchedObjects)
+            selectedFilters.remove(.listen)
+            // passin models
         case .search:
             presentedSearch = true
         case .all:

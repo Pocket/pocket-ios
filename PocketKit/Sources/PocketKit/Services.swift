@@ -120,8 +120,8 @@ struct Services {
         subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
-        
-        listen = ListenRuntime()
+
+        listen = ListenRuntime(appSession: appSession)
     }
 }
 

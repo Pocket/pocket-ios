@@ -228,6 +228,10 @@ internal enum L10n {
       internal static let pocket = L10n.tr("Localizable", "back.to.pocket", fallback: "Back to Pocket")
     }
   }
+  internal enum Carousel {
+    /// Listen
+    internal static let listen = L10n.tr("Localizable", "carousel.listen", fallback: "Listen")
+  }
   internal enum General {
     /// Oops! Try again?
     internal static let oops = L10n.tr("Localizable", "general.oops", fallback: "Oops! Try again?")

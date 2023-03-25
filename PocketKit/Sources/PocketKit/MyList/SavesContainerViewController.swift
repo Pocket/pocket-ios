@@ -5,6 +5,7 @@ import SharedPocketKit
 import Combine
 import SafariServices
 import Textile
+import PKTListen
 
 struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: SavesContainerViewModel
@@ -230,6 +231,10 @@ extension SavesContainerViewController {
             self?.updateSearchScope()
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
+            self?.showListen()
+        }.store(in: &subscriptions)
+
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
@@ -259,6 +264,10 @@ extension SavesContainerViewController {
 
         model.archivedItemsList.$presentedSearch.sink { [weak self] alert in
             self?.updateSearchScope()
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
+            self?.showListen()
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
@@ -468,5 +477,17 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
+    }
+}
+
+extension SavesContainerViewController {
+    private func showListen() {
+        let config =  PKTListenAppKusariConfiguration()
+        let source = PKTRemoteListSource(["offset": NSNumber(value: 0), "count": NSNumber(value: 50), "state": "unread", "contentType": "article", "authors": NSNumber(value: 1)], configuration: config)
+        let appConfig = PKTListenAppConfiguration(source: source)
+
+        let listen = PKTListenDrawerViewController.drawer(with: appConfig)
+
+        self.present(listen, animated: true)
     }
 }
