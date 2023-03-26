@@ -9,6 +9,7 @@ import AuthenticationServices
 import BackgroundTasks
 import SharedPocketKit
 import Kingfisher
+import Network
 
 struct Services {
     static let shared: Services = { Services() }()
@@ -121,7 +122,7 @@ struct Services {
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
 
-        listen = Listen(appSession: appSession, consumerKey: Keys.shared.pocketApiConsumerKey)
+        listen = Listen(appSession: appSession, consumerKey: Keys.shared.pocketApiConsumerKey, networkPathMonitor: NWPathMonitor())
     }
 }
 

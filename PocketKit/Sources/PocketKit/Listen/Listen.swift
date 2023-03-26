@@ -7,13 +7,14 @@ import SharedPocketKit
 import Combine
 import PKTListen
 import Sync
+import Network
 
 class Listen: NSObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     static let colors = PKTListenAppTheme()
 
-    init(appSession: AppSession, consumerKey: String) {
+    init(appSession: AppSession, consumerKey: String, networkPathMonitor: NetworkPathMonitor) {
         super.init()
         PKTSetConsumerKey(consumerKey)
         ListenRuntime.sharedRuntime.start()
@@ -38,6 +39,29 @@ class Listen: NSObject {
         }.store(in: &subscriptions)
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
+
+        networkPathMonitor.updateHandler = { [weak self] path in
+            guard let self else {
+                Log.capture(message: "weak self in listen network")
+                return
+            }
+            self.setNetworkStatus(status: path.status)
+        }
+
+        setNetworkStatus(status: networkPathMonitor.currentNetworkPath.status)
+    }
+
+    func setNetworkStatus(status: NWPath.Status) {
+        switch status {
+        case .satisfied:
+            PKTListenAppConfiguration.setConnection(.typeWiFi)
+        case .unsatisfied:
+            PKTListenAppConfiguration.setConnection(.typeNone)
+        case .requiresConnection:
+            PKTListenAppConfiguration.setConnection(.typeUnknown)
+        default:
+            PKTListenAppConfiguration.setConnection(.typeUnknown)
+        }
     }
 
     /**
