@@ -13,12 +13,33 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
     static func source(savedItems: [SavedItem]?) -> ListenViewModel {
         let config = PKTListenAppKusariConfiguration()
 
+        guard let languages = PKTListen.supportedLanguages else {
+            return ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
+                source.hasMore = false
+                Log.debug("Loaded Listen with no items")
+                complete(nil, ["index": NSNumber(value: 0)], [])
+            })
+        }
+
         let allItems: [PKTKusari<PKTListenItem>] = savedItems?.compactMap { $0 }.filter({savedItem in
-            guard let wordCount = savedItem.item?.wordCount?.intValue, wordCount > PKTListen.minimumWordCount, wordCount < PKTListen.maximumWordCount else {
+            if savedItem.estimatedAlbumDuration <= 60 {
+                return false
+            }
+// Below is the legacy listen logic, however we did not include wordCount in our intial data model so not all users will have it., So instead we just ensure our albumDuration is above 0
+//            guard let wordCount = savedItem.item?.wordCount?.intValue, wordCount > PKTListen.minimumWordCount, wordCount < PKTListen.maximumWordCount else {
+//                //Back up to using time to read, because MVP did not include wordCount
+//                guard let timeToRead = savedItem.item?.timeToRead?.intValue, timeToRead > 0 else {
+//                    return false
+//                }
+//
+//                return true
+//            }
+
+            guard let language = savedItem.albumLanguage else {
                 return false
             }
 
-            guard let language = savedItem.albumLanguage, ((PKTListen.supportedLanguages?.contains(language)) != nil) else {
+            if !languages.contains(language) {
                 return false
             }
 
@@ -30,7 +51,7 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
 
         return ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
             source.hasMore = false
-            Log.debug("Loaded Listen with \(allItems.count)")
+            Log.debug("Loaded Listen with \(allItems.count) articles")
             complete(nil, ["index": NSNumber(value: allItems.count)], allItems)
         })
     }

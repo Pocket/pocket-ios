@@ -41,7 +41,7 @@ extension SavedItem: PKTListenItem {
         }
 
         if let timeToRead = item?.timeToRead?.intValue, timeToRead > 0 {
-            return Double(timeToRead)
+            return Double(timeToRead * 60)
         }
 
         return 0
