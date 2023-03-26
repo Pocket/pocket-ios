@@ -13,7 +13,17 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
     static func source(savedItems: [SavedItem]?) -> ListenViewModel {
         let config = PKTListenAppKusariConfiguration()
 
-        let allItems: [PKTKusari<PKTListenItem>] = savedItems?.compactMap { $0 }.compactMap({item in
+        let allItems: [PKTKusari<PKTListenItem>] = savedItems?.compactMap { $0 }.filter({savedItem in
+            guard let wordCount = savedItem.item?.wordCount?.intValue, wordCount > PKTListen.minimumWordCount, wordCount < PKTListen.maximumWordCount else {
+                return false
+            }
+            
+            guard let language = savedItem.albumLanguage, ((PKTListen.supportedLanguages?.contains(language)) != nil) else {
+                return false
+            }
+            
+            return savedItem.item?.isArticle ?? false
+        }).compactMap({item in
             let v = PKTListenKusariCreate(item.albumID!, PKTListenQueueSectionType.item.rawValue, item, config)
             return v
         }) ?? []
