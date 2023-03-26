@@ -16,7 +16,7 @@ class Listen: NSObject {
     init(appSession: AppSession, consumerKey: String) {
         super.init()
         PKTSetConsumerKey(consumerKey)
-        PKTLocalRuntime.shared().start()
+        ListenRuntime.sharedRuntime.start()
         PKTListen.sharedInstance().sessionDelegate = self
         PKTListen.sharedInstance().pocketProxy = self
 
@@ -77,15 +77,19 @@ extension Listen: PKTListenServiceDelegate {
         // reach_end_listen
         // See PKTListenItemSession for full list.
         // kusari?.album.
+        // TODO: Analytics
     }
 
     func listenDidPresentPlayer(_ player: PKTListenAudibleQueuePresentationContext) {
+        // TODO: Analytics
     }
 
     func listenDidDismissPlayer(_ player: PKTListenAudibleQueuePresentationContext) {
+        // TODO: Analytics
     }
 
     func listenDidDismiss() {
+        // TODO: Analytics
     }
 
     func itemSessionService() -> PKTItemSessionService? {
@@ -93,12 +97,15 @@ extension Listen: PKTListenServiceDelegate {
     }
 
     func listenDidCollapse(intoMiniPlayer player: PKTListenAudibleQueuePresentationContext) {
+        // TODO: Analytics
     }
 
     func listenDidCloseMiniPlayer(_ player: PKTListenAudibleQueuePresentationContext) {
+        // TODO: Analytics
     }
 
     func listenDidExpand(fromMiniPlayer player: PKTListenAudibleQueuePresentationContext) {
+        // TODO: Analytics
     }
 
     func currentColors() -> PKTUITheme {
