@@ -63,7 +63,9 @@ class FetchArchive: SyncOperation {
     private func fetchArchive() async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize)
 
+        var i = 1
         repeat {
+            Log.breadcrumb(category: "sync.archive", level: .debug, message: "Loading page \(i)")
             let result = try await fetchPage(pagination)
 
             if case .started = initialDownloadState.value,
@@ -74,6 +76,8 @@ class FetchArchive: SyncOperation {
 
             try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Archive.pageSize)
+            Log.breadcrumb(category: "sync.archive", level: .debug, message: "Finished loading page \(i)")
+            i = i + 1
         } while pagination.shouldFetchNextPage
 
         initialDownloadState.send(.completed)

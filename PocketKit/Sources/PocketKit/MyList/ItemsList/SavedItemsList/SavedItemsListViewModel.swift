@@ -584,13 +584,6 @@ extension SavedItemsListViewModel {
         guard !reTappedTagFilter else { return }
 
         switch filter {
-<<<<<<< HEAD
-=======
-        case .listen:
-            presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects)
-            selectedFilters.remove(.listen)
-            return
->>>>>>> 519e45d6 (fix(performance): cleaning up some threads)
         case .search:
             presentedSearch = true
         case .all:

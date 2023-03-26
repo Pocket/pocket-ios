@@ -44,11 +44,19 @@ public class PocketSource: Source {
         return q
     }()
 
-    private let fetchQueue: OperationQueue = {
+    private let fetchSavesQueue: OperationQueue = {
         let q = OperationQueue()
-        q.maxConcurrentOperationCount = 8
+        q.maxConcurrentOperationCount = 1
         q.qualityOfService = .background
-        q.name = "com.mozilla.pocket.fetch"
+        q.name = "com.mozilla.pocket.fetch.saves"
+        return q
+    }()
+
+    private let fetchArchiveQueue: OperationQueue = {
+        let q = OperationQueue()
+        q.maxConcurrentOperationCount = 1
+        q.qualityOfService = .background
+        q.name = "com.mozilla.pocket.fetch.archive"
         return q
     }()
 
@@ -198,14 +206,17 @@ public class PocketSource: Source {
         networkMonitor.updateHandler = { [weak self] path in
             switch path.status {
             case .unsatisfied, .requiresConnection:
-                self?.fetchQueue.isSuspended = true
+                self?.fetchSavesQueue.isSuspended = true
+                self?.fetchArchiveQueue.isSuspended = true
                 self?.saveQueue.isSuspended = true
             case .satisfied:
-                self?.fetchQueue.isSuspended = false
+                self?.fetchSavesQueue.isSuspended = false
+                self?.fetchArchiveQueue.isSuspended = false
                 self?.saveQueue.isSuspended = false
                 self?.retrySignal.send()
             @unknown default:
-                self?.fetchQueue.isSuspended = false
+                self?.fetchSavesQueue.isSuspended = false
+                self?.fetchArchiveQueue.isSuspended = false
                 self?.saveQueue.isSuspended = false
             }
         }
@@ -215,7 +226,8 @@ public class PocketSource: Source {
     // Should not be used outside of a testing context
     func drain(_ completion: @escaping () -> Void) {
         DispatchQueue.global(qos: .background).async {
-            self.fetchQueue.waitUntilAllOperationsAreFinished()
+            self.fetchSavesQueue.waitUntilAllOperationsAreFinished()
+            self.fetchArchiveQueue.waitUntilAllOperationsAreFinished()
             self.saveQueue.waitUntilAllOperationsAreFinished()
             completion()
         }
@@ -251,7 +263,7 @@ extension PocketSource {
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchSaves, queue: fetchQueue, completion: completion)
+        enqueue(operation: operation, task: .fetchSaves, queue: fetchSavesQueue, completion: completion)
     }
 
     public func refreshArchive(completion: (() -> Void)? = nil) {
@@ -267,7 +279,7 @@ extension PocketSource {
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchSaves, queue: fetchQueue, completion: completion)
+        enqueue(operation: operation, task: .fetchSaves, queue: fetchArchiveQueue, completion: completion)
     }
 
     public func favorite(item: SavedItem) {
@@ -593,7 +605,7 @@ extension PocketSource {
                     initialDownloadState: initialSavesDownloadState,
                     lastRefresh: lastRefresh
                 )
-                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchQueue)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchSavesQueue)
             case .fetchArchive:
                 let operation = operations.fetchArchive(
                     apollo: apollo,
@@ -602,7 +614,7 @@ extension PocketSource {
                     initialDownloadState: initialArchiveDownloadState,
                     lastRefresh: lastRefresh
                 )
-                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchQueue)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchArchiveQueue)
             case .archive(let remoteID):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,

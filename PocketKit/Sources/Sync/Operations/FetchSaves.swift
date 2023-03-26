@@ -66,8 +66,9 @@ class FetchSaves: SyncOperation {
 
     private func fetchSaves() async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize)
-
+        var i = 1
         repeat {
+            Log.breadcrumb(category: "sync.saves", level: .debug, message: "Loading page \(i)")
             let result = try await fetchPage(pagination)
             if let isPremium = result.data?.user?.isPremium as? Bool {
                 user.setPremiumStatus(isPremium)
@@ -81,6 +82,8 @@ class FetchSaves: SyncOperation {
 
             try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Saves.pageSize)
+            Log.breadcrumb(category: "sync.saves", level: .debug, message: "Finsihed loading page \(i)")
+            i = i + 1
         } while pagination.shouldFetchNextPage
 
         initialDownloadState.send(.completed)
@@ -90,7 +93,9 @@ class FetchSaves: SyncOperation {
         var shouldFetchNextPage = true
         var pagination = PaginationInput(first: .null)
 
-        while shouldFetchNextPage {
+        var i = 1
+        repeat {
+            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Loading page \(i)")
             let query = TagsQuery(pagination: .init(pagination))
             let result = try await apollo.fetch(query: query)
             try updateLocalTags(result)
@@ -101,7 +106,9 @@ class FetchSaves: SyncOperation {
             } else {
                 shouldFetchNextPage = false
             }
-        }
+            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Finsihed loading page \(i)")
+            i = i + 1
+        } while shouldFetchNextPage
     }
 
     private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
