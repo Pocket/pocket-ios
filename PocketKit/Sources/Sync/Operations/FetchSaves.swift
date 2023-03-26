@@ -30,6 +30,14 @@ class FetchSaves: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
+            
+            guard let lastRefreshTime = lastRefresh.lastRefreshSaves, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Saves.timeMustPass else {
+                Log.info("Not refreshing saves from server, last refresh is not above tolerance of \(SyncConstants.Saves.timeMustPass) seconds")
+                // Future TODO: We should have a new result called too soon that the ui can act on.
+                // However many states may not come from a user, IE. Instant Sync, Persistent Tasks that never finished, Retries
+                return .success
+            }
+            
             async let saves: Void = fetchSaves()
             async let tags: Void = fetchTags()
             _ = await [try saves, try tags]
