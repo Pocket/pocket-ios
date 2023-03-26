@@ -73,9 +73,11 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             )
         }
 
-        source.restore()
+        DispatchQueue.global(qos: .background).async { [weak self] in
+            self?.refreshCoordinator.initialize()
+            self?.source.restore()
+        }
         Textiles.initialize()
-        refreshCoordinator.initialize()
 
         return true
     }

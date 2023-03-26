@@ -35,9 +35,20 @@ public class PocketSource: Source {
     private let notificationObserver = UUID()
 
     private let operations: SyncOperationFactory
-    private let syncQ: OperationQueue = {
+    private let saveQueue: OperationQueue = {
         let q = OperationQueue()
+        // need to save data to the server 1 at a time cause a user can favorite, then unfavorite in a specific order.
         q.maxConcurrentOperationCount = 1
+        q.qualityOfService = .background
+        q.name = "com.mozilla.pocket.save"
+        return q
+    }()
+
+    private let fetchQueue: OperationQueue = {
+        let q = OperationQueue()
+        q.maxConcurrentOperationCount = 8
+        q.qualityOfService = .background
+        q.name = "com.mozilla.pocket.fetch"
         return q
     }()
 
@@ -187,12 +198,15 @@ public class PocketSource: Source {
         networkMonitor.updateHandler = { [weak self] path in
             switch path.status {
             case .unsatisfied, .requiresConnection:
-                self?.syncQ.isSuspended = true
+                self?.fetchQueue.isSuspended = true
+                self?.saveQueue.isSuspended = true
             case .satisfied:
-                self?.syncQ.isSuspended = false
+                self?.fetchQueue.isSuspended = false
+                self?.saveQueue.isSuspended = false
                 self?.retrySignal.send()
             @unknown default:
-                self?.syncQ.isSuspended = false
+                self?.fetchQueue.isSuspended = false
+                self?.saveQueue.isSuspended = false
             }
         }
     }
@@ -201,7 +215,8 @@ public class PocketSource: Source {
     // Should not be used outside of a testing context
     func drain(_ completion: @escaping () -> Void) {
         DispatchQueue.global(qos: .background).async {
-            self.syncQ.waitUntilAllOperationsAreFinished()
+            self.fetchQueue.waitUntilAllOperationsAreFinished()
+            self.saveQueue.waitUntilAllOperationsAreFinished()
             completion()
         }
     }
@@ -236,7 +251,7 @@ extension PocketSource {
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchSaves, completion: completion)
+        enqueue(operation: operation, task: .fetchSaves, queue: fetchQueue, completion: completion)
     }
 
     public func refreshArchive(completion: (() -> Void)? = nil) {
@@ -252,7 +267,7 @@ extension PocketSource {
             lastRefresh: lastRefresh
         )
 
-        enqueue(operation: operation, task: .fetchSaves, completion: completion)
+        enqueue(operation: operation, task: .fetchSaves, queue: fetchQueue, completion: completion)
     }
 
     public func favorite(item: SavedItem) {
@@ -271,7 +286,7 @@ extension PocketSource {
                 mutation: FavoriteItemMutation(itemID: remoteID)
             )
 
-            enqueue(operation: operation, task: .favorite(remoteID: remoteID))
+            enqueue(operation: operation, task: .favorite(remoteID: remoteID), queue: saveQueue)
         }
     }
 
@@ -290,7 +305,7 @@ extension PocketSource {
                 events: _events,
                 mutation: UnfavoriteItemMutation(itemID: remoteID)
             )
-            enqueue(operation: operation, task: .unfavorite(remoteID: remoteID))
+            enqueue(operation: operation, task: .unfavorite(remoteID: remoteID), queue: saveQueue)
         }
     }
 
@@ -317,7 +332,7 @@ extension PocketSource {
                 mutation: DeleteItemMutation(itemID: remoteID)
             )
 
-            enqueue(operation: operation, task: .delete(remoteID: remoteID))
+            enqueue(operation: operation, task: .delete(remoteID: remoteID), queue: saveQueue)
         }
     }
 
@@ -338,7 +353,7 @@ extension PocketSource {
                 mutation: ArchiveItemMutation(itemID: remoteID)
             )
 
-            enqueue(operation: operation, task: .archive(remoteID: remoteID))
+            enqueue(operation: operation, task: .archive(remoteID: remoteID), queue: saveQueue)
         }
     }
 
@@ -359,7 +374,7 @@ extension PocketSource {
                 space: space
             )
 
-            enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url))
+            enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url), queue: saveQueue)
         }
     }
 
@@ -371,7 +386,7 @@ extension PocketSource {
             apollo: apollo,
             space: space
         )
-        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url))
+        enqueue(operation: operation, task: .save(localID: item.objectID.uriRepresentation(), url: item.url), queue: saveQueue)
     }
 
     public func addTags(item: SavedItem, tags: [String]) {
@@ -393,7 +408,7 @@ extension PocketSource {
                 mutation: getMutation(for: tags, and: remoteID)
             )
 
-            enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags))
+            enqueue(operation: operation, task: .addTags(remoteID: remoteID, tags: tags), queue: saveQueue)
         }
     }
 
@@ -411,7 +426,7 @@ extension PocketSource {
                 mutation: DeleteTagMutation(id: remoteID)
             )
 
-            enqueue(operation: operation, task: .deleteTag(remoteID: remoteID))
+            enqueue(operation: operation, task: .deleteTag(remoteID: remoteID), queue: saveQueue)
         }
     }
 
@@ -430,7 +445,7 @@ extension PocketSource {
                 mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
             )
 
-            enqueue(operation: operation, task: .renameTag(remoteID: remoteID, name: name))
+            enqueue(operation: operation, task: .renameTag(remoteID: remoteID, name: name), queue: saveQueue)
         }
     }
 
@@ -522,30 +537,33 @@ extension PocketSource {
 
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
-    private func enqueue(operation: SyncOperation, task: SyncTask, completion: (() -> Void)? = nil) {
+    private func enqueue(operation: SyncOperation, task: SyncTask, queue: OperationQueue, completion: (() -> Void)? = nil) {
         let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.backgroundContext)
         persistentTask.createdAt = Date()
         persistentTask.syncTaskContainer = SyncTaskContainer(task: task)
         try? space.save()
 
-        enqueue(operation: operation, persistentTask: persistentTask, completion: completion)
+        enqueue(operation: operation, persistentTask: persistentTask, queue: queue, completion: completion)
     }
 
-    private func enqueue(operation: SyncOperation, persistentTask: PersistentSyncTask, completion: (() -> Void)? = nil) {
+    private func enqueue(operation: SyncOperation, persistentTask: PersistentSyncTask, queue: OperationQueue, completion: (() -> Void)? = nil) {
         let _operation = RetriableOperation(
             retrySignal: retrySignal.eraseToAnyPublisher(),
             backgroundTaskManager: backgroundTaskManager,
             operation: operation
         )
 
-        _operation.completionBlock = completion
-        syncQ.addOperation(_operation)
-        syncQ.addBarrierBlock { [weak self] in
+        _operation.completionBlock = {[ weak self ] in
             self?.space.performAndWait { [weak self] in
                 self?.space.delete(persistentTask)
                 try? self?.space.save()
             }
+            guard let completion else {
+                return
+            }
+            completion()
         }
+        queue.addOperation(_operation)
 
         if networkMonitor.currentNetworkPath.status == .satisfied {
             retrySignal.send()
@@ -565,7 +583,7 @@ extension PocketSource {
                     events: _events,
                     mutation: FavoriteItemMutation(itemID: remoteID)
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .fetchSaves:
                 let operation = operations.fetchSaves(
                     user: user,
@@ -575,7 +593,7 @@ extension PocketSource {
                     initialDownloadState: initialSavesDownloadState,
                     lastRefresh: lastRefresh
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchQueue)
             case .fetchArchive:
                 let operation = operations.fetchArchive(
                     apollo: apollo,
@@ -584,28 +602,28 @@ extension PocketSource {
                     initialDownloadState: initialArchiveDownloadState,
                     lastRefresh: lastRefresh
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchQueue)
             case .archive(let remoteID):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
                     mutation: ArchiveItemMutation(itemID: remoteID)
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .delete(let remoteID):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
                     mutation: DeleteItemMutation(itemID: remoteID)
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .unfavorite(let remoteID):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
                     mutation: UnfavoriteItemMutation(itemID: remoteID)
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case let .save(localID, itemURL):
                 guard let managedID = space.managedObjectID(forURL: localID) else { return }
 
@@ -616,28 +634,28 @@ extension PocketSource {
                     apollo: apollo,
                     space: space
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .addTags(let remoteID, let tags):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
                     mutation: getMutation(for: tags, and: remoteID)
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .deleteTag(let tagID):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
                     mutation: DeleteTagMutation(id: tagID)
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .renameTag(let remoteID, let name):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
                     events: _events,
                     mutation: TagUpdateMutation(input: TagUpdateInput(id: remoteID, name: name))
                 )
-                enqueue(operation: operation, persistentTask: persistentTask)
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             }
         }
     }

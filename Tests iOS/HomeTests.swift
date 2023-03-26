@@ -60,7 +60,7 @@ class HomeTests: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
-        
+
         server.routes.get("/item-1") { _, _ in
             Response {
                 Status.ok

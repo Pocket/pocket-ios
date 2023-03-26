@@ -30,9 +30,9 @@ class FetchSaves: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
-            try await fetchSaves()
-            try await fetchTags()
-
+            async let saves: Void = fetchSaves()
+            async let tags: Void = fetchTags()
+            _ = await [try saves, try tags]
             lastRefresh.refreshedSaves()
             return .success
         } catch {

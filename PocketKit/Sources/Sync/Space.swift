@@ -174,7 +174,9 @@ public class Space {
     func save() throws {
         try backgroundContext.performAndWait {
             try backgroundContext.obtainPermanentIDs(for: Array(backgroundContext.insertedObjects))
-            try backgroundContext.save()
+            if backgroundContext.hasChanges {
+                try backgroundContext.save()
+            }
         }
     }
 
@@ -265,7 +267,7 @@ public class Space {
         request.sortDescriptors = [NSSortDescriptor(key: "source.absoluteString", ascending: true)]
         return NSFetchedResultsController(
             fetchRequest: request,
-            managedObjectContext: viewContext,
+            managedObjectContext: backgroundContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )
