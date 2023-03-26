@@ -49,6 +49,13 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
             return v
         }) ?? []
 
+        DispatchQueue.global(qos: .background).async {
+            // Warm up the first 6 images
+            allItems.prefix(6).forEach({ listenItem in
+                listenItem.warmImage()
+            })
+        }
+
         return ListenViewModel(context: ["index": NSNumber(value: 0)], loader: { source, context, complete in
             source.hasMore = false
             Log.debug("Loaded Listen with \(allItems.count) articles")

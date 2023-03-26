@@ -60,7 +60,6 @@ extension SavedItem: PKTListenItem {
     }
 
     public var albumArtIsAvailableOffline: Bool {
-       // Services.shared.listen.
         return true
     }
 
@@ -69,7 +68,7 @@ extension SavedItem: PKTListenItem {
     }
 
     public var givenURL: URL? {
-        self.bestURL
+        self.url
     }
 
     public var localID: String? {

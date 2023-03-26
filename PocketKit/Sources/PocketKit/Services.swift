@@ -122,7 +122,12 @@ struct Services {
 
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
 
-        listen = Listen(appSession: appSession, consumerKey: Keys.shared.pocketApiConsumerKey, networkPathMonitor: NWPathMonitor())
+        listen = Listen(
+            appSession: appSession,
+            consumerKey: Keys.shared.pocketApiConsumerKey,
+            networkPathMonitor: NWPathMonitor(),
+            tracker: tracker
+        )
     }
 }
 

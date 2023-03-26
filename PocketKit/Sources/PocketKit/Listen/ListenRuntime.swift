@@ -1,17 +1,23 @@
-//
-//  File.swift
-//  
-//
-//  Created by Daniel Brooks on 3/25/23.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
 import PKTListen
 import Sync
 import Kingfisher
 
+/// Older Pocket runtime which configures the legacy pocket app hooks used by Listen
 class ListenRuntime: PKTAbstractRuntime {
     static let sharedRuntime = ListenRuntime()
+
+    /// A Key-Value store that writes to disk storing using settings for Listen.
+    /// Also contains the data needed to access and operate listen.
+    lazy var pktJSONDAO: PKTKeyValueStore = {
+        let listenDirectory = PKTListenSupportDataDirectoryURL(Keys.shared.groupID)
+        let listen = listenDirectory.appendingPathComponent("listen-next")
+        return PKTJSONDAO<NSDictionary>(fileURL: listen)
+    }()
 
     override var apiDomain: String {
         "getpocket.com"
@@ -38,7 +44,7 @@ class ListenRuntime: PKTAbstractRuntime {
     }
 
     override func store() -> PKTKeyValueStore {
-        PKTSharedKeyStore()
+        pktJSONDAO
     }
 
     override func itemSessionService() -> PKTItemSessionService? {
@@ -71,7 +77,7 @@ class ListenRuntime: PKTAbstractRuntime {
         PKTListenCacheManager.isDisabled = false
 
         // Disable the image cache
-        PKTCoreLogging.localRuntime.imageCache?.isDisabled = false
+        ListenRuntime.sharedRuntime.imageCache?.isDisabled = false
     }
 }
 
