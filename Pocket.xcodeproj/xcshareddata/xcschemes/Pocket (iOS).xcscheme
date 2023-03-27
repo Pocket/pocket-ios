@@ -333,6 +333,11 @@
             isEnabled = "YES">
          </EnvironmentVariable>
          <EnvironmentVariable
+            key = "OS_ACTIVITY_MODE"
+            value = "disable"
+            isEnabled = "YES">
+         </EnvironmentVariable>
+         <EnvironmentVariable
             key = "SNOWPLOW_ENDPOINT"
             value = "http://127.0.0.1:9090"
             isEnabled = "NO">
