@@ -21,7 +21,7 @@ public class PocketEncryptedStore: LegacyEncryptedStore {
             return nil
         }
 
-        return url
+        return filepath
     }()
 
     public init() { }

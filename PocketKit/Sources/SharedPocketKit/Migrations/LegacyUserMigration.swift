@@ -130,7 +130,7 @@ extension LegacyUserMigration {
     }
 
     private var keychainPassword: String? {
-        LegacyPasswordRetriever(keychain: keychain, groupID: groupID).password
+        LegacyPasswordRetriever(groupID: groupID, key: Self.decryptionKey).password
     }
 
     private var userDefaultsPassword: String? {
@@ -155,24 +155,7 @@ private struct LegacyStore: Decodable {
 private class LegacyPasswordRetriever {
     let password: String?
 
-    init(keychain: Keychain, groupID: String) {
-        let query: CFDictionary = [
-            kSecClass: kSecClassGenericPassword,
-            kSecAttrService: "Pocket",
-            kSecAttrAccount: "encryption",
-            kSecAttrAccessGroup: groupID,
-            kSecReturnData: true
-        ] as CFDictionary
-
-        var result: AnyObject?
-        let status = keychain.copyMatching(query: query, result: &result)
-
-        guard status == errSecSuccess,
-              let password = result as? String else {
-            password = nil
-            return
-        }
-
-        self.password = password
+    init(groupID: String, key: String) {
+        password = UserDefaults(suiteName: groupID)?.string(forKey: key)
     }
 }
