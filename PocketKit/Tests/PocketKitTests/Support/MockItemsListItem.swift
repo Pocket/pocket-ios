@@ -2,6 +2,30 @@ import Foundation
 @testable import PocketKit
 
 struct MockItemsListItem: ItemsListItem {
+    var displayTitle: String {
+        title ?? bestURL?.absoluteString ?? ""
+    }
+
+    var displayDomain: String? {
+        domainMetadata?.name ?? domain ?? host
+    }
+
+    var displayDetail: String {
+        [displayDomain, displayTimeToRead]
+            .compactMap { $0 }
+            .joined(separator: " • ")
+    }
+
+    var displayTimeToRead: String? {
+        timeToRead
+            .flatMap { $0 > 0 ? $0 : nil }
+            .flatMap { L10n.Item.List.min($0) }
+    }
+
+    var displayAuthors: String? {
+        return ""
+    }
+
     let id: String?
     let title: String?
     let isFavorite: Bool

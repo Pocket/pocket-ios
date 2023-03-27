@@ -10,16 +10,16 @@ extension SavedItem: ItemsListItem {
         item?.domain
     }
 
-    var displayTitle: String {
-        item?.title ?? item?.bestURL?.absoluteString ?? ""
-    }
-
     var topImageURL: URL? {
         item?.topImageURL
     }
 
     var timeToRead: Int? {
         item?.timeToRead?.intValue
+    }
+
+    var displayTitle: String {
+        item?.title ?? item?.bestURL?.absoluteString ?? ""
     }
 
     var displayDomain: String? {

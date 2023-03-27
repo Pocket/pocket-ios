@@ -188,7 +188,7 @@ extension Listen: PKTListenPocketProxy {
         // TODO: Implement archiving
         Log.debug("Archive listen album: \(String(describing: kusari.albumID))")
     }
-    
+
     /// User clicked save in the listen controls
     /// - Parameters:
     ///   - kusari: An object representing the item the user saved
@@ -197,7 +197,7 @@ extension Listen: PKTListenPocketProxy {
         // TODO: Implement add
         Log.debug("Add listen album: \(String(describing: kusari.albumID))")
     }
-    
+
     /// TODO: Ask nicole
     /// - Parameter album: The album to refresh
     /// - Returns: A PKTListenItem that was refreshed to send back to Listen

@@ -27,6 +27,7 @@
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",
                 "timeToRead": 1,
+                "wordCount": 200,
                 "authors": [
                   {
                     "__typename": "Author",
@@ -71,6 +72,7 @@
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-1-rec-2/top-image.png",
                 "timeToRead": 2,
+                "wordCount": 200,
                 "authors": [
                   
                 ],
@@ -114,6 +116,7 @@
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-2-rec-1/top-image.png",
                 "timeToRead": 3,
+                "wordCount": 200,
                 "authors": [
                   
                 ],
@@ -147,6 +150,7 @@
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-2-rec-2/top-image.png",
                 "timeToRead": 3,
+                "wordCount": 200,
                 "authors": [
                   
                 ],
