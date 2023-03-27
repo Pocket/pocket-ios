@@ -6,11 +6,13 @@ import XCTest
 class RecomendationExtensionTests: XCTestCase {
     private var source: MockSource!
     private var space: Space!
+    private var allowedCharset: CharacterSet!
 
     override func setUp() {
         source = MockSource()
         space = .testSpace()
-
+        allowedCharset = NSCharacterSet.urlHostAllowed
+        allowedCharset.remove(charactersIn: ":%")
         continueAfterFailure = false
     }
 
@@ -114,7 +116,8 @@ extension RecomendationExtensionTests {
      This is because the recomendation helpers will encode the underlying image to a image cache url
      */
     func assertCachedImageURLContainsOriginalImageURL(imageURL: URL, originalUrl: URL) {
-        XCTAssertNotNil(imageURL.absoluteString.range(of: originalUrl.absoluteString))
+        let string = originalUrl.absoluteString.addingPercentEncoding(withAllowedCharacters: allowedCharset)!
+        XCTAssertNotNil(imageURL.absoluteString.range(of: string))
     }
 
     func assertCuratedInfo(_ subject: Recommendation) {
