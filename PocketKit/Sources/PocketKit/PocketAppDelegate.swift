@@ -10,6 +10,8 @@ import BackgroundTasks
 import SharedPocketKit
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
+    static var phoneOrientationLock = UIInterfaceOrientationMask.portrait
+
     private let source: Source
     private let userDefaults: UserDefaults
     private let firstLaunchDefaults: UserDefaults
@@ -80,5 +82,15 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         Textiles.initialize()
 
         return true
+    }
+
+    /// Sets orientations to use for the views
+    /// - Parameters:
+    ///   - application: singleton app object
+    ///   - window: window whose interface orientations you want to retrieve
+    /// - Returns: orientations to use for the view
+    public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
+        return PocketAppDelegate.phoneOrientationLock
     }
 }
