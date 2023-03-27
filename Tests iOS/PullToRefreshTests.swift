@@ -56,6 +56,8 @@ class PullToRefreshTests: XCTestCase {
             }
         }
 
+        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait longer then the last refresh timeout")], timeout: 8.0)
+
         listView.pullToRefresh()
 
         listView
