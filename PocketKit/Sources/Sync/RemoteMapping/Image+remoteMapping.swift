@@ -13,4 +13,16 @@ extension Image {
 
         source = URL(string: remote.src)
     }
+
+    convenience init(src: String, context: NSManagedObjectContext) {
+        self.init(context: context)
+
+        source = URL(string: src)
+    }
+
+    convenience init(url: URL, context: NSManagedObjectContext) {
+        self.init(context: context)
+
+        source = url
+    }
 }

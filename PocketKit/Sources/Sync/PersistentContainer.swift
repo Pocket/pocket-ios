@@ -5,12 +5,17 @@
 import CoreData
 
 public class PersistentContainer: NSPersistentContainer {
-    public lazy var rootSpace = { Space(backgroundContext: backgroundContext, viewContext: viewContext) }()
+    public lazy var rootSpace = { Space(backgroundContext: backgroundContext, viewContext: modifiedViewContext) }()
 
     private lazy var backgroundContext = {
         let context = newBackgroundContext()
-        context.automaticallyMergesChangesFromParent = true
         return context
+    }()
+
+    private lazy var modifiedViewContext: NSManagedObjectContext = {
+        viewContext.automaticallyMergesChangesFromParent = true
+        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        return viewContext
     }()
 
     public enum Storage {
@@ -46,17 +51,10 @@ public class PersistentContainer: NSPersistentContainer {
             ]
         }
 
-        loadPersistentStores {[weak self] storeDescription, error in
+        loadPersistentStores {storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
-            guard let self else {
-                Log.capture(message: "No strong self loading persistent store")
-                return
-            }
-
-            self.viewContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
-            self.viewContext.automaticallyMergesChangesFromParent = true
         }
     }
 }

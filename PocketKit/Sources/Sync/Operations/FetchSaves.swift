@@ -30,9 +30,18 @@ class FetchSaves: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
-            try await fetchSaves()
-            try await fetchTags()
+            if lastRefresh.lastRefreshSaves != nil {
+                guard let lastRefreshTime = lastRefresh.lastRefreshSaves, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Saves.timeMustPass else {
+                    Log.info("Not refreshing saves from server, last refresh is not above tolerance of \(SyncConstants.Saves.timeMustPass) seconds")
+                    // Future TODO: We should have a new result called too soon that the ui can act on.
+                    // However many states may not come from a user, IE. Instant Sync, Persistent Tasks that never finished, Retries
+                    return .success
+                }
+            }
 
+            async let saves: Void = fetchSaves()
+            async let tags: Void = fetchTags()
+            _ = await [try saves, try tags]
             lastRefresh.refreshedSaves()
             return .success
         } catch {
@@ -66,8 +75,9 @@ class FetchSaves: SyncOperation {
 
     private func fetchSaves() async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize)
-
+        var i = 1
         repeat {
+            Log.breadcrumb(category: "sync.saves", level: .debug, message: "Loading page \(i)")
             let result = try await fetchPage(pagination)
             if let isPremium = result.data?.user?.isPremium as? Bool {
                 user.setPremiumStatus(isPremium)
@@ -81,6 +91,8 @@ class FetchSaves: SyncOperation {
 
             try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Saves.pageSize)
+            Log.breadcrumb(category: "sync.saves", level: .debug, message: "Finsihed loading page \(i)")
+            i = i + 1
         } while pagination.shouldFetchNextPage
 
         initialDownloadState.send(.completed)
@@ -90,7 +102,9 @@ class FetchSaves: SyncOperation {
         var shouldFetchNextPage = true
         var pagination = PaginationInput(first: .null)
 
-        while shouldFetchNextPage {
+        var pageNumber = 1
+        repeat {
+            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Loading page \(pageNumber)")
             let query = TagsQuery(pagination: .init(pagination))
             let result = try await apollo.fetch(query: query)
             try updateLocalTags(result)
@@ -101,7 +115,9 @@ class FetchSaves: SyncOperation {
             } else {
                 shouldFetchNextPage = false
             }
-        }
+            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Finsihed loading page \(pageNumber)")
+            pageNumber += 1
+        } while shouldFetchNextPage
     }
 
     private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {

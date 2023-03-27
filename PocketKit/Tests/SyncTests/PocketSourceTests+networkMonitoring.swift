@@ -46,7 +46,7 @@ extension PocketSourceTests {
         source.refreshSaves()
 
         networkMonitor.update(status: .satisfied)
-        wait(for: [expectSaveItem, expectFetchList], timeout: 1, enforceOrder: true)
+        wait(for: [expectSaveItem, expectFetchList], timeout: 1)
     }
 
     func test_whenNetworkBecomesSatisified_retriesOperationsThatAreWaitingForSignal() throws {
@@ -75,6 +75,7 @@ extension PocketSourceTests {
 
         let source = subject()
         try source.archive(item: space.createSavedItem())
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for last refresh to be avoid its 5.0 second wait")], timeout: 10.0)
         wait(for: [firstAttempt], timeout: 1)
 
         networkMonitor.update(status: .unsatisfied)

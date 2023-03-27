@@ -117,7 +117,7 @@ private extension ImageManager {
         // Images are removed via `removeFromImages` when Items are updated
         // This nullifies the item relationship from Image -> Item
         // Therefore, we want to retrieve orphaned Images so we can delete them
-        let orphans = images.filter { $0.item == nil }
+        let orphans = images.filter { $0.item == nil && $0.recommendation == nil && $0.syndicatedArticle == nil }
 
         let allURLs = Set(images.compactMap { $0.source })
         let orphanURLs = Set(orphans.compactMap { $0.source })
