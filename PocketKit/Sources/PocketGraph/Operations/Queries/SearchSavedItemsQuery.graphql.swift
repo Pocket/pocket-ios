@@ -559,8 +559,6 @@ public class SearchSavedItemsQuery: GraphQLQuery {
 
                   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
 
-                  /// URL of the item that the user gave for the SavedItem
-                  /// that is pending processing by parser
                   public var url: PocketGraph.Url { __data["url"] }
                   public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 

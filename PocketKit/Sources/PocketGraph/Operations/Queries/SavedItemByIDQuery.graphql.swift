@@ -54,6 +54,7 @@ public class SavedItemByIDQuery: GraphQLQuery {
       ] }
 
       /// Get a SavedItem by its id
+      @available(*, deprecated, message: "Use saveById instead")
       public var savedItemById: SavedItemById? { __data["savedItemById"] }
 
       /// User.SavedItemById
@@ -462,8 +463,6 @@ public class SavedItemByIDQuery: GraphQLQuery {
 
             public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
 
-            /// URL of the item that the user gave for the SavedItem
-            /// that is pending processing by parser
             public var url: PocketGraph.Url { __data["url"] }
             public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 

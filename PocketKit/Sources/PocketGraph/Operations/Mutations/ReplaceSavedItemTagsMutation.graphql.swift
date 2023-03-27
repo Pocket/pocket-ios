@@ -41,6 +41,7 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
     /// Note: if there is a new tag name in the SavedItemTagsInput, then the tag record will be created
     /// Inputs a list of SavedItemTagsInput(ie. savedItemId and list of tag names)
     /// Returns the SavedItem for which the tags have been modified.
+    @available(*, deprecated, message: "use saveBatchUpdateTags")
     public var replaceSavedItemTags: [ReplaceSavedItemTag] { __data["replaceSavedItemTags"] }
 
     /// ReplaceSavedItemTag
@@ -449,8 +450,6 @@ public class ReplaceSavedItemTagsMutation: GraphQLMutation {
 
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PendingItem }
 
-          /// URL of the item that the user gave for the SavedItem
-          /// that is pending processing by parser
           public var url: PocketGraph.Url { __data["url"] }
           public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
 
