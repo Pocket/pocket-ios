@@ -40,9 +40,8 @@ extension ImageComponent: Decodable {
         height = try container.decodeIfPresent(UInt.self, forKey: .height)
         width = try container.decodeIfPresent(UInt.self, forKey: .width)
         id = try container.decode(Int.self, forKey: .id)
-
         source = try container.decode(String.self, forKey: .source)
-            .addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted)
-            .flatMap(URL.init)
+                   .addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted)
+                   .flatMap(URL.init)
     }
 }
