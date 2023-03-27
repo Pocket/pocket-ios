@@ -12,7 +12,7 @@ public class PersistentContainer: NSPersistentContainer {
         return context
     }()
 
-    lazy var modifiedViewContext: NSManagedObjectContext = {
+    private lazy var modifiedViewContext: NSManagedObjectContext = {
         viewContext.automaticallyMergesChangesFromParent = true
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         return viewContext

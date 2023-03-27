@@ -102,9 +102,9 @@ class FetchSaves: SyncOperation {
         var shouldFetchNextPage = true
         var pagination = PaginationInput(first: .null)
 
-        var i = 1
+        var pageNumber = 1
         repeat {
-            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Loading page \(i)")
+            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Loading page \(pageNumber)")
             let query = TagsQuery(pagination: .init(pagination))
             let result = try await apollo.fetch(query: query)
             try updateLocalTags(result)
@@ -115,8 +115,8 @@ class FetchSaves: SyncOperation {
             } else {
                 shouldFetchNextPage = false
             }
-            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Finsihed loading page \(i)")
-            i = i + 1
+            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Finsihed loading page \(pageNumber)")
+            pageNumber += 1
         } while shouldFetchNextPage
     }
 
