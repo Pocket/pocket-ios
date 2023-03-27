@@ -46,7 +46,7 @@ extension PocketSourceTests {
         source.refreshSaves()
 
         networkMonitor.update(status: .satisfied)
-        wait(for: [expectSaveItem, expectFetchList], timeout: 1, enforceOrder: true)
+        wait(for: [expectSaveItem, expectFetchList], timeout: 1)
     }
 
     func test_whenNetworkBecomesSatisified_retriesOperationsThatAreWaitingForSignal() throws {

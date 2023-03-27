@@ -82,13 +82,7 @@ class FetchArchive: SyncOperation {
                pagination.cursor == nil {
                 initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
             }
-            DispatchQueue.global(qos: .background).async { [weak self] in
-                do {
-                    try self?.updateLocalStorage(result: result)
-                } catch {
-                    Log.capture(error: error)
-                }
-            }
+            try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Archive.pageSize)
             Log.breadcrumb(category: "sync.archive", level: .debug, message: "Finished loading page \(i)")
             i = i + 1

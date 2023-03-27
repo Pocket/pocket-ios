@@ -89,13 +89,7 @@ class FetchSaves: SyncOperation {
                 initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
             }
 
-            DispatchQueue.global(qos: .background).async { [weak self] in
-                do {
-                    try self?.updateLocalStorage(result: result)
-                } catch {
-                    Log.capture(error: error)
-                }
-            }
+            try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Saves.pageSize)
             Log.breadcrumb(category: "sync.saves", level: .debug, message: "Finsihed loading page \(i)")
             i = i + 1
