@@ -14,6 +14,7 @@ public struct LegacyCleanupService {
         cleanupLegacyUserDefaults()
         deleteSqliteDataBase()
         deleteImageCache()
+        deleteAudioCache()
         deleteLogFiles()
     }
 
