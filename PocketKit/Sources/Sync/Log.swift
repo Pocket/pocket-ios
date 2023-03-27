@@ -237,14 +237,12 @@ extension Log {
             return
         }
 
-//        SentrySDK.start { options in
-//            options.dsn = dsn
-//            options.enableAutoSessionTracking = true
-//            #if DEBUG
-//            options.debug = true
-//            options.diagnosticLevel = .warning
-//            #endif
-//        }
+        #if !DEBUG
+        SentrySDK.start { options in
+            options.dsn = dsn
+            options.enableAutoSessionTracking = true
+        }
+        #endif
     }
 
     public class func setUserID(_ userID: String) {

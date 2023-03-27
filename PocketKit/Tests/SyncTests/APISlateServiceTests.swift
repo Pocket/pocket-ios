@@ -42,7 +42,7 @@ extension APISlateServiceTests {
         let fetchCall: MockApolloClient.FetchCall<GetSlateLineupQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(fetchCall)
         XCTAssertEqual(fetchCall?.query.lineupID, "slate-lineup-identifier")
-        XCTAssertEqual(fetchCall?.query.maxRecommendations, 5)
+        XCTAssertEqual(fetchCall?.query.maxRecommendations, SyncConstants.Home.recomendationsPerSlateFromSlateLineup)
     }
 
     @MainActor
@@ -207,7 +207,7 @@ extension APISlateServiceTests {
         let fetchCall: MockApolloClient.FetchCall<GetSlateQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(fetchCall)
         XCTAssertEqual(fetchCall?.query.slateID, "slate-identifier")
-        XCTAssertEqual(fetchCall?.query.recommendationCount, 25)
+        XCTAssertEqual(fetchCall?.query.recommendationCount, SyncConstants.Home.recomendationsPerSlateDetail)
     }
 
     @MainActor

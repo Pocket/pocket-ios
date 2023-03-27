@@ -163,32 +163,94 @@ extension MockSource {
 
 // MARK: - Make items controller
 extension MockSource {
-    static let makeItemsController = "makeItemsController"
-    typealias MakeItemsControllerImpl = () -> SavedItemsController
+    static let makeSavesController = "makeSavesController"
+    typealias MakeSavesControllerImpl = () -> SavedItemsController
 
-    struct MakeItemsControllerCall {
+    struct MakeSavesControllerCall {
     }
 
-    func stubMakeItemsController(impl: @escaping MakeItemsControllerImpl) {
-        implementations[Self.makeItemsController] = impl
+    func stubMakeSavesController(impl: @escaping MakeSavesControllerImpl) {
+        implementations[Self.makeSavesController] = impl
     }
 
     func makeSavesController() -> SavedItemsController {
-        guard let impl = implementations[Self.makeItemsController] as? MakeItemsControllerImpl else {
+        guard let impl = implementations[Self.makeSavesController] as? MakeSavesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.makeItemsController] = (calls[Self.makeItemsController] ?? []) + [MakeItemsControllerCall()]
+        calls[Self.makeSavesController] = (calls[Self.makeSavesController] ?? []) + [MakeSavesControllerCall()]
 
         return impl()
     }
 
-    func makeItemsControllerCall(at index: Int) -> MakeItemsControllerCall? {
-        guard let calls = calls[Self.makeItemsController], calls.count > index else {
+    func makeSavesControllerCall(at index: Int) -> MakeSavesControllerCall? {
+        guard let calls = calls[Self.makeSavesController], calls.count > index else {
             return nil
         }
 
-        return calls[index] as? MakeItemsControllerCall
+        return calls[index] as? MakeSavesControllerCall
+    }
+}
+
+// MARK: - Make recent saves controller
+extension MockSource {
+    static let makeRecentSavesController = "makeRecentSavesController"
+    typealias MakeRecentSavesControllerImpl = () -> NSFetchedResultsController<Sync.SavedItem>
+
+    struct MakeRecentSavesControllerCall {
+    }
+
+    func stubMakeRecentSavesController(impl: @escaping MakeRecentSavesControllerImpl) {
+        implementations[Self.makeRecentSavesController] = impl
+    }
+
+    func makeRecentSavesController() -> NSFetchedResultsController<Sync.SavedItem> {
+        guard let impl = implementations[Self.makeRecentSavesController] as? MakeRecentSavesControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeRecentSavesController] = (calls[Self.makeRecentSavesController] ?? []) + [MakeRecentSavesControllerCall()]
+
+        return impl()
+    }
+
+    func makeRecentSavesControllerCall(at index: Int) -> MakeRecentSavesControllerCall? {
+        guard let calls = calls[Self.makeRecentSavesController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeRecentSavesControllerCall
+    }
+}
+
+// MARK: - Make home controller
+extension MockSource {
+    static let makeHomeController = "makeHomeController"
+    typealias MakeHomeControllerImpl = () -> NSFetchedResultsController<Sync.Recommendation>
+
+    struct MakeHomeControllerCall {
+    }
+
+    func stubMakeHomeController(impl: @escaping MakeHomeControllerImpl) {
+        implementations[Self.makeHomeController] = impl
+    }
+
+    func makeHomeController() -> NSFetchedResultsController<Sync.Recommendation> {
+        guard let impl = implementations[Self.makeHomeController] as? MakeHomeControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeHomeController] = (calls[Self.makeHomeController] ?? []) + [MakeHomeControllerCall()]
+
+        return impl()
+    }
+
+    func makeHomeControllerCall(at index: Int) -> MakeHomeControllerCall? {
+        guard let calls = calls[Self.makeHomeController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeHomeControllerCall
     }
 }
 
@@ -247,15 +309,15 @@ extension MockSource {
 
 // MARK: - Make images controller
 extension MockSource {
-    static let makeUndownloadedImagesController = "makeUndownloadedImagesController"
-    typealias MakeUndownloadedImagesControllerImpl = () -> ImagesController
+    static let makeImagesController = "makeImagesController"
+    typealias MakeImagesControllerImpl = () -> ImagesController
 
-    func stubMakeUndownloadedImagesController(impl: @escaping MakeUndownloadedImagesControllerImpl) {
-        implementations[Self.makeUndownloadedImagesController] = impl
+    func stubMakeImagesController(impl: @escaping MakeImagesControllerImpl) {
+        implementations[Self.makeImagesController] = impl
     }
 
-    func makeUndownloadedImagesController() -> ImagesController {
-        guard let impl = implementations[Self.makeUndownloadedImagesController] as? MakeUndownloadedImagesControllerImpl else {
+    func makeImagesController() -> ImagesController {
+        guard let impl = implementations[Self.makeImagesController] as? MakeImagesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
@@ -953,33 +1015,33 @@ extension MockSource {
 }
 
 extension MockSource {
-    private static let downloadImages = "downloadImages"
-    typealias DownloadImagesImpl = ([Image]) -> Void
-    struct DownloadImagesCall {
+    private static let deleteImages = "deleteImages"
+    typealias DeleteImagesImpl = ([Image]) -> Void
+    struct DeleteImagesCall {
         let images: [Image]
     }
 
-    func stubDownloadImages(_ impl: @escaping DownloadImagesImpl) {
-        implementations[Self.downloadImages] = impl
+    func stubDeleteImages(_ impl: @escaping DeleteImagesImpl) {
+        implementations[Self.deleteImages] = impl
     }
 
-    func downloadImagesCall(at index: Int) -> DownloadImagesCall? {
-        guard let calls = calls[Self.downloadImages],
+    func deleteImagesCall(at index: Int) -> DeleteImagesCall? {
+        guard let calls = calls[Self.deleteImages],
               index < calls.count,
-              let call = calls[index] as? DownloadImagesCall else {
+              let call = calls[index] as? DeleteImagesCall else {
             return nil
         }
 
         return call
     }
 
-    func download(images: [Image]) {
-        guard let impl = implementations[Self.downloadImages] as? DownloadImagesImpl else {
+    func delete(images: [Image]) {
+        guard let impl = implementations[Self.deleteImages] as? DeleteImagesImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.downloadImages] = (calls[Self.downloadImages] ?? []) + [
-            DownloadImagesCall(images: images)
+        calls[Self.deleteImages] = (calls[Self.deleteImages] ?? []) + [
+            DeleteImagesCall(images: images)
         ]
 
         impl(images)
@@ -1204,70 +1266,6 @@ extension MockSource {
         }
 
         return calls[index] as? FetchSavedItemCall
-    }
-}
-
-// MARK: - Fetch Recent Saves
-extension MockSource {
-    private static let recentSaves = "recentSaves"
-    typealias RecentSavesItemImpl = (Int) -> [SavedItem]
-
-    struct RecentSavesCall {
-        let limit: Int
-    }
-
-    func stubRecentSaves(impl: @escaping RecentSavesItemImpl) {
-        implementations[Self.recentSaves] = impl
-    }
-
-    func recentSaves(limit: Int) -> [SavedItem] {
-        guard let impl = implementations[Self.recentSaves] as? RecentSavesItemImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        calls[Self.recentSaves] = (calls[Self.recentSaves] ?? []) + [RecentSavesCall(limit: limit)]
-        return impl(limit)
-    }
-
-    func fetchRecentSavesCall(at index: Int) -> RecentSavesCall? {
-        guard let calls = calls[Self.recentSaves],
-              calls.count > index else {
-            return nil
-        }
-
-        return calls[index] as? RecentSavesCall
-    }
-}
-
-// MARK: - Fetch Slate lineup
-extension MockSource {
-    private static let slateLineup = "slateLineup"
-    typealias SlateLineupImpl = (String) -> SlateLineup?
-
-    struct SlateLineupCall {
-        let identifier: String
-    }
-
-    func stubSlateLineup(impl: @escaping SlateLineupImpl) {
-        implementations[Self.slateLineup] = impl
-    }
-
-    func slateLineup(identifier: String) -> SlateLineup? {
-        guard let impl = implementations[Self.slateLineup] as? SlateLineupImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        calls[Self.slateLineup] = (calls[Self.slateLineup] ?? []) + [SlateLineupCall(identifier: identifier)]
-        return impl(identifier)
-    }
-
-    func slateLineupCall(at index: Int) -> SlateLineupCall? {
-        guard let calls = calls[Self.slateLineup],
-              calls.count > index else {
-            return nil
-        }
-
-        return calls[index] as? SlateLineupCall
     }
 }
 

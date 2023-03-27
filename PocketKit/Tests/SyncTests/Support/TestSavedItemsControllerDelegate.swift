@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import Sync
+import UIKit
 
 class TestSavedItemsControllerDelegate: SavedItemsControllerDelegate {
     private let handler: () -> Void
@@ -9,10 +10,10 @@ class TestSavedItemsControllerDelegate: SavedItemsControllerDelegate {
         self.handler = handler
     }
 
-    func controllerDidChangeContent(_ controller: SavedItemsController) {
-        handler()
+    func controller(_ controller: SavedItemsController, didChange aSavedItem: SavedItem, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
     }
 
-    func controller(_ controller: SavedItemsController, didChange aSavedItem: SavedItem, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+    func controller(_ controller: SavedItemsController, didChangeContentWith snapshot: NSDiffableDataSourceSnapshotReference) {
+        handler()
     }
 }

@@ -183,11 +183,11 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             }
         }
 
-        model.events.sink { [weak self] event in
+        model.events.receive(on: DispatchQueue.main).sink { [weak self] event in
             self?.handle(savesEvent: event)
         }.store(in: &subscriptions)
 
-        model.snapshot.sink { [weak self] snapshot in
+        model.snapshot.receive(on: DispatchQueue.main).sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot, animatingDifferences: true)
         }.store(in: &subscriptions)
 

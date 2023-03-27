@@ -21,8 +21,8 @@
               "item": {
                 "__typename": "[some-type-name]",
                 "remoteID": "recommended-item-1",
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello",
+                "givenUrl": "http://localhost:8080/item-1",
+                "resolvedUrl": "http://localhost:8080/item-1",
                 "title": "Slate 1, Recommendation 1",
                 "language": "en",
                 "topImageUrl": "http://example.com/slate-1-rec-1/top-image.png",

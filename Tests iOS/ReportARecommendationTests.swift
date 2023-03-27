@@ -75,7 +75,7 @@ class ReportARecommendationTests: XCTestCase {
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let event = await snowplowMicro.getFirstEvent(with: "discover.report")
         event!.getReportContext()!.assertHas(reason: "other")
-        event!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        event!.getContentContext()!.assertHas(url: "http://localhost:8080/item-1")
     }
 
     @MainActor

@@ -11,6 +11,8 @@ protocol ImageCacheProtocol {
                      callbackQueue: CallbackQueue,
                      completionHandler: (() -> Void)?
     )
+
+    func isCached(forKey key: String, processorIdentifier identifier: String) -> Bool
 }
 
 extension ImageCache: ImageCacheProtocol { }
@@ -53,77 +55,91 @@ class ImageManager {
         imagesController.delegate = self
         try? imagesController.performFetch()
 
-        imagesController.images?.forEach { download(image: $0) }
+        handle(images: imagesController.images)
     }
 }
 
 private extension ImageManager {
-    func download(image: Image, _ completion: ((Bool) -> Void)? = nil) {
-        guard let source = image.source, let cachedSource = imageCacheURL(for: source) else {
+    func download(url: URL, _ completion: ((Bool) -> Void)? = nil) {
+        // 1. Check if we have a valid image cache url
+        // 2. Check if the image is already cached
+        // If the image has a valid url and is already cached, skip; else, retrieve
+        guard let cachedURL = imageCacheURL(for: url),
+        imageRetriever.imageCache.isCached(
+            forKey: cachedURL.cacheKey,
+            processorIdentifier: DefaultImageProcessor.default.identifier
+        ) == false else {
             return
         }
 
         imageRetriever.retrieveImage(
-            with: cachedSource,
+            with: cachedURL,
             options: nil,
             progressBlock: nil,
             downloadTaskUpdated: nil
         ) { result in
-                switch result {
-                case .success:
-                    completion?(true)
-                default:
-                    completion?(false)
-                }
+            switch result {
+            case .success:
+                completion?(true)
+            default:
+                completion?(false)
             }
+        }
     }
 
-    func delete(image: Image) {
-        guard let source = image.source, let cachedSource = imageCacheURL(for: source) else {
+    func delete(url: URL) {
+        // 1. Check if we have a valid image cache url
+        // 2. Check if the image is already cached
+        // If the image has a valid url and is not already cached, skip; else, delete
+        guard let cachedURL = imageCacheURL(for: url),
+        imageRetriever.imageCache.isCached(
+            forKey: cachedURL.cacheKey,
+            processorIdentifier: DefaultImageProcessor.default.identifier
+        ) == true else {
             return
         }
 
         imageRetriever.imageCache.removeImage(
-            forKey: cachedSource.cacheKey,
-            processorIdentifier: "",
+            forKey: cachedURL.cacheKey,
+            processorIdentifier: DefaultImageProcessor.default.identifier,
             fromMemory: true,
             fromDisk: true,
             callbackQueue: .untouch,
             completionHandler: nil
         )
     }
+
+    func handle(images: [Image]?) {
+        guard let images = images, !images.isEmpty else {
+            return
+        }
+
+        // Images are removed via `removeFromImages` when Items are updated
+        // This nullifies the item relationship from Image -> Item
+        // Therefore, we want to retrieve orphaned Images so we can delete them
+        let orphans = images.filter { $0.item == nil }
+
+        let allURLs = Set(images.compactMap { $0.source })
+        let orphanURLs = Set(orphans.compactMap { $0.source })
+
+        // All URLs that are not orphans
+        let toDownload = allURLs.subtracting(orphanURLs)
+        // Skip deleting any URLs that are also orphans, as to not redownload
+        let skipDelete = toDownload.intersection(orphanURLs)
+        // Delete all orphan URLs that are not to be skipped
+        let toDelete = orphanURLs.subtracting(skipDelete)
+
+        toDelete.forEach { delete(url: $0) }
+        toDownload.forEach { download(url: $0) }
+
+        source.delete(images: orphans)
+    }
 }
 
 extension ImageManager: ImagesControllerDelegate {
-    func controller(
-        _ controller: ImagesController,
-        didChange image: Image,
-        at indexPath: IndexPath?,
-        for type: NSFetchedResultsChangeType,
-        newIndexPath: IndexPath?
-    ) {
-        switch type {
-        case .insert, .update:
-            download(image: image) { [weak self] success in
-                if success {
-                    self?.source.download(images: [image])
-                }
-            }
-        case .delete:
-            delete(image: image)
-        case .move:
-            return
-        @unknown default:
-            return
-        }
-    }
-
     func controllerDidChangeContent(_ controller: ImagesController) {
-        guard let images = controller.images, !images.isEmpty else {
-            return
-        }
-
-        images.forEach { download(image: $0) }
-        source.download(images: images)
+        // Called once all context changes are saved (inserts, deletes, etc)
+        // so we can bulk handle the latest Images
+        handle(images: controller.images)
     }
 }

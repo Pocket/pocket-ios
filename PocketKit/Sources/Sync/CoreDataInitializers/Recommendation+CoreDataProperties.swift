@@ -17,4 +17,5 @@ extension Recommendation {
     @NSManaged public var title: String?
     @NSManaged public var item: Item?
     @NSManaged public var slate: Slate?
+    @NSManaged public var sortIndex: NSNumber?
 }

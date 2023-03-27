@@ -168,6 +168,12 @@ extension Space {
         backgroundContext.performAndWait {
             let lineup: SlateLineup = SlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             lineup.slates = NSOrderedSet(array: slates)
+            var i = 1
+            lineup.slates?.forEach { slate in
+                let slate = slate as! Slate
+                slate.sortIndex = NSNumber(value: i)
+                i = i + 1
+            }
 
             return lineup
         }
@@ -214,6 +220,13 @@ extension Space {
             slate.name = name
             slate.slateDescription = slateDescription
             slate.recommendations = NSOrderedSet(array: recommendations)
+
+            var i = 1
+            slate.recommendations?.forEach { rec in
+                var rec = rec as! Recommendation
+                rec.sortIndex = NSNumber(value: i)
+                i = i + 1
+            }
 
             return slate
         }
@@ -283,12 +296,14 @@ extension Space {
     @discardableResult
     func buildImage(
         source: URL?,
-        isDownloaded: Bool = false
+        isDownloaded: Bool = false,
+        item: Item? = nil
     ) -> Image {
         return backgroundContext.performAndWait {
             let image: Image = Image(context: backgroundContext)
             image.source = source
             image.isDownloaded = isDownloaded
+            image.item = item
 
             return image
         }
@@ -297,10 +312,15 @@ extension Space {
     @discardableResult
     func createImage(
         source: URL?,
-        isDownloaded: Bool = false
+        isDownloaded: Bool = false,
+        item: Item? = nil
     ) throws -> Image {
         return try backgroundContext.performAndWait {
-            let image = buildImage(source: source, isDownloaded: isDownloaded)
+            let image = buildImage(
+                source: source,
+                isDownloaded: isDownloaded,
+                item: item
+            )
             try backgroundContext.save()
 
             return image
