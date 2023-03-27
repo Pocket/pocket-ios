@@ -103,6 +103,10 @@ extension Response {
         fixture(named: "user")
     }
 
+    static func premiumUserDetails() -> Response {
+        fixture(named: "premium-user")
+    }
+
     static func searchList(_ type: SearchScope) -> Response {
         var fixtureName = "search-list"
         switch type {

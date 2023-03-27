@@ -2,7 +2,7 @@
   "data": {
     "user": {
       "__typename": "[type-name-here]",
-      "isPremium": false,
+      "isPremium": true,
       "username": "User Name",
       "name": "Pocket User"
     }
