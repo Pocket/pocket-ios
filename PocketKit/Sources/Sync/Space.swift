@@ -221,11 +221,11 @@ public class Space {
         )
     }
 
-    func makeRecomendationsSlateLineupController(by lineupIdentifier: String) -> NSFetchedResultsController<Recommendation> {
-        NSFetchedResultsController(
+    func makeRecomendationsSlateLineupController(by lineupIdentifier: String) -> RichFetchedResultsController<Recommendation> {
+        RichFetchedResultsController(
             fetchRequest: Requests.fetchRecomendations(by: lineupIdentifier),
             managedObjectContext: viewContext,
-            sectionNameKeyPath: "slate.remoteID",
+            sectionNameKeyPath: "slate.sortIndex",
             cacheName: nil
         )
     }

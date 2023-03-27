@@ -101,14 +101,21 @@ public enum Requests {
         Slate.fetchRequest()
     }
 
-    public static func fetchRecomendations(by lineupIdentifier: String) -> NSFetchRequest<Recommendation> {
-        let request = Recommendation.fetchRequest()
+    public static func fetchRecomendations(by lineupIdentifier: String) -> RichFetchRequest<Recommendation> {
+        let request = RichFetchRequest<Recommendation>(entityName: "Recommendation")
         request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@", lineupIdentifier)
         request.sortDescriptors = [
             NSSortDescriptor(keyPath: \Recommendation.slate?.sortIndex, ascending: true),
             NSSortDescriptor(keyPath: \Recommendation.sortIndex, ascending: true),
-            NSSortDescriptor(keyPath: \Recommendation.item?.title, ascending: true),
-            NSSortDescriptor(keyPath: \Recommendation.item?.savedItem?.url, ascending: true),
+        ]
+        request.relationshipKeyPathsForRefreshing = [
+            #keyPath(Recommendation.slate.sortIndex),
+            // Reload the cell when the image finishes downloading. Kingfisher has a bug where the cell is not always reloaded with the image.
+            #keyPath(Recommendation.image.isDownloaded),
+            #keyPath(Recommendation.item.title),
+            #keyPath(Recommendation.item.savedItem.archivedAt),
+            #keyPath(Recommendation.item.savedItem.isFavorite),
+            #keyPath(Recommendation.item.savedItem.createdAt),
         ]
         return request
     }

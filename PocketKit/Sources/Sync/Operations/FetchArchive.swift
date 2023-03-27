@@ -27,14 +27,15 @@ class FetchArchive: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
-            
-            guard let lastRefreshTime = lastRefresh.lastRefreshArchive, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Archive.timeMustPass else {
-                Log.info("Not refreshing archives from server, last refresh is not above tolerance of \(SyncConstants.Archive.timeMustPass) seconds")
-                // Future TODO: We should have a new result called too soon that the ui can act on.
-                // However many states may not come from a user, IE. Instant Sync, Persistent Tasks that never finished, Retries
-                return .success
+            if lastRefresh.lastRefreshArchive != nil {
+                guard let lastRefreshTime = lastRefresh.lastRefreshArchive, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Archive.timeMustPass else {
+                    Log.info("Not refreshing archives from server, last refresh is not above tolerance of \(SyncConstants.Archive.timeMustPass) seconds")
+                    // Future TODO: We should have a new result called too soon that the ui can act on.
+                    // However many states may not come from a user, IE. Instant Sync, Persistent Tasks that never finished, Retries
+                    return .success
+                }
             }
-            
+
             try await fetchArchive()
 
             lastRefresh.refreshedArchive()

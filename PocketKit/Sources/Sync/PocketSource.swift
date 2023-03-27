@@ -177,7 +177,7 @@ public class PocketSource: Source {
         space.makeRecentSavesController(limit: SyncConstants.Home.recentSaves)
     }
 
-    public func makeHomeController() -> NSFetchedResultsController<Recommendation> {
+    public func makeHomeController() -> RichFetchedResultsController<Recommendation> {
         space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
     }
 
