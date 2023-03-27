@@ -5,8 +5,6 @@ private let imageCacheFilters = "/fit-in/\(Int(UIScreen.main.nativeBounds.width)
 private let baseURL = URL(string: "https://pocket-image-cache.com")!
 
 func imageCacheURL(for imageURL: URL?) -> URL? {
-    var queryComponents = NSCharacterSet.urlHostAllowed
-    queryComponents.remove(charactersIn: ":%")
     let url = imageURL
         .flatMap { $0.absoluteString }
         // Need to remove percent encoding because we add it in Marticle Images
@@ -16,7 +14,8 @@ func imageCacheURL(for imageURL: URL?) -> URL? {
             // All urls should passed to the image cache should encode the same when usign that site.
             // We do not use URLPathComponents because it adds auto encoding on top of our own encoding which will casue % to be rencoded causing errors. 🤦🏻
             var allowedCharacterSet = NSCharacterSet.urlHostAllowed
-            allowedCharacterSet.remove(charactersIn: "?&")
+            allowedCharacterSet.remove(charactersIn: ":?&")
+
             let path = [
                 imageCacheFilters,
                 imageURLString.addingPercentEncoding(withAllowedCharacters: allowedCharacterSet) ?? imageURLString
