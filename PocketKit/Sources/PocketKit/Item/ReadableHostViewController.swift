@@ -46,6 +46,16 @@ class ReadableHostViewController: UIViewController {
         }.store(in: &subscriptions)
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        lockOrientation(.allButUpsideDown)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        lockOrientation(.portrait)
+        super.viewDidDisappear(animated)
+    }
+
     override func loadView() {
         view = UIView()
 
