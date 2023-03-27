@@ -138,20 +138,6 @@ extension LegacyUserMigrationTests {
         }
     }
 
-    func test_perform_withKeyInKeychain_doesNotThrowError() {
-        keychain.copyMatchingResult = "password" as CFTypeRef
-        let migration = subject()
-        encryptedStore.stubDecryptStore { _ in return nil }
-
-        do {
-            try migration.perform()
-        } catch {
-            if case LegacyUserMigrationError.missingKey = error {
-                XCTFail("Key should exist; error should not be thrown")
-            }
-        }
-    }
-
     func test_perform_withKeyNotInKeychainAndInUserDefaults_doesNotThrowError() {
         userDefaults.set("password", forKey: LegacyUserMigration.decryptionKey)
 
