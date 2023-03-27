@@ -10,16 +10,13 @@ protocol UserService {
 
 class APIUserService: UserService {
     private let apollo: ApolloClientProtocol
-    private let space: Space
     private let user: User
 
     init(
         apollo: ApolloClientProtocol,
-        space: Space,
         user: User
     ) {
         self.apollo = apollo
-        self.space = space
         self.user = user
     }
 
@@ -35,10 +32,10 @@ class APIUserService: UserService {
     }
 
     private func fetchRemoteUser(remote: GetUserDataQuery.Data.User) throws {
-        space.performAndWait {
             guard let remoteIsPremium = remote.isPremium, let remoteUserName = remote.name else {
                 return
             }
+
             user.setPremiumStatus(remoteIsPremium)
             user.setUserName(remoteUserName)
 
@@ -47,7 +44,5 @@ class APIUserService: UserService {
             } else {
                 Log.capture(message: "No display name data")
             }
-        }
-        try space.save()
     }
 }

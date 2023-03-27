@@ -87,7 +87,7 @@ public class PocketSource: Source {
             osNotificationCenter: OSNotificationCenter(
                 notifications: CFNotificationCenterGetDarwinNotifyCenter()
             ),
-            userService: APIUserService(apollo: apollo, space: space, user: user)
+            userService: APIUserService(apollo: apollo, user: user)
         )
     }
 
