@@ -14,7 +14,7 @@ class Listen: NSObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     static let colors = PKTListenAppTheme()
-    
+
     /// Analytics tracker
     private var tracker: Tracker
 
@@ -22,7 +22,7 @@ class Listen: NSObject {
         self.tracker = tracker
         super.init()
         PKTSetConsumerKey(consumerKey)
-        ListenRuntime.sharedRuntime.start()
+        PKTLocalRuntime.shared().start()
         PKTListen.sharedInstance().sessionDelegate = self
         PKTListen.sharedInstance().pocketProxy = self
 
@@ -209,6 +209,6 @@ extension Listen: PKTListenPocketProxy {
     }
 
     func store() -> PKTKeyValueStore {
-        ListenRuntime.sharedRuntime.store()
+        PKTLocalRuntime.shared().store()
     }
 }

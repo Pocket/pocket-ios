@@ -8,6 +8,7 @@ import Sync
 import Kingfisher
 
 /// Older Pocket runtime which configures the legacy pocket app hooks used by Listen
+/// NOT USED FOR NOW.
 class ListenRuntime: PKTAbstractRuntime {
     static let sharedRuntime = ListenRuntime()
 
