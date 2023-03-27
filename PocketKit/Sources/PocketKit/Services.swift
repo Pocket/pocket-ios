@@ -126,7 +126,8 @@ struct Services {
             appSession: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             networkPathMonitor: NWPathMonitor(),
-            tracker: tracker
+            tracker: tracker,
+            source: source
         )
     }
 }

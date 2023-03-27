@@ -16,10 +16,14 @@ class Listen: NSObject {
     static let colors = PKTListenAppTheme()
 
     /// Analytics tracker
-    private var tracker: Tracker
+    private let tracker: Tracker
 
-    init(appSession: AppSession, consumerKey: String, networkPathMonitor: NetworkPathMonitor, tracker: Tracker) {
+    /// Service used to  archive or save an article
+    private let source: Source
+
+    init(appSession: AppSession, consumerKey: String, networkPathMonitor: NetworkPathMonitor, tracker: Tracker, source: Source) {
         self.tracker = tracker
+        self.source = source
         super.init()
         PKTSetConsumerKey(consumerKey)
         PKTLocalRuntime.shared().start()
@@ -185,8 +189,13 @@ extension Listen: PKTListenPocketProxy {
     ///   - kusari: An object representing the item the user saved
     ///   - userInfo: Extra context info as needed
     func archiveKusari(_ kusari: PKTKusari<PKTListenItem>, userInfo: [AnyHashable: Any] = [:]) {
-        // TODO: Implement archiving
-        Log.debug("Archive listen album: \(String(describing: kusari.albumID))")
+        guard let savedItem = kusari.album as? SavedItem else {
+            Log.capture(message: "Tried to archive item from Listen where we dont have the SavedItem")
+            return
+        }
+
+        self.source.archive(item: savedItem)
+        // TODO: Track analytics
     }
 
     /// User clicked save in the listen controls
@@ -194,8 +203,12 @@ extension Listen: PKTListenPocketProxy {
     ///   - kusari: An object representing the item the user saved
     ///   - userInfo: Extra context info as needed
     func add(_ kusari: PKTKusari<PKTListenItem>, userInfo: [AnyHashable: Any] = [:]) {
-        // TODO: Implement add
-        Log.debug("Add listen album: \(String(describing: kusari.albumID))")
+        guard let url = kusari.album?.givenURL else {
+            Log.capture(message: "Tried to save item from Listen where we dont have the url")
+            return
+        }
+        _ = self.source.save(url: url)
+        // TODO: Track analytics
     }
 
     /// TODO: Ask nicole
