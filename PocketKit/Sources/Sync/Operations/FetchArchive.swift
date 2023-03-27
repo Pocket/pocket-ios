@@ -27,6 +27,15 @@ class FetchArchive: SyncOperation {
 
     func execute() async -> SyncOperationResult {
         do {
+            if lastRefresh.lastRefreshArchive != nil {
+                guard let lastRefreshTime = lastRefresh.lastRefreshArchive, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Archive.timeMustPass else {
+                    Log.info("Not refreshing archives from server, last refresh is not above tolerance of \(SyncConstants.Archive.timeMustPass) seconds")
+                    // Future TODO: We should have a new result called too soon that the ui can act on.
+                    // However many states may not come from a user, IE. Instant Sync, Persistent Tasks that never finished, Retries
+                    return .success
+                }
+            }
+
             try await fetchArchive()
 
             lastRefresh.refreshedArchive()
@@ -63,7 +72,9 @@ class FetchArchive: SyncOperation {
     private func fetchArchive() async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize)
 
+        var pageNumber = 1
         repeat {
+            Log.breadcrumb(category: "sync.archive", level: .debug, message: "Loading page \(pageNumber)")
             let result = try await fetchPage(pagination)
 
             if case .started = initialDownloadState.value,
@@ -71,9 +82,10 @@ class FetchArchive: SyncOperation {
                pagination.cursor == nil {
                 initialDownloadState.send(.paginating(totalCount: min(totalCount, pagination.maxItems)))
             }
-
             try updateLocalStorage(result: result)
             pagination = pagination.nextPage(result: result, pageSize: SyncConstants.Archive.pageSize)
+            Log.breadcrumb(category: "sync.archive", level: .debug, message: "Finished loading page \(pageNumber)")
+            pageNumber += 1
         } while pagination.shouldFetchNextPage
 
         initialDownloadState.send(.completed)

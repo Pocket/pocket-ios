@@ -226,7 +226,7 @@ extension MockSource {
 // MARK: - Make home controller
 extension MockSource {
     static let makeHomeController = "makeHomeController"
-    typealias MakeHomeControllerImpl = () -> NSFetchedResultsController<Sync.Recommendation>
+    typealias MakeHomeControllerImpl = () -> RichFetchedResultsController<Sync.Recommendation>
 
     struct MakeHomeControllerCall {
     }
@@ -235,7 +235,7 @@ extension MockSource {
         implementations[Self.makeHomeController] = impl
     }
 
-    func makeHomeController() -> NSFetchedResultsController<Sync.Recommendation> {
+    func makeHomeController() -> RichFetchedResultsController<Sync.Recommendation> {
         guard let impl = implementations[Self.makeHomeController] as? MakeHomeControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }

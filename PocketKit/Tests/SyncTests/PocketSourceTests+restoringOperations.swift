@@ -36,7 +36,8 @@ extension PocketSourceTests {
         source.restore()
         networkMonitor.update(status: .satisfied)
 
-        wait(for: [fetchList, favoriteItem, archiveItem], timeout: 1, enforceOrder: true)
+        wait(for: [favoriteItem, archiveItem], timeout: 1, enforceOrder: true)
+        wait(for: [fetchList], timeout: 1)
 
         let done = expectation(description: "done")
         source.drain { done.fulfill() }

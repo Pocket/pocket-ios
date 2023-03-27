@@ -102,6 +102,10 @@ extension Item {
             return
         }
 
+        if let topImageURL {
+            addToImages(Image(url: topImageURL, context: context))
+        }
+
         if let metaParts = summary.domainMetadata?.fragments.domainMetadataParts {
             domainMetadata = domainMetadata ?? DomainMetadata(context: context)
             domainMetadata?.update(remote: metaParts)
@@ -138,6 +142,9 @@ extension Item {
             self.syndicatedArticle?.title = syndicatedArticle.title
             self.syndicatedArticle?.excerpt = syndicatedArticle.excerpt
             self.syndicatedArticle?.imageURL = syndicatedArticle.mainImage.flatMap(URL.init)
+            if let imageSrc = syndicatedArticle.mainImage {
+                self.syndicatedArticle?.image = Image(src: imageSrc, context: context)
+            }
         }
     }
 }

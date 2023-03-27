@@ -174,7 +174,9 @@ public class Space {
     func save() throws {
         try backgroundContext.performAndWait {
             try backgroundContext.obtainPermanentIDs(for: Array(backgroundContext.insertedObjects))
-            try backgroundContext.save()
+            if backgroundContext.hasChanges {
+                try backgroundContext.save()
+            }
         }
     }
 
@@ -219,11 +221,11 @@ public class Space {
         )
     }
 
-    func makeRecomendationsSlateLineupController(by lineupIdentifier: String) -> NSFetchedResultsController<Recommendation> {
-        NSFetchedResultsController(
+    func makeRecomendationsSlateLineupController(by lineupIdentifier: String) -> RichFetchedResultsController<Recommendation> {
+        RichFetchedResultsController(
             fetchRequest: Requests.fetchRecomendations(by: lineupIdentifier),
             managedObjectContext: viewContext,
-            sectionNameKeyPath: "slate.remoteID",
+            sectionNameKeyPath: "slate.sortIndex",
             cacheName: nil
         )
     }
@@ -265,7 +267,7 @@ public class Space {
         request.sortDescriptors = [NSSortDescriptor(key: "source.absoluteString", ascending: true)]
         return NSFetchedResultsController(
             fetchRequest: request,
-            managedObjectContext: viewContext,
+            managedObjectContext: backgroundContext,
             sectionNameKeyPath: nil,
             cacheName: nil
         )

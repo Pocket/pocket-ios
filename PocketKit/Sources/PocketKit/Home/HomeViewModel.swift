@@ -105,7 +105,7 @@ class HomeViewModel: NSObject {
     private var recentSavesCount: Int = 0
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
-    private let recomendationsController: NSFetchedResultsController<Recommendation>
+    private let recomendationsController: RichFetchedResultsController<Recommendation>
 
     init(
         source: Source,
@@ -202,41 +202,27 @@ extension HomeViewModel {
 
         for slateSection in slateSections {
             guard var recommendations = slateSection.objects as? [Recommendation],
-                    !recommendations.isEmpty,
-                  let firstRecommendation = recommendations.first,
-                  let slate = firstRecommendation.slate
+                  let slateId = recommendations.first?.slate?.objectID
             else {
                 continue
             }
 
-            let slateId: NSManagedObjectID = slate.objectID
-
-            let slateSectionId: Section = .slateHero(slateId)
-
             let hero = recommendations.removeFirst()
-            if snapshot.indexOfSection(slateSectionId) == nil {
-                snapshot.appendSections([slateSectionId])
-            }
+            snapshot.appendSections([.slateHero(slateId)])
             snapshot.appendItems(
                 [.recommendationHero(hero.objectID)],
-                toSection: slateSectionId
+                toSection: .slateHero(slateId)
             )
-            // Set a rec to always reload so it gets the latest save state. This is because NSFetchedResultsController is not listening for SavedItem changes on recs
-            snapshot.reloadItems([.recommendationHero(hero.objectID)])
 
             guard !recommendations.isEmpty else {
                 continue
             }
 
-            if snapshot.indexOfSection(.slateCarousel(slate.objectID)) == nil {
-                snapshot.appendSections([.slateCarousel(slate.objectID)])
-            }
+            snapshot.appendSections([.slateCarousel(slateId)])
             snapshot.appendItems(
                 recommendations.prefix(4).map { .recommendationCarousel($0.objectID) },
                 toSection: .slateCarousel(slateId)
             )
-            // Set a rec to always reload so it gets the latest save state. This is because NSFetchedResultsController is not listening for SavedItem changes on recs
-            snapshot.reloadItems(recommendations.prefix(4).map { .recommendationCarousel($0.objectID) })
         }
 
         return snapshot

@@ -14,7 +14,7 @@ class HomeViewModelTests: XCTestCase {
     var networkPathMonitor: MockNetworkPathMonitor!
     var homeRefreshCoordinator: MockHomeRefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
-    var homeController: NSFetchedResultsController<Recommendation>!
+    var homeController: RichFetchedResultsController<Recommendation>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
 
     override func setUp() async throws {
@@ -340,7 +340,7 @@ class HomeViewModelTests: XCTestCase {
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -356,8 +356,7 @@ class HomeViewModelTests: XCTestCase {
             )
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID), .recommendationCarousel(recommendations[1].objectID)]
-            )
+                [])
         }.store(in: &subscriptions)
 
         savedItem = space.buildSavedItem()
@@ -379,6 +378,7 @@ class HomeViewModelTests: XCTestCase {
             remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
+        try space.save()
 
         let viewModel = subject()
         viewModel.fetch()
@@ -400,7 +400,7 @@ class HomeViewModelTests: XCTestCase {
             )
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID), .recommendationCarousel(recommendations[1].objectID)]
+                []
             )
         }.store(in: &subscriptions)
 
@@ -423,6 +423,7 @@ class HomeViewModelTests: XCTestCase {
             remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
+        try space.save()
 
         let viewModel = subject()
         viewModel.fetch()
@@ -445,7 +446,7 @@ class HomeViewModelTests: XCTestCase {
 
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID), .recommendationCarousel(recommendations[1].objectID)]
+                []
             )
         }.store(in: &subscriptions)
 
