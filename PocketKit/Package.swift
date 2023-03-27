@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "PocketKit",
     defaultLocalization: "en",
-    platforms: [.iOS("15")],
+    platforms: [.iOS("15"), .macOS("11")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
         .library(name: "SaveToPocketKit", targets: ["SaveToPocketKit"]),

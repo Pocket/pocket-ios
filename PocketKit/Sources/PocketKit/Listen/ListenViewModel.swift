@@ -1,9 +1,6 @@
-//
-//  File.swift
-//  
-//
-//  Created by Daniel Brooks on 3/24/23.
-//
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Foundation
 import Sync
@@ -25,15 +22,6 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
             if savedItem.estimatedAlbumDuration <= 60 {
                 return false
             }
-// Below is the legacy listen logic, however we did not include wordCount in our intial data model so not all users will have it., So instead we just ensure our albumDuration is above 0
-//            guard let wordCount = savedItem.item?.wordCount?.intValue, wordCount > PKTListen.minimumWordCount, wordCount < PKTListen.maximumWordCount else {
-//                //Back up to using time to read, because MVP did not include wordCount
-//                guard let timeToRead = savedItem.item?.timeToRead?.intValue, timeToRead > 0 else {
-//                    return false
-//                }
-//
-//                return true
-//            }
 
             guard let language = savedItem.albumLanguage else {
                 return false
