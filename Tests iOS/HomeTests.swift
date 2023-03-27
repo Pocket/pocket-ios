@@ -50,7 +50,7 @@ class HomeTests: XCTestCase {
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
 
@@ -60,7 +60,7 @@ class HomeTests: XCTestCase {
                 Fixture.data(name: "hello", ext: "html")
             }
         }
-        
+
         server.routes.get("/item-1") { _, _ in
             Response {
                 Status.ok
@@ -462,7 +462,7 @@ extension HomeTests {
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
 

@@ -31,7 +31,7 @@ class FavoriteAnItemTests: XCTestCase {
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
 

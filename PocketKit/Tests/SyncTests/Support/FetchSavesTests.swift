@@ -53,7 +53,7 @@ class FetchSavesTests: XCTestCase {
 
     func test_refresh_fetchesFetchSavesQueryWithGivenToken() async {
         user.stubSetStatus { _ in }
-        apollo.setupSyncResponse()
+        apollo.setupFetchSavesSyncResponse()
 
         let service = subject()
         _ = await service.execute()
@@ -66,7 +66,7 @@ class FetchSavesTests: XCTestCase {
 
     func test_refresh_whenFetchSucceeds_andResultContainsNewItems_createsNewItems() async throws {
         user.stubSetStatus { _ in }
-        apollo.setupSyncResponse()
+        apollo.setupFetchSavesSyncResponse()
 
         let service = subject()
         _ = await service.execute()
@@ -119,7 +119,7 @@ class FetchSavesTests: XCTestCase {
 
     func test_refresh_whenFetchSucceeds_andResultContainsDuplicateItems_createsSingleItem() async throws {
         user.stubSetStatus { _ in }
-        apollo.setupSyncResponse(listFixtureName: "duplicate-list")
+        apollo.setupFetchSavesSyncResponse(listFixtureName: "duplicate-list")
 
         let service = subject()
         _ = await service.execute()
@@ -130,7 +130,7 @@ class FetchSavesTests: XCTestCase {
 
     func test_refresh_whenFetchSucceeds_andResultContainsUpdatedItems_updatesExistingItems() async throws {
         user.stubSetStatus { _ in }
-        apollo.setupSyncResponse(listFixtureName: "updated-item")
+        apollo.setupFetchSavesSyncResponse(listFixtureName: "updated-item")
         try space.createSavedItem(
             remoteID: "saved-item-1",
             item: space.buildItem(title: "Item 1")
@@ -245,7 +245,7 @@ class FetchSavesTests: XCTestCase {
     func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() async {
         user.stubSetStatus { _ in }
         lastRefresh.stubGetLastRefreshSaves { 123456789 }
-        apollo.setupSyncResponse()
+        apollo.setupFetchSavesSyncResponse()
 
         let service = subject()
         _ = await service.execute()
@@ -258,7 +258,7 @@ class FetchSavesTests: XCTestCase {
     func test_refresh_whenUpdatedSinceIsPresent_doesNotSendInitialDownloadFetchedFirstPageEvent() async {
         user.stubSetStatus { _ in }
         initialDownloadState.send(.completed)
-        apollo.setupSyncResponse()
+        apollo.setupFetchSavesSyncResponse()
 
         let receivedEvent = expectation(description: "receivedEvent")
         receivedEvent.isInverted = true
@@ -280,7 +280,7 @@ class FetchSavesTests: XCTestCase {
 
     func test_refresh_whenUpdatedSinceIsNotPresent_onlyFetchesUnreadItems() async {
         user.stubSetStatus { _ in }
-        apollo.setupSyncResponse()
+        apollo.setupFetchSavesSyncResponse()
 
         let service = subject()
         _ = await service.execute()
@@ -329,7 +329,7 @@ class FetchSavesTests: XCTestCase {
     func test_refresh_whenIsInitialDownload_sendsAppropriateEvents() async {
         user.stubSetStatus { _ in }
         initialDownloadState.send(.started)
-        apollo.setupSyncResponse()
+        apollo.setupFetchSavesSyncResponse()
 
         let receivedFirstPageEvent = expectation(description: "receivedFirstPageEvent")
         let receivedCompletedEvent = expectation(description: "receivedCompletedEvent")
@@ -353,7 +353,7 @@ class FetchSavesTests: XCTestCase {
 
     func test_refresh_whenResultsAreEmpty_finishesOperationSuccessfully() async {
         user.stubSetStatus { _ in }
-        apollo.setupSyncResponse(listFixtureName: "empty-list")
+        apollo.setupFetchSavesSyncResponse(listFixtureName: "empty-list")
 
         let service = subject()
         _ = await service.execute()
@@ -412,7 +412,7 @@ extension MockApolloClient {
         )
     }
 
-    func setupSyncResponse(
+    func setupFetchSavesSyncResponse(
         listFixtureName: String = "list",
         tagsFixtureName: String = "empty-tags"
     ) {

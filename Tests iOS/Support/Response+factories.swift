@@ -99,6 +99,10 @@ extension Response {
         fixture(named: "premium-status")
     }
 
+    static func userDetails() -> Response {
+        fixture(named: "user")
+    }
+
     static func searchList(_ type: SearchScope) -> Response {
         var fixtureName = "search-list"
         switch type {
@@ -120,10 +124,6 @@ extension Response {
 
     static func searchPagination(_ fixtureName: String = "search-list-page-1") -> Response {
         fixture(named: fixtureName)
-    }
-
-    static func userDetails() -> Response {
-        fixture(named: "user")
     }
 
     static func fixture(named fixtureName: String) -> Response {

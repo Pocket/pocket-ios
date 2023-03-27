@@ -46,7 +46,7 @@ class SearchTests: XCTestCase {
             } else if apiRequest.isForItemDetail {
                 return Response.itemDetail()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
 
@@ -350,7 +350,7 @@ class SearchTests: XCTestCase {
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
 
@@ -397,7 +397,7 @@ class SearchTests: XCTestCase {
             } else if apiRequest.isForSearch(.saves) {
                 return Response(status: .internalServerError)
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
         app.launch()

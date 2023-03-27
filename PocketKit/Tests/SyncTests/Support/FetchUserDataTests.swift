@@ -38,7 +38,7 @@ class FetchUserTests: XCTestCase {
         user.stubSetStatus { _ in }
         user.stubSetUserName { _ in }
         user.stubSetDisplayName { _ in }
-        apollo.setupSyncResponse()
+        apollo.setupUserSyncResponse()
         let service = subject()
         try await service.fetchUser()
         XCTAssertNotNil(user.setStatusCall(at: 0))
@@ -53,7 +53,7 @@ extension MockApolloClient {
         )
     }
 
-    func setupSyncResponse(
+    func setupUserSyncResponse(
         userResponse: String = "user"
     ) {
         setupUserResponse(fixtureName: userResponse)
