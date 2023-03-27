@@ -394,14 +394,6 @@ class FetchSavesTests: XCTestCase {
             return
         }
     }
-
-    func test_execute_setsUserStatus() async {
-        user.stubSetStatus { _ in }
-        apollo.setupSyncResponse()
-        let service = subject()
-        _ = await service.execute()
-        XCTAssertNotNil(user.setStatusCall(at: 0))
-    }
 }
 
 extension MockApolloClient {

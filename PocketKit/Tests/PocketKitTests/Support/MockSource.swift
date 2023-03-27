@@ -5,7 +5,6 @@ import Combine
 
 class MockSource: Source {
     func fetchUserData() async throws {
-        <#code#>
     }
 
     var _events: SyncEvents = SyncEvents()

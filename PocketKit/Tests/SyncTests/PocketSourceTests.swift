@@ -38,6 +38,7 @@ class PocketSourceTests: XCTestCase {
         backgroundTaskManager = MockBackgroundTaskManager()
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
         subscriptions = []
+        userService = MockUserService()
 
         lastRefresh.stubGetLastRefreshSaves { nil }
         lastRefresh.stubGetLastRefreshArchive { nil }

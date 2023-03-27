@@ -122,6 +122,10 @@ extension Response {
         fixture(named: fixtureName)
     }
 
+    static func userDetails() -> Response {
+        fixture(named: "user")
+    }
+
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok
@@ -140,6 +144,8 @@ extension Response {
             return Response.saves()
         } else if apiRequest.isForDeleteUser {
             return Response.deleteUser()
+        } else if apiRequest.isForUserDetails {
+            return Response.userDetails()
         } else {
             fatalError("Unexpected request")
         }
