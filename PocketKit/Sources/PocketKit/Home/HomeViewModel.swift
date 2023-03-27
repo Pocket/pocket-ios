@@ -202,7 +202,6 @@ extension HomeViewModel {
 
         for slateSection in slateSections {
             guard var recommendations = slateSection.objects as? [Recommendation],
-                    !recommendations.isEmpty,
                   let slateId = recommendations.first?.slate?.objectID
             else {
                 continue
