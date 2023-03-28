@@ -31,7 +31,7 @@ class ShareAnItemTests: XCTestCase {
             } else if apiRequest.isForSlateDetail() {
                 return Response.slateDetail()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
 

@@ -57,6 +57,8 @@ class SettingsTest: XCTestCase {
             } else if apiRequest.isForDeleteUser {
                 _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Making the server response slow so we can see the loading screen")], timeout: 5.0)
                 return Response.deleteUser()
+            } else if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
             }
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
@@ -79,6 +81,8 @@ class SettingsTest: XCTestCase {
             } else if apiRequest.isForDeleteUser {
                 _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Making the server response slow so we can see the loading screen")], timeout: 5.0)
                 return Response.deleteUserError()
+            } else if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
             }
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
@@ -97,6 +101,8 @@ class SettingsTest: XCTestCase {
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
                 return Response.saves()
+            } else if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
             }
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
@@ -140,6 +146,9 @@ class SettingsTest: XCTestCase {
         let saveRequestExpectation = expectation(description: "A save mutation request")
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
+            }
             return Response.fallbackResponses(apiRequest: apiRequest)
         }
         server.routes.post("/purchase_status") { request, _ in

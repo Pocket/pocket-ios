@@ -54,6 +54,7 @@ public class SavedItemByIDQuery: GraphQLQuery {
       ] }
 
       /// Get a SavedItem by its id
+      @available(*, deprecated, message: "Use saveById instead")
       public var savedItemById: SavedItemById? { __data["savedItemById"] }
 
       /// User.SavedItemById
