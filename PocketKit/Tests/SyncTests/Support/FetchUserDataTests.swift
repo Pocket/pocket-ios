@@ -10,26 +10,18 @@ import PocketGraph
 class FetchUserTests: XCTestCase {
     var apollo: MockApolloClient!
     var user: MockUser!
-    var space: Space!
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
         user = MockUser()
-        space = .testSpace()
-    }
-
-    override func tearDownWithError() throws {
-        try space.clear()
     }
 
     func subject(
         user: User? = nil,
-        apollo: ApolloClientProtocol? = nil,
-        space: Space? = nil
+        apollo: ApolloClientProtocol? = nil
     ) -> UserService {
         APIUserService(
             apollo: apollo ?? self.apollo,
-            space: space ?? self.space,
             user: user ?? self.user
         )
     }
