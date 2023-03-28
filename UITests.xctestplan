@@ -69,6 +69,13 @@
     {
       "skippedTests" : [
         "AddTagsItemTests",
+        "ArchiveAnItemTests\/test_archivingAnItemFromHomeRecentSaves_archivesItem_andPopsBackToList()",
+        "ArchiveAnItemTests\/test_archivingAnItemFromList_bySwipe_removesItFromList_andSyncWithServer()",
+        "ArchiveAnItemTests\/test_archivingAnItemFromList_removesItFromList_andSyncsWithServer()",
+        "ArchiveAnItemTests\/test_archivingAnItemFromReader_archivesItem_andPopsBackToList()",
+        "ArchiveFiltersTests\/test_archiveView_sortingNoTagFilter_showFilteredItems()",
+        "ArchiveFiltersTests\/test_archiveView_tappingTaggedFilter_showsFilteredItems()",
+        "BannerViewTests\/test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop()",
         "HomeTests",
         "HomeWebViewTests",
         "PremiumTests",
@@ -78,7 +85,10 @@
         "SaveToPocketTests",
         "SavesFiltersTests",
         "SearchTests",
-        "ShareAnItemTests"
+        "SettingsTest\/test_deleteAccount_free_succeeds()",
+        "SettingsTest\/test_deleteAccount_premium_succeeds()",
+        "ShareAnItemTests",
+        "SignOutTests\/test_tappingSignOutshowsLogin()"
       ],
       "target" : {
         "containerPath" : "container:Pocket.xcodeproj",
