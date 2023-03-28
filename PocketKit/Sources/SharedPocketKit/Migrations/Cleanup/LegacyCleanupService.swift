@@ -10,6 +10,12 @@ public enum CleanupError: Error {
 
 /// Service that cleans up legacy data
 public struct LegacyCleanupService {
+    private let grouoID: String
+
+    public init(groupID: String) {
+        self.grouoID = groupID
+    }
+
     public func cleanUp() {
         cleanupLegacyUserDefaults()
         deleteSqliteDataBase()
@@ -17,8 +23,6 @@ public struct LegacyCleanupService {
         deleteAudioCache()
         deleteLogFiles()
     }
-
-    public init() { }
 
     /// Remove legacy `UserDefaults` suite
     private func cleanupLegacyUserDefaults() {
