@@ -43,6 +43,11 @@
 		16E4B16F27A3212900E01746 /* Response+factories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16E4B16E27A3212900E01746 /* Response+factories.swift */; };
 		16EE3F5026CEC80900249AF4 /* PullToRefreshTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16EE3F4F26CEC80900249AF4 /* PullToRefreshTests.swift */; };
 		16FCADBF26CB04AC00906C03 /* ArchiveAnItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16FCADBE26CB04AC00906C03 /* ArchiveAnItemTests.swift */; };
+		3859089F29D35B2F00C8C17F /* Adjust in Frameworks */ = {isa = PBXBuildFile; productRef = 3859089E29D35B2F00C8C17F /* Adjust */; };
+		385908A129D35B2F00C8C17F /* Criteo in Frameworks */ = {isa = PBXBuildFile; productRef = 385908A029D35B2F00C8C17F /* Criteo */; };
+		385908A329D35B2F00C8C17F /* Sociomantic in Frameworks */ = {isa = PBXBuildFile; productRef = 385908A229D35B2F00C8C17F /* Sociomantic */; };
+		385908A529D35B2F00C8C17F /* Trademob in Frameworks */ = {isa = PBXBuildFile; productRef = 385908A429D35B2F00C8C17F /* Trademob */; };
+		385908A729D35B2F00C8C17F /* WebBridge in Frameworks */ = {isa = PBXBuildFile; productRef = 385908A629D35B2F00C8C17F /* WebBridge */; };
 		3879243129BA816200C43F87 /* PremiumStatusViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3879243029BA816200C43F87 /* PremiumStatusViewElement.swift */; };
 		3E44BE77290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E44BE76290BFD4600EC25AD /* ReaderActionsWebActivityElement.swift */; };
 		3E7349DF2930F6D200EEEA36 /* String+Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E7349DE2930F6D200EEEA36 /* String+Localization.swift */; };
@@ -262,7 +267,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				385908A129D35B2F00C8C17F /* Criteo in Frameworks */,
+				385908A329D35B2F00C8C17F /* Sociomantic in Frameworks */,
 				16BA7D6626851579009A17C1 /* PocketKit in Frameworks */,
+				3859089F29D35B2F00C8C17F /* Adjust in Frameworks */,
+				385908A729D35B2F00C8C17F /* WebBridge in Frameworks */,
+				385908A529D35B2F00C8C17F /* Trademob in Frameworks */,
 				AA7D6A2B2995F0A20094FD18 /* StoreKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -523,6 +533,11 @@
 			name = "Pocket (iOS)";
 			packageProductDependencies = (
 				16BA7D6526851579009A17C1 /* PocketKit */,
+				3859089E29D35B2F00C8C17F /* Adjust */,
+				385908A029D35B2F00C8C17F /* Criteo */,
+				385908A229D35B2F00C8C17F /* Sociomantic */,
+				385908A429D35B2F00C8C17F /* Trademob */,
+				385908A629D35B2F00C8C17F /* WebBridge */,
 			);
 			productName = "Pocket (iOS)";
 			productReference = 166A81B02637406C0015AA1D /* Pocket.app */;
@@ -665,6 +680,7 @@
 			packageReferences = (
 				167F8082264B011600D8F507 /* XCRemoteSwiftPackageReference "Sails" */,
 				65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */,
+				3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */,
 			);
 			productRefGroup = 166A81B12637406C0015AA1D /* Products */;
 			projectDirPath = "";
@@ -1815,6 +1831,14 @@
 				kind = branch;
 			};
 		};
+		3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/adjust/ios_sdk";
+			requirement = {
+				kind = exactVersion;
+				version = 4.33.4;
+			};
+		};
 		65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/braze-inc/braze-swift-sdk.git";
@@ -1834,6 +1858,31 @@
 		16BA7D6526851579009A17C1 /* PocketKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PocketKit;
+		};
+		3859089E29D35B2F00C8C17F /* Adjust */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */;
+			productName = Adjust;
+		};
+		385908A029D35B2F00C8C17F /* Criteo */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */;
+			productName = Criteo;
+		};
+		385908A229D35B2F00C8C17F /* Sociomantic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */;
+			productName = Sociomantic;
+		};
+		385908A429D35B2F00C8C17F /* Trademob */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */;
+			productName = Trademob;
+		};
+		385908A629D35B2F00C8C17F /* WebBridge */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3859089D29D35B2F00C8C17F /* XCRemoteSwiftPackageReference "ios_sdk" */;
+			productName = WebBridge;
 		};
 		65167B6E2909904200343FA8 /* BrazeNotificationService */ = {
 			isa = XCSwiftPackageProductDependency;
