@@ -68,6 +68,7 @@
   "testTargets" : [
     {
       "skippedTests" : [
+        "AddTagsItemTests\/test_addTagsToItemFromSaves_savesNewTags()",
         "ArchiveAnItemTests",
         "ArchiveFiltersTests",
         "ArchiveTests",
@@ -76,6 +77,8 @@
         "EditTagsTests",
         "EmptyStateTests",
         "FavoriteAnItemTests",
+        "HomeTests\/test_tappingRecentSavesItem_showsWebViewWhenItemIsVideo()",
+        "HomeTests\/test_tappingRecentSavesSavesButton_opensSavesView()",
         "PullToRefreshTests",
         "ReaderTests",
         "ReportARecommendationTests",
