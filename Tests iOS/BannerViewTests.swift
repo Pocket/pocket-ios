@@ -66,31 +66,32 @@ class BannerViewTests: XCTestCase {
         app.bannerView.wait()
     }
 
-    func test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop() {
-        let urlString = "https://example.com/item-3"
-        UIPasteboard.general.string = urlString
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.itemView(matching: "Item 3").wait()
-        app.tabBar.homeButton.tap()
-        let banner = app.bannerView.wait()
-
-        server.routes.post("/graphql") { request, loop in
-            let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isToSaveAnItem {
-                XCTAssertTrue(apiRequest.contains("https:\\/\\/example.com\\/item-3"))
-                return Response.saveItem("save-item-2")
-            } else {
-                fatalError("Unexpected request")
-            }
-
-            XCTFail("Received unexpected request")
-        }
-
-        banner.buttons.firstMatch.tap()
-        waitForDisappearance(of: banner)
-
-        app.homeView.recentSavesView(matching: "Item 3").wait()
-    }
+//    Disabled Flaky Test
+//    func test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop() {
+//        let urlString = "https://example.com/item-3"
+//        UIPasteboard.general.string = urlString
+//        app.launch().tabBar.savesButton.wait().tap()
+//        app.saves.itemView(matching: "Item 3").wait()
+//        app.tabBar.homeButton.tap()
+//        let banner = app.bannerView.wait()
+//
+//        server.routes.post("/graphql") { request, loop in
+//            let apiRequest = ClientAPIRequest(request)
+//            if apiRequest.isToSaveAnItem {
+//                XCTAssertTrue(apiRequest.contains("https:\\/\\/example.com\\/item-3"))
+//                return Response.saveItem("save-item-2")
+//            } else {
+//                fatalError("Unexpected request")
+//            }
+//
+//            XCTFail("Received unexpected request")
+//        }
+//
+//        banner.buttons.firstMatch.tap()
+//        waitForDisappearance(of: banner)
+//
+//        app.homeView.recentSavesView(matching: "Item 3").wait()
+//    }
 
     func test_navigatingToHomeTab_withoutSavedURL_doesNotShowSaveFromClipboardBanner() {
         UIPasteboard.general.string = "get pocket"

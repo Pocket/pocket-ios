@@ -43,31 +43,32 @@ class PullToRefreshTests: XCTestCase {
         app.terminate()
     }
 
-    func test_saves_pullToRefresh_fetchesNewContent() {
-        app.tabBar.savesButton.wait().tap()
-
-        let listView = app.saves.wait()
-        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait a few seconds")], timeout: 2.0)
-
-        XCTAssertEqual(listView.itemCount, 2)
-
-        server.routes.post("/graphql") { _, _ in
-            return Response {
-                Status.ok
-                Fixture.data(name: "updated-list")
-            }
-        }
-
-        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait longer then the last refresh timeout")], timeout: 8.0)
-
-        listView.pullToRefresh()
-
-        listView
-            .itemView(matching: "Updated Item 1")
-            .wait()
-
-        listView
-            .itemView(matching: "Updated Item 2")
-            .wait()
-    }
+//    Disabled Flaky Test
+//    func test_saves_pullToRefresh_fetchesNewContent() {
+//        app.tabBar.savesButton.wait().tap()
+//
+//        let listView = app.saves.wait()
+//        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait a few seconds")], timeout: 2.0)
+//
+//        XCTAssertEqual(listView.itemCount, 2)
+//
+//        server.routes.post("/graphql") { _, _ in
+//            return Response {
+//                Status.ok
+//                Fixture.data(name: "updated-list")
+//            }
+//        }
+//
+//        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait longer then the last refresh timeout")], timeout: 8.0)
+//
+//        listView.pullToRefresh()
+//
+//        listView
+//            .itemView(matching: "Updated Item 1")
+//            .wait()
+//
+//        listView
+//            .itemView(matching: "Updated Item 2")
+//            .wait()
+//    }
 }

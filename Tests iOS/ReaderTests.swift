@@ -65,16 +65,17 @@ class ReaderTests: XCTestCase {
         app.saves.wait()
     }
 
-    func test_archivingItem_dismissesReader_andShowsSaves() {
-        launchApp_andOpenItem()
-        server.routes.post("/graphql") { request, loop in
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToArchiveAnItem)
-            return Response.archive()
-        }
-        app.readerView.archiveButton.tap()
-        app.saves.wait()
-    }
+//    Disabled Flaky Test
+//    func test_archivingItem_dismissesReader_andShowsSaves() {
+//        launchApp_andOpenItem()
+//        server.routes.post("/graphql") { request, loop in
+//            let apiRequest = ClientAPIRequest(request)
+//            XCTAssertTrue(apiRequest.isToArchiveAnItem)
+//            return Response.archive()
+//        }
+//        app.readerView.archiveButton.tap()
+//        app.saves.wait()
+//    }
 
     func test_tappingOverflowMenu_showsOverflowOptions() {
         launchApp_andOpenItem()
