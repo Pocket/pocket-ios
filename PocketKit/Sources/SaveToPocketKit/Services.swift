@@ -11,6 +11,7 @@ struct Services {
     let saveService: PocketSaveService
     let tracker: Tracker
     let firstLaunchDefaults: UserDefaults
+    let userDefaults: UserDefaults
 
     private let persistentContainer: PersistentContainer
 
@@ -33,5 +34,7 @@ struct Services {
             consumerKey: Keys.shared.pocketApiConsumerKey,
             expiringActivityPerformer: ProcessInfo.processInfo
         )
+
+        userDefaults = .standard
     }
 }
