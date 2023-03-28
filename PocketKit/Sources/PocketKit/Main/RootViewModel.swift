@@ -56,6 +56,8 @@ public class RootViewModel: ObservableObject {
             self?.handleSession(session: nil)
         }.store(in: &subscriptions)
 
+        getUserData()
+
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
     }
@@ -96,5 +98,11 @@ public class RootViewModel: ObservableObject {
 
         Log.clearUser()
         Textiles.clearImageCache()
+    }
+
+    private func getUserData() {
+        Task {
+            try? await source.fetchUserData()
+        }
     }
 }

@@ -103,6 +103,8 @@ public protocol Source {
     /// Get the count of unread saves
     /// - Returns: Int of unread saves
     func unreadSaves() throws -> Int
+
+    func fetchUserData() async throws
 }
 
 public extension Source {

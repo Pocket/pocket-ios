@@ -2,7 +2,6 @@
     "data": {
         "user": {
             "__typename": "[type-name-here]",
-            "isPremium": true,
             "savedItems": {
                 "__typename": "[type-name-here]",
                 "totalCount": 2,

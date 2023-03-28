@@ -110,4 +110,14 @@ class OperationFactory: SyncOperationFactory {
             space: space
         )
     }
+
+    func getUserData(
+        apollo: ApolloClientProtocol,
+        user: User
+    ) -> SyncOperation {
+        APIUserService(
+            apollo: apollo,
+            user: user
+        ) as! SyncOperation
+    }
 }
