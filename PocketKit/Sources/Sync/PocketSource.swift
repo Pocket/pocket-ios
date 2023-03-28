@@ -206,7 +206,7 @@ public class PocketSource: Source {
     }
 
     private func observeNetworkStatus() {
-        networkMonitor.start(queue: .main)
+        networkMonitor.start(queue: .global(qos: .background))
         networkMonitor.updateHandler = { [weak self] path in
             switch path.status {
             case .unsatisfied, .requiresConnection:
