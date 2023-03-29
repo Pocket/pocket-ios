@@ -7,7 +7,7 @@ import SharedPocketKit
 
 func pocketPremiumURL(_ url: URL?, user: User) -> URL? {
     guard let url = url else { return nil }
-    guard url.host == "getpocket.com" else { return url }
+    guard url.host == "getpocket.com", user.status == .premium else { return url }
 
     let premiumQueryItem = URLQueryItem(name: "premium_user", value: "true")
 

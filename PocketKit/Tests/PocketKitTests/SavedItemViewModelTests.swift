@@ -1,6 +1,7 @@
 import XCTest
 import Analytics
 import Combine
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -10,6 +11,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var tracker: MockTracker!
     private var space: Space!
     private var pasteboard: Pasteboard!
+    private var user: User!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -18,6 +20,7 @@ class SavedItemViewModelTests: XCTestCase {
         tracker = MockTracker()
         pasteboard = MockPasteboard()
         space = .testSpace()
+        user = PocketUser(userDefaults: UserDefaults())
     }
 
     override func tearDown() async throws {
@@ -29,13 +32,15 @@ class SavedItemViewModelTests: XCTestCase {
         item: SavedItem,
         source: Source? = nil,
         tracker: Tracker? = nil,
-        pasteboard: UIPasteboard? = nil
+        pasteboard: UIPasteboard? = nil,
+        user: User? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             item: item,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            pasteboard: pasteboard ?? self.pasteboard
+            pasteboard: pasteboard ?? self.pasteboard,
+            user: user ?? self.user
         )
     }
 
