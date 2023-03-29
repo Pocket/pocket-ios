@@ -4,7 +4,7 @@ import XCTest
 @testable import Sync
 
 // Commenting out for now
-//class ImageManagerTests: XCTestCase {
+// class ImageManagerTests: XCTestCase {
 //    var imagesController: MockImagesController!
 //    var imageCache: MockImageCache!
 //    var imageRetriever: MockImageRetriever!
@@ -130,4 +130,4 @@ import XCTest
 //            expectedKey
 //        )
 //    }
-//}
+// }
