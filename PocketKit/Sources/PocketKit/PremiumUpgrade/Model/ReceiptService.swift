@@ -27,6 +27,9 @@ class AppStoreReceiptService: NSObject, ReceiptService {
     }
 
     func send(_ product: Product?) async throws {
+        // First make sure a receipt even exists before we try and get one.
+        _ = try getReceipt()
+
         // Ensure we have a receipt to work with from StoreKit 1
         var _: SKRequest = try await withCheckedThrowingContinuation { continuation in
             storeKit1Continuation = continuation
