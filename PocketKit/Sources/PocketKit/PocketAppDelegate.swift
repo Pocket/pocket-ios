@@ -95,6 +95,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             let attempted = try legacyUserMigration.perform()
             if attempted {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
+                // Legacy cleanup
+                LegacyCleanupService(groupID: Keys.shared.groupID).cleanUp()
             } else {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
@@ -108,7 +110,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             legacyUserMigration.forceSkip()
             Log.capture(error: error)
         }
-
         return true
     }
 
