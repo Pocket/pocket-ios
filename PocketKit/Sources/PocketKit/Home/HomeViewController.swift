@@ -341,7 +341,9 @@ extension HomeViewController {
             present(url: viewModel.premiumURL)
         case .webViewSavedItem(let viewModel):
             showSavedItem(forWebView: viewModel)
-            present(url: viewModel.url)
+            // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
+            // we'll utilize its premium url to present a premium Pocket web page as necessary
+            present(url: viewModel.premiumURL)
         case .none:
             readerSubscriptions = []
         }
