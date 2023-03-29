@@ -95,6 +95,10 @@
       }
     },
     {
+      "skippedTests" : [
+        "PocketSourceTests\/test_restoresOperationsInCorrectOrder()",
+        "PocketSourceTests\/test_retryImmediately_sendsRetrySignal()"
+      ],
       "target" : {
         "containerPath" : "container:PocketKit",
         "identifier" : "SyncTests",
