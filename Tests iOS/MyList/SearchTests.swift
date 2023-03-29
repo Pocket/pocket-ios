@@ -62,9 +62,13 @@ class SearchTests: XCTestCase {
     }
 
     func test_searchSaves_forFreeUser_showsEmptyStateView() {
-        stubGraphQLEndpoint(isPremium: false)
         server.routes.post("/graphql") { request, _ in
-            Response.saves("initial-list-free-user")
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.userDetails()
+            } else {
+                return Response.saves("initial-list-free-user")
+            }
         }
         app.launch()
         tapSearch()

@@ -132,9 +132,7 @@ class HomeViewModel: NSObject {
 
         networkPathMonitor.updateHandler = { [weak self] path in
             if path.status == .satisfied {
-                DispatchQueue.main.async {
-                    self?.refresh(isForced: true) { }
-                }
+                self?.refresh(isForced: false) { }
             }
         }
         fetch()

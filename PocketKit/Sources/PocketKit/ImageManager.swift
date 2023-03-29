@@ -55,7 +55,7 @@ class ImageManager {
         imagesController.delegate = self
         try? imagesController.performFetch()
 
-        handle(images: imagesController.images)
+        // handle(images: imagesController.images)
     }
 }
 
@@ -140,6 +140,6 @@ extension ImageManager: ImagesControllerDelegate {
     func controllerDidChangeContent(_ controller: ImagesController) {
         // Called once all context changes are saved (inserts, deletes, etc)
         // so we can bulk handle the latest Images
-        handle(images: controller.images)
+        // handle(images: controller.images)
     }
 }
