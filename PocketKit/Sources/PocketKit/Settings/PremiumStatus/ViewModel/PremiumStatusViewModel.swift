@@ -72,13 +72,14 @@ extension SubscriptionInfo {
     /// Describes the provider of the subscription
     enum SubscriptionProvider: String {
         case apple
+        case itunes
         case web
         case google
         case unknown
 
         var isApple: Bool {
             switch self {
-            case .apple:
+            case .apple, .itunes:
                 return true
             default:
                 return false
