@@ -50,7 +50,9 @@ public class AuthorizationClient {
         // response and then track an adjust event.
         let response = try await authenticate(with: "/signup", contextProvider: contextProvider)
 
-        Adjust.trackEvent(ADJEvent(eventToken: Keys.shared.adjustSignUpEventToken))
+        Task {
+            Adjust.trackEvent(ADJEvent(eventToken: Keys.shared.adjustSignUpEventToken))
+        }
 
         return response
     }
