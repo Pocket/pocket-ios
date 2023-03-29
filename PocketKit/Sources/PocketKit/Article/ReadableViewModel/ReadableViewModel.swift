@@ -28,6 +28,7 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var publishDate: Date? { get }
     var url: URL? { get }
     var isArchived: Bool { get }
+    var premiumURL: URL? { get }
 
     func delete()
     func openExternally(url: URL?)

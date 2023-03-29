@@ -4,6 +4,7 @@ import Foundation
 import Textile
 import UIKit
 import Analytics
+import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
     @Published
@@ -31,16 +32,18 @@ class RecommendationViewModel: ReadableViewModel {
     private let recommendation: Recommendation
     private let source: Source
     private let pasteboard: Pasteboard
+    private let user: User
     let tracker: Tracker
 
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
-    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard) {
+    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard, user: User) {
         self.recommendation = recommendation
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
+        self.user = user
 
         self.savedItemCancellable = recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
@@ -83,6 +86,18 @@ class RecommendationViewModel: ReadableViewModel {
     var isArchived: Bool {
         return recommendation.item?.savedItem?.isArchived ?? false
     }
+    
+    var premiumURL: URL? {
+        pocketPremiumURL(url, user: user)
+    }
+
+    func moveToSaves() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            return
+        }
+
+        source.unarchive(item: savedItem)
+    }
 
     func delete() {
         guard let savedItem = recommendation.item?.savedItem else {
@@ -108,7 +123,7 @@ class RecommendationViewModel: ReadableViewModel {
     func externalActions(for url: URL) -> [ItemAction] {
         [
             .save { [weak self] _ in self?.saveExternalURL(url) },
-            .open { [weak self] _ in self?.openExternalURL(url) },
+            .open { [weak self] _ in self?.openExternally(url: url) },
             .copyLink { [weak self] _ in self?.copyExternalURL(url) },
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
@@ -212,6 +227,11 @@ extension RecommendationViewModel {
         track(identifier: .itemUnfavorite)
     }
 
+    func openExternally(url: URL?) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+    }
+
     func moveFromArchiveToSaves(completion: (Bool) -> Void) {
         guard let savedItem = recommendation.item?.savedItem else {
             Log.capture(message: "Could not get SavedItem so unarchive action not taken")
@@ -249,10 +269,6 @@ extension RecommendationViewModel {
 
     private func shareExternalURL(_ url: URL) {
         sharedActivity = PocketItemActivity(url: url)
-    }
-
-    private func openExternalURL(_ url: URL) {
-        presentedWebReaderURL = url
     }
 }
 
