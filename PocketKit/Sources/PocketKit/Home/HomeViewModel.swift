@@ -132,9 +132,7 @@ class HomeViewModel: NSObject {
 
         networkPathMonitor.updateHandler = { [weak self] path in
             if path.status == .satisfied {
-                DispatchQueue.main.async {
-                    self?.refresh(isForced: true) { }
-                }
+                self?.refresh(isForced: false) { }
             }
         }
         fetch()
@@ -312,8 +310,8 @@ extension HomeViewModel {
         case .recentSaves:
             return .init(
                 name: L10n.recentSaves,
-                buttonTitle: L10n.save,
-                buttonImage: nil
+                buttonTitle: L10n.seeAll,
+                buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
                 self?.tappedSeeAll = .saves
             }

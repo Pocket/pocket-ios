@@ -64,6 +64,15 @@
       }
     },
     {
+      "identity" : "rncryptor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/RNCryptor/RNCryptor.git",
+      "state" : {
+        "revision" : "5e3bbf44f08bf90049537cb8902d8f4fa911a79a",
+        "version" : "5.1.0"
+      }
+    },
+    {
       "identity" : "sails",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jacobsimeon/Sails.git",
@@ -140,8 +149,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "45167b8006448c79dda4b7bd604e07a034c15c49",
-        "version" : "2.48.0"
+        "revision" : "9b2848d76f5caad08b97e71a04345aa5bdb23a06",
+        "version" : "2.49.0"
       }
     },
     {

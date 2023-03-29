@@ -48,12 +48,20 @@ struct ResultsView: View {
 
     @State private var showingAlert = false
 
+    let swipeTintColor = Color(.ui.teal2)
+
     var body: some View {
         List {
             ForEach(Array(results.enumerated()), id: \.offset) { index, item in
                 HStack {
                     ListItem(viewModel: viewModel.itemViewModel(item, index: index))
                     Spacer()
+                }
+                .swipeActions {
+                    Button(viewModel.swipeActionTitle(item)) {
+                        viewModel.handleSwipeAction(item, index: index)
+                    }
+                    .tint(swipeTintColor)
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {

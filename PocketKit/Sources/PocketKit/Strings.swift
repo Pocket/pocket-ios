@@ -283,6 +283,14 @@ internal enum L10n {
         internal static let needsInternet = L10n.tr("Localizable", "search.error.view.needsInternet", fallback: "You must have an internet connection to view this item.")
       }
     }
+    internal enum Swipe {
+      /// Archive
+      internal static let archive = L10n.tr("Localizable", "search.swipe.archive", fallback: "Archive")
+      /// Move to Saves
+      internal static let moveToSaves = L10n.tr("Localizable", "search.swipe.moveToSaves", fallback: "Move to Saves")
+      /// Unable to Move
+      internal static let unableToMove = L10n.tr("Localizable", "search.swipe.unableToMove", fallback: "Unable to Move")
+    }
   }
   internal enum Settings {
     /// Account Management

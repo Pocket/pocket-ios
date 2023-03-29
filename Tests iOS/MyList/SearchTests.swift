@@ -63,7 +63,12 @@ class SearchTests: XCTestCase {
 
     func test_searchSaves_forFreeUser_showsEmptyStateView() {
         server.routes.post("/graphql") { request, _ in
-            Response.saves("initial-list-free-user")
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.userDetails()
+            } else {
+                return Response.saves("initial-list-free-user")
+            }
         }
         app.launch()
         tapSearch()
@@ -72,6 +77,7 @@ class SearchTests: XCTestCase {
     }
 
     func test_search_forPremiumUser_showsRecentSaves() {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         XCTAssertTrue(app.saves.searchView.exists)
@@ -213,7 +219,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_switchingScopes_showsResultsWithCache() async {
+    func test_switchingScopes_forPremiumUser_showsResultsWithCache() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -254,7 +261,8 @@ class SearchTests: XCTestCase {
 
     // MARK: - Recent Search
     @MainActor
-    func test_submitSearch_fromRecentSearch() async {
+    func test_submitSearch_forPremiumUser_fromRecentSearch() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -285,7 +293,8 @@ class SearchTests: XCTestCase {
 
     // MARK: - Select a Search Item
     @MainActor
-    func test_selectSearchItem_showsReaderView() async {
+    func test_selectSearchItem_forPremiumUser_showsReaderView() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -306,7 +315,7 @@ class SearchTests: XCTestCase {
     }
 
     // MARK: - Search Loading State
-    func test_search_showsSkeletonView() {
+    func test_search_forPremiumUser_showsSkeletonView() {
         continueAfterFailure = true
         var promises: [EventLoopPromise<Response>] = []
 
@@ -325,11 +334,12 @@ class SearchTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
+            } else if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
             } else {
                 return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
-
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -358,7 +368,7 @@ class SearchTests: XCTestCase {
         XCTAssertTrue(app.saves.searchEmptyStateView(for: "error-empty-state").exists)
     }
 
-    func test_search_forSaves_showsErrorBanner() {
+    func test_search_forSaves_forPremiumUser_showsErrorBanner() {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
@@ -372,6 +382,8 @@ class SearchTests: XCTestCase {
                 return Response.emptyTags()
             } else if apiRequest.isForSearch(.saves) {
                 return Response(status: .internalServerError)
+            } else if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
             } else {
                 return Response.fallbackResponses(apiRequest: apiRequest)
             }
@@ -387,7 +399,8 @@ class SearchTests: XCTestCase {
 
     // MARK: Search Actions
     @MainActor
-    func test_favoritingAndUnfavoritingAnItemFromSearch_showsFavoritedIcon() async {
+    func test_favoritingAndUnfavoritingAnItemFromSearch_forPremiumUser_showsFavoritedIcon() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -442,7 +455,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_sharingAnItemFromSearch_presentsShareSheet() async {
+    func test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -468,7 +482,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_addTagsFromSearch_showsAddTagsView() async {
+    func test_addTagsFromSearch_forPremiumUser_showsAddTagsView() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -495,7 +510,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_archivingAnItemFromSearch_removesItem() async {
+    func test_archivingAnItemFromSearch_forPremiumUser_removesItem() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -520,7 +536,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_unArchivingAnItemFromSearch_removesItem() async {
+    func test_unArchivingAnItemFromSearch_forPremiumUser_removesItem() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch(fromArchive: true)
 
@@ -545,7 +562,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_deletingAnItemFromSearch_presentsOverflowMenu() async {
+    func test_deletingAnItemFromSearch_forPremiumUser_presentsOverflowMenu() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -572,7 +590,8 @@ class SearchTests: XCTestCase {
 
     // MARK: Pagination
     @MainActor
-    func test_search_showsPagination() async {
+    func test_search_forPremiumUser_showsPagination() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let firstExpectRequest = expectation(description: "First request to the server")
