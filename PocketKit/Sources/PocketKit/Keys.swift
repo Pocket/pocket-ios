@@ -14,6 +14,8 @@ struct Keys {
     let pocketPremiumMonthly: String
     let pocketPremiumAnnual: String
     let groupID: String
+    let adjustAppToken: String
+    let adjustSignUpEventToken: String
 
     private init() {
         guard let info = Bundle.main.infoDictionary else {
@@ -48,6 +50,14 @@ struct Keys {
             fatalError("Unable to extract GroupID from main bundle")
         }
 
+        guard let adjustToken = info["AdjustAppToken"] as? String else {
+            fatalError("Unable to extract adjustToken from main bundle")
+        }
+
+        guard let adjustEventToken = info["AdjustSignUpEventToken"] as? String else {
+            fatalError("Unable to extract adjustEventToken from main bundle")
+        }
+
         self.pocketApiConsumerKey = pocketApiConsumerKey
         self.sentryDSN = sentryDSN
         self.brazeAPIEndpoint = brazeAPIEndpoint
@@ -55,5 +65,7 @@ struct Keys {
         self.pocketPremiumMonthly = pocketPremiumMonthly
         self.pocketPremiumAnnual = pocketPremiumAnnual
         self.groupID = groupID
+        self.adjustAppToken = adjustToken
+        self.adjustSignUpEventToken = adjustEventToken
     }
 }

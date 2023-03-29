@@ -46,6 +46,15 @@
       }
     },
     {
+      "identity" : "ios_sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/adjust/ios_sdk",
+      "state" : {
+        "revision" : "6ae03883c3b7d22e72e2a5937ad5dd8765d9c31d",
+        "version" : "4.33.4"
+      }
+    },
+    {
       "identity" : "kingfisher",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/onevcat/Kingfisher.git",
