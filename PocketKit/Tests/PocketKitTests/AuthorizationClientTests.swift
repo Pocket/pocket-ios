@@ -12,7 +12,7 @@ class AuthorizationClientTests: XCTestCase {
 
     override func setUp() {
         mockAuthenticationSession = MockAuthenticationSession()
-        client = AuthorizationClient(consumerKey: "the-consumer-key") { (_, _, completion) in
+        client = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token") { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }

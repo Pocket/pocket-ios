@@ -13,13 +13,16 @@ public class AuthorizationClient {
     private var isAuthenticating = false
 
     private let consumerKey: String
+    private let adjustSignupEventToken: String
     private let authenticationSessionFactory: AuthenticationSessionFactory
 
     init(
         consumerKey: String,
+        adjustSignupEventToken: String,
         authenticationSessionFactory: @escaping AuthenticationSessionFactory
     ) {
         self.consumerKey = consumerKey
+        self.adjustSignupEventToken = adjustSignupEventToken
         self.authenticationSessionFactory = authenticationSessionFactory
     }
 
@@ -50,9 +53,13 @@ public class AuthorizationClient {
         // response and then track an adjust event.
         let response = try await authenticate(with: "/signup", contextProvider: contextProvider)
 
-        Task {
-            Adjust.trackEvent(ADJEvent(eventToken: Keys.shared.adjustSignUpEventToken))
-        }
+       Task { [weak self] in
+           guard let self else {
+               Log.capture(message: "weak self logging adjust")
+               return
+           }
+          Adjust.trackEvent(ADJEvent(eventToken: self.adjustSignupEventToken))
+       }
 
         return response
     }
