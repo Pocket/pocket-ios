@@ -168,7 +168,7 @@ class HomeViewController: UIViewController {
             task.setTaskCompleted(success: true)
         }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(true)
         model.refresh { }
