@@ -5,6 +5,7 @@ import Combine
 import Textile
 import SharedPocketKit
 import UIKit
+import Adjust
 
 @MainActor
 public class RootViewModel: ObservableObject {
@@ -89,7 +90,7 @@ public class RootViewModel: ObservableObject {
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
-        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
+        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid()))
         Log.setUserID(session.userIdentifier)
     }
 

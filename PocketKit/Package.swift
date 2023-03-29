@@ -47,7 +47,13 @@ let package = Package(
         ),
         .target(
             name: "SaveToPocketKit",
-            dependencies: ["SharedPocketKit", "Textile", "Sync", "Analytics"]
+            dependencies: [
+                "SharedPocketKit",
+                "Textile",
+                "Sync",
+                "Analytics",
+                .product(name: "Adjust", package: "ios_sdk")
+            ]
         ),
         .testTarget(
             name: "SaveToPocketKitTests",
