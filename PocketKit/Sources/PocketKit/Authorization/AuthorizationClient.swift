@@ -5,6 +5,7 @@
 import Foundation
 import AuthenticationServices
 import Sync
+import Adjust
 
 public class AuthorizationClient {
     typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession
@@ -43,7 +44,17 @@ public class AuthorizationClient {
         defer { isAuthenticating = false }
 
         isAuthenticating = true
-        return try await authenticate(with: "/signup", contextProvider: contextProvider)
+
+        // This will only return if signup succeeds, otherwise
+        // it will throw an error. We can await a successful
+        // response and then track an adjust event.
+        let response = try await authenticate(with: "/signup", contextProvider: contextProvider)
+
+        Task {
+            Adjust.trackEvent(ADJEvent(eventToken: Keys.shared.adjustSignUpEventToken))
+        }
+
+        return response
     }
 
     @MainActor

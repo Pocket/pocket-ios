@@ -8,6 +8,7 @@ import Textile
 import Analytics
 import BackgroundTasks
 import SharedPocketKit
+import Adjust
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     static var phoneOrientationLock = UIInterfaceOrientationMask.portrait
@@ -81,6 +82,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
         Textiles.initialize()
 
+        enableAdjust()
+
         let legacyUserMigration = LegacyUserMigration(
             userDefaults: userDefaults,
             encryptedStore: PocketEncryptedStore(),
@@ -118,5 +121,15 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
         return PocketAppDelegate.phoneOrientationLock
+    }
+
+    func enableAdjust() {
+        let adjustAppToken = Keys.shared.adjustAppToken
+        let environment = ADJEnvironmentProduction
+        let adjustConfig = ADJConfig(
+            appToken: adjustAppToken,
+            environment: environment
+        )
+        Adjust.appDidLaunch(adjustConfig)
     }
 }

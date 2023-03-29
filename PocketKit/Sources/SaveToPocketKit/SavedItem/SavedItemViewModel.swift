@@ -3,6 +3,7 @@ import SharedPocketKit
 import Sync
 import Combine
 import Analytics
+import Adjust
 
 class SavedItemViewModel {
     private let appSession: AppSession
@@ -36,7 +37,7 @@ class SavedItemViewModel {
             APIUserEntity(consumerKey: consumerKey)
         ])
 
-        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
+        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid()))
     }
 
     func save(from context: ExtensionContext?) async {
