@@ -1,8 +1,10 @@
 @testable import Sync
+import Foundation
 
 class MockBackgroundTaskManager: BackgroundTaskManager {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
+    private var lock: DispatchQueue = DispatchQueue(label: "")
 }
 
 // MARK: - beginTask
@@ -25,9 +27,11 @@ extension MockBackgroundTaskManager {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.beginTask] = (calls[Self.beginTask] ?? []) + [
-            BeginTaskCall(name: name, expirationHandler: expirationHandler)
-        ]
+        lock.sync {
+            calls[Self.beginTask] = (calls[Self.beginTask] ?? []) + [
+                BeginTaskCall(name: name, expirationHandler: expirationHandler)
+            ]
+        }
 
         return impl(name, expirationHandler)
     }
@@ -59,10 +63,11 @@ extension MockBackgroundTaskManager {
         guard let impl = implementations[Self.endTask] as? EndTaskImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
-
-        calls[Self.endTask] = (calls[Self.endTask] ?? []) + [
-            EndTaskCall(identifier: identifier)
-        ]
+        lock.sync {
+            calls[Self.endTask] = (calls[Self.endTask] ?? []) + [
+                EndTaskCall(identifier: identifier)
+            ]
+        }
 
         impl(identifier)
     }

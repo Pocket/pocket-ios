@@ -151,3 +151,24 @@ extension ReadableViewModel {
         return [archiveActivity, deleteActivity, favoriteActivity]
     }
 }
+
+// MARK: - Analytics
+extension ReadableViewModel {
+    /// track when user views unsupported content cell
+    func trackUnsupportedContentViewed() {
+        guard let url else {
+            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentViewed")
+            return
+        }
+        tracker.track(event: Events.Reader.unsupportedContentViewed(url: url))
+    }
+
+    /// track when user taps on button to open unsupported content in web view
+    func trackUnsupportedContentButtonTapped() {
+        guard let url else {
+            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentButtonTapped")
+            return
+        }
+        tracker.track(event: Events.Reader.unsupportedContentButtonTapped(url: url))
+    }
+}

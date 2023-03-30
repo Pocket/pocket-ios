@@ -27,7 +27,8 @@ public final class RelationshipKeyPathsObserver<ResultType: NSFetchRequestResult
         NotificationCenter.default.addObserver(self, selector: #selector(contextDidSaveNotification(notification:)), name: NSNotification.Name.NSManagedObjectContextDidSave, object: nil)
     }
 
-    @objc private func contextDidChangeNotification(notification: NSNotification) {
+    @objc
+    private func contextDidChangeNotification(notification: NSNotification) {
         guard let context = notification.object as? NSManagedObjectContext else {
             return
         }
@@ -48,7 +49,8 @@ public final class RelationshipKeyPathsObserver<ResultType: NSFetchRequestResult
 
     /// Context saved, so take any pending objects that we are montiroing and trigger a refresh in their context.
     /// - Parameter notification: notification from NSNotificationCenter
-    @objc private func contextDidSaveNotification(notification: NSNotification) {
+    @objc
+    private func contextDidSaveNotification(notification: NSNotification) {
         guard !updatedObjectIDs.isEmpty else { return }
         guard let fetchedObjects = fetchedResultsController.fetchedObjects as? [NSManagedObject], !fetchedObjects.isEmpty else { return }
 

@@ -8,12 +8,14 @@ import Sails
 class ReaderTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
@@ -52,6 +54,10 @@ class ReaderTests: XCTestCase {
         }
 
         try server.start()
+    }
+
+    override func tearDown() async throws {
+       await snowplowMicro.assertNoBadEvents()
     }
 
     override func tearDownWithError() throws {
@@ -150,10 +156,21 @@ class ReaderTests: XCTestCase {
         validateSafariOpens()
     }
 
-    func test_tappingUnsupportedElementButton_showsSafari() {
+    @MainActor
+    func test_tappingUnsupportedElementButton_showsSafari() async {
         launchApp_andOpenItem()
         app.readerView.unsupportedElementOpenButton.tap()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let impressionEvent = await snowplowMicro.getFirstEvent(with: "reader.unsupportedContent")
+        impressionEvent!.getUIContext()!.assertHas(type: "card")
+        impressionEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+
         validateSafariOpens()
+
+        let engagementEvent = await snowplowMicro.getFirstEvent(with: "reader.unsupportedContent.open")
+        engagementEvent!.getUIContext()!.assertHas(type: "button")
+        engagementEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     func test_tappingDeleteNo_dismissesDeleteConfirmation() {
