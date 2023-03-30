@@ -25,10 +25,11 @@ class SearchTests: XCTestCase {
         try server.start()
     }
 
+    override func tearDown() async throws {
+       await snowplowMicro.assertNoBadEvents()
+    }
+
     override func tearDownWithError() throws {
-        Task {
-            await snowplowMicro.assertNoBadEvents()
-        }
         try server.stop()
         app.terminate()
     }
