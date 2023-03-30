@@ -9,6 +9,30 @@ class ReadableHostViewController: UIViewController {
     private var subscriptions: [AnyCancellable] = []
     private var readableViewModel: ReadableViewModel
 
+    private lazy var getArchiveButton: UIBarButtonItem = {
+        let archiveNavButton = UIBarButtonItem(
+            image: UIImage(asset: .archive),
+            style: .plain,
+            target: self,
+            action: #selector(archive)
+        )
+
+        archiveNavButton.accessibilityIdentifier = "archiveNavButton"
+        return archiveNavButton
+    }()
+
+    private lazy var getMoveFromArchiveToSavesButton: UIBarButtonItem = {
+        let moveFromArchiveToSavesNavButton = UIBarButtonItem(
+            image: UIImage(asset: .save),
+            style: .plain,
+            target: self,
+            action: #selector(moveFromArchiveToSaves)
+        )
+
+        moveFromArchiveToSavesNavButton.accessibilityIdentifier = "moveFromArchiveToSavesNavButton"
+        return moveFromArchiveToSavesNavButton
+    }()
+
     init(readableViewModel: ReadableViewModel) {
         self.readableViewModel = readableViewModel
         self.moreButtonItem = UIBarButtonItem(
@@ -22,14 +46,6 @@ class ReadableHostViewController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
         hidesBottomBarWhenPushed = true
 
-        let archiveNavButton = UIBarButtonItem(
-            image: UIImage(asset: .archive),
-            style: .plain,
-            target: self,
-            action: #selector(archiveArticle)
-        )
-        archiveNavButton.accessibilityIdentifier = "archiveNavButton"
-
         navigationItem.rightBarButtonItems = [
             moreButtonItem,
             UIBarButtonItem(
@@ -38,7 +54,7 @@ class ReadableHostViewController: UIViewController {
                 target: self,
                 action: #selector(showWebView)
             ),
-            archiveNavButton
+            readableViewModel.isArchived ? getMoveFromArchiveToSavesButton : getArchiveButton
         ]
 
         readableViewModel.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
@@ -98,8 +114,17 @@ class ReadableHostViewController: UIViewController {
     }
 
     @objc
-    private func archiveArticle() {
-        readableViewModel.archiveArticle()
+    private func archive() {
+        readableViewModel.archive()
+    }
+
+    @objc
+    private func moveFromArchiveToSaves() {
+        readableViewModel.moveFromArchiveToSaves { [weak self] success in
+            if success, let items = navigationItem.rightBarButtonItems, let index = items.firstIndex(of: getMoveFromArchiveToSavesButton) {
+                self?.navigationItem.rightBarButtonItems?[index] = getArchiveButton
+            }
+        }
     }
 
     var popoverAnchor: UIBarButtonItem? {

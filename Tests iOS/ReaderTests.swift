@@ -34,6 +34,8 @@ class ReaderTests: XCTestCase {
                 return Response.unfavorite()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
+            } else if apiRequest.isForItemDetail {
+                return Response.itemDetail()
             } else {
                 return Response.fallbackResponses(apiRequest: apiRequest)
             }
@@ -71,7 +73,8 @@ class ReaderTests: XCTestCase {
         app.saves.wait()
     }
 
-    func test_archivingItem_dismissesReader_andShowsSaves() {
+    @MainActor
+    func test_archivingItem_dismissesReader_andShowsSaves() async {
         launchApp_andOpenItem()
         server.routes.post("/graphql") { request, loop in
             let apiRequest = ClientAPIRequest(request)
@@ -80,6 +83,28 @@ class ReaderTests: XCTestCase {
         }
         app.readerView.archiveButton.tap()
         app.saves.wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let archiveEvent = await snowplowMicro.getFirstEvent(with: "reader.archive")
+        archiveEvent!.getUIContext()!.assertHas(type: "button")
+        archiveEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+    }
+
+    @MainActor
+    func test_moveFromArchiveToSaves_stillShowsReader() async {
+        launchApp_switchToArchive_andOpenItem()
+        server.routes.post("/graphql") { request, loop in
+            let apiRequest = ClientAPIRequest(request)
+            XCTAssertTrue(apiRequest.isToSaveAnItem)
+            return Response.saveItem()
+        }
+        app.readerView.moveFromArchiveToSavesButton.tap()
+        app.readerView.archiveButton.wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let moveFromArchiveToSavesEvent = await snowplowMicro.getFirstEvent(with: "reader.un-archive")
+        moveFromArchiveToSavesEvent!.getUIContext()!.assertHas(type: "button")
+        moveFromArchiveToSavesEvent!.getContentContext()!.assertHas(url: "http://example.com/items/archived-item-1")
     }
 
     func test_tappingOverflowMenu_showsOverflowOptions() {
@@ -242,6 +267,16 @@ class ReaderTests: XCTestCase {
 
     func launchApp_andOpenItem() {
         app.launch().tabBar.savesButton.wait().tap()
+        app
+            .saves
+            .itemView(at: 0)
+            .wait()
+            .tap()
+    }
+
+    func launchApp_switchToArchive_andOpenItem() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.tap()
         app
             .saves
             .itemView(at: 0)

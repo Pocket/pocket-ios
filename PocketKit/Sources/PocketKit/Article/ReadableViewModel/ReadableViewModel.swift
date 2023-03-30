@@ -26,14 +26,15 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var domain: String? { get }
     var publishDate: Date? { get }
     var url: URL? { get }
+    var isArchived: Bool { get }
 
     func delete()
     func openExternally(url: URL?)
-    func archiveArticle()
+    func archive()
+    func moveFromArchiveToSaves(completion: (Bool) -> Void)
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
     func clearPresentedWebReaderURL()
-    func moveToSaves()
     func unfavorite()
     func favorite()
 }
@@ -125,9 +126,9 @@ extension ReadableViewModel {
                                                        : .archive)
         let archiveActivity = ReaderActionsWebActivity(title: archiveActivityTitle) { [weak self] in
             if item.isArchived == true {
-                self?.moveToSaves()
+                self?.moveFromArchiveToSaves { _ in }
             } else {
-                self?.archiveArticle()
+                self?.archive()
             }
         }
 
@@ -170,5 +171,17 @@ extension ReadableViewModel {
             return
         }
         tracker.track(event: Events.Reader.unsupportedContentButtonTapped(url: url))
+    }
+
+    /// track archive button tapped in reader toolbar
+    /// - Parameter url: url of saved item
+    func trackArchiveButtonTapped(url: URL) {
+        tracker.track(event: Events.Reader.archiveClicked(url: url))
+    }
+
+    /// track move to saves from archive button tapped in reader toolbar
+    /// - Parameter url: url of saved item
+    func trackMoveFromArchiveToSavesButtonTapped(url: URL) {
+        tracker.track(event: Events.Reader.moveFromArchiveToSavesClicked(url: url))
     }
 }

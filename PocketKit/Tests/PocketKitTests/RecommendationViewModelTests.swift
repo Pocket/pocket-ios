@@ -61,7 +61,7 @@ class RecommendationViewModelTests: XCTestCase {
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Favorite", "Archive", "Delete", "Share"]
+                ["Display Settings", "Favorite", "Delete", "Share"]
             )
         }
 
@@ -74,7 +74,7 @@ class RecommendationViewModelTests: XCTestCase {
             let viewModel = subject(recommendation: recommendation)
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Move to Saves", "Delete", "Share"]
+                ["Display Settings", "Unfavorite", "Delete", "Share"]
             )
         }
     }
@@ -88,19 +88,19 @@ class RecommendationViewModelTests: XCTestCase {
 
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Favorite", "Move to Saves", "Delete", "Share"]
+            ["Display Settings", "Favorite", "Delete", "Share"]
         )
 
         savedItem.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Move to Saves", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Delete", "Share"]
         )
 
         savedItem.isArchived = false
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Archive", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Delete", "Share"]
         )
 
         item.savedItem = nil
@@ -112,7 +112,7 @@ class RecommendationViewModelTests: XCTestCase {
         item.savedItem = savedItem
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Archive", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Delete", "Share"]
         )
     }
 
@@ -214,25 +214,25 @@ class RecommendationViewModelTests: XCTestCase {
             expectArchiveEvent.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.invokeAction(title: "Archive")
+        viewModel.archive()
         wait(for: [expectArchive, expectArchiveEvent], timeout: 1)
     }
 
-    func test_moveToSaves_sendsRequestToSource_AndRefreshes() {
+    func test_moveFromArchiveToSaves_sendsRequestToSource_AndRefreshes() {
         let item = space.buildItem()
         let savedItem = space.buildSavedItem(isArchived: true, item: item)
         let recommendation = space.buildRecommendation(item: item)
 
-        let expectUnarchive = expectation(description: "expect source.unarchive(_:)")
-        source.stubUnarchiveSavedItem { unarchivedItem in
-            defer { expectUnarchive.fulfill() }
-            XCTAssertTrue(unarchivedItem === savedItem)
+        let expectMoveFromArchiveToSaves = expectation(description: "expect source.unarchive(_:)")
+        source.stubUnarchiveSavedItem { item in
+            defer { expectMoveFromArchiveToSaves.fulfill() }
+            XCTAssertTrue(item === savedItem)
         }
 
         let viewModel = subject(recommendation: recommendation)
-        viewModel.invokeAction(title: "Move to Saves")
+        viewModel.moveFromArchiveToSaves { _ in }
 
-        wait(for: [expectUnarchive], timeout: 1)
+        wait(for: [expectMoveFromArchiveToSaves], timeout: 1)
     }
 
     func test_share_updatesSharedActivity() {

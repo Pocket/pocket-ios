@@ -80,12 +80,8 @@ class RecommendationViewModel: ReadableViewModel {
         recommendation.item?.bestURL
     }
 
-    func moveToSaves() {
-        guard let savedItem = recommendation.item?.savedItem else {
-            return
-        }
-
-        source.unarchive(item: savedItem)
+    var isArchived: Bool {
+        return recommendation.item?.savedItem?.isArchived ?? false
     }
 
     func delete() {
@@ -95,10 +91,6 @@ class RecommendationViewModel: ReadableViewModel {
 
         source.delete(item: savedItem)
         _events.send(.delete)
-    }
-
-    func archiveArticle() {
-        archive()
     }
 
     func fetchDetailsIfNeeded() {
@@ -171,17 +163,9 @@ extension RecommendationViewModel {
             favoriteAction = .favorite { [weak self] _ in self?.favorite() }
         }
 
-        let archiveAction: ItemAction
-        if savedItem.isArchived {
-            archiveAction = .moveToSaves { [weak self] _ in self?.moveToSaves() }
-        } else {
-            archiveAction = .archive { [weak self] _ in self?.archive() }
-        }
-
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
-            archiveAction,
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
@@ -228,13 +212,25 @@ extension RecommendationViewModel {
         track(identifier: .itemUnfavorite)
     }
 
-    private func archive() {
+    func moveFromArchiveToSaves(completion: (Bool) -> Void) {
         guard let savedItem = recommendation.item?.savedItem else {
+            Log.capture(message: "Could not get SavedItem so unarchive action not taken")
+            completion(false)
+            return
+        }
+        source.unarchive(item: savedItem)
+        trackMoveFromArchiveToSavesButtonTapped(url: savedItem.url)
+        completion(true)
+    }
+
+    func archive() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            Log.capture(message: "Could not get SavedItem so archive action not taken")
             return
         }
 
         source.archive(item: savedItem)
-        track(identifier: .itemArchive)
+        trackArchiveButtonTapped(url: savedItem.url)
         _events.send(.archive)
     }
 
