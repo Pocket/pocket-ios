@@ -1,0 +1,101 @@
+{
+  "configurations" : [
+    {
+      "id" : "BDED0113-9ED1-4384-9CB6-2E3054711E73",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "AddTagsItemTests\/test_addTagsToItemFromArchive_showsAddTagsView()",
+        "AddTagsItemTests\/test_addTagsToItemFromSaves_savesFromExistingTags()",
+        "AddTagsItemTests\/test_addTagsToSavedItemFromReader_showsAddTagsView()",
+        "AddTagsItemTests\/test_textField_withUserInput_showsFilteredTags()",
+        "ArchiveFiltersTests\/test_archiveView_tappingAllPill_togglesDisplayingAllArchivedContent()",
+        "ArchiveFiltersTests\/test_archiveView_tappingFavoritesPill_togglesDisplayingFavoritedArchivedContent()",
+        "ArchiveTests",
+        "BannerViewTests\/test_dismissingBanner_withClipboardURL_doesNotShowBanner()",
+        "BannerViewTests\/test_foregroundingTheApp_withURL_showsSaveFromClipboardBanner()",
+        "BannerViewTests\/test_navigatingToHomeTab_withClipboardURL_showsBannerAndSavedItem()",
+        "BannerViewTests\/test_navigatingToHomeTab_withoutSavedURL_doesNotShowSaveFromClipboardBanner()",
+        "DeleteAnItemTests",
+        "EditTagsTests",
+        "EmptyStateTests",
+        "FavoriteAnItemTests",
+        "HomeTests\/test_archivingRecentSavesItem_removesItemFromRecentSaves()",
+        "HomeTests\/test_deletingRecentSavesItem_removesItemFromRecentSaves()",
+        "HomeTests\/test_favoritingRecentSavesItem_shouldShowFavoriteInSaves()",
+        "HomeTests\/test_navigatingToHomeTab_showsASectionForEachSlate()",
+        "HomeTests\/test_navigatingToHomeTab_showsRecentlySavedItems()",
+        "HomeTests\/test_pullToRefresh_fetchesUpdatedContent()",
+        "HomeTests\/test_returningFromReader_maintainsHomePosition()",
+        "HomeTests\/test_returningFromSaves_maintainsHomePosition()",
+        "HomeTests\/test_returningFromSeeAll_maintainsHomePosition()",
+        "HomeTests\/test_returningFromSettings_maintainsHomePosition()",
+        "HomeTests\/test_sharingRecentSavesItem_removesItemFromRecentSaves()",
+        "HomeTests\/test_slateDetailsView_tappingSaveButtonInRecommendationCell_savesItemToList()",
+        "HomeTests\/test_slateDetails_savingARecommendation_addsItemToList()",
+        "HomeTests\/test_tappingRecentSavesItem_showsReader()",
+        "HomeTests\/test_tappingRecentSavesItem_showsWebViewWhenItemIsImage()",
+        "HomeTests\/test_tappingRecentSavesItem_showsWebViewWhenItemIsNotAnArticle()",
+        "HomeTests\/test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsNotSyndicated_opensItemInWebView()",
+        "HomeTests\/test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_andUserGoesBack_SyndicationInfoStays()",
+        "HomeTests\/test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_opensItemInReaderView()",
+        "HomeTests\/test_tappingSaveButtonInRecommendationCell_savesItemToList()",
+        "HomeTests\/test_tappingSlatesSeeAllButton_showsSlateDetailView()",
+        "HomeTests\/test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInSaves()",
+        "HomeWebViewTests",
+        "PremiumTests",
+        "ReaderTests\/test_tappingSaves_dismissesReader_andShowsSaves()",
+        "ReaderTests\/test_tappingUnsupportedElementButton_showsSafari()",
+        "ReaderTests\/test_tappingWebViewButton_showsSafari()",
+        "ReportARecommendationTests",
+        "SaveToPocketTests",
+        "SavesFiltersTests",
+        "SavesTests",
+        "SearchTests\/test_addTagsFromSearch_forPremiumUser_showsAddTagsView()",
+        "SearchTests\/test_archivingAnItemFromSearch_forPremiumUser_removesItem()",
+        "SearchTests\/test_deletingAnItemFromSearch_forPremiumUser_presentsOverflowMenu()",
+        "SearchTests\/test_enterArchiveSearch_fromCarouselGoIntoSearch()",
+        "SearchTests\/test_enterArchiveSearch_fromSwipeDownSearch()",
+        "SearchTests\/test_enterSavesSearch_fromCarouselGoIntoSearch()",
+        "SearchTests\/test_enterSavesSearch_fromSwipeDownSearch()",
+        "SearchTests\/test_favoritingAndUnfavoritingAnItemFromSearch_forPremiumUser_showsFavoritedIcon()",
+        "SearchTests\/test_searchArchive_forFreeUser_showsEmptyStateView()",
+        "SearchTests\/test_searchArchive_forPremiumUser_showsRecentSaves()",
+        "SearchTests\/test_searchSaves_forFreeUser_showsEmptyStateView()",
+        "SearchTests\/test_search_forPremiumUser_showsPagination()",
+        "SearchTests\/test_search_forPremiumUser_showsRecentSaves()",
+        "SearchTests\/test_search_forPremiumUser_showsSkeletonView()",
+        "SearchTests\/test_search_forSaves_forPremiumUser_showsErrorBanner()",
+        "SearchTests\/test_search_showsErrorView()",
+        "SearchTests\/test_submitSearch_forFreeUser_withArchive_showsResults()",
+        "SearchTests\/test_submitSearch_forPremiumUser_fromRecentSearch()",
+        "SearchTests\/test_submitSearch_forPremiumUser_withAllItems_showsResults()",
+        "SearchTests\/test_submitSearch_forPremiumUser_withArchive_showsResults()",
+        "SearchTests\/test_submitSearch_forPremiumUser_withSaves_showsResults()",
+        "SearchTests\/test_switchingScopes_forPremiumUser_showsResultsWithCache()",
+        "SearchTests\/test_unArchivingAnItemFromSearch_forPremiumUser_removesItem()",
+        "SettingsTest\/test_deleteAccount_free_showsError()",
+        "SettingsTest\/test_deleteAccount_premium_showsError()",
+        "SettingsTest\/test_deleteAccount_premium_showsHelp()",
+        "SettingsTest\/test_premiumStatus_success()",
+        "ShareAnItemTests",
+        "SignOutTests\/test_tappingSignOutCancelshowsAccountsMenu()"
+      ],
+      "target" : {
+        "containerPath" : "container:Pocket.xcodeproj",
+        "identifier" : "166A81BF2637406C0015AA1D",
+        "name" : "Tests iOS"
+      }
+    }
+  ],
+  "version" : 1
+}

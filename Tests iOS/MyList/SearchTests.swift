@@ -20,43 +20,16 @@ class SearchTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else if apiRequest.isForSearch(.saves) {
-                return Response.searchList(.saves)
-            } else if apiRequest.isForSearch(.archive) {
-                return Response.searchList(.archive)
-            } else if apiRequest.isForSearch(.all) {
-                return Response.searchList(.all)
-            } else if apiRequest.isToDeleteAnItem {
-                return Response.delete()
-            } else if apiRequest.isForItemDetail {
-                return Response.itemDetail()
-            } else {
-                fatalError("Unexpected request")
-            }
-        }
+        stubGraphQLEndpoint(isPremium: false)
 
         try server.start()
     }
 
+    override func tearDown() async throws {
+       await snowplowMicro.assertNoBadEvents()
+    }
+
     override func tearDownWithError() throws {
-        Task {
-            await snowplowMicro.assertNoBadEvents()
-        }
         try server.stop()
         app.terminate()
     }
@@ -91,7 +64,12 @@ class SearchTests: XCTestCase {
 
     func test_searchSaves_forFreeUser_showsEmptyStateView() {
         server.routes.post("/graphql") { request, _ in
-            Response.saves("initial-list-free-user")
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.userDetails()
+            } else {
+                return Response.saves("initial-list-free-user")
+            }
         }
         app.launch()
         tapSearch()
@@ -100,6 +78,7 @@ class SearchTests: XCTestCase {
     }
 
     func test_search_forPremiumUser_showsRecentSaves() {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         XCTAssertTrue(app.saves.searchView.exists)
@@ -140,6 +119,7 @@ class SearchTests: XCTestCase {
     }
 
     func test_searchArchive_forPremiumUser_showsRecentSaves() {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch(fromArchive: true)
         XCTAssertTrue(app.saves.searchView.exists)
@@ -179,6 +159,7 @@ class SearchTests: XCTestCase {
 
     @MainActor
     func test_submitSearch_forPremiumUser_withSaves_showsResults() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -205,6 +186,7 @@ class SearchTests: XCTestCase {
 
     @MainActor
     func test_submitSearch_forPremiumUser_withArchive_showsResults() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch(fromArchive: true)
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -221,6 +203,7 @@ class SearchTests: XCTestCase {
 
     @MainActor
     func test_submitSearch_forPremiumUser_withAllItems_showsResults() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         app.navigationBar.buttons["All items"].wait().tap()
@@ -237,7 +220,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_switchingScopes_showsResultsWithCache() async {
+    func test_switchingScopes_forPremiumUser_showsResultsWithCache() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -278,7 +262,8 @@ class SearchTests: XCTestCase {
 
     // MARK: - Recent Search
     @MainActor
-    func test_submitSearch_fromRecentSearch() async {
+    func test_submitSearch_forPremiumUser_fromRecentSearch() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -309,7 +294,8 @@ class SearchTests: XCTestCase {
 
     // MARK: - Select a Search Item
     @MainActor
-    func test_selectSearchItem_showsReaderView() async {
+    func test_selectSearchItem_forPremiumUser_showsReaderView() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -330,7 +316,7 @@ class SearchTests: XCTestCase {
     }
 
     // MARK: - Search Loading State
-    func test_search_showsSkeletonView() {
+    func test_search_forPremiumUser_showsSkeletonView() {
         continueAfterFailure = true
         var promises: [EventLoopPromise<Response>] = []
 
@@ -349,11 +335,12 @@ class SearchTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
+            } else if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
-
         app.launch()
         tapSearch()
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -382,7 +369,7 @@ class SearchTests: XCTestCase {
         XCTAssertTrue(app.saves.searchEmptyStateView(for: "error-empty-state").exists)
     }
 
-    func test_search_forSaves_showsErrorBanner() {
+    func test_search_forSaves_forPremiumUser_showsErrorBanner() {
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
@@ -396,8 +383,10 @@ class SearchTests: XCTestCase {
                 return Response.emptyTags()
             } else if apiRequest.isForSearch(.saves) {
                 return Response(status: .internalServerError)
+            } else if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
         app.launch()
@@ -411,7 +400,8 @@ class SearchTests: XCTestCase {
 
     // MARK: Search Actions
     @MainActor
-    func test_favoritingAndUnfavoritingAnItemFromSearch_showsFavoritedIcon() async {
+    func test_favoritingAndUnfavoritingAnItemFromSearch_forPremiumUser_showsFavoritedIcon() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -466,7 +456,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_sharingAnItemFromSearch_presentsShareSheet() async {
+    func test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -492,7 +483,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_addTagsFromSearch_showsAddTagsView() async {
+    func test_addTagsFromSearch_forPremiumUser_showsAddTagsView() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -519,7 +511,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_archivingAnItemFromSearch_removesItem() async {
+    func test_archivingAnItemFromSearch_forPremiumUser_removesItem() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -544,7 +537,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_unArchivingAnItemFromSearch_removesItem() async {
+    func test_unArchivingAnItemFromSearch_forPremiumUser_removesItem() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch(fromArchive: true)
 
@@ -569,7 +563,8 @@ class SearchTests: XCTestCase {
     }
 
     @MainActor
-    func test_deletingAnItemFromSearch_presentsOverflowMenu() async {
+    func test_deletingAnItemFromSearch_forPremiumUser_presentsOverflowMenu() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
 
@@ -596,7 +591,8 @@ class SearchTests: XCTestCase {
 
     // MARK: Pagination
     @MainActor
-    func test_search_showsPagination() async {
+    func test_search_forPremiumUser_showsPagination() async {
+        stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch()
         let firstExpectRequest = expectation(description: "First request to the server")
@@ -648,5 +644,45 @@ class SearchTests: XCTestCase {
             app.saves.selectionSwitcher.archiveButton.wait().tap()
         }
         app.saves.filterButton(for: "Search").wait().tap()
+    }
+}
+
+extension SearchTests {
+    func stubGraphQLEndpoint(isPremium: Bool) {
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSlateLineup {
+                return Response.slateLineup()
+            } else if apiRequest.isForSavesContent {
+                return Response.saves()
+            } else if apiRequest.isToSaveAnItem {
+                return Response.saveItem()
+            } else if apiRequest.isForArchivedContent {
+                return Response.archivedContent()
+            } else if apiRequest.isToArchiveAnItem {
+                return Response.archive()
+            } else if apiRequest.isForTags {
+                return Response.emptyTags()
+            } else if apiRequest.isForSearch(.saves) {
+                return Response.searchList(.saves)
+            } else if apiRequest.isForSearch(.archive) {
+                return Response.searchList(.archive)
+            } else if apiRequest.isForSearch(.all) {
+                return Response.searchList(.all)
+            } else if apiRequest.isToDeleteAnItem {
+                return Response.delete()
+            } else if apiRequest.isForItemDetail {
+                return Response.itemDetail()
+            } else if apiRequest.isForUserDetails {
+                if isPremium {
+                    return Response.premiumUserDetails()
+                } else {
+                    return Response.userDetails()
+                }
+            } else {
+                return Response.fallbackResponses(apiRequest: apiRequest)
+            }
+        }
     }
 }

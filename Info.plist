@@ -15,7 +15,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Pocket Beta</string>
+	<string>Pocket</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -68,6 +68,10 @@
 	<string>$(SNOWPLOW_ENDPOINT)</string>
 	<key>SnowplowIdentifier</key>
 	<string>$(SNOWPLOW_IDENTIFIER)</string>
+	<key>AdjustAppToken</key>
+	<string>$(ADJUST_APP_TOKEN)</string>
+	<key>AdjustSignUpEventToken</key>
+	<string>$(ADJUST_SIGN_UP_EVENT_TOKEN)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

@@ -5,6 +5,7 @@ import Combine
 import Textile
 import SharedPocketKit
 import UIKit
+import Adjust
 
 @MainActor
 public class RootViewModel: ObservableObject {
@@ -63,6 +64,8 @@ public class RootViewModel: ObservableObject {
             self?.handleSession(session: nil)
         }.store(in: &subscriptions)
 
+        getUserData()
+
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)
     }
@@ -87,7 +90,7 @@ public class RootViewModel: ObservableObject {
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])
-        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier))
+        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid()))
         Log.setUserID(session.userIdentifier)
     }
 
@@ -101,5 +104,11 @@ public class RootViewModel: ObservableObject {
 
         Log.clearUser()
         Textiles.clearImageCache()
+    }
+
+    private func getUserData() {
+        Task {
+            try? await source.fetchUserData()
+        }
     }
 }

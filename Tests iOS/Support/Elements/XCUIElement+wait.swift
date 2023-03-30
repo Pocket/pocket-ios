@@ -17,6 +17,7 @@ extension XCUIElement {
 
         let cameIntoExistence = waitForExistence(timeout: timeout)
         if cameIntoExistence {
+            XCTAssertTrue(exists)
             return self
         } else {
             XCTFail("Expected \(self) to exist but it was not found.", file: file, line: line)

@@ -4,6 +4,9 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+    func fetchUserData() async throws {
+    }
+
     var _events: SyncEvents = SyncEvents()
     var events: AnyPublisher<SyncEvent, Never> {
         _events.eraseToAnyPublisher()

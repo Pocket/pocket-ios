@@ -46,7 +46,7 @@ struct SnowplowMicroEvent: Codable {
      Pulls the user out of the event
      */
     func getUserContext() -> SnowplowMicroContext? {
-        return getContext(of: "iglu:com.pocket/user/jsonschema/1-0-0")
+        return getContext(of: "iglu:com.pocket/user/jsonschema/1-0-1")
     }
 
     /**
@@ -324,7 +324,7 @@ extension SnowplowMicro {
     internal func assertUser(for event: SnowplowMicroEvent) {
         // Screens in the app that are allowed to not have a userId because the user is logged out.
         let noUserIdScreens = ["PocketKit.LoggedOutViewController"]
-        let noUserIdEventIds = ["login.accountdelete.banner.exitsurvey.click", "login.accountdelete.exitsurvey"]
+        let noUserIdEventIds = ["login.accountdelete.banner.exitsurvey.click", "login.accountdelete.exitsurvey", "login.accountdelete.banner"]
 
         let user = event.getUserContext()
 
@@ -340,7 +340,7 @@ extension SnowplowMicro {
            let identifier = currentUIContext.dataDict()["identifier"] as? String,
            noUserIdEventIds.contains(identifier) {
             // If the screen is in in the list of allowed no user events, lets return.
-            XCTAssertNil(user, "User found in analytics event, and not expected")
+            XCTAssertNil(user, "User found in \(identifier) event, and not expected")
             return
         }
 

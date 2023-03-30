@@ -36,12 +36,14 @@ extension PocketSourceTests {
         source.restore()
         networkMonitor.update(status: .satisfied)
 
-        wait(for: [favoriteItem, archiveItem], timeout: 1, enforceOrder: true)
-        wait(for: [fetchList], timeout: 1)
+        wait(for: [favoriteItem, archiveItem], timeout: 5, enforceOrder: true)
+        wait(for: [fetchList], timeout: 5)
 
         let done = expectation(description: "done")
         source.drain { done.fulfill() }
-        wait(for: [done], timeout: 1)
+        wait(for: [done], timeout: 5)
+
+        _ = XCTWaiter.wait(for: [expectation(description: "Waiting for core data to flush deletions")], timeout: 5.0)
 
         operations.stubFetchSaves { _, _, _, _, _  in
             XCTFail("Operation should not be re-created after succeeding")

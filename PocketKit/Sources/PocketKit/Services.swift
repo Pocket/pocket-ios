@@ -49,6 +49,7 @@ struct Services {
         appSession = AppSession(groupID: Keys.shared.groupID)
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
+            adjustSignupEventToken: Keys.shared.adjustSignUpEventToken,
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
         user = PocketUser(userDefaults: userDefaults)

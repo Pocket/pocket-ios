@@ -418,6 +418,51 @@ extension SearchViewModel {
         }
     }
 
+    func swipeActionTitle(_ searchItem: PocketItem) -> String {
+        guard let savedItem = fetchSavedItem(searchItem) else { return L10n.Search.Swipe.unableToMove }
+
+        if savedItem.isArchived {
+            return L10n.Search.Swipe.moveToSaves
+        } else {
+            return L10n.Search.Swipe.archive
+        }
+    }
+
+    func handleSwipeAction(_ searchItem: PocketItem, index: Int) {
+        guard let savedItem = fetchSavedItem(searchItem) else { return }
+        if savedItem.isArchived {
+            moveToSaves(savedItem, index: index)
+        } else {
+            archive(savedItem, index: index)
+        }
+    }
+
+    /// Triggers action to archive an item in a list
+    func archive(_ savedItem: SavedItem, index: Int) {
+        tracker.track(event: Events.Search.archiveItem(itemUrl: savedItem.url, positionInList: index, scope: selectedScope))
+        source.archive(item: savedItem)
+    }
+
+    /// Triggers action to move an item from archive to saves in a list
+    func moveToSaves(_ savedItem: SavedItem, index: Int) {
+        tracker.track(event: Events.Search.unarchiveItem(itemUrl: savedItem.url, positionInList: index, scope: selectedScope))
+        source.unarchive(item: savedItem)
+    }
+
+    func fetchSavedItem(_ searchItem: PocketItem) -> SavedItem? {
+        guard
+            let id = searchItem.id,
+            let savedItem = source.fetchOrCreateSavedItem(
+                with: id,
+                and: searchItem.remoteItemParts
+            )
+        else {
+            Log.capture(message: "Saved Item not created")
+            return nil
+        }
+        return savedItem
+    }
+
     private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
         guard let url = item.bestURL else {
             return

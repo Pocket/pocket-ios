@@ -9,20 +9,30 @@ public enum Status: String {
 
 public protocol User {
     var status: Status { get }
+    var userName: String { get }
+    var displayName: String { get }
     var statusPublisher: Published<Status>.Publisher { get }
     func setPremiumStatus(_ isPremium: Bool)
+    func setUserName(_ userName: String)
+    func setDisplayName(_ displayName: String)
     func clear()
 }
 
 public class PocketUser: User, ObservableObject {
     @Published public private(set) var status: Status = .unknown
+    @AppStorage public var userName: String
+    @AppStorage public var displayName: String
     public var statusPublisher: Published<Status>.Publisher { $status }
     @AppStorage private var storedStatus: Status
 
     private static let userStatusKey = "User.statusKey"
+    private static let userNameKey = "User.nameKey"
+    private static let displayNameKey = "User.displayNameKey"
 
-    public init(status: Status = .unknown, userDefaults: UserDefaults) {
+    public init(status: Status = .unknown, userDefaults: UserDefaults, userName: String = "", displayName: String = "") {
         _storedStatus = AppStorage(wrappedValue: status, Self.userStatusKey, store: userDefaults)
+        _userName = AppStorage(wrappedValue: userName, Self.userNameKey, store: userDefaults)
+        _displayName = AppStorage(wrappedValue: displayName, Self.displayNameKey, store: userDefaults)
         publishStatus()
     }
 
@@ -31,8 +41,18 @@ public class PocketUser: User, ObservableObject {
         setStatus(targetStatus)
     }
 
+    public func setUserName(_ userName: String) {
+        self.userName = userName
+    }
+
+    public func setDisplayName(_ displayName: String) {
+        self.displayName = displayName
+    }
+
     public func clear() {
         setStatus(.unknown)
+        setUserName("")
+        setDisplayName("")
     }
 }
 

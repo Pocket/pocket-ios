@@ -33,17 +33,18 @@ class AddTagsItemTests: XCTestCase {
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else {
-                fatalError("Unexpected request")
+                return Response.fallbackResponses(apiRequest: apiRequest)
             }
         }
 
         try server.start()
     }
 
+    override func tearDown() async throws {
+       await snowplowMicro.assertNoBadEvents()
+    }
+
     override func tearDownWithError() throws {
-        Task {
-            await snowplowMicro.assertNoBadEvents()
-        }
         try server.stop()
         app.terminate()
     }

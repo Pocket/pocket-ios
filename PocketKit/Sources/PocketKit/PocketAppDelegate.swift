@@ -8,6 +8,7 @@ import Textile
 import Analytics
 import BackgroundTasks
 import SharedPocketKit
+import Adjust
 
 public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     static var phoneOrientationLock = UIInterfaceOrientationMask.portrait
@@ -81,6 +82,34 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
         Textiles.initialize()
 
+        enableAdjust()
+
+        let legacyUserMigration = LegacyUserMigration(
+            userDefaults: userDefaults,
+            encryptedStore: PocketEncryptedStore(),
+            appSession: appSession,
+            groupID: Keys.shared.groupID
+        )
+
+        do {
+            let attempted = try legacyUserMigration.perform()
+            if attempted {
+                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
+                // Legacy cleanup
+                LegacyCleanupService(groupID: Keys.shared.groupID).cleanUp()
+            } else {
+                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
+            }
+        } catch LegacyUserMigrationError.missingStore {
+            Log.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
+            // Since we don't have a store, we can skip any further attempts at running this migration.
+            legacyUserMigration.forceSkip()
+        } catch {
+            // All errors are something we can't resolve client-side, so we don't want to re-attempt
+            // on further launches.
+            legacyUserMigration.forceSkip()
+            Log.capture(error: error)
+        }
         return true
     }
 
@@ -92,5 +121,15 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
         guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
         return PocketAppDelegate.phoneOrientationLock
+    }
+
+    func enableAdjust() {
+        let adjustAppToken = Keys.shared.adjustAppToken
+        let environment = ADJEnvironmentProduction
+        let adjustConfig = ADJConfig(
+            appToken: adjustAppToken,
+            environment: environment
+        )
+        Adjust.appDidLaunch(adjustConfig)
     }
 }

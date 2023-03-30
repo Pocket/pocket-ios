@@ -99,6 +99,14 @@ extension Response {
         fixture(named: "premium-status")
     }
 
+    static func userDetails() -> Response {
+        fixture(named: "user")
+    }
+
+    static func premiumUserDetails() -> Response {
+        fixture(named: "premium-user")
+    }
+
     static func searchList(_ type: SearchScope) -> Response {
         var fixtureName = "search-list"
         switch type {
@@ -140,6 +148,8 @@ extension Response {
             return Response.saves()
         } else if apiRequest.isForDeleteUser {
             return Response.deleteUser()
+        } else if apiRequest.isForUserDetails {
+            return Response.userDetails()
         } else {
             fatalError("Unexpected request")
         }
