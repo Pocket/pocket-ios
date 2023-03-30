@@ -41,4 +41,9 @@ open class AsyncOperation: Operation {
         isExecuting = false
         isFinished = true
     }
+
+    public func cancelOperation() {
+        isExecuting = false
+        self.cancel()
+    }
 }

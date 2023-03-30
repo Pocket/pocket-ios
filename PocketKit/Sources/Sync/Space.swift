@@ -163,6 +163,16 @@ public class Space {
         }
     }
 
+    func delete(_ byIDs: [NSManagedObjectID], for entity: NSEntityDescription) throws {
+        try backgroundContext.performAndWait {
+            let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
+            fetchRequest.predicate = NSPredicate(format: "(objectID IN %@)", byIDs)
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
+            try backgroundContext.execute(deleteRequest)
+            try backgroundContext.save()
+        }
+    }
+
     func delete(_ objects: [NSManagedObject]) {
         backgroundContext.performAndWait { objects.compactMap({ backgroundObject(with: $0.objectID) }).forEach(backgroundContext.delete(_:)) }
     }

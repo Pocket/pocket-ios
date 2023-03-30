@@ -30,7 +30,7 @@ class SaveItemOperation: SyncOperation {
 
         do {
             let result = try await apollo.perform(mutation: mutation)
-            await handle(result: result)
+            handle(result: result)
             return .success
         } catch {
             switch error {
