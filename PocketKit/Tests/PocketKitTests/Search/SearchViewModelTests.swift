@@ -184,7 +184,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        await fulfillment(of: [searchExpectation], timeout: 1)
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     func test_updateScope_forFreeUser_withAllAndTerm_showsGetPremiumEmptyState() async {
@@ -224,7 +224,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        await fulfillment(of: [searchExpectation], timeout: 1)
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     func test_updateScope_forPremiumUser_withArchiveAndTerm_showsResults() async {
@@ -248,7 +248,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        await fulfillment(of: [searchExpectation], timeout: 1)
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     func test_updateScope_forPremiumUser_withAllAndTerm_showsResults() async {
@@ -272,7 +272,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        await fulfillment(of: [searchExpectation], timeout: 1)
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     // MARK: - Update Search Results
@@ -342,7 +342,7 @@ class SearchViewModelTests: XCTestCase {
         searchService.stubSearch { _, _ in }
         searchService._results = []
 
-        await fulfillment(of: [searchExpectation], timeout: 1)
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     func test_updateSearchResults_forPremiumUser_withItems_showsResults() async {
@@ -367,7 +367,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        await fulfillment(of: [searchExpectation], timeout: 1)
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     // MARK: - Offline States
@@ -584,11 +584,11 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        await fulfillment(of: [searchResultsExpectation], timeout: 1.0, enforceOrder: false)
+        wait(for: [searchResultsExpectation], timeout: 1.0, enforceOrder: false)
 
         viewModel.clear()
 
-        await fulfillment(of: [recentSearchesExpectation], timeout: 1.0, enforceOrder: false)
+        wait(for: [recentSearchesExpectation], timeout: 1.0, enforceOrder: false)
     }
 
     func test_search_whenDeviceRegainsInternetConnection_submitsSearch() async {
@@ -628,7 +628,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: "search-term")
 
-        await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
+        wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
     }
 
     // MARK: - Error Handling
@@ -657,7 +657,7 @@ class SearchViewModelTests: XCTestCase {
 
         viewModel.updateScope(with: .saves, searchTerm: "saved")
 
-        await fulfillment(of: [errorExpectation, localSavesExpectation], timeout: 1)
+        wait(for: [errorExpectation, localSavesExpectation], timeout: 1)
     }
 
     func test_updateSearchResults_withInternetConnectionError_showsOfflineView() async throws {
@@ -681,7 +681,7 @@ class SearchViewModelTests: XCTestCase {
 
         viewModel.updateScope(with: .archive, searchTerm: "search-term")
 
-        await fulfillment(of: [searchErrorExpectation, errorExpectation], timeout: 1, enforceOrder: true)
+        wait(for: [searchErrorExpectation, errorExpectation], timeout: 1, enforceOrder: true)
     }
 
     // MARK: Load More Search Results (Pagination)
@@ -711,7 +711,7 @@ class SearchViewModelTests: XCTestCase {
         viewModel.loadMoreSearchResults(with: pocketItem, at: 0)
         await setupOnlineSearch(with: term)
 
-        await fulfillment(of: [searchExpectation], timeout: 1)
+        wait(for: [searchExpectation], timeout: 1)
     }
 
     private func setupLocalSavesSearch(with url: URL? = nil) throws {
