@@ -43,7 +43,7 @@ class SettingsTest: XCTestCase {
         await loadDeleteConfirmationView()
         freeUser_tapDeleteToggles()
         await tap_deleteOnDeleteConfirmation()
-        _ = app.loggedOutView.waitForExistence(timeout: 10)
+        app.loggedOutView.wait(timeout: 10.0)
         await loadExitSurvey()
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
@@ -67,7 +67,7 @@ class SettingsTest: XCTestCase {
         await loadDeleteConfirmationView()
         premiumUser_tapDeleteToggles()
         await tap_deleteOnDeleteConfirmation()
-        _ = app.loggedOutView.waitForExistence(timeout: 10)
+        app.loggedOutView.wait(timeout: 10.0)
         await loadExitSurvey()
         await snowplowMicro.assertBaselineSnowplowExpectation()
     }
@@ -166,7 +166,7 @@ class SettingsTest: XCTestCase {
     @MainActor
     func tapPremiumSubscription() async {
         app.settingsView.premiumSubscriptionButton.tap()
-        XCTAssertTrue(app.premiumStatusView.exists)
+        app.premiumStatusView.wait()
     }
 
     /// Utillity to tap and assert the toggles for delete confirmation screen for premium users
@@ -190,8 +190,8 @@ class SettingsTest: XCTestCase {
         await tapSettings()
         await tap_AccountManagement()
         tap_DeleteAccount()
-        XCTAssertTrue(app.deleteConfirmationView.exists)
-        XCTAssertTrue(app.accountManagementView.exists)
+        app.deleteConfirmationView.wait()
+        app.accountManagementView.wait()
         let events =  await [snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.delete.click")]
         XCTAssertNotNil(events[0])
         XCTAssertFalse(app.deleteConfirmationView.deleteAccountButton.isEnabled)
@@ -200,7 +200,7 @@ class SettingsTest: XCTestCase {
     @MainActor
     func tapSettings() async {
         app.tabBar.settingsButton.wait().tap()
-        XCTAssertTrue(app.settingsView.exists)
+        app.settingsView.wait()
 
         let settingsViewEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings")
         XCTAssertNotNil(settingsViewEvent)
@@ -211,7 +211,7 @@ class SettingsTest: XCTestCase {
         app.deleteConfirmationView.deleteAccountButton.tap()
         // Performing async, so we catch the delete overlay in time.
         async let deleteButtonEventCall = snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.delete.confirm.click")
-        _ = app.deletingAccountOverlay.waitForExistence(timeout: 5)
+        app.deletingAccountOverlay.wait()
 
         let deleteButtonEvent = await deleteButtonEventCall
         XCTAssertNotNil(deleteButtonEvent)
@@ -219,12 +219,12 @@ class SettingsTest: XCTestCase {
 
     @MainActor
     func loadExitSurvey() async {
-        _ = app.surveyBannerButton.waitForExistence(timeout: 5.0)
+        app.surveyBannerButton.wait()
         let bannerImpression = await snowplowMicro.getFirstEvent(with: "login.accountdelete.banner")
         XCTAssertNotNil(bannerImpression)
         let surveyButton = app.surveyBannerButton
         surveyButton.tap()
-        _ = app.webView.waitForExistence(timeout: 5.0)
+        app.webView.wait()
         let events =  await [snowplowMicro.getFirstEvent(with: "login.accountdelete.banner.exitsurvey.click"), snowplowMicro.getFirstEvent(with: "login.accountdelete.exitsurvey")]
         XCTAssertNotNil(events[0])
         XCTAssertNotNil(events[1])
@@ -232,14 +232,13 @@ class SettingsTest: XCTestCase {
 
     func assertsError() {
         let alert = app.alert.wait(timeout: 5.0)
-        XCTAssertTrue(alert.exists)
         alert.ok.tap()
     }
 
     @MainActor
     func tap_AccountManagement() async {
         app.settingsView.accountManagementButton.tap()
-        XCTAssertTrue(app.accountManagementView.exists)
+        app.accountManagementView.wait()
         let events =  await [snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management.click"), snowplowMicro.getFirstEvent(with: "global-nav.settings.account-management")]
         XCTAssertNotNil(events[0])
         XCTAssertNotNil(events[1])

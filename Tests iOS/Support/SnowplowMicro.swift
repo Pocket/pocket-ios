@@ -46,7 +46,7 @@ struct SnowplowMicroEvent: Codable {
      Pulls the user out of the event
      */
     func getUserContext() -> SnowplowMicroContext? {
-        return getContext(of: "iglu:com.pocket/user/jsonschema/1-0-0")
+        return getContext(of: "iglu:com.pocket/user/jsonschema/1-0-1")
     }
 
     /**
