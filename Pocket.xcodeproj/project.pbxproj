@@ -243,6 +243,7 @@
 		8ADD6AA0292C1B2C007F419D /* SearchViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewElement.swift; sourceTree = "<group>"; };
 		AA69A28329B7FC6E00BBA644 /* SearchGetPremiumEmptyViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchGetPremiumEmptyViewElement.swift; sourceTree = "<group>"; };
 		AA7D6A2A2995F0A20094FD18 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.2.sdk/System/Library/Frameworks/StoreKit.framework; sourceTree = DEVELOPER_DIR; };
+		AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = secrets_test.xcconfig; sourceTree = "<group>"; };
 		AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Test_Subscriptions.storekit; sourceTree = "<group>"; };
 		AAEE908129B69BA70028587D /* PremiumTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumTests.swift; sourceTree = "<group>"; };
 		AAEE908329B69E9F0028587D /* PremiumUpgradeViewElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PremiumUpgradeViewElement.swift; sourceTree = "<group>"; };
@@ -458,6 +459,7 @@
 			isa = PBXGroup;
 			children = (
 				653DA74529C3C11200123847 /* secrets_alpha_neue.xcconfig */,
+				AA909AC8299EFD3A00F90FA7 /* secrets_test.xcconfig */,
 				16973355263CBB3F0003DE2A /* secrets.xcconfig */,
 				AA909ACC299F4D5400F90FA7 /* Test_Subscriptions.storekit */,
 			);

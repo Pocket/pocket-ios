@@ -18,25 +18,5 @@
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>PocketAPIBaseURL</key>
-	<string>$(POCKET_API_BASE_URL)</string>
-	<key>PocketAPIConsumerKey</key>
-	<string>$(POCKET_API_CONSUMER_KEY)</string>
-	<key>PocketPremiumAnnual</key>
-	<string>$(POCKET_PREMIUM_ANNUAL)</string>
-	<key>PocketPremiumMonthly</key>
-	<string>$(POCKET_PREMIUM_MONTHLY)</string>
-	<key>SentryDSN</key>
-	<string>$(SENTRY_DSN)</string>
-	<key>GroupId</key>
-	<string>$(GROUP_ID)</string>
-	<key>SnowplowEndpoint</key>
-	<string>$(SNOWPLOW_ENDPOINT)</string>
-	<key>SnowplowIdentifier</key>
-	<string>$(SNOWPLOW_IDENTIFIER)</string>
-	<key>AdjustAppToken</key>
-	<string>$(ADJUST_APP_TOKEN)</string>
-	<key>AdjustSignUpEventToken</key>
-	<string>$(ADJUST_SIGN_UP_EVENT_TOKEN)</string>
 </dict>
 </plist>
