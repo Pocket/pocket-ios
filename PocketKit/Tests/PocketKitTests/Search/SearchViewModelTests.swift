@@ -165,6 +165,7 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateScope_forFreeUser_withArchiveAndTerm_showsResults() async {
         let term = "search-term"
+        await setupOnlineSearch(with: term)
         let viewModel = await subject(user: MockUser(status: .free))
 
         let searchExpectation = expectation(description: "search Expectation")
@@ -183,11 +184,12 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        wait(for: [searchExpectation], timeout: 1)
+        await fulfillment(of: [searchExpectation], timeout: 1)
     }
 
     func test_updateScope_forFreeUser_withAllAndTerm_showsGetPremiumEmptyState() async {
         let term = "search-term"
+        await setupOnlineSearch(with: term)
 
         let user = MockUser()
         let viewModel = await subject(user: user)
@@ -202,6 +204,7 @@ class SearchViewModelTests: XCTestCase {
 
     func test_updateScope_forPremiumUser_withSavesAndTerm_showsResults() async {
         let term = "search-term"
+        await setupOnlineSearch(with: term)
 
         let viewModel = await subject(user: MockUser(status: .premium))
 
@@ -221,11 +224,12 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        wait(for: [searchExpectation], timeout: 1)
+        await fulfillment(of: [searchExpectation], timeout: 1)
     }
 
     func test_updateScope_forPremiumUser_withArchiveAndTerm_showsResults() async {
         let term = "search-term"
+        await setupOnlineSearch(with: term)
 
         let viewModel = await subject(user: MockUser(status: .premium))
         let searchExpectation = expectation(description: "search Expectation")
@@ -244,11 +248,12 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        wait(for: [searchExpectation], timeout: 1)
+        await fulfillment(of: [searchExpectation], timeout: 1)
     }
 
     func test_updateScope_forPremiumUser_withAllAndTerm_showsResults() async {
         let term = "search-term"
+        await setupOnlineSearch(with: term)
 
         let viewModel = await subject(user: MockUser(status: .premium))
         let searchExpectation = expectation(description: "search Expectation")
@@ -267,7 +272,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        wait(for: [searchExpectation], timeout: 1)
+        await fulfillment(of: [searchExpectation], timeout: 1)
     }
 
     // MARK: - Update Search Results
@@ -316,6 +321,9 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_forPremiumUser_withNoItems_showsNoResultsEmptyState() async {
+        let term = "search-term"
+        await setupOnlineSearch(with: term)
+
         let viewModel = await subject(user: MockUser(status: .premium))
         let searchExpectation = expectation(description: "search Expectation")
         viewModel.$searchState.dropFirst(2).receive(on: DispatchQueue.main).sink { state in
@@ -329,16 +337,17 @@ class SearchViewModelTests: XCTestCase {
             searchExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.updateSearchResults(with: "search-term")
+        viewModel.updateSearchResults(with: term)
 
         searchService.stubSearch { _, _ in }
         searchService._results = []
 
-        wait(for: [searchExpectation], timeout: 1)
+        await fulfillment(of: [searchExpectation], timeout: 1)
     }
 
     func test_updateSearchResults_forPremiumUser_withItems_showsResults() async {
         let term = "search-term"
+        await setupOnlineSearch(with: term)
 
         let viewModel = await subject(user: MockUser(status: .premium))
 
@@ -358,7 +367,7 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        wait(for: [searchExpectation], timeout: 1)
+        await fulfillment(of: [searchExpectation], timeout: 1)
     }
 
     // MARK: - Offline States
@@ -376,8 +385,10 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_forPremiumUser_withOfflineArchive_showsOfflineEmptyState() async {
+        let term = "search-term"
+        await setupOnlineSearch(with: term)
+
         networkPathMonitor.update(status: .unsatisfied)
-        await setupOnlineSearch(with: "search-term")
 
         let viewModel = await subject(user: MockUser(status: .premium))
 
@@ -389,7 +400,7 @@ class SearchViewModelTests: XCTestCase {
         }
         XCTAssertTrue(emptyStateViewModel is OfflineEmptyState)
 
-        viewModel.updateScope(with: .archive, searchTerm: "search-term")
+        viewModel.updateScope(with: .archive, searchTerm: term)
 
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
@@ -399,11 +410,13 @@ class SearchViewModelTests: XCTestCase {
     }
 
     func test_updateSearchResults_forPremiumUser_withOfflineAll_showsOfflineEmptyState() async {
+        let term = "search-term"
+        await setupOnlineSearch(with: term)
+
         networkPathMonitor.update(status: .unsatisfied)
-        await setupOnlineSearch(with: "search-term")
 
         let viewModel = await subject(user: MockUser(status: .premium))
-        viewModel.updateScope(with: .all, searchTerm: "search-term")
+        viewModel.updateScope(with: .all, searchTerm: term)
         guard case .emptyState(let emptyStateViewModel) = viewModel.searchState else {
             XCTFail("Should not have failed")
             return
@@ -538,6 +551,7 @@ class SearchViewModelTests: XCTestCase {
     // MARK: - Clear
     func test_clear_resetsSearchResults() async {
         let term = "search-term"
+        await setupOnlineSearch(with: term)
 
         let viewModel = await subject(user: MockUser(status: .premium))
 
@@ -570,14 +584,16 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: term)
 
-        wait(for: [searchResultsExpectation], timeout: 1)
+        await fulfillment(of: [searchResultsExpectation], timeout: 1.0, enforceOrder: false)
 
         viewModel.clear()
 
-        wait(for: [recentSearchesExpectation], timeout: 1)
+        await fulfillment(of: [recentSearchesExpectation], timeout: 1.0, enforceOrder: false)
     }
 
     func test_search_whenDeviceRegainsInternetConnection_submitsSearch() async {
+        await setupOnlineSearch(with: "search-term")
+
         let user = MockUser()
         let viewModel = await subject(user: user)
         networkPathMonitor.update(status: .unsatisfied)
@@ -612,11 +628,17 @@ class SearchViewModelTests: XCTestCase {
 
         await setupOnlineSearch(with: "search-term")
 
-        wait(for: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
+        await fulfillment(of: [offlineExpectation, onlineExpectation], timeout: 1, enforceOrder: true)
     }
 
     // MARK: - Error Handling
     func test_updateSearchResults_forPremiumUser_withOnlineSavesError_showsLocalSaves() async throws {
+        let errorExpectation = expectation(description: "should throw an error")
+        searchService.stubSearch { _, _ in
+            errorExpectation.fulfill()
+            throw TestError.anError
+        }
+
         networkPathMonitor.update(status: .unsatisfied)
         try setupLocalSavesSearch()
 
@@ -635,16 +657,16 @@ class SearchViewModelTests: XCTestCase {
 
         viewModel.updateScope(with: .saves, searchTerm: "saved")
 
-        await withCheckedContinuation { continuation in
-            searchService.stubSearch { _, _ in
-                continuation.resume()
-                throw TestError.anError
-            }
-        }
-        wait(for: [localSavesExpectation], timeout: 1)
+        await fulfillment(of: [errorExpectation, localSavesExpectation], timeout: 1)
     }
 
     func test_updateSearchResults_withInternetConnectionError_showsOfflineView() async throws {
+        let searchErrorExpectation = expectation(description: "should throw an error")
+        searchService.stubSearch { _, _ in
+            searchErrorExpectation.fulfill()
+            throw SearchServiceError.noInternet
+        }
+
         let viewModel = await subject(user: MockUser(status: .premium))
         let errorExpectation = expectation(description: "handle apollo internet connection error")
 
@@ -659,18 +681,13 @@ class SearchViewModelTests: XCTestCase {
 
         viewModel.updateScope(with: .archive, searchTerm: "search-term")
 
-        await withCheckedContinuation { continuation in
-            searchService.stubSearch { _, _ in
-                continuation.resume()
-                throw SearchServiceError.noInternet
-            }
-        }
-
-        wait(for: [errorExpectation], timeout: 1)
+        await fulfillment(of: [searchErrorExpectation, errorExpectation], timeout: 1, enforceOrder: true)
     }
 
     // MARK: Load More Search Results (Pagination)
     func test_loadMoreSearchResults_forItem_showsNextPaginationResults() async {
+        searchService.stubSearch { _, _ in }
+
         let item = space.buildSavedItem()
         let pocketItem = PocketItem(item: item)
         let term = "search-term"
@@ -694,7 +711,7 @@ class SearchViewModelTests: XCTestCase {
         viewModel.loadMoreSearchResults(with: pocketItem, at: 0)
         await setupOnlineSearch(with: term)
 
-        wait(for: [searchExpectation], timeout: 1)
+        await fulfillment(of: [searchExpectation], timeout: 1)
     }
 
     private func setupLocalSavesSearch(with url: URL? = nil) throws {
