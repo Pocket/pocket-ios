@@ -12,6 +12,7 @@ struct ReaderActionsWebActivityElement: PocketUIElement {
     }
 
     func activityOption(_ label: String) -> XCUIElement {
-        return element.buttons[label]
+        // Note that pre iOS 16.4 these were buttons, they now are StaticTexts
+        return element.staticTexts[label]
     }
 }

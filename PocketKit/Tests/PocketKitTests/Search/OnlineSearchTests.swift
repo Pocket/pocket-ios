@@ -32,8 +32,9 @@ class OnlineSearchTests: XCTestCase {
     func test_search_withSaves_showsResultsAndCaches() async {
         let sut = subject()
 
+        let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: "search-term")
-        await setupOnlineSearch(with: "search-term")
+        wait(for: [expectation], timeout: 5.0)
 
         guard case .success(let items) = sut.results else {
             XCTFail("should not have failed")
@@ -57,8 +58,9 @@ class OnlineSearchTests: XCTestCase {
 
     func test_search_withArchive_showsResultsAndCaches() async {
         let sut = subject(scope: .archive)
+        let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: "search-term")
-        await setupOnlineSearch(with: "search-term")
+        wait(for: [expectation], timeout: 5.0)
 
         guard case .success(let items) = sut.results else {
             XCTFail("should not have failed")
@@ -81,8 +83,9 @@ class OnlineSearchTests: XCTestCase {
 
     func test_search_withAll_showsResultsAndCaches() async {
         let sut = subject(scope: .all)
+        let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: "search-term")
-        await setupOnlineSearch(with: "search-term")
+        wait(for: [expectation], timeout: 5.0)
 
         guard case .success(let items) = sut.results else {
             XCTFail("should not have failed")
@@ -106,8 +109,10 @@ class OnlineSearchTests: XCTestCase {
     func test_hasCache_withPreviousSearchTerm_returnsTrue() async {
         let sut = subject()
         let term = "search-term"
+        let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: term)
-        await setupOnlineSearch(with: "search-term")
+        wait(for: [expectation], timeout: 5.0)
+
         XCTAssertTrue(sut.hasCache(with: term))
     }
 
@@ -119,8 +124,9 @@ class OnlineSearchTests: XCTestCase {
 
     func test_hasCache_withLoadMoreResults_returnsNewResults() async {
         let sut = subject(scope: .archive)
+        let expectation = setupOnlineSearch(with: "search-term")
         sut.search(with: "search-term")
-        await setupOnlineSearch(with: "search-term")
+        wait(for: [expectation], timeout: 5.0)
 
         guard case .success(let pageOneItems) = sut.results else {
             XCTFail("should not have failed")
@@ -131,8 +137,9 @@ class OnlineSearchTests: XCTestCase {
         XCTAssertEqual(searchService.searchCall(at: 0)?.term, "search-term")
         XCTAssertEqual(searchService.searchCall(at: 0)?.scope, .archive)
 
+        let expectation2 = setupOnlineSearchPage2(with: "search-term")
         sut.search(with: "search-term", and: true)
-        await setupOnlineSearchPage2(with: "search-term")
+        wait(for: [expectation2], timeout: 5.0)
         guard case .success(let pageTwoItems) = sut.results else {
             XCTFail("should not have failed")
             return
@@ -147,14 +154,13 @@ class OnlineSearchTests: XCTestCase {
     func test_search_whenFetchFails_throwsError() async {
         let sut = subject()
         let term = "search-term"
-        sut.search(with: term)
-
-        await withCheckedContinuation { continuation in
-            searchService.stubSearch { _, _ in
-                continuation.resume()
-                throw TestError.anError
-            }
+        let expectation = expectation(description: "online search")
+        searchService.stubSearch { _, _ in
+            expectation.fulfill()
+            throw TestError.anError
         }
+        sut.search(with: term)
+        wait(for: [expectation], timeout: 5.0)
 
         guard case .failure(let error) = sut.results else {
             XCTFail("should not have failed")
@@ -164,7 +170,7 @@ class OnlineSearchTests: XCTestCase {
         XCTAssertEqual(error as? TestError, .anError)
     }
 
-    private func setupOnlineSearch(with term: String) async {
+    private func setupOnlineSearch(with term: String) -> XCTestExpectation {
         let itemParts = SavedItemParts(data: DataDict([
             "__typename": "SavedItem",
             "item": [
@@ -176,15 +182,15 @@ class OnlineSearchTests: XCTestCase {
         ], variables: nil))
 
         let item = SearchSavedItem(remoteItem: itemParts)
-        await withCheckedContinuation { continuation in
-            searchService.stubSearch { _, _ in
-                self.searchService._results = [item, item]
-                continuation.resume()
-            }
+        let expectation = expectation(description: "search called")
+        searchService.stubSearch { _, _ in
+            self.searchService._results = [item, item]
+            expectation.fulfill()
         }
+        return expectation
     }
 
-    private func setupOnlineSearchPage2(with term: String) async {
+    private func setupOnlineSearchPage2(with term: String) -> XCTestExpectation {
         let itemParts = SavedItemParts(data: DataDict([
             "__typename": "SavedItem",
             "item": [
@@ -196,11 +202,11 @@ class OnlineSearchTests: XCTestCase {
         ], variables: nil))
 
         let item = SearchSavedItem(remoteItem: itemParts)
-        await withCheckedContinuation { continuation in
-            searchService.stubSearch { _, _ in
-                self.searchService._results = [item, item, item]
-                continuation.resume()
-            }
+        let expectation = expectation(description: "search called")
+        searchService.stubSearch { _, _ in
+            self.searchService._results = [item, item, item]
+            expectation.fulfill()
         }
+        return expectation
     }
 }

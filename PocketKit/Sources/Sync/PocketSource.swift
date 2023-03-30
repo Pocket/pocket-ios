@@ -229,12 +229,10 @@ public class PocketSource: Source {
     // Exposed to tests to facilitate waiting for all operations to finish
     // Should not be used outside of a testing context
     func drain(_ completion: @escaping () -> Void) {
-        DispatchQueue.global(qos: .background).async {
-            self.fetchSavesQueue.waitUntilAllOperationsAreFinished()
-            self.fetchArchiveQueue.waitUntilAllOperationsAreFinished()
-            self.saveQueue.waitUntilAllOperationsAreFinished()
-            completion()
-        }
+        self.fetchSavesQueue.waitUntilAllOperationsAreFinished()
+        self.fetchArchiveQueue.waitUntilAllOperationsAreFinished()
+        self.saveQueue.waitUntilAllOperationsAreFinished()
+        completion()
     }
 
     /// Sends the delete call to Backend, you must still implement the logout and reset functionality.

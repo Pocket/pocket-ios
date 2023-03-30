@@ -65,7 +65,9 @@ opt_in_rules: # some rules are only opt-in
   # swiftlint rules
   - anyobject_protocol
   - array_init
-  - attributes
+  - attributes:
+      always_on_line_above:
+        - '@Published'
   - capture_variable
   - closing_brace
   - closure_spacing

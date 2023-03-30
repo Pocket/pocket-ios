@@ -356,7 +356,8 @@ class HomeViewModelTests: XCTestCase {
             )
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [])
+                []
+            )
         }.store(in: &subscriptions)
 
         savedItem = space.buildSavedItem()
