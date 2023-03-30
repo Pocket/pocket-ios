@@ -23,7 +23,7 @@ let package = Package(
         .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.1.3"),
         .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.4.0"),
-        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.11.2"),
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.13.0"),
         .package(url: "https://github.com/adjust/ios_sdk", exact: "4.33.4"),
         .package(url: "https://github.com/RNCryptor/RNCryptor.git", .upToNextMajor(from: "5.0.0"))
     ],
