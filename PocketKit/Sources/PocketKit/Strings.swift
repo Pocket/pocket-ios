@@ -392,6 +392,14 @@ internal enum L10n {
       internal static let credits = L10n.tr("Localizable", "settings.thankyou.credits", fallback: "Thank you for using Pocket")
     }
   }
+  internal enum Tags {
+    internal enum Upsell {
+      /// Get Pocket Premium
+      internal static let getPocketPremium = L10n.tr("Localizable", "tags.upsell.getPocketPremium", fallback: "Get Pocket Premium")
+      /// Tag stories faster than ever—get your most recent tags with Pocket Premium.
+      internal static let tagStoriesFasterThanEver = L10n.tr("Localizable", "tags.upsell.tagStoriesFasterThanEver", fallback: "Tag stories faster than ever—get your most recent tags with Pocket Premium.")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces
@@ -416,4 +424,3 @@ private final class BundleToken {
   }()
 }
 // swiftlint:enable convenience_type
-// swiftlint:enable all

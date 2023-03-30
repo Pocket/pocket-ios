@@ -173,6 +173,13 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
             }
         }
     }
+
+    struct freeUserUpsell: View {
+        var body: some View {
+            UpsellView()
+        }
+    }
+
 }
 
 private extension Style {
@@ -190,5 +197,36 @@ extension View {
         self.onChange(of: text.wrappedValue) { _ in
             text.wrappedValue = String(text.wrappedValue.prefix(characterLimit))
         }
+    }
+}
+
+struct UpsellView <Content: View> : View {
+
+    let content: Content
+
+    init(@ViewBuilder contentBuilder: () -> Content){
+        self.content = contentBuilder()
+    }
+
+    init() where Content == Color {
+        self.init {
+            Color.white
+        }
+    }
+
+    var body: some View {
+        HStack {
+            Image(uiImage: UIImage(asset: .premiumIconColorful))
+            VStack {
+                Text("Test title")
+                Text("Test subject")
+            }
+        }
+    }
+}
+
+struct Upsell_Previews: PreviewProvider {
+    static var previews: some View {
+        UpsellView()
     }
 }

@@ -16,7 +16,6 @@ public protocol AddTagsViewModel: ObservableObject {
     func addTags()
     func allOtherTags()
     func removeTag(with tag: String)
-
     func trackAddTag()
     func trackRemoveTag()
 }
