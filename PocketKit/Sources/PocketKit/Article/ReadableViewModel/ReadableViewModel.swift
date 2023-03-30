@@ -61,23 +61,11 @@ extension ReadableViewModel {
 
     func openExternally(url: URL?) {
         presentedWebReaderURL = url
-
-        if let url = url {
-            trackOpen(url: url)
-        }
+        trackWebViewOpen()
     }
 
     func showWebReader() {
         openExternally(url: url)
-    }
-
-    private func trackOpen(url: URL) {
-        let additionalContexts: [Context] = [ContentContext(url: url)]
-
-        let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
-        let link = UIContext.articleView.link
-        let contexts = additionalContexts + [link]
-        tracker.track(event: contentOpen, contexts)
     }
 
     func share(additionalText: String? = nil) {
@@ -183,5 +171,14 @@ extension ReadableViewModel {
     /// - Parameter url: url of saved item
     func trackMoveFromArchiveToSavesButtonTapped(url: URL) {
         tracker.track(event: Events.Reader.moveFromArchiveToSavesClicked(url: url))
+    }
+
+    /// track when user taps on the safari button to open content in web view
+    func trackWebViewOpen() {
+        guard let url else {
+            Log.capture(message: "Reader item without an associated url, not logging analytics for openInWebView")
+            return
+        }
+        tracker.track(event: Events.Reader.openInWebView(url: url))
     }
 }
