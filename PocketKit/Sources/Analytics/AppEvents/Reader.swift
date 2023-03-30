@@ -39,4 +39,31 @@ public extension Events.Reader {
             ]
         )
     }
+
+    /**
+     Fired when a user un-archives/adds an article to Saves via the top toolbar on Reader
+     */
+    static func moveFromArchiveToSavesClicked(url: URL) -> Engagement {
+        return Engagement(
+            .save(contentEntity: ContentEntity(url: url)),
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.un-archive"
+            )
+        )
+    }
+    /**
+     Fired when a user archives an article via the top toolbar on Reader
+     */
+    static func archiveClicked(url: URL) -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.archive"
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
 }

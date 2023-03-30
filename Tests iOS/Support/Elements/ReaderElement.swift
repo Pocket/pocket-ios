@@ -24,6 +24,10 @@ struct ReaderElement: PocketUIElement {
         element.buttons["archiveNavButton"]
     }
 
+    var moveFromArchiveToSavesButton: XCUIElement {
+        element.buttons["moveFromArchiveToSavesNavButton"]
+    }
+
     var overflowButton: XCUIElement {
         element.buttons["more"]
     }
