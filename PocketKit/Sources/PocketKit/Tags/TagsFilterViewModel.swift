@@ -4,7 +4,7 @@ import Analytics
 import Foundation
 import Textile
 
-class TagsFilterViewModel: ObservableObject {
+class TagsFilterViewModel: ObservableObject, TagsList {
     private var fetchedTags: [Tag]?
     private let tracker: Tracker
     private let source: Source
@@ -24,19 +24,7 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     func getAllTags() -> [TagType] {
-        var allTags: [String] = []
-        guard let fetchedTags = fetchedTags?.compactMap({ $0.name }).reversed() else { return [] }
-
-        if fetchedTags.count > 3 {
-            let topRecentTags = Array(fetchedTags)[..<3]
-            let sortedTags = Array(fetchedTags)[3...].sorted()
-            allTags.append(contentsOf: topRecentTags)
-            allTags.append(contentsOf: sortedTags)
-        } else {
-            allTags.append(contentsOf: fetchedTags)
-        }
-
-        return allTags.compactMap { TagType.tag($0) }
+        arrangeTags(with: fetchedTags?.compactMap({ $0.name }) ?? [])
     }
 
     func trackEditAsOverflowAnalytics() {

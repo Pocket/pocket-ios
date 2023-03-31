@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import Textile
 
 @testable import Sync
 @testable import PocketKit
@@ -37,7 +38,7 @@ class TagsFilterViewModelTests: XCTestCase {
         let tags = viewModel.getAllTags()
 
         XCTAssertEqual(tags.count, 3)
-        XCTAssertEqual(tags, ["tag 3", "tag 2", "tag 1"])
+        XCTAssertEqual(tags, [TagType.tag("tag 3"), TagType.tag("tag 2"), TagType.tag("tag 1")])
     }
 
     func test_getAllTags_withMoreThan3Tags_returnsSortedOrder() {
@@ -54,7 +55,7 @@ class TagsFilterViewModelTests: XCTestCase {
         let tags = viewModel.getAllTags()
 
         XCTAssertEqual(tags.count, 5)
-        XCTAssertEqual(tags, ["e", "d", "c", "a", "b"])
+        XCTAssertEqual(tags, [TagType.tag("e"), TagType.tag("d"), TagType.tag("c"), TagType.tag("a"), TagType.tag("b")])
     }
 
     func test_selectedTag_withTagName_sendsPredicate() {
