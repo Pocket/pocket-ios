@@ -177,7 +177,7 @@ To release a version of Pocket following our every 2 week cycle you should follo
 1. If needed pr to increment the app version number in Git on the `develop` branch.
 2. Trigger the `nightly-internal-pipeline` manually to submit a new build to Testflight.
 
-If you will use the app version already in `develop`
+###If you will use the app version already in `develop`
 1. Find the nightly you will promote that is already Testflight Nightlies. Correlate it's build number with Bitrise and find the respective commit and write that down. You can search by build number in the Bitrise UI.
    a. Alternatively trigger the `nightly-internal-pipeline` manually to submit a new build to Testflight from the latest on the `develop` branch.
 
