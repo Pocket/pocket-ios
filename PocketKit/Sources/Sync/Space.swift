@@ -166,7 +166,7 @@ public class Space {
     func delete(_ byIDs: [NSManagedObjectID], for entity: NSEntityDescription) throws {
         try backgroundContext.performAndWait {
             let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: entity.name!)
-            fetchRequest.predicate = NSPredicate(format: "(objectID IN %@)", byIDs)
+            fetchRequest.predicate = NSPredicate(format: "SELF IN %@", byIDs)
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
             try backgroundContext.execute(deleteRequest)
             try backgroundContext.save()

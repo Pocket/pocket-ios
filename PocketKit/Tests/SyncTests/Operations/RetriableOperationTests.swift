@@ -1,4 +1,5 @@
 import XCTest
+import CoreData
 import Combine
 
 @testable import Sync
@@ -6,28 +7,38 @@ import Combine
 class RetriableOperationTests: XCTestCase {
     var retrySignal: PassthroughSubject<Void, Never>!
     var backgroundTaskManager: MockBackgroundTaskManager!
+    var space: Space!
+    var task: PersistentSyncTask!
 
-    override func setUp() {
+    override func setUpWithError() throws {
         retrySignal = .init()
         backgroundTaskManager = MockBackgroundTaskManager()
+        space = .testSpace()
+        task = PersistentSyncTask(context: space.backgroundContext)
+        task.syncTaskContainer = SyncTaskContainer(task: .fetchSaves)
+        try space.save()
 
         backgroundTaskManager.stubBeginTask { _, _ in return 0 }
         backgroundTaskManager.stubEndTask { _ in }
+        XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 1)
     }
 
     func subject(
         retrySignal: AnyPublisher<Void, Never>? = nil,
         backgroundTaskManager: BackgroundTaskManager? = nil,
-        operation: SyncOperation
+        operation: SyncOperation,
+        syncTaskId: NSManagedObjectID? = nil
     ) -> RetriableOperation {
         RetriableOperation(
             retrySignal: retrySignal ?? self.retrySignal.eraseToAnyPublisher(),
             backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager,
-            operation: operation
+            operation: operation,
+            space: self.space,
+            syncTaskId: syncTaskId ?? self.task.objectID
         )
     }
 
-    func test_retry_retriesOnSignal() {
+    func test_retry_retriesOnSignal() throws {
         var calls = 0
         let firstAttempt = expectation(description: "first attempt")
         let secondAttempt = expectation(description: "second attempt")
@@ -53,13 +64,14 @@ class RetriableOperationTests: XCTestCase {
         let completed = expectation(description: "it completed")
         let queue = OperationQueue()
         queue.addOperation(executor)
-        queue.addBarrierBlock {
+        executor.completionBlock = {
             completed.fulfill()
         }
 
         wait(for: [firstAttempt], timeout: 1)
         retrySignal.send()
-        wait(for: [secondAttempt, completed], timeout: 1, enforceOrder: true)
+        wait(for: [secondAttempt, completed], timeout: 5, enforceOrder: true)
+        XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
     }
 
     func test_retry_whenMaxRetriesAreExceeded_doesNotRetry() {
@@ -86,7 +98,7 @@ class RetriableOperationTests: XCTestCase {
         let completed = expectation(description: "it completed")
         let queue = OperationQueue()
         queue.addOperation(executor)
-        queue.addBarrierBlock {
+        executor.completionBlock = {
             completed.fulfill()
         }
 
@@ -96,6 +108,7 @@ class RetriableOperationTests: XCTestCase {
         }
 
         wait(for: [completed], timeout: 1, enforceOrder: true)
+        XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
     }
 
     func test_main_protectsOperationWithBackgroundTask() {
@@ -114,5 +127,6 @@ class RetriableOperationTests: XCTestCase {
 
         queue.waitUntilAllOperationsAreFinished()
         XCTAssertEqual(backgroundTaskManager.endTaskCall(at: 0)?.identifier, 0)
+        XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
     }
 }

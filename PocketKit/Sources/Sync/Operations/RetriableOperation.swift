@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import CoreData
 
@@ -87,6 +91,7 @@ class RetriableOperation: AsyncOperation {
         do {
             Log.info("Deleting persistent task with objectID \(self.syncTaskId)")
             try space.delete([self.syncTaskId], for: PersistentSyncTask.entity())
+            try space.save()
         } catch {
             Log.capture(error: error)
         }
@@ -96,7 +101,11 @@ class RetriableOperation: AsyncOperation {
     /// - Parameter error: The error that the underlying operation sent
     private func retry(_ error: Error?) {
         subscription = retrySignal.sink { [weak self] in
-            self?._retry(error)
+            guard let self else {
+                Log.captureNilWeakSelf()
+                return
+            }
+            self._retry(error)
         }
     }
 
@@ -113,8 +122,8 @@ class RetriableOperation: AsyncOperation {
             if let error {
                 Log.capture(error: error)
             }
-            clearPersistentTask()
-            finishOperation()
+
+            doneWithTask()
             return
         }
 
