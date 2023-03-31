@@ -173,7 +173,7 @@ The following are the high level steps to update the notices page:
 
 To release a version of Pocket following our every 2 week cycle you should follow the following depending on your release scenario. The following assumes you will be releasing to the Testflight Audience and then after some time promoting that version of the App to the store.
 
-If you need to increment the app version:
+###If you need to increment the app version:
 1. If needed pr to increment the app version number in Git on the `develop` branch.
 2. Trigger the `nightly-internal-pipeline` manually to submit a new build to Testflight.
 
