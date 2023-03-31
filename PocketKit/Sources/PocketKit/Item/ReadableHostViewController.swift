@@ -121,8 +121,12 @@ class ReadableHostViewController: UIViewController {
     @objc
     private func moveFromArchiveToSaves() {
         readableViewModel.moveFromArchiveToSaves { [weak self] success in
-            if success, let items = navigationItem.rightBarButtonItems, let index = items.firstIndex(of: getMoveFromArchiveToSavesButton) {
-                self?.navigationItem.rightBarButtonItems?[index] = getArchiveButton
+            if success,
+               let items = self?.navigationItem.rightBarButtonItems,
+               let getMoveFromArchiveToSavesButton = self?.getMoveFromArchiveToSavesButton,
+               let index = items.firstIndex(of: getMoveFromArchiveToSavesButton),
+               let archiveButton = self?.getArchiveButton {
+                self?.navigationItem.rightBarButtonItems?[index] = archiveButton
             }
         }
     }
