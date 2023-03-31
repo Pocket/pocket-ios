@@ -59,16 +59,19 @@ class RetriableOperationTests: XCTestCase {
             }
         }
 
-        let executor = subject(operation: operation)
-
         let completed = expectation(description: "it completed")
-        let queue = OperationQueue()
-        queue.addOperation(executor)
+        let executor = subject(operation: operation)
         executor.completionBlock = {
             completed.fulfill()
         }
 
+        let queue = OperationQueue()
+        queue.addOperation(executor)
+
         wait(for: [firstAttempt], timeout: 1)
+        // NOTE: We need to await after the firstAttempt because it takes a few ms for the
+        // retrySubscritpion to get setup after firstAttempt is fullfilled.
+        _ = XCTWaiter.wait(for: [expectation(description: "test")], timeout: 1)
         retrySignal.send()
         wait(for: [secondAttempt, completed], timeout: 5, enforceOrder: true)
         XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
@@ -96,14 +99,17 @@ class RetriableOperationTests: XCTestCase {
 
         let executor = subject(operation: operation)
         let completed = expectation(description: "it completed")
-        let queue = OperationQueue()
-        queue.addOperation(executor)
         executor.completionBlock = {
             completed.fulfill()
         }
+        let queue = OperationQueue()
+        queue.addOperation(executor)
 
         expectations.forEach {
             wait(for: [$0], timeout: 1)
+            // NOTE: We need to await after each attempt because it takes a few ms for the
+            // retrySubscritpion to get setup after the attempt is fullfilled.
+            _ = XCTWaiter.wait(for: [expectation(description: "test")], timeout: 1)
             retrySignal.send()
         }
 
