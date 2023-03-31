@@ -7,7 +7,6 @@ public extension Style {
     struct TagsStyle {
         let emptyStateText: Style = Style.header.sansSerif.p2.with { $0.with(alignment: .center).with(lineSpacing: 6) }
         public let sectionHeader: Style = Style.header.sansSerif.h8.with(color: .ui.grey4)
-//        let sectionHeader: Style = Style.header.sansSerif.h8.with(color: .ui.grey5)
         public let tag: Style = Style.header.sansSerif.h8.with(color: .ui.grey4)
         let allTags: Style = Style.header.sansSerif.h8.with(color: .ui.grey1)
     }
