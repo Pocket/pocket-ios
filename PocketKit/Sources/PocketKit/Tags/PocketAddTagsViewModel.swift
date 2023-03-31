@@ -2,10 +2,9 @@ import Combine
 import Sync
 import Textile
 import Foundation
-import SharedPocketKit
 import Analytics
 
-class PocketAddTagsViewModel: AddTagsViewModel {
+class PocketAddTagsViewModel: AddTagsViewModel, TagsList {
     private let item: SavedItem
     private let source: Source
     private let tracker: Tracker
@@ -50,9 +49,8 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
-        let fetchedTags = source.retrieveTags(excluding: tags)?.compactMap { $0.name } ?? []
-        let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
-        otherTags = tagTypes
+        let fetchedTags = source.retrieveTags(excluding: tags)?.compactMap({ $0.name }) ?? []
+        otherTags = arrangeTags(with: fetchedTags)
         sectionTitle = .allTags
         trackAllTagsImpression()
     }

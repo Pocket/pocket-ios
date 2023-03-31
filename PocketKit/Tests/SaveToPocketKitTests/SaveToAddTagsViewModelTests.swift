@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 import Analytics
+import Textile
 
 @testable import Sync
 @testable import SaveToPocketKit
@@ -39,7 +40,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
         viewModel.tags = ["tag 1"]
-        let isValidTag = viewModel.addTag(with: "tag 2")
+        let isValidTag = viewModel.addNewTag(with: "tag 2")
 
         XCTAssertTrue(isValidTag)
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 2"])
@@ -49,7 +50,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
         viewModel.tags = ["tag 1"]
-        let isValidTag = viewModel.addTag(with: "tag 1")
+        let isValidTag = viewModel.addNewTag(with: "tag 1")
 
         XCTAssertFalse(isValidTag)
         XCTAssertEqual(viewModel.tags, ["tag 1"])
@@ -59,7 +60,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let viewModel = subject(item: item) { _ in }
         viewModel.tags = ["tag 1"]
-        let isValidTag = viewModel.addTag(with: "  ")
+        let isValidTag = viewModel.addNewTag(with: "  ")
 
         XCTAssertFalse(isValidTag)
         XCTAssertEqual(viewModel.tags, ["tag 1"])
@@ -102,7 +103,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
 
         viewModel.allOtherTags()
 
-        XCTAssertEqual(viewModel.otherTags, ["tag 2", "tag 3"])
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 3"), TagType.tag("tag 2")])
     }
 
     func test_removeTag_withValidName_updatesTags() throws {
@@ -113,7 +114,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         viewModel.removeTag(with: "tag 2")
 
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 3"])
-        XCTAssertEqual(viewModel.otherTags, ["tag 2"])
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2")])
     }
 
     func test_removeTag_withNotExistingName_updatesTags() throws {
@@ -150,7 +151,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             .delay(for: .seconds(1), scheduler: RunLoop.main, options: .none)
             .sink { string in
                 defer { expectFilterTagsCall.fulfill() }
-                XCTAssertEqual(viewModel.otherTags, ["tag 2", "tag 3"])
+                XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
             }
             .store(in: &subscriptions)
         wait(for: [expectFilterTagsCall], timeout: 1)
@@ -180,7 +181,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
             .delay(for: .seconds(1), scheduler: RunLoop.main, options: .none)
             .sink { string in
                 defer { expectFilterTagsCall.fulfill() }
-                XCTAssertEqual(viewModel.otherTags, ["tag 2", "tag 3"])
+                XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
             }
             .store(in: &subscriptions)
         wait(for: [expectFilterTagsCall], timeout: 1)

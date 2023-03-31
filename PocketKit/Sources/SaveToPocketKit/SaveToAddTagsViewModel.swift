@@ -4,7 +4,7 @@ import Textile
 import Foundation
 import Analytics
 
-class SaveToAddTagsViewModel: AddTagsViewModel {
+class SaveToAddTagsViewModel: AddTagsViewModel, TagsList {
     private let item: SavedItem?
     private let tracker: Tracker
     private let retrieveAction: ([String]) -> [Tag]?
@@ -51,8 +51,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
         let fetchedTags = retrieveAction(tags)?.compactMap { $0.name } ?? []
-        let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
-        otherTags = tagTypes
+        otherTags = arrangeTags(with: fetchedTags)
         sectionTitle = .allTags
         trackAllTagsImpression()
     }
