@@ -141,6 +141,9 @@
 "search.banner.errorMessage." = "我們遇到錯誤，無法顯示您完整的搜尋結果。請稍後重試。";
 "search.error.view.needsInternet" = "您必須有網際網路連線才能檢視此項目。";
 "search.recent" = "近期搜尋";
+"search.swipe.unableToMove" = "無法移動";
+"search.swipe.archive" = "封存";
+"search.swipe.moveToSaves" = "移至「儲存項目」";
 
 // Settings
 "settings.thankyou.credits" = "感謝您使用 Pocket";
