@@ -26,14 +26,15 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var domain: String? { get }
     var publishDate: Date? { get }
     var url: URL? { get }
+    var isArchived: Bool { get }
 
     func delete()
     func openExternally(url: URL?)
-    func archiveArticle()
+    func archive()
+    func moveFromArchiveToSaves(completion: (Bool) -> Void)
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
     func clearPresentedWebReaderURL()
-    func moveToSaves()
     func unfavorite()
     func favorite()
 }
@@ -60,23 +61,11 @@ extension ReadableViewModel {
 
     func openExternally(url: URL?) {
         presentedWebReaderURL = url
-
-        if let url = url {
-            trackOpen(url: url)
-        }
+        trackWebViewOpen()
     }
 
     func showWebReader() {
         openExternally(url: url)
-    }
-
-    private func trackOpen(url: URL) {
-        let additionalContexts: [Context] = [ContentContext(url: url)]
-
-        let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
-        let link = UIContext.articleView.link
-        let contexts = additionalContexts + [link]
-        tracker.track(event: contentOpen, contexts)
     }
 
     func share(additionalText: String? = nil) {
@@ -125,9 +114,9 @@ extension ReadableViewModel {
                                                        : .archive)
         let archiveActivity = ReaderActionsWebActivity(title: archiveActivityTitle) { [weak self] in
             if item.isArchived == true {
-                self?.moveToSaves()
+                self?.moveFromArchiveToSaves { _ in }
             } else {
-                self?.archiveArticle()
+                self?.archive()
             }
         }
 
@@ -170,5 +159,26 @@ extension ReadableViewModel {
             return
         }
         tracker.track(event: Events.Reader.unsupportedContentButtonTapped(url: url))
+    }
+
+    /// track archive button tapped in reader toolbar
+    /// - Parameter url: url of saved item
+    func trackArchiveButtonTapped(url: URL) {
+        tracker.track(event: Events.Reader.archiveClicked(url: url))
+    }
+
+    /// track move to saves from archive button tapped in reader toolbar
+    /// - Parameter url: url of saved item
+    func trackMoveFromArchiveToSavesButtonTapped(url: URL) {
+        tracker.track(event: Events.Reader.moveFromArchiveToSavesClicked(url: url))
+    }
+
+    /// track when user taps on the safari button to open content in web view
+    func trackWebViewOpen() {
+        guard let url else {
+            Log.capture(message: "Reader item without an associated url, not logging analytics for openInWebView")
+            return
+        }
+        tracker.track(event: Events.Reader.openInWebView(url: url))
     }
 }

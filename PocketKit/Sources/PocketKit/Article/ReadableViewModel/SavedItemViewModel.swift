@@ -88,17 +88,13 @@ class SavedItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
-    func moveToSaves() {
-        source.unarchive(item: item)
+    var isArchived: Bool {
+        item.isArchived
     }
 
     func delete() {
         source.delete(item: item)
         _events.send(.delete)
-    }
-
-    func archiveArticle() {
-        archive()
     }
 
     func fetchDetailsIfNeeded() {
@@ -159,9 +155,15 @@ extension SavedItemViewModel {
         track(identifier: .itemUnfavorite)
     }
 
-    private func archive() {
+    func moveFromArchiveToSaves(completion: (Bool) -> Void) {
+        source.unarchive(item: item)
+        trackMoveFromArchiveToSavesButtonTapped(url: item.url)
+        completion(true)
+    }
+
+    func archive() {
         source.archive(item: item)
-        track(identifier: .itemArchive)
+        trackArchiveButtonTapped(url: item.url)
         _events.send(.archive)
     }
 

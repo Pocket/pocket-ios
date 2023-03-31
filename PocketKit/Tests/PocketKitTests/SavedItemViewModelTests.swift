@@ -205,6 +205,47 @@ class SavedItemViewModelTests: XCTestCase {
         wait(for: [expectDelete, expectDeleteEvent], timeout: 1)
     }
 
+    func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
+        let viewModel = subject(item: savedItem)
+
+        let expectArchive = expectation(description: "expect source.archive(_:)")
+        source.stubArchiveSavedItem { archivedItem in
+            defer { expectArchive.fulfill() }
+            XCTAssertTrue(archivedItem === savedItem)
+        }
+
+        let expectArchiveEvent = expectation(description: "expect archive event")
+        viewModel.events.sink { event in
+            guard case .archive = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+
+            expectArchiveEvent.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.archive()
+        wait(for: [expectArchive, expectArchiveEvent], timeout: 1)
+    }
+
+    func test_moveFromArchiveToSaves_sendsRequestToSource_AndRefreshes() {
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
+
+        let expectMoveFromArchiveToSaves = expectation(description: "expect source.unarchive(_:)")
+        source.stubUnarchiveSavedItem { item in
+            defer { expectMoveFromArchiveToSaves.fulfill() }
+            XCTAssertTrue(item === savedItem)
+        }
+
+        let viewModel = subject(item: savedItem)
+        viewModel.moveFromArchiveToSaves { _ in }
+
+        wait(for: [expectMoveFromArchiveToSaves], timeout: 1)
+    }
+
     func test_share_updatesSharedActivity() {
         let viewModel = subject(item: space.buildSavedItem())
         viewModel.invokeAction(title: "Share")
