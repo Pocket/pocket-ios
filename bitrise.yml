@@ -181,6 +181,7 @@ workflows:
   _install_past_ios:
     steps:
       - script@1:
+          timeout: 600 # 10 minutes
           inputs:
             - content: |
                 #!/usr/bin/env bash
@@ -199,6 +200,7 @@ workflows:
   _start_snowplow:
     steps:
         - script@1:
+           timeout: 300 # 5 minutes
            inputs:
              - content: |
                 #!/usr/bin/env bash
@@ -483,7 +485,7 @@ workflows:
           timeout: 600 #10 minutes
           title: Unit Tests
           inputs:
-            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITestsFlaky_iphonesimulator16.4.xctestrun'
+            - xctestrun: '${BITRISE_TEST_BUNDLE_PATH}/Pocket (iOS)_UITestsFlaky_iphonesimulator16.4-arm64-x86_64.xctestrun'
             - destination: platform=iOS Simulator,name=iPhone 14,OS=16.4
       - deploy-to-bitrise-io@2.1.1:
           inputs:
