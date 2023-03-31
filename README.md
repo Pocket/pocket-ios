@@ -202,6 +202,6 @@ Releasing to Beta Testers:
 1. Find the build you want to release to testers
 2. Add in the public facing release notes in TestFlight.
 3. Add the Public Beta and Mozillians Testflight Groups to the build. They will be notified once the app passes External Beta Review and receive the update. Ensure you coordinate this with the Product team.
-4. At the same time you should also submit the App for Store review, but set it so that the app is held and we need to release it manually to the store after it is approved. This ensures that after our beta cycle finishes, we can immediately launch that version of the app to the Store.
+4. At the same time you should also submit the App for Apple review. Set the build to manual release by checking the 'Manually release this version' radio button under 'Version Release' in App Store Connect. This ensures that after our beta cycle finishes, we can immediately launch that version to the Store.
     a. When you release the App to the beta audience, you should at the same time release the last beta app to the store. *In coordination with the product team.*
 
