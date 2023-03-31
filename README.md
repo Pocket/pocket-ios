@@ -19,6 +19,25 @@ Then replace values in `Config/secrets.xcconfig` with the values you have receiv
 
 After you will need to run the API Generation steps below.
 
+## Install Docker (Mozillans/Pocketeers Only)
+
+To run our UITests locally, you will need an instance of [Snowplow Micro](https://github.com/snowplow-incubator/snowplow-micro) running on your system on port 9090.
+We use Docker for this purpose. You can install Docker using Homebrew: `brew install docker`
+Or you may download it from the [Docker website](https://docs.docker.com/desktop/install/mac-install/)
+
+Once installed you need to provide your Docker username to the iOS lead so they can add you to the Pocket docker Organisation.
+Once done you can simply run `docker compose up` in Terminal from the root Pocket directory to run an instance of Snowplow Micro.
+
+###Snowplow Micro
+Snowplow micro has 4 endpoints of note:
+1. http://localhost:9090/micro/all - Lists the total number of events received and whether they are bad or good.
+2. http://localhost:9090/micro/good - Returns all the good (passed validation) events snowplow received and the data within.
+3. http://localhost:9090/micro/bad - Returns all the bad (failed validation) events snowplow received and the reason why.
+3. http://localhost:9090/micro/reset - Resets snowplow to 0 events received. Should be ran at the start of each test.
+
+[SnowplowMicro](./Tests iOS/Support/SnowplowMicro) class is used to interact with Snowplow and provide helper assertions to make testing events easier.
+
+
 ## Pocket Graph (API) Schema
 
 Pocket for iOS uses Apollo client to autogenerate its API schema code. You will need to run the following commands every time the APIs you use change or if you change your API queries.
