@@ -186,7 +186,7 @@ Once you have the build and associated commit you want to release to the Testfli
 2. Push the tag to github.
 3. Draft a new GitHub release by [clicking here](https://github.com/Pocket/pocket-ios/releases/new)
 4. For the name put `v0.0.0.0000` where 0.0.0 is the app version, and .0000 is the build number.
-5. In the Choose a tag dropdown select your tag you pushed to GitHub, and make sure the target is main. This will draft the release by comparing the changes from the Tag since the last release.
+5. In the 'Choose a tag' dropdown select the tag you pushed to GitHub and make sure the target is `main`. This will draft the release by comparing the changes between the tag and the last release.
 6. Click Auto Generate Release Notes.
 7. Obtain the public release notes and add it as the last section.
 8. Publish the release, or save as draft until you are ready.
