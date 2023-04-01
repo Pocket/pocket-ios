@@ -141,6 +141,9 @@
 "search.banner.errorMessage." = "Er is een fout opgetreden waardoor we je geen volledige zoekresultaten kunnen tonen. Probeer het later opnieuw.";
 "search.error.view.needsInternet" = "Je hebt een internetverbinding nodig om dit item te bekijken.";
 "search.recent" = "Recente zoekopdrachten";
+"search.swipe.unableToMove" = "Kan niet verplaatsen";
+"search.swipe.archive" = "Archief";
+"search.swipe.moveToSaves" = "Verplaatsen naar Opgeslagen";
 
 // Settings
 "settings.thankyou.credits" = "Bedankt dat je Pocket gebruikt";

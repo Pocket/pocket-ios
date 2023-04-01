@@ -141,6 +141,9 @@
 "search.banner.errorMessage." = "我们遇到了错误，无法显示完整的搜索结果。请稍后重试。";
 "search.error.view.needsInternet" = "您必须有互联网连接才能查看此项目。";
 "search.recent" = "最近的搜索";
+"search.swipe.unableToMove" = "无法移动";
+"search.swipe.archive" = "存档";
+"search.swipe.moveToSaves" = "移至“保存内容”";
 
 // Settings
 "settings.thankyou.credits" = "感谢您使用 Pocket";
