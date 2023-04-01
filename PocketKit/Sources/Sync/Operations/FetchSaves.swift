@@ -7,14 +7,18 @@ import Apollo
 import Combine
 import PocketGraph
 import SharedPocketKit
+import CoreData
 
 class FetchSaves: SyncOperation {
+
     private let user: User
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let events: SyncEvents
     private let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
     private let lastRefresh: LastRefresh
+    // Force unwrapping, because the entry point, execute, will ensure that this exists with a guard
+    private var persistentTask: PersistentSyncTask!
 
     init(
         user: User,
@@ -32,7 +36,12 @@ class FetchSaves: SyncOperation {
         self.initialDownloadState = initialDownloadState
     }
 
-    func execute() async -> SyncOperationResult {
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
+        guard let persistentTask = space.backgroundObject(with: syncTaskId) as? PersistentSyncTask else {
+            return .retry(NoPersistentTaskOperationError())
+        }
+        self.persistentTask = persistentTask
+
         do {
             if lastRefresh.lastRefreshSaves != nil {
                 guard let lastRefreshTime = lastRefresh.lastRefreshSaves, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Saves.timeMustPass else {
@@ -79,6 +88,10 @@ class FetchSaves: SyncOperation {
 
     private func fetchSaves() async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize)
+        if let cursor = persistentTask.currentCursor {
+            pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize, cursor: cursor)
+        }
+
         var i = 1
         repeat {
             Log.breadcrumb(category: "sync.saves", level: .debug, message: "Loading page \(i)")
@@ -140,7 +153,8 @@ class FetchSaves: SyncOperation {
     }
 
     private func updateLocalStorage(result: GraphQLResult<FetchSavesQuery.Data>) throws {
-        guard let edges = result.data?.user?.savedItems?.edges else {
+        guard let edges = result.data?.user?.savedItems?.edges,
+              let cursor = result.data?.user?.savedItems?.pageInfo.endCursor else {
             return
         }
 
@@ -165,6 +179,9 @@ class FetchSaves: SyncOperation {
             }
         }
 
+        space.performAndWait {
+            persistentTask.currentCursor = cursor
+        }
         try space.save()
     }
 
@@ -188,6 +205,10 @@ class FetchSaves: SyncOperation {
 
         init(maxItems: Int, pageSize: Int) {
             self.init(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
+        }
+
+        init(maxItems: Int, pageSize: Int, cursor: String) {
+            self.init(cursor: cursor, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
         }
 
         private init(cursor: String?, shouldFetchNextPage: Bool, maxItems: Int, pageSize: Int) {
