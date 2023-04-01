@@ -141,6 +141,9 @@
 "search.banner.errorMessage." = "エラーが発生し、完全な検索結果を表示することができません。後ほどもう一度お試しください。";
 "search.error.view.needsInternet" = "このアイテムを見るには、インターネット接続が必要です。";
 "search.recent" = "最近の検索";
+"search.swipe.unableToMove" = "移動できません";
+"search.swipe.archive" = "アーカイブ";
+"search.swipe.moveToSaves" = "保存アイテムに移動";
 
 // Settings
 "settings.thankyou.credits" = "Pocket をご利用いただきありがとうございます";
