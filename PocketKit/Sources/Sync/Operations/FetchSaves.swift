@@ -11,7 +11,6 @@ import CoreData
 
 class FetchSaves: SyncOperation {
 
-    private let user: User
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let events: SyncEvents
@@ -21,14 +20,12 @@ class FetchSaves: SyncOperation {
     private var persistentTask: PersistentSyncTask!
 
     init(
-        user: User,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
         lastRefresh: LastRefresh
     ) {
-        self.user = user
         self.apollo = apollo
         self.space = space
         self.events = events
@@ -52,9 +49,7 @@ class FetchSaves: SyncOperation {
                 }
             }
 
-            async let saves: Void = fetchSaves()
-            async let tags: Void = fetchTags()
-            _ = await [try saves, try tags]
+            try await fetchSaves()
             lastRefresh.refreshedSaves()
             return .success
         } catch {
@@ -112,28 +107,6 @@ class FetchSaves: SyncOperation {
         initialDownloadState.send(.completed)
     }
 
-    private func fetchTags() async throws {
-        var shouldFetchNextPage = true
-        var pagination = PaginationInput(first: .null)
-
-        var pageNumber = 1
-        repeat {
-            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Loading page \(pageNumber)")
-            let query = TagsQuery(pagination: .init(pagination))
-            let result = try await apollo.fetch(query: query)
-            try updateLocalTags(result)
-
-            if let pageInfo = result.data?.user?.tags?.pageInfo {
-                pagination.after = pageInfo.endCursor ?? .none
-                shouldFetchNextPage = pageInfo.hasNextPage
-            } else {
-                shouldFetchNextPage = false
-            }
-            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Finsihed loading page \(pageNumber)")
-            pageNumber += 1
-        } while shouldFetchNextPage
-    }
-
     private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
         let query = FetchSavesQuery(
             pagination: .some(PaginationInput(
@@ -182,18 +155,6 @@ class FetchSaves: SyncOperation {
         space.performAndWait {
             persistentTask.currentCursor = cursor
         }
-        try space.save()
-    }
-
-    func updateLocalTags(_ result: GraphQLResult<TagsQuery.Data>) throws {
-        result.data?.user?.tags?.edges?.forEach { edge in
-            guard let node = edge?.node else { return }
-            space.performAndWait {
-                let tag = space.fetchOrCreateTag(byName: node.name)
-                tag.update(remote: node.fragments.tagParts)
-            }
-        }
-
         try space.save()
     }
 

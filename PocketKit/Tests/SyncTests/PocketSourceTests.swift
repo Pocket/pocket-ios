@@ -84,7 +84,7 @@ class PocketSourceTests: XCTestCase {
         let session = MockSession()
         sessionProvider.session = session
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubFetchSaves { _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _ in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -98,7 +98,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_refreshWithCompletion_callsCompletionWhenFinished() {
         sessionProvider.session = MockSession()
-        operations.stubFetchSaves { _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _  in
             TestSyncOperation { }
         }
 
@@ -114,7 +114,7 @@ class PocketSourceTests: XCTestCase {
 
     func test_refresh_whenTokenIsNil_callsCompletion() {
         sessionProvider.session = nil
-        operations.stubFetchSaves { _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _  in
             TestSyncOperation { }
         }
 

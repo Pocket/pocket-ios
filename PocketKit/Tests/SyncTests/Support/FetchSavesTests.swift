@@ -38,7 +38,6 @@ class FetchSavesTests: XCTestCase {
     }
 
     func subject(
-        user: User? = nil,
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil,
         events: SyncEvents? = nil,
@@ -46,11 +45,24 @@ class FetchSavesTests: XCTestCase {
         lastRefresh: LastRefresh? = nil
     ) -> FetchSaves {
         FetchSaves(
-            user: user ?? self.user,
             apollo: apollo ?? self.apollo,
             space: space ?? self.space,
             events: events ?? self.events,
             initialDownloadState: initialDownloadState ?? self.initialDownloadState,
+            lastRefresh: lastRefresh ?? self.lastRefresh
+        )
+    }
+
+    func tagsSubject(
+        apollo: ApolloClientProtocol? = nil,
+        space: Space? = nil,
+        events: SyncEvents? = nil,
+        lastRefresh: LastRefresh? = nil
+    ) -> FetchTags {
+        FetchTags(
+            apollo: apollo ?? self.apollo,
+            space: space ?? self.space,
+            events: events ?? self.events,
             lastRefresh: lastRefresh ?? self.lastRefresh
         )
     }
@@ -339,7 +351,6 @@ class FetchSavesTests: XCTestCase {
 
     func test_execute_whenUpdatedSinceIsNotPresent_downloadsAllTags() async throws {
         user.stubSetStatus { _ in }
-        apollo.setupFetchListResponse(fixtureName: "empty-list")
 
         var tagsPageCount = 1
         apollo.stubFetch { (query: TagsQuery, _, _, queue, completion) in
@@ -359,7 +370,7 @@ class FetchSavesTests: XCTestCase {
             return MockCancellable()
         }
 
-        let operation = subject()
+        let operation = tagsSubject()
         _ = await operation.execute(syncTaskId: task.objectID)
 
         let fetchCall1 = apollo.fetchCall(withQueryType: TagsQuery.self, at: 0)

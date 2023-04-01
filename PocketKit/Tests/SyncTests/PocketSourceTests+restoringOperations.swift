@@ -8,7 +8,7 @@ extension PocketSourceTests {
         sessionProvider.session = MockSession()
 
         let fetchList = expectation(description: "fetchList operation executed")
-        operations.stubFetchSaves { _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _  in
             TestSyncOperation { fetchList.fulfill() }
         }
 
@@ -45,7 +45,7 @@ extension PocketSourceTests {
 
         _ = XCTWaiter.wait(for: [expectation(description: "Waiting for core data to flush deletions")], timeout: 5.0)
 
-        operations.stubFetchSaves { _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _  in
             XCTFail("Operation should not be re-created after succeeding")
             return TestSyncOperation { }
         }
