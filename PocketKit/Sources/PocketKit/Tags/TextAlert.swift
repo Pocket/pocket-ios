@@ -1,13 +1,14 @@
 import SwiftUI
 import UIKit
 import Combine
+import Localization
 
 public struct TextAlert {
     public var title: String
     public var message: String
     public var placeholder: String = ""
-    public var accept: String = L10n.ok
-    public var cancel: String? = L10n.cancel
+    public var accept: String = Localization.ok
+    public var cancel: String? = Localization.cancel
     public var action: (String?) -> Void
 }
 

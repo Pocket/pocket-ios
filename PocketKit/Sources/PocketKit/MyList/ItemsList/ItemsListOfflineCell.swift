@@ -1,12 +1,13 @@
 import UIKit
 import Textile
+import Localization
 
 class ItemsListOfflineCell: UICollectionViewCell {
     enum Constants {
         static let image = UIImage(asset: .looking)
-        static let text = NSAttributedString(string: L10n.noInternetConnection, style: .header.sansSerif.h2)
+        static let text = NSAttributedString(string: Localization.noInternetConnection, style: .header.sansSerif.h2)
         static let detailText = NSAttributedString(
-            string: L10n.LooksLikeYouReOffline.tryCheckingYourMobileDataOrWifi,
+            string: Localization.LooksLikeYouReOffline.tryCheckingYourMobileDataOrWifi,
             style: .header.sansSerif.p2.with { $0.with(alignment: .center).with(lineHeight: .explicit(28)) }
         )
 

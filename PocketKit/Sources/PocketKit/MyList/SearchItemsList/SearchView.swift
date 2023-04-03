@@ -5,6 +5,7 @@
 import SharedPocketKit
 import SwiftUI
 import Textile
+import Localization
 
 struct SearchView: View {
     @ObservedObject
@@ -84,7 +85,7 @@ struct ResultsView: View {
         .accessibilityIdentifier("search-results")
         .banner(data: viewModel.bannerData, show: $viewModel.showBanner, bottomOffset: 0)
         .alert(isPresented: $showingAlert) {
-            Alert(title: Text(L10n.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
+            Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
         }
     }
 }
@@ -154,7 +155,7 @@ struct RecentSearchView: View {
 
     var body: some View {
         List {
-            Section(header: Text(L10n.Search.recent).style(.search.header)) {
+            Section(header: Text(Localization.Search.recent).style(.search.header)) {
                 ForEach(recentSearches.reversed(), id: \.self) { recentSearch in
                     HStack {
                         Text(recentSearch)
