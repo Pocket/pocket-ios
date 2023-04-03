@@ -141,6 +141,9 @@
 "search.banner.errorMessage." = "Из-за возникшей ошибки мы не можем показать вам полные результаты поиска. Попробуйте позже.";
 "search.error.view.needsInternet" = "Для просмотра этого материала требуется подключение к Интернету.";
 "search.recent" = "Недавно искали";
+"search.swipe.unableToMove" = "Невозможно переместить";
+"search.swipe.archive" = "Архив";
+"search.swipe.moveToSaves" = "Перейти к Сохраненному";
 
 // Settings
 "settings.thankyou.credits" = "Спасибо, что пользуетесь Pocket";

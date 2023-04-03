@@ -1,4 +1,5 @@
 import Foundation
+import SharedPocketKit
 
 /**
  Client used to access Pocket's V3 endpoint which is legacy, but still holds some critical pieces of Pocket's API for now.
@@ -7,7 +8,7 @@ public class V3Client: NSObject, V3ClientProtocol {
     /**
      V3 Client Error Types
      */
-    enum Error: Swift.Error, LocalizedError {
+    enum Error: LoggableError {
         case invalidResponse
         case invalidSource
         case unexpectedRedirect
@@ -18,7 +19,7 @@ public class V3Client: NSObject, V3ClientProtocol {
         case noCredentialsInSession
         case generic(Swift.Error)
 
-        var errorDescription: String? {
+        var logDescription: String {
             switch self {
             case .invalidResponse:
                 return "Invalid response"

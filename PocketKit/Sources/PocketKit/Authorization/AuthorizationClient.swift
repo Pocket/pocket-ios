@@ -6,6 +6,7 @@ import Foundation
 import AuthenticationServices
 import Sync
 import Adjust
+import SharedPocketKit
 
 public class AuthorizationClient {
     typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession
@@ -111,7 +112,7 @@ public class AuthorizationClient {
 }
 
 extension AuthorizationClient {
-    enum Error: LocalizedError, Equatable {
+    enum Error: LoggableError, Equatable {
         static func == (lhs: AuthorizationClient.Error, rhs: AuthorizationClient.Error) -> Bool {
             switch (lhs, rhs) {
             case (.invalidRedirect, .invalidRedirect):
@@ -130,7 +131,7 @@ extension AuthorizationClient {
         case alreadyAuthenticating
         case other(Swift.Error)
 
-        var errorDescription: String? {
+        var logDescription: String {
             switch self {
             case .invalidRedirect:
                 return L10n.couldNotSuccessfullyHandleTheServerRedirect
