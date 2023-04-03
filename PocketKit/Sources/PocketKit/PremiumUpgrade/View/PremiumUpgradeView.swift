@@ -1,6 +1,7 @@
 import SharedPocketKit
 import SwiftUI
 import Textile
+import Localization
 
 struct PremiumUpgradeView: View {
     // TODO: remove this property and the two @State properties once we are ready to ship premium upgrades to beta users
@@ -257,7 +258,7 @@ private struct PremiumInfoView: View {
     init(monthlyPrice: String, annualPrice: String) {
         self.monthlyPrice = monthlyPrice
         self.annualPrice = annualPrice
-        self.text = L10n.Premium.Upgradeview.description(monthlyPrice, annualPrice)
+        self.text = Localization.Premium.Upgradeview.description(monthlyPrice, annualPrice)
     }
 
     var body: some View {

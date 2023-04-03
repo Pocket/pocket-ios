@@ -14,6 +14,7 @@ let package = Package(
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
         .library(name: "Analytics", targets: ["Analytics"]),
+        .library(name: "Localization", targets: ["Localization"])
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.0.7"),
@@ -35,6 +36,7 @@ let package = Package(
                 "Textile",
                 "Analytics",
                 "SharedPocketKit",
+                "Localization",
                 .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
                 .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "BrazeUI", package: "braze-swift-sdk"),
@@ -124,5 +126,7 @@ let package = Package(
             name: "AnalyticsTests",
             dependencies: ["Analytics"]
         ),
+
+        .target(name: "Localization"),
     ]
 )

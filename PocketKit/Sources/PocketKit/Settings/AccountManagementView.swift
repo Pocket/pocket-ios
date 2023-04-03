@@ -4,6 +4,7 @@
 
 import SwiftUI
 import Textile
+import Localization
 
 struct AccountManagementView: View {
     @ObservedObject
@@ -20,7 +21,7 @@ struct AccountManagementView: View {
                     .background(Color(.ui.white1))
             }
         }
-        .navigationBarTitle(L10n.Settings.accountManagement, displayMode: .large)
+        .navigationBarTitle(Localization.Settings.accountManagement, displayMode: .large)
         .accessibilityIdentifier("account-management")
         .onAppear {
             model.trackAccountManagementImpression()
@@ -36,7 +37,7 @@ struct AccountManagementForm: View {
             Group {
                 Section {
                     if !model.isPremium {
-                        SettingsRowButton(title: L10n.Settings.AccountManagement.restoreSubscription, trailingImageAsset: .chevronRight) {
+                        SettingsRowButton(title: Localization.Settings.AccountManagement.restoreSubscription, trailingImageAsset: .chevronRight) {
                             model.attemptRestoreSubscription()
                         }
                         // NOTE: SwiftUI does not play well with more than one alert attached to the same view, that's why we have one here
@@ -44,23 +45,23 @@ struct AccountManagementForm: View {
                         // ref https://www.hackingwithswift.com/quick-start/swiftui/how-to-show-multiple-alerts-in-a-single-view
                         .alert(isPresented: $model.isPresentingRestoreNotSuccessful) {
                             Alert(
-                                title: Text(L10n.Settings.AccountManagement.RestoreSubscription.RestoreNotSuccessful.title),
-                                message: Text(L10n.Settings.AccountManagement.RestoreSubscription.RestoreNotSuccessful.message),
-                                dismissButton: .default(Text(L10n.ok))
+                                title: Text(Localization.Settings.AccountManagement.RestoreSubscription.RestoreNotSuccessful.title),
+                                message: Text(Localization.Settings.AccountManagement.RestoreSubscription.RestoreNotSuccessful.message),
+                                dismissButton: .default(Text(Localization.ok))
                             )
                         }
                         .accessibilityIdentifier("restore-existing-subscription-button")
                     }
 
-                    SettingsRowButton(title: L10n.Settings.AccountManagement.deleteAccount, trailingImageAsset: .chevronRight) {
+                    SettingsRowButton(title: Localization.Settings.AccountManagement.deleteAccount, trailingImageAsset: .chevronRight) {
                         model.trackDeleteTapped()
                         model.isPresentingDeleteYourAccount.toggle()
                     }
                     .alert(isPresented: $model.isPresentingRestoreSuccessful) {
                         Alert(
-                            title: Text(L10n.Settings.AccountManagement.RestoreSubscription.RestoreSuccessful.title),
-                            message: Text(L10n.Settings.AccountManagement.RestoreSubscription.RestoreSuccessful.message),
-                            dismissButton: .default(Text(L10n.ok))
+                            title: Text(Localization.Settings.AccountManagement.RestoreSubscription.RestoreSuccessful.title),
+                            message: Text(Localization.Settings.AccountManagement.RestoreSubscription.RestoreSuccessful.message),
+                            dismissButton: .default(Text(Localization.ok))
                         )
                     }
                     .sheet(isPresented: $model.isPresentingDeleteYourAccount) {
