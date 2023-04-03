@@ -4,8 +4,6 @@ import CoreData
 import Combine
 
 class MockSource: Source {
-    func fetchUserData() async throws {
-    }
 
     var _events: SyncEvents = SyncEvents()
     var events: AnyPublisher<SyncEvent, Never> {
@@ -1329,5 +1327,72 @@ extension MockSource {
         }
 
         return calls[index] as? ViewRefreshCall
+    }
+}
+
+// MARK: - refreshTags
+extension MockSource {
+    private static let refreshTags = "refreshTags"
+    typealias RefreshTagsImpl = ((() -> Void)?) -> Void
+
+    struct RefreshTagsCall {
+        let completion: (() -> Void)?
+    }
+
+    func stubRefreshTags(impl: @escaping RefreshTagsImpl) {
+        implementations[Self.refreshTags] = impl
+    }
+
+    func refreshTags(completion: (() -> Void)?) {
+        guard let impl = implementations[Self.refreshTags] as? RefreshTagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.refreshTags] = (calls[Self.refreshTags] ?? []) + [
+            RefreshTagsCall(completion: completion)
+        ]
+
+        impl(completion)
+    }
+
+    func refreshTagsCall(at index: Int) -> RefreshTagsCall? {
+        guard let calls = calls[Self.refreshTags], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshTagsCall
+    }
+}
+
+// MARK: - fetchUserData
+extension MockSource {
+    private static let fetchUserData = "fetchUserData"
+    typealias FetchUserDataImpl = () -> Void
+
+    struct FetchUserDataCall {
+    }
+
+    func stubFetchUserData(impl: @escaping RefreshTagsImpl) {
+        implementations[Self.refreshTags] = impl
+    }
+
+    func fetchUserData() async throws {
+        guard let impl = implementations[Self.fetchUserData] as? FetchUserDataImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchUserData] = (calls[Self.fetchUserData] ?? []) + [
+            FetchUserDataCall()
+        ]
+
+        impl()
+    }
+
+    func fetchUserDataCall(at index: Int) -> RefreshTagsCall? {
+        guard let calls = calls[Self.refreshTags], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshTagsCall
     }
 }

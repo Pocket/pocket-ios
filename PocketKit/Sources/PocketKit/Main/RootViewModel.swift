@@ -48,6 +48,7 @@ public class RootViewModel: ObservableObject {
             // Call refresh on login of the app.
             source.refreshSaves()
             source.refreshArchive()
+            source.refreshTags()
         }.store(in: &subscriptions)
 
         // Register for logout notifications

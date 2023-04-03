@@ -7,7 +7,6 @@ import SharedPocketKit
 
 protocol SyncOperationFactory {
     func fetchSaves(
-        user: User,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
@@ -20,6 +19,13 @@ protocol SyncOperationFactory {
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation
+
+    func fetchTags(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
         lastRefresh: LastRefresh
     ) -> SyncOperation
 
@@ -46,7 +52,6 @@ protocol SyncOperationFactory {
 
 class OperationFactory: SyncOperationFactory {
     func fetchSaves(
-        user: User,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
@@ -54,7 +59,6 @@ class OperationFactory: SyncOperationFactory {
         lastRefresh: LastRefresh
     ) -> SyncOperation {
         return FetchSaves(
-            user: user,
             apollo: apollo,
             space: space,
             events: events,
@@ -75,6 +79,20 @@ class OperationFactory: SyncOperationFactory {
             space: space,
             events: events,
             initialDownloadState: initialDownloadState,
+            lastRefresh: lastRefresh
+        )
+    }
+
+    func fetchTags(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation {
+        return FetchTags(
+            apollo: apollo,
+            space: space,
+            events: events,
             lastRefresh: lastRefresh
         )
     }
