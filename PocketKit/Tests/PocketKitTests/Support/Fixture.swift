@@ -34,7 +34,9 @@ class Fixture {
     }
 
     static func load(name: String, ext: String = "json") -> Fixture {
-        let bundle = Bundle.module
+        // Required over `Bundle.module` since there's a conflict with a variable
+        // of the same name from a dependency (L10n)
+        let bundle = Bundle(for: Self.self)
         guard let url = bundle.url(forResource: "Fixtures/\(name)", withExtension: ext) else {
             fatalError("Could not find fixture named \(name) in \(bundle)")
         }

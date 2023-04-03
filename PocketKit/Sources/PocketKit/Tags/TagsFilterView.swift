@@ -4,6 +4,7 @@
 
 import SwiftUI
 import Textile
+import Localization
 
 struct TagsFilterView: View {
     @ObservedObject
@@ -34,7 +35,7 @@ struct TagsFilterView: View {
         NavigationView {
             VStack {
                 List(selection: $selection) {
-                    Text(L10n.notTagged)
+                    Text(Localization.notTagged)
                         .style(.tagsFilter.tag)
                         .accessibilityIdentifier("all-tags")
                         .onTapGesture {
@@ -65,21 +66,21 @@ struct TagsFilterView: View {
         .navigationViewStyle(.stack)
         .alert(isPresented: $showDeleteAlert) {
             Alert(
-                title: Text(L10n.deleteTag),
-                message: Text(L10n.areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems),
-                primaryButton: .destructive(Text(L10n.delete), action: {
+                title: Text(Localization.deleteTag),
+                message: Text(Localization.areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems),
+                primaryButton: .destructive(Text(Localization.delete), action: {
                     viewModel.delete(tags: Array(tagsSelected))
                     tagsSelected = Set<String>()
                 }),
-                secondaryButton: .cancel(Text(L10n.cancel), action: {
+                secondaryButton: .cancel(Text(Localization.cancel), action: {
                 })
             )
         }
         .alert(
             isPresented: $showRenameAlert,
             TextAlert(
-                title: L10n.renameTag,
-                message: L10n.enterANewNameForThisTag
+                title: Localization.renameTag,
+                message: Localization.enterANewNameForThisTag
             ) { result in
                 if let text = result, let oldName = tagsSelected.first {
                     viewModel.rename(from: oldName, to: text)
@@ -120,14 +121,14 @@ struct EditBottomBar: View {
 
     var body: some View {
         HStack {
-            Button(L10n.rename) {
+            Button(Localization.rename) {
                 tagsSelected = selection
                 showRenameAlert = true
             }
             .disabled(selection.count != 1)
             .accessibilityIdentifier("rename-button")
             Spacer()
-            Button(L10n.delete) {
+            Button(Localization.delete) {
                 tagsSelected = selection
                 showDeleteAlert = true
             }
@@ -146,7 +147,7 @@ struct TagsHeaderToolBar: ViewModifier {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack {
-                        Text(L10n.tags).style(.tagsFilter.sectionHeader)
+                        Text(Localization.tags).style(.tagsFilter.sectionHeader)
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
