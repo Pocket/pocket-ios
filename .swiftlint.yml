@@ -86,7 +86,10 @@ opt_in_rules: # some rules are only opt-in
   - multiline_arguments
   - opening_brace
   - optional_enum_case_matching
-  - overridden_super_call
+  - overridden_super_call:
+        excluded:
+            - PocketKit/Tests
+            - Tests iOS/
   - return_arrow_whitespace
   - unused_import
   - vertical_parameter_alignment_on_call
