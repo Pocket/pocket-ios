@@ -558,6 +558,12 @@ extension PocketSource {
 
 // MARK: - Enqueueing and Restoring offline operations
 extension PocketSource {
+    /// Creates a PersistentSync task and a RetriableOperation from a SyncTask request and enqueues it onto the Operation Queue to be performed
+    /// - Parameters:
+    ///   - operation: The sync operation with the executable operation code
+    ///   - task: The sync task to turn into a persistent sync task
+    ///   - queue: The operation queue to run the task on
+    ///   - completion: The completion block to execute when the operation is done. If you need to do cleanup work, you should instead do the completion work within the operation itself because they launch BackgroundTasks
     private func enqueue(operation: SyncOperation, task: SyncTask, queue: OperationQueue, completion: (() -> Void)? = nil) {
         let persistentTask: PersistentSyncTask = PersistentSyncTask(context: space.backgroundContext)
         persistentTask.createdAt = Date()
@@ -567,18 +573,22 @@ extension PocketSource {
         enqueue(operation: operation, persistentTask: persistentTask, queue: queue, completion: completion)
     }
 
+    /// Creates a RetriableOperation from a PersistentSyncTask and enqueues it onto the Operation Queue to be performed
+    /// - Parameters:
+    ///   - operation: The sync operation with the executable operation code
+    ///   - persistentTask: The persistent sync task to track the task to disk
+    ///   - queue: The operation queue to run the task on
+    ///   - completion: The completion block to execute when the operation is done. If you need to do cleanup work, you should instead do the completion work within the operation itself because they launch BackgroundTasks
     private func enqueue(operation: SyncOperation, persistentTask: PersistentSyncTask, queue: OperationQueue, completion: (() -> Void)? = nil) {
         let _operation = RetriableOperation(
             retrySignal: retrySignal.eraseToAnyPublisher(),
             backgroundTaskManager: backgroundTaskManager,
-            operation: operation
+            operation: operation,
+            space: space,
+            syncTaskId: persistentTask.objectID
         )
 
-        _operation.completionBlock = {[ weak self ] in
-            self?.space.performAndWait { [weak self] in
-                self?.space.delete(persistentTask)
-                try? self?.space.save()
-            }
+        _operation.completionBlock = {
             guard let completion else {
                 return
             }
@@ -591,6 +601,7 @@ extension PocketSource {
         }
     }
 
+    /// Restores all Persistent tasks from CoreData into their respective operation queues.
     public func restore() {
         guard let persistentTasks = try? space.fetchPersistentSyncTasks() else { return }
 

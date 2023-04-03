@@ -141,6 +141,9 @@
 "search.banner.errorMessage." = "Debido a un error no podemos mostrarte los resultados de búsqueda completos. Vuelve a intentarlo más tarde.";
 "search.error.view.needsInternet" = "Debes disponer de conexión a Internet para ver este ítem.";
 "search.recent" = "Búsquedas recientes";
+"search.swipe.unableToMove" = "No se puede mover";
+"search.swipe.archive" = "Archivo";
+"search.swipe.moveToSaves" = "Mover a Guardados";
 
 // Settings
 "settings.thankyou.credits" = "Gracias por utilizar Pocket";
