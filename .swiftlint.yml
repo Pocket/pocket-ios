@@ -14,7 +14,6 @@ disabled_rules: # rule identifiers to exclude from running
   - discarded_notification_center_observer
   - fallthrough
   - file_length
-  - for_where
   - force_cast
   - force_try
   - function_body_length
@@ -30,7 +29,6 @@ disabled_rules: # rule identifiers to exclude from running
   - no_fallthrough_only
   - notification_center_detachment
   - nsobject_prefer_isequal
-  - orphaned_doc_comment
   - private_unit_test
   - reduce_boolean
   - redundant_string_enum_value
@@ -87,6 +85,8 @@ opt_in_rules: # some rules are only opt-in
   - multiline_arguments_brackets
   - multiline_arguments
   - opening_brace
+  - optional_enum_case_matching
+  - overridden_super_call
   - return_arrow_whitespace
   - unused_import
   - vertical_parameter_alignment_on_call
