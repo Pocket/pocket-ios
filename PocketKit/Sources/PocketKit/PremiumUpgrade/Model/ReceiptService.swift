@@ -1,15 +1,23 @@
 import Foundation
 import StoreKit
 import Sync
+import SharedPocketKit
 
 /// Generic type to send subscription receipt to a server
 public protocol ReceiptService {
     func send(_ product: Product?) async throws
 }
 
-public enum ReceiptError: Error {
+public enum ReceiptError: LoggableError {
     case noData
     case invalidReceipt
+
+    public var logDescription: String {
+        switch self {
+        case .noData: return "No data"
+        case .invalidReceipt: return "Invalid receipt"
+        }
+    }
 }
 
 /// Concrete implementation that sends the App Store Receipt to the Pocket backend

@@ -4,8 +4,14 @@
 
 import Foundation
 
-public enum CleanupError: Error {
+public enum CleanupError: LoggableError {
     case fileNotFound
+
+    public var logDescription: String {
+        switch self {
+        case .fileNotFound: return "File not found"
+        }
+    }
 }
 
 /// Service that cleans up legacy data
