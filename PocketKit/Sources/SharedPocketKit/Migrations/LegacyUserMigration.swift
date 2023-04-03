@@ -1,13 +1,13 @@
 import Foundation
 
-public enum LegacyUserMigrationError: Error, LocalizedError {
+public enum LegacyUserMigrationError: LoggableError {
     case missingKey
     case missingStore
     case failedDecryption(Error)
     case missingData
     case failedDeserialization(Error)
 
-    public var errorDescription: String? {
+    public var logDescription: String {
         switch self {
         case .missingKey: return "Missing decryption key for legacy user migration"
         case .missingStore: return "Missing file for legacy store"
