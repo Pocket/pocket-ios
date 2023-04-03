@@ -42,13 +42,22 @@ class APISlateService: SlateService {
         try await handle(remote: remote)
     }
 
-    private func handle(remote: GetSlateLineupQuery.Data.GetSlateLineup) throws {
-        space.performAndWait {
-            let lineup = (try? space.fetchSlateLineup(byRemoteID: remote.id)) ?? SlateLineup(context: space.backgroundContext, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
-            lineup.update(from: remote, in: space)
+    private func handle(remote: GetSlateLineupQuery.Data.GetSlateLineup) async throws {
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.parent = space.backgroundContext
+        context.automaticallyMergesChangesFromParent = true
+        context.performAndWait {
+            let lineup = (try? space.fetchSlateLineup(byRemoteID: remote.id, context: context)) ?? SlateLineup(context: context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
+            lineup.update(from: remote, in: space, context: context)
         }
-
-        try space.save()
+        try context.performAndWait {
+            try context.obtainPermanentIDs(for: Array(context.insertedObjects))
+            guard context.hasChanges else {
+                return
+            }
+            try context.save()
+            try space.save()
+        }
         try space.batchDeleteOrphanedSlates()
         try space.batchDeleteOrphanedItems()
     }
