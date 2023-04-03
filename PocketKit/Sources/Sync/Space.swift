@@ -64,38 +64,38 @@ public class Space {
         return try fetch(Requests.fetchSlateLineups())
     }
 
-    func fetchSlateLineup(byRemoteID id: String) throws -> SlateLineup? {
-        return try fetch(Requests.fetchSlateLineup(byID: id)).first
+    func fetchSlateLineup(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> SlateLineup? {
+        return try fetch(Requests.fetchSlateLineup(byID: id), context: context).first
     }
 
     func fetchSlates() throws -> [Slate] {
         return try fetch(Requests.fetchSlates())
     }
 
-    func fetchSlate(byRemoteID id: String) throws -> Slate? {
+    func fetchSlate(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> Slate? {
         let request = Requests.fetchSlates()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1
-        return try fetch(request).first
+        return try fetch(request, context: context).first
     }
 
     func fetchRecommendations() throws -> [Recommendation] {
         return try fetch(Requests.fetchRecommendations())
     }
 
-    func fetchRecommendation(byRemoteID id: String) throws -> Recommendation? {
+    func fetchRecommendation(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> Recommendation? {
         let request = Requests.fetchRecommendations()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
         request.fetchLimit = 1
-        return try fetch(request).first
+        return try fetch(request, context: context).first
     }
 
     func fetchItems() throws -> [Item] {
         return try fetch(Requests.fetchItems())
     }
 
-    func fetchItem(byRemoteID id: String) throws -> Item? {
-        return try fetch(Requests.fetchItem(byRemoteID: id)).first
+    func fetchItem(byRemoteID id: String, context: NSManagedObjectContext? = nil) throws -> Item? {
+        return try fetch(Requests.fetchItem(byRemoteID: id), context: context).first
     }
 
     func fetchItem(byURL url: URL) throws -> Item? {
@@ -150,8 +150,9 @@ public class Space {
         return try fetch(Requests.fetchUnsavedItems())
     }
 
-    func fetch<T>(_ request: NSFetchRequest<T>) throws -> [T] {
-        try backgroundContext.performAndWait { try backgroundContext.fetch(request) }
+    func fetch<T>(_ request: NSFetchRequest<T>, context: NSManagedObjectContext? = nil) throws -> [T] {
+        let context = context ?? backgroundContext
+        return try context.performAndWait { try context.fetch(request) }
     }
 
     func delete(_ object: NSManagedObject) {
