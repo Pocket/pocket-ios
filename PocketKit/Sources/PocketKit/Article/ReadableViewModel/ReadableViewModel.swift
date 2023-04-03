@@ -61,11 +61,6 @@ extension ReadableViewModel {
         isPresentingReaderSettings = true
     }
 
-    func openExternally(url: URL?) {
-        presentedWebReaderURL = url
-        trackWebViewOpen()
-    }
-
     func showWebReader() {
         openExternally(url: url)
     }

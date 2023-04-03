@@ -176,6 +176,8 @@ extension SavedItemViewModel {
     func openExternally(url: URL?) {
         let updatedURL = pocketPremiumURL(url, user: user)
         presentedWebReaderURL = updatedURL
+
+        trackWebViewOpen()
     }
 
     func archive() {
