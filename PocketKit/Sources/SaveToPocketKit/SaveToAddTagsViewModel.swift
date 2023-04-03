@@ -20,7 +20,6 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-
     init(item: SavedItem?, tracker: Tracker, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
         self.item = item
         self.tracker = tracker
