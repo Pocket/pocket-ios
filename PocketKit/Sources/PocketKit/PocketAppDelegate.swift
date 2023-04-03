@@ -94,6 +94,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         do {
             let attempted = try legacyUserMigration.perform()
             if attempted {
+                Services.shared.braze.signedInUserDidBeginMigration()
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
                 LegacyCleanupService(groupID: Keys.shared.groupID).cleanUp()

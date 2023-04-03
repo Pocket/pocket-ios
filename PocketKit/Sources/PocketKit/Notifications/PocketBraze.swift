@@ -11,6 +11,8 @@ protocol BrazeSDKProtocol {
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void)
+    
+    func signedInUserDidBeginMigration()
 }
 
 /**
@@ -128,5 +130,14 @@ extension PocketBraze: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
         completionHandler([.list, .banner])
+    }
+}
+
+/**
+ Extend to add specific event logs
+ */
+extension PocketBraze {
+    func signedInUserDidBeginMigration() {
+        braze.logCustomEvent(name: "SIGNED_IN_USER_UPGRADE_DID_START")
     }
 }
