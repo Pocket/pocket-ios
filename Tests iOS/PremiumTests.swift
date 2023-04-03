@@ -6,6 +6,7 @@ import XCTest
 import Sails
 import StoreKitTest
 
+// swiftlint:disable force_try
 class PremiumTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
@@ -172,3 +173,4 @@ class PremiumTests: XCTestCase {
         XCTAssertNotNil(searchUpsellEvent)
     }
 }
+// swiftlint:enable force_try

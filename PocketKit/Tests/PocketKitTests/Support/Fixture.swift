@@ -5,6 +5,7 @@
 import Foundation
 @testable import PocketKit
 
+// swiftlint:disable force_try
 class Fixture {
     enum ReplacementEscapeStrategy {
         case none
@@ -108,3 +109,4 @@ class Fixture {
         )
     }
 }
+// swiftlint:enable force_try

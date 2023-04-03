@@ -1,6 +1,7 @@
 import XCTest
 @testable import SharedPocketKit
 
+// swiftlint:disable force_try
 class BlankKeychain: Keychain {
     func add(query: CFDictionary, result: UnsafeMutablePointer<CFTypeRef?>?) -> OSStatus {
         .zero
@@ -241,3 +242,4 @@ extension LegacyUserMigrationTests {
         XCTAssertEqual(appSession.currentSession?.userIdentifier, "uid")
     }
 }
+// swiftlint:enable force_try
