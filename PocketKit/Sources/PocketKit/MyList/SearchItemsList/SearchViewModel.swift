@@ -10,6 +10,7 @@ import SharedPocketKit
 import Analytics
 import CoreData
 import Textile
+import L10n
 
 /// State for the search view
 enum SearchViewState {

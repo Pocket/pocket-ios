@@ -7,6 +7,7 @@ import Combine
 import Foundation
 import SharedPocketKit
 import Sync
+import L10n
 
 /// Factory to construct and inject `PremiumStatusViewModel` where needed
 typealias PremiumStatusViewModelFactory = () -> PremiumStatusViewModel

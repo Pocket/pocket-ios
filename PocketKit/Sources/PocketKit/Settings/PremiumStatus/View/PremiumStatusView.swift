@@ -2,6 +2,7 @@ import SwiftUI
 import Textile
 import MessageUI
 import StoreKit
+import L10n
 
 struct PremiumStatusView: View {
     @Environment(\.dismiss)

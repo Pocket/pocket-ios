@@ -8,6 +8,7 @@ import Foundation
 import SharedPocketKit
 import Textile
 import Sync
+import L10n
 
 /// Factory to construct and inject `PremiumUpgradeViewModel` where needed
 typealias PremiumUpgradeViewModelFactory = (PremiumUpgradeSource) -> PremiumUpgradeViewModel

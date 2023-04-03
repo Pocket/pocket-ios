@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import UIKit
+import L10n
 
 class CopyLinkActivity: UIActivity {
     private var link: URL?

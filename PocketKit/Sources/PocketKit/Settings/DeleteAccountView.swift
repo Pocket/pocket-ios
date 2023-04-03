@@ -6,6 +6,7 @@ import SwiftUI
 import Textile
 import SharedPocketKit
 import Analytics
+import L10n
 
 struct DeleteAccountView: View {
     @ObservedObject var viewModel: DeleteAccountViewModel

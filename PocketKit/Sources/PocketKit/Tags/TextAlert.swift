@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import Combine
+import L10n
 
 public struct TextAlert {
     public var title: String

@@ -1,4 +1,5 @@
 import Foundation
+import L10n
 
 enum SortSection: String, Hashable, CaseIterable {
     case sortBy = "Sort by"

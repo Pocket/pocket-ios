@@ -4,6 +4,7 @@ import Foundation
 import Textile
 import UIKit
 import Analytics
+import L10n
 
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>

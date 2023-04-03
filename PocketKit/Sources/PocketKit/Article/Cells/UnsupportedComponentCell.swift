@@ -1,5 +1,6 @@
 import UIKit
 import Textile
+import L10n
 
 class UnsupportedComponentCell: UICollectionViewCell {
     private lazy var unsupportedView: ArticleComponentUnavailableView = {

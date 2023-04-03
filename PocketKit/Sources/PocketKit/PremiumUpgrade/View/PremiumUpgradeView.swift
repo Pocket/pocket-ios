@@ -1,6 +1,7 @@
 import SharedPocketKit
 import SwiftUI
 import Textile
+import L10n
 
 struct PremiumUpgradeView: View {
     // TODO: remove this property and the two @State properties once we are ready to ship premium upgrades to beta users

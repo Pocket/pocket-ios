@@ -1,6 +1,7 @@
 import Foundation
 import Textile
 import UIKit
+import L10n
 
 struct ItemContextualAction {
     let style: UIContextualAction.Style

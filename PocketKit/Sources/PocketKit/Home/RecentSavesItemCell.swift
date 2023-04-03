@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import Textile
+import L10n
 
 class RecentSavesItemCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {

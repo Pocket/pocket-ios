@@ -2,6 +2,7 @@ import SwiftUI
 import Sync
 import Analytics
 import Textile
+import L10n
 
 struct ReportRecommendationView: View {
     private struct Constants {

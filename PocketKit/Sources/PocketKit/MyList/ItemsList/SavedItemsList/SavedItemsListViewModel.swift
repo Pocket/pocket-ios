@@ -3,6 +3,7 @@ import Sync
 import Analytics
 import Combine
 import UIKit
+import L10n
 
 public enum SavesViewType {
     case saves

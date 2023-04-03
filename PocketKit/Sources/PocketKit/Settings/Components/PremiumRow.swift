@@ -1,5 +1,6 @@
 import SwiftUI
 import Textile
+import L10n
 
 enum PremiumStatus: String {
     case notSubscribed = "Sign up for Premium"

@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import SharedPocketKit
 import StoreKit
+import L10n
 
 /// A type that maps to a subscription product on the App Store
 public struct PremiumSubscription {

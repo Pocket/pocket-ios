@@ -2,6 +2,7 @@ import Foundation
 import Textile
 import UIKit
 import SwiftUI
+import L10n
 
 struct ItemAction {
     let title: String

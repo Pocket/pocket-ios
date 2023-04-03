@@ -10,6 +10,7 @@ import Analytics
 import CoreData
 import UIKit
 import Kingfisher
+import L10n
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8

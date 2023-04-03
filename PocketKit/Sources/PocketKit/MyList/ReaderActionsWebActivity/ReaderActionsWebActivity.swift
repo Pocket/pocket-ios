@@ -1,5 +1,6 @@
 import UIKit
 import Textile
+import L10n
 
 enum WebActivityTitle: String {
     case save = "Save"

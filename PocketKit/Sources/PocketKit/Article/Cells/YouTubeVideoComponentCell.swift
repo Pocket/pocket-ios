@@ -1,6 +1,7 @@
 import UIKit
 import YouTubePlayerKit
 import Textile
+import L10n
 
 class YouTubeVideoComponentCell: UICollectionViewCell {
     private lazy var loadingView: UIActivityIndicatorView = {

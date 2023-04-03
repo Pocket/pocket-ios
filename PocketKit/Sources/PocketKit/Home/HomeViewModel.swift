@@ -3,6 +3,7 @@ import Combine
 import UIKit
 import CoreData
 import Analytics
+import L10n
 
 enum ReadableType {
     case recommendation(RecommendationViewModel)

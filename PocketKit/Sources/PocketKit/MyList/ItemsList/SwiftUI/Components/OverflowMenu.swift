@@ -1,5 +1,6 @@
 import SwiftUI
 import Textile
+import L10n
 
 struct OverflowMenu: View {
     @EnvironmentObject

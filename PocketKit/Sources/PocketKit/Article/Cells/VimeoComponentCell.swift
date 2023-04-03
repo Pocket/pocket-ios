@@ -1,6 +1,7 @@
 import UIKit
 import WebKit
 import Combine
+import L10n
 
 protocol VimeoComponentCellDelegate: AnyObject {
     func vimeoComponentCell(_ cell: VimeoComponentCell, didNavigateToURL: URL)

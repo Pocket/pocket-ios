@@ -1,4 +1,5 @@
 import UIKit
+import L10n
 
 struct PocketAlert {
     let title: String?

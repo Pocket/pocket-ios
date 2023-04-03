@@ -5,6 +5,7 @@
 import SharedPocketKit
 import SwiftUI
 import Textile
+import L10n
 
 struct SearchView: View {
     @ObservedObject

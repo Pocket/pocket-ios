@@ -1,5 +1,6 @@
 import UIKit
 import Textile
+import L10n
 
 private extension Style {
     static let label: Self = .body.sansSerif.with(size: .p3)

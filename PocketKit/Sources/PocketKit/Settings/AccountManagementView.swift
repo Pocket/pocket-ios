@@ -4,6 +4,7 @@
 
 import SwiftUI
 import Textile
+import L10n
 
 struct AccountManagementView: View {
     @ObservedObject

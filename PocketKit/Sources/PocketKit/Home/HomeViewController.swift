@@ -7,6 +7,7 @@ import SwiftUI
 import BackgroundTasks
 import Lottie
 import SafariServices
+import L10n
 
 struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: HomeViewModel

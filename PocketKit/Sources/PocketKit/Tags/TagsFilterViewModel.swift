@@ -2,6 +2,7 @@ import Combine
 import Sync
 import Analytics
 import Foundation
+import L10n
 
 class TagsFilterViewModel: ObservableObject {
     enum SelectedTag {

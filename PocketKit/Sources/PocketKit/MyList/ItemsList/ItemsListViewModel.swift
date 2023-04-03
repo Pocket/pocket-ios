@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Sync
+import L10n
 
 enum SelectedItem {
     case readable(SavedItemViewModel?)

@@ -5,6 +5,7 @@ import Foundation
 import BackgroundTasks
 import UIKit
 import Textile
+import L10n
 
 @MainActor
 class MainViewModel: ObservableObject {

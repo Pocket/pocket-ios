@@ -1,6 +1,7 @@
 import UIKit
 import Textile
 import SwiftUI
+import L10n
 
 struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: LoggedOutViewModel

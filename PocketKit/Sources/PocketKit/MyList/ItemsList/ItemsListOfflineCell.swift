@@ -1,5 +1,6 @@
 import UIKit
 import Textile
+import L10n
 
 class ItemsListOfflineCell: UICollectionViewCell {
     enum Constants {

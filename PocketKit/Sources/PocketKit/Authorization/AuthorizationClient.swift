@@ -7,6 +7,7 @@ import AuthenticationServices
 import Sync
 import Adjust
 import SharedPocketKit
+import L10n
 
 public class AuthorizationClient {
     typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession

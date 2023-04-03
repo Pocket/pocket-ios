@@ -1,5 +1,6 @@
 import SwiftUI
 import Textile
+import L10n
 
 public struct MainView: View {
     @ObservedObject var model: MainViewModel

@@ -4,6 +4,7 @@ import Analytics
 import Combine
 import Lottie
 import Textile
+import L10n
 
 class SlateDetailViewController: UIViewController {
     private lazy var layoutConfiguration = UICollectionViewCompositionalLayout { [weak self] index, env in

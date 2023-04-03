@@ -36,6 +36,7 @@ let package = Package(
                 "Textile",
                 "Analytics",
                 "SharedPocketKit",
+                "L10n",
                 .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
                 .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "BrazeUI", package: "braze-swift-sdk"),

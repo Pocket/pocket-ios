@@ -4,6 +4,7 @@
 
 import Foundation
 import Textile
+import L10n
 
 struct ErrorEmptyState: EmptyStateViewModel {
     let imageAsset: ImageAsset = .warning
