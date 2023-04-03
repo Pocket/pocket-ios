@@ -1,5 +1,7 @@
 strings:
-  inputs: PocketKit/Sources/PocketKit/Resources/en.lproj
+  inputs: PocketKit/Sources/L10n/Resources/en.lproj
   outputs:
     templateName: structured-swift5
-    output: PocketKit/Sources/PocketKit/Strings.swift
+    output: PocketKit/Sources/L10n/Strings.swift
+    params:
+      publicAccess:
