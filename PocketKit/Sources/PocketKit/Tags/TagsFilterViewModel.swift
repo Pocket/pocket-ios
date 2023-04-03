@@ -2,6 +2,7 @@ import Combine
 import Sync
 import Analytics
 import Foundation
+import Localization
 
 class TagsFilterViewModel: ObservableObject {
     enum SelectedTag {
@@ -11,7 +12,7 @@ class TagsFilterViewModel: ObservableObject {
         var name: String {
             switch self {
             case .notTagged:
-                return L10n.notTagged
+                return Localization.notTagged
             case .tag(let name):
                 return name
             }

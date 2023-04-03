@@ -5,6 +5,7 @@ import Foundation
 import BackgroundTasks
 import UIKit
 import Textile
+import Localization
 
 @MainActor
 class MainViewModel: ObservableObject {
@@ -156,9 +157,9 @@ class MainViewModel: ObservableObject {
     func showSaveFromClipboardBanner() {
         if UIPasteboard.general.hasURLs {
             bannerViewModel = PasteBoardModifier.PasteBoardData(
-                title: L10n.addCopiedURLToYourSaves,
+                title: Localization.addCopiedURLToYourSaves,
                 action: PasteBoardModifier.PasteBoardData.PasteBoardAction(
-                    text: L10n.saves,
+                    text: Localization.saves,
                     action: { [weak self] url in
                         self?.handleBannerPrimaryAction(url: url)
                     }, dismiss: { [weak self] in
