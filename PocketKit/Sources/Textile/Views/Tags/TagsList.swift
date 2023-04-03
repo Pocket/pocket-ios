@@ -7,6 +7,9 @@ public protocol TagsList {
 }
 
 public extension TagsList {
+    /// Arranges the tags in a list by sorting with three recent tags and then alphabetizing the rest
+    /// - Parameter tags: list of users tags
+    /// - Returns: a list of tags to display to the user
     func arrangeTags(with tags: [String]) -> [TagType] {
         var allTags: [String] = []
         let fetchedTags = tags.reversed()
