@@ -12,6 +12,7 @@ class OnDismissHostingController<T: View>: UIHostingController<T> {
         if isBeingDismissed {
             onDismiss()
         }
+        super.viewDidDisappear(animated)
     }
 
     @MainActor @objc
