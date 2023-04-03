@@ -61,13 +61,13 @@ public struct SlateParts: PocketGraph.SelectionSet, Fragment {
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Recommendation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("id", PocketGraph.ID?.self),
+      .field("id", PocketGraph.ID.self),
       .field("item", Item.self),
       .field("curatedInfo", CuratedInfo?.self),
     ] }
 
     /// A generated id from the Data and Learning team that represents the Recommendation
-    public var id: PocketGraph.ID? { __data["id"] }
+    public var id: PocketGraph.ID { __data["id"] }
     /// The Recommendation entity is owned by the Recommendation API service.
     /// We extend it in this service to add an extra field ('curationInfo') to the Recommendation entity.
     /// The key for this entity is the 'itemId' found within the Item entity which is owned by the Parser service.
