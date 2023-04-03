@@ -5,8 +5,14 @@ import PocketGraph
 import SharedPocketKit
 import Combine
 
-public enum SearchServiceError: Error {
+public enum SearchServiceError: LoggableError {
     case noInternet
+
+    public var logDescription: String {
+        switch self {
+        case .noInternet: return "No internet"
+        }
+    }
 }
 
 public protocol SearchService: AnyObject {
