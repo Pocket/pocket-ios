@@ -2,7 +2,7 @@ import SwiftUI
 import Textile
 import MessageUI
 import StoreKit
-import L10n
+import Localization
 
 struct PremiumStatusView: View {
     @Environment(\.dismiss)
@@ -37,10 +37,10 @@ struct PremiumStatusView: View {
         }
         .padding([.leading, .trailing], Constants.verticalPadding)
         .alert(
-            Text(L10n.General.oops),
+            Text(Localization.General.oops),
             isPresented: $viewModel.isPresentingErrorAlert,
-            actions: { Button( role: .cancel, action: { dismiss() }, label: { Text(L10n.ok) }) },
-            message: { Text(L10n.Search.errorMessage) }
+            actions: { Button( role: .cancel, action: { dismiss() }, label: { Text(Localization.ok) }) },
+            message: { Text(Localization.Search.errorMessage) }
         )
     }
 
@@ -62,7 +62,7 @@ struct PremiumStatusView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: Constants.frameSize.width, height: Constants.frameSize.height)
-            Text(L10n.Settings.Premium.Settings.thanksForSubscribing)
+            Text(Localization.Settings.Premium.Settings.thanksForSubscribing)
                 .style(Style.title)
         }
     }
@@ -70,7 +70,7 @@ struct PremiumStatusView: View {
     private var subscriptionStatus: some View {
         VStack(spacing: Constants.spacerPadding) {
             HStack {
-                Text(L10n.Settings.Premium.Settings.subscriptionStatus)
+                Text(Localization.Settings.Premium.Settings.subscriptionStatus)
                     .style(Style.subtitle)
                 Spacer()
             }
@@ -83,11 +83,11 @@ struct PremiumStatusView: View {
     private var yourSubscription: some View {
         VStack(spacing: Constants.spacerPadding) {
             HStack {
-                Text(L10n.Settings.Premium.Settings.yourSubscription)
+                Text(Localization.Settings.Premium.Settings.yourSubscription)
                     .style(Style.subtitle)
                 Spacer()
             }
-            PremiumStatusRow(title: L10n.Settings.Premium.Settings.manageYourSubscription) {
+            PremiumStatusRow(title: Localization.Settings.Premium.Settings.manageYourSubscription) {
                 presentManageSubscriptions = true
             }
         }
@@ -96,18 +96,18 @@ struct PremiumStatusView: View {
     private var questionsOrFeedback: some View {
         VStack(spacing: Constants.spacerPadding) {
             HStack {
-                Text(L10n.Settings.Premium.Settings.questionOrFeedback)
+                Text(Localization.Settings.Premium.Settings.questionOrFeedback)
                     .style(Style.subtitle)
                 Spacer()
             }
-            PremiumStatusRow(title: L10n.Settings.Premium.Settings.pocketPremiumFAQ) {
+            PremiumStatusRow(title: Localization.Settings.Premium.Settings.pocketPremiumFAQ) {
                 viewModel.isPresentingFAQ.toggle()
             }
             .sheet(isPresented: $viewModel.isPresentingFAQ) {
                 SFSafariView(url: URL(string: "https://help.getpocket.com/article/969-premium-subscriber-faq")!)
                     .edgesIgnoringSafeArea(.bottom)
             }
-            PremiumStatusRow(title: L10n.Settings.Premium.Settings.contactPocketSupport) {
+            PremiumStatusRow(title: Localization.Settings.Premium.Settings.contactPocketSupport) {
                 MFMailComposeViewController.canSendMail() ? viewModel.isContactingSupport.toggle() : viewModel.isNoMailSupport.toggle()
             }
             .sheet(isPresented: $viewModel.isContactingSupport) {

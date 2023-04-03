@@ -1,6 +1,6 @@
 import UIKit
 import Textile
-import L10n
+import Localization
 
 enum WebActivityTitle: String {
     case save = "Save"
@@ -33,19 +33,19 @@ enum WebActivityTitle: String {
     var localized: String {
         switch self {
         case .save:
-            return L10n.save
+            return Localization.save
         case .report:
-            return L10n.report
+            return Localization.report
         case .delete:
-            return L10n.delete
+            return Localization.delete
         case .favorite:
-            return L10n.favorite
+            return Localization.favorite
         case .unfavorite:
-            return L10n.unfavorite
+            return Localization.unfavorite
         case .archive:
-            return L10n.archive
+            return Localization.archive
         case .moveToSaves:
-            return L10n.moveToSaves
+            return Localization.moveToSaves
         }
     }
 }

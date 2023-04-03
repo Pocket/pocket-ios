@@ -10,7 +10,7 @@ import Analytics
 import CoreData
 import UIKit
 import Kingfisher
-import L10n
+import Localization
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8
@@ -97,6 +97,6 @@ class ItemsListItemPresenter {
     private var timeToRead: String? {
         item.timeToRead
             .flatMap { $0 > 0 ? $0 : nil }
-            .flatMap { L10n.Item.List.min($0) }
+            .flatMap { Localization.Item.List.min($0) }
     }
 }

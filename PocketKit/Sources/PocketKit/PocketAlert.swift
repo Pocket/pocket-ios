@@ -1,5 +1,5 @@
 import UIKit
-import L10n
+import Localization
 
 struct PocketAlert {
     let title: String?
@@ -12,11 +12,11 @@ struct PocketAlert {
 extension PocketAlert {
     init(_ error: Error, handler: @escaping () -> Void) {
         self.init(
-            title: L10n.anErrorOccurred,
+            title: Localization.anErrorOccurred,
             message: error.localizedDescription,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: L10n.ok, style: .default) { _ in
+                UIAlertAction(title: Localization.ok, style: .default) { _ in
                     handler()
                 }
             ],

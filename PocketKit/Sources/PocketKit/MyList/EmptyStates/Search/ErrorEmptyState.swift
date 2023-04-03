@@ -4,14 +4,14 @@
 
 import Foundation
 import Textile
-import L10n
+import Localization
 
 struct ErrorEmptyState: EmptyStateViewModel {
     let imageAsset: ImageAsset = .warning
     let maxWidth: CGFloat = Width.normal.rawValue
     let icon: ImageAsset? = nil
-    let headline: String? = L10n.General.oops
-    let detailText: String? = L10n.Search.errorMessage
+    let headline: String? = Localization.General.oops
+    let detailText: String? = Localization.Search.errorMessage
     let buttonText: String? = nil
     let webURL: URL? = nil
     let accessibilityIdentifier = "error-empty-state"

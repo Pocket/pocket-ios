@@ -8,7 +8,7 @@ import Foundation
 import SharedPocketKit
 import Textile
 import Sync
-import L10n
+import Localization
 
 /// Factory to construct and inject `PremiumUpgradeViewModel` where needed
 typealias PremiumUpgradeViewModelFactory = (PremiumUpgradeSource) -> PremiumUpgradeViewModel
@@ -37,7 +37,7 @@ class PremiumUpgradeViewModel: ObservableObject {
 
     private var cancellables: Set<AnyCancellable> = []
 
-    let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.noInternetConnection, detail: L10n.Settings.NoInternet.youMustBeOnline)
+    let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.noInternetConnection, detail: Localization.Settings.NoInternet.youMustBeOnline)
 
     init(store: SubscriptionStore, tracker: Tracker,
          source: PremiumUpgradeSource,

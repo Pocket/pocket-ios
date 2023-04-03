@@ -1,6 +1,6 @@
 import UIKit
 import Textile
-import L10n
+import Localization
 
 private extension Style {
     static let saveTitle: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium).with(maxScaleSize: 17)
@@ -15,9 +15,9 @@ class RecommendationSaveButton: UIButton {
         var title: String {
             switch self {
             case .save:
-                return L10n.save
+                return Localization.save
             case .saved:
-                return L10n.saved
+                return Localization.saved
             }
         }
 

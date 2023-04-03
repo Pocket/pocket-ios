@@ -1,7 +1,7 @@
 import SharedPocketKit
 import SwiftUI
 import Textile
-import L10n
+import Localization
 
 struct SettingsView: View {
     @ObservedObject
@@ -18,7 +18,7 @@ struct SettingsView: View {
                         .background(Color(.ui.white1))
             }
         }
-        .navigationBarTitle(L10n.settings, displayMode: .large)
+        .navigationBarTitle(Localization.settings, displayMode: .large)
         .accessibilityIdentifier("settings")
         .onDidAppear {
             model.trackSettingsViewed()
@@ -36,8 +36,8 @@ struct SettingsForm: View {
             Group {
                 topSectionWithLeadingDivider()
                     .textCase(nil)
-                Section(header: Text(L10n.appCustomization).style(.settings.header)) {
-                    SettingsRowToggle(title: L10n.showAppBadgeCount, model: model) {
+                Section(header: Text(Localization.appCustomization).style(.settings.header)) {
+                    SettingsRowToggle(title: Localization.showAppBadgeCount, model: model) {
                         model.toggleAppBadge()
                     }
                 }
@@ -45,23 +45,23 @@ struct SettingsForm: View {
                 .sheet(isPresented: $model.isPresentingHooray) {
                     PremiumUpgradeSuccessView()
                 }
-                Section(header: Text(L10n.aboutSupport).style(.settings.header)) {
-                    SettingsRowButton(title: L10n.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
+                Section(header: Text(Localization.aboutSupport).style(.settings.header)) {
+                    SettingsRowButton(title: Localization.Settings.help, icon: SFIconModel("questionmark.circle")) { model.isPresentingHelp.toggle() }
                         .sheet(isPresented: $model.isPresentingHelp) {
                             SFSafariView(url: LinkedExternalURLS.Help)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
-                    SettingsRowButton(title: L10n.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
+                    SettingsRowButton(title: Localization.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
                         .sheet(isPresented: $model.isPresentingTerms) {
                             SFSafariView(url: LinkedExternalURLS.TermsOfService)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
-                    SettingsRowButton(title: L10n.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
+                    SettingsRowButton(title: Localization.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
                         .sheet(isPresented: $model.isPresentingPrivacy) {
                             SFSafariView(url: LinkedExternalURLS.PrivacyPolicy)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
-                    SettingsRowButton(title: L10n.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle() }
+                    SettingsRowButton(title: Localization.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle() }
                         .sheet(isPresented: $model.isPresentingLicenses) {
                             SFSafariView(url: LinkedExternalURLS.OpenSourceNotices)
                                 .edgesIgnoringSafeArea(.bottom)
@@ -81,10 +81,10 @@ struct SettingsForm: View {
             HStack {
                 Spacer()
                 VStack(spacing: 0) {
-                    Text(L10n.Settings.pocketForiOS(buildNumber, appVersion))
+                    Text(Localization.Settings.pocketForiOS(buildNumber, appVersion))
                         .style(.credits)
                         .padding([.bottom], 6)
-                    Text(L10n.Settings.Thankyou.credits)
+                    Text(Localization.Settings.Thankyou.credits)
                         .style(.credits)
                 }
                 Spacer()
@@ -110,7 +110,7 @@ extension SettingsForm {
     }
     /// Provides the standard top section view
     private func topSection() -> some View {
-        Section(header: Text(L10n.yourAccount).style(.settings.header)) {
+        Section(header: Text(Localization.yourAccount).style(.settings.header)) {
             if model.isPremium {
                 makePremiumSubscriptionRow()
                     .accessibilityIdentifier("premium-subscription-button")
@@ -126,14 +126,14 @@ extension SettingsForm {
                 }
                 .opacity(0.0)
                 .buttonStyle(PlainButtonStyle())
-                SettingsRowButton(title: L10n.Settings.accountManagement, trailingImageAsset: .chevronRight) {
+                SettingsRowButton(title: Localization.Settings.accountManagement, trailingImageAsset: .chevronRight) {
                     model.trackAccountManagementTapped()
                 }
                 .accessibilityIdentifier("account-management-button")
             }
 
             SettingsRowButton(
-                title: L10n.Settings.logout,
+                title: Localization.Settings.logout,
                 titleStyle: .settings.button.signOut,
                 icon: SFIconModel(
                     "rectangle.portrait.and.arrow.right",
@@ -146,22 +146,22 @@ extension SettingsForm {
             }
                 .accessibilityIdentifier("log-out-button")
                 .alert(
-                    L10n.Settings.Logout.areyousure,
+                    Localization.Settings.Logout.areyousure,
                     isPresented: $model.isPresentingSignOutConfirm,
                     actions: {
-                        Button(L10n.Settings.logout, role: .destructive) {
+                        Button(Localization.Settings.logout, role: .destructive) {
                             model.trackLogoutConfirmTapped()
                             model.signOut()
                         }
                     }, message: {
-                        Text(L10n.Settings.Logout.areYouSureMessage)
+                        Text(Localization.Settings.Logout.areYouSureMessage)
                     }
                 )
         }
     }
 
     private func makePremiumRowContent(_ isPremium: Bool) -> some View {
-        let title = isPremium ? L10n.Settings.premiumSubscriptionRow : L10n.Settings.goPremiumRow
+        let title = isPremium ? Localization.Settings.premiumSubscriptionRow : Localization.Settings.goPremiumRow
         let titleStyle: Style = isPremium ? .settings.row.active : .settings.row.default
         let leadingTintColor = isPremium ? Color(.ui.teal2) : Color(.ui.black1)
         let action = isPremium ? { model.showPremiumStatus() } : { model.showPremiumUpgrade() }

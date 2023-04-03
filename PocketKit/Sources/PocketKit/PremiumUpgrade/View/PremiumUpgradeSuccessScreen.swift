@@ -1,6 +1,6 @@
 import SwiftUI
 import Textile
-import L10n
+import Localization
 
 struct PremiumUpgradeSuccessView: View {
     @Environment(\.dismiss) private var dismiss
@@ -13,15 +13,15 @@ struct PremiumUpgradeSuccessView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: Constants.frameSize.width, height: Constants.frameSize.height)
-            Text(L10n.hooray)
+            Text(Localization.hooray)
                 .style(.title)
-            Text(L10n.Premium.Success.message)
+            Text(Localization.Premium.Success.message)
                 .style(.paragraph)
             Button(action: {
                 dismiss()
             }) {
                 VStack {
-                    Text(L10n.Back.To.pocket)
+                    Text(Localization.Back.To.pocket)
                         .style(.button)
                 }
             }

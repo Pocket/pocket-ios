@@ -7,7 +7,7 @@ import SwiftUI
 import BackgroundTasks
 import Lottie
 import SafariServices
-import L10n
+import Localization
 
 struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: HomeViewModel
@@ -64,7 +64,7 @@ class HomeViewController: UIViewController {
         view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
         view.attributedText = NSAttributedString(
-            string: L10n.youReAllCaughtUpCheckBackLaterForMore,
+            string: Localization.youReAllCaughtUpCheckBackLaterForMore,
             style: .overscroll
         )
         return view
@@ -104,7 +104,7 @@ class HomeViewController: UIViewController {
 
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
-        navigationItem.title = L10n.home
+        navigationItem.title = Localization.home
         collectionView
             .publisher(for: \.contentSize, options: [.new])
             .receive(on: DispatchQueue.main)

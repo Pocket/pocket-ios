@@ -10,7 +10,7 @@ import SharedPocketKit
 import Analytics
 import CoreData
 import Textile
-import L10n
+import Localization
 
 /// State for the search view
 enum SearchViewState {
@@ -66,8 +66,8 @@ class SearchViewModel: ObservableObject {
     @Published var isPresentingHooray = false
 
     var bannerData: BannerModifier.BannerData {
-        let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.Search.limitedResults, detail: L10n.Search.offlineMessage)
-        let errorView = BannerModifier.BannerData(image: .warning, title: L10n.Search.limitedResults, detail: L10n.Search.Banner.errorMessage)
+        let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.Search.limitedResults, detail: Localization.Search.offlineMessage)
+        let errorView = BannerModifier.BannerData(image: .warning, title: Localization.Search.limitedResults, detail: Localization.Search.Banner.errorMessage)
         return isOffline ? offlineView : errorView
     }
 
@@ -420,12 +420,12 @@ extension SearchViewModel {
     }
 
     func swipeActionTitle(_ searchItem: PocketItem) -> String {
-        guard let savedItem = fetchSavedItem(searchItem) else { return L10n.Search.Swipe.unableToMove }
+        guard let savedItem = fetchSavedItem(searchItem) else { return Localization.Search.Swipe.unableToMove }
 
         if savedItem.isArchived {
-            return L10n.Search.Swipe.moveToSaves
+            return Localization.Search.Swipe.moveToSaves
         } else {
-            return L10n.Search.Swipe.archive
+            return Localization.Search.Swipe.archive
         }
     }
 

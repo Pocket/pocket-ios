@@ -3,7 +3,7 @@ import Sync
 import Analytics
 import Combine
 import UIKit
-import L10n
+import Localization
 
 public enum SavesViewType {
     case saves
@@ -20,9 +20,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     var selectionItem: SelectionItem {
         switch self.viewType {
         case .saves:
-            return SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+            return SelectionItem(title: Localization.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
         case .archive:
-            return SelectionItem(title: L10n.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
+            return SelectionItem(title: Localization.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
         }
     }
 
@@ -369,14 +369,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private func confirmDelete(item: SavedItem) {
         presentedAlert = PocketAlert(
-            title: L10n.areYouSureYouWantToDeleteThisItem,
+            title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: L10n.no, style: .default) { [weak self] _ in
+                UIAlertAction(title: Localization.no, style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: L10n.yes, style: .destructive) { [weak self] _ in
+                UIAlertAction(title: Localization.yes, style: .destructive) { [weak self] _ in
                     self?._delete(item: item)
                 }
             ],

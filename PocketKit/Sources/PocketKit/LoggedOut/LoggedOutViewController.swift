@@ -1,7 +1,7 @@
 import UIKit
 import Textile
 import SwiftUI
-import L10n
+import Localization
 
 struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: LoggedOutViewModel
@@ -57,10 +57,10 @@ struct LoggedOutView: View {
         .banner(
             data: BannerModifier.BannerData(
                 image: .accountDeleted,
-                title: L10n.Login.DeletedAccount.Banner.title,
-                detail: L10n.Login.DeletedAccount.Banner.detail,
+                title: Localization.Login.DeletedAccount.Banner.title,
+                detail: Localization.Login.DeletedAccount.Banner.detail,
                 action: BannerModifier.BannerData.BannerAction(
-                    text: L10n.Login.DeletedAccount.Banner.action,
+                    text: Localization.Login.DeletedAccount.Banner.action,
                     style: PocketButtonStyle(.primary)
                 ) {
                     viewModel.exitSurveyButtonClicked()
@@ -83,20 +83,20 @@ private struct LoggedOutCarouselView: View {
         TabView {
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel1,
-                text: L10n.saveWhatReallyInterestsYou,
-                detailText: L10n.collectArticlesVideosOrAnyOnlineContentYouLike
+                text: Localization.saveWhatReallyInterestsYou,
+                detailText: Localization.collectArticlesVideosOrAnyOnlineContentYouLike
             )
 
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel2,
-                text: L10n.makeTheMostOfAnyMoment,
-                detailText: L10n.SaveFromSafariTwitterYouTubeOrYourFavoriteNewsAppForStarters.yourArticlesAndVideosWillBeReadyForYouInPocket
+                text: Localization.makeTheMostOfAnyMoment,
+                detailText: Localization.SaveFromSafariTwitterYouTubeOrYourFavoriteNewsAppForStarters.yourArticlesAndVideosWillBeReadyForYouInPocket
             )
 
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel3,
-                text: L10n.yourQuietCornerOfTheInternet,
-                detailText: L10n.pocketSavesArticlesInACleanLayoutDesignedForReadingNoInterruptionsNoPopupsSoYouCanSidestepTheInternetSNoise
+                text: Localization.yourQuietCornerOfTheInternet,
+                detailText: Localization.pocketSavesArticlesInACleanLayoutDesignedForReadingNoInterruptionsNoPopupsSoYouCanSidestepTheInternetSNoise
             )
         }
         .tabViewStyle(.page)
@@ -146,7 +146,7 @@ private struct LoggedOutActionsView: View {
             Button {
                 viewModel.signUp()
             } label: {
-                Text(L10n.signUp).style(.header.sansSerif.h8.with(color: .ui.white))
+                Text(Localization.signUp).style(.header.sansSerif.h8.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                     .frame(maxWidth: 320)
             }.buttonStyle(ActionsPrimaryButtonStyle())
@@ -154,7 +154,7 @@ private struct LoggedOutActionsView: View {
             Button {
                 viewModel.logIn()
             } label: {
-                Text(L10n.logIn)
+                Text(Localization.logIn)
                     .style(.header.sansSerif.p4)
                     .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
             }

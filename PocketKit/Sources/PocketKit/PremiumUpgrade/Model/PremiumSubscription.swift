@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import SharedPocketKit
 import StoreKit
-import L10n
+import Localization
 
 /// A type that maps to a subscription product on the App Store
 public struct PremiumSubscription {
@@ -12,9 +12,9 @@ public struct PremiumSubscription {
     var name: String {
         switch type {
         case .monthly:
-            return L10n.monthly
+            return Localization.monthly
         case .annual:
-            return L10n.annual
+            return Localization.annual
         case .unknown:
             return ""
         }
@@ -39,9 +39,9 @@ public struct PremiumSubscription {
     private var frequency: String {
         switch type {
         case .monthly:
-            return Self.separator + L10n.month
+            return Self.separator + Localization.month
         case .annual:
-            return Self.separator + L10n.year
+            return Self.separator + Localization.year
         case .unknown:
             return ""
         }

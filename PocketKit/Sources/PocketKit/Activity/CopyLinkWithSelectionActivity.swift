@@ -3,7 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import UIKit
-import L10n
+import Localization
 
 class CopyLinkWithSelectionActivity: UIActivity {
     private var link: URL?
@@ -18,7 +18,7 @@ class CopyLinkWithSelectionActivity: UIActivity {
     }
 
     override var activityTitle: String? {
-        return L10n.copyLinkWithSelection
+        return Localization.copyLinkWithSelection
     }
 
     override var activityImage: UIImage? {

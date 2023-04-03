@@ -1,6 +1,6 @@
 import SwiftUI
 import Textile
-import L10n
+import Localization
 
 struct OverflowMenu: View {
     @EnvironmentObject
@@ -14,7 +14,7 @@ struct OverflowMenu: View {
                 showingSheet = true
             }) {
                 Label {
-                    Text(L10n.addTags)
+                    Text(Localization.addTags)
                 } icon: {
                     Image(asset: .tag)
                 }
@@ -32,7 +32,7 @@ struct OverflowMenu: View {
                 showingAlert = true
             }) {
                 Label {
-                    Text(L10n.delete)
+                    Text(Localization.delete)
                 } icon: {
                     Image(asset: .delete)
                 }
@@ -41,9 +41,9 @@ struct OverflowMenu: View {
             Image(asset: .overflow)
                 .actionButtonStyle(selected: false)
         }
-        .alert(L10n.areYouSureYouWantToDeleteThisItem, isPresented: $showingAlert) {
-            Button(L10n.no, role: .cancel) { }
-            Button(L10n.yes, role: .destructive) {
+        .alert(Localization.areYouSureYouWantToDeleteThisItem, isPresented: $showingAlert) {
+            Button(Localization.no, role: .cancel) { }
+            Button(Localization.yes, role: .destructive) {
                 withAnimation {
                     viewModel.delete()
                 }
@@ -72,7 +72,7 @@ struct ArchiveButton: View {
             }
         }) {
             Label {
-                Text(L10n.archive)
+                Text(Localization.archive)
             } icon: {
                 Image(asset: .archive)
             }
@@ -90,7 +90,7 @@ struct MoveToSavesButton: View {
             }
         }) {
             Label {
-                Text(L10n.moveToSaves)
+                Text(Localization.moveToSaves)
             } icon: {
                 Image(asset: .save)
             }

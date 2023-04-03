@@ -7,7 +7,7 @@ import Combine
 import Foundation
 import SharedPocketKit
 import Sync
-import L10n
+import Localization
 
 /// Factory to construct and inject `PremiumStatusViewModel` where needed
 typealias PremiumStatusViewModelFactory = () -> PremiumStatusViewModel
@@ -60,11 +60,11 @@ class PremiumStatusViewModel: ObservableObject {
     }
 
     private enum Labels {
-        static let subscriptionType = L10n.Settings.Premium.Settings.subscription
-        static let dateOfPurchase = L10n.Settings.Premium.Settings.datePurchased
-        static let dateOfRenewal = L10n.Settings.Premium.Settings.renewalDate
-        static let providerName = L10n.Settings.Premium.Settings.purchaseLocation
-        static let displayAmount = L10n.Settings.Premium.Settings.price
+        static let subscriptionType = Localization.Settings.Premium.Settings.subscription
+        static let dateOfPurchase = Localization.Settings.Premium.Settings.datePurchased
+        static let dateOfRenewal = Localization.Settings.Premium.Settings.renewalDate
+        static let providerName = Localization.Settings.Premium.Settings.purchaseLocation
+        static let displayAmount = Localization.Settings.Premium.Settings.price
     }
 }
 

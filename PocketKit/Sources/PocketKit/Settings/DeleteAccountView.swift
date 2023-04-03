@@ -6,7 +6,7 @@ import SwiftUI
 import Textile
 import SharedPocketKit
 import Analytics
-import L10n
+import Localization
 
 struct DeleteAccountView: View {
     @ObservedObject var viewModel: DeleteAccountViewModel
@@ -21,12 +21,12 @@ struct DeleteAccountView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                Text(L10n.Settings.AccountManagement.deleteYourAccount)
+                Text(Localization.Settings.AccountManagement.deleteYourAccount)
                     .style(.deleteAccountView.header)
                     .padding(.top, 50)
                     .padding()
 
-                Text(L10n.Settings.AccountManagement.DeleteAccount.warning)
+                Text(Localization.Settings.AccountManagement.DeleteAccount.warning)
                     .style(.deleteAccountView.warning)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding()
@@ -37,7 +37,7 @@ struct DeleteAccountView: View {
                 VStack {
                     if viewModel.isPremium {
                         Toggle(isOn: $hasCancelledPremium, label: {
-                            Text(LocalizedStringKey(L10n.Settings.AccountManagement.DeleteAccount.premiumConfirmation))
+                            Text(LocalizedStringKey(Localization.Settings.AccountManagement.DeleteAccount.premiumConfirmation))
                                 .multilineTextAlignment(.leading)
                         })
                         .toggleStyle(iOSCheckboxToggleStyle())
@@ -45,7 +45,7 @@ struct DeleteAccountView: View {
                     }
 
                     Toggle(isOn: $understandsPermanentDeletion, label: {
-                        Text(LocalizedStringKey(L10n.Settings.AccountManagement.DeleteAccount.deletionConfirmation))
+                        Text(LocalizedStringKey(Localization.Settings.AccountManagement.DeleteAccount.deletionConfirmation))
                             .multilineTextAlignment(.leading)
                     })
                     .toggleStyle(iOSCheckboxToggleStyle())
@@ -53,7 +53,7 @@ struct DeleteAccountView: View {
                 }.padding()
 
                 if viewModel.isPremium {
-                    Button(L10n.Settings.AccountManagement.DeleteAccount.howToCancel) {
+                    Button(Localization.Settings.AccountManagement.DeleteAccount.howToCancel) {
                         viewModel.helpCancelPremium()
                     }
                     .padding()
@@ -65,7 +65,7 @@ struct DeleteAccountView: View {
                     }
                 }
 
-                Button(L10n.Settings.AccountManagement.deleteAccount) {
+                Button(Localization.Settings.AccountManagement.deleteAccount) {
                     viewModel.deleteAccount()
                 }
                 .buttonStyle(PocketButtonStyle(.primary))
@@ -77,7 +77,7 @@ struct DeleteAccountView: View {
                 .padding()
                 .accessibilityIdentifier("delete-account")
 
-                Button(L10n.cancel) {
+                Button(Localization.cancel) {
                     viewModel.trackDeleteDismissed(dismissReason: .button)
                     dismiss()
                 }
@@ -86,7 +86,7 @@ struct DeleteAccountView: View {
                 .accessibilityIdentifier("cancel")
                 Spacer()
             }
-            .navigationTitle(L10n.Settings.accountManagement)
+            .navigationTitle(Localization.Settings.accountManagement)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarItems(
                 trailing:
@@ -94,7 +94,7 @@ struct DeleteAccountView: View {
                     viewModel.trackDeleteDismissed(dismissReason: .closeButton)
                     dismiss()
                 }) {
-                    Text(L10n.close)
+                    Text(Localization.close)
                 }.accessibilityIdentifier("close")
             )
         }
@@ -112,7 +112,7 @@ struct DeleteAccountView: View {
             }
         }
         .alert(isPresented: $viewModel.showErrorAlert) {
-            Alert(title: Text(L10n.General.oops), message: Text(L10n.Settings.AccountManagement.DeleteAccount.Error.body), dismissButton: .cancel(Text(L10n.ok)))
+            Alert(title: Text(Localization.General.oops), message: Text(Localization.Settings.AccountManagement.DeleteAccount.Error.body), dismissButton: .cancel(Text(Localization.ok)))
         }
         .onDidAppear {
             viewModel.trackDeleteConfirmationImpression()
@@ -129,7 +129,7 @@ private struct DeleteLoadingView: View {
             Spacer()
             LottieView(.loading)
                 .frame(minWidth: 0, maxWidth: 300, minHeight: 0, maxHeight: 100)
-            Text(L10n.Settings.AccountManagement.DeleteAccount.deleting).style(.deleteAccountView.overlay)
+            Text(Localization.Settings.AccountManagement.DeleteAccount.deleting).style(.deleteAccountView.overlay)
             Spacer()
         }
         .background(Color(.ui.grey3))

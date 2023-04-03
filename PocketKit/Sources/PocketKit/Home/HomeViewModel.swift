@@ -3,7 +3,7 @@ import Combine
 import UIKit
 import CoreData
 import Analytics
-import L10n
+import Localization
 
 enum ReadableType {
     case recommendation(RecommendationViewModel)
@@ -310,8 +310,8 @@ extension HomeViewModel {
         switch section {
         case .recentSaves:
             return .init(
-                name: L10n.recentSaves,
-                buttonTitle: L10n.seeAll,
+                name: Localization.recentSaves,
+                buttonTitle: Localization.seeAll,
                 buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
                 self?.tappedSeeAll = .saves
@@ -323,7 +323,7 @@ extension HomeViewModel {
 
             return .init(
                 name: slate.name ?? "",
-                buttonTitle: L10n.seeAll,
+                buttonTitle: Localization.seeAll,
                 buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
                 self?.select(slate: slate)
@@ -388,14 +388,14 @@ extension HomeViewModel {
 
     private func confirmDelete(item: SavedItem, indexPath: IndexPath) {
         presentedAlert = PocketAlert(
-            title: L10n.areYouSureYouWantToDeleteThisItem,
+            title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: L10n.no, style: .default) { [weak self] _ in
+                UIAlertAction(title: Localization.no, style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: L10n.yes, style: .destructive) { [weak self] _ in
+                UIAlertAction(title: Localization.yes, style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
                     self?.delete(item: item, indexPath: indexPath)
                 }

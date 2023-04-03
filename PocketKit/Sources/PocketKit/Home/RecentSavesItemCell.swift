@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import Textile
-import L10n
+import Localization
 
 class RecentSavesItemCell: HomeCarouselItemCell {
     struct Model: HomeCarouselItemCellModel {
@@ -56,7 +56,7 @@ class RecentSavesItemCell: HomeCarouselItemCell {
                 return nil
             }
 
-            return L10n.minRead(timeToRead)
+            return Localization.minRead(timeToRead)
         }
     }
 }

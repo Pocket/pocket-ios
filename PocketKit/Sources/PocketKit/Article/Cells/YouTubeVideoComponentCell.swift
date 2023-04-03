@@ -1,7 +1,7 @@
 import UIKit
 import YouTubePlayerKit
 import Textile
-import L10n
+import Localization
 
 class YouTubeVideoComponentCell: UICollectionViewCell {
     private lazy var loadingView: UIActivityIndicatorView = {
@@ -13,7 +13,7 @@ class YouTubeVideoComponentCell: UICollectionViewCell {
 
     private lazy var errorView: ArticleComponentUnavailableView = {
         let view = ArticleComponentUnavailableView()
-        view.text = L10n.thisVideoCouldNotBeLoaded
+        view.text = Localization.thisVideoCouldNotBeLoaded
         return view
     }()
 

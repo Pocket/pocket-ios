@@ -4,7 +4,7 @@ import Foundation
 import Textile
 import UIKit
 import Analytics
-import L10n
+import Localization
 
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
@@ -76,14 +76,14 @@ extension ReadableViewModel {
 
     func confirmDelete() {
         presentedAlert = PocketAlert(
-            title: L10n.areYouSureYouWantToDeleteThisItem,
+            title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: L10n.no, style: .default) { [weak self] _ in
+                UIAlertAction(title: Localization.no, style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: L10n.yes, style: .destructive) { [weak self] _ in self?._delete() },
+                UIAlertAction(title: Localization.yes, style: .destructive) { [weak self] _ in self?._delete() },
             ],
             preferredAction: nil
         )
