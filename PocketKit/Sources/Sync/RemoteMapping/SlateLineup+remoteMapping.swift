@@ -33,8 +33,8 @@ extension Slate {
 
         var i = 1
         recommendations = NSOrderedSet(array: remote.recommendations.compactMap { remote in
-            guard let remoteID = remote.id,
-                  let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID) ?? Recommendation(context: space.backgroundContext, remoteID: remoteID) else {
+            let remoteID = remote.id
+            guard let recommendation = try? space.fetchRecommendation(byRemoteID: remoteID) ?? Recommendation(context: space.backgroundContext, remoteID: remoteID) else {
                 return nil
             }
             recommendation.update(from: remote, in: space)
@@ -49,7 +49,8 @@ extension Recommendation {
     public typealias RemoteRecommendation = SlateParts.Recommendation
 
     func update(from remote: RemoteRecommendation, in space: Space) {
-        guard let id = remote.id, let url = URL(string: remote.item.givenUrl) else {
+        let id = remote.id
+        guard let url = URL(string: remote.item.givenUrl) else {
             // TODO: Daniel work to make id non-null in the API Layer.
             Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Recomendation because \(remote.item.givenUrl) is not valid url")
             return
