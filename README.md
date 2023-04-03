@@ -6,7 +6,7 @@ Welcome to the Next iteration of the Pocket iOS client, currently in development
 
 ## Setup Pocket Secrets File
 
-pocket-ios requires secrets to run, we have included some mock secrets in the repo but if you are a Mozillan or Pocketeer you can obtain a 1st party Pocket consumer key from the Pocket Team.
+pocket-ios requires a secrets.xcconfig file to run and secrets_test.xcconfig file to test, we have included some mock secrets in the repo but if you are a Mozillan or Pocketeer you can obtain the actual secret keys from the Pocket Team.
 External contributors may generate their own Pocket API keys at https://getpocket.com/developer/ though some features (payments, for example) will still not work.
 
 Once obtained you can run the following command from the root directory:
@@ -84,7 +84,7 @@ We plan on implementing the following changes in the future:
 
 ## Setup Fonts
 
-Pocket uses a custom font called Graphik for it's UI. In order for the styles to present as expected in your local build you need to obtain the font files. Mozillians and Pocketeers can request them from the iOS manager and install them in [`PocketKit/Sources/Textile/Style/Typography/Fonts`](./PocketKit/Sources/Textile/Style/Typography/Fonts)
+Pocket uses custom fonts: Graphik & Blanco. In order for the styles to present as expected in your local build you need to obtain the font files. Mozillians and Pocketeers can request them from the iOS manager and install them in [`PocketKit/Sources/Textile/Style/Typography/Fonts`](./PocketKit/Sources/Textile/Style/Typography/Fonts)
 
 ## Build Targets
 
