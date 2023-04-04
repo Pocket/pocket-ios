@@ -32,17 +32,26 @@ struct InputTagsView: View {
     }
 
     func RowView(tag: String) -> some View {
-        Text(tag)
-            .style(.tags.tag)
-            .padding(Constants.tagPadding)
-            .background(Rectangle().fill(Color(.ui.grey6)))
-            .cornerRadius(4)
-            .lineLimit(1)
-            .onTapGesture {
-                removeTag(tag)
-            }
-            .accessibilityIdentifier("tag")
-            .matchedGeometryEffect(id: tag, in: animation)
+        HStack {
+            Text(tag)
+                .style(.tags.tag)
+            Image(asset: .remove)
+                .renderingMode(.template)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                    .frame(width: 5, height: 5)
+                    .foregroundColor(Color(.ui.grey4))
+                    .padding(.trailing, 4)
+        }
+        .padding(Constants.tagPadding)
+        .background(Rectangle().fill(Color(.ui.grey6)))
+        .cornerRadius(4)
+        .lineLimit(1)
+        .onTapGesture {
+            removeTag(tag)
+        }
+        .accessibilityIdentifier("tag")
+        .matchedGeometryEffect(id: tag, in: animation)
     }
 
     func getRows(screenWidth: CGFloat) -> [[String]] {
@@ -52,10 +61,11 @@ struct InputTagsView: View {
         var totalWidth: CGFloat = 0
         let safeWidth: CGFloat = screenWidth
         let padding: CGFloat = Constants.tagPadding * 2 + Constants.tagsHorizontalSpacing * 2
+        let closeImage: CGFloat = 5 + 6
 
         tags.forEach { tag in
             let attributes = Style.tags.tag.textAttributes
-            let tagWidth: CGFloat = tag.size(withAttributes: attributes).width + padding
+            let tagWidth: CGFloat = tag.size(withAttributes: attributes).width + closeImage + padding
 
             totalWidth += tagWidth
 
