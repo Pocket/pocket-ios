@@ -4,7 +4,7 @@ import Analytics
 import Foundation
 import Textile
 
-class TagsFilterViewModel: ObservableObject, TagsList {
+class TagsFilterViewModel: ObservableObject {
     private var fetchedTags: [Tag]?
     private let tracker: Tracker
     private let source: Source

@@ -4,7 +4,7 @@ import Textile
 import Foundation
 import Analytics
 
-class PocketAddTagsViewModel: AddTagsViewModel, TagsList {
+class PocketAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem
     private let source: Source
     private let tracker: Tracker
