@@ -5,12 +5,7 @@ import PocketGraph
 extension SlateLineup {
     public typealias RemoteSlateLineup = GetSlateLineupQuery.Data.GetSlateLineup
 
-    func update(from remote: RemoteSlateLineup, in space: Space, context: NSManagedObjectContext? = nil) {
-        remoteID = remote.id
-        requestID = remote.requestId
-        experimentID = remote.experimentId
-        let context = context ?? space.backgroundContext
-
+    func update(from remote: RemoteSlateLineup, in space: Space, context: NSManagedObjectContext) {
         var i = 1
         slates = try? NSOrderedSet(array: remote.slates.map { remoteSlate in
             let slate = try space.fetchSlate(byRemoteID: remoteSlate.id, context: context) ?? Slate(context: context, remoteID: remoteSlate.id, expermimentID: remoteSlate.experimentId, requestID: remoteSlate.requestId)
@@ -25,13 +20,12 @@ extension SlateLineup {
 extension Slate {
     public typealias RemoteSlate = SlateParts
 
-    func update(from remote: RemoteSlate, in space: Space, context: NSManagedObjectContext? = nil) {
+    func update(from remote: RemoteSlate, in space: Space, context: NSManagedObjectContext) {
         experimentID = remote.experimentId
         remoteID = remote.id
         name = remote.displayName
         requestID = remote.requestId
         slateDescription = remote.description
-        let context = context ?? space.backgroundContext
 
         var i = 1
         recommendations = NSOrderedSet(array: remote.recommendations.compactMap { remote in
@@ -50,8 +44,7 @@ extension Slate {
 extension Recommendation {
     public typealias RemoteRecommendation = SlateParts.Recommendation
 
-    func update(from remote: RemoteRecommendation, in space: Space, context: NSManagedObjectContext? = nil) {
-        let context = context ?? space.backgroundContext
+    func update(from remote: RemoteRecommendation, in space: Space, context: NSManagedObjectContext) {
         let id = remote.id
         guard let url = URL(string: remote.item.givenUrl) else {
             // TODO: Daniel work to make id non-null in the API Layer.
