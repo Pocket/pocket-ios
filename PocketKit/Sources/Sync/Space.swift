@@ -30,12 +30,17 @@ public class Space {
         return try context.performAndWait { try context.fetch(request) }
     }
 
-    func delete(_ object: NSManagedObject) {
-        backgroundContext.performAndWait {
+    /// Deletes an entity from the specified context.  If context is nil, the default `backgroundContext` is used
+    /// - Parameters:
+    ///   - object: entity to be removed
+    ///   - context: the specified context, or nil.
+    func delete(_ object: NSManagedObject, in context: NSManagedObjectContext? = nil) {
+        let context = context ?? backgroundContext
+        context.performAndWait {
             guard let object = backgroundObject(with: object.objectID) else {
                 return
             }
-            backgroundContext.delete(object)
+            context.delete(object)
         }
     }
 
@@ -53,21 +58,37 @@ public class Space {
         backgroundContext.performAndWait { objects.compactMap({ backgroundObject(with: $0.objectID) }).forEach(backgroundContext.delete(_:)) }
     }
 
-    func save() throws {
-        try backgroundContext.performAndWait {
-            //try backgroundContext.obtainPermanentIDs(for: Array(backgroundContext.insertedObjects))
-            if backgroundContext.hasChanges {
-                try backgroundContext.save()
+    /// Saves the specified  context. If context is nil, saves `backgroundContext`
+    /// - Parameter context: the specified context, or nil.
+    func save(context: NSManagedObjectContext? = nil) throws {
+        let context = context ?? backgroundContext
+        try context.performAndWait {
+            guard context.hasChanges else {
+                return
             }
+            try context.save()
         }
     }
 
-    func performAndWait<T>(_ block: () throws -> T) rethrows -> T {
-        return try backgroundContext.performAndWait(block)
+    /// Calls `performAndWait` on the specified context, passing the specified closure. If context is nil, `backgroundContext` is used
+    /// - Parameters:
+    ///   - context: the specified context or nil
+    ///   - block: the specified closure
+    func performAndWait<T>(context: NSManagedObjectContext? = nil, _ block: () throws -> T) rethrows -> T {
+        let context = context ?? backgroundContext
+        return try context.performAndWait(block)
     }
 
-    func perform<T>(schedule: NSManagedObjectContext.ScheduledTaskType = .immediate, _ block: @escaping () throws -> T) async rethrows -> T {
-        return try await backgroundContext.perform(schedule: schedule, block)
+    /// Calls `perform` on the specified context, passing the specified closure. If context is nil, `backgroundContext` is used
+    /// - Parameters:
+    ///   - schedule: schedule type, defaunts to `.immediate`
+    ///   - block: the specified closure
+    ///   - context: the specified context, or nil
+    func perform<T>(schedule: NSManagedObjectContext.ScheduledTaskType = .immediate,
+                    context: NSManagedObjectContext? = nil,
+                    _ block: @escaping () throws -> T) async rethrows -> T {
+        let context = context ?? backgroundContext
+        return try await context.perform(schedule: schedule, block)
     }
 
     func clear() throws {
@@ -107,6 +128,15 @@ public class Space {
         viewContext.performAndWait {
             viewContext.refresh(object, mergeChanges: mergeChanges)
         }
+    }
+
+    /// Creates a child context to `backgroundContext`
+    /// - Returns: the child context.
+    func makeChildBackgroundContext() -> NSManagedObjectContext {
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.parent = backgroundContext
+        context.automaticallyMergesChangesFromParent = true
+        return context
     }
 }
 
@@ -300,6 +330,56 @@ extension Space {
         let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
         _ = try backgroundContext.performAndWait {
             try backgroundContext.execute(deleteRequest)
+        }
+    }
+
+    /// Updates a `SlateLineup` from the specified remote object, on a child background context
+    /// - Parameter remote: the specified remote object
+    func updateLineup(from remote: SlateLineup.RemoteSlateLineup) throws {
+        let context = makeChildBackgroundContext()
+
+        context.performAndWait { [weak self] in
+            guard let self else { return }
+
+            let lineup = (try? self.fetchSlateLineup(byRemoteID: remote.id, context: context)) ??
+            SlateLineup(context: context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
+
+            lineup.update(from: remote, in: self, context: context)
+        }
+        // save the child context
+        try context.performAndWait {
+            guard context.hasChanges else {
+                return
+            }
+            try context.save()
+            // then save the parent context
+            try save()
+            // then purge orphaned objects from the parent
+            try batchDeleteOrphanedSlates()
+            try batchDeleteOrphanedItems()
+        }
+    }
+
+    /// Updates a `Slate` from the specified remote object, on a child background context
+    /// - Parameter remote: the specified remote object
+    func updateSlate(from remote: Slate.RemoteSlate) throws {
+        let context = makeChildBackgroundContext()
+        context.performAndWait { [weak self] in
+            guard let self else { return }
+
+            let slate = (try? self.fetchSlate(byRemoteID: remote.id)) ??
+            Slate(context: context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
+            slate.update(from: remote, in: self, context: context)
+        }
+
+        try context.performAndWait {
+            guard context.hasChanges else {
+                return
+            }
+            // save the child context
+            try context.save()
+            // then save the parent context
+            try save()
         }
     }
 }
