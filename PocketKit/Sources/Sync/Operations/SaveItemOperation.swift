@@ -28,7 +28,7 @@ class SaveItemOperation: SyncOperation {
         self.space = space
     }
 
-    func execute() async -> SyncOperationResult {
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
         let input = SavedItemUpsertInput(url: url.absoluteString)
         let mutation = SaveItemMutation(input: input)
 

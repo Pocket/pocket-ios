@@ -106,6 +106,7 @@ class RefreshCoordinatorTests: XCTestCase {
     func test_receivingAppWillEnterForegroundNotification_refreshesSource_andResolvesUnresolvedSavedItems() {
         taskScheduler.stubRegisterHandler { _, _, _ in true }
         source.stubRefreshSaves { _ in }
+        source.stubRefreshTags { _ in }
         source.stubRefreshArchive { _ in }
         source.stubResolveUnresolvedSavedItems { }
 
@@ -134,5 +135,6 @@ class RefreshCoordinatorTests: XCTestCase {
         XCTAssertNil(source.refreshSavesCall(at: 0))
         XCTAssertNil(source.resolveUnresolvedSavedItemsCall(at: 0))
         XCTAssertNil(source.refreshArchiveCall(at: 0))
+        XCTAssertNil(source.refreshTagsCall(at: 0))
     }
 }

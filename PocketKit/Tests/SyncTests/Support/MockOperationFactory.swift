@@ -15,7 +15,6 @@ class MockOperationFactory: SyncOperationFactory {
 // MARK: - fetchSaves
 extension MockOperationFactory {
     typealias FetchSavesImpl = (
-        User,
         ApolloClientProtocol,
         Space,
         SyncEvents,
@@ -23,7 +22,6 @@ extension MockOperationFactory {
     ) -> SyncOperation
 
     struct FetchSavesCall {
-        let user: User
         let apollo: ApolloClientProtocol
         let space: Space
         let events: SyncEvents
@@ -36,7 +34,6 @@ extension MockOperationFactory {
     }
 
     func fetchSaves(
-        user: User,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
@@ -49,7 +46,6 @@ extension MockOperationFactory {
 
         calls["fetchSaves"] = (calls["fetchSaves"] ?? []) + [
             FetchSavesCall(
-                user: user,
                 apollo: apollo,
                 space: space,
                 events: events,
@@ -58,7 +54,7 @@ extension MockOperationFactory {
             )
         ]
 
-        return impl(user, apollo, space, events, initialDownloadState)
+        return impl(apollo, space, events, initialDownloadState)
     }
 
     func fetchSavesCall(at index: Int) -> FetchSavesCall? {
@@ -121,6 +117,56 @@ extension MockOperationFactory {
         }
 
         return fetchArchiveCalls[index] as? FetchArchiveCall
+    }
+}
+
+// MARK: - fetchTags
+extension MockOperationFactory {
+    typealias FetchTagsImpl = (
+        ApolloClientProtocol,
+        Space,
+        SyncEvents
+    ) -> SyncOperation
+
+    struct FetchTagsCall {
+        let apollo: ApolloClientProtocol
+        let space: Space
+        let events: SyncEvents
+        let lastRefresh: LastRefresh
+    }
+
+    func stubFetchTags(impl: @escaping FetchTagsImpl) {
+        implementations["fetchTags"] = impl
+    }
+
+    func fetchTags(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation {
+        guard let impl = implementations["fetchTags"] as? FetchTagsImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls["fetchTags"] = (calls["fetchTags"] ?? []) + [
+            FetchTagsCall(
+                apollo: apollo,
+                space: space,
+                events: events,
+                lastRefresh: lastRefresh
+            )
+        ]
+
+        return impl(apollo, space, events)
+    }
+
+    func fetchTagsCall(at index: Int) -> FetchTagsCall? {
+        guard let fetchTagsCalls = calls["fetchTags"], index < fetchTagsCalls.count else {
+            return nil
+        }
+
+        return fetchTagsCalls[index] as? FetchTagsCall
     }
 }
 

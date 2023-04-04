@@ -33,6 +33,17 @@ public struct SyncConstants {
         public static let timeMustPass = 5.0
     }
 
+    public  struct Tags {
+        /// How many tags we should load on the first login request for tags, we use a small value here so the user immediately sees content.
+        public  static let initalPageSize = 15
+
+        /// How many saves to load per subsequent page until we hit our load count.
+        public  static let pageSize = 30
+
+        /// How many seconds must pass from the last load of saves data before we allow hitting the server again.
+        public static let timeMustPass = 5.0
+    }
+
     public struct Home {
         /// How many recomendations to pull in when we load them via getSlateLineup (ie. Home)
         static let recomendationsPerSlateFromSlateLineup = 15

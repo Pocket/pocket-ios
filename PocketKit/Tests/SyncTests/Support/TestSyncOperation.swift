@@ -1,4 +1,5 @@
 @testable import Sync
+import CoreData
 
 class TestSyncOperation: SyncOperation {
     private let block: () async -> SyncOperationResult
@@ -14,7 +15,7 @@ class TestSyncOperation: SyncOperation {
         }
     }
 
-    func execute() async -> SyncOperationResult {
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
         return await block()
     }
 }
