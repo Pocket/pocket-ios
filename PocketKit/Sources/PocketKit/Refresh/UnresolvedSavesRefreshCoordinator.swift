@@ -4,6 +4,7 @@
 
 import Foundation
 import Sync
+import SharedPocketKit
 
 /// Refresh coordinator to handle the refreshing of all unresolved saves
 class UnresolvedSavesRefreshCoordinator: AbstractRefreshCoordinator {
@@ -21,9 +22,9 @@ class UnresolvedSavesRefreshCoordinator: AbstractRefreshCoordinator {
     }
     private let source: Source
 
-    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, sessionProvider: SessionProvider, source: Source) {
+    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source) {
         self.source = source
-        super.init(notificationCenter: notificationCenter, taskScheduler: taskScheduler, sessionProvider: sessionProvider)
+        super.init(notificationCenter: notificationCenter, taskScheduler: taskScheduler, appSession: appSession)
     }
 
     override func refresh(completion: @escaping () -> Void) {

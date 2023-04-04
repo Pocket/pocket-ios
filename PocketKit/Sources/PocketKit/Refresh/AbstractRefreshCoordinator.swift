@@ -6,6 +6,7 @@ import BackgroundTasks
 import Sync
 import UIKit
 import Combine
+import SharedPocketKit
 
 protocol AbstractRefreshCoordinatorProtocol {
 
@@ -32,18 +33,18 @@ class AbstractRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
 
     private let notificationCenter: NotificationCenter
     private let taskScheduler: BGTaskSchedulerProtocol
-    private let sessionProvider: SessionProvider
+    private let appSession: AppSession
 
     private var subscriptions: [AnyCancellable] = []
 
     init(
         notificationCenter: NotificationCenter,
         taskScheduler: BGTaskSchedulerProtocol,
-        sessionProvider: SessionProvider
+        appSession: AppSession
     ) {
         self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
-        self.sessionProvider = sessionProvider
+        self.appSession = appSession
     }
 
     func initialize() {
@@ -56,6 +57,42 @@ class AbstractRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
             self.submitRequest()
         }
 
+        // Register for login notifications
+        NotificationCenter.default.publisher(
+            for: .userLoggedIn
+        ).sink { [weak self] notification in
+            self?.handleSession(session: notification.object as? SharedPocketKit.Session)
+            guard (notification.object as? SharedPocketKit.Session) != nil else {
+                return
+            }
+        }.store(in: &subscriptions)
+
+        // Register for logout notifications
+        NotificationCenter.default.publisher(
+            for: .userLoggedOut
+        ).sink { [weak self] notification in
+            self?.handleSession(session: nil)
+        }.store(in: &subscriptions)
+
+        // Because session could already be available at init, lets try and use it.
+        handleSession(session: appSession.currentSession)
+    }
+
+    /**
+     Handles a session if it exists.
+     */
+    func handleSession(session: SharedPocketKit.Session?) {
+        guard let session = session else {
+            // If the session is nil, ensure the user's view is logged out
+            self.tearDownSession()
+            return
+        }
+
+        // We have a session! Ensure the user is logged in.
+        self.setUpSession(session)
+    }
+
+    private func setUpSession(_ session: SharedPocketKit.Session) {
         notificationCenter.publisher(for: UIScene.didEnterBackgroundNotification, object: nil).sink { [weak self] _ in
             guard let self else {
                 Log.captureNilWeakSelf()
@@ -71,13 +108,17 @@ class AbstractRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
             }
             self.refresh {}
         }.store(in: &subscriptions)
+    }
 
-        // TODO: add in logout/login handling
+    private func tearDownSession() {
+        subscriptions = []
+        taskScheduler.cancel(taskID)
     }
 
     internal func refresh(completion: @escaping () -> Void) {
-        guard (sessionProvider.session) != nil else {
+        guard (appSession.currentSession) != nil else {
             Log.info("Not refreshing \(Self.Type.self) because no active session")
+            completion()
             return
         }
     }

@@ -14,6 +14,8 @@ protocol BGTaskSchedulerProtocol {
     ) -> Bool
 
     func submit(_ taskRequest: BGTaskRequest) throws
+
+    func cancel(_ identifier: String)
 }
 
 // MARK: - BackgroundTasks Extensions
@@ -28,5 +30,9 @@ extension BGTaskScheduler: BGTaskSchedulerProtocol {
         register(forTaskWithIdentifier: identifier, using: queue) { task in
             launchHandler(task)
         }
+    }
+
+    func cancel(_ identifier: String) {
+        cancel(taskRequestWithIdentifier: identifier)
     }
 }

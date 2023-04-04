@@ -6,6 +6,7 @@ import Foundation
 import UIKit
 import Combine
 import Sync
+import SharedPocketKit
 
 protocol HomeRefreshCoordinatorProtocol {
     /// Refresh method that can be called by View Model classes
@@ -35,10 +36,10 @@ class HomeRefreshCoordinator: AbstractRefreshCoordinator, HomeRefreshCoordinator
     private var subscriptions: [AnyCancellable] = []
     private var isRefreshing: Bool = false
 
-    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, sessionProvider: SessionProvider, source: Source, userDefaults: UserDefaults) {
+    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, userDefaults: UserDefaults) {
         self.source = source
         self.userDefaults = userDefaults
-        super.init(notificationCenter: notificationCenter, taskScheduler: taskScheduler, sessionProvider: sessionProvider)
+        super.init(notificationCenter: notificationCenter, taskScheduler: taskScheduler, appSession: appSession)
     }
 
     override func refresh(completion: @escaping () -> Void) {

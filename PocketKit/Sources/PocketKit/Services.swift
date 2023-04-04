@@ -78,35 +78,35 @@ struct Services {
         savesRefreshCoordinator = SavesRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            sessionProvider: appSession,
+            appSession: appSession,
             source: source
         )
 
         archiveRefreshCoordinator = ArchiveRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            sessionProvider: appSession,
+            appSession: appSession,
             source: source
         )
 
         tagsRefreshCoordinator = TagsRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            sessionProvider: appSession,
+            appSession: appSession,
             source: source
         )
 
         unresolvedSavesRefreshCoordinator = UnresolvedSavesRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            sessionProvider: appSession,
+            appSession: appSession,
             source: source
         )
 
         homeRefreshCoordinator = HomeRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            sessionProvider: appSession,
+            appSession: appSession,
             source: source,
             userDefaults: userDefaults
         )
