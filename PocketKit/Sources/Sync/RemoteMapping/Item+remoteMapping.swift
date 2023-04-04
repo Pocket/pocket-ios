@@ -136,7 +136,7 @@ extension Item {
         }
 
         if let syndicatedArticle = summary.syndicatedArticle, let itemId = syndicatedArticle.itemId {
-            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId)) ?? SyndicatedArticle(context: context)
+            self.syndicatedArticle = (try? space.fetchSyndicatedArticle(byItemId: itemId, context: context)) ?? SyndicatedArticle(context: context)
             self.syndicatedArticle?.itemID = itemId
             self.syndicatedArticle?.publisherName = syndicatedArticle.publisher?.name
             self.syndicatedArticle?.title = syndicatedArticle.title
