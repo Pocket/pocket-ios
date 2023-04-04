@@ -3,36 +3,41 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import SwiftUI
 
-struct TagsCell: View {
-    let tag: String
-    let tagAction: (String) -> Bool
+public struct TagsCell: View {
+    let tag: TagType
+    let tagAction: (TagType) -> Void
 
-    var body: some View {
+    public init(tag: TagType, tagAction: @escaping (TagType) -> Void) {
+        self.tag = tag
+        self.tagAction = tagAction
+    }
+
+    public var body: some View {
         HStack {
-            Text(tag)
+            Text(tag.name)
                 .style(.tags.allTags)
+                .accessibilityIdentifier("all-tags")
             Spacer()
         }
         .contentShape(Rectangle())
         .onTapGesture {
-            _ = tagAction(tag)
+            tagAction(tag)
         }
     }
 }
 
 struct TagsCell_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        let tagAction = { (tag: String) -> Bool in
-            print("\(tag) action")
-            return true
+        let tagAction = { (tag: TagType) -> Void in
+            print("\(tag.name) action")
         }
 
-        TagsCell(tag: "test tag", tagAction: tagAction)
+        TagsCell(tag: TagType.tag("test tag"), tagAction: tagAction)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Light")
             .preferredColorScheme(.light)
 
-        TagsCell(tag: "test tag", tagAction: tagAction)
+        TagsCell(tag: TagType.tag("test tag"), tagAction: tagAction)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Dark")
             .preferredColorScheme(.dark)

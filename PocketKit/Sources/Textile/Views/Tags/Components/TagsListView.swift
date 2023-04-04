@@ -7,8 +7,8 @@ import SwiftUI
 struct TagsListView: View {
     let sectionTitle: String
     let emptyStateText: String
-    let usersTags: [String]
-    let tagAction: (String) -> Bool
+    let usersTags: [TagType]
+    let tagAction: (TagType) -> Void
 
     var body: some View {
         if !usersTags.isEmpty {
@@ -29,15 +29,14 @@ struct TagsListView: View {
 
 struct TagsListView_PreviewProvider: PreviewProvider {
     static var previews: some View {
-        let tagAction = { (tag: String) -> Bool in
-            print("\(tag) action")
-            return true
+        let tagAction = { (tag: TagType) -> Void in
+            print("\(tag.name) action")
         }
 
         TagsListView(
             sectionTitle: "tag section title",
             emptyStateText: "empty state text",
-            usersTags: ["tag 0", "tag 1", "tag 2"],
+            usersTags: [TagType.tag("tag 0"), TagType.tag("tag 1"), TagType.tag("tag 2")],
             tagAction: tagAction
         )
         .previewLayout(.sizeThatFits)
@@ -47,7 +46,7 @@ struct TagsListView_PreviewProvider: PreviewProvider {
         TagsListView(
             sectionTitle: "tag section title",
             emptyStateText: "empty state text",
-            usersTags: ["tag 0", "tag 1", "tag 2"],
+            usersTags: [TagType.tag("tag 0"), TagType.tag("tag 1"), TagType.tag("tag 2")],
             tagAction: tagAction
         )
         .previewLayout(.sizeThatFits)
