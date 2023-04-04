@@ -8,14 +8,11 @@ enum Constants {
 }
 
 public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
-    @ObservedObject
-    var viewModel: ViewModel
+    @ObservedObject var viewModel: ViewModel
 
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(\.dismiss) private var dismiss
 
-    @FocusState
-    private var isTextFieldFocused: Bool
+    @FocusState private var isTextFieldFocused: Bool
 
     public init(viewModel: ViewModel) {
         self.viewModel = viewModel

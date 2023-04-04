@@ -15,8 +15,7 @@ class OnlineSearch {
 
     var pageNumberLoaded: Int = 0
 
-    @Published
-    var results: Result<[PocketItem], Error>?
+    @Published var results: Result<[PocketItem], Error>?
 
     init(source: Source, scope: SearchScope) {
         self.source = source

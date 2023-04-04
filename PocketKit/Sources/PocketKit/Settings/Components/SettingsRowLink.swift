@@ -2,8 +2,7 @@ import SwiftUI
 import Textile
 
 struct SettingsRowLink<Destination: View>: View {
-    @State
-    var isActive: Bool = false
+    @State var isActive: Bool = false
 
     var title: String
     var titleStyle: Style = .settings.row.default

@@ -13,14 +13,11 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     var sectionTitle: TagSectionType = .allTags
 
-    @Published
-    var tags: [String] = []
+    @Published var tags: [String] = []
 
-    @Published
-    var newTagInput: String = ""
+    @Published var newTagInput: String = ""
 
-    @Published
-    var otherTags: [TagType] = []
+    @Published var otherTags: [TagType] = []
 
     init(item: SavedItem, source: Source, tracker: Tracker, saveAction: @escaping () -> Void) {
         self.item = item

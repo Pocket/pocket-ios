@@ -28,8 +28,7 @@ class LoggedOutViewController: UIHostingController<LoggedOutView> {
 }
 
 struct LoggedOutView: View {
-    @ObservedObject
-    private var viewModel: LoggedOutViewModel
+    @ObservedObject private var viewModel: LoggedOutViewModel
 
     init(viewModel: LoggedOutViewModel) {
         self.viewModel = viewModel

@@ -9,8 +9,7 @@ enum SortMenuSourceView {
 
 class SortMenuViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<SortSection, SortOption>
-    @Published
-    private(set) var snapshot = Snapshot()
+    @Published private(set) var snapshot = Snapshot()
 
     private let source: Source
     private let tracker: Tracker
