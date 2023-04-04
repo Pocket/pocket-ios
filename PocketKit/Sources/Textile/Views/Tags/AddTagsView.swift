@@ -2,11 +2,6 @@ import SwiftUI
 import UIKit
 import Combine
 
-enum Constants {
-    static let tagsHorizontalSpacing: CGFloat = 6
-    static let tagPadding: CGFloat = 4
-}
-
 public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
     @ObservedObject var viewModel: ViewModel
 
