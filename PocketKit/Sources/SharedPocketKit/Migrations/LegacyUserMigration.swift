@@ -42,9 +42,8 @@ public class LegacyUserMigration {
         self.keychain = keychain
         self.groupID = groupID
     }
-
-    @discardableResult
-    public func perform() throws -> Bool {
+    
+    func decryptUserData() throws -> Data {
         guard let password = currentPassword else {
             throw LegacyUserMigrationError.missingKey
         }
@@ -67,18 +66,30 @@ public class LegacyUserMigration {
         guard let decryptedData = decryptedData else {
             throw LegacyUserMigrationError.missingData
         }
-
-        let legacyStore: LegacyStore
+        
+        return decryptedData
+    }
+    
+    private func getLegacyStore(from decryptedData: Data) throws -> LegacyStore {
         do {
-            legacyStore = try JSONDecoder().decode(LegacyStore.self, from: decryptedData)
+            return try JSONDecoder().decode(LegacyStore.self, from: decryptedData)
         } catch {
             throw LegacyUserMigrationError.failedDeserialization(error)
         }
+    }
 
+    @discardableResult
+    public func perform(migrationAnalytics: ()-> Void) throws -> Bool {
+
+        let userData = try decryptUserData()
+        let legacyStore = try getLegacyStore(from: userData)
+        
         guard isRequired(version: legacyStore.version) else {
             updateUserDefaults()
             return false
         }
+        
+        migrationAnalytics()
 
         appSession.currentSession = Session(
             guid: legacyStore.guid,
