@@ -22,7 +22,11 @@ struct Services {
     let tracker: Tracker
     let sceneTracker: SceneTracker
     let savesRefreshCoordinator: SavesRefreshCoordinator
+    let archiveRefreshCoordinator: ArchiveRefreshCoordinator
+    let tagsRefreshCoordinator: TagsRefreshCoordinator
+    let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
+    let refreshCoordinators: [AbstractRefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
     let notificationService: PushNotificationService
@@ -78,12 +82,42 @@ struct Services {
             source: source
         )
 
+        archiveRefreshCoordinator = ArchiveRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            sessionProvider: appSession,
+            source: source
+        )
+
+        tagsRefreshCoordinator = TagsRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            sessionProvider: appSession,
+            source: source
+        )
+
+        unresolvedSavesRefreshCoordinator = UnresolvedSavesRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            sessionProvider: appSession,
+            source: source
+        )
+
         homeRefreshCoordinator = HomeRefreshCoordinator(
             notificationCenter: .default,
-            userDefaults: userDefaults,
+            taskScheduler: BGTaskScheduler.shared,
+            sessionProvider: appSession,
             source: source,
-            sessionProvider: appSession
+            userDefaults: userDefaults
         )
+
+        refreshCoordinators = [
+            savesRefreshCoordinator,
+            archiveRefreshCoordinator,
+            tagsRefreshCoordinator,
+            unresolvedSavesRefreshCoordinator,
+            homeRefreshCoordinator
+        ]
 
         imageManager = ImageManager(
             imagesController: source.makeImagesController(),

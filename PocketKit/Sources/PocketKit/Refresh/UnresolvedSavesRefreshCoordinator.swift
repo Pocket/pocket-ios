@@ -5,20 +5,20 @@
 import Foundation
 import Sync
 
-/// Refresh coordinator to handle the refreshing of a Users Save data
-class SavesRefreshCoordinator: AbstractRefreshCoordinator {
+/// Refresh coordinator to handle the refreshing of all unresolved saves
+class UnresolvedSavesRefreshCoordinator: AbstractRefreshCoordinator {
 
     override var taskID: String! {
-        get { return  "com.mozilla.pocket.refresh.saves" }
+        get { return  "com.mozilla.pocket.refresh.unresolved" }
         // set nothing, because only the identifier is allowed
         set {  }
     }
 
     override var refreshInterval: TimeInterval! {
         get { return  60 * 60 }
+        // set nothing, because only the identifier is allowed
         set {  }
     }
-
     private let source: Source
 
     init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, sessionProvider: SessionProvider, source: Source) {
@@ -28,7 +28,7 @@ class SavesRefreshCoordinator: AbstractRefreshCoordinator {
 
     override func refresh(completion: @escaping () -> Void) {
         super.refresh(completion: completion)
-        self.source.refreshSaves {
+        self.source.resolveUnresolvedSavedItems {
             completion()
         }
     }

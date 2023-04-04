@@ -80,7 +80,7 @@ public protocol Source {
 
     func restore()
 
-    func resolveUnresolvedSavedItems()
+    func resolveUnresolvedSavedItems(completion: (() -> Void)?)
 
     func save(recommendation: Recommendation)
 
@@ -121,4 +121,9 @@ public extension Source {
     func refreshTags() {
         self.refreshTags(completion: nil)
     }
+
+    func resolveUnresolvedSavedItems() {
+        self.resolveUnresolvedSavedItems(completion: nil)
+    }
+
 }

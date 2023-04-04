@@ -5,17 +5,18 @@
 import Foundation
 import Sync
 
-/// Refresh coordinator to handle the refreshing of a Users Save data
-class SavesRefreshCoordinator: AbstractRefreshCoordinator {
+/// Refresh coordinator to handle the refreshing of a Users tag data
+class TagsRefreshCoordinator: AbstractRefreshCoordinator {
 
     override var taskID: String! {
-        get { return  "com.mozilla.pocket.refresh.saves" }
+        get { return  "com.mozilla.pocket.refresh.tags" }
         // set nothing, because only the identifier is allowed
         set {  }
     }
 
     override var refreshInterval: TimeInterval! {
         get { return  60 * 60 }
+        // set nothing, because only the identifier is allowed
         set {  }
     }
 
@@ -28,7 +29,7 @@ class SavesRefreshCoordinator: AbstractRefreshCoordinator {
 
     override func refresh(completion: @escaping () -> Void) {
         super.refresh(completion: completion)
-        self.source.refreshSaves {
+        self.source.refreshTags {
             completion()
         }
     }

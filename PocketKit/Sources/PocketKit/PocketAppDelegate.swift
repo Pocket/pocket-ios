@@ -29,7 +29,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.source = services.source
         self.userDefaults = services.userDefaults
         self.firstLaunchDefaults = services.firstLaunchDefaults
-        self.refreshCoordinators = [services.savesRefreshCoordinator]
+        self.refreshCoordinators = services.refreshCoordinators
         self.appSession = services.appSession
         self.notificationService = services.notificationService
         self.user = services.user
