@@ -21,7 +21,7 @@ struct Services {
     let source: Sync.Source
     let tracker: Tracker
     let sceneTracker: SceneTracker
-    let refreshCoordinator: RefreshCoordinator
+    let savesRefreshCoordinator: SavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
     let authClient: AuthorizationClient
     let imageManager: ImageManager
@@ -71,11 +71,11 @@ struct Services {
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
 
-        refreshCoordinator = RefreshCoordinator(
+        savesRefreshCoordinator = SavesRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
-            source: source,
-            sessionProvider: appSession
+            sessionProvider: appSession,
+            source: source
         )
 
         homeRefreshCoordinator = HomeRefreshCoordinator(

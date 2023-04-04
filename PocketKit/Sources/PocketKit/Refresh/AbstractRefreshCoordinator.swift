@@ -3,12 +3,29 @@ import Sync
 import UIKit
 import Combine
 
-class RefreshCoordinator {
-    static let taskID = "com.mozilla.pocket.next.refresh"
+protocol AbstractRefreshCoordinatorProtocol {
+
+    func initialize()
+
+    func refresh(completion: (() -> Void)?)
+
+    func handleBackgroundRefresh(_ task: BGTaskProtocol)
+}
+
+extension AbstractRefreshCoordinatorProtocol {
+    var taskID: String {
+        fatalError("implement taskID")
+    }
+
+    var refreshInterval: TimeInterval {
+        fatalError("implement refreshInterval")
+    }
+}
+
+class AbstractRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
 
     private let notificationCenter: NotificationCenter
     private let taskScheduler: BGTaskSchedulerProtocol
-    private let source: Source
     private let sessionProvider: SessionProvider
 
     private var subscriptions: [AnyCancellable] = []
@@ -16,18 +33,16 @@ class RefreshCoordinator {
     init(
         notificationCenter: NotificationCenter,
         taskScheduler: BGTaskSchedulerProtocol,
-        source: Source,
         sessionProvider: SessionProvider
     ) {
         self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
-        self.source = source
         self.sessionProvider = sessionProvider
     }
 
     func initialize() {
-        _ = taskScheduler.registerHandler(forTaskWithIdentifier: Self.taskID, using: .global(qos: .background)) { [weak self] task in
-            self?.refresh(task)
+        _ = taskScheduler.registerHandler(forTaskWithIdentifier: taskID, using: .global(qos: .background)) { [weak self] task in
+            self?.handleBackgroundRefresh(task)
             self?.submitRequest()
         }
 
@@ -36,25 +51,27 @@ class RefreshCoordinator {
         }.store(in: &subscriptions)
 
         notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
-            self?.refreshData()
+            self?.refresh()
         }.store(in: &subscriptions)
+
+        // TODO: add in logout/login handling
     }
 
-    private func refreshData() {
+    internal func refresh(completion: (() -> Void)? = nil) {
         guard (sessionProvider.session) != nil else {
-            Log.info("Not refreshing saves & archive data because no active session")
+            Log.info("Not refreshing \(Self.Type.self) because no active session")
             return
         }
-        self.source.refreshSaves()
-        self.source.refreshArchive()
-        self.source.refreshTags()
-        self.source.resolveUnresolvedSavedItems()
+
+//        self.source.refreshArchive()
+//        self.source.refreshTags()
+//        self.source.resolveUnresolvedSavedItems()
     }
 
     private func submitRequest() {
         do {
-            let request = BGAppRefreshTaskRequest(identifier: "com.mozilla.pocket.next.refresh")
-            request.earliestBeginDate = Date().addingTimeInterval(60 * 60) // Tell apple we can refresh in an hour.
+            let request = BGAppRefreshTaskRequest(identifier: taskID)
+            request.earliestBeginDate = Date().addingTimeInterval(refreshInterval)
 
             try taskScheduler.submit(request)
         } catch {
@@ -62,12 +79,12 @@ class RefreshCoordinator {
         }
     }
 
-    private func refresh(_ task: BGTaskProtocol) {
+    internal func handleBackgroundRefresh(_ task: BGTaskProtocol) {
         task.expirationHandler = {
             task.setTaskCompleted(success: false)
         }
 
-        source.refreshSaves {
+        self.refresh {
             task.setTaskCompleted(success: true)
         }
     }

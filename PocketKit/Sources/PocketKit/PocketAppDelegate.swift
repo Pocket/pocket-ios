@@ -16,7 +16,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let source: Source
     private let userDefaults: UserDefaults
     private let firstLaunchDefaults: UserDefaults
-    private let refreshCoordinator: RefreshCoordinator
+    private let refreshCoordinators: [AbstractRefreshCoordinator]
     private let appSession: AppSession
     internal let notificationService: PushNotificationService
     private let user: User
@@ -29,7 +29,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.source = services.source
         self.userDefaults = services.userDefaults
         self.firstLaunchDefaults = services.firstLaunchDefaults
-        self.refreshCoordinator = services.refreshCoordinator
+        self.refreshCoordinators = [services.savesRefreshCoordinator]
         self.appSession = services.appSession
         self.notificationService = services.notificationService
         self.user = services.user
@@ -76,7 +76,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             )
         }
 
-        self.refreshCoordinator.initialize()
+        self.refreshCoordinators.forEach({$0.initialize()})
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.source.restore()
         }
