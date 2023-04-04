@@ -2,6 +2,7 @@ import SwiftUI
 import Sync
 import Analytics
 import Textile
+import Localization
 
 struct ReportRecommendationView: View {
     private struct Constants {
@@ -42,7 +43,7 @@ struct ReportRecommendationView: View {
 
     var body: some View {
         List {
-            Section(header: Text(L10n.reportAConcern)) {
+            Section(header: Text(Localization.reportAConcern)) {
                 ForEach(ReportEntity.Reason.allCases, id: \.self) { reason in
                     ReportReasonRow(
                         text: reason.localized,
@@ -70,7 +71,7 @@ struct ReportRecommendationView: View {
                 }
 
                 Button(action: submitReport) {
-                    Text(isReported ? L10n.reported : L10n.submitFeedback)
+                    Text(isReported ? Localization.reported : Localization.submitFeedback)
                 }.buttonStyle(PocketButtonStyle(.primary))
                 .padding()
                 .listRowBackground(Rectangle().foregroundColor(.clear))
@@ -161,7 +162,7 @@ private struct ReportCommentRow: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             if text.wrappedValue.isEmpty && isFocused.wrappedValue == false {
-                Text(L10n.tellUsMore)
+                Text(Localization.tellUsMore)
                     .style(.recommendationRowStyle)
                     .padding(Constants.placeholderPadding)
                     .opacity(Constants.placeholderOpacity)
@@ -186,12 +187,12 @@ private extension Style {
 private extension ReportEntity.Reason {
     var localized: String {
         switch self {
-        case .brokenMeta: return L10n.theTitleLinkOrImageIsBroken
-        case .wrongCategory: return L10n.itSInTheWrongCategory
-        case .sexuallyExplicit: return L10n.itSSexuallyExplicit
-        case .offensive: return L10n.itSRudeVulgarOrOffensive
-        case .misinformation: return L10n.itContainsMisinformation
-        case .other: return L10n.other
+        case .brokenMeta: return Localization.theTitleLinkOrImageIsBroken
+        case .wrongCategory: return Localization.itSInTheWrongCategory
+        case .sexuallyExplicit: return Localization.itSSexuallyExplicit
+        case .offensive: return Localization.itSRudeVulgarOrOffensive
+        case .misinformation: return Localization.itContainsMisinformation
+        case .other: return Localization.other
         }
     }
 

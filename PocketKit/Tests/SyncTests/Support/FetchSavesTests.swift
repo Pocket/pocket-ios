@@ -17,6 +17,7 @@ class FetchSavesTests: XCTestCase {
     var queue: OperationQueue!
     var lastRefresh: MockLastRefresh!
     var cancellables: Set<AnyCancellable> = []
+    var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
@@ -26,6 +27,9 @@ class FetchSavesTests: XCTestCase {
         queue = OperationQueue()
         lastRefresh = MockLastRefresh()
         space = .testSpace()
+        task = PersistentSyncTask(context: space.backgroundContext)
+        task.syncTaskContainer = SyncTaskContainer(task: .fetchSaves)
+        try space.save()
     }
 
     override func tearDownWithError() throws {
@@ -34,7 +38,6 @@ class FetchSavesTests: XCTestCase {
     }
 
     func subject(
-        user: User? = nil,
         apollo: ApolloClientProtocol? = nil,
         space: Space? = nil,
         events: SyncEvents? = nil,
@@ -42,11 +45,24 @@ class FetchSavesTests: XCTestCase {
         lastRefresh: LastRefresh? = nil
     ) -> FetchSaves {
         FetchSaves(
-            user: user ?? self.user,
             apollo: apollo ?? self.apollo,
             space: space ?? self.space,
             events: events ?? self.events,
             initialDownloadState: initialDownloadState ?? self.initialDownloadState,
+            lastRefresh: lastRefresh ?? self.lastRefresh
+        )
+    }
+
+    func tagsSubject(
+        apollo: ApolloClientProtocol? = nil,
+        space: Space? = nil,
+        events: SyncEvents? = nil,
+        lastRefresh: LastRefresh? = nil
+    ) -> FetchTags {
+        FetchTags(
+            apollo: apollo ?? self.apollo,
+            space: space ?? self.space,
+            events: events ?? self.events,
             lastRefresh: lastRefresh ?? self.lastRefresh
         )
     }
@@ -56,7 +72,7 @@ class FetchSavesTests: XCTestCase {
         apollo.setupFetchSavesSyncResponse()
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         XCTAssertFalse(apollo.fetchCalls(withQueryType: FetchSavesQuery.self).isEmpty)
         let _: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
@@ -69,7 +85,7 @@ class FetchSavesTests: XCTestCase {
         apollo.setupFetchSavesSyncResponse()
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         let savedItems = try space.fetchAllSavedItems()
         XCTAssertEqual(savedItems.count, 2)
@@ -122,7 +138,7 @@ class FetchSavesTests: XCTestCase {
         apollo.setupFetchSavesSyncResponse(listFixtureName: "duplicate-list")
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         let items = try space.fetchSavedItems()
         XCTAssertEqual(items.count, 1)
@@ -137,7 +153,7 @@ class FetchSavesTests: XCTestCase {
         )
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         let item = try space.fetchSavedItem(byRemoteID: "saved-item-1")
         XCTAssertEqual(item?.item?.title, "Updated Item 1")
@@ -158,7 +174,7 @@ class FetchSavesTests: XCTestCase {
         }.store(in: &cancellables)
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         XCTAssertEqual(error as? TestError, .anError)
         XCTAssertEqual(lastRefresh.refreshedSavesCallCount, 0)
@@ -168,7 +184,7 @@ class FetchSavesTests: XCTestCase {
         var fetches = 0
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
-        apollo.stubFetch { (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
@@ -177,6 +193,7 @@ class FetchSavesTests: XCTestCase {
                 result = Fixture.load(name: "paginated-list-1")
             case 1:
                 XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-1")
+                XCTAssertEqual(self?.task.currentCursor!, "cursor-1")
                 result = Fixture.load(name: "paginated-list-2")
             default:
                 XCTFail("Unexpected number of fetches: \(fetches)")
@@ -190,7 +207,8 @@ class FetchSavesTests: XCTestCase {
         }
 
         let service = subject()
-        _ = await service.execute()
+        XCTAssertNil(self.task.currentCursor, "cursor-1")
+        _ = await service.execute(syncTaskId: task.objectID)
 
         let items = try space.fetchSavedItems()
         XCTAssertEqual(items.count, 2)
@@ -203,28 +221,35 @@ class FetchSavesTests: XCTestCase {
 
         user.stubSetStatus { _ in }
         apollo.setupTagsResponse()
-        apollo.stubFetch { (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
             defer { fetches += 1 }
 
             let result: Fixture
             switch fetches {
             case 0:
                 XCTAssertEqual(query.pagination.unwrapped?.first, 15)
+                XCTAssertNil(self?.task.currentCursor)
 
                 result = Fixture.load(name: "large-list-1")
             case 1:
                 XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-1")
                 XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 30)
+                // check that the last cursor was persisted before we return, since we dont have a way to hook into after each save operation.
+                XCTAssertEqual(self?.task.currentCursor!, "cursor-1")
 
                 result = Fixture.load(name: "large-list-2")
             case 2:
                 XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-2")
                 XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 30)
+                // check that the last cursor was persisted before we return, since we dont have a way to hook into after each save operation.
+                XCTAssertEqual(self?.task.currentCursor!, "cursor-2")
 
                 result = Fixture.load(name: "large-list-3")
             case 3...pages:
                 XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-3")
                 XCTAssertEqual(query.pagination.unwrapped?.first.unwrapped, 30)
+                // check that the last cursor was persisted before we return, since we dont have a way to hook into after each save operation.
+                XCTAssertEqual(self?.task.currentCursor!, "cursor-3")
 
                 result = Fixture.load(name: "large-list-3")
             default:
@@ -238,8 +263,43 @@ class FetchSavesTests: XCTestCase {
         }
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
         XCTAssertEqual(fetches, pages)
+    }
+
+    func test_refresh_whenSyncTaskHasACursor_taskResumesFromCursor() async throws {
+        task.currentCursor = "cursor-1"
+        try space.save()
+
+        var fetches = 0
+        user.stubSetStatus { _ in }
+        apollo.setupTagsResponse()
+        apollo.stubFetch { [weak self] (query: FetchSavesQuery, _, _, queue, completion) -> Apollo.Cancellable in
+            defer { fetches += 1 }
+
+            let result: Fixture
+            switch fetches {
+            case 0:
+                XCTAssertEqual(query.pagination.unwrapped?.after.unwrapped, "cursor-1")
+                XCTAssertEqual(self?.task.currentCursor!, "cursor-1")
+                result = Fixture.load(name: "paginated-list-2")
+            default:
+                XCTFail("Unexpected number of fetches: \(fetches)")
+                return MockCancellable()
+            }
+
+            queue.async {
+                completion?(.success(result.asGraphQLResult(from: query)))
+            }
+            return MockCancellable()
+        }
+
+        let service = subject()
+        _ = await service.execute(syncTaskId: task.objectID)
+        XCTAssertEqual(task.currentCursor!, "cursor-2")
+
+        let items = try space.fetchSavedItems()
+        XCTAssertEqual(items.count, 1)
     }
 
     func test_refresh_whenUpdatedSinceIsPresent_includesUpdatedSinceFilter() async {
@@ -248,7 +308,7 @@ class FetchSavesTests: XCTestCase {
         apollo.setupFetchSavesSyncResponse()
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         let call: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
         XCTAssertNotNil(call?.query.savedItemsFilter)
@@ -273,7 +333,7 @@ class FetchSavesTests: XCTestCase {
         }.store(in: &cancellables)
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         wait(for: [receivedEvent], timeout: 1)
     }
@@ -283,7 +343,7 @@ class FetchSavesTests: XCTestCase {
         apollo.setupFetchSavesSyncResponse()
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         let call: MockApolloClient.FetchCall<FetchSavesQuery>? = apollo.fetchCall(at: 0)
         XCTAssertEqual(call?.query.savedItemsFilter.unwrapped?.status.value, .unread)
@@ -291,7 +351,6 @@ class FetchSavesTests: XCTestCase {
 
     func test_execute_whenUpdatedSinceIsNotPresent_downloadsAllTags() async throws {
         user.stubSetStatus { _ in }
-        apollo.setupFetchListResponse(fixtureName: "empty-list")
 
         var tagsPageCount = 1
         apollo.stubFetch { (query: TagsQuery, _, _, queue, completion) in
@@ -311,8 +370,8 @@ class FetchSavesTests: XCTestCase {
             return MockCancellable()
         }
 
-        let operation = subject()
-        _ = await operation.execute()
+        let operation = tagsSubject()
+        _ = await operation.execute(syncTaskId: task.objectID)
 
         let fetchCall1 = apollo.fetchCall(withQueryType: TagsQuery.self, at: 0)
         XCTAssertNotNil(fetchCall1)
@@ -346,7 +405,7 @@ class FetchSavesTests: XCTestCase {
         }.store(in: &cancellables)
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         wait(for: [receivedFirstPageEvent, receivedCompletedEvent], timeout: 1)
     }
@@ -356,7 +415,7 @@ class FetchSavesTests: XCTestCase {
         apollo.setupFetchSavesSyncResponse(listFixtureName: "empty-list")
 
         let service = subject()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         XCTAssertEqual(lastRefresh.refreshedSavesCallCount, 1)
     }
@@ -372,7 +431,7 @@ class FetchSavesTests: XCTestCase {
         apollo.stubFetch(ofQueryType: FetchSavesQuery.self, toReturnError: initialError)
 
         let service = subject()
-        let result = await service.execute()
+        let result = await service.execute(syncTaskId: task.objectID)
 
         guard case .retry = result else {
             XCTFail("Expected retry result but got \(result)")
@@ -387,7 +446,7 @@ class FetchSavesTests: XCTestCase {
         apollo.stubFetch(ofQueryType: FetchSavesQuery.self, toReturnError: initialError)
 
         let service = subject()
-        let result = await service.execute()
+        let result = await service.execute(syncTaskId: task.objectID)
 
         guard case .retry = result else {
             XCTFail("Expected retry result but got \(result)")

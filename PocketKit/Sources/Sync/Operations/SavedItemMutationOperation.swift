@@ -5,6 +5,7 @@
 import Combine
 import Apollo
 import ApolloAPI
+import CoreData
 
 class AnyMutation {
     let perform: (ApolloClientProtocol) async throws -> Void
@@ -40,7 +41,7 @@ class SavedItemMutationOperation: SyncOperation {
         self.mutation = mutation
     }
 
-    func execute() async -> SyncOperationResult {
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
         do {
             _ = try await mutation.perform(apollo)
             return .success

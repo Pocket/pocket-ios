@@ -36,6 +36,10 @@ public protocol Source {
 
     func refreshSaves(completion: (() -> Void)?)
 
+    func refreshArchive(completion: (() -> Void)?)
+
+    func refreshTags(completion: (() -> Void)?)
+
     func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
@@ -43,8 +47,6 @@ public protocol Source {
     func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool)
 
     func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
-
-    func refreshArchive(completion: (() -> Void)?)
 
     func retryImmediately()
 
@@ -114,5 +116,9 @@ public extension Source {
 
     func refreshArchive() {
         self.refreshArchive(completion: nil)
+    }
+
+    func refreshTags() {
+        self.refreshTags(completion: nil)
     }
 }

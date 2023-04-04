@@ -11,9 +11,11 @@ enum SyncOperationResult {
     case failure(Error)
 }
 
+struct NoPersistentTaskOperationError: Error { }
+
 /// Protocol that all operations in the Pocket code base follows for syncing data
 protocol SyncOperation {
-    func execute() async -> SyncOperationResult
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult
 }
 
 /// A NSOperation that retries its operation thread if needed.
@@ -55,7 +57,12 @@ class RetriableOperation: AsyncOperation {
         /// Wrap the code in a Task so that it is Async, Apple by default does not provide an Async capable NSOperation.
         /// But they provide a variable to make one Async.
         /// See AsyncOperation which makes NSOperation Async
-        Task {
+        Task { [weak self] in
+            guard let self else {
+                Log.captureNilWeakSelf()
+                return
+            }
+
             let taskID = backgroundTaskManager.beginTask(withName: String(describing: type(of: operation))) { [weak self] in
                 guard let self else {
                     Log.captureNilWeakSelf()
@@ -64,7 +71,7 @@ class RetriableOperation: AsyncOperation {
                 cancelOperation()
             }
 
-            switch await operation.execute() {
+            switch await operation.execute(syncTaskId: self.syncTaskId) {
             case .retry(let error):
                 Log.info("Retrying persistent task with objectID \(String(describing: syncTaskId)) due to \(String(describing: error))")
                 retry(error)

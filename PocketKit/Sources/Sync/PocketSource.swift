@@ -61,6 +61,14 @@ public class PocketSource: Source {
         return q
     }()
 
+    private let fetchTagsQueue: OperationQueue = {
+        let q = OperationQueue()
+        q.maxConcurrentOperationCount = 1
+        q.qualityOfService = .background
+        q.name = "com.mozilla.pocket.fetch.tags"
+        return q
+    }()
+
     public convenience init(
         space: Space,
         user: User,
@@ -257,7 +265,6 @@ extension PocketSource {
         }
 
         let operation = operations.fetchSaves(
-            user: user,
             apollo: apollo,
             space: space,
             events: _events,
@@ -282,6 +289,17 @@ extension PocketSource {
         )
 
         enqueue(operation: operation, task: .fetchSaves, queue: fetchArchiveQueue, completion: completion)
+    }
+
+    public func refreshTags(completion: (() -> Void)? = nil) {
+        let operation = operations.fetchTags(
+            apollo: apollo,
+            space: space,
+            events: _events,
+            lastRefresh: lastRefresh
+        )
+
+        enqueue(operation: operation, task: .fetchSaves, queue: fetchTagsQueue, completion: completion)
     }
 
     public func favorite(item: SavedItem) {
@@ -618,7 +636,6 @@ extension PocketSource {
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.saveQueue)
             case .fetchSaves:
                 let operation = operations.fetchSaves(
-                    user: user,
                     apollo: apollo,
                     space: space,
                     events: _events,
@@ -635,6 +652,14 @@ extension PocketSource {
                     lastRefresh: lastRefresh
                 )
                 enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchArchiveQueue)
+            case .fetchTags:
+                let operation = operations.fetchTags(
+                    apollo: apollo,
+                    space: space,
+                    events: _events,
+                    lastRefresh: lastRefresh
+                )
+                enqueue(operation: operation, persistentTask: persistentTask, queue: self.fetchTagsQueue)
             case .archive(let remoteID):
                 let operation = operations.savedItemMutationOperation(
                     apollo: apollo,
