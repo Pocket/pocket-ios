@@ -3,6 +3,7 @@ import Combine
 import Analytics
 import CoreData
 import PocketGraph
+import SharedPocketKit
 @testable import Sync
 @testable import PocketKit
 
@@ -16,6 +17,7 @@ class HomeViewModelTests: XCTestCase {
     var subscriptions: Set<AnyCancellable> = []
     var homeController: RichFetchedResultsController<Recommendation>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
+    var user: User!
 
     override func setUp() async throws {
         subscriptions = []
@@ -25,6 +27,7 @@ class HomeViewModelTests: XCTestCase {
         homeRefreshCoordinator = MockHomeRefreshCoordinator()
         homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
         recentSavesController = space.makeRecentSavesController(limit: 5)
+        user = PocketUser(userDefaults: UserDefaults())
 
         tracker = MockTracker()
 
@@ -56,13 +59,15 @@ class HomeViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil,
-        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol? = nil
+        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol? = nil,
+        user: User? = nil
     ) -> HomeViewModel {
         HomeViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
-            homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator
+            homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
+            user: user ?? self.user
         )
     }
 

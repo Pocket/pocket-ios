@@ -4,6 +4,7 @@ import Analytics
 import Combine
 import UIKit
 import Localization
+import SharedPocketKit
 
 public enum SavesViewType {
     case saves
@@ -76,6 +77,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let source: Source
     private let tracker: Tracker
     private let itemsController: SavedItemsController
+    private let user: User
     private var subscriptions: [AnyCancellable] = []
 
     private var selectedFilters: Set<ItemsListFilter>
@@ -83,13 +85,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User) {
         self.source = source
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
         self.viewType = viewType
         self.listOptions = listOptions
+        self.user = user
 
         switch self.viewType {
         case .saves:
@@ -537,7 +540,8 @@ extension SavedItemsListViewModel {
             item: savedItem,
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general
+            pasteboard: UIPasteboard.general,
+            user: user
         )
 
         if savedItem.shouldOpenInWebView {

@@ -4,6 +4,7 @@ import UIKit
 import CoreData
 import Combine
 import Analytics
+import SharedPocketKit
 
 class SlateDetailViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
@@ -30,12 +31,14 @@ class SlateDetailViewModel {
     private let slate: Slate
     private let source: Source
     private let tracker: Tracker
+    private let user: User
     private var subscriptions: [AnyCancellable] = []
 
-    init(slate: Slate, source: Source, tracker: Tracker) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
+        self.user = user
         self.snapshot = Self.loadingSnapshot()
 
         NotificationCenter.default.publisher(
@@ -104,7 +107,8 @@ extension SlateDetailViewModel {
         )
 
         if let item = recommendation.item, item.shouldOpenInWebView {
-            presentedWebReaderURL = item.bestURL
+            let url = pocketPremiumURL(item.bestURL, user: user)
+            presentedWebReaderURL = url
 
             tracker.track(
                 event: ContentOpenEvent(destination: .external, trigger: .click),
@@ -115,7 +119,8 @@ extension SlateDetailViewModel {
                 recommendation: recommendation,
                 source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
-                pasteboard: UIPasteboard.general
+                pasteboard: UIPasteboard.general,
+                user: user
             )
 
             tracker.track(
