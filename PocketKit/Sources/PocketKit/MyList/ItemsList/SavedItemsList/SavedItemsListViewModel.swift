@@ -146,7 +146,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     switch selectedTag {
                     case .notTagged:
                         predicate = NSPredicate(format: "tags.@count = 0")
-                    case .tag(let name):
+                    case .tag(let name), .recent(let name):
                         predicate = NSPredicate(format: "%@ IN tags.name", name)
                     }
                     self?.fetchItems(with: [predicate])

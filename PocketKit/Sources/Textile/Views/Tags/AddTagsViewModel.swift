@@ -72,7 +72,7 @@ public extension AddTagsViewModel {
     func removeTag(with tag: String) {
         guard let index = tags.firstIndex(of: tag) else { return }
         tags.remove(at: index)
-        otherTags.append(TagType.tag(tag))
+//        allOtherTags()
         trackRemoveTag()
     }
 
