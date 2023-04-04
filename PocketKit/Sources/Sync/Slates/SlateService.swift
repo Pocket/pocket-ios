@@ -1,6 +1,5 @@
 import Apollo
 import Foundation
-import CoreData
 import PocketGraph
 
 protocol SlateService {
@@ -27,8 +26,7 @@ class APISlateService: SlateService {
             Log.capture(message: "Error loading slate lineup")
             return
         }
-
-        try await handle(remote: remote)
+        try space.updateLineup(from: remote)
     }
 
     func fetchSlate(_ slateID: String) async throws {
@@ -38,36 +36,6 @@ class APISlateService: SlateService {
             .data?.getSlate.fragments.slateParts else {
             return
         }
-
-        try await handle(remote: remote)
-    }
-
-    private func handle(remote: GetSlateLineupQuery.Data.GetSlateLineup) async throws {
-        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        context.parent = space.backgroundContext
-        context.automaticallyMergesChangesFromParent = true
-        context.performAndWait {
-            let lineup = (try? space.fetchSlateLineup(byRemoteID: remote.id, context: context)) ?? SlateLineup(context: context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
-            lineup.update(from: remote, in: space, context: context)
-        }
-        try context.performAndWait {
-            try context.obtainPermanentIDs(for: Array(context.insertedObjects))
-            guard context.hasChanges else {
-                return
-            }
-            try context.save()
-            try space.save()
-        }
-        try space.batchDeleteOrphanedSlates()
-        try space.batchDeleteOrphanedItems()
-    }
-
-    private func handle(remote: SlateParts) throws {
-        space.performAndWait {
-            let slate = (try? space.fetchSlate(byRemoteID: remote.id)) ?? Slate(context: space.backgroundContext, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
-            slate.update(from: remote, in: space)
-        }
-
-        try space.save()
+        try space.updateSlate(from: remote)
     }
 }
