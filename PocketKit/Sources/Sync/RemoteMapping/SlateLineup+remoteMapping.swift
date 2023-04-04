@@ -6,12 +6,10 @@ extension SlateLineup {
     public typealias RemoteSlateLineup = GetSlateLineupQuery.Data.GetSlateLineup
 
     func update(from remote: RemoteSlateLineup, in space: Space, context: NSManagedObjectContext) {
-        var i = 1
-        slates = try? NSOrderedSet(array: remote.slates.map { remoteSlate in
-            let slate = try space.fetchSlate(byRemoteID: remoteSlate.id, context: context) ?? Slate(context: context, remoteID: remoteSlate.id, expermimentID: remoteSlate.experimentId, requestID: remoteSlate.requestId)
-            slate.update(from: remoteSlate.fragments.slateParts, in: space, context: context)
-            slate.sortIndex = NSNumber(value: i)
-            i = i + 1
+        slates = try? NSOrderedSet(array: remote.slates.enumerated().map {
+            let slate = try space.fetchSlate(byRemoteID: $0.element.id, context: context) ?? Slate(context: context, remoteID: $0.element.id, expermimentID: $0.element.experimentId, requestID: $0.element.requestId)
+            slate.update(from: $0.element.fragments.slateParts, in: space, context: context)
+            slate.sortIndex = NSNumber(value: $0.offset + 1)
             return slate
         })
     }
