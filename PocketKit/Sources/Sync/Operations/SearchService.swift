@@ -44,8 +44,7 @@ public class PocketSearchService: SearchService {
 
     typealias SearchItemEdge = SearchSavedItemsQuery.Data.User.SearchSavedItems.Edge
 
-    @Published
-    private var _results: [SearchSavedItem]?
+    @Published private var _results: [SearchSavedItem]?
     public var results: Published<[SearchSavedItem]?>.Publisher { $_results }
 
     public var hasFinishedResults: Bool = false

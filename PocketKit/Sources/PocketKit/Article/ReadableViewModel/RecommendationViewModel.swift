@@ -7,27 +7,21 @@ import Analytics
 import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
-    @Published
-    private(set) var _actions: [ItemAction] = []
+    @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var isPresentingReaderSettings: Bool?
+    @Published var isPresentingReaderSettings: Bool?
 
-    @Published
-    var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: Recommendation?
 
     private let recommendation: Recommendation
     private let source: Source

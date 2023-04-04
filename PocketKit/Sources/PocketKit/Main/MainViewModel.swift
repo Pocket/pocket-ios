@@ -14,14 +14,11 @@ class MainViewModel: ObservableObject {
     let account: AccountViewModel
     let source: Source
 
-    @Published
-    var selectedSection: AppSection = .home
+    @Published var selectedSection: AppSection = .home
 
-    @Published
-    var bannerViewModel: PasteBoardModifier.PasteBoardData?
+    @Published var bannerViewModel: PasteBoardModifier.PasteBoardData?
 
-    @Published
-    var showBanner: Bool = false
+    @Published var showBanner: Bool = false
 
     private var subscriptions: Set<AnyCancellable> = []
 

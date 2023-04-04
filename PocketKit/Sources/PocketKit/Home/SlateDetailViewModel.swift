@@ -9,20 +9,15 @@ import SharedPocketKit
 class SlateDetailViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
-    @Published
-    var snapshot: Snapshot
+    @Published var snapshot: Snapshot
 
-    @Published
-    var selectedReadableViewModel: RecommendationViewModel?
+    @Published var selectedReadableViewModel: RecommendationViewModel?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: Recommendation?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
     var slateName: String? {
         slate.name

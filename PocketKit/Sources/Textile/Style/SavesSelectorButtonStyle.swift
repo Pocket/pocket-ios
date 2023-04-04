@@ -34,8 +34,7 @@ public struct SavesSelectorButtonStyle: ButtonStyle {
         @Environment(\.isEnabled)
         private var isEnabled: Bool
 
-        @Binding
-        var isSelected: Bool
+        @Binding var isSelected: Bool
 
         var image: Image
         var title: String

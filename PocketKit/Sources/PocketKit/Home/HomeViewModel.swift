@@ -81,23 +81,17 @@ class HomeViewModel: NSObject {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
     typealias ItemIdentifier = NSManagedObjectID
 
-    @Published
-    var snapshot: Snapshot
+    @Published var snapshot: Snapshot
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var selectedReadableType: ReadableType?
+    @Published var selectedReadableType: ReadableType?
 
-    @Published
-    var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: Recommendation?
 
-    @Published
-    var tappedSeeAll: SeeAll?
+    @Published var tappedSeeAll: SeeAll?
 
     private let source: Source
     let tracker: Tracker

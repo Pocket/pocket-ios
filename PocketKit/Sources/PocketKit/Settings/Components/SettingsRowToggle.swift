@@ -4,8 +4,7 @@ import Textile
 struct SettingsRowToggle: View {
     private var title: String
 
-    @ObservedObject
-    private var model: AccountViewModel
+    @ObservedObject private var model: AccountViewModel
 
     let action: () -> Void
 
