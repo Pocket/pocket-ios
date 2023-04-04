@@ -31,6 +31,21 @@ class MockLastRefresh: LastRefresh {
         return impl()
     }
 
+    // MARK: - lastRefresh tags
+    typealias GetLastRefreshTagsImpl = () -> Int?
+    private var getLastRefreshTagsImpl: GetLastRefreshTagsImpl?
+    func stubGetLastRefreshTags(impl: @escaping GetLastRefreshTagsImpl) {
+        getLastRefreshTagsImpl = impl
+    }
+
+    var lastRefreshTags: Int? {
+        guard let impl = getLastRefreshTagsImpl else {
+            return nil
+        }
+
+        return impl()
+    }
+
     // MARK: - refreshed saves
     typealias RefreshedSavesImpl = () -> Void
     private var refreshedSavesImpl: RefreshedSavesImpl?
@@ -61,6 +76,24 @@ class MockLastRefresh: LastRefresh {
         refreshedArchiveCallCount += 1
 
         guard let impl = refreshedArchiveImpl else {
+            return
+        }
+
+        impl()
+    }
+
+    // MARK: - refreshed tags
+    typealias RefreshedTagsImpl = () -> Void
+    private var refreshedTagsImpl: RefreshedTagsImpl?
+    func stubRefreshedTags(impl: @escaping RefreshedTagsImpl) {
+        refreshedTagsImpl = impl
+    }
+
+    var refreshedTagsCallCount = 0
+    func refreshedTags() {
+        refreshedTagsCallCount += 1
+
+        guard let impl = refreshedTagsImpl else {
             return
         }
 

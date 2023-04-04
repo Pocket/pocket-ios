@@ -10,7 +10,7 @@ extension PocketSourceTests {
 
     func test_enqueueingOperations_whenNetworkPathIsUnsatisfied_doesNotExecuteOperations() {
         sessionProvider.session = MockSession()
-        operations.stubFetchSaves { _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _  in
             TestSyncOperation {
                 XCTFail("Operation should not be executed while network path is unsatisfied")
             }
@@ -33,7 +33,7 @@ extension PocketSourceTests {
         }
 
         let expectFetchList = expectation(description: "execute the fetch list operation")
-        operations.stubFetchSaves { _, _, _, _, _  in
+        operations.stubFetchSaves { _, _, _, _  in
             TestSyncOperation {
                 expectFetchList.fulfill()
             }
@@ -119,7 +119,10 @@ extension PocketSourceTests {
         let source = subject()
         source.archive(item: item)
         wait(for: [firstAttempt], timeout: 1)
-
+        // NOTE: We need to await after each attempt because it takes a few ms for the
+        // retrySubscritpion to get setup after the attempt is fullfilled.
+        // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         source.favorite(item: item)
         wait(for: [retrySignalSent, attemptFavorite], timeout: 1, enforceOrder: true)
     }
@@ -187,7 +190,10 @@ extension PocketSourceTests {
         let source = subject()
         source.archive(item: item)
         wait(for: [firstAttempt], timeout: 1)
-
+        // NOTE: We need to await after each attempt because it takes a few ms for the
+        // retrySubscritpion to get setup after the attempt is fullfilled.
+        // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
         source.retryImmediately()
         wait(for: [retrySignalSent], timeout: 1)
     }

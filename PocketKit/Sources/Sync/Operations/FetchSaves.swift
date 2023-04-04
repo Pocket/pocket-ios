@@ -1,26 +1,31 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Apollo
 import Combine
 import PocketGraph
 import SharedPocketKit
+import CoreData
 
 class FetchSaves: SyncOperation {
-    private let user: User
+
     private let apollo: ApolloClientProtocol
     private let space: Space
     private let events: SyncEvents
     private let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
     private let lastRefresh: LastRefresh
+    // Force unwrapping, because the entry point, execute, will ensure that this exists with a guard
+    private var persistentTask: PersistentSyncTask!
 
     init(
-        user: User,
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
         lastRefresh: LastRefresh
     ) {
-        self.user = user
         self.apollo = apollo
         self.space = space
         self.events = events
@@ -28,7 +33,12 @@ class FetchSaves: SyncOperation {
         self.initialDownloadState = initialDownloadState
     }
 
-    func execute() async -> SyncOperationResult {
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
+        guard let persistentTask = space.backgroundObject(with: syncTaskId) as? PersistentSyncTask else {
+            return .retry(NoPersistentTaskOperationError())
+        }
+        self.persistentTask = persistentTask
+
         do {
             if lastRefresh.lastRefreshSaves != nil {
                 guard let lastRefreshTime = lastRefresh.lastRefreshSaves, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Saves.timeMustPass else {
@@ -39,9 +49,7 @@ class FetchSaves: SyncOperation {
                 }
             }
 
-            async let saves: Void = fetchSaves()
-            async let tags: Void = fetchTags()
-            _ = await [try saves, try tags]
+            try await fetchSaves()
             lastRefresh.refreshedSaves()
             return .success
         } catch {
@@ -75,6 +83,10 @@ class FetchSaves: SyncOperation {
 
     private func fetchSaves() async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize)
+        if let cursor = persistentTask.currentCursor {
+            pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize, cursor: cursor)
+        }
+
         var i = 1
         repeat {
             Log.breadcrumb(category: "sync.saves", level: .debug, message: "Loading page \(i)")
@@ -93,28 +105,6 @@ class FetchSaves: SyncOperation {
         } while pagination.shouldFetchNextPage
 
         initialDownloadState.send(.completed)
-    }
-
-    private func fetchTags() async throws {
-        var shouldFetchNextPage = true
-        var pagination = PaginationInput(first: .null)
-
-        var pageNumber = 1
-        repeat {
-            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Loading page \(pageNumber)")
-            let query = TagsQuery(pagination: .init(pagination))
-            let result = try await apollo.fetch(query: query)
-            try updateLocalTags(result)
-
-            if let pageInfo = result.data?.user?.tags?.pageInfo {
-                pagination.after = pageInfo.endCursor ?? .none
-                shouldFetchNextPage = pageInfo.hasNextPage
-            } else {
-                shouldFetchNextPage = false
-            }
-            Log.breadcrumb(category: "sync.tags", level: .debug, message: "Finsihed loading page \(pageNumber)")
-            pageNumber += 1
-        } while shouldFetchNextPage
     }
 
     private func fetchPage(_ pagination: PaginationSpec) async throws -> GraphQLResult<FetchSavesQuery.Data> {
@@ -136,7 +126,8 @@ class FetchSaves: SyncOperation {
     }
 
     private func updateLocalStorage(result: GraphQLResult<FetchSavesQuery.Data>) throws {
-        guard let edges = result.data?.user?.savedItems?.edges else {
+        guard let edges = result.data?.user?.savedItems?.edges,
+              let cursor = result.data?.user?.savedItems?.pageInfo.endCursor else {
             return
         }
 
@@ -161,18 +152,9 @@ class FetchSaves: SyncOperation {
             }
         }
 
-        try space.save()
-    }
-
-    func updateLocalTags(_ result: GraphQLResult<TagsQuery.Data>) throws {
-        result.data?.user?.tags?.edges?.forEach { edge in
-            guard let node = edge?.node else { return }
-            space.performAndWait {
-                let tag = space.fetchOrCreateTag(byName: node.name)
-                tag.update(remote: node.fragments.tagParts)
-            }
+        space.performAndWait {
+            persistentTask.currentCursor = cursor
         }
-
         try space.save()
     }
 
@@ -184,6 +166,10 @@ class FetchSaves: SyncOperation {
 
         init(maxItems: Int, pageSize: Int) {
             self.init(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
+        }
+
+        init(maxItems: Int, pageSize: Int, cursor: String) {
+            self.init(cursor: cursor, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
         }
 
         private init(cursor: String?, shouldFetchNextPage: Bool, maxItems: Int, pageSize: Int) {

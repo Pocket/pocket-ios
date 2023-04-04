@@ -6,10 +6,18 @@ import Foundation
 import SharedPocketKit
 
 /// Subscription store error(s)
-enum SubscriptionStoreError: Error {
+enum SubscriptionStoreError: LoggableError {
     case unverifiedPurchase
     case purchaseFailed
     case invalidProduct
+
+    var logDescription: String {
+        switch self {
+        case .unverifiedPurchase: return "Unverified purchase"
+        case .purchaseFailed: return "Purchase failed"
+        case .invalidProduct: return "Invalid product"
+        }
+    }
 }
 
 /// Describes the state of a purchase made from a `SubscriptionStore`

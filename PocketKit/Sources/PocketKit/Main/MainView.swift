@@ -1,5 +1,6 @@
 import SwiftUI
 import Textile
+import Localization
 
 public struct MainView: View {
     @ObservedObject var model: MainViewModel
@@ -16,7 +17,7 @@ public struct MainView: View {
                     } else {
                         Image(asset: .tabHomeDeselected)
                     }
-                    Text(L10n.home)
+                    Text(Localization.home)
                 }
                 .accessibilityIdentifier("home-tab-bar-button")
                 .tag(MainViewModel.AppSection.home)
@@ -29,7 +30,7 @@ public struct MainView: View {
                     } else {
                         Image(asset: .tabSavesDeselected)
                     }
-                    Text(L10n.saves)
+                    Text(Localization.saves)
                 }
                 .accessibilityIdentifier("saves-tab-bar-button")
                 .tag(MainViewModel.AppSection.saves)
@@ -46,7 +47,7 @@ public struct MainView: View {
                 } else {
                     Image(asset: .tabSettingsDeselected)
                 }
-                Text(L10n.settings)
+                Text(Localization.settings)
             }
             .accessibilityIdentifier("account-tab-bar-button")
             .tag(MainViewModel.AppSection.account)
