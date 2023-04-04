@@ -86,7 +86,7 @@ class RecommendationViewModel: ReadableViewModel {
     var isArchived: Bool {
         return recommendation.item?.savedItem?.isArchived ?? false
     }
-    
+
     var premiumURL: URL? {
         pocketPremiumURL(url, user: user)
     }

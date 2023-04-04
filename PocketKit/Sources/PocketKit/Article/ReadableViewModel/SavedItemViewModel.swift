@@ -95,7 +95,7 @@ class SavedItemViewModel: ReadableViewModel {
     var isArchived: Bool {
         item.isArchived
     }
-    
+
     var premiumURL: URL? {
         pocketPremiumURL(url, user: user)
     }
