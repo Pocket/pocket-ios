@@ -11,7 +11,7 @@ protocol BrazeSDKProtocol {
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void)
-    
+
     func signedInUserDidBeginMigration()
 }
 
@@ -78,9 +78,9 @@ extension PocketBraze: BrazeProtocol {
     func loggedOut(session: SharedPocketKit.Session?) {
         // Waiting on braze support to understand logout
     }
-    
-    //MARK: Push Notification Events
-    
+
+    // MARK: Push Notification Events
+
     func didReceiveUserNotification(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
         _ = braze.notifications.handleUserNotification(response: response, withCompletionHandler: completionHandler)
     }
@@ -92,9 +92,9 @@ extension PocketBraze: BrazeProtocol {
     func handleBackgroundNotifcation(didReceiveRemoteNotification userInfo: [AnyHashable: Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
         return braze.notifications.handleBackgroundNotification(userInfo: userInfo, fetchCompletionHandler: completionHandler)
     }
-    
-    //MARK: Migration Events
-    
+
+    // MARK: Migration Events
+
     func signedInUserDidBeginMigration() {
         braze.logCustomEvent(name: "SIGNED_IN_USER_UPGRADE_DID_START")
     }
