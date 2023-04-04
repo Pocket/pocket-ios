@@ -34,7 +34,7 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                         sectionTitle: viewModel.sectionTitle.rawValue,
                         emptyStateText: viewModel.emptyStateText,
                         usersTags: viewModel.otherTags,
-                        tagAction: viewModel.addTag
+                        tagAction: viewModel.addExistingTag
                     )
                     Spacer()
                     TextField(viewModel.placeholderText, text: Binding(get: { viewModel.newTagInput }, set: { string in viewModel.newTagInput = string.lowercased() }))
@@ -43,7 +43,7 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                         .autocapitalization(.none)
                         .padding(10)
                         .onSubmit {
-                            guard viewModel.addTag(with: viewModel.newTagInput) else { return }
+                            guard viewModel.addNewTag(with: viewModel.newTagInput) else { return }
                             viewModel.newTagInput = ""
                         }
                         .focused($isTextFieldFocused)

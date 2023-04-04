@@ -2,30 +2,16 @@ import Combine
 import Sync
 import Analytics
 import Foundation
-import Localization
+import Textile
 
 class TagsFilterViewModel: ObservableObject {
-    enum SelectedTag {
-        case notTagged
-        case tag(String)
-
-        var name: String {
-            switch self {
-            case .notTagged:
-                return Localization.notTagged
-            case .tag(let name):
-                return name
-            }
-        }
-    }
-
     private var fetchedTags: [Tag]?
     private let tracker: Tracker
     private let source: Source
     var selectAllAction: () -> Void?
 
     @Published
-    var selectedTag: SelectedTag?
+    var selectedTag: TagType?
 
     @Published
     var refreshView: Bool? = false
@@ -37,9 +23,9 @@ class TagsFilterViewModel: ObservableObject {
         self.selectAllAction = selectAllAction
     }
 
-    func getAllTags() -> [String] {
+    func getAllTags() -> [TagType] {
         var allTags: [String] = []
-        guard let fetchedTags = fetchedTags?.compactMap({ $0.name }).reversed() else { return allTags }
+        guard let fetchedTags = fetchedTags?.compactMap({ $0.name }).reversed() else { return [] }
 
         if fetchedTags.count > 3 {
             let topRecentTags = Array(fetchedTags)[..<3]
@@ -50,7 +36,7 @@ class TagsFilterViewModel: ObservableObject {
             allTags.append(contentsOf: fetchedTags)
         }
 
-        return allTags
+        return allTags.compactMap { TagType.tag($0) }
     }
 
     func trackEditAsOverflowAnalytics() {
@@ -59,7 +45,7 @@ class TagsFilterViewModel: ObservableObject {
         tracker.track(event: event, [context])
     }
 
-    func selectTag(_ tag: SelectedTag) {
+    func selectTag(_ tag: TagType) {
         var tagContext = UIContext.button(identifier: .selectedTag)
         if case .notTagged = tag {
             tagContext = UIContext.button(identifier: .notTagged)

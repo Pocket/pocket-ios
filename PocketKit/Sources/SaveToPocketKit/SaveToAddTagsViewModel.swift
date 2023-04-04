@@ -21,7 +21,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     var newTagInput: String = ""
 
     @Published
-    var otherTags: [String] = []
+    var otherTags: [TagType] = []
 
     init(item: SavedItem?, tracker: Tracker, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
         self.item = item
@@ -50,8 +50,9 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
-        let fetchedTags = retrieveAction(tags)
-        otherTags = fetchedTags?.compactMap { $0.name } ?? []
+        let fetchedTags = retrieveAction(tags)?.compactMap { $0.name } ?? []
+        let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
+        otherTags = tagTypes
         sectionTitle = .allTags
         trackAllTagsImpression()
     }
@@ -64,8 +65,9 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
             return
         }
         let fetchedTags = filterAction(text.lowercased(), tags)?.compactMap { $0.name } ?? []
-        if !fetchedTags.isEmpty {
-            otherTags = fetchedTags
+        let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
+        if !tagTypes.isEmpty {
+            otherTags = tagTypes
             sectionTitle = .filterTags
             trackFilteredTagsImpression()
         } else {

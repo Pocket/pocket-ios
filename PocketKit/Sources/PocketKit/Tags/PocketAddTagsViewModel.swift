@@ -21,7 +21,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
     var newTagInput: String = ""
 
     @Published
-    var otherTags: [String] = []
+    var otherTags: [TagType] = []
 
     init(item: SavedItem, source: Source, tracker: Tracker, saveAction: @escaping () -> Void) {
         self.item = item
@@ -50,8 +50,9 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
-        let fetchedTags = source.retrieveTags(excluding: tags)
-        otherTags = fetchedTags?.compactMap { $0.name } ?? []
+        let fetchedTags = source.retrieveTags(excluding: tags)?.compactMap { $0.name } ?? []
+        let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
+        otherTags = tagTypes
         sectionTitle = .allTags
         trackAllTagsImpression()
     }
@@ -64,9 +65,9 @@ class PocketAddTagsViewModel: AddTagsViewModel {
             return
         }
         let fetchedTags = source.filterTags(with: text.lowercased(), excluding: tags)?.compactMap { $0.name } ?? []
-
-        if !fetchedTags.isEmpty {
-            otherTags = fetchedTags
+        let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
+        if !tagTypes.isEmpty {
+            otherTags = tagTypes
             sectionTitle = .filterTags
             trackFilteredTagsImpression()
         } else {

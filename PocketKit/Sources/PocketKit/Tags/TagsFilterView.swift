@@ -17,7 +17,7 @@ struct TagsFilterView: View {
     var didTap = false
 
     @State
-    private var selection = Set<String>()
+    private var selection = Set<TagType>()
 
     @State
     private var isEditing = false
@@ -29,29 +29,22 @@ struct TagsFilterView: View {
     private var showRenameAlert: Bool = false
 
     @State
-    private var tagsSelected = Set<String>()
+    private var tagsSelected = Set<TagType>()
 
     var body: some View {
         NavigationView {
             VStack {
                 List(selection: $selection) {
-                    Text(Localization.notTagged)
-                        .style(.tagsFilter.tag)
-                        .accessibilityIdentifier("all-tags")
-                        .onTapGesture {
-                            didTap = true
-                            viewModel.selectTag(.notTagged)
-                            dismiss()
-                        }.disabled(isEditing)
+                    let tagAction = { (tag: TagType) in
+                        didTap = true
+                        viewModel.selectTag(tag)
+                        dismiss()
+                    }
+                    TagsCell(tag: .notTagged, tagAction: tagAction)
+                        .disabled(isEditing)
                     ForEach(viewModel.getAllTags(), id: \.self) { tag in
-                        Text(tag)
-                            .style(.tagsFilter.tag)
-                            .accessibilityIdentifier("all-tags")
-                            .onTapGesture {
-                                didTap = true
-                                viewModel.selectTag(.tag(tag))
-                                dismiss()
-                            }.disabled(isEditing)
+                        TagsCell(tag: tag, tagAction: tagAction)
+                            .disabled(isEditing)
                     }
                 }
                 .listStyle(.plain)
@@ -69,8 +62,8 @@ struct TagsFilterView: View {
                 title: Text(Localization.deleteTag),
                 message: Text(Localization.areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems),
                 primaryButton: .destructive(Text(Localization.delete), action: {
-                    viewModel.delete(tags: Array(tagsSelected))
-                    tagsSelected = Set<String>()
+                    viewModel.delete(tags: Array(tagsSelected.compactMap({ $0.name })))
+                    tagsSelected = Set<TagType>()
                 }),
                 secondaryButton: .cancel(Text(Localization.cancel), action: {
                 })
@@ -82,9 +75,9 @@ struct TagsFilterView: View {
                 title: Localization.renameTag,
                 message: Localization.enterANewNameForThisTag
             ) { result in
-                if let text = result, let oldName = tagsSelected.first {
+                if let text = result, let oldName = tagsSelected.first?.name {
                     viewModel.rename(from: oldName, to: text)
-                    tagsSelected = Set<String>()
+                    tagsSelected = Set<TagType>()
                 }
             }
         )
@@ -114,8 +107,8 @@ struct EditModeView: View {
 }
 
 struct EditBottomBar: View {
-    @Binding var selection: Set<String>
-    @Binding var tagsSelected: Set<String>
+    @Binding var selection: Set<TagType>
+    @Binding var tagsSelected: Set<TagType>
     @Binding var showRenameAlert: Bool
     @Binding var showDeleteAlert: Bool
 
@@ -147,7 +140,7 @@ struct TagsHeaderToolBar: ViewModifier {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack {
-                        Text(Localization.tags).style(.tagsFilter.sectionHeader)
+                        Text(Localization.tags).style(.tags.sectionHeader)
                     }
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -167,13 +160,5 @@ extension View {
 
     public func alert(isPresented: Binding<Bool>, _ alert: TextAlert) -> some View {
         AlertWrapper(isPresented: isPresented, alert: alert, content: self)
-    }
-}
-
-private extension Style {
-    static let tagsFilter = TagsFilterStyle()
-    struct TagsFilterStyle {
-        let tag: Style = Style.header.sansSerif.h8.with(color: .ui.grey1)
-        let sectionHeader: Style = Style.header.sansSerif.h8.with(color: .ui.grey5)
     }
 }
