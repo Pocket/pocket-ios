@@ -20,11 +20,11 @@ extension MockPocketBraze {
         let response: UNNotificationResponse
         let completionHandler: () -> Void
     }
-
+    
     func stubDidRecieveUserNotifcation(impl: @escaping DidRecieveUserNotifcationImpl) {
         implementations[Self.didReceiveUserNotifcation] = impl
     }
-
+    
     func didReceiveUserNotification(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse,
@@ -32,18 +32,18 @@ extension MockPocketBraze {
             guard let impl = implementations[Self.didReceiveUserNotifcation] as? DidRecieveUserNotifcationImpl else {
                 fatalError("\(Self.self).\(#function) has not been stubbed")
             }
-
+            
             calls[Self.didReceiveUserNotifcation] = (calls[Self.didReceiveUserNotifcation] ?? []) + [DidRecieveUserNotifcationCall(center: center, response: response, completionHandler: completionHandler)]
-
+            
             return impl(center, response, completionHandler)
         }
-
+    
     func didRecieveUserNotificationCall(at index: Int) -> DidRecieveUserNotifcationImpl? {
         guard let calls = calls[Self.didReceiveUserNotifcation],
               calls.count > index else {
             return nil
         }
-
+        
         return calls[index] as? DidRecieveUserNotifcationImpl
     }
     
