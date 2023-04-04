@@ -15,7 +15,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
     private let source: Source
     private let userDefaults: UserDefaults
-    private let firstLaunchDefaults: UserDefaults
     private let refreshCoordinator: RefreshCoordinator
     private let appSession: AppSession
     internal let notificationService: PushNotificationService
@@ -28,7 +27,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     init(services: Services) {
         self.source = services.source
         self.userDefaults = services.userDefaults
-        self.firstLaunchDefaults = services.firstLaunchDefaults
         self.refreshCoordinator = services.refreshCoordinator
         self.appSession = services.appSession
         self.notificationService = services.notificationService
@@ -46,12 +44,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
         }
 
-        if CommandLine.arguments.contains("clearFirstLaunch") {
-            firstLaunchDefaults.removePersistentDomain(
-                forName: "\(Bundle.main.bundleIdentifier!).first-launch"
-            )
-        }
-
         if CommandLine.arguments.contains("clearCoreData") {
             source.clear()
         }
@@ -63,7 +55,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         SignOutOnFirstLaunch(
             appSession: appSession,
             user: user,
-            userDefaults: firstLaunchDefaults
+            userDefaults: userDefaults
         ).signOutOnFirstLaunch()
 
         if let guid = ProcessInfo.processInfo.environment["sessionGUID"],

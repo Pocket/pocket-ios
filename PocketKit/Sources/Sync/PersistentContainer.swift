@@ -23,11 +23,7 @@ public class PersistentContainer: NSPersistentContainer {
         case shared
     }
 
-    let userDefaults: UserDefaults
-
-    public init(storage: Storage = .shared, userDefaults: UserDefaults, groupID: String) {
-        self.userDefaults = userDefaults
-
+    public init(storage: Storage = .shared, groupID: String) {
         ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
         ValueTransformer.setValueTransformer(SyncTaskTransformer(), forName: .syncTaskTransformer)
 
