@@ -4,7 +4,7 @@ import Textile
 import Foundation
 import Analytics
 
-class SaveToAddTagsViewModel: AddTagsViewModel, TagsList {
+class SaveToAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem?
     private let tracker: Tracker
     private let retrieveAction: ([String]) -> [Tag]?
