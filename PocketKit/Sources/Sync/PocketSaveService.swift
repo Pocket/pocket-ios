@@ -86,7 +86,7 @@ public class PocketSaveService: SaveService {
 
     private func fetchOrCreateSavedItem(url: URL) -> SaveServiceStatus {
         return space.performAndWait {
-            if let existingItem = try! space.fetchSavedItem(byURL: url) {
+            if let existingItem = try? space.fetchSavedItem(byURL: url) {
                 existingItem.createdAt = Date()
 
                 let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)

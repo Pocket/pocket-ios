@@ -7,8 +7,7 @@ import Textile
 import Localization
 
 struct AccountManagementView: View {
-    @ObservedObject
-    var model: AccountViewModel
+    @ObservedObject var model: AccountViewModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -30,8 +29,7 @@ struct AccountManagementView: View {
 }
 
 struct AccountManagementForm: View {
-    @ObservedObject
-    var model: AccountViewModel
+    @ObservedObject var model: AccountViewModel
     var body: some View {
         Form {
             Group {

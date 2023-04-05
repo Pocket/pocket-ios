@@ -10,11 +10,8 @@ class TagsFilterViewModel: ObservableObject {
     private let source: Source
     var selectAllAction: () -> Void?
 
-    @Published
-    var selectedTag: TagType?
-
-    @Published
-    var refreshView: Bool? = false
+    @Published var selectedTag: TagType?
+    @Published var refreshView: Bool? = false
 
     init(source: Source, tracker: Tracker, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
         self.source = source

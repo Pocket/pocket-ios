@@ -4,8 +4,7 @@ import Textile
 import Localization
 
 struct SettingsView: View {
-    @ObservedObject
-    var model: AccountViewModel
+    @ObservedObject var model: AccountViewModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,8 +27,7 @@ struct SettingsView: View {
 
 struct SettingsForm: View {
     @State var dismissReason: DismissReason = .swipe
-    @ObservedObject
-    var model: AccountViewModel
+    @ObservedObject var model: AccountViewModel
 
     var body: some View {
         Form {

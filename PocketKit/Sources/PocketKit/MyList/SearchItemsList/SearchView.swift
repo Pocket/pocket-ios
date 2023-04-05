@@ -8,8 +8,7 @@ import Textile
 import Localization
 
 struct SearchView: View {
-    @ObservedObject
-    var viewModel: SearchViewModel
+    @ObservedObject var viewModel: SearchViewModel
 
     var body: some View {
         Group {
@@ -42,8 +41,7 @@ struct ResultsView: View {
         static let indexToTriggerNextPage = 15
     }
 
-    @ObservedObject
-    var viewModel: SearchViewModel
+    @ObservedObject var viewModel: SearchViewModel
 
     let results: [PocketItem]
 
@@ -149,8 +147,7 @@ struct GetPocketPremiumButton: View {
 
 // MARK: - Recent Searches Component
 struct RecentSearchView: View {
-    @ObservedObject
-    var viewModel: SearchViewModel
+    @ObservedObject var viewModel: SearchViewModel
     var recentSearches: [String]
 
     var body: some View {

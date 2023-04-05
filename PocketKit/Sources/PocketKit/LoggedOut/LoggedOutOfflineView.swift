@@ -2,8 +2,7 @@ import SwiftUI
 import Textile
 
 struct LoggedOutOfflineView: View {
-    @Binding
-    private var isPresented: Bool
+    @Binding private var isPresented: Bool
 
     init(isPresented: Binding<Bool>) {
         _isPresented = isPresented

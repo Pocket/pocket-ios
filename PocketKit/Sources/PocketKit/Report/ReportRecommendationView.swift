@@ -21,20 +21,15 @@ struct ReportRecommendationView: View {
         selectedReason == nil ? "submit-report-disabled" : "submit-report"
     }
 
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(\.dismiss) private var dismiss
 
-    @State
-    private var selectedReason: ReportEntity.Reason?
+    @State private var selectedReason: ReportEntity.Reason?
 
-    @State
-    private var reportComment = ""
+    @State private var reportComment = ""
 
-    @State
-    private var isReported = false
+    @State private var isReported = false
 
-    @FocusState
-    private var isCommentFocused: Bool
+    @FocusState private var isCommentFocused: Bool
 
     init(recommendation: Recommendation, tracker: Tracker) {
         self.recommendation = recommendation

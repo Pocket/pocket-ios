@@ -3,8 +3,7 @@ import Textile
 import Localization
 
 struct OverflowMenu: View {
-    @EnvironmentObject
-    var viewModel: PocketItemViewModel
+    @EnvironmentObject var viewModel: PocketItemViewModel
     @State private var showingAlert = false
     @State private var showingSheet = false
 
@@ -63,8 +62,7 @@ struct OverflowMenu: View {
 }
 
 struct ArchiveButton: View {
-    @EnvironmentObject
-    var viewModel: PocketItemViewModel
+    @EnvironmentObject var viewModel: PocketItemViewModel
     var body: some View {
         Button(action: {
             withAnimation {
@@ -81,8 +79,7 @@ struct ArchiveButton: View {
 }
 
 struct MoveToSavesButton: View {
-    @EnvironmentObject
-    var viewModel: PocketItemViewModel
+    @EnvironmentObject var viewModel: PocketItemViewModel
     var body: some View {
         Button(action: {
             withAnimation {

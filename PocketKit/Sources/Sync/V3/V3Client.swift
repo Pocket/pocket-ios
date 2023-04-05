@@ -157,7 +157,7 @@ public class V3Client: NSObject, V3ClientProtocol {
         var builtRequest = URLRequest(url: url)
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
-        builtRequest.httpBody = try! encoder.encode(request)
+        builtRequest.httpBody = try? encoder.encode(request)
         builtRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         builtRequest.setValue("application/json", forHTTPHeaderField: "X-Accept")
         builtRequest.httpMethod = "POST"
