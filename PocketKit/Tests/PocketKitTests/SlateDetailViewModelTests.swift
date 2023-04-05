@@ -3,6 +3,7 @@ import Combine
 import Analytics
 import CoreData
 import PocketGraph
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -12,11 +13,13 @@ class SlateDetailViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
     var subscriptions: Set<AnyCancellable> = []
+    var user: User!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
+        user = PocketUser(userDefaults: UserDefaults())
         source.stubViewObject { identifier in
             self.space.viewObject(with: identifier)
         }
@@ -34,12 +37,14 @@ class SlateDetailViewModelTests: XCTestCase {
     func subject(
         slate: Slate,
         source: Source? = nil,
-        tracker: Tracker? = nil
+        tracker: Tracker? = nil,
+        user: User? = nil
     ) -> SlateDetailViewModel {
         SlateDetailViewModel(
             slate: slate,
             source: source ?? self.source,
-            tracker: tracker ?? self.tracker
+            tracker: tracker ?? self.tracker,
+            user: user ?? self.user
         )
     }
 
