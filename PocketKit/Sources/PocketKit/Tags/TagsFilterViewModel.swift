@@ -2,32 +2,16 @@ import Combine
 import Sync
 import Analytics
 import Foundation
+import Textile
 
 class TagsFilterViewModel: ObservableObject {
-    enum SelectedTag {
-        case notTagged
-        case tag(String)
-
-        var name: String {
-            switch self {
-            case .notTagged:
-                return L10n.notTagged
-            case .tag(let name):
-                return name
-            }
-        }
-    }
-
     private var fetchedTags: [Tag]?
     private let tracker: Tracker
     private let source: Source
     var selectAllAction: () -> Void?
 
-    @Published
-    var selectedTag: SelectedTag?
-
-    @Published
-    var refreshView: Bool? = false
+    @Published var selectedTag: TagType?
+    @Published var refreshView: Bool? = false
 
     init(source: Source, tracker: Tracker, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
         self.source = source
@@ -36,20 +20,8 @@ class TagsFilterViewModel: ObservableObject {
         self.selectAllAction = selectAllAction
     }
 
-    func getAllTags() -> [String] {
-        var allTags: [String] = []
-        guard let fetchedTags = fetchedTags?.compactMap({ $0.name }).reversed() else { return allTags }
-
-        if fetchedTags.count > 3 {
-            let topRecentTags = Array(fetchedTags)[..<3]
-            let sortedTags = Array(fetchedTags)[3...].sorted()
-            allTags.append(contentsOf: topRecentTags)
-            allTags.append(contentsOf: sortedTags)
-        } else {
-            allTags.append(contentsOf: fetchedTags)
-        }
-
-        return allTags
+    func getAllTags() -> [TagType] {
+        arrangeTags(with: fetchedTags?.compactMap({ $0.name }) ?? [])
     }
 
     func trackEditAsOverflowAnalytics() {
@@ -58,7 +30,7 @@ class TagsFilterViewModel: ObservableObject {
         tracker.track(event: event, [context])
     }
 
-    func selectTag(_ tag: SelectedTag) {
+    func selectTag(_ tag: TagType) {
         var tagContext = UIContext.button(identifier: .selectedTag)
         if case .notTagged = tag {
             tagContext = UIContext.button(identifier: .notTagged)

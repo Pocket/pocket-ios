@@ -4,6 +4,7 @@
 
 import SwiftUI
 import Textile
+import Localization
 
 struct ReaderSettingsView: View {
     private enum Constants {
@@ -12,11 +13,9 @@ struct ReaderSettingsView: View {
         static let allowedFontFamilies: [FontDescriptor.Family] = [.graphik, .blanco]
     }
 
-    @Environment(\.presentationMode)
-    private var presentationMode
+    @Environment(\.presentationMode) private var presentationMode
 
-    @ObservedObject
-    private var settings: ReaderSettings
+    @ObservedObject private var settings: ReaderSettings
 
     init(settings: ReaderSettings) {
         self.settings = settings
@@ -25,8 +24,8 @@ struct ReaderSettingsView: View {
     var body: some View {
         NavigationView {
             Form {
-                Section(header: Text(L10n.displaySettings)) {
-                    Picker(L10n.font, selection: settings.$fontFamily) {
+                Section(header: Text(Localization.displaySettings)) {
+                    Picker(Localization.font, selection: settings.$fontFamily) {
                         ForEach(Constants.allowedFontFamilies, id: \.name) { family in
                             Text(family.name)
                                 .tag(family)
@@ -34,7 +33,7 @@ struct ReaderSettingsView: View {
                     }
 
                     Stepper(
-                        L10n.fontSize,
+                        Localization.fontSize,
                         value: settings.$fontSizeAdjustment,
                         in: Constants.allowedAdjustments,
                         step: Constants.adjustmentStep

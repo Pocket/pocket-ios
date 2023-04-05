@@ -53,7 +53,6 @@
         "HomeTests\/test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInSaves()",
         "HomeWebViewTests",
         "PremiumTests",
-        "ReaderTests\/test_tappingSaves_dismissesReader_andShowsSaves()",
         "ReaderTests\/test_tappingUnsupportedElementButton_showsSafari()",
         "ReaderTests\/test_tappingWebViewButton_showsSafari()",
         "ReportARecommendationTests",

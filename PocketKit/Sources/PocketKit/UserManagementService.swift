@@ -41,9 +41,9 @@ final class UserManagementService: ObservableObject, UserManagementServiceProtoc
         accountDeleted = false
     }
 
-    @MainActor
     /// Logs out the user
     /// We do this on the main thread because the Notification Center will post to areas that will change the UI
+    @MainActor
     func logout() {
         // Post that we logged out to the rest of the app using the old session
         notificationCenter.post(name: .userLoggedOut, object: appSession.currentSession)

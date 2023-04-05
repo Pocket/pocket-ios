@@ -4,6 +4,7 @@
 import Foundation
 import XCTest
 
+// swiftlint:disable force_try
 /**
  Represents the response from /micro/all
  */
@@ -379,3 +380,4 @@ extension SnowplowMicro {
         XCTAssertNotNil(event.getSlateLineupContext(), "Recommemdation missing slate lineup context")
     }
 }
+// swiftlint:enable force_try

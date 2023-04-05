@@ -1,10 +1,11 @@
 import UIKit
 import Textile
+import Localization
 
 class UnsupportedComponentCell: UICollectionViewCell {
     private lazy var unsupportedView: ArticleComponentUnavailableView = {
         let view = ArticleComponentUnavailableView()
-        view.text = L10n.thisElementIsCurrentlyUnsupported
+        view.text = Localization.thisElementIsCurrentlyUnsupported
         return view
     }()
 

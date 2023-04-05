@@ -2,6 +2,7 @@ import XCTest
 import CoreData
 import Analytics
 import Combine
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -14,6 +15,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     var listOptions: ListOptions!
     var viewType: SavesViewType!
     var subscriptions: [AnyCancellable]!
+    var user: User!
 
     override func setUp() {
         source = MockSource()
@@ -23,6 +25,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         listOptions = .saved
         listOptions.selectedSortOption = .newest
         viewType = .saves
+        user = PocketUser(userDefaults: UserDefaults())
 
         itemsController = FetchedSavedItemsController(resultsController: NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
@@ -59,14 +62,16 @@ class SavedItemsListViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         listOptions: ListOptions? = nil,
-        viewType: SavesViewType? = nil
+        viewType: SavesViewType? = nil,
+        user: User? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             viewType: viewType ?? self.viewType,
             listOptions: listOptions ?? self.listOptions,
-            notificationCenter: .default
+            notificationCenter: .default,
+            user: user ?? self.user
         )
     }
 

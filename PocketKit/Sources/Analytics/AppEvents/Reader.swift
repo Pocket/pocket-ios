@@ -52,6 +52,7 @@ public extension Events.Reader {
             )
         )
     }
+
     /**
      Fired when a user archives an article via the top toolbar on Reader
      */
@@ -64,6 +65,19 @@ public extension Events.Reader {
             extraEntities: [
                 ContentEntity(url: url)
             ]
+        )
+    }
+
+    /**
+     Fired when the user taps on the button to open item in web view  in the `Reader`
+     */
+    static func openInWebView(url: URL) -> ContentOpen {
+        return ContentOpen(
+            contentEntity: ContentEntity(url: url),
+            uiEntity: UiEntity(
+                .button,
+                identifier: "reader.view_original"
+            )
         )
     }
 }

@@ -1,8 +1,13 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Apollo
 import Combine
 import PocketGraph
 import SharedPocketKit
+import CoreData
 
 class FetchArchive: SyncOperation {
     private let apollo: ApolloClientProtocol
@@ -10,6 +15,8 @@ class FetchArchive: SyncOperation {
     private let events: SyncEvents
     private let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
     private let lastRefresh: LastRefresh
+    // Force unwrapping, because the entry point, execute, will ensure that this exists with a guard
+    private var persistentTask: PersistentSyncTask!
 
     init(
         apollo: ApolloClientProtocol,
@@ -25,7 +32,12 @@ class FetchArchive: SyncOperation {
         self.initialDownloadState = initialDownloadState
     }
 
-    func execute() async -> SyncOperationResult {
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
+        guard let persistentTask = space.backgroundObject(with: syncTaskId) as? PersistentSyncTask else {
+            return .retry(NoPersistentTaskOperationError())
+        }
+        self.persistentTask = persistentTask
+
         do {
             if lastRefresh.lastRefreshArchive != nil {
                 guard let lastRefreshTime = lastRefresh.lastRefreshArchive, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Archive.timeMustPass else {
@@ -71,6 +83,9 @@ class FetchArchive: SyncOperation {
 
     private func fetchArchive() async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize)
+        if let cursor = persistentTask.currentCursor {
+            pagination = PaginationSpec(maxItems: SyncConstants.Archive.firstLoadMaxCount, pageSize: SyncConstants.Archive.initalPageSize, cursor: cursor)
+        }
 
         var pageNumber = 1
         repeat {
@@ -111,7 +126,8 @@ class FetchArchive: SyncOperation {
     }
 
     private func updateLocalStorage(result: GraphQLResult<FetchArchiveQuery.Data>) throws {
-        guard let edges = result.data?.user?.savedItems?.edges else {
+        guard let edges = result.data?.user?.savedItems?.edges,
+              let cursor = result.data?.user?.savedItems?.pageInfo.endCursor else {
             return
         }
 
@@ -135,6 +151,9 @@ class FetchArchive: SyncOperation {
             }
         }
 
+        space.performAndWait {
+            persistentTask.currentCursor = cursor
+        }
         try space.save()
     }
 
@@ -146,6 +165,10 @@ class FetchArchive: SyncOperation {
 
         init(maxItems: Int, pageSize: Int) {
             self.init(cursor: nil, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
+        }
+
+        init(maxItems: Int, pageSize: Int, cursor: String) {
+            self.init(cursor: cursor, shouldFetchNextPage: false, maxItems: maxItems, pageSize: pageSize)
         }
 
         private init(cursor: String?, shouldFetchNextPage: Bool, maxItems: Int, pageSize: Int) {

@@ -5,8 +5,14 @@ import PocketGraph
 import SharedPocketKit
 import Combine
 
-public enum SearchServiceError: Error {
+public enum SearchServiceError: LoggableError {
     case noInternet
+
+    public var logDescription: String {
+        switch self {
+        case .noInternet: return "No internet"
+        }
+    }
 }
 
 public protocol SearchService: AnyObject {
@@ -38,8 +44,7 @@ public class PocketSearchService: SearchService {
 
     typealias SearchItemEdge = SearchSavedItemsQuery.Data.User.SearchSavedItems.Edge
 
-    @Published
-    private var _results: [SearchSavedItem]?
+    @Published private var _results: [SearchSavedItem]?
     public var results: Published<[SearchSavedItem]?>.Publisher { $_results }
 
     public var hasFinishedResults: Bool = false

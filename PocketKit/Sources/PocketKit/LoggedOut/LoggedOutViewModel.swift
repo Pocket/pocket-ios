@@ -15,17 +15,13 @@ enum LoggedOutAction {
 class LoggedOutViewModel: ObservableObject {
     var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var isPresentingOfflineView: Bool = false
+    @Published var isPresentingOfflineView: Bool = false
 
-    @Published
-    var isPresentingExitSurveyBanner: Bool = false
+    @Published var isPresentingExitSurveyBanner: Bool = false
 
-    @Published
-    var isPresentingExitSurvey: Bool = false
+    @Published var isPresentingExitSurvey: Bool = false
 
     private(set) var automaticallyDismissed = false
     private(set) var lastAction: LoggedOutAction?

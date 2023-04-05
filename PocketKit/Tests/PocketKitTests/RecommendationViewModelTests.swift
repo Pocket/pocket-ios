@@ -1,6 +1,7 @@
 import XCTest
 import Analytics
 import Combine
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -10,6 +11,7 @@ class RecommendationViewModelTests: XCTestCase {
     private var space: Space!
     private var tracker: MockTracker!
     private var pasteboard: MockPasteboard!
+    private var user: User!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -18,6 +20,7 @@ class RecommendationViewModelTests: XCTestCase {
         tracker = MockTracker()
         pasteboard = MockPasteboard()
         space = .testSpace()
+        user = PocketUser(userDefaults: UserDefaults())
 
         continueAfterFailure = false
     }
@@ -31,13 +34,15 @@ class RecommendationViewModelTests: XCTestCase {
         recommendation: Recommendation,
         source: Source? = nil,
         tracker: Tracker? = nil,
-        pasteboard: Pasteboard? = nil
+        pasteboard: Pasteboard? = nil,
+        user: User? = nil
     ) -> RecommendationViewModel {
         RecommendationViewModel(
             recommendation: recommendation,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            pasteboard: pasteboard ?? self.pasteboard
+            pasteboard: pasteboard ?? self.pasteboard,
+            user: user ?? self.user
         )
     }
 
@@ -319,7 +324,7 @@ class RecommendationViewModelTests: XCTestCase {
 
     func test_externalOpen_updatesPresentedWebReaderURL() throws {
         let viewModel = try subject(recommendation: space.createRecommendation())
-        let url = URL(string: "https://getpocket.com")!
+        let url = URL(string: "https://example.com")!
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Open")
         XCTAssertEqual(viewModel.presentedWebReaderURL, url)

@@ -9,33 +9,27 @@ import SharedPocketKit
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
 
-    @Published
-    private(set) var _actions: [ItemAction] = []
+    @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var presentedAddTags: PocketAddTagsViewModel?
+    @Published var presentedAddTags: PocketAddTagsViewModel?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var isPresentingReaderSettings: Bool?
+    @Published var isPresentingReaderSettings: Bool?
 
     private let item: SavedItem
     private let source: Source
     private let pasteboard: Pasteboard
+    private let user: User
     private var subscriptions: [AnyCancellable] = []
-    private var user: User
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
 
@@ -100,6 +94,14 @@ class SavedItemViewModel: ReadableViewModel {
 
     var isArchived: Bool {
         item.isArchived
+    }
+
+    var premiumURL: URL? {
+        pocketPremiumURL(url, user: user)
+    }
+
+    func moveToSaves() {
+        source.unarchive(item: item)
     }
 
     func delete() {
@@ -169,6 +171,13 @@ extension SavedItemViewModel {
         source.unarchive(item: item)
         trackMoveFromArchiveToSavesButtonTapped(url: item.url)
         completion(true)
+    }
+
+    func openExternally(url: URL?) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackWebViewOpen()
     }
 
     func archive() {

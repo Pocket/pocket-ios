@@ -175,10 +175,15 @@ class ReaderTests: XCTestCase {
 //        })
 //    }
 
-    func test_tappingWebViewButton_showsSafari() {
+    @MainActor
+    func test_tappingWebViewButton_showsSafari() async {
         launchApp_andOpenItem()
         tapSafariButton()
         validateSafariOpens()
+
+        let engagementEvent = await snowplowMicro.getFirstEvent(with: "reader.view_original")
+        engagementEvent!.getUIContext()!.assertHas(type: "button")
+        engagementEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     @MainActor
