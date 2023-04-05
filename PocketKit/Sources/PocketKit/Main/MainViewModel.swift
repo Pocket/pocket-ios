@@ -32,7 +32,8 @@ class MainViewModel: ObservableObject {
                     user: Services.shared.user,
                     userDefaults: Services.shared.userDefaults,
                     source: Services.shared.source,
-                    tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
+                    store: Services.shared.subscriptionStore
                 ) { source in
                     PremiumUpgradeViewModel(
                         store: Services.shared.subscriptionStore,
@@ -47,7 +48,9 @@ class MainViewModel: ObservableObject {
                     viewType: .saves,
                     listOptions: .saved,
                     notificationCenter: .default,
-                    user: Services.shared.user
+                    user: Services.shared.user,
+                    store: Services.shared.subscriptionStore,
+                    networkPathMonitor: NWPathMonitor()
                 ),
                 archivedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
@@ -55,7 +58,9 @@ class MainViewModel: ObservableObject {
                     viewType: .archive,
                     listOptions: .archived,
                     notificationCenter: .default,
-                    user: Services.shared.user
+                    user: Services.shared.user,
+                    store: Services.shared.subscriptionStore,
+                    networkPathMonitor: NWPathMonitor()
                 )
             ),
             home: HomeViewModel(
@@ -63,7 +68,8 @@ class MainViewModel: ObservableObject {
                 tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
                 networkPathMonitor: NWPathMonitor(),
                 homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
-                user: Services.shared.user
+                user: Services.shared.user,
+                store: Services.shared.subscriptionStore
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,

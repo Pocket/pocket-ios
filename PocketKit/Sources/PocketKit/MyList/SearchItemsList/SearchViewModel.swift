@@ -35,6 +35,7 @@ class SearchViewModel: ObservableObject {
     private let networkPathMonitor: NetworkPathMonitor
     private var lastPathStatus: NWPath.Status?
     private let user: User
+    private let store: SubscriptionStore
     private let userDefaults: UserDefaults
     private let source: Source
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
@@ -107,12 +108,14 @@ class SearchViewModel: ObservableObject {
          userDefaults: UserDefaults,
          source: Source,
          tracker: Tracker,
+         store: SubscriptionStore,
          premiumUpgradeViewModelFactory: @escaping PremiumUpgradeViewModelFactory) {
         self.networkPathMonitor = networkPathMonitor
         self.user = user
         self.userDefaults = userDefaults
         self.source = source
         self.tracker = tracker
+        self.store = store
         self.premiumUpgradeViewModelFactory = premiumUpgradeViewModelFactory
         itemsController = source.makeSavesController()
 
@@ -383,7 +386,7 @@ class SearchViewModel: ObservableObject {
 
 extension SearchViewModel {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
-        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, scope: selectedScope, user: user)
+        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, scope: selectedScope, user: user, store: store, networkPathMonitor: networkPathMonitor)
     }
 
     func select(_ searchItem: PocketItem, index: Int) {
@@ -403,7 +406,9 @@ extension SearchViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
-            user: user
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor
         )
 
         trackOpenSearchItem(url: savedItem.url, index: index)

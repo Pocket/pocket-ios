@@ -25,7 +25,6 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
         GeometryReader { geometry in
             NavigationView {
                 VStack {
-                    viewModel.upsellView
                     InputTagsView(viewModel: viewModel, geometry: geometry)
                     OtherTagsView(viewModel: viewModel)
                     Spacer()
@@ -91,6 +90,8 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                 Divider()
                     .frame(height: 10)
                     .overlay(Color(.ui.grey7))
+                viewModel.upsellView
+                    .padding(EdgeInsets(top: 32, leading: 12, bottom: 12, trailing: 12))
             }
         }
 
@@ -193,35 +194,3 @@ extension View {
         }
     }
 }
-
-//struct UpsellView <Content: View> : View {
-//
-//    let content: Content
-//
-//    init(@ViewBuilder contentBuilder: () -> Content){
-//        self.content = contentBuilder()
-//    }
-//
-//    init() where Content == Color {
-//        self.init {
-//            Color.white
-//        }
-//    }
-//
-//    var body: some View {
-//        HStack {
-//            Image(uiImage: UIImage(asset: .premiumIconColorful))
-//            VStack {
-//                Text("Test title")
-//                Text("Test subject")
-//            }
-//        }
-//    }
-//}
-
-
-//struct Upsell_Previews: PreviewProvider {
-//    static var previews: some View {
-//        UpsellView()
-//    }
-//}
