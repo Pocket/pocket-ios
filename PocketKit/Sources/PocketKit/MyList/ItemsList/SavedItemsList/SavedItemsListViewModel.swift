@@ -71,6 +71,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let tracker: Tracker
     private let itemsController: SavedItemsController
     private let user: User
+    private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
 
     private var selectedFilters: Set<ItemsListFilter>
@@ -78,7 +79,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, refreshCoordinator: AbstractRefreshCoordinatorProtocol) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, refreshCoordinator: AbstractRefreshCoordinatorProtocol, userDefaults: UserDefaults) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
@@ -87,6 +88,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         self.viewType = viewType
         self.listOptions = listOptions
         self.user = user
+        self.userDefaults = userDefaults
 
         switch self.viewType {
         case .saves:
@@ -532,7 +534,8 @@ extension SavedItemsListViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
-            user: user
+            user: user,
+            userDefaults: userDefaults
         )
 
         if savedItem.shouldOpenInWebView {

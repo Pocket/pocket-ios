@@ -13,21 +13,29 @@ class HomeViewModelTests: XCTestCase {
     var tracker: MockTracker!
     var space: Space!
     var networkPathMonitor: MockNetworkPathMonitor!
-    var homeRefreshCoordinator: MockHomeRefreshCoordinator!
+    var appSession: AppSession!
+    var taskScheduler: MockBGTaskScheduler!
+    var homeRefreshCoordinator: AbstractRefreshCoordinatorProtocol!
     var subscriptions: Set<AnyCancellable> = []
     var homeController: RichFetchedResultsController<Recommendation>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
     var user: User!
+    var userDefaults: UserDefaults!
 
     override func setUp() async throws {
         subscriptions = []
         space = .testSpace()
         source = MockSource()
         networkPathMonitor = MockNetworkPathMonitor()
-        homeRefreshCoordinator = MockHomeRefreshCoordinator()
+
+        taskScheduler = MockBGTaskScheduler()
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: UserDefaultsLastRefresh(defaults: .standard))
         homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
         recentSavesController = space.makeRecentSavesController(limit: 5)
-        user = PocketUser(userDefaults: UserDefaults())
+        userDefaults = .standard
+        user = PocketUser(userDefaults: userDefaults)
 
         tracker = MockTracker()
 
@@ -59,15 +67,17 @@ class HomeViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil,
-        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol? = nil,
-        user: User? = nil
+        homeRefreshCoordinator: AbstractRefreshCoordinatorProtocol? = nil,
+        user: User? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> HomeViewModel {
-        HomeViewModel(
+        return HomeViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
-            user: user ?? self.user
+            user: user ?? self.user,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 
@@ -552,13 +562,10 @@ class HomeViewModelTests: XCTestCase {
     func test_refresh_delegatesToHomeRefreshCoordinator() {
         let fetchExpectation = expectation(description: "expected to fetch slate lineup")
         source.stubFetchSlateLineup { _ in fetchExpectation.fulfill() }
-        homeRefreshCoordinator.stubRefresh { _, _ in fetchExpectation.fulfill() }
 
         let viewModel = subject()
         viewModel.refresh { }
         wait(for: [fetchExpectation], timeout: 10)
-
-        XCTAssertNotNil(homeRefreshCoordinator.refreshCall(at: 0))
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {

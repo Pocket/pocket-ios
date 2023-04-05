@@ -321,10 +321,6 @@
             isEnabled = "NO">
          </CommandLineArgument>
          <CommandLineArgument
-            argument = "clearFirstLaunch"
-            isEnabled = "NO">
-         </CommandLineArgument>
-         <CommandLineArgument
             argument = "clearImageCache"
             isEnabled = "NO">
          </CommandLineArgument>

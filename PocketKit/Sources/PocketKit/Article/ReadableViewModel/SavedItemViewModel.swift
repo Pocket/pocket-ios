@@ -29,6 +29,7 @@ class SavedItemViewModel: ReadableViewModel {
     private let source: Source
     private let pasteboard: Pasteboard
     private let user: User
+    private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
 
     init(
@@ -36,13 +37,15 @@ class SavedItemViewModel: ReadableViewModel {
         source: Source,
         tracker: Tracker,
         pasteboard: Pasteboard,
-        user: User
+        user: User,
+        userDefaults: UserDefaults
     ) {
         self.item = item
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
         self.user = user
+        self.userDefaults = userDefaults
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -55,7 +58,7 @@ class SavedItemViewModel: ReadableViewModel {
 
     var readerSettings: ReaderSettings {
         // TODO: inject this
-        ReaderSettings()
+        ReaderSettings(userDefaults: userDefaults)
     }
 
     var components: [ArticleComponent]? {

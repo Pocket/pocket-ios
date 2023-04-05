@@ -30,7 +30,7 @@ public struct UserDefaultsLastRefresh: LastRefresh {
 // MARK: Saves
 
 extension UserDefaultsLastRefresh {
-    public static let lastRefreshedSavesAtKey = "lastRefreshedSavesAt"
+    public static let lastRefreshedSavesAtKey = UserDefaults.Key.lastRefreshedSavesAt
 
     public var lastRefreshSaves: Double? {
         if hasRefreshedSaves {
@@ -51,7 +51,7 @@ extension UserDefaultsLastRefresh {
 
 // MARK: Archive
 extension UserDefaultsLastRefresh {
-    public static let lastRefreshedArchiveAtKey = "lastRefreshedArchiveAt"
+    public static let lastRefreshedArchiveAtKey = UserDefaults.Key.lastRefreshedArchiveAt
 
     public var lastRefreshArchive: Double? {
         if hasRefreshedArchive {
@@ -72,7 +72,7 @@ extension UserDefaultsLastRefresh {
 
 // MARK: Tags
 extension UserDefaultsLastRefresh {
-    public static let lastRefreshedTagsAtKey = "lastRefreshedTagsAt"
+    public static let lastRefreshedTagsAtKey = UserDefaults.Key.lastRefreshedTagsAt
 
     public var lastRefreshTags: Double? {
         if hasRefreshedTags {
@@ -93,7 +93,7 @@ extension UserDefaultsLastRefresh {
 
 // MARK: Home
 extension UserDefaultsLastRefresh {
-    public static let lastRefreshedHomeAtKey = "lastRefreshedHomeAt"
+    public static let lastRefreshedHomeAtKey = UserDefaults.Key.lastRefreshedHomeAt
 
     public var lastRefreshHome: Double? {
         if hasRefreshedHome {

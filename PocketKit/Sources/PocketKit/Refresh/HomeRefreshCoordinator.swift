@@ -8,15 +8,7 @@ import Combine
 import Sync
 import SharedPocketKit
 
-protocol HomeRefreshCoordinatorProtocol {
-    /// Refresh method that can be called by View Model classes
-    /// - Parameters:
-    ///   - isForced: True when a user manually asked for a refresh
-    ///   - completion: The completion call back to run when the code is done running
-    func refresh(isForced: Bool, _ completion: @escaping () -> Void)
-}
-
-class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol, HomeRefreshCoordinatorProtocol {
+class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
 
     var taskID: String = "com.mozilla.pocket.refresh.home"
 

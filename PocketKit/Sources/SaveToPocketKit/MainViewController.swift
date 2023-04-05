@@ -31,7 +31,7 @@ class MainViewController: UIViewController {
             if attempted {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
-                LegacyCleanupService(groupID: Keys.shared.groupdId).cleanUp()
+                LegacyCleanupService().cleanUp()
             } else {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }

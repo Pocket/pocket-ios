@@ -155,7 +155,7 @@ extension LoggedOutViewModelTests {
         }.store(in: &subscriptions)
 
         viewModel.signUp()
-      
+
         wait(for: [alertExpectation], timeout: 10)
     }
 

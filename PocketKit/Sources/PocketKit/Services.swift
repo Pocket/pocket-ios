@@ -14,7 +14,6 @@ struct Services {
     static let shared: Services = { Services() }()
 
     let userDefaults: UserDefaults
-    let firstLaunchDefaults: UserDefaults
     let appSession: AppSession
     let user: User
     let urlSession: URLSessionProtocol
@@ -41,11 +40,12 @@ struct Services {
     private let persistentContainer: PersistentContainer
 
     private init() {
-        userDefaults = .standard
-        firstLaunchDefaults = UserDefaults(
-            suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
-        )!
-        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupID: Keys.shared.groupID)
+        guard let sharedUserDefaults = UserDefaults(suiteName: Keys.shared.groupID) else {
+            fatalError("UserDefaults with suite name \(Keys.shared.groupID) must exist.")
+        }
+        userDefaults = sharedUserDefaults
+
+        persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
 
         lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         urlSession = URLSession.shared
