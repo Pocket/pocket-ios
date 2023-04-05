@@ -400,7 +400,8 @@ extension SearchViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
-            user: user
+            user: user,
+            userDefaults: userDefaults
         )
 
         trackOpenSearchItem(url: savedItem.url, index: index)

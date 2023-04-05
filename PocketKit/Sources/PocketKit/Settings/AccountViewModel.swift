@@ -38,8 +38,8 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingPremiumStatus = false
     @Published var isPresentingHooray = false
 
-    @AppStorage(UserDefaults.Key.toggleAppBadge)
-    public var appBadgeToggle: Bool = false
+    @AppStorage
+    public var appBadgeToggle: Bool
 
     private var userStatusListener: AnyCancellable?
 
@@ -69,6 +69,8 @@ class AccountViewModel: ObservableObject {
         self.premiumStatusViewModelFactory = premiumStatusViewModelFactory
         self.isPremium = user.status == .premium
         self.networkPathMonitor = networkPathMonitor
+
+        _appBadgeToggle = AppStorage(wrappedValue: false, UserDefaults.Key.toggleAppBadge, store: userDefaults)
 
         userStatusListener = user
             .statusPublisher
