@@ -27,7 +27,11 @@ class MainViewController: UIViewController {
         )
 
         do {
+<<<<<<< Updated upstream
             let attempted = try legacyUserMigration.perform()
+=======
+            let attempted = try legacyUserMigration.perform {}
+>>>>>>> Stashed changes
             if attempted {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup

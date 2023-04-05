@@ -43,8 +43,12 @@ public class LegacyUserMigration {
         self.groupID = groupID
     }
 
+<<<<<<< Updated upstream
     @discardableResult
     public func perform() throws -> Bool {
+=======
+    func decryptUserData() throws -> Data {
+>>>>>>> Stashed changes
         guard let password = currentPassword else {
             throw LegacyUserMigrationError.missingKey
         }
@@ -68,17 +72,38 @@ public class LegacyUserMigration {
             throw LegacyUserMigrationError.missingData
         }
 
+<<<<<<< Updated upstream
         let legacyStore: LegacyStore
+=======
+        return decryptedData
+    }
+
+    private func getLegacyStore(from decryptedData: Data) throws -> LegacyStore {
+>>>>>>> Stashed changes
         do {
             legacyStore = try JSONDecoder().decode(LegacyStore.self, from: decryptedData)
         } catch {
             throw LegacyUserMigrationError.failedDeserialization(error)
         }
 
+<<<<<<< Updated upstream
+=======
+    @discardableResult
+    public func perform(migrationAnalytics: () -> Void) throws -> Bool {
+
+        let userData = try decryptUserData()
+        let legacyStore = try getLegacyStore(from: userData)
+
+>>>>>>> Stashed changes
         guard isRequired(version: legacyStore.version) else {
             updateUserDefaults()
             return false
         }
+<<<<<<< Updated upstream
+=======
+
+        migrationAnalytics()
+>>>>>>> Stashed changes
 
         appSession.currentSession = Session(
             guid: legacyStore.guid,
