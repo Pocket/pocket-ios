@@ -88,6 +88,8 @@
         "ReaderTests\/test_tappingDisplaySettings_showsDisplaySettings()",
         "ReaderTests\/test_tappingOverflowMenu_showsOverflowOptions()",
         "ReaderTests\/test_tappingSaves_dismissesReader_andShowsSaves()",
+        "ReaderTests\/test_tappingUnsupportedElementButton_showsSafari()",
+        "ReaderTests\/test_tappingWebViewButton_showsSafari()",
         "SavesTests",
         "SearchTests\/test_selectSearchItem_forPremiumUser_showsReaderView()",
         "SearchTests\/test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet()",
