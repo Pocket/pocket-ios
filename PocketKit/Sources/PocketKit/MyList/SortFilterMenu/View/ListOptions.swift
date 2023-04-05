@@ -32,7 +32,7 @@ class ListOptions: ObservableObject {
 }
 
 class SavedListOptions: ObservableObject, ListOptionsHolder {
-    @AppStorage("listSelectedSortForSaved")
+    @AppStorage(UserDefaults.Key.listSelectedSortForSaved)
     var selectedSortOption: SortOption  = .newest
 
     private var cancellable: AnyCancellable?
@@ -50,7 +50,7 @@ class SavedListOptions: ObservableObject, ListOptionsHolder {
 }
 
 class ArchiveListOptions: ObservableObject, ListOptionsHolder {
-    @AppStorage("listSelectedSortForArchive")
+    @AppStorage(UserDefaults.Key.listSelectedSortForArchive)
     var selectedSortOption: SortOption  = .newest
 
     private var cancellable: AnyCancellable?

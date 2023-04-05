@@ -10,6 +10,8 @@ protocol BadgeProvider: AnyObject {
 extension UIApplication: BadgeProvider { }
 
 class AppBadgeSetup {
+    static let toggleAppBadgeKey = UserDefaults.Key.toggleAppBadge
+
     private let source: Source
     private let notificationCenter: NotificationCenter
     private var subscriptions: Set<AnyCancellable> = []
@@ -45,7 +47,7 @@ class AppBadgeSetup {
 
     func manualCheckForSavedCount() {
         var numberOfSaves: Int = 0
-        let currentValue = userDefaults.bool(forKey: AccountViewModel.ToggleAppBadgeKey)
+        let currentValue = userDefaults.bool(forKey: Self.toggleAppBadgeKey)
         if currentValue != false {
             do {
                 numberOfSaves = try source.unreadSaves()

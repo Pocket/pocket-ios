@@ -41,7 +41,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         if CommandLine.arguments.contains("clearUserDefaults") {
-            userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+            userDefaults.resetKeys()
         }
 
         if CommandLine.arguments.contains("clearCoreData") {

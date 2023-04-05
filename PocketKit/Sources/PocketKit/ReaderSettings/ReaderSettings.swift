@@ -7,10 +7,10 @@ import Textile
 import SwiftUI
 
 class ReaderSettings: StylerModifier, ObservableObject {
-    @AppStorage("readerFontSizeAdjustment")
+    @AppStorage(UserDefaults.Key.readerFontSizeAdjustment)
     var fontSizeAdjustment: Int = 0
 
-    @AppStorage("readerFontFamily")
+    @AppStorage(UserDefaults.Key.readerFontFamily)
     var fontFamily: FontDescriptor.Family = .blanco
 
     var currentStyling: FontStyling {

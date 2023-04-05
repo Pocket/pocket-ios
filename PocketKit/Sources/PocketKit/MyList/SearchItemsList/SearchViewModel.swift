@@ -31,7 +31,8 @@ enum SearchViewState {
 
 /// View model that holds business logic for the SearchView
 class SearchViewModel: ObservableObject {
-    static let recentSearchesKey = "Search.recentSearches"
+    static let recentSearchesKey = UserDefaults.Key.recentSearches
+
     private var subscriptions: [AnyCancellable] = []
     private let networkPathMonitor: NetworkPathMonitor
     private var lastPathStatus: NWPath.Status?

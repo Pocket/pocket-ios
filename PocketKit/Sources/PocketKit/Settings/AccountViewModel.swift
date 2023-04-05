@@ -7,7 +7,8 @@ import Textile
 import Network
 
 class AccountViewModel: ObservableObject {
-    static let ToggleAppBadgeKey = "AccountViewModel.ToggleAppBadge"
+    static let ToggleAppBadgeKey = UserDefaults.Key.toggleAppBadge
+
     private let user: User
     private let tracker: Tracker
     private let userDefaults: UserDefaults
@@ -37,7 +38,7 @@ class AccountViewModel: ObservableObject {
     @Published var isPresentingPremiumStatus = false
     @Published var isPresentingHooray = false
 
-    @AppStorage("Settings.ToggleAppBadge")
+    @AppStorage(UserDefaults.Key.toggleAppBadge)
     public var appBadgeToggle: Bool = false
 
     private var userStatusListener: AnyCancellable?

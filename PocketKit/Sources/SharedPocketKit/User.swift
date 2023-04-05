@@ -25,9 +25,9 @@ public class PocketUser: User, ObservableObject {
     public var statusPublisher: Published<Status>.Publisher { $status }
     @AppStorage private var storedStatus: Status
 
-    private static let userStatusKey = "User.statusKey"
-    private static let userNameKey = "User.nameKey"
-    private static let displayNameKey = "User.displayNameKey"
+    private static let userStatusKey = UserDefaults.Key.userStatus
+    private static let userNameKey = UserDefaults.Key.userName
+    private static let displayNameKey = UserDefaults.Key.displayName
 
     public init(status: Status = .unknown, userDefaults: UserDefaults, userName: String = "", displayName: String = "") {
         _storedStatus = AppStorage(wrappedValue: status, Self.userStatusKey, store: userDefaults)
