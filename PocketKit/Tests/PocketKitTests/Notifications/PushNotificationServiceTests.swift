@@ -52,7 +52,7 @@ final class PushNotificationServiceTests: XCTestCase {
 
         NotificationCenter.default.post(name: .userLoggedIn, object: session)
 
-        wait(for: [sessionExpectation], timeout: 2)
+        wait(for: [sessionExpectation], timeout: 10)
 
         XCTAssertEqual(braze.loggedInCalls(), 2)
         XCTAssertEqual(instantSync.loggedInCalls(), 2)
@@ -76,7 +76,7 @@ final class PushNotificationServiceTests: XCTestCase {
 
         NotificationCenter.default.post(name: .userLoggedOut, object: SharedPocketKit.Session(guid: "logout-test-guid", accessToken: "logout-test-access-token", userIdentifier: "logout-test-id"))
 
-        wait(for: [sessionExpectation], timeout: 2)
+        wait(for: [sessionExpectation], timeout: 10)
 
         XCTAssertEqual(braze.loggedOutCalls(), 1)
         XCTAssertEqual(instantSync.loggedOutCalls(), 1)

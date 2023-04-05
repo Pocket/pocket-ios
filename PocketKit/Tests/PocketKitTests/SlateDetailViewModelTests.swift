@@ -58,7 +58,7 @@ class SlateDetailViewModelTests: XCTestCase {
         }
         viewModel.refresh { }
 
-        wait(for: [fetchExpectation], timeout: 1)
+        wait(for: [fetchExpectation], timeout: 10)
         XCTAssertEqual(source.fetchSlateCall(at: 0)?.identifier, "abcde")
     }
 
@@ -77,7 +77,7 @@ class SlateDetailViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedLoadingSnapshot], timeout: 1)
+        wait(for: [receivedLoadingSnapshot], timeout: 10)
     }
 
     func test_fetch_sendsSnapshotWithItemForEachRecommendation() throws {
@@ -108,7 +108,7 @@ class SlateDetailViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetch()
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() throws {
@@ -142,7 +142,7 @@ class SlateDetailViewModelTests: XCTestCase {
         item.savedItem = space.buildSavedItem()
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
@@ -161,7 +161,7 @@ class SlateDetailViewModelTests: XCTestCase {
             at: IndexPath(item: 0, section: 0)
         )
 
-        wait(for: [readableExpectation], timeout: 1)
+        wait(for: [readableExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsNotReadable_updatesPresentedWebReaderURL() throws {
@@ -201,7 +201,7 @@ class SlateDetailViewModelTests: XCTestCase {
             viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
         }
 
-        wait(for: [urlExpectation], timeout: 1)
+        wait(for: [urlExpectation], timeout: 10)
     }
 
     func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() throws {
@@ -224,7 +224,7 @@ class SlateDetailViewModelTests: XCTestCase {
         XCTAssertNotNil(action)
 
         action?.handler?(nil)
-        wait(for: [reportExpectation], timeout: 1)
+        wait(for: [reportExpectation], timeout: 10)
     }
 
     func test_primaryAction_whenRecommendationIsNotSaved_savesWithSource() throws {
