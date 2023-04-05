@@ -91,7 +91,7 @@ public class RootViewModel: ObservableObject {
     private func tearDownSession() {
         source.clear()
 
-        userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        userDefaults.resetKeys()
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])

@@ -8,7 +8,8 @@ protocol HomeRefreshCoordinatorProtocol {
 }
 
 class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
-    static let dateLastRefreshKey = "HomeRefreshCoordinator.dateLastRefreshKey"
+    static let dateLastRefreshKey = UserDefaults.Key.dateLastRefresh
+
     private let notificationCenter: NotificationCenter
     private let userDefaults: UserDefaults
     private let source: Source

@@ -19,7 +19,10 @@ public enum LegacyUserMigrationError: LoggableError {
 }
 
 public class LegacyUserMigration {
-    static let migrationKey = "com.mozilla.pocket.next.migration.legacyUser"
+    static let migrationKey = UserDefaults.Key.legacyUserMigration
+    // These are required for legacy migration as one-offs, and thus, should not be removed
+    // from user defaults (since legacy user defaults are within the current app group)
+    // So, you won't find these defined in UserDefaults.Key
     static let versionKey = "version"
     static let decryptionKey = "kPKTCryptoKey"
 

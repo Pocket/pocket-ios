@@ -9,7 +9,7 @@ class PocketUserTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
-        UserDefaults.standard.removePersistentDomain(forName: "PocketUserTests")
+        userDefaults.resetKeys()
     }
 
     func subject(
