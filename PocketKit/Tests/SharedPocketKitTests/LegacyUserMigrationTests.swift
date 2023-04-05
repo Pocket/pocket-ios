@@ -123,7 +123,7 @@ extension LegacyUserMigrationTests {
             return try! JSONSerialization.data(withJSONObject: correct)
         }
 
-        XCTAssertNoThrow(try migration.perform() {
+        XCTAssertNoThrow(try migration.perform {
             XCTFail("Migration should not be attempted")
         })
     }
@@ -132,7 +132,7 @@ extension LegacyUserMigrationTests {
         let migration = subject()
 
         do {
-            try migration.perform() {
+            try migration.perform {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -150,7 +150,7 @@ extension LegacyUserMigrationTests {
         encryptedStore.stubDecryptStore { _ in return nil }
 
         do {
-            try migration.perform()  {
+            try migration.perform {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -173,7 +173,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform()  {
+            try migration.perform {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -192,7 +192,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform()  {
+            try migration.perform {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -215,7 +215,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-            try migration.perform()  {
+            try migration.perform {
                 XCTFail("Migration should not be attempted")
             }
         } catch {
@@ -249,7 +249,7 @@ extension LegacyUserMigrationTests {
 
         let expectation = XCTestExpectation(description: "Migration event fired successfully.")
 
-        try migration.perform()  {
+        try migration.perform {
             expectation.fulfill()
         }
 

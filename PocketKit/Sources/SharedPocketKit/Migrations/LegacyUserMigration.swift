@@ -42,7 +42,7 @@ public class LegacyUserMigration {
         self.keychain = keychain
         self.groupID = groupID
     }
-    
+
     func decryptUserData() throws -> Data {
         guard let password = currentPassword else {
             throw LegacyUserMigrationError.missingKey
@@ -66,10 +66,10 @@ public class LegacyUserMigration {
         guard let decryptedData = decryptedData else {
             throw LegacyUserMigrationError.missingData
         }
-        
+
         return decryptedData
     }
-    
+
     private func getLegacyStore(from decryptedData: Data) throws -> LegacyStore {
         do {
             return try JSONDecoder().decode(LegacyStore.self, from: decryptedData)
@@ -79,16 +79,16 @@ public class LegacyUserMigration {
     }
 
     @discardableResult
-    public func perform(migrationAnalytics: ()-> Void) throws -> Bool {
+    public func perform(migrationAnalytics: () -> Void) throws -> Bool {
 
         let userData = try decryptUserData()
         let legacyStore = try getLegacyStore(from: userData)
-        
+
         guard isRequired(version: legacyStore.version) else {
             updateUserDefaults()
             return false
         }
-        
+
         migrationAnalytics()
 
         appSession.currentSession = Session(

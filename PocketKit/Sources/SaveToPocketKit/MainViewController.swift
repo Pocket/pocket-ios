@@ -27,7 +27,7 @@ class MainViewController: UIViewController {
         )
 
         do {
-            let attempted = try legacyUserMigration.perform() {}
+            let attempted = try legacyUserMigration.perform { }
             if attempted {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
