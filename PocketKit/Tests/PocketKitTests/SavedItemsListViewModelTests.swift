@@ -16,16 +16,18 @@ class SavedItemsListViewModelTests: XCTestCase {
     var viewType: SavesViewType!
     var subscriptions: [AnyCancellable]!
     var user: User!
+    var userDefaults: UserDefaults!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
         subscriptions = []
-        listOptions = .saved
-        listOptions.selectedSortOption = .newest
         viewType = .saves
-        user = PocketUser(userDefaults: UserDefaults())
+        userDefaults = .standard
+        user = PocketUser(userDefaults: userDefaults)
+        listOptions = .saved(userDefaults: userDefaults)
+        listOptions.selectedSortOption = .newest
 
         itemsController = FetchedSavedItemsController(resultsController: NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
@@ -63,7 +65,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         tracker: Tracker? = nil,
         listOptions: ListOptions? = nil,
         viewType: SavesViewType? = nil,
-        user: User? = nil
+        user: User? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
             source: source ?? self.source,
@@ -71,7 +74,8 @@ class SavedItemsListViewModelTests: XCTestCase {
             viewType: viewType ?? self.viewType,
             listOptions: listOptions ?? self.listOptions,
             notificationCenter: .default,
-            user: user ?? self.user
+            user: user ?? self.user,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 
@@ -390,7 +394,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     func test_receivedSnapshots_whenArchiveInitialDownloadIsStarted_insertsPlaceholderCells() throws {
         source.initialArchiveDownloadState.send(.started)
 
-        let viewModel = subject(listOptions: .archived, viewType: .archive)
+        let viewModel = subject(listOptions: .archived(userDefaults: userDefaults), viewType: .archive)
 
         let receivedSnapshot = expectation(description: "receivedSnapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in

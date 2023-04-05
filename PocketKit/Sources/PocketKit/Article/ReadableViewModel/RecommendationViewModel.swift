@@ -27,17 +27,19 @@ class RecommendationViewModel: ReadableViewModel {
     private let source: Source
     private let pasteboard: Pasteboard
     private let user: User
+    private let userDefaults: UserDefaults
     let tracker: Tracker
 
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
-    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard, user: User) {
+    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard, user: User, userDefaults: UserDefaults) {
         self.recommendation = recommendation
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
         self.user = user
+        self.userDefaults = userDefaults
 
         self.savedItemCancellable = recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
@@ -50,7 +52,7 @@ class RecommendationViewModel: ReadableViewModel {
 
     var readerSettings: ReaderSettings {
         // TODO: inject this
-        ReaderSettings()
+        ReaderSettings(userDefaults: userDefaults)
     }
 
     var textAlignment: Textile.TextAlignment {
