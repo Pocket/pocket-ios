@@ -12,11 +12,11 @@ struct AddTagsViewElement: PocketUIElement {
     }
 
     var saveButton: XCUIElement {
-        element.buttons["save-button"]
+        element.buttons["save-button"].wait()
     }
 
     var newTagTextField: XCUIElement {
-        element.textFields["enter-tag-name"]
+        element.textFields["enter-tag-name"].wait()
     }
 
     var allTagsView: XCUIElement {
@@ -28,19 +28,19 @@ struct AddTagsViewElement: PocketUIElement {
             query = element.tables
         }
 
-        return query["all-tags"]
+        return query["all-tags"].wait()
     }
 
     func allTagsRow(matching string: String) -> XCUIElement {
-        return allTagsView.staticTexts[string]
+        return allTagsView.staticTexts[string].wait()
     }
 
     func tag(matching string: String) -> XCUIElement {
-        return element.staticTexts[string]
+        return element.staticTexts[string].wait()
     }
 
     func clearTagsTextfield() {
-        newTagTextField.wait().tap()
+        newTagTextField.tap()
         newTagTextField.typeText(XCUIKeyboardKey.delete.rawValue)
     }
 

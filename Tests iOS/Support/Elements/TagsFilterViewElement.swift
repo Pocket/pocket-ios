@@ -12,15 +12,15 @@ struct TagsFilterViewElement: PocketUIElement {
     }
 
     var editButton: XCUIElement {
-        element.buttons["edit-button"]
+        element.buttons["edit-button"].wait()
     }
 
     var renameButton: XCUIElement {
-        element.buttons["rename-button"]
+        element.buttons["rename-button"].wait()
     }
 
     var deleteButton: XCUIElement {
-        element.buttons["delete-button"]
+        element.buttons["delete-button"].wait()
     }
 
     func tag(matching string: String) -> XCUIElement {
@@ -35,6 +35,6 @@ struct TagsFilterViewElement: PocketUIElement {
         return tagCells.containing(
             .staticText,
             identifier: string
-        ).element(boundBy: 0)
+        ).element(boundBy: 0).wait()
     }
 }

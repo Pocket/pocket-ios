@@ -12,14 +12,14 @@ struct PremiumUpgradeViewElement: PocketUIElement {
     }
 
     var premiumUpgradeMonthlyButton: XCUIElement {
-        element.buttons["premium-upgrade-view-monthly-button"]
+        element.buttons["premium-upgrade-view-monthly-button"].wait()
     }
 
     var premiumUpgradeAnnualButton: XCUIElement {
-        element.buttons["premium-upgrade-view-annual-button"]
+        element.buttons["premium-upgrade-view-annual-button"].wait()
     }
 
     var dismissPremiumButton: XCUIElement {
-        element.buttons["premium-upgrade-view-dismiss-button"]
+        element.buttons["premium-upgrade-view-dismiss-button"].wait()
     }
 }

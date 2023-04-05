@@ -12,18 +12,18 @@ struct SettingsViewElement: PocketUIElement {
     }
 
     var logOutButton: XCUIElement {
-        element.buttons["log-out-button"]
+        element.buttons["log-out-button"].wait()
     }
 
     var accountManagementButton: XCUIElement {
-        element.buttons["account-management-button"]
+        element.buttons["account-management-button"].wait()
     }
 
     var goPremiumButton: XCUIElement {
-        element.buttons["go-premium-button"]
+        element.buttons["go-premium-button"].wait()
     }
 
     var premiumSubscriptionButton: XCUIElement {
-        element.buttons["premium-subscription-button"]
+        element.buttons["premium-subscription-button"].wait()
     }
 }

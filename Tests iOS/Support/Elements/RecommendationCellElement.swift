@@ -12,15 +12,15 @@ struct RecommendationCellElement: PocketUIElement {
     }
 
     var saveButton: XCUIElement {
-        element.buttons["Save"]
+        element.buttons["Save"].wait()
     }
 
     var savedButton: XCUIElement {
-        element.buttons["Saved"]
+        element.buttons["Saved"].wait()
     }
 
     var overflowButton: XCUIElement {
-        element.buttons["overflow-button"]
+        element.buttons["overflow-button"].wait()
     }
 
     struct SaveButton: PocketUIElement {

@@ -52,6 +52,7 @@ struct HomeViewElement: PocketUIElement {
 
         element.cells
             .element(boundBy: 0)
+            .wait()
             .coordinate(withNormalizedOffset: topCenter)
             .press(
                 forDuration: 0.1,
@@ -79,14 +80,14 @@ struct HomeViewElement: PocketUIElement {
     }
 
     var overscrollText: XCUIElement {
-        element.otherElements["slate-detail-overscroll"]
+        element.otherElements["slate-detail-overscroll"].wait()
     }
 
     var seeAllCollectionButton: XCUIElement {
-        element.staticTexts["See All"]
+        element.staticTexts["See All"].wait()
     }
 
     var returnToHomeButton: XCUIElement {
-        element.buttons["Home"]
+        element.buttons["Home"].wait()
     }
 }

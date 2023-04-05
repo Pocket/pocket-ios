@@ -17,11 +17,13 @@ struct ItemRowElement: PocketUIElement {
             .matching(NSPredicate(format: "label CONTAINS %@", string))
             // Ignoring the next empty count because of https://github.com/realm/SwiftLint/issues/2012
             // swiftlint:disable:next empty_count
-            .count > 0
+            .firstMatch
+            .wait()
+            .exists
     }
 
     var tagButton: XCUIElement {
-        element.buttons["tag-button"]
+        element.buttons["tag-button"].wait()
     }
 
     func tap() {
@@ -31,19 +33,19 @@ struct ItemRowElement: PocketUIElement {
     }
 
     var itemActionButton: XCUIElement {
-        element.buttons["item-actions"]
+        element.buttons["item-actions"].wait()
     }
 
     var favoriteButton: FavoriteButton {
-        FavoriteButton(element.buttons["item-action-favorite"])
+        FavoriteButton(element.buttons["item-action-favorite"].wait())
     }
 
     var shareButton: XCUIElement {
-        element.buttons["item-action-share"]
+        element.buttons["item-action-share"].wait()
     }
 
     var overFlowMenu: XCUIElement {
-        element.buttons["overflow-menu"]
+        element.buttons["overflow-menu"].wait()
     }
 }
 

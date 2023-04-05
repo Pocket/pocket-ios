@@ -12,6 +12,6 @@ struct WebReaderElement: PocketUIElement {
     }
 
     func staticText(matching string: String) -> XCUIElement {
-        return element.staticTexts[string]
+        return element.staticTexts[string].wait()
     }
 }

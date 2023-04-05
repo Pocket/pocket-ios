@@ -12,19 +12,19 @@ struct SavesElement: PocketUIElement {
     }
 
     var selectionSwitcher: SelectionSwitcherElement {
-        return SelectionSwitcherElement(element.otherElements["saves-selection-switcher"])
+        return SelectionSwitcherElement(element.otherElements["saves-selection-switcher"].wait())
     }
 
     var tagsFilterView: TagsFilterViewElement {
-        TagsFilterViewElement(element.otherElements["filter-tags"])
+        TagsFilterViewElement(element.otherElements["filter-tags"].wait())
     }
 
     var searchView: SearchViewElement {
-        SearchViewElement(element.otherElements["search-view"])
+        SearchViewElement(element.otherElements["search-view"].wait())
     }
 
     private var collectionView: XCUIElement {
-        element.otherElements["saves"].collectionViews.firstMatch
+        element.otherElements["saves"].wait().collectionViews.firstMatch
     }
 
     var itemCells: XCUIElementQuery {
@@ -37,7 +37,7 @@ struct SavesElement: PocketUIElement {
                 format: "identifier = %@",
                 "topic-chip"
             )
-        ).containing(.staticText, identifier: type).element(boundBy: 0)
+        ).containing(.staticText, identifier: type).element(boundBy: 0).wait()
     }
 
     func selectedTagChip(for tag: String) -> XCUIElement {
@@ -46,23 +46,23 @@ struct SavesElement: PocketUIElement {
                 format: "identifier = %@",
                 "selected-tag-chip"
             )
-        ).containing(.staticText, identifier: tag).element(boundBy: 0)
+        ).containing(.staticText, identifier: tag).element(boundBy: 0).wait()
     }
 
     func emptyStateView(for type: String) -> XCUIElement {
-        element.otherElements[type]
+        element.otherElements[type].wait()
     }
 
     func searchEmptyStateView(for type: String) -> XCUIElement {
-        element.images[type]
+        element.images[type].wait()
     }
 
     var archiveSwipeButton: XCUIElement {
-        collectionView.buttons["Archive"]
+        collectionView.buttons["Archive"].wait()
     }
 
     var moveToSavesSwipeButton: XCUIElement {
-        collectionView.buttons["Move to Saves"]
+        collectionView.buttons["Move to Saves"].wait()
     }
 
     var itemCount: Int {
@@ -83,7 +83,7 @@ struct SavesElement: PocketUIElement {
             identifier: string
         ).element(boundBy: 0)
 
-        return ItemRowElement(cell)
+        return ItemRowElement(cell.wait())
     }
 
     func pullToRefresh() {
@@ -91,6 +91,7 @@ struct SavesElement: PocketUIElement {
 
         itemCells
             .element(boundBy: 0)
+            .wait()
             .coordinate(withNormalizedOffset: centerCenter)
             .press(
                 forDuration: 0.1,

@@ -12,14 +12,14 @@ struct SignInFormElement: PocketUIElement {
     }
 
     var emailField: XCUIElement {
-        element.textFields["email"]
+        element.textFields["email"].wait()
     }
 
     var passwordField: XCUIElement {
-        element.secureTextFields["password"]
+        element.secureTextFields["password"].wait()
     }
 
     var signInButton: XCUIElement {
-        element.buttons["Sign In"]
+        element.buttons["Sign In"].wait()
     }
 }

@@ -12,6 +12,6 @@ struct AccountManagementViewElement: PocketUIElement {
     }
 
     var deleteAccountButton: XCUIElement {
-        element.buttons["delete-your-account-button"]
+        element.buttons["delete-your-account-button"].wait()
     }
 }

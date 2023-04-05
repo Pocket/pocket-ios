@@ -16,25 +16,25 @@ struct PocketAppElement {
     }
 
     var loggedOutView: XCUIElement {
-        return app.collectionViews["logged-out"]
+        return app.collectionViews["logged-out"].wait()
     }
 
     var bannerView: XCUIElement {
-        return app.otherElements["banner"]
+        return app.otherElements["banner"].wait()
     }
 
     var surveyBannerButton: XCUIElement {
         // Some reason the banner view when used on Logout does not keep its accessibility identifiers...
-        return app.buttons.element(matching: NSPredicate(format: "label == %@", "Quick survey"))
+        return app.buttons.element(matching: NSPredicate(format: "label == %@", "Quick survey")).wait()
     }
 
     /// Gets the delete overlay view, for some reason this is in the main app element.
     var deletingAccountOverlay: XCUIElement {
-        return app.otherElements["deleting-overlay"]
+        return app.otherElements["deleting-overlay"].wait()
     }
 
     var homeView: HomeViewElement {
-        return HomeViewElement(app.otherElements["home"])
+        return HomeViewElement(app.otherElements["home"].wait())
     }
 
     var saves: SavesElement {
@@ -42,31 +42,31 @@ struct PocketAppElement {
     }
 
     var settingsView: SettingsViewElement {
-        return SettingsViewElement(app.collectionViews["settings"])
+        return SettingsViewElement(app.collectionViews["settings"].wait())
     }
 
     var premiumUpgradeView: PremiumUpgradeViewElement {
-        PremiumUpgradeViewElement(app.otherElements["premium-upgrade-view"])
+        PremiumUpgradeViewElement(app.otherElements["premium-upgrade-view"].wait())
     }
 
     var searchGetPremiumEmptyView: SearchGetPremiumEmptyViewElement {
-        SearchGetPremiumEmptyViewElement(app.otherElements["get-premium-empty-state"])
+        SearchGetPremiumEmptyViewElement(app.otherElements["get-premium-empty-state"].wait())
     }
 
     var accountManagementView: AccountManagementViewElement {
-        return AccountManagementViewElement(app.collectionViews["account-management"])
+        return AccountManagementViewElement(app.collectionViews["account-management"].wait())
     }
 
     var deleteConfirmationView: DeleteConfirmationViewElement {
-        return DeleteConfirmationViewElement(app.otherElements["delete-confirmation"])
+        return DeleteConfirmationViewElement(app.otherElements["delete-confirmation"].wait())
     }
 
     var premiumStatusView: PremiumStatusViewElement {
-        return PremiumStatusViewElement(app.otherElements["premium-status-view"])
+        return PremiumStatusViewElement(app.otherElements["premium-status-view"].wait())
     }
 
     var slateDetailView: SlateDetailElement {
-        return SlateDetailElement(app.otherElements["slate-detail"])
+        return SlateDetailElement(app.otherElements["slate-detail"].wait())
     }
 
     var readerView: ReaderElement {
@@ -74,11 +74,11 @@ struct PocketAppElement {
     }
 
     var webView: XCUIElement {
-       return app.webViews.element(boundBy: 0)
+       return app.webViews.element(boundBy: 0).wait()
     }
 
     var webReaderView: WebReaderElement {
-        return WebReaderElement(app.webViews.element(boundBy: 0))
+        return WebReaderElement(app.webViews.element(boundBy: 0).wait())
     }
 
     var reportView: ReportViewElement {
@@ -89,67 +89,67 @@ struct PocketAppElement {
             query = app.tables
         }
 
-        return ReportViewElement(query["report-recommendation"])
+        return ReportViewElement(query["report-recommendation"].wait())
     }
 
     var sortMenu: SortMenuElement {
-        return SortMenuElement(app.tables["sort-menu"])
+        return SortMenuElement(app.tables["sort-menu"].wait())
     }
 
     var shareSheet: XCUIElement {
-        return app.otherElements["ActivityListView"]
+        return app.otherElements["ActivityListView"].wait()
     }
 
     var tabBar: TabBarElement {
-        return TabBarElement(app.tabBars.element(boundBy: 0))
+        return TabBarElement(app.tabBars.element(boundBy: 0).wait())
     }
 
     var addTagsView: AddTagsViewElement {
-        return AddTagsViewElement(app.otherElements["add-tags"])
+        return AddTagsViewElement(app.otherElements["add-tags"].wait())
     }
 
     var readerActionWebActivity: ReaderActionsWebActivityElement {
-        return ReaderActionsWebActivityElement(app.otherElements["ActivityListView"])
+        return ReaderActionsWebActivityElement(app.otherElements["ActivityListView"].wait())
     }
 
     var favoriteButton: XCUIElement {
-        app.buttons["Favorite"]
+        app.buttons["Favorite"].wait()
     }
 
     var unfavoriteButton: XCUIElement {
-        app.buttons["Unfavorite"]
+        app.buttons["Unfavorite"].wait()
     }
 
     var deleteButton: XCUIElement {
-        app.buttons["item-action-delete"]
+        app.buttons["item-action-delete"].wait()
     }
 
     var archiveButton: XCUIElement {
-        app.buttons["item-action-archive"]
+        app.buttons["item-action-archive"].wait()
     }
 
     var addTagsButton: XCUIElement {
-        app.buttons["item-action-add-tags"]
+        app.buttons["item-action-add-tags"].wait()
     }
 
     var reAddButton: XCUIElement {
-        app.buttons["item-action-move-to-saves"]
+        app.buttons["item-action-move-to-saves"].wait()
     }
 
     var shareButton: XCUIElement {
-        app.buttons["Share"]
+        app.buttons["Share"].wait()
     }
 
     var reportButton: XCUIElement {
-        app.buttons["Report"]
+        app.buttons["Report"].wait()
     }
 
     var alert: AlertElement {
-        AlertElement(app.alerts.element(boundBy: 0))
+        AlertElement(app.alerts.element(boundBy: 0).wait())
     }
 
     var navigationBar: XCUIElement {
-        app.navigationBars.element(boundBy: 0)
+        app.navigationBars.element(boundBy: 0).wait()
     }
 
     @discardableResult
