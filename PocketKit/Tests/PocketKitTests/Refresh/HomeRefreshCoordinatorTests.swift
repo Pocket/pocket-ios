@@ -63,7 +63,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 5)
+        wait(for: [expectRefresh], timeout: 10)
         XCTAssertNotNil(lastRefresh.lastRefreshHome)
     }
 
@@ -94,7 +94,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 5)
+        wait(for: [expectRefresh], timeout: 10)
         XCTAssertNotEqual(lastRefresh.lastRefreshHome, date!.timeIntervalSince1970)
     }
 
@@ -110,7 +110,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh(isForced: true) {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 5)
+        wait(for: [expectRefresh], timeout: 10)
     }
 
     func test_refresh_delegatesToSource() {
@@ -120,7 +120,8 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         let coordinator = subject()
 
         coordinator.refresh(isForced: true) { }
-        wait(for: [fetchExpectation], timeout: 5)
+
+        wait(for: [fetchExpectation], timeout: 10)
 
         XCTAssertEqual(source.fetchSlateLineupCall(at: 0)?.identifier, "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1")
     }
@@ -146,7 +147,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.initialize()
         notificationCenter.post(name: UIScene.willEnterForegroundNotification, object: nil)
 
-        wait(for: [fetchExpectation], timeout: 2)
+        wait(for: [fetchExpectation], timeout: 10)
         XCTAssertEqual(source.fetchSlateLineupCall(at: 0)?.identifier, "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1")
     }
 

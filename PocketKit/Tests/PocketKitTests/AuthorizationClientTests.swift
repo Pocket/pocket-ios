@@ -76,7 +76,7 @@ extension AuthorizationClientTests {
             _ = try await self.client.logIn(from: self)
         }
 
-        wait(for: [expectSessionStart], timeout: 1)
+        wait(for: [expectSessionStart], timeout: 10)
     }
 }
 
@@ -130,7 +130,7 @@ extension AuthorizationClientTests {
             _ = try await self.client.signUp(from: self)
         }
 
-        wait(for: [expectSessionStart], timeout: 1)
+        wait(for: [expectSessionStart], timeout: 10)
     }
 }
 

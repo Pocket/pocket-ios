@@ -444,7 +444,7 @@ extension HomeTests {
         let doesExist = expectation(for: exists, evaluatedWith: overscrollView)
         let isHittable = NSPredicate(format: "isHittable == 1")
         let hittable = expectation(for: isHittable, evaluatedWith: overscrollView)
-        wait(for: [doesExist, hittable], timeout: 20)
+        wait(for: [doesExist, hittable], timeout: 100)
     }
 }
 

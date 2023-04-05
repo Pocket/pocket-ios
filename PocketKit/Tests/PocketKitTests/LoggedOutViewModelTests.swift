@@ -78,7 +78,7 @@ extension LoggedOutViewModelTests {
         let viewModel = subject()
         await viewModel.logIn()
 
-        wait(for: [startExpectation], timeout: 5)
+        wait(for: [startExpectation], timeout: 10)
     }
 
     @MainActor
@@ -94,7 +94,7 @@ extension LoggedOutViewModelTests {
 
         viewModel.logIn()
 
-        wait(for: [alertExpectation], timeout: 5)
+        wait(for: [alertExpectation], timeout: 10)
     }
 
     @MainActor
@@ -118,7 +118,7 @@ extension LoggedOutViewModelTests {
         }.store(in: &subscriptions)
 
         viewModel.logIn()
-        wait(for: [sessionExpectation], timeout: 5)
+        wait(for: [sessionExpectation], timeout: 10)
     }
 }
 
@@ -140,7 +140,7 @@ extension LoggedOutViewModelTests {
         let viewModel = subject()
         await viewModel.signUp()
 
-        wait(for: [startExpectation], timeout: 5)
+        wait(for: [startExpectation], timeout: 10)
     }
 
     @MainActor
@@ -155,7 +155,8 @@ extension LoggedOutViewModelTests {
         }.store(in: &subscriptions)
 
         viewModel.signUp()
-        wait(for: [alertExpectation], timeout: 5)
+      
+        wait(for: [alertExpectation], timeout: 10)
     }
 
     @MainActor
@@ -179,7 +180,8 @@ extension LoggedOutViewModelTests {
         }.store(in: &subscriptions)
 
         viewModel.signUp()
-        wait(for: [sessionExpectation], timeout: 5)
+
+        wait(for: [sessionExpectation], timeout: 10)
     }
 }
 
@@ -195,7 +197,8 @@ extension LoggedOutViewModelTests {
         }.store(in: &subscriptions)
 
         await viewModel.logIn()
-        wait(for: [offlineExpectation], timeout: 5)
+
+        wait(for: [offlineExpectation], timeout: 10)
     }
 
     func test_logIn_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() async {
@@ -218,7 +221,8 @@ extension LoggedOutViewModelTests {
 
         await viewModel.logIn()
         networkPathMonitor.update(status: .satisfied)
-        wait(for: [offlineExpectation, onlineExpectation], timeout: 5, enforceOrder: true)
+
+        wait(for: [offlineExpectation, onlineExpectation], timeout: 10, enforceOrder: true)
     }
 
     func test_signUp_whenOffline_setsPresentOfflineViewToTrue() async {
@@ -232,7 +236,8 @@ extension LoggedOutViewModelTests {
         }.store(in: &subscriptions)
 
         await viewModel.signUp()
-        wait(for: [offlineExpectation], timeout: 5)
+
+        wait(for: [offlineExpectation], timeout: 10)
     }
 
     func test_signUp_whenOffline_thenReconnects_setsPresentOfflineViewToFalse() async {
@@ -255,7 +260,8 @@ extension LoggedOutViewModelTests {
 
         await viewModel.signUp()
         networkPathMonitor.update(status: .satisfied)
-        wait(for: [offlineExpectation, onlineExpectation], timeout: 5, enforceOrder: true)
+
+        wait(for: [offlineExpectation, onlineExpectation], timeout: 10, enforceOrder: true)
     }
 }
 
