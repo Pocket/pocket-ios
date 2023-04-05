@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 
 public enum TagSectionType: String {
     case allTags = "All Tags"
@@ -12,6 +13,8 @@ public protocol AddTagsViewModel: ObservableObject {
     var newTagInput: String { get set }
     var otherTags: [String] { get set }
     var sectionTitle: TagSectionType { get }
+    var upsellView: AnyView { get }
+
     func addTag(with tag: String) -> Bool
     func addTags()
     func allOtherTags()

@@ -4,6 +4,7 @@ import Foundation
 import Textile
 import Analytics
 import UIKit
+import SharedPocketKit
 
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
@@ -34,17 +35,20 @@ class SavedItemViewModel: ReadableViewModel {
     private let source: Source
     private let pasteboard: Pasteboard
     private var subscriptions: [AnyCancellable] = []
+    private var user: User
 
     init(
         item: SavedItem,
         source: Source,
         tracker: Tracker,
-        pasteboard: Pasteboard
+        pasteboard: Pasteboard,
+        user: User
     ) {
         self.item = item
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
+        self.user = user
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -172,6 +176,7 @@ extension SavedItemViewModel {
             item: item,
             source: source,
             tracker: tracker,
+            user: user,
             saveAction: { [weak self] in
                 self?.fetchDetailsIfNeeded()
             }

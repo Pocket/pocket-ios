@@ -383,7 +383,7 @@ class SearchViewModel: ObservableObject {
 
 extension SearchViewModel {
     func itemViewModel(_ searchItem: PocketItem, index: Int) -> PocketItemViewModel {
-        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, scope: selectedScope)
+        return PocketItemViewModel(item: searchItem, index: index, source: source, tracker: tracker, scope: selectedScope, user: user)
     }
 
     func select(_ searchItem: PocketItem, index: Int) {
@@ -402,7 +402,8 @@ extension SearchViewModel {
             item: savedItem,
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general
+            pasteboard: UIPasteboard.general,
+            user: user
         )
 
         trackOpenSearchItem(url: savedItem.url, index: index)

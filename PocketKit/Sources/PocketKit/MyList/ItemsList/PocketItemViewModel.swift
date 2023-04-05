@@ -13,6 +13,7 @@ class PocketItemViewModel: ObservableObject {
     private let source: Source
     private let index: Int
     private let scope: SearchScope
+    private let user: User
 
     let item: PocketItem
 
@@ -38,19 +39,21 @@ class PocketItemViewModel: ObservableObject {
             item: savedItem,
             source: source,
             tracker: tracker,
+            user: user,
             saveAction: {}
         )
         tracker.track(event: Events.Search.showAddTags(itemUrl: savedItem.url, positionInList: index, scope: scope))
         return addTagsViewModel
     }
 
-    init(item: PocketItem, index: Int, source: Source, tracker: Tracker, scope: SearchScope) {
+    init(item: PocketItem, index: Int, source: Source, tracker: Tracker, scope: SearchScope, user: User) {
         self.item = item
         self.index = index
         self.source = source
         self.tracker = tracker
         self.scope = scope
         self.isFavorite = item.isFavorite
+        self.user = user
     }
 
     /// Triggers action to favorite or unfavorite an item in a list

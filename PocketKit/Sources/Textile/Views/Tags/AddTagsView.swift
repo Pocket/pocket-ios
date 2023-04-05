@@ -25,6 +25,7 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
         GeometryReader { geometry in
             NavigationView {
                 VStack {
+                    viewModel.upsellView
                     InputTagsView(viewModel: viewModel, geometry: geometry)
                     OtherTagsView(viewModel: viewModel)
                     Spacer()
@@ -173,13 +174,6 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
             }
         }
     }
-
-    struct freeUserUpsell: View {
-        var body: some View {
-            UpsellView()
-        }
-    }
-
 }
 
 private extension Style {
@@ -200,33 +194,34 @@ extension View {
     }
 }
 
-struct UpsellView <Content: View> : View {
+//struct UpsellView <Content: View> : View {
+//
+//    let content: Content
+//
+//    init(@ViewBuilder contentBuilder: () -> Content){
+//        self.content = contentBuilder()
+//    }
+//
+//    init() where Content == Color {
+//        self.init {
+//            Color.white
+//        }
+//    }
+//
+//    var body: some View {
+//        HStack {
+//            Image(uiImage: UIImage(asset: .premiumIconColorful))
+//            VStack {
+//                Text("Test title")
+//                Text("Test subject")
+//            }
+//        }
+//    }
+//}
 
-    let content: Content
 
-    init(@ViewBuilder contentBuilder: () -> Content){
-        self.content = contentBuilder()
-    }
-
-    init() where Content == Color {
-        self.init {
-            Color.white
-        }
-    }
-
-    var body: some View {
-        HStack {
-            Image(uiImage: UIImage(asset: .premiumIconColorful))
-            VStack {
-                Text("Test title")
-                Text("Test subject")
-            }
-        }
-    }
-}
-
-struct Upsell_Previews: PreviewProvider {
-    static var previews: some View {
-        UpsellView()
-    }
-}
+//struct Upsell_Previews: PreviewProvider {
+//    static var previews: some View {
+//        UpsellView()
+//    }
+//}

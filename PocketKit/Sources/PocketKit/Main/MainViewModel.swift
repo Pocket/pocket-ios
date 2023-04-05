@@ -46,21 +46,24 @@ class MainViewModel: ObservableObject {
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
                     viewType: .saves,
                     listOptions: .saved,
-                    notificationCenter: .default
+                    notificationCenter: .default,
+                    user: Services.shared.user
                 ),
                 archivedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
                     viewType: .archive,
                     listOptions: .archived,
-                    notificationCenter: .default
+                    notificationCenter: .default,
+                    user: Services.shared.user
                 )
             ),
             home: HomeViewModel(
                 source: Services.shared.source,
                 tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
                 networkPathMonitor: NWPathMonitor(),
-                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator
+                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
+                user: Services.shared.user
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,
