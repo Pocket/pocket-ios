@@ -4,6 +4,7 @@ import Foundation
 import Textile
 import Analytics
 import UIKit
+import SharedPocketKit
 
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
@@ -33,18 +34,21 @@ class SavedItemViewModel: ReadableViewModel {
     private let item: SavedItem
     private let source: Source
     private let pasteboard: Pasteboard
+    private let user: User
     private var subscriptions: [AnyCancellable] = []
 
     init(
         item: SavedItem,
         source: Source,
         tracker: Tracker,
-        pasteboard: Pasteboard
+        pasteboard: Pasteboard,
+        user: User
     ) {
         self.item = item
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
+        self.user = user
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -90,6 +94,14 @@ class SavedItemViewModel: ReadableViewModel {
 
     var isArchived: Bool {
         item.isArchived
+    }
+
+    var premiumURL: URL? {
+        pocketPremiumURL(url, user: user)
+    }
+
+    func moveToSaves() {
+        source.unarchive(item: item)
     }
 
     func delete() {
@@ -159,6 +171,13 @@ extension SavedItemViewModel {
         source.unarchive(item: item)
         trackMoveFromArchiveToSavesButtonTapped(url: item.url)
         completion(true)
+    }
+
+    func openExternally(url: URL?) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackWebViewOpen()
     }
 
     func archive() {

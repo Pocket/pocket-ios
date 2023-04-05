@@ -4,6 +4,7 @@ import UIKit
 import CoreData
 import Analytics
 import Localization
+import SharedPocketKit
 
 enum ReadableType {
     case recommendation(RecommendationViewModel)
@@ -100,6 +101,7 @@ class HomeViewModel: NSObject {
 
     private let source: Source
     let tracker: Tracker
+    private let user: User
     private let networkPathMonitor: NetworkPathMonitor
     private let homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
     private var subscriptions: [AnyCancellable] = []
@@ -112,13 +114,15 @@ class HomeViewModel: NSObject {
         source: Source,
         tracker: Tracker,
         networkPathMonitor: NetworkPathMonitor,
-        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
+        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol,
+        user: User
     ) {
         self.source = source
         self.tracker = tracker
         self.networkPathMonitor = networkPathMonitor
         networkPathMonitor.start(queue: .global(qos: .utility))
         self.homeRefreshCoordinator = homeRefreshCoordinator
+        self.user = user
 
         self.snapshot = {
             return Self.loadingSnapshot()
@@ -253,7 +257,8 @@ extension HomeViewModel {
         tappedSeeAll = .slate(SlateDetailViewModel(
             slate: slate,
             source: source,
-            tracker: tracker.childTracker(hosting: .slateDetail.screen)
+            tracker: tracker.childTracker(hosting: .slateDetail.screen),
+            user: user
         ))
     }
 
@@ -262,7 +267,8 @@ extension HomeViewModel {
             recommendation: recommendation,
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general
+            pasteboard: UIPasteboard.general,
+            user: user
         )
 
         guard let item = recommendation.item else {
@@ -292,7 +298,8 @@ extension HomeViewModel {
             item: savedItem,
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general
+            pasteboard: UIPasteboard.general,
+            user: user
         )
 
         if let item = savedItem.item, item.shouldOpenInWebView {

@@ -48,6 +48,7 @@ class MainViewModel: ObservableObject {
                     viewType: .saves,
                     listOptions: .saved,
                     notificationCenter: .default,
+                    user: Services.shared.user,
                     refreshCoordinator: Services.shared.savesRefreshCoordinator
                 ),
                 archivedItemsList: SavedItemsListViewModel(
@@ -56,6 +57,7 @@ class MainViewModel: ObservableObject {
                     viewType: .archive,
                     listOptions: .archived,
                     notificationCenter: .default,
+                    user: Services.shared.user,
                     refreshCoordinator: Services.shared.archiveRefreshCoordinator
                 )
             ),
@@ -63,7 +65,8 @@ class MainViewModel: ObservableObject {
                 source: Services.shared.source,
                 tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
                 networkPathMonitor: NWPathMonitor(),
-                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator
+                homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
+                user: Services.shared.user
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,
