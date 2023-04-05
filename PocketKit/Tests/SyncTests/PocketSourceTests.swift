@@ -261,14 +261,6 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(slateService.fetchSlateLineupCall(at: 0)?.identifier, "slate-lineup-identifier")
     }
 
-    func test_fetchSlate_forwardsToSlateService() async throws {
-        slateService.stubFetchSlate { _ in }
-
-        let source = subject()
-        try await source.fetchSlate("slate-identifier")
-        XCTAssertEqual(slateService.fetchSlateCall(at: 0)?.identifier, "slate-identifier")
-    }
-
     func test_savesController_returnsAFetchedResultsController() throws {
         let source = subject()
         let item1 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
