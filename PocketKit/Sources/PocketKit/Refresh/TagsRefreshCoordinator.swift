@@ -5,31 +5,30 @@
 import Foundation
 import Sync
 import SharedPocketKit
+import Combine
 
 /// Refresh coordinator to handle the refreshing of a Users tag data
-class TagsRefreshCoordinator: AbstractRefreshCoordinator {
+class TagsRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
 
-    override var taskID: String! {
-        get { return  "com.mozilla.pocket.refresh.tags" }
-        // set nothing, because only the identifier is allowed
-        set {  }
-    }
+    var refreshInterval: TimeInterval? {  nil }
 
-    override var refreshInterval: TimeInterval! {
-        get { return  60 * 60 }
-        // set nothing, because only the identifier is allowed
-        set {  }
-    }
+    var taskID: String { "com.mozilla.pocket.refresh.tags" }
+
+    var notificationCenter: NotificationCenter
+    var taskScheduler: BGTaskSchedulerProtocol
+    var appSession: SharedPocketKit.AppSession
+    var subscriptions: [AnyCancellable] = []
 
     private let source: Source
 
     init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source) {
+        self.notificationCenter = notificationCenter
+        self.taskScheduler = taskScheduler
+        self.appSession = appSession
         self.source = source
-        super.init(notificationCenter: notificationCenter, taskScheduler: taskScheduler, appSession: appSession)
     }
 
-    override func refresh(completion: @escaping () -> Void) {
-        super.refresh(completion: completion)
+    func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         self.source.refreshTags {
             completion()
         }

@@ -16,7 +16,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let source: Source
     private let userDefaults: UserDefaults
     private let firstLaunchDefaults: UserDefaults
-    private let refreshCoordinators: [AbstractRefreshCoordinator]
+    private let refreshCoordinators: [AbstractRefreshCoordinatorProtocol]
     private let appSession: AppSession
     internal let notificationService: PushNotificationService
     private let user: User

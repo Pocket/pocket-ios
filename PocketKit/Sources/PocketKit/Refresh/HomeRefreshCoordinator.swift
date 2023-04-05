@@ -16,37 +16,28 @@ protocol HomeRefreshCoordinatorProtocol {
     func refresh(isForced: Bool, _ completion: @escaping () -> Void)
 }
 
-class HomeRefreshCoordinator: AbstractRefreshCoordinator, HomeRefreshCoordinatorProtocol {
+class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol, HomeRefreshCoordinatorProtocol {
 
-    override var taskID: String! {
-        get { return  "com.mozilla.pocket.refresh.home" }
-        // set nothing, because only the identifier is allowed
-        set {  }
-    }
+    var taskID: String {  "com.mozilla.pocket.refresh.home" }
 
-    override var refreshInterval: TimeInterval! {
-        get { return  12 * 60 * 60 }
-        // set nothing, because only the identifier is allowed
-        set {  }
-    }
+    var refreshInterval: TimeInterval? { 12 * 60 * 60 }
+
+    var notificationCenter: NotificationCenter
+    var taskScheduler: BGTaskSchedulerProtocol
+    var appSession: SharedPocketKit.AppSession
+    var subscriptions: [AnyCancellable] = []
 
     static let dateLastRefreshKey = "HomeRefreshCoordinator.dateLastRefreshKey"
     private let userDefaults: UserDefaults
     private let source: Source
-    private var subscriptions: [AnyCancellable] = []
     private var isRefreshing: Bool = false
 
     init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, userDefaults: UserDefaults) {
+        self.notificationCenter = notificationCenter
+        self.taskScheduler = taskScheduler
+        self.appSession = appSession
         self.source = source
         self.userDefaults = userDefaults
-        super.init(notificationCenter: notificationCenter, taskScheduler: taskScheduler, appSession: appSession)
-    }
-
-    override func refresh(completion: @escaping () -> Void) {
-        super.refresh(completion: completion)
-        refresh(isForced: false) {
-            completion()
-        }
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
@@ -89,6 +80,6 @@ class HomeRefreshCoordinator: AbstractRefreshCoordinator, HomeRefreshCoordinator
 
         let timeSinceLastRefresh = Date().timeIntervalSince(lastActiveTimestamp)
 
-        return timeSinceLastRefresh >= refreshInterval || isForced
+        return timeSinceLastRefresh >= refreshInterval! || isForced
     }
 }

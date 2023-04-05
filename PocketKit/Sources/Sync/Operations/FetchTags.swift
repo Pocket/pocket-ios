@@ -9,6 +9,9 @@ import PocketGraph
 import SharedPocketKit
 import CoreData
 
+/// Note: This class should only be used to fetch tags on login of a user or if the use does a manual pull to refresh.
+/// After initial login, requesting saves/archives via the updatedSince filter will pull in all new/changed tags associated with any save.
+/// We can not filter on tags updatedSince explicitly because in the server database, tags are not a real entity at the moment and need database modeling changes to support this.
 class FetchTags: SyncOperation {
 
     private let apollo: ApolloClientProtocol
