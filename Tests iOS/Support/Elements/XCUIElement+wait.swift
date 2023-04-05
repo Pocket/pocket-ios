@@ -12,6 +12,7 @@ extension XCUIElement {
         line: UInt = #line
     ) -> XCUIElement {
         if exists {
+            XCTAssertTrue(exists)
             return self
         }
 

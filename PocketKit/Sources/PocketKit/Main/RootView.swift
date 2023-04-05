@@ -8,10 +8,20 @@ public struct RootView: View {
     }
 
     public var body: some View {
-        if model.isLoggedIn {
-            MainView(model: model.mainViewModel)
-        } else {
-            LoggedOutViewControllerSwiftUI(model: model.loggedOutViewModel)
+        if let model = model.mainViewModel {
+            mainView(model: model)
         }
+
+        if let model = model.loggedOutViewModel {
+            loggedOutView(model: model)
+        }
+    }
+
+    private func mainView(model: MainViewModel) -> MainView {
+        MainView(model: model)
+    }
+
+    private func loggedOutView(model: LoggedOutViewModel) -> LoggedOutViewControllerSwiftUI {
+       LoggedOutViewControllerSwiftUI(model: model)
     }
 }

@@ -2,6 +2,7 @@ import Foundation
 import Textile
 import UIKit
 import SwiftUI
+import Localization
 
 struct ItemAction {
     let title: String
@@ -28,7 +29,7 @@ extension ItemAction: Hashable {
 extension ItemAction {
     static func save(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.save,
+            title: Localization.save,
             identifier: .saveItem,
             accessibilityIdentifier: "item-action-save",
             image: UIImage(asset: .save),
@@ -38,7 +39,7 @@ extension ItemAction {
 
     static func archive(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.archive,
+            title: Localization.archive,
             identifier: .archiveItem,
             accessibilityIdentifier: "item-action-archive",
             image: UIImage(asset: .archive),
@@ -48,7 +49,7 @@ extension ItemAction {
 
     static func delete(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.delete,
+            title: Localization.delete,
             identifier: .deleteItem,
             accessibilityIdentifier: "item-action-delete",
             image: UIImage(asset: .delete),
@@ -58,7 +59,7 @@ extension ItemAction {
 
     static func addTags(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.addTags,
+            title: Localization.addTags,
             identifier: .addTagsItem,
             accessibilityIdentifier: "item-action-add-tags",
             image: UIImage(asset: .tag),
@@ -68,7 +69,7 @@ extension ItemAction {
 
     static func moveToSaves(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.moveToSaves,
+            title: Localization.moveToSaves,
             identifier: .moveToSavesItem,
             accessibilityIdentifier: "item-action-move-to-saves",
             image: UIImage(asset: .save),
@@ -78,7 +79,7 @@ extension ItemAction {
 
     static func favorite(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.favorite,
+            title: Localization.favorite,
             identifier: .favoriteItem,
             accessibilityIdentifier: "item-action-favorite",
             image: UIImage(asset: .favorite)
@@ -89,7 +90,7 @@ extension ItemAction {
 
     static func unfavorite(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.unfavorite,
+            title: Localization.unfavorite,
             // intentionally the same as `favorite()` since we want to replace
             identifier: .favoriteItem,
             accessibilityIdentifier: "item-action-favorite",
@@ -101,7 +102,7 @@ extension ItemAction {
 
     static func share(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.share,
+            title: Localization.share,
             identifier: .shareItem,
             accessibilityIdentifier: "item-action-share",
             image: UIImage(asset: .share),
@@ -111,7 +112,7 @@ extension ItemAction {
 
     static func displaySettings(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.displaySettings,
+            title: Localization.displaySettings,
             identifier: .displaySettings,
             accessibilityIdentifier: "item-action-display-settings",
             image: UIImage(systemName: "textformat.size"),
@@ -121,7 +122,7 @@ extension ItemAction {
 
     static func report(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.report,
+            title: Localization.report,
             identifier: .report,
             accessibilityIdentifier: "item-action-report",
             image: UIImage(asset: .alert),
@@ -141,7 +142,7 @@ extension ItemAction {
 
     static func copyLink(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.copyLink,
+            title: Localization.copyLink,
             identifier: .copyLink,
             accessibilityIdentifier: "item-action-copy-link",
             image: UIImage(systemName: "link"),
@@ -151,7 +152,7 @@ extension ItemAction {
 
     static func open(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: L10n.open,
+            title: Localization.open,
             identifier: .open,
             accessibilityIdentifier: "item-action-open",
             image: UIImage(systemName: "safari"),

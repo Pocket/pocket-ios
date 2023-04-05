@@ -3,6 +3,8 @@ import Combine
 import UIKit
 import CoreData
 import Analytics
+import Localization
+import SharedPocketKit
 
 enum ReadableType {
     case recommendation(RecommendationViewModel)
@@ -79,26 +81,21 @@ class HomeViewModel: NSObject {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
     typealias ItemIdentifier = NSManagedObjectID
 
-    @Published
-    var snapshot: Snapshot
+    @Published var snapshot: Snapshot
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var selectedReadableType: ReadableType?
+    @Published var selectedReadableType: ReadableType?
 
-    @Published
-    var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: Recommendation?
 
-    @Published
-    var tappedSeeAll: SeeAll?
+    @Published var tappedSeeAll: SeeAll?
 
     private let source: Source
     let tracker: Tracker
+    private let user: User
     private let networkPathMonitor: NetworkPathMonitor
     private let homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
     private var subscriptions: [AnyCancellable] = []
@@ -111,13 +108,15 @@ class HomeViewModel: NSObject {
         source: Source,
         tracker: Tracker,
         networkPathMonitor: NetworkPathMonitor,
-        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
+        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol,
+        user: User
     ) {
         self.source = source
         self.tracker = tracker
         self.networkPathMonitor = networkPathMonitor
         networkPathMonitor.start(queue: .global(qos: .utility))
         self.homeRefreshCoordinator = homeRefreshCoordinator
+        self.user = user
 
         self.snapshot = {
             return Self.loadingSnapshot()
@@ -252,7 +251,8 @@ extension HomeViewModel {
         tappedSeeAll = .slate(SlateDetailViewModel(
             slate: slate,
             source: source,
-            tracker: tracker.childTracker(hosting: .slateDetail.screen)
+            tracker: tracker.childTracker(hosting: .slateDetail.screen),
+            user: user
         ))
     }
 
@@ -261,7 +261,8 @@ extension HomeViewModel {
             recommendation: recommendation,
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general
+            pasteboard: UIPasteboard.general,
+            user: user
         )
 
         guard let item = recommendation.item else {
@@ -291,7 +292,8 @@ extension HomeViewModel {
             item: savedItem,
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general
+            pasteboard: UIPasteboard.general,
+            user: user
         )
 
         if let item = savedItem.item, item.shouldOpenInWebView {
@@ -309,8 +311,8 @@ extension HomeViewModel {
         switch section {
         case .recentSaves:
             return .init(
-                name: L10n.recentSaves,
-                buttonTitle: L10n.seeAll,
+                name: Localization.recentSaves,
+                buttonTitle: Localization.seeAll,
                 buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
                 self?.tappedSeeAll = .saves
@@ -322,7 +324,7 @@ extension HomeViewModel {
 
             return .init(
                 name: slate.name ?? "",
-                buttonTitle: L10n.seeAll,
+                buttonTitle: Localization.seeAll,
                 buttonImage: UIImage(asset: .chevronRight)
             ) { [weak self] in
                 self?.select(slate: slate)
@@ -387,14 +389,14 @@ extension HomeViewModel {
 
     private func confirmDelete(item: SavedItem, indexPath: IndexPath) {
         presentedAlert = PocketAlert(
-            title: L10n.areYouSureYouWantToDeleteThisItem,
+            title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: L10n.no, style: .default) { [weak self] _ in
+                UIAlertAction(title: Localization.no, style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: L10n.yes, style: .destructive) { [weak self] _ in
+                UIAlertAction(title: Localization.yes, style: .destructive) { [weak self] _ in
                     self?.presentedAlert = nil
                     self?.delete(item: item, indexPath: indexPath)
                 }

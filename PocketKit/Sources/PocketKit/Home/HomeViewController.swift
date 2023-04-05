@@ -7,6 +7,7 @@ import SwiftUI
 import BackgroundTasks
 import Lottie
 import SafariServices
+import Localization
 
 struct HomeViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: HomeViewModel
@@ -63,7 +64,7 @@ class HomeViewController: UIViewController {
         view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
         view.attributedText = NSAttributedString(
-            string: L10n.youReAllCaughtUpCheckBackLaterForMore,
+            string: Localization.youReAllCaughtUpCheckBackLaterForMore,
             style: .overscroll
         )
         return view
@@ -103,7 +104,7 @@ class HomeViewController: UIViewController {
 
         collectionView.refreshControl = UIRefreshControl(frame: .zero, primaryAction: action)
 
-        navigationItem.title = L10n.home
+        navigationItem.title = Localization.home
         collectionView
             .publisher(for: \.contentSize, options: [.new])
             .receive(on: DispatchQueue.main)
@@ -335,10 +336,14 @@ extension HomeViewController {
             show(viewModel)
         case .webViewRecommendation(let viewModel):
             showRecommendation(forWebView: viewModel)
-            present(url: viewModel.url)
+            // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
+            // we'll utilize its premium url to present a premium Pocket web page as necessary
+            present(url: viewModel.premiumURL)
         case .webViewSavedItem(let viewModel):
             showSavedItem(forWebView: viewModel)
-            present(url: viewModel.url)
+            // Since the view model is not publishing a direct request to present a url (e.g presentedWebReaderURL),
+            // we'll utilize its premium url to present a premium Pocket web page as necessary
+            present(url: viewModel.premiumURL)
         case .none:
             readerSubscriptions = []
         }

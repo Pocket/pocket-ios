@@ -19,11 +19,9 @@ class SceneTracker {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    @AppStorage
-    private var dateLastOpened: Date?
+    @AppStorage private var dateLastOpened: Date?
 
-    @AppStorage
-    private var dateLastBackgrounded: Date?
+    @AppStorage private var dateLastBackgrounded: Date?
 
     init(tracker: Tracker, userDefaults: UserDefaults, notificationCenter: NotificationCenter = .default) {
         self.tracker = tracker

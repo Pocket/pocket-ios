@@ -1,6 +1,7 @@
 import XCTest
 @testable import Sync
 
+// swiftlint:disable force_try
 final class V3ClientTests: XCTestCase {
     let consumerKey = "the-consumer-key"
     let deviceIdentifier = "never-gonna-give-you-up"
@@ -360,3 +361,4 @@ extension V3ClientTests {
         )!
     }
 }
+// swiftlint:enable force_try

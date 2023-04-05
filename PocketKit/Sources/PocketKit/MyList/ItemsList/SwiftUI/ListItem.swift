@@ -4,8 +4,7 @@ import Kingfisher
 import SharedPocketKit
 
 struct ListItem: View {
-    @ObservedObject
-    var viewModel: PocketItemViewModel
+    @ObservedObject var viewModel: PocketItemViewModel
 
     let constants = Constants.self
 

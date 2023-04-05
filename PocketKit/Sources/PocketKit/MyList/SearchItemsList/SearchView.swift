@@ -5,10 +5,10 @@
 import SharedPocketKit
 import SwiftUI
 import Textile
+import Localization
 
 struct SearchView: View {
-    @ObservedObject
-    var viewModel: SearchViewModel
+    @ObservedObject var viewModel: SearchViewModel
 
     var body: some View {
         Group {
@@ -41,8 +41,7 @@ struct ResultsView: View {
         static let indexToTriggerNextPage = 15
     }
 
-    @ObservedObject
-    var viewModel: SearchViewModel
+    @ObservedObject var viewModel: SearchViewModel
 
     let results: [PocketItem]
 
@@ -84,7 +83,7 @@ struct ResultsView: View {
         .accessibilityIdentifier("search-results")
         .banner(data: viewModel.bannerData, show: $viewModel.showBanner, bottomOffset: 0)
         .alert(isPresented: $showingAlert) {
-            Alert(title: Text(L10n.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
+            Alert(title: Text(Localization.Search.Error.View.needsInternet), dismissButton: .default(Text("OK")))
         }
     }
 }
@@ -148,13 +147,12 @@ struct GetPocketPremiumButton: View {
 
 // MARK: - Recent Searches Component
 struct RecentSearchView: View {
-    @ObservedObject
-    var viewModel: SearchViewModel
+    @ObservedObject var viewModel: SearchViewModel
     var recentSearches: [String]
 
     var body: some View {
         List {
-            Section(header: Text(L10n.Search.recent).style(.search.header)) {
+            Section(header: Text(Localization.Search.recent).style(.search.header)) {
                 ForEach(recentSearches.reversed(), id: \.self) { recentSearch in
                     HStack {
                         Text(recentSearch)

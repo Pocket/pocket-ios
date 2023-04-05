@@ -1,6 +1,7 @@
 import Foundation
 import Textile
 import UIKit
+import Localization
 
 struct ItemContextualAction {
     let style: UIContextualAction.Style
@@ -14,7 +15,7 @@ extension ItemContextualAction {
     static func moveToSaves(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
         ItemContextualAction(
             style: .destructive,
-            title: L10n.moveToSaves,
+            title: Localization.moveToSaves,
             image: UIImage(asset: .save),
             backgroundColor: UIColor(.ui.teal2),
             completion: completion
@@ -24,7 +25,7 @@ extension ItemContextualAction {
     static func archive(_ completion: @escaping ((Bool) -> Void) -> Void) -> ItemContextualAction {
         ItemContextualAction(
             style: .destructive,
-            title: L10n.archive,
+            title: Localization.archive,
             image: UIImage(asset: .archive),
             backgroundColor: UIColor(.ui.teal2),
             completion: completion

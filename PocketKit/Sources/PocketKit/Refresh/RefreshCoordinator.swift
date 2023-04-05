@@ -47,13 +47,14 @@ class RefreshCoordinator {
         }
         self.source.refreshSaves()
         self.source.refreshArchive()
+        self.source.refreshTags()
         self.source.resolveUnresolvedSavedItems()
     }
 
     private func submitRequest() {
         do {
             let request = BGAppRefreshTaskRequest(identifier: "com.mozilla.pocket.next.refresh")
-            request.earliestBeginDate = Date() + 60 * 5
+            request.earliestBeginDate = Date().addingTimeInterval(60 * 60) // Tell apple we can refresh in an hour.
 
             try taskScheduler.submit(request)
         } catch {

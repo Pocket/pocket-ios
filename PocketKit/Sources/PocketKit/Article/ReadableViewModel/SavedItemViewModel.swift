@@ -4,47 +4,45 @@ import Foundation
 import Textile
 import Analytics
 import UIKit
+import SharedPocketKit
 
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
 
-    @Published
-    private(set) var _actions: [ItemAction] = []
+    @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var presentedAddTags: PocketAddTagsViewModel?
+    @Published var presentedAddTags: PocketAddTagsViewModel?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var isPresentingReaderSettings: Bool?
+    @Published var isPresentingReaderSettings: Bool?
 
     private let item: SavedItem
     private let source: Source
     private let pasteboard: Pasteboard
+    private let user: User
     private var subscriptions: [AnyCancellable] = []
 
     init(
         item: SavedItem,
         source: Source,
         tracker: Tracker,
-        pasteboard: Pasteboard
+        pasteboard: Pasteboard,
+        user: User
     ) {
         self.item = item
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
+        self.user = user
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -88,6 +86,14 @@ class SavedItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
+    var isArchived: Bool {
+        item.isArchived
+    }
+
+    var premiumURL: URL? {
+        pocketPremiumURL(url, user: user)
+    }
+
     func moveToSaves() {
         source.unarchive(item: item)
     }
@@ -95,10 +101,6 @@ class SavedItemViewModel: ReadableViewModel {
     func delete() {
         source.delete(item: item)
         _events.send(.delete)
-    }
-
-    func archiveArticle() {
-        archive()
     }
 
     func fetchDetailsIfNeeded() {
@@ -159,9 +161,22 @@ extension SavedItemViewModel {
         track(identifier: .itemUnfavorite)
     }
 
-    private func archive() {
+    func moveFromArchiveToSaves(completion: (Bool) -> Void) {
+        source.unarchive(item: item)
+        trackMoveFromArchiveToSavesButtonTapped(url: item.url)
+        completion(true)
+    }
+
+    func openExternally(url: URL?) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackWebViewOpen()
+    }
+
+    func archive() {
         source.archive(item: item)
-        track(identifier: .itemArchive)
+        trackArchiveButtonTapped(url: item.url)
         _events.send(.archive)
     }
 

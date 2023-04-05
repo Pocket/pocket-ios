@@ -29,8 +29,4 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
         readableViewModel?.showWebReader()
         readableViewModel?.trackUnsupportedContentButtonTapped()
     }
-
-    private func handleArchiveArticleButtonTap() {
-        readableViewModel?.archiveArticle()
-    }
 }

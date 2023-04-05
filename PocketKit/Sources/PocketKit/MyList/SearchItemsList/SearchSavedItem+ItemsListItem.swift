@@ -1,6 +1,7 @@
 import Foundation
 import PocketGraph
 import Sync
+import Localization
 
 extension SearchSavedItem: ItemsListItem {
     var displayTitle: String {
@@ -25,7 +26,7 @@ extension SearchSavedItem: ItemsListItem {
     var displayTimeToRead: String? {
         timeToRead
             .flatMap { $0 > 0 ? $0 : nil }
-            .flatMap { L10n.Item.List.min($0) }
+            .flatMap { Localization.Item.List.min($0) }
     }
 
     var remoteItemParts: PocketGraph.SavedItemParts? {

@@ -4,43 +4,40 @@ import Foundation
 import Textile
 import UIKit
 import Analytics
+import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
-    @Published
-    private(set) var _actions: [ItemAction] = []
+    @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var isPresentingReaderSettings: Bool?
+    @Published var isPresentingReaderSettings: Bool?
 
-    @Published
-    var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: Recommendation?
 
     private let recommendation: Recommendation
     private let source: Source
     private let pasteboard: Pasteboard
+    private let user: User
     let tracker: Tracker
 
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
-    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard) {
+    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard, user: User) {
         self.recommendation = recommendation
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
+        self.user = user
 
         self.savedItemCancellable = recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
@@ -80,6 +77,14 @@ class RecommendationViewModel: ReadableViewModel {
         recommendation.item?.bestURL
     }
 
+    var isArchived: Bool {
+        return recommendation.item?.savedItem?.isArchived ?? false
+    }
+
+    var premiumURL: URL? {
+        pocketPremiumURL(url, user: user)
+    }
+
     func moveToSaves() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
@@ -97,10 +102,6 @@ class RecommendationViewModel: ReadableViewModel {
         _events.send(.delete)
     }
 
-    func archiveArticle() {
-        archive()
-    }
-
     func fetchDetailsIfNeeded() {
         guard recommendation.item?.article == nil else {
             _events.send(.contentUpdated)
@@ -116,7 +117,7 @@ class RecommendationViewModel: ReadableViewModel {
     func externalActions(for url: URL) -> [ItemAction] {
         [
             .save { [weak self] _ in self?.saveExternalURL(url) },
-            .open { [weak self] _ in self?.openExternalURL(url) },
+            .open { [weak self] _ in self?.openExternally(url: url) },
             .copyLink { [weak self] _ in self?.copyExternalURL(url) },
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
@@ -171,17 +172,9 @@ extension RecommendationViewModel {
             favoriteAction = .favorite { [weak self] _ in self?.favorite() }
         }
 
-        let archiveAction: ItemAction
-        if savedItem.isArchived {
-            archiveAction = .moveToSaves { [weak self] _ in self?.moveToSaves() }
-        } else {
-            archiveAction = .archive { [weak self] _ in self?.archive() }
-        }
-
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
-            archiveAction,
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
@@ -228,13 +221,32 @@ extension RecommendationViewModel {
         track(identifier: .itemUnfavorite)
     }
 
-    private func archive() {
+    func openExternally(url: URL?) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackWebViewOpen()
+    }
+
+    func moveFromArchiveToSaves(completion: (Bool) -> Void) {
         guard let savedItem = recommendation.item?.savedItem else {
+            Log.capture(message: "Could not get SavedItem so unarchive action not taken")
+            completion(false)
+            return
+        }
+        source.unarchive(item: savedItem)
+        trackMoveFromArchiveToSavesButtonTapped(url: savedItem.url)
+        completion(true)
+    }
+
+    func archive() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            Log.capture(message: "Could not get SavedItem so archive action not taken")
             return
         }
 
         source.archive(item: savedItem)
-        track(identifier: .itemArchive)
+        trackArchiveButtonTapped(url: savedItem.url)
         _events.send(.archive)
     }
 
@@ -253,10 +265,6 @@ extension RecommendationViewModel {
 
     private func shareExternalURL(_ url: URL) {
         sharedActivity = PocketItemActivity(url: url)
-    }
-
-    private func openExternalURL(_ url: URL) {
-        presentedWebReaderURL = url
     }
 }
 

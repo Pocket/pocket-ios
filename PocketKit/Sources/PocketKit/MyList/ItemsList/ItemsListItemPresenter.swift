@@ -10,6 +10,7 @@ import Analytics
 import CoreData
 import UIKit
 import Kingfisher
+import Localization
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8
@@ -84,5 +85,11 @@ class ItemsListItemPresenter {
     private var otherTagsCount: Int? {
         guard let count = item.tagNames?.count else { return nil }
         return count > 2 ? count - 2 : nil
+    }
+
+    private var timeToRead: String? {
+        item.timeToRead
+            .flatMap { $0 > 0 ? $0 : nil }
+            .flatMap { Localization.Item.List.min($0) }
     }
 }

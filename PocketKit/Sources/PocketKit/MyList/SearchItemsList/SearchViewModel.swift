@@ -10,6 +10,7 @@ import SharedPocketKit
 import Analytics
 import CoreData
 import Textile
+import Localization
 
 /// State for the search view
 enum SearchViewState {
@@ -63,15 +64,19 @@ class SearchViewModel: ObservableObject {
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
-
-    var bannerData: BannerModifier.BannerData {
-        let offlineView = BannerModifier.BannerData(image: .looking, title: L10n.Search.limitedResults, detail: L10n.Search.offlineMessage)
-        let errorView = BannerModifier.BannerData(image: .warning, title: L10n.Search.limitedResults, detail: L10n.Search.Banner.errorMessage)
-        return isOffline ? offlineView : errorView
+    @Published var searchState: SearchViewState?
+    @Published var selectedItem: SelectedItem?
+    @Published var searchText = "" {
+        didSet {
+            updateSearchResults(with: searchText)
+        }
     }
 
-    @Published
-    var searchState: SearchViewState?
+    var bannerData: BannerModifier.BannerData {
+        let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.Search.limitedResults, detail: Localization.Search.offlineMessage)
+        let errorView = BannerModifier.BannerData(image: .warning, title: Localization.Search.limitedResults, detail: Localization.Search.Banner.errorMessage)
+        return isOffline ? offlineView : errorView
+    }
 
     var defaultState: SearchViewState {
         guard let emptyStateViewModel = isPremium ? premiumEmptyState(for: selectedScope) : freeEmptyState(for: selectedScope) else {
@@ -79,9 +84,6 @@ class SearchViewModel: ObservableObject {
         }
         return .emptyState(emptyStateViewModel)
     }
-
-    @Published
-    var selectedItem: SelectedItem?
 
     var scopeTitles: [String] {
         SearchScope.allCases.map { $0.rawValue }
@@ -93,12 +95,6 @@ class SearchViewModel: ObservableObject {
         }
         set {
             userDefaults.set(newValue, forKey: SearchViewModel.recentSearchesKey)
-        }
-    }
-
-    @Published var searchText = "" {
-        didSet {
-            updateSearchResults(with: searchText)
         }
     }
 
@@ -402,7 +398,8 @@ extension SearchViewModel {
             item: savedItem,
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general
+            pasteboard: UIPasteboard.general,
+            user: user
         )
 
         trackOpenSearchItem(url: savedItem.url, index: index)
@@ -419,12 +416,12 @@ extension SearchViewModel {
     }
 
     func swipeActionTitle(_ searchItem: PocketItem) -> String {
-        guard let savedItem = fetchSavedItem(searchItem) else { return L10n.Search.Swipe.unableToMove }
+        guard let savedItem = fetchSavedItem(searchItem) else { return Localization.Search.Swipe.unableToMove }
 
         if savedItem.isArchived {
-            return L10n.Search.Swipe.moveToSaves
+            return Localization.Search.Swipe.moveToSaves
         } else {
-            return L10n.Search.Swipe.archive
+            return Localization.Search.Swipe.archive
         }
     }
 

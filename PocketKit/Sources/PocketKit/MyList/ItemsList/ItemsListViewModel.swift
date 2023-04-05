@@ -1,6 +1,7 @@
 import Combine
 import UIKit
 import Sync
+import Localization
 
 enum SelectedItem {
     case readable(SavedItemViewModel?)
@@ -79,17 +80,17 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
     var localized: String {
         switch self {
         case .all:
-            return L10n.all
+            return Localization.all
         case .tagged:
-            return L10n.tagged
+            return Localization.tagged
         case .favorites:
-            return L10n.favorites
+            return Localization.favorites
         case .sortAndFilter:
-            return L10n.sortFilter
+            return Localization.sortFilter
         case .search:
-            return L10n.search
+            return Localization.search
         case .listen:
-            return L10n.Carousel.listen
+            return Localization.Carousel.listen
         }
     }
 }

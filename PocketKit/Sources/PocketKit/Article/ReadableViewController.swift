@@ -42,7 +42,7 @@ class ReadableViewController: UIViewController {
         collectionViewLayout: layout
     )
 
-    private lazy var layout = UICollectionViewCompositionalLayout { [self] in
+    private lazy var layout = UICollectionViewCompositionalLayout { [unowned self] in
         return self.buildSection(index: $0, environment: $1)
     }
 

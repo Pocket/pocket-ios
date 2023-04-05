@@ -2,10 +2,10 @@ import Foundation
 import UIKit
 
 public class DeviceUtilities {
-    enum Error: Swift.Error, LocalizedError {
+    enum Error: LoggableError {
         case idfvUnavailable
 
-        var errorDescription: String? {
+        var logDescription: String {
             switch self {
             case .idfvUnavailable:
                 return "IDFV Identifier is currently unavailable"

@@ -5,6 +5,7 @@ import Combine
 import SharedPocketKit
 @testable import Sync
 
+// swiftlint:disable force_try
 class MockBadgeProvider: BadgeProvider {
     var applicationIconBadgeNumber: Int = 0
 }
@@ -88,3 +89,4 @@ final class AppBadgeTrackerTests: XCTestCase {
         XCTAssertEqual(badgeProvider.applicationIconBadgeNumber, 0)
     }
 }
+// swiftlint:enable force_try

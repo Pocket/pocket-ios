@@ -38,8 +38,7 @@ struct EmptyStateView<Content: View>: View {
     private let viewModel: EmptyStateViewModel
     private var content: Content?
 
-    @State
-    private var showSafariView = false
+    @State private var showSafariView = false
 
     init(viewModel: EmptyStateViewModel, content: (() -> Content)? = nil) {
         self.viewModel = viewModel

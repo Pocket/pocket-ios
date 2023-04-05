@@ -1,6 +1,7 @@
 import XCTest
 @testable import SharedPocketKit
 
+// swiftlint:disable force_try
 class KeychainStorageTests: XCTestCase {
     struct Test: Codable, Equatable {
         let value: String
@@ -108,3 +109,4 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(keychain.copyMatchingCalls.count, 3)
     }
 }
+// swiftlint:enable force_try

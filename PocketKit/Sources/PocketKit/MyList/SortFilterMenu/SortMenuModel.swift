@@ -1,11 +1,12 @@
 import Foundation
+import Localization
 
 enum SortSection: String, Hashable, CaseIterable {
     case sortBy = "Sort by"
     var localized: String {
         switch self {
         case .sortBy:
-            return L10n.sortBy
+            return Localization.sortBy
         }
     }
 }
@@ -19,13 +20,13 @@ enum SortOption: String, Hashable {
     var localized: String {
         switch self {
         case .newest:
-            return L10n.newestSaved
+            return Localization.newestSaved
         case .oldest:
-            return L10n.oldestSaved
+            return Localization.oldestSaved
         case .shortestToRead:
-            return L10n.shortestToRead
+            return Localization.shortestToRead
         case .longestToRead:
-            return L10n.longestToRead
+            return Localization.longestToRead
         }
     }
 }

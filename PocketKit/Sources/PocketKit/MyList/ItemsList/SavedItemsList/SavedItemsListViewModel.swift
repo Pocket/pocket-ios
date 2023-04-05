@@ -3,6 +3,8 @@ import Sync
 import Analytics
 import Combine
 import UIKit
+import Localization
+import SharedPocketKit
 
 public enum SavesViewType {
     case saves
@@ -19,36 +21,28 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     var selectionItem: SelectionItem {
         switch self.viewType {
         case .saves:
-            return SelectionItem(title: L10n.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
+            return SelectionItem(title: Localization.saves, image: .init(asset: .saves), selectedView: SelectedView.saves)
         case .archive:
-            return SelectionItem(title: L10n.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
+            return SelectionItem(title: Localization.archive, image: .init(asset: .archive), selectedView: SelectedView.archive)
         }
     }
 
-    @Published
-    private var _snapshot = Snapshot()
+    @Published private var _snapshot = Snapshot()
     var snapshot: Published<Snapshot>.Publisher { $_snapshot }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var presentedAddTags: PocketAddTagsViewModel?
+    @Published var presentedAddTags: PocketAddTagsViewModel?
 
-    @Published
-    var presentedTagsFilter: TagsFilterViewModel?
+    @Published var presentedTagsFilter: TagsFilterViewModel?
 
-    @Published
-    var selectedItem: SelectedItem?
+    @Published var selectedItem: SelectedItem?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var presentedSortFilterViewModel: SortMenuViewModel?
+    @Published var presentedSortFilterViewModel: SortMenuViewModel?
 
-    @Published
-    var presentedSearch: Bool?
+    @Published var presentedSearch: Bool?
 
     @Published
     var presentedListenViewModel: ListenViewModel?
@@ -78,6 +72,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let source: Source
     private let tracker: Tracker
     private let itemsController: SavedItemsController
+    private let user: User
     private var subscriptions: [AnyCancellable] = []
 
     private var selectedFilters: Set<ItemsListFilter>
@@ -85,13 +80,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User) {
         self.source = source
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
         self.viewType = viewType
         self.listOptions = listOptions
+        self.user = user
 
         switch self.viewType {
         case .saves:
@@ -373,14 +369,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     private func confirmDelete(item: SavedItem) {
         presentedAlert = PocketAlert(
-            title: L10n.areYouSureYouWantToDeleteThisItem,
+            title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: L10n.no, style: .default) { [weak self] _ in
+                UIAlertAction(title: Localization.no, style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: L10n.yes, style: .destructive) { [weak self] _ in
+                UIAlertAction(title: Localization.yes, style: .destructive) { [weak self] _ in
                     self?._delete(item: item)
                 }
             ],
@@ -541,7 +537,8 @@ extension SavedItemsListViewModel {
             item: savedItem,
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
-            pasteboard: UIPasteboard.general
+            pasteboard: UIPasteboard.general,
+            user: user
         )
 
         if savedItem.shouldOpenInWebView {

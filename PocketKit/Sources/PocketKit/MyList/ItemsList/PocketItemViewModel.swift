@@ -16,11 +16,9 @@ class PocketItemViewModel: ObservableObject {
 
     let item: PocketItem
 
-    @Published
-    var isFavorite: Bool
+    @Published var isFavorite: Bool
 
-    @Published
-    var presentShareSheet: Bool = false
+    @Published var presentShareSheet: Bool = false
 
     /// Determines whether an item should show Archive or Move To Saves
     var isArchived: Bool {

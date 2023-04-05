@@ -1,5 +1,6 @@
 import Sync
 import Foundation
+import Localization
 
 extension SavedItem: ItemsListItem {
     var id: String? {
@@ -35,7 +36,7 @@ extension SavedItem: ItemsListItem {
     var displayTimeToRead: String? {
         timeToRead
             .flatMap { $0 > 0 ? $0 : nil }
-            .flatMap { L10n.Item.List.min($0) }
+            .flatMap { Localization.Item.List.min($0) }
     }
 
     var displayAuthors: String? {

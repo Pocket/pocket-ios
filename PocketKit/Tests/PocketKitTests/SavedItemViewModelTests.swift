@@ -1,6 +1,7 @@
 import XCTest
 import Analytics
 import Combine
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -10,6 +11,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var tracker: MockTracker!
     private var space: Space!
     private var pasteboard: Pasteboard!
+    private var user: User!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -18,6 +20,7 @@ class SavedItemViewModelTests: XCTestCase {
         tracker = MockTracker()
         pasteboard = MockPasteboard()
         space = .testSpace()
+        user = PocketUser(userDefaults: UserDefaults())
     }
 
     override func tearDown() async throws {
@@ -29,13 +32,15 @@ class SavedItemViewModelTests: XCTestCase {
         item: SavedItem,
         source: Source? = nil,
         tracker: Tracker? = nil,
-        pasteboard: UIPasteboard? = nil
+        pasteboard: UIPasteboard? = nil,
+        user: User? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             item: item,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            pasteboard: pasteboard ?? self.pasteboard
+            pasteboard: pasteboard ?? self.pasteboard,
+            user: user ?? self.user
         )
     }
 
@@ -203,6 +208,47 @@ class SavedItemViewModelTests: XCTestCase {
         viewModel.presentedAlert?.actions.first { $0.title == "Yes" }?.invoke()
 
         wait(for: [expectDelete, expectDeleteEvent], timeout: 1)
+    }
+
+    func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
+        let viewModel = subject(item: savedItem)
+
+        let expectArchive = expectation(description: "expect source.archive(_:)")
+        source.stubArchiveSavedItem { archivedItem in
+            defer { expectArchive.fulfill() }
+            XCTAssertTrue(archivedItem === savedItem)
+        }
+
+        let expectArchiveEvent = expectation(description: "expect archive event")
+        viewModel.events.sink { event in
+            guard case .archive = event else {
+                XCTFail("Received unexpected event: \(event)")
+                return
+            }
+
+            expectArchiveEvent.fulfill()
+        }.store(in: &subscriptions)
+
+        viewModel.archive()
+        wait(for: [expectArchive, expectArchiveEvent], timeout: 1)
+    }
+
+    func test_moveFromArchiveToSaves_sendsRequestToSource_AndRefreshes() {
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
+
+        let expectMoveFromArchiveToSaves = expectation(description: "expect source.unarchive(_:)")
+        source.stubUnarchiveSavedItem { item in
+            defer { expectMoveFromArchiveToSaves.fulfill() }
+            XCTAssertTrue(item === savedItem)
+        }
+
+        let viewModel = subject(item: savedItem)
+        viewModel.moveFromArchiveToSaves { _ in }
+
+        wait(for: [expectMoveFromArchiveToSaves], timeout: 1)
     }
 
     func test_share_updatesSharedActivity() {
