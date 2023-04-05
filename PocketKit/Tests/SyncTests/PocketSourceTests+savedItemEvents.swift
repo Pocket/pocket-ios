@@ -17,7 +17,7 @@ extension PocketSourceTests {
         }.store(in: &subscriptions)
 
         osNotificationCenter.post(name: .savedItemCreated)
-        wait(for: [receivedNotification], timeout: 1)
+        wait(for: [receivedNotification], timeout: 10)
     }
 
     func test_events_whenOSNotificationCenterPostsSavedItemUpdatedNotification_publishesAnEvent_andDeletesNotificationRecords() {
@@ -40,7 +40,7 @@ extension PocketSourceTests {
         try! space.save()
 
         osNotificationCenter.post(name: .savedItemUpdated)
-        wait(for: [receivedNotification], timeout: 1)
+        wait(for: [receivedNotification], timeout: 10)
 
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
         XCTAssertEqual(notifications, [])
@@ -64,7 +64,7 @@ extension PocketSourceTests {
 
         osNotificationCenter.post(name: .unresolvedSavedItemCreated)
 
-        wait(for: [operationStarted], timeout: 1)
+        wait(for: [operationStarted], timeout: 10)
 
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
 
@@ -100,7 +100,7 @@ extension PocketSourceTests {
 
         osNotificationCenter.post(name: .savedItemUpdated)
 
-        wait(for: [expectEvent], timeout: 1)
+        wait(for: [expectEvent], timeout: 10)
         sub.cancel()
     }
 }

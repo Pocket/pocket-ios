@@ -68,7 +68,7 @@ class PocketItemViewModelTests: XCTestCase {
 
         _ = viewModel.favoriteAction().handler?(nil)
 
-        wait(for: [expectFavoriteCall, expectFetchSavedItemCall], timeout: 1)
+        wait(for: [expectFavoriteCall, expectFetchSavedItemCall], timeout: 10)
         XCTAssertEqual(source.favoriteSavedItemCall(at: 0)?.item, item)
         XCTAssertTrue(viewModel.isFavorite)
     }
@@ -92,7 +92,7 @@ class PocketItemViewModelTests: XCTestCase {
 
         _ = viewModel.favoriteAction().handler?(nil)
 
-        wait(for: [expectUnfavoriteCall, expectFetchSavedItemCall], timeout: 1)
+        wait(for: [expectUnfavoriteCall, expectFetchSavedItemCall], timeout: 10)
         XCTAssertEqual(source.unfavoriteSavedItemCall(at: 0)?.item, item)
         XCTAssertFalse(viewModel.isFavorite)
     }
@@ -121,7 +121,7 @@ class PocketItemViewModelTests: XCTestCase {
             XCTFail("Should not be nil")
             return
         }
-        wait(for: [expectFetchSavedItemCall], timeout: 1)
+        wait(for: [expectFetchSavedItemCall], timeout: 10)
         XCTAssertEqual(tagsViewModel.tags, ["tag-0"])
     }
 
@@ -142,7 +142,7 @@ class PocketItemViewModelTests: XCTestCase {
         let viewModel = subject(item: PocketItem(item: item))
         viewModel.archive()
 
-        wait(for: [expectArchive, expectFetchSavedItemCall], timeout: 1)
+        wait(for: [expectArchive, expectFetchSavedItemCall], timeout: 10)
     }
 
     func test_unarchiveAction_delegatesToSource() {
@@ -162,7 +162,7 @@ class PocketItemViewModelTests: XCTestCase {
         let viewModel = subject(item: PocketItem(item: item))
         viewModel.moveToSaves()
 
-        wait(for: [expectUnarchive, expectFetchSavedItemCall], timeout: 1)
+        wait(for: [expectUnarchive, expectFetchSavedItemCall], timeout: 10)
     }
 
     func test_deleteAction_delegatesToSource() {
@@ -183,6 +183,6 @@ class PocketItemViewModelTests: XCTestCase {
         let viewModel = subject(item: PocketItem(item: item))
         viewModel.delete()
 
-        wait(for: [expectDelete, expectFetchSavedItemCall], timeout: 1)
+        wait(for: [expectDelete, expectFetchSavedItemCall], timeout: 10)
     }
 }

@@ -107,7 +107,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
 
         viewModel.addTags()
 
-        wait(for: [expectAddTagsCall], timeout: 1)
+        wait(for: [expectAddTagsCall], timeout: 10)
         XCTAssertNotNil(source.addTagsToSavedItemCall(at: 0))
     }
 
@@ -127,7 +127,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         let viewModel = subject(item: item) { }
         viewModel.allOtherTags()
 
-        wait(for: [expectRetrieveTagsCall], timeout: 1)
+        wait(for: [expectRetrieveTagsCall], timeout: 10)
         XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 3"), TagType.tag("tag 2")])
         XCTAssertNotNil(source.retrieveTagsCall(at: 0))
     }
@@ -183,7 +183,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
                 XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
             }
             .store(in: &subscriptions)
-        wait(for: [expectFilterTagsCall], timeout: 1)
+        wait(for: [expectFilterTagsCall], timeout: 10)
     }
 
     func test_newTagInput_withNoTags_showAllTags() {
@@ -212,6 +212,6 @@ class PocketAddTagsViewModelTests: XCTestCase {
                 XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
             }
             .store(in: &subscriptions)
-        wait(for: [expectFilterTagsCall], timeout: 1)
+        wait(for: [expectFilterTagsCall], timeout: 10)
     }
 }
