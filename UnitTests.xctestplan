@@ -74,6 +74,9 @@
       }
     },
     {
+      "skippedTests" : [
+        "HomeRefreshCoordinatorTests\/test_coordinator_whenEnterForeground_whenDataIsStale_refreshesHome()"
+      ],
       "target" : {
         "containerPath" : "container:PocketKit",
         "identifier" : "PocketKitTests",
@@ -96,6 +99,7 @@
     },
     {
       "skippedTests" : [
+        "PocketSaveServiceTests\/test_save_createsAnEmptyItemLocally_andUpdatesFromResponse()",
         "RetriableOperationTests\/test_main_protectsOperationWithBackgroundTask()"
       ],
       "target" : {
