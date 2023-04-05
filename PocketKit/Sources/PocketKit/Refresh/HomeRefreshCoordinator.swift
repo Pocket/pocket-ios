@@ -28,7 +28,6 @@ class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol, HomeRefreshCoo
     var subscriptions: [AnyCancellable] = []
     var lastRefresh: LastRefresh
 
-    static let dateLastRefreshKey = "HomeRefreshCoordinator.dateLastRefreshKey"
     private let source: Source
     var isRefreshing: Bool = false
 

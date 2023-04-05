@@ -74,6 +74,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private let source: Source
+    private let refreshCoordinator: AbstractRefreshCoordinatorProtocol
     private let tracker: Tracker
     private let itemsController: SavedItemsController
     private var subscriptions: [AnyCancellable] = []
@@ -83,8 +84,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, refreshCoordinator: AbstractRefreshCoordinatorProtocol) {
         self.source = source
+        self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
@@ -189,11 +191,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func refresh(_ completion: (() -> Void)? = nil) {
-        switch self.viewType {
-        case .saves:
-            source.refreshSaves(completion: completion)
-        case .archive:
-            source.refreshArchive(completion: completion)
+        refreshCoordinator.refresh(isForced: true) {
+            completion?()
         }
 
         source.retryImmediately()

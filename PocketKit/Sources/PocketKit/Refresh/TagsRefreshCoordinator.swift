@@ -8,6 +8,10 @@ import SharedPocketKit
 import Combine
 
 /// Refresh coordinator to handle the refreshing of a Users tag data
+/// This refresh coordinator will only ever refresh Tags once unless the user manually pulls to refresh on the Tags screen
+/// This is because we do not have an updatedSince filter for Tag querying do to how the backend database is setup.
+///     However this is ok because tags are always associated with a Saved/Archived Item
+///     and we will get any new tags via the updatedSince filter when we load Archive and Save data.
 class TagsRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
 
     // Return nil, which informs the protocol we never want to background refresh tags
@@ -62,9 +66,10 @@ class TagsRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
     /// - Returns: Whether or not Tags should refresh
     func shouldRefresh(isForced: Bool = false) -> Bool {
         guard let lastRefreshTags = lastRefresh.lastRefreshTags  else {
+            // If there is no tag refresh date, load the full tag list.
             return true
         }
-        let timeSinceLastRefresh = Date().timeIntervalSince(Date(timeIntervalSince1970: lastRefreshTags))
-        return timeSinceLastRefresh > SyncConstants.Tags.timeMustPass || isForced
+        // Grab new tag data if it was forced.
+        return isForced
     }
 }

@@ -5,10 +5,14 @@ import Combine
 
 @testable import Sync
 @testable import PocketKit
+@testable import SharedPocketKit
 
 class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
     var space: Space!
+    var refreshCoordinator: AbstractRefreshCoordinatorProtocol!
+    var appSession: AppSession!
+
     var tracker: MockTracker!
     var itemsController: FetchedSavedItemsController!
     var listOptions: ListOptions!
@@ -19,6 +23,9 @@ class SavedItemsListViewModelTests: XCTestCase {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        refreshCoordinator = SavesRefreshCoordinator(notificationCenter: .default, taskScheduler: MockBGTaskScheduler(), appSession: appSession, source: source)
         subscriptions = []
         listOptions = .saved
         listOptions.selectedSortOption = .newest
@@ -66,7 +73,8 @@ class SavedItemsListViewModelTests: XCTestCase {
             tracker: tracker ?? self.tracker,
             viewType: viewType ?? self.viewType,
             listOptions: listOptions ?? self.listOptions,
-            notificationCenter: .default
+            notificationCenter: .default,
+            refreshCoordinator: refreshCoordinator
         )
     }
 

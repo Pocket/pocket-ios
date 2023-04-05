@@ -102,12 +102,12 @@ extension AbstractRefreshCoordinatorProtocol {
     /// Submit the request to be scheduled anytime after the given interval
     private func submitRequest() {
         guard let refreshInterval else {
-            Log.info("No refresh interval set by developer, not scheduling a refresh.")
+            Log.info("No refresh interval set by developer, not scheduling a refresh for \(type(of: self))")
             return
         }
 
         guard appSession.currentSession != nil else {
-            Log.warning("No user session, so not scheduling a refresh.")
+            Log.warning("No user session, so not scheduling a refresh \(type(of: self))")
             return
         }
 
@@ -116,12 +116,13 @@ extension AbstractRefreshCoordinatorProtocol {
             request.earliestBeginDate = Date().addingTimeInterval(refreshInterval)
             try taskScheduler.submit(request)
         } catch {
+            Log.warning("Could not submit background task request for \(type(of: self))")
             Log.capture(error: error)
         }
     }
 
     /// Private function that calls the underlying refresh function
-    /// - Parameter completion: <#completion description#>
+    /// - Parameter completion: Completion to call when done refreshing data
     private func refreshData(_ completion: @escaping () -> Void) {
         guard appSession.currentSession != nil else {
             completion()

@@ -5,62 +5,37 @@ import BackgroundTasks
 @testable import PocketKit
 import SharedPocketKit
 
-class TestAbstractRefreshCoordinator: AbstractRefreshCoordinator {
-
-    override var taskID: String! {
-        get { return  "com.mozilla.pocket.refresh.test" }
-        // set nothing, because only the identifier is allowed
-        set {  }
-    }
-
-    override var refreshInterval: TimeInterval! {
-        get { return  60 * 60 }
-        // set nothing, because only the identifier is allowed
-        set {  }
-    }
-
-    private let testCompletion: () -> Void
-
-    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, testCompletion: @escaping () -> Void) {
-        self.testCompletion = testCompletion
-        super.init(notificationCenter: notificationCenter, taskScheduler: taskScheduler, appSession: appSession)
-    }
-
-    override func refresh(completion: @escaping () -> Void) {
-        super.refresh(completion: completion)
-        completion()
-        testCompletion()
-    }
-}
-
-class AbstractRefreshCoordinatorTests: XCTestCase {
+class SavesRefreshCoordinatorTests: XCTestCase {
     var notificationCenter: NotificationCenter!
     var taskScheduler: MockBGTaskScheduler!
     var source: MockSource!
-    var session: SharedPocketKit.Session!
     var appSession: AppSession!
 
     override func setUp() {
         notificationCenter = NotificationCenter()
         taskScheduler = MockBGTaskScheduler()
         source = MockSource()
+        source.stubRefreshSaves { _ in }
         appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
-        session = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
-        appSession.currentSession = session
+        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        taskScheduler.stubRegisterHandler { _, _, _ in
+            return true
+        }
+        taskScheduler.stubCancel { _ in }
+        taskScheduler.stubSubmit { _ in }
     }
 
     func subject(
         notificationCenter: NotificationCenter? = nil,
         taskScheduler: BGTaskSchedulerProtocol? = nil,
         source: Source? = nil,
-        appSession: AppSession? = nil,
-        completion: @escaping () -> Void
-    ) -> TestAbstractRefreshCoordinator {
-        TestAbstractRefreshCoordinator(
+        appSession: AppSession? = nil
+    ) -> SavesRefreshCoordinator {
+        SavesRefreshCoordinator(
             notificationCenter: notificationCenter ?? self.notificationCenter,
             taskScheduler: taskScheduler ?? self.taskScheduler,
             appSession: appSession ?? self.appSession,
-            testCompletion: completion
+            source: source ?? self.source
         )
     }
 
@@ -72,7 +47,7 @@ class AbstractRefreshCoordinatorTests: XCTestCase {
 
         let registerCall = taskScheduler.registerHandlerCall(at: 0)
         XCTAssertNotNil(registerCall)
-        XCTAssertEqual(registerCall?.identifier, RefreshCoordinator.taskID)
+        XCTAssertEqual(registerCall?.identifier, coordinator.taskID)
     }
 
     func test_receivingAppDidEnterBackgroundNotification_submitsBGAppRefreshRequest() {
@@ -86,7 +61,7 @@ class AbstractRefreshCoordinatorTests: XCTestCase {
         let submitCall = taskScheduler.submitCall(at: 0)
         XCTAssertNotNil(submitCall)
         XCTAssertTrue(submitCall?.taskRequest is BGAppRefreshTaskRequest)
-        XCTAssertEqual(submitCall?.taskRequest.identifier, RefreshCoordinator.taskID)
+        XCTAssertEqual(submitCall?.taskRequest.identifier, coordinator.taskID)
     }
 
     func test_backgroundTaskHandler_beginsBackgroundtask_callsRefresh_completsBackgroundTask_completesRefreshTask() {
@@ -136,12 +111,9 @@ class AbstractRefreshCoordinatorTests: XCTestCase {
         XCTAssertEqual(task.setTaskCompletedCall(at: 0)?.success, false)
     }
 
-    func test_receivingAppWillEnterForegroundNotification_refreshesSource_andResolvesUnresolvedSavedItems() {
+    func test_receivingAppWillEnterForegroundNotification_refreshesSource() {
         taskScheduler.stubRegisterHandler { _, _, _ in true }
         source.stubRefreshSaves { _ in }
-        source.stubRefreshTags { _ in }
-        source.stubRefreshArchive { _ in }
-        source.stubResolveUnresolvedSavedItems { }
 
         let coordinator = subject()
         coordinator.initialize()
@@ -149,25 +121,14 @@ class AbstractRefreshCoordinatorTests: XCTestCase {
         notificationCenter?.post(name: UIScene.willEnterForegroundNotification, object: nil)
 
         XCTAssertNotNil(source.refreshSavesCall(at: 0))
-        XCTAssertNotNil(source.resolveUnresolvedSavedItemsCall(at: 0))
-        XCTAssertNotNil(source.refreshArchiveCall(at: 0))
     }
 
-    func test_coordinator_whenNoSession_doesNotRefreshSavesArchive() {
+    func test_coordinator_whenNoSession_doesNotRefreshSaves() {
         source.stubRefreshSaves {  _ in
             XCTFail("Should not fetch saves")
         }
-        source.stubRefreshArchive { _ in
-            XCTFail("Should not fetch archive")
-        }
-        source.stubResolveUnresolvedSavedItems {
-            XCTFail("Should not resolve items")
-        }
 
-        let coordinator = subject(sessionProvider: MockSessionProvider(session: nil))
+        let coordinator = subject(appSession: AppSession(groupID: ""))
         XCTAssertNil(source.refreshSavesCall(at: 0))
-        XCTAssertNil(source.resolveUnresolvedSavedItemsCall(at: 0))
-        XCTAssertNil(source.refreshArchiveCall(at: 0))
-        XCTAssertNil(source.refreshTagsCall(at: 0))
     }
 }

@@ -47,14 +47,16 @@ class MainViewModel: ObservableObject {
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
                     viewType: .saves,
                     listOptions: .saved,
-                    notificationCenter: .default
+                    notificationCenter: .default,
+                    refreshCoordinator: Services.shared.savesRefreshCoordinator
                 ),
                 archivedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
                     viewType: .archive,
                     listOptions: .archived,
-                    notificationCenter: .default
+                    notificationCenter: .default,
+                    refreshCoordinator: Services.shared.archiveRefreshCoordinator
                 )
             ),
             home: HomeViewModel(

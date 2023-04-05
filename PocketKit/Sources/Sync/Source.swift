@@ -34,12 +34,6 @@ public protocol Source {
 
     func makeImagesController() -> ImagesController
 
-    func refreshSaves(completion: (() -> Void)?)
-
-    func refreshArchive(completion: (() -> Void)?)
-
-    func refreshTags(completion: (() -> Void)?)
-
     func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
 
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
@@ -80,8 +74,6 @@ public protocol Source {
 
     func restore()
 
-    func resolveUnresolvedSavedItems(completion: (() -> Void)?)
-
     func save(recommendation: Recommendation)
 
     func archive(recommendation: Recommendation)
@@ -107,4 +99,18 @@ public protocol Source {
     func unreadSaves() throws -> Int
 
     func fetchUserData() async throws
+
+    // MARK: - Refresh Coordindator calls
+    // All the following functions below this comment should be called from a RefreshCoordinator and not directtly.
+
+    func resolveUnresolvedSavedItems(completion: (() -> Void)?)
+
+    func refreshSaves(completion: (() -> Void)?)
+
+    func refreshArchive(completion: (() -> Void)?)
+
+    func refreshTags(completion: (() -> Void)?)
+
+    // MARK: -
+
 }
