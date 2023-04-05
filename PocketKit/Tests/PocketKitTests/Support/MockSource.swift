@@ -885,32 +885,6 @@ extension MockSource {
 
         impl(identifier)
     }
-
-    func stubFetchSlate(_ impl: @escaping FetchSlateImpl) {
-        implementations[Self.fetchSlate] = impl
-    }
-
-    func fetchSlateCall(at index: Int) -> FetchSlateCall? {
-        guard let calls = calls[Self.fetchSlate],
-              index < calls.count,
-              let call = calls[index] as? FetchSlateCall else {
-                  return nil
-              }
-
-        return call
-    }
-
-    func fetchSlate(_ identifier: String) async throws {
-        guard let impl = implementations[Self.fetchSlate] as? FetchSlateImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        calls[Self.fetchSlate] = (calls[Self.fetchSlate] ?? []) + [
-            FetchSlateCall(identifier: identifier)
-        ]
-
-        impl(identifier)
-    }
 }
 
 // MARK: - Recommendations
