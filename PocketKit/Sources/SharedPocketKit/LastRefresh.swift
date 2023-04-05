@@ -1,10 +1,10 @@
 import Foundation
 
 public protocol LastRefresh {
-    var lastRefreshSaves: Double? { get }
-    var lastRefreshArchive: Double? { get }
-    var lastRefreshTags: Double? { get }
-    var lastRefreshHome: Double? { get }
+    var lastRefreshSaves: TimeInterval? { get }
+    var lastRefreshArchive: TimeInterval? { get }
+    var lastRefreshTags: TimeInterval? { get }
+    var lastRefreshHome: TimeInterval? { get }
     func refreshedSaves()
     func refreshedArchive()
     func refreshedTags()
@@ -32,7 +32,7 @@ public struct UserDefaultsLastRefresh: LastRefresh {
 extension UserDefaultsLastRefresh {
     public static let lastRefreshedSavesAtKey = UserDefaults.Key.lastRefreshedSavesAt
 
-    public var lastRefreshSaves: Double? {
+    public var lastRefreshSaves: TimeInterval? {
         if hasRefreshedSaves {
             return defaults.double(forKey: Self.lastRefreshedSavesAtKey)
         } else {
@@ -53,7 +53,7 @@ extension UserDefaultsLastRefresh {
 extension UserDefaultsLastRefresh {
     public static let lastRefreshedArchiveAtKey = UserDefaults.Key.lastRefreshedArchiveAt
 
-    public var lastRefreshArchive: Double? {
+    public var lastRefreshArchive: TimeInterval? {
         if hasRefreshedArchive {
             return defaults.double(forKey: Self.lastRefreshedArchiveAtKey)
         } else {
@@ -74,7 +74,7 @@ extension UserDefaultsLastRefresh {
 extension UserDefaultsLastRefresh {
     public static let lastRefreshedTagsAtKey = UserDefaults.Key.lastRefreshedTagsAt
 
-    public var lastRefreshTags: Double? {
+    public var lastRefreshTags: TimeInterval? {
         if hasRefreshedTags {
             return defaults.double(forKey: Self.lastRefreshedTagsAtKey)
         } else {
@@ -95,7 +95,7 @@ extension UserDefaultsLastRefresh {
 extension UserDefaultsLastRefresh {
     public static let lastRefreshedHomeAtKey = UserDefaults.Key.lastRefreshedHomeAt
 
-    public var lastRefreshHome: Double? {
+    public var lastRefreshHome: TimeInterval? {
         if hasRefreshedHome {
             return defaults.double(forKey: Self.lastRefreshedHomeAtKey)
         } else {

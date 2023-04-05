@@ -11,14 +11,14 @@ import SharedPocketKit
 enum BackgroundRequestType {
     /// Instructs us to create a Processing Request, we are allowed 10 different tasks of this type scheduled at a time
     case processing
-    /// Instructs us to create a Refresh Request, we are allowed 1 of thus type schdeduled at a time
+    /// Instructs us to create a Refresh Request, we are allowed 1 of this type schdeduled at a time
     case refresh
 }
 
 protocol RefreshCoordinator: AnyObject {
-    var notificationCenter: NotificationCenter { get set }
-    var taskScheduler: BGTaskSchedulerProtocol { get set }
-    var appSession: AppSession { get set }
+    var notificationCenter: NotificationCenter { get }
+    var taskScheduler: BGTaskSchedulerProtocol { get }
+    var appSession: AppSession { get }
     var subscriptions: [AnyCancellable] { get set }
 
     /// The taskID to be resgistered with the system for this background task and identified in info.plist

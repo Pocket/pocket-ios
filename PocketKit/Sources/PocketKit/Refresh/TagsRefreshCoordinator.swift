@@ -15,15 +15,15 @@ import Combine
 class TagsRefreshCoordinator: RefreshCoordinator {
 
     // Return nil, which informs the protocol we never want to background refresh tags
-    var refreshInterval: TimeInterval?
+    let refreshInterval: TimeInterval? = nil
 
-    var taskID: String = "com.mozilla.pocket.refresh.tags"
+    let taskID: String = "com.mozilla.pocket.refresh.tags"
 
-    var backgroundRequestType: BackgroundRequestType = .processing
+    let backgroundRequestType: BackgroundRequestType = .processing
 
-    var notificationCenter: NotificationCenter
-    var taskScheduler: BGTaskSchedulerProtocol
-    var appSession: SharedPocketKit.AppSession
+    let notificationCenter: NotificationCenter
+    let taskScheduler: BGTaskSchedulerProtocol
+    let appSession: SharedPocketKit.AppSession
     var subscriptions: [AnyCancellable] = []
 
     private var isRefreshing: Bool = false

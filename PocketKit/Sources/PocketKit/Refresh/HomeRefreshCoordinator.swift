@@ -10,17 +10,17 @@ import SharedPocketKit
 
 class HomeRefreshCoordinator: RefreshCoordinator {
 
-    var taskID: String = "com.mozilla.pocket.refresh.home"
+    let taskID: String = "com.mozilla.pocket.refresh.home"
 
-    var refreshInterval: TimeInterval? = 12 * 60 * 60
+    let refreshInterval: TimeInterval? = 12 * 60 * 60
 
-    var backgroundRequestType: BackgroundRequestType = .refresh
+    let backgroundRequestType: BackgroundRequestType = .refresh
 
-    var notificationCenter: NotificationCenter
-    var taskScheduler: BGTaskSchedulerProtocol
-    var appSession: SharedPocketKit.AppSession
+    let notificationCenter: NotificationCenter
+    let taskScheduler: BGTaskSchedulerProtocol
+    let appSession: SharedPocketKit.AppSession
     var subscriptions: [AnyCancellable] = []
-    var lastRefresh: LastRefresh
+    let lastRefresh: LastRefresh
 
     private let source: Source
     var isRefreshing: Bool = false
