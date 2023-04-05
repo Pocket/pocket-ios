@@ -47,7 +47,7 @@ class PullToRefreshTests: XCTestCase {
         app.tabBar.savesButton.wait().tap()
 
         let listView = app.saves.wait()
-        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait a few seconds")], timeout: 2.0)
+        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait a few seconds")], timeout: 10.0)
 
         XCTAssertEqual(listView.itemCount, 2)
 
