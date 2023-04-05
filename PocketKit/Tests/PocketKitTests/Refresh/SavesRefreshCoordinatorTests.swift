@@ -60,7 +60,7 @@ class SavesRefreshCoordinatorTests: XCTestCase {
 
         let submitCall = taskScheduler.submitCall(at: 0)
         XCTAssertNotNil(submitCall)
-        XCTAssertTrue(submitCall?.taskRequest is BGAppRefreshTaskRequest)
+        XCTAssertTrue(submitCall?.taskRequest is BGProcessingTaskRequest)
         XCTAssertEqual(submitCall?.taskRequest.identifier, coordinator.taskID)
     }
 

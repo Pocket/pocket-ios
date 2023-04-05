@@ -12,9 +12,11 @@ class OnDismissHostingController<T: View>: UIHostingController<T> {
         if isBeingDismissed {
             onDismiss()
         }
+        super.viewDidDisappear(animated)
     }
 
-    @MainActor @objc
+    @MainActor
+    @objc
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

@@ -1,6 +1,7 @@
 import XCTest
 @testable import Sync
 
+// swiftlint:disable force_try
 extension PocketSourceTests {
     func test_events_whenOSNotificationCenterPostsSavedItemCreatedNotification_publishesAnEvent() {
         let source = subject()
@@ -103,3 +104,4 @@ extension PocketSourceTests {
         sub.cancel()
     }
 }
+// swiftlint:enable force_try

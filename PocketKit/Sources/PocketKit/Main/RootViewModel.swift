@@ -9,11 +9,9 @@ import Adjust
 
 @MainActor
 public class RootViewModel: ObservableObject {
-    @Published
-    var mainViewModel: MainViewModel?
-
-    @Published
-    var loggedOutViewModel: LoggedOutViewModel?
+    @Published var mainViewModel: MainViewModel?
+    @Published var loggedOutViewModel: LoggedOutViewModel?
+    @Published var isLoggedIn = false
 
     private let appSession: AppSession
     private let tracker: Tracker

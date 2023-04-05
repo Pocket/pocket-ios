@@ -27,30 +27,22 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         }
     }
 
-    @Published
-    private var _snapshot = Snapshot()
+    @Published private var _snapshot = Snapshot()
     var snapshot: Published<Snapshot>.Publisher { $_snapshot }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var presentedAddTags: PocketAddTagsViewModel?
+    @Published var presentedAddTags: PocketAddTagsViewModel?
 
-    @Published
-    var presentedTagsFilter: TagsFilterViewModel?
+    @Published var presentedTagsFilter: TagsFilterViewModel?
 
-    @Published
-    var selectedItem: SelectedItem?
+    @Published var selectedItem: SelectedItem?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var presentedSortFilterViewModel: SortMenuViewModel?
+    @Published var presentedSortFilterViewModel: SortMenuViewModel?
 
-    @Published
-    var presentedSearch: Bool?
+    @Published var presentedSearch: Bool?
 
     private let listOptions: ListOptions
 

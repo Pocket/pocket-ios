@@ -40,8 +40,7 @@ enum PremiumStatus: String {
 }
 
 struct PremiumRow<Destination: View>: View {
-    @State
-    var isActive: Bool = false
+    @State var isActive: Bool = false
 
     var status: PremiumStatus
     var destination: Destination

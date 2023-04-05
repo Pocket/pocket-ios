@@ -9,27 +9,21 @@ import SharedPocketKit
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
 
-    @Published
-    private(set) var _actions: [ItemAction] = []
+    @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var presentedAddTags: PocketAddTagsViewModel?
+    @Published var presentedAddTags: PocketAddTagsViewModel?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var isPresentingReaderSettings: Bool?
+    @Published var isPresentingReaderSettings: Bool?
 
     private let item: SavedItem
     private let source: Source

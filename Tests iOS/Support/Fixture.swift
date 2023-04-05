@@ -5,6 +5,7 @@
 import Foundation
 import Apollo
 
+// swiftlint:disable force_try
 class Fixture {
     enum ReplacementEscapeStrategy {
         case none
@@ -93,3 +94,4 @@ class Fixture {
         )
     }
 }
+// swiftlint:enable force_try

@@ -10,8 +10,7 @@ class SavesContainerViewModel {
         case archive
     }
 
-    @Published
-    var selection: Selection = .saves
+    @Published var selection: Selection = .saves
 
     let searchList: SearchViewModel
     let savedItemsList: SavedItemsListViewModel
