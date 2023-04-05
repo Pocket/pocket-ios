@@ -4,7 +4,7 @@
 
 /**
  Inspiration taken from  https://sarunw.com/posts/swiftui-checkbox/
- */
+*/
 
 import SwiftUI
 

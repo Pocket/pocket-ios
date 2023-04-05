@@ -4,6 +4,7 @@ import Sync
 import Textile
 import Foundation
 import Analytics
+import SharedPocketKit
 
 class PocketAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem

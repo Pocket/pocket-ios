@@ -14,8 +14,9 @@ public protocol AddTagsViewModel: ObservableObject {
     var otherTags: [String] { get set }
     var sectionTitle: TagSectionType { get }
     var upsellView: AnyView { get }
-
-    func addTag(with tag: String) -> Bool
+    
+    func addNewTag(with tag: String) -> Bool
+    func addExistingTag(with tag: TagType)
     func addTags()
     func allOtherTags()
     func removeTag(with tag: String)

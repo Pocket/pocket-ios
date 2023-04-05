@@ -8,7 +8,7 @@ import Sync
 import Combine
 import Analytics
 
-class PremiumUpsellViewModel : ObservableObject {
+class PremiumUpsellViewModel: ObservableObject {
     private let premiumUpgradeViewModelFactory: PremiumUpgradeViewModelFactory
     private let networkPathMonitor: NetworkPathMonitor
     private let user: User
@@ -57,7 +57,7 @@ extension PremiumUpsellViewModel {
             break
         }
     }
-    
+
     func trackPremiumUpsellViewed() {
         tracker.track(event: Events.Settings.premiumUpsellViewed())
     }
