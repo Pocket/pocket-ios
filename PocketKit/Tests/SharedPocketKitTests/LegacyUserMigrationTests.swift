@@ -122,26 +122,14 @@ extension LegacyUserMigrationTests {
             return try! JSONSerialization.data(withJSONObject: correct)
         }
 
-<<<<<<< Updated upstream
         XCTAssertNoThrow(try migration.perform())
-=======
-        XCTAssertNoThrow(try migration.perform {
-            XCTFail("Migration should not be attempted")
-        })
->>>>>>> Stashed changes
     }
 
     func test_perform_withMissingKeyInKeychainAndDefaults_throwsError() {
         let migration = subject()
 
         do {
-<<<<<<< Updated upstream
             try migration.perform()
-=======
-            try migration.perform {
-                XCTFail("Migration should not be attempted")
-            }
->>>>>>> Stashed changes
         } catch {
             guard case LegacyUserMigrationError.missingKey = error else {
                 XCTFail("Incorrect error thrown")
@@ -157,13 +145,7 @@ extension LegacyUserMigrationTests {
         encryptedStore.stubDecryptStore { _ in return nil }
 
         do {
-<<<<<<< Updated upstream
             try migration.perform()
-=======
-            try migration.perform  {
-                XCTFail("Migration should not be attempted")
-            }
->>>>>>> Stashed changes
         } catch {
             if case LegacyUserMigrationError.missingKey = error {
                 XCTFail("Key should exist; error should not be thrown")
@@ -184,13 +166,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-<<<<<<< Updated upstream
             try migration.perform()
-=======
-            try migration.perform  {
-                XCTFail("Migration should not be attempted")
-            }
->>>>>>> Stashed changes
         } catch {
             guard case LegacyUserMigrationError.failedDecryption = error else {
                 XCTFail("Incorrect error thrown")
@@ -207,13 +183,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-<<<<<<< Updated upstream
             try migration.perform()
-=======
-            try migration.perform  {
-                XCTFail("Migration should not be attempted")
-            }
->>>>>>> Stashed changes
         } catch {
             guard case LegacyUserMigrationError.missingData = error else {
                 XCTFail("Incorrect error thrown")
@@ -234,13 +204,7 @@ extension LegacyUserMigrationTests {
         }
 
         do {
-<<<<<<< Updated upstream
             try migration.perform()
-=======
-            try migration.perform  {
-                XCTFail("Migration should not be attempted")
-            }
->>>>>>> Stashed changes
         } catch {
             guard case LegacyUserMigrationError.failedDeserialization = error else {
                 XCTFail("Incorrect error thrown")
@@ -270,15 +234,9 @@ extension LegacyUserMigrationTests {
             return try! JSONSerialization.data(withJSONObject: correct)
         }
 
-<<<<<<< Updated upstream
-        try migration.perform()
-=======
         let expectation = XCTestExpectation(description: "Migration event fired successfully.")
 
-        try migration.perform  {
-            expectation.fulfill()
-        }
->>>>>>> Stashed changes
+        try migration.perform()
 
         XCTAssertEqual(appSession.currentSession?.guid, "guid")
         XCTAssertEqual(appSession.currentSession?.accessToken, "accessToken")
