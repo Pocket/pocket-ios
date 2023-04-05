@@ -6,7 +6,6 @@ import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
-@testable import SharedPocketKit
 
 class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
