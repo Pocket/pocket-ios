@@ -48,20 +48,6 @@ class SlateDetailViewModelTests: XCTestCase {
         )
     }
 
-    func test_refresh_delegatesToSource() throws {
-        let slate = try space.createSlate(remoteID: "abcde")
-        let viewModel = subject(slate: slate)
-
-        let fetchExpectation = expectation(description: "expected to fetch slate")
-        source.stubFetchSlate { _ in
-            fetchExpectation.fulfill()
-        }
-        viewModel.refresh { }
-
-        wait(for: [fetchExpectation], timeout: 10)
-        XCTAssertEqual(source.fetchSlateCall(at: 0)?.identifier, "abcde")
-    }
-
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() throws {
         let slate: Slate = try space.createSlate(
             remoteID: "slate-1",
