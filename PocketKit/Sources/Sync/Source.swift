@@ -108,22 +108,3 @@ public protocol Source {
 
     func fetchUserData() async throws
 }
-
-public extension Source {
-    func refreshSaves() {
-        self.refreshSaves(completion: nil)
-    }
-
-    func refreshArchive() {
-        self.refreshArchive(completion: nil)
-    }
-
-    func refreshTags() {
-        self.refreshTags(completion: nil)
-    }
-
-    func resolveUnresolvedSavedItems() {
-        self.resolveUnresolvedSavedItems(completion: nil)
-    }
-
-}

@@ -754,7 +754,7 @@ extension PocketSource {
     }
 
     func handleUnresolvedSavedItemCreatedNotification() {
-        resolveUnresolvedSavedItems()
+        resolveUnresolvedSavedItems(completion: nil)
     }
 }
 

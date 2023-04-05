@@ -40,17 +40,7 @@ class FetchTags: SyncOperation {
         self.persistentTask = persistentTask
 
         do {
-            if lastRefresh.lastRefreshSaves != nil {
-                guard let lastRefreshTime = lastRefresh.lastRefreshTags, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Tags.timeMustPass else {
-                    Log.info("Not refreshing tags from server, last refresh is not above tolerance of \(SyncConstants.Tags.timeMustPass) seconds")
-                    // Future TODO: We should have a new result called too soon that the ui can act on.
-                    // However many states may not come from a user, IE. Instant Sync, Persistent Tasks that never finished, Retries
-                    return .success
-                }
-            }
-
             try await fetchTags()
-            lastRefresh.refreshedTags()
             return .success
         } catch {
             switch error {

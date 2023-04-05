@@ -26,18 +26,18 @@ class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol, HomeRefreshCoo
     var taskScheduler: BGTaskSchedulerProtocol
     var appSession: SharedPocketKit.AppSession
     var subscriptions: [AnyCancellable] = []
+    var lastRefresh: LastRefresh
 
     static let dateLastRefreshKey = "HomeRefreshCoordinator.dateLastRefreshKey"
-    private let userDefaults: UserDefaults
     private let source: Source
-    private var isRefreshing: Bool = false
+    var isRefreshing: Bool = false
 
-    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, userDefaults: UserDefaults) {
+    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, lastRefresh: LastRefresh) {
         self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
         self.appSession = appSession
         self.source = source
-        self.userDefaults = userDefaults
+        self.lastRefresh = lastRefresh
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
@@ -53,7 +53,7 @@ class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol, HomeRefreshCoo
                 do {
                     self.isRefreshing = true
                     try await self.source.fetchSlateLineup(SyncConstants.Home.slateLineupIdentifier)
-                    self.userDefaults.setValue(Date(), forKey: Self.dateLastRefreshKey)
+                    self.lastRefresh.refreshedHome()
                     Log.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
                 } catch {
                     Log.capture(error: error)
@@ -74,11 +74,10 @@ class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol, HomeRefreshCoo
     /// - Parameter isForced: True when a user manually asked for a refresh
     /// - Returns: Whether or not Home should refresh
     private func shouldRefresh(isForced: Bool = false) -> Bool {
-        guard let lastActiveTimestamp = userDefaults.object(forKey: Self.dateLastRefreshKey) as? Date else {
+        guard let lastRefreshHome = lastRefresh.lastRefreshHome  else {
             return true
         }
-
-        let timeSinceLastRefresh = Date().timeIntervalSince(lastActiveTimestamp)
+        let timeSinceLastRefresh = Date().timeIntervalSince(Date(timeIntervalSince1970: lastRefreshHome))
 
         return timeSinceLastRefresh >= refreshInterval! || isForced
     }

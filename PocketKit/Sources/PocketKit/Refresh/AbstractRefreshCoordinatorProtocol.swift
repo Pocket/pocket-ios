@@ -85,10 +85,10 @@ extension AbstractRefreshCoordinatorProtocol {
             }
             self.refreshData {}
         }.store(in: &subscriptions)
-        
+
         // The user just logged in, we need to refresh the latest data
         self.refreshData {}
-        
+
         // The user just logged in, lets setup background refreshing
         self.submitRequest()
     }
@@ -105,7 +105,7 @@ extension AbstractRefreshCoordinatorProtocol {
             Log.info("No refresh interval set by developer, not scheduling a refresh.")
             return
         }
-        
+
         guard appSession.currentSession != nil else {
             Log.warning("No user session, so not scheduling a refresh.")
             return
@@ -119,9 +119,11 @@ extension AbstractRefreshCoordinatorProtocol {
             Log.capture(error: error)
         }
     }
-    
+
+    /// Private function that calls the underlying refresh function
+    /// - Parameter completion: <#completion description#>
     private func refreshData(_ completion: @escaping () -> Void) {
-        guard (appSession.currentSession != nil) else {
+        guard appSession.currentSession != nil else {
             completion()
             return
         }

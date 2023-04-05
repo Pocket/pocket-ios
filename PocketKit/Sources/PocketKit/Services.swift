@@ -36,6 +36,7 @@ struct Services {
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
+    let lastRefresh: LastRefresh
 
     private let persistentContainer: PersistentContainer
 
@@ -46,6 +47,7 @@ struct Services {
         )!
         persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupID: Keys.shared.groupID)
 
+        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         urlSession = URLSession.shared
 
         appSession = AppSession(groupID: Keys.shared.groupID)
@@ -93,7 +95,8 @@ struct Services {
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
-            source: source
+            source: source,
+            lastRefresh: lastRefresh
         )
 
         unresolvedSavesRefreshCoordinator = UnresolvedSavesRefreshCoordinator(
@@ -108,7 +111,7 @@ struct Services {
             taskScheduler: BGTaskScheduler.shared,
             appSession: appSession,
             source: source,
-            userDefaults: userDefaults
+            lastRefresh: lastRefresh
         )
 
         refreshCoordinators = [

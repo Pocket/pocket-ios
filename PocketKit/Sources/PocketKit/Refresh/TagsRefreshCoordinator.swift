@@ -10,6 +10,7 @@ import Combine
 /// Refresh coordinator to handle the refreshing of a Users tag data
 class TagsRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
 
+    // Return nil, which informs the protocol we never want to background refresh tags
     var refreshInterval: TimeInterval? {  nil }
 
     var taskID: String { "com.mozilla.pocket.refresh.tags" }
@@ -19,18 +20,51 @@ class TagsRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
     var appSession: SharedPocketKit.AppSession
     var subscriptions: [AnyCancellable] = []
 
+    private var isRefreshing: Bool = false
     private let source: Source
+    private let lastRefresh: LastRefresh
 
-    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source) {
+    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, lastRefresh: LastRefresh) {
         self.notificationCenter = notificationCenter
         self.taskScheduler = taskScheduler
         self.appSession = appSession
         self.source = source
+        self.lastRefresh = lastRefresh
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
-        self.source.refreshTags {
+        Log.debug("Refresh tags called, isForced: \(String(describing: isForced))")
+
+        if shouldRefresh(isForced: isForced), !isRefreshing {
+            self.isRefreshing = true
+            Log.breadcrumb(category: "refresh", level: .info, message: "Tags Refresh Occur")
+            self.source.refreshTags { [weak self] in
+                guard let self else {
+                    Log.captureNilWeakSelf()
+                    completion()
+                    return
+                }
+                self.lastRefresh.refreshedTags()
+                self.isRefreshing = false
+                completion()
+            }
+        } else if isRefreshing {
+            Log.debug("Already refreshing Tags")
+            completion()
+        } else {
+            Log.debug("Not refreshing Tags, to early to ask for new data")
             completion()
         }
+    }
+
+    /// Determines if Tags is allowed to perform a full refresh or not
+    /// - Parameter isForced: True when a user manually asked for a refresh
+    /// - Returns: Whether or not Tags should refresh
+    func shouldRefresh(isForced: Bool = false) -> Bool {
+        guard let lastRefreshTags = lastRefresh.lastRefreshTags  else {
+            return true
+        }
+        let timeSinceLastRefresh = Date().timeIntervalSince(Date(timeIntervalSince1970: lastRefreshTags))
+        return timeSinceLastRefresh > SyncConstants.Tags.timeMustPass || isForced
     }
 }
