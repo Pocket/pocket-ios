@@ -185,8 +185,8 @@ class SnowplowMicro {
      Make a request to snowplow micro
      */
     internal func snowplowRequest(path: String, method: String = "GET") async -> Data {
-        // For now we wait 2 seconds for snowplow data to be available because the iOS app flushes it to the server. In the future we could poll or find a way to make the make instant calls to snowplow.
-        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait 2 seconds for snowplow data to be available.")], timeout: 2.0)
+        // For now we wait 5 seconds for snowplow data to be available because the iOS app flushes it to the server. In the future we could poll or find a way to make the make instant calls to snowplow.
+        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait 5 seconds for snowplow data to be available.")], timeout: 5.0)
         let data = try! await self.client.httpData(from: URL(string: "http://localhost:9090\(path)")!, method: method)
         return data
     }

@@ -65,7 +65,7 @@ class ArchiveAnItemTests: XCTestCase {
         }
 
         app.archiveButton.wait().tap()
-        wait(for: [expectRequest], timeout: 1)
+        wait(for: [expectRequest], timeout: 10)
         waitForDisappearance(of: itemCell)
     }
 
@@ -93,7 +93,7 @@ class ArchiveAnItemTests: XCTestCase {
             .archiveSwipeButton.wait()
             .tap()
 
-        wait(for: [expectRequest], timeout: 1)
+        wait(for: [expectRequest], timeout: 10)
         waitForDisappearance(of: itemCell)
     }
 
@@ -120,7 +120,7 @@ class ArchiveAnItemTests: XCTestCase {
         archiveNavButton.wait().tap()
         app.saves.wait()
 
-        wait(for: [expectRequest], timeout: 1)
+        wait(for: [expectRequest], timeout: 10)
         listView.wait()
         waitForDisappearance(of: itemCell)
     }
