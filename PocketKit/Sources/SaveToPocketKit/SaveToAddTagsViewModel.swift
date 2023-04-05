@@ -7,7 +7,7 @@ import Analytics
 class SaveToAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem?
     private let tracker: Tracker
-    private let retrieveAction: ([String]) -> [Tag]?
+    private let retrieveAction: ([String]) -> [String]?
     private let filterAction: (String, [String]) -> [Tag]?
     private let saveAction: ([String]) -> Void
     private var userInputListener: AnyCancellable?
@@ -20,7 +20,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-    init(item: SavedItem?, tracker: Tracker, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
+    init(item: SavedItem?, tracker: Tracker, retrieveAction: @escaping ([String]) -> [String]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
         self.item = item
         self.tracker = tracker
         self.retrieveAction = retrieveAction
@@ -47,8 +47,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
-        let fetchedTags = retrieveAction(tags)?.compactMap { $0.name } ?? []
-        otherTags = arrangeTags(with: fetchedTags)
+        otherTags = []
         sectionTitle = .allTags
         trackAllTagsImpression()
     }

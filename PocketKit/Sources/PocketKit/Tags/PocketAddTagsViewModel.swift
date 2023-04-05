@@ -4,12 +4,13 @@ import Textile
 import Foundation
 import Analytics
 
-class PocketAddTagsViewModel: AddTagsViewModel {
+class PocketAddTagsViewModel: TagsList, AddTagsViewModel {
     private let item: SavedItem
     private let source: Source
     private let tracker: Tracker
     private let saveAction: () -> Void
     private var userInputListener: AnyCancellable?
+    private var fetchedTags: [String] = []
 
     var sectionTitle: TagSectionType = .allTags
 
@@ -24,8 +25,10 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         self.source = source
         self.tracker = tracker
         self.saveAction = saveAction
+        super.init()
 
         tags = item.tags?.compactMap { ($0 as? Tag)?.name } ?? []
+
         allOtherTags()
 
         userInputListener = $newTagInput
@@ -35,6 +38,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
                 self?.trackUserEnterText(with: text)
                 self?.filterTags(with: text)
             })
+
     }
 
     /// Saves tags to an item
@@ -46,8 +50,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
-        let fetchedTags = source.retrieveTags(excluding: tags)?.compactMap({ $0.name }) ?? []
-        otherTags = arrangeTags(with: fetchedTags)
+        otherTags = retrieveTagsList(excluding: tags, source: source)
         sectionTitle = .allTags
         trackAllTagsImpression()
     }
@@ -60,9 +63,8 @@ class PocketAddTagsViewModel: AddTagsViewModel {
             return
         }
         let fetchedTags = source.filterTags(with: text.lowercased(), excluding: tags)?.compactMap { $0.name } ?? []
-        let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
-        if !tagTypes.isEmpty {
-            otherTags = tagTypes
+        if !fetchedTags.isEmpty {
+            otherTags = fetchedTags.compactMap { TagType.tag($0) }
             sectionTitle = .filterTags
             trackFilteredTagsImpression()
         } else {

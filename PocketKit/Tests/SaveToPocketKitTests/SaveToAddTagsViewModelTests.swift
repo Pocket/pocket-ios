@@ -26,7 +26,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         try space.clear()
     }
 
-    private func subject(item: SavedItem, tracker: Tracker? = nil, retrieveAction: (([String]) -> [Tag]?)? = nil, filterAction: ((String, [String]) -> [Tag]?)? = nil, saveAction: @escaping ([String]) -> Void) -> SaveToAddTagsViewModel {
+    private func subject(item: SavedItem, tracker: Tracker? = nil, retrieveAction: (([String]) -> [String]?)? = nil, filterAction: ((String, [String]) -> [Tag]?)? = nil, saveAction: @escaping ([String]) -> Void) -> SaveToAddTagsViewModel {
         SaveToAddTagsViewModel(
             item: item,
             tracker: tracker ?? self.tracker,

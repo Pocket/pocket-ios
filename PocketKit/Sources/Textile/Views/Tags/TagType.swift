@@ -16,19 +16,3 @@ public enum TagType: Hashable {
         }
     }
 }
-
-/// Arranges the list of tags for a user in both the Add Tags / Edit Tags view
-/// - Parameter tags: list of users tag names
-/// - Returns: converts users tags to display a list of `TagType`
-public func arrangeTags(with tags: [String]) -> [TagType] {
-    var allTags: [TagType] = []
-    let fetchedTags = tags.reversed()
-    if fetchedTags.count > 3 {
-        let topRecentTags = Array(fetchedTags)[..<3].compactMap { TagType.recent($0) }
-        let sortedTags = Array(fetchedTags)[3...].compactMap { TagType.tag($0) }
-        allTags = topRecentTags + sortedTags
-    } else {
-        allTags = fetchedTags.compactMap { TagType.tag($0) }
-    }
-    return allTags
-}

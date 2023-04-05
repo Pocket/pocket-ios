@@ -66,7 +66,11 @@ public protocol Source {
 
     func renameTag(from oldTag: Tag, to name: String)
 
-    func retrieveTags(excluding: [String]) -> [Tag]?
+    func retrieveRecentTags(excluding tags: [String], count: Int) -> [String]?
+
+    func retrieveSortedTags(excluding tags: [String], count: Int) -> [String]?
+
+    func retrieveTags(excluding: [String]) -> [String]?
 
     func fetchAllTags() -> [Tag]?
 

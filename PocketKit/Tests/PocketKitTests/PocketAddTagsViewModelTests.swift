@@ -123,15 +123,26 @@ class PocketAddTagsViewModelTests: XCTestCase {
 
     func test_removeTag_withValidName_updatesTags() {
         let item = space.buildSavedItem(tags: ["tag 1", "tag 2", "tag 3"])
+        let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
+        expectRetrieveTagsCall.assertForOverFulfill = false
         source.stubRetrieveTags { _ in
-            return nil
+            defer { expectRetrieveTagsCall.fulfill() }
+            let tag1: Tag = Tag(context: self.space.backgroundContext)
+            let tag2: Tag = Tag(context: self.space.backgroundContext)
+            let tag3: Tag = Tag(context: self.space.backgroundContext)
+            tag1.name = "tag 1"
+            tag2.name = "tag 2"
+            tag3.name = "tag 3"
+            return [tag1, tag2, tag3]
         }
 
         let viewModel = subject(item: item) { }
         viewModel.removeTag(with: "tag 2")
 
+        wait(for: [expectRetrieveTagsCall], timeout: 1)
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 3"])
         XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2")])
+        XCTAssertNotNil(source.retrieveTagsCall(at: 0))
     }
 
     func test_removeTag_withNotExistingName_updatesTags() {

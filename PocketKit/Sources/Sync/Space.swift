@@ -131,8 +131,16 @@ public class Space {
         try fetch(Requests.fetchTag(byID: id)).first
     }
 
-    func retrieveTags(excluding tags: [String]) throws -> [Tag] {
-        return try fetch(Requests.fetchTags(excluding: tags))
+    func retrieveRecentTags(count: Int) throws -> [String] {
+        return try fetch(Requests.fetchTags()).reversed().prefix(upTo: count).compactMap { $0.name }.sorted()
+    }
+
+    func retrieveSortedTags(excluding tags: [String], count: Int) throws -> [String] {
+        return try fetch(Requests.fetchTags(excluding: tags)).compactMap { $0.name }.sorted()
+    }
+
+    func retrieveTags(excluding tags: [String]) throws -> [String] {
+        return try fetch(Requests.fetchTags(excluding: tags)).compactMap { $0.name }.sorted()
     }
 
     func filterTags(with input: String, excluding tags: [String]) throws -> [Tag] {

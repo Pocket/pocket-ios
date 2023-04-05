@@ -481,7 +481,16 @@ extension PocketSource {
         }
     }
 
-    public func retrieveTags(excluding tags: [String]) -> [Tag]? {
+    public func retrieveRecentTags(excluding tags: [String], count: Int) -> [String]? {
+        let recentTags = try? space.retrieveRecentTags(count: count)
+        return recentTags?.filter { !tags.contains($0) }
+    }
+
+    public func retrieveSortedTags(excluding tags: [String], count: Int) -> [String]? {
+        try? space.retrieveSortedTags(excluding: tags, count: count)
+    }
+
+    public func retrieveTags(excluding tags: [String]) -> [String]? {
         try? space.retrieveTags(excluding: tags)
     }
 

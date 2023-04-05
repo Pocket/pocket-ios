@@ -41,7 +41,7 @@ public extension AddTagsViewModel {
     func addNewTag(with tag: String) -> Bool {
         let tagName = validateInput(tag)
         guard !tagName.isEmpty,
-              !tags.contains(tagName) else {
+              !tags.contains(where: { $0 == tagName }) else {
             return false
         }
         addTag(with: tagName)
@@ -56,9 +56,9 @@ public extension AddTagsViewModel {
 
     /// Add tag to the input area and remove from the list
     /// - Parameter tag: tag name to add in the input area
-    private func addTag(with tagName: String) {
-        tags.append(tagName)
-        if let index = otherTags.firstIndex(where: { $0.name == tagName}) {
+    private func addTag(with tag: String) {
+        tags.append(tag)
+        if let index = otherTags.firstIndex(where: { $0.name == tag}) {
             otherTags.remove(at: index)
         }
         if otherTags.isEmpty {
@@ -72,7 +72,7 @@ public extension AddTagsViewModel {
     func removeTag(with tag: String) {
         guard let index = tags.firstIndex(of: tag) else { return }
         tags.remove(at: index)
-//        allOtherTags()
+        allOtherTags()
         trackRemoveTag()
     }
 

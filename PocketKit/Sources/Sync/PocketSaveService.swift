@@ -54,7 +54,7 @@ public class PocketSaveService: SaveService {
         }
     }
 
-    public func retrieveTags(excluding tags: [String]) -> [Tag]? {
+    public func retrieveTags(excluding tags: [String]) -> [String]? {
         try? space.retrieveTags(excluding: tags)
     }
 
