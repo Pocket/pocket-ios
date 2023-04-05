@@ -48,6 +48,6 @@ extension MockPocketBraze {
     }
     
     func signedInUserDidBeginMigration() {
-        
+
     }
 }
