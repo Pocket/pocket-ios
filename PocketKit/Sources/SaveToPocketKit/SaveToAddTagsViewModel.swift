@@ -14,14 +14,11 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     var sectionTitle: TagSectionType = .allTags
 
-    @Published
-    var tags: [String] = []
+    @Published var tags: [String] = []
 
-    @Published
-    var newTagInput: String = ""
+    @Published var newTagInput: String = ""
 
-    @Published
-    var otherTags: [TagType] = []
+    @Published var otherTags: [TagType] = []
 
     init(item: SavedItem?, tracker: Tracker, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
         self.item = item

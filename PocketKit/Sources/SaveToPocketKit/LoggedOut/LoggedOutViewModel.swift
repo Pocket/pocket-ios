@@ -17,8 +17,7 @@ class LoggedOutViewModel {
 
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
-    @Published
-    var actionButtonConfiguration: UIButton.Configuration?
+    @Published var actionButtonConfiguration: UIButton.Configuration?
 
     func viewWillAppear(context: ExtensionContext?, origin: Any) {
         if responder(from: origin) != nil {

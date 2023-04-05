@@ -64,6 +64,13 @@ class SearchViewModel: ObservableObject {
     @Published var showBanner: Bool = false
     @Published var isPresentingPremiumUpgrade = false
     @Published var isPresentingHooray = false
+    @Published var searchState: SearchViewState?
+    @Published var selectedItem: SelectedItem?
+    @Published var searchText = "" {
+        didSet {
+            updateSearchResults(with: searchText)
+        }
+    }
 
     var bannerData: BannerModifier.BannerData {
         let offlineView = BannerModifier.BannerData(image: .looking, title: Localization.Search.limitedResults, detail: Localization.Search.offlineMessage)
@@ -71,18 +78,12 @@ class SearchViewModel: ObservableObject {
         return isOffline ? offlineView : errorView
     }
 
-    @Published
-    var searchState: SearchViewState?
-
     var defaultState: SearchViewState {
         guard let emptyStateViewModel = isPremium ? premiumEmptyState(for: selectedScope) : freeEmptyState(for: selectedScope) else {
             return .recentSearches(recentSearches)
         }
         return .emptyState(emptyStateViewModel)
     }
-
-    @Published
-    var selectedItem: SelectedItem?
 
     var scopeTitles: [String] {
         SearchScope.allCases.map { $0.rawValue }
@@ -94,12 +95,6 @@ class SearchViewModel: ObservableObject {
         }
         set {
             userDefaults.set(newValue, forKey: SearchViewModel.recentSearchesKey)
-        }
-    }
-
-    @Published var searchText = "" {
-        didSet {
-            updateSearchResults(with: searchText)
         }
     }
 

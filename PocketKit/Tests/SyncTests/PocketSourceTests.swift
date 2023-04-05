@@ -11,6 +11,7 @@ import SharedPocketKit
 
 @testable import Sync
 
+// swiftlint:disable force_try
 class PocketSourceTests: XCTestCase {
     var space: Space!
     var user: MockUser!
@@ -754,3 +755,4 @@ extension PocketSourceTests {
         try space.save()
     }
 }
+// swiftlint:enable force_try

@@ -14,11 +14,9 @@ class SavedItemViewModel {
 
     private var dismissTimerCancellable: AnyCancellable?
 
-    @Published
-    var infoViewModel: InfoView.Model = .empty
+    @Published var infoViewModel: InfoView.Model = .empty
 
-    @Published
-    var presentedAddTags: SaveToAddTagsViewModel?
+    @Published var presentedAddTags: SaveToAddTagsViewModel?
 
     var savedItem: SavedItem?
 

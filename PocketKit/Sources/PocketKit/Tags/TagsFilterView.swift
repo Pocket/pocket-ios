@@ -7,29 +7,21 @@ import Textile
 import Localization
 
 struct TagsFilterView: View {
-    @ObservedObject
-    var viewModel: TagsFilterViewModel
+    @ObservedObject var viewModel: TagsFilterViewModel
 
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(\.dismiss) private var dismiss
 
-    @State
-    var didTap = false
+    @State var didTap = false
 
-    @State
-    private var selection = Set<TagType>()
+    @State private var selection = Set<TagType>()
 
-    @State
-    private var isEditing = false
+    @State private var isEditing = false
 
-    @State
-    private var showDeleteAlert = false
+    @State private var showDeleteAlert = false
 
-    @State
-    private var showRenameAlert: Bool = false
+    @State private var showRenameAlert: Bool = false
 
-    @State
-    private var tagsSelected = Set<TagType>()
+    @State private var tagsSelected = Set<TagType>()
 
     var body: some View {
         NavigationView {
@@ -93,8 +85,7 @@ struct TagsFilterView: View {
 struct EditModeView: View {
     @Environment(\.editMode) var editMode
     @Binding var isEditing: Bool
-    @ObservedObject
-    var viewModel: TagsFilterViewModel
+    @ObservedObject var viewModel: TagsFilterViewModel
 
     var body: some View {
         EditButton()
@@ -133,8 +124,7 @@ struct EditBottomBar: View {
 
 struct TagsHeaderToolBar: ViewModifier {
     @Binding var isEditing: Bool
-    @ObservedObject
-    var viewModel: TagsFilterViewModel
+    @ObservedObject var viewModel: TagsFilterViewModel
     func body(content: Content) -> some View {
         content
             .toolbar {
