@@ -46,7 +46,7 @@ extension MockPocketBraze {
         
         return calls[index] as? DidRecieveUserNotifcationImpl
     }
-    
+
     func signedInUserDidBeginMigration() {
 
     }
