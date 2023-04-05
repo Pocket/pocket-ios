@@ -8,7 +8,7 @@ import SharedPocketKit
 import Combine
 
 /// Refresh coordinator to handle the refreshing of a Users Save data
-class SavesRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
+class SavesRefreshCoordinator: RefreshCoordinator {
 
     var taskID: String = "com.mozilla.pocket.refresh.saves"
 

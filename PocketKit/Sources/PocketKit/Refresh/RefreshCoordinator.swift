@@ -15,7 +15,7 @@ enum BackgroundRequestType {
     case refresh
 }
 
-protocol AbstractRefreshCoordinatorProtocol: AnyObject {
+protocol RefreshCoordinator: AnyObject {
     var notificationCenter: NotificationCenter { get set }
     var taskScheduler: BGTaskSchedulerProtocol { get set }
     var appSession: AppSession { get set }
@@ -38,7 +38,7 @@ protocol AbstractRefreshCoordinatorProtocol: AnyObject {
 }
 
 /// An Abstract extension  that can be used to implement background refreshing and implement some default logic like observing to login/logout and foregorund notifications.
-extension AbstractRefreshCoordinatorProtocol {
+extension RefreshCoordinator {
     /// Register the background task and start listening for events
     func initialize() {
         _ = taskScheduler.registerHandler(forTaskWithIdentifier: taskID, using: .global(qos: .background)) { task in

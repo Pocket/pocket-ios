@@ -10,7 +10,7 @@ import SharedPocketKit
 class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
     var space: Space!
-    var refreshCoordinator: AbstractRefreshCoordinatorProtocol!
+    var refreshCoordinator: RefreshCoordinator!
     var appSession: AppSession!
 
     var tracker: MockTracker!

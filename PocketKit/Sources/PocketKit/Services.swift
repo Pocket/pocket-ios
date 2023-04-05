@@ -25,7 +25,7 @@ struct Services {
     let tagsRefreshCoordinator: TagsRefreshCoordinator
     let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
-    let refreshCoordinators: [AbstractRefreshCoordinatorProtocol]
+    let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
     let notificationService: PushNotificationService

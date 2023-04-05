@@ -67,7 +67,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private let source: Source
-    private let refreshCoordinator: AbstractRefreshCoordinatorProtocol
+    private let refreshCoordinator: RefreshCoordinator
     private let tracker: Tracker
     private let itemsController: SavedItemsController
     private let user: User
@@ -79,7 +79,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, refreshCoordinator: AbstractRefreshCoordinatorProtocol, userDefaults: UserDefaults) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, refreshCoordinator: RefreshCoordinator, userDefaults: UserDefaults) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker

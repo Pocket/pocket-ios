@@ -8,7 +8,7 @@ import SharedPocketKit
 import Combine
 
 /// Refresh coordinator to handle the refreshing of a Users Archive data
-class ArchiveRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
+class ArchiveRefreshCoordinator: RefreshCoordinator {
     var taskID: String = "com.mozilla.pocket.refresh.archive"
 
     var refreshInterval: TimeInterval? = 60 * 60

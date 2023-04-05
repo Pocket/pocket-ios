@@ -8,7 +8,7 @@ import SharedPocketKit
 import Combine
 
 /// Refresh coordinator to handle the refreshing of all unresolved saves
-class UnresolvedSavesRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
+class UnresolvedSavesRefreshCoordinator: RefreshCoordinator {
 
     var taskID: String = "com.mozilla.pocket.refresh.unresolved"
 

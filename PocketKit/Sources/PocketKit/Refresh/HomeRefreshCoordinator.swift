@@ -8,7 +8,7 @@ import Combine
 import Sync
 import SharedPocketKit
 
-class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
+class HomeRefreshCoordinator: RefreshCoordinator {
 
     var taskID: String = "com.mozilla.pocket.refresh.home"
 

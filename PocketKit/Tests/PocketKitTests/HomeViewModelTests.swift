@@ -15,7 +15,7 @@ class HomeViewModelTests: XCTestCase {
     var networkPathMonitor: MockNetworkPathMonitor!
     var appSession: AppSession!
     var taskScheduler: MockBGTaskScheduler!
-    var homeRefreshCoordinator: AbstractRefreshCoordinatorProtocol!
+    var homeRefreshCoordinator: RefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
     var homeController: RichFetchedResultsController<Recommendation>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
@@ -70,7 +70,7 @@ class HomeViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil,
-        homeRefreshCoordinator: AbstractRefreshCoordinatorProtocol? = nil,
+        homeRefreshCoordinator: RefreshCoordinator? = nil,
         user: User? = nil,
         userDefaults: UserDefaults? = nil
     ) -> HomeViewModel {

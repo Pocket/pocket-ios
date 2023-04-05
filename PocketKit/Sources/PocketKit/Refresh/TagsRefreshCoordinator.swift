@@ -12,7 +12,7 @@ import Combine
 /// This is because we do not have an updatedSince filter for Tag querying do to how the backend database is setup.
 ///     However this is ok because tags are always associated with a Saved/Archived Item
 ///     and we will get any new tags via the updatedSince filter when we load Archive and Save data.
-class TagsRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
+class TagsRefreshCoordinator: RefreshCoordinator {
 
     // Return nil, which informs the protocol we never want to background refresh tags
     var refreshInterval: TimeInterval?
