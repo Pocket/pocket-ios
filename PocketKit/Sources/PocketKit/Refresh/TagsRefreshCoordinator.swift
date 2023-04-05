@@ -15,9 +15,11 @@ import Combine
 class TagsRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
 
     // Return nil, which informs the protocol we never want to background refresh tags
-    var refreshInterval: TimeInterval? {  nil }
+    var refreshInterval: TimeInterval?
 
-    var taskID: String { "com.mozilla.pocket.refresh.tags" }
+    var taskID: String = "com.mozilla.pocket.refresh.tags"
+
+    var backgroundRequestType: BackgroundRequestType = .processing
 
     var notificationCenter: NotificationCenter
     var taskScheduler: BGTaskSchedulerProtocol
@@ -65,7 +67,7 @@ class TagsRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
     /// - Parameter isForced: True when a user manually asked for a refresh
     /// - Returns: Whether or not Tags should refresh
     func shouldRefresh(isForced: Bool = false) -> Bool {
-        guard let lastRefreshTags = lastRefresh.lastRefreshTags  else {
+        guard lastRefresh.lastRefreshTags != nil else {
             // If there is no tag refresh date, load the full tag list.
             return true
         }

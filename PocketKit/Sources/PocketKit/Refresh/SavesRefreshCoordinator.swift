@@ -10,9 +10,11 @@ import Combine
 /// Refresh coordinator to handle the refreshing of a Users Save data
 class SavesRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
 
-    var taskID: String { "com.mozilla.pocket.refresh.saves" }
+    var taskID: String = "com.mozilla.pocket.refresh.saves"
 
-    var refreshInterval: TimeInterval? {  60 * 60 }
+    var refreshInterval: TimeInterval? = 60 * 60
+
+    var backgroundRequestType: BackgroundRequestType = .processing
 
     var notificationCenter: NotificationCenter
     var taskScheduler: BGTaskSchedulerProtocol

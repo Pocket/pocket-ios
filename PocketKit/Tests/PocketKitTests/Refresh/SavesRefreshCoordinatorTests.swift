@@ -129,6 +129,7 @@ class SavesRefreshCoordinatorTests: XCTestCase {
         }
 
         let coordinator = subject(appSession: AppSession(groupID: ""))
+        coordinator.initialize()
         XCTAssertNil(source.refreshSavesCall(at: 0))
     }
 }

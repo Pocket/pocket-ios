@@ -8,6 +8,13 @@ import UIKit
 import Combine
 import SharedPocketKit
 
+enum BackgroundRequestType {
+    /// Instructs us to create a Processing Request, we are allowed 10 different tasks of this type scheduled at a time
+    case processing
+    /// Instructs us to create a Refresh Request, we are allowed 1 of thus type schdeduled at a time
+    case refresh
+}
+
 protocol AbstractRefreshCoordinatorProtocol: AnyObject {
     var notificationCenter: NotificationCenter { get set }
     var taskScheduler: BGTaskSchedulerProtocol { get set }
@@ -16,6 +23,9 @@ protocol AbstractRefreshCoordinatorProtocol: AnyObject {
 
     /// The taskID to be resgistered with the system for this background task and identified in info.plist
     var taskID: String { get }
+
+    /// Which type of BGTaskRequest to create at any time.
+    var backgroundRequestType: BackgroundRequestType { get }
 
     /// The minimum time to wait before the request is allowed to be retried again.
     /// If this is nil, we will never background refresh this cooridnator.
@@ -112,7 +122,14 @@ extension AbstractRefreshCoordinatorProtocol {
         }
 
         do {
-            let request = BGAppRefreshTaskRequest(identifier: taskID)
+            let request: BGTaskRequest
+            switch backgroundRequestType {
+            case .processing:
+                request = BGProcessingTaskRequest(identifier: taskID)
+                (request as? BGProcessingTaskRequest)?.requiresNetworkConnectivity = true
+            case .refresh:
+                request = BGAppRefreshTaskRequest(identifier: taskID)
+            }
             request.earliestBeginDate = Date().addingTimeInterval(refreshInterval)
             try taskScheduler.submit(request)
         } catch {

@@ -18,9 +18,11 @@ protocol HomeRefreshCoordinatorProtocol {
 
 class HomeRefreshCoordinator: AbstractRefreshCoordinatorProtocol, HomeRefreshCoordinatorProtocol {
 
-    var taskID: String {  "com.mozilla.pocket.refresh.home" }
+    var taskID: String = "com.mozilla.pocket.refresh.home"
 
-    var refreshInterval: TimeInterval? { 12 * 60 * 60 }
+    var refreshInterval: TimeInterval? = 12 * 60 * 60
+
+    var backgroundRequestType: BackgroundRequestType = .refresh
 
     var notificationCenter: NotificationCenter
     var taskScheduler: BGTaskSchedulerProtocol

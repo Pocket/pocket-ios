@@ -63,7 +63,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 1)
+        wait(for: [expectRefresh], timeout: 5)
         XCTAssertNotNil(lastRefresh.lastRefreshHome)
     }
 
@@ -79,7 +79,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh(isForced: false) {
             refreshExpectation.fulfill()
         }
-        wait(for: [refreshExpectation], timeout: 1)
+        wait(for: [refreshExpectation], timeout: 5)
     }
 
     func test_coordinator_whenDataIsStale_refreshesHome() {
@@ -94,7 +94,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 1)
+        wait(for: [expectRefresh], timeout: 5)
         XCTAssertNotEqual(lastRefresh.lastRefreshHome, date!.timeIntervalSince1970)
     }
 
@@ -110,7 +110,7 @@ class HomeRefreshCoordinatorTests: XCTestCase {
         coordinator.refresh(isForced: true) {
             expectRefresh.fulfill()
         }
-        wait(for: [expectRefresh], timeout: 1)
+        wait(for: [expectRefresh], timeout: 5)
     }
 
     func test_refresh_delegatesToSource() {

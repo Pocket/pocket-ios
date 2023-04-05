@@ -9,9 +9,11 @@ import Combine
 
 /// Refresh coordinator to handle the refreshing of a Users Archive data
 class ArchiveRefreshCoordinator: AbstractRefreshCoordinatorProtocol {
-    var taskID: String { "com.mozilla.pocket.refresh.archive" }
+    var taskID: String = "com.mozilla.pocket.refresh.archive"
 
-    var refreshInterval: TimeInterval? { 60 * 60 }
+    var refreshInterval: TimeInterval? = 60 * 60
+
+    var backgroundRequestType: BackgroundRequestType = .processing
 
     var notificationCenter: NotificationCenter
     var taskScheduler: BGTaskSchedulerProtocol
