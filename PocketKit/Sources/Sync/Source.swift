@@ -76,8 +76,6 @@ public protocol Source {
 
     func fetchSlateLineup(_ identifier: String) async throws
 
-    func fetchSlate(_ slateID: String) async throws
-
     func restore()
 
     func resolveUnresolvedSavedItems()

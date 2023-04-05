@@ -4,7 +4,6 @@ import PocketGraph
 
 protocol SlateService {
     func fetchSlateLineup(_ identifier: String) async throws
-    func fetchSlate(_ slateID: String) async throws
 }
 
 class APISlateService: SlateService {
@@ -27,15 +26,5 @@ class APISlateService: SlateService {
             return
         }
         try space.updateLineup(from: remote)
-    }
-
-    func fetchSlate(_ slateID: String) async throws {
-        let query = GetSlateQuery(slateID: slateID, recommendationCount: SyncConstants.Home.recomendationsPerSlateDetail)
-
-        guard let remote = try await apollo.fetch(query: query)
-            .data?.getSlate.fragments.slateParts else {
-            return
-        }
-        try space.updateSlate(from: remote)
     }
 }

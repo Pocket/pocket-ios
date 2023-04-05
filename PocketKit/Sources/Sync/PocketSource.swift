@@ -546,10 +546,6 @@ extension PocketSource {
         try await slateService.fetchSlateLineup(identifier)
     }
 
-    public func fetchSlate(_ slateID: String) async throws {
-        try await slateService.fetchSlate(slateID)
-    }
-
     public func fetchDetails(for recommendation: Recommendation) async throws {
         Log.breadcrumb(category: "detail-loading", level: .debug, message: "Loading details for Recomendation: \(String(describing: recommendation.remoteID))")
         guard let item = recommendation.item else {

@@ -56,13 +56,6 @@ class SlateDetailViewModel {
         self.snapshot = snapshot
     }
 
-    func refresh(_ completion: @escaping () -> Void) {
-        Task {
-            try await source.fetchSlate(slate.remoteID)
-            completion()
-        }
-    }
-
     func willDisplay(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
         case .loading:
