@@ -21,6 +21,7 @@ class HomeViewModelTests: XCTestCase {
     var recentSavesController: NSFetchedResultsController<SavedItem>!
     var user: User!
     var userDefaults: UserDefaults!
+    var lastRefresh: UserDefaultsLastRefresh!
 
     override func setUp() async throws {
         subscriptions = []
@@ -29,12 +30,13 @@ class HomeViewModelTests: XCTestCase {
         networkPathMonitor = MockNetworkPathMonitor()
 
         taskScheduler = MockBGTaskScheduler()
+        userDefaults = .standard
+        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
         appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
-        homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: UserDefaultsLastRefresh(defaults: .standard))
+        homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: lastRefresh)
         homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
         recentSavesController = space.makeRecentSavesController(limit: 5)
-        userDefaults = .standard
         user = PocketUser(userDefaults: userDefaults)
 
         tracker = MockTracker()
@@ -56,6 +58,7 @@ class HomeViewModelTests: XCTestCase {
         source.stubBackgroundObject { object in
             self.space.backgroundObject(with: object)
         }
+        lastRefresh.reset()
     }
 
     override func tearDownWithError() throws {
