@@ -176,13 +176,14 @@ extension Space {
         return try fetch(Requests.fetchUnsavedItems())
     }
 
-    func batchDeleteOrphanedItems() throws {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Item.fetchRequest()
+    func deleteOrphanedItems(context: NSManagedObjectContext) throws {
+        let fetchRequest: NSFetchRequest<Item> = Item.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "recommendation = NULL && savedItem = NULL")
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-
-        _ = try backgroundContext.performAndWait {
-            try backgroundContext.execute(deleteRequest)
+        try context.performAndWait {
+            let orphans = try context.fetch(fetchRequest)
+            orphans.forEach {
+                context.delete($0)
+            }
         }
     }
 }
@@ -324,12 +325,15 @@ extension Space {
         )
     }
 
-    func batchDeleteOrphanedSlates() throws {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = Slate.fetchRequest()
+    func deleteOrphanedSlates(context: NSManagedObjectContext) throws {
+        let fetchRequest: NSFetchRequest<Slate> = Slate.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "slateLineup = NULL")
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        _ = try backgroundContext.performAndWait {
-            try backgroundContext.execute(deleteRequest)
+
+        try context.performAndWait {
+            let orphans = try context.fetch(fetchRequest)
+            orphans.forEach {
+                context.delete($0)
+            }
         }
     }
 
@@ -351,32 +355,9 @@ extension Space {
             guard context.hasChanges else {
                 return
             }
-            try context.save()
-            // then save the parent context
-            try save()
-            // then purge orphaned objects from the parent
-            try batchDeleteOrphanedSlates()
-            try batchDeleteOrphanedItems()
-        }
-    }
-
-    /// Updates a `Slate` from the specified remote object, on a child background context
-    /// - Parameter remote: the specified remote object
-    func updateSlate(from remote: Slate.RemoteSlate) throws {
-        let context = makeChildBackgroundContext()
-        context.performAndWait { [weak self] in
-            guard let self else { return }
-
-            let slate = (try? self.fetchSlate(byRemoteID: remote.id)) ??
-            Slate(context: context, remoteID: remote.id, expermimentID: remote.experimentId, requestID: remote.requestId)
-            slate.update(from: remote, in: self, context: context)
-        }
-
-        try context.performAndWait {
-            guard context.hasChanges else {
-                return
-            }
-            // save the child context
+            // purge orphaned slates and items due to recommentation changes
+            try deleteOrphanedSlates(context: context)
+            try deleteOrphanedItems(context: context)
             try context.save()
             // then save the parent context
             try save()
