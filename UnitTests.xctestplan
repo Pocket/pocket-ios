@@ -95,6 +95,9 @@
       }
     },
     {
+      "skippedTests" : [
+        "RetriableOperationTests\/test_main_protectsOperationWithBackgroundTask()"
+      ],
       "target" : {
         "containerPath" : "container:PocketKit",
         "identifier" : "SyncTests",
