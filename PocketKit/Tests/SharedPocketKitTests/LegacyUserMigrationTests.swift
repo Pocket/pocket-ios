@@ -235,8 +235,6 @@ extension LegacyUserMigrationTests {
             return try! JSONSerialization.data(withJSONObject: correct)
         }
 
-        let expectation = XCTestExpectation(description: "Migration event fired successfully.")
-
         try migration.perform()
 
         XCTAssertEqual(appSession.currentSession?.guid, "guid")
