@@ -16,6 +16,8 @@ class SavedItemsListViewModelTests: XCTestCase {
     var viewType: SavesViewType!
     var subscriptions: [AnyCancellable]!
     var user: User!
+    var subscriptionStore: SubscriptionStore!
+    var networkPathMonitor: NetworkPathMonitor!
 
     override func setUp() {
         source = MockSource()
@@ -26,6 +28,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         listOptions.selectedSortOption = .newest
         viewType = .saves
         user = PocketUser(userDefaults: UserDefaults())
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
 
         itemsController = FetchedSavedItemsController(resultsController: NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
@@ -56,6 +60,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         subscriptions = []
         try space.clear()
         try space.save()
+        networkPathMonitor = nil
+        subscriptionStore = nil
     }
 
     func subject(
@@ -63,7 +69,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         tracker: Tracker? = nil,
         listOptions: ListOptions? = nil,
         viewType: SavesViewType? = nil,
-        user: User? = nil
+        user: User? = nil,
+        networkPathMonitor: NetworkPathMonitor? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
             source: source ?? self.source,
@@ -71,7 +78,9 @@ class SavedItemsListViewModelTests: XCTestCase {
             viewType: viewType ?? self.viewType,
             listOptions: listOptions ?? self.listOptions,
             notificationCenter: .default,
-            user: user ?? self.user
+            user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
         )
     }
 

@@ -67,6 +67,7 @@ class SearchViewModelTests: XCTestCase {
             userDefaults: userDefaults ?? self.userDefaults,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
+            store: subscriptionStore ?? self.subscriptionStore,
             premiumUpgradeViewModelFactory: {_ in
                 premiumViewModel
             }
