@@ -12,6 +12,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var space: Space!
     private var pasteboard: Pasteboard!
     private var user: User!
+    private var userDefaults: UserDefaults!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -21,6 +22,7 @@ class SavedItemViewModelTests: XCTestCase {
         pasteboard = MockPasteboard()
         space = .testSpace()
         user = PocketUser(userDefaults: UserDefaults())
+        userDefaults = .standard
     }
 
     override func tearDown() async throws {
@@ -40,7 +42,8 @@ class SavedItemViewModelTests: XCTestCase {
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             pasteboard: pasteboard ?? self.pasteboard,
-            user: user ?? self.user
+            user: user ?? self.user,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 

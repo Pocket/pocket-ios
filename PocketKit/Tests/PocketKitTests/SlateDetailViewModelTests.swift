@@ -14,12 +14,14 @@ class SlateDetailViewModelTests: XCTestCase {
     var tracker: MockTracker!
     var subscriptions: Set<AnyCancellable> = []
     var user: User!
+    var userDefaults: UserDefaults!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
-        user = PocketUser(userDefaults: UserDefaults())
+        userDefaults = .standard
+        user = PocketUser(userDefaults: userDefaults)
         source.stubViewObject { identifier in
             self.space.viewObject(with: identifier)
         }
@@ -38,13 +40,15 @@ class SlateDetailViewModelTests: XCTestCase {
         slate: Slate,
         source: Source? = nil,
         tracker: Tracker? = nil,
-        user: User? = nil
+        user: User? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> SlateDetailViewModel {
         SlateDetailViewModel(
             slate: slate,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            user: user ?? self.user
+            user: user ?? self.user,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 

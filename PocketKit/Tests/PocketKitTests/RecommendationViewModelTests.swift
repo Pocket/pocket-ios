@@ -12,6 +12,7 @@ class RecommendationViewModelTests: XCTestCase {
     private var tracker: MockTracker!
     private var pasteboard: MockPasteboard!
     private var user: User!
+    private var userDefaults: UserDefaults!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -20,7 +21,8 @@ class RecommendationViewModelTests: XCTestCase {
         tracker = MockTracker()
         pasteboard = MockPasteboard()
         space = .testSpace()
-        user = PocketUser(userDefaults: UserDefaults())
+        userDefaults = .standard
+        user = PocketUser(userDefaults: userDefaults)
 
         continueAfterFailure = false
     }
@@ -35,14 +37,16 @@ class RecommendationViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         pasteboard: Pasteboard? = nil,
-        user: User? = nil
+        user: User? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> RecommendationViewModel {
         RecommendationViewModel(
             recommendation: recommendation,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             pasteboard: pasteboard ?? self.pasteboard,
-            user: user ?? self.user
+            user: user ?? self.user,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 

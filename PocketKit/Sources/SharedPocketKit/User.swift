@@ -20,14 +20,17 @@ public protocol User {
 
 public class PocketUser: User, ObservableObject {
     @Published public private(set) var status: Status = .unknown
-    @AppStorage public var userName: String
-    @AppStorage public var displayName: String
+    @AppStorage
+    public var userName: String
+    @AppStorage
+    public var displayName: String
     public var statusPublisher: Published<Status>.Publisher { $status }
-    @AppStorage private var storedStatus: Status
+    @AppStorage
+    private var storedStatus: Status
 
-    private static let userStatusKey = "User.statusKey"
-    private static let userNameKey = "User.nameKey"
-    private static let displayNameKey = "User.displayNameKey"
+    private static let userStatusKey = UserDefaults.Key.userStatus
+    private static let userNameKey = UserDefaults.Key.userName
+    private static let displayNameKey = UserDefaults.Key.displayName
 
     public init(status: Status = .unknown, userDefaults: UserDefaults, userName: String = "", displayName: String = "") {
         _storedStatus = AppStorage(wrappedValue: status, Self.userStatusKey, store: userDefaults)

@@ -15,7 +15,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
     private let source: Source
     private let userDefaults: UserDefaults
-    private let firstLaunchDefaults: UserDefaults
     private let refreshCoordinator: RefreshCoordinator
     private let appSession: AppSession
     private let user: User
@@ -30,7 +29,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     init(services: Services) {
         self.source = services.source
         self.userDefaults = services.userDefaults
-        self.firstLaunchDefaults = services.firstLaunchDefaults
         self.refreshCoordinator = services.refreshCoordinator
         self.appSession = services.appSession
         self.user = services.user
@@ -47,13 +45,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         if CommandLine.arguments.contains("clearUserDefaults") {
-            userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        }
-
-        if CommandLine.arguments.contains("clearFirstLaunch") {
-            firstLaunchDefaults.removePersistentDomain(
-                forName: "\(Bundle.main.bundleIdentifier!).first-launch"
-            )
+            userDefaults.resetKeys()
         }
 
         if CommandLine.arguments.contains("clearCoreData") {
@@ -67,7 +59,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         SignOutOnFirstLaunch(
             appSession: appSession,
             user: user,
-            userDefaults: firstLaunchDefaults
+            userDefaults: userDefaults
         ).signOutOnFirstLaunch()
 
         if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
@@ -103,7 +95,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             if attempted {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
-                LegacyCleanupService(groupID: Keys.shared.groupID).cleanUp()
+                LegacyCleanupService().cleanUp()
             } else {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }

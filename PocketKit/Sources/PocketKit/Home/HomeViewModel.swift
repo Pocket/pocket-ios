@@ -96,6 +96,7 @@ class HomeViewModel: NSObject {
     private let source: Source
     let tracker: Tracker
     private let user: User
+    private let userDefaults: UserDefaults
     private let networkPathMonitor: NetworkPathMonitor
     private let homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
     private var subscriptions: [AnyCancellable] = []
@@ -109,7 +110,8 @@ class HomeViewModel: NSObject {
         tracker: Tracker,
         networkPathMonitor: NetworkPathMonitor,
         homeRefreshCoordinator: HomeRefreshCoordinatorProtocol,
-        user: User
+        user: User,
+        userDefaults: UserDefaults
     ) {
         self.source = source
         self.tracker = tracker
@@ -117,6 +119,7 @@ class HomeViewModel: NSObject {
         networkPathMonitor.start(queue: .global(qos: .utility))
         self.homeRefreshCoordinator = homeRefreshCoordinator
         self.user = user
+        self.userDefaults = userDefaults
 
         self.snapshot = {
             return Self.loadingSnapshot()
@@ -252,7 +255,8 @@ extension HomeViewModel {
             slate: slate,
             source: source,
             tracker: tracker.childTracker(hosting: .slateDetail.screen),
-            user: user
+            user: user,
+            userDefaults: userDefaults
         ))
     }
 
@@ -262,7 +266,8 @@ extension HomeViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
-            user: user
+            user: user,
+            userDefaults: userDefaults
         )
 
         guard let item = recommendation.item else {
@@ -293,7 +298,8 @@ extension HomeViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
-            user: user
+            user: user,
+            userDefaults: userDefaults
         )
 
         if let item = savedItem.item, item.shouldOpenInWebView {

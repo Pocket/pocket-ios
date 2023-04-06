@@ -14,7 +14,7 @@ class SortMenuViewModelTests: XCTestCase {
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
-        listOptions = .saved
+        listOptions = .saved(userDefaults: .standard)
         listOptions.selectedSortOption = .newest
     }
 

@@ -16,7 +16,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
 
         XCTAssertEqual(presenter.shouldHideCaption, false)
     }
@@ -30,7 +30,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
 
         XCTAssertEqual(presenter.shouldHideCaption, true)
     }
@@ -44,7 +44,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
         let imageSize = CGSize(width: 0, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
@@ -59,7 +59,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
         let imageSize = CGSize(width: 0, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
@@ -74,7 +74,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
         let imageSize = CGSize(width: -1, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.ui.grey7))
@@ -89,7 +89,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: URL(string: "http://example.com")!
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
         let imageSize = CGSize(width: -1, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
@@ -104,7 +104,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: nil
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
         let imageSize = CGSize(width: -1, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
@@ -119,7 +119,7 @@ extension ImageComponentPresenterTests {
             id: 3,
             source: nil
         )
-        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings()) { }
+        let presenter = ImageComponentPresenter(component: component, readerSettings: ReaderSettings(userDefaults: .standard)) { }
         let imageSize = CGSize(width: -1, height: 0)
 
         XCTAssertEqual(presenter.imageViewBackgroundColor(imageSize: imageSize), UIColor(.clear))
