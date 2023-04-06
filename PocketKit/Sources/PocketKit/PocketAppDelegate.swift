@@ -88,7 +88,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         )
 
         do {
-            let attempted = try legacyUserMigration.perform(migrationWillBegin: { [weak self] in
+            let attempted = try legacyUserMigration.attemptMigration(migrationWillBegin: { [weak self] in
                 self?.brazeService.signedInUserDidBeginMigration()
             })
 

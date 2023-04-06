@@ -79,7 +79,7 @@ public class Space {
         return try context.performAndWait(block)
     }
 
-    /// Calls `perform` on the specified context, passing the specified closure. If context is nil, `backgroundContext` is used
+    /// Calls `attemptMigration` on the specified context, passing the specified closure. If context is nil, `backgroundContext` is used
     /// - Parameters:
     ///   - schedule: schedule type, defaunts to `.immediate`
     ///   - block: the specified closure

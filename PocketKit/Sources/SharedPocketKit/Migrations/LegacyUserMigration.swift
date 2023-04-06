@@ -82,7 +82,7 @@ public class LegacyUserMigration {
     }
 
     @discardableResult
-    public func perform(migrationWillBegin: () -> Void) throws -> Bool {
+    public func attemptMigration(migrationWillBegin: () -> Void) throws -> Bool {
 
         let userData = try decryptUserData()
         let legacyStore = try getLegacyStore(from: userData)
