@@ -139,25 +139,27 @@ extension Response {
 
     static func fallbackResponses(apiRequest: ClientAPIRequest) -> Response {
         if apiRequest.isForSlateLineup {
-            return Response.slateLineup()
+            return .slateLineup()
         } else if apiRequest.isForArchivedContent {
-            return Response.archivedContent()
+            return .archivedContent()
         } else if apiRequest.isForTags {
-            return Response.emptyTags()
+            return .emptyTags()
         } else if apiRequest.isForSavesContent {
-            return Response.saves()
+            return .saves()
         } else if apiRequest.isForDeleteUser {
-            return Response.deleteUser()
+            return .deleteUser()
         } else if apiRequest.isForUserDetails {
-            return Response.userDetails()
+            return .userDetails()
         } else if apiRequest.isToArchiveAnItem {
-            return Response.archive()
+            return .archive()
         } else if apiRequest.isToSaveAnItem {
-            return Response.saveItem()
+            return .saveItem()
         } else if apiRequest.isForRecommendationDetail(1) {
-            return Response.recommendationDetail(1)
+            return .recommendationDetail(1)
+        } else if apiRequest.isForItemDetail {
+            return .itemDetail()
         } else if apiRequest.isForReplacingSavedItemTags {
-            return Response.savedItemWithTag()
+            return .savedItemWithTag()
         } else {
             fatalError("Unexpected request")
         }
