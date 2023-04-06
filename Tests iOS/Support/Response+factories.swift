@@ -150,6 +150,10 @@ extension Response {
             return Response.deleteUser()
         } else if apiRequest.isForUserDetails {
             return Response.userDetails()
+        } else if apiRequest.isToArchiveAnItem {
+            return Response.archive()
+        } else if apiRequest.isToSaveAnItem {
+            return Response.saveItem()
         } else {
             fatalError("Unexpected request")
         }
