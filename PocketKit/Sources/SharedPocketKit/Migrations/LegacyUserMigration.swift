@@ -79,7 +79,7 @@ public class LegacyUserMigration {
     }
 
     @discardableResult
-    public func perform(migrationAnalytics: () -> Void) throws -> Bool {
+    public func perform(migrationWillBegin: () -> Void) throws -> Bool {
 
         let userData = try decryptUserData()
         let legacyStore = try getLegacyStore(from: userData)
@@ -89,7 +89,7 @@ public class LegacyUserMigration {
             return false
         }
 
-        migrationAnalytics()
+        migrationWillBegin()
 
         appSession.currentSession = Session(
             guid: legacyStore.guid,
