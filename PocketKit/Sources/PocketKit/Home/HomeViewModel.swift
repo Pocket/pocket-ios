@@ -98,7 +98,7 @@ class HomeViewModel: NSObject {
     private let user: User
     private let userDefaults: UserDefaults
     private let networkPathMonitor: NetworkPathMonitor
-    private let homeRefreshCoordinator: HomeRefreshCoordinatorProtocol
+    private let homeRefreshCoordinator: RefreshCoordinator
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
 
@@ -109,7 +109,7 @@ class HomeViewModel: NSObject {
         source: Source,
         tracker: Tracker,
         networkPathMonitor: NetworkPathMonitor,
-        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol,
+        homeRefreshCoordinator: RefreshCoordinator,
         user: User,
         userDefaults: UserDefaults
     ) {

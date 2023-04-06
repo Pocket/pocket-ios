@@ -2,9 +2,17 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AdjustAppToken</key>
+	<string>$(ADJUST_APP_TOKEN)</string>
+	<key>AdjustSignUpEventToken</key>
+	<string>$(ADJUST_SIGN_UP_EVENT_TOKEN)</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.mozilla.pocket.next.refresh</string>
+		<string>com.mozilla.pocket.refresh.saves</string>
+		<string>com.mozilla.pocket.refresh.home</string>
+		<string>com.mozilla.pocket.refresh.archive</string>
+		<string>com.mozilla.pocket.refresh.tags</string>
+		<string>com.mozilla.pocket.refresh.unresolved</string>
 	</array>
 	<key>BrazeAPIEndpoint</key>
 	<string>$(BRAZE_API_ENDPOINT)</string>
@@ -43,6 +51,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GroupId</key>
+	<string>$(GROUP_ID)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -62,16 +72,10 @@
 	<string>$(POCKET_PREMIUM_MONTHLY)</string>
 	<key>SentryDSN</key>
 	<string>$(SENTRY_DSN)</string>
-	<key>GroupId</key>
-	<string>$(GROUP_ID)</string>
 	<key>SnowplowEndpoint</key>
 	<string>$(SNOWPLOW_ENDPOINT)</string>
 	<key>SnowplowIdentifier</key>
 	<string>$(SNOWPLOW_IDENTIFIER)</string>
-	<key>AdjustAppToken</key>
-	<string>$(ADJUST_APP_TOKEN)</string>
-	<key>AdjustSignUpEventToken</key>
-	<string>$(ADJUST_SIGN_UP_EVENT_TOKEN)</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

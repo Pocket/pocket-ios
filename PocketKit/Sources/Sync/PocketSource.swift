@@ -713,13 +713,20 @@ extension PocketSource {
         }
     }
 
-    public func resolveUnresolvedSavedItems() {
+    public func resolveUnresolvedSavedItems(completion: (() -> Void)?) {
         guard let unresolved = try? space.fetchUnresolvedSavedItems() else {
+            completion?()
             return
         }
 
         unresolved.compactMap(\.savedItem).forEach(save(item:))
         space.delete(unresolved)
+        do {
+            try space.save()
+        } catch {
+            Log.capture(error: error)
+        }
+        completion?()
     }
 }
 
@@ -743,7 +750,7 @@ extension PocketSource {
     }
 
     func handleUnresolvedSavedItemCreatedNotification() {
-        resolveUnresolvedSavedItems()
+        resolveUnresolvedSavedItems(completion: nil)
     }
 }
 
