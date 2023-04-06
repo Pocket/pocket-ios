@@ -80,14 +80,14 @@ struct HomeViewElement: PocketUIElement {
     }
 
     var overscrollText: XCUIElement {
-        element.otherElements["slate-detail-overscroll"].wait()
+        element.otherElements["slate-detail-overscroll"]
     }
 
     var seeAllCollectionButton: XCUIElement {
-        element.staticTexts["See All"].wait()
+        element.staticTexts["See All"]
     }
 
     var returnToHomeButton: XCUIElement {
-        element.buttons["Home"].wait()
+        element.buttons["Home"]
     }
 }

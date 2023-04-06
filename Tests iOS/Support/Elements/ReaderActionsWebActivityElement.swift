@@ -14,9 +14,9 @@ struct ReaderActionsWebActivityElement: PocketUIElement {
     func activityOption(_ label: String) -> XCUIElement {
         if #available(iOS 16.4, *) {
             // Note that pre iOS 16.4 these were buttons, they now are StaticTexts
-            return element.staticTexts[label].wait()
+            return element.staticTexts[label]
         } else {
-            return element.buttons[label].wait()
+            return element.buttons[label]
         }
     }
 }

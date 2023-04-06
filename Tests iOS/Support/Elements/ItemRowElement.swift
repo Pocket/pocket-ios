@@ -24,7 +24,7 @@ struct ItemRowElement: PocketUIElement {
     }
 
     var tagButton: XCUIElement {
-        element.buttons["tag-button"].wait()
+        element.buttons["tag-button"]
     }
 
     func tap() {
@@ -35,19 +35,19 @@ struct ItemRowElement: PocketUIElement {
     }
 
     var itemActionButton: XCUIElement {
-        element.buttons["item-actions"].wait()
+        element.buttons["item-actions"]
     }
 
     var favoriteButton: FavoriteButton {
-        FavoriteButton(element.buttons["item-action-favorite"].wait())
+        FavoriteButton(element.buttons["item-action-favorite"])
     }
 
     var shareButton: XCUIElement {
-        element.buttons["item-action-share"].wait()
+        element.buttons["item-action-share"]
     }
 
     var overFlowMenu: XCUIElement {
-        element.buttons["overflow-menu"].wait()
+        element.buttons["overflow-menu"]
     }
 }
 

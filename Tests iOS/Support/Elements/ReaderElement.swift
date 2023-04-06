@@ -12,89 +12,89 @@ struct ReaderElement: PocketUIElement {
     }
 
     var readerToolbar: ReaderToolbarElement {
-        return ReaderToolbarElement(element.navigationBars.element(boundBy: 0).wait())
+        return ReaderToolbarElement(element.navigationBars.element(boundBy: 0))
     }
 
     var savesBackButton: XCUIElement {
         // This will always be a back button in the Navbar at index 0
-        element.navigationBars.buttons.element(boundBy: 0).wait()
+        element.navigationBars.buttons.element(boundBy: 0)
     }
 
     var archiveButton: XCUIElement {
-        element.buttons["archiveNavButton"].wait()
+        element.buttons["archiveNavButton"]
     }
 
     var moveFromArchiveToSavesButton: XCUIElement {
-        element.buttons["moveFromArchiveToSavesNavButton"].wait()
+        element.buttons["moveFromArchiveToSavesNavButton"]
     }
 
     var overflowButton: XCUIElement {
-        element.buttons["more"].wait()
+        element.buttons["more"]
     }
 
     var displaySettingsButton: XCUIElement {
-        element.buttons["Display Settings"].wait()
+        element.buttons["Display Settings"]
     }
 
     var favoriteButton: XCUIElement {
-        element.buttons["Favorite"].wait()
+        element.buttons["Favorite"]
     }
 
     var addTagsButton: XCUIElement {
-        element.buttons["Add Tags"].wait()
+        element.buttons["Add Tags"]
     }
 
     var deleteButton: XCUIElement {
-        element.buttons["Delete"].wait()
+        element.buttons["Delete"]
     }
 
     var deleteNoButton: XCUIElement {
-        element.buttons["No"].wait()
+        element.buttons["No"]
     }
 
     var deleteYesButton: XCUIElement {
-        element.buttons["Yes"].wait()
+        element.buttons["Yes"]
     }
 
     var shareButton: XCUIElement {
-        element.buttons["Share"].wait()
+        element.buttons["Share"]
     }
 
     var fontButton: XCUIElement {
-        element.collectionViews.cells.staticTexts["Font"].wait()
+        element.collectionViews.cells.staticTexts["Font"]
     }
 
     func fontSelection(fontName: String) -> XCUIElement {
-        element.collectionViews.buttons[fontName].wait()
+        element.collectionViews.buttons[fontName]
     }
 
     var fontStepperIncreaseButton: XCUIElement {
-        element.collectionViews.steppers["Font Size"].buttons["Increment"].wait()
+        element.collectionViews.steppers["Font Size"].buttons["Increment"]
     }
 
     var fontStepperDecreaseButton: XCUIElement {
-        element.collectionViews.steppers["Font Size"].buttons["Decrement"].wait()
+        element.collectionViews.steppers["Font Size"].buttons["Decrement"]
     }
 
     var safariButton: XCUIElement {
-        element.buttons["safari"].wait()
+        element.buttons["safari"]
     }
 
     var safariDoneButton: XCUIElement {
-        element.buttons["Done"].wait()
+        element.buttons["Done"]
     }
 
     var readerHomeButton: XCUIElement {
         // This will always be a back button in the Navbar at index 0
-        element.navigationBars.buttons.element(boundBy: 0).wait()
+        element.navigationBars.buttons.element(boundBy: 0)
     }
 
     var unsupportedElementOpenButton: XCUIElement {
-        element.buttons["Open in Web View"].wait()
+        element.buttons["Open in Web View"]
     }
 
     var articleView: XCUIElement {
-        element.collectionViews["article-view"].wait()
+        element.collectionViews["article-view"]
     }
 
     var articleTextViews: [XCUIElement] {
@@ -107,7 +107,6 @@ struct ReaderElement: PocketUIElement {
             .cells
             .containing(predicate)
             .element(boundBy: 0)
-            .wait()
     }
 
     func scrollCellToTop(_ cell: XCUIElement) {

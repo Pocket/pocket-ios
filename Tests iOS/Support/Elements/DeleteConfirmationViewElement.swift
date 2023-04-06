@@ -18,22 +18,22 @@ struct DeleteConfirmationViewElement: PocketUIElement {
     }
 
     var understandDeletionSwitch: XCUIElement {
-        element.switches["understand-deletion"].wait()
+        element.switches["understand-deletion"]
     }
 
     var confirmCancelledSwitch: XCUIElement {
-        element.switches["confirm-cancelled"].wait()
+        element.switches["confirm-cancelled"]
     }
 
     var deleteAccountButton: XCUIElement {
-        element.buttons["delete-account"].wait()
+        element.buttons["delete-account"]
     }
 
     var cancelButton: XCUIElement {
-        element.buttons["cancel"].wait()
+        element.buttons["cancel"]
     }
 
     var closeButton: XCUIElement {
-        element.buttons["close"].wait()
+        element.buttons["close"]
     }
 }

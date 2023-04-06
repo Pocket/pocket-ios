@@ -12,10 +12,10 @@ struct SelectionSwitcherElement: PocketUIElement {
     }
 
     var archiveButton: XCUIElement {
-        element.buttons["Archive"].wait()
+        element.buttons["Archive"]
     }
 
     var savesButton: XCUIElement {
-        element.buttons["Saves"].wait()
+        element.buttons["Saves"]
     }
 }

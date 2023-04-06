@@ -12,22 +12,22 @@ struct AlertElement: PocketUIElement {
     }
 
     var no: XCUIElement {
-        element.buttons["No"].wait()
+        element.buttons["No"]
     }
 
     var yes: XCUIElement {
-        element.buttons["Yes"].wait()
+        element.buttons["Yes"]
     }
 
     var cancel: XCUIElement {
-        element.buttons["Cancel"].wait()
+        element.buttons["Cancel"]
     }
 
     var delete: XCUIElement {
-        element.buttons["Delete"].wait()
+        element.buttons["Delete"]
     }
 
     var ok: XCUIElement {
-        element.buttons["OK"].wait()
+        element.buttons["OK"]
     }
 }

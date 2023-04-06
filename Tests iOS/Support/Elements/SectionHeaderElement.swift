@@ -12,6 +12,6 @@ struct SectionHeaderElement: PocketUIElement {
     }
 
     var seeAllButton: XCUIElement {
-        element.buttons["see-all-button"].wait()
+        element.buttons["see-all-button"]
     }
 }

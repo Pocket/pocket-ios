@@ -41,67 +41,67 @@ class BannerViewTests: XCTestCase {
     func test_navigatingToHomeTab_withClipboardURL_showsBannerAndSavedItem() {
         let urlString = "https://example.com/item-1"
         UIPasteboard.general.string = urlString
-        let home = app.launch().homeView
+        let home = app.launch().homeView.wait()
         let banner = app.bannerView.wait()
 
-        banner.buttons.firstMatch.tap()
+        banner.buttons.firstMatch.wait().tap()
         waitForDisappearance(of: banner)
 
         home.recentSavesView(matching: "Slate 1, Recommendation 1").wait()
-        app.tabBar.savesButton.tap()
+        app.tabBar.savesButton.wait().tap()
         app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
     }
 
     func test_foregroundingTheApp_withURL_showsSaveFromClipboardBanner() {
         let urlString = "https://example.com/item-1"
         UIPasteboard.general.string = urlString
-        _ = app.launch().homeView
+        _ = app.launch().homeView.wait()
         app.bannerView.wait()
 
-        app.tabBar.savesButton.tap()
+        app.tabBar.savesButton.wait().tap()
         app.bannerView.wait()
 
         XCUIDevice.shared.press(.home)
-        _ = app.launch().settingsView
+        _ = app.launch().homeView.wait()
         app.bannerView.wait()
     }
 
     func test_foregroundingTheApp_withAlreadySavedURL_showsSaveFromClipboardBannerAndBringsItemToTop() {
-        let urlString = "https://example.com/item-3"
-        UIPasteboard.general.string = urlString
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.itemView(matching: "Item 3").wait()
-        app.tabBar.homeButton.tap()
-        let banner = app.bannerView.wait()
-
         server.routes.post("/graphql") { request, loop in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isToSaveAnItem {
                 XCTAssertTrue(apiRequest.contains("https:\\/\\/example.com\\/item-3"))
                 return Response.saveItem("save-item-2")
-            } else {
-                fatalError("Unexpected request")
+            } else if apiRequest.isForSavesContent {
+                return Response.saves("initial-list-recent-saves")
             }
-
-            XCTFail("Received unexpected request")
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
 
-        banner.buttons.firstMatch.tap()
+        let urlString = "https://example.com/item-3"
+        UIPasteboard.general.string = urlString
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Item 3").wait()
+        app.tabBar.homeButton.wait().tap()
+        let banner = app.bannerView.wait()
+
+        banner.buttons.firstMatch.wait().tap()
         waitForDisappearance(of: banner)
 
-        app.homeView.recentSavesView(matching: "Item 3").wait()
+        app.homeView.recentSavesView(matching: "Item 3").verify()
     }
 
     func test_navigatingToHomeTab_withoutSavedURL_doesNotShowSaveFromClipboardBanner() {
         UIPasteboard.general.string = "get pocket"
-        _ = app.launch().homeView
+        _ = app.launch().homeView.wait()
+
         waitForDisappearance(of: app.bannerView)
 
-        app.tabBar.savesButton.tap()
+        app.tabBar.savesButton.wait().tap()
         waitForDisappearance(of: app.bannerView)
 
         XCUIDevice.shared.press(.home)
-        _ = app.launch().settingsView
+        _ = app.launch().homeView.wait()
         waitForDisappearance(of: app.bannerView)
     }
 

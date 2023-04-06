@@ -12,10 +12,10 @@ struct ReaderToolbarElement: PocketUIElement {
     }
 
     var webReaderButton: XCUIElement {
-        element.buttons["safari"].wait()
+        element.buttons["safari"]
     }
 
     var moreButton: XCUIElement {
-        element.buttons["more"].wait()
+        element.buttons["more"]
     }
 }

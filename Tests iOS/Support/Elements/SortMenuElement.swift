@@ -12,6 +12,6 @@ struct SortMenuElement: PocketUIElement {
     }
 
     func sortOption(_ label: String) -> XCUIElement {
-        return element.cells.containing(.staticText, identifier: label).firstMatch.wait()
+        return element.cells.containing(.staticText, identifier: label).firstMatch
     }
 }

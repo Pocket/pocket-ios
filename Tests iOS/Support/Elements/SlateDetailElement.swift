@@ -12,7 +12,7 @@ struct SlateDetailElement: PocketUIElement {
     }
 
     var overscrollView: XCUIElement {
-        element.otherElements["slate-detail-overscroll"].wait()
+        element.otherElements["slate-detail-overscroll"]
     }
 
     func recommendationCell(_ title: String) -> RecommendationCellElement {

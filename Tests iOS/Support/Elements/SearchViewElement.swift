@@ -20,7 +20,7 @@ struct SearchViewElement: PocketUIElement {
             query = element.tables
         }
 
-        return query["recent-searches"].wait()
+        return query["recent-searches"]
     }
 
     var searchResultsView: XCUIElement {
@@ -32,7 +32,7 @@ struct SearchViewElement: PocketUIElement {
             query = element.tables
         }
 
-        return query["search-results"].wait()
+        return query["search-results"]
     }
 
     var skeletonView: XCUIElement {
@@ -44,11 +44,11 @@ struct SearchViewElement: PocketUIElement {
             query = element.tables
         }
 
-        return query["skeleton-view"].wait()
+        return query["skeleton-view"]
     }
 
-    func hasBanner(with message: String) -> Bool {
-        element.staticTexts["banner"].wait().exists && element.staticTexts[message].wait().exists
+    func hasBanner(with message: String) {
+        XCTAssertTrue(element.staticTexts["banner"].wait().exists && element.staticTexts[message].wait().exists)
     }
 
     func searchItemCell(matching identifier: String) -> ItemRowElement {

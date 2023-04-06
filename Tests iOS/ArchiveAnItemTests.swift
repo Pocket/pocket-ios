@@ -8,6 +8,7 @@ import Sails
 class ArchiveAnItemTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var archiveRequestExpectation: XCTestExpectation!
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -17,7 +18,10 @@ class ArchiveAnItemTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
+        archiveRequestExpectation = expectation(description: "An archive request to the server")
+        archiveRequestExpectation.assertForOverFulfill = true
+
+        server.routes.post("/graphql") { [unowned self] request, _ in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isForSlateLineup {
@@ -28,9 +32,13 @@ class ArchiveAnItemTests: XCTestCase {
                 return Response.archivedContent()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+            } else if apiRequest.isToArchiveAnItem {
+                XCTAssertTrue(apiRequest.contains("item-2"))
+                archiveRequestExpectation.fulfill()
+                return Response.archive()
             }
+
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
 
         try server.start()
@@ -44,110 +52,77 @@ class ArchiveAnItemTests: XCTestCase {
     }
 
     func test_archivingAnItemFromList_removesItFromList_andSyncsWithServer() {
-        app.tabBar.savesButton.tap()
+        app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
             .saves
+            .wait()
             .itemView(matching: "Item 2")
+            .wait()
 
         itemCell
             .itemActionButton
+            .wait()
             .tap()
 
-        let expectRequest = expectation(description: "A request to the server")
-        server.routes.post("/graphql") { request, loop in
-            defer { expectRequest.fulfill() }
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToArchiveAnItem)
-            XCTAssertTrue(apiRequest.contains("item-2"))
-
-            return Response.archive()
-        }
-
-        app.archiveButton.tap()
-        wait(for: [expectRequest], timeout: 10)
+        app.archiveButton.wait().tap()
+        wait(for: [archiveRequestExpectation], timeout: 10)
         waitForDisappearance(of: itemCell)
     }
 
     func test_archivingAnItemFromList_bySwipe_removesItFromList_andSyncWithServer() {
-        app.tabBar.savesButton.tap()
+        app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
             .saves
+            .wait()
             .itemView(matching: "Item 2")
+            .wait()
 
-        itemCell.element.swipeLeft()
-
-        let expectRequest = expectation(description: "A request to the server")
-        server.routes.post("/graphql") { request, loop in
-            defer { expectRequest.fulfill() }
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToArchiveAnItem)
-            XCTAssertTrue(apiRequest.contains("item-2"))
-
-            return Response.archive()
-        }
+        itemCell.element.wait().swipeLeft()
 
         app
             .saves
+            .wait()
             .archiveSwipeButton
+            .wait()
             .tap()
 
-        wait(for: [expectRequest], timeout: 10)
+        wait(for: [archiveRequestExpectation], timeout: 10)
         waitForDisappearance(of: itemCell)
     }
 
     func test_archivingAnItemFromReader_archivesItem_andPopsBackToList() {
-        app.tabBar.savesButton.tap()
+        app.tabBar.savesButton.wait().tap()
 
-        let listView = app.saves
-        let itemCell = listView.itemView(matching: "Item 2")
+        let listView = app.saves.wait()
+        let itemCell = listView.itemView(matching: "Item 2").wait()
 
         itemCell.tap()
 
-        let expectRequest = expectation(description: "A request to the server")
-        server.routes.post("/graphql") { request, loop in
-            defer { expectRequest.fulfill() }
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToArchiveAnItem)
-            XCTAssertTrue(apiRequest.contains("item-2"))
-
-            return Response.archive()
-        }
-
         let archiveNavButton = XCUIApplication().buttons["archiveNavButton"].wait()
         archiveNavButton.tap()
-        app.saves.verify()
+        app.saves.wait()
 
-        wait(for: [expectRequest], timeout: 10)
+        wait(for: [archiveRequestExpectation], timeout: 10)
         listView.wait()
         waitForDisappearance(of: itemCell)
     }
 
     func test_archivingAnItemFromHomeRecentSaves_archivesItem_andPopsBackToList() {
-        let home = app.launch().homeView
+        let home = app.launch().homeView.wait()
 
-        let itemCell = home.recentSavesView(matching: "Item 2")
+        let itemCell = home.recentSavesView(matching: "Item 2").wait()
 
-        app.tabBar.homeButton.tap()
+        app.tabBar.homeButton.wait().tap()
 
         itemCell.tap()
 
-        let expectRequest = expectation(description: "A request to the server")
-        server.routes.post("/graphql") { request, loop in
-            defer { expectRequest.fulfill() }
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToArchiveAnItem)
-            XCTAssertTrue(apiRequest.contains("item-2"))
-
-            return Response.archive()
-        }
-
         let archiveNavButton = XCUIApplication().buttons["archiveNavButton"].wait()
         archiveNavButton.tap()
-        app.homeView.verify()
+        app.homeView.wait()
 
-        wait(for: [expectRequest])
+        wait(for: [archiveRequestExpectation])
         waitForDisappearance(of: itemCell)
     }
 }

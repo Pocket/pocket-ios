@@ -12,6 +12,6 @@ struct SearchGetPremiumEmptyViewElement: PocketUIElement {
     }
 
     var getPocketPremiumButton: XCUIElement {
-        element.buttons["get-pocket-premium-button"].wait()
+        element.buttons["get-pocket-premium-button"]
     }
 }

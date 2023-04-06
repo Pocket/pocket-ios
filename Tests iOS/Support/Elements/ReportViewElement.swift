@@ -8,34 +8,34 @@ struct ReportViewElement: PocketUIElement {
     }
 
     var brokenMetaButton: XCUIElement {
-        element.buttons["broken-meta"].wait()
+        element.buttons["broken-meta"]
     }
 
     var wrongCategoryButton: XCUIElement {
-        element.buttons["wrong-category"].wait()
+        element.buttons["wrong-category"]
     }
 
     var sexuallyExplicitButton: XCUIElement {
-        element.buttons["sexually-explicit"].wait()
+        element.buttons["sexually-explicit"]
     }
 
     var offensiveButton: XCUIElement {
-        element.buttons["offensive"].wait()
+        element.buttons["offensive"]
     }
 
     var misinformationButton: XCUIElement {
-        element.buttons["misinformation"].wait()
+        element.buttons["misinformation"]
     }
 
     var otherButton: XCUIElement {
-        element.buttons["other"].wait()
+        element.buttons["other"]
     }
 
     var commentEntry: XCUIElement {
-        element.textViews["report-comment"].wait()
+        element.textViews["report-comment"]
     }
 
     var submitButton: XCUIElement {
-        element.buttons["submit-report"].wait()
+        element.buttons["submit-report"]
     }
 }

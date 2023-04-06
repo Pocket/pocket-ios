@@ -12,11 +12,11 @@ struct RecentSavesCellElement: PocketUIElement {
     }
 
     var favoriteButton: FavoriteButton {
-        FavoriteButton(element.buttons["item-action-favorite"].wait())
+        FavoriteButton(element.buttons["item-action-favorite"])
     }
 
     var overflowButton: XCUIElement {
-        element.buttons["overflow-button"].wait()
+        element.buttons["overflow-button"]
     }
 }
 

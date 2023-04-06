@@ -8,18 +8,18 @@ struct TabBarElement: PocketUIElement {
     }
 
     var homeButton: XCUIElement {
-        element.buttons["Home"].wait()
+        element.buttons["Home"]
     }
 
     var savesButton: XCUIElement {
-        element.buttons["Saves"].wait()
+        element.buttons["Saves"]
     }
 
     var accountButton: XCUIElement {
-        element.buttons["Account"].wait()
+        element.buttons["Account"]
     }
 
     var settingsButton: XCUIElement {
-        element.buttons["Settings"].wait()
+        element.buttons["Settings"]
     }
 }

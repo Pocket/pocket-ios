@@ -48,73 +48,73 @@ class ArchiveFiltersTests: XCTestCase {
     }
 
     func test_archiveView_tappingFavoritesPill_togglesDisplayingFavoritedArchivedContent() {
-        app.launch().tabBar.savesButton.tap()
-        let saves = app.saves
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
 
         saves.selectionSwitcher.archiveButton.wait().tap()
-        let archiveItem1 = saves.itemView(matching: "Archived Item 1")
-        saves.itemView(matching: "Archived Item 2").verify()
+        let archiveItem1 = saves.itemView(matching: "Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
 
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
         waitForDisappearance(of: archiveItem1)
-        saves.itemView(matching: "Archived Item 2").verify()
-        app.saves.filterButton(for: "Favorites").tap()
+        saves.itemView(matching: "Archived Item 2").wait()
+        app.saves.filterButton(for: "Favorites").wait().tap()
 
-        saves.itemView(matching: "Archived Item 1").verify()
-        saves.itemView(matching: "Archived Item 2").verify()
+        saves.itemView(matching: "Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
     }
 
     func test_archiveView_tappingAllPill_togglesDisplayingAllArchivedContent() {
-        app.launch().tabBar.savesButton.tap()
-        let saves = app.saves
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
 
-        saves.selectionSwitcher.archiveButton.tap()
+        saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "All").tap()
-        let archivedItem1 = saves.itemView(matching: "Archived Item 1")
-        saves.itemView(matching: "Archived Item 2").verify()
+        app.saves.filterButton(for: "All").wait().tap()
+        let archivedItem1 = saves.itemView(matching: "Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
 
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
         waitForDisappearance(of: archivedItem1)
 
-        app.saves.filterButton(for: "All").tap()
-        saves.itemView(matching: "Archived Item 1").verify()
-        saves.itemView(matching: "Archived Item 2").verify()
+        app.saves.filterButton(for: "All").wait().tap()
+        saves.itemView(matching: "Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
     }
 
     func test_archiveView_tappingTaggedFilter_showsFilteredItems() {
-        app.launch().tabBar.savesButton.tap()
-        let saves = app.saves
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
 
-        saves.selectionSwitcher.archiveButton.tap()
+        saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "Tagged").tap()
-        let tagsFilterView = app.saves.tagsFilterView
+        app.saves.filterButton(for: "Tagged").wait().tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
-        tagsFilterView.tag(matching: "tag 0").tap()
+        tagsFilterView.tag(matching: "tag 0").wait().tap()
 
         waitForDisappearance(of: tagsFilterView)
 
-        app.saves.selectedTagChip(for: "tag 0").verify()
+        app.saves.selectedTagChip(for: "tag 0").wait()
         XCTAssertEqual(app.saves.wait().itemCells.count, 1)
     }
 
     func test_archiveView_sortingNoTagFilter_showFilteredItems() {
-        app.launch().tabBar.savesButton.tap()
-        let saves = app.saves
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
 
-        saves.selectionSwitcher.archiveButton.tap()
+        saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "Tagged").tap()
-        let tagsFilterView = app.saves.tagsFilterView
+        app.saves.filterButton(for: "Tagged").wait().tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
-        tagsFilterView.tag(matching: "not tagged").tap()
+        tagsFilterView.tag(matching: "not tagged").wait().tap()
         waitForDisappearance(of: tagsFilterView)
 
-        XCTAssertEqual(app.saves.itemCells.count, 1)
+        XCTAssertEqual(app.saves.wait().itemCells.count, 1)
     }
 }

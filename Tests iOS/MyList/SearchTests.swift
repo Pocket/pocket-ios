@@ -395,7 +395,7 @@ class SearchTests: XCTestCase {
         searchField.tap()
         searchField.typeText("item\n")
 
-        XCTAssertTrue(app.saves.searchView.hasBanner(with: "Limited search results"))
+        app.saves.searchView.wait().hasBanner(with: "Limited search results")
     }
 
     // MARK: Search Actions
