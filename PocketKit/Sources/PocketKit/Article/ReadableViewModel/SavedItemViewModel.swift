@@ -29,6 +29,7 @@ class SavedItemViewModel: ReadableViewModel {
     private let source: Source
     private let pasteboard: Pasteboard
     private let user: User
+    private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
@@ -40,7 +41,8 @@ class SavedItemViewModel: ReadableViewModel {
         pasteboard: Pasteboard,
         user: User,
         store: SubscriptionStore,
-        networkPathMonitor: NetworkPathMonitor
+        networkPathMonitor: NetworkPathMonitor,
+        userDefaults: UserDefaults
     ) {
         self.item = item
         self.source = source
@@ -49,6 +51,7 @@ class SavedItemViewModel: ReadableViewModel {
         self.user = user
         self.store = store
         self.networkPathMonitor = networkPathMonitor
+        self.userDefaults = userDefaults
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -61,7 +64,7 @@ class SavedItemViewModel: ReadableViewModel {
 
     var readerSettings: ReaderSettings {
         // TODO: inject this
-        ReaderSettings()
+        ReaderSettings(userDefaults: userDefaults)
     }
 
     var components: [ArticleComponent]? {

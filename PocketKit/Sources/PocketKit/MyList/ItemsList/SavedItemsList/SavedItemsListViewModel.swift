@@ -70,6 +70,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let tracker: Tracker
     private let itemsController: SavedItemsController
     private let user: User
+    private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
@@ -79,7 +80,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults) {
         self.source = source
         self.tracker = tracker
         self.selectedFilters = [.all]
@@ -89,6 +90,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         self.user = user
         self.store = store
         self.networkPathMonitor = networkPathMonitor
+        self.userDefaults = userDefaults
 
         switch self.viewType {
         case .saves:
@@ -539,7 +541,8 @@ extension SavedItemsListViewModel {
             pasteboard: UIPasteboard.general,
             user: user,
             store: store,
-            networkPathMonitor: networkPathMonitor
+            networkPathMonitor: networkPathMonitor,
+            userDefaults: userDefaults
         )
 
         if savedItem.shouldOpenInWebView {

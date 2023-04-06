@@ -18,18 +18,20 @@ class SavedItemsListViewModelTests: XCTestCase {
     var user: User!
     var subscriptionStore: SubscriptionStore!
     var networkPathMonitor: NetworkPathMonitor!
+    var userDefaults: UserDefaults!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
         subscriptions = []
-        listOptions = .saved
-        listOptions.selectedSortOption = .newest
         viewType = .saves
-        user = PocketUser(userDefaults: UserDefaults())
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
+        userDefaults = .standard
+        user = PocketUser(userDefaults: userDefaults)
+        listOptions = .saved(userDefaults: userDefaults)
+        listOptions.selectedSortOption = .newest
 
         itemsController = FetchedSavedItemsController(resultsController: NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
@@ -70,7 +72,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         listOptions: ListOptions? = nil,
         viewType: SavesViewType? = nil,
         user: User? = nil,
-        networkPathMonitor: NetworkPathMonitor? = nil
+        networkPathMonitor: NetworkPathMonitor? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
             source: source ?? self.source,
@@ -80,7 +83,8 @@ class SavedItemsListViewModelTests: XCTestCase {
             notificationCenter: .default,
             user: user ?? self.user,
             store: subscriptionStore ?? self.subscriptionStore,
-            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 
@@ -399,7 +403,7 @@ class SavedItemsListViewModelTests: XCTestCase {
     func test_receivedSnapshots_whenArchiveInitialDownloadIsStarted_insertsPlaceholderCells() throws {
         source.initialArchiveDownloadState.send(.started)
 
-        let viewModel = subject(listOptions: .archived, viewType: .archive)
+        let viewModel = subject(listOptions: .archived(userDefaults: userDefaults), viewType: .archive)
 
         let receivedSnapshot = expectation(description: "receivedSnapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in

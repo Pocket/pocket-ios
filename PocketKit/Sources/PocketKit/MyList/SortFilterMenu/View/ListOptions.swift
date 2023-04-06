@@ -8,8 +8,13 @@ protocol ListOptionsHolder: AnyObject {
 }
 
 class ListOptions: ObservableObject {
-    static let saved = ListOptions(holder: SavedListOptions())
-    static let archived = ListOptions(holder: ArchiveListOptions())
+    static func saved(userDefaults: UserDefaults) -> ListOptions {
+        return ListOptions(holder: SavedListOptions(userDefaults: userDefaults))
+    }
+
+    static func archived(userDefaults: UserDefaults) -> ListOptions {
+        return ListOptions(holder: ArchiveListOptions(userDefaults: userDefaults))
+    }
 
     private let holder: any ListOptionsHolder
     private var cancellable: AnyCancellable?
@@ -32,8 +37,8 @@ class ListOptions: ObservableObject {
 }
 
 class SavedListOptions: ObservableObject, ListOptionsHolder {
-    @AppStorage("listSelectedSortForSaved")
-    var selectedSortOption: SortOption  = .newest
+    @AppStorage
+    var selectedSortOption: SortOption
 
     private var cancellable: AnyCancellable?
     private let _publisher: PassthroughSubject<Void, Never>
@@ -41,7 +46,9 @@ class SavedListOptions: ObservableObject, ListOptionsHolder {
         _publisher.eraseToAnyPublisher()
     }
 
-    init() {
+    init(userDefaults: UserDefaults) {
+        _selectedSortOption = AppStorage(wrappedValue: SortOption.newest, UserDefaults.Key.listSelectedSortForSaved, store: userDefaults)
+
         _publisher = .init()
         cancellable = objectWillChange.sink { [weak self] in
             self?._publisher.send()
@@ -50,8 +57,8 @@ class SavedListOptions: ObservableObject, ListOptionsHolder {
 }
 
 class ArchiveListOptions: ObservableObject, ListOptionsHolder {
-    @AppStorage("listSelectedSortForArchive")
-    var selectedSortOption: SortOption  = .newest
+    @AppStorage
+    var selectedSortOption: SortOption
 
     private var cancellable: AnyCancellable?
     private let _publisher: PassthroughSubject<Void, Never>
@@ -59,7 +66,9 @@ class ArchiveListOptions: ObservableObject, ListOptionsHolder {
         _publisher.eraseToAnyPublisher()
     }
 
-    init() {
+    init(userDefaults: UserDefaults) {
+        _selectedSortOption = AppStorage(wrappedValue: SortOption.newest, UserDefaults.Key.listSelectedSortForArchive, store: userDefaults)
+
         _publisher = .init()
         cancellable = objectWillChange.sink { [weak self] in
             self?._publisher.send()

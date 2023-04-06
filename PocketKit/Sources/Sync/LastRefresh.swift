@@ -27,7 +27,7 @@ struct UserDefaultsLastRefresh: LastRefresh {
 // MARK: Saves
 
 extension UserDefaultsLastRefresh {
-    private static let lastRefreshedSavesAtKey = "lastRefreshedSavesAt"
+    private static let lastRefreshedSavesAtKey = UserDefaults.Key.lastRefreshedSavesAt
 
     var lastRefreshSaves: Int? {
         if hasRefreshedSaves {
@@ -48,7 +48,7 @@ extension UserDefaultsLastRefresh {
 
 // MARK: Archive
 extension UserDefaultsLastRefresh {
-    private static let lastRefreshedArchiveAtKey = "lastRefreshedArchiveAt"
+    private static let lastRefreshedArchiveAtKey = UserDefaults.Key.lastRefreshedArchiveAt
 
     var lastRefreshArchive: Int? {
         if hasRefreshedArchive {
@@ -69,7 +69,7 @@ extension UserDefaultsLastRefresh {
 
 // MARK: Tags
 extension UserDefaultsLastRefresh {
-    private static let lastRefreshedTagsAtKey = "lastRefreshedTagsAt"
+    private static let lastRefreshedTagsAtKey = UserDefaults.Key.lastRefreshedTagsAt
 
     var lastRefreshTags: Int? {
         if hasRefreshedArchive {

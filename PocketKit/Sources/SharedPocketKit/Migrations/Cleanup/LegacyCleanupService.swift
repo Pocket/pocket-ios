@@ -16,27 +16,13 @@ public enum CleanupError: LoggableError {
 
 /// Service that cleans up legacy data
 public struct LegacyCleanupService {
-    private let grouoID: String
-
-    public init(groupID: String) {
-        self.grouoID = groupID
-    }
+    public init() { }
 
     public func cleanUp() {
-        cleanupLegacyUserDefaults()
         deleteSqliteDataBase()
         deleteImageCache()
         deleteAudioCache()
         deleteLogFiles()
-    }
-
-    /// Remove legacy `UserDefaults` suite
-    private func cleanupLegacyUserDefaults() {
-        guard let legacyDefaults = UserDefaults(suiteName: Legacy.groupID) else {
-            // Legacy dictionary does not exist, no cleanup or migration possible
-            return
-        }
-        legacyDefaults.removePersistentDomain(forName: Legacy.groupID)
     }
 
     /// Delete legacy log files
