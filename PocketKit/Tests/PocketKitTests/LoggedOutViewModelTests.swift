@@ -96,8 +96,7 @@ extension LoggedOutViewModelTests {
 
         wait(for: [alertExpectation], timeout: 10)
     }
-
-// When run with HomeRefreshCoordinator this fails cause of NotificationCenter
+// TODO: Fix this in the ui test pr to not use the default notification center
 //    @MainActor
 //    func test_logIn_onFxASuccess_updatesSession() {
 //        mockAuthenticationSession.url = URL(string: "pocket://fxa?guid=test-guid&access_token=test-access-token&id=test-id")!
