@@ -9,6 +9,9 @@ class EditTagsTests: XCTestCase {
     var app: PocketAppElement!
     var server: Application!
 
+    var firstDeleteRequest: XCTestExpectation?
+    var secondDeleteRequest: XCTestExpectation?
+
     override func setUpWithError() throws {
         continueAfterFailure = false
         let uiApp = XCUIApplication()
@@ -16,7 +19,7 @@ class EditTagsTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") {[unowned self] request, _ in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isForSlateLineup {
@@ -29,6 +32,12 @@ class EditTagsTests: XCTestCase {
                 return Response.updateTag()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
+            } else if apiRequest.isToDeleteATag() {
+                defer { firstDeleteRequest?.fulfill() }
+                return Response.deleteTag()
+            } else if apiRequest.isToDeleteATag(2) {
+                defer { secondDeleteRequest?.fulfill() }
+                return Response.deleteTag("delete-tag-2")
             } else {
                 return Response.fallbackResponses(apiRequest: apiRequest)
             }
@@ -73,6 +82,11 @@ class EditTagsTests: XCTestCase {
     }
 
     func test_editTagsView_deletesTag() {
+        firstDeleteRequest = expectation(description: "first delete request")
+        firstDeleteRequest!.assertForOverFulfill = true
+        secondDeleteRequest = expectation(description: "second delete request")
+        secondDeleteRequest!.assertForOverFulfill = true
+
         app.tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
@@ -88,24 +102,8 @@ class EditTagsTests: XCTestCase {
         XCTAssertTrue(tagsFilterView.deleteButton.isEnabled)
         tagsFilterView.deleteButton.tap()
 
-        let firstDeleteRequest = expectation(description: "first delete request")
-        let secondDeleteRequest = expectation(description: "second delete request")
-        firstDeleteRequest.assertForOverFulfill = false
-        server.routes.post("/graphql") { request, _ -> Response in
-            let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isToDeleteATag() {
-                firstDeleteRequest.fulfill()
-                return Response.deleteTag()
-            } else if apiRequest.isToDeleteATag(2) {
-                secondDeleteRequest.fulfill()
-                return Response.deleteTag("delete-tag-2")
-            } else {
-                fatalError("Unexpected request")
-            }
-        }
-
         app.alert.delete.wait().tap()
-        wait(for: [firstDeleteRequest, secondDeleteRequest])
+        wait(for: [firstDeleteRequest!, secondDeleteRequest!])
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 1"))
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 2"))
     }

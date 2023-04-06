@@ -28,9 +28,9 @@ class ArchiveFiltersTests: XCTestCase {
                 return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
-            } else if apiRequest.isToFavoriteAnItem {
+            } else if apiRequest.isToFavoriteAnItem() {
                 return Response.favorite()
-            } else if apiRequest.isToUnfavoriteAnItem {
+            } else if apiRequest.isToUnfavoriteAnItem() {
                 return Response.unfavorite()
             } else if apiRequest.isForTags {
                 return Response.emptyTags()

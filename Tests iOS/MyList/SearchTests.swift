@@ -419,7 +419,7 @@ class SearchTests: XCTestCase {
         server.routes.post("/graphql") { request, loop in
             defer { expectRequest.fulfill() }
             let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToFavoriteAnItem)
+            XCTAssertTrue(apiRequest.isToFavoriteAnItem(2))
             XCTAssertTrue(apiRequest.contains("item-2"))
 
             return Response.favorite()
@@ -439,7 +439,7 @@ class SearchTests: XCTestCase {
         server.routes.post("/graphql") { request, loop in
             defer { expectUnfavoriteRequest.fulfill() }
             let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToUnfavoriteAnItem)
+            XCTAssertTrue(apiRequest.isToUnfavoriteAnItem(2))
             XCTAssertTrue(apiRequest.contains("item-2"))
 
             return Response.unfavorite()

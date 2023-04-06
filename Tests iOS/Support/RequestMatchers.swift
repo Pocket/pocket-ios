@@ -47,12 +47,12 @@ struct ClientAPIRequest {
         contains("deleteSavedItem")
     }
 
-    var isToFavoriteAnItem: Bool {
-        contains("updateSavedItemFavorite")
+    func isToFavoriteAnItem(_ number: Int = 1) -> Bool {
+        contains("updateSavedItemFavorite") && contains("item-\(number)")
     }
 
-    var isToUnfavoriteAnItem: Bool {
-        contains("updateSavedItemUnFavorite")
+    func isToUnfavoriteAnItem(_ number: Int = 1) -> Bool {
+        contains("updateSavedItemUnFavorite") && contains("item-\(number)")
     }
 
     func isForSlateDetail(_ number: Int = 1) -> Bool {
