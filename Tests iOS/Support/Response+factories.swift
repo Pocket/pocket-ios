@@ -150,6 +150,10 @@ extension Response {
             return Response.deleteUser()
         } else if apiRequest.isForUserDetails {
             return Response.userDetails()
+        } else if apiRequest.isToUnfavoriteAnItem() {
+            return Response.unfavorite()
+        } else if apiRequest.isToFavoriteAnItem() {
+            return Response.favorite()
         } else {
             fatalError("Unexpected request")
         }

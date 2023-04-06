@@ -25,7 +25,7 @@ class EmptyStateTests: XCTestCase {
                 return Response.saves()
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
-            } else if apiRequest.isToUnfavoriteAnItem() {
+            } else if apiRequest.isToUnfavoriteAnItem(2) {
                 return Response.unfavorite()
             } else if apiRequest.isToArchiveAnItem {
                 return Response.archive()

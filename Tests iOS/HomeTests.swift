@@ -37,9 +37,9 @@ class HomeTests: XCTestCase {
                 return Response.saveItem()
             } else if apiRequest.isToArchiveAnItem {
                 return Response.archive()
-            } else if apiRequest.isToFavoriteAnItem() {
+            } else if apiRequest.isToFavoriteAnItem(2) {
                 return Response.favorite()
-            } else if apiRequest.isToUnfavoriteAnItem() {
+            } else if apiRequest.isToUnfavoriteAnItem(2) {
                 return Response.unfavorite()
             } else if apiRequest.isToDeleteAnItem {
                 return Response.delete()
@@ -269,11 +269,8 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
-        let cell = app.launch().homeView.wait().recommendationCell("Slate 1, Recommendation 1").wait()
-
         let saveRequestExpectation = expectation(description: "A save mutation request")
         let archiveRequestExpectation = expectation(description: "An archive mutation request")
-        var promise: EventLoopPromise<Response>?
         server.routes.post("/graphql") { request, loop in
             let apiRequest = ClientAPIRequest(request)
 
@@ -286,17 +283,17 @@ class HomeTests: XCTestCase {
             } else if apiRequest.isForArchivedContent {
                 return Response.archivedContent()
             } else if apiRequest.isToSaveAnItem {
+                defer { saveRequestExpectation.fulfill() }
                 XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/item-1"))
-                saveRequestExpectation.fulfill()
-                promise = loop.makePromise()
-                return promise!.futureResult
+                return Response.saveItem()
             } else if apiRequest.isToArchiveAnItem {
-                archiveRequestExpectation.fulfill()
+                defer { archiveRequestExpectation.fulfill() }
                 return Response.archive()
-            } else {
-                fatalError("Unexpected request")
             }
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
+
+        let cell = app.launch().homeView.wait().recommendationCell("Slate 1, Recommendation 1").wait()
 
         cell.saveButton.wait().tap()
         cell.savedButton.wait()
@@ -306,7 +303,6 @@ class HomeTests: XCTestCase {
 
         wait(for: [saveRequestExpectation])
 
-        promise?.succeed(Response.saveItem())
         app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         app.tabBar.homeButton.wait().tap()
@@ -318,23 +314,6 @@ class HomeTests: XCTestCase {
     }
 
     func test_slateDetailsView_tappingSaveButtonInRecommendationCell_savesItemToList() {
-        app.launch()
-            .homeView
-            .sectionHeader("Slate 1")
-            .seeAllButton
-            .wait().tap()
-
-        let rec1Cell = app.slateDetailView
-            .recommendationCell("Slate 1, Recommendation 1")
-            .wait()
-
-        let coord = rec1Cell.element
-            .coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9))
-
-        let rec2Cell = app.slateDetailView
-            .recommendationCell("Slate 1, Recommendation 2")
-            .wait()
-
         server.routes.post("/graphql") { request, _ in
             let apiRequest = ClientAPIRequest(request)
 
@@ -352,9 +331,25 @@ class HomeTests: XCTestCase {
                 }
             }
 
-            XCTFail("Received unexpected request")
-            return Response(status: .internalServerError)
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
+
+        app.launch()
+            .homeView
+            .sectionHeader("Slate 1")
+            .seeAllButton
+            .wait().tap()
+
+        let rec1Cell = app.slateDetailView
+            .recommendationCell("Slate 1, Recommendation 1")
+            .wait()
+
+        let coord = rec1Cell.element
+            .coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9))
+
+        let rec2Cell = app.slateDetailView
+            .recommendationCell("Slate 1, Recommendation 2")
+            .wait()
 
         rec1Cell.saveButton.wait().tap()
         rec1Cell.savedButton.wait()
@@ -418,12 +413,25 @@ class HomeTests: XCTestCase {
 
 extension HomeTests {
     func test_pullToRefresh_fetchesUpdatedContent() {
+
+        var slateCalls = 0
+        server.routes.post("/graphql") { request, _ in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSlateLineup {
+                defer {slateCalls += 1}
+                switch slateCalls {
+                case 0:
+                    return Response.slateLineup()
+                default:
+                    return Response.slateLineup("updated-slates")
+                }
+            }
+
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+
         let home = app.launch().homeView.wait()
         home.recommendationCell("Slate 1, Recommendation 1").wait()
-
-        server.routes.post("/graphql") { request, _ in
-            Response.slateLineup("updated-slates")
-        }
 
         home.pullToRefresh()
         home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
