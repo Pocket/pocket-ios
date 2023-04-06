@@ -857,12 +857,6 @@ extension MockSource {
         let identifier: String
     }
 
-    static let fetchSlate = "fetchSlate"
-    typealias FetchSlateImpl = (String) -> Void
-    struct FetchSlateCall {
-        let identifier: String
-    }
-
     func stubFetchSlateLineup(_ impl: @escaping FetchSlateLineupImpl) {
         implementations[Self.fetchSlateLineup] = impl
     }
