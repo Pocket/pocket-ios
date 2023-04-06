@@ -16,6 +16,7 @@ public extension UserDefaults {
         case lastRefreshedTagsAt = "lastRefreshedTagsAt"
         case lastRefreshedArchiveAt = "lastRefreshedArchiveAt"
         case lastRefreshedSavesAt = "lastRefreshedSavesAt"
+        case lastRefreshedHomeAt = "lastRefreshedHomeAt"
         case listSelectedSortForSaved = "listSelectedSortForSaved"
         case listSelectedSortForArchive = "listSelectedSortForArchive"
         case readerFontSizeAdjustment = "readerFontSizeAdjustment"
@@ -69,6 +70,10 @@ public extension UserDefaults {
 
     func integer(forKey key: UserDefaults.Key) -> Int {
         return integer(forKey: key.rawValue)
+    }
+
+    func double(forKey key: UserDefaults.Key) -> Double {
+        return double(forKey: key.rawValue)
     }
 
     func value(forKey key: UserDefaults.Key) -> Any? {

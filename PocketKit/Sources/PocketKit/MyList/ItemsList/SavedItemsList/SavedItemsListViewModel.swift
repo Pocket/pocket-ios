@@ -67,6 +67,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private let source: Source
+    private let refreshCoordinator: RefreshCoordinator
     private let tracker: Tracker
     private let itemsController: SavedItemsController
     private let user: User
@@ -78,8 +79,9 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, userDefaults: UserDefaults) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, refreshCoordinator: RefreshCoordinator, userDefaults: UserDefaults) {
         self.source = source
+        self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
@@ -186,11 +188,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func refresh(_ completion: (() -> Void)? = nil) {
-        switch self.viewType {
-        case .saves:
-            source.refreshSaves(completion: completion)
-        case .archive:
-            source.refreshArchive(completion: completion)
+        refreshCoordinator.refresh(isForced: true) {
+            completion?()
         }
 
         source.retryImmediately()

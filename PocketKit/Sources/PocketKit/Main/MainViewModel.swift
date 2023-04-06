@@ -47,6 +47,7 @@ class MainViewModel: ObservableObject {
                     listOptions: .saved(userDefaults: Services.shared.userDefaults),
                     notificationCenter: .default,
                     user: Services.shared.user,
+                    refreshCoordinator: Services.shared.savesRefreshCoordinator,
                     userDefaults: Services.shared.userDefaults
                 ),
                 archivedItemsList: SavedItemsListViewModel(
@@ -56,6 +57,7 @@ class MainViewModel: ObservableObject {
                     listOptions: .archived(userDefaults: Services.shared.userDefaults),
                     notificationCenter: .default,
                     user: Services.shared.user,
+                    refreshCoordinator: Services.shared.archiveRefreshCoordinator,
                     userDefaults: Services.shared.userDefaults
                 )
             ),

@@ -41,7 +41,9 @@ public struct SyncConstants {
         public  static let pageSize = 30
 
         /// How many seconds must pass from the last load of saves data before we allow hitting the server again.
-        public static let timeMustPass = 5.0
+        /// This is set to 5 minutes because loading a users tags is expensive and updates come to us when a user tags
+        ///  a saved/archived item already so the need to manually refresh tags should be very low.
+        public static let timeMustPass = 300.0
     }
 
     public struct Home {
