@@ -84,6 +84,7 @@
         "ReportARecommendationTests",
         "SaveToPocketTests",
         "SavesFiltersTests",
+        "SavesTests\/test_savingAnItemFromShareExtension_addsItemToList()",
         "SearchTests",
         "SettingsTest\/test_deleteAccount_free_succeeds()",
         "SettingsTest\/test_deleteAccount_premium_succeeds()",
