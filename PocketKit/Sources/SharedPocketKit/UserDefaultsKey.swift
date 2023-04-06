@@ -25,6 +25,7 @@ public extension UserDefaults {
         case userStatus = "User.statusKey"
         case userName = "User.nameKey"
         case displayName = "User.displayNameKey"
+        case startingAppSection = "MainViewModel.StartingAppSection"
 
         var isRemovable: Bool {
             switch self {
