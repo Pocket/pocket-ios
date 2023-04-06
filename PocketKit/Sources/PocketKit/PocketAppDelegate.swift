@@ -17,8 +17,10 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     private let userDefaults: UserDefaults
     private let refreshCoordinators: [RefreshCoordinator]
     private let appSession: AppSession
-    internal let notificationService: PushNotificationService
     private let user: User
+    private let brazeService: BrazeProtocol
+
+    internal let notificationService: PushNotificationService
 
     convenience override init() {
         self.init(services: Services.shared)
@@ -29,8 +31,10 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         self.userDefaults = services.userDefaults
         self.refreshCoordinators = services.refreshCoordinators
         self.appSession = services.appSession
-        self.notificationService = services.notificationService
         self.user = services.user
+        self.brazeService = services.braze
+
+        self.notificationService = services.notificationService
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -84,7 +88,10 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         )
 
         do {
-            let attempted = try legacyUserMigration.perform()
+            let attempted = try legacyUserMigration.perform(migrationWillBegin: { [weak self] in
+                self?.brazeService.signedInUserDidBeginMigration()
+            })
+
             if attempted {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
