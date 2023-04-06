@@ -299,7 +299,7 @@ class PocketSourceTests: XCTestCase {
         unresolved.savedItem = savedItem
         try space.save()
 
-        source.resolveUnresolvedSavedItems()
+        source.resolveUnresolvedSavedItems(completion: nil)
 
         wait(for: [operationStarted], timeout: 10)
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])

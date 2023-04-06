@@ -1,14 +1,15 @@
-@testable import Sync
+@testable import SharedPocketKit
 
 class MockLastRefresh: LastRefresh {
+
     // MARK: - lastRefresh saves
-    typealias GetLastRefreshSavesImpl = () -> Int?
+    typealias GetLastRefreshSavesImpl = () -> Double?
     private var getLastRefreshSavesImpl: GetLastRefreshSavesImpl?
     func stubGetLastRefreshSaves(impl: @escaping GetLastRefreshSavesImpl) {
         getLastRefreshSavesImpl = impl
     }
 
-    var lastRefreshSaves: Int? {
+    var lastRefreshSaves: Double? {
         guard let impl = getLastRefreshSavesImpl else {
             return nil
         }
@@ -17,13 +18,13 @@ class MockLastRefresh: LastRefresh {
     }
 
     // MARK: - lastRefresh archive
-    typealias GetLastRefreshArchiveImpl = () -> Int?
+    typealias GetLastRefreshArchiveImpl = () -> Double?
     private var getLastRefreshArchiveImpl: GetLastRefreshArchiveImpl?
     func stubGetLastRefreshArchive(impl: @escaping GetLastRefreshArchiveImpl) {
         getLastRefreshArchiveImpl = impl
     }
 
-    var lastRefreshArchive: Int? {
+    var lastRefreshArchive: Double? {
         guard let impl = getLastRefreshArchiveImpl else {
             return nil
         }
@@ -32,14 +33,29 @@ class MockLastRefresh: LastRefresh {
     }
 
     // MARK: - lastRefresh tags
-    typealias GetLastRefreshTagsImpl = () -> Int?
+    typealias GetLastRefreshTagsImpl = () -> Double?
     private var getLastRefreshTagsImpl: GetLastRefreshTagsImpl?
     func stubGetLastRefreshTags(impl: @escaping GetLastRefreshTagsImpl) {
         getLastRefreshTagsImpl = impl
     }
 
-    var lastRefreshTags: Int? {
+    var lastRefreshTags: Double? {
         guard let impl = getLastRefreshTagsImpl else {
+            return nil
+        }
+
+        return impl()
+    }
+
+    // MARK: - lastRefresh home
+    typealias GetLastRefreshHomeImpl = () -> Double?
+    private var getLastRefreshHomeImpl: GetLastRefreshHomeImpl?
+    func stubGetLastRefreshHome(impl: @escaping GetLastRefreshHomeImpl) {
+        getLastRefreshHomeImpl = impl
+    }
+
+    var lastRefreshHome: Double? {
+        guard let impl = getLastRefreshHomeImpl else {
             return nil
         }
 
@@ -106,6 +122,24 @@ class MockLastRefresh: LastRefresh {
     func reset() {
         resetCallCount += 1
         guard let impl = resetImpl else {
+            return
+        }
+
+        impl()
+    }
+
+    // MARK: - refreshed home
+    typealias RefreshedHomeImpl = () -> Void
+    private var refreshedHomeImpl: RefreshedHomeImpl?
+    func stubRefreshedHome(impl: @escaping RefreshedHomeImpl) {
+        refreshedHomeImpl = impl
+    }
+
+    var refreshedHomeCallCount = 0
+    func refreshedHome() {
+        refreshedHomeCallCount += 1
+
+        guard let impl = refreshedHomeImpl else {
             return
         }
 

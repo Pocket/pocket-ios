@@ -20,8 +20,12 @@ struct Services {
     let source: Sync.Source
     let tracker: Tracker
     let sceneTracker: SceneTracker
-    let refreshCoordinator: RefreshCoordinator
+    let savesRefreshCoordinator: SavesRefreshCoordinator
+    let archiveRefreshCoordinator: ArchiveRefreshCoordinator
+    let tagsRefreshCoordinator: TagsRefreshCoordinator
+    let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
+    let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
     let notificationService: PushNotificationService
@@ -31,6 +35,7 @@ struct Services {
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
+    let lastRefresh: LastRefresh
 
     private let persistentContainer: PersistentContainer
 
@@ -42,6 +47,7 @@ struct Services {
 
         persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
 
+        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         urlSession = URLSession.shared
 
         appSession = AppSession(groupID: Keys.shared.groupID)
@@ -71,19 +77,50 @@ struct Services {
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
 
-        refreshCoordinator = RefreshCoordinator(
+        savesRefreshCoordinator = SavesRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
+        archiveRefreshCoordinator = ArchiveRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
+        tagsRefreshCoordinator = TagsRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
             source: source,
-            sessionProvider: appSession
+            lastRefresh: lastRefresh
+        )
+
+        unresolvedSavesRefreshCoordinator = UnresolvedSavesRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
         )
 
         homeRefreshCoordinator = HomeRefreshCoordinator(
             notificationCenter: .default,
-            userDefaults: userDefaults,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
             source: source,
-            sessionProvider: appSession
+            lastRefresh: lastRefresh
         )
+
+        refreshCoordinators = [
+            savesRefreshCoordinator,
+            archiveRefreshCoordinator,
+            tagsRefreshCoordinator,
+            unresolvedSavesRefreshCoordinator,
+            homeRefreshCoordinator
+        ]
 
         imageManager = ImageManager(
             imagesController: source.makeImagesController(),

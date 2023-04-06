@@ -81,6 +81,7 @@
         "HomeWebViewTests",
         "PremiumTests",
         "PullToRefreshTests\/test_saves_pullToRefresh_fetchesNewContent()",
+        "ReaderTests",
         "ReaderTests\/test_archivingItem_dismissesReader_andShowsSaves()",
         "ReaderTests\/test_longPressingHyperlink_showsPreview_andMenu()",
         "ReaderTests\/test_moveFromArchiveToSaves_stillShowsReader()",

@@ -84,6 +84,42 @@ extension MockBGTaskScheduler {
     }
 }
 
+// MARK: - cancel
+extension MockBGTaskScheduler {
+    static let cancel = "cancel"
+
+    typealias CancelImpl = (String) -> Void
+
+    struct CancelCall {
+        let identifier: String
+    }
+
+    func stubCancel(impl: @escaping CancelImpl) {
+        implementations[Self.cancel] = impl
+    }
+
+    func cancel(_ identifier: String) {
+        guard let impl = implementations[Self.cancel] as? CancelImpl else {
+            fatalError("\(Self.self).\(#function) is not stubbed")
+        }
+
+        calls[Self.cancel] = (calls[Self.cancel] ?? []) + [
+            CancelCall(identifier: identifier)
+        ]
+
+        impl(identifier)
+    }
+
+    func cancelCall(at index: Int) -> CancelCall? {
+        guard let calls = calls[Self.cancel], calls.count > index,
+              let call = calls[index] as? CancelCall else {
+                    return nil
+        }
+
+        return call
+    }
+}
+
 class MockBGTask: BGTaskProtocol {
     var expirationHandler: (() -> Void)?
 

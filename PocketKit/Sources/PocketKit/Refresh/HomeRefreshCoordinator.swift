@@ -1,53 +1,52 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import UIKit
 import Combine
 import Sync
+import SharedPocketKit
 
-protocol HomeRefreshCoordinatorProtocol {
-    func refresh(isForced: Bool, _ completion: @escaping () -> Void)
-}
+class HomeRefreshCoordinator: RefreshCoordinator {
 
-class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
-    static let dateLastRefreshKey = UserDefaults.Key.dateLastRefresh
+    let taskID: String = "com.mozilla.pocket.refresh.home"
 
-    private let notificationCenter: NotificationCenter
-    private let userDefaults: UserDefaults
+    let refreshInterval: TimeInterval? = 12 * 60 * 60
+
+    let backgroundRequestType: BackgroundRequestType = .refresh
+
+    let notificationCenter: NotificationCenter
+    let taskScheduler: BGTaskSchedulerProtocol
+    let appSession: SharedPocketKit.AppSession
+    var subscriptions: [AnyCancellable] = []
+    let lastRefresh: LastRefresh
+
     private let source: Source
-    private let minimumRefreshInterval: TimeInterval
-    private var subscriptions: [AnyCancellable] = []
-    private var isRefreshing: Bool = false
-    private var sessionProvider: SessionProvider
+    var isRefreshing: Bool = false
 
-    init(notificationCenter: NotificationCenter, userDefaults: UserDefaults, source: Source, minimumRefreshInterval: TimeInterval = 12 * 60 * 60, sessionProvider: SessionProvider) {
-        self.userDefaults = userDefaults
+    init(notificationCenter: NotificationCenter, taskScheduler: BGTaskSchedulerProtocol, appSession: AppSession, source: Source, lastRefresh: LastRefresh) {
         self.notificationCenter = notificationCenter
-        self.minimumRefreshInterval = minimumRefreshInterval
+        self.taskScheduler = taskScheduler
+        self.appSession = appSession
         self.source = source
-        self.sessionProvider = sessionProvider
-
-        self.notificationCenter.publisher(for: UIScene.willEnterForegroundNotification, object: nil).sink { [weak self] _ in
-            self?.refresh { }
-        }.store(in: &subscriptions)
+        self.lastRefresh = lastRefresh
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         Log.debug("Refresh home called, isForced: \(String(describing: isForced))")
-        guard (sessionProvider.session) != nil else {
-            Log.info("Not refreshing home because no active session")
-            return
-        }
 
         if shouldRefresh(isForced: isForced), !isRefreshing {
             Task { [weak self] in
                 guard let self else {
-                    Log.capture(message: "Home refresh task - self is nil")
+                    Log.captureNilWeakSelf()
+                    completion()
                     return
                 }
-
                 do {
                     self.isRefreshing = true
                     try await self.source.fetchSlateLineup(SyncConstants.Home.slateLineupIdentifier)
-                    self.userDefaults.setValue(Date(), forKey: Self.dateLastRefreshKey)
+                    self.lastRefresh.refreshedHome()
                     Log.breadcrumb(category: "refresh", level: .info, message: "Home Refresh Occur")
                 } catch {
                     Log.capture(error: error)
@@ -57,18 +56,22 @@ class HomeRefreshCoordinator: HomeRefreshCoordinatorProtocol {
             }
         } else if isRefreshing {
             Log.debug("Already refreshing Home, not going to add to the queue")
+            completion()
         } else {
             Log.debug("Not refreshing Home, to early to ask for new data")
+            completion()
         }
     }
 
+    /// Determines if Home is allowed to refresh or not
+    /// - Parameter isForced: True when a user manually asked for a refresh
+    /// - Returns: Whether or not Home should refresh
     private func shouldRefresh(isForced: Bool = false) -> Bool {
-        guard let lastActiveTimestamp = userDefaults.object(forKey: Self.dateLastRefreshKey) as? Date else {
+        guard let lastRefreshHome = lastRefresh.lastRefreshHome  else {
             return true
         }
+        let timeSinceLastRefresh = Date().timeIntervalSince(Date(timeIntervalSince1970: lastRefreshHome))
 
-        let timeSinceLastRefresh = Date().timeIntervalSince(lastActiveTimestamp)
-
-        return timeSinceLastRefresh >= minimumRefreshInterval || isForced
+        return timeSinceLastRefresh >= refreshInterval! || isForced
     }
 }

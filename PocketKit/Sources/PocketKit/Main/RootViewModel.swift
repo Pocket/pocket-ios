@@ -40,13 +40,6 @@ public class RootViewModel: ObservableObject {
             for: .userLoggedIn
         ).sink { [weak self] notification in
             self?.handleSession(session: notification.object as? SharedPocketKit.Session)
-            guard (notification.object as? SharedPocketKit.Session) != nil else {
-                return
-            }
-            // Call refresh on login of the app.
-            source.refreshSaves()
-            source.refreshArchive()
-            source.refreshTags()
         }.store(in: &subscriptions)
 
         // Register for logout notifications

@@ -9,6 +9,9 @@ import PocketGraph
 import SharedPocketKit
 import CoreData
 
+/// Note: This class should only be used to fetch tags on login of a user or if the use does a manual pull to refresh.
+/// After initial login, requesting saves/archives via the updatedSince filter will pull in all new/changed tags associated with any save.
+/// We can not filter on tags updatedSince explicitly because in the server database, tags are not a real entity at the moment and need database modeling changes to support this.
 class FetchTags: SyncOperation {
 
     private let apollo: ApolloClientProtocol
@@ -37,17 +40,7 @@ class FetchTags: SyncOperation {
         self.persistentTask = persistentTask
 
         do {
-            if lastRefresh.lastRefreshSaves != nil {
-                guard let lastRefreshTime = lastRefresh.lastRefreshTags, Date().timeIntervalSince1970 - Double(lastRefreshTime) > SyncConstants.Tags.timeMustPass else {
-                    Log.info("Not refreshing tags from server, last refresh is not above tolerance of \(SyncConstants.Tags.timeMustPass) seconds")
-                    // Future TODO: We should have a new result called too soon that the ui can act on.
-                    // However many states may not come from a user, IE. Instant Sync, Persistent Tasks that never finished, Retries
-                    return .success
-                }
-            }
-
             try await fetchTags()
-            lastRefresh.refreshedTags()
             return .success
         } catch {
             switch error {

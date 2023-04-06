@@ -10,6 +10,9 @@ import SharedPocketKit
 class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
     var space: Space!
+    var refreshCoordinator: RefreshCoordinator!
+    var appSession: AppSession!
+
     var tracker: MockTracker!
     var itemsController: FetchedSavedItemsController!
     var listOptions: ListOptions!
@@ -22,6 +25,9 @@ class SavedItemsListViewModelTests: XCTestCase {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        refreshCoordinator = SavesRefreshCoordinator(notificationCenter: .default, taskScheduler: MockBGTaskScheduler(), appSession: appSession, source: source)
         subscriptions = []
         viewType = .saves
         userDefaults = .standard
@@ -75,6 +81,7 @@ class SavedItemsListViewModelTests: XCTestCase {
             listOptions: listOptions ?? self.listOptions,
             notificationCenter: .default,
             user: user ?? self.user,
+            refreshCoordinator: refreshCoordinator,
             userDefaults: userDefaults ?? self.userDefaults
         )
     }

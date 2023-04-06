@@ -117,7 +117,7 @@ class FetchArchive: SyncOperation {
         )
 
         if let updatedSince = lastRefresh.lastRefreshArchive {
-            query.filter = .some(SavedItemsFilter(updatedSince: .some(updatedSince)))
+            query.filter = .some(SavedItemsFilter(updatedSince: .some(Int(updatedSince))))
         } else {
             query.filter = .some(SavedItemsFilter(statuses: .some([.init(.archived)])))
         }
