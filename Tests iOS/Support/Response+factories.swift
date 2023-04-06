@@ -154,6 +154,10 @@ extension Response {
             return Response.archive()
         } else if apiRequest.isToSaveAnItem {
             return Response.saveItem()
+        } else if apiRequest.isForRecommendationDetail(1) {
+            return Response.recommendationDetail(1)
+        } else if apiRequest.isForReplacingSavedItemTags {
+            return Response.savedItemWithTag()
         } else {
             fatalError("Unexpected request")
         }
