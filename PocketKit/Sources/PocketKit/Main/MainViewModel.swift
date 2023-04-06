@@ -48,6 +48,7 @@ class MainViewModel: ObservableObject {
                     notificationCenter: .default,
                     user: Services.shared.user,
                     store: Services.shared.subscriptionStore,
+                    refreshCoordinator: Services.shared.savesRefreshCoordinator,
                     networkPathMonitor: NWPathMonitor(),
                     userDefaults: Services.shared.userDefaults
                 ),
@@ -59,6 +60,7 @@ class MainViewModel: ObservableObject {
                     notificationCenter: .default,
                     user: Services.shared.user,
                     store: Services.shared.subscriptionStore,
+                    refreshCoordinator: Services.shared.archiveRefreshCoordinator,
                     networkPathMonitor: NWPathMonitor(),
                     userDefaults: Services.shared.userDefaults
                 )

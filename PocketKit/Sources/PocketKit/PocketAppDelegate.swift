@@ -15,7 +15,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
     private let source: Source
     private let userDefaults: UserDefaults
-    private let refreshCoordinator: RefreshCoordinator
+    private let refreshCoordinators: [RefreshCoordinator]
     private let appSession: AppSession
     private let user: User
     private let brazeService: BrazeProtocol
@@ -29,7 +29,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     init(services: Services) {
         self.source = services.source
         self.userDefaults = services.userDefaults
-        self.refreshCoordinator = services.refreshCoordinator
+        self.refreshCoordinators = services.refreshCoordinators
         self.appSession = services.appSession
         self.user = services.user
         self.brazeService = services.braze
@@ -72,7 +72,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             )
         }
 
-        self.refreshCoordinator.initialize()
+        self.refreshCoordinators.forEach({$0.initialize()})
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.source.restore()
         }
