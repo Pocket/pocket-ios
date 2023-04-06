@@ -27,11 +27,15 @@ struct ListItem: View {
                 ActionButton(viewModel.shareAction())
                     .sheet(isPresented: $viewModel.presentShareSheet) {
                         if #available(iOS 16.0, *) {
-                            ShareSheetView(activity: PocketItemActivity(url: viewModel.item.url))
+                            // We can use PocketItemActivity.fromSaves for now since the only place
+                            // this SwiftUI view is used is within Tags (from Saves)
+                            ShareSheetView(activity: PocketItemActivity.fromSaves(url: viewModel.item.url))
                                 .presentationDetents([.medium])
                         } else {
                             // For now, iOS 15 will be full screen as weird bug and presentationDetents not available
-                            ShareSheetView(activity: PocketItemActivity(url: viewModel.item.url))
+                            // We can use PocketItemActivity.fromSaves for now since the only place
+                            // this SwiftUI view is used is within Tags (from Saves)
+                            ShareSheetView(activity: PocketItemActivity.fromSaves(url: viewModel.item.url))
                         }
                     }
                 // Instead of using existing code of overflow, we created a new SwiftUI view
