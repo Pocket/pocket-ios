@@ -291,7 +291,7 @@ class SavesTests: XCTestCase {
         listView.itemView(at: 0).wait()
 
         XCTAssertEqual(listView.itemCount, 1)
-        XCTAssertTrue(listView.itemView(at: 0).contains(string: "Item 2"))
+        listView.itemView(at: 0).contains(string: "Item 2")
     }
 
     func test_list_showsSkeletonCellsDuringInitialFetch() {
@@ -347,14 +347,14 @@ class SavesTests: XCTestCase {
         app.sortMenu.sortOption("Oldest saved").wait().tap()
 
         app.saves.itemView(matching: "Item 1").wait()
-        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 2"))
-        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 1"))
+        app.saves.itemView(at: 0).contains(string: "Item 2")
+        app.saves.itemView(at: 1).contains(string: "Item 1")
 
         app.saves.filterButton(for: "Sort/Filter").wait().tap()
         app.sortMenu.sortOption("Newest saved").wait().tap()
 
-        XCTAssertTrue(app.saves.itemView(at: 0).contains(string: "Item 1"))
-        XCTAssertTrue(app.saves.itemView(at: 1).contains(string: "Item 2"))
+        app.saves.itemView(at: 0).contains(string: "Item 1")
+        app.saves.itemView(at: 1).contains(string: "Item 2")
     }
 
     func test_tappingTagLabel_showsTagFilter() {
@@ -364,7 +364,7 @@ class SavesTests: XCTestCase {
         XCTAssertEqual(listView.itemCount, 2)
         let item = listView.itemView(at: 1)
         XCTAssertTrue(item.tagButton.firstMatch.label == "tag 0")
-        XCTAssertTrue(item.contains(string: "+3"))
+        item.contains(string: "+3")
         item.tagButton.firstMatch.tap()
         app.saves.selectedTagChip(for: "tag 0").wait()
     }

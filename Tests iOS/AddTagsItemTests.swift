@@ -51,19 +51,18 @@ class AddTagsItemTests: XCTestCase {
 
     @MainActor
     func test_addTagsToItemFromSaves_savesNewTags() async {
-        app.launch().tabBar.savesButton.wait().tap()
+        app.launch().tabBar.savesButton.tap()
         let itemCell = app.saves.itemView(matching: "Item 1")
-        itemCell.itemActionButton.wait().tap()
-        app.addTagsButton.wait().tap()
-        let addTagsView = app.addTagsView.wait()
+        itemCell.itemActionButton.tap()
+        app.addTagsButton.tap()
+        let addTagsView = app.addTagsView
         addTagsView.clearTagsTextfield()
-        let randomTagName = String(addTagsView.enterRandomTagName())
+        _ = addTagsView.enterRandomTagName()
         server.routes.post("/graphql") { request, _ in
             Response.savedItemWithTag()
         }
         addTagsView.saveButton.tap()
         selectTaggedFilterButton()
-        app.saves.tagsFilterView.wait()
         XCTAssertEqual(app.saves.tagsFilterView.tagCells.count, 7)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
@@ -74,19 +73,19 @@ class AddTagsItemTests: XCTestCase {
 
     @MainActor
     func test_addTagsToItemFromSaves_savesFromExistingTags() async {
-        app.launch().tabBar.savesButton.wait().tap()
+        app.launch().tabBar.savesButton.tap()
         let itemCell = app.saves.itemView(matching: "Item 1")
-        itemCell.itemActionButton.wait().tap()
+        itemCell.itemActionButton.tap()
 
-        app.addTagsButton.wait().tap()
-        let addTagsView = app.addTagsView.wait()
-        addTagsView.wait()
+        app.addTagsButton.tap()
+        let addTagsView = app.addTagsView
 
-        addTagsView.tag(matching: "tag 0").wait().tap()
-        addTagsView.allTagsRow(matching: "tag 0").wait()
+        addTagsView.tag(matching: "tag 0").tap()
+        _ = addTagsView.allTagsRow(matching: "tag 0")
 
-        addTagsView.allTagsRow(matching: "tag 1").wait().tap()
-        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
+        let tag1 = addTagsView.allTagsRow(matching: "tag 1")
+        tag1.tap()
+        waitForDisappearance(of: tag1)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let removeTagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.removeInputTag")
@@ -101,25 +100,25 @@ class AddTagsItemTests: XCTestCase {
 
     @MainActor
     func test_addTagsToItemFromArchive_showsAddTagsView() async {
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
+        app.launch().tabBar.savesButton.tap()
+        app.saves.selectionSwitcher.archiveButton.tap()
 
         let itemCell = app
             .saves
             .itemView(matching: "Archived Item 2")
 
         itemCell
-            .itemActionButton.wait()
+            .itemActionButton
             .tap()
 
         app.addTagsButton.wait().tap()
-        let addTagsView = app.addTagsView.wait()
+        let addTagsView = app.addTagsView
         addTagsView.wait()
         addTagsView.newTagTextField.tap()
         addTagsView.newTagTextField.typeText("Tag 1")
         addTagsView.newTagTextField.typeText("\n")
 
-        addTagsView.tag(matching: "tag 1").wait()
+        addTagsView.tag(matching: "tag 1").verify()
 
         server.routes.post("/graphql") { request, _ in
             Response.savedItemWithTag()
@@ -127,9 +126,9 @@ class AddTagsItemTests: XCTestCase {
 
         addTagsView.saveButton.tap()
 
-        itemCell.itemActionButton.wait().tap()
-        app.addTagsButton.wait().tap()
-        app.addTagsView.wait()
+        itemCell.itemActionButton.tap()
+        app.addTagsButton.tap()
+        app.addTagsView.verify()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags")
@@ -148,7 +147,6 @@ class AddTagsItemTests: XCTestCase {
         app
             .saves
             .itemView(matching: "Item 1")
-            .wait()
             .tap()
 
         app
@@ -157,9 +155,9 @@ class AddTagsItemTests: XCTestCase {
             .moreButton.wait()
             .tap()
 
-        app.addTagsButton.wait().tap()
-        app.addTagsView.wait()
-        app.addTagsView.allTagsView.wait()
+        app.addTagsButton.tap()
+        app.addTagsView.verify()
+        app.addTagsView.allTagsView.verify()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags")
@@ -169,7 +167,7 @@ class AddTagsItemTests: XCTestCase {
 
     @MainActor
     func test_textField_withUserInput_showsFilteredTags() async {
-        app.launch().tabBar.savesButton.wait().tap()
+        app.launch().tabBar.savesButton.tap()
         app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
 
         let itemCell = app
@@ -181,14 +179,14 @@ class AddTagsItemTests: XCTestCase {
             .tap()
 
         app.addTagsButton.wait().tap()
-        let addTagsView = app.addTagsView.wait()
-        addTagsView.wait()
+        let addTagsView = app.addTagsView
+        addTagsView.verify()
         addTagsView.newTagTextField.tap()
         addTagsView.newTagTextField.typeText("F")
 
         addTagsView.allTagsRow(matching: "filter tag 0").wait()
         addTagsView.allTagsRow(matching: "filter tag 1").wait()
-        app.addTagsView.allTagsView.wait()
+        app.addTagsView.allTagsView.verify()
 
 //        Bitrise is failing, but this passes locally, commenting out for now
 //        await snowplowMicro.assertBaselineSnowplowExpectation()

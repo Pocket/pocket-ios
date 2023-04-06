@@ -12,11 +12,11 @@ struct AddTagsViewElement: PocketUIElement {
     }
 
     var saveButton: XCUIElement {
-        element.buttons["save-button"].wait()
+        element.buttons["save-button"]
     }
 
     var newTagTextField: XCUIElement {
-        element.textFields["enter-tag-name"].wait()
+        element.textFields["enter-tag-name"]
     }
 
     var allTagsView: XCUIElement {
@@ -32,11 +32,11 @@ struct AddTagsViewElement: PocketUIElement {
     }
 
     func allTagsRow(matching string: String) -> XCUIElement {
-        return allTagsView.staticTexts[string].wait()
+        return allTagsView.staticTexts[string]
     }
 
     func tag(matching string: String) -> XCUIElement {
-        return element.staticTexts[string].wait()
+        return element.staticTexts[string]
     }
 
     func clearTagsTextfield() {
@@ -44,11 +44,12 @@ struct AddTagsViewElement: PocketUIElement {
         newTagTextField.typeText(XCUIKeyboardKey.delete.rawValue)
     }
 
-    func enterRandomTagName() -> Int {
+    @discardableResult
+    func enterRandomTagName() -> String {
         let randomInt = Int.random(in: 1..<155)
         let tagInt = String(randomInt)
         newTagTextField.typeText(tagInt)
         newTagTextField.typeText("\n")
-        return randomInt
+        return tagInt
     }
 }

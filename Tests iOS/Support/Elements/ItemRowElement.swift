@@ -11,8 +11,8 @@ struct ItemRowElement: PocketUIElement {
         self.element = element
     }
 
-    func contains(string: String) -> Bool {
-        element
+    func contains(string: String) {
+        XCTAssertTrue(element
             .staticTexts
             .matching(NSPredicate(format: "label CONTAINS %@", string))
             // Ignoring the next empty count because of https://github.com/realm/SwiftLint/issues/2012
@@ -20,6 +20,7 @@ struct ItemRowElement: PocketUIElement {
             .firstMatch
             .wait()
             .exists
+        )
     }
 
     var tagButton: XCUIElement {
@@ -28,6 +29,7 @@ struct ItemRowElement: PocketUIElement {
 
     func tap() {
         element
+            .wait()
             .coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.1))
             .tap()
     }

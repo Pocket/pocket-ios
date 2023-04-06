@@ -24,7 +24,7 @@ struct SavesElement: PocketUIElement {
     }
 
     private var collectionView: XCUIElement {
-        element.otherElements["saves"].wait().collectionViews.firstMatch
+        element.otherElements["saves"].wait().collectionViews.firstMatch.wait()
     }
 
     var itemCells: XCUIElementQuery {
