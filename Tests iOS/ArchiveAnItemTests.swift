@@ -33,8 +33,8 @@ class ArchiveAnItemTests: XCTestCase {
             } else if apiRequest.isForTags {
                 return Response.emptyTags()
             } else if apiRequest.isToArchiveAnItem {
+                defer { archiveRequestExpectation.fulfill() }
                 XCTAssertTrue(apiRequest.contains("item-2"))
-                archiveRequestExpectation.fulfill()
                 return Response.archive()
             }
 
