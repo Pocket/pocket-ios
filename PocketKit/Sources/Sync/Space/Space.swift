@@ -213,8 +213,8 @@ extension Space {
 
 // MARK: SavedItem
 extension Space {
-    func fetchSavedItem(byRemoteID remoteID: String) throws -> SavedItem? {
-        return try fetch(Requests.fetchSavedItem(byRemoteID: remoteID)).first
+    func fetchSavedItem(byRemoteID remoteID: String, context: NSManagedObjectContext? = nil) throws -> SavedItem? {
+        return try fetch(Requests.fetchSavedItem(byRemoteID: remoteID), context: context).first
     }
 
     func fetchSavedItem(byRemoteItemID remoteItemID: String) throws -> SavedItem? {
@@ -386,10 +386,11 @@ extension Space {
         }
     }
 
-    func fetchOrCreateTag(byName name: String) -> Tag {
+    func fetchOrCreateTag(byName name: String, context: NSManagedObjectContext? = nil) -> Tag {
+        let context = context ?? backgroundContext
         let fetchRequest = Requests.fetchTag(byName: name)
         fetchRequest.fetchLimit = 1
-        let fetchedTag = (try? fetch(fetchRequest).first) ?? Tag(context: backgroundContext)
+        let fetchedTag = (try? fetch(fetchRequest, context: context).first) ?? Tag(context: context)
         guard fetchedTag.name == nil else { return fetchedTag }
         fetchedTag.name = name
         return fetchedTag
