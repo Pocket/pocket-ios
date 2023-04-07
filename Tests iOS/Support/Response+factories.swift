@@ -72,7 +72,21 @@ extension Response {
     }
 
     static func itemDetail() -> Response {
-        fixture(named: "item-detail")
+        return Response {
+            Status.ok
+            Fixture.load(name: "item-detail")
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
+        }
+    }
+
+    static func archiveItemDetail() -> Response {
+        return Response {
+            Status.ok
+            Fixture.load(name: "archive-item-detail")
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
+        }
     }
 
     static func recommendationDetail(_ number: Int = 1) -> Response {
@@ -139,17 +153,51 @@ extension Response {
 
     static func fallbackResponses(apiRequest: ClientAPIRequest) -> Response {
         if apiRequest.isForSlateLineup {
-            return Response.slateLineup()
+            return .slateLineup()
+        } else if apiRequest.isForSlateDetail(1) {
+            return Response.slateDetail(1)
+        } else if apiRequest.isForSlateDetail(2) {
+            return Response.slateDetail(2)
         } else if apiRequest.isForArchivedContent {
-            return Response.archivedContent()
+            return .archivedContent()
         } else if apiRequest.isForTags {
-            return Response.emptyTags()
+            return .emptyTags()
         } else if apiRequest.isForSavesContent {
-            return Response.saves()
+            return .saves()
         } else if apiRequest.isForDeleteUser {
-            return Response.deleteUser()
+            return .deleteUser()
         } else if apiRequest.isForUserDetails {
-            return Response.userDetails()
+            return .userDetails()
+        } else if apiRequest.isToArchiveAnItem {
+            return .archive()
+        } else if apiRequest.isToSaveAnItem {
+            return .saveItem()
+        } else if apiRequest.isForRecommendationDetail(1) {
+            return .recommendationDetail(1)
+        } else if apiRequest.isForRecommendationDetail(2) {
+            return .recommendationDetail(2)
+        } else if apiRequest.isForRecommendationDetail(3) {
+            return .recommendationDetail(3)
+        } else if apiRequest.isForRecommendationDetail(4) {
+            return .recommendationDetail(4)
+        } else if apiRequest.isForArchivedItemDetail {
+            return .archiveItemDetail()
+        } else if apiRequest.isForItemDetail {
+            return .itemDetail()
+        } else if apiRequest.isForReplacingSavedItemTags {
+            return .savedItemWithTag()
+        } else if apiRequest.isToFavoriteAnItem {
+            return .favorite()
+        } else if apiRequest.isToUnfavoriteAnItem {
+            return .unfavorite()
+        } else if apiRequest.isToDeleteAnItem {
+            return .delete()
+        } else if apiRequest.isForSearch(.all) {
+            return .searchList(.all)
+        } else if apiRequest.isForSearch(.saves) {
+            return .searchList(.saves)
+        } else if apiRequest.isForSearch(.archive) {
+            return .searchList(.archive)
         } else {
             fatalError("Unexpected request")
         }

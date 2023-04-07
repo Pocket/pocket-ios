@@ -47,6 +47,14 @@ class SaveToPocketTests: XCTestCase {
     }
 
     func test_userAddTags_showsConfirmationView() {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isToSaveAnItem {
+                return .savedItemWithTag()
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+
         app.launch()
 
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
@@ -64,16 +72,14 @@ class SaveToPocketTests: XCTestCase {
         addTagsView.wait()
         addTagsView.clearTagsTextfield()
         let randomTagName = String(addTagsView.enterRandomTagName())
-        server.routes.post("/graphql") { request, _ in
-            Response.savedItemWithTag()
-        }
-        addTagsView.saveButton.tap()
+
+        addTagsView.saveButton.wait().tap()
         safari.staticTexts["Hello, world"].wait()
     }
 
     func tapPocketShareMenuIcon() {
         let safariShareMenu = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         let activityView = safariShareMenu.descendants(matching: .other)["ActivityListView"].wait()
-        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
+        activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).wait().tap()
     }
 }

@@ -833,6 +833,8 @@ extension PocketSource {
 
         guard savedItem == nil, let remoteParts, let url = URL(string: remoteParts.url) else {
             Log.breadcrumb(category: "sync", level: .debug, message: "SavedItem found and don't need to create one")
+            // save the space with the updated item data
+            try? space.save()
             return savedItem
         }
 

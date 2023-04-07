@@ -125,12 +125,12 @@ class PremiumTests: XCTestCase {
 
     /// Set user to free
     @MainActor private func configureFreeUser() {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
             if apiRequest.isForSavesContent {
-                return Response.freeUserSaves()
+                return .freeUserSaves()
             }
-            return Response.fallbackResponses(apiRequest: apiRequest)
+            return .fallbackResponses(apiRequest: apiRequest)
         }
     }
 

@@ -19,28 +19,8 @@ class SavesTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
-        }
-
-        server.routes.post("/v3/oauth/authorize") { _, _ in
-            Response(
-                status: .created,
-                headers: [("X-Source", "Pocket")],
-                content: Fixture.data(name: "successful-auth")
-            )
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         server.routes.get("/hello") { _, _ in
@@ -64,14 +44,6 @@ class SavesTests: XCTestCase {
             }
         }
 
-        server.routes.get("/v3/guid") { _, _ in
-            Response(
-                status: .created,
-                headers: [("X-Source", "Pocket")],
-                content: Fixture.data(name: "guid")
-            )
-        }
-
         server.routes.get("/welcome") { _, _ in
             Response {
                 Status.ok
@@ -87,74 +59,19 @@ class SavesTests: XCTestCase {
         app.terminate()
     }
 
-//    func test_1_signingIn_whenSigninIsSuccessful_showsUserList() {
-//        app.launch(arguments: .firstLaunch, environment: .noSession)
-//
-//        let signInView = app.signInView.wait()
-//
-//        signInView.emailField.tap()
-//        app.typeText("test@example.com")
-//        signInView.passwordField.tap()
-//        app.typeText("super-secret-password")
-//        signInView.signInButton.tap()
-//
-//        app.tabBar.savesButton.wait().tap()
-//        let listView = app.savesView.wait()
-//
-//        do {
-//            let item = listView
-//                .itemView(matching: "Item 1")
-//                .wait()
-//
-//            XCTAssertTrue(item.contains(string: "WIRED"))
-//            XCTAssertTrue(item.contains(string: "6 min"))
-//        }
-//
-//        do {
-//            let item = listView
-//                .itemView(matching: "Item 2")
-//                .wait()
-//
-//            XCTAssertTrue(item.contains(string: "wired.com"))
-//        }
-//    }
-//
-//    func test_2_subsequentAppLaunch_displaysCachedContent() {
-//        var promise: EventLoopPromise<Response>?
-//        server.routes.post("/graphql") { request, loop in
-//            let apiRequest = ClientAPIRequest(request)
-//
-//            if apiRequest.isForSlateLineup {
-//                return Response.slateLineup()
-//            } else if apiRequest.isForArchivedContent {
-//                return Response.archivedContent()
-//            } else if apiRequest.isForSavesContent {
-//                promise = loop.makePromise()
-//                return promise!.futureResult
-//            } else {
-//                fatalError("Unexpected request")
-//            }
-//        }
-//
-//        app.launch(
-//            arguments: .preserve,
-//            environment: .noSession
-//        ).tabBar.savesButton.wait().tap()
-//
-//        let listView = app.savesView.wait()
-//        ["Item 1", "Item 2"].forEach { label in
-//            listView.itemView(matching: label).wait()
-//        }
-//        XCTAssertEqual(listView.itemCount, 2)
-//
-//        promise?.succeed(Response.saves("updated-list"))
-//        ["Updated Item 1", "Updated Item 2"].forEach { label in
-//            listView.itemView(matching: label).wait()
-//        }
-//        XCTAssertEqual(listView.itemCount, 2)
-//    }
-
     func test_savingAnItemFromShareExtension_addsItemToList() {
+        let saveExpectation = expectation(description: "Saved an item from the extension")
+        server.routes.post("/graphql") { request, eventLoop -> Response in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isToSaveAnItem {
+                defer { saveExpectation.fulfill() }
+                return .saveItemFromExtension()
+            }
+
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.itemView(at: 0).wait()
 
@@ -168,33 +85,13 @@ class SavesTests: XCTestCase {
 
         let activityView = safari.descendants(matching: .other)["ActivityListView"].wait()
 
-        var promise: EventLoopPromise<Response>?
-        server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isToSaveAnItem {
-                promise = eventLoop.makePromise()
-                return promise!.futureResult
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
-        }
-
         // Sadly this is the only way I could devise to find the Pocket Beta button
         // This will likely be very brittle
         activityView.cells.matching(identifier: "XCElementSnapshotPrivilegedValuePlaceholder").element(boundBy: 1).tap()
         safari.staticTexts["Saved to Pocket"].wait()
 
         app.activate()
-        app.saves.itemView(matching: "http://localhost:8080/new-item").wait()
-
-        promise?.succeed(.saveItemFromExtension())
+        wait(for: [saveExpectation])
         app.saves.itemView(matching: "Item 3").wait()
     }
 
@@ -238,7 +135,7 @@ class SavesTests: XCTestCase {
         for expectedString in expectedContent {
             guard app.readerView.cell(containing: expectedString).isHittable else {
                 app.readerView.element.swipeUp()
-                let cell = app.readerView.cell(containing: expectedString)
+                let cell = app.readerView.cell(containing: expectedString).wait()
                 app.readerView.scrollCellToTop(cell)
                 XCTAssertTrue(cell.exists)
                 return
@@ -269,20 +166,12 @@ class SavesTests: XCTestCase {
     }
 
     func test_list_excludesArchivedContent() {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves("list-with-archived-item")
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+            if apiRequest.isForSavesContent {
+                return .saves("list-with-archived-item")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().tabBar.savesButton.wait().tap()
@@ -296,43 +185,53 @@ class SavesTests: XCTestCase {
 
     func test_list_showsSkeletonCellsDuringInitialFetch() {
         continueAfterFailure = true
-        var promises: [EventLoopPromise<Response>] = []
+        var savesCalls = 0
+        let saves1Expectation = expectation(description: "saves page 1")
+        let saves2Expectation = expectation(description: "saves page 2")
+        var save1Promise: EventLoopPromise<Response>?
+        var save2Promise: EventLoopPromise<Response>?
 
-        server.routes.post("/graphql") { request, eventLoop in
+        server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
             let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                let promise = eventLoop.makePromise(of: Response.self)
-                promises.append(promise)
-                return promise.futureResult
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+            if apiRequest.isForSavesContent {
+                defer { savesCalls += 1 }
+                switch savesCalls {
+                case 0:
+                    defer { saves1Expectation.fulfill() }
+                    save1Promise = eventLoop.makePromise()
+                    return save1Promise!.futureResult
+                default:
+                    defer { saves2Expectation.fulfill() }
+                    save2Promise = eventLoop.makePromise()
+                    return save2Promise!.futureResult
+                }
             }
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().tabBar.savesButton.wait().tap()
 
         let listView = app.saves.wait()
+        listView.skeletonCell(at: 0).wait()
+        listView.skeletonCell(at: 1).wait()
+        listView.skeletonCell(at: 2).wait()
+        listView.skeletonCell(at: 3).wait()
         XCTAssertEqual(listView.itemCount, 0)
         XCTAssertEqual(listView.skeletonCellCount, 4)
-        promises[0].completeWith(.success(Response.saves("saves-loading-page-1")))
-        //            These conditionals try to fix the flakey test failures by reloading saves
-        if listView.itemCount != 2 {
-            promises[0].completeWith(.success(Response.saves("saves-loading-page-1")))
-        }
+        save1Promise!.completeWith(.success(.saves("saves-loading-page-1")))
+        wait(for: [saves1Expectation])
+
+        listView.itemView(at: 0).wait()
+        listView.itemView(at: 1).wait()
+        listView.skeletonCell(at: 0).wait()
         XCTAssertEqual(listView.itemCount, 2)
         XCTAssertEqual(listView.skeletonCellCount, 1)
-        promises[1].completeWith(.success(Response.saves("saves-loading-page-2")))
+        save2Promise!.completeWith(.success(.saves("saves-loading-page-2")))
+        wait(for: [saves2Expectation])
 
-        if listView.itemCount != 3 {
-            promises[1].completeWith(.success(Response.saves("saves-loading-page-2")))
-        }
+        listView.itemView(at: 0).wait()
+        listView.itemView(at: 1).wait()
+        listView.itemView(at: 2).wait()
         XCTAssertEqual(listView.itemCount, 3)
         XCTAssertEqual(listView.skeletonCellCount, 0)
     }
@@ -386,20 +285,13 @@ extension SavesTests {
     }
 
     func test_list_showsWebView(at index: Int) {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves("list-for-web-view")
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+            if apiRequest.isForSavesContent {
+                return .saves("list-for-web-view")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().tabBar.savesButton.wait().tap()
@@ -413,24 +305,17 @@ extension SavesTests {
         app
             .webReaderView
             .staticText(matching: "Hello, world")
-            .wait(timeout: 10)
+            .wait()
     }
 
     func test_webview_includesCustomItemActions() {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves("list-for-web-view-actions")
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
+           if apiRequest.isForSavesContent {
+               return .saves("list-for-web-view-actions")
+           }
+           return .fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().tabBar.savesButton.wait().tap()
@@ -444,24 +329,24 @@ extension SavesTests {
         app
             .webReaderView
             .staticText(matching: "Hello, world")
-            .wait(timeout: 10)
+            .wait()
 
         app.shareButton.tap()
 
         app
             .readerActionWebActivity
             .activityOption("Archive")
-            .wait(timeout: 5.0)
+            .wait()
 
         app
             .readerActionWebActivity
             .activityOption("Delete")
-            .wait(timeout: 5.0)
+            .wait()
 
         app
             .readerActionWebActivity
             .activityOption("Favorite")
-            .wait(timeout: 5.0)
+            .wait()
     }
 
     func test_webview_validateCustomItemActions_whenNavigateToAnotherPage() {
@@ -470,16 +355,17 @@ extension SavesTests {
         app
             .webReaderView
             .staticText(matching: "Hello, world")
-            .wait(timeout: 10)
+            .wait()
             .tap()
 
         app
             .webReaderView
             .staticText(matching: "Welcome")
-            .wait(timeout: 10)
+            .wait()
 
         app
             .shareButton
+            .wait()
             .tap()
 
         waitForDisappearance(

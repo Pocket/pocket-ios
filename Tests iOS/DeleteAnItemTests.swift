@@ -16,25 +16,7 @@ class DeleteAnItemTests: XCTestCase {
         app = PocketAppElement(app: uiApp)
 
         server = Application()
-        server.routes.post("/graphql") { request, _ -> Response in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return .slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return .saves()
-            } else if apiRequest.isForArchivedContent {
-                return .archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
-        }
-
         try server.start()
-
-        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -43,34 +25,48 @@ class DeleteAnItemTests: XCTestCase {
     }
 
     func test_deletingAnItemFromList_removesItFromList_andSyncsWithServer() {
+        let deletionExpectation = expectation(description: "A delete request to the server")
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isToDeleteAnItem {
+                defer { deletionExpectation.fulfill() }
+                XCTAssertTrue(apiRequest.contains("item-2"))
+                return .delete()
+            }
+
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+        app.launch()
+
         app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
             .saves
-            .itemView(matching: "Item 2")
+            .itemView(matching: "Item 2").wait()
 
         itemCell
             .itemActionButton.wait()
             .tap()
 
-        let expectRequest = expectation(description: "A request to the server")
-        server.routes.post("/graphql") { request, loop in
-            defer { expectRequest.fulfill() }
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertFalse(apiRequest.isEmpty)
-            XCTAssertTrue(apiRequest.isToDeleteAnItem)
-            XCTAssertTrue(apiRequest.contains("item-2"))
-
-            return Response.delete()
-        }
-
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
-        wait(for: [expectRequest], timeout: 10)
+        wait(for: [deletionExpectation], timeout: 10)
         waitForDisappearance(of: itemCell)
     }
 
     func test_deletingAnItemFromReader_deletesItem_andPopsBackToList() {
+        let deletionExpectation = expectation(description: "A delete request to the server")
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isToDeleteAnItem {
+                defer { deletionExpectation.fulfill() }
+                XCTAssertTrue(apiRequest.contains("item-2"))
+                return Response.delete()
+            }
+
+            return Response.fallbackResponses(apiRequest: apiRequest)
+        }
+        app.launch()
         app.tabBar.savesButton.wait().tap()
 
         let itemCell = app
@@ -80,64 +76,45 @@ class DeleteAnItemTests: XCTestCase {
 
         itemCell.tap()
 
-        let expectRequest = expectation(description: "A request to the server")
-        server.routes.post("/graphql") { request, loop in
-            defer { expectRequest.fulfill() }
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertFalse(apiRequest.isEmpty)
-            XCTAssertTrue(apiRequest.isToDeleteAnItem)
-            XCTAssertTrue(apiRequest.contains("item-2"))
-
-            return Response.delete()
-        }
-
         app
             .readerView
+            .wait()
             .readerToolbar
+            .wait()
             .moreButton
             .wait()
             .tap()
 
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
-        wait(for: [expectRequest], timeout: 10)
+        wait(for: [deletionExpectation], timeout: 10)
 
         app.saves.wait()
         waitForDisappearance(of: itemCell)
     }
 
     func test_deletingAnItem_fromArchive_removesItFromList_andSyncsWithServer() {
-        app.tabBar.savesButton.wait().tap()
-        app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
-        let cell = app.saves.itemView(matching: "Archived Item 1")
-
-        let receivedDeleteRequest = expectation(description: "receivedDeleteRequest")
+        let deletionExpectation = expectation(description: "A delete request to the server")
         server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return .slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return .saves()
-            } else if apiRequest.isForArchivedContent {
-                return .archivedContent()
-            } else if apiRequest.isToDeleteAnItem {
-                receivedDeleteRequest.fulfill()
-                XCTAssertFalse(apiRequest.isEmpty)
-                XCTAssertTrue(apiRequest.isToDeleteAnItem)
+            if apiRequest.isToDeleteAnItem {
+                defer { deletionExpectation.fulfill() }
                 XCTAssertTrue(apiRequest.contains("archived-item-1"))
-
                 return .delete()
-            } else {
-                fatalError("Unexpected request")
             }
+
+            return .fallbackResponses(apiRequest: apiRequest)
         }
+        app.launch()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
+        let cell = app.saves.itemView(matching: "Archived Item 1").wait()
 
         cell.itemActionButton.wait().tap()
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
 
-        wait(for: [receivedDeleteRequest], timeout: 10)
+        wait(for: [deletionExpectation], timeout: 10)
         waitForDisappearance(of: cell)
     }
 }

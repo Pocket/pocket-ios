@@ -16,26 +16,8 @@ class EmptyStateTests: XCTestCase {
         app = PocketAppElement(app: uiApp)
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToUnfavoriteAnItem {
-                return Response.unfavorite()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()
@@ -50,56 +32,55 @@ class EmptyStateTests: XCTestCase {
     func testSavesAndArchive_showsEmptyStateView() {
         app.tabBar.savesButton.wait().tap()
 
-        XCTAssertEqual(app.saves.wait().itemCells.count, 2)
-
+        app.saves.wait()
         do {
-            let itemCell2 = app.saves.itemView(matching: "Item 2")
-            let itemCell1 = app.saves.itemView(matching: "Item 1")
+            let itemCell2 = app.saves.itemView(matching: "Item 2").wait()
+            let itemCell1 = app.saves.itemView(matching: "Item 1").wait()
+            XCTAssertEqual(app.saves.wait().itemCells.count, 2)
 
             swipeItemToArchive(with: itemCell1)
             swipeItemToArchive(with: itemCell2)
         }
 
+        app.saves.emptyStateView(for: "saves-empty-state").wait()
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
-        XCTAssertTrue(app.saves.emptyStateView(for: "saves-empty-state").exists)
 
         app.saves.selectionSwitcher.archiveButton.wait().tap()
-        XCTAssertEqual(app.saves.wait().itemCells.count, 4)
 
         do {
-            let itemCell1 = app.saves.itemView(matching: "Item 2")
-            let itemCell2 = app.saves.itemView(matching: "Item 1")
-            let itemCell3 = app.saves.itemView(matching: "Archived Item 2")
-            let itemCell4 = app.saves.itemView(matching: "Archived Item 1")
-
+            let itemCell1 = app.saves.itemView(matching: "Item 2").wait()
+            let itemCell2 = app.saves.itemView(matching: "Item 1").wait()
+            let itemCell3 = app.saves.itemView(matching: "Archived Item 2").wait()
+            let itemCell4 = app.saves.itemView(matching: "Archived Item 1").wait()
+            XCTAssertEqual(app.saves.wait().itemCells.count, 4)
             swipeItemToSaves(with: itemCell1)
             swipeItemToSaves(with: itemCell2)
             swipeItemToSaves(with: itemCell3)
             swipeItemToSaves(with: itemCell4)
         }
 
+        app.saves.emptyStateView(for: "archive-empty-state").wait()
         XCTAssertEqual(app.saves.wait().itemCells.count, 0)
-        XCTAssertTrue(app.saves.emptyStateView(for: "archive-empty-state").exists)
     }
 
     func testFavorites_showsEmptyStateView() {
         app.tabBar.savesButton.wait().tap()
-        app.saves.filterButton(for: "Favorites").tap()
-        XCTAssertTrue(app.saves.emptyStateView(for: "favorites-empty-state").exists)
+        app.saves.filterButton(for: "Favorites").wait().tap()
+        app.saves.emptyStateView(for: "favorites-empty-state").wait()
 
         app.saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
         app.saves.itemView(at: 0).favoriteButton.tap()
 
-        XCTAssertTrue(app.saves.emptyStateView(for: "favorites-empty-state").exists)
+        app.saves.emptyStateView(for: "favorites-empty-state").wait()
     }
 
     func testTags_showsEmptyStateView() {
         app.tabBar.savesButton.wait().tap()
-        app.saves.filterButton(for: "Tagged").tap()
+        app.saves.filterButton(for: "Tagged").wait().tap()
         app.saves.tagsFilterView.tag(matching: "not tagged").tap()
-        XCTAssertTrue(app.saves.emptyStateView(for: "tags-empty-state").exists)
+        app.saves.emptyStateView(for: "tags-empty-state").wait()
     }
 
     private func swipeItemToArchive(with itemCell: ItemRowElement) {

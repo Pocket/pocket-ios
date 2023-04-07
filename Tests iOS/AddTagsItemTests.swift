@@ -19,22 +19,8 @@ class AddTagsItemTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForRecommendationDetail(1) {
-                return Response.recommendationDetail(1)
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()
@@ -58,9 +44,6 @@ class AddTagsItemTests: XCTestCase {
         let addTagsView = app.addTagsView.wait()
         addTagsView.clearTagsTextfield()
         let randomTagName = String(addTagsView.enterRandomTagName())
-        server.routes.post("/graphql") { request, _ in
-            Response.savedItemWithTag()
-        }
         addTagsView.saveButton.tap()
         selectTaggedFilterButton()
         app.saves.tagsFilterView.wait()
@@ -89,14 +72,16 @@ class AddTagsItemTests: XCTestCase {
         waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let removeTagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.removeInputTag")
-        removeTagEvent!.getUIContext()!.assertHas(type: "button")
-        removeTagEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
-        let addTagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.addTag")
-        addTagEvent!.getUIContext()!.assertHas(type: "button")
-        addTagEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        let events = await [snowplowMicro.getFirstEvent(with: "global-nav.addTags.removeInputTag"), snowplowMicro.getFirstEvent(with: "global-nav.addTags.addTag")]
+
+        let removeTagEvent = events[0]!
+        removeTagEvent.getUIContext()!.assertHas(type: "button")
+        removeTagEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+
+        let addTagEvent = events[1]!
+        addTagEvent.getUIContext()!.assertHas(type: "button")
+        addTagEvent.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
     }
 
     @MainActor
@@ -121,10 +106,6 @@ class AddTagsItemTests: XCTestCase {
 
         addTagsView.tag(matching: "tag 1").wait()
 
-        server.routes.post("/graphql") { request, _ in
-            Response.savedItemWithTag()
-        }
-
         addTagsView.saveButton.tap()
 
         itemCell.itemActionButton.wait().tap()
@@ -132,13 +113,16 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsView.wait()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
-        let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags")
-        tagEvent!.getUIContext()!.assertHas(type: "screen")
-        tagEvent!.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
 
-        let tagEvent2 = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.userEntersText")
-        tagEvent2!.getUIContext()!.assertHas(type: "dialog")
-        tagEvent2!.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
+        let events = await [snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags"), snowplowMicro.getFirstEvent(with: "global-nav.addTags.userEntersText")]
+
+        let tagEvent = events[0]!
+        tagEvent.getUIContext()!.assertHas(type: "screen")
+        tagEvent.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
+
+        let tagEvent2 = events[1]!
+        tagEvent2.getUIContext()!.assertHas(type: "dialog")
+        tagEvent2.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
     }
 
     @MainActor
