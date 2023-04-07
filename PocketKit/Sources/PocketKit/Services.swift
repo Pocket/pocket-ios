@@ -25,6 +25,7 @@ struct Services {
     let tagsRefreshCoordinator: TagsRefreshCoordinator
     let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
+    let userRefreshCoordinator: UserRefreshCoordinator
     let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
@@ -114,12 +115,20 @@ struct Services {
             lastRefresh: lastRefresh
         )
 
+        userRefreshCoordinator = UserRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
         refreshCoordinators = [
             savesRefreshCoordinator,
             archiveRefreshCoordinator,
             tagsRefreshCoordinator,
             unresolvedSavesRefreshCoordinator,
-            homeRefreshCoordinator
+            homeRefreshCoordinator,
+            userRefreshCoordinator
         ]
 
         imageManager = ImageManager(
