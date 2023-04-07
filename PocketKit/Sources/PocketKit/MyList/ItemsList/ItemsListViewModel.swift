@@ -106,6 +106,7 @@ protocol ItemsListViewModel: AnyObject {
     func fetch()
     func refresh(_ completion: (() -> Void)?)
 
+    func preview(for cell: ItemsListCell<ItemIdentifier>) -> (ReadableViewModel, Bool)?
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter?
     func presenter(for itemID: ItemIdentifier) -> ItemsListItemPresenter?
     func filterButton(with id: ItemsListFilter) -> TopicChipPresenter

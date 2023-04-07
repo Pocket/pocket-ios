@@ -4,6 +4,7 @@ import CoreData
 import Combine
 import Kingfisher
 import Textile
+import SafariServices
 
 class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     private let model: ViewModel
@@ -315,6 +316,25 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
 
     func collectionView(_ collectionView: UICollectionView, prefetchItemsAt indexPaths: [IndexPath]) {
         model.prefetch(itemsAt: indexPaths)
+    }
+
+    func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+
+        guard let item = dataSource.itemIdentifier(for: indexPath), let (viewModel, showInWebView) = model.preview(for: item) else {
+            return nil
+        }
+
+        return UIContextMenuConfiguration {
+            if showInWebView {
+                return SFSafariViewController(url: viewModel.url!)
+            } else {
+                return ReadableViewController(readable: viewModel, readerSettings: ReaderSettings(userDefaults: .standard))
+            }
+        } actionProvider: { _ in
+            return UIMenu(children: [
+                UIAction(title: "Edit") { _ in }
+            ])
+        }
     }
 }
 
