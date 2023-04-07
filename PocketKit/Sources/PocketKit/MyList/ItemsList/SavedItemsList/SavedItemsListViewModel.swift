@@ -5,6 +5,7 @@ import Combine
 import UIKit
 import Localization
 import SharedPocketKit
+import Textile
 
 public enum SavesViewType {
     case saves
@@ -293,6 +294,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
+        Haptics.overflowTap()
         guard let item = bareItem(with: objectID) else {
             return []
         }
@@ -314,6 +316,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func trackOverflow(for objectID: NSManagedObjectID) -> UIAction? {
+        Haptics.overflowTap()
         guard let item = bareItem(with: objectID) else {
             return nil
         }
