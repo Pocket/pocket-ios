@@ -189,7 +189,7 @@ class ReaderTests: XCTestCase {
     @MainActor
     func test_tappingUnsupportedElementButton_showsSafari() async {
         launchApp_andOpenItem()
-        app.readerView.unsupportedElementOpenButton.tap()
+        app.readerView.unsupportedElementOpenButton.wait().tap()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let impressionEvent = await snowplowMicro.getFirstEvent(with: "reader.unsupportedContent")
@@ -206,8 +206,8 @@ class ReaderTests: XCTestCase {
     func test_tappingDeleteNo_dismissesDeleteConfirmation() {
         launchApp_andOpenItem()
         openReaderOverflowMenu()
-        app.readerView.deleteButton.tap()
-        app.readerView.deleteNoButton.tap()
+        app.readerView.wait().deleteButton.wait().tap()
+        app.readerView.wait().deleteNoButton.wait().tap()
         XCTAssertTrue(app.readerView.exists)
     }
 
@@ -228,7 +228,7 @@ class ReaderTests: XCTestCase {
             }
         }
 
-        app.launch().tabBar.savesButton.wait().tap()
+        app.launch().tabBar.wait().savesButton.wait().tap()
 
         app
             .saves
@@ -243,37 +243,37 @@ class ReaderTests: XCTestCase {
     }
 
     func validateSafariOpens() {
-        XCTAssertTrue(app.readerView.safariDoneButton.wait().exists)
+        XCTAssertTrue(app.readerView.wait().safariDoneButton.wait().exists)
     }
 
     func openReaderOverflowMenu() {
-        app.readerView.overflowButton.tap()
+        app.readerView.wait().overflowButton.wait().tap()
     }
 
     func openDisplaySettings() {
-        app.readerView.displaySettingsButton.tap()
+        app.readerView.wait().displaySettingsButton.wait().tap()
     }
 
     func openFontMenu() {
-        app.readerView.fontButton.tap()
+        app.readerView.wait().fontButton.wait().tap()
     }
 
     func tapFontSizeIncreaseButton() {
-        app.readerView.fontStepperIncreaseButton.tap()
+        app.readerView.wait().fontStepperIncreaseButton.wait().tap()
     }
 
     func tapFontSizeDecreaseButton() {
-        app.readerView.fontStepperDecreaseButton.tap()
+        app.readerView.wait().fontStepperDecreaseButton.wait().tap()
     }
 
     func tapSafariButton() {
-        app.readerView.safariButton.tap()
+        app.readerView.wait().safariButton.wait().tap()
     }
 
     func launchApp_andOpenItem() {
         app.launch().tabBar.savesButton.wait().tap()
         app
-            .saves
+            .saves.wait()
             .itemView(at: 0)
             .wait()
             .tap()
@@ -283,7 +283,7 @@ class ReaderTests: XCTestCase {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.selectionSwitcher.archiveButton.tap()
         app
-            .saves
+            .saves.wait()
             .itemView(at: 0)
             .wait()
             .tap()

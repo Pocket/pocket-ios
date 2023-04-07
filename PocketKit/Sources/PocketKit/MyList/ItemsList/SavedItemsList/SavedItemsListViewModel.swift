@@ -70,9 +70,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     private let source: Source
+    private let refreshCoordinator: RefreshCoordinator
     private let tracker: Tracker
     private let itemsController: SavedItemsController
     private let user: User
+    private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
 
     private var selectedFilters: Set<ItemsListFilter>
@@ -80,14 +82,16 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, refreshCoordinator: RefreshCoordinator, userDefaults: UserDefaults) {
         self.source = source
+        self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
         self.selectedFilters = [.all]
         self.availableFilters = ItemsListFilter.allCases
         self.viewType = viewType
         self.listOptions = listOptions
         self.user = user
+        self.userDefaults = userDefaults
 
         switch self.viewType {
         case .saves:
@@ -189,11 +193,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func refresh(_ completion: (() -> Void)? = nil) {
-        switch self.viewType {
-        case .saves:
-            source.refreshSaves(completion: completion)
-        case .archive:
-            source.refreshArchive(completion: completion)
+        refreshCoordinator.refresh(isForced: true) {
+            completion?()
         }
 
         source.retryImmediately()
@@ -538,7 +539,8 @@ extension SavedItemsListViewModel {
             source: source,
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
-            user: user
+            user: user,
+            userDefaults: userDefaults
         )
 
         if savedItem.shouldOpenInWebView {

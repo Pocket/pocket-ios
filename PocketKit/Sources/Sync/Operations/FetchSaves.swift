@@ -117,7 +117,7 @@ class FetchSaves: SyncOperation {
         )
 
         if let updatedSince = lastRefresh.lastRefreshSaves {
-            query.savedItemsFilter = .some(SavedItemsFilter(updatedSince: .some(updatedSince)))
+            query.savedItemsFilter = .some(SavedItemsFilter(updatedSince: .some(Int(updatedSince))))
         } else {
             query.savedItemsFilter = .some(SavedItemsFilter(status: .init(.unread)))
         }

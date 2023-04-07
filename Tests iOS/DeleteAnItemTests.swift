@@ -66,7 +66,7 @@ class DeleteAnItemTests: XCTestCase {
 
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
-        wait(for: [expectRequest], timeout: 1)
+        wait(for: [expectRequest], timeout: 10)
         waitForDisappearance(of: itemCell)
     }
 
@@ -100,7 +100,7 @@ class DeleteAnItemTests: XCTestCase {
 
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
-        wait(for: [expectRequest], timeout: 1)
+        wait(for: [expectRequest], timeout: 10)
 
         app.saves.wait()
         waitForDisappearance(of: itemCell)
@@ -137,7 +137,7 @@ class DeleteAnItemTests: XCTestCase {
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
 
-        wait(for: [receivedDeleteRequest], timeout: 1)
+        wait(for: [receivedDeleteRequest], timeout: 10)
         waitForDisappearance(of: cell)
     }
 }

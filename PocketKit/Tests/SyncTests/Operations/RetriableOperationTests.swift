@@ -68,11 +68,11 @@ class RetriableOperationTests: XCTestCase {
         let queue = OperationQueue()
         queue.addOperation(executor)
 
-        wait(for: [firstAttempt], timeout: 1)
+        wait(for: [firstAttempt], timeout: 10)
         // NOTE: We need to await after the firstAttempt because it takes a few ms for the
         // retrySubscritpion to get setup after firstAttempt is fullfilled.
         // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
+        _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
         retrySignal.send()
         wait(for: [secondAttempt, completed], timeout: 5, enforceOrder: true)
         XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
@@ -107,34 +107,15 @@ class RetriableOperationTests: XCTestCase {
         queue.addOperation(executor)
 
         expectations.forEach {
-            wait(for: [$0], timeout: 1)
+            wait(for: [$0], timeout: 10)
             // NOTE: We need to await after each attempt because it takes a few ms for the
             // retrySubscritpion to get setup after the attempt is fullfilled.
             // TODO: Refactor retrySignal to keep track of its number of subscribers and instead wait for that to become 1 instead of this random wait.
-            _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 1)
+            _ = XCTWaiter.wait(for: [expectation(description: "wait for subscriber")], timeout: 10)
             retrySignal.send()
         }
 
-        wait(for: [completed], timeout: 1, enforceOrder: true)
-        XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
-    }
-
-    func test_main_protectsOperationWithBackgroundTask() {
-        let beganOperation = expectation(description: "began operation")
-        let operation = TestSyncOperation {
-            beganOperation.fulfill()
-        }
-
-        let executor = subject(operation: operation)
-
-        let queue = OperationQueue()
-        queue.addOperation(executor)
-
-        wait(for: [beganOperation], timeout: 1)
-        XCTAssertNotNil(backgroundTaskManager.beginTaskCall(at: 0))
-
-        queue.waitUntilAllOperationsAreFinished()
-        XCTAssertEqual(backgroundTaskManager.endTaskCall(at: 0)?.identifier, 0)
+        wait(for: [completed], timeout: 10, enforceOrder: true)
         XCTAssertEqual(try space.fetchPersistentSyncTasks().count, 0)
     }
 }

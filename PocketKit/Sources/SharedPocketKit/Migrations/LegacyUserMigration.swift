@@ -19,7 +19,10 @@ public enum LegacyUserMigrationError: LoggableError {
 }
 
 public class LegacyUserMigration {
-    static let migrationKey = "com.mozilla.pocket.next.migration.legacyUser"
+    static let migrationKey = UserDefaults.Key.legacyUserMigration
+    // These are required for legacy migration as one-offs, and thus, should not be removed
+    // from user defaults (since legacy user defaults are within the current app group)
+    // So, you won't find these defined in UserDefaults.Key
     static let versionKey = "version"
     static let decryptionKey = "kPKTCryptoKey"
 
@@ -43,8 +46,7 @@ public class LegacyUserMigration {
         self.groupID = groupID
     }
 
-    @discardableResult
-    public func perform() throws -> Bool {
+    func decryptUserData() throws -> Data {
         guard let password = currentPassword else {
             throw LegacyUserMigrationError.missingKey
         }
@@ -68,17 +70,29 @@ public class LegacyUserMigration {
             throw LegacyUserMigrationError.missingData
         }
 
-        let legacyStore: LegacyStore
+        return decryptedData
+    }
+
+    private func getLegacyStore(from decryptedData: Data) throws -> LegacyStore {
         do {
-            legacyStore = try JSONDecoder().decode(LegacyStore.self, from: decryptedData)
+            return try JSONDecoder().decode(LegacyStore.self, from: decryptedData)
         } catch {
             throw LegacyUserMigrationError.failedDeserialization(error)
         }
+    }
+
+    @discardableResult
+    public func perform(migrationWillBegin: () -> Void) throws -> Bool {
+
+        let userData = try decryptUserData()
+        let legacyStore = try getLegacyStore(from: userData)
 
         guard isRequired(version: legacyStore.version) else {
             updateUserDefaults()
             return false
         }
+
+        migrationWillBegin()
 
         appSession.currentSession = Session(
             guid: legacyStore.guid,

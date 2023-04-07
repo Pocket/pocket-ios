@@ -15,15 +15,18 @@ struct Services {
     static let shared: Services = { Services() }()
 
     let userDefaults: UserDefaults
-    let firstLaunchDefaults: UserDefaults
     let appSession: AppSession
     let user: User
     let urlSession: URLSessionProtocol
     let source: Sync.Source
     let tracker: Tracker
     let sceneTracker: SceneTracker
-    let refreshCoordinator: RefreshCoordinator
+    let savesRefreshCoordinator: SavesRefreshCoordinator
+    let archiveRefreshCoordinator: ArchiveRefreshCoordinator
+    let tagsRefreshCoordinator: TagsRefreshCoordinator
+    let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
+    let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
     let notificationService: PushNotificationService
@@ -33,17 +36,23 @@ struct Services {
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
+<<<<<<< HEAD
     let listen: Listen
+=======
+    let lastRefresh: LastRefresh
+>>>>>>> f9ea6dfb8138789875c76bc878eed2e632b960cc
 
     private let persistentContainer: PersistentContainer
 
     private init() {
-        userDefaults = .standard
-        firstLaunchDefaults = UserDefaults(
-            suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
-        )!
-        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupID: Keys.shared.groupID)
+        guard let sharedUserDefaults = UserDefaults(suiteName: Keys.shared.groupID) else {
+            fatalError("UserDefaults with suite name \(Keys.shared.groupID) must exist.")
+        }
+        userDefaults = sharedUserDefaults
 
+        persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
+
+        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         urlSession = URLSession.shared
 
         appSession = AppSession(groupID: Keys.shared.groupID)
@@ -73,19 +82,50 @@ struct Services {
 
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
 
-        refreshCoordinator = RefreshCoordinator(
+        savesRefreshCoordinator = SavesRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
+        archiveRefreshCoordinator = ArchiveRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
+        tagsRefreshCoordinator = TagsRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
             source: source,
-            sessionProvider: appSession
+            lastRefresh: lastRefresh
+        )
+
+        unresolvedSavesRefreshCoordinator = UnresolvedSavesRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
         )
 
         homeRefreshCoordinator = HomeRefreshCoordinator(
             notificationCenter: .default,
-            userDefaults: userDefaults,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
             source: source,
-            sessionProvider: appSession
+            lastRefresh: lastRefresh
         )
+
+        refreshCoordinators = [
+            savesRefreshCoordinator,
+            archiveRefreshCoordinator,
+            tagsRefreshCoordinator,
+            unresolvedSavesRefreshCoordinator,
+            homeRefreshCoordinator
+        ]
 
         imageManager = ImageManager(
             imagesController: source.makeImagesController(),

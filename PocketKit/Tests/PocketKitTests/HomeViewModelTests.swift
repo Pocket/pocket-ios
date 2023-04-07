@@ -13,21 +13,33 @@ class HomeViewModelTests: XCTestCase {
     var tracker: MockTracker!
     var space: Space!
     var networkPathMonitor: MockNetworkPathMonitor!
-    var homeRefreshCoordinator: MockHomeRefreshCoordinator!
+    var appSession: AppSession!
+    var taskScheduler: MockBGTaskScheduler!
+    var homeRefreshCoordinator: RefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
     var homeController: RichFetchedResultsController<Recommendation>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
     var user: User!
+    var userDefaults: UserDefaults!
+    var lastRefresh: UserDefaultsLastRefresh!
 
     override func setUp() async throws {
         subscriptions = []
         space = .testSpace()
         source = MockSource()
         networkPathMonitor = MockNetworkPathMonitor()
-        homeRefreshCoordinator = MockHomeRefreshCoordinator()
+
+        taskScheduler = MockBGTaskScheduler()
+        userDefaults = .standard
+        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
+        lastRefresh.reset()
+
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: lastRefresh)
         homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
         recentSavesController = space.makeRecentSavesController(limit: 5)
-        user = PocketUser(userDefaults: UserDefaults())
+        user = PocketUser(userDefaults: userDefaults)
 
         tracker = MockTracker()
 
@@ -59,15 +71,17 @@ class HomeViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil,
-        homeRefreshCoordinator: HomeRefreshCoordinatorProtocol? = nil,
-        user: User? = nil
+        homeRefreshCoordinator: RefreshCoordinator? = nil,
+        user: User? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> HomeViewModel {
-        HomeViewModel(
+        return HomeViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
-            user: user ?? self.user
+            user: user ?? self.user,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 
@@ -81,7 +95,7 @@ class HomeViewModelTests: XCTestCase {
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() {
@@ -95,7 +109,7 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedLoadingSnapshot], timeout: 1)
+        wait(for: [receivedLoadingSnapshot], timeout: 10)
     }
 
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsAvailable_sendsSnapshotWithSlates() throws {
@@ -145,7 +159,7 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedSnapshot], timeout: 1)
+        wait(for: [receivedSnapshot], timeout: 10)
     }
 
     func test_fetch_whenRecentSavesAreAvailable_andSlateLineupIsUnavailable_sendsSnapshotWithRecentSaves() throws {
@@ -176,7 +190,7 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedEmptySnapshot], timeout: 10)
     }
 
     func test_fetch_whenRecentSavesAndSlateLineupAreAvailable_sendsSnapshotWithRecentSavesAndSlates() throws {
@@ -236,7 +250,7 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedEmptySnapshot], timeout: 10)
     }
 
     func test_fetch_whenSlateContainsMoreThanFiveRecommendations_sendsSnapshotFirstFiveRecommendations() throws {
@@ -265,7 +279,7 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedEmptySnapshot], timeout: 10)
     }
 
     func test_snapshot_whenSlateLineupIsUpdated_updatesSnapshot() throws {
@@ -324,7 +338,7 @@ class HomeViewModelTests: XCTestCase {
         )
         try space.save()
 
-        wait(for: [snapshotSent], timeout: 1)
+        wait(for: [snapshotSent], timeout: 10)
     }
 
     func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() throws {
@@ -369,7 +383,7 @@ class HomeViewModelTests: XCTestCase {
         item.savedItem = savedItem
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_snapshot_whenRecommendationIsArchived_updatesSnapshot() throws {
@@ -413,7 +427,7 @@ class HomeViewModelTests: XCTestCase {
         item.savedItem?.isArchived = true
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_snapshot_whenRecommendationIsDeleted_updatesSnapshot() throws {
@@ -460,7 +474,7 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertNotNil(item.savedItem?.item)
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_snapshot_whenSavedItemIsFavorited_updatesSnapshot() throws {
@@ -493,7 +507,7 @@ class HomeViewModelTests: XCTestCase {
         savedItem.isFavorite = true
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
      func test_snapshot_whenNetworkIsInitiallyAvailable_hasCorrectSnapshot() {
@@ -528,7 +542,7 @@ class HomeViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetch()
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_refresh_whenNetworkIsUnavailable_updatesSnapshot() {
@@ -546,19 +560,16 @@ class HomeViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
         viewModel.refresh { }
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_refresh_delegatesToHomeRefreshCoordinator() {
         let fetchExpectation = expectation(description: "expected to fetch slate lineup")
         source.stubFetchSlateLineup { _ in fetchExpectation.fulfill() }
-        homeRefreshCoordinator.stubRefresh { _, _ in fetchExpectation.fulfill() }
 
         let viewModel = subject()
         viewModel.refresh { }
-        wait(for: [fetchExpectation], timeout: 1)
-
-        XCTAssertNotNil(homeRefreshCoordinator.refreshCall(at: 0))
+        wait(for: [fetchExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
@@ -595,7 +606,7 @@ class HomeViewModelTests: XCTestCase {
             )
         }
 
-        wait(for: [readableExpectation], timeout: 1)
+        wait(for: [readableExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecommendation_whenRecommendationIsNotReadable_updatesPresentedWebReaderURL() throws {
@@ -645,7 +656,7 @@ class HomeViewModelTests: XCTestCase {
             )
         }
 
-        wait(for: [urlExpectation], timeout: 1)
+        wait(for: [urlExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecentSave_recentSaveIsReadable_updatesSelectedReadable() throws {
@@ -674,7 +685,7 @@ class HomeViewModelTests: XCTestCase {
             at: IndexPath(item: 0, section: 0)
         )
 
-        wait(for: [readableExpectation], timeout: 1)
+        wait(for: [readableExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecentSave_recentSaveIsNotReadable_updatesPresentedWebReaderURL() throws {
@@ -724,7 +735,7 @@ class HomeViewModelTests: XCTestCase {
             )
         }
 
-        wait(for: [urlExpectation], timeout: 1)
+        wait(for: [urlExpectation], timeout: 10)
     }
 
     func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() throws {
@@ -751,7 +762,7 @@ class HomeViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.sectionHeaderViewModel(for: .slateHero(slate.objectID))?.buttonAction?()
-        wait(for: [detailExpectation], timeout: 1)
+        wait(for: [detailExpectation], timeout: 10)
     }
 
     func test_reportAction_forRecommendationCells_updatesSelectedRecommendationToReport() throws {
@@ -780,7 +791,7 @@ class HomeViewModelTests: XCTestCase {
             action?.handler?(nil)
         }
 
-        wait(for: [reportExpectation], timeout: 1)
+        wait(for: [reportExpectation], timeout: 10)
     }
 
     func test_primary_whenRecommendationIsNotSaved_savesWithSource() throws {

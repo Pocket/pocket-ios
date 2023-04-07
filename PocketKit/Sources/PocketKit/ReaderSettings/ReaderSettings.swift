@@ -7,11 +7,11 @@ import Textile
 import SwiftUI
 
 class ReaderSettings: StylerModifier, ObservableObject {
-    @AppStorage("readerFontSizeAdjustment")
-    var fontSizeAdjustment: Int = 0
+    @AppStorage
+    var fontSizeAdjustment: Int
 
-    @AppStorage("readerFontFamily")
-    var fontFamily: FontDescriptor.Family = .blanco
+    @AppStorage
+    var fontFamily: FontDescriptor.Family
 
     var currentStyling: FontStyling {
         if fontFamily == .graphik {
@@ -19,6 +19,11 @@ class ReaderSettings: StylerModifier, ObservableObject {
         } else {
             return BlancoOSFStyling()
         }
+    }
+
+    init(userDefaults: UserDefaults) {
+        _fontSizeAdjustment = AppStorage(wrappedValue: 0, UserDefaults.Key.readerFontSizeAdjustment, store: userDefaults)
+        _fontFamily = AppStorage(wrappedValue: .blanco, UserDefaults.Key.readerFontSizeAdjustment, store: userDefaults)
     }
 }
 

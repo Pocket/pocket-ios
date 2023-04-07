@@ -8,8 +8,8 @@ import SwiftUI
 import Combine
 
 class SceneTracker {
-    static let dateLastOpenedKey = "SceneTracker.dateLastOpened"
-    static let dateLastBackgroundedKey = "SceneTracker.dateLastBackgrounded"
+    static let dateLastOpenedKey = UserDefaults.Key.dateLastOpened
+    static let dateLastBackgroundedKey = UserDefaults.Key.dateLastBackgrounded
 
     private let tracker: Tracker
     private let userDefaults: UserDefaults
@@ -19,9 +19,11 @@ class SceneTracker {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    @AppStorage private var dateLastOpened: Date?
+    @AppStorage
+    private var dateLastOpened: Date?
 
-    @AppStorage private var dateLastBackgrounded: Date?
+    @AppStorage
+    private var dateLastBackgrounded: Date?
 
     init(tracker: Tracker, userDefaults: UserDefaults, notificationCenter: NotificationCenter = .default) {
         self.tracker = tracker

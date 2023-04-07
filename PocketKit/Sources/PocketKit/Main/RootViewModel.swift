@@ -21,7 +21,7 @@ public class RootViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     public convenience init() {
-        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: .standard)
+        self.init(appSession: Services.shared.appSession, tracker: Services.shared.tracker, source: Services.shared.source, userDefaults: Services.shared.userDefaults)
     }
 
     init(
@@ -40,13 +40,6 @@ public class RootViewModel: ObservableObject {
             for: .userLoggedIn
         ).sink { [weak self] notification in
             self?.handleSession(session: notification.object as? SharedPocketKit.Session)
-            guard (notification.object as? SharedPocketKit.Session) != nil else {
-                return
-            }
-            // Call refresh on login of the app.
-            source.refreshSaves()
-            source.refreshArchive()
-            source.refreshTags()
         }.store(in: &subscriptions)
 
         // Register for logout notifications
@@ -91,7 +84,7 @@ public class RootViewModel: ObservableObject {
     private func tearDownSession() {
         source.clear()
 
-        userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
+        userDefaults.resetKeys()
         tracker.resetPersistentEntities([
             APIUserEntity(consumerKey: Keys.shared.pocketApiConsumerKey)
         ])

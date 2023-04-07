@@ -15,11 +15,12 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
     private let source: Source
     private let userDefaults: UserDefaults
-    private let firstLaunchDefaults: UserDefaults
-    private let refreshCoordinator: RefreshCoordinator
+    private let refreshCoordinators: [RefreshCoordinator]
     private let appSession: AppSession
-    internal let notificationService: PushNotificationService
     private let user: User
+    private let brazeService: BrazeProtocol
+
+    internal let notificationService: PushNotificationService
 
     convenience override init() {
         self.init(services: Services.shared)
@@ -28,11 +29,12 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
     init(services: Services) {
         self.source = services.source
         self.userDefaults = services.userDefaults
-        self.firstLaunchDefaults = services.firstLaunchDefaults
-        self.refreshCoordinator = services.refreshCoordinator
+        self.refreshCoordinators = services.refreshCoordinators
         self.appSession = services.appSession
-        self.notificationService = services.notificationService
         self.user = services.user
+        self.brazeService = services.braze
+
+        self.notificationService = services.notificationService
     }
 
     public func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -43,13 +45,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         }
 
         if CommandLine.arguments.contains("clearUserDefaults") {
-            userDefaults.removePersistentDomain(forName: Bundle.main.bundleIdentifier!)
-        }
-
-        if CommandLine.arguments.contains("clearFirstLaunch") {
-            firstLaunchDefaults.removePersistentDomain(
-                forName: "\(Bundle.main.bundleIdentifier!).first-launch"
-            )
+            userDefaults.resetKeys()
         }
 
         if CommandLine.arguments.contains("clearCoreData") {
@@ -63,7 +59,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         SignOutOnFirstLaunch(
             appSession: appSession,
             user: user,
-            userDefaults: firstLaunchDefaults
+            userDefaults: userDefaults
         ).signOutOnFirstLaunch()
 
         if let guid = ProcessInfo.processInfo.environment["sessionGUID"],
@@ -76,7 +72,7 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             )
         }
 
-        self.refreshCoordinator.initialize()
+        self.refreshCoordinators.forEach({$0.initialize()})
         DispatchQueue.global(qos: .background).async { [weak self] in
             self?.source.restore()
         }
@@ -92,11 +88,14 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         )
 
         do {
-            let attempted = try legacyUserMigration.perform()
+            let attempted = try legacyUserMigration.perform(migrationWillBegin: { [weak self] in
+                self?.brazeService.signedInUserDidBeginMigration()
+            })
+
             if attempted {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
-                LegacyCleanupService(groupID: Keys.shared.groupID).cleanUp()
+                LegacyCleanupService().cleanUp()
             } else {
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }

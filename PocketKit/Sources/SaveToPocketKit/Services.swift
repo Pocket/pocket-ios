@@ -10,7 +10,6 @@ struct Services {
     let appSession: AppSession
     let saveService: PocketSaveService
     let tracker: Tracker
-    let firstLaunchDefaults: UserDefaults
     let userDefaults: UserDefaults
 
     private let persistentContainer: PersistentContainer
@@ -18,10 +17,12 @@ struct Services {
     private init() {
         Log.start(dsn: Keys.shared.sentryDSN)
 
-        firstLaunchDefaults = UserDefaults(
-            suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
-        )!
-        persistentContainer = .init(storage: .shared, userDefaults: firstLaunchDefaults, groupID: Keys.shared.groupdId)
+        guard let sharedUserDefaults = UserDefaults(suiteName: Keys.shared.groupdId) else {
+            fatalError("UserDefaults with suite name \(Keys.shared.groupdId) must exist.")
+        }
+        userDefaults = sharedUserDefaults
+
+        persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupdId)
 
         appSession = AppSession(groupID: Keys.shared.groupdId)
 
@@ -34,7 +35,5 @@ struct Services {
             consumerKey: Keys.shared.pocketApiConsumerKey,
             expiringActivityPerformer: ProcessInfo.processInfo
         )
-
-        userDefaults = .standard
     }
 }

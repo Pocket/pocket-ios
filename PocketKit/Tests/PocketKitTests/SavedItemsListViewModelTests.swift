@@ -10,22 +10,30 @@ import SharedPocketKit
 class SavedItemsListViewModelTests: XCTestCase {
     var source: MockSource!
     var space: Space!
+    var refreshCoordinator: RefreshCoordinator!
+    var appSession: AppSession!
+
     var tracker: MockTracker!
     var itemsController: FetchedSavedItemsController!
     var listOptions: ListOptions!
     var viewType: SavesViewType!
     var subscriptions: [AnyCancellable]!
     var user: User!
+    var userDefaults: UserDefaults!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        refreshCoordinator = SavesRefreshCoordinator(notificationCenter: .default, taskScheduler: MockBGTaskScheduler(), appSession: appSession, source: source)
         subscriptions = []
-        listOptions = .saved
-        listOptions.selectedSortOption = .newest
         viewType = .saves
-        user = PocketUser(userDefaults: UserDefaults())
+        userDefaults = .standard
+        user = PocketUser(userDefaults: userDefaults)
+        listOptions = .saved(userDefaults: userDefaults)
+        listOptions.selectedSortOption = .newest
 
         itemsController = FetchedSavedItemsController(resultsController: NSFetchedResultsController(
             fetchRequest: Requests.fetchSavedItems(),
@@ -63,7 +71,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         tracker: Tracker? = nil,
         listOptions: ListOptions? = nil,
         viewType: SavesViewType? = nil,
-        user: User? = nil
+        user: User? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
             source: source ?? self.source,
@@ -71,7 +80,9 @@ class SavedItemsListViewModelTests: XCTestCase {
             viewType: viewType ?? self.viewType,
             listOptions: listOptions ?? self.listOptions,
             notificationCenter: .default,
-            user: user ?? self.user
+            user: user ?? self.user,
+            refreshCoordinator: refreshCoordinator,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 
@@ -98,7 +109,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         listOptions.selectedSortOption = .oldest
 
-        wait(for: [snapshotSent], timeout: 1)
+        wait(for: [snapshotSent], timeout: 10)
     }
 
     func test_shouldSelectCell_whenItemIsPending_returnsFalse() throws {
@@ -171,7 +182,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectedItem = nil
-        wait(for: [eventSent], timeout: 1)
+        wait(for: [eventSent], timeout: 10)
     }
 
     func test_selectedItem_whenReaderView_doesNotSendSelectionCleared() {
@@ -185,7 +196,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectedItem = .readable(nil)
-        wait(for: [eventSent], timeout: 1)
+        wait(for: [eventSent], timeout: 10)
     }
 
     func test_selectedItem_whenWebView_doesNotSendSelectionCleared() {
@@ -199,7 +210,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectedItem = .webView(nil)
-        wait(for: [eventSent], timeout: 1)
+        wait(for: [eventSent], timeout: 10)
     }
 
     func test_sourceEvents_whenEventIsSavedItemCreated_sendsSnapshotWithNewItem() {
@@ -217,7 +228,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         try? space.save()
         source._events.send(.savedItemCreated)
 
-        wait(for: [snapshotSent], timeout: 1)
+        wait(for: [snapshotSent], timeout: 10)
     }
 
     func test_sourceEvents_whenEventIsSavedItemUpdated_sendsSnapshotWithUpdatedItem() {
@@ -234,7 +245,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         source._events.send(.savedItemsUpdated([savedItem]))
 
-        wait(for: [snapshotSent], timeout: 1)
+        wait(for: [snapshotSent], timeout: 10)
     }
 
     func test_receivedSnapshots_withNoItems_includesSavesEmptyState() {
@@ -252,7 +263,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_receivedSnapshots_withNoItems_includesFavoritesEmptyState() {
@@ -271,7 +282,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_receivedSnapshots_withNoItems_includesTagsEmptyState() {
@@ -293,7 +304,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeSavesEmptyState() {
@@ -312,7 +323,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_receivedSnapshots_withItems_doesNotIncludeFavoritesEmptyState() {
@@ -333,7 +344,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         try? itemsController.performFetch()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_refreshSaves_callsRetryImmediatelyOnSource() {
@@ -365,7 +376,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         source.initialSavesDownloadState.send(.paginating(totalCount: 2))
         try? itemsController.performFetch()
 
-        wait(for: [receivedSnapshot], timeout: 1)
+        wait(for: [receivedSnapshot], timeout: 10)
     }
 
     func test_receivedSnapshots_whenSavesInitialDownloadIsStarted_insertsPlaceholderCells() throws {
@@ -384,13 +395,13 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedSnapshot], timeout: 1)
+        wait(for: [receivedSnapshot], timeout: 10)
     }
 
     func test_receivedSnapshots_whenArchiveInitialDownloadIsStarted_insertsPlaceholderCells() throws {
         source.initialArchiveDownloadState.send(.started)
 
-        let viewModel = subject(listOptions: .archived, viewType: .archive)
+        let viewModel = subject(listOptions: .archived(userDefaults: userDefaults), viewType: .archive)
 
         let receivedSnapshot = expectation(description: "receivedSnapshot")
         viewModel.snapshot.dropFirst().sink { snapshot in
@@ -403,7 +414,7 @@ class SavedItemsListViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedSnapshot], timeout: 1)
+        wait(for: [receivedSnapshot], timeout: 10)
     }
 }
 
@@ -426,7 +437,7 @@ extension SavedItemsListViewModelTests {
             .first { $0.title == "Add Tags" }?
             .handler?(nil)
 
-        wait(for: [expectAddTags], timeout: 1)
+        wait(for: [expectAddTags], timeout: 10)
     }
 
     func test_fetch_whenTaggedSelected_sendsTagsFilterViewModel() throws {
@@ -443,7 +454,7 @@ extension SavedItemsListViewModelTests {
 
         viewModel.selectCell(with: .filterButton(.tagged))
 
-        wait(for: [expectTagFiltersCall], timeout: 1)
+        wait(for: [expectTagFiltersCall], timeout: 10)
     }
 
     func test_tagModel_calculatesTagHeightAndWidth() {

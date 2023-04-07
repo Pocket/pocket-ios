@@ -21,6 +21,7 @@ class MainViewModel: ObservableObject {
     @Published var showBanner: Bool = false
 
     private var subscriptions: Set<AnyCancellable> = []
+    private let userDefaults: UserDefaults
 
     convenience init() {
         self.init(
@@ -43,17 +44,21 @@ class MainViewModel: ObservableObject {
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.saves),
                     viewType: .saves,
-                    listOptions: .saved,
+                    listOptions: .saved(userDefaults: Services.shared.userDefaults),
                     notificationCenter: .default,
-                    user: Services.shared.user
+                    user: Services.shared.user,
+                    refreshCoordinator: Services.shared.savesRefreshCoordinator,
+                    userDefaults: Services.shared.userDefaults
                 ),
                 archivedItemsList: SavedItemsListViewModel(
                     source: Services.shared.source,
                     tracker: Services.shared.tracker.childTracker(hosting: .saves.archive),
                     viewType: .archive,
-                    listOptions: .archived,
+                    listOptions: .archived(userDefaults: Services.shared.userDefaults),
                     notificationCenter: .default,
-                    user: Services.shared.user
+                    user: Services.shared.user,
+                    refreshCoordinator: Services.shared.archiveRefreshCoordinator,
+                    userDefaults: Services.shared.userDefaults
                 )
             ),
             home: HomeViewModel(
@@ -61,7 +66,8 @@ class MainViewModel: ObservableObject {
                 tracker: Services.shared.tracker.childTracker(hosting: .home.screen),
                 networkPathMonitor: NWPathMonitor(),
                 homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
-                user: Services.shared.user
+                user: Services.shared.user,
+                userDefaults: Services.shared.userDefaults
             ),
             account: AccountViewModel(
                 appSession: Services.shared.appSession,
@@ -86,7 +92,8 @@ class MainViewModel: ObservableObject {
                     PremiumStatusViewModel(service: PocketSubscriptionInfoService(client: Services.shared.v3Client), tracker: Services.shared.tracker)
                 }
             ),
-            source: Services.shared.source
+            source: Services.shared.source,
+            userDefaults: Services.shared.userDefaults
         )
     }
 
@@ -94,12 +101,17 @@ class MainViewModel: ObservableObject {
         saves: SavesContainerViewModel,
         home: HomeViewModel,
         account: AccountViewModel,
-        source: Source
+        source: Source,
+        userDefaults: UserDefaults
     ) {
         self.saves = saves
         self.home = home
         self.account = account
         self.source = source
+        self.userDefaults = userDefaults
+
+        self.loadStartingAppSection()
+        self.clearStartingAppSection()
 
         NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification).delay(for: 0.5, scheduler: RunLoop.main).sink { [weak self] _ in
             self?.showSaveFromClipboardBanner()
@@ -107,6 +119,7 @@ class MainViewModel: ObservableObject {
 
         NotificationCenter.default.publisher(for: UIApplication.didEnterBackgroundNotification).sink { [weak self] _ in
             self?.bannerViewModel = nil
+            self?.saveStartingAppSection()
         }.store(in: &subscriptions)
     }
 
@@ -118,6 +131,17 @@ class MainViewModel: ObservableObject {
         case home
         case saves
         case account
+
+        init(from rawValue: String?) {
+            switch rawValue {
+            case AppSection.saves.id:
+                self = .saves
+            case AppSection.account.id:
+                self = .account
+            default:
+                self = .home
+            }
+        }
 
         var id: String {
             switch self {
@@ -179,5 +203,20 @@ class MainViewModel: ObservableObject {
 
         guard let url = url else { return }
         source.save(url: url)
+    }
+
+    // MARK: Tab Restoration
+
+    private func loadStartingAppSection() {
+        let selectedSectionID = userDefaults.string(forKey: UserDefaults.Key.startingAppSection)
+        selectedSection = AppSection(from: selectedSectionID)
+    }
+
+    private func saveStartingAppSection() {
+        userDefaults.setValue(selectedSection.id, forKey: UserDefaults.Key.startingAppSection)
+    }
+
+    private func clearStartingAppSection() {
+        userDefaults.removeObject(forKey: UserDefaults.Key.startingAppSection)
     }
 }

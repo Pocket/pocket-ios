@@ -816,23 +816,26 @@ extension MockSource {
 // MARK: - Resolved unresolved saved items
 extension MockSource {
     static let resolveUnresolvedSavedItems = "resolveUnresolvedSavedItems"
-    typealias ResolveUnresolvedSavedItemsImpl = () -> Void
-    struct ResolveUnresolvedSavedItemsCall { }
+    typealias ResolveUnresolvedSavedItemsImpl = ((() -> Void)?) -> Void
+
+    struct ResolveUnresolvedSavedItemsCall {
+        let completion: (() -> Void)?
+    }
 
     func stubResolveUnresolvedSavedItems(impl: @escaping ResolveUnresolvedSavedItemsImpl) {
         implementations[Self.resolveUnresolvedSavedItems] = impl
     }
 
-    func resolveUnresolvedSavedItems() {
+    func resolveUnresolvedSavedItems(completion: (() -> Void)?) {
         guard let impl = implementations[Self.resolveUnresolvedSavedItems] as? ResolveUnresolvedSavedItemsImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
         calls[Self.resolveUnresolvedSavedItems] = (calls[Self.resolveUnresolvedSavedItems] ?? []) + [
-            ResolveUnresolvedSavedItemsCall()
+            ResolveUnresolvedSavedItemsCall(completion: completion)
         ]
 
-        impl()
+        impl(completion)
     }
 
     func resolveUnresolvedSavedItemsCall(at index: Int) -> ResolveUnresolvedSavedItemsCall? {
@@ -851,12 +854,6 @@ extension MockSource {
     static let fetchSlateLineup = "fetchSlateLineup"
     typealias FetchSlateLineupImpl = (String) -> Void
     struct FetchSlateLineupCall {
-        let identifier: String
-    }
-
-    static let fetchSlate = "fetchSlate"
-    typealias FetchSlateImpl = (String) -> Void
-    struct FetchSlateCall {
         let identifier: String
     }
 
@@ -881,32 +878,6 @@ extension MockSource {
 
         calls[Self.fetchSlateLineup] = (calls[Self.fetchSlateLineup] ?? []) + [
             FetchSlateLineupCall(identifier: identifier)
-        ]
-
-        impl(identifier)
-    }
-
-    func stubFetchSlate(_ impl: @escaping FetchSlateImpl) {
-        implementations[Self.fetchSlate] = impl
-    }
-
-    func fetchSlateCall(at index: Int) -> FetchSlateCall? {
-        guard let calls = calls[Self.fetchSlate],
-              index < calls.count,
-              let call = calls[index] as? FetchSlateCall else {
-                  return nil
-              }
-
-        return call
-    }
-
-    func fetchSlate(_ identifier: String) async throws {
-        guard let impl = implementations[Self.fetchSlate] as? FetchSlateImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        calls[Self.fetchSlate] = (calls[Self.fetchSlate] ?? []) + [
-            FetchSlateCall(identifier: identifier)
         ]
 
         impl(identifier)

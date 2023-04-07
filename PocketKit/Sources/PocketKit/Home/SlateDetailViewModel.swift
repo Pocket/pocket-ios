@@ -27,13 +27,15 @@ class SlateDetailViewModel {
     private let source: Source
     private let tracker: Tracker
     private let user: User
+    private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
 
-    init(slate: Slate, source: Source, tracker: Tracker, user: User) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
         self.user = user
+        self.userDefaults = userDefaults
         self.snapshot = Self.loadingSnapshot()
 
         NotificationCenter.default.publisher(
@@ -54,13 +56,6 @@ class SlateDetailViewModel {
         let snapshot = buildSnapshot()
         guard snapshot.numberOfItems != 0 else { return }
         self.snapshot = snapshot
-    }
-
-    func refresh(_ completion: @escaping () -> Void) {
-        Task {
-            try await source.fetchSlate(slate.remoteID)
-            completion()
-        }
     }
 
     func willDisplay(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
@@ -115,7 +110,8 @@ extension SlateDetailViewModel {
                 source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
                 pasteboard: UIPasteboard.general,
-                user: user
+                user: user,
+                userDefaults: userDefaults
             )
 
             tracker.track(
