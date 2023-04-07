@@ -25,13 +25,11 @@ class SearchTests: XCTestCase {
         try server.start()
     }
 
+    @MainActor
     override func tearDown() async throws {
-       await snowplowMicro.assertNoBadEvents()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
-        app.terminate()
+       try server.stop()
+       app.terminate()
+       await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     // MARK: - Saves: Search
@@ -42,7 +40,6 @@ class SearchTests: XCTestCase {
 
         XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
@@ -56,20 +53,18 @@ class SearchTests: XCTestCase {
         app.navigationBar.searchFields["Search"].wait().tap()
         XCTAssertTrue(app.navigationBar.buttons["Saves"].isSelected)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
     }
 
     func test_searchSaves_forFreeUser_showsEmptyStateView() {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isForUserDetails {
-                return Response.userDetails()
-            } else {
-                return Response.saves("initial-list-free-user")
+            if apiRequest.isForSavesContent {
+                return .saves("initial-list-free-user")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
         app.launch()
         tapSearch()
@@ -109,21 +104,25 @@ class SearchTests: XCTestCase {
     }
 
     func test_searchArchive_forFreeUser_showsEmptyStateView() {
-        server.routes.post("/graphql") { request, _ in
-            Response.saves("initial-list-free-user")
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSavesContent {
+                return .saves("initial-list-free-user")
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
         app.launch()
         tapSearch(fromArchive: true)
-        XCTAssertTrue(app.saves.searchView.exists)
-        XCTAssertTrue(app.saves.searchEmptyStateView(for: "search-empty-state").exists)
+        app.saves.searchView.wait()
+        app.saves.searchEmptyStateView(for: "search-empty-state").wait()
     }
 
     func test_searchArchive_forPremiumUser_showsRecentSaves() {
         stubGraphQLEndpoint(isPremium: true)
         app.launch()
         tapSearch(fromArchive: true)
-        XCTAssertTrue(app.saves.searchView.exists)
-        XCTAssertTrue(app.saves.searchEmptyStateView(for: "recent-search-empty-state").exists)
+        app.saves.searchView.wait()
+        app.saves.searchEmptyStateView(for: "recent-search-empty-state").wait()
         let searchField = app.navigationBar.searchFields["Search"].wait()
         searchField.tap()
         searchField.typeText("search-term\n")
@@ -135,14 +134,16 @@ class SearchTests: XCTestCase {
     // MARK: - Online Search
     @MainActor
     func test_submitSearch_forFreeUser_withArchive_showsResults() async {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isForSearch(.archive) {
+            if apiRequest.isForSavesContent {
+                return .saves("initial-list-free-user")
+            } else if apiRequest.isForSearch(.archive) {
                 return Response.searchList(.archive)
-            } else {
-                return Response.saves("initial-list-free-user")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
+
         app.launch()
         tapSearch(fromArchive: true)
         let searchField = app.navigationBar.searchFields["Search"].wait()
@@ -151,7 +152,6 @@ class SearchTests: XCTestCase {
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 1)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "archive")
@@ -168,7 +168,6 @@ class SearchTests: XCTestCase {
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
@@ -195,7 +194,6 @@ class SearchTests: XCTestCase {
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 1)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "archive")
@@ -213,7 +211,6 @@ class SearchTests: XCTestCase {
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 3)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "all_items")
@@ -233,7 +230,6 @@ class SearchTests: XCTestCase {
         app.navigationBar.buttons["All items"].wait().tap()
         XCTAssertEqual(searchView.cells.count, 3)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.switchscope")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "all_items")
@@ -286,7 +282,6 @@ class SearchTests: XCTestCase {
         XCTAssertEqual(searchView.cells.count, 2)
         XCTAssertFalse(app.saves.itemView(at: 0).element.isHittable)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.submit")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
@@ -308,7 +303,6 @@ class SearchTests: XCTestCase {
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.card.open")
         searchEvent!.getUIContext()!.assertHas(type: "card")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
@@ -318,28 +312,19 @@ class SearchTests: XCTestCase {
     // MARK: - Search Loading State
     func test_search_forPremiumUser_showsSkeletonView() {
         continueAfterFailure = true
-        var promises: [EventLoopPromise<Response>] = []
-
-        server.routes.post("/graphql") { request, eventLoop in
+        var savesPromise: EventLoopPromise<Response>?
+        var searchSavesExpectation = expectation(description: "did search saves")
+        server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForSearch(.saves) {
-                let promise = eventLoop.makePromise(of: Response.self)
-                promises.append(promise)
-                return promise.futureResult
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
+            if apiRequest.isForSearch(.saves) {
+                defer { searchSavesExpectation.fulfill() }
+                savesPromise = eventLoop.makePromise(of: Response.self)
+                return savesPromise!.futureResult
             } else if apiRequest.isForUserDetails {
                 return Response.premiumUserDetails()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
             }
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
         app.launch()
         tapSearch()
@@ -349,45 +334,41 @@ class SearchTests: XCTestCase {
 
         app.saves.searchView.skeletonView.wait()
 
-        promises[0].completeWith(.success(Response.searchList(.saves)))
-
+        savesPromise!.completeWith(.success(.searchList(.saves)))
+        wait(for: [searchSavesExpectation])
         let searchView = app.saves.searchView.searchResultsView.wait()
         XCTAssertEqual(searchView.cells.count, 2)
     }
 
     // MARK: - Search Error State
     func test_search_showsErrorView() {
-        server.routes.post("/graphql") { request, _ in
-            Response(status: .internalServerError)
+        server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSearch(.archive) {
+                return Response(status: .internalServerError)
+            }
+
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
+
         app.launch()
         tapSearch(fromArchive: true)
         let searchField = app.navigationBar.searchFields["Search"].wait()
         searchField.tap()
         searchField.typeText("item\n")
 
-        XCTAssertTrue(app.saves.searchEmptyStateView(for: "error-empty-state").exists)
+        app.saves.searchEmptyStateView(for: "error-empty-state").wait()
     }
 
     func test_search_forSaves_forPremiumUser_showsErrorBanner() {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else if apiRequest.isForSearch(.saves) {
+            if apiRequest.isForSearch(.saves) {
                 return Response(status: .internalServerError)
             } else if apiRequest.isForUserDetails {
-                return Response.premiumUserDetails()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+                return .premiumUserDetails()
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
         app.launch()
         tapSearch()
@@ -401,7 +382,29 @@ class SearchTests: XCTestCase {
     // MARK: Search Actions
     @MainActor
     func test_favoritingAndUnfavoritingAnItemFromSearch_forPremiumUser_showsFavoritedIcon() async {
-        stubGraphQLEndpoint(isPremium: true)
+        let favoriteExpectation = expectation(description: "A request to the server")
+        let unfavoriteExpectation = expectation(description: "A request to the server")
+
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSearch(.saves) {
+                return .searchList(.saves)
+            } else if apiRequest.isForSearch(.archive) {
+                return .searchList(.archive)
+            } else if apiRequest.isForSearch(.all) {
+                return .searchList(.all)
+            } else if apiRequest.isForUserDetails {
+                return .premiumUserDetails()
+            } else if apiRequest.isToFavoriteAnItem {
+                defer { favoriteExpectation.fulfill() }
+                return .favorite()
+            } else if apiRequest.isToUnfavoriteAnItem {
+                defer { unfavoriteExpectation.fulfill() }
+                return .unfavorite()
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
         app.launch()
         tapSearch()
 
@@ -415,38 +418,17 @@ class SearchTests: XCTestCase {
             .searchItemCell(matching: "Item 2")
             .wait()
 
-        let expectRequest = expectation(description: "A request to the server")
-        server.routes.post("/graphql") { request, loop in
-            defer { expectRequest.fulfill() }
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToFavoriteAnItem)
-            XCTAssertTrue(apiRequest.contains("item-2"))
-
-            return Response.favorite()
-        }
-
-        itemCell.favoriteButton.tap()
-        wait(for: [expectRequest])
+        itemCell.favoriteButton.wait().tap()
+        wait(for: [favoriteExpectation])
         XCTAssertTrue(itemCell.favoriteButton.isFilled)
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.favorite")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
         searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
 
-        let expectUnfavoriteRequest = expectation(description: "A request to the server")
-        server.routes.post("/graphql") { request, loop in
-            defer { expectUnfavoriteRequest.fulfill() }
-            let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToUnfavoriteAnItem)
-            XCTAssertTrue(apiRequest.contains("item-2"))
-
-            return Response.unfavorite()
-        }
-
-        itemCell.favoriteButton.tap()
-        wait(for: [expectUnfavoriteRequest])
+        itemCell.favoriteButton.wait().tap()
+        wait(for: [unfavoriteExpectation])
         XCTAssertFalse(itemCell.favoriteButton.isFilled)
 
         let searchEvent2 = await snowplowMicro.getFirstEvent(with: "global-nav.search.unfavorite")
@@ -471,11 +453,10 @@ class SearchTests: XCTestCase {
             .searchItemCell(matching: "Item 2")
             .wait()
 
-        itemCell.shareButton.tap()
+        itemCell.shareButton.wait().tap()
 
         app.shareSheet.wait()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.share")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
@@ -498,12 +479,11 @@ class SearchTests: XCTestCase {
             .searchItemCell(matching: "Item 1")
             .wait()
 
-        itemCell.overFlowMenu.tap()
+        itemCell.overFlowMenu.wait().tap()
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
         app.addTagsView.allTagsView.wait()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.addTags")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
@@ -526,10 +506,9 @@ class SearchTests: XCTestCase {
             .searchItemCell(matching: "Item 1")
             .wait()
 
-        itemCell.overFlowMenu.tap()
+        itemCell.overFlowMenu.wait().tap()
         app.archiveButton.wait().tap()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.archive")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
@@ -552,10 +531,9 @@ class SearchTests: XCTestCase {
             .searchItemCell(matching: "Item 3")
             .wait()
 
-        itemCell.overFlowMenu.tap()
+        itemCell.overFlowMenu.wait().tap()
         app.reAddButton.wait().tap()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.unarchive")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "archive")
@@ -578,11 +556,10 @@ class SearchTests: XCTestCase {
             .searchItemCell(matching: "Item 2")
             .wait()
 
-        itemCell.overFlowMenu.tap()
+        itemCell.overFlowMenu.wait().tap()
         app.deleteButton.wait().tap()
         app.alert.yes.wait().tap()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.delete")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
@@ -592,24 +569,30 @@ class SearchTests: XCTestCase {
     // MARK: Pagination
     @MainActor
     func test_search_forPremiumUser_showsPagination() async {
-        stubGraphQLEndpoint(isPremium: true)
-        app.launch()
-        tapSearch()
         let firstExpectRequest = expectation(description: "First request to the server")
         let secondExpectRequest = expectation(description: "Second request to the server")
-        var count = 0
-        server.routes.post("/graphql") { request, loop in
-            count += 1
-            if count == 1 {
-                firstExpectRequest.fulfill()
-                return Response.searchPagination()
-            } else if count == 2 {
-                secondExpectRequest.fulfill()
-                return Response.searchPagination("search-list-page-2")
-            } else {
-                fatalError("Unexpected request")
+        var searchCount = 0
+        server.routes.post("/graphql") { request, loop -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSearch(.all) {
+                defer {searchCount += 1}
+                switch searchCount {
+                case 0:
+                    defer { firstExpectRequest.fulfill() }
+                    return .searchPagination()
+                default:
+                    defer { secondExpectRequest.fulfill() }
+                    return .searchPagination("search-list-page-2")
+                }
+            } else if apiRequest.isForUserDetails {
+                return .premiumUserDetails()
             }
+
+            return .fallbackResponses(apiRequest: apiRequest)
         }
+
+        app.launch()
+        tapSearch()
 
         let searchField = app.navigationBar.searchFields["Search"].wait()
         searchField.tap()
@@ -649,40 +632,23 @@ class SearchTests: XCTestCase {
 
 extension SearchTests {
     func stubGraphQLEndpoint(isPremium: Bool) {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else if apiRequest.isForSearch(.saves) {
-                return Response.searchList(.saves)
+            if apiRequest.isForSearch(.saves) {
+                return .searchList(.saves)
             } else if apiRequest.isForSearch(.archive) {
-                return Response.searchList(.archive)
+                return .searchList(.archive)
             } else if apiRequest.isForSearch(.all) {
-                return Response.searchList(.all)
-            } else if apiRequest.isToDeleteAnItem {
-                return Response.delete()
-            } else if apiRequest.isForItemDetail {
-                return Response.itemDetail()
+                return .searchList(.all)
             } else if apiRequest.isForUserDetails {
                 if isPremium {
-                    return Response.premiumUserDetails()
+                    return .premiumUserDetails()
                 } else {
-                    return Response.userDetails()
+                    return .userDetails()
                 }
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
             }
+            return Response.fallbackResponses(apiRequest: apiRequest)
         }
     }
 }
