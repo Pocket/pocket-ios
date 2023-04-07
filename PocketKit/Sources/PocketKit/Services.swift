@@ -36,11 +36,8 @@ struct Services {
     let appBadgeSetup: AppBadgeSetup
     let subscriptionStore: SubscriptionStore
     let userManagementService: UserManagementServiceProtocol
-<<<<<<< HEAD
-    let listen: Listen
-=======
     let lastRefresh: LastRefresh
->>>>>>> f9ea6dfb8138789875c76bc878eed2e632b960cc
+    let listen: Listen
 
     private let persistentContainer: PersistentContainer
 
