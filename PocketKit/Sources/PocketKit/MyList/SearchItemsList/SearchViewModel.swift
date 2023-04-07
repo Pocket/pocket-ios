@@ -470,6 +470,36 @@ extension SearchViewModel {
         return savedItem
     }
 
+    func readableViewModel(for item: PocketItem, index: Int) -> (ReadableViewModel, Bool)? {
+        guard
+            let id = item.id,
+            let savedItem = source.fetchOrCreateSavedItem(
+                with: id,
+                and: item.remoteItemParts
+            )
+        else {
+            Log.capture(message: "Saved Item not created")
+            return nil
+        }
+
+        let viewModel = SavedItemViewModel(
+            item: savedItem,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
+            userDefaults: userDefaults
+        )
+
+        if savedItem.shouldOpenInWebView {
+            return (viewModel, true)
+        } else {
+            return (viewModel, false)
+        }
+    }
+
     private func trackContentOpen(destination: ContentOpenEvent.Destination, item: SavedItem) {
         guard let url = item.bestURL else {
             return
