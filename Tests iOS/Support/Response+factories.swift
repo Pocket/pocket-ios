@@ -176,6 +176,12 @@ extension Response {
             return .unfavorite()
         } else if apiRequest.isToDeleteAnItem {
             return .delete()
+        } else if apiRequest.isForSearch(.all) {
+            return .searchList(.all)
+        } else if apiRequest.isForSearch(.saves) {
+            return .searchList(.saves)
+        } else if apiRequest.isForSearch(.archive) {
+            return .searchList(.archive)
         } else {
             fatalError("Unexpected request")
         }

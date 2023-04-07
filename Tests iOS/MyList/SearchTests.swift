@@ -574,7 +574,7 @@ class SearchTests: XCTestCase {
         var searchCount = 0
         server.routes.post("/graphql") { request, loop -> Response in
             let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isForSearch(.all) {
+            if apiRequest.isForSearch(.saves) {
                 defer {searchCount += 1}
                 switch searchCount {
                 case 0:
