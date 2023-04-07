@@ -180,7 +180,7 @@ class SearchTests: XCTestCase {
         impressions[0]!.getUIContext()!.assertHas(type: "card")
         impressions[0]!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
         impressions[1]!.getUIContext()!.assertHas(type: "card")
-        impressions[1]!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        impressions[1]!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
     }
 
     @MainActor
@@ -298,8 +298,9 @@ class SearchTests: XCTestCase {
         searchField.typeText("item\n")
 
         let searchView = app.saves.searchView.searchResultsView.wait()
+        app.saves.searchView.searchItemCell(matching: "Item 1").wait()
         XCTAssertEqual(searchView.cells.count, 2)
-        app.saves.searchView.searchItemCell(matching: "Item 1").tap()
+        app.saves.searchView.searchItemCell(matching: "Item 1").wait().tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
 
@@ -313,7 +314,7 @@ class SearchTests: XCTestCase {
     func test_search_forPremiumUser_showsSkeletonView() {
         continueAfterFailure = true
         var savesPromise: EventLoopPromise<Response>?
-        var searchSavesExpectation = expectation(description: "did search saves")
+        let searchSavesExpectation = expectation(description: "did search saves")
         server.routes.post("/graphql") { request, eventLoop -> FutureResponse in
             let apiRequest = ClientAPIRequest(request)
 
@@ -425,7 +426,7 @@ class SearchTests: XCTestCase {
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.favorite")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
-        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
 
         itemCell.favoriteButton.wait().tap()
         wait(for: [unfavoriteExpectation])
@@ -434,7 +435,7 @@ class SearchTests: XCTestCase {
         let searchEvent2 = await snowplowMicro.getFirstEvent(with: "global-nav.search.unfavorite")
         searchEvent2!.getUIContext()!.assertHas(type: "button")
         searchEvent2!.getUIContext()!.assertHas(componentDetail: "saves")
-        searchEvent2!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        searchEvent2!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
     }
 
     @MainActor
@@ -460,7 +461,7 @@ class SearchTests: XCTestCase {
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.share")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
-        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
     }
 
     @MainActor
@@ -563,7 +564,7 @@ class SearchTests: XCTestCase {
         let searchEvent = await snowplowMicro.getFirstEvent(with: "global-nav.search.delete")
         searchEvent!.getUIContext()!.assertHas(type: "button")
         searchEvent!.getUIContext()!.assertHas(componentDetail: "saves")
-        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
+        searchEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello-2")
     }
 
     // MARK: Pagination

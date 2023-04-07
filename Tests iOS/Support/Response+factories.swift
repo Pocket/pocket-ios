@@ -72,7 +72,12 @@ extension Response {
     }
 
     static func itemDetail() -> Response {
-        fixture(named: "item-detail")
+        return Response {
+            Status.ok
+            Fixture.load(name: "item-detail")
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
+        }
     }
 
     static func recommendationDetail(_ number: Int = 1) -> Response {
