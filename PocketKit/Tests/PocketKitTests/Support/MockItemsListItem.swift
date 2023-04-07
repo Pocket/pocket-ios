@@ -1,4 +1,5 @@
 import Foundation
+import Localization
 @testable import PocketKit
 
 struct MockItemsListItem: ItemsListItem {
@@ -19,7 +20,7 @@ struct MockItemsListItem: ItemsListItem {
     var displayTimeToRead: String? {
         timeToRead
             .flatMap { $0 > 0 ? $0 : nil }
-            .flatMap { L10n.Item.List.min($0) }
+            .flatMap { Localization.Item.List.min($0) }
     }
 
     var displayAuthors: String? {
