@@ -16,26 +16,16 @@ class EditTagsTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToUpdateTag("rename tag 1") {
-                return Response.updateTag()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+            if apiRequest.isToUpdateTag("rename tag 1") {
+                return .updateTag()
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         try server.start()
-        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -44,6 +34,7 @@ class EditTagsTests: XCTestCase {
     }
 
     func test_editTagsView_renamesTag() {
+        app.launch()
         app.tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
@@ -73,6 +64,20 @@ class EditTagsTests: XCTestCase {
     }
 
     func test_editTagsView_deletesTag() {
+        let firstDeleteRequest = expectation(description: "first delete request")
+        let secondDeleteRequest = expectation(description: "second delete request")
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isToDeleteATag() {
+                firstDeleteRequest.fulfill()
+                return Response.deleteTag()
+            } else if apiRequest.isToDeleteATag(2) {
+                secondDeleteRequest.fulfill()
+                return Response.deleteTag("delete-tag-2")
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+        app.launch()
         app.tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
@@ -87,22 +92,6 @@ class EditTagsTests: XCTestCase {
 
         XCTAssertTrue(tagsFilterView.deleteButton.isEnabled)
         tagsFilterView.deleteButton.tap()
-
-        let firstDeleteRequest = expectation(description: "first delete request")
-        let secondDeleteRequest = expectation(description: "second delete request")
-        firstDeleteRequest.assertForOverFulfill = false
-        server.routes.post("/graphql") { request, _ -> Response in
-            let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isToDeleteATag() {
-                firstDeleteRequest.fulfill()
-                return Response.deleteTag()
-            } else if apiRequest.isToDeleteATag(2) {
-                secondDeleteRequest.fulfill()
-                return Response.deleteTag("delete-tag-2")
-            } else {
-                fatalError("Unexpected request")
-            }
-        }
 
         app.alert.delete.wait().tap()
         wait(for: [firstDeleteRequest, secondDeleteRequest])

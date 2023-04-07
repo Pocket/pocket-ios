@@ -83,7 +83,9 @@ class FetchTags: SyncOperation {
             if let pageInfo = result.data?.user?.tags?.pageInfo {
                 pagination.after = pageInfo.endCursor ?? .none
                 shouldFetchNextPage = pageInfo.hasNextPage
-                persistentTask.currentCursor = pageInfo.endCursor
+                space.backgroundContext.performAndWait {
+                    persistentTask.currentCursor = pageInfo.endCursor
+                }
             } else {
                 shouldFetchNextPage = false
             }
