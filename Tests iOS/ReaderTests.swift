@@ -19,26 +19,8 @@ class ReaderTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToFavoriteAnItem {
-                return Response.favorite()
-            } else if apiRequest.isToUnfavoriteAnItem {
-                return Response.unfavorite()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else if apiRequest.isForItemDetail {
-                return Response.itemDetail()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         server.routes.get("/hello") { _, _ in
@@ -58,13 +40,11 @@ class ReaderTests: XCTestCase {
         try server.start()
     }
 
+    @MainActor
     override func tearDown() async throws {
-       await snowplowMicro.assertNoBadEvents()
-    }
-
-    override func tearDownWithError() throws {
-        try server.stop()
         app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        try server.stop()
     }
 
     func test_tappingSaves_dismissesReader_andShowsSaves() {
@@ -75,16 +55,21 @@ class ReaderTests: XCTestCase {
 
     @MainActor
     func test_archivingItem_dismissesReader_andShowsSaves() async {
-        launchApp_andOpenItem()
-        server.routes.post("/graphql") { request, loop in
+        let archiveExpectation = expectation(description: "Did archive an item")
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToArchiveAnItem)
-            return Response.archive()
+            if apiRequest.isToArchiveAnItem {
+                defer { archiveExpectation.fulfill() }
+                return .archive()
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
+
+        launchApp_andOpenItem()
         app.readerView.archiveButton.tap()
+        wait(for: [archiveExpectation])
         app.saves.wait()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let archiveEvent = await snowplowMicro.getFirstEvent(with: "reader.archive")
         archiveEvent!.getUIContext()!.assertHas(type: "button")
         archiveEvent!.getContentContext()!.assertHas(url: "http://localhost:8080/hello")
@@ -92,16 +77,20 @@ class ReaderTests: XCTestCase {
 
     @MainActor
     func test_moveFromArchiveToSaves_stillShowsReader() async {
-        launchApp_switchToArchive_andOpenItem()
-        server.routes.post("/graphql") { request, loop in
+        let saveExpectation = expectation(description: "Did save an item")
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-            XCTAssertTrue(apiRequest.isToSaveAnItem)
-            return Response.saveItem()
+            if apiRequest.isToSaveAnItem {
+                defer { saveExpectation.fulfill() }
+                return .saveItem()
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
+        launchApp_switchToArchive_andOpenItem()
         app.readerView.moveFromArchiveToSavesButton.tap()
+        wait(for: [saveExpectation])
         app.readerView.archiveButton.wait()
 
-        await snowplowMicro.assertBaselineSnowplowExpectation()
         let moveFromArchiveToSavesEvent = await snowplowMicro.getFirstEvent(with: "reader.un-archive")
         moveFromArchiveToSavesEvent!.getUIContext()!.assertHas(type: "button")
         moveFromArchiveToSavesEvent!.getContentContext()!.assertHas(url: "http://example.com/items/archived-item-1")
@@ -212,20 +201,13 @@ class ReaderTests: XCTestCase {
     }
 
     func test_longPressingHyperlink_showsPreview_andMenu() {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves("list-for-web-view-actions")
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+            if apiRequest.isForSavesContent {
+                return .saves("list-for-web-view-actions")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().tabBar.wait().savesButton.wait().tap()
