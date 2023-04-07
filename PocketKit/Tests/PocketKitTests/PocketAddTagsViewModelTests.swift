@@ -21,6 +21,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         space = .testSpace()
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
+        user = MockUser()
     }
 
     override func tearDown() async throws {
