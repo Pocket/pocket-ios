@@ -20,6 +20,7 @@ protocol RefreshCoordinator: AnyObject {
     var taskScheduler: BGTaskSchedulerProtocol { get }
     var appSession: AppSession { get }
     var subscriptions: [AnyCancellable] { get set }
+    var sessionSubscriptions: [AnyCancellable] { get set }
 
     /// The taskID to be resgistered with the system for this background task and identified in info.plist
     var taskID: String { get }
@@ -51,14 +52,14 @@ extension RefreshCoordinator {
             for: .userLoggedIn
         ).sink { [weak self] notification in
             self?.handleSession(session: notification.object as? SharedPocketKit.Session)
-        }.store(in: &subscriptions)
+        }.store(in: &sessionSubscriptions)
 
         // Register for logout notifications
         NotificationCenter.default.publisher(
             for: .userLoggedOut
         ).sink { [weak self] notification in
             self?.handleSession(session: nil)
-        }.store(in: &subscriptions)
+        }.store(in: &sessionSubscriptions)
 
         // Because session could already be available at init, lets try and use it.
         handleSession(session: appSession.currentSession)

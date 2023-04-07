@@ -31,7 +31,8 @@ class MainViewModel: ObservableObject {
                     user: Services.shared.user,
                     userDefaults: Services.shared.userDefaults,
                     source: Services.shared.source,
-                    tracker: Services.shared.tracker.childTracker(hosting: .saves.search)
+                    tracker: Services.shared.tracker.childTracker(hosting: .saves.search),
+                    store: Services.shared.subscriptionStore
                 ) { source in
                     PremiumUpgradeViewModel(
                         store: Services.shared.subscriptionStore,
@@ -47,7 +48,9 @@ class MainViewModel: ObservableObject {
                     listOptions: .saved(userDefaults: Services.shared.userDefaults),
                     notificationCenter: .default,
                     user: Services.shared.user,
+                    store: Services.shared.subscriptionStore,
                     refreshCoordinator: Services.shared.savesRefreshCoordinator,
+                    networkPathMonitor: NWPathMonitor(),
                     userDefaults: Services.shared.userDefaults
                 ),
                 archivedItemsList: SavedItemsListViewModel(
@@ -57,7 +60,9 @@ class MainViewModel: ObservableObject {
                     listOptions: .archived(userDefaults: Services.shared.userDefaults),
                     notificationCenter: .default,
                     user: Services.shared.user,
+                    store: Services.shared.subscriptionStore,
                     refreshCoordinator: Services.shared.archiveRefreshCoordinator,
+                    networkPathMonitor: NWPathMonitor(),
                     userDefaults: Services.shared.userDefaults
                 )
             ),
@@ -67,6 +72,7 @@ class MainViewModel: ObservableObject {
                 networkPathMonitor: NWPathMonitor(),
                 homeRefreshCoordinator: Services.shared.homeRefreshCoordinator,
                 user: Services.shared.user,
+                store: Services.shared.subscriptionStore,
                 userDefaults: Services.shared.userDefaults
             ),
             account: AccountViewModel(

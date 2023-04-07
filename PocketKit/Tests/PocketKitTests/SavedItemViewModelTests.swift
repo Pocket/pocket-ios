@@ -12,6 +12,8 @@ class SavedItemViewModelTests: XCTestCase {
     private var space: Space!
     private var pasteboard: Pasteboard!
     private var user: User!
+    private var subscriptionStore: SubscriptionStore!
+    private var networkPathMonitor: MockNetworkPathMonitor!
     private var userDefaults: UserDefaults!
 
     private var subscriptions: Set<AnyCancellable> = []
@@ -22,12 +24,16 @@ class SavedItemViewModelTests: XCTestCase {
         pasteboard = MockPasteboard()
         space = .testSpace()
         user = PocketUser(userDefaults: UserDefaults())
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
         userDefaults = .standard
     }
 
     override func tearDown() async throws {
         subscriptions = []
         try space.clear()
+        networkPathMonitor = nil
+        subscriptionStore = nil
     }
 
     func subject(
@@ -35,7 +41,8 @@ class SavedItemViewModelTests: XCTestCase {
         source: Source? = nil,
         tracker: Tracker? = nil,
         pasteboard: UIPasteboard? = nil,
-        user: User? = nil
+        user: User? = nil,
+        networkPathMonitor: NetworkPathMonitor? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             item: item,
@@ -43,6 +50,8 @@ class SavedItemViewModelTests: XCTestCase {
             tracker: tracker ?? self.tracker,
             pasteboard: pasteboard ?? self.pasteboard,
             user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             userDefaults: userDefaults ?? self.userDefaults
         )
     }

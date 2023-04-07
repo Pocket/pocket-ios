@@ -11,28 +11,40 @@ class PocketAddTagsViewModelTests: XCTestCase {
     private var tracker: MockTracker!
     private var space: Space!
     private var subscriptions: [AnyCancellable] = []
+    private var user: MockUser!
+    private var subscriptionStore: SubscriptionStore!
+    private var networkPathMonitor: MockNetworkPathMonitor!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
+        user = MockUser()
     }
 
     override func tearDown() async throws {
         source = nil
         try space.clear()
+        networkPathMonitor = nil
+        subscriptionStore = nil
     }
 
     private func subject(
         item: SavedItem,
         source: Source? = nil,
         tracker: Tracker? = nil,
-        saveAction: @escaping () -> Void
+        saveAction: @escaping () -> Void,
+        networkPathMonitor: NetworkPathMonitor? = nil
     ) -> PocketAddTagsViewModel {
         PocketAddTagsViewModel(
             item: item,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
+            user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             saveAction: saveAction
         )
     }

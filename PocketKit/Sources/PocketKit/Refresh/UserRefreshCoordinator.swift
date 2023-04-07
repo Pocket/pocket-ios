@@ -7,12 +7,12 @@ import Sync
 import SharedPocketKit
 import Combine
 
-/// Refresh coordinator to handle the refreshing of a Users Save data
-class SavesRefreshCoordinator: RefreshCoordinator {
+/// Refresh coordinator to handle the refreshing of user data
+class UserRefreshCoordinator: RefreshCoordinator {
 
-    let taskID: String = "com.mozilla.pocket.refresh.saves"
+    let taskID: String = "com.mozilla.pocket.refresh.user"
 
-    let refreshInterval: TimeInterval? = 60 * 60
+    let refreshInterval: TimeInterval? = 60 * 60 * 24 // once every 24 hours.
 
     let backgroundRequestType: BackgroundRequestType = .processing
 
@@ -32,7 +32,12 @@ class SavesRefreshCoordinator: RefreshCoordinator {
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
-        self.source.refreshSaves {
+        Task {
+            do {
+                try await self.source.fetchUserData()
+            } catch {
+                Log.capture(error: error)
+            }
             completion()
         }
     }

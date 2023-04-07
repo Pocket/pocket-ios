@@ -20,6 +20,7 @@ class HomeViewModelTests: XCTestCase {
     var homeController: RichFetchedResultsController<Recommendation>!
     var recentSavesController: NSFetchedResultsController<SavedItem>!
     var user: User!
+    var subscriptionStore: SubscriptionStore!
     var userDefaults: UserDefaults!
     var lastRefresh: UserDefaultsLastRefresh!
 
@@ -39,6 +40,8 @@ class HomeViewModelTests: XCTestCase {
         homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: lastRefresh)
         homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
         recentSavesController = space.makeRecentSavesController(limit: 5)
+        subscriptionStore = MockSubscriptionStore()
+        userDefaults = .standard
         user = PocketUser(userDefaults: userDefaults)
 
         tracker = MockTracker()
@@ -65,6 +68,7 @@ class HomeViewModelTests: XCTestCase {
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        subscriptionStore = nil
     }
 
     func subject(
@@ -81,6 +85,7 @@ class HomeViewModelTests: XCTestCase {
             networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
             user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
             userDefaults: userDefaults ?? self.userDefaults
         )
     }
