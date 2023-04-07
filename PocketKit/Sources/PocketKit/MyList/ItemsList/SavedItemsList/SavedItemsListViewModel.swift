@@ -5,6 +5,7 @@ import Combine
 import UIKit
 import Localization
 import SharedPocketKit
+import Textile
 
 public enum SavesViewType {
     case saves
@@ -322,6 +323,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
         return UIAction(title: "", handler: { [weak self] _ in
+            Haptics.overflowTap()
             self?.trackButton(item: item, identifier: .itemOverflow)
         })
     }
@@ -331,6 +333,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
         return ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil) { [weak self] _ in
+            Haptics.overflowTap()
             self?.trackButton(item: item, identifier: .itemOverflow)
         }
     }

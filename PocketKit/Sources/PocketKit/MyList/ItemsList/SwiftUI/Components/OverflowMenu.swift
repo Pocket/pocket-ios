@@ -55,6 +55,7 @@ struct OverflowMenu: View {
             }
         }
         .onTapGesture {
+            Haptics.overflowTap()
             viewModel.trackOverflowMenu()
         }
         .accessibilityIdentifier("overflow-menu")
