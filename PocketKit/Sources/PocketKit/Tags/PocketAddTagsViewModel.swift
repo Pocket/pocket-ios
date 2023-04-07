@@ -44,8 +44,8 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         self.networkPathMonitor = networkPathMonitor
 
         self.premiumUpgradeViewModel = PremiumUpgradeViewModel(
-            store: Services.shared.subscriptionStore,
-            tracker: Services.shared.tracker,
+            store: store,
+            tracker: tracker,
             source: .tags,
             networkPathMonitor: self.networkPathMonitor
         )

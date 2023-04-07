@@ -19,6 +19,7 @@ class PocketItemViewModelTests: XCTestCase {
         self.space = .testSpace()
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
+        user = MockUser()
     }
 
     override func tearDownWithError() throws {
