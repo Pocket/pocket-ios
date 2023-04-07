@@ -15,18 +15,19 @@ class SignOutTests: XCTestCase {
 
         app = PocketAppElement(app: XCUIApplication())
         server = Application()
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-            return Response.fallbackResponses(apiRequest: apiRequest)
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         await snowplowMicro.resetSnowplowEvents()
         try server.start()
     }
-
-    override func tearDownWithError() throws {
+    
+    @MainActor
+    override func tearDown() async throws {
         try server.stop()
         app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
@@ -44,8 +45,6 @@ class SignOutTests: XCTestCase {
 
         let logoutConfirmedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.logout-confirmed")
         XCTAssertNotNil(logoutConfirmedEvent)
-
-        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     @MainActor
@@ -65,8 +64,6 @@ class SignOutTests: XCTestCase {
 
         let logoutConfirmedEvent = events[1]
         XCTAssertNil(logoutConfirmedEvent)
-
-        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     func tap_SignOut() {
