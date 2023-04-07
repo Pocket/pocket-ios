@@ -59,6 +59,6 @@ extension PremiumUpsellViewModel {
     }
 
     func trackPremiumUpsellViewed() {
-        tracker.track(event: Events.Settings.premiumUpsellViewed())
+        tracker.track(event: Events.Tags.premiumUpsellViewed())
     }
 }
