@@ -39,10 +39,10 @@ class ArchiveFiltersTests: XCTestCase {
         saves.itemView(matching: "Archived Item 1").wait()
         saves.itemView(matching: "Archived Item 2").wait()
 
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
         waitForDisappearance(of: saves.itemView(matching: "Archived Item 1"))
         saves.itemView(matching: "Archived Item 2").wait()
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
 
         saves.itemView(matching: "Archived Item 1").wait()
         saves.itemView(matching: "Archived Item 2").wait()
@@ -54,14 +54,14 @@ class ArchiveFiltersTests: XCTestCase {
 
         saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "All").tap()
+        app.saves.filterButton(for: "All").wait().tap()
         saves.itemView(matching: "Archived Item 1").wait()
         saves.itemView(matching: "Archived Item 2").wait()
 
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
         waitForDisappearance(of: saves.itemView(matching: "Archived Item 1"))
 
-        app.saves.filterButton(for: "All").tap()
+        app.saves.filterButton(for: "All").wait().tap()
         saves.itemView(matching: "Archived Item 1").wait()
         saves.itemView(matching: "Archived Item 2").wait()
     }
@@ -72,7 +72,7 @@ class ArchiveFiltersTests: XCTestCase {
 
         saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "Tagged").tap()
+        app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.tagCells.count, 6)
@@ -91,7 +91,7 @@ class ArchiveFiltersTests: XCTestCase {
 
         saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "Tagged").tap()
+        app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.tagCells.count, 6)
