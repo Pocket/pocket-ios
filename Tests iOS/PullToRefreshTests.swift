@@ -16,26 +16,7 @@ class PullToRefreshTests: XCTestCase {
         app = PocketAppElement(app: uiApp)
 
         server = Application()
-
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
-        }
-
         try server.start()
-
-        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -44,21 +25,29 @@ class PullToRefreshTests: XCTestCase {
     }
 
     func test_saves_pullToRefresh_fetchesNewContent() {
+        var savesCall = 0
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+
+            if apiRequest.isForSavesContent {
+                defer { savesCall += 1 }
+                switch savesCall {
+                case 0:
+                    return .saves()
+                default:
+                    return .saves("updated-list")
+                }
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+        app.launch()
         app.tabBar.savesButton.wait().tap()
 
         let listView = app.saves.wait()
-        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait a few seconds")], timeout: 10.0)
-
+        listView.itemView(matching: "Item 1").wait()
+        listView.itemView(matching: "Item 2").wait()
         XCTAssertEqual(listView.itemCount, 2)
-
-        server.routes.post("/graphql") { _, _ in
-            return Response {
-                Status.ok
-                Fixture.data(name: "updated-list")
-            }
-        }
-
-        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait longer then the last refresh timeout")], timeout: 8.0)
+        _ = XCTWaiter.wait(for: [XCTestExpectation(description: "Wait 1 second longer then saves refresh safe guard")], timeout: 6.0)
 
         listView.pullToRefresh()
 
@@ -69,5 +58,6 @@ class PullToRefreshTests: XCTestCase {
         listView
             .itemView(matching: "Updated Item 2")
             .wait()
+        XCTAssertEqual(listView.itemCount, 2)
     }
 }
