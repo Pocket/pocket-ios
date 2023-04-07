@@ -47,7 +47,7 @@ struct SavedItemSpace {
                 item.update(from: edge, with: space)
 
                 if item.deletedAt != nil {
-                    space.delete(item)
+                    space.delete(item, in: context)
                 }
                 task.currentCursor = cursor
             }
