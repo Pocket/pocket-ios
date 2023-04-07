@@ -22,7 +22,7 @@ class SignOutTests: XCTestCase {
         await snowplowMicro.resetSnowplowEvents()
         try server.start()
     }
-    
+
     @MainActor
     override func tearDown() async throws {
         try server.stop()
