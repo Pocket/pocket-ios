@@ -416,7 +416,6 @@ extension Space {
     }
 }
 
-
 extension Space {
     func fetchFeatureFlag(byName name: String) throws -> FeatureFlag? {
         let request = Requests.fetchFeatureFlags()

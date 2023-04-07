@@ -9,6 +9,7 @@ import Foundation
 import Analytics
 import Sync
 
+/// Used to interact with the feature flags stored in our core data store
 class FeatureFlagService {
     private let source: Source
     private let tracker: Tracker
@@ -18,12 +19,10 @@ class FeatureFlagService {
         self.tracker = tracker
     }
 
-    /**
-     Determine if a user is assigned to a test and a variant.
-     */
+    /// Determine if a user is assigned to a test and a variant.
     func isAssigned(flag: String, variant: String = "control") -> Bool {
         guard let flag = source.fetchFeatureFlag(byName: flag) else {
-            //If we have no flag, the user is not assigned
+            // If we have no flag, the user is not assigned
             return false
         }
         let flagVariant = flag.variant ?? "control"
@@ -31,12 +30,9 @@ class FeatureFlagService {
         return flag.assigned && flagVariant == variant
     }
 
-
-    /**
-     Only call this track feature when the User has felt the change of the feature flag, not before.
-     */
-    func trackFeatureFlagFelt(flag: String, variant: String = "control")  {
-        // TODO: Call analytics with the feature flag enroll event
+    /// Only call this track feature when the User has felt the change of the feature flag, not before.
+    func trackFeatureFlagFelt(flag: String, variant: String = "control") {
+        tracker.track(event: Events.FeatureFlag.FeatureFlagFelt(name: flag, variant: variant))
     }
 
 }
