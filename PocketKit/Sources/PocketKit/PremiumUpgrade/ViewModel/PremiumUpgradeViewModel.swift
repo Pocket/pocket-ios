@@ -13,7 +13,6 @@ import Localization
 /// Factory to construct and inject `PremiumUpgradeViewModel` where needed
 typealias PremiumUpgradeViewModelFactory = (PremiumUpgradeSource) -> PremiumUpgradeViewModel
 
-@MainActor
 class PremiumUpgradeViewModel: ObservableObject {
     private let store: SubscriptionStore
     private let tracker: Tracker
@@ -74,9 +73,7 @@ class PremiumUpgradeViewModel: ObservableObject {
             .sink { [weak self]  state in
                 switch state {
                 case .subscribed(let type):
-                    Task {
                         self?.trackPurchaseSubscriptionSuccess(type: type)
-                    }
                     self?.shouldDismiss = true
                 case .unsubscribed:
                     // TODO: also do nothing here, this should only be received once when viewing the screen

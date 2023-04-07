@@ -1,15 +1,30 @@
 import Combine
+import SwiftUI
 import Sync
 import Textile
 import Foundation
 import Analytics
+import SharedPocketKit
 
 class PocketAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem
     private let source: Source
     private let tracker: Tracker
+    private let store: SubscriptionStore
     private let saveAction: () -> Void
     private var userInputListener: AnyCancellable?
+    private var user: User
+    private var networkPathMonitor: NetworkPathMonitor
+    private var premiumUpsellView: PremiumUpsellView
+    private var premiumUpsellViewModel: PremiumUpsellViewModel
+    private var premiumUpgradeViewModel: PremiumUpgradeViewModel
+    var upsellView: AnyView {
+        if user.status == .free {
+            return AnyView(erasing: premiumUpsellView)
+        } else {
+            return AnyView(erasing: EmptyView())
+        }
+    }
 
     var sectionTitle: TagSectionType = .allTags
 
@@ -19,11 +34,27 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-    init(item: SavedItem, source: Source, tracker: Tracker, saveAction: @escaping () -> Void) {
+    init(item: SavedItem, source: Source, tracker: Tracker, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor, saveAction: @escaping () -> Void) {
         self.item = item
         self.source = source
         self.tracker = tracker
+        self.store = store
         self.saveAction = saveAction
+        self.user = user
+        self.networkPathMonitor = networkPathMonitor
+
+        self.premiumUpgradeViewModel = PremiumUpgradeViewModel(
+            store: store,
+            tracker: tracker,
+            source: .tags,
+            networkPathMonitor: self.networkPathMonitor
+        )
+
+        self.premiumUpsellViewModel = PremiumUpsellViewModel(networkPathMonitor: networkPathMonitor, user: user, source: source, tracker: tracker, premiumUpgradeViewModelFactory: { PremiumUpgradeSource in
+            PremiumUpgradeViewModel(store: store, tracker: tracker, source: .tags, networkPathMonitor: networkPathMonitor)
+        })
+
+        self.premiumUpsellView = PremiumUpsellView(viewModel: premiumUpsellViewModel)
 
         tags = item.tags?.compactMap { ($0 as? Tag)?.name } ?? []
         allOtherTags()

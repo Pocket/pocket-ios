@@ -25,6 +25,7 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                     InputTagsView(
                         tags: viewModel.tags,
                         removeTag: viewModel.removeTag,
+                        upsellView: viewModel.upsellView,
                         geometry: geometry
                     )
                     TagsListView(

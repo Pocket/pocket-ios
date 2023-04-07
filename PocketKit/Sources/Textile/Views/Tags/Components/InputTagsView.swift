@@ -7,6 +7,7 @@ import SwiftUI
 struct InputTagsView: View {
     let tags: [String]
     let removeTag: (String) -> Void
+    let upsellView: AnyView
 
     @Namespace
     var animation
@@ -28,6 +29,8 @@ struct InputTagsView: View {
             Divider()
                 .frame(height: 10)
                 .overlay(Color(.ui.grey7))
+            upsellView
+                .padding(EdgeInsets(top: 32, leading: 12, bottom: 12, trailing: 12))
         }
     }
 
@@ -87,6 +90,7 @@ struct InputTagsView_PreviewProvider: PreviewProvider {
             InputTagsView(
                 tags: ["tag 0", "tag 1", "tag 2", "tag 3", "tag 4", "tag 5", "tag 6", "this is going to be a long tag"],
                 removeTag: tagAction,
+                upsellView: AnyView(EmptyView()),
                 geometry: reader)
         }
         .previewLayout(.sizeThatFits)
@@ -97,6 +101,7 @@ struct InputTagsView_PreviewProvider: PreviewProvider {
             InputTagsView(
                 tags: ["tag 0", "tag 1", "tag 2", "tag 3", "tag 4", "tag 5", "tag 6", "this is going to be a long tag"],
                 removeTag: tagAction,
+                upsellView: AnyView(EmptyView()),
                 geometry: reader)
         }
         .previewLayout(.sizeThatFits)

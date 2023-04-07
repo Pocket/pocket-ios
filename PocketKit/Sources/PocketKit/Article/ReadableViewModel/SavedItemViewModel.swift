@@ -31,6 +31,8 @@ class SavedItemViewModel: ReadableViewModel {
     private let user: User
     private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
+    private var store: SubscriptionStore
+    private var networkPathMonitor: NetworkPathMonitor
 
     init(
         item: SavedItem,
@@ -38,6 +40,8 @@ class SavedItemViewModel: ReadableViewModel {
         tracker: Tracker,
         pasteboard: Pasteboard,
         user: User,
+        store: SubscriptionStore,
+        networkPathMonitor: NetworkPathMonitor,
         userDefaults: UserDefaults
     ) {
         self.item = item
@@ -45,6 +49,8 @@ class SavedItemViewModel: ReadableViewModel {
         self.tracker = tracker
         self.pasteboard = pasteboard
         self.user = user
+        self.store = store
+        self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
@@ -188,6 +194,9 @@ extension SavedItemViewModel {
             item: item,
             source: source,
             tracker: tracker,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
             saveAction: { [weak self] in
                 self?.fetchDetailsIfNeeded()
             }
