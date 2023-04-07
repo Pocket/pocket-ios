@@ -78,7 +78,7 @@ public class AuthorizationClient {
         components.queryItems = [
             URLQueryItem(name: "consumer_key", value: consumerKey),
             URLQueryItem(name: "redirect_uri", value: "\(requestRedirect)://fxa"),
-            URLQueryItem(name: "utm_source", value: "ios")
+            URLQueryItem(name: "utm_source", value: "ios_next")
         ]
 
         guard let requestURL = components.url else {
