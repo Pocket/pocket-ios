@@ -202,6 +202,33 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         source.retryImmediately()
     }
 
+    func preview(for cell: ItemsListCell<NSManagedObjectID>) -> (ReadableViewModel, Bool)? {
+        guard case .item(let itemID) = cell else {
+            return nil
+        }
+
+        guard let savedItem = bareItem(with: itemID) else {
+            return nil
+        }
+
+        let readable = SavedItemViewModel(
+            item: savedItem,
+            source: source,
+            tracker: tracker.childTracker(hosting: .articleView.screen),
+            pasteboard: UIPasteboard.general,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
+            userDefaults: userDefaults
+        )
+
+        if savedItem.shouldOpenInWebView {
+            return (readable, true)
+        } else {
+            return (readable, false)
+        }
+    }
+
     func presenter(for cellID: ItemsListCell<ItemIdentifier>) -> ItemsListItemPresenter? {
         guard case .item(let objectID) = cellID else {
             return nil
