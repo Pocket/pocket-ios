@@ -298,7 +298,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
-        Haptics.overflowTap()
         guard let item = bareItem(with: objectID) else {
             return []
         }
@@ -320,11 +319,11 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     }
 
     func trackOverflow(for objectID: NSManagedObjectID) -> UIAction? {
-        Haptics.overflowTap()
         guard let item = bareItem(with: objectID) else {
             return nil
         }
         return UIAction(title: "", handler: { [weak self] _ in
+            Haptics.overflowTap()
             self?.trackButton(item: item, identifier: .itemOverflow)
         })
     }
@@ -334,6 +333,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
         return ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil) { [weak self] _ in
+            Haptics.overflowTap()
             self?.trackButton(item: item, identifier: .itemOverflow)
         }
     }
