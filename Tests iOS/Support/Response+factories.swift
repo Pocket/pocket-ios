@@ -80,6 +80,15 @@ extension Response {
         }
     }
 
+    static func archiveItemDetail() -> Response {
+        return Response {
+            Status.ok
+            Fixture.load(name: "archive-item-detail")
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
+        }
+    }
+
     static func recommendationDetail(_ number: Int = 1) -> Response {
         fixture(named: "recommendation-detail-\(number)")
     }
@@ -171,6 +180,8 @@ extension Response {
             return .recommendationDetail(3)
         } else if apiRequest.isForRecommendationDetail(4) {
             return .recommendationDetail(4)
+        } else if apiRequest.isForArchivedItemDetail {
+            return .archiveItemDetail()
         } else if apiRequest.isForItemDetail {
             return .itemDetail()
         } else if apiRequest.isForReplacingSavedItemTags {

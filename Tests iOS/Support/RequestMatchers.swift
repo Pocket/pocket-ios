@@ -69,6 +69,10 @@ struct ClientAPIRequest {
         self.operationName == "SavedItemByID"
     }
 
+    var isForArchivedItemDetail: Bool {
+        self.operationName == "SavedItemByID" && contains("archived-item-1")
+    }
+
     func isForRecommendationDetail(_ number: Int = 1) -> Bool {
         self.operationName == "ItemByID" && contains("recommended-item-\(number)")
     }
