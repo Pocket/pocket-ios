@@ -16,22 +16,8 @@ class ArchiveTests: XCTestCase {
         app = PocketAppElement(app: uiApp)
 
         server = Application()
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForItemDetail {
-                return Response.itemDetail()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         server.routes.get("/hello") { _, _ in
@@ -106,23 +92,30 @@ class ArchiveTests: XCTestCase {
     }
 
     func test_unarchivingAnItem_removesFromArchive_andAddsToSaves() {
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.selectionSwitcher.archiveButton.wait().tap()
-
-        let itemCell = app.saves.itemView(matching: "Archived Item 1")
-        itemCell.itemActionButton.wait().tap()
-
-        server.routes.post("/graphql") { request, _ in
+        var savesCall = 0
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
                 return Response.saves("unarchive")
             } else if apiRequest.isForSavesContent {
-                return Response.saves("list-with-unarchived-item")
+                defer { savesCall += 1}
+                switch savesCall {
+                case 0:
+                       return .saves()
+                default:
+                      return  .saves("list-with-unarchived-item")
+                }
             }
 
-            fatalError("Unexpected request")
+            return .fallbackResponses(apiRequest: apiRequest)
         }
+
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+
+        let itemCell = app.saves.itemView(matching: "Archived Item 1")
+        itemCell.itemActionButton.wait().tap()
 
         app.reAddButton.wait().tap()
         waitForDisappearance(of: itemCell)
@@ -132,23 +125,30 @@ class ArchiveTests: XCTestCase {
     }
 
     func test_unarchivingAnItem_bySwiping_removesFromArchive_andAddsToSaves() {
-        app.launch().tabBar.savesButton.wait().tap()
-        app.saves.selectionSwitcher.archiveButton.wait().tap()
-
-        let itemCell = app.saves.itemView(matching: "Archived Item 1")
-        itemCell.element.swipeLeft()
-
-        server.routes.post("/graphql") { request, _ in
+        var savesCall = 0
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isToSaveAnItem {
                 return Response.saves("unarchive")
             } else if apiRequest.isForSavesContent {
-                return Response.saves("list-with-unarchived-item")
+                defer { savesCall += 1}
+                switch savesCall {
+                case 0:
+                       return .saves()
+                default:
+                      return  .saves("list-with-unarchived-item")
+                }
             }
 
-            fatalError("Unexpected request")
+            return .fallbackResponses(apiRequest: apiRequest)
         }
+
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
+
+        let itemCell = app.saves.itemView(matching: "Archived Item 1")
+        itemCell.element.swipeLeft()
 
         app.saves.moveToSavesSwipeButton.wait().tap()
         waitForDisappearance(of: itemCell)
@@ -185,20 +185,19 @@ extension ArchiveTests {
     }
 
     func test_archive_showsWebView(at index: Int) {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
+                return .slateLineup()
             } else if apiRequest.isForSavesContent {
-                return Response.saves("list-for-web-view")
+                return .saves("list-for-web-view")
             } else if apiRequest.isForArchivedContent {
-                return Response.saves("archived-web-view")
+                return .saves("archived-web-view")
             } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+                return .emptyTags()
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().tabBar.savesButton.wait().tap()
@@ -210,8 +209,4 @@ extension ArchiveTests {
             .staticText(matching: "Hello, world")
             .wait(timeout: 10)
     }
-}
-
-private func requestIsForArchivedContent(_ request: Request) -> Bool {
-    body(of: request)?.contains("\"isArchived\":true") ?? false
 }

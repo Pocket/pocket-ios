@@ -213,7 +213,8 @@ extension SavedItemViewModel {
     }
 
     private func shareExternalURL(_ url: URL) {
-        sharedActivity = PocketItemActivity(url: url)
+        // This view model is used within the context of a view that is presented within the reader
+        sharedActivity = PocketItemActivity.fromReader(url: url)
     }
 
     private func openExternalURL(_ url: URL) {

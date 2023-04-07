@@ -13,18 +13,62 @@ struct PocketItemActivity: PocketActivity {
         ]
     }
 
+    /// The source of the item activity, e.g "pocket_home", which will
+    /// be set as a utm_source query item of the item's url.
+    private let source: String?
+
     let activityItems: [Any]
     let sender: Any?
 
-    init(url: URL?, additionalText: String? = nil, sender: Any? = nil) {
-        self.activityItems = Self.activityItems(for: url, additionalText: additionalText)
+    init(url: URL?, additionalText: String? = nil, source: String? = nil, sender: Any? = nil) {
+        self.activityItems = Self.activityItems(for: url, additionalText: additionalText, source: source)
         self.sender = sender
+        self.source = source
     }
 
-    private static func activityItems(for url: URL?, additionalText: String?) -> [Any] {
-        [
-            url.flatMap(ActivityItemSource.init),
+    private static func activityItems(for url: URL?, additionalText: String?, source: String?) -> [Any] {
+        // Append utm_source (using pocketShareURL) as necessary if there is a source, else use the original URL
+        let itemSourceURL = source.flatMap { pocketShareURL(url, source: $0) } ?? url
+        return [
+            itemSourceURL.flatMap(ActivityItemSource.init),
             additionalText.flatMap(ActivityItemSource.init)
         ].compactMap { $0 }
+    }
+}
+
+extension PocketItemActivity {
+    static func fromSaves(
+        url: URL?,
+        additionalText: String? = nil,
+        sender: Any? = nil
+    ) -> PocketItemActivity {
+        return PocketItemActivity(
+            url: url,
+            additionalText: additionalText,
+            source: "pocket_saves",
+            sender: sender
+        )
+    }
+
+    static func fromHome(url: URL?, additionalText: String? = nil, sender: Any? = nil) -> PocketItemActivity {
+        return PocketItemActivity(
+            url: url,
+            additionalText: additionalText,
+            source: "pocket_home",
+            sender: sender
+        )
+    }
+
+    static func fromReader(
+        url: URL?,
+        additionalText: String? = nil,
+        sender: Any? = nil
+    ) -> PocketItemActivity {
+        return PocketItemActivity(
+            url: url,
+            additionalText: additionalText,
+            source: "pocket_reader",
+            sender: sender
+        )
     }
 }
