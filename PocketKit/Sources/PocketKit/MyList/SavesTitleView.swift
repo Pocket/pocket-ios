@@ -41,6 +41,7 @@ class SavesTitleView: UIView {
                     guard let selectedButton = action.sender as? UIButton else {
                         return
                     }
+                    Haptics.savesSelectorChanged()
 
                     self?.select(selectedButton)
                 }
