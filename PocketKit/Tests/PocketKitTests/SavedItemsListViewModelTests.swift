@@ -19,6 +19,8 @@ class SavedItemsListViewModelTests: XCTestCase {
     var viewType: SavesViewType!
     var subscriptions: [AnyCancellable]!
     var user: User!
+    var subscriptionStore: SubscriptionStore!
+    var networkPathMonitor: NetworkPathMonitor!
     var userDefaults: UserDefaults!
 
     override func setUp() {
@@ -30,6 +32,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         refreshCoordinator = SavesRefreshCoordinator(notificationCenter: .default, taskScheduler: MockBGTaskScheduler(), appSession: appSession, source: source)
         subscriptions = []
         viewType = .saves
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
         userDefaults = .standard
         user = PocketUser(userDefaults: userDefaults)
         listOptions = .saved(userDefaults: userDefaults)
@@ -64,6 +68,8 @@ class SavedItemsListViewModelTests: XCTestCase {
         subscriptions = []
         try space.clear()
         try space.save()
+        networkPathMonitor = nil
+        subscriptionStore = nil
     }
 
     func subject(
@@ -72,6 +78,7 @@ class SavedItemsListViewModelTests: XCTestCase {
         listOptions: ListOptions? = nil,
         viewType: SavesViewType? = nil,
         user: User? = nil,
+        networkPathMonitor: NetworkPathMonitor? = nil,
         userDefaults: UserDefaults? = nil
     ) -> SavedItemsListViewModel {
         SavedItemsListViewModel(
@@ -81,7 +88,9 @@ class SavedItemsListViewModelTests: XCTestCase {
             listOptions: listOptions ?? self.listOptions,
             notificationCenter: .default,
             user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
             refreshCoordinator: refreshCoordinator,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             userDefaults: userDefaults ?? self.userDefaults
         )
     }

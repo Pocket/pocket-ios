@@ -9,17 +9,25 @@ class PocketItemViewModelTests: XCTestCase {
     private var source: MockSource!
     private var tracker: MockTracker!
     var space: Space!
+    private var user: MockUser!
+    private var subscriptionStore: SubscriptionStore!
+    private var networkPathMonitor: MockNetworkPathMonitor!
 
     override func setUpWithError() throws {
         source = MockSource()
         tracker = MockTracker()
         self.space = .testSpace()
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
+        user = MockUser()
     }
 
     override func tearDownWithError() throws {
         source = nil
         tracker = nil
         try space.clear()
+        networkPathMonitor = nil
+        subscriptionStore = nil
     }
 
     func subject(
@@ -27,14 +35,18 @@ class PocketItemViewModelTests: XCTestCase {
         index: Int = 0,
         source: Source? = nil,
         tracker: Tracker? = nil,
-        scope: SearchScope? = nil
+        scope: SearchScope? = nil,
+        networkPathMonitor: NetworkPathMonitor? = nil
     ) -> PocketItemViewModel {
         PocketItemViewModel(
             item: item,
             index: index,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            scope: scope ?? .saves
+            scope: scope ?? .saves,
+            user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
         )
     }
 

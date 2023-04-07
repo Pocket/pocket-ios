@@ -101,6 +101,7 @@ class HomeViewModel: NSObject {
     private let homeRefreshCoordinator: RefreshCoordinator
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
+    private var store: SubscriptionStore
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -111,6 +112,7 @@ class HomeViewModel: NSObject {
         networkPathMonitor: NetworkPathMonitor,
         homeRefreshCoordinator: RefreshCoordinator,
         user: User,
+        store: SubscriptionStore,
         userDefaults: UserDefaults
     ) {
         self.source = source
@@ -119,6 +121,7 @@ class HomeViewModel: NSObject {
         networkPathMonitor.start(queue: .global(qos: .utility))
         self.homeRefreshCoordinator = homeRefreshCoordinator
         self.user = user
+        self.store = store
         self.userDefaults = userDefaults
 
         self.snapshot = {
@@ -299,6 +302,8 @@ extension HomeViewModel {
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
             user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
             userDefaults: userDefaults
         )
 

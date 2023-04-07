@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Combine
+import SwiftUI
 
 public enum TagSectionType: String {
     case allTags = "All Tags"
@@ -16,6 +17,8 @@ public protocol AddTagsViewModel: ObservableObject {
     var newTagInput: String { get set }
     var otherTags: [TagType] { get set }
     var sectionTitle: TagSectionType { get }
+    var upsellView: AnyView { get }
+
     func addNewTag(with tag: String) -> Bool
     func addExistingTag(with tag: TagType)
     func addTags()

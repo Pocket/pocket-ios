@@ -1,4 +1,5 @@
 import Combine
+import SwiftUI
 import Sync
 import Textile
 import Foundation
@@ -11,6 +12,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     private let filterAction: (String, [String]) -> [Tag]?
     private let saveAction: ([String]) -> Void
     private var userInputListener: AnyCancellable?
+    var upsellView: AnyView { return AnyView(erasing: EmptyView()) }
 
     var sectionTitle: TagSectionType = .allTags
 

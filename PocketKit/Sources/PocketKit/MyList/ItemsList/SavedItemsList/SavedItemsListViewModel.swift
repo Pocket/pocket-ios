@@ -74,13 +74,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let user: User
     private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
+    private var store: SubscriptionStore
+    private var networkPathMonitor: NetworkPathMonitor
 
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, refreshCoordinator: RefreshCoordinator, userDefaults: UserDefaults) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
@@ -89,6 +91,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         self.viewType = viewType
         self.listOptions = listOptions
         self.user = user
+        self.store = store
+        self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
 
         switch self.viewType {
@@ -539,6 +543,8 @@ extension SavedItemsListViewModel {
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
             user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
             userDefaults: userDefaults
         )
 
@@ -660,6 +666,9 @@ extension SavedItemsListViewModel {
             item: item,
             source: source,
             tracker: tracker,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
             saveAction: { [weak self] in
                 self?.refresh()
             }
