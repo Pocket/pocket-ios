@@ -1,6 +1,7 @@
 import UIKit
 import WebKit
 import Combine
+import Localization
 
 protocol VimeoComponentCellDelegate: AnyObject {
     func vimeoComponentCell(_ cell: VimeoComponentCell, didNavigateToURL: URL)
@@ -39,7 +40,7 @@ class VimeoComponentCell: UICollectionViewCell {
 
     private let errorView: ArticleComponentUnavailableView = {
         let view = ArticleComponentUnavailableView()
-        view.text = "This video could not be loaded."
+        view.text = Localization.thisVideoCouldNotBeLoaded
         return view
     }()
 

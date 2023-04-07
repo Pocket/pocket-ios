@@ -9,45 +9,24 @@ import NIO
 class HomeTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
         app = PocketAppElement(app: uiApp)
+        await snowplowMicro.resetSnowplowEvents()
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail() {
-                return Response.slateDetail()
-            } else if apiRequest.isForSlateDetail(2) {
-                return Response.slateDetail(2)
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("initial-list-recent-saves")
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
-            } else if apiRequest.isToFavoriteAnItem {
-                return Response.favorite()
-            } else if apiRequest.isToUnfavoriteAnItem {
-                return Response.unfavorite()
-            } else if apiRequest.isToDeleteAnItem {
-                return Response.delete()
-            } else if apiRequest.isForRecommendationDetail {
-                return Response.recommendationDetail()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
+            if apiRequest.isForSavesContent {
+                return .saves("initial-list-recent-saves")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         server.routes.get("/hello") { _, _ in
@@ -57,7 +36,18 @@ class HomeTests: XCTestCase {
             }
         }
 
+        server.routes.get("/item-1") { _, _ in
+            Response {
+                Status.ok
+                Fixture.data(name: "hello", ext: "html")
+            }
+        }
+
         try server.start()
+    }
+
+    override func tearDown() async throws {
+       await snowplowMicro.assertNoBadEvents()
     }
 
     override func tearDownWithError() throws {
@@ -65,7 +55,8 @@ class HomeTests: XCTestCase {
         app.terminate()
     }
 
-    func test_navigatingToHomeTab_showsASectionForEachSlate() {
+    @MainActor
+    func test_navigatingToHomeTab_showsASectionForEachSlate() async {
         let home = app.launch().homeView
 
         home.sectionHeader("Slate 1").wait()
@@ -78,24 +69,44 @@ class HomeTests: XCTestCase {
 
         home.sectionHeader("Slate 2").verify()
         home.recommendationCell("Slate 2, Recommendation 1").verify()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+
+        async let slate1Rec1 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-1")
+        async let slate1Rec2 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-2")
+        async let slate2Rec1 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-2-rec-1")
+        async let slate2Rec2 = snowplowMicro.getFirstEvent(with: "discover.impression", recommendationId: "slate-1-rec-2")
+
+        let recs = await [slate1Rec1, slate1Rec2, slate2Rec1, slate2Rec2]
+        let loadedSlate1Rec1 = recs[0]!
+        let loadedSlate1Rec2 = recs[1]!
+        let loadedSlate2Rec1 = recs[2]!
+        let loadedSlate2Rec2 = recs[3]!
+
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec1, url: "http://localhost:8080/item-1")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate1Rec2, url: "https://example.com/item-2")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec1, url: "https://example.com/item-1")
+        snowplowMicro.assertRecommendationImpressionHasNecessaryContexts(event: loadedSlate2Rec2, url: "https://example.com/item-2")
     }
 
-    func test_navigatingToHomeTab_showsRecentlySavedItems() {
+    @MainActor
+    func test_navigatingToHomeTab_showsRecentlySavedItems() async {
         let home = app.launch().homeView.wait()
-
         home.savedItemCell("Item 1").wait()
         home.savedItemCell("Item 2").wait()
-
         home.savedItemCell("Item 1").swipeLeft(velocity: .fast)
         home.savedItemCell("Item 3").swipeLeft(velocity: .fast)
-        waitForDisappearance(of: home.savedItemCell("Item 6"))
+        waitForDisappearance(of: home.savedItemCell("Item 3"))
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
-    func test_tappingRecentSavesItem_showsReader() {
+    @MainActor
+    func test_tappingRecentSavesItem_showsReader() async {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait().tap()
         app.readerView.wait()
         app.readerView.cell(containing: "Commodo Consectetur Dapibus").wait()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     func test_tappingRecentSavesItem_showsWebViewWhenItemIsImage() {
@@ -110,27 +121,27 @@ class HomeTests: XCTestCase {
         test_tappingRecentSavesItem_showsWebView("Item 3")
     }
 
-    func test_favoritingRecentSavesItem_shouldShowFavoriteInMyList() {
+    func test_favoritingRecentSavesItem_shouldShowFavoriteInSaves() {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 1").wait()
         home.recentSavesView(matching: "Item 1").favoriteButton.tap()
         XCTAssertTrue(home.recentSavesView(matching: "Item 1").favoriteButton.isFilled)
 
-        app.tabBar.myListButton.tap()
-        app.myListView.filterButton(for: "Favorites").tap()
-        XCTAssertTrue(app.myListView.itemView(matching: "Item 1").favoriteButton.isFilled)
+        app.tabBar.savesButton.tap()
+        app.saves.filterButton(for: "Favorites").tap()
+        XCTAssertTrue(app.saves.itemView(matching: "Item 1").favoriteButton.isFilled)
     }
 
-    func test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInMyList() {
+    func test_unfavoritingRecentSavesItem_shouldNotAppearForFavoriteInSaves() {
         let home = app.launch().homeView.wait()
         home.savedItemCell("Item 2").wait()
         XCTAssertTrue(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
         home.recentSavesView(matching: "Item 2").favoriteButton.tap()
         XCTAssertFalse(home.recentSavesView(matching: "Item 2").favoriteButton.isFilled)
 
-        app.tabBar.myListButton.tap()
-        app.myListView.filterButton(for: "Favorites").tap()
-        waitForDisappearance(of: app.myListView.itemView(matching: "Item 2"))
+        app.tabBar.savesButton.tap()
+        app.saves.filterButton(for: "Favorites").tap()
+        waitForDisappearance(of: app.saves.itemView(matching: "Item 2"))
     }
 
     func test_archivingRecentSavesItem_removesItemFromRecentSaves() {
@@ -150,8 +161,8 @@ class HomeTests: XCTestCase {
         app.alert.yes.wait().tap()
         waitForDisappearance(of: home.savedItemCell("Item 1"))
 
-        app.tabBar.myListButton.tap()
-        waitForDisappearance(of: app.myListView.itemView(matching: "Item 1"))
+        app.tabBar.savesButton.tap()
+        waitForDisappearance(of: app.saves.itemView(matching: "Item 1"))
     }
 
     func test_sharingRecentSavesItem_removesItemFromRecentSaves() {
@@ -162,19 +173,10 @@ class HomeTests: XCTestCase {
         app.shareSheet.wait()
     }
 
-    func test_tappingRecentSavesMyListButton_opensMyListView() {
+    func test_tappingRecentSavesSavesButton_opensSavesView() {
         app.launch().homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
-        app.myListView.itemView(matching: "Item 1").wait()
-        XCTAssertTrue(app.myListView.selectionSwitcher.myListButton.isSelected)
-    }
-
-    func test_tappingRecentSavesMyListButton_whenPreviouslyArchiveView_opensMyListView() {
-        app.launch().tabBar.myListButton.wait().tap()
-        app.myListView.selectionSwitcher.archiveButton.wait().tap()
-        app.tabBar.homeButton.wait().tap()
-        app.homeView.sectionHeader("Recent Saves").seeAllButton.wait().tap()
-        app.myListView.itemView(matching: "Item 1").wait()
-        XCTAssertTrue(app.myListView.selectionSwitcher.myListButton.isSelected)
+        app.saves.itemView(matching: "Item 1").wait()
+        XCTAssertTrue(app.saves.selectionSwitcher.savesButton.isSelected)
     }
 
     func test_tappingSlatesSeeAllButton_showsSlateDetailView() {
@@ -183,8 +185,6 @@ class HomeTests: XCTestCase {
         home.sectionHeader("Slate 1").seeAllButton.wait().tap()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 1").wait()
         app.slateDetailView.recommendationCell("Slate 1, Recommendation 2").wait()
-        app.slateDetailView.element.swipeUp()
-        app.slateDetailView.recommendationCell("Slate 1, Recommendation 3").wait()
 
         app.navigationBar.buttons["Home"].wait().tap()
         home.element.swipeUp()
@@ -204,8 +204,8 @@ class HomeTests: XCTestCase {
         cell.savedButton.wait()
 
         app.navigationBar.buttons["Home"].tap()
-        app.tabBar.myListButton.tap()
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
+        app.tabBar.savesButton.tap()
+        app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
     }
 
     func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsNotSyndicated_opensItemInWebView() {
@@ -220,62 +220,83 @@ class HomeTests: XCTestCase {
             .homeView.recommendationCell("Slate 1, Recommendation 1")
             .wait().element.swipeUp()
 
-        app.homeView.recommendationCell("Slate 2, Recommendation 2")
+        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2")
             .wait().tap()
 
-        app.readerView.cell(containing: "Jacob and David").wait()
+        app.readerView.cell(containing: "Mozilla").wait()
+    }
+
+    func test_tappingRecommendationCell_whenItemIsNotSaved_andItemIsSyndicated_andUserGoesBack_SyndicationInfoStays() {
+        app.launch()
+            .homeView.recommendationCell("Slate 1, Recommendation 1")
+            .wait().element.swipeUp()
+
+        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2")
+            .wait().tap()
+
+        app.readerView.cell(containing: "Syndicated Article Slate 2, Rec 2").wait()
+
+        app.navigationBar.buttons["Home"].tap()
+
+        XCTAssertTrue(app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").element.staticTexts["Mozilla"].exists)
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
-        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
-
         let saveRequestExpectation = expectation(description: "A save mutation request")
         let archiveRequestExpectation = expectation(description: "An archive mutation request")
-        var promise: EventLoopPromise<Response>?
-        server.routes.post("/graphql") { request, loop in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail() {
-                return Response.slateDetail()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToSaveAnItem {
-                XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/hello"))
-                saveRequestExpectation.fulfill()
-                promise = loop.makePromise()
-                return promise!.futureResult
+            if apiRequest.isToSaveAnItem {
+                defer { saveRequestExpectation.fulfill() }
+                XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/item-1"))
+                return .saveItem()
             } else if apiRequest.isToArchiveAnItem {
-                archiveRequestExpectation.fulfill()
-                return Response.archive()
-            } else {
-                fatalError("Unexpected request")
+                defer { archiveRequestExpectation.fulfill() }
+                return .archive()
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
+        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
         cell.saveButton.tap()
         cell.savedButton.wait()
 
-        app.tabBar.myListButton.tap()
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
+        app.tabBar.savesButton.tap()
+        app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
 
-        wait(for: [saveRequestExpectation], timeout: 1)
+        wait(for: [saveRequestExpectation])
 
-        promise?.succeed(Response.saveItem())
-        app.myListView.itemView(matching: "Slate 1, Recommendation 1").wait()
+        app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
         cell.savedButton.tap()
         cell.saveButton.wait()
 
-        wait(for: [archiveRequestExpectation], timeout: 1)
-        XCTAssertFalse(app.myListView.itemView(matching: "Slate 1, Recommendation 1").exists)
+        wait(for: [archiveRequestExpectation])
+        XCTAssertFalse(app.saves.itemView(matching: "Slate 1, Recommendation 1").exists)
     }
 
     func test_slateDetailsView_tappingSaveButtonInRecommendationCell_savesItemToList() {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isToSaveAnItem {
+                if apiRequest.contains("http:\\/\\/localhost:8080\\/item-1") {
+                    return Response.saveItem("save-recommendation-1")
+                } else if apiRequest.contains("https:\\/\\/example.com\\/item-2") {
+                    return Response.saveItem("save-recommendation-2")
+                }
+            } else if apiRequest.isToArchiveAnItem {
+                if apiRequest.contains("slate-1-rec-1-saved-item") {
+                    XCTFail("Received archive request for unexpected item")
+                } else {
+                    return Response.archive()
+                }
+            }
+
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+
         app.launch()
             .homeView
             .sectionHeader("Slate 1")
@@ -292,27 +313,6 @@ class HomeTests: XCTestCase {
         let rec2Cell = app.slateDetailView
             .recommendationCell("Slate 1, Recommendation 2")
             .wait()
-
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isToSaveAnItem {
-                if apiRequest.contains("https:\\/\\/example.com\\/item-1") {
-                    return Response.saveItem("save-recommendation-1")
-                } else if apiRequest.contains("https:\\/\\/example.com\\/item-2") {
-                    return Response.saveItem("save-recommendation-2")
-                }
-            } else if apiRequest.isToArchiveAnItem {
-                if apiRequest.contains("slate-1-rec-1-saved-item") {
-                    XCTFail("Received archive request for unexpected item")
-                } else {
-                    return Response.archive()
-                }
-            }
-
-            XCTFail("Received unexpected request")
-            return Response(status: .internalServerError)
-        }
 
         rec1Cell.saveButton.wait().tap()
         rec1Cell.savedButton.wait()
@@ -332,16 +332,66 @@ class HomeTests: XCTestCase {
         rec2Cell.savedButton.wait()
         rec1Cell.savedButton.wait()
     }
+
+    func test_returningFromSaves_maintainsHomePosition() {
+        let home = app.launch().homeView
+        home.overscroll()
+        validateBottomMessage()
+        app.tabBar.savesButton.tap()
+        app.tabBar.homeButton.tap()
+        validateBottomMessage()
+    }
+
+    func test_returningFromSettings_maintainsHomePosition() {
+        let home = app.launch().homeView
+        home.overscroll()
+        validateBottomMessage()
+        app.tabBar.settingsButton.tap()
+        app.tabBar.homeButton.tap()
+        validateBottomMessage()
+    }
+
+    func test_returningFromReader_maintainsHomePosition() {
+        let home = app.launch().homeView
+        home.overscroll()
+        validateBottomMessage()
+        home.recommendationCell("Syndicated Article Slate 2, Rec 2").tap()
+        app.readerView.readerHomeButton.wait().tap()
+        validateBottomMessage()
+    }
+
+    func test_returningFromSeeAll_maintainsHomePosition() {
+        let home = app.launch().homeView
+        home.overscroll()
+        validateBottomMessage()
+        home.seeAllCollectionButton.tap()
+        app.readerView.readerHomeButton.wait().tap()
+        validateBottomMessage()
+    }
+
+    func validateBottomMessage() {
+        XCTAssertTrue(app.homeView.overscrollText.exists)
+    }
 }
 
 extension HomeTests {
     func test_pullToRefresh_fetchesUpdatedContent() {
+        var slateLineupCalls = 0
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSlateLineup {
+                defer { slateLineupCalls += 1 }
+                switch slateLineupCalls {
+                case 0:
+                    return .slateLineup()
+                default:
+                    return .slateLineup("updated-slates")
+                }
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
         let home = app.launch().homeView
         home.recommendationCell("Slate 1, Recommendation 1").wait()
-
-        server.routes.post("/graphql") { request, _ in
-            Response.slateLineup("updated-slates")
-        }
 
         home.pullToRefresh()
         home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
@@ -364,33 +414,25 @@ extension HomeTests {
         let doesExist = expectation(for: exists, evaluatedWith: overscrollView)
         let isHittable = NSPredicate(format: "isHittable == 1")
         let hittable = expectation(for: isHittable, evaluatedWith: overscrollView)
-        wait(for: [doesExist, hittable], timeout: 20)
+        wait(for: [doesExist, hittable], timeout: 100)
     }
 }
 
 extension HomeTests {
     private func test_tappingRecentSavesItem_showsWebView(_ item: String) {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList("list-for-web-view")
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
+            if apiRequest.isForSavesContent {
+                return .saves("list-for-web-view")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().homeView.wait()
 
         // If an item isn't initially visible (e.g "Item 3"),
         // take the first cell and swipe left so that it becomes visible.
-        // This works because the fixture for "My List" contains 3 items.
+        // This works because the fixture for "Saves" contains 3 items.
         // The first two tests for "Item 1" and "Item 2" work because
         // they are on-screen, but we have to scroll for "Item 3".
         if !app.homeView.savedItemCell(item).exists {

@@ -8,40 +8,65 @@ import Sails
 class SignOutTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
+
         app = PocketAppElement(app: XCUIApplication())
         server = Application()
-
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail() {
-                return Response.slateDetail()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
+        await snowplowMicro.resetSnowplowEvents()
         try server.start()
-        app.launch()
     }
 
-    override func tearDownWithError() throws {
+    @MainActor
+    override func tearDown() async throws {
         try server.stop()
         app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+    }
+
+    @MainActor
+    func test_tappingSignOutshowsLogin() async {
+        app.launch()
+        app.tabBar.settingsButton.wait().tap()
+        tap_SignOut()
+
+        let logoutRowTappedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.logout")
+        XCTAssertNotNil(logoutRowTappedEvent)
+
+        let account = XCUIApplication()
+        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Log Out"].wait().tap()
+        app.loggedOutView.wait()
+
+        let logoutConfirmedEvent = await snowplowMicro.getFirstEvent(with: "global-nav.settings.logout-confirmed")
+        XCTAssertNotNil(logoutConfirmedEvent)
+    }
+
+    @MainActor
+    func test_tappingSignOutCancelshowsAccountsMenu() async {
+        app.launch()
+        app.tabBar.settingsButton.wait().tap()
+        tap_SignOut()
+        let account = XCUIApplication()
+        account.alerts["Are you sure?"].scrollViews.otherElements.buttons["Cancel"].wait().tap()
+        let cellCount = account.cells.count
+        XCTAssertTrue(cellCount > 0)
+
+        let events = await [snowplowMicro.getFirstEvent(with: "global-nav.settings.logout"), snowplowMicro.getFirstEvent(with: "global-nav.settings.logout-confirmed")]
+
+        let logoutRowTappedEvent = events[0]
+        XCTAssertNotNil(logoutRowTappedEvent)
+
+        let logoutConfirmedEvent = events[1]
+        XCTAssertNil(logoutConfirmedEvent)
+    }
+
+    func tap_SignOut() {
+        app.settingsView.logOutButton.tap()
     }
 }

@@ -38,4 +38,17 @@ struct AddTagsViewElement: PocketUIElement {
     func tag(matching string: String) -> XCUIElement {
         return element.staticTexts[string]
     }
+
+    func clearTagsTextfield() {
+        newTagTextField.wait().tap()
+        newTagTextField.typeText(XCUIKeyboardKey.delete.rawValue)
+    }
+
+    func enterRandomTagName() -> Int {
+        let randomInt = Int.random(in: 1..<155)
+        let tagInt = String(randomInt)
+        newTagTextField.typeText(tagInt)
+        newTagTextField.typeText("\n")
+        return randomInt
+    }
 }

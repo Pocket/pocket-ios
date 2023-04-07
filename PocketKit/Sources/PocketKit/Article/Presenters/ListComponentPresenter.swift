@@ -98,7 +98,7 @@ extension BulletedListComponent.Row: ListComponentElement {
     }
 
     func prefixStyle(applying settings: ReaderSettings) -> Style {
-        .body.monospace.adjustingSize(by: settings.fontSizeAdjustment)
+        .body.monospace.modified(by: settings)
     }
 }
 

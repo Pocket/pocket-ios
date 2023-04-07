@@ -2,18 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>AdjustAppToken</key>
+	<string>$(ADJUST_APP_TOKEN)</string>
+	<key>AdjustSignUpEventToken</key>
+	<string>$(ADJUST_SIGN_UP_EVENT_TOKEN)</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
 	<array>
-		<string>com.mozilla.pocket.next.refresh</string>
+		<string>com.mozilla.pocket.refresh.saves</string>
+		<string>com.mozilla.pocket.refresh.home</string>
+		<string>com.mozilla.pocket.refresh.archive</string>
+		<string>com.mozilla.pocket.refresh.tags</string>
+		<string>com.mozilla.pocket.refresh.unresolved</string>
+		<string>com.mozilla.pocket.refresh.user</string>
 	</array>
 	<key>BrazeAPIEndpoint</key>
 	<string>$(BRAZE_API_ENDPOINT)</string>
 	<key>BrazeAPIKey</key>
 	<string>$(BRAZE_API_KEY)</string>
+	<key>CFBundleAllowMixedLocalizations</key>
+	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Pocket Beta</string>
+	<string>Pocket</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -41,6 +52,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GroupId</key>
+	<string>$(GROUP_ID)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
@@ -54,6 +67,10 @@
 	<string>$(POCKET_API_BASE_URL)</string>
 	<key>PocketAPIConsumerKey</key>
 	<string>$(POCKET_API_CONSUMER_KEY)</string>
+	<key>PocketPremiumAnnual</key>
+	<string>$(POCKET_PREMIUM_ANNUAL)</string>
+	<key>PocketPremiumMonthly</key>
+	<string>$(POCKET_PREMIUM_MONTHLY)</string>
 	<key>SentryDSN</key>
 	<string>$(SENTRY_DSN)</string>
 	<key>SnowplowEndpoint</key>

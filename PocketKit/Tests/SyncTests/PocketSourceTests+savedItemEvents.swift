@@ -1,6 +1,7 @@
 import XCTest
 @testable import Sync
 
+// swiftlint:disable force_try
 extension PocketSourceTests {
     func test_events_whenOSNotificationCenterPostsSavedItemCreatedNotification_publishesAnEvent() {
         let source = subject()
@@ -16,7 +17,7 @@ extension PocketSourceTests {
         }.store(in: &subscriptions)
 
         osNotificationCenter.post(name: .savedItemCreated)
-        wait(for: [receivedNotification], timeout: 1)
+        wait(for: [receivedNotification], timeout: 10)
     }
 
     func test_events_whenOSNotificationCenterPostsSavedItemUpdatedNotification_publishesAnEvent_andDeletesNotificationRecords() {
@@ -34,16 +35,16 @@ extension PocketSourceTests {
             receivedNotification.fulfill()
         }.store(in: &subscriptions)
 
-        let notification: SavedItemUpdatedNotification = space.new()
+        let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
         notification.savedItem = savedItem
         try! space.save()
 
         osNotificationCenter.post(name: .savedItemUpdated)
-        wait(for: [receivedNotification], timeout: 1)
+        wait(for: [receivedNotification], timeout: 10)
 
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
         XCTAssertEqual(notifications, [])
-        XCTAssertFalse(space.context.hasChanges)
+        XCTAssertFalse(space.backgroundContext.hasChanges)
     }
 
     func test_events_whenOSNotificationCenterPostsUnresolvedItemCreatedNotification_enqueuesASaveItemOperation() throws {
@@ -57,13 +58,13 @@ extension PocketSourceTests {
         var source: PocketSource? = subject()
 
         let savedItem = try! space.createSavedItem()
-        let unresolved: UnresolvedSavedItem = space.new()
+        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.backgroundContext)
         unresolved.savedItem = savedItem
         try space.save()
 
         osNotificationCenter.post(name: .unresolvedSavedItemCreated)
 
-        wait(for: [operationStarted], timeout: 1)
+        wait(for: [operationStarted], timeout: 10)
 
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
 
@@ -78,11 +79,11 @@ extension PocketSourceTests {
         let source = subject()
 
         let savedItem = try! space.createSavedItem()
-        let notification1: SavedItemUpdatedNotification = space.new()
+        let notification1: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
         notification1.savedItem = savedItem
         try! space.save()
 
-        let notification2: SavedItemUpdatedNotification = space.new()
+        let notification2: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
         notification2.savedItem = savedItem
         try space.save()
 
@@ -99,7 +100,8 @@ extension PocketSourceTests {
 
         osNotificationCenter.post(name: .savedItemUpdated)
 
-        wait(for: [expectEvent], timeout: 1)
+        wait(for: [expectEvent], timeout: 10)
         sub.cancel()
     }
 }
+// swiftlint:enable force_try

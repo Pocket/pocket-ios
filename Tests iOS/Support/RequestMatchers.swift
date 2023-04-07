@@ -4,82 +4,104 @@
 
 import Foundation
 import Sails
+import SharedPocketKit
 
 struct ClientAPIRequest {
     private let request: Request
     private let requestBody: String?
+    private let operationName: String?
 
     init(_ request: Request) {
         self.request = request
         self.requestBody = body(of: request)
+        self.operationName = request.head.headers.first(name: "X-APOLLO-OPERATION-NAME")
     }
 
     var isEmpty: Bool {
         requestBody == nil
     }
 
-    var isForMyListContent: Bool {
-        contains("userByToken") && !contains(#""isArchived":true"#)
+    var isForSavesContent: Bool {
+        self.operationName == "FetchSaves" && !contains(#"ARCHIVED"#)
     }
 
     var isForArchivedContent: Bool {
-        contains("savedItems(") && contains(#""isArchived":true"#)
-    }
-
-    var isForFavoritedArchivedContent: Bool {
-        contains("savedItems(") && contains(#""isArchived":true"#) && contains(#""isFavorite":true"#)
+        self.operationName == "FetchArchive" && contains(#"ARCHIVED"#)
     }
 
     var isForSlateLineup: Bool {
-        contains("getSlateLineup")
+        self.operationName == "GetSlateLineup"
     }
 
     var isToArchiveAnItem: Bool {
-        contains("updateSavedItemArchive")
+        self.operationName == "ArchiveItem"
     }
 
     func isToDeleteATag(_ number: Int = 1) -> Bool {
-        contains("deleteTag(") && contains("id-\(number)")
+        self.operationName == "DeleteTag" && contains("id-\(number)")
     }
 
     func isToUpdateTag(_ name: String) -> Bool {
-        contains("updateTag(") && contains("\(name)")
+        self.operationName == "TagUpdate" && contains("\(name)")
     }
 
     var isToDeleteAnItem: Bool {
-        contains("deleteSavedItem")
+        self.operationName == "DeleteItem"
     }
 
     var isToFavoriteAnItem: Bool {
-        contains("updateSavedItemFavorite")
+        self.operationName == "FavoriteItem"
     }
 
     var isToUnfavoriteAnItem: Bool {
-        contains("updateSavedItemUnFavorite")
+        self.operationName == "UnfavoriteItem"
     }
 
     func isForSlateDetail(_ number: Int = 1) -> Bool {
-        contains("getSlate(") && contains("slate-\(number)")
+        self.operationName == "GetSlate" && contains("slate-\(number)")
     }
 
     var isToSaveAnItem: Bool {
-        contains("upsertSavedItem")
+        self.operationName == "SaveItem"
     }
 
     var isForItemDetail: Bool {
-        contains("savedItemById(")
+        self.operationName == "SavedItemByID"
     }
 
-    var isForRecommendationDetail: Bool {
-        contains("itemByItemId(")
+    var isForArchivedItemDetail: Bool {
+        self.operationName == "SavedItemByID" && contains("archived-item-1")
+    }
+
+    func isForRecommendationDetail(_ number: Int = 1) -> Bool {
+        self.operationName == "ItemByID" && contains("recommended-item-\(number)")
     }
 
     var isForReplacingSavedItemTags: Bool {
-        contains("replaceSavedItemTags")
+        self.operationName == "ReplaceSavedItemTags"
     }
 
     var isForTags: Bool {
-        contains("Tags")
+        self.operationName == "Tags"
+    }
+
+    var isForDeleteUser: Bool {
+        self.operationName == "DeleteUser"
+    }
+
+    var isForUserDetails: Bool {
+        self.operationName == "GetUserData"
+    }
+
+    func isForSearch(_ type: SearchScope) -> Bool {
+        switch type {
+        case .saves:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{\"status\":\"UNREAD\"}")
+        case .archive:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{\"status\":\"ARCHIVED\"}")
+        case .all:
+            return self.operationName == "SearchSavedItems" && contains("filter\":{}")
+        }
     }
 
     func contains(_ string: String) -> Bool {

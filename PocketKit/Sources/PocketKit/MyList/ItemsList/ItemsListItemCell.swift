@@ -75,7 +75,7 @@ class ItemsListItemCell: UICollectionViewListCell {
             .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
 
         let button = UIButton(configuration: config, primaryAction: nil)
-        button.accessibilityIdentifier = "share"
+        button.accessibilityIdentifier = "item-action-share"
         return button
     }()
 
@@ -131,7 +131,7 @@ class ItemsListItemCell: UICollectionViewListCell {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        accessibilityIdentifier = "my-list-item"
+        accessibilityIdentifier = "saves-item"
 
         buttonStack.addArrangedSubview(tagsStack)
         buttonStack.addArrangedSubview(UIView())
@@ -225,6 +225,8 @@ extension ItemsListItemCell {
         let favoriteAction: ItemAction?
         let overflowActions: [ItemAction]
         let filterByTagAction: UIAction?
+        let trackOverflow: UIAction?
+        let swiftUITrackOverflow: ItemAction?
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -275,6 +277,10 @@ extension ItemsListItemCell {
         let menuActions = state.model?.overflowActions.compactMap(UIAction.init) ?? []
         menuButton.menu = UIMenu(children: menuActions)
 
+        if let trackAction = state.model?.trackOverflow {
+            menuButton.addAction(trackAction, for: .menuActionTriggered)
+        }
+
         thumbnailView.image = nil
         guard let thumbnailURL = state.model?.thumbnailURL else {
             thumbnailWidthConstraint.constant = 0
@@ -282,9 +288,12 @@ extension ItemsListItemCell {
         }
 
         thumbnailWidthConstraint.constant = Constants.thumbnailSize.width
+        thumbnailView.kf.indicatorType = .activity
         thumbnailView.kf.setImage(
             with: thumbnailURL,
             options: [
+                .callbackQueue(.dispatch(.global(qos: .userInteractive))),
+                .backgroundDecode,
                 .scaleFactor(UIScreen.main.scale),
                 .processor(
                     ResizingImageProcessor(
@@ -302,12 +311,12 @@ extension ItemsListItemCell {
 }
 
 private extension UIConfigurationStateCustomKey {
-    static let model = UIConfigurationStateCustomKey("com.mozilla.pocket.next.MyListItemCell.model")
+    static let model = UIConfigurationStateCustomKey("com.mozilla.pocket.next.SavesItemCell.model")
 }
 
 private extension UICellConfigurationState {
     var model: ItemsListItemCell.Model? {
-        set { self[.model] = newValue }
         get { return self[.model] as? ItemsListItemCell.Model }
+        set { self[.model] = newValue }
     }
 }

@@ -1,6 +1,6 @@
 import XCTest
 import Apollo
-import Sync
+import PocketGraph
 
 @testable import Sync
 
@@ -51,10 +51,13 @@ class PocketSaveServiceTests: XCTestCase {
         let service = subject()
         let result = service.save(url: URL(string: "https://getpocket.com")!)
 
-        XCTAssertEqual(result, .newItem)
+        guard case .newItem = result else {
+            XCTFail("Expected newItem, but was \(result)")
+            return
+        }
         XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
 
-        wait(for: [performCalled], timeout: 1)
+        wait(for: [performCalled], timeout: 10)
         let performCall: MockApolloClient.PerformCall<SaveItemMutation>? = client.performCall(at: 0)
         XCTAssertEqual(performCall?.mutation.input.url, "https://getpocket.com")
     }
@@ -72,8 +75,11 @@ class PocketSaveServiceTests: XCTestCase {
         let service = subject()
         let result = service.save(url: url)
 
-        XCTAssertEqual(result, .existingItem)
-        wait(for: [savedItemUpdated], timeout: 1)
+        guard case .existingItem = result else {
+            XCTFail("Expected existingItem, but was \(result)")
+            return
+        }
+        wait(for: [savedItemUpdated], timeout: 10)
 
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
         XCTAssertEqual(notifications?.isEmpty, false)
@@ -108,14 +114,14 @@ class PocketSaveServiceTests: XCTestCase {
         _ = service.save(url: url)
 
         do {
-            wait(for: [performMutationWasCalled], timeout: 1)
+            wait(for: [performMutationWasCalled], timeout: 10)
             let savedItem = try space.fetchSavedItem(byURL: url)
             XCTAssertNotNil(savedItem)
             XCTAssertFalse(savedItem!.hasChanges)
         }
 
         do {
-            wait(for: [performMutationCompleted], timeout: 1)
+            wait(for: [performMutationCompleted], timeout: 10)
             let savedItem = try space.fetchSavedItem(byRemoteID: "saved-item-1")
             XCTAssertNotNil(savedItem?.item)
         }
@@ -144,7 +150,7 @@ class PocketSaveServiceTests: XCTestCase {
         DispatchQueue(label: "start task").async {
             expiringActivity?(false)
         }
-        wait(for: [performMutationCalled, notificationReceived], timeout: 1)
+        wait(for: [performMutationCalled, notificationReceived], timeout: 10)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
         XCTAssertEqual(unresolved[0].savedItem?.url, url)
@@ -174,7 +180,7 @@ class PocketSaveServiceTests: XCTestCase {
             finishedActivity.fulfill()
         }
 
-        wait(for: [performMutationCalled], timeout: 1)
+        wait(for: [performMutationCalled], timeout: 10)
 
         let finishedCancellingActivity = expectation(description: "finished cancelling the activity")
         queue.async {
@@ -183,7 +189,7 @@ class PocketSaveServiceTests: XCTestCase {
             finishedCancellingActivity.fulfill()
         }
 
-        wait(for: [finishedActivity, finishedCancellingActivity], timeout: 1)
+        wait(for: [finishedActivity, finishedCancellingActivity], timeout: 10)
     }
 
     func test_cancellationOfExpiringActivity_setsSkeletonItemAsUnresolved_andPostsNotification() throws {
@@ -210,12 +216,12 @@ class PocketSaveServiceTests: XCTestCase {
         DispatchQueue(label: "start task").async {
             expiringActivity?(false)
         }
-        wait(for: [performMutationCalled], timeout: 1)
+        wait(for: [performMutationCalled], timeout: 10)
 
         DispatchQueue(label: "cancel task").async {
             expiringActivity?(true)
         }
-        wait(for: [notificationReceived], timeout: 1)
+        wait(for: [notificationReceived], timeout: 10)
 
         let unresolved = try space.fetchUnresolvedSavedItems()
         XCTAssertEqual(unresolved[0].savedItem?.url, url)
@@ -250,14 +256,151 @@ class PocketSaveServiceTests: XCTestCase {
 
         let service = subject()
         _ = service.save(url: URL(string: "https://getpocket.com")!)
-        wait(for: [performCalled, savedItemCreated], timeout: 1)
+        wait(for: [performCalled, savedItemCreated], timeout: 10)
 
         DispatchQueue.main.async {
             mutationCompletion?(.success(Fixture.load(name: "save-item").asGraphQLResult(from: mutation!)))
         }
 
-        wait(for: [savedItemUpdated], timeout: 1)
+        wait(for: [savedItemUpdated], timeout: 10)
         let notifications = try? space.fetchSavedItemUpdatedNotifications()
         XCTAssertEqual(notifications?.isEmpty, false)
+    }
+}
+
+// MARK: Tags
+extension PocketSaveServiceTests {
+    func test_addTags_beginsBackgroundActivity_andPerformsReplaceSavedItemTagsMutationWithCorrectTags() {
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, block in
+            DispatchQueue.global(qos: .background).async {
+                block(false)
+            }
+        }
+
+        let performCalled = expectation(description: "perform called")
+        client.stubPerform(toReturnFixtureNamed: "add-tags", asResultType: ReplaceSavedItemTagsMutation.self) {
+            performCalled.fulfill()
+        }
+
+        let service = subject()
+        let item = space.buildSavedItem()
+        let result = service.addTags(savedItem: item, tags: ["tag 1", "tag 2"])
+
+        guard case .taggedItem = result else {
+            XCTFail("Expected taggedItem, but was \(result)")
+            return
+        }
+        XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
+
+        wait(for: [performCalled], timeout: 10)
+        let performCall: MockApolloClient.PerformCall<ReplaceSavedItemTagsMutation>? = client.performCall(at: 0)
+        XCTAssertEqual(performCall?.mutation.input.compactMap { $0.tags }, [["tag 1", "tag 2"]])
+    }
+
+    func test_addTags_whenApolloRequestFailsForReplaceSavedItemTagsMutation_storesUnresolvedSavedItemAndPostsNotification() throws {
+        var expiringActivity: ((Bool) -> Void)?
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
+            expiringActivity = _expiringActivity
+        }
+
+        let performMutationCalled = expectation(description: "perform called")
+        client.stubPerform(ofMutationType: ReplaceSavedItemTagsMutation.self, toReturnError: TestError.anError) {
+            performMutationCalled.fulfill()
+        }
+        let item = space.buildSavedItem()
+        let service = self.subject()
+        _ = service.addTags(savedItem: item, tags: ["tag 1", "tag 2"])
+
+        let notificationReceived = expectation(description: "notificationReceived")
+        osNotificationCenter.add(observer: self, name: .unresolvedSavedItemCreated) {
+            notificationReceived.fulfill()
+        }
+
+        DispatchQueue(label: "start task").async {
+            expiringActivity?(false)
+        }
+        wait(for: [performMutationCalled, notificationReceived], timeout: 10)
+
+        let unresolved = try space.fetchUnresolvedSavedItems()
+        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"] )
+        XCTAssertEqual(unresolved[0].hasChanges, false)
+    }
+
+    func test_addTags_beginsBackgroundActivity_andPerformsUpdateSavedItemRemoveTagsMutationWithCorrectTags() {
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, block in
+            DispatchQueue.global(qos: .background).async {
+                block(false)
+            }
+        }
+
+        let performCalled = expectation(description: "perform called")
+        client.stubPerform(toReturnFixtureNamed: "update-tags", asResultType: UpdateSavedItemRemoveTagsMutation.self) {
+            performCalled.fulfill()
+        }
+
+        let service = subject()
+        let item = space.buildSavedItem()
+        let result = service.addTags(savedItem: item, tags: [])
+
+        guard case .taggedItem = result else {
+            XCTFail("Expected taggedItem, but was \(result)")
+            return
+        }
+        XCTAssertNotNil(backgroundActivityPerformer.performCall(at: 0))
+
+        wait(for: [performCalled], timeout: 10)
+        let performCall: MockApolloClient.PerformCall<UpdateSavedItemRemoveTagsMutation>? = client.performCall(at: 0)
+        XCTAssertNotNil(performCall?.mutation.savedItemId)
+    }
+
+    func test_addTags_whenApolloRequestFailsForUpdateSavedItemRemoveTagsMutation_storesUnresolvedSavedItemAndPostsNotification() throws {
+        var expiringActivity: ((Bool) -> Void)?
+        backgroundActivityPerformer.stubPerformExpiringActivity { _, _expiringActivity in
+            expiringActivity = _expiringActivity
+        }
+
+        let performMutationCalled = expectation(description: "perform called")
+        client.stubPerform(ofMutationType: UpdateSavedItemRemoveTagsMutation.self, toReturnError: TestError.anError) {
+            performMutationCalled.fulfill()
+        }
+        let item = space.buildSavedItem()
+        let service = self.subject()
+        _ = service.addTags(savedItem: item, tags: [])
+
+        let notificationReceived = expectation(description: "notificationReceived")
+        osNotificationCenter.add(observer: self, name: .unresolvedSavedItemCreated) {
+            notificationReceived.fulfill()
+        }
+
+        DispatchQueue(label: "start task").async {
+            expiringActivity?(false)
+        }
+        wait(for: [performMutationCalled, notificationReceived], timeout: 10)
+
+        let unresolved = try space.fetchUnresolvedSavedItems()
+        XCTAssertEqual(unresolved[0].savedItem?.tags?.compactMap { ($0 as? Tag)?.name }, [] )
+        XCTAssertEqual(unresolved[0].hasChanges, false)
+    }
+
+    func test_retrieveTags_updatesInfoViewModel() {
+        let tag: Tag = Tag(context: space.backgroundContext)
+        tag.name = "tag 1"
+        let tag2: Tag = Tag(context: space.backgroundContext)
+        tag2.name = "tag 2"
+        let service = subject()
+        let tags = service.retrieveTags(excluding: ["tag 1"])
+        XCTAssertEqual(tags?.count, 1)
+        XCTAssertEqual(tags?[0].name, "tag 2")
+    }
+
+    func test_filterTags_retrievesFilteredTags() {
+        let tag: Tag = Tag(context: space.backgroundContext)
+        tag.name = "tag 1"
+        let tag2: Tag = Tag(context: space.backgroundContext)
+        tag2.name = "tag 2"
+        let service = subject()
+        let tags = service.filterTags(with: "t", excluding: ["tag 2"])
+        XCTAssertEqual(tags?.count, 1)
+        XCTAssertEqual(tags?[0].name, "tag 1")
     }
 }

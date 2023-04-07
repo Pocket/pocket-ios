@@ -4,18 +4,20 @@ import XCTest
 import CoreData
 
 class SpaceTests: XCTestCase {
-    var context: NSManagedObjectContext!
+    var viewContext: NSManagedObjectContext!
+    var backgroundContext: NSManagedObjectContext!
 
     override func setUp() {
-        context = PersistentContainer.testContainer.viewContext
+        viewContext = PersistentContainer.testContainer.viewContext
+        backgroundContext = PersistentContainer.testContainer.newBackgroundContext()
     }
 
     override func tearDownWithError() throws {
         try Space.testSpace().clear()
     }
 
-    func subject(context: NSManagedObjectContext? = nil) -> Space {
-        Space(context: context ?? self.context)
+    func subject() -> Space {
+        Space(backgroundContext: backgroundContext, viewContext: viewContext)
     }
 
     func testDeleteTags() throws {
@@ -32,7 +34,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchTagsForSavedAndArchivedItems() throws {
         let space = subject()
-        let tag: Tag = space.new()
+        let tag: Tag = Tag(context: space.backgroundContext)
         tag.name = "tag 0"
         _ = space.buildSavedItem(tags: [tag])
         _ = createItemsWithTags(2, isArchived: true)
@@ -43,7 +45,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchOrCreateTags() throws {
         let space = subject()
-        let tag1: Tag = space.new()
+        let tag1: Tag = Tag(context: space.backgroundContext)
         tag1.name = "tag 1"
 
         let fetchedTag1 = space.fetchOrCreateTag(byName: "tag 1")
@@ -56,7 +58,7 @@ class SpaceTests: XCTestCase {
 
     func testFetchTagsByID() throws {
         let space = subject()
-        let tag1: Tag = space.new()
+        let tag1: Tag = Tag(context: space.backgroundContext)
         tag1.remoteID = "id 1"
         tag1.name = "tag 1"
 
@@ -81,11 +83,25 @@ class SpaceTests: XCTestCase {
         XCTAssertTrue(tags.contains(tag2))
     }
 
+    func testFilterTagsExcludingCertainTags() throws {
+        let space = subject()
+        let items = createItemsWithTags(3)
+        guard let tag0 = items[0].tags?[0] as? Tag, let tag2 = items[2].tags?[0] as? Tag else {
+            XCTFail("Should not be nil")
+            return
+        }
+        let tags = try space.filterTags(with: "t", excluding: ["tag 2"])
+
+        XCTAssertEqual(tags.count, 2)
+        XCTAssertTrue(tags.contains(tag0))
+        XCTAssertTrue(tags.contains(tag2))
+    }
+
     private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [SavedItem] {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in
             let space = subject()
-            let tag: Tag = space.new()
+            let tag: Tag = Tag(context: space.backgroundContext)
             tag.remoteID = "id \(num)"
             tag.name = "tag \(num)"
             return space.buildSavedItem(isArchived: isArchived, tags: [tag])

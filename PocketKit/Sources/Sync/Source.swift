@@ -10,23 +10,37 @@ public enum InitialDownloadState {
 }
 
 public protocol Source {
-    var mainContext: NSManagedObjectContext { get }
+    var viewContext: NSManagedObjectContext { get }
 
     var events: AnyPublisher<SyncEvent, Never> { get }
 
-    var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
+    var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
+
+    var initialArchiveDownloadState: CurrentValueSubject<InitialDownloadState, Never> { get }
 
     func clear()
 
-    func makeItemsController() -> SavedItemsController
+    func deleteAccount() async throws
 
-    func makeArchiveService() -> ArchiveService
+    func makeRecentSavesController() -> NSFetchedResultsController<SavedItem>
 
-    func makeUndownloadedImagesController() -> ImagesController
+    func makeHomeController() -> RichFetchedResultsController<Recommendation>
 
-    func object<T: NSManagedObject>(id: NSManagedObjectID) -> T?
+    func makeSavesController() -> SavedItemsController
 
-    func refresh(maxItems: Int, completion: (() -> Void)?)
+    func makeArchiveController() -> SavedItemsController
+
+    func makeSearchService() -> SearchService
+
+    func makeImagesController() -> ImagesController
+
+    func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
+
+    func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
+
+    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool)
+
+    func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
 
     func retryImmediately()
 
@@ -50,17 +64,13 @@ public protocol Source {
 
     func fetchAllTags() -> [Tag]?
 
+    func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
+
     func fetchTags(isArchived: Bool) -> [Tag]?
 
     func fetchSlateLineup(_ identifier: String) async throws
 
-    func fetchSlate(_ slateID: String) async throws
-
     func restore()
-
-    func refresh(_ object: NSManagedObject, mergeChanges: Bool)
-
-    func resolveUnresolvedSavedItems()
 
     func save(recommendation: Recommendation)
 
@@ -68,21 +78,37 @@ public protocol Source {
 
     func remove(recommendation: Recommendation)
 
-    func download(images: [Image])
+    func delete(images: [Image])
 
     func fetchDetails(for savedItem: SavedItem) async throws
 
     func fetchDetails(for recommendation: Recommendation) async throws
 
     func save(url: URL)
-}
 
-public extension Source {
-    func refresh(completion: (() -> Void)?) {
-        self.refresh(maxItems: 400, completion: completion)
-    }
+    func fetchItem(_ url: URL) -> Item?
 
-    func refresh() {
-        self.refresh(maxItems: 400, completion: nil)
-    }
+    func searchSaves(search: String) -> [SavedItem]?
+
+    func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem?
+
+    /// Get the count of unread saves
+    /// - Returns: Int of unread saves
+    func unreadSaves() throws -> Int
+
+    func fetchUserData() async throws
+
+    // MARK: - Refresh Coordindator calls
+    // All the following functions below this comment should be called from a RefreshCoordinator and not directtly.
+
+    func resolveUnresolvedSavedItems(completion: (() -> Void)?)
+
+    func refreshSaves(completion: (() -> Void)?)
+
+    func refreshArchive(completion: (() -> Void)?)
+
+    func refreshTags(completion: (() -> Void)?)
+
+    // MARK: -
+
 }

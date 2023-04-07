@@ -4,6 +4,10 @@
 
 import Foundation
 import AuthenticationServices
+import Sync
+import Adjust
+import SharedPocketKit
+import Localization
 
 public class AuthorizationClient {
     typealias AuthenticationSessionFactory = (URL, String?, @escaping ASWebAuthenticationSession.CompletionHandler) -> AuthenticationSession
@@ -11,13 +15,16 @@ public class AuthorizationClient {
     private var isAuthenticating = false
 
     private let consumerKey: String
+    private let adjustSignupEventToken: String
     private let authenticationSessionFactory: AuthenticationSessionFactory
 
     init(
         consumerKey: String,
+        adjustSignupEventToken: String,
         authenticationSessionFactory: @escaping AuthenticationSessionFactory
     ) {
         self.consumerKey = consumerKey
+        self.adjustSignupEventToken = adjustSignupEventToken
         self.authenticationSessionFactory = authenticationSessionFactory
     }
 
@@ -42,7 +49,21 @@ public class AuthorizationClient {
         defer { isAuthenticating = false }
 
         isAuthenticating = true
-        return try await authenticate(with: "/signup", contextProvider: contextProvider)
+
+        // This will only return if signup succeeds, otherwise
+        // it will throw an error. We can await a successful
+        // response and then track an adjust event.
+        let response = try await authenticate(with: "/signup", contextProvider: contextProvider)
+
+       Task { [weak self] in
+           guard let self else {
+               Log.capture(message: "weak self logging adjust")
+               return
+           }
+          Adjust.trackEvent(ADJEvent(eventToken: self.adjustSignupEventToken))
+       }
+
+        return response
     }
 
     @MainActor
@@ -57,7 +78,7 @@ public class AuthorizationClient {
         components.queryItems = [
             URLQueryItem(name: "consumer_key", value: consumerKey),
             URLQueryItem(name: "redirect_uri", value: "\(requestRedirect)://fxa"),
-            URLQueryItem(name: "utm_source", value: "ios")
+            URLQueryItem(name: "utm_source", value: "ios_next")
         ]
 
         guard let requestURL = components.url else {
@@ -67,10 +88,11 @@ public class AuthorizationClient {
         return try await withCheckedThrowingContinuation { continuation in
             var session = authenticationSessionFactory(requestURL, requestRedirect) { url, error in
                 if let error = error {
+                    Log.breadcrumb(category: "auth", level: .error, message: "Error: \(error.localizedDescription) with url \(String(describing: url))")
                     continuation.resume(throwing: AuthorizationClient.Error.other(error))
                 } else if let url = url {
                     guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
-                          let guid = components.queryItems?.first(where: {$0.name == "guid" })?.value,
+                          let guid = components.queryItems?.first(where: { $0.name == "guid" })?.value,
                           let token = components.queryItems?.first(where: { $0.name == "access_token" })?.value,
                           let userID = components.queryItems?.first(where: { $0.name == "id" })?.value else {
                               continuation.resume(throwing: AuthorizationClient.Error.invalidRedirect)
@@ -91,7 +113,7 @@ public class AuthorizationClient {
 }
 
 extension AuthorizationClient {
-    enum Error: LocalizedError, Equatable {
+    enum Error: LoggableError, Equatable {
         static func == (lhs: AuthorizationClient.Error, rhs: AuthorizationClient.Error) -> Bool {
             switch (lhs, rhs) {
             case (.invalidRedirect, .invalidRedirect):
@@ -110,14 +132,14 @@ extension AuthorizationClient {
         case alreadyAuthenticating
         case other(Swift.Error)
 
-        var errorDescription: String? {
+        var logDescription: String {
             switch self {
             case .invalidRedirect:
-                return "Could not successfully handle the server redirect."
+                return Localization.couldNotSuccessfullyHandleTheServerRedirect
             case .invalidComponents:
-                return "Could not generate correct URL for authentication."
+                return Localization.couldNotGenerateCorrectURLForAuthentication
             case .alreadyAuthenticating:
-                return "AuthorizationClient is already authenticating"
+                return Localization.authorizationClientIsAlreadyAuthenticating
             case .other(let error):
                 return error.localizedDescription
             }

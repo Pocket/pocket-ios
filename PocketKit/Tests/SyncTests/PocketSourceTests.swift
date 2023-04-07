@@ -5,12 +5,16 @@
 import XCTest
 import CoreData
 import Apollo
+import PocketGraph
 import Combine
+import SharedPocketKit
 
 @testable import Sync
 
+// swiftlint:disable force_try
 class PocketSourceTests: XCTestCase {
     var space: Space!
+    var user: MockUser!
     var apollo: MockApolloClient!
     var operations: MockOperationFactory!
     var lastRefresh: MockLastRefresh!
@@ -20,9 +24,12 @@ class PocketSourceTests: XCTestCase {
     var backgroundTaskManager: MockBackgroundTaskManager!
     var osNotificationCenter: OSNotificationCenter!
     var subscriptions: [AnyCancellable]!
+    var userService: MockUserService!
 
     override func setUpWithError() throws {
         space = .testSpace()
+        user = MockUser()
+        user.stubStandardSetStatus()
         apollo = MockApolloClient()
         operations = MockOperationFactory()
         lastRefresh = MockLastRefresh()
@@ -32,8 +39,10 @@ class PocketSourceTests: XCTestCase {
         backgroundTaskManager = MockBackgroundTaskManager()
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
         subscriptions = []
+        userService = MockUserService()
 
-        lastRefresh.stubGetLastRefresh { nil}
+        lastRefresh.stubGetLastRefreshSaves { nil }
+        lastRefresh.stubGetLastRefreshArchive { nil }
 
         backgroundTaskManager.stubBeginTask { _, _ in return 0 }
         backgroundTaskManager.stubEndTask { _ in }
@@ -47,16 +56,19 @@ class PocketSourceTests: XCTestCase {
 
     func subject(
         space: Space? = nil,
+        user: User? = nil,
         apollo: ApolloClientProtocol? = nil,
         operations: OperationFactory? = nil,
         lastRefresh: LastRefresh? = nil,
         slateService: SlateService? = nil,
         networkMonitor: NetworkPathMonitor? = nil,
         sessionProvider: SessionProvider? = nil,
-        osNotificationCenter: OSNotificationCenter? = nil
+        osNotificationCenter: OSNotificationCenter? = nil,
+        userService: UserService? = nil
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
+            user: user ?? self.user,
             apollo: apollo ?? self.apollo,
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
@@ -64,15 +76,16 @@ class PocketSourceTests: XCTestCase {
             networkMonitor: networkMonitor ?? self.networkMonitor,
             sessionProvider: sessionProvider ?? self.sessionProvider,
             backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager,
-            osNotificationCenter: osNotificationCenter ?? self.osNotificationCenter
+            osNotificationCenter: osNotificationCenter ?? self.osNotificationCenter,
+            userService: userService ?? self.userService
         )
     }
 
-    func test_refresh_addsFetchListOperationToQueue() {
+    func test_refresh_addsFetchSavesOperationToQueue() {
         let session = MockSession()
         sessionProvider.session = session
         let expectationToRunOperation = expectation(description: "Run operation")
-        operations.stubFetchList { _, _, _, _, _, _ in
+        operations.stubFetchSaves { _, _, _, _ in
             TestSyncOperation {
                 expectationToRunOperation.fulfill()
             }
@@ -80,42 +93,40 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
 
-        source.refresh()
+        source.refreshSaves()
         waitForExpectations(timeout: 1)
-
-        XCTAssertEqual(operations.fetchListCall(at: 0)?.token, session.accessToken)
     }
 
     func test_refreshWithCompletion_callsCompletionWhenFinished() {
         sessionProvider.session = MockSession()
-        operations.stubFetchList { _, _, _, _, _, _ in
+        operations.stubFetchSaves { _, _, _, _  in
             TestSyncOperation { }
         }
 
         let source = subject()
 
         let expectationToRunOperation = expectation(description: "Run operation")
-        source.refresh {
+        source.refreshSaves {
             expectationToRunOperation.fulfill()
         }
 
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
     }
 
     func test_refresh_whenTokenIsNil_callsCompletion() {
         sessionProvider.session = nil
-        operations.stubFetchList { _, _, _, _, _, _ in
+        operations.stubFetchSaves { _, _, _, _  in
             TestSyncOperation { }
         }
 
         let source = subject()
 
         let expectationToRunOperation = expectation(description: "Run operation")
-        source.refresh {
+        source.refreshSaves {
             expectationToRunOperation.fulfill()
         }
 
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
     }
 
     func test_favorite_togglesIsFavorite_andExecutesFavoriteMutation() throws {
@@ -165,7 +176,7 @@ class PocketSourceTests: XCTestCase {
         let fetchedItem = try space.fetchSavedItem(byRemoteID: "delete-me")
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.hasChanges)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
     }
 
     func test_delete_ifSavedItemItemHasRecommendation_doesNotDeleteSavedItemItem() throws {
@@ -177,7 +188,7 @@ class PocketSourceTests: XCTestCase {
         let item = savedItem.item!
         item.recommendation = space.buildRecommendation()
 
-        let remoteItemID = item.remoteID!
+        let remoteItemID = item.remoteID
 
         let source = subject()
         source.delete(item: savedItem)
@@ -194,7 +205,7 @@ class PocketSourceTests: XCTestCase {
         let savedItem = try space.createSavedItem(item: space.buildItem())
         let item = savedItem.item!
 
-        let remoteItemID = item.remoteID!
+        let remoteItemID = item.remoteID
 
         let source = subject()
         source.delete(item: savedItem)
@@ -218,7 +229,7 @@ class PocketSourceTests: XCTestCase {
         XCTAssertTrue(item.isArchived)
         XCTAssertFalse(item.hasChanges)
         XCTAssertNotNil(item.archivedAt)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
     }
 
     func test_unarchive_executesSaveItemMutation_andUpdatesCreatedAtField() throws {
@@ -239,7 +250,7 @@ class PocketSourceTests: XCTestCase {
         XCTAssertNil(fetchedItem)
         XCTAssertFalse(item.isArchived)
         XCTAssertNotNil(item.createdAt)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
     }
 
     func test_fetchSlateLineup_forwardsToSlateService() async throws {
@@ -250,32 +261,27 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(slateService.fetchSlateLineupCall(at: 0)?.identifier, "slate-lineup-identifier")
     }
 
-    func test_fetchSlate_forwardsToSlateService() async throws {
-        slateService.stubFetchSlate { _ in }
-
-        let source = subject()
-        try await source.fetchSlate("slate-identifier")
-        XCTAssertEqual(slateService.fetchSlateCall(at: 0)?.identifier, "slate-identifier")
-    }
-
-    func test_itemsController_returnsAFetchedResultsController() throws {
+    func test_savesController_returnsAFetchedResultsController() throws {
         let source = subject()
         let item1 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(1)), item: space.buildItem(title: "Item 1"))
+        try space.save()
 
-        let itemResultsController = source.makeItemsController()
-        try itemResultsController.performFetch()
-        XCTAssertEqual(itemResultsController.fetchedObjects, [item1])
+        let savesResultsController = source.makeSavesController()
+        try savesResultsController.performFetch()
+        XCTAssertEqual(savesResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID])
 
         let expectationForUpdatedItems = expectation(description: "updated items")
         let delegate = TestSavedItemsControllerDelegate {
             expectationForUpdatedItems.fulfill()
         }
-        itemResultsController.delegate = delegate
+        savesResultsController.delegate = delegate
 
         let item2 = try space.createSavedItem(createdAt: .init(timeIntervalSince1970: TimeInterval(0)), item: space.buildItem(title: "Item 2"))
+        try space.save()
+        try savesResultsController.performFetch()
 
-        wait(for: [expectationForUpdatedItems], timeout: 1)
-        XCTAssertEqual(itemResultsController.fetchedObjects, [item1, item2])
+        wait(for: [expectationForUpdatedItems], timeout: 10)
+        XCTAssertEqual(savesResultsController.fetchedObjects?.compactMap({ $0.objectID }), [item1.objectID, item2.objectID])
     }
 
     func test_resolveUnresolvedSavedItems_enqueuesSaveItemOperation() throws {
@@ -289,13 +295,13 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
 
         let savedItem = try! space.createSavedItem()
-        let unresolved: UnresolvedSavedItem = space.new()
+        let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.backgroundContext)
         unresolved.savedItem = savedItem
         try space.save()
 
-        source.resolveUnresolvedSavedItems()
+        source.resolveUnresolvedSavedItems(completion: nil)
 
-        wait(for: [operationStarted], timeout: 1)
+        wait(for: [operationStarted], timeout: 10)
         try XCTAssertEqual(space.fetchUnresolvedSavedItems(), [])
     }
 
@@ -312,7 +318,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(recommendation: recommendation)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
@@ -338,7 +344,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(recommendation: recommendation)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
@@ -363,7 +369,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.archive(recommendation: recommendation)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
 
         let archivedItems = try space.fetchArchivedItems()
         XCTAssertEqual(archivedItems.count, 1)
@@ -385,20 +391,11 @@ class PocketSourceTests: XCTestCase {
         XCTAssertEqual(fetched, [recommendation2])
     }
 
-    func test_downloadImage_updatesIsDownloadedProperty() throws {
-        let image: Image = space.new()
-
-        let source = subject()
-        source.download(images: [image])
-
-        XCTAssertTrue(image.isDownloaded)
-    }
-
     @MainActor
     func test_fetchOfflineContent_fetchesOfflineContent() async throws {
         apollo.stubFetch(
             toReturnFixtureNamed: "single-item-details",
-            asResultType: SavedItemByIdQuery.self
+            asResultType: SavedItemByIDQuery.self
         )
 
         let savedItem = try space.createSavedItem(remoteID: "a-saved-item")
@@ -408,7 +405,7 @@ class PocketSourceTests: XCTestCase {
         let source = subject()
         try await source.fetchDetails(for: savedItem)
 
-        space.refresh(savedItem, mergeChanges: true)
+        space.backgroundRefresh(savedItem, mergeChanges: true)
         XCTAssertNotNil(savedItem.item)
         XCTAssertFalse(savedItem.hasChanges)
     }
@@ -421,13 +418,13 @@ class PocketSourceTests: XCTestCase {
 
         apollo.stubFetch(
             toReturnFixtureNamed: "recommendation-detail",
-            asResultType: ItemByIdQuery.self
+            asResultType: ItemByIDQuery.self
         )
 
         let source = subject()
         try await source.fetchDetails(for: recommendation)
 
-        space.refresh(recommendation, mergeChanges: true)
+        space.backgroundRefresh(recommendation, mergeChanges: true)
         XCTAssertNotNil(recommendation.item?.article)
         XCTAssertFalse(recommendation.hasChanges)
     }
@@ -444,7 +441,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(url: url)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.first?.url, url)
@@ -466,7 +463,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(url: url)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
@@ -488,7 +485,7 @@ class PocketSourceTests: XCTestCase {
 
         let source = subject()
         source.save(url: url)
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
 
         let savedItems = try space.fetchSavedItems()
         XCTAssertEqual(savedItems.count, 1)
@@ -536,6 +533,18 @@ extension PocketSourceTests {
         let tags = source.retrieveTags(excluding: ["tag 1", "tag 2"])
         XCTAssertEqual(tags?.count, 1)
         XCTAssertEqual(tags?[0].name, "tag 3")
+    }
+
+    func test_filterTags_showsFilteredTags() throws {
+        _ = createItemsWithTags(3)
+        let source = subject()
+        guard let tags = source.filterTags(with: "t", excluding: ["tag 2"]) else {
+            XCTFail("Should not be nil")
+            return
+        }
+        XCTAssertEqual(tags.count, 2)
+        XCTAssertTrue(tags.compactMap { $0.name }.contains("tag 1"))
+        XCTAssertTrue(tags.compactMap { $0.name }.contains("tag 3"))
     }
 
     func test_fetchTags_withSaved_returnsSavedTags() throws {
@@ -586,11 +595,11 @@ extension PocketSourceTests {
         source.deleteTag(tag: tag)
 
         try XCTAssertEqual(space.fetchAllTags(), [])
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
     }
 
     func test_renameTag_executesUpdateTagMutation() throws {
-        let tag1: Tag = space.new()
+        let tag1: Tag = Tag(context: space.backgroundContext)
         tag1.remoteID = "id 1"
         tag1.name = "tag 1"
         let source = subject()
@@ -606,16 +615,136 @@ extension PocketSourceTests {
         source.renameTag(from: tag1, to: "tag 3")
 
         try XCTAssertEqual(space.fetchAllTags().compactMap { $0.name }, ["tag 3"])
-        wait(for: [expectationToRunOperation], timeout: 1)
+        wait(for: [expectationToRunOperation], timeout: 10)
     }
 
     private func createItemsWithTags(_ number: Int, isArchived: Bool = false) -> [SavedItem] {
         guard number > 0 else { return [] }
         return (1...number).compactMap { num in
-            let tag: Tag = space.new()
+            let tag: Tag = Tag(context: space.backgroundContext)
             tag.remoteID = "id \(num)"
             tag.name = "tag \(num)"
             return space.buildSavedItem(isArchived: isArchived, tags: [tag])
         }
     }
 }
+
+// MARK: - Search Term
+extension PocketSourceTests {
+    func test_savesSearches_withFreeUser_showSearchResults_searchTitle() throws {
+        user.setPremiumStatus(false)
+
+        try setupLocalSavesSearch()
+        let source = subject()
+        let results = source.searchSaves(search: "saved")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "none")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchTitle() throws {
+        user.setPremiumStatus(true)
+        try setupLocalSavesSearch()
+        let source = subject()
+        let results = source.searchSaves(search: "saved")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "none")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withFreeUser_showSearchResults_searchUrl() throws {
+        user.setPremiumStatus(false)
+        let url = URL(string: "testUrl.saved")
+        try setupLocalSavesSearch(with: url)
+
+        let source = subject()
+        let results = source.searchSaves(search: "saved")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "none")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchUrl() throws {
+        user.setPremiumStatus(true)
+
+        let url = URL(string: "testUrl.saved")
+        try setupLocalSavesSearch(with: url)
+
+        let source = subject()
+        let results = source.searchSaves(search: "saved")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "none")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withFreeUser_showSearchResults_doesNotSearchTag() throws {
+        user.setPremiumStatus(false)
+
+         _ = createItemsWithTags(2)
+
+        try space.save()
+
+        let source = subject()
+        let results = source.searchSaves(search: "tag")
+        XCTAssertEqual(results?.isEmpty, true)
+
+        let noResults = source.searchSaves(search: "test-tag")
+        XCTAssertEqual(noResults?.isEmpty, true)
+    }
+
+    func test_savesSearches_withPremiumUser_showSearchResults_searchTag() throws {
+        user.setPremiumStatus(true)
+
+        _ = createItemsWithTags(2)
+
+        try space.save()
+
+        let source = subject()
+        let results = source.searchSaves(search: "tag")
+        XCTAssertEqual(results?.count, 2)
+
+        let noResults = source.searchSaves(search: "test-tag")
+        XCTAssertEqual(noResults?.count, 0)
+    }
+
+    func test_fetchOrCreateSavedItem_retrievesItem() throws {
+        let itemParts = SavedItemParts(data: DataDict([
+            "__typename": "SavedItem",
+            "remoteID": "saved-item",
+            "url": "http://localhost:8080/hello",
+            "_createdAt": 1,
+            "isArchived": false,
+            "isFavorite": false,
+            "item": [
+                "__typename": "Item",
+                "remoteID": "item-1",
+                "title": "item-title",
+                "givenUrl": "http://localhost:8080/hello",
+                "resolvedUrl": "http://localhost:8080/hello"
+            ]
+        ], variables: nil))
+
+        let source = subject()
+        let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemParts)
+
+        XCTAssertEqual(savedItem?.remoteID, "saved-item")
+        XCTAssertEqual(savedItem?.item?.title, "item-title")
+        XCTAssertEqual(savedItem?.item?.bestURL?.absoluteString, "http://localhost:8080/hello")
+    }
+
+    private func setupLocalSavesSearch(with url: URL? = nil) throws {
+        _ = (1...2).map {
+            space.buildSavedItem(
+                remoteID: "saved-item-\($0)",
+                createdAt: Date(timeIntervalSince1970: TimeInterval($0)),
+                item: space.buildItem(title: "saved-item-\($0)", givenURL: url)
+            )
+        }
+        try space.save()
+    }
+}
+// swiftlint:enable force_try

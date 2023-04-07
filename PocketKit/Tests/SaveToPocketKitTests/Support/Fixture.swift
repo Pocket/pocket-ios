@@ -4,10 +4,11 @@
 
 import Foundation
 import Apollo
-import Sync
+import ApolloAPI
 
 @testable import Sync
 
+// swiftlint:disable force_try
 class Fixture {
     enum ReplacementEscapeStrategy {
         case none
@@ -124,3 +125,4 @@ class Fixture {
         }
     }
 }
+// swiftlint:enable force_try

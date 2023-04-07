@@ -5,14 +5,25 @@
 import CoreData
 
 public class PersistentContainer: NSPersistentContainer {
-    public lazy var rootSpace = { Space(context: viewContext) }()
+    public lazy var rootSpace = { Space(backgroundContext: backgroundContext, viewContext: modifiedViewContext) }()
+
+    private lazy var backgroundContext = {
+        let context = newBackgroundContext()
+        return context
+    }()
+
+    private lazy var modifiedViewContext: NSManagedObjectContext = {
+        viewContext.automaticallyMergesChangesFromParent = true
+        viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        return viewContext
+    }()
 
     public enum Storage {
         case inMemory
         case shared
     }
 
-    public init(storage: Storage = .shared) {
+    public init(storage: Storage = .shared, groupID: String) {
         ValueTransformer.setValueTransformer(ArticleTransformer(), forName: .articleTransfomer)
         ValueTransformer.setValueTransformer(SyncTaskTransformer(), forName: .syncTaskTransformer)
 
@@ -27,15 +38,16 @@ public class PersistentContainer: NSPersistentContainer {
             ]
         case .shared:
             let sharedContainerURL = FileManager.default
-                .containerURL(forSecurityApplicationGroupIdentifier: "group.com.ideashower.ReadItLaterProAlphaNeue")!
+                .containerURL(forSecurityApplicationGroupIdentifier: groupID)!
                 .appendingPathComponent("PocketModel.sqlite")
 
+            Log.debug("Store URL: \(sharedContainerURL)")
             persistentStoreDescriptions = [
                 NSPersistentStoreDescription(url: sharedContainerURL)
             ]
         }
 
-        loadPersistentStores { storeDescription, error in
+        loadPersistentStores {storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }

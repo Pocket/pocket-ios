@@ -4,6 +4,11 @@ import Sails
 class ReportARecommendationTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
+
+    override func setUp() async throws {
+        await snowplowMicro.resetSnowplowEvents()
+    }
 
     override func setUpWithError() throws {
         continueAfterFailure = false
@@ -13,42 +18,13 @@ class ReportARecommendationTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail() {
-                return Response.slateDetail()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
-            } else if apiRequest.isForRecommendationDetail {
-                return Response.recommendationDetail()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
-            }
-        }
-
-        server.routes.post("/com.snowplowanalytics.snowplow/tp2") { _, _ in
-            return Response {
-                Status.ok
-                Data()
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return Response.fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()
 
-        app.launch(
-            arguments: .bypassSignIn.with(disableSnowplow: false)
-        )
+        app.launch()
     }
 
     override func tearDownWithError() throws {
@@ -56,23 +32,8 @@ class ReportARecommendationTests: XCTestCase {
         app.terminate()
     }
 
-    func test_reportingARecommendationfromHero_asBrokenMeta_sendsEvent() {
-        let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
-        var requestBody: String?
-        server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
-            requestBody = body(of: request)
-            if requestBody?.contains("engagement") == true
-                && requestBody?.contains("report") == true
-                && requestBody?.contains("reason") == true {
-                reportExpectation.fulfill()
-            }
-
-            return Response {
-                Status.ok
-                Data()
-            }
-        }
-
+    @MainActor
+    func test_reportingARecommendationfromHero_asBrokenMeta_sendsEvent() async {
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .overflowButton.wait().tap()
@@ -89,32 +50,14 @@ class ReportARecommendationTests: XCTestCase {
         report.commentEntry.wait()
         report.submitButton.wait().tap()
 
-        wait(for: [reportExpectation], timeout: 1)
-        guard let requestBody = requestBody else {
-            XCTFail("Expected request body to not be nil")
-            return
-        }
-
-        XCTAssertTrue(requestBody.contains("reason"))
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let event = await snowplowMicro.getFirstEvent(with: "discover.report")
+        event!.getReportContext()!.assertHas(reason: "other")
+        event!.getContentContext()!.assertHas(url: "http://localhost:8080/item-1")
     }
 
-    func test_reportingARecommendationFromCarousel_asBrokenMeta_sendsEvent() {
-        let reportExpectation = expectation(description: "A request to snowplow for reporting a recommendation")
-        var requestBody: String?
-        server.routes.post("/com.snowplowanalytics.snowplow/tp2") { request, _ in
-            requestBody = body(of: request)
-            if requestBody?.contains("engagement") == true
-                && requestBody?.contains("report") == true
-                && requestBody?.contains("reason") == true {
-                reportExpectation.fulfill()
-            }
-
-            return Response {
-                Status.ok
-                Data()
-            }
-        }
-
+    @MainActor
+    func test_reportingARecommendationFromCarousel_asBrokenMeta_sendsEvent() async {
         let coordinateToScroll = app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .element.coordinate(
@@ -144,27 +87,25 @@ class ReportARecommendationTests: XCTestCase {
         report.commentEntry.wait()
         report.submitButton.wait().tap()
 
-        wait(for: [reportExpectation], timeout: 1)
-        guard let requestBody = requestBody else {
-            XCTFail("Expected request body to not be nil")
-            return
-        }
-
-        XCTAssertTrue(requestBody.contains("reason"))
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let event = await snowplowMicro.getFirstEvent(with: "discover.report")
+        event!.getReportContext()!.assertHas(reason: "other")
+        event!.getContentContext()!.assertHas(url: "https://example.com/item-2")
     }
 
-    func test_reportingARecommendation_fromReader_showsReportView() {
+    @MainActor
+    func test_reportingARecommendation_fromReader_showsReportView() async {
         app.homeView
             .recommendationCell("Slate 1, Recommendation 1")
             .wait()
 
         // Swipe down to a syndicated item
         app.homeView.element.swipeUp()
-        app.homeView.recommendationCell("Slate 2, Recommendation 2").wait().tap()
-
+        app.homeView.recommendationCell("Syndicated Article Slate 2, Rec 2").wait().tap()
         app.readerView.readerToolbar.moreButton.tap()
         app.reportButton.wait().tap()
-
         app.reportView.wait()
+
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 }

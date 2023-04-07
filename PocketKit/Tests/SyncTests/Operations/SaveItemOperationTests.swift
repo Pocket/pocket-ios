@@ -1,5 +1,6 @@
 import XCTest
 import Apollo
+import PocketGraph
 import Combine
 import CoreData
 
@@ -11,12 +12,16 @@ class SaveItemOperationTests: XCTestCase {
     var subscriptions: [AnyCancellable] = []
     var queue: OperationQueue!
     var events: SyncEvents!
+    var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
         space = .testSpace()
         queue = OperationQueue()
         events = PassthroughSubject()
+        task = PersistentSyncTask(context: space.backgroundContext)
+        task.syncTaskContainer = SyncTaskContainer(task: .fetchSaves)
+        try space.save()
     }
 
     override func tearDownWithError() throws {
@@ -53,10 +58,10 @@ class SaveItemOperationTests: XCTestCase {
         )
 
         let service = subject(managedItemID: savedItem.objectID, url: url)
-        _ = await service.execute()
-        _ = await service.execute()
-        _ = await service.execute()
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
+        _ = await service.execute(syncTaskId: task.objectID)
+        _ = await service.execute(syncTaskId: task.objectID)
+        _ = await service.execute(syncTaskId: task.objectID)
 
         let items = try? space.fetchItems()
         XCTAssertEqual(items?.count, 1)
@@ -78,8 +83,8 @@ class SaveItemOperationTests: XCTestCase {
             toReturnError: TestError.anError
         )
 
-        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url!)
-        let result = await service.execute()
+        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url)
+        let result = await service.execute(syncTaskId: task.objectID)
 
         guard case .failure = result else {
             XCTFail("Expected failure result but got \(result)")
@@ -92,8 +97,8 @@ class SaveItemOperationTests: XCTestCase {
         apollo.stubPerform(ofMutationType: SaveItemMutation.self, toReturnError: initialError)
 
         let savedItem = try space.createSavedItem()
-        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url!)
-        let result = await service.execute()
+        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url)
+        let result = await service.execute(syncTaskId: task.objectID)
 
         guard case .retry = result else {
             XCTFail("Expected retry result but got \(result)")
@@ -111,8 +116,8 @@ class SaveItemOperationTests: XCTestCase {
         apollo.stubPerform(ofMutationType: SaveItemMutation.self, toReturnError: initialError)
 
         let savedItem = try space.createSavedItem()
-        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url!)
-        let result = await service.execute()
+        let service = subject(managedItemID: savedItem.objectID, url: savedItem.url)
+        let result = await service.execute(syncTaskId: task.objectID)
 
         guard case .retry = result else {
             XCTFail("Expected retry result but got \(result)")

@@ -17,8 +17,7 @@ class LoggedOutViewModel {
 
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
-    @Published
-    var actionButtonConfiguration: UIButton.Configuration?
+    @Published var actionButtonConfiguration: UIButton.Configuration?
 
     func viewWillAppear(context: ExtensionContext?, origin: Any) {
         if responder(from: origin) != nil {
@@ -26,7 +25,7 @@ class LoggedOutViewModel {
             configuration.background.backgroundColor = UIColor(.ui.teal2)
             configuration.background.cornerRadius = 13
             configuration.contentInsets = NSDirectionalEdgeInsets(top: 13, leading: 0, bottom: 13, trailing: 0)
-            configuration.attributedTitle = AttributedString(NSAttributedString(string: "Log in to Pocket", style: .logIn))
+            configuration.attributedTitle = AttributedString(NSAttributedString(string: "Log in to Pocket", style: .buttonText))
             actionButtonConfiguration = configuration
         }
     }

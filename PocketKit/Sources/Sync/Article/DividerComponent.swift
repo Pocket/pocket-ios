@@ -1,3 +1,5 @@
+import PocketGraph
+
 public struct DividerComponent: Codable, Equatable, Hashable {
     public let content: Markdown
 }

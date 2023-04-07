@@ -4,21 +4,20 @@ import UIKit
 import CoreData
 import Combine
 import Analytics
+import SharedPocketKit
 
 class SlateDetailViewModel {
     typealias Snapshot = NSDiffableDataSourceSnapshot<Section, Cell>
 
-    @Published
-    var snapshot: Snapshot
+    @Published var snapshot: Snapshot
 
-    @Published
-    var selectedReadableViewModel: RecommendationViewModel?
+    @Published var selectedReadableViewModel: RecommendationViewModel?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: Recommendation?
+
+    @Published var sharedActivity: PocketActivity?
 
     var slateName: String? {
         slate.name
@@ -27,22 +26,28 @@ class SlateDetailViewModel {
     private let slate: Slate
     private let source: Source
     private let tracker: Tracker
+    private let user: User
+    private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
 
-    init(slate: Slate, source: Source, tracker: Tracker) {
+    init(slate: Slate, source: Source, tracker: Tracker, user: User, userDefaults: UserDefaults) {
         self.slate = slate
         self.source = source
         self.tracker = tracker
+        self.user = user
+        self.userDefaults = userDefaults
         self.snapshot = Self.loadingSnapshot()
 
         NotificationCenter.default.publisher(
             for: NSManagedObjectContext.didSaveObjectsNotification,
-            object: source.mainContext
-        ).sink { [weak self] notification in
+            object: nil
+        )
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] notification in
             do {
                 try self?.handle(notification: notification)
             } catch {
-                print(error)
+                Log.capture(error: error)
             }
         }.store(in: &subscriptions)
     }
@@ -53,23 +58,12 @@ class SlateDetailViewModel {
         self.snapshot = snapshot
     }
 
-    func refresh(_ completion: @escaping () -> Void) {
-        guard let slateID = slate.remoteID else {
-            return
-        }
-
-        Task {
-            try await source.fetchSlate(slateID)
-            completion()
-        }
-    }
-
     func willDisplay(_ cell: SlateDetailViewModel.Cell, at indexPath: IndexPath) {
         switch cell {
         case .loading:
             return
         case .recommendation(let objectID):
-            guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+            guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
                 return
             }
 
@@ -93,7 +87,7 @@ extension SlateDetailViewModel {
     }
 
     private func selectRecommendation(with objectID: NSManagedObjectID, at indexPath: IndexPath) {
-        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return
         }
 
@@ -103,7 +97,8 @@ extension SlateDetailViewModel {
         )
 
         if let item = recommendation.item, item.shouldOpenInWebView {
-            presentedWebReaderURL = item.bestURL
+            let url = pocketPremiumURL(item.bestURL, user: user)
+            presentedWebReaderURL = url
 
             tracker.track(
                 event: ContentOpenEvent(destination: .external, trigger: .click),
@@ -114,7 +109,9 @@ extension SlateDetailViewModel {
                 recommendation: recommendation,
                 source: source,
                 tracker: tracker.childTracker(hosting: .articleView.screen),
-                pasteboard: UIPasteboard.general
+                pasteboard: UIPasteboard.general,
+                user: user,
+                userDefaults: userDefaults
             )
 
             tracker.track(
@@ -131,7 +128,7 @@ extension SlateDetailViewModel {
         for objectID: NSManagedObjectID,
         at indexPath: IndexPath? = nil
     ) -> HomeRecommendationCellViewModel? {
-        guard let recommendation = source.mainContext.object(with: objectID) as? Recommendation else {
+        guard let recommendation = source.viewObject(id: objectID) as? Recommendation else {
             return nil
         }
 
@@ -142,6 +139,10 @@ extension SlateDetailViewModel {
         return HomeRecommendationCellViewModel(
             recommendation: recommendation,
             overflowActions: [
+                .share { [weak self] sender in
+                    // This view model is used within the context of a view that is presented within Home
+                    self?.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item?.bestURL, sender: sender)
+                },
                 .report { [weak self] _ in
                     self?.report(recommendation, at: indexPath)
                 }
@@ -195,26 +196,19 @@ extension SlateDetailViewModel {
 
         var contexts: [Context] = []
 
-        if let remoteID = slate.remoteID,
-           let requestID = slate.requestID,
-           let experimentID = slate.experimentID {
+        let slateContext = SlateContext(
+            id: slate.remoteID,
+            requestID: slate.requestID,
+            experiment: slate.experimentID,
+            index: UIIndex(0)
+        )
+        contexts.append(slateContext)
 
-            let slateContext = SlateContext(
-                id: remoteID,
-                requestID: requestID,
-                experiment: experimentID,
-                index: UIIndex(0)
-            )
-            contexts.append(slateContext)
-        }
-
-        if let remoteID = recommendation.remoteID {
-            let recommendationContext = RecommendationContext(
-                id: remoteID,
-                index: UIIndex(indexPath.item)
-            )
-            contexts.append(recommendationContext)
-        }
+        let recommendationContext = RecommendationContext(
+            id: recommendation.remoteID,
+            index: UIIndex(indexPath.item)
+        )
+        contexts.append(recommendationContext)
 
         return contexts + [
             ContentContext(url: recommendationURL),
@@ -249,7 +243,7 @@ private extension SlateDetailViewModel {
     }
 
     private func handle(notification: Notification) throws {
-        source.mainContext.refresh(slate, mergeChanges: true)
+        source.viewRefresh(slate, mergeChanges: true)
         var snapshot = buildSnapshot()
 
         guard let updatedObjects = notification.userInfo?[NSUpdatedObjectsKey] as? Set<NSManagedObject> else {
@@ -299,6 +293,7 @@ extension SlateDetailViewModel {
 
     func clearSharedActivity() {
         selectedReadableViewModel?.clearSharedActivity()
+        sharedActivity = nil
     }
 
     func clearPresentedWebReaderURL() {

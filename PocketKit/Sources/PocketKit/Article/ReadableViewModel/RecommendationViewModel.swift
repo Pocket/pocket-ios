@@ -4,43 +4,42 @@ import Foundation
 import Textile
 import UIKit
 import Analytics
+import SharedPocketKit
 
 class RecommendationViewModel: ReadableViewModel {
-    @Published
-    private(set) var _actions: [ItemAction] = []
+    @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var isPresentingReaderSettings: Bool?
+    @Published var isPresentingReaderSettings: Bool?
 
-    @Published
-    var selectedRecommendationToReport: Recommendation?
+    @Published var selectedRecommendationToReport: Recommendation?
 
     private let recommendation: Recommendation
     private let source: Source
     private let pasteboard: Pasteboard
+    private let user: User
+    private let userDefaults: UserDefaults
     let tracker: Tracker
 
     private var savedItemCancellable: AnyCancellable?
     private var savedItemSubscriptions: Set<AnyCancellable> = []
 
-    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard) {
+    init(recommendation: Recommendation, source: Source, tracker: Tracker, pasteboard: Pasteboard, user: User, userDefaults: UserDefaults) {
         self.recommendation = recommendation
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
+        self.user = user
+        self.userDefaults = userDefaults
 
         self.savedItemCancellable = recommendation.item?.publisher(for: \.savedItem).sink { [weak self] savedItem in
             self?.update(for: savedItem)
@@ -53,7 +52,7 @@ class RecommendationViewModel: ReadableViewModel {
 
     var readerSettings: ReaderSettings {
         // TODO: inject this
-        ReaderSettings()
+        ReaderSettings(userDefaults: userDefaults)
     }
 
     var textAlignment: Textile.TextAlignment {
@@ -61,15 +60,15 @@ class RecommendationViewModel: ReadableViewModel {
     }
 
     var title: String? {
-        recommendation.item?.title
+        recommendation.bestTitle
     }
 
     var authors: [ReadableAuthor]? {
-        recommendation.item?.authors?.compactMap { $0 as? Author}
+        recommendation.item?.authors?.compactMap { $0 as? Author }
     }
 
     var domain: String? {
-        recommendation.item?.domainMetadata?.name ?? recommendation.item?.domain ?? recommendation.item?.bestURL?.host
+        recommendation.bestDomain
     }
 
     var publishDate: Date? {
@@ -80,7 +79,15 @@ class RecommendationViewModel: ReadableViewModel {
         recommendation.item?.bestURL
     }
 
-    func moveToMyList() {
+    var isArchived: Bool {
+        return recommendation.item?.savedItem?.isArchived ?? false
+    }
+
+    var premiumURL: URL? {
+        pocketPremiumURL(url, user: user)
+    }
+
+    func moveToSaves() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
         }
@@ -95,10 +102,6 @@ class RecommendationViewModel: ReadableViewModel {
 
         source.delete(item: savedItem)
         _events.send(.delete)
-    }
-
-    func showWebReader() {
-        presentedWebReaderURL = url
     }
 
     func fetchDetailsIfNeeded() {
@@ -116,10 +119,38 @@ class RecommendationViewModel: ReadableViewModel {
     func externalActions(for url: URL) -> [ItemAction] {
         [
             .save { [weak self] _ in self?.saveExternalURL(url) },
-            .open { [weak self] _ in self?.openExternalURL(url) },
+            .open { [weak self] _ in self?.openExternally(url: url) },
             .copyLink { [weak self] _ in self?.copyExternalURL(url) },
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
+    }
+
+    func webViewActivityItems(url: URL) -> [UIActivity] {
+        guard let item = source.fetchItem(url) else {
+            return []
+        }
+
+        if !item.isSaved {
+            // When recommendation is Not saved
+            let saveActivity = ReaderActionsWebActivity(title: .save) { [weak self] in
+                if item.isSaved {
+                    self?.archive()
+                } else {
+                    self?.save()
+                }
+            }
+
+            let reportActivity = ReaderActionsWebActivity(title: .report) { [weak self] in
+                self?.report()
+            }
+            return [saveActivity, reportActivity]
+        } else {
+            // When recommendation is saved
+            guard let savedItem = item.savedItem else {
+                return []
+            }
+            return webViewActivityItems(for: savedItem)
+        }
     }
 }
 
@@ -143,17 +174,9 @@ extension RecommendationViewModel {
             favoriteAction = .favorite { [weak self] _ in self?.favorite() }
         }
 
-        let archiveAction: ItemAction
-        if savedItem.isArchived {
-            archiveAction = .moveToMyList { [weak self] _ in self?.moveToMyList() }
-        } else {
-            archiveAction = .archive { [weak self] _ in self?.archive() }
-        }
-
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
-            archiveAction,
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
@@ -182,7 +205,7 @@ extension RecommendationViewModel {
         selectedRecommendationToReport = recommendation
     }
 
-    private func favorite() {
+    func favorite() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
         }
@@ -191,7 +214,7 @@ extension RecommendationViewModel {
         track(identifier: .itemFavorite)
     }
 
-    private func unfavorite() {
+    func unfavorite() {
         guard let savedItem = recommendation.item?.savedItem else {
             return
         }
@@ -200,13 +223,32 @@ extension RecommendationViewModel {
         track(identifier: .itemUnfavorite)
     }
 
-    private func archive() {
+    func openExternally(url: URL?) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackWebViewOpen()
+    }
+
+    func moveFromArchiveToSaves(completion: (Bool) -> Void) {
         guard let savedItem = recommendation.item?.savedItem else {
+            Log.capture(message: "Could not get SavedItem so unarchive action not taken")
+            completion(false)
+            return
+        }
+        source.unarchive(item: savedItem)
+        trackMoveFromArchiveToSavesButtonTapped(url: savedItem.url)
+        completion(true)
+    }
+
+    func archive() {
+        guard let savedItem = recommendation.item?.savedItem else {
+            Log.capture(message: "Could not get SavedItem so archive action not taken")
             return
         }
 
         source.archive(item: savedItem)
-        track(identifier: .itemArchive)
+        trackArchiveButtonTapped(url: savedItem.url)
         _events.send(.archive)
     }
 
@@ -224,11 +266,8 @@ extension RecommendationViewModel {
     }
 
     private func shareExternalURL(_ url: URL) {
-        sharedActivity = PocketItemActivity(url: url)
-    }
-
-    private func openExternalURL(_ url: URL) {
-        presentedWebReaderURL = url
+        // This view model is used within the context of a view that is presented within the reader
+        sharedActivity = PocketItemActivity.fromReader(url: url)
     }
 }
 

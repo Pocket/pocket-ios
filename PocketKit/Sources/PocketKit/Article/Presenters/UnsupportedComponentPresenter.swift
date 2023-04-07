@@ -13,6 +13,7 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
         cell.action = { [weak self] in
             self?.handleShowInWebReaderButtonTap()
         }
+        readableViewModel?.trackUnsupportedContentViewed()
         return cell
     }
 
@@ -26,5 +27,6 @@ class UnsupportedComponentPresenter: ArticleComponentPresenter {
 
     private func handleShowInWebReaderButtonTap() {
         readableViewModel?.showWebReader()
+        readableViewModel?.trackUnsupportedContentButtonTapped()
     }
 }

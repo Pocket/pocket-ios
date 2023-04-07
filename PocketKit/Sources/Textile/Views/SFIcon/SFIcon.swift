@@ -1,7 +1,6 @@
 import SwiftUI
 
 public struct SFIcon: View {
-
     var model: SFIconModel
 
     public init(_ model: SFIconModel) {
@@ -9,14 +8,26 @@ public struct SFIcon: View {
     }
 
     public var body: some View {
-        Image(systemName: model.systemImage)
-            .resizable()
-            .scaledToFit()
-            .font(.system(size: model.size, weight: model.weight, design: .monospaced))
-            .rotationEffect(.degrees(model.rotation))
-            .frame(width: model.size, height: model.size)
-            .imageScale(.small)
-            .symbolRenderingMode(.palette)
-            .foregroundStyle(model.color)
+        if let color = model.secondaryColor {
+            Image(systemName: model.systemImage)
+                .resizable()
+                .scaledToFit()
+                .font(.system(size: model.size, weight: model.weight, design: .monospaced))
+                .rotationEffect(.degrees(model.rotation))
+                .frame(width: model.size, height: model.size)
+                .imageScale(.small)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(model.color, color)
+        } else {
+            Image(systemName: model.systemImage)
+                .resizable()
+                .scaledToFit()
+                .font(.system(size: model.size, weight: model.weight, design: .monospaced))
+                .rotationEffect(.degrees(model.rotation))
+                .frame(width: model.size, height: model.size)
+                .imageScale(.small)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(model.color)
+        }
     }
 }

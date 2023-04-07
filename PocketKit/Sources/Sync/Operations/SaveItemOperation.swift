@@ -1,6 +1,11 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Foundation
 import Apollo
 import CoreData
+import PocketGraph
 
 class SaveItemOperation: SyncOperation {
     private let managedItemID: NSManagedObjectID
@@ -23,13 +28,13 @@ class SaveItemOperation: SyncOperation {
         self.space = space
     }
 
-    func execute() async -> SyncOperationResult {
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
         let input = SavedItemUpsertInput(url: url.absoluteString)
         let mutation = SaveItemMutation(input: input)
 
         do {
             let result = try await apollo.perform(mutation: mutation)
-            await handle(result: result)
+            handle(result: result)
             return .success
         } catch {
             switch error {
@@ -52,14 +57,15 @@ class SaveItemOperation: SyncOperation {
         }
     }
 
-    @MainActor
     private func handle(result: GraphQLResult<SaveItemMutation.Data>) {
-        guard let remote = result.data?.upsertSavedItem.fragments.savedItemParts,
-              let savedItem: SavedItem = space.context.object(with: managedItemID) as? SavedItem else {
-            return
-        }
+        space.performAndWait {
+            guard let remote = result.data?.upsertSavedItem.fragments.savedItemParts,
+                  let savedItem: SavedItem = space.backgroundContext.object(with: managedItemID) as? SavedItem else {
+                return
+            }
 
-        savedItem.update(from: remote, with: space)
+            savedItem.update(from: remote, with: space)
+        }
 
         do {
             try space.save()

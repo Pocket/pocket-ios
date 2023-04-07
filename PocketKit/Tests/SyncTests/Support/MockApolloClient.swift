@@ -4,11 +4,13 @@
 
 import Foundation
 import Apollo
+import ApolloAPI
 @testable import Sync
 
 class MockApolloClient: ApolloClientProtocol {
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
+    private var lock: DispatchQueue = DispatchQueue(label: "")
 }
 
 // MARK: - fetch
@@ -48,14 +50,16 @@ extension MockApolloClient {
             fatalError("Stub implementation for \(Self.self).\(#function) is incorrect type")
         }
 
-        calls[functionID] = (calls[functionID] ?? []) + [
-            FetchCall(
-                query: query,
-                cachePolicy: cachePolicy,
-                contextIdentifier: contextIdentifier,
-                queue: queue
-            )
-        ]
+        lock.sync {
+            calls[functionID] = (calls[functionID] ?? []) + [
+                FetchCall(
+                    query: query,
+                    cachePolicy: cachePolicy,
+                    contextIdentifier: contextIdentifier,
+                    queue: queue
+                )
+            ]
+        }
 
         return impl(query, cachePolicy, contextIdentifier, queue, resultHandler)
     }
@@ -128,14 +132,16 @@ extension MockApolloClient {
             fatalError("Stub implementation for \(Self.self).\(#function) is incorrect type")
         }
 
-        calls[functionID] = (calls[functionID] ?? []) + [
-            PerformCall(
-                mutation: mutation,
-                publishResultToStore: publishResultToStore,
-                queue: queue,
-                resultHandler: resultHandler
-            )
-        ]
+        lock.sync {
+            calls[functionID] = (calls[functionID] ?? []) + [
+                PerformCall(
+                    mutation: mutation,
+                    publishResultToStore: publishResultToStore,
+                    queue: queue,
+                    resultHandler: resultHandler
+                )
+            ]
+        }
 
         return impl(mutation, publishResultToStore, queue, resultHandler)
     }
@@ -172,11 +178,6 @@ extension MockApolloClient {
 extension MockApolloClient {
     var store: ApolloStore {
         fatalError("\(Self.self).\(#function) is not implemented")
-    }
-
-    var cacheKeyForObject: CacheKeyForObject? {
-        get { fatalError("\(Self.self).\(#function) is not implemented") }
-        set { fatalError("\(Self.self).\(#function) is not implemented") }
     }
 
     @discardableResult

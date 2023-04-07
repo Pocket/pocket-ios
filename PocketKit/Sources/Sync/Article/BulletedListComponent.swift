@@ -1,3 +1,5 @@
+import PocketGraph
+
 public struct BulletedListComponent: Codable, Equatable, Hashable {
     public let rows: [Row]
 

@@ -5,29 +5,38 @@ import Analytics
 import SnowplowTracker
 
 class MockTracker: Analytics.Tracker {
-    struct TrackCall {
-        let event: Analytics.Event
+    struct OldTrackCall {
+        let event: Analytics.OldEvent
         let contexts: [Context]?
     }
 
-    struct AddPersistentCall {
-        let context: Context
+    struct TrackCall {
+        let event: Analytics.Event
     }
 
+    struct AddPersistentCall {
+        let entity: Entity
+    }
+
+    private(set) var oldTrackCalls = Calls<OldTrackCall>()
     private(set) var trackCalls = Calls<TrackCall>()
     private(set) var addPersistentCalls = Calls<AddPersistentCall>()
-    private(set) var clearPersistentContextsCalls = Calls<[Context]>()
+    private(set) var clearPersistentContextsCalls = Calls<[Entity]>()
 
-    func addPersistentContext(_ context: Context) {
-        addPersistentCalls.add(AddPersistentCall(context: context))
+    func addPersistentEntity(_ entity: Analytics.Entity) {
+        addPersistentCalls.add(AddPersistentCall(entity: entity))
     }
 
-    func track<T: Analytics.Event>(event: T, _ contexts: [Context]?) {
-        trackCalls.add(TrackCall(event: event, contexts: contexts))
+    func track<T: Analytics.OldEvent>(event: T, _ contexts: [Context]?) {
+        oldTrackCalls.add(OldTrackCall(event: event, contexts: contexts))
     }
 
-    func resetPersistentContexts(_ contexts: [Context]) {
-        clearPersistentContextsCalls.add(contexts)
+    func track(event: Analytics.Event) {
+        trackCalls.add(TrackCall(event: event))
+    }
+
+    func resetPersistentEntities(_ entities: [Analytics.Entity]) {
+        clearPersistentContextsCalls.add(entities)
     }
 
     func childTracker(with contexts: [Context]) -> Analytics.Tracker {
@@ -40,27 +49,49 @@ class MockSnowplow: Analytics.SnowplowTracker {
         let event: SelfDescribing
     }
 
+    struct AddPersistentCall {
+        let entity: Entity
+    }
+
     private(set) var trackCalls = Calls<TrackCall>()
+    private(set) var clearPersistentContextsCalls = Calls<[Entity]>()
+    private(set) var addPersistentCalls = Calls<AddPersistentCall>()
 
     func track(event: SelfDescribing) {
         trackCalls.add(TrackCall(event: event))
     }
+
+    func addPersistentEntity(_ entity: Entity) {
+        addPersistentCalls.add(AddPersistentCall(entity: entity))
+    }
+
+    func resetPersistentEntities(_ entities: [Entity]) {
+        clearPersistentContextsCalls.add(entities)
+    }
 }
 
-struct MockEvent: Analytics.Event, Equatable {
+struct MockEvent: Analytics.OldEvent, Equatable {
     static var schema = "mock-event"
 
     let value: Int
 }
 
-struct MockContext: Context, Equatable {
+struct MockEntity: Entity, Context, Equatable {
     static var schema = "mock-context"
 
     let value: String
+
+    func toSelfDescribingJson() -> SelfDescribingJson {
+        SelfDescribingJson(schema: MockEntity.schema, andDictionary: ["value": value])
+    }
 }
 
-struct PersistentContext: Context {
+struct PersistentContext: Entity {
     static var schema = "persistent-context"
 
     let value: String
+
+    func toSelfDescribingJson() -> SelfDescribingJson {
+        SelfDescribingJson(schema: PersistentContext.schema, andDictionary: ["value": value])
+    }
 }

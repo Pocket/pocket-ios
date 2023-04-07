@@ -5,6 +5,7 @@
 public typealias UIHierarchy = UInt
 public typealias UIIndex = UInt
 
+@available(*, deprecated, message: "Use Entities moving forward")
 public struct UIContext: Context {
     public static let schema = "iglu:com.pocket/ui/jsonschema/1-0-3"
 
@@ -13,19 +14,22 @@ public struct UIContext: Context {
     let identifier: Identifier
     let componentDetail: ComponentDetail?
     let index: UIIndex?
+    let label: Label?
 
     public init(
         type: UIType,
         hierarchy: UIHierarchy = 0,
         identifier: Identifier,
         componentDetail: ComponentDetail? = nil,
-        index: UIIndex? = nil
+        index: UIIndex? = nil,
+        label: Label? = nil
     ) {
         self.type = type
         self.hierarchy = hierarchy
         self.identifier = identifier
         self.componentDetail = componentDetail
         self.index = index
+        self.label = label
     }
 
     func with(hierarchy: UIHierarchy) -> UIContext {
@@ -34,7 +38,8 @@ public struct UIContext: Context {
             hierarchy: hierarchy,
             identifier: identifier,
             componentDetail: componentDetail,
-            index: index
+            index: index,
+            label: label
         )
     }
 }
@@ -46,6 +51,7 @@ private extension UIContext {
         case identifier
         case componentDetail = "component_detail"
         case index
+        case label
     }
 }
 
@@ -64,13 +70,17 @@ extension UIContext {
 extension UIContext {
     public enum Identifier: String, Encodable {
         case home
-        case myList = "my_list"
+        case saves = "saves"
         case archive
+        case search
         case favorites
         case reader
         case item
         case articleLink = "article_link"
         case switchToWebView = "switch_to_web_view"
+        case itemOverflow = "itemOverflow"
+        case itemEditTags = "itemEditTags"
+        case itemAddTags = "item_add_tags"
         case itemDelete = "item_delete"
         case itemArchive = "item_archive"
         case itemFavorite = "item_favorite"
@@ -85,6 +95,21 @@ extension UIContext {
         case loggedOut = "logged_out"
         case logIn = "log_in"
         case signUp = "sign_up"
+        case taggedChip = "taggedChip"
+        case selectedTag = "selectedTagChip"
+        case notTagged = "notTagged"
+        case tagBadge = "tagBadge"
+        case tagsOverflow = "tagsOverflow"
+        case tagsDelete = "tagsDelete"
+        case tagsSaveChanges = "tagsSaveChanges"
+        case externalApp = "external_app"
+        case saveExtension = "save_extension"
+        case sortFilterSheet = "sort_filter"
+        case sortByNewest = "sortByNewest"
+        case sortByOldest = "sortByOldest"
+        case sortByLongest = "sortByLongest"
+        case sortByShortest = "sortByShortest"
+        case navigationDrawer = "navigationDrawer"
     }
 }
 
@@ -92,6 +117,16 @@ extension UIContext {
     public enum ComponentDetail: String, Encodable {
         case itemRow = "item_row"
         case homeCard = "discover_tile"
+        case overlay = "overlay"
+        case addTags = "add_tags"
+        case addTagsDone = "add_tags_done"
+    }
+}
+
+extension UIContext {
+    public enum Label: String, Encodable {
+        case saveToPocket = "Save to Pocket"
+        case tagsAdded = "Tags Added"
     }
 }
 
@@ -124,11 +159,13 @@ extension UIContext {
         }
     }
 
-    public struct MyList {
-        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .myList)
-        public let myList = UIContext(type: .list, hierarchy: 0, identifier: .myList)
+    public struct Saves {
+        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .saves)
+        public let saves = UIContext(type: .list, hierarchy: 0, identifier: .saves)
         public let archive = UIContext(type: .list, hierarchy: 0, identifier: .archive)
+        public let search = UIContext(type: .list, hierarchy: 0, identifier: .search)
         public let favorites = UIContext(type: .list, hierarchy: 0, identifier: .favorites)
+        public let sortFilterSheet = UIContext(type: .screen, identifier: .sortFilterSheet)
 
         public func item(index: UIIndex) -> UIContext {
             UIContext(type: .card, hierarchy: 0, identifier: .item, componentDetail: .itemRow, index: index)
@@ -153,14 +190,24 @@ extension UIContext {
         }
     }
 
+    public struct SaveExtension {
+        public let screen = UIContext(type: .screen, hierarchy: 0, identifier: .externalApp)
+        public let saveDialog = UIContext(type: .dialog, hierarchy: 0, identifier: .saveExtension, componentDetail: .overlay, label: .saveToPocket)
+        public let addTagsButton = UIContext(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTags)
+        public let addTagsDone = UIContext(type: .button, hierarchy: 0, identifier: .saveExtension, componentDetail: .addTagsDone, label: .tagsAdded)
+    }
+
     public static let loggedOut = LoggedOut()
     public static let home = Home()
-    public static let myList = MyList()
+    public static let saves = Saves()
     public static let account = Account()
     public static let articleView = ArticleView()
     public static let slateDetail = SlateDetail()
+    public static let saveExtension = SaveExtension()
 
     public static let reportDialog = UIContext(type: .dialog, identifier: .reportItem)
+
+    public static let navigationDrawer = UIContext(type: .screen, identifier: .navigationDrawer)
 
     public static func button(identifier: Identifier) -> UIContext {
         UIContext(

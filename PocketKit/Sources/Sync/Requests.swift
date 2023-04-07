@@ -58,6 +58,19 @@ public enum Requests {
         return request
     }
 
+    public static func fetchSavedItems(bySearchTerm searchTerm: String, userPremium isPremium: Bool) -> NSFetchRequest<SavedItem> {
+        let request = SavedItem.fetchRequest()
+        let urlPredicate = NSPredicate(format: "url CONTAINS %@", searchTerm)
+        let titlePredicate = NSPredicate(format: "item.title CONTAINS %@", searchTerm)
+        var allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate])
+        if isPremium {
+            let tagsPredicate = NSPredicate(format: "%@ IN tags.name", searchTerm)
+            allPredicate = NSCompoundPredicate(type: .or, subpredicates: [urlPredicate, titlePredicate, tagsPredicate])
+        }
+        request.predicate = allPredicate
+        return request
+    }
+
     public static func fetchPersistentSyncTasks() -> NSFetchRequest<PersistentSyncTask> {
         let request = PersistentSyncTask.fetchRequest()
         request.sortDescriptors = [NSSortDescriptor(keyPath: \PersistentSyncTask.createdAt, ascending: true)]
@@ -88,6 +101,25 @@ public enum Requests {
         Slate.fetchRequest()
     }
 
+    public static func fetchRecomendations(by lineupIdentifier: String) -> RichFetchRequest<Recommendation> {
+        let request = RichFetchRequest<Recommendation>(entityName: "Recommendation")
+        request.predicate = NSPredicate(format: "slate.slateLineup.remoteID = %@", lineupIdentifier)
+        request.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Recommendation.slate?.sortIndex, ascending: true),
+            NSSortDescriptor(keyPath: \Recommendation.sortIndex, ascending: true),
+        ]
+        request.relationshipKeyPathsForRefreshing = [
+            #keyPath(Recommendation.slate.sortIndex),
+            // Reload the cell when the image finishes downloading. Kingfisher has a bug where the cell is not always reloaded with the image.
+            #keyPath(Recommendation.image.isDownloaded),
+            #keyPath(Recommendation.item.title),
+            #keyPath(Recommendation.item.savedItem.archivedAt),
+            #keyPath(Recommendation.item.savedItem.isFavorite),
+            #keyPath(Recommendation.item.savedItem.createdAt),
+        ]
+        return request
+    }
+
     public static func fetchSlate(byID id: String) -> NSFetchRequest<Slate> {
         let request = Self.fetchSlates()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
@@ -106,6 +138,17 @@ public enum Requests {
     public static func fetchItem(byRemoteID id: String) -> NSFetchRequest<Item> {
         let request = self.fetchItems()
         request.predicate = NSPredicate(format: "remoteID = %@", id)
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchSyndicatedArticles() -> NSFetchRequest<SyndicatedArticle> {
+        SyndicatedArticle.fetchRequest()
+    }
+
+    public static func fetchSyndicatedArticle(byItemId id: String) -> NSFetchRequest<SyndicatedArticle> {
+        let request = self.fetchSyndicatedArticles()
+        request.predicate = NSPredicate(format: "itemID = %@", id)
         request.fetchLimit = 1
         return request
     }
@@ -152,6 +195,14 @@ public enum Requests {
         return request
     }
 
+    public static func filterTags(with input: String, excluding tags: [String]) -> NSFetchRequest<Tag> {
+        let request = fetchTags()
+        let filterPredicate = NSPredicate(format: "name BEGINSWITH %@", input)
+        let excludePredicate = NSPredicate(format: "NOT (self.name IN %@)", tags)
+        request.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [filterPredicate, excludePredicate])
+        return request
+    }
+
     public static func fetchUnsavedItems() -> NSFetchRequest<Item> {
         let request = self.fetchItems()
         request.predicate = NSPredicate(format: "savedItem = nil")
@@ -159,15 +210,22 @@ public enum Requests {
     }
 
     public static func fetchUndownloadedImages() -> NSFetchRequest<Image> {
-        let request = Image.fetchRequest()
-        request.predicate = NSPredicate(format: "isDownloaded = NO")
-        return request
+        return Image.fetchRequest()
     }
 
     public static func fetchSavedItem(for item: Item) -> NSFetchRequest<SavedItem> {
         let request = fetchAllSavedItems()
         request.predicate = Predicates.savedItems(filters: [NSPredicate(format: "item = %@", item)])
 
+        return request
+    }
+
+    public static func fetchItem(byURL url: URL) -> NSFetchRequest<Item> {
+        let request = fetchItems()
+        let resolvedUrlPredicate = NSPredicate(format: "resolvedURL = %@", url.absoluteString)
+        let givenUrlPredicate = NSPredicate(format: "givenURL = %@", url.absoluteString)
+        request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [resolvedUrlPredicate, givenUrlPredicate])
+        request.fetchLimit = 1
         return request
     }
 }
@@ -180,6 +238,11 @@ public enum Predicates {
 
     public static func archivedItems(filters: [NSPredicate] = []) -> NSPredicate {
         let predicates = filters + [NSPredicate(format: "isArchived = true && deletedAt = nil")]
+        return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+    }
+
+    public static func allItems(filters: [NSPredicate] = []) -> NSPredicate {
+        let predicates = filters + [NSPredicate(format: "deletedAt = nil")]
         return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
     }
 }

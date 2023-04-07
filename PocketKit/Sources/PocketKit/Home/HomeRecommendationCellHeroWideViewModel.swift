@@ -22,7 +22,7 @@ class HomeRecommendationCellHeroWideViewModel {
 
 extension HomeRecommendationCellHeroWideViewModel {
     var imageURL: URL? {
-        recommendation.item?.topImageURL.flatMap(imageCacheURL(for:))
+        recommendation.bestImageURL
     }
 
     var saveButtonMode: RecommendationSaveButton.Mode {
@@ -35,21 +35,19 @@ extension HomeRecommendationCellHeroWideViewModel {
     }
 
     var attributedHeadline: NSAttributedString? {
-        recommendation.item?.title.flatMap {
+        recommendation.bestTitle.flatMap {
             NSAttributedString(string: $0, style: .headline)
         }
     }
 
     var attributedPublisher: NSAttributedString? {
         (
-            recommendation.item?.domainMetadata?.name ??
-            recommendation.item?.domain ??
-            recommendation.item?.bestURL?.host
+            recommendation.bestDomain
         ).flatMap { NSAttributedString(string: $0, style: .publisher) }
     }
 
     var attributedExcerpt: NSAttributedString? {
-        recommendation.item?.excerpt.flatMap {
+        recommendation.bestExcerpt.flatMap {
             NSAttributedString(string: $0, style: .excerpt)
         }
     }
@@ -74,7 +72,6 @@ private extension Style {
         paragraph
             .with(lineHeight: .multiplier(1.4))
             .with(lineBreakMode: .byTruncatingTail)
-
     }
 
     static let publisher: Style = .header.sansSerif.p4.with(color: .ui.grey5).with(weight: .medium)

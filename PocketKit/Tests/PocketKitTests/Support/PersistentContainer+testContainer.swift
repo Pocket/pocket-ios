@@ -1,11 +1,11 @@
-import Sync
+@testable import Sync
 
 extension PersistentContainer {
-    static let testContainer = PersistentContainer(storage: .inMemory)
+    static let testContainer = PersistentContainer(storage: .inMemory, groupID: "group.com.ideashower.ReadItLaterPro")
 }
 
 extension Space {
     static func testSpace() -> Space {
-        Space(context: PersistentContainer.testContainer.viewContext)
+        return PersistentContainer.testContainer.rootSpace
     }
 }

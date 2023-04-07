@@ -15,7 +15,7 @@ struct SelectionSwitcherElement: PocketUIElement {
         element.buttons["Archive"]
     }
 
-    var myListButton: XCUIElement {
-        element.buttons["My List"]
+    var savesButton: XCUIElement {
+        element.buttons["Saves"]
     }
 }

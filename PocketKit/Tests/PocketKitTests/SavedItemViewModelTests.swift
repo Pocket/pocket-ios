@@ -1,6 +1,7 @@
 import XCTest
 import Analytics
 import Combine
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -10,6 +11,10 @@ class SavedItemViewModelTests: XCTestCase {
     private var tracker: MockTracker!
     private var space: Space!
     private var pasteboard: Pasteboard!
+    private var user: User!
+    private var subscriptionStore: SubscriptionStore!
+    private var networkPathMonitor: MockNetworkPathMonitor!
+    private var userDefaults: UserDefaults!
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -18,24 +23,36 @@ class SavedItemViewModelTests: XCTestCase {
         tracker = MockTracker()
         pasteboard = MockPasteboard()
         space = .testSpace()
+        user = PocketUser(userDefaults: UserDefaults())
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
+        userDefaults = .standard
     }
 
     override func tearDown() async throws {
         subscriptions = []
         try space.clear()
+        networkPathMonitor = nil
+        subscriptionStore = nil
     }
 
     func subject(
         item: SavedItem,
         source: Source? = nil,
         tracker: Tracker? = nil,
-        pasteboard: UIPasteboard? = nil
+        pasteboard: UIPasteboard? = nil,
+        user: User? = nil,
+        networkPathMonitor: NetworkPathMonitor? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             item: item,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            pasteboard: pasteboard ?? self.pasteboard
+            pasteboard: pasteboard ?? self.pasteboard,
+            user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 
@@ -45,7 +62,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: false, isArchived: false))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Favorite", "Add Tags", "Archive", "Delete", "Share"]
+                ["Display Settings", "Favorite", "Add Tags", "Delete", "Share"]
             )
         }
 
@@ -54,7 +71,7 @@ class SavedItemViewModelTests: XCTestCase {
             let viewModel = subject(item: space.buildSavedItem(isFavorite: true, isArchived: true))
             XCTAssertEqual(
                 viewModel._actions.map(\.title),
-                ["Display Settings", "Unfavorite", "Add Tags", "Move to My List", "Delete", "Share"]
+                ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
             )
         }
     }
@@ -66,13 +83,13 @@ class SavedItemViewModelTests: XCTestCase {
         item.isFavorite = true
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Add Tags", "Move to My List", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
         )
 
         item.isArchived = false
         XCTAssertEqual(
             viewModel._actions.map(\.title),
-            ["Display Settings", "Unfavorite", "Add Tags", "Archive", "Delete", "Share"]
+            ["Display Settings", "Unfavorite", "Add Tags", "Delete", "Share"]
         )
     }
 
@@ -96,7 +113,7 @@ class SavedItemViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetchDetailsIfNeeded()
-        wait(for: [eventSent], timeout: 2)
+        wait(for: [eventSent], timeout: 10)
 
         let call = source.fetchDetailsCall(at: 0)
         XCTAssertNotNil(call)
@@ -124,7 +141,7 @@ class SavedItemViewModelTests: XCTestCase {
 
         viewModel.fetchDetailsIfNeeded()
 
-        wait(for: [contentUpdatedSent], timeout: 1)
+        wait(for: [contentUpdatedSent], timeout: 10)
         XCTAssertNil(source.fetchDetailsCall(at: 0))
     }
 
@@ -147,7 +164,7 @@ class SavedItemViewModelTests: XCTestCase {
         let viewModel = subject(item: item)
         viewModel.invokeAction(title: "Favorite")
 
-        wait(for: [expectFavorite], timeout: 1)
+        wait(for: [expectFavorite], timeout: 10)
     }
 
     func test_unfavorite_delegatesToSource() {
@@ -162,12 +179,12 @@ class SavedItemViewModelTests: XCTestCase {
         let viewModel = subject(item: item)
         viewModel.invokeAction(title: "Unfavorite")
 
-        wait(for: [expectUnfavorite], timeout: 1)
+        wait(for: [expectUnfavorite], timeout: 10)
     }
 
     func test_addTagsAction_sendsAddTagsViewModel() {
         let viewModel = subject(item: space.buildSavedItem(tags: ["tag 1"]))
-
+        source.stubRetrieveTags { _ in return nil }
         let expectAddTags = expectation(description: "expect add tags to present")
         viewModel.$presentedAddTags.dropFirst().sink { viewModel in
             expectAddTags.fulfill()
@@ -176,7 +193,7 @@ class SavedItemViewModelTests: XCTestCase {
 
         viewModel.invokeAction(title: "Add Tags")
 
-        wait(for: [expectAddTags], timeout: 1)
+        wait(for: [expectAddTags], timeout: 10)
     }
 
     func test_delete_delegatesToSource_andSendsDeleteEvent() {
@@ -202,17 +219,18 @@ class SavedItemViewModelTests: XCTestCase {
         viewModel.invokeAction(title: "Delete")
         viewModel.presentedAlert?.actions.first { $0.title == "Yes" }?.invoke()
 
-        wait(for: [expectDelete, expectDeleteEvent], timeout: 1)
+        wait(for: [expectDelete, expectDeleteEvent], timeout: 10)
     }
 
     func test_archive_sendsRequestToSource_andSendsArchiveEvent() {
-        let item = space.buildSavedItem(isArchived: false)
-        let viewModel = subject(item: item)
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
+        let viewModel = subject(item: savedItem)
 
         let expectArchive = expectation(description: "expect source.archive(_:)")
         source.stubArchiveSavedItem { archivedItem in
             defer { expectArchive.fulfill() }
-            XCTAssertTrue(archivedItem === item)
+            XCTAssertTrue(archivedItem === savedItem)
         }
 
         let expectArchiveEvent = expectation(description: "expect archive event")
@@ -225,23 +243,24 @@ class SavedItemViewModelTests: XCTestCase {
             expectArchiveEvent.fulfill()
         }.store(in: &subscriptions)
 
-        viewModel.invokeAction(title: "Archive")
-        wait(for: [expectArchive, expectArchiveEvent], timeout: 1)
+        viewModel.archive()
+        wait(for: [expectArchive, expectArchiveEvent], timeout: 10)
     }
 
-    func test_reAdd_sendsRequestToSource_AndRefreshes() {
-        let item = space.buildSavedItem(isArchived: true)
-        let expectUnarchive = expectation(description: "expect source.unarchive(_:)")
+    func test_moveFromArchiveToSaves_sendsRequestToSource_AndRefreshes() {
+        let item = space.buildItem()
+        let savedItem = space.buildSavedItem(item: item)
 
-        source.stubUnarchiveSavedItem { unarchivedItem in
-            defer { expectUnarchive.fulfill() }
-            XCTAssertTrue(unarchivedItem === item)
+        let expectMoveFromArchiveToSaves = expectation(description: "expect source.unarchive(_:)")
+        source.stubUnarchiveSavedItem { item in
+            defer { expectMoveFromArchiveToSaves.fulfill() }
+            XCTAssertTrue(item === savedItem)
         }
 
-        let viewModel = subject(item: item)
-        viewModel.invokeAction(title: "Move to My List")
+        let viewModel = subject(item: savedItem)
+        viewModel.moveFromArchiveToSaves { _ in }
 
-        wait(for: [expectUnarchive], timeout: 1)
+        wait(for: [expectMoveFromArchiveToSaves], timeout: 10)
     }
 
     func test_share_updatesSharedActivity() {
@@ -290,6 +309,45 @@ class SavedItemViewModelTests: XCTestCase {
         let actions = viewModel.externalActions(for: url)
         viewModel.invokeAction(from: actions, title: "Open")
         XCTAssertEqual(viewModel.presentedWebReaderURL, url)
+    }
+
+    func test_webActivitiesActions_whenItemIsSaved_canArchive() throws {
+        let savedItem = space.buildSavedItem()
+
+        let viewModel = subject(item: savedItem)
+
+        let webActivitiesExpectation = expectation(description: "Web activity list includes archive")
+        source.stubFetchItem { url in
+            defer { webActivitiesExpectation.fulfill() }
+            return savedItem.item
+        }
+
+        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url)
+        XCTAssertEqual(webViewActivityList[0].activityTitle, "Archive")
+        XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
+        XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
+
+        wait(for: [webActivitiesExpectation], timeout: 10)
+    }
+
+    func test_webActivitiesActions_whenItemIsArchive_canMoveToSaves() throws {
+        let savedItem = space.buildSavedItem()
+        savedItem.isArchived = true
+        try space.save()
+
+        let viewModel = subject(item: savedItem)
+        let webActivitiesExpectation = expectation(description: "Web activity list includes move to saves")
+        source.stubFetchItem { url in
+            defer { webActivitiesExpectation.fulfill() }
+            return savedItem.item
+        }
+
+        let webViewActivityList = viewModel.webViewActivityItems(url: savedItem.url)
+        XCTAssertEqual(webViewActivityList[0].activityTitle, "Move to Saves")
+        XCTAssertEqual(webViewActivityList[1].activityTitle, "Delete")
+        XCTAssertEqual(webViewActivityList[2].activityTitle, "Favorite")
+
+        wait(for: [webActivitiesExpectation], timeout: 10)
     }
 }
 

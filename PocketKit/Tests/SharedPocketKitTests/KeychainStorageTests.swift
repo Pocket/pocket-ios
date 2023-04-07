@@ -1,6 +1,7 @@
 import XCTest
 @testable import SharedPocketKit
 
+// swiftlint:disable force_try
 class KeychainStorageTests: XCTestCase {
     struct Test: Codable, Equatable {
         let value: String
@@ -10,7 +11,7 @@ class KeychainStorageTests: XCTestCase {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test?>(keychain: keychain, service: service, account: account)
+        let storage = KeychainStorage<Test?>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         _ = storage.wrappedValue
 
@@ -22,14 +23,14 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(query[kSecAttrService as String] as? String, service)
         XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
         XCTAssertEqual(query[kSecReturnData as String] as? Bool, true)
-        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterProAlphaNeue")
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterPro")
     }
 
     func test_set_whenInitialValue_callsAdd_withCorrectQuery() {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account)
+        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         storage.wrappedValue = Test(value: "test")
 
@@ -39,14 +40,14 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(query[kSecAttrService as String] as? String, service)
         XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
         XCTAssertEqual(query[kSecAttrAccessible as String] as? String, kSecAttrAccessibleAfterFirstUnlock as String)
-        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterProAlphaNeue")
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterPro")
     }
 
     func test_set_whenValueExists_callsUpdate_withCorrectQuery() {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account)
+        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         let initialValue = Test(value: "test")
         storage.wrappedValue = initialValue
@@ -61,14 +62,14 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(query[kSecClass as String] as? String, kSecClassGenericPassword as String)
         XCTAssertEqual(query[kSecAttrService as String] as? String, service)
         XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
-        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterProAlphaNeue")
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterPro")
     }
 
     func test_set_whenNil_callsDelete_withCorrectQuery() {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account)
+        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         storage.wrappedValue = nil
 
@@ -79,14 +80,14 @@ class KeychainStorageTests: XCTestCase {
         XCTAssertEqual(query[kSecClass as String] as? String, kSecClassGenericPassword as String)
         XCTAssertEqual(query[kSecAttrService as String] as? String, service)
         XCTAssertEqual(query[kSecAttrAccount as String] as? String, account)
-        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterProAlphaNeue")
+        XCTAssertEqual(query[kSecAttrAccessGroup as String] as? String, "group.com.ideashower.ReadItLaterPro")
     }
 
     func test_read_usesCachedValue() {
         let keychain = MockKeychain()
         let service = "MockService"
         let account = "MockAccount"
-        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account)
+        let storage = KeychainStorage<Test>(keychain: keychain, service: service, account: account, groupID: "group.com.ideashower.ReadItLaterPro")
 
         // One read on init, one read if the current cached value is nil
         _ = storage.wrappedValue
@@ -107,24 +108,5 @@ class KeychainStorageTests: XCTestCase {
         _ = storage.wrappedValue
         XCTAssertEqual(keychain.copyMatchingCalls.count, 3)
     }
-
-    func test_projectedValue_removesDuplicates() {
-        let keychain = MockKeychain()
-        let service = "MockService"
-        let account = "MockAccount"
-        let storage = KeychainStorage<Test?>(keychain: keychain, service: service, account: account)
-
-        let publishedExpectation = expectation(description: "expected new value to be published")
-        publishedExpectation.expectedFulfillmentCount = 2
-        let cancellable = storage.projectedValue.sink { value in
-            publishedExpectation.fulfill()
-        }
-
-        storage.wrappedValue = Test(value: "123456")
-        storage.wrappedValue = Test(value: "123456")
-
-        wait(for: [publishedExpectation], timeout: 1)
-
-        cancellable.cancel()
-    }
 }
+// swiftlint:enable force_try

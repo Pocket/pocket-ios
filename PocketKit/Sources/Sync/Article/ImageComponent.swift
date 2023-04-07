@@ -1,4 +1,5 @@
 import Foundation
+import PocketGraph
 
 public struct ImageComponent: Encodable, Equatable, Hashable {
     public let caption: String?
@@ -25,7 +26,7 @@ extension ImageComponent {
             credit: marticle.credit,
             height: marticle.height.flatMap(UInt.init),
             width: marticle.width.flatMap(UInt.init),
-            id: marticle.imageId,
+            id: marticle.imageID,
             source: marticle.src.addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted).flatMap(URL.init)
         )
     }
@@ -39,9 +40,8 @@ extension ImageComponent: Decodable {
         height = try container.decodeIfPresent(UInt.self, forKey: .height)
         width = try container.decodeIfPresent(UInt.self, forKey: .width)
         id = try container.decode(Int.self, forKey: .id)
-
         source = try container.decode(String.self, forKey: .source)
-            .addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted)
-            .flatMap(URL.init)
+                   .addingPercentEncoding(withAllowedCharacters: .whitespaces.inverted)
+                   .flatMap(URL.init)
     }
 }

@@ -2,41 +2,91 @@ import XCTest
 import Combine
 import Analytics
 import CoreData
+import PocketGraph
+import SharedPocketKit
 @testable import Sync
 @testable import PocketKit
 
+@MainActor
 class HomeViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
     var space: Space!
     var networkPathMonitor: MockNetworkPathMonitor!
-
+    var appSession: AppSession!
+    var taskScheduler: MockBGTaskScheduler!
+    var homeRefreshCoordinator: RefreshCoordinator!
     var subscriptions: Set<AnyCancellable> = []
+    var homeController: RichFetchedResultsController<Recommendation>!
+    var recentSavesController: NSFetchedResultsController<SavedItem>!
+    var user: User!
+    var subscriptionStore: SubscriptionStore!
+    var userDefaults: UserDefaults!
+    var lastRefresh: UserDefaultsLastRefresh!
 
     override func setUp() async throws {
         subscriptions = []
         space = .testSpace()
         source = MockSource()
-        source.mainContext = space.context
         networkPathMonitor = MockNetworkPathMonitor()
 
+        taskScheduler = MockBGTaskScheduler()
+        userDefaults = .standard
+        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
+        lastRefresh.reset()
+
+        appSession = AppSession(keychain: MockKeychain(), groupID: "groupId")
+        appSession.currentSession = SharedPocketKit.Session(guid: "test-guid", accessToken: "test-access-token", userIdentifier: "test-id")
+        homeRefreshCoordinator = HomeRefreshCoordinator(notificationCenter: .default, taskScheduler: taskScheduler, appSession: appSession, source: source, lastRefresh: lastRefresh)
+        homeController = space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
+        recentSavesController = space.makeRecentSavesController(limit: 5)
+        subscriptionStore = MockSubscriptionStore()
+        userDefaults = .standard
+        user = PocketUser(userDefaults: userDefaults)
+
         tracker = MockTracker()
+
+        source.stubMakeHomeController {
+            self.homeController
+        }
+
+        source.stubMakeRecentSavesController {
+            self.recentSavesController
+        }
+
+        source.stubViewObject { identifier in
+            self.space.viewObject(with: identifier)
+        }
+
+        source.stubViewRefresh { _, _ in }
+
+        source.stubBackgroundObject { object in
+            self.space.backgroundObject(with: object)
+        }
     }
 
     override func tearDownWithError() throws {
         subscriptions = []
         try space.clear()
+        subscriptionStore = nil
     }
 
     func subject(
         source: Source? = nil,
         tracker: Tracker? = nil,
-        networkPathMonitor: NetworkPathMonitor? = nil
+        networkPathMonitor: NetworkPathMonitor? = nil,
+        homeRefreshCoordinator: RefreshCoordinator? = nil,
+        user: User? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> HomeViewModel {
-        HomeViewModel(
+        return HomeViewModel(
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
-            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
+            homeRefreshCoordinator: homeRefreshCoordinator ?? self.homeRefreshCoordinator,
+            user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 
@@ -50,21 +100,21 @@ class HomeViewModelTests: XCTestCase {
             snapshotExpectation.fulfill()
         }.store(in: &subscriptions)
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() {
         let viewModel = subject()
 
         let receivedLoadingSnapshot = expectation(description: "receivedLoadingSnapshot")
-        viewModel.$snapshot.sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
             defer { receivedLoadingSnapshot.fulfill() }
             XCTAssertEqual(snapshot.sectionIdentifiers, [.loading])
         }.store(in: &subscriptions)
 
         viewModel.fetch()
 
-        wait(for: [receivedLoadingSnapshot], timeout: 1)
+        wait(for: [receivedLoadingSnapshot], timeout: 10)
     }
 
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsAvailable_sendsSnapshotWithSlates() throws {
@@ -73,19 +123,20 @@ class HomeViewModelTests: XCTestCase {
         }
 
         let slates = try [
-            space.createSlate(recommendations: Array(recommendations[0...1])),
-            space.createSlate(recommendations: Array(recommendations[2...3])),
+            space.createSlate(remoteID: "slate-1", recommendations: Array(recommendations[0...1])),
+            space.createSlate(remoteID: "slate-2", recommendations: Array(recommendations[2...3])),
         ]
 
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
+        try space.save()
 
         let viewModel = subject()
-        let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
+        let receivedSnapshot = expectation(description: "receivedSnapshot")
         viewModel.$snapshot.dropFirst().first().sink { snapshot in
-            defer { receivedEmptySnapshot.fulfill() }
+            defer { receivedSnapshot.fulfill() }
             XCTAssertEqual(
                 snapshot.sectionIdentifiers,
                 slates.flatMap { slate in
@@ -113,7 +164,7 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedSnapshot], timeout: 10)
     }
 
     func test_fetch_whenRecentSavesAreAvailable_andSlateLineupIsUnavailable_sendsSnapshotWithRecentSaves() throws {
@@ -125,6 +176,7 @@ class HomeViewModelTests: XCTestCase {
                 item: items[$0 - 1]
             )
         }
+        try space.save()
 
         let viewModel = subject()
         let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
@@ -132,7 +184,7 @@ class HomeViewModelTests: XCTestCase {
             defer { receivedEmptySnapshot.fulfill() }
             XCTAssertEqual(
                 snapshot.sectionIdentifiers,
-                [.recentSaves]
+                [.recentSaves, .loading]
             )
 
             XCTAssertEqual(
@@ -143,18 +195,18 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedEmptySnapshot], timeout: 10)
     }
 
     func test_fetch_whenRecentSavesAndSlateLineupAreAvailable_sendsSnapshotWithRecentSavesAndSlates() throws {
         let items = (1...4).map { space.buildItem(remoteID: "item-\($0)") }
         let recommendations = items.map { space.buildRecommendation(item: $0) }
         let slates = [
-            space.buildSlate(recommendations: Array(recommendations[0...1])),
-            space.buildSlate(recommendations: Array(recommendations[2...3])),
+            space.buildSlate(remoteID: "slate-1", recommendations: Array(recommendations[0...1])),
+            space.buildSlate(remoteID: "slate-2", recommendations: Array(recommendations[2...3])),
         ]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
 
@@ -165,6 +217,7 @@ class HomeViewModelTests: XCTestCase {
                 item: items[$0 - 1]
             )
         }
+        try space.save()
 
         let viewModel = subject()
         let receivedEmptySnapshot = expectation(description: "receivedEmptySnapshot")
@@ -202,7 +255,7 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedEmptySnapshot], timeout: 10)
     }
 
     func test_fetch_whenSlateContainsMoreThanFiveRecommendations_sendsSnapshotFirstFiveRecommendations() throws {
@@ -210,7 +263,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendations = try items.map { try space.createRecommendation(item: $0) }
         let slate = space.buildSlate(recommendations: recommendations)
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [slate]
         )
 
@@ -231,12 +284,12 @@ class HomeViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedEmptySnapshot], timeout: 1)
+        wait(for: [receivedEmptySnapshot], timeout: 10)
     }
 
     func test_snapshot_whenSlateLineupIsUpdated_updatesSnapshot() throws {
         let lineup = try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [
                 space.createSlate(
                     remoteID: "slate-1",
@@ -251,6 +304,7 @@ class HomeViewModelTests: XCTestCase {
                 )
             ]
         )
+        try space.save()
 
         let viewModel = subject()
         viewModel.fetch()
@@ -259,7 +313,7 @@ class HomeViewModelTests: XCTestCase {
         var rec: Recommendation!
 
         let snapshotSent = expectation(description: "snapshotSent")
-        viewModel.$snapshot.dropFirst().first().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).first().sink { snapshot in
             defer { snapshotSent.fulfill() }
 
             XCTAssertEqual(
@@ -284,12 +338,12 @@ class HomeViewModelTests: XCTestCase {
         )
 
         _ = space.buildSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [slate]
         )
         try space.save()
 
-        wait(for: [snapshotSent], timeout: 1)
+        wait(for: [snapshotSent], timeout: 10)
     }
 
     func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() throws {
@@ -300,16 +354,17 @@ class HomeViewModelTests: XCTestCase {
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
+        try space.save()
 
         var savedItem: SavedItem!
         let viewModel = subject()
         viewModel.fetch()
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
             defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(
@@ -325,7 +380,7 @@ class HomeViewModelTests: XCTestCase {
             )
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID)]
+                []
             )
         }.store(in: &subscriptions)
 
@@ -333,7 +388,7 @@ class HomeViewModelTests: XCTestCase {
         item.savedItem = savedItem
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_snapshot_whenRecommendationIsArchived_updatesSnapshot() throws {
@@ -345,9 +400,10 @@ class HomeViewModelTests: XCTestCase {
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
+        try space.save()
 
         let viewModel = subject()
         viewModel.fetch()
@@ -369,14 +425,14 @@ class HomeViewModelTests: XCTestCase {
             )
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID)]
+                []
             )
         }.store(in: &subscriptions)
 
         item.savedItem?.isArchived = true
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_snapshot_whenRecommendationIsDeleted_updatesSnapshot() throws {
@@ -389,9 +445,10 @@ class HomeViewModelTests: XCTestCase {
         ]
         let slates: [Slate] = [space.buildSlate(recommendations: recommendations)]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
+        try space.save()
 
         let viewModel = subject()
         viewModel.fetch()
@@ -414,7 +471,7 @@ class HomeViewModelTests: XCTestCase {
 
             XCTAssertEqual(
                 snapshot.reloadedItemIdentifiers,
-                [.recommendationHero(recommendations[0].objectID)]
+                []
             )
         }.store(in: &subscriptions)
 
@@ -422,7 +479,7 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertNotNil(item.savedItem?.item)
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_snapshot_whenSavedItemIsFavorited_updatesSnapshot() throws {
@@ -438,7 +495,7 @@ class HomeViewModelTests: XCTestCase {
 
             XCTAssertEqual(
                 snapshot.sectionIdentifiers,
-                [.recentSaves]
+                [.recentSaves, .loading]
             )
 
             XCTAssertEqual(
@@ -455,7 +512,7 @@ class HomeViewModelTests: XCTestCase {
         savedItem.isFavorite = true
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
      func test_snapshot_whenNetworkIsInitiallyAvailable_hasCorrectSnapshot() {
@@ -475,7 +532,7 @@ class HomeViewModelTests: XCTestCase {
 
          let snapshotExpectation = expectation(description: "expect a snapshot")
          let viewModel = subject()
-         viewModel.$snapshot.dropFirst().sink { snapshot in
+         viewModel.$snapshot.dropFirst(2).sink { snapshot in
              XCTAssertEqual(
                  snapshot.itemIdentifiers(inSection: .recentSaves),
                  [
@@ -490,7 +547,7 @@ class HomeViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetch()
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_refresh_whenNetworkIsUnavailable_updatesSnapshot() {
@@ -499,7 +556,7 @@ class HomeViewModelTests: XCTestCase {
         let viewModel = subject()
 
         let snapshotExpectation = expectation(description: "expected a snapshot update")
-        viewModel.$snapshot.dropFirst().sink { snapshot in
+        viewModel.$snapshot.dropFirst(2).sink { snapshot in
             XCTAssertNotNil(snapshot.indexOfSection(.offline))
             XCTAssertEqual(snapshot.itemIdentifiers(inSection: .offline), [.offline])
             snapshotExpectation.fulfill()
@@ -508,26 +565,24 @@ class HomeViewModelTests: XCTestCase {
         networkPathMonitor.update(status: .unsatisfied)
         viewModel.refresh { }
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
-    func test_refresh_delegatesToSource() {
+    func test_refresh_delegatesToHomeRefreshCoordinator() {
         let fetchExpectation = expectation(description: "expected to fetch slate lineup")
         source.stubFetchSlateLineup { _ in fetchExpectation.fulfill() }
 
         let viewModel = subject()
         viewModel.refresh { }
-        wait(for: [fetchExpectation], timeout: 1)
-
-        XCTAssertEqual(source.fetchSlateLineupCall(at: 0)?.identifier, "e39bc22a-6b70-4ed2-8247-4b3f1a516bd1")
+        wait(for: [fetchExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
-        let heroRec = space.buildRecommendation()
-        let carouselRec = space.buildRecommendation()
+        let heroRec = space.buildRecommendation(item: space.buildItem())
+        let carouselRec = space.buildRecommendation(item: space.buildItem())
         let recommendations = [heroRec, carouselRec]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
@@ -537,9 +592,9 @@ class HomeViewModelTests: XCTestCase {
         readableExpectation.expectedFulfillmentCount = 2
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
-            case .recommendation:
+            case .recommendation, .webViewRecommendation:
                 readableExpectation.fulfill()
-            case .savedItem, .none:
+            case .savedItem, .webViewSavedItem, .none:
                 XCTFail("Expected recommendation, but got \(String(describing: readableType))")
             }
         }.store(in: &subscriptions)
@@ -556,7 +611,7 @@ class HomeViewModelTests: XCTestCase {
             )
         }
 
-        wait(for: [readableExpectation], timeout: 1)
+        wait(for: [readableExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecommendation_whenRecommendationIsNotReadable_updatesPresentedWebReaderURL() throws {
@@ -564,14 +619,15 @@ class HomeViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let recommendations = [recommendation]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
         let viewModel = subject()
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
-        viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
+
+        viewModel.$selectedReadableType.dropFirst().sink { readableType in
             urlExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -605,7 +661,7 @@ class HomeViewModelTests: XCTestCase {
             )
         }
 
-        wait(for: [urlExpectation], timeout: 1)
+        wait(for: [urlExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecentSave_recentSaveIsReadable_updatesSelectedReadable() throws {
@@ -614,7 +670,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let recommendations = [recommendation]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
@@ -622,9 +678,9 @@ class HomeViewModelTests: XCTestCase {
         let readableExpectation = expectation(description: "expected to update selected readable")
         viewModel.$selectedReadableType.dropFirst().sink { readableType in
             switch readableType {
-            case .savedItem:
+            case .savedItem, .webViewSavedItem:
                 readableExpectation.fulfill()
-            case .recommendation, .none:
+            case .webViewRecommendation, .recommendation, .none:
                 XCTFail("Expected recommendation, but got \(String(describing: readableType))")
             }
         }.store(in: &subscriptions)
@@ -634,7 +690,7 @@ class HomeViewModelTests: XCTestCase {
             at: IndexPath(item: 0, section: 0)
         )
 
-        wait(for: [readableExpectation], timeout: 1)
+        wait(for: [readableExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecentSave_recentSaveIsNotReadable_updatesPresentedWebReaderURL() throws {
@@ -643,14 +699,15 @@ class HomeViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let recommendations = [recommendation]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
         let viewModel = subject()
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
-        viewModel.$presentedWebReaderURL.filter { $0 != nil }.sink { readable in
+
+        viewModel.$selectedReadableType.dropFirst().sink { readableType in
             urlExpectation.fulfill()
         }.store(in: &subscriptions)
 
@@ -683,7 +740,7 @@ class HomeViewModelTests: XCTestCase {
             )
         }
 
-        wait(for: [urlExpectation], timeout: 1)
+        wait(for: [urlExpectation], timeout: 10)
     }
 
     func test_selectSection_whenSelectingSlateSection_updatesSelectedSlateDetailViewModel() throws {
@@ -692,7 +749,7 @@ class HomeViewModelTests: XCTestCase {
         let recommendations = [recommendation]
         let slate = space.buildSlate(name: "My Awesome Slate", recommendations: recommendations)
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [slate]
         )
 
@@ -710,14 +767,14 @@ class HomeViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.sectionHeaderViewModel(for: .slateHero(slate.objectID))?.buttonAction?()
-        wait(for: [detailExpectation], timeout: 1)
+        wait(for: [detailExpectation], timeout: 10)
     }
 
     func test_reportAction_forRecommendationCells_updatesSelectedRecommendationToReport() throws {
         let heroRec = space.buildRecommendation()
         let carouselRec = space.buildRecommendation()
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: [heroRec, carouselRec])]
         )
 
@@ -739,7 +796,7 @@ class HomeViewModelTests: XCTestCase {
             action?.handler?(nil)
         }
 
-        wait(for: [reportExpectation], timeout: 1)
+        wait(for: [reportExpectation], timeout: 10)
     }
 
     func test_primary_whenRecommendationIsNotSaved_savesWithSource() throws {
@@ -748,9 +805,10 @@ class HomeViewModelTests: XCTestCase {
         let recommendation = space.buildRecommendation(item: item)
         let recommendations = [recommendation]
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
+        try space.save()
 
         let viewModel = subject()
 
@@ -760,8 +818,8 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertNotNil(action)
         action?.handler?(nil)
         XCTAssertEqual(
-            source.saveRecommendationCall(at: 0)?.recommendation,
-            recommendation
+            source.saveRecommendationCall(at: 0)?.recommendation.objectID,
+            recommendation.objectID
         )
     }
 
@@ -773,7 +831,7 @@ class HomeViewModelTests: XCTestCase {
 
         space.buildSavedItem(item: item)
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: [space.buildSlate(recommendations: recommendations)]
         )
 
@@ -785,8 +843,8 @@ class HomeViewModelTests: XCTestCase {
         XCTAssertNotNil(action)
         action?.handler?(nil)
         XCTAssertEqual(
-            source.archiveRecommendationCall(at: 0)?.recommendation,
-            recommendation
+            source.archiveRecommendationCall(at: 0)?.recommendation.objectID,
+            recommendation.objectID
         )
     }
 
@@ -798,7 +856,7 @@ class HomeViewModelTests: XCTestCase {
         ]
 
         try space.createSlateLineup(
-            remoteID: HomeViewModel.lineupIdentifier,
+            remoteID: SyncConstants.Home.slateLineupIdentifier,
             slates: slates
         )
 

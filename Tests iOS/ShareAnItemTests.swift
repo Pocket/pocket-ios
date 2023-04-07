@@ -17,20 +17,8 @@ class ShareAnItemTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()
@@ -44,10 +32,10 @@ class ShareAnItemTests: XCTestCase {
     }
 
     func test_sharingAnItemFromList_presentsShareSheet() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
             .shareButton.wait()
             .tap()
@@ -56,10 +44,10 @@ class ShareAnItemTests: XCTestCase {
     }
 
     func test_sharingAnItemFromReader_presentsShareSheet() {
-        app.tabBar.myListButton.wait().tap()
+        app.tabBar.savesButton.wait().tap()
 
         app
-            .myListView
+            .saves
             .itemView(matching: "Item 2")
             .wait()
             .tap()
@@ -73,6 +61,32 @@ class ShareAnItemTests: XCTestCase {
         app
             .shareButton.wait()
             .tap()
+
+        app.shareSheet.wait()
+    }
+
+    func test_shareFromHome_sharingARecommendation_sharingFromSlate() {
+        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1").wait()
+
+        cell.overflowButton.wait().tap()
+        app.shareButton.wait().tap()
+
+        app.shareSheet.wait()
+    }
+
+    func test_shareFromHome_sharingARecommendation_sharingFromSlateDetails() {
+        app.launch()
+            .homeView
+            .sectionHeader("Slate 1")
+            .seeAllButton
+            .wait().tap()
+
+        let cell = app.slateDetailView
+            .recommendationCell("Slate 1, Recommendation 1")
+            .wait()
+
+        cell.overflowButton.wait().tap()
+        app.shareButton.wait().tap()
 
         app.shareSheet.wait()
     }

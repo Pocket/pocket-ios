@@ -3,44 +3,48 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import SnowplowTracker
+import Sync
 
 public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker
-
-    private var persistentContexts: [Context] = []
 
     public init(snowplow: SnowplowTracker) {
         self.snowplow = snowplow
     }
 
-    public func addPersistentContext(_ context: Context) {
-        persistentContexts.append(context)
-    }
-
-    public func track<T: Event>(event: T, _ contexts: [Context]?) {
+    public func track<T: OldEvent>(event: T, _ contexts: [Context]?) {
         guard let event = Event(from: event) else {
             return
         }
 
         let contexts = contexts ?? []
-        let merged = contexts + persistentContexts
-        let Contexts = Contexts(from: merged)
+        let Contexts = Contexts(from: contexts)
         event.contexts.addObjects(from: Contexts)
 
         snowplow.track(event: event)
+    }
+
+    public func track(event: Event, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) {
+        Log.debug("Tracking \(String(describing: event))", filename: filename, line: line, column: column, funcName: funcName)
+        let selfDescribing = event.toSelfDescribing()
+        snowplow.track(event: selfDescribing)
     }
 
     public func childTracker(with contexts: [Context]) -> Tracker {
         return LinkedTracker(parent: self, contexts: contexts)
     }
 
-    public func resetPersistentContexts(_ contexts: [Context]) {
-        persistentContexts = contexts
+    public func addPersistentEntity(_ entity: Entity) {
+        snowplow.addPersistentEntity(entity)
+    }
+
+    public func resetPersistentEntities(_ entities: [Entity]) {
+        snowplow.resetPersistentEntities(entities)
     }
 }
 
 extension PocketTracker {
-    private func Event<T: Event>(from event: T) -> SelfDescribing? {
+    private func Event<T: OldEvent>(from event: T) -> SelfDescribing? {
         guard let data = try? JSONEncoder().encode(event),
               let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
               let eventJSON = SelfDescribingJson(schema: type(of: event).schema, andData: deserialized as NSObject) else {

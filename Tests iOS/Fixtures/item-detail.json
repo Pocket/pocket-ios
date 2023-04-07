@@ -5,8 +5,8 @@
             "savedItemById": {
                 "__typename": "[type-name-here]",
                 "__typename": "[type-name-here]",
-                "remoteID": "archived-item-1",
-                "url": "http://example.com/items/archived-item-1",
+                "remoteID": "saved-item-1",
+                "url": "http://example.com/items/item-1",
                 "_createdAt": 0,
                 "_deletedAt": null,
                 "archivedAt": 100,
@@ -15,20 +15,21 @@
                 "tags": [],
                 "item": {
                     "__typename": "Item",
-                    "remoteID": "archived-item-1",
-                    "title": "Archived Item 1",
-                    "givenUrl": "http://example.com/items/archived-item-1",
-                    "resolvedUrl": "http://example.com/items/archived-item-1",
-                    "topImageUrl": "https://example.com/archived-item-1/top-image.jpg",
+                    "remoteID": "saved-item-1",
+                    "title": "Item 1",
+                    "givenUrl": "http://example.com/items/item-1",
+                    "resolvedUrl": "http://example.com/items/item-1",
+                    "topImageUrl": "https://example.com/item-1/top-image.jpg",
                     "domain": null,
                     "language": "en",
                     "timeToRead": 6,
+                    "marticle": #MARTICLE#,
                     "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
                     "datePublished": "2001-01-01 12:01:01",
                     "authors": [
                         {
                             "__typename": "Author",
-                            "id": "archived-author-1",
+                            "id": "author-1",
                             "name": "Socrates",
                             "url": "https://example.com/authors/socrates"
                         }

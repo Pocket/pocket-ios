@@ -15,7 +15,7 @@ extension Space {
         tags: [Tag]? = nil,
         item: Item? = nil
     ) throws -> SavedItem {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let savedItem = buildSavedItem(
                 remoteID: remoteID,
                 url: url,
@@ -27,7 +27,7 @@ extension Space {
                 tags: tags,
                 item: item
             )
-            try save()
+            try backgroundContext.save()
 
             return savedItem
         }
@@ -45,19 +45,67 @@ extension Space {
         tags: [Tag]? = nil,
         item: Item? = nil
     ) -> SavedItem {
-        context.performAndWait {
-            let savedItem: SavedItem = new()
+        backgroundContext.performAndWait {
+            let savedItem: SavedItem = SavedItem(context: backgroundContext, url: URL(string: url)!)
             savedItem.remoteID = remoteID
             savedItem.isFavorite = isFavorite
             savedItem.isArchived = isArchived
             savedItem.createdAt = createdAt
             savedItem.archivedAt = archivedAt
-            savedItem.url = URL(string: url)!
             savedItem.cursor = cursor
             savedItem.tags = NSOrderedSet(array: tags ?? [])
-            savedItem.item = item ?? new()
+            savedItem.item = item ?? Item(context: backgroundContext, givenURL: URL(string: url)!, remoteID: remoteID)
 
             return savedItem
+        }
+    }
+}
+
+// MARK: - SyndicatedArticle
+
+extension Space {
+    @discardableResult
+    func createSyndicatedArticle(
+        excerpt: String? = nil,
+        imageURL: URL? = nil,
+        itemID: String? = nil,
+        publisherName: String? = nil,
+        title: String? = nil,
+        item: Item? = nil
+    ) throws -> SyndicatedArticle {
+        try backgroundContext.performAndWait {
+            let syndicatedArticle = buildSyndicatedArticle(
+                excerpt: excerpt,
+                imageURL: imageURL,
+                itemID: itemID,
+                publisherName: publisherName,
+                title: title,
+                item: item
+            )
+            try backgroundContext.save()
+
+            return syndicatedArticle
+        }
+    }
+
+    @discardableResult
+    func buildSyndicatedArticle(
+        excerpt: String? = nil,
+        imageURL: URL? = nil,
+        itemID: String? = nil,
+        publisherName: String? = nil,
+        title: String? = nil,
+        item: Item? = nil
+    ) -> SyndicatedArticle {
+        backgroundContext.performAndWait {
+            let syndicatedArticle: SyndicatedArticle = SyndicatedArticle(context: backgroundContext)
+            syndicatedArticle.excerpt = excerpt
+            syndicatedArticle.imageURL = imageURL
+            syndicatedArticle.itemID = itemID
+            syndicatedArticle.publisherName = publisherName
+            syndicatedArticle.title = title
+            syndicatedArticle.item = item
+            return syndicatedArticle
         }
     }
 }
@@ -68,17 +116,19 @@ extension Space {
     func createItem(
         remoteID: String = "item-1",
         title: String = "Item 1",
-        givenURL: URL? = URL(string: "https://example.com/items/item-1"),
-        isArticle: Bool = true
+        givenURL: URL = URL(string: "https://example.com/items/item-1")!,
+        isArticle: Bool = true,
+        syndicatedArticle: SyndicatedArticle? = nil
     ) throws -> Item {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let item = buildItem(
                 remoteID: remoteID,
                 title: title,
                 givenURL: givenURL,
-                isArticle: isArticle
+                isArticle: isArticle,
+                syndicatedArticle: syndicatedArticle
             )
-            try save()
+            try backgroundContext.save()
 
             return item
         }
@@ -90,15 +140,20 @@ extension Space {
         title: String = "Item 1",
         givenURL: URL? = URL(string: "https://example.com/items/item-1"),
         resolvedURL: URL? = nil,
-        isArticle: Bool = true
+        isArticle: Bool = true,
+        syndicatedArticle: SyndicatedArticle? = nil
     ) -> Item {
-        context.performAndWait {
-            let item: Item = new()
-            item.remoteID = remoteID
+        var url = givenURL
+        if url == nil {
+            url = URL(string: "https://example.com/items/item-1")
+        }
+
+        return backgroundContext.performAndWait {
+            let item: Item = Item(context: backgroundContext, givenURL: url!, remoteID: remoteID)
             item.title = title
-            item.givenURL = givenURL
             item.resolvedURL = resolvedURL
             item.isArticle = isArticle
+            item.syndicatedArticle = syndicatedArticle
 
             return item
         }
@@ -114,7 +169,7 @@ extension Space {
         experimentID: String = "slate-lineup-1-experiment",
         slates: [Slate] = []
     ) throws -> SlateLineup {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let slateLineup = buildSlateLineup(
                 remoteID: remoteID,
                 requestID: requestID,
@@ -122,7 +177,7 @@ extension Space {
                 slates: slates
             )
 
-            try save()
+            try backgroundContext.save()
             return slateLineup
         }
     }
@@ -134,11 +189,8 @@ extension Space {
         experimentID: String = "slate-lineup-1-experiment",
         slates: [Slate] = []
     ) -> SlateLineup {
-        context.performAndWait {
-            let lineup: SlateLineup = new()
-            lineup.remoteID = remoteID
-            lineup.requestID = requestID
-            lineup.experimentID = experimentID
+        backgroundContext.performAndWait {
+            let lineup: SlateLineup = SlateLineup(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             lineup.slates = NSOrderedSet(array: slates)
 
             return lineup
@@ -157,7 +209,7 @@ extension Space {
         slateDescription: String = "The description of slate 1",
         recommendations: [Recommendation] = []
     ) throws -> Slate {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let slate = buildSlate(
                 experimentID: experimentID,
                 remoteID: remoteID,
@@ -167,7 +219,7 @@ extension Space {
                 recommendations: recommendations
             )
 
-            try save()
+            try backgroundContext.save()
             return slate
         }
     }
@@ -181,12 +233,9 @@ extension Space {
         slateDescription: String = "The description of slate 1",
         recommendations: [Recommendation] = []
     ) -> Slate {
-        context.performAndWait {
-            let slate: Slate = new()
-            slate.experimentID = experimentID
-            slate.remoteID = remoteID
+        backgroundContext.performAndWait {
+            let slate: Slate = Slate(context: backgroundContext, remoteID: remoteID, expermimentID: experimentID, requestID: requestID)
             slate.name = name
-            slate.requestID = requestID
             slate.slateDescription = slateDescription
             slate.recommendations = NSOrderedSet(array: recommendations)
 
@@ -202,13 +251,13 @@ extension Space {
         remoteID: String = "slate-1-rec-1",
         item: Item? = nil
     ) throws -> Recommendation {
-        try context.performAndWait {
+        try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
                 remoteID: remoteID,
                 item: item
             )
 
-            try save()
+            try backgroundContext.save()
             return recommendation
         }
     }
@@ -218,9 +267,8 @@ extension Space {
         remoteID: String = "slate-1-rec-1",
         item: Item? = nil
     ) -> Recommendation {
-        context.performAndWait {
-            let recommendation: Recommendation = new()
-            recommendation.remoteID = remoteID
+        backgroundContext.performAndWait {
+            let recommendation: Recommendation = Recommendation(context: backgroundContext, remoteID: remoteID)
             recommendation.item = item
 
             return recommendation

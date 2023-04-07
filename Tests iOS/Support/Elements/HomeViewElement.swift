@@ -48,7 +48,7 @@ struct HomeViewElement: PocketUIElement {
 
     func pullToRefresh() {
         let topCenter = CGVector(dx: 0.5, dy: 0.1)
-        let centerCenter = CGVector(dx: 0.5, dy: 0.8)
+        let centerCenter = CGVector(dx: 0.5, dy: 2)
 
         element.cells
             .element(boundBy: 0)
@@ -76,5 +76,17 @@ struct HomeViewElement: PocketUIElement {
         element
             .coordinate(withNormalizedOffset: origin)
             .press(forDuration: 0.1, thenDragTo: element.coordinate(withNormalizedOffset: destination), withVelocity: .fast, thenHoldForDuration: 1)
+    }
+
+    var overscrollText: XCUIElement {
+        element.otherElements["slate-detail-overscroll"]
+    }
+
+    var seeAllCollectionButton: XCUIElement {
+        element.staticTexts["See All"]
+    }
+
+    var returnToHomeButton: XCUIElement {
+        element.buttons["Home"]
     }
 }

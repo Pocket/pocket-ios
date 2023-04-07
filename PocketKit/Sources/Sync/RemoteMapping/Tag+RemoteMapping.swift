@@ -1,4 +1,5 @@
 import CoreData
+import PocketGraph
 
 extension Tag {
     func update(remote: TagParts) {

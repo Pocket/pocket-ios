@@ -1,5 +1,6 @@
 import SwiftUI
 import Textile
+import Localization
 
 enum PremiumStatus: String {
     case notSubscribed = "Sign up for Premium"
@@ -7,8 +8,8 @@ enum PremiumStatus: String {
 
     var headerVisible: Bool {
         switch self {
-            case .notSubscribed: return false
-            case .subscribed: return true
+        case .notSubscribed: return false
+        case .subscribed: return true
         }
     }
     var statusStyle: Style {
@@ -29,12 +30,17 @@ enum PremiumStatus: String {
         case .subscribed: return Color(UIColor.secondarySystemGroupedBackground)
         }
     }
+
+    var localized: String {
+        switch self {
+        case .notSubscribed: return Localization.signUpForPremium
+        case .subscribed: return Localization.premiumSubscriber
+        }
+    }
 }
 
 struct PremiumRow<Destination: View>: View {
-
-    @State
-    var isActive: Bool = false
+    @State var isActive: Bool = false
 
     var status: PremiumStatus
     var destination: Destination
@@ -47,7 +53,7 @@ struct PremiumRow<Destination: View>: View {
                 HStack(alignment: .center, spacing: 0) {
                     VStack(alignment: .leading, spacing: 5) {
                         if status.headerVisible {
-                            Text("Premium Status:")
+                            Text(Localization.premiumStatus)
                                 .style(.settings.row.header)
                         }
                         Text(status.rawValue)
@@ -58,7 +64,7 @@ struct PremiumRow<Destination: View>: View {
                     SFIcon(SFIconModel("chevron.right", color: status.foreground))
                 }
                 .padding(.vertical, 5)
-                NavigationLink(destination: destination, isActive: $isActive) {EmptyView()}.hidden()
+                NavigationLink(destination: destination, isActive: $isActive) { EmptyView() }.hidden()
             }
         }.listRowBackground(status.background)
     }

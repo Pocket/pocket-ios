@@ -3,16 +3,19 @@ import Sync
 import SharedPocketKit
 
 class SignOutOnFirstLaunch {
-    static let hasAppBeenLaunchedPreviouslyKey = "hasAppBeenLaunchedPreviously"
+    static let hasAppBeenLaunchedPreviouslyKey = UserDefaults.Key.hasAppBeenLaunchedPreviously
 
     private let appSession: AppSession
+    private let user: User
     private let userDefaults: UserDefaults
 
     init(
         appSession: AppSession,
+        user: User,
         userDefaults: UserDefaults
     ) {
         self.appSession = appSession
+        self.user = user
         self.userDefaults = userDefaults
     }
 
@@ -30,6 +33,7 @@ class SignOutOnFirstLaunch {
             return
         }
 
+        user.clear()
         appSession.currentSession = nil
         hasAppBeenLaunchedPreviously = true
     }

@@ -1,0 +1,92 @@
+import XCTest
+import CoreData
+@testable import PocketKit
+import Combine
+import SharedPocketKit
+@testable import Sync
+
+// swiftlint:disable force_try
+class MockBadgeProvider: BadgeProvider {
+    var applicationIconBadgeNumber: Int = 0
+}
+
+final class AppBadgeTrackerTests: XCTestCase {
+    private var space: Space!
+    private var source: MockSource!
+    private var userDefaults: UserDefaults!
+    private var accountViewModel: AccountViewModel!
+    private var badgeProvider: MockBadgeProvider!
+
+    override func setUp() {
+        space = .testSpace()
+        source = MockSource()
+        source.viewContext = space.viewContext
+
+        userDefaults = UserDefaults()
+        badgeProvider = MockBadgeProvider()
+
+        source.stubUnreadSaves {
+            try! self.space.fetchSavedItems().count
+        }
+    }
+
+    private func subject(completion: (() -> Void)? = nil) -> AppBadgeSetup {
+        return AppBadgeSetup(source: source, userDefaults: userDefaults, badgeProvider: badgeProvider, completion: completion)
+    }
+
+    override func tearDownWithError() throws {
+        userDefaults.removeObject(forKey: AccountViewModel.ToggleAppBadgeKey)
+        try space.clear()
+        try space.save()
+    }
+
+    func test_on_savedItemsUpdated_noSubscriberCalled() throws {
+        userDefaults.setValue(false, forKey: AccountViewModel.ToggleAppBadgeKey)
+        space.buildSavedItem()
+        try space.save()
+
+        NotificationCenter.default.post(name: .listUpdated, object: nil)
+
+        XCTAssertEqual(badgeProvider.applicationIconBadgeNumber, 0)
+    }
+
+    func test_on_savedItemsUpdated_subscribersCalledAddingElement() throws {
+        let badgeExpectation = expectation(description: "expected badge count to be updated")
+        let subject = subject {
+            badgeExpectation.fulfill()
+        }
+        badgeExpectation.assertForOverFulfill = false
+
+        userDefaults.setValue(true, forKey: AccountViewModel.ToggleAppBadgeKey)
+
+        space.buildSavedItem()
+        space.buildSavedItem(isArchived: true)
+        try space.save()
+
+        NotificationCenter.default.post(name: .listUpdated, object: nil)
+
+        wait(for: [badgeExpectation], timeout: 10)
+        XCTAssertEqual(badgeProvider.applicationIconBadgeNumber, 1)
+    }
+
+    func test_on_savedItemsUpdated_subscribersCalledAddingAndDeleting() throws {
+        let badgeExpectation = expectation(description: "expected badge count to be updated")
+        let subject = subject {
+            badgeExpectation.fulfill()
+        }
+        badgeExpectation.assertForOverFulfill = false
+
+        userDefaults.setValue(true, forKey: AccountViewModel.ToggleAppBadgeKey)
+
+        let savedItem = space.buildSavedItem()
+        try space.save()
+        space.delete(savedItem)
+        try space.save()
+
+        NotificationCenter.default.post(name: .listUpdated, object: nil)
+
+        wait(for: [badgeExpectation], timeout: 10)
+        XCTAssertEqual(badgeProvider.applicationIconBadgeNumber, 0)
+    }
+}
+// swiftlint:enable force_try

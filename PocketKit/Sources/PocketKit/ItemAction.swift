@@ -2,6 +2,7 @@ import Foundation
 import Textile
 import UIKit
 import SwiftUI
+import Localization
 
 struct ItemAction {
     let title: String
@@ -28,105 +29,134 @@ extension ItemAction: Hashable {
 extension ItemAction {
     static func save(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Save",
+            title: Localization.save,
             identifier: .saveItem,
             accessibilityIdentifier: "item-action-save",
             image: UIImage(asset: .save),
-            handler: handler
+            handler: { sender in
+                Haptics.saveTap()
+                handler(sender)
+            }
         )
     }
 
     static func archive(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Archive",
+            title: Localization.archive,
             identifier: .archiveItem,
             accessibilityIdentifier: "item-action-archive",
             image: UIImage(asset: .archive),
-            handler: handler
+            handler: { sender in
+                Haptics.archiveTap()
+                handler(sender)
+            }
         )
     }
 
     static func delete(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Delete",
+            title: Localization.delete,
             identifier: .deleteItem,
             accessibilityIdentifier: "item-action-delete",
-            // TODO: Use the pocket trash can icon here
-            image: UIImage(systemName: "trash"),
-            handler: handler
+            image: UIImage(asset: .delete),
+            handler: { sender in
+                Haptics.deleteTap()
+                handler(sender)
+            }
         )
     }
 
     static func addTags(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Add Tags",
+            title: Localization.addTags,
             identifier: .addTagsItem,
             accessibilityIdentifier: "item-action-add-tags",
             image: UIImage(asset: .tag),
-            handler: handler
+            handler: { sender in
+                Haptics.addTagsTap()
+                handler(sender)
+            }
         )
     }
 
-    static func moveToMyList(_ handler: @escaping (Any?) -> Void) -> ItemAction {
+    static func moveToSaves(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Move to My List",
-            identifier: .moveToMyListItem,
-            accessibilityIdentifier: "item-action-move-to-my-list",
+            title: Localization.moveToSaves,
+            identifier: .moveToSavesItem,
+            accessibilityIdentifier: "item-action-move-to-saves",
             image: UIImage(asset: .save),
-            handler: handler
+            handler: { sender in
+                Haptics.moveToSavesTap()
+                handler(sender)
+            }
         )
     }
 
     static func favorite(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Favorite",
+            title: Localization.favorite,
             identifier: .favoriteItem,
             accessibilityIdentifier: "item-action-favorite",
             image: UIImage(asset: .favorite)
                 .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal),
-            handler: handler
+            handler: { sender in
+                Haptics.favoriteTap()
+                handler(sender)
+            }
         )
     }
 
     static func unfavorite(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Unfavorite",
+            title: Localization.unfavorite,
             // intentionally the same as `favorite()` since we want to replace
             identifier: .favoriteItem,
             accessibilityIdentifier: "item-action-favorite",
             image: UIImage(asset: .favoriteFilled)
                 .withTintColor(UIColor(.branding.amber4), renderingMode: .alwaysOriginal),
-            handler: handler
+            handler: { sender in
+                Haptics.unfavoriteTap()
+                handler(sender)
+            }
         )
     }
 
     static func share(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Share",
+            title: Localization.share,
             identifier: .shareItem,
             accessibilityIdentifier: "item-action-share",
             image: UIImage(asset: .share),
-            handler: handler
+            handler: { sender in
+                Haptics.shareTap()
+                handler(sender)
+            }
         )
     }
 
     static func displaySettings(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Display Settings",
+            title: Localization.displaySettings,
             identifier: .displaySettings,
             accessibilityIdentifier: "item-action-display-settings",
             image: UIImage(systemName: "textformat.size"),
-            handler: handler
+            handler: { sender in
+                Haptics.displaySettingsTap()
+                handler(sender)
+            }
         )
     }
 
     static func report(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Report",
+            title: Localization.report,
             identifier: .report,
             accessibilityIdentifier: "item-action-report",
             image: UIImage(asset: .alert),
-            handler: handler
+            handler: { sender in
+                Haptics.reportTap()
+                handler(sender)
+            }
         )
     }
 
@@ -136,27 +166,36 @@ extension ItemAction {
             identifier: .recommendationPrimary,
             accessibilityIdentifier: "item-action-recommendation-primary",
             image: nil,
-            handler: handler
+            handler: { sender in
+                Haptics.recomendationPrimaryTap()
+                handler(sender)
+            }
         )
     }
 
     static func copyLink(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Copy link",
+            title: Localization.copyLink,
             identifier: .copyLink,
             accessibilityIdentifier: "item-action-copy-link",
             image: UIImage(systemName: "link"),
-            handler: handler
+            handler: { sender in
+                Haptics.copyLinkTap()
+                handler(sender)
+            }
         )
     }
 
     static func open(_ handler: @escaping (Any?) -> Void) -> ItemAction {
         return ItemAction(
-            title: "Open",
+            title: Localization.open,
             identifier: .open,
             accessibilityIdentifier: "item-action-open",
             image: UIImage(systemName: "safari"),
-            handler: handler
+            handler: { sender in
+                Haptics.openItemTap()
+                handler(sender)
+            }
         )
     }
 }
@@ -166,7 +205,7 @@ extension UIAction.Identifier {
     static let archiveItem = UIAction.Identifier(rawValue: "archive-item")
     static let deleteItem = UIAction.Identifier(rawValue: "delete-item")
     static let addTagsItem = UIAction.Identifier(rawValue: "add-tags-item")
-    static let moveToMyListItem = UIAction.Identifier(rawValue: "move-to-my-list-item")
+    static let moveToSavesItem = UIAction.Identifier(rawValue: "move-to-saves-item")
     static let favoriteItem = UIAction.Identifier(rawValue: "favorite-item")
     static let shareItem = UIAction.Identifier(rawValue: "share-item")
     static let displaySettings = UIAction.Identifier(rawValue: "display-settings")

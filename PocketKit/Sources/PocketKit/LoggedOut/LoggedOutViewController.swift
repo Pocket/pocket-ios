@@ -1,6 +1,20 @@
 import UIKit
 import Textile
 import SwiftUI
+import Localization
+
+struct LoggedOutViewControllerSwiftUI: UIViewControllerRepresentable {
+    var model: LoggedOutViewModel
+
+    func makeUIViewController(context: UIViewControllerRepresentableContext<Self>) -> LoggedOutViewController {
+        let v = LoggedOutCoordinator(viewModel: model)
+
+        return v.viewController
+    }
+
+    func updateUIViewController(_ uiViewController: LoggedOutViewController, context: UIViewControllerRepresentableContext<Self>) {
+    }
+}
 
 class LoggedOutViewController: UIHostingController<LoggedOutView> {
     convenience init(viewModel: LoggedOutViewModel) {
@@ -14,8 +28,7 @@ class LoggedOutViewController: UIHostingController<LoggedOutView> {
 }
 
 struct LoggedOutView: View {
-    @ObservedObject
-    private var viewModel: LoggedOutViewModel
+    @ObservedObject private var viewModel: LoggedOutViewModel
 
     init(viewModel: LoggedOutViewModel) {
         self.viewModel = viewModel
@@ -40,6 +53,27 @@ struct LoggedOutView: View {
                 .onDisappear { viewModel.offlineViewDidDisappear() }
         }
         .accessibilityIdentifier("logged-out")
+        .banner(
+            data: BannerModifier.BannerData(
+                image: .accountDeleted,
+                title: Localization.Login.DeletedAccount.Banner.title,
+                detail: Localization.Login.DeletedAccount.Banner.detail,
+                action: BannerModifier.BannerData.BannerAction(
+                    text: Localization.Login.DeletedAccount.Banner.action,
+                    style: PocketButtonStyle(.primary)
+                ) {
+                    viewModel.exitSurveyButtonClicked()
+                }
+            ),
+            show: $viewModel.isPresentingExitSurveyBanner,
+            bottomOffset: 0
+        )
+        .sheet(isPresented: $viewModel.isPresentingExitSurvey) {
+            SFSafariView(url: LinkedExternalURLS.ExitSurvey)
+                .edgesIgnoringSafeArea(.bottom).onAppear {
+                    viewModel.exitSurveyAppeared()
+                }
+        }
     }
 }
 
@@ -48,20 +82,20 @@ private struct LoggedOutCarouselView: View {
         TabView {
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel1,
-                text: "Save what really interests you",
-                detailText: "Collect articles, videos or any online content you like."
+                text: Localization.saveWhatReallyInterestsYou,
+                detailText: Localization.collectArticlesVideosOrAnyOnlineContentYouLike
             )
 
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel2,
-                text: "Make the most of any moment",
-                detailText: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket"
+                text: Localization.makeTheMostOfAnyMoment,
+                detailText: Localization.SaveFromSafariTwitterYouTubeOrYourFavoriteNewsAppForStarters.yourArticlesAndVideosWillBeReadyForYouInPocket
             )
 
             LoggedOutCarouselPageView(
                 imageAsset: .loggedOutCarousel3,
-                text: "Your quiet corner of the Internet",
-                detailText: "Pocket saves articles in a clean layout designed for reading—no interruptions, no popups—so you can sidestep the Internet's noise."
+                text: Localization.yourQuietCornerOfTheInternet,
+                detailText: Localization.pocketSavesArticlesInACleanLayoutDesignedForReadingNoInterruptionsNoPopupsSoYouCanSidestepTheInternetSNoise
             )
         }
         .tabViewStyle(.page)
@@ -111,7 +145,7 @@ private struct LoggedOutActionsView: View {
             Button {
                 viewModel.signUp()
             } label: {
-                Text("Sign Up").style(.header.sansSerif.h8.with(color: .ui.white))
+                Text(Localization.signUp).style(.header.sansSerif.h8.with(color: .ui.white))
                     .padding(EdgeInsets(top: 12, leading: 0, bottom: 12, trailing: 0))
                     .frame(maxWidth: 320)
             }.buttonStyle(ActionsPrimaryButtonStyle())
@@ -119,7 +153,7 @@ private struct LoggedOutActionsView: View {
             Button {
                 viewModel.logIn()
             } label: {
-                Text("Log In")
+                Text(Localization.logIn)
                     .style(.header.sansSerif.p4)
                     .padding(EdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16))
             }

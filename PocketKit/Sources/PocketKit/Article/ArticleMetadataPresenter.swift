@@ -10,13 +10,12 @@ private extension Style {
             .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
                 paragraph.with(lineHeight: .multiplier(0.925))
             }
-            .modified(by: modifier)
 
         if modifier.fontFamily == .graphik {
             style = style.with(weight: .medium)
         }
 
-        return style
+        return style.modified(by: modifier)
     }
 
     static func byline(modifier: StylerModifier) -> Style {
@@ -27,7 +26,7 @@ private extension Style {
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
             paragraph.with(lineHeight: .multiplier(1.1))
         }
-        .adjustingSize(by: modifier.fontSizeAdjustment)
+        .modified(by: modifier)
     }
 
     static func publishedDate(modifier: StylerModifier) -> Style {
@@ -37,7 +36,7 @@ private extension Style {
         .with { (paragraph: ParagraphStyle) -> ParagraphStyle in
             paragraph.with(lineHeight: .multiplier(1.1))
         }
-        .adjustingSize(by: modifier.fontSizeAdjustment)
+        .modified(by: modifier)
     }
 }
 

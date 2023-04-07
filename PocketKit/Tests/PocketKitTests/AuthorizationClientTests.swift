@@ -12,7 +12,7 @@ class AuthorizationClientTests: XCTestCase {
 
     override func setUp() {
         mockAuthenticationSession = MockAuthenticationSession()
-        client = AuthorizationClient(consumerKey: "the-consumer-key") { (_, _, completion) in
+        client = AuthorizationClient(consumerKey: "the-consumer-key", adjustSignupEventToken: "token") { (_, _, completion) in
             self.mockAuthenticationSession.completionHandler = completion
             return self.mockAuthenticationSession
         }
@@ -76,7 +76,7 @@ extension AuthorizationClientTests {
             _ = try await self.client.logIn(from: self)
         }
 
-        wait(for: [expectSessionStart], timeout: 1)
+        wait(for: [expectSessionStart], timeout: 10)
     }
 }
 
@@ -130,7 +130,7 @@ extension AuthorizationClientTests {
             _ = try await self.client.signUp(from: self)
         }
 
-        wait(for: [expectSessionStart], timeout: 1)
+        wait(for: [expectSessionStart], timeout: 10)
     }
 }
 

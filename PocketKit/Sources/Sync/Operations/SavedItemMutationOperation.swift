@@ -1,5 +1,11 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
 import Combine
 import Apollo
+import ApolloAPI
+import CoreData
 
 class AnyMutation {
     let perform: (ApolloClientProtocol) async throws -> Void
@@ -35,7 +41,7 @@ class SavedItemMutationOperation: SyncOperation {
         self.mutation = mutation
     }
 
-    func execute() async -> SyncOperationResult {
+    func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
         do {
             _ = try await mutation.perform(apollo)
             return .success
@@ -51,7 +57,7 @@ class SavedItemMutationOperation: SyncOperation {
                     return .failure(error)
                 }
             default:
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
                 events.send(.error(error))
                 return .failure(error)
             }

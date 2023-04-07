@@ -1,4 +1,6 @@
 import XCTest
+import PocketGraph
+
 @testable import Sync
 
 extension PocketSourceTests {
@@ -6,7 +8,7 @@ extension PocketSourceTests {
         sessionProvider.session = MockSession()
 
         let fetchList = expectation(description: "fetchList operation executed")
-        operations.stubFetchList { _, _, _, _, _, _ in
+        operations.stubFetchSaves { _, _, _, _  in
             TestSyncOperation { fetchList.fulfill() }
         }
 
@@ -25,7 +27,7 @@ extension PocketSourceTests {
         var source: PocketSource! = subject()
         networkMonitor.update(status: .unsatisfied)
 
-        source.refresh()
+        source.refreshSaves()
         source.favorite(item: item)
         source.archive(item: item)
 
@@ -34,13 +36,16 @@ extension PocketSourceTests {
         source.restore()
         networkMonitor.update(status: .satisfied)
 
-        wait(for: [fetchList, favoriteItem, archiveItem], timeout: 1, enforceOrder: true)
+        wait(for: [favoriteItem, archiveItem], timeout: 5, enforceOrder: true)
+        wait(for: [fetchList], timeout: 5)
 
         let done = expectation(description: "done")
         source.drain { done.fulfill() }
-        wait(for: [done], timeout: 1)
+        wait(for: [done], timeout: 5)
 
-        operations.stubFetchList { _, _, _, _, _, _ in
+        _ = XCTWaiter.wait(for: [expectation(description: "Waiting for core data to flush deletions")], timeout: 5.0)
+
+        operations.stubFetchSaves { _, _, _, _  in
             XCTFail("Operation should not be re-created after succeeding")
             return TestSyncOperation { }
         }

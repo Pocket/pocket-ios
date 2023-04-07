@@ -2,23 +2,40 @@ import Foundation
 import SharedPocketKit
 import Sync
 import Combine
+import Analytics
+import Adjust
 
 class SavedItemViewModel {
     private let appSession: AppSession
     private let saveService: SaveService
     private let dismissTimer: Timer.TimerPublisher
+    private let tracker: Tracker
+    private let consumerKey: String
 
     private var dismissTimerCancellable: AnyCancellable?
 
-    @Published
-    var infoViewModel: InfoView.Model = .empty
+    @Published var infoViewModel: InfoView.Model = .empty
+
+    @Published var presentedAddTags: SaveToAddTagsViewModel?
+
+    var savedItem: SavedItem?
 
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
-    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher) {
+    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher, tracker: Tracker, consumerKey: String) {
         self.appSession = appSession
         self.saveService = saveService
         self.dismissTimer = dismissTimer
+        self.tracker = tracker
+        self.consumerKey = consumerKey
+
+        guard let session = appSession.currentSession else { return }
+
+        tracker.resetPersistentEntities([
+            APIUserEntity(consumerKey: consumerKey)
+        ])
+
+        tracker.addPersistentEntity(UserEntity(guid: session.guid, userID: session.userIdentifier, adjustAdId: Adjust.adid()))
     }
 
     func save(from context: ExtensionContext?) async {
@@ -35,11 +52,20 @@ class SavedItemViewModel {
                 break
             }
 
-            switch saveService.save(url: url) {
-            case .existingItem:
+            // TODO: Add this to all track calls not the global call.
+            tracker.addPersistentEntity(ContentEntity(url: url))
+            track(context: .saveExtension.saveDialog)
+
+            let result = saveService.save(url: url)
+            switch result {
+            case .existingItem(let savedItem):
+                self.savedItem = savedItem
                 infoViewModel = .existingItem
-            case .newItem:
+            case .newItem(let savedItem):
+                self.savedItem = savedItem
                 infoViewModel = .newItem
+            case .taggedItem:
+                break
             }
 
             autodismiss(from: context)
@@ -47,8 +73,49 @@ class SavedItemViewModel {
         }
     }
 
+    func showAddTagsView(from context: ExtensionContext?) {
+        presentedAddTags = SaveToAddTagsViewModel(
+            item: savedItem,
+            tracker: tracker,
+            retrieveAction: { [weak self] tags in
+                self?.retrieveTags(excluding: tags)
+            },
+            filterAction: { [weak self] text, tags in
+                self?.filterTags(with: text, excluding: tags)
+            },
+            saveAction: { [weak self] tags in
+                self?.addTags(tags: tags, from: context)
+            }
+        )
+        track(context: .saveExtension.addTagsButton)
+    }
+
+    func addTags(tags: [String], from context: ExtensionContext?) {
+        guard let savedItem = savedItem else { return }
+        let result = saveService.addTags(savedItem: savedItem, tags: tags)
+        if case let .taggedItem(savedItem) = result {
+            self.savedItem = savedItem
+            infoViewModel = .taggedItem
+
+            track(context: .saveExtension.addTagsDone)
+        }
+        finish(context: context)
+    }
+
+    func retrieveTags(excluding tags: [String]) -> [Tag]? {
+        return saveService.retrieveTags(excluding: tags)
+    }
+
+    func filterTags(with text: String, excluding tags: [String]) -> [Tag]? {
+        return saveService.filterTags(with: text, excluding: tags)
+    }
+
     func finish(context: ExtensionContext?, completionHandler: ((Bool) -> Void)? = nil) {
         context?.completeRequest(returningItems: nil, completionHandler: completionHandler)
+    }
+
+    func cancelDismissTimer() {
+        dismissTimerCancellable?.cancel()
     }
 }
 
@@ -88,6 +155,11 @@ extension SavedItemViewModel {
 
         return nil
     }
+
+    private func track(context: UIContext) {
+        let event = SnowplowEngagement(type: .general, value: nil)
+        tracker.track(event: event, [context])
+    }
 }
 
 private extension InfoView.Model {
@@ -113,7 +185,7 @@ private extension InfoView.Model {
             style: .mainText
         ),
         attributedDetailText: NSAttributedString(
-            string: "You've already saved this before. We'll move it to the top of your list.",
+            string: "You've already saved this. We'll move it to the top of your list.",
             style: .detailText
         )
     )
@@ -123,6 +195,15 @@ private extension InfoView.Model {
         attributedText: NSAttributedString(
             string: "Pocket couldn't save this link",
             style: .mainTextError
+        ),
+        attributedDetailText: nil
+    )
+
+    static let taggedItem = InfoView.Model(
+        style: .default,
+        attributedText: NSAttributedString(
+            string: "Tags Added!",
+            style: .mainText
         ),
         attributedDetailText: nil
     )

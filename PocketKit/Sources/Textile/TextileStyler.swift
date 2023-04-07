@@ -14,39 +14,30 @@ public class TextileStyler: Styler {
     }
 
     public func style(document str: NSMutableAttributedString) {
-
     }
 
     public func style(blockQuote str: NSMutableAttributedString, nestDepth: Int) {
-
     }
 
     public func style(list str: NSMutableAttributedString, nestDepth: Int) {
-
     }
 
     public func style(listItemPrefix str: NSMutableAttributedString) {
-
     }
 
     public func style(item str: NSMutableAttributedString, prefixLength: Int) {
-
     }
 
     public func style(codeBlock str: NSMutableAttributedString, fenceInfo: String?) {
-
     }
 
     public func style(htmlBlock str: NSMutableAttributedString) {
-
     }
 
     public func style(customBlock str: NSMutableAttributedString) {
-
     }
 
     public func style(paragraph str: NSMutableAttributedString) {
-
     }
 
     public func style(heading str: NSMutableAttributedString, level: Int) {
@@ -63,7 +54,7 @@ public class TextileStyler: Styler {
 
         str.updateStyle { existingStyle in
             guard let existingStyle = existingStyle else {
-                return headingStyle
+                return headingStyle.modified(by: modifier)
             }
 
             headingStyle = headingStyle.with(slant: existingStyle.fontDescriptor.slant)
@@ -74,58 +65,53 @@ public class TextileStyler: Styler {
                     .with(backgroundColor: .ui.grey6)
             }
 
-            return headingStyle
+            return headingStyle.modified(by: modifier)
         }
     }
 
     public func style(thematicBreak str: NSMutableAttributedString) {
-
     }
 
     public func style(text str: NSMutableAttributedString) {
         str.updateStyle { _ in
-            styling.body
+            styling.body.modified(by: modifier)
         }
     }
 
     public func style(softBreak str: NSMutableAttributedString) {
-
     }
 
     public func style(lineBreak str: NSMutableAttributedString) {
-
     }
 
     public func style(code str: NSMutableAttributedString) {
         str.updateStyle { existingStyle in
-            styling.monospace.with(backgroundColor: .ui.grey6)
+            styling.monospace.with(backgroundColor: .ui.grey6).modified(by: modifier)
         }
     }
 
     public func style(htmlInline str: NSMutableAttributedString) {
-
     }
 
     public func style(customInline str: NSMutableAttributedString) {
-
     }
 
     public func style(emphasis str: NSMutableAttributedString) {
         str.updateStyle { existingStyle in
-            (existingStyle ?? styling.body).with(slant: .italic)
+            (existingStyle ?? styling.body).with(slant: .italic).modified(by: modifier)
         }
     }
 
     public func style(strong str: NSMutableAttributedString) {
         str.updateStyle { existingStyle in
             let style = existingStyle ?? styling.body
-            return styling.bolding(style: style)
+            return styling.bolding(style: style).modified(by: modifier)
         }
     }
 
     public func style(link str: NSMutableAttributedString, title: String?, url: String?) {
         str.updateStyle { existingStyle in
-            (existingStyle ?? styling.body).with(underlineStyle: .single)
+            (existingStyle ?? styling.body).with(underlineStyle: .single).modified(by: modifier)
         }
 
         if let urlString = url, let url = URL(string: urlString) {
@@ -135,6 +121,5 @@ public class TextileStyler: Styler {
     }
 
     public func style(image str: NSMutableAttributedString, title: String?, url: String?) {
-
     }
 }

@@ -1,0 +1,11 @@
+mutation DeleteUser {
+  deleteUser
+}
+
+query GetUserData {
+  user {
+    isPremium
+    username
+    name
+  }
+}

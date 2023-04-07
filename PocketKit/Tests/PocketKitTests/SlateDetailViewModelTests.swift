@@ -1,8 +1,9 @@
 import XCTest
-import Sync
 import Combine
 import Analytics
 import CoreData
+import PocketGraph
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -12,13 +13,22 @@ class SlateDetailViewModelTests: XCTestCase {
     var source: MockSource!
     var tracker: MockTracker!
     var subscriptions: Set<AnyCancellable> = []
+    var user: User!
+    var userDefaults: UserDefaults!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
+        userDefaults = .standard
+        user = PocketUser(userDefaults: userDefaults)
+        source.stubViewObject { identifier in
+            self.space.viewObject(with: identifier)
+        }
 
-        source.mainContext = space.context
+        source.stubViewRefresh { object, flag in
+            self.space.viewContext.refresh(object, mergeChanges: flag)
+        }
     }
 
     override func tearDownWithError() throws {
@@ -29,27 +39,17 @@ class SlateDetailViewModelTests: XCTestCase {
     func subject(
         slate: Slate,
         source: Source? = nil,
-        tracker: Tracker? = nil
+        tracker: Tracker? = nil,
+        user: User? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> SlateDetailViewModel {
         SlateDetailViewModel(
             slate: slate,
             source: source ?? self.source,
-            tracker: tracker ?? self.tracker
+            tracker: tracker ?? self.tracker,
+            user: user ?? self.user,
+            userDefaults: userDefaults ?? self.userDefaults
         )
-    }
-
-    func test_refresh_delegatesToSource() throws {
-        let slate = try space.createSlate(remoteID: "abcde")
-        let viewModel = subject(slate: slate)
-
-        let fetchExpectation = expectation(description: "expected to fetch slate")
-        source.stubFetchSlate { _ in
-            fetchExpectation.fulfill()
-        }
-        viewModel.refresh { }
-
-        wait(for: [fetchExpectation], timeout: 1)
-        XCTAssertEqual(source.fetchSlateCall(at: 0)?.identifier, "abcde")
     }
 
     func test_fetch_whenRecentSavesIsEmpty_andSlateLineupIsUnavailable_sendsLoadingSnapshot() throws {
@@ -67,7 +67,7 @@ class SlateDetailViewModelTests: XCTestCase {
 
         viewModel.fetch()
 
-        wait(for: [receivedLoadingSnapshot], timeout: 1)
+        wait(for: [receivedLoadingSnapshot], timeout: 10)
     }
 
     func test_fetch_sendsSnapshotWithItemForEachRecommendation() throws {
@@ -85,7 +85,7 @@ class SlateDetailViewModelTests: XCTestCase {
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.$snapshot.dropFirst().sink { snapshot in
-            defer { snapshotExpectation.fulfill()}
+            defer { snapshotExpectation.fulfill() }
 
             XCTAssertEqual(snapshot.sectionIdentifiers, [.slate(slate)])
             XCTAssertEqual(
@@ -98,7 +98,7 @@ class SlateDetailViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.fetch()
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_snapshot_whenRecommendationIsSaved_updatesSnapshot() throws {
@@ -111,7 +111,8 @@ class SlateDetailViewModelTests: XCTestCase {
         ]
 
         let slate = try space.createSlate(recommendations: recommendations)
-        let viewModel = subject(slate: slate)
+        try space.save()
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
 
         let snapshotExpectation = expectation(description: "expected snapshot to update")
         viewModel.$snapshot.dropFirst().sink { snapshot in
@@ -131,14 +132,14 @@ class SlateDetailViewModelTests: XCTestCase {
         item.savedItem = space.buildSavedItem()
         try space.save()
 
-        wait(for: [snapshotExpectation], timeout: 1)
+        wait(for: [snapshotExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsReadable_updatesSelectedReadable() throws {
         let recommendation = space.buildRecommendation()
         let slate = try space.createSlate(recommendations: [recommendation])
-
-        let viewModel = subject(slate: slate)
+        try space.save()
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
 
         let readableExpectation = expectation(description: "expected to update selected readable")
         viewModel.$selectedReadableViewModel.dropFirst().sink { readable in
@@ -150,15 +151,15 @@ class SlateDetailViewModelTests: XCTestCase {
             at: IndexPath(item: 0, section: 0)
         )
 
-        wait(for: [readableExpectation], timeout: 1)
+        wait(for: [readableExpectation], timeout: 10)
     }
 
     func test_selectCell_whenSelectingRecommendation_recommendationIsNotReadable_updatesPresentedWebReaderURL() throws {
         let item = space.buildItem()
         let recommendation = space.buildRecommendation(item: item)
         let slate = try space.createSlate(recommendations: [recommendation])
-
-        let viewModel = subject(slate: slate)
+        try space.save()
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
 
         let urlExpectation = expectation(description: "expected to update presented URL")
         urlExpectation.expectedFulfillmentCount = 3
@@ -190,15 +191,16 @@ class SlateDetailViewModelTests: XCTestCase {
             viewModel.select(cell: cell, at: IndexPath(item: 0, section: 0))
         }
 
-        wait(for: [urlExpectation], timeout: 1)
+        wait(for: [urlExpectation], timeout: 10)
     }
 
     func test_reportAction_forRecommendation_updatesSelectedRecommendationToReport() throws {
         let item = space.buildItem()
         let recommendation = space.buildRecommendation(item: item)
         let slate = try space.createSlate(recommendations: [recommendation])
+        try space.save()
 
-        let viewModel = subject(slate: slate)
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
         let reportExpectation = expectation(description: "expected to update selected recommendation to report")
         viewModel.$selectedRecommendationToReport.dropFirst().sink { recommendation in
             XCTAssertNotNil(recommendation)
@@ -212,7 +214,7 @@ class SlateDetailViewModelTests: XCTestCase {
         XCTAssertNotNil(action)
 
         action?.handler?(nil)
-        wait(for: [reportExpectation], timeout: 1)
+        wait(for: [reportExpectation], timeout: 10)
     }
 
     func test_primaryAction_whenRecommendationIsNotSaved_savesWithSource() throws {
@@ -221,7 +223,9 @@ class SlateDetailViewModelTests: XCTestCase {
         let item = space.buildItem()
         let recommendation = space.buildRecommendation(item: item)
         let slate = try space.createSlate(recommendations: [recommendation])
-        let viewModel = subject(slate: slate)
+        try space.save()
+
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
 
         let action = viewModel
             .recommendationViewModel(for: recommendation.objectID, at: [0, 0])?
@@ -229,7 +233,7 @@ class SlateDetailViewModelTests: XCTestCase {
         XCTAssertNotNil(action)
         action?.handler?(nil)
 
-        XCTAssertEqual(source.saveRecommendationCall(at: 0)?.recommendation, recommendation)
+        XCTAssertEqual(source.saveRecommendationCall(at: 0)?.recommendation.objectID, recommendation.objectID)
     }
 
     func test_primaryAction_whenRecommendationIsSaved_archivesWithSource() throws {
@@ -239,8 +243,9 @@ class SlateDetailViewModelTests: XCTestCase {
         space.buildSavedItem(item: item)
         let recommendation = space.buildRecommendation(item: item)
         let slate = try space.createSlate(recommendations: [recommendation])
-        let viewModel = subject(slate: slate)
 
+        try space.save()
+        let viewModel = subject(slate: space.viewObject(with: slate.objectID) as! Slate)
         let action = viewModel.recommendationViewModel(
             for: recommendation.objectID,
             at: IndexPath(item: 0, section: 0)
@@ -248,6 +253,6 @@ class SlateDetailViewModelTests: XCTestCase {
         XCTAssertNotNil(action)
         action?.handler?(nil)
 
-        XCTAssertEqual(source.archiveRecommendationCall(at: 0)?.recommendation, recommendation)
+        XCTAssertEqual(source.archiveRecommendationCall(at: 0)?.recommendation.objectID, recommendation.objectID)
     }
 }

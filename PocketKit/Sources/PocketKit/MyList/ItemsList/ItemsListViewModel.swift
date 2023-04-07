@@ -1,9 +1,11 @@
 import Combine
 import UIKit
+import Sync
+import Localization
 
 enum SelectedItem {
     case readable(SavedItemViewModel?)
-    case webView(URL?)
+    case webView(SavedItemViewModel?)
 
     func clearPresentedWebReaderURL() {
         switch self {
@@ -51,6 +53,7 @@ enum ItemsListCell<ItemIdentifier: Hashable>: Hashable {
 }
 
 enum ItemsListFilter: String, Hashable, CaseIterable {
+    case search = "Search"
     case all = "All"
     case tagged = "Tagged"
     case favorites = "Favorites"
@@ -58,6 +61,8 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
 
     var image: UIImage? {
         switch self {
+        case .search:
+            return UIImage(asset: .magnifyingGlass)
         case .all:
             return nil
         case .tagged:
@@ -66,6 +71,21 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
             return UIImage(asset: .favorite)
         case .sortAndFilter:
             return UIImage(asset: .sortFilter)
+        }
+    }
+
+    var localized: String {
+        switch self {
+        case .all:
+            return Localization.all
+        case .tagged:
+            return Localization.tagged
+        case .favorites:
+            return Localization.favorites
+        case .sortAndFilter:
+            return Localization.sortFilter
+        case .search:
+            return Localization.search
         }
     }
 }
@@ -94,6 +114,8 @@ protocol ItemsListViewModel: AnyObject {
     func selectCell(with: ItemsListCell<ItemIdentifier>, sender: Any?)
 
     func filterByTagAction() -> UIAction?
+    func trackOverflow(for objectID: ItemIdentifier) -> UIAction?
+    func swiftUITrackOverflow(for objectID: ItemIdentifier) -> ItemAction?
     func shareAction(for objectID: ItemIdentifier) -> ItemAction?
     func favoriteAction(for objectID: ItemIdentifier) -> ItemAction?
     func overflowActions(for objectID: ItemIdentifier) -> [ItemAction]

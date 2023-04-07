@@ -4,6 +4,7 @@ import Analytics
 import Combine
 import Lottie
 import Textile
+import Localization
 
 class SlateDetailViewController: UIViewController {
     private lazy var layoutConfiguration = UICollectionViewCompositionalLayout { [weak self] index, env in
@@ -28,7 +29,7 @@ class SlateDetailViewController: UIViewController {
         view.accessibilityIdentifier = "slate-detail-overscroll"
         view.alpha = 0
         view.attributedText = NSAttributedString(
-            string: "You're all caught up!\nCheck back later for more.",
+            string: Localization.youReAllCaughtUpCheckBackLaterForMore,
             style: .overscroll
         )
         return view
@@ -115,8 +116,6 @@ class SlateDetailViewController: UIViewController {
         ])
 
         model.fetch()
-        model.refresh { }
-
     }
 }
 

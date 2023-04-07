@@ -3,9 +3,10 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Sails
+import SharedPocketKit
 
 extension Response {
-    static func myList(_ fixtureName: String = "initial-list") -> Response {
+    static func saves(_ fixtureName: String = "initial-list") -> Response {
         Response {
             Status.ok
             Fixture.load(name: fixtureName)
@@ -14,12 +15,16 @@ extension Response {
         }
     }
 
+    static func freeUserSaves(_ fixtureName: String = "initial-list") -> Response {
+        saves("initial-list-free-user")
+    }
+
     static func archivedContent() -> Response {
-        myList("archived-items")
+        saves("archived-items")
     }
 
     static func favoritedArchivedContent() -> Response {
-        myList("archived-favorite-items")
+        saves("archived-favorite-items")
     }
 
     static func slateLineup(_ fixtureName: String = "slates") -> Response {
@@ -67,11 +72,25 @@ extension Response {
     }
 
     static func itemDetail() -> Response {
-        fixture(named: "item-detail")
+        return Response {
+            Status.ok
+            Fixture.load(name: "item-detail")
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
+        }
     }
 
-    static func recommendationDetail() -> Response {
-        fixture(named: "recommendation-detail")
+    static func archiveItemDetail() -> Response {
+        return Response {
+            Status.ok
+            Fixture.load(name: "archive-item-detail")
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
+        }
+    }
+
+    static func recommendationDetail(_ number: Int = 1) -> Response {
+        fixture(named: "recommendation-detail-\(number)")
     }
 
     static func savedItemWithTag() -> Response {
@@ -82,10 +101,105 @@ extension Response {
         fixture(named: "empty-tags")
     }
 
+    static func deleteUser() -> Response {
+        fixture(named: "deleteUser")
+    }
+
+    static func deleteUserError() -> Response {
+        fixture(named: "deleteUser-error")
+    }
+
+    static func premiumStatus() -> Response {
+        fixture(named: "premium-status")
+    }
+
+    static func userDetails() -> Response {
+        fixture(named: "user")
+    }
+
+    static func premiumUserDetails() -> Response {
+        fixture(named: "premium-user")
+    }
+
+    static func searchList(_ type: SearchScope) -> Response {
+        var fixtureName = "search-list"
+        switch type {
+        case .saves:
+            fixtureName = "search-list"
+        case .archive:
+            fixtureName = "search-list-archive"
+        case .all:
+            fixtureName = "search-list-all"
+        }
+
+        return Response {
+            Status.ok
+            Fixture.load(name: fixtureName)
+                .replacing("MARTICLE", withFixtureNamed: "marticle")
+                .data
+        }
+    }
+
+    static func searchPagination(_ fixtureName: String = "search-list-page-1") -> Response {
+        fixture(named: fixtureName)
+    }
+
     static func fixture(named fixtureName: String) -> Response {
         Response {
             Status.ok
             Fixture.data(name: fixtureName)
+        }
+    }
+
+    static func fallbackResponses(apiRequest: ClientAPIRequest) -> Response {
+        if apiRequest.isForSlateLineup {
+            return .slateLineup()
+        } else if apiRequest.isForSlateDetail(1) {
+            return Response.slateDetail(1)
+        } else if apiRequest.isForSlateDetail(2) {
+            return Response.slateDetail(2)
+        } else if apiRequest.isForArchivedContent {
+            return .archivedContent()
+        } else if apiRequest.isForTags {
+            return .emptyTags()
+        } else if apiRequest.isForSavesContent {
+            return .saves()
+        } else if apiRequest.isForDeleteUser {
+            return .deleteUser()
+        } else if apiRequest.isForUserDetails {
+            return .userDetails()
+        } else if apiRequest.isToArchiveAnItem {
+            return .archive()
+        } else if apiRequest.isToSaveAnItem {
+            return .saveItem()
+        } else if apiRequest.isForRecommendationDetail(1) {
+            return .recommendationDetail(1)
+        } else if apiRequest.isForRecommendationDetail(2) {
+            return .recommendationDetail(2)
+        } else if apiRequest.isForRecommendationDetail(3) {
+            return .recommendationDetail(3)
+        } else if apiRequest.isForRecommendationDetail(4) {
+            return .recommendationDetail(4)
+        } else if apiRequest.isForArchivedItemDetail {
+            return .archiveItemDetail()
+        } else if apiRequest.isForItemDetail {
+            return .itemDetail()
+        } else if apiRequest.isForReplacingSavedItemTags {
+            return .savedItemWithTag()
+        } else if apiRequest.isToFavoriteAnItem {
+            return .favorite()
+        } else if apiRequest.isToUnfavoriteAnItem {
+            return .unfavorite()
+        } else if apiRequest.isToDeleteAnItem {
+            return .delete()
+        } else if apiRequest.isForSearch(.all) {
+            return .searchList(.all)
+        } else if apiRequest.isForSearch(.saves) {
+            return .searchList(.saves)
+        } else if apiRequest.isForSearch(.archive) {
+            return .searchList(.archive)
+        } else {
+            fatalError("Unexpected request")
         }
     }
 }

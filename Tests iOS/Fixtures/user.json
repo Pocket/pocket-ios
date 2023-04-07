@@ -1,0 +1,10 @@
+{
+  "data": {
+    "user": {
+      "__typename": "[type-name-here]",
+      "isPremium": false,
+      "username": "User Name",
+      "name": "Pocket User"
+    }
+  }
+}

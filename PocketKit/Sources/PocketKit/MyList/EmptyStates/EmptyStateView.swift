@@ -2,7 +2,6 @@ import SwiftUI
 import Textile
 
 open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Content: View {
-
     private(set) var host: UIHostingController<Content>?
 
     func embed(in parent: UIViewController, withView content: Content) {
@@ -26,8 +25,7 @@ open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Conten
     }
 }
 
-class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView> {
-
+class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView<EmptyView>> {
     func configure(parent: UIViewController, _ viewModel: EmptyStateViewModel) {
         embed(in: parent, withView: EmptyStateView(viewModel: viewModel))
         host?.view.frame = self.contentView.bounds
@@ -36,16 +34,15 @@ class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView> {
     }
 }
 
-struct EmptyStateView: View {
-    private var viewModel: EmptyStateViewModel
+struct EmptyStateView<Content: View>: View {
+    private let viewModel: EmptyStateViewModel
+    private var content: Content?
 
-    @State
-    private var showSafariView = false
+    @State private var showSafariView = false
 
-    static let maxWidth: CGFloat = 300
-
-    init(viewModel: EmptyStateViewModel) {
+    init(viewModel: EmptyStateViewModel, content: (() -> Content)? = nil) {
         self.viewModel = viewModel
+        self.content = content?()
     }
 
     var body: some View {
@@ -53,19 +50,25 @@ struct EmptyStateView: View {
             Image(asset: viewModel.imageAsset)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: Self.maxWidth)
+                .frame(maxWidth: viewModel.maxWidth)
+                .accessibilityIdentifier(viewModel.accessibilityIdentifier)
 
             VStack(alignment: .center, spacing: 20) {
-                Text(viewModel.headline).style(.main)
-
-                if let subtitle = viewModel.detailText, let icon = viewModel.icon {
-                    VStack(alignment: .center, spacing: 5) {
-                        Image(asset: icon)
-                        Text(subtitle).style(.detail)
-                    }
+                if let headline = viewModel.headline {
+                    Text(headline).style(.main)
                 }
 
-                if let buttonText = viewModel.buttonText, let webURL = viewModel.webURL {
+                if let subtitle = viewModel.detailText {
+                    if let icon = viewModel.icon {
+                        VStack(alignment: .center, spacing: 5) {
+                            Image(asset: icon)
+                            Text(subtitle).style(.detail)
+                        }
+                    } else { Text(subtitle).style(.detail) }
+                }
+                if let content {
+                    content
+                } else if let buttonText = viewModel.buttonText, let webURL = viewModel.webURL {
                     Button(action: {
                         self.showSafariView = true
                     }, label: {
@@ -79,6 +82,8 @@ struct EmptyStateView: View {
                 }
             }
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier(viewModel.accessibilityIdentifier)
     }
 }
 

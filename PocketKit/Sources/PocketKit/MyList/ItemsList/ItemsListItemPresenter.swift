@@ -6,11 +6,11 @@ import Textile
 import Sync
 import Combine
 import Foundation
-import Sync
 import Analytics
 import CoreData
 import UIKit
 import Kingfisher
+import Localization
 
 private extension Style {
     static let title: Style = .header.sansSerif.h8
@@ -97,6 +97,6 @@ class ItemsListItemPresenter {
     private var timeToRead: String? {
         item.timeToRead
             .flatMap { $0 > 0 ? $0 : nil }
-            .flatMap { "\($0) min" }
+            .flatMap { Localization.Item.List.min($0) }
     }
 }

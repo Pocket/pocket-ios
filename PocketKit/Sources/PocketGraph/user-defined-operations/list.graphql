@@ -1,0 +1,146 @@
+fragment SavedItemParts on SavedItem {
+  url
+  remoteID: id
+  isArchived
+  isFavorite
+  _deletedAt
+  _createdAt
+  archivedAt
+  tags {
+    ...TagParts
+  }
+  item {
+    ...ItemParts
+    ...PendingItemParts
+  }
+}
+
+fragment TagParts on Tag {
+  name
+  id
+}
+
+query FetchSaves($pagination: PaginationInput, $savedItemsFilter: SavedItemsFilter) {
+  user {
+    savedItems(pagination: $pagination, filter: $savedItemsFilter) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          ...SavedItemParts
+        }
+      }
+    }
+  }
+}
+
+mutation SaveItem($input: SavedItemUpsertInput!) {
+  upsertSavedItem(input: $input) {
+    ...SavedItemParts
+  }
+}
+
+mutation FavoriteItem($itemID: ID!) {
+  updateSavedItemFavorite(id: $itemID) {
+    id
+  }
+}
+
+mutation UnfavoriteItem($itemID: ID!) {
+  updateSavedItemUnFavorite(id: $itemID) {
+    id
+  }
+}
+
+mutation ArchiveItem($itemID: ID!) {
+  updateSavedItemArchive(id: $itemID) {
+    id
+  }
+}
+
+mutation DeleteItem($itemID: ID!) {
+  deleteSavedItem(id: $itemID)
+}
+
+mutation DeleteTag($id: ID!) {
+  deleteTag(id: $id)
+}
+
+mutation TagUpdate($input: TagUpdateInput!) {
+  updateTag(input: $input) {
+    name
+    id
+  }
+}
+
+mutation ReplaceSavedItemTags($input: [SavedItemTagsInput!]!) {
+  replaceSavedItemTags(input: $input) {
+    ...SavedItemParts
+  }
+}
+
+mutation UpdateSavedItemRemoveTags($savedItemId: ID!) {
+  updateSavedItemRemoveTags(savedItemId: $savedItemId) {
+    ...SavedItemParts
+  }
+}
+
+query SavedItemByID($id: ID!) {
+  user {
+    savedItemById(id: $id) {
+      ...SavedItemParts
+    }
+  }
+}
+
+query ItemByID($id: ID!) {
+  itemByItemId(id: $id) {
+    ...ItemParts
+  }
+}
+
+query Tags($pagination: PaginationInput) {
+  user {
+    tags(pagination: $pagination) {
+      edges {
+        node {
+          ...TagParts
+        }
+        cursor
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
+    }
+  }
+}
+
+query SearchSavedItems($term: String!, $pagination: PaginationInput, $filter: SearchFilterInput, $sort: SearchSortInput) {
+  user {
+    searchSavedItems(term: $term, pagination: $pagination, filter: $filter, sort: $sort) {
+      edges {
+        node {
+            savedItem {
+                ...SavedItemParts
+            }
+        }
+        cursor
+      }
+      pageInfo {
+        endCursor
+        hasNextPage
+        hasPreviousPage
+        startCursor
+      }
+      totalCount
+    }
+  }
+}

@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import UIKit
+import Localization
 
 class CopyLinkWithSelectionActivity: UIActivity {
     private var link: URL?
@@ -17,7 +18,7 @@ class CopyLinkWithSelectionActivity: UIActivity {
     }
 
     override var activityTitle: String? {
-        return "Copy link with selection"
+        return Localization.copyLinkWithSelection
     }
 
     override var activityImage: UIImage? {
@@ -26,13 +27,13 @@ class CopyLinkWithSelectionActivity: UIActivity {
 
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
         let firstURL = activityItems.first(where: { $0 is URL })
-        let firstString  = activityItems.first(where: {  $0 is String })
+        let firstString  = activityItems.first(where: { $0 is String })
         return firstURL != nil && firstString != nil
     }
 
     override func prepare(withActivityItems activityItems: [Any]) {
         guard let link = activityItems.first(where: { $0 is URL }) as? URL,
-        let highlight = activityItems.first(where: { $0 is String}) as? String else {
+        let highlight = activityItems.first(where: { $0 is String }) as? String else {
             return
         }
 

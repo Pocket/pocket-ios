@@ -1,5 +1,7 @@
 import XCTest
 import Apollo
+import ApolloAPI
+import PocketGraph
 import Combine
 
 @testable import Sync
@@ -10,12 +12,16 @@ class ItemMutationOperationTests: XCTestCase {
     var subscriptions: [AnyCancellable] = []
     var queue: OperationQueue!
     var events: SyncEvents!
+    var task: PersistentSyncTask!
 
     override func setUpWithError() throws {
         apollo = MockApolloClient()
         space = .testSpace()
         queue = OperationQueue()
         events = PassthroughSubject()
+        task = PersistentSyncTask(context: space.backgroundContext)
+        task.syncTaskContainer = SyncTaskContainer(task: .fetchSaves)
+        try space.save()
     }
 
     override func tearDownWithError() throws {
@@ -45,7 +51,7 @@ class ItemMutationOperationTests: XCTestCase {
 
         let mutation = ArchiveItemMutation(itemID: "test-item-id")
         let service = subject(mutation: mutation)
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         let call = apollo.performCall(
             withMutationType: ArchiveItemMutation.self,
@@ -74,7 +80,7 @@ class ItemMutationOperationTests: XCTestCase {
 
         let mutation = ArchiveItemMutation(itemID: "test-item-id")
         let service = subject(mutation: mutation)
-        _ = await service.execute()
+        _ = await service.execute(syncTaskId: task.objectID)
 
         XCTAssertNotNil(error)
         XCTAssertEqual(error as? TestError, .anError)
@@ -86,7 +92,7 @@ class ItemMutationOperationTests: XCTestCase {
 
         let mutation = ArchiveItemMutation(itemID: "test-item-id")
         let service = subject(mutation: mutation)
-        let result = await service.execute()
+        let result = await service.execute(syncTaskId: task.objectID)
 
         guard case .retry = result else {
             XCTFail("Expected retry result but got \(result)")
@@ -105,7 +111,7 @@ class ItemMutationOperationTests: XCTestCase {
 
         let mutation = ArchiveItemMutation(itemID: "test-item-id")
         let service = subject(mutation: mutation)
-        let result = await service.execute()
+        let result = await service.execute(syncTaskId: task.objectID)
 
         guard case .retry = result else {
             XCTFail("Expected retry result but got \(result)")

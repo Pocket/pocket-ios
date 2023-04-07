@@ -4,6 +4,7 @@ import Foundation
 import Textile
 import UIKit
 import Analytics
+import Localization
 
 protocol ReadableViewModel: ReadableViewControllerDelegate {
     typealias EventPublisher = AnyPublisher<ReadableEvent, Never>
@@ -26,19 +27,25 @@ protocol ReadableViewModel: ReadableViewControllerDelegate {
     var domain: String? { get }
     var publishDate: Date? { get }
     var url: URL? { get }
+    var isArchived: Bool { get }
+    var premiumURL: URL? { get }
 
     func delete()
-    func showWebReader()
+    func openExternally(url: URL?)
+    func archive()
+    func moveFromArchiveToSaves(completion: (Bool) -> Void)
     func fetchDetailsIfNeeded()
     func externalActions(for url: URL) -> [ItemAction]
     func clearPresentedWebReaderURL()
+    func unfavorite()
+    func favorite()
 }
 
 // MARK: - ReadableViewControllerDelegate
 
 extension ReadableViewModel {
     func readableViewController(_ controller: ReadableViewController, openURL url: URL) {
-        open(url: url)
+        openExternally(url: url)
     }
 
     func readableViewController(_ controller: ReadableViewController, shareWithAdditionalText text: String?) {
@@ -54,35 +61,27 @@ extension ReadableViewModel {
         isPresentingReaderSettings = true
     }
 
-    func open(url: URL) {
-        trackOpen(url: url)
-        presentedWebReaderURL = url
-    }
-
-    private func trackOpen(url: URL) {
-        let additionalContexts: [Context] = [ContentContext(url: url)]
-
-        let contentOpen = ContentOpenEvent(destination: .external, trigger: .click)
-        let link = UIContext.articleView.link
-        let contexts = additionalContexts + [link]
-        tracker.track(event: contentOpen, contexts)
+    func showWebReader() {
+        openExternally(url: url)
     }
 
     func share(additionalText: String? = nil) {
         track(identifier: .itemShare)
-        sharedActivity = PocketItemActivity(url: url, additionalText: additionalText)
+        // Instances conforming to this view model are used within the context
+        // of an item presented within the reader
+        sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: additionalText)
     }
 
     func confirmDelete() {
         presentedAlert = PocketAlert(
-            title: "Are you sure you want to delete this item?",
+            title: Localization.areYouSureYouWantToDeleteThisItem,
             message: nil,
             preferredStyle: .alert,
             actions: [
-                UIAlertAction(title: "No", style: .default) { [weak self] _ in
+                UIAlertAction(title: Localization.no, style: .default) { [weak self] _ in
                     self?.presentedAlert = nil
                 },
-                UIAlertAction(title: "Yes", style: .destructive) { [weak self] _ in self?._delete() },
+                UIAlertAction(title: Localization.yes, style: .destructive) { [weak self] _ in self?._delete() },
             ],
             preferredAction: nil
         )
@@ -106,5 +105,79 @@ extension ReadableViewModel {
 
         let event = SnowplowEngagement(type: .general, value: nil)
         tracker.track(event: event, contexts)
+    }
+
+    func webViewActivityItems(for item: SavedItem) -> [UIActivity] {
+        let archiveActivityTitle: WebActivityTitle = (item.isArchived
+                                                      ? .moveToSaves
+                                                       : .archive)
+        let archiveActivity = ReaderActionsWebActivity(title: archiveActivityTitle) { [weak self] in
+            if item.isArchived == true {
+                self?.moveFromArchiveToSaves { _ in }
+            } else {
+                self?.archive()
+            }
+        }
+
+        let deleteActivity = ReaderActionsWebActivity(title: .delete) { [weak self] in
+            self?.confirmDelete()
+        }
+
+        let favoriteActivityTitle: WebActivityTitle = (item.isFavorite
+                                                        ? .unfavorite
+                                                        : .favorite
+        )
+
+        let favoriteActivity = ReaderActionsWebActivity(title: favoriteActivityTitle) { [weak self] in
+            if item.isFavorite == true {
+                self?.unfavorite()
+            } else {
+                self?.favorite()
+            }
+        }
+
+        return [archiveActivity, deleteActivity, favoriteActivity]
+    }
+}
+
+// MARK: - Analytics
+extension ReadableViewModel {
+    /// track when user views unsupported content cell
+    func trackUnsupportedContentViewed() {
+        guard let url else {
+            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentViewed")
+            return
+        }
+        tracker.track(event: Events.Reader.unsupportedContentViewed(url: url))
+    }
+
+    /// track when user taps on button to open unsupported content in web view
+    func trackUnsupportedContentButtonTapped() {
+        guard let url else {
+            Log.capture(message: "Reader item without an associated url, not logging analytics for unsupportedContentButtonTapped")
+            return
+        }
+        tracker.track(event: Events.Reader.unsupportedContentButtonTapped(url: url))
+    }
+
+    /// track archive button tapped in reader toolbar
+    /// - Parameter url: url of saved item
+    func trackArchiveButtonTapped(url: URL) {
+        tracker.track(event: Events.Reader.archiveClicked(url: url))
+    }
+
+    /// track move to saves from archive button tapped in reader toolbar
+    /// - Parameter url: url of saved item
+    func trackMoveFromArchiveToSavesButtonTapped(url: URL) {
+        tracker.track(event: Events.Reader.moveFromArchiveToSavesClicked(url: url))
+    }
+
+    /// track when user taps on the safari button to open content in web view
+    func trackWebViewOpen() {
+        guard let url else {
+            Log.capture(message: "Reader item without an associated url, not logging analytics for openInWebView")
+            return
+        }
+        tracker.track(event: Events.Reader.openInWebView(url: url))
     }
 }

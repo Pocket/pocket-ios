@@ -8,8 +8,8 @@ import SwiftUI
 import Combine
 
 class SceneTracker {
-    static let dateLastOpenedKey = "SceneTracker.dateLastOpened"
-    static let dateLastBackgroundedKey = "SceneTracker.dateLastBackgrounded"
+    static let dateLastOpenedKey = UserDefaults.Key.dateLastOpened
+    static let dateLastBackgroundedKey = UserDefaults.Key.dateLastBackgrounded
 
     private let tracker: Tracker
     private let userDefaults: UserDefaults

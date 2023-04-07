@@ -18,26 +18,15 @@ class HomeWebViewTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
             if apiRequest.isForSlateLineup {
-                return Response.slateLineup("slates-web-view")
+                return .slateLineup("slates-web-view")
             } else if apiRequest.isForSlateDetail() {
-                return Response.slateLineup("slate-detail-web-view")
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
+                return .slateLineup("slate-detail-web-view")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         server.routes.get("/hello") { _, _ in
@@ -78,6 +67,6 @@ class HomeWebViewTests: XCTestCase {
         app
             .webReaderView
             .staticText(matching: "Hello, world")
-            .wait(timeout: 10)
+            .wait()
     }
 }

@@ -1,5 +1,6 @@
 import UIKit
 import Textile
+import Localization
 
 private extension Style {
     static let label: Self = .body.sansSerif.with(size: .p3)
@@ -16,7 +17,7 @@ class ArticleComponentUnavailableView: UIView {
         config.baseBackgroundColor = UIColor(.ui.teal2)
         config.attributedTitle = AttributedString(
             NSAttributedString(
-                string: "Open in Web View",
+                string: Localization.openInWebView,
                 style: .button
             )
         )

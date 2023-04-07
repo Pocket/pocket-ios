@@ -42,7 +42,7 @@ class ReadableViewController: UIViewController {
         collectionViewLayout: layout
     )
 
-    private lazy var layout = UICollectionViewCompositionalLayout { [self] in
+    private lazy var layout = UICollectionViewCompositionalLayout { [unowned self] in
         return self.buildSection(index: $0, environment: $1)
     }
 
@@ -91,6 +91,12 @@ class ReadableViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         readableViewModel.fetchDetailsIfNeeded()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        // ensure on device rotate and change the view re-draws
+        collectionView.collectionViewLayout.invalidateLayout()
     }
 
     required init?(coder: NSCoder) {
@@ -263,15 +269,12 @@ extension ReadableViewController {
 
         switch index {
         case 0:
-            let availableItemWidth = environment.container.effectiveContentSize.width
-            - Constants.metaSectionContentInsets.leading
-            - Constants.metaSectionContentInsets.trailing
-
+            let availableItemWidth = view.readableContentGuide.layoutFrame.width
             let height = metadata?.size(for: availableItemWidth).height ?? 1
             let group = NSCollectionLayoutGroup.vertical(
                 layoutSize: NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(height)
+                    heightDimension: .estimated(height)
                 ),
                 subitems: [
                     NSCollectionLayoutItem(
@@ -284,12 +287,18 @@ extension ReadableViewController {
             )
 
             let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = Constants.metaSectionContentInsets
+            // Zero out the default leading/trailing contentInsets, but preserve the default top/bottom values.
+            // This ensures each section will be inset horizontally exactly to the readable content width.
+            var contentInsets = section.contentInsets
+            contentInsets.leading = 0
+            contentInsets.trailing = 0
+            contentInsets.top = Constants.metaSectionContentInsets.top
+            contentInsets.bottom = Constants.metaSectionContentInsets.bottom
+            section.contentInsets = contentInsets
+            section.contentInsetsReference = .readableContent
             return section
         default:
-            let availableItemWidth = environment.container.effectiveContentSize.width
-            - Constants.contentSectionContentInsets.leading
-            - Constants.contentSectionContentInsets.trailing
+            let availableItemWidth = view.readableContentGuide.layoutFrame.width
 
             var height: CGFloat = 0
             let subitems = presenters?.compactMap { presenter -> NSCollectionLayoutItem? in
@@ -297,7 +306,7 @@ extension ReadableViewController {
                 height += size.height
                 let layoutSize = NSCollectionLayoutSize(
                     widthDimension: .fractionalWidth(1),
-                    heightDimension: .absolute(size.height)
+                    heightDimension: .estimated(size.height)
                 )
 
                 return NSCollectionLayoutItem(layoutSize: layoutSize)
@@ -313,7 +322,15 @@ extension ReadableViewController {
             group.interItemSpacing = .fixed(0)
 
             let section = NSCollectionLayoutSection(group: group)
-            section.contentInsets = Constants.contentSectionContentInsets
+            // Zero out the default leading/trailing contentInsets, but preserve the default top/bottom values.
+            // This ensures each section will be inset horizontally exactly to the readable content width.
+            var contentInsets = section.contentInsets
+            contentInsets.leading = 0
+            contentInsets.trailing = 0
+            contentInsets.top = Constants.contentSectionContentInsets.top
+            contentInsets.bottom = Constants.metaSectionContentInsets.bottom
+            section.contentInsets = contentInsets
+            section.contentInsetsReference = .readableContent
             return section
         }
     }

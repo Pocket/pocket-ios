@@ -1,0 +1,8 @@
+strings:
+  inputs: PocketKit/Sources/Localization/Resources/en.lproj
+  outputs:
+    templateName: structured-swift5
+    output: PocketKit/Sources/Localization/Strings.swift
+    params:
+      enumName: "Localization"
+      publicAccess:

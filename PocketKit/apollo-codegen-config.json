@@ -1,0 +1,41 @@
+{
+  "schemaName" : "PocketGraph",
+  "input" : {
+    "operationSearchPaths" : [
+        "Sources/PocketGraph/user-defined-operations/*.graphql"
+    ],
+    "schemaSearchPaths" : [
+        "Sources/PocketGraph/schema.graphqls"
+    ]
+  },
+  "output" : {
+    "testMocks" : {
+      "none" : {
+      }
+    },
+    "schemaTypes" : {
+      "path" : "./Sources/PocketGraph/",
+      "moduleType": {
+          "other": {}
+      },
+    },
+    "operations" : {
+      "inSchemaModule" : {}
+    }
+  },
+  "schemaDownloadConfiguration": {
+      "downloadMethod": {
+          "introspection": {
+              "endpointURL": "https://client-api.getpocket.com",
+              "httpMethod": {
+                  "POST": {}
+              },
+              "includeDeprecatedInputValues": true,
+              "outputFormat": "SDL"
+          }
+      },
+      "downloadTimeout": 60,
+      "headers": [],
+      "outputPath": "./Sources/PocketGraph/schema.graphqls"
+  }
+}

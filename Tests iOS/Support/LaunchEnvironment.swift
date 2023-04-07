@@ -9,6 +9,7 @@ struct LaunchEnvironment {
     let clientAPIURL: String
     let snowplowIdentifier: String
     let snowplowEndpoint: String
+    let snowplowPostPath: String
     let accessToken: String?
     let sessionGUID: String?
     let sessionUserID: String?
@@ -17,7 +18,8 @@ struct LaunchEnvironment {
         v3BaseURL: String = "http://localhost:8080",
         clientAPIURL: String = "http://localhost:8080/graphql",
         snowplowIdentifier: String = "pocket-ios-next-dev",
-        snowplowEndpoint: String = "http://localhost:8080",
+        snowplowEndpoint: String = "http://localhost:9090",
+        snowplowPostPath: String = "com.snowplowanalytics.snowplow/tp2",
         accessToken: String?,
         sessionGUID: String?,
         sessionUserID: String?
@@ -26,6 +28,7 @@ struct LaunchEnvironment {
         self.clientAPIURL = clientAPIURL
         self.snowplowIdentifier = snowplowIdentifier
         self.snowplowEndpoint = snowplowEndpoint
+        self.snowplowPostPath = snowplowPostPath
         self.accessToken = accessToken
         self.sessionGUID = sessionGUID
         self.sessionUserID = sessionUserID
@@ -36,7 +39,8 @@ struct LaunchEnvironment {
            "POCKET_V3_BASE_URL": v3BaseURL,
            "POCKET_CLIENT_API_URL": clientAPIURL,
            "SNOWPLOW_IDENTIFIER": snowplowIdentifier,
-           "SNOWPLOW_ENDPOINT": snowplowEndpoint
+           "SNOWPLOW_ENDPOINT": snowplowEndpoint,
+           "SNOWPLOW_POST_PATH": snowplowPostPath
        ]
 
         if let accessToken = accessToken {

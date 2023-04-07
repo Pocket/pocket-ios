@@ -11,67 +11,161 @@ import SharedPocketKit
 import Kingfisher
 
 struct Services {
-    static let shared = Services()
+    static let shared: Services = { Services() }()
 
     let userDefaults: UserDefaults
-    let firstLaunchDefaults: UserDefaults
     let appSession: AppSession
+    let user: User
     let urlSession: URLSessionProtocol
     let source: Sync.Source
     let tracker: Tracker
     let sceneTracker: SceneTracker
-    let refreshCoordinator: RefreshCoordinator
+    let savesRefreshCoordinator: SavesRefreshCoordinator
+    let archiveRefreshCoordinator: ArchiveRefreshCoordinator
+    let tagsRefreshCoordinator: TagsRefreshCoordinator
+    let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
+    let homeRefreshCoordinator: HomeRefreshCoordinator
+    let userRefreshCoordinator: UserRefreshCoordinator
+    let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
-    let notificationService: PocketNotificationService
+    let notificationService: PushNotificationService
+    let v3Client: V3ClientProtocol
+    let instantSync: InstantSyncProtocol
+    let braze: BrazeProtocol
+    let appBadgeSetup: AppBadgeSetup
+    let subscriptionStore: SubscriptionStore
+    let userManagementService: UserManagementServiceProtocol
+    let lastRefresh: LastRefresh
 
     private let persistentContainer: PersistentContainer
 
     private init() {
-        persistentContainer = .init(storage: .shared)
+        guard let sharedUserDefaults = UserDefaults(suiteName: Keys.shared.groupID) else {
+            fatalError("UserDefaults with suite name \(Keys.shared.groupID) must exist.")
+        }
+        userDefaults = sharedUserDefaults
 
-        userDefaults = .standard
-        firstLaunchDefaults = UserDefaults(
-            suiteName: "\(Bundle.main.bundleIdentifier!).first-launch"
-        )!
+        persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupID)
+
+        lastRefresh = UserDefaultsLastRefresh(defaults: userDefaults)
         urlSession = URLSession.shared
 
-        appSession = AppSession()
+        appSession = AppSession(groupID: Keys.shared.groupID)
         authClient = AuthorizationClient(
             consumerKey: Keys.shared.pocketApiConsumerKey,
+            adjustSignupEventToken: Keys.shared.adjustSignUpEventToken,
             authenticationSessionFactory: ASWebAuthenticationSession.init
         )
+        user = PocketUser(userDefaults: userDefaults)
 
         let snowplow = PocketSnowplowTracker()
         tracker = PocketTracker(snowplow: snowplow)
 
         source = PocketSource(
             space: persistentContainer.rootSpace,
+            user: user,
             sessionProvider: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults,
             backgroundTaskManager: UIApplication.shared
         )
 
+        v3Client = V3Client.createDefault(
+            sessionProvider: appSession,
+            consumerKey: Keys.shared.pocketApiConsumerKey
+        )
+
         sceneTracker = SceneTracker(tracker: tracker, userDefaults: userDefaults)
-        refreshCoordinator = RefreshCoordinator(
+
+        savesRefreshCoordinator = SavesRefreshCoordinator(
             notificationCenter: .default,
             taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
             source: source
         )
 
+        archiveRefreshCoordinator = ArchiveRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
+        tagsRefreshCoordinator = TagsRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source,
+            lastRefresh: lastRefresh
+        )
+
+        unresolvedSavesRefreshCoordinator = UnresolvedSavesRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
+        homeRefreshCoordinator = HomeRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source,
+            lastRefresh: lastRefresh
+        )
+
+        userRefreshCoordinator = UserRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source
+        )
+
+        refreshCoordinators = [
+            savesRefreshCoordinator,
+            archiveRefreshCoordinator,
+            tagsRefreshCoordinator,
+            unresolvedSavesRefreshCoordinator,
+            homeRefreshCoordinator,
+            userRefreshCoordinator
+        ]
+
         imageManager = ImageManager(
-            imagesController: source.makeUndownloadedImagesController(),
+            imagesController: source.makeImagesController(),
             imageRetriever: KingfisherManager.shared,
             source: source
         )
         imageManager.start()
 
-        notificationService = PocketNotificationService(
+        instantSync = InstantSync(
+            appSession: appSession,
+            source: source,
+            v3Client: v3Client
+        )
+
+        braze = PocketBraze(
+            apiKey: Keys.shared.brazeAPIKey,
+            endpoint: Keys.shared.brazeAPIEndpoint,
+            groupdId: Keys.shared.groupID
+        )
+
+        notificationService = PushNotificationService(
             source: source,
             tracker: tracker,
-            sessionManager: appSession
+            appSession: appSession,
+            braze: braze,
+            instantSync: instantSync
         )
+
+        appBadgeSetup = AppBadgeSetup(
+            source: source,
+            userDefaults: userDefaults,
+            badgeProvider: UIApplication.shared
+        )
+        subscriptionStore = PocketSubscriptionStore(user: user, receiptService: AppStoreReceiptService(client: v3Client))
+
+        userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
     }
 }
 

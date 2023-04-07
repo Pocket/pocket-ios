@@ -16,26 +16,16 @@ class EditTagsTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
-            } else if apiRequest.isToUpdateTag("rename tag 1") {
-                return Response.updateTag()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
+            if apiRequest.isToUpdateTag("rename tag 1") {
+                return .updateTag()
             }
-
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         try server.start()
-        app.launch()
-
     }
 
     override func tearDownWithError() throws {
@@ -44,9 +34,10 @@ class EditTagsTests: XCTestCase {
     }
 
     func test_editTagsView_renamesTag() {
-        app.tabBar.myListButton.wait().tap()
-        app.myListView.filterButton(for: "Tagged").tap()
-        let tagsFilterView = app.myListView.tagsFilterView.wait()
+        app.launch()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.editButton.label, "Edit")
         tagsFilterView.editButton.wait().tap()
@@ -69,13 +60,27 @@ class EditTagsTests: XCTestCase {
 
         tagsFilterView.editButton.wait().tap()
         tagsFilterView.tag(matching: "rename tag 1").wait().tap()
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
+        XCTAssertEqual(app.saves.wait().itemCells.count, 1)
     }
 
     func test_editTagsView_deletesTag() {
-        app.tabBar.myListButton.wait().tap()
-        app.myListView.filterButton(for: "Tagged").tap()
-        let tagsFilterView = app.myListView.tagsFilterView.wait()
+        let firstDeleteRequest = expectation(description: "first delete request")
+        let secondDeleteRequest = expectation(description: "second delete request")
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isToDeleteATag() {
+                firstDeleteRequest.fulfill()
+                return Response.deleteTag()
+            } else if apiRequest.isToDeleteATag(2) {
+                secondDeleteRequest.fulfill()
+                return Response.deleteTag("delete-tag-2")
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+        app.launch()
+        app.tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.editButton.label, "Edit")
         tagsFilterView.editButton.wait().tap()
@@ -88,24 +93,8 @@ class EditTagsTests: XCTestCase {
         XCTAssertTrue(tagsFilterView.deleteButton.isEnabled)
         tagsFilterView.deleteButton.tap()
 
-        let firstDeleteRequest = expectation(description: "first delete request")
-        let secondDeleteRequest = expectation(description: "second delete request")
-        firstDeleteRequest.assertForOverFulfill = false
-        server.routes.post("/graphql") { request, _ -> Response in
-            let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isToDeleteATag() {
-                firstDeleteRequest.fulfill()
-                return Response.deleteTag()
-            } else if apiRequest.isToDeleteATag(2) {
-                secondDeleteRequest.fulfill()
-                return Response.deleteTag("delete-tag-2")
-            } else {
-                fatalError("Unexpected request")
-            }
-        }
-
         app.alert.delete.wait().tap()
-        wait(for: [firstDeleteRequest, secondDeleteRequest], timeout: 1)
+        wait(for: [firstDeleteRequest, secondDeleteRequest])
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 1"))
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 2"))
     }

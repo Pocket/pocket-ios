@@ -2,15 +2,30 @@ import Foundation
 import Apollo
 import Combine
 import CoreData
+import PocketGraph
+import SharedPocketKit
 
 protocol SyncOperationFactory {
-    func fetchList(
-        token: String,
+    func fetchSaves(
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation
+
+    func fetchArchive(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation
+
+    func fetchTags(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
         lastRefresh: LastRefresh
     ) -> SyncOperation
 
@@ -36,22 +51,48 @@ protocol SyncOperationFactory {
 }
 
 class OperationFactory: SyncOperationFactory {
-    func fetchList(
-        token: String,
+    func fetchSaves(
         apollo: ApolloClientProtocol,
         space: Space,
         events: SyncEvents,
         initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
-        maxItems: Int,
         lastRefresh: LastRefresh
     ) -> SyncOperation {
-        return FetchList(
-            token: token,
+        return FetchSaves(
             apollo: apollo,
             space: space,
             events: events,
             initialDownloadState: initialDownloadState,
-            maxItems: maxItems,
+            lastRefresh: lastRefresh
+        )
+    }
+
+    func fetchArchive(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation {
+        return FetchArchive(
+            apollo: apollo,
+            space: space,
+            events: events,
+            initialDownloadState: initialDownloadState,
+            lastRefresh: lastRefresh
+        )
+    }
+
+    func fetchTags(
+        apollo: ApolloClientProtocol,
+        space: Space,
+        events: SyncEvents,
+        lastRefresh: LastRefresh
+    ) -> SyncOperation {
+        return FetchTags(
+            apollo: apollo,
+            space: space,
+            events: events,
             lastRefresh: lastRefresh
         )
     }
@@ -86,5 +127,15 @@ class OperationFactory: SyncOperationFactory {
             apollo: apollo,
             space: space
         )
+    }
+
+    func getUserData(
+        apollo: ApolloClientProtocol,
+        user: User
+    ) -> SyncOperation {
+        APIUserService(
+            apollo: apollo,
+            user: user
+        ) as! SyncOperation
     }
 }

@@ -1,7 +1,8 @@
 {
     "data": {
-        "userByToken": {
+        "user": {
             "__typename": "[type-name-here]",
+            "isPremium": true,
             "savedItems": {
                 "__typename": "[type-name-here]",
                 "totalCount": 3,

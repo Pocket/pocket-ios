@@ -19,26 +19,8 @@ class ArchiveFiltersTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForMyListContent {
-                return Response.myList()
-            } else if apiRequest.isForFavoritedArchivedContent {
-                return Response.favoritedArchivedContent()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToFavoriteAnItem {
-                return Response.favorite()
-            } else if apiRequest.isToUnfavoriteAnItem {
-                return Response.unfavorite()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                fatalError("Unexpected request")
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()
@@ -50,58 +32,73 @@ class ArchiveFiltersTests: XCTestCase {
     }
 
     func test_archiveView_tappingFavoritesPill_togglesDisplayingFavoritedArchivedContent() {
-        app.launch().tabBar.myListButton.wait().tap()
-        let myList = app.myListView.wait()
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
 
-        myList.selectionSwitcher.archiveButton.wait().tap()
-        myList.itemView(matching: "Archived Item 1").wait()
-        myList.itemView(matching: "Archived Item 2").wait()
+        saves.selectionSwitcher.archiveButton.wait().tap()
+        saves.itemView(matching: "Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
 
-        app.myListView.filterButton(for: "Favorites").tap()
-        waitForDisappearance(of: myList.itemView(matching: "Archived Item 1"))
-        myList.itemView(matching: "Favorited Archived Item 1").wait()
-        app.myListView.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
+        waitForDisappearance(of: saves.itemView(matching: "Archived Item 1"))
+        saves.itemView(matching: "Archived Item 2").wait()
+        app.saves.filterButton(for: "Favorites").wait().tap()
 
-        myList.itemView(matching: "Archived Item 1").wait()
-        myList.itemView(matching: "Archived Item 2").wait()
+        saves.itemView(matching: "Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
     }
 
     func test_archiveView_tappingAllPill_togglesDisplayingAllArchivedContent() {
-        app.launch().tabBar.myListButton.wait().tap()
-        let myList = app.myListView.wait()
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
 
-        myList.selectionSwitcher.archiveButton.wait().tap()
+        saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.myListView.filterButton(for: "All").tap()
-        myList.itemView(matching: "Archived Item 1").wait()
-        myList.itemView(matching: "Archived Item 2").wait()
+        app.saves.filterButton(for: "All").wait().tap()
+        saves.itemView(matching: "Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
 
-        app.myListView.filterButton(for: "Favorites").tap()
-        myList.itemView(matching: "Favorited Archived Item 1").wait()
+        app.saves.filterButton(for: "Favorites").wait().tap()
+        waitForDisappearance(of: saves.itemView(matching: "Archived Item 1"))
 
-        app.myListView.filterButton(for: "All").tap()
-        myList.itemView(matching: "Archived Item 1").wait()
-        myList.itemView(matching: "Archived Item 2").wait()
+        app.saves.filterButton(for: "All").wait().tap()
+        saves.itemView(matching: "Archived Item 1").wait()
+        saves.itemView(matching: "Archived Item 2").wait()
     }
 
-    func test_archiveView_tappingTaggedPill_showsFilteredItems() {
-        app.launch().tabBar.myListButton.wait().tap()
-        let myList = app.myListView.wait()
+    func test_archiveView_tappingTaggedFilter_showsFilteredItems() {
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
 
-        myList.selectionSwitcher.archiveButton.wait().tap()
+        saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.myListView.filterButton(for: "Tagged").tap()
-        let tagsFilterView = app.myListView.tagsFilterView.wait()
+        app.saves.filterButton(for: "Tagged").wait().tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 4)
+        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
-        tagsFilterView.tag(matching: "not tagged").wait().tap()
+        tagsFilterView.tag(matching: "tag 0").wait().tap()
 
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 1)
         waitForDisappearance(of: tagsFilterView)
 
-        app.myListView.selectedTagChip(for: "not tagged").wait()
-        app.myListView.selectedTagChip(for: "not tagged").buttons.element(boundBy: 0).tap()
-        XCTAssertEqual(app.myListView.wait().itemCells.count, 2)
+        app.saves.selectedTagChip(for: "tag 0").wait()
+        XCTAssertEqual(app.saves.wait().itemCells.count, 1)
+    }
+
+    func test_archiveView_sortingNoTagFilter_showFilteredItems() {
+        app.launch().tabBar.savesButton.wait().tap()
+        let saves = app.saves.wait()
+
+        saves.selectionSwitcher.archiveButton.wait().tap()
+
+        app.saves.filterButton(for: "Tagged").wait().tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
+
+        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
+
+        tagsFilterView.tag(matching: "not tagged").wait().tap()
+        waitForDisappearance(of: tagsFilterView)
+
+        XCTAssertEqual(app.saves.wait().itemCells.count, 1)
     }
 }

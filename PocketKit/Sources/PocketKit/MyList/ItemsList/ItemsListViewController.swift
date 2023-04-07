@@ -3,6 +3,7 @@ import Sync
 import CoreData
 import Combine
 import Kingfisher
+import Textile
 
 class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, UICollectionViewDelegate, UICollectionViewDataSourcePrefetching {
     private let model: ViewModel
@@ -162,10 +163,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         }
 
         let offlineCellRegistration: UICollectionView.CellRegistration<ItemsListOfflineCell, String> = .init { cell, _, _ in
-
         }
 
-        let placeholderCellRegistration: UICollectionView.CellRegistration<ItemPlaceholderCell, Int> = .init { cell, indexPath, itemIndex in
+        let placeholderCellRegistration: UICollectionView.CellRegistration<ItemSkeletonCell, Int> = .init { cell, indexPath, itemIndex in
             // no op
         }
 
@@ -186,11 +186,11 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             }
         }
 
-        model.events.sink { [weak self] event in
-            self?.handle(myListEvent: event)
+        model.events.receive(on: DispatchQueue.main).sink { [weak self] event in
+            self?.handle(savesEvent: event)
         }.store(in: &subscriptions)
 
-        model.snapshot.sink { [weak self] snapshot in
+        model.snapshot.receive(on: DispatchQueue.main).sink { [weak self] snapshot in
             self?.dataSource.apply(snapshot, animatingDifferences: true)
         }.store(in: &subscriptions)
 
@@ -208,10 +208,6 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor(.ui.white1)
-        model.fetch()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
         model.fetch()
     }
 
@@ -240,7 +236,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
                 shareAction: nil,
                 favoriteAction: nil,
                 overflowActions: [],
-                filterByTagAction: nil
+                filterByTagAction: nil,
+                trackOverflow: nil,
+                swiftUITrackOverflow: nil
             )
 
             return
@@ -255,7 +253,9 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
             shareAction: model.shareAction(for: objectID),
             favoriteAction: model.favoriteAction(for: objectID),
             overflowActions: model.overflowActions(for: objectID),
-            filterByTagAction: model.filterByTagAction()
+            filterByTagAction: model.filterByTagAction(),
+            trackOverflow: model.trackOverflow(for: objectID),
+            swiftUITrackOverflow: model.swiftUITrackOverflow(for: objectID)
         )
     }
 
@@ -279,7 +279,7 @@ class ItemsListViewController<ViewModel: ItemsListViewModel>: UIViewController, 
         cell.configure(parent: self, viewModel)
     }
 
-    private func handle(myListEvent event: ItemsListEvent<ViewModel.ItemIdentifier>) {
+    private func handle(savesEvent event: ItemsListEvent<ViewModel.ItemIdentifier>) {
         switch event {
         case .selectionCleared:
             deselectAll()
@@ -326,7 +326,7 @@ extension ItemsListViewController: SelectableViewController {
         return model.selectionItem
     }
 
-    func didBecomeSelected(by parent: MyListContainerViewController) {
+    func didBecomeSelected(by parent: SavesContainerViewController) {
         // Fixes an issue where the navigation bar state could be out-of-sync
         // with the expected state based on the current visible
         // collection view's content offset after toggling list selection.

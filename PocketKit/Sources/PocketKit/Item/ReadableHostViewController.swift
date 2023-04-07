@@ -9,6 +9,30 @@ class ReadableHostViewController: UIViewController {
     private var subscriptions: [AnyCancellable] = []
     private var readableViewModel: ReadableViewModel
 
+    private lazy var getArchiveButton: UIBarButtonItem = {
+        let archiveNavButton = UIBarButtonItem(
+            image: UIImage(asset: .archive),
+            style: .plain,
+            target: self,
+            action: #selector(archive)
+        )
+
+        archiveNavButton.accessibilityIdentifier = "archiveNavButton"
+        return archiveNavButton
+    }()
+
+    private lazy var getMoveFromArchiveToSavesButton: UIBarButtonItem = {
+        let moveFromArchiveToSavesNavButton = UIBarButtonItem(
+            image: UIImage(asset: .save),
+            style: .plain,
+            target: self,
+            action: #selector(moveFromArchiveToSaves)
+        )
+
+        moveFromArchiveToSavesNavButton.accessibilityIdentifier = "moveFromArchiveToSavesNavButton"
+        return moveFromArchiveToSavesNavButton
+    }()
+
     init(readableViewModel: ReadableViewModel) {
         self.readableViewModel = readableViewModel
         self.moreButtonItem = UIBarButtonItem(
@@ -29,12 +53,23 @@ class ReadableHostViewController: UIViewController {
                 style: .plain,
                 target: self,
                 action: #selector(showWebView)
-            )
+            ),
+            readableViewModel.isArchived ? getMoveFromArchiveToSavesButton : getArchiveButton
         ]
 
         readableViewModel.actions.receive(on: DispatchQueue.main).sink { [weak self] actions in
             self?.buildOverflowMenu(from: actions)
         }.store(in: &subscriptions)
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        lockOrientation(.allButUpsideDown)
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        lockOrientation(.portrait)
+        super.viewDidDisappear(animated)
     }
 
     override func loadView() {
@@ -76,6 +111,24 @@ class ReadableHostViewController: UIViewController {
     @objc
     private func showWebView() {
         readableViewModel.showWebReader()
+    }
+
+    @objc
+    private func archive() {
+        readableViewModel.archive()
+    }
+
+    @objc
+    private func moveFromArchiveToSaves() {
+        readableViewModel.moveFromArchiveToSaves { [weak self] success in
+            if success,
+               let items = self?.navigationItem.rightBarButtonItems,
+               let getMoveFromArchiveToSavesButton = self?.getMoveFromArchiveToSavesButton,
+               let index = items.firstIndex(of: getMoveFromArchiveToSavesButton),
+               let archiveButton = self?.getArchiveButton {
+                self?.navigationItem.rightBarButtonItems?[index] = archiveButton
+            }
+        }
     }
 
     var popoverAnchor: UIBarButtonItem? {

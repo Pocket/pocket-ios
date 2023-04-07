@@ -15,20 +15,51 @@ class MainViewController: UIViewController {
         Textiles.initialize()
 
         let appSession = services.appSession
+        let encryptedStore = PocketEncryptedStore()
+        let userDefaults = services.userDefaults
         let child: UIViewController
 
+        let legacyUserMigration = LegacyUserMigration(
+            userDefaults: userDefaults,
+            encryptedStore: encryptedStore,
+            appSession: appSession,
+            groupID: Keys.shared.groupdId
+        )
+
+        do {
+            let attempted = try legacyUserMigration.perform { }
+            if attempted {
+                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
+                // Legacy cleanup
+                LegacyCleanupService().cleanUp()
+            } else {
+                Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
+            }
+        } catch LegacyUserMigrationError.missingStore {
+            Log.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
+            // Since we don't have a store, we can skip any further attempts at running this migration.
+            legacyUserMigration.forceSkip()
+        } catch {
+            // All errors are something we can't resolve client-side, so we don't want to re-attempt
+            // on further launches.
+            legacyUserMigration.forceSkip()
+            Log.capture(error: error)
+        }
+
         if appSession.currentSession == nil {
-            Crashlogger.clearUser()
+            Log.clearUser()
             child = LoggedOutViewController(
                 viewModel: LoggedOutViewModel()
             )
         } else {
-            Crashlogger.setUserID(services.appSession.currentSession!.userIdentifier)
+            Log.setUserID(services.appSession.currentSession!.userIdentifier)
             child = SavedItemViewController(
                 viewModel: SavedItemViewModel(
                     appSession: appSession,
                     saveService: services.saveService,
-                    dismissTimer: Timer.TimerPublisher(interval: 2.1, runLoop: .main, mode: .default)
+                    dismissTimer: Timer.TimerPublisher(interval: 3.0, runLoop: .main, mode: .default),
+                    tracker: Services.shared.tracker.childTracker(hosting: .saveExtension.screen),
+                    consumerKey: Keys.shared.pocketApiConsumerKey
                 )
             )
         }

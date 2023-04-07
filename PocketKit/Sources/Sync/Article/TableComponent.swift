@@ -1,3 +1,5 @@
+import PocketGraph
+
 public struct TableComponent: Codable, Equatable, Hashable {
     public let html: String
 }

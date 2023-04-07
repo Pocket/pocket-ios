@@ -4,25 +4,27 @@ import CoreData
 import Combine
 
 class MockSource: Source {
+
     var _events: SyncEvents = SyncEvents()
     var events: AnyPublisher<SyncEvent, Never> {
         _events.eraseToAnyPublisher()
     }
 
-    var initialDownloadState: CurrentValueSubject<InitialDownloadState, Never> = .init(.unknown)
+    var initialSavesDownloadState: CurrentValueSubject<InitialDownloadState, Never> = .init(.unknown)
+    var initialArchiveDownloadState: CurrentValueSubject<Sync.InitialDownloadState, Never> = .init(.unknown)
 
     private var implementations: [String: Any] = [:]
     private var calls: [String: [Any]] = [:]
 
-    private var _mainContext: NSManagedObjectContext?
-    var mainContext: NSManagedObjectContext {
+    private var _viewContext: NSManagedObjectContext?
+    var viewContext: NSManagedObjectContext {
         get {
-            guard let context = _mainContext else {
+            guard let context = _viewContext else {
                 fatalError()
             }
             return context
         }
-        set { _mainContext = newValue }
+        set { _viewContext = newValue }
     }
 
     func clear() {
@@ -35,107 +37,269 @@ class MockSource: Source {
 }
 
 extension MockSource {
-    private static let object = "object"
-    typealias ObjectImpl<T> = (NSManagedObjectID) -> T?
+    private static let backgroundObject = "backgroundObject"
+    typealias BackgroundObjectImpl = (NSManagedObjectID) -> NSManagedObject?
 
-    func stubObject<T: NSManagedObject>(_ impl: @escaping ObjectImpl<T>) {
-        implementations[Self.object] = impl
+    struct BackgroundObjectCall {
+        let id: NSManagedObjectID
     }
 
-    func object<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
-        print(T.self)
+    func stubBackgroundObject(_ impl: @escaping BackgroundObjectImpl) {
+        implementations[Self.backgroundObject] = impl
+    }
 
-        guard let impl = implementations[Self.object] as? ObjectImpl<T> else {
+    func backgroundObject<T>(id: NSManagedObjectID) -> T? where T: NSManagedObject {
+        guard let impl = implementations[Self.backgroundObject] as? BackgroundObjectImpl else {
             fatalError("\(Self.self)#\(#function) is not implemented")
         }
 
-        return impl(id)
+        calls[Self.viewObject] = (calls[Self.backgroundObject] ?? []) + [BackgroundObjectCall(id: id)]
+
+        return impl(id) as? T
     }
 }
 
-// MARK: - Refresh
+// MARK: - proxy view object to space
 extension MockSource {
-    private static let refresh = "refresh"
-    typealias RefreshImpl = (Int, (() -> Void)?) -> Void
+    private static let viewObject = "viewObject"
+    typealias ViewObjectImpl = (NSManagedObjectID) -> NSManagedObject?
 
-    struct RefreshCall {
-        let maxItems: Int
-        let completion: (() -> Void)?
+    struct ViewObjectCall {
+        let id: NSManagedObjectID
     }
 
-    func stubRefresh(impl: @escaping RefreshImpl) {
-        implementations[Self.refresh] = impl
+    func stubViewObject(impl: @escaping ViewObjectImpl) {
+        implementations[Self.viewObject] = impl
     }
 
-    func refresh(maxItems: Int, completion: (() -> Void)?) {
-        guard let impl = implementations[Self.refresh] as? RefreshImpl else {
-            fatalError("\(Self.self)#\(#function) has not been stubbed")
+    func viewObject<T>(id: NSManagedObjectID) -> T? where T: NSManagedObject {
+        guard let impl = implementations[Self.viewObject] as? ViewObjectImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.refresh] = (calls[Self.refresh] ?? []) + [
-            RefreshCall(maxItems: maxItems, completion: completion)
-        ]
-
-        impl(maxItems, completion)
+        calls[Self.viewObject] = (calls[Self.viewObject] ?? []) + [ViewObjectCall(id: id)]
+        return impl(id) as? T
     }
 
-    func refreshCall(at index: Int) -> RefreshCall? {
-        guard let calls = calls[Self.refresh], calls.count > index else {
+    func fetchViewObject(at index: Int) -> ViewObjectCall? {
+        guard let calls = calls[Self.viewObject],
+              calls.count > index else {
             return nil
         }
 
-        return calls[index] as? RefreshCall
+        return calls[index] as? ViewObjectCall
+    }
+}
+
+// MARK: - Refresh Saves
+extension MockSource {
+    private static let refreshSaves = "refreshSaves"
+    typealias RefreshSavesImpl = ((() -> Void)?) -> Void
+
+    struct RefreshSavesCall {
+        let completion: (() -> Void)?
+    }
+
+    func stubRefreshSaves(impl: @escaping RefreshSavesImpl) {
+        implementations[Self.refreshSaves] = impl
+    }
+
+    func refreshSaves(completion: (() -> Void)?) {
+        guard let impl = implementations[Self.refreshSaves] as? RefreshSavesImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.refreshSaves] = (calls[Self.refreshSaves] ?? []) + [
+            RefreshSavesCall(completion: completion)
+        ]
+
+        impl(completion)
+    }
+
+    func refreshSavesCall(at index: Int) -> RefreshSavesCall? {
+        guard let calls = calls[Self.refreshSaves], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshSavesCall
+    }
+}
+
+// MARK: - Refresh Archive
+extension MockSource {
+    private static let refreshArchive = "refreshArchive"
+    typealias RefreshArchiveImpl = ((() -> Void)?) -> Void
+
+    struct RefreshArchiveCall {
+        let completion: (() -> Void)?
+    }
+
+    func stubRefreshArchive(impl: @escaping RefreshArchiveImpl) {
+        implementations[Self.refreshArchive] = impl
+    }
+
+    func refreshArchive(completion: (() -> Void)?) {
+        guard let impl = implementations[Self.refreshArchive] as? RefreshArchiveImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.refreshArchive] = (calls[Self.refreshArchive] ?? []) + [
+            RefreshArchiveCall(completion: completion)
+        ]
+
+        impl(completion)
+    }
+
+    func refreshArchiveCall(at index: Int) -> RefreshArchiveCall? {
+        guard let calls = calls[Self.refreshArchive], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshArchiveCall
     }
 }
 
 // MARK: - Make items controller
 extension MockSource {
-    static let makeItemsController = "makeItemsController"
-    typealias MakeItemsControllerImpl = () -> SavedItemsController
+    static let makeSavesController = "makeSavesController"
+    typealias MakeSavesControllerImpl = () -> SavedItemsController
 
-    struct MakeItemsControllerCall {
+    struct MakeSavesControllerCall {
     }
 
-    func stubMakeItemsController(impl: @escaping MakeItemsControllerImpl) {
-        implementations[Self.makeItemsController] = impl
+    func stubMakeSavesController(impl: @escaping MakeSavesControllerImpl) {
+        implementations[Self.makeSavesController] = impl
     }
 
-    func makeItemsController() -> SavedItemsController {
-        guard let impl = implementations[Self.makeItemsController] as? MakeItemsControllerImpl else {
+    func makeSavesController() -> SavedItemsController {
+        guard let impl = implementations[Self.makeSavesController] as? MakeSavesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.makeItemsController] = (calls[Self.makeItemsController] ?? []) + [MakeItemsControllerCall()]
+        calls[Self.makeSavesController] = (calls[Self.makeSavesController] ?? []) + [MakeSavesControllerCall()]
 
         return impl()
     }
 
-    func makeItemsControllerCall(at index: Int) -> MakeItemsControllerCall? {
-        guard let calls = calls[Self.makeItemsController], calls.count > index else {
+    func makeSavesControllerCall(at index: Int) -> MakeSavesControllerCall? {
+        guard let calls = calls[Self.makeSavesController], calls.count > index else {
             return nil
         }
 
-        return calls[index] as? MakeItemsControllerCall
+        return calls[index] as? MakeSavesControllerCall
     }
 }
 
-// MARK: - Make archive service
+// MARK: - Make recent saves controller
 extension MockSource {
-    static let makeArchiveService = "makeArchiveService"
-    typealias MakeArchiveServiceImpl = () -> ArchiveService
+    static let makeRecentSavesController = "makeRecentSavesController"
+    typealias MakeRecentSavesControllerImpl = () -> NSFetchedResultsController<Sync.SavedItem>
 
-    struct MakeArchivedServiceCall { }
-
-    func stubMakeArchiveService(impl: @escaping MakeArchiveServiceImpl) {
-        implementations[Self.makeArchiveService] = impl
+    struct MakeRecentSavesControllerCall {
     }
 
-    func makeArchiveService() -> ArchiveService {
-        guard let impl = implementations[Self.makeArchiveService] as? MakeArchiveServiceImpl else {
+    func stubMakeRecentSavesController(impl: @escaping MakeRecentSavesControllerImpl) {
+        implementations[Self.makeRecentSavesController] = impl
+    }
+
+    func makeRecentSavesController() -> NSFetchedResultsController<Sync.SavedItem> {
+        guard let impl = implementations[Self.makeRecentSavesController] as? MakeRecentSavesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.makeArchiveService] = (calls[Self.makeArchiveService] ?? []) + [MakeArchivedServiceCall()]
+        calls[Self.makeRecentSavesController] = (calls[Self.makeRecentSavesController] ?? []) + [MakeRecentSavesControllerCall()]
+
+        return impl()
+    }
+
+    func makeRecentSavesControllerCall(at index: Int) -> MakeRecentSavesControllerCall? {
+        guard let calls = calls[Self.makeRecentSavesController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeRecentSavesControllerCall
+    }
+}
+
+// MARK: - Make home controller
+extension MockSource {
+    static let makeHomeController = "makeHomeController"
+    typealias MakeHomeControllerImpl = () -> RichFetchedResultsController<Sync.Recommendation>
+
+    struct MakeHomeControllerCall {
+    }
+
+    func stubMakeHomeController(impl: @escaping MakeHomeControllerImpl) {
+        implementations[Self.makeHomeController] = impl
+    }
+
+    func makeHomeController() -> RichFetchedResultsController<Sync.Recommendation> {
+        guard let impl = implementations[Self.makeHomeController] as? MakeHomeControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeHomeController] = (calls[Self.makeHomeController] ?? []) + [MakeHomeControllerCall()]
+
+        return impl()
+    }
+
+    func makeHomeControllerCall(at index: Int) -> MakeHomeControllerCall? {
+        guard let calls = calls[Self.makeHomeController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeHomeControllerCall
+    }
+}
+
+// MARK: - Make archive controller
+extension MockSource {
+    static let makeArchiveController = "makeArchiveController"
+    typealias MakeArchiveControllerImpl = () -> SavedItemsController
+
+    struct MakeArchiveControllerCall {
+    }
+
+    func stubMakeArchiveController(impl: @escaping MakeArchiveControllerImpl) {
+        implementations[Self.makeArchiveController] = impl
+    }
+
+    func makeArchiveController() -> SavedItemsController {
+        guard let impl = implementations[Self.makeArchiveController] as? MakeArchiveControllerImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeArchiveController] = (calls[Self.makeArchiveController] ?? []) + [MakeArchiveControllerCall()]
+
+        return impl()
+    }
+
+    func makeArchiveControllerCall(at index: Int) -> MakeArchiveControllerCall? {
+        guard let calls = calls[Self.makeArchiveController], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? MakeArchiveControllerCall
+    }
+}
+
+// MARK: - Make search service
+extension MockSource {
+    static let makeSearchService = "makeSearchService"
+    typealias MakeSearchServiceImpl = () -> SearchService
+
+    struct MakeSearchServiceCall { }
+
+    func stubMakeSearchService(impl: @escaping MakeSearchServiceImpl) {
+        implementations[Self.makeSearchService] = impl
+    }
+
+    func makeSearchService() -> SearchService {
+        guard let impl = implementations[Self.makeSearchService] as? MakeSearchServiceImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.makeSearchService] = (calls[Self.makeSearchService] ?? []) + [MakeSearchServiceCall()]
 
         return impl()
     }
@@ -143,15 +307,15 @@ extension MockSource {
 
 // MARK: - Make images controller
 extension MockSource {
-    static let makeUndownloadedImagesController = "makeUndownloadedImagesController"
-    typealias MakeUndownloadedImagesControllerImpl = () -> ImagesController
+    static let makeImagesController = "makeImagesController"
+    typealias MakeImagesControllerImpl = () -> ImagesController
 
-    func stubMakeUndownloadedImagesController(impl: @escaping MakeUndownloadedImagesControllerImpl) {
-        implementations[Self.makeUndownloadedImagesController] = impl
+    func stubMakeImagesController(impl: @escaping MakeImagesControllerImpl) {
+        implementations[Self.makeImagesController] = impl
     }
 
-    func makeUndownloadedImagesController() -> ImagesController {
-        guard let impl = implementations[Self.makeUndownloadedImagesController] as? MakeUndownloadedImagesControllerImpl else {
+    func makeImagesController() -> ImagesController {
+        guard let impl = implementations[Self.makeImagesController] as? MakeImagesControllerImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
@@ -297,6 +461,41 @@ extension MockSource {
     }
 }
 
+// MARK: - Filter Tags
+extension MockSource {
+    private static let filterTags = "filterTags"
+    typealias FilterTagsImpl = ([String]) -> [Tag]?
+
+    struct FilterTagsImplCall {
+        let tags: [String]
+    }
+
+    func stubFilterTags(impl: @escaping FilterTagsImpl) {
+        implementations[Self.filterTags] = impl
+    }
+
+    func filterTags(with text: String, excluding tags: [String]) -> [Tag]? {
+        guard let impl = implementations[Self.filterTags] as? FilterTagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.filterTags] = (calls[Self.filterTags] ?? []) + [
+            RetrieveTagsImplCall(tags: tags)
+        ]
+
+        return impl(tags)
+    }
+
+    func filterTagsCall(at index: Int) -> FilterTagsImplCall? {
+        guard let calls = calls[Self.filterTags],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? FilterTagsImplCall
+    }
+}
+
 // MARK: - Fetch Tags
 extension MockSource {
     static let fetchTags = "fetchTags"
@@ -326,6 +525,38 @@ extension MockSource {
               }
 
         return calls[index] as? FetchTagsImplCall
+    }
+}
+
+// MARK: - Delete Account
+extension MockSource {
+    static let deleteAccount = "deleteAccount"
+    typealias DeleteAccountImpl = () -> Void
+    struct DeleteAccountCall { }
+
+    func stubDeleteAccount(impl: @escaping DeleteAccountImpl) {
+        implementations[Self.deleteAccount] = impl
+    }
+
+    func deleteAccount() async throws {
+        guard let impl = implementations[Self.deleteAccount] as? DeleteAccountImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.deleteAccount] = (calls[Self.deleteAccount] ?? []) + [
+            DeleteAccountCall()
+        ]
+
+        return impl()
+    }
+
+    func deleteAccountCall(at index: Int) -> DeleteAccountCall? {
+        guard let calls = calls[Self.deleteAccount],
+              calls.count > index else {
+                  return nil
+              }
+
+        return calls[index] as? DeleteAccountCall
     }
 }
 
@@ -548,60 +779,63 @@ extension MockSource {
     }
 }
 
-// MARK: - Refresh an object
+// MARK: - background Refresh an object
 extension MockSource {
-    static let refreshObject = "refreshObject"
-    typealias RefreshObjectImpl = (NSManagedObject, Bool) -> Void
-    struct RefreshObjectCall {
+    static let backgroundRefreshObject = "backgroundRefreshObject"
+    typealias BackgroundRefreshObjectImpl = (NSManagedObject, Bool) -> Void
+    struct BackgroundRefreshObjectCall {
         let object: NSManagedObject
         let mergeChanges: Bool
     }
 
-    func stubRefreshObject(impl: @escaping RefreshObjectImpl) {
-        implementations[Self.refreshObject] = impl
+    func stubBackgroundRefreshObject(impl: @escaping BackgroundRefreshObjectImpl) {
+        implementations[Self.backgroundRefreshObject] = impl
     }
 
-    func refresh(_ object: NSManagedObject, mergeChanges: Bool) {
-        guard let impl = implementations[Self.refreshObject] as? RefreshObjectImpl else {
+    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool) {
+        guard let impl = implementations[Self.backgroundRefreshObject] as? BackgroundRefreshObjectImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.refreshObject] = (calls[Self.refreshObject] ?? []) + [
-            RefreshObjectCall(object: object, mergeChanges: mergeChanges)
+        calls[Self.backgroundRefreshObject] = (calls[Self.backgroundRefreshObject] ?? []) + [
+            BackgroundRefreshObjectCall(object: object, mergeChanges: mergeChanges)
         ]
 
         impl(object, mergeChanges)
     }
 
-    func refreshObjectCall(at index: Int) -> RefreshObjectCall? {
-        guard let calls = calls[Self.refreshObject], calls.count > index else {
+    func backgroundRefreshObjectCall(at index: Int) -> BackgroundRefreshObjectCall? {
+        guard let calls = calls[Self.backgroundRefreshObject], calls.count > index else {
             return nil
         }
 
-        return calls[index] as? RefreshObjectCall
+        return calls[index] as? BackgroundRefreshObjectCall
     }
 }
 
 // MARK: - Resolved unresolved saved items
 extension MockSource {
     static let resolveUnresolvedSavedItems = "resolveUnresolvedSavedItems"
-    typealias ResolveUnresolvedSavedItemsImpl = () -> Void
-    struct ResolveUnresolvedSavedItemsCall { }
+    typealias ResolveUnresolvedSavedItemsImpl = ((() -> Void)?) -> Void
+
+    struct ResolveUnresolvedSavedItemsCall {
+        let completion: (() -> Void)?
+    }
 
     func stubResolveUnresolvedSavedItems(impl: @escaping ResolveUnresolvedSavedItemsImpl) {
         implementations[Self.resolveUnresolvedSavedItems] = impl
     }
 
-    func resolveUnresolvedSavedItems() {
+    func resolveUnresolvedSavedItems(completion: (() -> Void)?) {
         guard let impl = implementations[Self.resolveUnresolvedSavedItems] as? ResolveUnresolvedSavedItemsImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
         calls[Self.resolveUnresolvedSavedItems] = (calls[Self.resolveUnresolvedSavedItems] ?? []) + [
-            ResolveUnresolvedSavedItemsCall()
+            ResolveUnresolvedSavedItemsCall(completion: completion)
         ]
 
-        impl()
+        impl(completion)
     }
 
     func resolveUnresolvedSavedItemsCall(at index: Int) -> ResolveUnresolvedSavedItemsCall? {
@@ -620,12 +854,6 @@ extension MockSource {
     static let fetchSlateLineup = "fetchSlateLineup"
     typealias FetchSlateLineupImpl = (String) -> Void
     struct FetchSlateLineupCall {
-        let identifier: String
-    }
-
-    static let fetchSlate = "fetchSlate"
-    typealias FetchSlateImpl = (String) -> Void
-    struct FetchSlateCall {
         let identifier: String
     }
 
@@ -650,32 +878,6 @@ extension MockSource {
 
         calls[Self.fetchSlateLineup] = (calls[Self.fetchSlateLineup] ?? []) + [
             FetchSlateLineupCall(identifier: identifier)
-        ]
-
-        impl(identifier)
-    }
-
-    func stubFetchSlate(_ impl: @escaping FetchSlateImpl) {
-        implementations[Self.fetchSlate] = impl
-    }
-
-    func fetchSlateCall(at index: Int) -> FetchSlateCall? {
-        guard let calls = calls[Self.fetchSlate],
-              index < calls.count,
-              let call = calls[index] as? FetchSlateCall else {
-                  return nil
-              }
-
-        return call
-    }
-
-    func fetchSlate(_ identifier: String) async throws {
-        guard let impl = implementations[Self.fetchSlate] as? FetchSlateImpl else {
-            fatalError("\(Self.self).\(#function) has not been stubbed")
-        }
-
-        calls[Self.fetchSlate] = (calls[Self.fetchSlate] ?? []) + [
-            FetchSlateCall(identifier: identifier)
         ]
 
         impl(identifier)
@@ -782,33 +984,33 @@ extension MockSource {
 }
 
 extension MockSource {
-    private static let downloadImages = "downloadImages"
-    typealias DownloadImagesImpl = ([Image]) -> Void
-    struct DownloadImagesCall {
+    private static let deleteImages = "deleteImages"
+    typealias DeleteImagesImpl = ([Image]) -> Void
+    struct DeleteImagesCall {
         let images: [Image]
     }
 
-    func stubDownloadImages(_ impl: @escaping DownloadImagesImpl) {
-        implementations[Self.downloadImages] = impl
+    func stubDeleteImages(_ impl: @escaping DeleteImagesImpl) {
+        implementations[Self.deleteImages] = impl
     }
 
-    func downloadImagesCall(at index: Int) -> DownloadImagesCall? {
-        guard let calls = calls[Self.downloadImages],
+    func deleteImagesCall(at index: Int) -> DeleteImagesCall? {
+        guard let calls = calls[Self.deleteImages],
               index < calls.count,
-              let call = calls[index] as? DownloadImagesCall else {
+              let call = calls[index] as? DeleteImagesCall else {
             return nil
         }
 
         return call
     }
 
-    func download(images: [Image]) {
-        guard let impl = implementations[Self.downloadImages] as? DownloadImagesImpl else {
+    func delete(images: [Image]) {
+        guard let impl = implementations[Self.deleteImages] as? DeleteImagesImpl else {
             fatalError("\(Self.self).\(#function) has not been stubbed")
         }
 
-        calls[Self.downloadImages] = (calls[Self.downloadImages] ?? []) + [
-            DownloadImagesCall(images: images)
+        calls[Self.deleteImages] = (calls[Self.deleteImages] ?? []) + [
+            DeleteImagesCall(images: images)
         ]
 
         impl(images)
@@ -946,5 +1148,222 @@ extension MockSource {
         }
 
         return calls[index] as? FetchDetailsForRecommendationCall
+    }
+}
+
+// MARK: - Fetch item by URL
+extension MockSource {
+    private static let fetchItem = "fetchItem"
+    typealias FetchItemImpl = (URL) -> Item?
+
+    struct FetchItemCall {
+        let url: URL
+    }
+
+    func stubFetchItem(impl: @escaping FetchItemImpl) {
+        implementations[Self.fetchItem] = impl
+    }
+
+    func fetchItem(_ url: URL) -> Item? {
+        guard let impl = implementations[Self.fetchItem] as? FetchItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchItem] = (calls[Self.fetchItem] ?? []) + [FetchItemCall(url: url)]
+        return impl(url)
+    }
+}
+
+// MARK: - Fetch Items by Search
+extension MockSource {
+    private static let searchTerm = "searchTerm"
+    typealias SearchItemsImpl = (String) -> [SavedItem]?
+
+    struct SearchItemsCall {
+        let searchTerm: String
+    }
+
+    func stubSearchItems(impl: @escaping SearchItemsImpl) {
+        implementations[Self.searchTerm] = impl
+    }
+
+    func searchSaves(search: String) -> [Sync.SavedItem]? {
+        guard let impl = implementations[Self.searchTerm] as? SearchItemsImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.searchTerm] = (calls[Self.searchTerm] ?? []) + [SearchItemsCall(searchTerm: search)]
+        return impl(search)
+    }
+
+    func searchSavesCall(at index: Int) -> SearchItemsCall? {
+        guard let calls = calls[Self.searchTerm],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? SearchItemsCall
+    }
+}
+
+// MARK: - Fetch SavedItem by Remote ID
+extension MockSource {
+    private static let fetchSavedItem = "fetchSavedItem"
+    typealias FetchSavedItemImpl = (String) -> SavedItem?
+
+    struct FetchSavedItemCall {
+        let remoteID: String
+    }
+
+    func stubFetchSavedItem(impl: @escaping FetchSavedItemImpl) {
+        implementations[Self.fetchSavedItem] = impl
+    }
+
+    func fetchOrCreateSavedItem(with remoteID: String, and remoteParts: SavedItem.RemoteSavedItem?) -> SavedItem? {
+        guard let impl = implementations[Self.fetchSavedItem] as? FetchSavedItemImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchSavedItem] = (calls[Self.fetchSavedItem] ?? []) + [FetchSavedItemCall(remoteID: remoteID)]
+        return impl(remoteID)
+    }
+
+    func fetchSavedItemCall(at index: Int) -> FetchSavedItemCall? {
+        guard let calls = calls[Self.fetchSavedItem],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? FetchSavedItemCall
+    }
+}
+
+// MARK: - Fetch unread saves count
+extension MockSource {
+    private static let unreadSaves = "unreadSaves"
+    typealias UnreadSavesImpl = () -> Int
+
+    struct UnreadSavesCall { }
+
+    func stubUnreadSaves(impl: @escaping UnreadSavesImpl) {
+        implementations[Self.unreadSaves] = impl
+    }
+
+    func unreadSaves() -> Int {
+        guard let impl = implementations[Self.unreadSaves] as? UnreadSavesImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.unreadSaves] = (calls[Self.unreadSaves] ?? []) + [UnreadSavesCall()]
+        return impl()
+    }
+
+    func fetchUnreadSaves(at index: Int) -> UnreadSavesCall? {
+        guard let calls = calls[Self.unreadSaves],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? UnreadSavesCall
+    }
+}
+
+// MARK: - Proxy view refresh to space
+extension MockSource {
+    private static let viewRefresh = "viewRefresh"
+    typealias ViewRefreshImpl = (NSManagedObject, Bool) -> Void
+
+    struct ViewRefreshCall {
+        let object: NSManagedObject
+        let mergeChanges: Bool
+    }
+
+    func stubViewRefresh(impl: @escaping ViewRefreshImpl) {
+        implementations[Self.viewRefresh] = impl
+    }
+
+    func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool) {
+        guard let impl = implementations[Self.viewRefresh] as? ViewRefreshImpl else {
+            fatalError("\(Self.self).\(#function) has not been stubbed")
+        }
+
+        calls[Self.viewRefresh] = (calls[Self.viewRefresh] ?? []) + [ViewRefreshCall(object: object, mergeChanges: flag)]
+        return impl(object, flag)
+    }
+
+    func fetchViewRefresh(at index: Int) -> ViewRefreshCall? {
+        guard let calls = calls[Self.viewRefresh],
+              calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? ViewRefreshCall
+    }
+}
+
+// MARK: - refreshTags
+extension MockSource {
+    private static let refreshTags = "refreshTags"
+    typealias RefreshTagsImpl = ((() -> Void)?) -> Void
+
+    struct RefreshTagsCall {
+        let completion: (() -> Void)?
+    }
+
+    func stubRefreshTags(impl: @escaping RefreshTagsImpl) {
+        implementations[Self.refreshTags] = impl
+    }
+
+    func refreshTags(completion: (() -> Void)?) {
+        guard let impl = implementations[Self.refreshTags] as? RefreshTagsImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.refreshTags] = (calls[Self.refreshTags] ?? []) + [
+            RefreshTagsCall(completion: completion)
+        ]
+
+        impl(completion)
+    }
+
+    func refreshTagsCall(at index: Int) -> RefreshTagsCall? {
+        guard let calls = calls[Self.refreshTags], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshTagsCall
+    }
+}
+
+// MARK: - fetchUserData
+extension MockSource {
+    private static let fetchUserData = "fetchUserData"
+    typealias FetchUserDataImpl = () -> Void
+
+    struct FetchUserDataCall {
+    }
+
+    func stubFetchUserData(impl: @escaping RefreshTagsImpl) {
+        implementations[Self.refreshTags] = impl
+    }
+
+    func fetchUserData() async throws {
+        guard let impl = implementations[Self.fetchUserData] as? FetchUserDataImpl else {
+            fatalError("\(Self.self)#\(#function) has not been stubbed")
+        }
+
+        calls[Self.fetchUserData] = (calls[Self.fetchUserData] ?? []) + [
+            FetchUserDataCall()
+        ]
+
+        impl()
+    }
+
+    func fetchUserDataCall(at index: Int) -> RefreshTagsCall? {
+        guard let calls = calls[Self.refreshTags], calls.count > index else {
+            return nil
+        }
+
+        return calls[index] as? RefreshTagsCall
     }
 }

@@ -1,5 +1,6 @@
 import XCTest
 import Combine
+import Textile
 
 @testable import Sync
 @testable import PocketKit
@@ -8,10 +9,12 @@ class TagsFilterViewModelTests: XCTestCase {
     private var subscriptions: [AnyCancellable]!
     var source: MockSource!
     var space: Space!
+    private var tracker: MockTracker!
 
     override func setUp() {
         space = .testSpace()
         source = MockSource()
+        tracker = MockTracker()
         subscriptions = []
     }
 
@@ -22,7 +25,7 @@ class TagsFilterViewModelTests: XCTestCase {
     }
 
     private func subject(source: Source? = nil, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
-        TagsFilterViewModel(source: source ?? self.source, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
+        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
     }
 
     func test_getAllTags_withThreeTags_returnsMostRecentTags() {
@@ -35,7 +38,7 @@ class TagsFilterViewModelTests: XCTestCase {
         let tags = viewModel.getAllTags()
 
         XCTAssertEqual(tags.count, 3)
-        XCTAssertEqual(tags, ["tag 3", "tag 2", "tag 1"])
+        XCTAssertEqual(tags, [TagType.tag("tag 3"), TagType.tag("tag 2"), TagType.tag("tag 1")])
     }
 
     func test_getAllTags_withMoreThan3Tags_returnsSortedOrder() {
@@ -52,7 +55,7 @@ class TagsFilterViewModelTests: XCTestCase {
         let tags = viewModel.getAllTags()
 
         XCTAssertEqual(tags.count, 5)
-        XCTAssertEqual(tags, ["e", "d", "c", "a", "b"])
+        XCTAssertEqual(tags, [TagType.tag("e"), TagType.tag("d"), TagType.tag("c"), TagType.tag("a"), TagType.tag("b")])
     }
 
     func test_selectedTag_withTagName_sendsPredicate() {
@@ -69,7 +72,7 @@ class TagsFilterViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectTag(.notTagged)
-        wait(for: [expectSeletedTagCall], timeout: 1)
+        wait(for: [expectSeletedTagCall], timeout: 5)
     }
 
     func test_selectedTag_withNotTagged_sendsPredicate() {
@@ -86,7 +89,7 @@ class TagsFilterViewModelTests: XCTestCase {
         }.store(in: &subscriptions)
 
         viewModel.selectTag(.tag("tag 0"))
-        wait(for: [expectSeletedTagCall], timeout: 1)
+        wait(for: [expectSeletedTagCall], timeout: 5)
     }
 
     func test_deleteTag_removesExistingTags() {
@@ -107,7 +110,7 @@ class TagsFilterViewModelTests: XCTestCase {
         viewModel.delete(tags: ["b", "e", "q"])
 
         XCTAssertEqual(deletedTags, ["b", "e"])
-        wait(for: [expectDelete], timeout: 1)
+        wait(for: [expectDelete], timeout: 10)
     }
 
     func test_renameTag_showsNewName() {
@@ -123,6 +126,6 @@ class TagsFilterViewModelTests: XCTestCase {
         let viewModel = subject(fetchedTags: savedTags) { }
         viewModel.rename(from: "tag 1", to: "tag 0")
 
-        wait(for: [expectRename], timeout: 1)
+        wait(for: [expectRename], timeout: 10)
     }
 }

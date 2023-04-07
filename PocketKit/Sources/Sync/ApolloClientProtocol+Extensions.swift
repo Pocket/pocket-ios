@@ -3,33 +3,46 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Apollo
+import ApolloAPI
+import Foundation
 
 public extension ApolloClientProtocol {
-    func fetch<Query: GraphQLQuery>(query: Query, resultHandler: GraphQLResultHandler<Query.Data>? = nil) -> Cancellable {
+    func fetch<Query: GraphQLQuery>(query: Query, queue: DispatchQueue = .global(qos: .utility), resultHandler: GraphQLResultHandler<Query.Data>? = nil) -> Cancellable {
         return fetch(
             query: query,
             cachePolicy: .fetchIgnoringCacheCompletely,
             contextIdentifier: nil,
-            queue: .main,
+            queue: queue,
             resultHandler: resultHandler
         )
     }
 
-    func fetch<Query: GraphQLQuery>(query: Query) async throws -> GraphQLResult<Query.Data> {
+    func fetch<Query: GraphQLQuery>(query: Query, queue: DispatchQueue = .global(qos: .utility), filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) async throws -> GraphQLResult<Query.Data> {
+        Log.debug("Requesting \(String(describing: query))", filename: filename, line: line, column: column, funcName: funcName)
         return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<GraphQLResult<Query.Data>, Error>) in
-            _ = fetch(query: query) { result in
+            _ = fetch(query: query, queue: queue) { result in
                 switch result {
                 case .failure(let error):
+                    Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
                     continuation.resume(throwing: error)
                 case .success(let data):
+                    guard let errors = data.errors,
+                            !errors.isEmpty else {
+                        Log.debug("Successful response of \(String(describing: query))", filename: filename, line: line, column: column, funcName: funcName)
+                        continuation.resume(returning: data)
+                        return
+                    }
+                    Log.warning("Error with query \(String(describing: query)) with errors \(String(describing: errors))", filename: filename, line: line, column: column, funcName: funcName)
+                    // Even though we had errors, let's continue forward for now, it should be up to the individual query executor to use what data we could since GraphQL can return partial responses
                     continuation.resume(returning: data)
                 }
             }
         }
     }
 
-    func perform<Mutation: GraphQLMutation>(mutation: Mutation) async throws -> GraphQLResult<Mutation.Data> {
+    func perform<Mutation: GraphQLMutation>(mutation: Mutation, filename: String = #file, line: Int = #line, column: Int = #column, funcName: String = #function) async throws -> GraphQLResult<Mutation.Data> {
         return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<GraphQLResult<Mutation.Data>, Error>) in
+            Log.debug("Requesting \(String(describing: mutation))", filename: filename, line: line, column: column, funcName: funcName)
             _ = perform(
                 mutation: mutation,
                 publishResultToStore: false,
@@ -37,8 +50,17 @@ public extension ApolloClientProtocol {
             ) { result in
                 switch result {
                 case .failure(let error):
+                    Log.capture(error: error, filename: filename, line: line, column: column, funcName: funcName)
                     continuation.resume(throwing: error)
                 case .success(let data):
+                    guard let errors = data.errors,
+                            !errors.isEmpty else {
+                        Log.debug("Successful response of \(String(describing: mutation))", filename: filename, line: line, column: column, funcName: funcName)
+                        continuation.resume(returning: data)
+                        return
+                    }
+                    Log.warning("Error with mutation \(String(describing: mutation)) with errors \(String(describing: errors))", filename: filename, line: line, column: column, funcName: funcName)
+                    // Even though we had errors, let's continue forward for now, it should be up to the individual query executor to use what data we could since GraphQL can return partial responses
                     continuation.resume(returning: data)
                 }
             }

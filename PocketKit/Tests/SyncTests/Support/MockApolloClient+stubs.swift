@@ -1,5 +1,6 @@
 import XCTest
 import Apollo
+import ApolloAPI
 
 extension MockApolloClient {
     func stubPerform<T: GraphQLMutation>(

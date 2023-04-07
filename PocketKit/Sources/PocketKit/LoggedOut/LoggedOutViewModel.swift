@@ -13,13 +13,16 @@ enum LoggedOutAction {
 }
 
 class LoggedOutViewModel: ObservableObject {
-    weak var contextProvider: ASWebAuthenticationPresentationContextProviding?
+    var contextProvider: ASWebAuthenticationPresentationContextProviding?
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var isPresentingOfflineView: Bool = false
+    @Published var isPresentingOfflineView: Bool = false
+
+    @Published var isPresentingExitSurveyBanner: Bool = false
+
+    @Published var isPresentingExitSurvey: Bool = false
+
     private(set) var automaticallyDismissed = false
     private(set) var lastAction: LoggedOutAction?
 
@@ -32,17 +35,25 @@ class LoggedOutViewModel: ObservableObject {
     private let appSession: AppSession
     private let networkPathMonitor: NetworkPathMonitor
     private let tracker: Tracker
+    private let userManagementService: UserManagementServiceProtocol
+    private var cancellables: Set<AnyCancellable> = []
+
+    convenience init() {
+        self.init(authorizationClient: Services.shared.authClient, appSession: Services.shared.appSession, networkPathMonitor: NWPathMonitor(), tracker: Services.shared.tracker, userManagementService: Services.shared.userManagementService)
+    }
 
     init(
         authorizationClient: AuthorizationClient,
         appSession: AppSession,
         networkPathMonitor: NetworkPathMonitor,
-        tracker: Tracker
+        tracker: Tracker,
+        userManagementService: UserManagementServiceProtocol
     ) {
         self.authorizationClient = authorizationClient
         self.appSession = appSession
         self.networkPathMonitor = networkPathMonitor
         self.tracker = tracker
+        self.userManagementService = userManagementService
 
         networkPathMonitor.start(queue: DispatchQueue.global())
         currentNetworkStatus = networkPathMonitor.currentNetworkPath.status
@@ -51,6 +62,29 @@ class LoggedOutViewModel: ObservableObject {
                 self?.updateStatus(path.status)
             }
         }
+
+        // Register for the user management service to show the deletion banner if the user logs out.
+        self.userManagementService
+            .accountDeletedPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] accountDeleted in self?.isPresentingExitSurveyBanner = accountDeleted }
+            .store(in: &cancellables)
+        self.isPresentingExitSurveyBanner = self.userManagementService.accountDeleted
+
+        // Set up impression analytics in our view model when the banner shows.
+        $isPresentingExitSurveyBanner
+            .receive(on: DispatchQueue.global(qos: .background))
+            .sink { [weak self] value in
+                guard let self else {
+                    Log.capture(message: "Not tracking deletion banner impression, due to a weak self")
+                    return
+                }
+
+                if value {
+                    self.trackExitSurveyBannerImpression()
+                }
+            }
+            .store(in: &cancellables)
     }
 
     private func updateStatus(_ status: NWPath.Status) {
@@ -63,6 +97,20 @@ class LoggedOutViewModel: ObservableObject {
             isPresentingOfflineView = false
         }
         currentNetworkStatus = status
+    }
+
+    @MainActor
+    func exitSurveyButtonClicked() {
+        self.isPresentingExitSurvey.toggle()
+        tracker.track(event: Events.Login.DeleteAccountExitSurveyBannerClick())
+    }
+
+    func exitSurveyAppeared() {
+        tracker.track(event: Events.Login.DeleteAccountExitSurveyImpression())
+    }
+
+    func trackExitSurveyBannerImpression() {
+        tracker.track(event: Events.Login.DeleteAccountExitSurveyBannerImpression())
     }
 
     @MainActor
@@ -133,6 +181,9 @@ class LoggedOutViewModel: ObservableObject {
             accessToken: response.accessToken,
             userIdentifier: response.userIdentifier
         )
+        // Post that we logged in to the rest of the app
+        // Note when we pass appSession.currentSession it seems to pass a nil object to NotificatioNcenter, but when we save the value and we pass the basic struct it works perfectly
+        NotificationCenter.default.post(name: .userLoggedIn, object: appSession.currentSession)
     }
 
     @MainActor
@@ -149,7 +200,7 @@ class LoggedOutViewModel: ObservableObject {
         } catch {
             // AuthorizationClient should only ever throw an AuthorizationClient.error
             guard let error = error as? AuthorizationClient.Error else {
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
                 return
             }
 
@@ -158,9 +209,9 @@ class LoggedOutViewModel: ObservableObject {
                 // If component generation failed, we should alert the user (to hopefully reach out),
                 // as well as capture the error
                 await present(error)
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
             case .alreadyAuthenticating:
-                Crashlogger.capture(error: error)
+                Log.capture(error: error)
             case .other(let nested):
                 // All other errors will be throws by the AuthenticationSession,
                 // which in production will be ASWebAuthenticationSessionError.
@@ -170,12 +221,14 @@ class LoggedOutViewModel: ObservableObject {
                     // but the other errors should never occur, so they should be captured.
                     switch nested.code {
                     case .presentationContextInvalid, .presentationContextNotProvided:
-                        Crashlogger.capture(error: nested)
+                        Log.breadcrumb(category: "auth", level: .error, message: "ASWebAuthenticationSessionError: \(nested.localizedDescription)")
+                        Log.capture(error: nested)
                     default:
                         return
                     }
                 } else {
-                    Crashlogger.capture(error: error)
+                    Log.breadcrumb(category: "auth", level: .error, message: "Error: \(nested.localizedDescription)")
+                    Log.capture(error: error)
                 }
             }
         }

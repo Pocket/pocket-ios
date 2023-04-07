@@ -1,5 +1,6 @@
 import Foundation
 import Apollo
+import PocketGraph
 
 public class PocketSaveService: SaveService {
     private let apollo: ApolloClientProtocol
@@ -42,60 +43,155 @@ public class PocketSaveService: SaveService {
     }
 
     public func save(url: URL) -> SaveServiceStatus {
-        let result = fetchOrCreateSavedItem(url: url)
+        space.performAndWait {
+            let result = fetchOrCreateSavedItem(url: url)
 
-        expiringActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.save") { [weak self] expiring in
-            self?._save(expiring: expiring, savedItem: result.savedItem)
+            expiringActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.save") { [weak self] expiring in
+                self?._save(expiring: expiring, savedItem: result.savedItem)
+            }
+
+            return result
         }
-
-        return result.status
     }
 
-    private func fetchOrCreateSavedItem(url: URL) -> (savedItem: SavedItem, status: SaveServiceStatus) {
-        if let existingItem = try! space.fetchSavedItem(byURL: url) {
-            existingItem.createdAt = Date()
+    public func retrieveTags(excluding tags: [String]) -> [Tag]? {
+        try? space.retrieveTags(excluding: tags)
+    }
 
-            let notification: SavedItemUpdatedNotification = space.new()
-            notification.savedItem = existingItem
+    public func filterTags(with input: String, excluding tags: [String]) -> [Tag]? {
+        try? space.filterTags(with: input, excluding: tags)
+    }
+
+    public func addTags(savedItem: SavedItem, tags: [String]) -> SaveServiceStatus {
+        return space.performAndWait {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+                Log.capture(message: "Save Service could not get a savedItem from the background context, for add tags")
+                return .taggedItem(savedItem)
+            }
+            savedItem.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
+                space.fetchOrCreateTag(byName: tag)
+            }))
+
             try? space.save()
 
             osNotifications.post(name: .savedItemUpdated)
-            return (existingItem, .existingItem)
-        } else {
-            let savedItem: SavedItem = space.new()
-            savedItem.url = url
-            savedItem.createdAt = Date()
-            try? space.save()
 
-            osNotifications.post(name: .savedItemCreated)
-            return (savedItem, .newItem)
+            expiringActivityPerformer.performExpiringActivity(withReason: "com.mozilla.pocket.next.addTags") { [weak self] expiring in
+                self?._addTags(expiring: expiring, savedItem: savedItem)
+            }
+
+            return .taggedItem(savedItem)
         }
     }
 
-    private func _save(expiring: Bool, savedItem: SavedItem) {
-        guard !expiring else {
-            queue.cancelAllOperations()
-            queue.waitUntilAllOperationsAreFinished()
-            return
+    private func fetchOrCreateSavedItem(url: URL) -> SaveServiceStatus {
+        return space.performAndWait {
+            if let existingItem = try? space.fetchSavedItem(byURL: url) {
+                existingItem.createdAt = Date()
+
+                let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
+                notification.savedItem = existingItem
+
+                try? space.save()
+
+                osNotifications.post(name: .savedItemUpdated)
+                return .existingItem(existingItem)
+            } else {
+                let savedItem: SavedItem = SavedItem(context: space.backgroundContext, url: url)
+                savedItem.url = url
+                savedItem.createdAt = Date()
+                try? space.save()
+
+                osNotifications.post(name: .savedItemCreated)
+                return .newItem(savedItem)
+            }
         }
+    }
 
-        let operation = SaveOperation(
-            apollo: apollo,
-            osNotifications: osNotifications,
-            space: space,
-            savedItem: savedItem
-        )
+    private func _addTags(expiring: Bool, savedItem: SavedItem) {
+        space.performAndWait {
+            guard !expiring else {
+                queue.cancelAllOperations()
+                queue.waitUntilAllOperationsAreFinished()
+                return
+            }
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+                Log.capture(message: "Save Service could not get a savedItem from the background context, for _addTags")
+                return
+            }
 
-        queue.addOperation(operation)
+            guard let tags = savedItem.tags, let remoteID = savedItem.remoteID else { return }
+            let names = Array(tags).compactMap { ($0 as? Tag)?.name }
+
+            if names.isEmpty {
+                let mutation = UpdateSavedItemRemoveTagsMutation(savedItemId: remoteID)
+
+                let operation = SaveOperation<UpdateSavedItemRemoveTagsMutation>(
+                    apollo: apollo,
+                    osNotifications: osNotifications,
+                    space: space,
+                    savedItem: savedItem,
+                    mutation: mutation
+                ) { graphQLResultData in
+                    return (graphQLResultData as? UpdateSavedItemRemoveTagsMutation.Data)?.updateSavedItemRemoveTags.fragments.savedItemParts
+                }
+                queue.addOperation(operation)
+            } else {
+                let mutation = ReplaceSavedItemTagsMutation(input: [SavedItemTagsInput(savedItemId: remoteID, tags: names)])
+
+                let operation = SaveOperation<ReplaceSavedItemTagsMutation>(
+                    apollo: apollo,
+                    osNotifications: osNotifications,
+                    space: space,
+                    savedItem: savedItem,
+                    mutation: mutation
+                ) { graphQLResultData in
+                    return (graphQLResultData as? ReplaceSavedItemTagsMutation.Data)?.replaceSavedItemTags.first?.fragments.savedItemParts
+                }
+                queue.addOperation(operation)
+            }
+        }
+        queue.waitUntilAllOperationsAreFinished()
+    }
+
+    private func _save(expiring: Bool, savedItem: SavedItem) {
+        space.performAndWait {
+            guard !expiring else {
+                queue.cancelAllOperations()
+                queue.waitUntilAllOperationsAreFinished()
+                return
+            }
+
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+                Log.capture(message: "Save Service could not get a savedItem from the background context, for _save")
+                return
+            }
+
+            let mutation =  SaveItemMutation(input: SavedItemUpsertInput(url: savedItem.url.absoluteString))
+
+            let operation = SaveOperation<SaveItemMutation>(
+                apollo: apollo,
+                osNotifications: osNotifications,
+                space: space,
+                savedItem: savedItem,
+                mutation: mutation
+            ) { graphQLResultData in
+                return (graphQLResultData as? SaveItemMutation.Data)?.upsertSavedItem.fragments.savedItemParts
+            }
+
+            queue.addOperation(operation)
+        }
         queue.waitUntilAllOperationsAreFinished()
     }
 }
 
-class SaveOperation: AsyncOperation {
+class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let apollo: ApolloClientProtocol
     private let osNotifications: OSNotificationCenter
     private let space: Space
     private let savedItem: SavedItem
+    private let mutation: any GraphQLMutation
+    private let savedItemParts: (AnySelectionSet) -> SavedItemParts?
 
     private var task: Cancellable?
 
@@ -103,17 +199,21 @@ class SaveOperation: AsyncOperation {
         apollo: ApolloClientProtocol,
         osNotifications: OSNotificationCenter,
         space: Space,
-        savedItem: SavedItem
+        savedItem: SavedItem,
+        mutation: Mutation,
+        savedItemParts: @escaping (AnySelectionSet) -> SavedItemParts?
     ) {
         self.apollo = apollo
         self.osNotifications = osNotifications
         self.space = space
         self.savedItem = savedItem
+        self.mutation = mutation
+        self.savedItemParts = savedItemParts
     }
 
     override func start() {
         guard !isCancelled else { return }
-        performMutation()
+        performMutation(mutation: mutation)
     }
 
     override func cancel() {
@@ -124,36 +224,45 @@ class SaveOperation: AsyncOperation {
         super.cancel()
     }
 
-    private func performMutation() {
-        guard let url = savedItem.url else { return }
-
-        let mutation = SaveItemMutation(input: SavedItemUpsertInput(url: url.absoluteString))
-        task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .main) { [weak self] result in
-            self?.handle(result: result)
+    private func performMutation<Mutation: GraphQLMutation>(mutation: Mutation) {
+        task = apollo.perform(mutation: mutation, publishResultToStore: false, queue: .global(qos: .userInitiated)) { [weak self] result in
+            guard case .success(let graphQLResult) = result,
+                    let data = graphQLResult.data,
+                    let savedItemParts = self?.savedItemParts(data) else {
+                print(result)
+                self?.storeUnresolvedSavedItem()
+                self?.finishOperation()
+                return
+            }
+            self?.updateSavedItem(savedItemParts: savedItemParts)
         }
     }
 
-    private func handle(result: Result<GraphQLResult<SaveItemMutation.Data>, Error>) {
-        guard case .success(let graphQLResult) = result,
-              let savedItemParts = graphQLResult.data?.upsertSavedItem.fragments.savedItemParts else {
-            storeUnresolvedSavedItem()
-            finishOperation()
-            return
+    private func updateSavedItem(savedItemParts: SavedItemParts) {
+        space.performAndWait {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+                Log.capture(message: "Save Service could not get a savedItem from the background context, for update")
+                return
+            }
+            savedItem.update(from: savedItemParts, with: space)
+            let notification: SavedItemUpdatedNotification = SavedItemUpdatedNotification(context: space.backgroundContext)
+            notification.savedItem = savedItem
+            try? space.save()
         }
-
-        savedItem.update(from: savedItemParts, with: space)
-        let notification: SavedItemUpdatedNotification = space.new()
-        notification.savedItem = savedItem
-        try? space.save()
-
         osNotifications.post(name: .savedItemUpdated)
         finishOperation()
     }
 
     private func storeUnresolvedSavedItem() {
-        let unresolved: UnresolvedSavedItem = space.new()
-        unresolved.savedItem = savedItem
-        try? space.save()
+        try? space.performAndWait {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
+                Log.capture(message: "Save Service could not get a savedItem from the background context, for unresolved item")
+                return
+            }
+            let unresolved: UnresolvedSavedItem = UnresolvedSavedItem(context: space.backgroundContext)
+            unresolved.savedItem = savedItem
+            try space.save()
+        }
 
         osNotifications.post(name: .unresolvedSavedItemCreated)
     }

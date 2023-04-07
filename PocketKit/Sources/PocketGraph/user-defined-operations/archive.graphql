@@ -1,0 +1,42 @@
+query FetchArchive(
+    $pagination: PaginationInput,
+    $filter: SavedItemsFilter,
+    $sort: SavedItemsSort
+) {
+  user {
+    savedItems(
+        pagination: $pagination,
+        filter: $filter,
+        sort: $sort
+    ) {
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+      edges {
+        cursor
+        node {
+          ...SavedItemSummary
+        }
+      }
+    }
+  }
+}
+
+fragment SavedItemSummary on SavedItem {
+  url
+  remoteID: id
+  isArchived
+  isFavorite
+  _deletedAt
+  _createdAt
+  archivedAt
+  tags {
+    name
+  }
+  item {
+    ...ItemSummary
+  }
+}
+

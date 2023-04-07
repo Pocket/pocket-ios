@@ -1,4 +1,5 @@
 import Foundation
+import PocketGraph
 
 public enum ItemVideoness: String, Equatable, Hashable {
     case noVideos = "NO_VIDEOS"

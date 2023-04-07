@@ -8,7 +8,13 @@
             "_deletedAt": null,
             "isArchived": false,
             "isFavorite": false,
-            "tags": [],
+            "tags": [
+                {
+                    "__typename": "Tag",
+                    "id": "id-1",
+                    "name": "tag-1"
+                }
+            ],
             "item": {
                 "__typename": "Item",
                 "remoteID": "item-1",

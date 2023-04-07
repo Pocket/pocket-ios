@@ -4,47 +4,54 @@ import Foundation
 import Textile
 import Analytics
 import UIKit
+import SharedPocketKit
 
 class SavedItemViewModel: ReadableViewModel {
     let tracker: Tracker
 
-    @Published
-    private(set) var _actions: [ItemAction] = []
+    @Published private(set) var _actions: [ItemAction] = []
     var actions: Published<[ItemAction]>.Publisher { $_actions }
 
     private var _events = PassthroughSubject<ReadableEvent, Never>()
     var events: EventPublisher { _events.eraseToAnyPublisher() }
 
-    @Published
-    var presentedAlert: PocketAlert?
+    @Published var presentedAlert: PocketAlert?
 
-    @Published
-    var presentedWebReaderURL: URL?
+    @Published var presentedWebReaderURL: URL?
 
-    @Published
-    var presentedAddTags: AddTagsViewModel?
+    @Published var presentedAddTags: PocketAddTagsViewModel?
 
-    @Published
-    var sharedActivity: PocketActivity?
+    @Published var sharedActivity: PocketActivity?
 
-    @Published
-    var isPresentingReaderSettings: Bool?
+    @Published var isPresentingReaderSettings: Bool?
 
     private let item: SavedItem
     private let source: Source
     private let pasteboard: Pasteboard
+    private let user: User
+    private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
+    private var store: SubscriptionStore
+    private var networkPathMonitor: NetworkPathMonitor
 
     init(
         item: SavedItem,
         source: Source,
         tracker: Tracker,
-        pasteboard: Pasteboard
+        pasteboard: Pasteboard,
+        user: User,
+        store: SubscriptionStore,
+        networkPathMonitor: NetworkPathMonitor,
+        userDefaults: UserDefaults
     ) {
         self.item = item
         self.source = source
         self.tracker = tracker
         self.pasteboard = pasteboard
+        self.user = user
+        self.store = store
+        self.networkPathMonitor = networkPathMonitor
+        self.userDefaults = userDefaults
 
         item.publisher(for: \.isFavorite).sink { [weak self] _ in
             self?.buildActions()
@@ -57,7 +64,7 @@ class SavedItemViewModel: ReadableViewModel {
 
     var readerSettings: ReaderSettings {
         // TODO: inject this
-        ReaderSettings()
+        ReaderSettings(userDefaults: userDefaults)
     }
 
     var components: [ArticleComponent]? {
@@ -88,17 +95,21 @@ class SavedItemViewModel: ReadableViewModel {
         item.bestURL
     }
 
-    func moveToMyList() {
+    var isArchived: Bool {
+        item.isArchived
+    }
+
+    var premiumURL: URL? {
+        pocketPremiumURL(url, user: user)
+    }
+
+    func moveToSaves() {
         source.unarchive(item: item)
     }
 
     func delete() {
         source.delete(item: item)
         _events.send(.delete)
-    }
-
-    func showWebReader() {
-        presentedWebReaderURL = url
     }
 
     func fetchDetailsIfNeeded() {
@@ -121,6 +132,14 @@ class SavedItemViewModel: ReadableViewModel {
             .share { [weak self] _ in self?.shareExternalURL(url) }
         ]
     }
+
+    func webViewActivityItems(url: URL) -> [UIActivity] {
+        guard let item = source.fetchItem(url), let savedItem = item.savedItem else {
+            return []
+        }
+
+        return webViewActivityItems(for: savedItem)
+    }
 }
 
 extension SavedItemViewModel {
@@ -132,47 +151,57 @@ extension SavedItemViewModel {
             favoriteAction = .favorite { [weak self] _ in self?.favorite() }
         }
 
-        let archiveAction: ItemAction
-        if item.isArchived {
-            archiveAction = .moveToMyList { [weak self] _ in self?.moveToMyList() }
-        } else {
-            archiveAction = .archive { [weak self] _ in self?.archive() }
-        }
-
         _actions = [
             .displaySettings { [weak self] _ in self?.displaySettings() },
             favoriteAction,
             .addTags { [weak self] _ in self?.showAddTagsView() },
-            archiveAction,
             .delete { [weak self] _ in self?.confirmDelete() },
             .share { [weak self] _ in self?.share() }
         ]
     }
 
-    private func favorite() {
+    func favorite() {
         source.favorite(item: item)
         track(identifier: .itemFavorite)
     }
 
-    private func unfavorite() {
+    func unfavorite() {
         source.unfavorite(item: item)
         track(identifier: .itemUnfavorite)
     }
 
-    private func archive() {
+    func moveFromArchiveToSaves(completion: (Bool) -> Void) {
+        source.unarchive(item: item)
+        trackMoveFromArchiveToSavesButtonTapped(url: item.url)
+        completion(true)
+    }
+
+    func openExternally(url: URL?) {
+        let updatedURL = pocketPremiumURL(url, user: user)
+        presentedWebReaderURL = updatedURL
+
+        trackWebViewOpen()
+    }
+
+    func archive() {
         source.archive(item: item)
-        track(identifier: .itemArchive)
+        trackArchiveButtonTapped(url: item.url)
         _events.send(.archive)
     }
 
     private func showAddTagsView() {
-        presentedAddTags = AddTagsViewModel(
+        presentedAddTags = PocketAddTagsViewModel(
             item: item,
             source: source,
+            tracker: tracker,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
             saveAction: { [weak self] in
                 self?.fetchDetailsIfNeeded()
             }
         )
+        track(identifier: .itemAddTags)
     }
 
     private func saveExternalURL(_ url: URL) {
@@ -184,7 +213,8 @@ extension SavedItemViewModel {
     }
 
     private func shareExternalURL(_ url: URL) {
-        sharedActivity = PocketItemActivity(url: url)
+        // This view model is used within the context of a view that is presented within the reader
+        sharedActivity = PocketItemActivity.fromReader(url: url)
     }
 
     private func openExternalURL(_ url: URL) {

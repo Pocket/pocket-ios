@@ -1,0 +1,106 @@
+{
+  "configurations" : [
+    {
+      "id" : "101CDED1-1A9D-4A85-8EDB-6090311C70C0",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "166A81AF2637406C0015AA1D",
+          "name" : "Pocket (iOS)"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "F204A75F27E22EC50010E155",
+          "name" : "SaveToPocket"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "650FECCA28BA85F300A3CB0C",
+          "name" : "PushNotificationServiceExtension"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "65EC272428BA8AD50075E1DF",
+          "name" : "PushNotificationStoryExtension"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Analytics",
+          "name" : "Analytics"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "PocketKit",
+          "name" : "PocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "SaveToPocketKit",
+          "name" : "SaveToPocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "SharedPocketKit",
+          "name" : "SharedPocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Sync",
+          "name" : "Sync"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Textile",
+          "name" : "Textile"
+        }
+      ]
+    },
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "skippedTests" : [
+        "AddTagsItemTests",
+        "ArchiveAnItemTests",
+        "ArchiveFiltersTests",
+        "ArchiveTests",
+        "BannerViewTests",
+        "DeleteAnItemTests",
+        "EditTagsTests",
+        "EmptyStateTests",
+        "FavoriteAnItemTests",
+        "HomeTests",
+        "HomeWebViewTests",
+        "PremiumTests",
+        "PullToRefreshTests\/test_saves_pullToRefresh_fetchesNewContent()",
+        "ReaderTests",
+        "ReaderTests\/test_archivingItem_dismissesReader_andShowsSaves()",
+        "ReaderTests\/test_longPressingHyperlink_showsPreview_andMenu()",
+        "ReaderTests\/test_moveFromArchiveToSaves_stillShowsReader()",
+        "ReaderTests\/test_tappingDeleteNo_dismissesDeleteConfirmation()",
+        "ReaderTests\/test_tappingDisplaySettings_showsDisplaySettings()",
+        "ReaderTests\/test_tappingOverflowMenu_showsOverflowOptions()",
+        "ReaderTests\/test_tappingSaves_dismissesReader_andShowsSaves()",
+        "SavesTests",
+        "SearchTests\/test_selectSearchItem_forPremiumUser_showsReaderView()",
+        "SearchTests\/test_sharingAnItemFromSearch_forPremiumUser_presentsShareSheet()",
+        "SettingsTest",
+        "SignOutTests"
+      ],
+      "target" : {
+        "containerPath" : "container:Pocket.xcodeproj",
+        "identifier" : "166A81BF2637406C0015AA1D",
+        "name" : "Tests iOS"
+      }
+    }
+  ],
+  "version" : 1
+}

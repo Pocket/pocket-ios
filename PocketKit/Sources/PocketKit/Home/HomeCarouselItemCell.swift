@@ -144,7 +144,6 @@ class HomeCarouselItemCell: UICollectionViewCell {
             contentView.leadingAnchor.constraint(equalTo: leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: trailingAnchor),
             contentView.bottomAnchor.constraint(equalTo: bottomAnchor),
-
         ])
 
         [UIView(), domainLabel, timeToReadLabel, UIView()].forEach(subtitleStack.addArrangedSubview)
@@ -199,9 +198,12 @@ extension HomeCarouselItemCell {
         }
 
         thumbnailWidthConstraint.constant = StyleConstants.thumbnailSize.width
+        thumbnailView.kf.indicatorType = .activity
         thumbnailView.kf.setImage(
             with: thumbnailURL,
             options: [
+                .callbackQueue(.dispatch(.global(qos: .userInteractive))),
+                .backgroundDecode,
                 .scaleFactor(UIScreen.main.scale),
                 .processor(
                     ResizingImageProcessor(

@@ -1,0 +1,113 @@
+{
+  "configurations" : [
+    {
+      "id" : "D7A8561E-5086-4968-9C3A-9D568C5F3698",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : {
+      "targets" : [
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Analytics",
+          "name" : "Analytics"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "PocketKit",
+          "name" : "PocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "SaveToPocketKit",
+          "name" : "SaveToPocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "SharedPocketKit",
+          "name" : "SharedPocketKit"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Sync",
+          "name" : "Sync"
+        },
+        {
+          "containerPath" : "container:PocketKit",
+          "identifier" : "Textile",
+          "name" : "Textile"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "166A81AF2637406C0015AA1D",
+          "name" : "Pocket (iOS)"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "F204A75F27E22EC50010E155",
+          "name" : "SaveToPocket"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "650FECCA28BA85F300A3CB0C",
+          "name" : "PushNotificationServiceExtension"
+        },
+        {
+          "containerPath" : "container:Pocket.xcodeproj",
+          "identifier" : "65EC272428BA8AD50075E1DF",
+          "name" : "PushNotificationStoryExtension"
+        }
+      ]
+    },
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "AnalyticsTests",
+        "name" : "AnalyticsTests"
+      }
+    },
+    {
+      "skippedTests" : [
+        "HomeRefreshCoordinatorTests\/test_coordinator_whenEnterForeground_whenDataIsStale_refreshesHome()"
+      ],
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "PocketKitTests",
+        "name" : "PocketKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SaveToPocketKitTests",
+        "name" : "SaveToPocketKitTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SharedPocketKitTests",
+        "name" : "SharedPocketKitTests"
+      }
+    },
+    {
+      "skippedTests" : [
+        "PocketSaveServiceTests\/test_save_createsAnEmptyItemLocally_andUpdatesFromResponse()",
+        "RetriableOperationTests\/test_main_protectsOperationWithBackgroundTask()"
+      ],
+      "target" : {
+        "containerPath" : "container:PocketKit",
+        "identifier" : "SyncTests",
+        "name" : "SyncTests"
+      }
+    }
+  ],
+  "version" : 1
+}

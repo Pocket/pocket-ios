@@ -2,6 +2,7 @@ import SwiftUI
 import Sync
 import Analytics
 import Textile
+import Localization
 
 struct ReportRecommendationView: View {
     private struct Constants {
@@ -11,9 +12,6 @@ struct ReportRecommendationView: View {
         static let reasonRowDeselectedColor: Color = .clear
         static let reasonRowTint = Color(.ui.teal2)
         static let commentRowHeight: CGFloat = 92
-        static let submitButtonHeight: CGFloat = 52
-        static let submitButtonTintColor = Color(.ui.grey1)
-        static let submitButtonBackgroundColor = Color(.ui.teal2)
     }
 
     private let recommendation: Recommendation
@@ -23,20 +21,15 @@ struct ReportRecommendationView: View {
         selectedReason == nil ? "submit-report-disabled" : "submit-report"
     }
 
-    @Environment(\.dismiss)
-    private var dismiss
+    @Environment(\.dismiss) private var dismiss
 
-    @State
-    private var selectedReason: ReportEvent.Reason?
+    @State private var selectedReason: ReportEntity.Reason?
 
-    @State
-    private var reportComment = ""
+    @State private var reportComment = ""
 
-    @State
-    private var isReported = false
+    @State private var isReported = false
 
-    @FocusState
-    private var isCommentFocused: Bool
+    @FocusState private var isCommentFocused: Bool
 
     init(recommendation: Recommendation, tracker: Tracker) {
         self.recommendation = recommendation
@@ -45,23 +38,24 @@ struct ReportRecommendationView: View {
 
     var body: some View {
         List {
-            Section(header: Text("Report a concern")) {
-                ForEach(ReportEvent.Reason.allCases, id: \.self) { reason in
+            Section(header: Text(Localization.reportAConcern)) {
+                ForEach(ReportEntity.Reason.allCases, id: \.self) { reason in
                     ReportReasonRow(
-                        text: reason.displayString,
-                        isSelected: reason == selectedReason) {
-                            guard reason != selectedReason else {
-                                isCommentFocused = false
-                                return
-                            }
-
-                            selectedReason = reason
+                        text: reason.localized,
+                        isSelected: reason == selectedReason
+                    ) {
+                        guard reason != selectedReason else {
+                            isCommentFocused = false
+                            return
                         }
-                        .tint(Constants.reasonRowTint)
-                        .frame(height: Constants.reasonRowHeight)
-                        .listRowBackground(Rectangle().foregroundColor(selectionColor(for: reason)))
-                        .listRowSeparator(.hidden)
-                        .accessibilityIdentifier(reason.accessibilityIdentifier)
+
+                        selectedReason = reason
+                    }
+                    .tint(Constants.reasonRowTint)
+                    .frame(height: Constants.reasonRowHeight)
+                    .listRowBackground(Rectangle().foregroundColor(selectionColor(for: reason)))
+                    .listRowSeparator(.hidden)
+                    .accessibilityIdentifier(reason.accessibilityIdentifier)
                 }
 
                 if selectedReason == .other {
@@ -72,17 +66,9 @@ struct ReportRecommendationView: View {
                 }
 
                 Button(action: submitReport) {
-                    HStack {
-                        Spacer()
-                        Text(isReported ? "Reported" : "Submit feedback")
-                            .style(Style.submitButtonStyle)
-                        Spacer()
-                    }
-                }
-                .frame(height: Constants.submitButtonHeight)
-                .tint(Constants.submitButtonTintColor)
-                .background(Constants.submitButtonBackgroundColor)
-                .cornerRadius(Constants.cornerRadius)
+                    Text(isReported ? Localization.reported : Localization.submitFeedback)
+                }.buttonStyle(PocketButtonStyle(.primary))
+                .padding()
                 .listRowBackground(Rectangle().foregroundColor(.clear))
                 .listRowSeparator(.hidden)
                 .disabled(selectedReason == nil)
@@ -95,30 +81,26 @@ struct ReportRecommendationView: View {
         .accessibilityIdentifier("report-recommendation")
     }
 
-    private func report(_ reason: ReportEvent.Reason) {
-        guard let url = url(for: recommendation) else {
-            return
-        }
-
-        let button = UIContext.button(identifier: .submit)
-        let content = ContentContext(url: url)
+    private func report(_ reason: ReportEntity.Reason) {
         let comment = reportComment.isEmpty ? nil : reportComment
-        let report = ReportEvent(reason: reason, comment: comment)
-        let engagement = SnowplowEngagement(type: .report, value: nil)
-        tracker.track(event: engagement, [button, content, report])
 
         isReported = true
 
         DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
             dismiss()
         }
+
+        guard
+            let item = recommendation.item
+        else {
+            Log.capture(message: "Reported recommendation without an associated item, not logging analytics")
+            return
+        }
+        // NOTE: As of 2/17/2023 The report view can only be called from the Home screen, so we assume that the SlateArticleReport event is the correct one.
+        tracker.track(event: Events.Home.SlateArticleReport(url: item.givenURL, reason: reason, comment: comment))
     }
 
-    private func url(for recommendation: Recommendation) -> URL? {
-        recommendation.item?.resolvedURL ?? recommendation.item?.givenURL
-    }
-
-    private func selectionColor(for reason: ReportEvent.Reason) -> Color {
+    private func selectionColor(for reason: ReportEntity.Reason) -> Color {
         return reason == selectedReason ? Constants.reasonRowSelectedColor : Constants.reasonRowDeselectedColor
     }
 
@@ -175,7 +157,7 @@ private struct ReportCommentRow: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             if text.wrappedValue.isEmpty && isFocused.wrappedValue == false {
-                Text("Tell us more")
+                Text(Localization.tellUsMore)
                     .style(.recommendationRowStyle)
                     .padding(Constants.placeholderPadding)
                     .opacity(Constants.placeholderOpacity)
@@ -195,18 +177,17 @@ private struct ReportCommentRow: View {
 
 private extension Style {
     static let recommendationRowStyle = Style.header.sansSerif.p3
-    static let submitButtonStyle = Style.header.sansSerif.h6.with(color: .ui.white)
 }
 
-private extension ReportEvent.Reason {
-    var displayString: String {
+private extension ReportEntity.Reason {
+    var localized: String {
         switch self {
-        case .brokenMeta: return "The title, link, or image is broken"
-        case .wrongCategory: return "It's in the wrong category"
-        case .sexuallyExplicit: return "It's sexually explicit"
-        case .offensive: return "It's rude, vulgar, or offensive"
-        case .misinformation: return "It contains misinformation"
-        case .other: return "Other"
+        case .brokenMeta: return Localization.theTitleLinkOrImageIsBroken
+        case .wrongCategory: return Localization.itSInTheWrongCategory
+        case .sexuallyExplicit: return Localization.itSSexuallyExplicit
+        case .offensive: return Localization.itSRudeVulgarOrOffensive
+        case .misinformation: return Localization.itContainsMisinformation
+        case .other: return Localization.other
         }
     }
 

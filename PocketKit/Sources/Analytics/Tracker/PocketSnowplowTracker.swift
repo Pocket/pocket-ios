@@ -7,11 +7,15 @@ import SnowplowTracker
 public class PocketSnowplowTracker: SnowplowTracker {
     private let tracker: TrackerController
 
+    private var persistentEntities: [Entity] = []
+
     public init() {
-        let endpoint = ProcessInfo.processInfo.environment["SNOWPLOW_ENDPOINT"] ?? "d.getpocket.com"
+        let endpoint = ProcessInfo.processInfo.environment["SNOWPLOW_ENDPOINT"] ?? "getpocket.com"
         let appID = ProcessInfo.processInfo.environment["SNOWPLOW_IDENTIFIER"] ?? "pocket-ios-next"
+        let postPath = ProcessInfo.processInfo.environment["SNOWPLOW_POST_PATH"] ?? "t/e"
 
         let networkConfiguration = NetworkConfiguration(endpoint: endpoint, method: .post)
+        networkConfiguration.customPostPath = postPath
 
         let trackerConfiguration = TrackerConfiguration()
         trackerConfiguration.appId = appID
@@ -22,8 +26,8 @@ public class PocketSnowplowTracker: SnowplowTracker {
         trackerConfiguration.platformContext = true
         trackerConfiguration.geoLocationContext = false
         trackerConfiguration.sessionContext = false
-        trackerConfiguration.screenContext = false
-        trackerConfiguration.screenViewAutotracking = false
+        trackerConfiguration.screenContext = true
+        trackerConfiguration.screenViewAutotracking = true
         trackerConfiguration.lifecycleAutotracking = false
         trackerConfiguration.installAutotracking = false
         trackerConfiguration.exceptionAutotracking = false
@@ -35,9 +39,26 @@ public class PocketSnowplowTracker: SnowplowTracker {
             configurations: [trackerConfiguration]
         )
 
+        #if DEBUG || DEBUG_ALPHA_NEUE
+        // We are using a debug build, emit analytics instantly for testing instead of batches
+        tracker.emitter.bufferOption = .single
+        #endif
+
+        tracker.globalContexts.add(tag: "persistent-entities", contextGenerator: GlobalContext(generator: {  event in
+            return self.persistentEntities.map({ $0.toSelfDescribingJson() })
+        }))
+
         if CommandLine.arguments.contains("disableSnowplow") {
             tracker.pause()
         }
+    }
+
+    public func addPersistentEntity(_ entity: Entity) {
+        persistentEntities.append(entity)
+    }
+
+    public func resetPersistentEntities(_ entities: [Entity]) {
+        persistentEntities = entities
     }
 
     public func track(event: SelfDescribing) {

@@ -1,10 +1,11 @@
-// swift-tools-version:5.4
+// swift-tools-version:5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
     name: "PocketKit",
+    defaultLocalization: "en",
     platforms: [.iOS("15"), .macOS("11")],
     products: [
         .library(name: "PocketKit", targets: ["PocketKit"]),
@@ -13,21 +14,19 @@ let package = Package(
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
         .library(name: "Analytics", targets: ["Analytics"]),
-        .library(name: "DangerDeps", type: .dynamic, targets: ["DangerDependencies"]), // dev
-        .executable(name: "ApolloCodegen", targets: ["ApolloCodegen"]),
+        .library(name: "Localization", targets: ["Localization"])
     ],
     dependencies: [
-        .package(name: "Apollo", url: "https://github.com/apollographql/apollo-ios.git", .upToNextMajor(from: "0.53.0")),
-        .package(name: "Kingfisher", url: "https://github.com/onevcat/Kingfisher.git", .upToNextMajor(from: "7.3.2")),
-        .package(name: "Sentry", url: "https://github.com/getsentry/sentry-cocoa.git", .upToNextMajor(from: "7.25.0")),
-        .package(name: "swift-argument-parser", url: "https://github.com/apple/swift-argument-parser.git", .upToNextMinor(from: "0.3.0")),
-        .package(name: "SnowplowTracker", url: "https://github.com/snowplow/snowplow-objc-tracker", .upToNextMajor(from: "3.2.0")),
-        .package(name: "Lottie", url: "https://github.com/airbnb/lottie-ios.git", from: "3.4.3"),
-        .package(name: "Down", url: "https://github.com/johnxnguyen/Down", .upToNextMinor(from: "0.11.0")),
-        .package(name: "YouTubePlayerKit", url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", .upToNextMinor(from: "1.1.5")),
-        .package(name: "BrazeKit", url: "https://github.com/braze-inc/braze-swift-sdk.git", .upToNextMinor(from: "5.3.0")),
-        .package(name: "Danger", url: "https://github.com/danger/swift.git", from: "3.12.3"), // dev
-        .package(name: "DangerSwiftCoverage", url: "https://github.com/f-meloni/danger-swift-coverage", .upToNextMinor(from: "1.2.1")) // dev
+        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.0.7"),
+        .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.6.2"),
+        .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.3.1"),
+        .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "4.1.0"),
+        .package(url: "https://github.com/airbnb/lottie-ios.git", exact: "4.1.3"),
+        .package(url: "https://github.com/johnxnguyen/Down", exact: "0.11.0"),
+        .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.4.0"),
+        .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.13.0"),
+        .package(url: "https://github.com/adjust/ios_sdk", exact: "4.33.4"),
+        .package(url: "https://github.com/RNCryptor/RNCryptor.git", .upToNextMajor(from: "5.0.0"))
     ],
     targets: [
         .target(
@@ -36,23 +35,27 @@ let package = Package(
                 "Sync",
                 "Textile",
                 "Analytics",
-                "Lottie",
-                "YouTubePlayerKit",
                 "SharedPocketKit",
-                "BrazeKit",
-                .product(name: "BrazeUI", package: "BrazeKit")
-            ],
-            resources: [.copy("Assets")]
+                "Localization",
+                .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
+                .product(name: "BrazeKit", package: "braze-swift-sdk"),
+                .product(name: "BrazeUI", package: "braze-swift-sdk"),
+                .product(name: "Adjust", package: "ios_sdk")
+            ]
         ),
         .testTarget(
             name: "PocketKitTests",
-            dependencies: ["PocketKit", "SharedPocketKit"],
-            resources: [.copy("Fixtures")]
+            dependencies: ["PocketKit", "SharedPocketKit"]
         ),
-
         .target(
             name: "SaveToPocketKit",
-            dependencies: ["SharedPocketKit", "Textile", "Sync"]
+            dependencies: [
+                "SharedPocketKit",
+                "Textile",
+                "Sync",
+                "Analytics",
+                .product(name: "Adjust", package: "ios_sdk")
+            ]
         ),
         .testTarget(
             name: "SaveToPocketKitTests",
@@ -61,7 +64,10 @@ let package = Package(
         ),
 
         .target(
-            name: "SharedPocketKit"
+            name: "SharedPocketKit",
+            dependencies: [
+                "RNCryptor"
+            ]
         ),
         .testTarget(
             name: "SharedPocketKitTests",
@@ -70,8 +76,13 @@ let package = Package(
 
         .target(
             name: "Textile",
-            dependencies: ["Kingfisher", "Down"],
+            dependencies: [
+                .product(name: "Kingfisher", package: "Kingfisher"),
+                .product(name: "Down", package: "Down"),
+                .product(name: "Lottie", package: "lottie-ios"),
+            ],
             resources: [
+                .copy("Assets"),
                 .copy("Style/Typography/Fonts"),
                 .process("Style/Colors/Colors.xcassets"),
                 .process("Style/Images/Images.xcassets"),
@@ -80,13 +91,11 @@ let package = Package(
 
         .target(
             name: "Sync",
-            dependencies: ["Apollo", "Sentry"],
-            exclude: [
-                "list.graphql",
-                "marticle.graphql",
-                "archive.graphql",
-                "schema.graphqls",
-                "introspection_response.json"
+            dependencies: [
+                .product(name: "Apollo", package: "apollo-ios"),
+                .product(name: "Sentry", package: "sentry-cocoa"),
+                "PocketGraph",
+                "SharedPocketKit"
             ],
             resources: [.process("PocketModel.xcdatamodeld")]
         ),
@@ -95,23 +104,29 @@ let package = Package(
             dependencies: ["Sync"],
             resources: [.copy("Fixtures")]
         ),
+        .target(
+            name: "PocketGraph",
+            dependencies: [
+                .product(name: "ApolloAPI", package: "apollo-ios"),
+            ],
+            exclude: [
+                "user-defined-operations",
+                "schema.graphqls"
+            ]
+        ),
 
         .target(
             name: "Analytics",
-            dependencies: ["SnowplowTracker"]
+            dependencies: [
+                .product(name: "SnowplowTracker", package: "snowplow-objc-tracker"),
+                "Sync"
+            ]
         ),
         .testTarget(
             name: "AnalyticsTests",
             dependencies: ["Analytics"]
         ),
 
-        .executableTarget(
-            name: "ApolloCodegen",
-            dependencies: [
-                .product(name: "ApolloCodegenLib", package: "Apollo"),
-                .product(name: "ArgumentParser", package: "swift-argument-parser")
-            ]
-        ),
-        .target(name: "DangerDependencies", dependencies: ["Danger", "DangerSwiftCoverage"]), // dev
+        .target(name: "Localization"),
     ]
 )

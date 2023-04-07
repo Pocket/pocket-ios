@@ -3,6 +3,7 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import UIKit
+import Localization
 
 class CopyLinkActivity: UIActivity {
     private var link: URL?
@@ -16,7 +17,7 @@ class CopyLinkActivity: UIActivity {
     }
 
     override var activityTitle: String? {
-        return "Copy link"
+        return Localization.copyLink
     }
 
     override var activityImage: UIImage? {
@@ -24,7 +25,7 @@ class CopyLinkActivity: UIActivity {
     }
 
     override func canPerform(withActivityItems activityItems: [Any]) -> Bool {
-        let first = activityItems.first(where: {$0 is URL})
+        let first = activityItems.first(where: { $0 is URL })
         return first != nil
     }
 
