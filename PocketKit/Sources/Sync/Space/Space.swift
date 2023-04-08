@@ -37,9 +37,7 @@ public class Space {
     func delete(_ object: NSManagedObject, in context: NSManagedObjectContext? = nil) {
         let context = context ?? backgroundContext
         context.performAndWait {
-            guard let object = backgroundObject(with: object.objectID) else {
-                return
-            }
+            let object = context.object(with: object.objectID)
             context.delete(object)
         }
     }
