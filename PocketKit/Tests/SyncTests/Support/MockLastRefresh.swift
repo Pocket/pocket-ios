@@ -62,6 +62,21 @@ class MockLastRefresh: LastRefresh {
         return impl()
     }
 
+    // MARK: - lastRefresh FeatureFlags
+    typealias GetLastRefreshFeatureFlagsImpl = () -> Double?
+    private var getLastRefreshFeatureFlagsImpl: GetLastRefreshFeatureFlagsImpl?
+    func stubGetLastRefreshFeatureFlags(impl: @escaping GetLastRefreshFeatureFlagsImpl) {
+        getLastRefreshFeatureFlagsImpl = impl
+    }
+
+    var lastRefreshFeatureFlags: Double? {
+        guard let impl = getLastRefreshFeatureFlagsImpl else {
+            return nil
+        }
+
+        return impl()
+    }
+
     // MARK: - refreshed saves
     typealias RefreshedSavesImpl = () -> Void
     private var refreshedSavesImpl: RefreshedSavesImpl?
@@ -140,6 +155,24 @@ class MockLastRefresh: LastRefresh {
         refreshedHomeCallCount += 1
 
         guard let impl = refreshedHomeImpl else {
+            return
+        }
+
+        impl()
+    }
+
+    // MARK: - refreshed feature flags
+    typealias RefreshedFeatureFlagsImpl = () -> Void
+    private var refreshedFeatureFlagsImpl: RefreshedFeatureFlagsImpl?
+    func stubRefreshedFeatureFlags(impl: @escaping RefreshedFeatureFlagsImpl) {
+        refreshedFeatureFlagsImpl = impl
+    }
+
+    var refreshedFeatureFlagsCallCount = 0
+    func refreshedFeatureFlags() {
+        refreshedFeatureFlagsCallCount += 1
+
+        guard let impl = refreshedFeatureFlagsImpl else {
             return
         }
 

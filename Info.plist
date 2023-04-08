@@ -14,6 +14,7 @@
 		<string>com.mozilla.pocket.refresh.tags</string>
 		<string>com.mozilla.pocket.refresh.unresolved</string>
 		<string>com.mozilla.pocket.refresh.user</string>
+		<string>com.mozilla.pocket.refresh.featureFlags</string>
 	</array>
 	<key>BrazeAPIEndpoint</key>
 	<string>$(BRAZE_API_ENDPOINT)</string>

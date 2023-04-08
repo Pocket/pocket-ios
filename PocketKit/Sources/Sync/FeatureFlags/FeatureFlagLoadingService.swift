@@ -8,54 +8,79 @@ protocol FeatureFlagLoadingService {
     func fetchFeatureFlags() async throws
 }
 
-public typealias RemoteFeatureFlagAssignment = UnleashAssignmentsQuery.Data.Assignments.Assignment
+public typealias RemoteFeatureFlagAssignment = FeatureFlagsQuery.Data.Assignments.Assignment
 
+/// Service to grab the latest feature flags from the server
+/// Main app usage should be via FeatureFlag service which loads the flags from the local database
 class APIFeatureFlagService: FeatureFlagLoadingService {
     private let apollo: ApolloClientProtocol
     private let space: Space
-    private let user: User
-    private let sessionProvider: SessionProvider
+    private let appSession: AppSession
 
     init(
         apollo: ApolloClientProtocol,
         space: Space,
-        user: User,
-        sessionProvider: SessionProvider
+        appSession: AppSession
     ) {
         self.apollo = apollo
         self.space = space
-        self.user = user
-        self.sessionProvider = sessionProvider
+        self.appSession = appSession
     }
 
-    func fetchFeatureFlags() async throws {
+    /// Fetches the latest feature flags from the server
+    func fetchFeatureFlags() async {
 
-        var context =  UnleashContext(appName: "pocket-ios", userId: user.getId() ?? .none, sessionId: sessionProvider.session?.guid ?? .none)
+        let context =  UnleashContext(appName: "pocket-ios", userId: appSession.currentSession?.userIdentifier ?? .none, sessionId: appSession.currentSession?.guid ?? .none)
 
-        let query = UnleashAssignmentsQuery(context: context)
+        let query = FeatureFlagsQuery(context: context)
 
-        guard let remoteAssignments = try await apollo.fetch(query: query).data?.assignments?.assignments else {
-            return
+        do {
+           let results = try await apollo.fetch(query: query)
+            let remoteAssignments = results.data?.assignments?.assignments
+            try handle(remoteAssignments: remoteAssignments?.map({ remoteAssignment in
+                // the ! is a bug in our graphql schema we need to update.
+                return remoteAssignment!
+            }))
+        } catch {
+            Log.capture(error: error)
         }
-
-        try await handle(remoteAssignments: remoteAssignments.map({ remoteAssignment in
-            // the ! is a bug in our graphql schema we need to update.
-            return remoteAssignment!
-        }))
     }
 
-    @MainActor
-    private func handle(remoteAssignments: [RemoteFeatureFlagAssignment]) throws {
-        let oldFlags = try space.fetchFeatureFlags()
+    /// Process the feature flags from the server and cache them in CoreData
+    /// - Parameter remoteAssignments: The remote assignements from the server
+    private func handle(remoteAssignments: [RemoteFeatureFlagAssignment]?) throws {
+        let context = space.makeChildBackgroundContext()
 
-        for remoteAssignment in remoteAssignments {
-            let assignment = try space.fetchFeatureFlag(byName: remoteAssignment.name) ?? space.new()
-            assignment.update(from: remoteAssignment)
+        try context.performAndWait {
+            // Delete all flags we have currently.
+
+            let oldFlags = try space.fetchFeatureFlags(in: context)
+            oldFlags.forEach { flag in
+                space.delete(flag, in: context)
+            }
+
+            guard let remoteAssignments else {
+                // save the child context
+                guard context.hasChanges else {
+                    return
+                }
+                try context.save()
+                // then save the parent context
+                try space.save()
+                return
+            }
+
+            for remoteAssignment in remoteAssignments {
+                let assignment = try space.fetchFeatureFlag(by: remoteAssignment.name, in: context) ?? FeatureFlag(context: context)
+                assignment.update(from: remoteAssignment)
+            }
+            // save the child context
+            guard context.hasChanges else {
+                return
+            }
+            try context.save()
+            // then save the parent context
+            try space.save()
         }
-
-        // TODO: delete feature flags no longer present
-
-        try space.save()
-
     }
 }

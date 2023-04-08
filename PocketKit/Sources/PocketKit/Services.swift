@@ -26,6 +26,7 @@ struct Services {
     let unresolvedSavesRefreshCoordinator: UnresolvedSavesRefreshCoordinator
     let homeRefreshCoordinator: HomeRefreshCoordinator
     let userRefreshCoordinator: UserRefreshCoordinator
+    let featureFlagsRefreshCoordinator: FeatureFlagsRefreshCoordinator
     let refreshCoordinators: [RefreshCoordinator]
     let authClient: AuthorizationClient
     let imageManager: ImageManager
@@ -66,7 +67,7 @@ struct Services {
         source = PocketSource(
             space: persistentContainer.rootSpace,
             user: user,
-            sessionProvider: appSession,
+            appSession: appSession,
             consumerKey: Keys.shared.pocketApiConsumerKey,
             defaults: userDefaults,
             backgroundTaskManager: UIApplication.shared
@@ -123,13 +124,22 @@ struct Services {
             source: source
         )
 
+        featureFlagsRefreshCoordinator = FeatureFlagsRefreshCoordinator(
+            notificationCenter: .default,
+            taskScheduler: BGTaskScheduler.shared,
+            appSession: appSession,
+            source: source,
+            lastRefresh: lastRefresh
+        )
+
         refreshCoordinators = [
             savesRefreshCoordinator,
             archiveRefreshCoordinator,
             tagsRefreshCoordinator,
             unresolvedSavesRefreshCoordinator,
             homeRefreshCoordinator,
-            userRefreshCoordinator
+            userRefreshCoordinator,
+            featureFlagsRefreshCoordinator
         ]
 
         imageManager = ImageManager(

@@ -21,7 +21,7 @@ class FeatureFlagService {
 
     /// Determine if a user is assigned to a test and a variant.
     func isAssigned(flag: String, variant: String = "control") -> Bool {
-        guard let flag = source.fetchFeatureFlag(byName: flag) else {
+        guard let flag = source.fetchFeatureFlag(by: flag) else {
             // If we have no flag, the user is not assigned
             return false
         }

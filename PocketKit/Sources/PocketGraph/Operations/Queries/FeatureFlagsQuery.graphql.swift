@@ -3,12 +3,12 @@
 
 @_exported import ApolloAPI
 
-public class UnleashAssignmentsQuery: GraphQLQuery {
-  public static let operationName: String = "unleashAssignments"
+public class FeatureFlagsQuery: GraphQLQuery {
+  public static let operationName: String = "FeatureFlags"
   public static let document: ApolloAPI.DocumentType = .notPersisted(
     definition: .init(
       #"""
-      query unleashAssignments($context: UnleashContext!) {
+      query FeatureFlags($context: UnleashContext!) {
         assignments: unleashAssignments(context: $context) {
           __typename
           assignments {

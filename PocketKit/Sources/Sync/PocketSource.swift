@@ -73,13 +73,13 @@ public class PocketSource: Source {
     public convenience init(
         space: Space,
         user: User,
-        sessionProvider: SessionProvider,
+        appSession: AppSession,
         consumerKey: String,
         defaults: UserDefaults,
         backgroundTaskManager: BackgroundTaskManager
     ) {
         let apollo = ApolloClient.createDefault(
-            sessionProvider: sessionProvider,
+            sessionProvider: appSession as! SessionProvider,
             consumerKey: consumerKey
         )
 
@@ -90,9 +90,9 @@ public class PocketSource: Source {
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo, space: space),
-            featureFlagService: APIFeatureFlagService(apollo: apollo, space: space, user: user, sessionProvider: sessionProvider),
+            featureFlagService: APIFeatureFlagService(apollo: apollo, space: space, appSession: appSession),
             networkMonitor: NWPathMonitor(),
-            sessionProvider: sessionProvider,
+            sessionProvider: appSession as! SessionProvider,
             backgroundTaskManager: backgroundTaskManager,
             osNotificationCenter: OSNotificationCenter(
                 notifications: CFNotificationCenterGetDarwinNotifyCenter()
@@ -552,8 +552,8 @@ extension PocketSource {
         try await featureFlagService.fetchFeatureFlags()
     }
 
-    public func fetchFeatureFlag(byName name: String) -> FeatureFlag? {
-        try? space.fetchFeatureFlag(byName: name)
+    public func fetchFeatureFlag(by name: String) -> FeatureFlag? {
+        try? space.fetchFeatureFlag(by: name, in: space.backgroundContext)
     }
 }
 

@@ -5,10 +5,12 @@ public protocol LastRefresh {
     var lastRefreshArchive: TimeInterval? { get }
     var lastRefreshTags: TimeInterval? { get }
     var lastRefreshHome: TimeInterval? { get }
+    var lastRefreshFeatureFlags: TimeInterval? { get }
     func refreshedSaves()
     func refreshedArchive()
     func refreshedTags()
     func refreshedHome()
+    func refreshedFeatureFlags()
     func reset()
 }
 
@@ -24,6 +26,7 @@ public struct UserDefaultsLastRefresh: LastRefresh {
         defaults.set(nil, forKey: Self.lastRefreshedArchiveAtKey)
         defaults.set(nil, forKey: Self.lastRefreshedTagsAtKey)
         defaults.set(nil, forKey: Self.lastRefreshedHomeAtKey)
+        defaults.set(nil, forKey: Self.lastRefreshedFeatureFlagsAtKey)
     }
 }
 
@@ -109,5 +112,26 @@ extension UserDefaultsLastRefresh {
 
     public func refreshedHome() {
         defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedHomeAtKey)
+    }
+}
+
+// MARK: Home
+extension UserDefaultsLastRefresh {
+    public static let lastRefreshedFeatureFlagsAtKey = UserDefaults.Key.lastRefreshedFeatureFlagsAt
+
+    public var lastRefreshFeatureFlags: TimeInterval? {
+        if hasRefreshedFeatureFlags {
+            return defaults.double(forKey: Self.lastRefreshedFeatureFlagsAtKey)
+        } else {
+            return nil
+        }
+    }
+
+    public var hasRefreshedFeatureFlags: Bool {
+        defaults.value(forKey: Self.lastRefreshedFeatureFlagsAtKey) != nil
+    }
+
+    public func refreshedFeatureFlags() {
+        defaults.set(Date().timeIntervalSince1970, forKey: Self.lastRefreshedFeatureFlagsAtKey)
     }
 }

@@ -34,6 +34,7 @@ class UserRefreshCoordinator: RefreshCoordinator {
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
         Task {
             do {
+                // Load the user premium status
                 try await self.source.fetchUserData()
             } catch {
                 Log.capture(error: error)

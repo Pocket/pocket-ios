@@ -416,19 +416,23 @@ extension Space {
     }
 }
 
+// MARK: FeatureFlags
 extension Space {
-    func fetchFeatureFlag(byName name: String) throws -> FeatureFlag? {
+    /// Gets a feature flag by name, you should interact with this at an App level via FeatureFlagsService
+    /// - Parameter name: Name of the flag in the database
+    /// - Parameter context: Context to operate in
+    /// - Returns: A feature flag if it exists
+    func fetchFeatureFlag(by name: String, in context: NSManagedObjectContext?) throws -> FeatureFlag? {
         let request = Requests.fetchFeatureFlags()
         request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1
-        return try fetch(request).first
+        return try fetch(request, context: context).first
     }
 
-    func fetchOrCreateFeatureFlag(byName name: String) throws -> FeatureFlag {
-        return try fetchFeatureFlag(byName: name) ?? new()
-    }
-
-    func fetchFeatureFlags() throws -> [FeatureFlag] {
-        return try fetch(Requests.fetchFeatureFlags())
+    /// Gets all feature flags in CoreData
+    /// - Parameter context: Context to operate in
+    /// - Returns: The set of feature flags
+    func fetchFeatureFlags(in context: NSManagedObjectContext?) throws -> [FeatureFlag] {
+        return try fetch(Requests.fetchFeatureFlags(), context: context)
     }
 }

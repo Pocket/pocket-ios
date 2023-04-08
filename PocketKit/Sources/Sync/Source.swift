@@ -113,6 +113,6 @@ public protocol Source {
 
     func fetchAllFeatureFlags() async throws
 
-    func fetchFeatureFlag(byName name: String) -> FeatureFlag?
+    func fetchFeatureFlag(by name: String) -> FeatureFlag?
 
 }

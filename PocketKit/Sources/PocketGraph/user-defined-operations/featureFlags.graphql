@@ -1,4 +1,4 @@
-query unleashAssignments($context: UnleashContext!) {
+query FeatureFlags($context: UnleashContext!) {
     assignments: unleashAssignments(context: $context) {
         assignments {
             name

@@ -4,14 +4,11 @@
 import class SnowplowTracker.SelfDescribing
 import Foundation
 
-/**
- * Event created when an app enrolls a user into a feature flag
- */
+/// Event triggered when an app enrolls a user in a test (details in “How to Implement A/B Test Analytics” in Analytics wiki). Entities included: always api_user, user, feature_flag; sometimes ui.
 public struct VariantEnroll: Event, CustomStringConvertible {
     public static let schema = "iglu:com.pocket/variant_enroll/jsonschema/1-0-0"
 
     let featureFlagEntity: FeatureFlagEntity
-    let uiEntity: UiEntity
     let extraEntities: [Entity]
 
     public init(featureFlagEntity: FeatureFlagEntity, extraEntities: [Entity] = []) {
@@ -27,7 +24,6 @@ public struct VariantEnroll: Event, CustomStringConvertible {
         let base = SelfDescribing(schema: ContentOpen.schema, payload: [:])
         base.contexts.add(featureFlagEntity.toSelfDescribingJson())
         extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
-
         return base
     }
 }
