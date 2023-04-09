@@ -21,7 +21,8 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     func getAllTags() -> [TagType] {
-        arrangeTags(with: fetchedTags?.compactMap({ $0.name }) ?? [])
+        // Finding unique elements using set
+        arrangeTags(with: Array(Set(fetchedTags?.compactMap({ $0.name }) ?? [])))
     }
 
     func trackEditAsOverflowAnalytics() {
