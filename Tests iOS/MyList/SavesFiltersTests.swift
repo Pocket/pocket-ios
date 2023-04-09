@@ -64,6 +64,7 @@ class SavesFiltersTests: XCTestCase {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
+        tagsFilterView.tag(matching: "not tagged").wait()
 
         XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
