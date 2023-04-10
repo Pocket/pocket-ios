@@ -154,7 +154,9 @@ public enum Requests {
     }
 
     public static func fetchTags() -> NSFetchRequest<Tag> {
-        Tag.fetchRequest()
+        let request = Tag.fetchRequest()
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \Tag.name, ascending: true)]
+        return request
     }
 
     public static func fetchSavedTags() -> NSFetchRequest<Tag> {

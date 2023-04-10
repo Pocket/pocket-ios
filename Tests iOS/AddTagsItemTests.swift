@@ -6,7 +6,7 @@ import XCTest
 import Sails
 
 class AddTagsItemTests: XCTestCase {
-    var server: Application!
+    var server: Sails.Application!
     var app: PocketAppElement!
     var snowplowMicro = SnowplowMicro()
 
@@ -66,8 +66,11 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.wait()
 
         addTagsView.tag(matching: "tag 0").wait().tap()
+
+        scrollTo(element: addTagsView.allTagsRow(matching: "tag 0"), in: addTagsView.allTagsView, direction: .up)
         addTagsView.allTagsRow(matching: "tag 0").wait()
 
+        scrollTo(element: addTagsView.allTagsRow(matching: "tag 1"), in: addTagsView.allTagsView, direction: .down)
         addTagsView.allTagsRow(matching: "tag 1").wait().tap()
         waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
 
@@ -159,6 +162,7 @@ class AddTagsItemTests: XCTestCase {
         let itemCell = app
             .saves
             .itemView(matching: "Archived Item 2")
+            .wait()
 
         itemCell
             .itemActionButton.wait()
@@ -171,6 +175,8 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.newTagTextField.typeText("F")
 
         addTagsView.allTagsRow(matching: "filter tag 0").wait()
+
+        scrollTo(element: addTagsView.allTagsRow(matching: "filter tag 1"), in: addTagsView.allTagsView, direction: .up)
         addTagsView.allTagsRow(matching: "filter tag 1").wait()
         app.addTagsView.allTagsView.wait()
 
@@ -182,6 +188,6 @@ class AddTagsItemTests: XCTestCase {
     }
 
     func selectTaggedFilterButton() {
-        app.saves.filterButton(for: "Tagged").tap()
+        app.saves.filterButton(for: "Tagged").wait().tap()
     }
 }

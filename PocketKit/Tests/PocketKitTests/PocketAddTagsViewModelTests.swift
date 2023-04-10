@@ -129,7 +129,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         viewModel.allOtherTags()
 
         wait(for: [expectRetrieveTagsCall], timeout: 10)
-        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 3"), TagType.tag("tag 2")])
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
         XCTAssertNotNil(source.retrieveTagsCall(at: 0))
     }
 
