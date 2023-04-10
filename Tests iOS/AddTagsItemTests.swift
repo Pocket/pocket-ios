@@ -47,7 +47,11 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.saveButton.tap()
         selectTaggedFilterButton()
         app.saves.tagsFilterView.wait()
-        XCTAssertEqual(app.saves.tagsFilterView.tagCells.count, 7)
+
+        app.saves.tagsFilterView.element.swipeUp(velocity: .fast)
+
+        XCTAssertEqual(app.saves.tagsFilterView.recentTagCells.count, 3)
+        XCTAssertEqual(app.saves.tagsFilterView.tagCells.count, 10)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.save")
@@ -114,6 +118,10 @@ class AddTagsItemTests: XCTestCase {
         itemCell.itemActionButton.wait().tap()
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
+        app.addTagsView.element.swipeUp(velocity: .fast)
+
+        XCTAssertEqual(app.addTagsView.recentTagCells.count, 3)
+        XCTAssertEqual(app.addTagsView.tagCells.count, 8)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
 

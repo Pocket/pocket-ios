@@ -2,6 +2,7 @@ import UIKit
 import Combine
 import Textile
 import SwiftUI
+import SharedPocketKit
 
 class SavedItemViewController: UIViewController {
     private let imageView = UIImageView(image: UIImage(asset: .logo))

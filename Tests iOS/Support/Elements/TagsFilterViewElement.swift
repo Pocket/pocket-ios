@@ -31,6 +31,10 @@ struct TagsFilterViewElement: PocketUIElement {
         element.cells.staticTexts.matching(identifier: "all-tags")
     }
 
+    var recentTagCells: XCUIElementQuery {
+        element.cells.staticTexts.matching(identifier: "recent-tags")
+    }
+
     func tagCells(matching string: String) -> XCUIElement {
         return tagCells.containing(
             .staticText,

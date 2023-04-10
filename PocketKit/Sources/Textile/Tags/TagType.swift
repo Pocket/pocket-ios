@@ -4,13 +4,14 @@
 
 public enum TagType: Hashable {
     case notTagged
+    case recent(String)
     case tag(String)
 
     public var name: String {
         switch self {
         case .notTagged:
             return "not tagged"
-        case .tag(let name):
+        case .tag(let name), .recent(let name):
             return name
         }
     }

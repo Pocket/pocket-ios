@@ -8,16 +8,25 @@ class TagsFilterViewModel: ObservableObject {
     private var fetchedTags: [Tag]?
     private let tracker: Tracker
     private let source: Source
+    private let userDefaults: UserDefaults
+    private let recentTagsFactory: RecentTagsFactory
     var selectAllAction: () -> Void?
+    var recentTags: [TagType] {
+        recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+    }
 
     @Published var selectedTag: TagType?
     @Published var refreshView: Bool? = false
 
-    init(source: Source, tracker: Tracker, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
+    init(source: Source, tracker: Tracker, userDefaults: UserDefaults, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
         self.source = source
         self.tracker = tracker
         self.fetchedTags = fetchedTags
         self.selectAllAction = selectAllAction
+        self.userDefaults = userDefaults
+        self.recentTagsFactory = RecentTagsFactory(userDefaults: userDefaults, key: UserDefaults.Key.recentTags.rawValue)
+
+        recentTagsFactory.getInitialRecentTags(with: fetchedTags?.compactMap({ $0.name }))
     }
 
     func getAllTags() -> [TagType] {

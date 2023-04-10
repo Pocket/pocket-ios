@@ -10,6 +10,8 @@ class PocketAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem
     private let source: Source
     private let tracker: Tracker
+    private let userDefaults: UserDefaults
+    private let recentTagsFactory: RecentTagsFactory
     private let store: SubscriptionStore
     private let saveAction: () -> Void
     private var userInputListener: AnyCancellable?
@@ -26,7 +28,9 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         }
     }
 
-    var sectionTitle: TagSectionType = .allTags
+    var recentTags: [TagType] {
+        recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+    }
 
     @Published var tags: [String] = []
 
@@ -34,10 +38,12 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-    init(item: SavedItem, source: Source, tracker: Tracker, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor, saveAction: @escaping () -> Void) {
+    init(item: SavedItem, source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor, saveAction: @escaping () -> Void) {
         self.item = item
         self.source = source
         self.tracker = tracker
+        self.userDefaults = userDefaults
+        self.recentTagsFactory = RecentTagsFactory(userDefaults: userDefaults, key: UserDefaults.Key.recentTags.rawValue)
         self.store = store
         self.saveAction = saveAction
         self.user = user
@@ -66,6 +72,8 @@ class PocketAddTagsViewModel: AddTagsViewModel {
                 self?.trackUserEnterText(with: text)
                 self?.filterTags(with: text)
             })
+
+        recentTagsFactory.getInitialRecentTags(with: source.retrieveTags(excluding: tags)?.compactMap({ $0.name }))
     }
 
     /// Saves tags to an item
@@ -73,13 +81,13 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         trackSaveTagsToItem()
         source.addTags(item: item, tags: tags)
         saveAction()
+        recentTagsFactory.updateRecentTags(with: item.tags?.compactMap { ($0 as? Tag)?.name }, and: tags)
     }
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
         let fetchedTags = source.retrieveTags(excluding: tags)?.compactMap({ $0.name }) ?? []
         otherTags = arrangeTags(with: fetchedTags)
-        sectionTitle = .allTags
         trackAllTagsImpression()
     }
 
@@ -94,7 +102,6 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
         if !tagTypes.isEmpty {
             otherTags = tagTypes
-            sectionTitle = .filterTags
             trackFilteredTagsImpression()
         } else {
             allOtherTags()

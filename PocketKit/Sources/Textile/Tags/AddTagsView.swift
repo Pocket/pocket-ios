@@ -24,8 +24,8 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                         geometry: geometry
                     )
                     TagsListView(
-                        sectionTitle: viewModel.sectionTitle.rawValue,
                         emptyStateText: viewModel.emptyStateText,
+                        recentTags: viewModel.recentTags,
                         usersTags: viewModel.otherTags,
                         tagAction: viewModel.addExistingTag
                     )
