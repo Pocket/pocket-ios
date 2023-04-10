@@ -46,12 +46,13 @@ class AddTagsItemTests: XCTestCase {
         let randomTagName = String(addTagsView.enterRandomTagName())
         addTagsView.saveButton.tap()
         selectTaggedFilterButton()
-        app.saves.tagsFilterView.wait()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
 
-        app.saves.tagsFilterView.element.swipeUp(velocity: .fast)
+        tagsFilterView.recentTagCells.element.wait()
+        XCTAssertEqual(tagsFilterView.recentTagCells.count, 3)
 
-        XCTAssertEqual(app.saves.tagsFilterView.recentTagCells.count, 3)
-        XCTAssertEqual(app.saves.tagsFilterView.tagCells.count, 10)
+        scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
+        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 7)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.save")
@@ -76,7 +77,6 @@ class AddTagsItemTests: XCTestCase {
 
         scrollTo(element: addTagsView.allTagsRow(matching: "tag 1"), in: addTagsView.allTagsView, direction: .down)
         addTagsView.allTagsRow(matching: "tag 1").wait().tap()
-        waitForDisappearance(of: addTagsView.allTagsRow(matching: "tag 1"))
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
 
@@ -111,6 +111,7 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.newTagTextField.typeText("Tag 1")
         addTagsView.newTagTextField.typeText("\n")
 
+        scrollTo(element: addTagsView.tag(matching: "tag 1"), in: addTagsView.element, direction: .up)
         addTagsView.tag(matching: "tag 1").wait()
 
         addTagsView.saveButton.tap()
@@ -118,10 +119,12 @@ class AddTagsItemTests: XCTestCase {
         itemCell.itemActionButton.wait().tap()
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
-        app.addTagsView.element.swipeUp(velocity: .fast)
 
+        addTagsView.recentTagCells.element.wait()
         XCTAssertEqual(app.addTagsView.recentTagCells.count, 3)
-        XCTAssertEqual(app.addTagsView.tagCells.count, 8)
+
+        scrollTo(element: addTagsView.allTagsRow(matching: "tag 2"), in: addTagsView.element, direction: .up)
+        XCTAssertEqual(app.addTagsView.allTagSectionCells.count, 7)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
 
@@ -154,7 +157,7 @@ class AddTagsItemTests: XCTestCase {
 
         app.addTagsButton.wait().tap()
         app.addTagsView.wait()
-        app.addTagsView.allTagsView.wait()
+        app.addTagsView.allTagSectionCells.element.wait()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.allTags")
@@ -181,12 +184,14 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.wait()
         addTagsView.newTagTextField.tap()
         addTagsView.newTagTextField.typeText("F")
+        addTagsView.newTagTextField.typeText("\n")
 
+        scrollTo(element: addTagsView.allTagsRow(matching: "filter tag 0"), in: addTagsView.allTagsView, direction: .up)
         addTagsView.allTagsRow(matching: "filter tag 0").wait()
 
         scrollTo(element: addTagsView.allTagsRow(matching: "filter tag 1"), in: addTagsView.allTagsView, direction: .up)
         addTagsView.allTagsRow(matching: "filter tag 1").wait()
-        app.addTagsView.allTagsView.wait()
+        app.addTagsView.allTagSectionCells.element.wait()
 
 //        Bitrise is failing, but this passes locally, commenting out for now
 //        await snowplowMicro.assertBaselineSnowplowExpectation()

@@ -1,17 +1,17 @@
 import Combine
 import SwiftUI
 import Sync
+import SharedPocketKit
 import Textile
 import Foundation
 import Analytics
-import SharedPocketKit
 
 class PocketAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem
     private let source: Source
     private let tracker: Tracker
     private let userDefaults: UserDefaults
-    private let recentTagsFactory: RecentTagsFactory
+    private let recentTagsFactory: RecentTagsProvider
     private let store: SubscriptionStore
     private let saveAction: () -> Void
     private var userInputListener: AnyCancellable?
@@ -32,6 +32,10 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
     }
 
+    var itemTagNames: [String]? {
+        item.tags?.compactMap { ($0 as? Tag)?.name }
+    }
+
     @Published var tags: [String] = []
 
     @Published var newTagInput: String = ""
@@ -43,7 +47,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         self.source = source
         self.tracker = tracker
         self.userDefaults = userDefaults
-        self.recentTagsFactory = RecentTagsFactory(userDefaults: userDefaults, key: UserDefaults.Key.recentTags.rawValue)
+        self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
         self.store = store
         self.saveAction = saveAction
         self.user = user
@@ -62,7 +66,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
         self.premiumUpsellView = PremiumUpsellView(viewModel: premiumUpsellViewModel)
 
-        tags = item.tags?.compactMap { ($0 as? Tag)?.name } ?? []
+        tags = itemTagNames ?? []
         allOtherTags()
 
         userInputListener = $newTagInput
@@ -81,7 +85,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         trackSaveTagsToItem()
         source.addTags(item: item, tags: tags)
         saveAction()
-        recentTagsFactory.updateRecentTags(with: item.tags?.compactMap { ($0 as? Tag)?.name }, and: tags)
+        recentTagsFactory.updateRecentTags(with: itemTagNames, and: tags)
     }
 
     /// Fetch all tags associated with an item to show user

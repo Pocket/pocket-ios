@@ -3,13 +3,14 @@ import Sync
 import Analytics
 import Foundation
 import Textile
+import SharedPocketKit
 
 class TagsFilterViewModel: ObservableObject {
     private var fetchedTags: [Tag]?
     private let tracker: Tracker
     private let source: Source
     private let userDefaults: UserDefaults
-    private let recentTagsFactory: RecentTagsFactory
+    private let recentTagsFactory: RecentTagsProvider
     var selectAllAction: () -> Void?
     var recentTags: [TagType] {
         recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
@@ -24,14 +25,13 @@ class TagsFilterViewModel: ObservableObject {
         self.fetchedTags = fetchedTags
         self.selectAllAction = selectAllAction
         self.userDefaults = userDefaults
-        self.recentTagsFactory = RecentTagsFactory(userDefaults: userDefaults, key: UserDefaults.Key.recentTags.rawValue)
+        self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
 
         recentTagsFactory.getInitialRecentTags(with: fetchedTags?.compactMap({ $0.name }))
     }
 
     func getAllTags() -> [TagType] {
-        // Finding unique elements using set
-        arrangeTags(with: Array(Set(fetchedTags?.compactMap({ $0.name }) ?? [])))
+        arrangeTags(with: fetchedTags?.compactMap({ $0.name }) ?? [])
     }
 
     func trackEditAsOverflowAnalytics() {

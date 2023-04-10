@@ -66,7 +66,11 @@ class SavesFiltersTests: XCTestCase {
         let tagsFilterView = app.saves.tagsFilterView.wait()
         tagsFilterView.tag(matching: "not tagged").wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
+        tagsFilterView.recentTagCells.element.wait()
+        XCTAssertEqual(tagsFilterView.recentTagCells.count, 3)
+
+        scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
+        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
 
         tagsFilterView.tag(matching: "not tagged").wait().tap()
 

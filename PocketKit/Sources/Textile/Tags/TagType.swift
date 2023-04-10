@@ -21,5 +21,5 @@ public enum TagType: Hashable {
 /// - Parameter tags: list of users tag names
 /// - Returns: converts users tags to display a list of `TagType`
 public func arrangeTags(with tags: [String]) -> [TagType] {
-    return tags.sorted().compactMap { TagType.tag($0) }
+    return Array(Set(tags)).sorted().compactMap { TagType.tag($0) }
 }

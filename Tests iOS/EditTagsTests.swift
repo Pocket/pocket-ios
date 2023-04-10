@@ -59,6 +59,7 @@ class EditTagsTests: XCTestCase {
         waitForDisappearance(of: tagsFilterView.tag(matching: "tag 1"))
 
         tagsFilterView.editButton.wait().tap()
+        scrollTo(element: tagsFilterView.tag(matching: "rename tag 1"), in: tagsFilterView.element, direction: .up)
         tagsFilterView.tag(matching: "rename tag 1").wait().tap()
         XCTAssertEqual(app.saves.wait().itemCells.count, 1)
     }
