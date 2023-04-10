@@ -67,7 +67,9 @@ extension ReadableViewModel {
 
     func share(additionalText: String? = nil) {
         track(identifier: .itemShare)
-        sharedActivity = PocketItemActivity(url: url, additionalText: additionalText)
+        // Instances conforming to this view model are used within the context
+        // of an item presented within the reader
+        sharedActivity = PocketItemActivity.fromReader(url: url, additionalText: additionalText)
     }
 
     func confirmDelete() {

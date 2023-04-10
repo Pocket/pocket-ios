@@ -392,6 +392,20 @@ public enum Localization {
       public static let credits = Localization.tr("Localizable", "settings.thankyou.credits", fallback: "Thank you for using Pocket")
     }
   }
+  public enum Tags {
+    public enum Section {
+      /// Recent tags
+      public static let recentTags = Localization.tr("Localizable", "tags.section.recentTags", fallback: "Recent tags")
+      /// My tags
+      public static let userTags = Localization.tr("Localizable", "tags.section.userTags", fallback: "My tags")
+    }
+    public enum Upsell {
+      /// Get Pocket Premium
+      public static let getPocketPremium = Localization.tr("Localizable", "tags.upsell.getPocketPremium", fallback: "Get Pocket Premium")
+      /// Tag stories faster than ever—get your most recent tags with Pocket Premium.
+      public static let tagStoriesFasterThanEver = Localization.tr("Localizable", "tags.upsell.tagStoriesFasterThanEver", fallback: "Tag stories faster than ever—get your most recent tags with Pocket Premium.")
+    }
+  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces

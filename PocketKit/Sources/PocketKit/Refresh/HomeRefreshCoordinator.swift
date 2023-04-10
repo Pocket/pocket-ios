@@ -20,6 +20,7 @@ class HomeRefreshCoordinator: RefreshCoordinator {
     let taskScheduler: BGTaskSchedulerProtocol
     let appSession: SharedPocketKit.AppSession
     var subscriptions: [AnyCancellable] = []
+    var sessionSubscriptions: [AnyCancellable] = []
     let lastRefresh: LastRefresh
 
     private let source: Source

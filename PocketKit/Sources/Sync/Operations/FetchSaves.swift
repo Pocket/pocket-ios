@@ -17,7 +17,7 @@ class FetchSaves: SyncOperation {
     private let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
     private let lastRefresh: LastRefresh
     // Force unwrapping, because the entry point, execute, will ensure that this exists with a guard
-    private var persistentTask: PersistentSyncTask!
+    private var safeSpace: SavedItemSpace!
 
     init(
         apollo: ApolloClientProtocol,
@@ -34,10 +34,10 @@ class FetchSaves: SyncOperation {
     }
 
     func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
-        guard let persistentTask = space.backgroundObject(with: syncTaskId) as? PersistentSyncTask else {
+        guard let safeSpace = SavedItemSpace(space: space, taskID: syncTaskId) else {
             return .retry(NoPersistentTaskOperationError())
         }
-        self.persistentTask = persistentTask
+        self.safeSpace = safeSpace
 
         do {
             if lastRefresh.lastRefreshSaves != nil {
@@ -83,7 +83,7 @@ class FetchSaves: SyncOperation {
 
     private func fetchSaves() async throws {
         var pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize)
-        if let cursor = persistentTask.currentCursor {
+        if let cursor = safeSpace.currentCursor {
             pagination = PaginationSpec(maxItems: SyncConstants.Saves.firstLoadMaxCount, pageSize: SyncConstants.Saves.initalPageSize, cursor: cursor)
         }
 
@@ -130,32 +130,7 @@ class FetchSaves: SyncOperation {
               let cursor = result.data?.user?.savedItems?.pageInfo.endCursor else {
             return
         }
-
-        for edge in edges {
-            guard let edge = edge, let node = edge.node, let url = URL(string: node.url) else {
-                return
-            }
-
-            Log.breadcrumb(
-                category: "sync",
-                level: .info,
-                message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"
-            )
-
-            space.performAndWait {
-                let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ?? SavedItem(context: space.backgroundContext, url: url, remoteID: node.remoteID)
-                item.update(from: edge, with: space)
-
-                if item.deletedAt != nil {
-                    space.delete(item)
-                }
-            }
-        }
-
-        space.performAndWait {
-            persistentTask.currentCursor = cursor
-        }
-        try space.save()
+        try safeSpace.savePage(edges: edges, cursor: cursor)
     }
 
     struct PaginationSpec {

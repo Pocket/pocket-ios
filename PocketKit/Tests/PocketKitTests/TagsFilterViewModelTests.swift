@@ -10,25 +10,28 @@ class TagsFilterViewModelTests: XCTestCase {
     var source: MockSource!
     var space: Space!
     private var tracker: MockTracker!
+    private var userDefaults: UserDefaults!
 
     override func setUp() {
         space = .testSpace()
         source = MockSource()
         tracker = MockTracker()
+        userDefaults = UserDefaults(suiteName: "TagsFilterViewModelTests")
         subscriptions = []
     }
 
     override func tearDown() async throws {
+        UserDefaults.standard.removePersistentDomain(forName: "TagsFilterViewModelTests")
         source = nil
         subscriptions = []
         try space.clear()
     }
 
-    private func subject(source: Source? = nil, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
-        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
+    private func subject(source: Source? = nil, userDefaults: UserDefaults? = nil, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
+        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
     }
 
-    func test_getAllTags_withThreeTags_returnsMostRecentTags() {
+    func test_getAllTags_withThreeTags_returnsSortedRecentTags() {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
@@ -38,10 +41,10 @@ class TagsFilterViewModelTests: XCTestCase {
         let tags = viewModel.getAllTags()
 
         XCTAssertEqual(tags.count, 3)
-        XCTAssertEqual(tags, [TagType.tag("tag 3"), TagType.tag("tag 2"), TagType.tag("tag 1")])
+        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
     }
 
-    func test_getAllTags_withMoreThan3Tags_returnsSortedOrder() {
+    func test_getAllTags_returnsSortedOrder() {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["a"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["b"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["c"])
@@ -55,7 +58,7 @@ class TagsFilterViewModelTests: XCTestCase {
         let tags = viewModel.getAllTags()
 
         XCTAssertEqual(tags.count, 5)
-        XCTAssertEqual(tags, [TagType.tag("e"), TagType.tag("d"), TagType.tag("c"), TagType.tag("a"), TagType.tag("b")])
+        XCTAssertEqual(tags, [TagType.tag("a"), TagType.tag("b"), TagType.tag("c"), TagType.tag("d"), TagType.tag("e")])
     }
 
     func test_selectedTag_withTagName_sendsPredicate() {

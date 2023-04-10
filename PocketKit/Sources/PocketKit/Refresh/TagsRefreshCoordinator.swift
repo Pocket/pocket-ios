@@ -25,6 +25,7 @@ class TagsRefreshCoordinator: RefreshCoordinator {
     let taskScheduler: BGTaskSchedulerProtocol
     let appSession: SharedPocketKit.AppSession
     var subscriptions: [AnyCancellable] = []
+    var sessionSubscriptions: [AnyCancellable] = []
 
     private var isRefreshing: Bool = false
     private let source: Source

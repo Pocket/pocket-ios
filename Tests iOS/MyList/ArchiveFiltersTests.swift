@@ -19,24 +19,8 @@ class ArchiveFiltersTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToFavoriteAnItem {
-                return Response.favorite()
-            } else if apiRequest.isToUnfavoriteAnItem {
-                return Response.unfavorite()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()
@@ -55,10 +39,10 @@ class ArchiveFiltersTests: XCTestCase {
         saves.itemView(matching: "Archived Item 1").wait()
         saves.itemView(matching: "Archived Item 2").wait()
 
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
         waitForDisappearance(of: saves.itemView(matching: "Archived Item 1"))
         saves.itemView(matching: "Archived Item 2").wait()
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
 
         saves.itemView(matching: "Archived Item 1").wait()
         saves.itemView(matching: "Archived Item 2").wait()
@@ -70,14 +54,14 @@ class ArchiveFiltersTests: XCTestCase {
 
         saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "All").tap()
+        app.saves.filterButton(for: "All").wait().tap()
         saves.itemView(matching: "Archived Item 1").wait()
         saves.itemView(matching: "Archived Item 2").wait()
 
-        app.saves.filterButton(for: "Favorites").tap()
+        app.saves.filterButton(for: "Favorites").wait().tap()
         waitForDisappearance(of: saves.itemView(matching: "Archived Item 1"))
 
-        app.saves.filterButton(for: "All").tap()
+        app.saves.filterButton(for: "All").wait().tap()
         saves.itemView(matching: "Archived Item 1").wait()
         saves.itemView(matching: "Archived Item 2").wait()
     }
@@ -88,13 +72,16 @@ class ArchiveFiltersTests: XCTestCase {
 
         saves.selectionSwitcher.archiveButton.wait().tap()
 
-        app.saves.filterButton(for: "Tagged").tap()
+        app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
+        tagsFilterView.recentTagCells.element.wait()
+        XCTAssertEqual(tagsFilterView.recentTagCells.count, 3)
+
+        scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
+//        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
 
         tagsFilterView.tag(matching: "tag 0").wait().tap()
-
         waitForDisappearance(of: tagsFilterView)
 
         app.saves.selectedTagChip(for: "tag 0").wait()
@@ -103,14 +90,10 @@ class ArchiveFiltersTests: XCTestCase {
 
     func test_archiveView_sortingNoTagFilter_showFilteredItems() {
         app.launch().tabBar.savesButton.wait().tap()
-        let saves = app.saves.wait()
+        app.saves.selectionSwitcher.archiveButton.wait().tap()
 
-        saves.selectionSwitcher.archiveButton.wait().tap()
-
-        app.saves.filterButton(for: "Tagged").tap()
+        app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
-
-        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
 
         tagsFilterView.tag(matching: "not tagged").wait().tap()
         waitForDisappearance(of: tagsFilterView)

@@ -48,6 +48,7 @@ extension ImageAsset {
     public static let tag = ImageAsset("tag")
     public static let pocketWordmark = ImageAsset("pocket-wordmark")
     public static let close = ImageAsset("close")
+    public static let remove = ImageAsset("remove")
     public static let checkMini = ImageAsset("checkMini")
     public static let premiumBorderTop = ImageAsset("premium.border.top")
     public static let premiumBorderBottom = ImageAsset("premium.border.bottom")

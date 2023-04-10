@@ -5,6 +5,7 @@ import Combine
 import UIKit
 import Localization
 import SharedPocketKit
+import Textile
 
 public enum SavesViewType {
     case saves
@@ -73,13 +74,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private let user: User
     private let userDefaults: UserDefaults
     private var subscriptions: [AnyCancellable] = []
+    private var store: SubscriptionStore
+    private var networkPathMonitor: NetworkPathMonitor
 
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, refreshCoordinator: RefreshCoordinator, userDefaults: UserDefaults) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
@@ -88,6 +91,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         self.viewType = viewType
         self.listOptions = listOptions
         self.user = user
+        self.store = store
+        self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
 
         switch self.viewType {
@@ -137,6 +142,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 presentedTagsFilter = TagsFilterViewModel(
                     source: source,
                     tracker: tracker,
+                    userDefaults: userDefaults,
                     fetchedTags: { [weak self] in
                         self?.source.fetchAllTags()
                     }(),
@@ -150,7 +156,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     switch selectedTag {
                     case .notTagged:
                         predicate = NSPredicate(format: "tags.@count = 0")
-                    case .tag(let name):
+                    case .tag(let name), .recent(let name):
                         predicate = NSPredicate(format: "%@ IN tags.name", name)
                     }
                     self?.fetchItems(with: [predicate])
@@ -288,7 +294,8 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
 
     func _share(item: SavedItem, sender: Any?) {
         track(item: item, identifier: .itemShare)
-        sharedActivity = PocketItemActivity(url: item.url, sender: sender)
+        // This view model is used within the context of a view that is presented within Saves
+        sharedActivity = PocketItemActivity.fromSaves(url: item.url, sender: sender)
     }
 
     func overflowActions(for objectID: NSManagedObjectID) -> [ItemAction] {
@@ -317,6 +324,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
         return UIAction(title: "", handler: { [weak self] _ in
+            Haptics.overflowTap()
             self?.trackButton(item: item, identifier: .itemOverflow)
         })
     }
@@ -326,6 +334,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
             return nil
         }
         return ItemAction(title: "", identifier: UIAction.Identifier(rawValue: ""), accessibilityIdentifier: "", image: nil) { [weak self] _ in
+            Haptics.overflowTap()
             self?.trackButton(item: item, identifier: .itemOverflow)
         }
     }
@@ -535,6 +544,8 @@ extension SavedItemsListViewModel {
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
             user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
             userDefaults: userDefaults
         )
 
@@ -656,6 +667,10 @@ extension SavedItemsListViewModel {
             item: item,
             source: source,
             tracker: tracker,
+            userDefaults: userDefaults,
+            user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
             saveAction: { [weak self] in
                 self?.refresh()
             }

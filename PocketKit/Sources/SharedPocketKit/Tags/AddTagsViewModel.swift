@@ -3,11 +3,8 @@
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import Combine
-
-public enum TagSectionType: String {
-    case allTags = "All Tags"
-    case filterTags = "Tags"
-}
+import SwiftUI
+import Textile
 
 public protocol AddTagsViewModel: ObservableObject {
     var placeholderText: String { get }
@@ -15,13 +12,14 @@ public protocol AddTagsViewModel: ObservableObject {
     var tags: [String] { get set }
     var newTagInput: String { get set }
     var otherTags: [TagType] { get set }
-    var sectionTitle: TagSectionType { get }
+    var upsellView: AnyView { get }
+    var recentTags: [TagType] { get }
+
     func addNewTag(with tag: String) -> Bool
     func addExistingTag(with tag: TagType)
     func addTags()
     func allOtherTags()
     func removeTag(with tag: String)
-
     func trackAddTag()
     func trackRemoveTag()
 }
@@ -57,6 +55,7 @@ public extension AddTagsViewModel {
     /// Add tag to the input area and remove from the list
     /// - Parameter tag: tag name to add in the input area
     private func addTag(with tagName: String) {
+        guard !tags.contains(tagName) else { return }
         tags.append(tagName)
         if let index = otherTags.firstIndex(where: { $0.name == tagName}) {
             otherTags.remove(at: index)
@@ -72,7 +71,7 @@ public extension AddTagsViewModel {
     func removeTag(with tag: String) {
         guard let index = tags.firstIndex(of: tag) else { return }
         tags.remove(at: index)
-        otherTags.append(TagType.tag(tag))
+        allOtherTags()
         trackRemoveTag()
     }
 

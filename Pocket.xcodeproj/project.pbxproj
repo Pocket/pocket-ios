@@ -67,6 +67,7 @@
 		65EC272C28BA8AD50075E1DF /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EC272B28BA8AD50075E1DF /* NotificationViewController.swift */; };
 		65EC273328BA8AD50075E1DF /* PushNotificationStoryExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 65EC272528BA8AD50075E1DF /* PushNotificationStoryExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8A289CD62899BD820030E5E0 /* BannerViewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A289CD52899BD820030E5E0 /* BannerViewTests.swift */; };
+		8A3B77BD29E0AEEB00AD71D0 /* PocketKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8A3B77BC29E0AEEB00AD71D0 /* PocketKit */; };
 		8A3E3DBC2864DB0500483564 /* EmptyStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3E3DBB2864DB0500483564 /* EmptyStateTests.swift */; };
 		8A3EAA5128AACC9500392057 /* AddTagsItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A3EAA5028AACC9500392057 /* AddTagsItemTests.swift */; };
 		8A47CA8E28BD4A9C003DB4BD /* TagsFilterViewElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47CA8D28BD4A9C003DB4BD /* TagsFilterViewElement.swift */; };
@@ -283,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				167F8084264B011600D8F507 /* Sails in Frameworks */,
+				8A3B77BD29E0AEEB00AD71D0 /* PocketKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -561,6 +563,7 @@
 			name = "Tests iOS";
 			packageProductDependencies = (
 				167F8083264B011600D8F507 /* Sails */,
+				8A3B77BC29E0AEEB00AD71D0 /* PocketKit */,
 			);
 			productName = "Tests iOS";
 			productReference = 166A81C02637406C0015AA1D /* Tests iOS.xctest */;
@@ -1895,6 +1898,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 65167B6D2909904200343FA8 /* XCRemoteSwiftPackageReference "braze-swift-sdk" */;
 			productName = BrazePushStory;
+		};
+		8A3B77BC29E0AEEB00AD71D0 /* PocketKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PocketKit;
 		};
 		F2687E7227E28F0F00E43F09 /* SaveToPocketKit */ = {
 			isa = XCSwiftPackageProductDependency;

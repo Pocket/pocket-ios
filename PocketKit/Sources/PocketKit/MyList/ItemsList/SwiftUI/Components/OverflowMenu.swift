@@ -1,6 +1,7 @@
 import SwiftUI
 import Textile
 import Localization
+import SharedPocketKit
 
 struct OverflowMenu: View {
     @EnvironmentObject var viewModel: PocketItemViewModel
@@ -55,6 +56,7 @@ struct OverflowMenu: View {
             }
         }
         .onTapGesture {
+            Haptics.overflowTap()
             viewModel.trackOverflowMenu()
         }
         .accessibilityIdentifier("overflow-menu")

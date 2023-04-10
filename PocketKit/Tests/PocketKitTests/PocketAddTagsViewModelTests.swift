@@ -9,30 +9,48 @@ import Textile
 class PocketAddTagsViewModelTests: XCTestCase {
     private var source: MockSource!
     private var tracker: MockTracker!
+    private var userDefaults: UserDefaults!
     private var space: Space!
     private var subscriptions: [AnyCancellable] = []
+    private var user: MockUser!
+    private var subscriptionStore: SubscriptionStore!
+    private var networkPathMonitor: MockNetworkPathMonitor!
 
     override func setUp() {
         source = MockSource()
         tracker = MockTracker()
         space = .testSpace()
+        networkPathMonitor = MockNetworkPathMonitor()
+        subscriptionStore = MockSubscriptionStore()
+        user = MockUser()
+
+        userDefaults = UserDefaults(suiteName: "PocketAddTagsViewModelTests")
     }
 
     override func tearDown() async throws {
+        UserDefaults.standard.removePersistentDomain(forName: "PocketAddTagsViewModelTests")
         source = nil
         try space.clear()
+        networkPathMonitor = nil
+        subscriptionStore = nil
     }
 
     private func subject(
         item: SavedItem,
         source: Source? = nil,
         tracker: Tracker? = nil,
-        saveAction: @escaping () -> Void
+        userDefaults: UserDefaults? = nil,
+        saveAction: @escaping () -> Void,
+        networkPathMonitor: NetworkPathMonitor? = nil
     ) -> PocketAddTagsViewModel {
         PocketAddTagsViewModel(
             item: item,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
+            userDefaults: userDefaults ?? self.userDefaults,
+            user: user ?? self.user,
+            store: subscriptionStore ?? self.subscriptionStore,
+            networkPathMonitor: networkPathMonitor ?? self.networkPathMonitor,
             saveAction: saveAction
         )
     }
@@ -100,6 +118,26 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertNotNil(source.addTagsToSavedItemCall(at: 0))
     }
 
+    func test_recentTags_withTags_returnsRecentTags() {
+        let item = space.buildSavedItem(tags: [])
+        let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
+        expectRetrieveTagsCall.assertForOverFulfill = false
+        source.stubRetrieveTags { _ in
+            defer { expectRetrieveTagsCall.fulfill() }
+            let tag1: Tag = Tag(context: self.space.backgroundContext)
+            let tag2: Tag = Tag(context: self.space.backgroundContext)
+            let tag3: Tag = Tag(context: self.space.backgroundContext)
+            tag1.name = "tag 1"
+            tag2.name = "tag 2"
+            tag3.name = "tag 3"
+            return [tag1, tag2, tag3]
+        }
+
+        let viewModel = subject(item: item) { }
+        wait(for: [expectRetrieveTagsCall], timeout: 10)
+        XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
+    }
+
     func test_allOtherTags_retrievesValidTagNames() {
         let item = space.buildSavedItem(tags: ["tag 1"])
         let expectRetrieveTagsCall = expectation(description: "expect source.retrieveTags(excluding:)")
@@ -117,7 +155,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         viewModel.allOtherTags()
 
         wait(for: [expectRetrieveTagsCall], timeout: 10)
-        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 3"), TagType.tag("tag 2")])
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
         XCTAssertNotNil(source.retrieveTagsCall(at: 0))
     }
 
@@ -131,7 +169,6 @@ class PocketAddTagsViewModelTests: XCTestCase {
         viewModel.removeTag(with: "tag 2")
 
         XCTAssertEqual(viewModel.tags, ["tag 1", "tag 3"])
-        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2")])
     }
 
     func test_removeTag_withNotExistingName_updatesTags() {

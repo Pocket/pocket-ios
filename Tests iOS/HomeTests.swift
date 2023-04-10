@@ -20,38 +20,13 @@ class HomeTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail() {
-                return Response.slateDetail()
-            } else if apiRequest.isForSlateDetail(2) {
-                return Response.slateDetail(2)
-            } else if apiRequest.isForSavesContent {
-                return Response.saves("initial-list-recent-saves")
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToSaveAnItem {
-                return Response.saveItem()
-            } else if apiRequest.isToArchiveAnItem {
-                return Response.archive()
-            } else if apiRequest.isToFavoriteAnItem {
-                return Response.favorite()
-            } else if apiRequest.isToUnfavoriteAnItem {
-                return Response.unfavorite()
-            } else if apiRequest.isToDeleteAnItem {
-                return Response.delete()
-            } else if apiRequest.isForRecommendationDetail(1) {
-                return Response.recommendationDetail(1)
-            } else if apiRequest.isForRecommendationDetail(4) {
-                return Response.recommendationDetail(4)
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+            if apiRequest.isForSavesContent {
+                return .saves("initial-list-recent-saves")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         server.routes.get("/hello") { _, _ in
@@ -267,35 +242,23 @@ class HomeTests: XCTestCase {
     }
 
     func test_tappingSaveButtonInRecommendationCell_savesItemToList() {
-        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
-
         let saveRequestExpectation = expectation(description: "A save mutation request")
         let archiveRequestExpectation = expectation(description: "An archive mutation request")
-        var promise: EventLoopPromise<Response>?
-        server.routes.post("/graphql") { request, loop in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
 
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSlateDetail() {
-                return Response.slateDetail()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isToSaveAnItem {
+            if apiRequest.isToSaveAnItem {
+                defer { saveRequestExpectation.fulfill() }
                 XCTAssertTrue(apiRequest.contains("http:\\/\\/localhost:8080\\/item-1"))
-                saveRequestExpectation.fulfill()
-                promise = loop.makePromise()
-                return promise!.futureResult
+                return .saveItem()
             } else if apiRequest.isToArchiveAnItem {
-                archiveRequestExpectation.fulfill()
-                return Response.archive()
-            } else {
-                fatalError("Unexpected request")
+                defer { archiveRequestExpectation.fulfill() }
+                return .archive()
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
+        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
         cell.saveButton.tap()
         cell.savedButton.wait()
 
@@ -304,7 +267,6 @@ class HomeTests: XCTestCase {
 
         wait(for: [saveRequestExpectation])
 
-        promise?.succeed(Response.saveItem())
         app.saves.itemView(matching: "Slate 1, Recommendation 1").wait()
 
         app.tabBar.homeButton.tap()
@@ -316,6 +278,25 @@ class HomeTests: XCTestCase {
     }
 
     func test_slateDetailsView_tappingSaveButtonInRecommendationCell_savesItemToList() {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isToSaveAnItem {
+                if apiRequest.contains("http:\\/\\/localhost:8080\\/item-1") {
+                    return Response.saveItem("save-recommendation-1")
+                } else if apiRequest.contains("https:\\/\\/example.com\\/item-2") {
+                    return Response.saveItem("save-recommendation-2")
+                }
+            } else if apiRequest.isToArchiveAnItem {
+                if apiRequest.contains("slate-1-rec-1-saved-item") {
+                    XCTFail("Received archive request for unexpected item")
+                } else {
+                    return Response.archive()
+                }
+            }
+
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+
         app.launch()
             .homeView
             .sectionHeader("Slate 1")
@@ -332,27 +313,6 @@ class HomeTests: XCTestCase {
         let rec2Cell = app.slateDetailView
             .recommendationCell("Slate 1, Recommendation 2")
             .wait()
-
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isToSaveAnItem {
-                if apiRequest.contains("http:\\/\\/localhost:8080\\/item-1") {
-                    return Response.saveItem("save-recommendation-1")
-                } else if apiRequest.contains("https:\\/\\/example.com\\/item-2") {
-                    return Response.saveItem("save-recommendation-2")
-                }
-            } else if apiRequest.isToArchiveAnItem {
-                if apiRequest.contains("slate-1-rec-1-saved-item") {
-                    XCTFail("Received archive request for unexpected item")
-                } else {
-                    return Response.archive()
-                }
-            }
-
-            XCTFail("Received unexpected request")
-            return Response(status: .internalServerError)
-        }
 
         rec1Cell.saveButton.wait().tap()
         rec1Cell.savedButton.wait()
@@ -416,12 +376,22 @@ class HomeTests: XCTestCase {
 
 extension HomeTests {
     func test_pullToRefresh_fetchesUpdatedContent() {
+        var slateLineupCalls = 0
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForSlateLineup {
+                defer { slateLineupCalls += 1 }
+                switch slateLineupCalls {
+                case 0:
+                    return .slateLineup()
+                default:
+                    return .slateLineup("updated-slates")
+                }
+            }
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
         let home = app.launch().homeView
         home.recommendationCell("Slate 1, Recommendation 1").wait()
-
-        server.routes.post("/graphql") { request, _ in
-            Response.slateLineup("updated-slates")
-        }
 
         home.pullToRefresh()
         home.recommendationCell("Updated Slate 1, Recommendation 1").wait()
@@ -450,20 +420,12 @@ extension HomeTests {
 
 extension HomeTests {
     private func test_tappingRecentSavesItem_showsWebView(_ item: String) {
-        server.routes.post("/graphql") { request, _ in
+        server.routes.post("/graphql") { request, _ -> Response in
             let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves("list-for-web-view")
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
+            if apiRequest.isForSavesContent {
+                return .saves("list-for-web-view")
             }
+            return .fallbackResponses(apiRequest: apiRequest)
         }
 
         app.launch().homeView.wait()

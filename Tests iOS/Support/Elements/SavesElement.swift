@@ -31,6 +31,10 @@ struct SavesElement: PocketUIElement {
         collectionView.cells.matching(NSPredicate(format: "identifier = %@", "saves-item"))
     }
 
+    var skeletonCells: XCUIElementQuery {
+        collectionView.cells.matching(NSPredicate(format: "identifier = %@", "saves-item-skeleton"))
+    }
+
     func filterButton(for type: String) -> XCUIElement {
         collectionView.cells.matching(
             NSPredicate(
@@ -70,7 +74,11 @@ struct SavesElement: PocketUIElement {
     }
 
     var skeletonCellCount: Int {
-        element.cells.matching(identifier: "saves-item-skeleton").count
+        skeletonCells.count
+    }
+
+    func skeletonCell(at index: Int) -> XCUIElement {
+        return skeletonCells.element(boundBy: index)
     }
 
     func itemView(at index: Int) -> ItemRowElement {

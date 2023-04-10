@@ -4,20 +4,28 @@
 
 import SwiftUI
 
-struct TagsListView: View {
-    let sectionTitle: String
+public struct TagsListView: View {
     let emptyStateText: String
+    let recentTags: [TagType]
     let usersTags: [TagType]
     let tagAction: (TagType) -> Void
 
-    var body: some View {
+    public init(emptyStateText: String, recentTags: [TagType], usersTags: [TagType], tagAction: @escaping (TagType) -> Void) {
+        self.emptyStateText = emptyStateText
+        self.recentTags = recentTags
+        self.usersTags = usersTags
+        self.tagAction = tagAction
+    }
+
+    public var body: some View {
         if !usersTags.isEmpty {
             List {
-                Section(header: Text(sectionTitle).style(.tags.sectionHeader)) {
-                    ForEach(usersTags, id: \.self) { tag in
-                        TagsCell(tag: tag, tagAction: tagAction)
-                    }
-                }
+                TagsSectionView(
+                    showRecentTags: !recentTags.isEmpty,
+                    recentTags: recentTags,
+                    allTags: usersTags,
+                    tagAction: tagAction
+                )
             }
             .listStyle(.plain)
             .accessibilityIdentifier("all-tags")
@@ -34,8 +42,8 @@ struct TagsListView_PreviewProvider: PreviewProvider {
         }
 
         TagsListView(
-            sectionTitle: "tag section title",
             emptyStateText: "empty state text",
+            recentTags: [TagType.recent("tag 0"), TagType.recent("tag 1"), TagType.recent("tag 2")],
             usersTags: [TagType.tag("tag 0"), TagType.tag("tag 1"), TagType.tag("tag 2")],
             tagAction: tagAction
         )
@@ -44,8 +52,8 @@ struct TagsListView_PreviewProvider: PreviewProvider {
         .preferredColorScheme(.light)
 
         TagsListView(
-            sectionTitle: "tag section title",
             emptyStateText: "empty state text",
+            recentTags: [TagType.recent("tag 0"), TagType.recent("tag 1"), TagType.recent("tag 2")],
             usersTags: [TagType.tag("tag 0"), TagType.tag("tag 1"), TagType.tag("tag 2")],
             tagAction: tagAction
         )

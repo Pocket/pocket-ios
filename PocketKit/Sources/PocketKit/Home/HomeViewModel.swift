@@ -101,6 +101,7 @@ class HomeViewModel: NSObject {
     private let homeRefreshCoordinator: RefreshCoordinator
     private var subscriptions: [AnyCancellable] = []
     private var recentSavesCount: Int = 0
+    private var store: SubscriptionStore
 
     private let recentSavesController: NSFetchedResultsController<SavedItem>
     private let recomendationsController: RichFetchedResultsController<Recommendation>
@@ -111,6 +112,7 @@ class HomeViewModel: NSObject {
         networkPathMonitor: NetworkPathMonitor,
         homeRefreshCoordinator: RefreshCoordinator,
         user: User,
+        store: SubscriptionStore,
         userDefaults: UserDefaults
     ) {
         self.source = source
@@ -119,6 +121,7 @@ class HomeViewModel: NSObject {
         networkPathMonitor.start(queue: .global(qos: .utility))
         self.homeRefreshCoordinator = homeRefreshCoordinator
         self.user = user
+        self.store = store
         self.userDefaults = userDefaults
 
         self.snapshot = {
@@ -299,6 +302,8 @@ extension HomeViewModel {
             tracker: tracker.childTracker(hosting: .articleView.screen),
             pasteboard: UIPasteboard.general,
             user: user,
+            store: store,
+            networkPathMonitor: networkPathMonitor,
             userDefaults: userDefaults
         )
 
@@ -509,7 +514,8 @@ extension HomeViewModel {
     }
 
     private func share(_ recommendation: Recommendation, at indexPath: IndexPath, with sender: Any?) {
-        self.sharedActivity = PocketItemActivity(url: recommendation.item?.bestURL, sender: sender)
+        // This view model is used within the context of a view that is presented within Saves
+        self.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item?.bestURL, sender: sender)
 
         guard
             let item = recommendation.item,
@@ -524,7 +530,9 @@ extension HomeViewModel {
     }
 
     private func share(_ savedItem: SavedItem, at indexPath: IndexPath, with sender: Any?) {
-        self.sharedActivity = PocketItemActivity(url: savedItem.url, sender: sender)
+        // This view model is used within the context of a view that is presented within Home, but
+        // within the context of "Recent Saves"
+        self.sharedActivity = PocketItemActivity.fromSaves(url: savedItem.url, sender: sender)
         tracker.track(event: Events.Home.RecentSavesCardShare(url: savedItem.url, positionInList: indexPath.item))
     }
 

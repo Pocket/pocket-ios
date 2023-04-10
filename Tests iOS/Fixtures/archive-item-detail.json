@@ -1,0 +1,48 @@
+{
+    "data": {
+        "user": {
+            "__typename": "[type-name-here]",
+            "savedItemById": {
+                "__typename": "[type-name-here]",
+                "__typename": "[type-name-here]",
+                "remoteID": "archived-item-1",
+                "url": "http://example.com/items/archived-item-1",
+                "_createdAt": 0,
+                "_deletedAt": null,
+                "archivedAt": 100,
+                "isArchived": true,
+                "isFavorite": false,
+                "tags": [],
+                "item": {
+                    "__typename": "Item",
+                    "remoteID": "archived-item-1",
+                    "title": "Archived Item 1",
+                    "givenUrl": "http://example.com/items/archived-item-1",
+                    "resolvedUrl": "http://example.com/items/archived-item-1",
+                    "topImageUrl": "https://example.com/archived-item-1/top-image.jpg",
+                    "domain": null,
+                    "language": "en",
+                    "timeToRead": 6,
+                    "marticle": #MARTICLE#,
+                    "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
+                    "datePublished": "2001-01-01 12:01:01",
+                    "authors": [
+                        {
+                            "__typename": "Author",
+                            "id": "author-1",
+                            "name": "Socrates",
+                            "url": "https://example.com/authors/socrates"
+                        }
+                    ],
+                    "domainMetadata": null,
+                    "images": [],
+                    "isArticle": true,
+                    "hasImage": "HAS_IMAGES",
+                    "hasVideo": "HAS_VIDEOS",
+                    "marticle": [],
+                    "syndicatedArticle": null
+                }
+            }
+        }
+    }
+}

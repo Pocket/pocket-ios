@@ -4,16 +4,29 @@
 
 import SwiftUI
 
-struct InputTagsView: View {
+public struct InputTagsView: View {
     let tags: [String]
     let removeTag: (String) -> Void
+    let upsellView: AnyView
+    let geometry: GeometryProxy
 
     @Namespace
     var animation
 
-    let geometry: GeometryProxy
+    enum Constants {
+        static let tagsHorizontalSpacing: CGFloat = 6
+        static let tagPadding: CGFloat = 4
+        static let frameSize = CGSize(width: 5, height: 5)
+    }
 
-    var body: some View {
+    public init(tags: [String], removeTag: @escaping (String) -> Void, upsellView: AnyView, geometry: GeometryProxy) {
+        self.tags = tags
+        self.removeTag = removeTag
+        self.upsellView = upsellView
+        self.geometry = geometry
+    }
+
+    public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
             VStack(alignment: .leading, spacing: 6) {
@@ -28,21 +41,32 @@ struct InputTagsView: View {
             Divider()
                 .frame(height: 10)
                 .overlay(Color(.ui.grey7))
+            upsellView
+                .padding(EdgeInsets(top: 32, leading: 12, bottom: 12, trailing: 12))
         }
     }
 
     func RowView(tag: String) -> some View {
-        Text(tag)
-            .style(.tags.tag)
-            .padding(Constants.tagPadding)
-            .background(Rectangle().fill(Color(.ui.grey6)))
-            .cornerRadius(4)
-            .lineLimit(1)
-            .onTapGesture {
-                removeTag(tag)
-            }
-            .accessibilityIdentifier("tag")
-            .matchedGeometryEffect(id: tag, in: animation)
+        HStack {
+            Text(tag)
+                .style(.tags.tag)
+            Image(asset: .remove)
+                .renderingMode(.template)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: Constants.frameSize.width, height: Constants.frameSize.height)
+                .foregroundColor(Color(.ui.grey4))
+                .padding(.trailing, Constants.tagPadding)
+        }
+        .padding(Constants.tagPadding)
+        .background(Rectangle().fill(Color(.ui.grey6)))
+        .cornerRadius(4)
+        .lineLimit(1)
+        .onTapGesture {
+            removeTag(tag)
+        }
+        .accessibilityIdentifier("tag")
+        .matchedGeometryEffect(id: tag, in: animation)
     }
 
     func getRows(screenWidth: CGFloat) -> [[String]] {
@@ -52,10 +76,11 @@ struct InputTagsView: View {
         var totalWidth: CGFloat = 0
         let safeWidth: CGFloat = screenWidth
         let padding: CGFloat = Constants.tagPadding * 2 + Constants.tagsHorizontalSpacing * 2
+        let closeImage: CGFloat = Constants.frameSize.width + Constants.tagsHorizontalSpacing
 
         tags.forEach { tag in
             let attributes = Style.tags.tag.textAttributes
-            let tagWidth: CGFloat = tag.size(withAttributes: attributes).width + padding
+            let tagWidth: CGFloat = tag.size(withAttributes: attributes).width + closeImage + padding
 
             totalWidth += tagWidth
 
@@ -87,6 +112,7 @@ struct InputTagsView_PreviewProvider: PreviewProvider {
             InputTagsView(
                 tags: ["tag 0", "tag 1", "tag 2", "tag 3", "tag 4", "tag 5", "tag 6", "this is going to be a long tag"],
                 removeTag: tagAction,
+                upsellView: AnyView(EmptyView()),
                 geometry: reader)
         }
         .previewLayout(.sizeThatFits)
@@ -97,6 +123,7 @@ struct InputTagsView_PreviewProvider: PreviewProvider {
             InputTagsView(
                 tags: ["tag 0", "tag 1", "tag 2", "tag 3", "tag 4", "tag 5", "tag 6", "this is going to be a long tag"],
                 removeTag: tagAction,
+                upsellView: AnyView(EmptyView()),
                 geometry: reader)
         }
         .previewLayout(.sizeThatFits)

@@ -1,11 +1,7 @@
 import SwiftUI
 import UIKit
 import Combine
-
-enum Constants {
-    static let tagsHorizontalSpacing: CGFloat = 6
-    static let tagPadding: CGFloat = 4
-}
+import Textile
 
 public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
     @ObservedObject var viewModel: ViewModel
@@ -25,11 +21,12 @@ public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
                     InputTagsView(
                         tags: viewModel.tags,
                         removeTag: viewModel.removeTag,
+                        upsellView: viewModel.upsellView,
                         geometry: geometry
                     )
                     TagsListView(
-                        sectionTitle: viewModel.sectionTitle.rawValue,
                         emptyStateText: viewModel.emptyStateText,
+                        recentTags: viewModel.recentTags,
                         usersTags: viewModel.otherTags,
                         tagAction: viewModel.addExistingTag
                     )

@@ -154,7 +154,7 @@ public enum Requests {
     }
 
     public static func fetchTags() -> NSFetchRequest<Tag> {
-        Tag.fetchRequest()
+        return Tag.fetchRequest()
     }
 
     public static func fetchSavedTags() -> NSFetchRequest<Tag> {

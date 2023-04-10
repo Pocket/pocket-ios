@@ -17,22 +17,8 @@ class ShareAnItemTests: XCTestCase {
 
         server = Application()
 
-        server.routes.post("/graphql") { request, _ in
-            let apiRequest = ClientAPIRequest(request)
-
-            if apiRequest.isForSlateLineup {
-                return Response.slateLineup()
-            } else if apiRequest.isForSavesContent {
-                return Response.saves()
-            } else if apiRequest.isForArchivedContent {
-                return Response.archivedContent()
-            } else if apiRequest.isForTags {
-                return Response.emptyTags()
-            } else if apiRequest.isForSlateDetail() {
-                return Response.slateDetail()
-            } else {
-                return Response.fallbackResponses(apiRequest: apiRequest)
-            }
+        server.routes.post("/graphql") { request, _ -> Response in
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
         }
 
         try server.start()
@@ -80,7 +66,7 @@ class ShareAnItemTests: XCTestCase {
     }
 
     func test_shareFromHome_sharingARecommendation_sharingFromSlate() {
-        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1")
+        let cell = app.launch().homeView.recommendationCell("Slate 1, Recommendation 1").wait()
 
         cell.overflowButton.wait().tap()
         app.shareButton.wait().tap()
