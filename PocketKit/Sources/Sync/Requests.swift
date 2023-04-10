@@ -154,7 +154,7 @@ public enum Requests {
     }
 
     public static func fetchTags() -> NSFetchRequest<Tag> {
-        Tag.fetchRequest()
+        return Tag.fetchRequest()
     }
 
     public static func fetchSavedTags() -> NSFetchRequest<Tag> {
@@ -225,6 +225,17 @@ public enum Requests {
         let resolvedUrlPredicate = NSPredicate(format: "resolvedURL = %@", url.absoluteString)
         let givenUrlPredicate = NSPredicate(format: "givenURL = %@", url.absoluteString)
         request.predicate = NSCompoundPredicate(orPredicateWithSubpredicates: [resolvedUrlPredicate, givenUrlPredicate])
+        request.fetchLimit = 1
+        return request
+    }
+
+    public static func fetchFeatureFlags() -> NSFetchRequest<FeatureFlag> {
+        FeatureFlag.fetchRequest()
+    }
+
+    public static func fetchFeatureFlag(byName name: String) -> NSFetchRequest<FeatureFlag> {
+        let request = fetchFeatureFlags()
+        request.predicate = NSPredicate(format: "name = %@", name)
         request.fetchLimit = 1
         return request
     }

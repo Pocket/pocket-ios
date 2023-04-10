@@ -25,6 +25,7 @@ class PocketSourceTests: XCTestCase {
     var osNotificationCenter: OSNotificationCenter!
     var subscriptions: [AnyCancellable]!
     var userService: MockUserService!
+    var featureFlagService: MockFeatureFlagService!
 
     override func setUpWithError() throws {
         space = .testSpace()
@@ -40,6 +41,7 @@ class PocketSourceTests: XCTestCase {
         osNotificationCenter = OSNotificationCenter(notifications: CFNotificationCenterGetDarwinNotifyCenter())
         subscriptions = []
         userService = MockUserService()
+        featureFlagService = MockFeatureFlagService()
 
         lastRefresh.stubGetLastRefreshSaves { nil }
         lastRefresh.stubGetLastRefreshArchive { nil }
@@ -64,7 +66,8 @@ class PocketSourceTests: XCTestCase {
         networkMonitor: NetworkPathMonitor? = nil,
         sessionProvider: SessionProvider? = nil,
         osNotificationCenter: OSNotificationCenter? = nil,
-        userService: UserService? = nil
+        userService: UserService? = nil,
+        featureFlagService: FeatureFlagLoadingService? = nil
     ) -> PocketSource {
         PocketSource(
             space: space ?? self.space,
@@ -73,6 +76,7 @@ class PocketSourceTests: XCTestCase {
             operations: operations ?? self.operations,
             lastRefresh: lastRefresh ?? self.lastRefresh,
             slateService: slateService ?? self.slateService,
+            featureFlagService: featureFlagService ?? self.featureFlagService,
             networkMonitor: networkMonitor ?? self.networkMonitor,
             sessionProvider: sessionProvider ?? self.sessionProvider,
             backgroundTaskManager: backgroundTaskManager ?? self.backgroundTaskManager,

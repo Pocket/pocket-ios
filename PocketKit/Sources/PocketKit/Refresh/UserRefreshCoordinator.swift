@@ -32,8 +32,14 @@ class UserRefreshCoordinator: RefreshCoordinator {
     }
 
     func refresh(isForced: Bool = false, _ completion: @escaping () -> Void) {
-        Task {
+        Task { [weak self] in
+            guard let self else {
+                Log.captureNilWeakSelf()
+                completion()
+                return
+            }
             do {
+                // Load the user premium status
                 try await self.source.fetchUserData()
             } catch {
                 Log.capture(error: error)

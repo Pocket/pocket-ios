@@ -71,6 +71,8 @@ let package = Package(
         .target(
             name: "SharedPocketKit",
             dependencies: [
+                "Textile",
+                "Localization",
                 "RNCryptor"
             ]
         ),

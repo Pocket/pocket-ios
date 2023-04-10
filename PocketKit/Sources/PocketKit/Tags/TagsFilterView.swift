@@ -34,10 +34,12 @@ struct TagsFilterView: View {
                     }
                     TagsCell(tag: .notTagged, tagAction: tagAction)
                         .disabled(isEditing)
-                    ForEach(viewModel.getAllTags(), id: \.self) { tag in
-                        TagsCell(tag: tag, tagAction: tagAction)
-                            .disabled(isEditing)
-                    }
+                    TagsSectionView(
+                        showRecentTags: !isEditing && !viewModel.recentTags.isEmpty,
+                        recentTags: viewModel.recentTags,
+                        allTags: viewModel.getAllTags(),
+                        tagAction: tagAction
+                    ).disabled(isEditing)
                 }
                 .listStyle(.plain)
                 .navigationBarTitleDisplayMode(.inline)

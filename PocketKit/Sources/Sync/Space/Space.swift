@@ -37,9 +37,7 @@ public class Space {
     func delete(_ object: NSManagedObject, in context: NSManagedObjectContext? = nil) {
         let context = context ?? backgroundContext
         context.performAndWait {
-            guard let object = backgroundObject(with: object.objectID) else {
-                return
-            }
+            let object = context.object(with: object.objectID)
             context.delete(object)
         }
     }
@@ -413,5 +411,26 @@ extension Space {
         fetchRequest.fetchLimit = 1
         let tag = try fetch(fetchRequest)
         delete(tag)
+    }
+}
+
+// MARK: FeatureFlags
+extension Space {
+    /// Gets a feature flag by name, you should interact with this at an App level via FeatureFlagsService
+    /// - Parameter name: Name of the flag in the database
+    /// - Parameter context: Context to operate in
+    /// - Returns: A feature flag if it exists
+    func fetchFeatureFlag(by name: String, in context: NSManagedObjectContext?) throws -> FeatureFlag? {
+        let request = Requests.fetchFeatureFlags()
+        request.predicate = NSPredicate(format: "name = %@", name)
+        request.fetchLimit = 1
+        return try fetch(request, context: context).first
+    }
+
+    /// Gets all feature flags in CoreData
+    /// - Parameter context: Context to operate in
+    /// - Returns: The set of feature flags
+    func fetchFeatureFlags(in context: NSManagedObjectContext?) throws -> [FeatureFlag] {
+        return try fetch(Requests.fetchFeatureFlags(), context: context)
     }
 }

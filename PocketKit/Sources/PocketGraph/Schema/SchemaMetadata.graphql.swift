@@ -41,6 +41,8 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Slate": return PocketGraph.Objects.Slate
     case "Recommendation": return PocketGraph.Objects.Recommendation
     case "CuratedInfo": return PocketGraph.Objects.CuratedInfo
+    case "UnleashAssignmentList": return PocketGraph.Objects.UnleashAssignmentList
+    case "UnleashAssignment": return PocketGraph.Objects.UnleashAssignment
     case "MarticleText": return PocketGraph.Objects.MarticleText
     case "MarticleDivider": return PocketGraph.Objects.MarticleDivider
     case "MarticleTable": return PocketGraph.Objects.MarticleTable

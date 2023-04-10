@@ -104,6 +104,10 @@ struct ClientAPIRequest {
         }
     }
 
+    var isForFeatureFlags: Bool {
+        self.operationName == "FeatureFlags"
+    }
+
     func contains(_ string: String) -> Bool {
         requestBody?.contains(string) == true
     }

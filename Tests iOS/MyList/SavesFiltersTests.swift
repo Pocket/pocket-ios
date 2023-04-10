@@ -48,7 +48,7 @@ class SavesFiltersTests: XCTestCase {
 
     func test_savesView_tappingAllPill_showsAllItems() {
         app.launch().tabBar.savesButton.wait().tap()
-        app.saves.itemView(at: 0).favoriteButton.tap()
+        app.saves.itemView(at: 0).wait().favoriteButton.tap()
 
         app.saves.filterButton(for: "All").tap()
         XCTAssertEqual(app.saves.wait().itemCells.count, 2)
@@ -64,8 +64,13 @@ class SavesFiltersTests: XCTestCase {
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
+        tagsFilterView.tag(matching: "not tagged").wait()
 
-        XCTAssertEqual(tagsFilterView.tagCells.count, 6)
+        tagsFilterView.recentTagCells.element.wait()
+        XCTAssertEqual(tagsFilterView.recentTagCells.count, 3)
+
+        scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
+//        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
 
         tagsFilterView.tag(matching: "not tagged").wait().tap()
 

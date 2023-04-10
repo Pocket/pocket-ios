@@ -9,6 +9,7 @@ public extension UserDefaults {
     enum Key: String, CaseIterable {
         case hasAppBeenLaunchedPreviously = "hasAppBeenLaunchedPreviously"
         case recentSearches = "Search.recentSearches"
+        case recentTags = "Search.recentTags"
         case toggleAppBadge = "AccountViewModel.ToggleAppBadge"
         case appBadgeToggle = "Settings.ToggleAppBadge"
         case legacyUserMigration = "com.mozilla.pocket.next.migration.legacyUser"
@@ -17,6 +18,7 @@ public extension UserDefaults {
         case lastRefreshedArchiveAt = "lastRefreshedArchiveAt"
         case lastRefreshedSavesAt = "lastRefreshedSavesAt"
         case lastRefreshedHomeAt = "lastRefreshedHomeAt"
+        case lastRefreshedFeatureFlagsAt = "lastRefreshedFeatureFlagsAt"
         case listSelectedSortForSaved = "listSelectedSortForSaved"
         case listSelectedSortForArchive = "listSelectedSortForArchive"
         case readerFontSizeAdjustment = "readerFontSizeAdjustment"
@@ -26,6 +28,7 @@ public extension UserDefaults {
         case userStatus = "User.statusKey"
         case userName = "User.nameKey"
         case displayName = "User.displayNameKey"
+        case userId = "User.userId"
         case startingAppSection = "MainViewModel.StartingAppSection"
 
         var isRemovable: Bool {

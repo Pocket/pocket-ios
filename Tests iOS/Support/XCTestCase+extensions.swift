@@ -14,4 +14,45 @@ extension XCTestCase {
     func wait(for expectations: [XCTestExpectation]) {
         wait(for: expectations, timeout: 10)
     }
+
+    /// Very basic swipe to element function. As our needs increase, we will want something like https://github.com/PGSSoft/AutoMate/blob/master/AutoMate/XCTest%20extensions/XCUIElement%2BSwipe.swift
+    /// - Parameters:
+    ///   - element: Element to scroll to
+    ///   - scrollableView: Scroll view to scroll
+    ///   - maxSwipes: Max number of swipes to try.
+    ///   - direction: Direction to swipe
+    func scrollTo(element: XCUIElement, in scrollableView: XCUIElement, maxSwipes: Int = 10, direction: SwipeDirection) {
+        var count = 0
+        while element.isHittable == false && count < maxSwipes {
+            defer { count += 1 }
+            switch direction {
+            case .up:
+                scrollableView.swipeUp(velocity: .slow)
+            case .down:
+                scrollableView.swipeDown(velocity: .slow)
+            case .left:
+                scrollableView.swipeLeft(velocity: .slow)
+            case .right:
+                scrollableView.swipeRight(velocity: .slow)
+            }
+        }
+    }
+}
+
+// MARK: - SwipeDirection
+/// Swipe direction.
+///
+/// - `up`: Swipe up.
+/// - `down`: Swipe down.
+/// - `left`: Swipe to the left.
+/// - `right`: Swipe to the right.
+public enum SwipeDirection {
+    /// Swipe up.
+    case up // swiftlint:disable:this identifier_name
+    /// Swipe down.
+    case down
+    /// Swipe to the left.
+    case left
+    /// Swipe to the right.
+    case right
 }
