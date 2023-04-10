@@ -1,0 +1,50 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at http://mozilla.org/MPL/2.0/.
+import class SnowplowTracker.SelfDescribing
+import Foundation
+
+/**
+ * Event created by a background task
+ */
+public struct Background: Event, CustomStringConvertible {
+    public static let schema = "iglu:com.pocket/content_open/jsonschema/1-0-0" // TODO
+
+    let type: Background.BackgroundType
+    let source: MigrationSource
+
+    let extraEntities: [Entity]
+
+    public init(type: BackgroundType, source:MigrationSource, extraEntities: [Entity] = []) {
+        self.type = type
+        self.source = source
+        self.extraEntities = extraEntities
+    }
+
+    public var description: String {
+        "fixMe"
+    }
+
+    public func toSelfDescribing() -> SelfDescribing {
+        let base = SelfDescribing(schema: Background.schema, payload: [
+            "type": NSString(string: "\(self.type)")
+        ])
+        extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
+
+        return base
+    }
+}
+
+extension Background {
+    public enum BackgroundType {
+        case userMigration(UserMigrationState)
+    }
+
+    public enum UserMigrationState {
+        case started
+        case succeeded
+        case failed(Error?)
+    }
+}
+
+
