@@ -31,15 +31,9 @@ public extension Events.Migration {
     }
 
     /**
-     Fired when the user begins migrating from V7 to V8
+     Fired when the user fails migrating from V7 to V8. Optional error
      */
     static func MigrationTo_v8DidFail(with error: Error?, source: MigrationSource) -> Background {
         return Background(type: .userMigration(.failed(error)), source: source)
     }
 }
-
-// engagementEvent
-// new UIelement? & bump schema version
-// ios.migration.to8.begin
-// ios.migration.to8.error/abort
-// ios.migration.to8.end
