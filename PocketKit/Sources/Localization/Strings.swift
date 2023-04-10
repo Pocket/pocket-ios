@@ -393,6 +393,12 @@ public enum Localization {
     }
   }
   public enum Tags {
+    public enum Section {
+      /// Recent tags
+      public static let recentTags = Localization.tr("Localizable", "tags.section.recentTags", fallback: "Recent tags")
+      /// My tags
+      public static let userTags = Localization.tr("Localizable", "tags.section.userTags", fallback: "My tags")
+    }
     public enum Upsell {
       /// Get Pocket Premium
       public static let getPocketPremium = Localization.tr("Localizable", "tags.upsell.getPocketPremium", fallback: "Get Pocket Premium")

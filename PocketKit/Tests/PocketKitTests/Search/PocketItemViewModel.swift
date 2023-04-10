@@ -8,6 +8,7 @@ import SharedPocketKit
 class PocketItemViewModelTests: XCTestCase {
     private var source: MockSource!
     private var tracker: MockTracker!
+    private var userDefaults: UserDefaults!
     var space: Space!
     private var user: MockUser!
     private var subscriptionStore: SubscriptionStore!
@@ -16,6 +17,7 @@ class PocketItemViewModelTests: XCTestCase {
     override func setUpWithError() throws {
         source = MockSource()
         tracker = MockTracker()
+        userDefaults = UserDefaults(suiteName: "PocketItemViewModelTests")
         self.space = .testSpace()
         networkPathMonitor = MockNetworkPathMonitor()
         subscriptionStore = MockSubscriptionStore()
@@ -23,6 +25,7 @@ class PocketItemViewModelTests: XCTestCase {
     }
 
     override func tearDownWithError() throws {
+        UserDefaults.standard.removePersistentDomain(forName: "PocketItemViewModelTests")
         source = nil
         tracker = nil
         try space.clear()
@@ -35,6 +38,7 @@ class PocketItemViewModelTests: XCTestCase {
         index: Int = 0,
         source: Source? = nil,
         tracker: Tracker? = nil,
+        userDefaults: UserDefaults? = nil,
         scope: SearchScope? = nil,
         networkPathMonitor: NetworkPathMonitor? = nil
     ) -> PocketItemViewModel {
@@ -43,6 +47,7 @@ class PocketItemViewModelTests: XCTestCase {
             index: index,
             source: source ?? self.source,
             tracker: tracker ?? self.tracker,
+            userDefaults: userDefaults ?? self.userDefaults,
             scope: scope ?? .saves,
             user: user ?? self.user,
             store: subscriptionStore ?? self.subscriptionStore,

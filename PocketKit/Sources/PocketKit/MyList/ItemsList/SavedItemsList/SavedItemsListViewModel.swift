@@ -142,6 +142,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 presentedTagsFilter = TagsFilterViewModel(
                     source: source,
                     tracker: tracker,
+                    userDefaults: userDefaults,
                     fetchedTags: { [weak self] in
                         self?.source.fetchAllTags()
                     }(),
@@ -155,7 +156,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     switch selectedTag {
                     case .notTagged:
                         predicate = NSPredicate(format: "tags.@count = 0")
-                    case .tag(let name):
+                    case .tag(let name), .recent(let name):
                         predicate = NSPredicate(format: "%@ IN tags.name", name)
                     }
                     self?.fetchItems(with: [predicate])
@@ -666,6 +667,7 @@ extension SavedItemsListViewModel {
             item: item,
             source: source,
             tracker: tracker,
+            userDefaults: userDefaults,
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,
