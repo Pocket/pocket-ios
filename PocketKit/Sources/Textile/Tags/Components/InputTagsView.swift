@@ -4,15 +4,14 @@
 
 import SwiftUI
 
-struct InputTagsView: View {
+public struct InputTagsView: View {
     let tags: [String]
     let removeTag: (String) -> Void
     let upsellView: AnyView
+    let geometry: GeometryProxy
 
     @Namespace
     var animation
-
-    let geometry: GeometryProxy
 
     enum Constants {
         static let tagsHorizontalSpacing: CGFloat = 6
@@ -20,7 +19,14 @@ struct InputTagsView: View {
         static let frameSize = CGSize(width: 5, height: 5)
     }
 
-    var body: some View {
+    public init(tags: [String], removeTag: @escaping (String) -> Void, upsellView: AnyView, geometry: GeometryProxy) {
+        self.tags = tags
+        self.removeTag = removeTag
+        self.upsellView = upsellView
+        self.geometry = geometry
+    }
+
+    public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
             VStack(alignment: .leading, spacing: 6) {

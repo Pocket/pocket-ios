@@ -4,12 +4,13 @@ import Sync
 import Textile
 import Foundation
 import Analytics
+import SharedPocketKit
 
 class SaveToAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem?
     private let tracker: Tracker
     private let userDefaults: UserDefaults
-    private let recentTagsFactory: RecentTagsFactory
+    private let recentTagsFactory: RecentTagsProvider
     private let retrieveAction: ([String]) -> [Tag]?
     private let filterAction: (String, [String]) -> [Tag]?
     private let saveAction: ([String]) -> Void
@@ -33,7 +34,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
         self.filterAction = filterAction
         self.saveAction = saveAction
         self.userDefaults = userDefaults
-        self.recentTagsFactory = RecentTagsFactory(userDefaults: userDefaults, key: UserDefaults.Key.recentTags.rawValue)
+        self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
 
         tags = item?.tags?.compactMap { ($0 as? Tag)?.name } ?? []
         allOtherTags()

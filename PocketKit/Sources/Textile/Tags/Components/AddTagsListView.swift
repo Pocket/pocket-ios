@@ -4,23 +4,30 @@
 
 import SwiftUI
 
-struct TagsListView: View {
+public struct TagsListView: View {
     let emptyStateText: String
     let recentTags: [TagType]
     let usersTags: [TagType]
     let tagAction: (TagType) -> Void
 
-    var body: some View {
+    public init(emptyStateText: String, recentTags: [TagType], usersTags: [TagType], tagAction: @escaping (TagType) -> Void) {
+        self.emptyStateText = emptyStateText
+        self.recentTags = recentTags
+        self.usersTags = usersTags
+        self.tagAction = tagAction
+    }
+
+    public var body: some View {
         if !usersTags.isEmpty {
             List {
                 TagsSectionView(
+                    showRecentTags: !recentTags.isEmpty,
                     recentTags: recentTags,
                     allTags: usersTags,
                     tagAction: tagAction
                 )
             }
             .listStyle(.plain)
-            .accessibilityIdentifier("all-tags")
         } else {
             TagsEmptyView(emptyStateText: emptyStateText)
         }

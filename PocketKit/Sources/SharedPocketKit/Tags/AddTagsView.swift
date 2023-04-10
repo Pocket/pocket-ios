@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import Combine
+import Textile
 
 public struct AddTagsView<ViewModel>: View where ViewModel: AddTagsViewModel {
     @ObservedObject var viewModel: ViewModel

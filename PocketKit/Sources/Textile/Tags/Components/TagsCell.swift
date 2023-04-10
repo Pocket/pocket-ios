@@ -41,7 +41,7 @@ struct RecentTag: View {
     }
 }
 
-extension Image {
+private extension Image {
     func tagIconStyle() -> some View {
         self
             .renderingMode(.template)
