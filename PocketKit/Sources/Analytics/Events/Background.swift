@@ -22,12 +22,16 @@ public struct Background: Event, CustomStringConvertible {
     }
 
     public var description: String {
-        "fixMe"
+        switch type {
+        case .userMigration(let userMigrationState):
+            return userMigrationState.id()
+        }
     }
 
     public func toSelfDescribing() -> SelfDescribing {
         let base = SelfDescribing(schema: Background.schema, payload: [
-            "type": NSString(string: "\(self.type)")
+            "type": NSString(string: "\(self.type)"),
+            "id": NSString(string: self.description)
         ])
         extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
 
@@ -44,5 +48,19 @@ extension Background {
         case started
         case succeeded
         case failed(Error?)
+
+        func id() -> String {
+            switch self {
+            case .started:
+                return "ios.migration.to8.start"
+            case .succeeded:
+                return "ios.migration.to8.succeeded"
+            case UserMigrationState.failed(let error):
+                guard let error else {
+                    return "ios.migration.to8.failed"
+                }
+                return "ios.migration.to8.failedWithError"
+            }
+        }
     }
 }
