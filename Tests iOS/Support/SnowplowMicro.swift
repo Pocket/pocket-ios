@@ -98,6 +98,11 @@ struct SnowplowMicroEvent: Codable {
     func getScreenContext() -> SnowplowMicroContext? {
         return getContext(of: "iglu:com.snowplowanalytics.mobile/screen/jsonschema/1-0-0")
     }
+
+    /// Pulls the feature flag out of the event
+    func getFeatureFlagContext() -> SnowplowMicroContext? {
+        return getContext(of: "iglu:com.pocket/feature_flag/jsonschema/1-0-0")
+    }
 }
 
 struct SnowplowMicroEventData: Codable {

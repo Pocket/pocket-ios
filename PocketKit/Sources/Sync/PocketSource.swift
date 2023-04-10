@@ -27,6 +27,7 @@ public class PocketSource: Source {
     private let apollo: ApolloClientProtocol
     private let lastRefresh: LastRefresh
     private let slateService: SlateService
+    private let featureFlagService: FeatureFlagLoadingService
     private let networkMonitor: NetworkPathMonitor
     private let retrySignal: PassthroughSubject<Void, Never>
     private let sessionProvider: SessionProvider
@@ -72,13 +73,13 @@ public class PocketSource: Source {
     public convenience init(
         space: Space,
         user: User,
-        sessionProvider: SessionProvider,
+        appSession: AppSession,
         consumerKey: String,
         defaults: UserDefaults,
         backgroundTaskManager: BackgroundTaskManager
     ) {
         let apollo = ApolloClient.createDefault(
-            sessionProvider: sessionProvider,
+            sessionProvider: appSession as! SessionProvider,
             consumerKey: consumerKey
         )
 
@@ -89,8 +90,9 @@ public class PocketSource: Source {
             operations: OperationFactory(),
             lastRefresh: UserDefaultsLastRefresh(defaults: defaults),
             slateService: APISlateService(apollo: apollo, space: space),
+            featureFlagService: APIFeatureFlagService(apollo: apollo, space: space, appSession: appSession),
             networkMonitor: NWPathMonitor(),
-            sessionProvider: sessionProvider,
+            sessionProvider: appSession as! SessionProvider,
             backgroundTaskManager: backgroundTaskManager,
             osNotificationCenter: OSNotificationCenter(
                 notifications: CFNotificationCenterGetDarwinNotifyCenter()
@@ -106,6 +108,7 @@ public class PocketSource: Source {
         operations: SyncOperationFactory,
         lastRefresh: LastRefresh,
         slateService: SlateService,
+        featureFlagService: FeatureFlagLoadingService,
         networkMonitor: NetworkPathMonitor,
         sessionProvider: SessionProvider,
         backgroundTaskManager: BackgroundTaskManager,
@@ -118,6 +121,7 @@ public class PocketSource: Source {
         self.operations = operations
         self.lastRefresh = lastRefresh
         self.slateService = slateService
+        self.featureFlagService = featureFlagService
         self.networkMonitor = networkMonitor
         self.retrySignal = .init()
         self.sessionProvider = sessionProvider
@@ -537,6 +541,19 @@ extension PocketSource {
 extension PocketSource {
     public func fetchUserData() async throws {
         try await userService.fetchUser()
+    }
+}
+
+// MARK: - Feature Flags
+
+extension PocketSource {
+
+    public func fetchAllFeatureFlags() async throws {
+        try await featureFlagService.fetchFeatureFlags()
+    }
+
+    public func fetchFeatureFlag(by name: String) -> FeatureFlag? {
+        try? space.fetchFeatureFlag(by: name, in: space.backgroundContext)
     }
 }
 

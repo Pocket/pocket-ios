@@ -1,0 +1,32 @@
+{
+  "data": {
+    "assignments": {
+      "assignments": [
+        {
+          "name": "temp.rick.roll",
+          "assigned": true,
+          "variant": null,
+          "payload": null
+        },
+        {
+          "name": "perm.feature.on",
+          "assigned": true,
+          "variant": null,
+          "payload": null
+        },
+        {
+          "name": "temp.feature.off",
+          "assigned": false,
+          "variant": null,
+          "payload": null
+        },
+        {
+          "name": "temp.feature.variant",
+          "assigned": true,
+          "variant": "theVariant",
+          "payload": null
+        }
+      ]
+    }
+  }
+}
