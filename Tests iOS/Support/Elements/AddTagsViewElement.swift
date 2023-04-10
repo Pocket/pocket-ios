@@ -31,8 +31,19 @@ struct AddTagsViewElement: PocketUIElement {
         return query["all-tags"]
     }
 
+    var allTagSectionCells: XCUIElementQuery {
+        element.cells.staticTexts.matching(identifier: "all-tags-section")
+    }
+
+    var recentTagCells: XCUIElementQuery {
+        element.cells.staticTexts.matching(identifier: "recent-tags")
+    }
+
     func allTagsRow(matching string: String) -> XCUIElement {
-        return allTagsView.staticTexts[string]
+        return allTagSectionCells.containing(
+            .staticText,
+            identifier: string
+        ).element(boundBy: 0)
     }
 
     func tag(matching string: String) -> XCUIElement {

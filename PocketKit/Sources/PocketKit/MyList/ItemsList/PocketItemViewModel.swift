@@ -11,6 +11,7 @@ import SharedPocketKit
 class PocketItemViewModel: ObservableObject {
     private let tracker: Tracker
     private let source: Source
+    private let userDefaults: UserDefaults
     private let index: Int
     private let scope: SearchScope
     private let user: User
@@ -39,6 +40,7 @@ class PocketItemViewModel: ObservableObject {
             item: savedItem,
             source: source,
             tracker: tracker,
+            userDefaults: userDefaults,
             user: user,
             store: store,
             networkPathMonitor: networkPathMontor,
@@ -48,11 +50,12 @@ class PocketItemViewModel: ObservableObject {
         return addTagsViewModel
     }
 
-    init(item: PocketItem, index: Int, source: Source, tracker: Tracker, scope: SearchScope, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor) {
+    init(item: PocketItem, index: Int, source: Source, tracker: Tracker, userDefaults: UserDefaults, scope: SearchScope, user: User, store: SubscriptionStore, networkPathMonitor: NetworkPathMonitor) {
         self.item = item
         self.index = index
         self.source = source
         self.tracker = tracker
+        self.userDefaults = userDefaults
         self.scope = scope
         self.isFavorite = item.isFavorite
         self.user = user

@@ -194,6 +194,7 @@ extension SavedItemViewModel {
             item: item,
             source: source,
             tracker: tracker,
+            userDefaults: userDefaults,
             user: user,
             store: store,
             networkPathMonitor: networkPathMonitor,

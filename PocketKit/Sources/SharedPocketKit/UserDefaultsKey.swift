@@ -9,6 +9,7 @@ public extension UserDefaults {
     enum Key: String, CaseIterable {
         case hasAppBeenLaunchedPreviously = "hasAppBeenLaunchedPreviously"
         case recentSearches = "Search.recentSearches"
+        case recentTags = "Search.recentTags"
         case toggleAppBadge = "AccountViewModel.ToggleAppBadge"
         case appBadgeToggle = "Settings.ToggleAppBadge"
         case legacyUserMigration = "com.mozilla.pocket.next.migration.legacyUser"

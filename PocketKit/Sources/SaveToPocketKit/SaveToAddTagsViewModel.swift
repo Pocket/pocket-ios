@@ -4,17 +4,22 @@ import Sync
 import Textile
 import Foundation
 import Analytics
+import SharedPocketKit
 
 class SaveToAddTagsViewModel: AddTagsViewModel {
     private let item: SavedItem?
     private let tracker: Tracker
+    private let userDefaults: UserDefaults
+    private let recentTagsFactory: RecentTagsProvider
     private let retrieveAction: ([String]) -> [Tag]?
     private let filterAction: (String, [String]) -> [Tag]?
     private let saveAction: ([String]) -> Void
     private var userInputListener: AnyCancellable?
     var upsellView: AnyView { return AnyView(erasing: EmptyView()) }
 
-    var sectionTitle: TagSectionType = .allTags
+    var recentTags: [TagType] {
+        recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+    }
 
     @Published var tags: [String] = []
 
@@ -22,12 +27,14 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
 
     @Published var otherTags: [TagType] = []
 
-    init(item: SavedItem?, tracker: Tracker, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
+    init(item: SavedItem?, tracker: Tracker, userDefaults: UserDefaults, retrieveAction: @escaping ([String]) -> [Tag]?, filterAction: @escaping (String, [String]) -> [Tag]?, saveAction: @escaping ([String]) -> Void) {
         self.item = item
         self.tracker = tracker
         self.retrieveAction = retrieveAction
         self.filterAction = filterAction
         self.saveAction = saveAction
+        self.userDefaults = userDefaults
+        self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
 
         tags = item?.tags?.compactMap { ($0 as? Tag)?.name } ?? []
         allOtherTags()
@@ -39,19 +46,21 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
                 self?.trackUserEnterText(with: text)
                 self?.filterTags(with: text)
         })
+
+        recentTagsFactory.getInitialRecentTags(with: retrieveAction(tags)?.compactMap({ $0.name }))
     }
 
     /// Saves tags to an item
     func addTags() {
         trackSaveTagsToItem()
         saveAction(tags)
+        recentTagsFactory.updateRecentTags(with: item?.tags?.compactMap { ($0 as? Tag)?.name }, and: tags)
     }
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
         let fetchedTags = retrieveAction(tags)?.compactMap { $0.name } ?? []
         otherTags = arrangeTags(with: fetchedTags)
-        sectionTitle = .allTags
         trackAllTagsImpression()
     }
 
@@ -66,7 +75,6 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
         let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
         if !tagTypes.isEmpty {
             otherTags = tagTypes
-            sectionTitle = .filterTags
             trackFilteredTagsImpression()
         } else {
             allOtherTags()

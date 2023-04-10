@@ -4,13 +4,14 @@
 
 public enum TagType: Hashable {
     case notTagged
+    case recent(String)
     case tag(String)
 
     public var name: String {
         switch self {
         case .notTagged:
             return "not tagged"
-        case .tag(let name):
+        case .tag(let name), .recent(let name):
             return name
         }
     }
@@ -20,5 +21,5 @@ public enum TagType: Hashable {
 /// - Parameter tags: list of users tag names
 /// - Returns: converts users tags to display a list of `TagType`
 public func arrangeTags(with tags: [String]) -> [TagType] {
-    return tags.sorted().compactMap { TagType.tag($0) }
+    return Array(Set(tags)).sorted().compactMap { TagType.tag($0) }
 }

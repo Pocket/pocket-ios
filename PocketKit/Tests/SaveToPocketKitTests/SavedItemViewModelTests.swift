@@ -10,6 +10,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var saveService: MockSaveService!
     private var dismissTimer: Timer.TimerPublisher!
     private var tracker: MockTracker!
+    private var userDefaults: UserDefaults!
     private var consumerKey: String!
     private var space: Space!
 
@@ -18,14 +19,16 @@ class SavedItemViewModelTests: XCTestCase {
         saveService: SaveService? = nil,
         dismissTimer: Timer.TimerPublisher? = nil,
         tracker: Tracker? = nil,
-        consumerKey: String? = nil
+        consumerKey: String? = nil,
+        userDefaults: UserDefaults? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             appSession: appSession ?? self.appSession,
             saveService: saveService ?? self.saveService,
             dismissTimer: dismissTimer ?? self.dismissTimer,
             tracker: tracker ?? self.tracker,
-            consumerKey: consumerKey ?? self.consumerKey
+            consumerKey: consumerKey ?? self.consumerKey,
+            userDefaults: userDefaults ?? self.userDefaults
         )
     }
 
@@ -38,12 +41,14 @@ class SavedItemViewModelTests: XCTestCase {
         tracker = MockTracker()
         consumerKey = "test-key"
         space = .testSpace()
+        userDefaults = UserDefaults(suiteName: "SavedItemViewModelTests")
 
         let savedItem = SavedItem(context: space.backgroundContext, url: URL(string: "http://mozilla.com")!)
         saveService.stubSave { _ in .newItem(savedItem) }
     }
 
     override func tearDown() async throws {
+        UserDefaults.standard.removePersistentDomain(forName: "SavedItemViewModelTests")
         try space.clear()
     }
 }
