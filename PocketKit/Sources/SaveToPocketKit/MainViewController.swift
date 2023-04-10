@@ -1,4 +1,5 @@
 import UIKit
+import Analytics
 import Textile
 import Apollo
 import SharedPocketKit
@@ -18,6 +19,7 @@ class MainViewController: UIViewController {
         let encryptedStore = PocketEncryptedStore()
         let userDefaults = services.userDefaults
         let child: UIViewController
+        let tracker = services.tracker
 
         let legacyUserMigration = LegacyUserMigration(
             userDefaults: userDefaults,
@@ -27,21 +29,26 @@ class MainViewController: UIViewController {
         )
 
         do {
+            tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .saveToPocketKit))
             let attempted = try legacyUserMigration.attemptMigration { }
             if attempted {
+                tracker.track(event: Events.Migration.MigrationTo_v8DidSucceed(source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration required; running.")
                 // Legacy cleanup
                 LegacyCleanupService().cleanUp()
             } else {
+                tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: nil, source: .saveToPocketKit))
                 Log.breadcrumb(category: "launch", level: .info, message: "Legacy user migration not required; skipped.")
             }
         } catch LegacyUserMigrationError.missingStore {
+            tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: LegacyUserMigrationError.missingStore, source: .saveToPocketKit))
             Log.breadcrumb(category: "launch", level: .info, message: "No previous store for user migration; skipped.")
             // Since we don't have a store, we can skip any further attempts at running this migration.
             legacyUserMigration.forceSkip()
         } catch {
             // All errors are something we can't resolve client-side, so we don't want to re-attempt
             // on further launches.
+            tracker.track(event: Events.Migration.MigrationTo_v8DidFail(with: error, source: .saveToPocketKit))
             legacyUserMigration.forceSkip()
             Log.capture(error: error)
         }
