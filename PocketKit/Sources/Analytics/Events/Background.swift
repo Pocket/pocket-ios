@@ -31,7 +31,8 @@ public struct Background: Event, CustomStringConvertible {
     public func toSelfDescribing() -> SelfDescribing {
         let base = SelfDescribing(schema: Background.schema, payload: [
             "type": NSString(string: "\(self.type)"),
-            "id": NSString(string: self.description)
+            "id": NSString(string: self.description),
+            "source": NSString(string: self.source.rawValue)
         ])
         extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
 
