@@ -103,7 +103,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
 
         viewModel.allOtherTags()
 
-        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 3"), TagType.tag("tag 2")])
+        XCTAssertEqual(viewModel.otherTags, [TagType.tag("tag 2"), TagType.tag("tag 3")])
     }
 
     func test_removeTag_withValidName_updatesTags() throws {

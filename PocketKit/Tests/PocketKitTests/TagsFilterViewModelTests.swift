@@ -28,7 +28,7 @@ class TagsFilterViewModelTests: XCTestCase {
         TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
     }
 
-    func test_getAllTags_withThreeTags_returnsMostRecentTags() {
+    func test_getAllTags_withThreeTags_returnsSortedNameTags() {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
@@ -38,7 +38,7 @@ class TagsFilterViewModelTests: XCTestCase {
         let tags = viewModel.getAllTags()
 
         XCTAssertEqual(tags.count, 3)
-        XCTAssertEqual(tags, [TagType.tag("tag 3"), TagType.tag("tag 2"), TagType.tag("tag 1")])
+        XCTAssertEqual(tags, [TagType.tag("tag 1"), TagType.tag("tag 2"), TagType.tag("tag 3")])
     }
 
     func test_getAllTags_withMoreThan3Tags_returnsSortedOrder() {
@@ -55,7 +55,7 @@ class TagsFilterViewModelTests: XCTestCase {
         let tags = viewModel.getAllTags()
 
         XCTAssertEqual(tags.count, 5)
-        XCTAssertEqual(tags, [TagType.tag("e"), TagType.tag("d"), TagType.tag("c"), TagType.tag("a"), TagType.tag("b")])
+        XCTAssertEqual(tags, [TagType.tag("a"), TagType.tag("b"), TagType.tag("c"), TagType.tag("d"), TagType.tag("e")])
     }
 
     func test_selectedTag_withTagName_sendsPredicate() {
