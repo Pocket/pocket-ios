@@ -28,7 +28,7 @@ struct AddTagsViewElement: PocketUIElement {
             query = element.tables
         }
 
-        return query["all-tags-section"]
+        return query["all-tags"]
     }
 
     var allTagSectionCells: XCUIElementQuery {

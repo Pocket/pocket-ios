@@ -28,6 +28,7 @@ public struct TagsListView: View {
                 )
             }
             .listStyle(.plain)
+            .accessibilityIdentifier("all-tags")
         } else {
             TagsEmptyView(emptyStateText: emptyStateText)
         }
