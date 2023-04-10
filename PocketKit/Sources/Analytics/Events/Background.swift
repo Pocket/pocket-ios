@@ -15,7 +15,7 @@ public struct Background: Event, CustomStringConvertible {
 
     let extraEntities: [Entity]
 
-    public init(type: BackgroundType, source:MigrationSource, extraEntities: [Entity] = []) {
+    public init(type: BackgroundType, source: MigrationSource, extraEntities: [Entity] = []) {
         self.type = type
         self.source = source
         self.extraEntities = extraEntities
@@ -46,5 +46,3 @@ extension Background {
         case failed(Error?)
     }
 }
-
-
