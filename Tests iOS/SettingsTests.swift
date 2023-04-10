@@ -49,6 +49,7 @@ class SettingsTest: XCTestCase {
         await tap_deleteOnDeleteConfirmation(deletePromise: &deletePromise)
         app.loggedOutView.wait()
         await loadExitSurvey()
+        deletePromise = nil
     }
 
     @MainActor
@@ -73,6 +74,7 @@ class SettingsTest: XCTestCase {
         await tap_deleteOnDeleteConfirmation(deletePromise: &deletePromise)
         app.loggedOutView.wait()
         await loadExitSurvey()
+        deletePromise = nil
     }
 
     @MainActor
@@ -96,6 +98,7 @@ class SettingsTest: XCTestCase {
         premiumUser_tapDeleteToggles()
         await tap_deleteOnDeleteConfirmation(deletePromise: &deletePromise, success: false)
         assertsError()
+        deletePromise = nil
     }
 
     @MainActor

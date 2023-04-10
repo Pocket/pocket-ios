@@ -23,7 +23,7 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
 
         return nil
     }
-    
+
     /// Helper function to turn a SavedItem into a CSSearchableItemAttributeSet
     /// - Parameter savedItem: The saved item to search
     /// - Returns: The CoreSpotlight result
