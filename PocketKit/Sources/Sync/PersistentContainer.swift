@@ -12,6 +12,9 @@ public class PersistentContainer: NSPersistentContainer {
         return context
     }()
 
+    private (set) var spotlightIndexer: CoreDataSpotlightDelegate?
+    private (set) var storeDescription: NSPersistentStoreDescription?
+
     private lazy var modifiedViewContext: NSManagedObjectContext = {
         viewContext.automaticallyMergesChangesFromParent = true
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
@@ -33,24 +36,35 @@ public class PersistentContainer: NSPersistentContainer {
 
         switch storage {
         case .inMemory:
-            persistentStoreDescriptions = [
-                NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
-            ]
+            storeDescription = NSPersistentStoreDescription(url: URL(fileURLWithPath: "/dev/null"))
         case .shared:
             let sharedContainerURL = FileManager.default
                 .containerURL(forSecurityApplicationGroupIdentifier: groupID)!
                 .appendingPathComponent("PocketModel.sqlite")
 
             Log.debug("Store URL: \(sharedContainerURL)")
-            persistentStoreDescriptions = [
-                NSPersistentStoreDescription(url: sharedContainerURL)
-            ]
+            storeDescription = NSPersistentStoreDescription(url: sharedContainerURL)
         }
+
+        guard let storeDescription else {
+            fatalError("no store description")
+        }
+
+        persistentStoreDescriptions = [
+            storeDescription
+        ]
+
+        storeDescription.type = NSSQLiteStoreType
+        storeDescription.setOption(true as NSNumber, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+        storeDescription.setOption(true as NSNumber, forKey: NSPersistentHistoryTrackingKey)
 
         loadPersistentStores {storeDescription, error in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         }
+
+        spotlightIndexer = CoreDataSpotlightDelegate(forStoreWith: storeDescription, coordinator: self.persistentStoreCoordinator)
+        spotlightIndexer?.startSpotlightIndexing()
     }
 }
