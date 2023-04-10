@@ -79,13 +79,14 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
     private var subscriptions: [AnyCancellable] = []
     private var store: SubscriptionStore
     private var networkPathMonitor: NetworkPathMonitor
+    private var featureFlags: FeatureFlagServiceProtocol
 
     private var selectedFilters: Set<ItemsListFilter>
     private let availableFilters: [ItemsListFilter]
     private let notificationCenter: NotificationCenter
     private let viewType: SavesViewType
 
-    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults) {
+    init(source: Source, tracker: Tracker, viewType: SavesViewType, listOptions: ListOptions, notificationCenter: NotificationCenter, user: User, store: SubscriptionStore, refreshCoordinator: RefreshCoordinator, networkPathMonitor: NetworkPathMonitor, userDefaults: UserDefaults, featureFlags: FeatureFlagServiceProtocol) {
         self.source = source
         self.refreshCoordinator = refreshCoordinator
         self.tracker = tracker
@@ -97,6 +98,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         self.store = store
         self.networkPathMonitor = networkPathMonitor
         self.userDefaults = userDefaults
+        self.featureFlags = featureFlags
 
         switch self.viewType {
         case .saves:
@@ -409,8 +411,12 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
         let sections: [ItemsListSection] = [.filters]
         snapshot.appendSections(sections)
 
+        var cases = ItemsListFilter.allCases
+        if !self.featureFlags.isAssigned(flag: .listen) {
+            cases.removeAll(where: {$0 == .listen})
+        }
         snapshot.appendItems(
-            ItemsListFilter.allCases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
+            cases.map { ItemsListCell<ItemIdentifier>.filterButton($0) },
             toSection: .filters
         )
 

@@ -1,0 +1,14 @@
+{
+    "data": {
+        "assignments": {
+            "__typename": "UnleashAssignmentList",
+            "assignments": [{
+                "__typename": "UnleashAssignment",
+                "name": "temp.ios.listen",
+                "assigned": true,
+                "variant": null,
+                "payload": null
+            }]
+        }
+    }
+}
