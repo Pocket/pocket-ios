@@ -90,7 +90,7 @@ public extension Events.Tags {
         )
     }
 
-    // Fired when a user views filtered tags in the `Add Tags` screen for an item
+    /// Fired when a user views filtered tags in the `Add Tags` screen for an item
     static func filteredTagsImpression(itemUrl: URL) -> Event {
         return Impression(
             component: .screen,
@@ -113,6 +113,26 @@ public extension Events.Tags {
             uiEntity: UiEntity(
                 .button,
                 identifier: "global-nav.addTags.upsell"
+            )
+        )
+    }
+
+    static func addTagsRecentTagTapped() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.addTags.recentTags"
+            )
+        )
+    }
+
+    static func filterTagsRecentTagTapped() -> Event {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "global-nav.filterTags.recentTags"
             )
         )
     }

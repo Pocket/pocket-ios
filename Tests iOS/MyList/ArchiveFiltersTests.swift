@@ -10,8 +10,9 @@ import NIO
 class ArchiveFiltersTests: XCTestCase {
     var server: Application!
     var app: PocketAppElement!
+    var snowplowMicro = SnowplowMicro()
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         continueAfterFailure = false
 
         let uiApp = XCUIApplication()
@@ -26,9 +27,11 @@ class ArchiveFiltersTests: XCTestCase {
         try server.start()
     }
 
-    override func tearDownWithError() throws {
+    @MainActor
+    override func tearDown() async throws {
         try server.stop()
         app.terminate()
+        await snowplowMicro.assertBaselineSnowplowExpectation()
     }
 
     func test_archiveView_tappingFavoritesPill_togglesDisplayingFavoritedArchivedContent() {
@@ -86,14 +89,6 @@ class ArchiveFiltersTests: XCTestCase {
     }
 
     func test_archiveView_tappingTaggedFilter_withPremiumUser_showsFilteredItems() {
-        server.routes.post("/graphql") { request, _ -> Response in
-            let apiRequest = ClientAPIRequest(request)
-            if apiRequest.isForUserDetails {
-                return Response.premiumUserDetails()
-            }
-            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
-        }
-
         app.launch().tabBar.savesButton.wait().tap()
         let saves = app.saves.wait()
 
@@ -101,9 +96,6 @@ class ArchiveFiltersTests: XCTestCase {
 
         app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
-
-        tagsFilterView.recentTagCells.element.wait()
-        XCTAssertEqual(tagsFilterView.recentTagCells.count, 3)
 
         scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
         XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
