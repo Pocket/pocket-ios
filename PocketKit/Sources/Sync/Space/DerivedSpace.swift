@@ -9,13 +9,13 @@ protocol Paginated {
     var currentCursor: String? { get }
 }
 
-/// Set of protocols that save a page of a specific entity. Used to specialize `DerivedSpace` for that same entity.
+/// Set of protocols that update a set of a specified entity in Core Data. Used to specialize `DerivedSpace` for that same entity.
 protocol SavedItemSpace: Paginated {
-    func savePage(edges: [SavedItem.SavedItemEdge?], cursor: String) throws
+    func updateSavedItems(edges: [SavedItem.SavedItemEdge?], cursor: String) throws
 }
 
 protocol ArchivedItemSpace: Paginated {
-    func saveArchivedPage(edges: [SavedItem.ArchivedItemEdge?], cursor: String) throws
+    func updateArchivedItems(edges: [SavedItem.ArchivedItemEdge?], cursor: String) throws
 }
 
 protocol TagSpace: Paginated {
@@ -77,7 +77,7 @@ struct DerivedSpace {
 }
 
 extension DerivedSpace: SavedItemSpace {
-    func savePage(edges: [SavedItem.SavedItemEdge?], cursor: String) throws {
+    func updateSavedItems(edges: [SavedItem.SavedItemEdge?], cursor: String) throws {
         updateCursor(cursor)
         for edge in edges {
             guard let edge = edge, let node = edge.node, let url = URL(string: node.url) else {
@@ -101,7 +101,7 @@ extension DerivedSpace: SavedItemSpace {
 }
 
 extension DerivedSpace: ArchivedItemSpace {
-    func saveArchivedPage(edges: [SavedItem.ArchivedItemEdge?], cursor: String) throws {
+    func updateArchivedItems(edges: [SavedItem.ArchivedItemEdge?], cursor: String) throws {
         updateCursor(cursor)
 
         for edge in edges {

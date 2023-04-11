@@ -135,7 +135,7 @@ class FetchArchive: SyncOperation {
             return
         }
 
-        try safeSpace.saveArchivedPage(edges: edges, cursor: cursor)
+        try safeSpace.updateArchivedItems(edges: edges, cursor: cursor)
     }
 
     struct PaginationSpec {
