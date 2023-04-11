@@ -36,7 +36,15 @@ class AddTagsItemTests: XCTestCase {
     }
 
     @MainActor
-    func test_addTagsToItemFromSaves_savesNewTags() async {
+    func test_addTagsToItemFromSaves_withPremiumUser_savesNewTags() async {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
+            }
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
+        }
+
         app.launch().tabBar.savesButton.wait().tap()
         let itemCell = app.saves.itemView(matching: "Item 1")
         itemCell.itemActionButton.wait().tap()
@@ -52,7 +60,7 @@ class AddTagsItemTests: XCTestCase {
         XCTAssertEqual(tagsFilterView.recentTagCells.count, 3)
 
         scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
-//        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 7)
+        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 7)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.save")
@@ -72,11 +80,11 @@ class AddTagsItemTests: XCTestCase {
 
         addTagsView.tag(matching: "tag 0").wait().tap()
 
-        scrollTo(element: addTagsView.allTagsRow(matching: "tag 0"), in: addTagsView.allTagsView, direction: .up)
-        addTagsView.allTagsRow(matching: "tag 0").wait()
+        scrollTo(element: addTagsView.allTagCells(matching: "tag 0"), in: addTagsView.allTagsView, direction: .up)
+        addTagsView.allTagCells(matching: "tag 0").wait()
 
-        scrollTo(element: addTagsView.allTagsRow(matching: "tag 1"), in: addTagsView.allTagsView, direction: .down)
-        addTagsView.allTagsRow(matching: "tag 1").wait().tap()
+        scrollTo(element: addTagsView.allTagCells(matching: "tag 1"), in: addTagsView.allTagsView, direction: .down)
+        addTagsView.allTagCells(matching: "tag 1").wait().tap()
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
 
@@ -92,7 +100,14 @@ class AddTagsItemTests: XCTestCase {
     }
 
     @MainActor
-    func test_addTagsToItemFromArchive_showsAddTagsView() async {
+    func test_addTagsToItemFromArchive_withPremiumUser_showsAddTagsView() async {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
+            }
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
+        }
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.wait().selectionSwitcher.archiveButton.wait().tap()
 
@@ -111,7 +126,7 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.newTagTextField.typeText("Tag 1")
         addTagsView.newTagTextField.typeText("\n")
 
-        scrollTo(element: addTagsView.tag(matching: "tag 1"), in: addTagsView.element, direction: .up)
+        scrollTo(element: addTagsView.allTagCells(matching: "tag 1"), in: addTagsView.element, direction: .up)
         addTagsView.tag(matching: "tag 1").wait()
 
         addTagsView.saveButton.tap()
@@ -123,8 +138,8 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.recentTagCells.element.wait()
         XCTAssertEqual(app.addTagsView.recentTagCells.count, 3)
 
-        scrollTo(element: addTagsView.allTagsRow(matching: "tag 2"), in: addTagsView.element, direction: .up)
-//        XCTAssertEqual(app.addTagsView.allTagSectionCells.count, 7)
+        scrollTo(element: addTagsView.allTagCells(matching: "tag 2"), in: addTagsView.allTagsView, direction: .up)
+        XCTAssertEqual(app.addTagsView.allTagSectionCells.count, 7)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
 
@@ -132,11 +147,11 @@ class AddTagsItemTests: XCTestCase {
 
         let tagEvent = events[0]!
         tagEvent.getUIContext()!.assertHas(type: "screen")
-//        tagEvent.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
+        tagEvent.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
 
         let tagEvent2 = events[1]!
         tagEvent2.getUIContext()!.assertHas(type: "dialog")
-//        tagEvent2.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
+        tagEvent2.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
     }
 
     @MainActor
@@ -186,18 +201,17 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.newTagTextField.typeText("F")
         addTagsView.newTagTextField.typeText("\n")
 
-        scrollTo(element: addTagsView.allTagsRow(matching: "filter tag 0"), in: addTagsView.allTagsView, direction: .up)
-        addTagsView.allTagsRow(matching: "filter tag 0").wait()
+        scrollTo(element: addTagsView.allTagCells(matching: "filter tag 0"), in: addTagsView.allTagsView, direction: .up)
+        addTagsView.allTagCells(matching: "filter tag 0").wait()
 
-        scrollTo(element: addTagsView.allTagsRow(matching: "filter tag 1"), in: addTagsView.allTagsView, direction: .up)
-        addTagsView.allTagsRow(matching: "filter tag 1").wait()
+        scrollTo(element: addTagsView.allTagCells(matching: "filter tag 1"), in: addTagsView.allTagsView, direction: .up)
+        addTagsView.allTagCells(matching: "filter tag 1").wait()
         app.addTagsView.allTagSectionCells.element.wait()
 
-//        Bitrise is failing, but this passes locally, commenting out for now
-//        await snowplowMicro.assertBaselineSnowplowExpectation()
-//        let tagEvent1 = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.filteredTags")
-//        tagEvent1!.getUIContext()!.assertHas(type: "screen")
-//        tagEvent1!.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
+        await snowplowMicro.assertBaselineSnowplowExpectation()
+        let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.filteredTags")
+        tagEvent!.getUIContext()!.assertHas(type: "screen")
+        tagEvent!.getContentContext()!.assertHas(url: "https://example.com/items/archived-item-2")
     }
 
     func selectTaggedFilterButton() {

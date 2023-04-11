@@ -60,7 +60,34 @@ class SavesFiltersTests: XCTestCase {
         XCTAssertEqual(app.saves.wait().itemCells.count, 2)
     }
 
-    func test_savesView_tappingTaggedPill_showsFilteredItems() {
+    func test_savesView_tappingTaggedPill_withFreeUser_showsFilteredItems() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.filterButton(for: "Tagged").tap()
+        let tagsFilterView = app.saves.tagsFilterView.wait()
+        tagsFilterView.tag(matching: "not tagged").wait()
+
+        scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
+        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
+
+        tagsFilterView.tag(matching: "not tagged").wait().tap()
+
+        XCTAssertEqual(app.saves.wait().itemCells.count, 0)
+        waitForDisappearance(of: tagsFilterView)
+
+        app.saves.selectedTagChip(for: "not tagged").wait()
+        app.saves.selectedTagChip(for: "not tagged").buttons.element(boundBy: 0).tap()
+        XCTAssertEqual(app.saves.wait().itemCells.count, 2)
+    }
+
+    func test_savesView_tappingTaggedPill_withPremiumUser_showsFilteredItems() {
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForUserDetails {
+                return Response.premiumUserDetails()
+            }
+            return .fallbackResponses(apiRequest: ClientAPIRequest(request))
+        }
+
         app.launch().tabBar.savesButton.wait().tap()
         app.saves.filterButton(for: "Tagged").tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
@@ -70,7 +97,7 @@ class SavesFiltersTests: XCTestCase {
         XCTAssertEqual(tagsFilterView.recentTagCells.count, 3)
 
         scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
-//        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
+        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
 
         tagsFilterView.tag(matching: "not tagged").wait().tap()
 
