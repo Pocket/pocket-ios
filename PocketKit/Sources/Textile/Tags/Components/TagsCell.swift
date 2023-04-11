@@ -29,30 +29,6 @@ public struct TagsCell: View {
     }
 }
 
-struct RecentTag: View {
-    public var body: some View {
-        HStack(alignment: .center, spacing: 0) {
-            Image(asset: .tag)
-                .tagIconStyle()
-            Text("recent")
-                .style(.tags.tag)
-        }
-        .accessibilityIdentifier("recent-tags")
-    }
-}
-
-private extension Image {
-    func tagIconStyle() -> some View {
-        self
-            .renderingMode(.template)
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-                .frame(width: 13, height: 13)
-                .foregroundColor(Color(.ui.grey4))
-                .padding(.trailing, (8 - 2))
-    }
-}
-
 struct TagsCell_PreviewProvider: PreviewProvider {
     static var previews: some View {
         let tagAction = { (tag: TagType) -> Void in
@@ -77,20 +53,6 @@ struct TagsCell_PreviewProvider: PreviewProvider {
         TagsCell(tag: TagType.recent("test tag"), tagAction: tagAction)
             .previewLayout(.sizeThatFits)
             .previewDisplayName("Recent Tag - Dark")
-            .preferredColorScheme(.dark)
-    }
-}
-
-struct RecentTag_PreviewProvider: PreviewProvider {
-    static var previews: some View {
-        RecentTag()
-            .previewLayout(.sizeThatFits)
-            .previewDisplayName("Light")
-            .preferredColorScheme(.light)
-
-        RecentTag()
-            .previewLayout(.sizeThatFits)
-            .previewDisplayName("Dark")
             .preferredColorScheme(.dark)
     }
 }

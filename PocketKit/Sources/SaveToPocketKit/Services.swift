@@ -9,6 +9,7 @@ struct Services {
 
     let appSession: AppSession
     let saveService: PocketSaveService
+    let user: User
     let tracker: Tracker
     let userDefaults: UserDefaults
 
@@ -25,6 +26,8 @@ struct Services {
         persistentContainer = .init(storage: .shared, groupID: Keys.shared.groupdId)
 
         appSession = AppSession(groupID: Keys.shared.groupdId)
+
+        user = PocketUser(userDefaults: userDefaults)
 
         let snowplow = PocketSnowplowTracker()
         tracker = PocketTracker(snowplow: snowplow)

@@ -150,6 +150,7 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     source: source,
                     tracker: tracker,
                     userDefaults: userDefaults,
+                    user: user,
                     fetchedTags: { [weak self] in
                         self?.source.fetchAllTags()
                     }(),

@@ -84,6 +84,7 @@ let package = Package(
         .target(
             name: "Textile",
             dependencies: [
+                "Localization",
                 .product(name: "Kingfisher", package: "Kingfisher"),
                 .product(name: "Down", package: "Down"),
                 .product(name: "Lottie", package: "lottie-ios"),

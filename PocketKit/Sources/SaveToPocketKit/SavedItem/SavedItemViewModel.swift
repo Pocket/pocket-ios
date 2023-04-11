@@ -12,6 +12,7 @@ class SavedItemViewModel {
     private let tracker: Tracker
     private let consumerKey: String
     private let userDefaults: UserDefaults
+    private let user: User
 
     private var dismissTimerCancellable: AnyCancellable?
 
@@ -23,13 +24,14 @@ class SavedItemViewModel {
 
     let dismissAttributedText = NSAttributedString(string: "Tap to Dismiss", style: .dismiss)
 
-    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher, tracker: Tracker, consumerKey: String, userDefaults: UserDefaults) {
+    init(appSession: AppSession, saveService: SaveService, dismissTimer: Timer.TimerPublisher, tracker: Tracker, consumerKey: String, userDefaults: UserDefaults, user: User) {
         self.appSession = appSession
         self.saveService = saveService
         self.dismissTimer = dismissTimer
         self.tracker = tracker
         self.consumerKey = consumerKey
         self.userDefaults = userDefaults
+        self.user = user
 
         guard let session = appSession.currentSession else { return }
 
@@ -80,6 +82,7 @@ class SavedItemViewModel {
             item: savedItem,
             tracker: tracker,
             userDefaults: userDefaults,
+            user: user,
             retrieveAction: { [weak self] tags in
                 self?.retrieveTags(excluding: tags)
             },
