@@ -107,9 +107,8 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
         )
 
         do {
-            tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .pocketKit))
-
             let attempted = try legacyUserMigration.attemptMigration(migrationWillBegin: { [weak self] in
+                self?.tracker.track(event: Events.Migration.MigrationTo_v8DidBegin(source: .pocketKit))
                 self?.brazeService.signedInUserDidBeginMigration()
             })
 
