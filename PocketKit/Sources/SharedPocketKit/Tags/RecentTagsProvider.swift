@@ -24,9 +24,8 @@ public class RecentTagsProvider {
 
     /// Retrieve initial tags if userDefaults is empty
     /// - Parameter fetchedTags: user's list of tags
-    public func getInitialRecentTags(with fetchedTags: [String]?) {
+    public func getInitialRecentTags(with fetchedTags: [String]) {
         if recentTags.isEmpty {
-            let fetchedTags = fetchedTags ?? []
             recentTags = Array(fetchedTags.prefix(3))
         }
     }
@@ -35,9 +34,9 @@ public class RecentTagsProvider {
     /// - Parameters:
     ///   - originalTags: list of tags originally associated with item
     ///   - inputTags: list of tags saved to the item
-    public func updateRecentTags(with originalTags: [String]?, and inputTags: [String]) {
+    public func updateRecentTags(with originalTags: [String], and inputTags: [String]) {
        var newTags = inputTags
-       if let originalTags {
+        if !originalTags.isEmpty {
            newTags = inputTags.filter { !originalTags.contains($0) }
        }
        newTags.forEach { tag in

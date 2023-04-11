@@ -31,7 +31,8 @@ public struct TagsSectionView: View {
                 ForEach(allTags, id: \.self) { tag in
                     TagsCell(tag: tag, tagAction: tagAction)
                 }
-            }                .accessibilityIdentifier("all-tags-section")
+            }
+            .accessibilityIdentifier("all-tags-section")
         }
     }
 }

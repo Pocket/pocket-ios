@@ -28,12 +28,20 @@ class PocketAddTagsViewModel: AddTagsViewModel {
         }
     }
 
+    /// Fetches recent tags to display to the user only if premium and user has more than 3 tags
     var recentTags: [TagType] {
-        recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+        guard user.status == .free && fetchAllTags.count > 3 else { return [] }
+        return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
     }
 
-    var itemTagNames: [String]? {
-        item.tags?.compactMap { ($0 as? Tag)?.name }
+    /// Fetches all tags associated with item
+    private var itemTagNames: [String] {
+        item.tags?.compactMap { ($0 as? Tag)?.name } ?? []
+    }
+
+    /// Fetches all tags associated with a user
+    private var fetchAllTags: [Tag] {
+        self.source.fetchAllTags() ?? []
     }
 
     @Published var tags: [String] = []
@@ -66,7 +74,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
         self.premiumUpsellView = PremiumUpsellView(viewModel: premiumUpsellViewModel)
 
-        tags = itemTagNames ?? []
+        tags = itemTagNames
         allOtherTags()
 
         userInputListener = $newTagInput
@@ -77,7 +85,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
                 self?.filterTags(with: text)
             })
 
-        recentTagsFactory.getInitialRecentTags(with: source.retrieveTags(excluding: tags)?.compactMap({ $0.name }))
+        recentTagsFactory.getInitialRecentTags(with: fetchAllTags.compactMap({ $0.name }))
     }
 
     /// Saves tags to an item

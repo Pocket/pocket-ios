@@ -10,28 +10,39 @@ class TagsFilterViewModel: ObservableObject {
     private let tracker: Tracker
     private let source: Source
     private let userDefaults: UserDefaults
+    private let user: User
     private let recentTagsFactory: RecentTagsProvider
+
     var selectAllAction: () -> Void?
+
+    /// Fetches recent tags to display to the user only if premium and user has more than 3 tags
     var recentTags: [TagType] {
-        recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+        guard user.status == .premium && getAllTags().count > 3 else { return [] }
+        return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
+    }
+
+    /// Fetches all tags associated with a user
+    private var fetchAllTags: [String] {
+        fetchedTags?.compactMap({ $0.name }) ?? []
     }
 
     @Published var selectedTag: TagType?
     @Published var refreshView: Bool? = false
 
-    init(source: Source, tracker: Tracker, userDefaults: UserDefaults, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
+    init(source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
         self.source = source
         self.tracker = tracker
         self.fetchedTags = fetchedTags
         self.selectAllAction = selectAllAction
         self.userDefaults = userDefaults
+        self.user = user
         self.recentTagsFactory = RecentTagsProvider(userDefaults: userDefaults, key: UserDefaults.Key.recentTags)
 
-        recentTagsFactory.getInitialRecentTags(with: fetchedTags?.compactMap({ $0.name }))
+        recentTagsFactory.getInitialRecentTags(with: fetchAllTags)
     }
 
     func getAllTags() -> [TagType] {
-        arrangeTags(with: fetchedTags?.compactMap({ $0.name }) ?? [])
+        arrangeTags(with: fetchAllTags)
     }
 
     func trackEditAsOverflowAnalytics() {
