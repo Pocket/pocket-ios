@@ -57,7 +57,7 @@ extension Background {
             case .succeeded:
                 return "ios.migration.to8.succeeded"
             case UserMigrationState.failed(let error):
-                guard error != nil else {
+                if error == nil  {
                     return "ios.migration.to8.failed"
                 }
                 return "ios.migration.to8.failedWithError"
