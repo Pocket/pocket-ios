@@ -50,7 +50,7 @@ public struct SlateEntity: Entity {
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
-        var data: [AnyHashable: Any] = [
+        var data: [String: Any] = [
             "slate_id": id,
             "request_id": requestID,
             "experiment": experiment,

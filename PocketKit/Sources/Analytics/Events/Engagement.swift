@@ -36,18 +36,18 @@ public struct Engagement: Event, CustomStringConvertible {
     }
 
     public func toSelfDescribing() -> SelfDescribing {
-        var payload: [String: NSObject] = [
-            "type": NSString(string: type.toType().value),
+        var payload: [String: Any] = [
+            "type": type.toType().value,
         ]
 
         if let value = value {
-            payload["value"] = NSString(string: value)
+            payload["value"] = value
         }
 
         let base = SelfDescribing(schema: Engagement.schema, payload: payload)
-        base.contexts.add(uiEntity.toSelfDescribingJson())
-        extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
-        type.toType().requiredEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
+        base.entities.append(uiEntity.toSelfDescribingJson())
+        extraEntities.forEach { base.entities.append($0.toSelfDescribingJson()) }
+        type.toType().requiredEntities.forEach { base.entities.append($0.toSelfDescribingJson()) }
 
         return base
     }
