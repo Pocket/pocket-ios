@@ -19,7 +19,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     var upsellView: AnyView { return AnyView(erasing: EmptyView()) }
 
     var recentTags: [TagType] {
-        guard user.status == .premium else { return [] }
+        guard user.status == .premium && fetchAllTags.count > 3 else { return [] }
         return recentTagsFactory.recentTags.sorted().compactMap { TagType.recent($0) }
     }
 

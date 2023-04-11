@@ -116,6 +116,7 @@ class PocketItemViewModelTests: XCTestCase {
     func test_addTagsAction_sendsAddTagsViewModel() {
         let item = space.buildSavedItem(tags: ["tag-0"])
         source.stubRetrieveTags { _ in return nil }
+        source.stubFetchAllTags { return [] }
         let expectFetchSavedItemCall = expectation(description: "expect source.fetchOrCreateSavedItem(_:)")
         source.stubFetchSavedItem { _ in
             defer { expectFetchSavedItemCall.fulfill() }
