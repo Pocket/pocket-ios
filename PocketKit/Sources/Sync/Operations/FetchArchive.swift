@@ -48,6 +48,10 @@ class FetchArchive: SyncOperation {
                 }
             }
 
+            if lastRefresh.lastRefreshArchive == nil {
+                initialDownloadState.send(.started)
+            }
+
             try await fetchArchive()
 
             lastRefresh.refreshedArchive()

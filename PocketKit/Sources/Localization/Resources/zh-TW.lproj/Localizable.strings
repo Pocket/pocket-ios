@@ -133,6 +133,11 @@
 //General Messages
 "general.oops" = "哎呀！要再試一次嗎？";
 
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "更快速地標記篇章 — 透過 Pocket Premium 獲取最新標籤。";
+"tags.upsell.getPocketPremium" = "訂購 Pocket Premium";
+"tags.section.recentTags" = "近期標籤";
+"tags.section.userTags" = "我的標籤";
 
 // Search
 "search.errorMessage" = "我們遇到錯誤，暫時無法為您提供所需資訊。請稍後重試。";
