@@ -82,6 +82,23 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
 
         enableAdjust()
 
+        migrateLegacyAccount()
+
+        return true
+    }
+
+    /// Sets orientations to use for the views
+    /// - Parameters:
+    ///   - application: singleton app object
+    ///   - window: window whose interface orientations you want to retrieve
+    /// - Returns: orientations to use for the view
+    public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
+        return PocketAppDelegate.phoneOrientationLock
+    }
+
+    /// Attempt to migrate a legacy (v7) account to v8
+    func migrateLegacyAccount() {
         let legacyUserMigration = LegacyUserMigration(
             userDefaults: userDefaults,
             encryptedStore: PocketEncryptedStore(),
@@ -117,17 +134,6 @@ public class PocketAppDelegate: UIResponder, UIApplicationDelegate {
             legacyUserMigration.forceSkip()
             Log.capture(error: error)
         }
-        return true
-    }
-
-    /// Sets orientations to use for the views
-    /// - Parameters:
-    ///   - application: singleton app object
-    ///   - window: window whose interface orientations you want to retrieve
-    /// - Returns: orientations to use for the view
-    public func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
-        guard UIDevice.current.userInterfaceIdiom == .phone else { return .all }
-        return PocketAppDelegate.phoneOrientationLock
     }
 
     func enableAdjust() {
