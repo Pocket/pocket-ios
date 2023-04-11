@@ -319,6 +319,9 @@ class FetchSavesTests: XCTestCase {
         user.stubSetStatus { _ in }
         initialDownloadState.send(.completed)
         apollo.setupFetchSavesSyncResponse()
+        lastRefresh.stubGetLastRefreshSaves {
+            return Date().timeIntervalSince1970
+        }
 
         let receivedEvent = expectation(description: "receivedEvent")
         receivedEvent.isInverted = true
