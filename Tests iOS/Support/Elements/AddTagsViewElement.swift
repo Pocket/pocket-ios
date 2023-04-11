@@ -39,7 +39,7 @@ struct AddTagsViewElement: PocketUIElement {
         element.cells.staticTexts.matching(identifier: "recent-tags")
     }
 
-    func allTagsRow(matching string: String) -> XCUIElement {
+    func allTagCells(matching string: String) -> XCUIElement {
         return allTagSectionCells.containing(
             .staticText,
             identifier: string
