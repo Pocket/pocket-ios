@@ -133,6 +133,11 @@
 //General Messages
 "general.oops" = "Ой! Попробовать еще раз?";
 
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "Добавляйте теги к историям быстрее, чем когда-либо — недавно использованные теги можно легко найти с помощью Pocket Premium.";
+"tags.upsell.getPocketPremium" = "Приобрести Pocket Premium";
+"tags.section.recentTags" = "Недавний тег";
+"tags.section.userTags" = "Мои теги";
 
 // Search
 "search.errorMessage" = "Из-за возникшей ошибки мы временно не можем предоставить вам то, что нужно. Попробуйте позже.";

@@ -133,6 +133,11 @@
 //General Messages
 "general.oops" = "エラーが発生しました。もう一度お試しください。";
 
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "ストーリーのタグ付けを高速化—Pocket Premium が最近使用したタグを提案します。";
+"tags.upsell.getPocketPremium" = "Pocket Premium に登録";
+"tags.section.recentTags" = "最近のタグ";
+"tags.section.userTags" = "マイタグ";
 
 // Search
 "search.errorMessage" = "エラーが発生したため、必要なデータを表示できません。後ほどもう一度お試しください。";

@@ -133,6 +133,11 @@
 //General Messages
 "general.oops" = "Hoppla! Erneut versuchen?";
 
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "Jetzt kannst du Geschichten noch rascher taggen – Pocket Premium schlägt dir deine zuletzt verwendeten Tags vor.";
+"tags.upsell.getPocketPremium" = "Hol dir Pocket Premium";
+"tags.section.recentTags" = "Neueste Tags";
+"tags.section.userTags" = "Meine Tags";
 
 // Search
 "search.errorMessage" = "Aufgrund eines Fehlers treten vorübergehend Einschränkungen auf. Bitte versuche es später erneut.";
