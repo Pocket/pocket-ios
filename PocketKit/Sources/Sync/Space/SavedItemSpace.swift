@@ -36,11 +36,7 @@ struct SavedItemSpace {
                 return
             }
 
-            Log.breadcrumb(
-                category: "sync",
-                level: .info,
-                message: "Updating/Inserting SavedItem with ID: \(node.remoteID)"
-            )
+            logItemUpdated(itemID: node.remoteID)
 
             context.performAndWait {
                 let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID, context: context)) ?? SavedItem(context: context, url: url, remoteID: node.remoteID)
@@ -52,15 +48,49 @@ struct SavedItemSpace {
                 task.currentCursor = cursor
             }
 
-            // save the child context
-            try context.performAndWait {
-                guard context.hasChanges else {
-                    return
-                }
-                try context.save()
-                // then save the parent context
-                try space.save()
+            try saveContexts()
+        }
+    }
+
+    func saveArchivedPage(edges: [SavedItem.ArchivedItemEdge?], cursor: String) throws {
+        for edge in edges {
+            guard let edge = edge, let node = edge.node, let url = URL(string: node.url) else {
+                return
             }
+
+            logItemUpdated(itemID: node.remoteID)
+
+            context.performAndWait {
+                let item = (try? space.fetchSavedItem(byRemoteID: node.remoteID)) ?? SavedItem(context: space.backgroundContext, url: url, remoteID: node.remoteID)
+                item.update(from: node.fragments.savedItemSummary, with: space)
+
+                if item.deletedAt != nil {
+                    space.delete(item)
+                }
+                task.currentCursor = cursor
+            }
+
+            try saveContexts()
+        }
+    }
+
+    private func logItemUpdated(itemID: String) {
+        Log.breadcrumb(
+            category: "sync",
+            level: .info,
+            message: "Updating/Inserting SavedItem with ID: \(itemID)"
+        )
+    }
+
+    private func saveContexts() throws {
+        // save the child context
+        try context.performAndWait {
+            guard context.hasChanges else {
+                return
+            }
+            try context.save()
+            // then save the parent context
+            try space.save()
         }
     }
 }
