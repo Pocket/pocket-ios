@@ -34,7 +34,7 @@ class FetchSaves: SyncOperation {
     }
 
     func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
-        guard let safeSpace = SavedItemSpace(space: space, taskID: syncTaskId) else {
+        guard let safeSpace = DerivedSpace(space: space, taskID: syncTaskId) else {
             return .retry(NoPersistentTaskOperationError())
         }
         self.safeSpace = safeSpace
