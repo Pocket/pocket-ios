@@ -438,7 +438,15 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                 .fetchedObjects?
                 .map { .item($0.objectID) } ?? []
         case .started:
-            itemCellIDs = (0..<4).map { .placeholder($0) }
+            // If you background the app, and reopen the Fetch operations can override the sent staus,
+            // so instead we will first make sure we have no objects before switching to placeholders.
+            if let fetchedObjects = itemsController.fetchedObjects, fetchedObjects.count > 0 {
+                itemCellIDs = (0..<fetchedObjects.count).compactMap { index in
+                    .item(fetchedObjects[index].objectID)
+                }
+            } else {
+                itemCellIDs = (0..<4).map { .placeholder($0) }
+            }
         case .paginating(let totalCount):
             itemCellIDs = (0..<totalCount).compactMap { index in
                 guard let fetchedObjects = itemsController.fetchedObjects,
