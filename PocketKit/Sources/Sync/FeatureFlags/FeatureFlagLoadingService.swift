@@ -35,7 +35,7 @@ class APIFeatureFlagService: FeatureFlagLoadingService {
         let query = FeatureFlagsQuery(context: context)
 
         do {
-           let results = try await apollo.fetch(query: query)
+            let results = try await apollo.fetch(query: query)
             let remoteAssignments = results.data?.assignments?.assignments
             try handle(remoteAssignments: remoteAssignments?.map({ remoteAssignment in
                 // the ! is a bug in our graphql schema we need to update.

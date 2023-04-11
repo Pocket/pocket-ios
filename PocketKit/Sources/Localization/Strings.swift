@@ -228,6 +228,10 @@ public enum Localization {
       public static let pocket = Localization.tr("Localizable", "back.to.pocket", fallback: "Back to Pocket")
     }
   }
+  public enum Carousel {
+    /// Listen
+    public static let listen = Localization.tr("Localizable", "carousel.listen", fallback: "Listen")
+  }
   public enum General {
     /// Oops! Try again?
     public static let oops = Localization.tr("Localizable", "general.oops", fallback: "Oops! Try again?")

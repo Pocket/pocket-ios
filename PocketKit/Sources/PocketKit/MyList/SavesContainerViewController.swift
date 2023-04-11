@@ -5,6 +5,7 @@ import SharedPocketKit
 import Combine
 import SafariServices
 import Textile
+import PKTListen
 
 struct SavesContainerViewControllerSwiftUI: UIViewControllerRepresentable {
     var model: SavesContainerViewModel
@@ -230,6 +231,13 @@ extension SavesContainerViewController {
             self?.updateSearchScope()
         }.store(in: &subscriptions)
 
+        model.savedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
+            guard let listenViewModel else {
+                return
+            }
+            self?.showListen(listenViewModel: listenViewModel)
+        }.store(in: &subscriptions)
+
         model.savedItemsList.$presentedAddTags.sink { [weak self] addTagsViewModel in
             self?.present(viewModel: addTagsViewModel)
         }.store(in: &subscriptions)
@@ -259,6 +267,13 @@ extension SavesContainerViewController {
 
         model.archivedItemsList.$presentedSearch.sink { [weak self] alert in
             self?.updateSearchScope()
+        }.store(in: &subscriptions)
+
+        model.archivedItemsList.$presentedListenViewModel.sink { [weak self] listenViewModel in
+            guard let listenViewModel else {
+                return
+            }
+            self?.showListen(listenViewModel: listenViewModel)
         }.store(in: &subscriptions)
 
         model.archivedItemsList.$sharedActivity.sink { [weak self] activity in
@@ -468,5 +483,13 @@ extension SavesContainerViewController: SFSafariViewControllerDelegate {
 
     func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
         model.clearPresentedWebReaderURL()
+    }
+}
+
+extension SavesContainerViewController {
+    private func showListen(listenViewModel: ListenViewModel) {
+        let appConfig = PKTListenAppConfiguration(source: listenViewModel)
+        let listen = PKTListenDrawerViewController.drawer(with: appConfig)
+        self.present(listen, animated: true)
     }
 }

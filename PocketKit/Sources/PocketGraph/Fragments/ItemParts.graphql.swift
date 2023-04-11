@@ -19,6 +19,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
       isArticle
       hasImage
       hasVideo
+      wordCount
       authors {
         __typename
         id
@@ -74,6 +75,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     .field("isArticle", Bool?.self),
     .field("hasImage", GraphQLEnum<PocketGraph.Imageness>?.self),
     .field("hasVideo", GraphQLEnum<PocketGraph.Videoness>?.self),
+    .field("wordCount", Int?.self),
     .field("authors", [Author?]?.self),
     .field("marticle", [Marticle]?.self),
     .field("excerpt", String?.self),
@@ -109,6 +111,8 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   public var hasImage: GraphQLEnum<PocketGraph.Imageness>? { __data["hasImage"] }
   /// 0=no videos, 1=contains video, 2=is a video
   public var hasVideo: GraphQLEnum<PocketGraph.Videoness>? { __data["hasVideo"] }
+  /// Number of words in the article
+  public var wordCount: Int? { __data["wordCount"] }
   /// List of Authors involved with this article
   public var authors: [Author?]? { __data["authors"] }
   /// The Marticle format of the article, used by clients for native article view.

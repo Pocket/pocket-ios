@@ -9,6 +9,7 @@ import AuthenticationServices
 import BackgroundTasks
 import SharedPocketKit
 import Kingfisher
+import Network
 
 struct Services {
     static let shared: Services = { Services() }()
@@ -39,6 +40,7 @@ struct Services {
     let userManagementService: UserManagementServiceProtocol
     let lastRefresh: LastRefresh
     let featureFlagService: FeatureFlagService
+    let listen: Listen
 
     private let persistentContainer: PersistentContainer
 
@@ -179,6 +181,14 @@ struct Services {
         userManagementService = UserManagementService(appSession: appSession, user: user, notificationCenter: .default, source: source)
 
         featureFlagService = FeatureFlagService(source: source, tracker: tracker)
+
+        listen = Listen(
+            appSession: appSession,
+            consumerKey: Keys.shared.pocketApiConsumerKey,
+            networkPathMonitor: NWPathMonitor(),
+            tracker: tracker,
+            source: source
+        )
     }
 }
 
