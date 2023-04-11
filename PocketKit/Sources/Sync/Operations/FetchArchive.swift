@@ -16,7 +16,7 @@ class FetchArchive: SyncOperation {
     private let initialDownloadState: CurrentValueSubject<InitialDownloadState, Never>
     private let lastRefresh: LastRefresh
     // Force unwrapping, because the entry point, execute, will ensure that this exists with a guard
-    private var safeSpace: SavedItemSpace!
+    private var safeSpace: ArchivedItemSpace!
 
     init(
         apollo: ApolloClientProtocol,
@@ -33,7 +33,7 @@ class FetchArchive: SyncOperation {
     }
 
     func execute(syncTaskId: NSManagedObjectID) async -> SyncOperationResult {
-        guard let safeSpace = SavedItemSpace(space: space, taskID: syncTaskId) else {
+        guard let safeSpace = DerivedSpace(space: space, taskID: syncTaskId) else {
             return .retry(NoPersistentTaskOperationError())
         }
         self.safeSpace = safeSpace
