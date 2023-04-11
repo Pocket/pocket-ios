@@ -40,4 +40,3 @@ struct RecentTag_PreviewProvider: PreviewProvider {
             .preferredColorScheme(.dark)
     }
 }
-

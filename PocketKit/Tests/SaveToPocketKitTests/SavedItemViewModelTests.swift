@@ -11,6 +11,7 @@ class SavedItemViewModelTests: XCTestCase {
     private var dismissTimer: Timer.TimerPublisher!
     private var tracker: MockTracker!
     private var userDefaults: UserDefaults!
+    private var user: MockUser!
     private var consumerKey: String!
     private var space: Space!
 
@@ -20,7 +21,8 @@ class SavedItemViewModelTests: XCTestCase {
         dismissTimer: Timer.TimerPublisher? = nil,
         tracker: Tracker? = nil,
         consumerKey: String? = nil,
-        userDefaults: UserDefaults? = nil
+        userDefaults: UserDefaults? = nil,
+        user: User? = nil
     ) -> SavedItemViewModel {
         SavedItemViewModel(
             appSession: appSession ?? self.appSession,
@@ -28,7 +30,8 @@ class SavedItemViewModelTests: XCTestCase {
             dismissTimer: dismissTimer ?? self.dismissTimer,
             tracker: tracker ?? self.tracker,
             consumerKey: consumerKey ?? self.consumerKey,
-            userDefaults: userDefaults ?? self.userDefaults
+            userDefaults: userDefaults ?? self.userDefaults,
+            user: user ?? self.user
         )
     }
 
@@ -42,6 +45,7 @@ class SavedItemViewModelTests: XCTestCase {
         consumerKey = "test-key"
         space = .testSpace()
         userDefaults = UserDefaults(suiteName: "SavedItemViewModelTests")
+        user = MockUser()
 
         let savedItem = SavedItem(context: space.backgroundContext, url: URL(string: "http://mozilla.com")!)
         saveService.stubSave { _ in .newItem(savedItem) }

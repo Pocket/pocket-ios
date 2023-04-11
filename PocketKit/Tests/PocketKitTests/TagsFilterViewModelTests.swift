@@ -1,6 +1,7 @@
 import XCTest
 import Combine
 import Textile
+import SharedPocketKit
 
 @testable import Sync
 @testable import PocketKit
@@ -11,12 +12,14 @@ class TagsFilterViewModelTests: XCTestCase {
     var space: Space!
     private var tracker: MockTracker!
     private var userDefaults: UserDefaults!
+    private var user: MockUser!
 
     override func setUp() {
         space = .testSpace()
         source = MockSource()
         tracker = MockTracker()
         userDefaults = UserDefaults(suiteName: "TagsFilterViewModelTests")
+        user = MockUser()
         subscriptions = []
     }
 
@@ -27,21 +30,46 @@ class TagsFilterViewModelTests: XCTestCase {
         try space.clear()
     }
 
-    private func subject(source: Source? = nil, userDefaults: UserDefaults? = nil, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void) -> TagsFilterViewModel {
-        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
+    private func subject(
+        source: Source? = nil,
+        userDefaults: UserDefaults? = nil,
+        user: User? = nil,
+        fetchedTags: [Tag]?,
+        selectAllAction: @escaping () -> Void
+    ) -> TagsFilterViewModel {
+        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
     }
 
-    func test_getAllTags_withThreeTags_returnsSortedRecentTags() {
+    func test_recentTags_withLessThanThreeTags_andPremiumUser_returnsNoRecentTags() {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
         let savedTags = try? space.fetchTags(isArchived: false)
-        let viewModel = subject(fetchedTags: savedTags) { }
-        XCTAssertEqual(savedTags?.compactMap { $0.name }, ["tag 1", "tag 2", "tag 3"])
-        let tags = viewModel.getAllTags()
+        let viewModel = subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
 
-        XCTAssertEqual(tags.count, 3)
+        XCTAssertEqual(viewModel.recentTags, [])
+    }
+
+    func test_recentTags_withMoreThanThreeTags_andPremiumUser_returnsRecentTags() {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
+        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
+        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = subject(user: MockUser(status: .premium), fetchedTags: savedTags) { }
+
         XCTAssertEqual(viewModel.recentTags, [TagType.recent("tag 1"), TagType.recent("tag 2"), TagType.recent("tag 3")])
+    }
+
+    func test_recentTags_withMoreThanThreeTags_andFreeUser_returnsNoRecentTags() {
+        _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
+        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
+        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
+        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["tag 4"])
+        let savedTags = try? space.fetchTags(isArchived: false)
+        let viewModel = subject(user: MockUser(status: .free), fetchedTags: savedTags) { }
+
+        XCTAssertEqual(viewModel.recentTags, [])
     }
 
     func test_getAllTags_returnsSortedOrder() {

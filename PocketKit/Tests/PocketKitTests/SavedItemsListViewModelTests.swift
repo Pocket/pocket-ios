@@ -500,6 +500,7 @@ extension SavedItemsListViewModelTests {
         try space.save()
 
         source.stubRetrieveTags { _ in return nil }
+        source.stubFetchAllTags { return [] }
         let viewModel = subject()
 
         let expectAddTags = expectation(description: "expect add tags to present")
