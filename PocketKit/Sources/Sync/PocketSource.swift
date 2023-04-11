@@ -264,10 +264,6 @@ public class PocketSource: Source {
 // MARK: - Saves/Archive items
 extension PocketSource {
     public func refreshSaves(completion: (() -> Void)? = nil) {
-        if lastRefresh.lastRefreshSaves == nil {
-            initialSavesDownloadState.send(.started)
-        }
-
         let operation = operations.fetchSaves(
             apollo: apollo,
             space: space,
@@ -280,10 +276,6 @@ extension PocketSource {
     }
 
     public func refreshArchive(completion: (() -> Void)? = nil) {
-        if lastRefresh.lastRefreshArchive == nil {
-            initialArchiveDownloadState.send(.started)
-        }
-
         let operation = operations.fetchArchive(
             apollo: apollo,
             space: space,

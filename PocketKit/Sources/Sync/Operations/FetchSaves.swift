@@ -49,6 +49,10 @@ class FetchSaves: SyncOperation {
                 }
             }
 
+            if lastRefresh.lastRefreshSaves == nil {
+                initialDownloadState.send(.started)
+            }
+
             try await fetchSaves()
             lastRefresh.refreshedSaves()
             return .success
