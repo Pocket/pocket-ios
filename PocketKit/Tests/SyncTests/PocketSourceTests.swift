@@ -716,7 +716,7 @@ extension PocketSourceTests {
     }
 
     func test_fetchOrCreateSavedItem_retrievesItem() throws {
-        let itemParts = SavedItemParts(data: DataDict([
+        let itemParts = SavedItemParts(_dataDict: DataDict(data: [
             "__typename": "SavedItem",
             "remoteID": "saved-item",
             "url": "http://localhost:8080/hello",
@@ -730,7 +730,7 @@ extension PocketSourceTests {
                 "givenUrl": "http://localhost:8080/hello",
                 "resolvedUrl": "http://localhost:8080/hello"
             ]
-        ], variables: nil))
+        ]))
 
         let source = subject()
         let savedItem = source.fetchOrCreateSavedItem(with: "saved-item", and: itemParts)

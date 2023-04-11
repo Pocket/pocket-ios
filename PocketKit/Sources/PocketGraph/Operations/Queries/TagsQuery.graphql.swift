@@ -46,7 +46,7 @@ public class TagsQuery: GraphQLQuery {
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
@@ -61,10 +61,11 @@ public class TagsQuery: GraphQLQuery {
     /// Parent Type: `User`
     public struct User: PocketGraph.SelectionSet {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.User }
       public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
         .field("tags", Tags?.self, arguments: ["pagination": .variable("pagination")]),
       ] }
 
@@ -76,10 +77,11 @@ public class TagsQuery: GraphQLQuery {
       /// Parent Type: `TagConnection`
       public struct Tags: PocketGraph.SelectionSet {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.TagConnection }
         public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
           .field("edges", [Edge?]?.self),
           .field("pageInfo", PageInfo.self),
           .field("totalCount", Int.self),
@@ -97,10 +99,11 @@ public class TagsQuery: GraphQLQuery {
         /// Parent Type: `TagEdge`
         public struct Edge: PocketGraph.SelectionSet {
           public let __data: DataDict
-          public init(data: DataDict) { __data = data }
+          public init(_dataDict: DataDict) { __data = _dataDict }
 
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.TagEdge }
           public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
             .field("node", Node?.self),
             .field("cursor", String.self),
           ] }
@@ -115,10 +118,11 @@ public class TagsQuery: GraphQLQuery {
           /// Parent Type: `Tag`
           public struct Node: PocketGraph.SelectionSet {
             public let __data: DataDict
-            public init(data: DataDict) { __data = data }
+            public init(_dataDict: DataDict) { __data = _dataDict }
 
             public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Tag }
             public static var __selections: [ApolloAPI.Selection] { [
+              .field("__typename", String.self),
               .fragment(TagParts.self),
             ] }
 
@@ -129,7 +133,7 @@ public class TagsQuery: GraphQLQuery {
 
             public struct Fragments: FragmentContainer {
               public let __data: DataDict
-              public init(data: DataDict) { __data = data }
+              public init(_dataDict: DataDict) { __data = _dataDict }
 
               public var tagParts: TagParts { _toFragment() }
             }
@@ -141,10 +145,11 @@ public class TagsQuery: GraphQLQuery {
         /// Parent Type: `PageInfo`
         public struct PageInfo: PocketGraph.SelectionSet {
           public let __data: DataDict
-          public init(data: DataDict) { __data = data }
+          public init(_dataDict: DataDict) { __data = _dataDict }
 
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PageInfo }
           public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
             .field("endCursor", String?.self),
             .field("hasNextPage", Bool.self),
             .field("hasPreviousPage", Bool.self),

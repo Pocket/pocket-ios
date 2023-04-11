@@ -59,10 +59,11 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("itemId", alias: "remoteID", String.self),
     .field("givenUrl", PocketGraph.Url.self),
     .field("resolvedUrl", PocketGraph.Url?.self),
@@ -131,10 +132,11 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `Author`
   public struct Author: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Author }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("id", PocketGraph.ID.self),
       .field("name", String?.self),
       .field("url", String?.self),
@@ -153,10 +155,11 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `MarticleComponent`
   public struct Marticle: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Unions.MarticleComponent }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .inlineFragment(AsMarticleText.self),
       .inlineFragment(AsImage.self),
       .inlineFragment(AsMarticleDivider.self),
@@ -185,8 +188,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `MarticleText`
     public struct AsMarticleText: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleText }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(MarticleTextParts.self),
@@ -197,7 +201,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var marticleTextParts: MarticleTextParts { _toFragment() }
       }
@@ -208,8 +212,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `Image`
     public struct AsImage: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(ImageParts.self),
@@ -231,7 +236,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var imageParts: ImageParts { _toFragment() }
       }
@@ -242,8 +247,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `MarticleDivider`
     public struct AsMarticleDivider: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleDivider }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(MarticleDividerParts.self),
@@ -254,7 +260,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var marticleDividerParts: MarticleDividerParts { _toFragment() }
       }
@@ -265,8 +271,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `MarticleTable`
     public struct AsMarticleTable: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleTable }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(MarticleTableParts.self),
@@ -277,7 +284,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var marticleTableParts: MarticleTableParts { _toFragment() }
       }
@@ -288,8 +295,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `MarticleHeading`
     public struct AsMarticleHeading: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleHeading }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(MarticleHeadingParts.self),
@@ -302,7 +310,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var marticleHeadingParts: MarticleHeadingParts { _toFragment() }
       }
@@ -313,8 +321,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `MarticleCodeBlock`
     public struct AsMarticleCodeBlock: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleCodeBlock }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(MarticleCodeBlockParts.self),
@@ -327,7 +336,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var marticleCodeBlockParts: MarticleCodeBlockParts { _toFragment() }
       }
@@ -338,8 +347,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `Video`
     public struct AsVideo: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(VideoParts.self),
@@ -362,7 +372,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var videoParts: VideoParts { _toFragment() }
       }
@@ -373,8 +383,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `MarticleBulletedList`
     public struct AsMarticleBulletedList: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(MarticleBulletedListParts.self),
@@ -384,7 +395,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var marticleBulletedListParts: MarticleBulletedListParts { _toFragment() }
       }
@@ -395,8 +406,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `MarticleNumberedList`
     public struct AsMarticleNumberedList: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleNumberedList }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(MarticleNumberedListParts.self),
@@ -406,7 +418,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var marticleNumberedListParts: MarticleNumberedListParts { _toFragment() }
       }
@@ -417,8 +429,9 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `MarticleBlockquote`
     public struct AsMarticleBlockquote: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = ItemParts.Marticle
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBlockquote }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(MarticleBlockquoteParts.self),
@@ -429,7 +442,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var marticleBlockquoteParts: MarticleBlockquoteParts { _toFragment() }
       }
@@ -441,10 +454,11 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `DomainMetadata`
   public struct DomainMetadata: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.DomainMetadata }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .fragment(DomainMetadataParts.self),
     ] }
 
@@ -455,7 +469,7 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
 
     public struct Fragments: FragmentContainer {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public var domainMetadataParts: DomainMetadataParts { _toFragment() }
     }
@@ -466,10 +480,11 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `Image`
   public struct Image: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("height", Int?.self),
       .field("width", Int?.self),
       .field("src", String.self),
@@ -492,10 +507,11 @@ public struct ItemParts: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `SyndicatedArticle`
   public struct SyndicatedArticle: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("itemId", PocketGraph.ID?.self),
     ] }
 

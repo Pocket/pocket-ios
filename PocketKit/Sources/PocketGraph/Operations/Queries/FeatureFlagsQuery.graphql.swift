@@ -33,7 +33,7 @@ public class FeatureFlagsQuery: GraphQLQuery {
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
@@ -55,10 +55,11 @@ public class FeatureFlagsQuery: GraphQLQuery {
     /// Parent Type: `UnleashAssignmentList`
     public struct Assignments: PocketGraph.SelectionSet {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.UnleashAssignmentList }
       public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
         .field("assignments", [Assignment?].self),
       ] }
 
@@ -69,10 +70,11 @@ public class FeatureFlagsQuery: GraphQLQuery {
       /// Parent Type: `UnleashAssignment`
       public struct Assignment: PocketGraph.SelectionSet {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.UnleashAssignment }
         public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
           .field("name", String.self),
           .field("assigned", Bool.self),
           .field("variant", String?.self),

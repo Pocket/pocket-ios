@@ -56,7 +56,7 @@ public class FetchArchiveQuery: GraphQLQuery {
 
   public struct Data: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
@@ -71,10 +71,11 @@ public class FetchArchiveQuery: GraphQLQuery {
     /// Parent Type: `User`
     public struct User: PocketGraph.SelectionSet {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.User }
       public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
         .field("savedItems", SavedItems?.self, arguments: [
           "pagination": .variable("pagination"),
           "filter": .variable("filter"),
@@ -90,10 +91,11 @@ public class FetchArchiveQuery: GraphQLQuery {
       /// Parent Type: `SavedItemConnection`
       public struct SavedItems: PocketGraph.SelectionSet {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SavedItemConnection }
         public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
           .field("totalCount", Int.self),
           .field("pageInfo", PageInfo.self),
           .field("edges", [Edge?]?.self),
@@ -111,10 +113,11 @@ public class FetchArchiveQuery: GraphQLQuery {
         /// Parent Type: `PageInfo`
         public struct PageInfo: PocketGraph.SelectionSet {
           public let __data: DataDict
-          public init(data: DataDict) { __data = data }
+          public init(_dataDict: DataDict) { __data = _dataDict }
 
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.PageInfo }
           public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
             .field("hasNextPage", Bool.self),
             .field("endCursor", String?.self),
           ] }
@@ -130,10 +133,11 @@ public class FetchArchiveQuery: GraphQLQuery {
         /// Parent Type: `SavedItemEdge`
         public struct Edge: PocketGraph.SelectionSet {
           public let __data: DataDict
-          public init(data: DataDict) { __data = data }
+          public init(_dataDict: DataDict) { __data = _dataDict }
 
           public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SavedItemEdge }
           public static var __selections: [ApolloAPI.Selection] { [
+            .field("__typename", String.self),
             .field("cursor", String.self),
             .field("node", Node?.self),
           ] }
@@ -148,10 +152,11 @@ public class FetchArchiveQuery: GraphQLQuery {
           /// Parent Type: `SavedItem`
           public struct Node: PocketGraph.SelectionSet {
             public let __data: DataDict
-            public init(data: DataDict) { __data = data }
+            public init(_dataDict: DataDict) { __data = _dataDict }
 
             public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SavedItem }
             public static var __selections: [ApolloAPI.Selection] { [
+              .field("__typename", String.self),
               .fragment(SavedItemSummary.self),
             ] }
 
@@ -176,7 +181,7 @@ public class FetchArchiveQuery: GraphQLQuery {
 
             public struct Fragments: FragmentContainer {
               public let __data: DataDict
-              public init(data: DataDict) { __data = data }
+              public init(_dataDict: DataDict) { __data = _dataDict }
 
               public var savedItemSummary: SavedItemSummary { _toFragment() }
             }
@@ -186,7 +191,7 @@ public class FetchArchiveQuery: GraphQLQuery {
             /// Parent Type: `ItemResult`
             public struct Item: PocketGraph.SelectionSet {
               public let __data: DataDict
-              public init(data: DataDict) { __data = data }
+              public init(_dataDict: DataDict) { __data = _dataDict }
 
               public static var __parentType: ApolloAPI.ParentType { PocketGraph.Unions.ItemResult }
 
@@ -195,11 +200,16 @@ public class FetchArchiveQuery: GraphQLQuery {
               /// User.SavedItems.Edge.Node.Item.AsItem
               ///
               /// Parent Type: `Item`
-              public struct AsItem: PocketGraph.InlineFragment {
+              public struct AsItem: PocketGraph.InlineFragment, ApolloAPI.CompositeInlineFragment {
                 public let __data: DataDict
-                public init(data: DataDict) { __data = data }
+                public init(_dataDict: DataDict) { __data = _dataDict }
 
+                public typealias RootEntityType = User.SavedItems.Edge.Node.Item
                 public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
+                public static var __mergedSources: [any ApolloAPI.SelectionSet.Type] { [
+                  ItemSummary.self,
+                  SavedItemSummary.Item.AsItem.self
+                ] }
 
                 /// The Item entity is owned by the Parser service.
                 /// We only extend it in this service to make this service's schema valid.
@@ -243,7 +253,7 @@ public class FetchArchiveQuery: GraphQLQuery {
 
                 public struct Fragments: FragmentContainer {
                   public let __data: DataDict
-                  public init(data: DataDict) { __data = data }
+                  public init(_dataDict: DataDict) { __data = _dataDict }
 
                   public var itemSummary: ItemSummary { _toFragment() }
                 }
@@ -253,7 +263,7 @@ public class FetchArchiveQuery: GraphQLQuery {
                 /// Parent Type: `DomainMetadata`
                 public struct DomainMetadata: PocketGraph.SelectionSet {
                   public let __data: DataDict
-                  public init(data: DataDict) { __data = data }
+                  public init(_dataDict: DataDict) { __data = _dataDict }
 
                   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.DomainMetadata }
 
@@ -264,7 +274,7 @@ public class FetchArchiveQuery: GraphQLQuery {
 
                   public struct Fragments: FragmentContainer {
                     public let __data: DataDict
-                    public init(data: DataDict) { __data = data }
+                    public init(_dataDict: DataDict) { __data = _dataDict }
 
                     public var domainMetadataParts: DomainMetadataParts { _toFragment() }
                   }

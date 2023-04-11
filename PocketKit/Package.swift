@@ -18,7 +18,7 @@ let package = Package(
         .library(name: "PKTListen", targets: ["PKTListen"])
     ],
     dependencies: [
-        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.0.7"),
+        .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.1.1"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", exact: "7.6.2"),
         .package(url: "https://github.com/getsentry/sentry-cocoa.git", exact: "8.3.1"),
         .package(url: "https://github.com/snowplow/snowplow-objc-tracker", exact: "4.1.0"),

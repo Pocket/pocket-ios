@@ -18,6 +18,7 @@ fragment ItemParts on Item {
     url
   }
   marticle {
+    __typename
     ...MarticleTextParts
     ...ImageParts
     ...MarticleDividerParts

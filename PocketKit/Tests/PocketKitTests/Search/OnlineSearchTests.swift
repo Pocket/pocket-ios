@@ -171,7 +171,7 @@ class OnlineSearchTests: XCTestCase {
     }
 
     private func setupOnlineSearch(with term: String) -> XCTestExpectation {
-        let itemParts = SavedItemParts(data: DataDict([
+        let itemParts = SavedItemParts(_dataDict: DataDict(data: [
             "__typename": "SavedItem",
             "item": [
                 "__typename": "Item",
@@ -179,7 +179,7 @@ class OnlineSearchTests: XCTestCase {
                 "givenUrl": "http://localhost:8080/hello",
                 "resolvedUrl": "http://localhost:8080/hello"
             ]
-        ], variables: nil))
+        ]))
 
         let item = SearchSavedItem(remoteItem: itemParts)
         let expectation = expectation(description: "search called")
@@ -191,7 +191,7 @@ class OnlineSearchTests: XCTestCase {
     }
 
     private func setupOnlineSearchPage2(with term: String) -> XCTestExpectation {
-        let itemParts = SavedItemParts(data: DataDict([
+        let itemParts = SavedItemParts(_dataDict: DataDict(data: [
             "__typename": "SavedItem",
             "item": [
                 "__typename": "Item",
@@ -199,7 +199,7 @@ class OnlineSearchTests: XCTestCase {
                 "givenUrl": "http://localhost:8080/hello",
                 "resolvedUrl": "http://localhost:8080/hello"
             ]
-        ], variables: nil))
+        ]))
 
         let item = SearchSavedItem(remoteItem: itemParts)
         let expectation = expectation(description: "search called")

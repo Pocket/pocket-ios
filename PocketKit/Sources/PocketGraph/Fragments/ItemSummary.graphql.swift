@@ -53,10 +53,11 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("itemId", alias: "remoteID", String.self),
     .field("givenUrl", PocketGraph.Url.self),
     .field("resolvedUrl", PocketGraph.Url?.self),
@@ -122,10 +123,11 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `Author`
   public struct Author: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Author }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("id", PocketGraph.ID.self),
       .field("name", String?.self),
       .field("url", String?.self),
@@ -144,10 +146,11 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `DomainMetadata`
   public struct DomainMetadata: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.DomainMetadata }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .fragment(DomainMetadataParts.self),
     ] }
 
@@ -158,7 +161,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
 
     public struct Fragments: FragmentContainer {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public var domainMetadataParts: DomainMetadataParts { _toFragment() }
     }
@@ -169,10 +172,11 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `Image`
   public struct Image: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("height", Int?.self),
       .field("width", Int?.self),
       .field("src", String.self),
@@ -195,10 +199,11 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `SyndicatedArticle`
   public struct SyndicatedArticle: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SyndicatedArticle }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("itemId", PocketGraph.ID?.self),
       .field("mainImage", String?.self),
       .field("title", String.self),
@@ -222,10 +227,11 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     /// Parent Type: `Publisher`
     public struct Publisher: PocketGraph.SelectionSet {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Publisher }
       public static var __selections: [ApolloAPI.Selection] { [
+        .field("__typename", String.self),
         .field("name", String?.self),
       ] }
 

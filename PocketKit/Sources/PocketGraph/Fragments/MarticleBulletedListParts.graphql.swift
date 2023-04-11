@@ -16,10 +16,11 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.MarticleBulletedList }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("rows", [Row].self),
   ] }
 
@@ -30,10 +31,11 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `BulletedListElement`
   public struct Row: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.BulletedListElement }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("content", PocketGraph.Markdown.self),
       .field("level", Int.self),
     ] }
