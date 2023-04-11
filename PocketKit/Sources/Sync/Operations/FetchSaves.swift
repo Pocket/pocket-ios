@@ -134,7 +134,7 @@ class FetchSaves: SyncOperation {
               let cursor = result.data?.user?.savedItems?.pageInfo.endCursor else {
             return
         }
-        try safeSpace.savePage(edges: edges, cursor: cursor)
+        try safeSpace.updateSavedItems(edges: edges, cursor: cursor)
     }
 
     struct PaginationSpec {
