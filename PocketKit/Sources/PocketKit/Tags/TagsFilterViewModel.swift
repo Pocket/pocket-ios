@@ -58,6 +58,7 @@ class TagsFilterViewModel: ObservableObject {
         }
         sendSelectedTagAnalytics(context: tagContext)
         selectedTag = tag
+        trackRecentTagsTapped(with: tag)
     }
 
     private func sendSelectedTagAnalytics(context: Context) {
@@ -82,5 +83,12 @@ class TagsFilterViewModel: ObservableObject {
         guard let tag: Tag = fetchedTags?.filter({ $0.name == oldName }).first else { return }
         source.renameTag(from: tag, to: newName)
         refreshView = true
+    }
+}
+
+// MARK: Analytics
+extension TagsFilterViewModel {
+    func trackRecentTagsTapped(with tag: TagType) {
+        tracker.track(event: Events.Tags.filterTagsRecentTagTapped())
     }
 }
