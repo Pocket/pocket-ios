@@ -128,35 +128,17 @@ extension LegacyUserMigrationTests {
         })
     }
 
-    func test_perform_withMissingKeyInKeychainAndDefaults_throwsError() {
+    func test_perform_withMissingKeyInKeychainAndDefaults() {
         let migration = subject()
 
         do {
-            try migration.perform {
+            let result = try migration.perform {
                 XCTFail("Migration should not be attempted")
             }
+
+            XCTAssertFalse(result, "Migration should not be attempted")
         } catch {
-            guard case LegacyUserMigrationError.missingKey = error else {
-                XCTFail("Incorrect error thrown")
-                return
-            }
-        }
-    }
-
-    func test_perform_withKeyNotInKeychainAndInUserDefaults_doesNotThrowError() {
-        userDefaults.set("password", forKey: LegacyUserMigration.decryptionKey)
-
-        let migration = subject()
-        encryptedStore.stubDecryptStore { _ in return nil }
-
-        do {
-            try migration.perform {
-                XCTFail("Migration should not be attempted")
-            }
-        } catch {
-            if case LegacyUserMigrationError.missingKey = error {
-                XCTFail("Key should exist; error should not be thrown")
-            }
+            XCTFail("Error should not be thrown")
         }
     }
 }
