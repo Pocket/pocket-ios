@@ -1,36 +1,36 @@
 import SwiftUI
 import Textile
 
-open class SwiftUICollectionViewCell<Content>: UICollectionViewCell where Content: View {
-    private(set) var host: UIHostingController<Content>?
+open class SwiftUICollectionViewCell<T>: UICollectionViewCell where T: View {
+    private(set) var hosting: UIHostingController<T>?
 
-    func embed(in parent: UIViewController, withView content: Content) {
-        if let host = self.host {
-            host.rootView = content
-            host.view.layoutIfNeeded()
+    func embed(in parent: UIViewController, withView content: T) {
+        if let hosting = self.hosting {
+            hosting.rootView = content
+            hosting.view.layoutIfNeeded()
         } else {
-            let host = UIHostingController(rootView: content)
-            parent.addChild(host)
-            host.didMove(toParent: parent)
-            self.contentView.addSubview(host.view)
-            self.host = host
+            let hosting = UIHostingController(rootView: content)
+            parent.addChild(hosting)
+            hosting.didMove(toParent: parent)
+            self.contentView.addSubview(hosting.view)
+            self.hosting = hosting
         }
     }
 
     deinit {
-        host?.willMove(toParent: nil)
-        host?.view.removeFromSuperview()
-        host?.removeFromParent()
-        host = nil
+        hosting?.willMove(toParent: nil)
+        hosting?.view.removeFromSuperview()
+        hosting?.removeFromParent()
+        hosting = nil
     }
 }
 
 class EmptyStateCollectionViewCell: SwiftUICollectionViewCell<EmptyStateView<EmptyView>> {
     func configure(parent: UIViewController, _ viewModel: EmptyStateViewModel) {
         embed(in: parent, withView: EmptyStateView(viewModel: viewModel))
-        host?.view.frame = self.contentView.bounds
-        host?.view.backgroundColor = .clear
-        host?.view.accessibilityIdentifier = viewModel.accessibilityIdentifier
+        hosting?.view.frame = self.contentView.bounds
+        hosting?.view.backgroundColor = .clear
+        hosting?.view.accessibilityIdentifier = viewModel.accessibilityIdentifier
     }
 }
 

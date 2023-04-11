@@ -14,7 +14,8 @@ let package = Package(
         .library(name: "Textile", targets: ["Textile"]),
         .library(name: "Sync", targets: ["Sync"]),
         .library(name: "Analytics", targets: ["Analytics"]),
-        .library(name: "Localization", targets: ["Localization"])
+        .library(name: "Localization", targets: ["Localization"]),
+        .library(name: "PKTListen", targets: ["PKTListen"])
     ],
     dependencies: [
         .package(url: "https://github.com/apollographql/apollo-ios.git", exact: "1.0.7"),
@@ -29,6 +30,8 @@ let package = Package(
         .package(url: "https://github.com/RNCryptor/RNCryptor.git", exact: "5.1.0")
     ],
     targets: [
+        .binaryTarget(name: "PKTListen", path: "./Frameworks/PKTListen.xcframework"),
+
         .target(
             name: "PocketKit",
             dependencies: [
@@ -37,11 +40,13 @@ let package = Package(
                 "Analytics",
                 "SharedPocketKit",
                 "Localization",
+                "PKTListen",
                 .product(name: "YouTubePlayerKit", package: "YouTubePlayerKit"),
                 .product(name: "BrazeKit", package: "braze-swift-sdk"),
                 .product(name: "BrazeUI", package: "braze-swift-sdk"),
                 .product(name: "Adjust", package: "ios_sdk")
-            ]
+            ],
+            linkerSettings: [.unsafeFlags(["-ObjC"])] // Needed to load categories in PKTListen
         ),
         .testTarget(
             name: "PocketKitTests",

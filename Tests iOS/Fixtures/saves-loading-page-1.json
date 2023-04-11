@@ -1,91 +1,93 @@
 {
-    "data": {
-        "user": {
+  "data": {
+    "user": {
+      "__typename": "[type-name-here]",
+      "isPremium": true,
+      "savedItems": {
+        "__typename": "[type-name-here]",
+        "totalCount": 3,
+        "pageInfo": {
+          "__typename": "[type-name-here]",
+          "hasNextPage": true,
+          "endCursor": "cursor-2"
+        },
+        "edges": [
+          {
             "__typename": "[type-name-here]",
-            "isPremium": true,
-            "savedItems": {
-                "__typename": "[type-name-here]",
-                "totalCount": 3,
-                "pageInfo": {
-                    "__typename": "[type-name-here]",
-                    "hasNextPage": true,
-                    "endCursor": "cursor-2"
-                },
-                "edges": [
-                    {
-                        "__typename": "[type-name-here]",
-                        "cursor": "cursor-1",
-                        "node": {
-                            "__typename": "[type-name-here]",
-                            "remoteID": "saved-item-1",
-                            "url": "http://localhost:8080/hello",
-                            "_createdAt": 0,
-                            "_deletedAt": null,
-                            "archivedAt": null,
-                            "isArchived": false,
-                            "isFavorite": false,
-                            "tags": [],
-                            "item": {
-                                "__typename": "Item",
-                                "remoteID": "item-1",
-                                "title": "Item 1",
-                                "givenUrl": "http://localhost:8080/hello",
-                                "resolvedUrl": "http://localhost:8080/hello",
-                                "topImageUrl": "https://example.com/item-1/top-image.jpg",
-                                "domain": null,
-                                "language": "en",
-                                "timeToRead": 6,
-                                "marticle": [],
-                                "excerpt": "Cursus Aenean Elit",
-                                "datePublished": "2021-01-01 12:01:01",
-                                "authors": [],
-                                "domainMetadata": null,
-                                "images": [],
-                                "isArticle": true,
-                                "hasImage": "HAS_IMAGES",
-                                "hasVideo": "HAS_VIDEOS",
-                                "syndicatedArticle": null
-                            }
-                        }
-                    },
-                    {
-                        "__typename": "[type-name-here]",
-                        "cursor": "cursor-2",
-                        "node": {
-                            "__typename": "[type-name-here]",
-                            "remoteID": "saved-item-2",
-                            "url": "https://example.com/item-2",
-                            "_createdAt": 0,
-                            "_deletedAt": null,
-                            "archivedAt": null,
-                            "isArchived": false,
-                            "isFavorite": false,
-                            "tags": [],
-                            "item": {
-                                "__typename": "Item",
-                                "remoteID": "item-2",
-                                "givenUrl": "https://example.com/item-2",
-                                "resolvedUrl": "https://example.com/item-2",
-                                "title": "Item 2",
-                                "topImageUrl": "https://example.com/item-2/top-image.jpg",
-                                "domain": "wired.com",
-                                "language": "en",
-                                "timeToRead": 6,
-                                "domainMetadata": null,
-                                "marticle": [],
-                                "authors": [],
-                                "datePublished": "2021-01-01 12:01:01",
-                                "excerpt": "Cursus Aenean Elit",
-                                "images": [],
-                                "isArticle": true,
-                                "hasImage": "HAS_IMAGES",
-                                "hasVideo": "HAS_VIDEOS",
-                                "syndicatedArticle": null
-                            }
-                        }
-                    }
-                ]
+            "cursor": "cursor-1",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-1",
+              "url": "http://localhost:8080/hello",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-1",
+                "title": "Item 1",
+                "givenUrl": "http://localhost:8080/hello",
+                "resolvedUrl": "http://localhost:8080/hello",
+                "topImageUrl": "https://example.com/item-1/top-image.jpg",
+                "domain": null,
+                "language": "en",
+                "timeToRead": 6,
+                "wordCount": 500,
+                "marticle": [],
+                "excerpt": "Cursus Aenean Elit",
+                "datePublished": "2021-01-01 12:01:01",
+                "authors": [],
+                "domainMetadata": null,
+                "images": [],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
             }
-        }
+          },
+          {
+            "__typename": "[type-name-here]",
+            "cursor": "cursor-2",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "saved-item-2",
+              "url": "https://example.com/item-2",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": null,
+              "isArchived": false,
+              "isFavorite": false,
+              "tags": [],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "item-2",
+                "givenUrl": "https://example.com/item-2",
+                "resolvedUrl": "https://example.com/item-2",
+                "title": "Item 2",
+                "topImageUrl": "https://example.com/item-2/top-image.jpg",
+                "domain": "wired.com",
+                "language": "en",
+                "timeToRead": 6,
+                "wordCount": 500,
+                "domainMetadata": null,
+                "marticle": [],
+                "authors": [],
+                "datePublished": "2021-01-01 12:01:01",
+                "excerpt": "Cursus Aenean Elit",
+                "images": [],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
+            }
+          }
+        ]
+      }
     }
+  }
 }

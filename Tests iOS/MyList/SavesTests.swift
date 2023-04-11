@@ -392,4 +392,35 @@ extension SavesTests {
                 .activityOption("Favorite")
         )
     }
+
+    // MARK: - Listen
+    func test_Listen_Shows_WhenInFlag() {
+        let flagsLoaded = expectation(description: "loaded flags")
+        server.routes.post("/graphql") { request, _ -> Response in
+            let apiRequest = ClientAPIRequest(request)
+            if apiRequest.isForFeatureFlags {
+                defer { flagsLoaded.fulfill() }
+                return .featureFlags("feature-flags-listen")
+            }
+
+            return .fallbackResponses(apiRequest: apiRequest)
+        }
+
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Item 1").wait()
+
+        wait(for: [flagsLoaded])
+
+        // do a refresh because the flag prob loaded in the background.
+        app.saves.pullToRefresh()
+
+        app.saves.filterButton(for: "Listen").wait().tap()
+    }
+
+    func test_Listen_DoesNotShow_WhenNotInFlag() {
+        app.launch().tabBar.savesButton.wait().tap()
+        app.saves.itemView(matching: "Item 1").wait()
+
+        waitForDisappearance(of: app.saves.filterButton(for: "Listen"))
+    }
 }

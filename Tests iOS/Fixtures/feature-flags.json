@@ -1,26 +1,31 @@
 {
   "data": {
     "assignments": {
-      "assignments": [
+        "__typename": "UnleashAssignmentList",
+        "assignments": [
         {
+          "__typename": "UnleashAssignment",
           "name": "temp.rick.roll",
           "assigned": true,
           "variant": null,
           "payload": null
         },
         {
+          "__typename": "UnleashAssignment",
           "name": "perm.feature.on",
           "assigned": true,
           "variant": null,
           "payload": null
         },
         {
+          "__typename": "UnleashAssignment",
           "name": "temp.feature.off",
           "assigned": false,
           "variant": null,
           "payload": null
         },
         {
+          "__typename": "UnleashAssignment",
           "name": "temp.feature.variant",
           "assigned": true,
           "variant": "theVariant",
