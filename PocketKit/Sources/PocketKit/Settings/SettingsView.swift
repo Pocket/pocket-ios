@@ -51,17 +51,17 @@ struct SettingsForm: View {
                         }
                     SettingsRowButton(title: Localization.termsOfService, icon: SFIconModel("doc.plaintext")) { model.isPresentingTerms.toggle() }
                         .sheet(isPresented: $model.isPresentingTerms) {
-                            SFSafariView(url: LinkedExternalURLS.TermsOfService)
+                            SFSafariView(url: LinkedExternalURLS.TermsOfService, readerMode: true)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: Localization.privacyPolicy, icon: SFIconModel("doc.plaintext")) { model.isPresentingPrivacy.toggle() }
                         .sheet(isPresented: $model.isPresentingPrivacy) {
-                            SFSafariView(url: LinkedExternalURLS.PrivacyPolicy)
+                            SFSafariView(url: LinkedExternalURLS.PrivacyPolicy, readerMode: true)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                     SettingsRowButton(title: Localization.Settings.openSourceLicenses, icon: SFIconModel("doc.plaintext")) { model.isPresentingLicenses.toggle() }
                         .sheet(isPresented: $model.isPresentingLicenses) {
-                            SFSafariView(url: LinkedExternalURLS.OpenSourceNotices)
+                            SFSafariView(url: LinkedExternalURLS.OpenSourceNotices, readerMode: true)
                                 .edgesIgnoringSafeArea(.bottom)
                         }
                 }.textCase(nil)
