@@ -23,6 +23,7 @@
                     "domain": null,
                     "language": "en",
                     "timeToRead": 6,
+                    "wordCount": 500,
                     "marticle": #MARTICLE#,
                     "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
                     "datePublished": "2001-01-01 12:01:01",
@@ -43,6 +44,16 @@
                     "syndicatedArticle": null
                 }
             }
+          ],
+          "domainMetadata": null,
+          "images": [],
+          "isArticle": true,
+          "hasImage": "HAS_IMAGES",
+          "hasVideo": "HAS_VIDEOS",
+          "marticle": [],
+          "syndicatedArticle": null
         }
+      }
     }
+  }
 }

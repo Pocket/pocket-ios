@@ -19,6 +19,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
       isArticle
       hasImage
       hasVideo
+      wordCount
       authors {
         __typename
         id
@@ -68,6 +69,7 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
     .field("isArticle", Bool?.self),
     .field("hasImage", GraphQLEnum<PocketGraph.Imageness>?.self),
     .field("hasVideo", GraphQLEnum<PocketGraph.Videoness>?.self),
+    .field("wordCount", Int?.self),
     .field("authors", [Author?]?.self),
     .field("excerpt", String?.self),
     .field("domainMetadata", DomainMetadata?.self),
@@ -102,6 +104,8 @@ public struct ItemSummary: PocketGraph.SelectionSet, Fragment {
   public var hasImage: GraphQLEnum<PocketGraph.Imageness>? { __data["hasImage"] }
   /// 0=no videos, 1=contains video, 2=is a video
   public var hasVideo: GraphQLEnum<PocketGraph.Videoness>? { __data["hasVideo"] }
+  /// Number of words in the article
+  public var wordCount: Int? { __data["wordCount"] }
   /// List of Authors involved with this article
   public var authors: [Author?]? { __data["authors"] }
   /// A snippet of text from the article

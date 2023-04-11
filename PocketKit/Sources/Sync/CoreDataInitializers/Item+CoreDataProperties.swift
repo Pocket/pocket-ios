@@ -23,6 +23,7 @@ extension Item {
     @NSManaged public var remoteID: String
     @NSManaged public var resolvedURL: URL?
     @NSManaged public var timeToRead: NSNumber?
+    @NSManaged public var wordCount: NSNumber?
     @NSManaged public var title: String?
     @NSManaged public var topImageURL: URL?
     @NSManaged public var videoness: String?
