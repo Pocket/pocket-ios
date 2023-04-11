@@ -133,6 +133,11 @@
 //General Messages
 "general.oops" = "Oeps! Opnieuw proberen?";
 
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "Verhalen sneller taggen dan ooit: krijg de meest recente tags met Pocket Premium.";
+"tags.upsell.getPocketPremium" = "Kies Pocket Premium";
+"tags.section.recentTags" = "Recente tags";
+"tags.section.userTags" = "Mijn tags";
 
 // Search
 "search.errorMessage" = "Er is een fout opgetreden waardoor we je tijdelijk niet kunnen leveren wat je nodig hebt. Probeer het later opnieuw.";

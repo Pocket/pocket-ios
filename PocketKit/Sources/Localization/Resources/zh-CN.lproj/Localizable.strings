@@ -133,6 +133,11 @@
 //General Messages
 "general.oops" = "糟糕！再试一次？";
 
+// Tags
+"tags.upsell.tagStoriesFasterThanEver" = "以更快的速度标记故事—使用 Pocket Premium 获取最新的标记。";
+"tags.upsell.getPocketPremium" = "获取 Pocket Premium";
+"tags.section.recentTags" = "最近的标记";
+"tags.section.userTags" = "我的标记";
 
 // Search
 "search.errorMessage" = "我们遇到了错误，暂时无法为您提供所需的信息。请稍后重试。";
