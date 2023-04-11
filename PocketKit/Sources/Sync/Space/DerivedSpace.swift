@@ -4,10 +4,12 @@
 
 import CoreData
 
+/// Protocol representing a type that exposes a (read only) task cursor
 protocol Paginated {
     var currentCursor: String? { get }
 }
 
+/// Set of protocols that save a page of a specific entity. Used to specialize `DerivedSpace` for that same entity.
 protocol SavedItemSpace: Paginated {
     func savePage(edges: [SavedItem.SavedItemEdge?], cursor: String) throws
 }
