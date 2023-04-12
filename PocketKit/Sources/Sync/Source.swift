@@ -34,11 +34,7 @@ public protocol Source {
 
     func makeImagesController() -> ImagesController
 
-    func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
-
     func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T?
-
-    func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool)
 
     func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool)
 
