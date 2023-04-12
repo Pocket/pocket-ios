@@ -41,12 +41,12 @@ public struct ContentOpen: Event, CustomStringConvertible {
 
     public func toSelfDescribing() -> SelfDescribing {
         let base = SelfDescribing(schema: ContentOpen.schema, payload: [
-            "destination": NSString(string: destination.rawValue),
-            "trigger": NSString(string: trigger.rawValue),
+            "destination": destination.rawValue,
+            "trigger": trigger.rawValue,
         ])
-        base.contexts.add(uiEntity.toSelfDescribingJson())
-        base.contexts.add(contentEntity.toSelfDescribingJson())
-        extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
+        base.entities.append(uiEntity.toSelfDescribingJson())
+        base.entities.append(contentEntity.toSelfDescribingJson())
+        extraEntities.forEach { base.entities.append($0.toSelfDescribingJson()) }
 
         return base
     }

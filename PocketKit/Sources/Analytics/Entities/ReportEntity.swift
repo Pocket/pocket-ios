@@ -26,7 +26,7 @@ public struct ReportEntity: Entity {
     }
 
     public func toSelfDescribingJson() -> SelfDescribingJson {
-        var data: [AnyHashable: Any] = [
+        var data: [String: Any] = [
             "reason": reason.rawValue,
         ]
 

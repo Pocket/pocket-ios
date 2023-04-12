@@ -24,14 +24,13 @@ typealias BrazeProtocol = BrazeSDKProtocol & PushNotificationProtocol
  Class that is managing our Braze SDK implementation
  */
 class PocketBraze: NSObject {
-    /**
-     Our Braze SDK Object
-     */
+
+    /// Our Braze SDK Object
     let braze: Braze
 
     init(apiKey: String, endpoint: String, groupdId: String) {
         // Init Braze with our information.
-        var configuration = Braze.Configuration(
+        let configuration = Braze.Configuration(
             apiKey: apiKey,
             endpoint: endpoint
         )
@@ -108,7 +107,22 @@ extension PocketBraze: BrazeInAppMessageUIDelegate {
         _ ui: BrazeInAppMessageUI,
         prepareWith context: inout BrazeInAppMessageUI.PresentationContext
     ) {
-        // Customize the in-app message presentation here using the context
+        // We need to set our scene for Braze because our UIKit + SwiftUI stuff does not seem to work with Braze's default
+        // https://github.com/braze-inc/braze-swift-sdk/blob/d2ac02aad85418dd1b044bdaf7306b2e1d3e3822/Sources/BrazeUI/InAppMessageUI/InAppMessageUI.swift#L123-L127
+        // Note: that if we ever introduce multiple scenes (CarPlay) we will need to update this.
+        // Note: You can also test this code by putting the below code in the init function above.
+        //        let modal: Braze.InAppMessage = .modal(
+        //            .init(
+        //              graphic: .icon("🙄"),
+        //              header: "Header text",
+        //              message: "Local modal in-app message"
+        //            )
+        //          )
+        //
+        //        DispatchQueue.main.async {
+        //            inAppMessageUI.present(message: modal)
+        //        }
+        context.windowScene = (UIApplication.shared.connectedScenes.first as? UIWindowScene)
     }
 
     func inAppMessage(
