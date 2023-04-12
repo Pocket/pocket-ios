@@ -4,6 +4,7 @@
 
 import SnowplowTracker
 import Sync
+import Foundation
 
 public class PocketTracker: Tracker {
     private let snowplow: SnowplowTracker
@@ -19,7 +20,7 @@ public class PocketTracker: Tracker {
 
         let contexts = contexts ?? []
         let Contexts = Contexts(from: contexts)
-        event.contexts.addObjects(from: Contexts)
+        event.entities.append(contentsOf: Contexts)
 
         snowplow.track(event: event)
     }
@@ -46,11 +47,11 @@ public class PocketTracker: Tracker {
 extension PocketTracker {
     private func Event<T: OldEvent>(from event: T) -> SelfDescribing? {
         guard let data = try? JSONEncoder().encode(event),
-              let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-              let eventJSON = SelfDescribingJson(schema: type(of: event).schema, andData: deserialized as NSObject) else {
+              let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+              else {
                   return nil
               }
-        return SelfDescribing(eventData: eventJSON)
+        return SelfDescribing(eventData: SelfDescribingJson(schema: type(of: event).schema, andData: deserialized))
     }
 
     private func Contexts(from contexts: [Context]) -> [SelfDescribingJson] {
@@ -72,11 +73,11 @@ extension PocketTracker {
 
         return contexts.compactMap { context -> SelfDescribingJson? in
             guard let data = context.jsonEncoded,
-                  let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
-                  let context = SelfDescribingJson(schema: type(of: context).schema, andData: deserialized as NSObject) else {
+                  let deserialized = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+                  else {
                       return nil
                   }
-            return context
+            return SelfDescribingJson(schema: type(of: context).schema, andData: deserialized)
         }
     }
 }
