@@ -533,9 +533,7 @@ workflows:
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                xcrun xcresulttool merge "${BITRISE_UITESTSFLAKEY_XCRESULT_PATH}"  --output-path "merged.xcresult"
-
-                envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
+                envman add --key BITRISE_XCRESULT_PATH --value "${BITRISE_UITESTSFLAKEY_XCRESULT_PATH}"
       - custom-test-results-export@0:
           inputs:
             - search_pattern: '*'
