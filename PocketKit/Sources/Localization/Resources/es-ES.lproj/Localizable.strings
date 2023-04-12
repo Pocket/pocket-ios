@@ -137,7 +137,7 @@
 "tags.upsell.tagStoriesFasterThanEver" = "Etiqueta historias más rápido que nunca: consigue las últimas etiquetas con Pocket Premium.";
 "tags.upsell.getPocketPremium" = "Consigue Pocket Premium";
 "tags.section.recentTags" = "Etiquetas recientes";
-"tags.section.userTags" = "My tags";
+"tags.section.userTags" = "Mis etiquetas";
 
 // Search
 "search.errorMessage" = "Temporalmente y debido a un error no podemos conseguirte lo que necesitas. Vuelve a intentarlo más tarde.";
