@@ -8,6 +8,7 @@ import PocketGraph
 
 extension SavedItem {
     typealias SavedItemEdge = FetchSavesQuery.Data.User.SavedItems.Edge
+    typealias ArchivedItemEdge = FetchArchiveQuery.Data.User.SavedItems.Edge
     public typealias RemoteSavedItem = SavedItemParts
     typealias RemoteItem = ItemParts
 
@@ -96,10 +97,10 @@ extension SavedItem {
         }
 
         tags = NSOrderedSet(array: summary.tags?.compactMap { $0 }.map { summaryTag in
-            space.fetchOrCreateTag(byName: summaryTag.name)
+            space.fetchOrCreateTag(byName: summaryTag.name, context: context)
         } ?? [])
 
-        let itemToUpdate = try? space.fetchItem(byRemoteID: itemSummary.remoteID) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
+        let itemToUpdate = try? space.fetchItem(byRemoteID: itemSummary.remoteID, context: context) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
         itemToUpdate?.update(from: itemSummary, with: space)
         item = itemToUpdate
     }

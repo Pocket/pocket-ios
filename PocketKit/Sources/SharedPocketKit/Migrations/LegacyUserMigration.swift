@@ -98,6 +98,7 @@ public class LegacyUserMigration {
         )
 
         updateUserDefaults()
+        NotificationCenter.default.post(name: .userLoggedIn, object: appSession.currentSession)
         return true
     }
 
