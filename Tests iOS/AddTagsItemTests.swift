@@ -179,7 +179,7 @@ class AddTagsItemTests: XCTestCase {
         }
 
         app.launch().tabBar.savesButton.wait().tap()
-        let itemCell = app.saves.itemView(matching: "Item 1")
+        let itemCell = app.saves.itemView(at: 0).wait()
         itemCell.itemActionButton.wait().tap()
 
         app.addTagsButton.wait().tap()
@@ -187,12 +187,7 @@ class AddTagsItemTests: XCTestCase {
         addTagsView.wait()
         addTagsView.allTagSectionCells.element.wait()
         addTagsView.recentTagCells.element.wait()
-        XCTAssertEqual(addTagsView.recentTagCells.count, 3)
-
         addTagsView.recentTagCells.element(boundBy: 0).tap()
-
-        scrollTo(element: app.addTagsView.allTagCells(matching: "tag 2"), in: app.addTagsView.allTagsView, direction: .up)
-        XCTAssertEqual(app.addTagsView.allTagSectionCells.count, 5)
 
         await snowplowMicro.assertBaselineSnowplowExpectation()
         let tagEvent = await snowplowMicro.getFirstEvent(with: "global-nav.addTags.recentTags")

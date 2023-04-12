@@ -40,7 +40,7 @@ class TagsFilterViewModelTests: XCTestCase {
         TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
     }
 
-    func test_recentTags_withLessThanThreeTags_andPremiumUser_returnsNoRecentTags() {
+    func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() {
         _ = try? space.createSavedItem(createdAt: Date(), tags: ["tag 1"])
         _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["tag 2"])
         _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["tag 3"])
