@@ -22,4 +22,16 @@ public struct MarticleTableParts: PocketGraph.SelectionSet, Fragment {
 
   /// Raw HTML representation of the table.
   public var html: String { __data["html"] }
+
+  public init(
+    html: String
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleTable.typename,
+      "html": html,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

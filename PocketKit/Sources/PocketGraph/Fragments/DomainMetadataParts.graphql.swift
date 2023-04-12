@@ -26,4 +26,18 @@ public struct DomainMetadataParts: PocketGraph.SelectionSet, Fragment {
   public var name: String? { __data["name"] }
   /// Url for the logo image
   public var logo: PocketGraph.Url? { __data["logo"] }
+
+  public init(
+    name: String? = nil,
+    logo: PocketGraph.Url? = nil
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.DomainMetadata.typename,
+      "name": name,
+      "logo": logo,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

@@ -27,6 +27,18 @@ public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
 
   public var rows: [Row] { __data["rows"] }
 
+  public init(
+    rows: [Row]
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleNumberedList.typename,
+      "rows": rows._fieldData,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
+
   /// Row
   ///
   /// Parent Type: `NumberedListElement`
@@ -48,5 +60,21 @@ public struct MarticleNumberedListParts: PocketGraph.SelectionSet, Fragment {
     public var level: Int { __data["level"] }
     /// Numeric index. If a nested item, the index is zero-indexed from the first child.
     public var index: Int { __data["index"] }
+
+    public init(
+      content: PocketGraph.Markdown,
+      level: Int,
+      index: Int
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": PocketGraph.Objects.NumberedListElement.typename,
+        "content": content,
+        "level": level,
+        "index": index,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
+        ])
+      ]))
+    }
   }
 }

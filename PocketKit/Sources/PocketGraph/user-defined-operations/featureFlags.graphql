@@ -1,6 +1,8 @@
 query FeatureFlags($context: UnleashContext!) {
     assignments: unleashAssignments(context: $context) {
+        __typename
         assignments {
+             __typename
             name
             assigned
             variant

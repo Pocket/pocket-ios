@@ -43,4 +43,26 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
   public var height: Int? { __data["height"] }
   /// The determined width of the image at the url
   public var width: Int? { __data["width"] }
+
+  public init(
+    caption: String? = nil,
+    credit: String? = nil,
+    imageID: Int,
+    src: String,
+    height: Int? = nil,
+    width: Int? = nil
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.Image.typename,
+      "caption": caption,
+      "credit": credit,
+      "imageID": imageID,
+      "src": src,
+      "height": height,
+      "width": width,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

@@ -61,6 +61,34 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
   /// Link to the underlying Pocket Item for the URL
   public var item: Item { __data["item"] }
 
+  public init(
+    url: String,
+    remoteID: PocketGraph.ID,
+    isArchived: Bool,
+    isFavorite: Bool,
+    _deletedAt: Int? = nil,
+    _createdAt: Int,
+    archivedAt: Int? = nil,
+    tags: [Tag]? = nil,
+    item: Item
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.SavedItem.typename,
+      "url": url,
+      "remoteID": remoteID,
+      "isArchived": isArchived,
+      "isFavorite": isFavorite,
+      "_deletedAt": _deletedAt,
+      "_createdAt": _createdAt,
+      "archivedAt": archivedAt,
+      "tags": tags._fieldData,
+      "item": item._fieldData,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
+
   /// Tag
   ///
   /// Parent Type: `Tag`
@@ -76,6 +104,18 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
 
     /// The actual tag string the user created for their list
     public var name: String { __data["name"] }
+
+    public init(
+      name: String
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": PocketGraph.Objects.Tag.typename,
+        "name": name,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
+        ])
+      ]))
+    }
   }
 
   /// Item
@@ -92,6 +132,17 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
     ] }
 
     public var asItem: AsItem? { _asInlineFragment() }
+
+    public init(
+      __typename: String
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": __typename,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
+        ])
+      ]))
+    }
 
     /// Item.AsItem
     ///
@@ -153,6 +204,54 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
         public var itemSummary: ItemSummary { _toFragment() }
       }
 
+      public init(
+        remoteID: String,
+        givenUrl: PocketGraph.Url,
+        resolvedUrl: PocketGraph.Url? = nil,
+        title: String? = nil,
+        language: String? = nil,
+        topImageUrl: PocketGraph.Url? = nil,
+        timeToRead: Int? = nil,
+        domain: String? = nil,
+        datePublished: PocketGraph.DateString? = nil,
+        isArticle: Bool? = nil,
+        hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
+        hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
+        wordCount: Int? = nil,
+        authors: [ItemSummary.Author?]? = nil,
+        excerpt: String? = nil,
+        domainMetadata: DomainMetadata? = nil,
+        images: [ItemSummary.Image?]? = nil,
+        syndicatedArticle: ItemSummary.SyndicatedArticle? = nil
+      ) {
+        self.init(_dataDict: DataDict(data: [
+          "__typename": PocketGraph.Objects.Item.typename,
+          "remoteID": remoteID,
+          "givenUrl": givenUrl,
+          "resolvedUrl": resolvedUrl,
+          "title": title,
+          "language": language,
+          "topImageUrl": topImageUrl,
+          "timeToRead": timeToRead,
+          "domain": domain,
+          "datePublished": datePublished,
+          "isArticle": isArticle,
+          "hasImage": hasImage,
+          "hasVideo": hasVideo,
+          "wordCount": wordCount,
+          "authors": authors._fieldData,
+          "excerpt": excerpt,
+          "domainMetadata": domainMetadata._fieldData,
+          "images": images._fieldData,
+          "syndicatedArticle": syndicatedArticle._fieldData,
+          "__fulfilled": Set([
+            ObjectIdentifier(Self.self),
+            ObjectIdentifier(SavedItemSummary.Item.self),
+            ObjectIdentifier(ItemSummary.self)
+          ])
+        ]))
+      }
+
       /// Item.AsItem.DomainMetadata
       ///
       /// Parent Type: `DomainMetadata`
@@ -172,6 +271,21 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
           public init(_dataDict: DataDict) { __data = _dataDict }
 
           public var domainMetadataParts: DomainMetadataParts { _toFragment() }
+        }
+
+        public init(
+          name: String? = nil,
+          logo: PocketGraph.Url? = nil
+        ) {
+          self.init(_dataDict: DataDict(data: [
+            "__typename": PocketGraph.Objects.DomainMetadata.typename,
+            "name": name,
+            "logo": logo,
+            "__fulfilled": Set([
+              ObjectIdentifier(Self.self),
+              ObjectIdentifier(DomainMetadataParts.self)
+            ])
+          ]))
         }
       }
     }

@@ -22,4 +22,16 @@ public struct MarticleDividerParts: PocketGraph.SelectionSet, Fragment {
 
   /// Always '---'; provided for convenience if building a markdown string
   public var content: PocketGraph.Markdown { __data["content"] }
+
+  public init(
+    content: PocketGraph.Markdown
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleDivider.typename,
+      "content": content,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

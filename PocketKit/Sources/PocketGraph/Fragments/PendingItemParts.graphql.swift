@@ -24,4 +24,18 @@ public struct PendingItemParts: PocketGraph.SelectionSet, Fragment {
 
   public var url: PocketGraph.Url { __data["url"] }
   public var status: GraphQLEnum<PocketGraph.PendingItemStatus>? { __data["status"] }
+
+  public init(
+    url: PocketGraph.Url,
+    status: GraphQLEnum<PocketGraph.PendingItemStatus>? = nil
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.PendingItem.typename,
+      "url": url,
+      "status": status,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

@@ -171,15 +171,18 @@ class OnlineSearchTests: XCTestCase {
     }
 
     private func setupOnlineSearch(with term: String) -> XCTestExpectation {
-        let itemParts = SavedItemParts(_dataDict: DataDict(data: [
-            "__typename": "SavedItem",
-            "item": [
-                "__typename": "Item",
-                "title": term,
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ]))
+        let itemParts = SavedItemParts(
+            url: "http://localhost:8080/hello",
+            remoteID: "saved-item-1",
+            isArchived: false,
+            isFavorite: false,
+            _createdAt: 1,
+            item: SavedItemParts.Item.AsItem(
+                remoteID: "item-1",
+                givenUrl: "http://localhost:8080/hello",
+                title: term
+            ).asRootEntityType
+        )
 
         let item = SearchSavedItem(remoteItem: itemParts)
         let expectation = expectation(description: "search called")
@@ -191,15 +194,18 @@ class OnlineSearchTests: XCTestCase {
     }
 
     private func setupOnlineSearchPage2(with term: String) -> XCTestExpectation {
-        let itemParts = SavedItemParts(_dataDict: DataDict(data: [
-            "__typename": "SavedItem",
-            "item": [
-                "__typename": "Item",
-                "title": term,
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ]))
+        let itemParts = SavedItemParts(
+            url: "http://localhost:8080/hello",
+            remoteID: "saved-item-1",
+            isArchived: false,
+            isFavorite: false,
+            _createdAt: 1,
+            item: SavedItemParts.Item.AsItem(
+                remoteID: "item-1",
+                givenUrl: "http://localhost:8080/hello",
+                title: term
+            ).asRootEntityType
+        )
 
         let item = SearchSavedItem(remoteItem: itemParts)
         let expectation = expectation(description: "search called")

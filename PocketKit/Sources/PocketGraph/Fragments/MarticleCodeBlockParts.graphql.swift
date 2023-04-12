@@ -26,4 +26,18 @@ public struct MarticleCodeBlockParts: PocketGraph.SelectionSet, Fragment {
   public var text: String { __data["text"] }
   /// Assuming the codeblock was a programming language, this field is used to identify it.
   public var language: Int? { __data["language"] }
+
+  public init(
+    text: String,
+    language: Int? = nil
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleCodeBlock.typename,
+      "text": text,
+      "language": language,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

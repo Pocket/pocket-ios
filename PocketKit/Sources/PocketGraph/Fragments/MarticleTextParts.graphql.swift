@@ -22,4 +22,16 @@ public struct MarticleTextParts: PocketGraph.SelectionSet, Fragment {
 
   /// Markdown text content. Typically, a paragraph.
   public var content: PocketGraph.Markdown { __data["content"] }
+
+  public init(
+    content: PocketGraph.Markdown
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleText.typename,
+      "content": content,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

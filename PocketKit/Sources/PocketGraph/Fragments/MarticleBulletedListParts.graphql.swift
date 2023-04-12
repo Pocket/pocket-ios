@@ -26,6 +26,18 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
 
   public var rows: [Row] { __data["rows"] }
 
+  public init(
+    rows: [Row]
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.MarticleBulletedList.typename,
+      "rows": rows._fieldData,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
+
   /// Row
   ///
   /// Parent Type: `BulletedListElement`
@@ -44,5 +56,19 @@ public struct MarticleBulletedListParts: PocketGraph.SelectionSet, Fragment {
     public var content: PocketGraph.Markdown { __data["content"] }
     /// Zero-indexed level, for handling nested lists.
     public var level: Int { __data["level"] }
+
+    public init(
+      content: PocketGraph.Markdown,
+      level: Int
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": PocketGraph.Objects.BulletedListElement.typename,
+        "content": content,
+        "level": level,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
+        ])
+      ]))
+    }
   }
 }

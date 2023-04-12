@@ -8,6 +8,13 @@
         "Sources/PocketGraph/schema.graphqls"
     ]
   },
+  "options": {
+      "selectionSetInitializers" : {
+          "operations": false,
+          "namedFragments": true,
+          "localCacheMutations" : true,
+      },
+  },
   "output" : {
     "testMocks" : {
       "none" : {
