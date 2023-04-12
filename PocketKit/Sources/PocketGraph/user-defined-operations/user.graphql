@@ -4,6 +4,7 @@ mutation DeleteUser {
 
 query GetUserData {
   user {
+    __typename
     isPremium
     username
     name

@@ -191,7 +191,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
     private let space: Space
     private let savedItem: SavedItem
     private let mutation: any GraphQLMutation
-    private let savedItemParts: (AnySelectionSet) -> SavedItemParts?
+    private let savedItemParts: (any RootSelectionSet) -> SavedItemParts?
 
     private var task: Cancellable?
 
@@ -201,7 +201,7 @@ class SaveOperation<Mutation: GraphQLMutation>: AsyncOperation {
         space: Space,
         savedItem: SavedItem,
         mutation: Mutation,
-        savedItemParts: @escaping (AnySelectionSet) -> SavedItemParts?
+        savedItemParts: @escaping (any RootSelectionSet) -> SavedItemParts?
     ) {
         self.apollo = apollo
         self.osNotifications = osNotifications

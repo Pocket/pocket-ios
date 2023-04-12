@@ -7,9 +7,11 @@ fragment SlateParts on Slate {
   recommendations {
     id
     item {
+      __typename
       ...ItemSummary
     }
     curatedInfo {
+      __typename
       ...CuratedInfoParts
     }
   }
@@ -27,6 +29,7 @@ query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
     requestId
     experimentId
     slates {
+      __typename
       ...SlateParts
     }
   }
@@ -34,6 +37,7 @@ query GetSlateLineup($lineupID: String!, $maxRecommendations: Int!) {
 
 query GetSlate($slateID: String!, $recommendationCount: Int!) {
   getSlate(slateId: $slateID, recommendationCount: $recommendationCount) {
+    __typename
     ...SlateParts
   }
 }

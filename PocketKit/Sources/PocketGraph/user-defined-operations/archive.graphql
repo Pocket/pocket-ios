@@ -17,6 +17,7 @@ query FetchArchive(
       edges {
         cursor
         node {
+          __typename
           ...SavedItemSummary
         }
       }

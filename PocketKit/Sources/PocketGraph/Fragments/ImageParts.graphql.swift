@@ -17,10 +17,11 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Image }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("caption", String?.self),
     .field("credit", String?.self),
     .field("imageId", alias: "imageID", Int.self),
@@ -42,4 +43,26 @@ public struct ImageParts: PocketGraph.SelectionSet, Fragment {
   public var height: Int? { __data["height"] }
   /// The determined width of the image at the url
   public var width: Int? { __data["width"] }
+
+  public init(
+    caption: String? = nil,
+    credit: String? = nil,
+    imageID: Int,
+    src: String,
+    height: Int? = nil,
+    width: Int? = nil
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.Image.typename,
+      "caption": caption,
+      "credit": credit,
+      "imageID": imageID,
+      "src": src,
+      "height": height,
+      "width": width,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

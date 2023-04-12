@@ -18,6 +18,7 @@ fragment ItemParts on Item {
     url
   }
   marticle {
+    __typename
     ...MarticleTextParts
     ...ImageParts
     ...MarticleDividerParts
@@ -31,15 +32,18 @@ fragment ItemParts on Item {
   }
   excerpt
   domainMetadata {
+    __typename
     ...DomainMetadataParts
   }
   images {
+    __typename
     height
     width
     src
     imageId
   }
   syndicatedArticle {
+    __typename
     itemId
   }
 }

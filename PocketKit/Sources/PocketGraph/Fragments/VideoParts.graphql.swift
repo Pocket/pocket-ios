@@ -18,10 +18,11 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Video }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("height", Int?.self),
     .field("src", String.self),
     .field("type", GraphQLEnum<PocketGraph.VideoType>.self),
@@ -45,4 +46,28 @@ public struct VideoParts: PocketGraph.SelectionSet, Fragment {
   public var width: Int? { __data["width"] }
   /// If known, the length of the video in seconds
   public var length: Int? { __data["length"] }
+
+  public init(
+    height: Int? = nil,
+    src: String,
+    type: GraphQLEnum<PocketGraph.VideoType>,
+    vid: String? = nil,
+    videoID: Int,
+    width: Int? = nil,
+    length: Int? = nil
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.Video.typename,
+      "height": height,
+      "src": src,
+      "type": type,
+      "vid": vid,
+      "videoID": videoID,
+      "width": width,
+      "length": length,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
 }

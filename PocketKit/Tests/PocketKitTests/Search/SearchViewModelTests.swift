@@ -729,15 +729,18 @@ class SearchViewModelTests: XCTestCase {
 
     private func setupOnlineSearch(with term: String) async {
         searchService.stubSearch { _, _ in }
-        let itemParts = SavedItemParts(data: DataDict([
-            "__typename": "SavedItem",
-            "item": [
-                "__typename": "Item",
-                "title": term,
-                "givenUrl": "http://localhost:8080/hello",
-                "resolvedUrl": "http://localhost:8080/hello"
-            ]
-        ], variables: nil))
+        let itemParts = SavedItemParts(
+            url: "http://localhost:8080/hello",
+            remoteID: "saved-item-1",
+            isArchived: false,
+            isFavorite: false,
+            _createdAt: 1,
+            item: SavedItemParts.Item.AsItem(
+                remoteID: "item-1",
+                givenUrl: "http://localhost:8080/hello",
+                title: term
+            ).asRootEntityType
+        )
         let item = SearchSavedItem(remoteItem: itemParts)
         searchService._results = [item]
     }

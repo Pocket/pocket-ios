@@ -26,10 +26,11 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
     """ }
 
   public let __data: DataDict
-  public init(data: DataDict) { __data = data }
+  public init(_dataDict: DataDict) { __data = _dataDict }
 
   public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.SavedItem }
   public static var __selections: [ApolloAPI.Selection] { [
+    .field("__typename", String.self),
     .field("url", String.self),
     .field("id", alias: "remoteID", PocketGraph.ID.self),
     .field("isArchived", Bool.self),
@@ -60,20 +61,61 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
   /// Link to the underlying Pocket Item for the URL
   public var item: Item { __data["item"] }
 
+  public init(
+    url: String,
+    remoteID: PocketGraph.ID,
+    isArchived: Bool,
+    isFavorite: Bool,
+    _deletedAt: Int? = nil,
+    _createdAt: Int,
+    archivedAt: Int? = nil,
+    tags: [Tag]? = nil,
+    item: Item
+  ) {
+    self.init(_dataDict: DataDict(data: [
+      "__typename": PocketGraph.Objects.SavedItem.typename,
+      "url": url,
+      "remoteID": remoteID,
+      "isArchived": isArchived,
+      "isFavorite": isFavorite,
+      "_deletedAt": _deletedAt,
+      "_createdAt": _createdAt,
+      "archivedAt": archivedAt,
+      "tags": tags._fieldData,
+      "item": item._fieldData,
+      "__fulfilled": Set([
+        ObjectIdentifier(Self.self)
+      ])
+    ]))
+  }
+
   /// Tag
   ///
   /// Parent Type: `Tag`
   public struct Tag: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Tag }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .field("name", String.self),
     ] }
 
     /// The actual tag string the user created for their list
     public var name: String { __data["name"] }
+
+    public init(
+      name: String
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": PocketGraph.Objects.Tag.typename,
+        "name": name,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
+        ])
+      ]))
+    }
   }
 
   /// Item
@@ -81,22 +123,35 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
   /// Parent Type: `ItemResult`
   public struct Item: PocketGraph.SelectionSet {
     public let __data: DataDict
-    public init(data: DataDict) { __data = data }
+    public init(_dataDict: DataDict) { __data = _dataDict }
 
     public static var __parentType: ApolloAPI.ParentType { PocketGraph.Unions.ItemResult }
     public static var __selections: [ApolloAPI.Selection] { [
+      .field("__typename", String.self),
       .inlineFragment(AsItem.self),
     ] }
 
     public var asItem: AsItem? { _asInlineFragment() }
+
+    public init(
+      __typename: String
+    ) {
+      self.init(_dataDict: DataDict(data: [
+        "__typename": __typename,
+        "__fulfilled": Set([
+          ObjectIdentifier(Self.self)
+        ])
+      ]))
+    }
 
     /// Item.AsItem
     ///
     /// Parent Type: `Item`
     public struct AsItem: PocketGraph.InlineFragment {
       public let __data: DataDict
-      public init(data: DataDict) { __data = data }
+      public init(_dataDict: DataDict) { __data = _dataDict }
 
+      public typealias RootEntityType = SavedItemSummary.Item
       public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.Item }
       public static var __selections: [ApolloAPI.Selection] { [
         .fragment(ItemSummary.self),
@@ -144,9 +199,57 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
 
       public struct Fragments: FragmentContainer {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public var itemSummary: ItemSummary { _toFragment() }
+      }
+
+      public init(
+        remoteID: String,
+        givenUrl: PocketGraph.Url,
+        resolvedUrl: PocketGraph.Url? = nil,
+        title: String? = nil,
+        language: String? = nil,
+        topImageUrl: PocketGraph.Url? = nil,
+        timeToRead: Int? = nil,
+        domain: String? = nil,
+        datePublished: PocketGraph.DateString? = nil,
+        isArticle: Bool? = nil,
+        hasImage: GraphQLEnum<PocketGraph.Imageness>? = nil,
+        hasVideo: GraphQLEnum<PocketGraph.Videoness>? = nil,
+        wordCount: Int? = nil,
+        authors: [ItemSummary.Author?]? = nil,
+        excerpt: String? = nil,
+        domainMetadata: DomainMetadata? = nil,
+        images: [ItemSummary.Image?]? = nil,
+        syndicatedArticle: ItemSummary.SyndicatedArticle? = nil
+      ) {
+        self.init(_dataDict: DataDict(data: [
+          "__typename": PocketGraph.Objects.Item.typename,
+          "remoteID": remoteID,
+          "givenUrl": givenUrl,
+          "resolvedUrl": resolvedUrl,
+          "title": title,
+          "language": language,
+          "topImageUrl": topImageUrl,
+          "timeToRead": timeToRead,
+          "domain": domain,
+          "datePublished": datePublished,
+          "isArticle": isArticle,
+          "hasImage": hasImage,
+          "hasVideo": hasVideo,
+          "wordCount": wordCount,
+          "authors": authors._fieldData,
+          "excerpt": excerpt,
+          "domainMetadata": domainMetadata._fieldData,
+          "images": images._fieldData,
+          "syndicatedArticle": syndicatedArticle._fieldData,
+          "__fulfilled": Set([
+            ObjectIdentifier(Self.self),
+            ObjectIdentifier(SavedItemSummary.Item.self),
+            ObjectIdentifier(ItemSummary.self)
+          ])
+        ]))
       }
 
       /// Item.AsItem.DomainMetadata
@@ -154,7 +257,7 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
       /// Parent Type: `DomainMetadata`
       public struct DomainMetadata: PocketGraph.SelectionSet {
         public let __data: DataDict
-        public init(data: DataDict) { __data = data }
+        public init(_dataDict: DataDict) { __data = _dataDict }
 
         public static var __parentType: ApolloAPI.ParentType { PocketGraph.Objects.DomainMetadata }
 
@@ -165,9 +268,24 @@ public struct SavedItemSummary: PocketGraph.SelectionSet, Fragment {
 
         public struct Fragments: FragmentContainer {
           public let __data: DataDict
-          public init(data: DataDict) { __data = data }
+          public init(_dataDict: DataDict) { __data = _dataDict }
 
           public var domainMetadataParts: DomainMetadataParts { _toFragment() }
+        }
+
+        public init(
+          name: String? = nil,
+          logo: PocketGraph.Url? = nil
+        ) {
+          self.init(_dataDict: DataDict(data: [
+            "__typename": PocketGraph.Objects.DomainMetadata.typename,
+            "name": name,
+            "logo": logo,
+            "__fulfilled": Set([
+              ObjectIdentifier(Self.self),
+              ObjectIdentifier(DomainMetadataParts.self)
+            ])
+          ]))
         }
       }
     }
