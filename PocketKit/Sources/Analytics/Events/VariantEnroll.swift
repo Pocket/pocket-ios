@@ -22,8 +22,8 @@ public struct VariantEnroll: Event, CustomStringConvertible {
 
     public func toSelfDescribing() -> SelfDescribing {
         let base = SelfDescribing(schema: ContentOpen.schema, payload: [:])
-        base.contexts.add(featureFlagEntity.toSelfDescribingJson())
-        extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
+        base.entities.append(featureFlagEntity.toSelfDescribingJson())
+        extraEntities.forEach { base.entities.append($0.toSelfDescribingJson()) }
         return base
     }
 }

@@ -485,10 +485,6 @@ extension PocketSource {
         try? space.fetchAllTags()
     }
 
-    public func fetchTags(isArchived: Bool = false) -> [Tag]? {
-        try? space.fetchTags(isArchived: isArchived)
-    }
-
     public func filterTags(with input: String, excluding tags: [String]) -> [Tag]? {
         try? space.filterTags(with: input, excluding: tags)
     }

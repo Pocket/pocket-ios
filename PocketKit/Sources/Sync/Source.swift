@@ -66,8 +66,6 @@ public protocol Source {
 
     func filterTags(with input: String, excluding tags: [String]) -> [Tag]?
 
-    func fetchTags(isArchived: Bool) -> [Tag]?
-
     func fetchSlateLineup(_ identifier: String) async throws
 
     func restore()
