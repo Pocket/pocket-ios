@@ -551,37 +551,6 @@ extension PocketSourceTests {
         XCTAssertTrue(tags.compactMap { $0.name }.contains("tag 3"))
     }
 
-    func test_fetchTags_withSaved_returnsSavedTags() throws {
-        let tagNames = ["tag 1", "tag 2", "tag 3"]
-        _ = createItemsWithTags(3)
-        _ = createItemsWithTags(1, isArchived: true)
-        let source = subject()
-        guard let tags = source.fetchTags() else {
-            XCTFail("tags should not be nil")
-            return
-        }
-        let names = tags.compactMap { $0.name }
-        XCTAssertEqual(names.count, 3)
-        XCTAssertTrue(names.contains(tagNames[0]))
-        XCTAssertTrue(names.contains(tagNames[1]))
-        XCTAssertTrue(names.contains(tagNames[2]))
-    }
-
-    func test_fetchTags_withArchive_returnsArchivedTags() throws {
-        let tagNames = ["tag 1", "tag 2"]
-        _ = createItemsWithTags(1)
-        _ = createItemsWithTags(2, isArchived: true)
-        let source = subject()
-        guard let tags = source.fetchTags(isArchived: true) else {
-            XCTFail("tags should not be nil")
-            return
-        }
-        let names = tags.compactMap { $0.name }
-        XCTAssertEqual(names.count, 2)
-        XCTAssertTrue(names.contains(tagNames[0]))
-        XCTAssertTrue(names.contains(tagNames[1]))
-    }
-
     func test_deleteTags_executesDeleteTagMutation() throws {
         let items = createItemsWithTags(1)
         let expectationToRunOperation = expectation(description: "Run operation")

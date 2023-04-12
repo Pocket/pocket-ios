@@ -27,7 +27,7 @@ let package = Package(
         .package(url: "https://github.com/SvenTiigi/YouTubePlayerKit.git", exact: "1.4.0"),
         .package(url: "https://github.com/braze-inc/braze-swift-sdk.git", exact: "5.13.0"),
         .package(url: "https://github.com/adjust/ios_sdk", exact: "4.33.4"),
-        .package(url: "https://github.com/RNCryptor/RNCryptor.git", .upToNextMajor(from: "5.0.0"))
+        .package(url: "https://github.com/RNCryptor/RNCryptor.git", exact: "5.1.0")
     ],
     targets: [
         .binaryTarget(name: "PKTListen", path: "./Frameworks/PKTListen.xcframework"),
