@@ -22,6 +22,7 @@ extension ImageAsset {
     public static let sortFilter = ImageAsset("sort-filter")
     public static let sort = ImageAsset("sort")
     public static let archive = ImageAsset("archive")
+    public static let listen = ImageAsset("listen")
     public static let looking = ImageAsset("looking")
     public static let loggedOutCarousel1 = ImageAsset("loggedOutCarousel1")
     public static let loggedOutCarousel2 = ImageAsset("loggedOutCarousel2")

@@ -77,6 +77,8 @@ public class ItemByIDQuery: GraphQLQuery {
       public var hasImage: GraphQLEnum<PocketGraph.Imageness>? { __data["hasImage"] }
       /// 0=no videos, 1=contains video, 2=is a video
       public var hasVideo: GraphQLEnum<PocketGraph.Videoness>? { __data["hasVideo"] }
+      /// Number of words in the article
+      public var wordCount: Int? { __data["wordCount"] }
       /// List of Authors involved with this article
       public var authors: [ItemParts.Author?]? { __data["authors"] }
       /// The Marticle format of the article, used by clients for native article view.

@@ -1,53 +1,54 @@
 {
-    "data": {
-        "user": {
+  "data": {
+    "user": {
+      "__typename": "[type-name-here]",
+      "savedItems": {
+        "__typename": "[type-name-here]",
+        "totalCount": 5,
+        "pageInfo": {
+          "__typename": "[type-name-here]",
+          "hasNextPage": true,
+          "endCursor": "cursor-5"
+        },
+        "edges": [
+          {
             "__typename": "[type-name-here]",
-            "savedItems": {
-                "__typename": "[type-name-here]",
-                "totalCount": 5,
-                "pageInfo": {
-                    "__typename": "[type-name-here]",
-                    "hasNextPage": true,
-                    "endCursor": "cursor-5"
-                },
-                "edges": [
-                    {
-                        "__typename": "[type-name-here]",
-                        "cursor": "cursor-5",
-                        "node": {
-                            "__typename": "[type-name-here]",
-                            "remoteID": "archived-saved-item--2",
-                            "url": "http://example.com/items/archived-item--2",
-                            "_createdAt": 0,
-                            "_deletedAt": null,
-                            "archivedAt": 1,
-                            "isArchived": true,
-                            "isFavorite": false,
-                            "tags": [],
-                            "item": {
-                                "__typename": "Item",
-                                "remoteID": "archived-item--2",
-                                "title": "Archived Item -2",
-                                "givenUrl": "http://example.com/items/archived-item--2",
-                                "resolvedUrl": "http://example.com/items/archived-item--2",
-                                "topImageUrl": "https://example.com/archived-item--2/top-image.jpg",
-                                "domain": "wired.com",
-                                "language": "en",
-                                "timeToRead": 6,
-                                "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
-                                "datePublished": "2001-01-01 12:01:01",
-                                "authors": [],
-                                "domainMetadata": null,
-                                "images": [],
-                                "isArticle": true,
-                                "hasImage": "HAS_IMAGES",
-                                "hasVideo": "HAS_VIDEOS",
-                                "syndicatedArticle": null
-                            }
-                        }
-                    }
-                ]
+            "cursor": "cursor-5",
+            "node": {
+              "__typename": "[type-name-here]",
+              "remoteID": "archived-saved-item--2",
+              "url": "http://example.com/items/archived-item--2",
+              "_createdAt": 0,
+              "_deletedAt": null,
+              "archivedAt": 1,
+              "isArchived": true,
+              "isFavorite": false,
+              "tags": [],
+              "item": {
+                "__typename": "Item",
+                "remoteID": "archived-item--2",
+                "title": "Archived Item -2",
+                "givenUrl": "http://example.com/items/archived-item--2",
+                "resolvedUrl": "http://example.com/items/archived-item--2",
+                "topImageUrl": "https://example.com/archived-item--2/top-image.jpg",
+                "domain": "wired.com",
+                "language": "en",
+                "timeToRead": 6,
+                "wordCount": 500,
+                "excerpt": "Risus Aenean Ultricies Nullam Vehicula",
+                "datePublished": "2001-01-01 12:01:01",
+                "authors": [],
+                "domainMetadata": null,
+                "images": [],
+                "isArticle": true,
+                "hasImage": "HAS_IMAGES",
+                "hasVideo": "HAS_VIDEOS",
+                "syndicatedArticle": null
+              }
             }
-        }
+          }
+        ]
+      }
     }
+  }
 }

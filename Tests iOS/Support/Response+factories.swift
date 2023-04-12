@@ -144,8 +144,8 @@ extension Response {
         fixture(named: fixtureName)
     }
 
-    static func featureFlags() -> Response {
-        fixture(named: "feature-flags")
+    static func featureFlags(_ fixtureName: String = "feature-flags") -> Response {
+        fixture(named: fixtureName)
     }
 
     static func fixture(named fixtureName: String) -> Response {

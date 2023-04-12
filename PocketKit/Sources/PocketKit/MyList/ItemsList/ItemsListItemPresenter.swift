@@ -65,22 +65,15 @@ class ItemsListItemPresenter {
     }
 
     private var title: String {
-        [
-            item.title,
-            item.bestURL?.absoluteString
-        ]
-            .compactMap { $0 }
-            .first { !$0.isEmpty } ?? ""
+        item.displayTitle
     }
 
     private var detail: String {
-        [domain, timeToRead]
-            .compactMap { $0 }
-            .joined(separator: " • ")
+        item.displayDetail
     }
 
     private var domain: String? {
-        item.domainMetadata?.name ?? item.domain ?? item.host
+        item.displayDomain
     }
 
     private var tags: [String]? {
