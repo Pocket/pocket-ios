@@ -197,20 +197,12 @@ public class PocketSource: Source {
         space.makeRecomendationsSlateLineupController(by: SyncConstants.Home.slateLineupIdentifier)
     }
 
-    public func backgroundObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
-        space.backgroundObject(with: id)
-    }
-
     public func viewObject<T: NSManagedObject>(id: NSManagedObjectID) -> T? {
         space.viewObject(with: id)
     }
 
     public func viewRefresh(_ object: NSManagedObject, mergeChanges flag: Bool) {
         space.viewContext.refresh(object, mergeChanges: flag)
-    }
-
-    public func backgroundRefresh(_ object: NSManagedObject, mergeChanges: Bool) {
-        space.backgroundRefresh(object, mergeChanges: mergeChanges)
     }
 
     public func retryImmediately() {
