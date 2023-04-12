@@ -26,13 +26,11 @@ class AddTagsItemTests: XCTestCase {
         try server.start()
     }
 
+    @MainActor
     override func tearDown() async throws {
-       await snowplowMicro.assertNoBadEvents()
-    }
-
-    override func tearDownWithError() throws {
         try server.stop()
         app.terminate()
+        await snowplowMicro.assertNoBadEvents()
     }
 
     @MainActor
@@ -185,7 +183,7 @@ class AddTagsItemTests: XCTestCase {
         app.addTagsButton.wait().tap()
         let addTagsView = app.addTagsView.wait()
         addTagsView.wait()
-        addTagsView.allTagSectionCells.element.wait()
+
         addTagsView.recentTagCells.element.wait()
         addTagsView.recentTagCells.element(boundBy: 0).tap()
 

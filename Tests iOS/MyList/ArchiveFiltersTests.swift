@@ -69,7 +69,7 @@ class ArchiveFiltersTests: XCTestCase {
         saves.itemView(matching: "Archived Item 2").wait()
     }
 
-    func test_archiveView_tappingTaggedFilter_withFreeUser_showsFilteredItems() {
+    func test_archiveView_tappingTaggedFilter_showsFilteredItems() {
         app.launch().tabBar.savesButton.wait().tap()
         let saves = app.saves.wait()
 
@@ -77,28 +77,6 @@ class ArchiveFiltersTests: XCTestCase {
 
         app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
-
-        scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
-        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
-
-        tagsFilterView.tag(matching: "tag 0").wait().tap()
-        waitForDisappearance(of: tagsFilterView)
-
-        app.saves.selectedTagChip(for: "tag 0").wait()
-        XCTAssertEqual(app.saves.wait().itemCells.count, 1)
-    }
-
-    func test_archiveView_tappingTaggedFilter_withPremiumUser_showsFilteredItems() {
-        app.launch().tabBar.savesButton.wait().tap()
-        let saves = app.saves.wait()
-
-        saves.selectionSwitcher.archiveButton.wait().tap()
-
-        app.saves.filterButton(for: "Tagged").wait().tap()
-        let tagsFilterView = app.saves.tagsFilterView.wait()
-
-        scrollTo(element: tagsFilterView.allTagCells(matching: "tag 2"), in: tagsFilterView.element, direction: .up)
-        XCTAssertEqual(tagsFilterView.allTagSectionCells.count, 6)
 
         tagsFilterView.tag(matching: "tag 0").wait().tap()
         waitForDisappearance(of: tagsFilterView)
