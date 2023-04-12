@@ -2,6 +2,7 @@
 // License, v. 2.0. If a copy of the MPL was not distributed with this
 // file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
+import Combine
 import SharedPocketKit
 import StoreKit
 import Sync
@@ -20,30 +21,23 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
     /// Will listen for transaction updates while the app is running
     private var transactionListener: Task<Void, Error>?
 
+    private var sessionSubscriptions = Set<AnyCancellable>()
+
     private let subscriptionMap: [String: PremiumSubscriptionType]
 
-    init(user: User, receiptService: ReceiptService, subscriptionMap: [String: PremiumSubscriptionType]? = nil) {
+    init(user: User, receiptService: ReceiptService, loggedIn: Bool, subscriptionMap: [String: PremiumSubscriptionType]? = nil) {
         self.user = user
         self.receiptService = receiptService
         self.subscriptionMap = subscriptionMap ?? [Keys.shared.pocketPremiumMonthly: .monthly, Keys.shared.pocketPremiumAnnual: .annual]
-
-        transactionListener = makeTransactionListener()
-
-        Task {
-            do {
-                // Obtain purchaseable subscriptions from the App Store
-                try await requestSubscriptions()
-            } catch {
-                state = .failed
-                Log.capture(error: error)
-            }
-            // Restore a purchased subscription, if any
-            await self.fetchActiveSubscription()
+        makeUserSessionListener()
+        guard loggedIn else {
+            return
         }
+        start()
     }
 
     deinit {
-        transactionListener?.cancel()
+        stop()
     }
 
     /// Fetch available subscriptions from the App Store
@@ -69,10 +63,33 @@ final class PocketSubscriptionStore: SubscriptionStore, ObservableObject {
 }
 
 // MARK: private methods
-extension PocketSubscriptionStore {
+private extension PocketSubscriptionStore {
+    /// Start the transaction listener, fetch purchaseable subscriptions,
+    /// and look for purchased subscriptions on the App Store
+    func start() {
+        transactionListener = makeTransactionListener()
+
+        Task {
+            do {
+                // Obtain purchaseable subscriptions from the App Store
+                try await requestSubscriptions()
+            } catch {
+                state = .failed
+                Log.capture(error: error)
+            }
+            // Restore a purchased subscription, if any
+            await self.fetchActiveSubscription()
+        }
+    }
+
+    /// Reset user status and cancel the transaction listener
+    func stop() {
+        state = .unsubscribed
+        transactionListener?.cancel()
+    }
     /// Return a detached Task to lListen for transaction updates from the App Store
     /// that don't directly come from purchases on the active device.
-    private func makeTransactionListener() -> Task<Void, Error> {
+    func makeTransactionListener() -> Task<Void, Error> {
         return Task.detached {
             for await transaction in Transaction.updates {
                 do {
@@ -84,10 +101,27 @@ extension PocketSubscriptionStore {
         }
     }
 
+    /// Listen for user session, call start at login, stop at logout.
+    func makeUserSessionListener() {
+        // Register for login notifications
+        NotificationCenter.default.publisher(
+            for: .userLoggedIn
+        ).sink { [weak self] _ in
+            self?.start()
+        }.store(in: &sessionSubscriptions)
+
+        // Register for logout notifications
+        NotificationCenter.default.publisher(
+            for: .userLoggedOut
+        ).sink { [weak self] _ in
+            self?.stop()
+        }.store(in: &sessionSubscriptions)
+    }
+
     /// Varify the passed transaction
     /// - Parameter transaction: a new transaction to verify
     /// - Returns: a verified trnasaction, if verification is successful. Throws an error otherwise.
-    private func verify(_ transaction: VerificationResult<Transaction>) throws -> Transaction {
+    func verify(_ transaction: VerificationResult<Transaction>) throws -> Transaction {
         switch transaction {
         case .unverified:
             throw SubscriptionStoreError.unverifiedPurchase
@@ -98,8 +132,9 @@ extension PocketSubscriptionStore {
 
     /// Process the purchase of a product
     /// - Parameter product: the product to purchase
-    private func purchase(product: Product) async throws {
-        // TODO: we could add `appAccountToken` in the purchase options, but it needs an UUID
+    func purchase(product: Product) async throws {
+        // In the future, we could add `appAccountToken` in the purchase options.
+        // It would need to be a UUID and should also be synced with the backend.
         let result = try await product.purchase()
 
         switch result {
@@ -118,13 +153,13 @@ extension PocketSubscriptionStore {
 
     /// Process a received `StoreKit` varification result and, if it contains a vaild transaction,
     /// it verifies it and updates the app status accordingly
-    private func processTransaction(_ result: VerificationResult<Transaction>) async throws {
+    func processTransaction(_ result: VerificationResult<Transaction>) async throws {
         let verifiedTransaction = try verify(result)
         await updateSubscriptionStatus(verifiedTransaction)
     }
 
     /// Looks for an active subscription
-    private func fetchActiveSubscription() async {
+    func fetchActiveSubscription() async {
         for await transaction in Transaction.currentEntitlements {
             do {
                 try await processTransaction(transaction)
@@ -143,7 +178,7 @@ extension PocketSubscriptionStore {
     }
 
     /// Process a verified transaction and update app status if necessary
-    private func updateSubscriptionStatus(_ verifiedTransaction: Transaction) async {
+    func updateSubscriptionStatus(_ verifiedTransaction: Transaction) async {
         guard let expirationDate = verifiedTransaction.expirationDate, expirationDate > Date() else {
             await verifiedTransaction.finish()
             Log.capture(message: "Subscription was expired")

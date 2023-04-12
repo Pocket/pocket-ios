@@ -1,4 +1,4 @@
-import Foundation
+import Combine
 import SwiftUI
 
 public enum Status: String {
