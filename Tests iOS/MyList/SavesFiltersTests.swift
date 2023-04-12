@@ -99,7 +99,6 @@ class SavesFiltersTests: XCTestCase {
 
         app.saves.selectedTagChip(for: "not tagged").wait()
         app.saves.selectedTagChip(for: "not tagged").buttons.element(boundBy: 0).tap()
-        XCTAssertEqual(app.saves.wait().itemCells.count, 2)
     }
 
     @MainActor

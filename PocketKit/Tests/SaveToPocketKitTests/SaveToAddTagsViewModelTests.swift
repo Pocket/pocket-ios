@@ -100,7 +100,7 @@ class SaveToAddTagsViewModelTests: XCTestCase {
         XCTAssertEqual(item.tags?.compactMap { ($0 as? Tag)?.name }, ["tag 1", "tag 2"])
     }
 
-    func test_recentTags_withLessThanThreeTags_andPremiumUser_returnsNoRecentTags() throws {
+    func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() throws {
         let item = space.buildSavedItem(tags: [])
         try space.save()
         let viewModel = subject(

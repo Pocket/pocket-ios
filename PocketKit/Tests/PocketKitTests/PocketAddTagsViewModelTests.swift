@@ -120,7 +120,7 @@ class PocketAddTagsViewModelTests: XCTestCase {
         XCTAssertNotNil(source.addTagsToSavedItemCall(at: 0))
     }
 
-    func test_recentTags_withLessThanThreeTags_andPremiumUser_returnsNoRecentTags() {
+    func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() {
         let item = space.buildSavedItem(tags: [])
         let expectFetchAllTagsCall = expectation(description: "expect source.fetchAllTags()")
         expectFetchAllTagsCall.assertForOverFulfill = false
