@@ -80,7 +80,7 @@ class EditTagsTests: XCTestCase {
         }
         app.launch()
         app.tabBar.savesButton.wait().tap()
-        app.saves.filterButton(for: "Tagged").tap()
+        app.saves.filterButton(for: "Tagged").wait().tap()
         let tagsFilterView = app.saves.tagsFilterView.wait()
 
         XCTAssertEqual(tagsFilterView.editButton.label, "Edit")
@@ -88,11 +88,11 @@ class EditTagsTests: XCTestCase {
         XCTAssertEqual(tagsFilterView.editButton.label, "Done")
         XCTAssertFalse(tagsFilterView.deleteButton.isEnabled)
 
-        tagsFilterView.tag(matching: "tag 1").tap()
-        tagsFilterView.tag(matching: "tag 2").tap()
+        tagsFilterView.tag(matching: "tag 1").wait().tap()
+        tagsFilterView.tag(matching: "tag 2").wait().tap()
 
         XCTAssertTrue(tagsFilterView.deleteButton.isEnabled)
-        tagsFilterView.deleteButton.tap()
+        tagsFilterView.deleteButton.wait().tap()
 
         app.alert.delete.wait().tap()
         wait(for: [firstDeleteRequest, secondDeleteRequest])
