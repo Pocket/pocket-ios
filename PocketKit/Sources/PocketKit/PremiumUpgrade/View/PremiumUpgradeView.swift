@@ -141,21 +141,18 @@ struct PremiumUpgradeView: View {
 
 private struct PremiumUpgradeHeader: View {
     var body: some View {
-        VStack(spacing: 0) {
-            Text("Premium").style(.upgradeHeader)
-            Text("Membership").style(.upgradeHeader)
-        }
+        Text("Premium\nMembership").style(.upgradeHeader)
     }
 }
 
 private struct PremiumUpgradeFeaturesView: View {
     private let features = [
-        "Permanent library of everything you've saved",
-        "Ad-free",
-        "Suggested tags",
-        "Full-text search",
-        "Unlimited highlights",
-        "Premium fonts"
+        Localization.Premium.UpgradeView.permanentLibrary,
+        Localization.Premium.UpgradeView.adFree,
+        Localization.Premium.UpgradeView.suggestedTags,
+        Localization.Premium.UpgradeView.fullTextSearch,
+        Localization.Premium.UpgradeView.unlimitedHighlights,
+        Localization.Premium.UpgradeView.premiumFonts
     ]
 
     var body: some View {
@@ -239,14 +236,12 @@ private struct PremiumUpgradeButton: View {
 }
 
 private struct PremiumYearlyPercent: View {
+    let discountAmount: String = "25%"
     var body: some View {
-        VStack {
-            Text("Save 25%")
-                .style(.percentSaved)
-                .multilineTextAlignment(.center)
-        }
-        .frame(width: 60, height: 60, alignment: .center)
-        .background(Circle().fill(Color(.ui.teal3)))
+        Text(Localization.Premium.UpgradeView.save + " " + discountAmount)
+            .style(.percentSaved)
+            .frame(width: 60, height: 60, alignment: .center)
+            .background(Circle().fill(Color(.ui.teal3)))
     }
 }
 
@@ -258,7 +253,7 @@ private struct PremiumInfoView: View {
     init(monthlyPrice: String, annualPrice: String) {
         self.monthlyPrice = monthlyPrice
         self.annualPrice = annualPrice
-        self.text = Localization.Premium.Upgradeview.description(monthlyPrice, annualPrice)
+        self.text = Localization.Premium.UpgradeView.description(monthlyPrice, annualPrice)
     }
 
     var body: some View {
@@ -351,7 +346,7 @@ private extension Style {
 
     static let yearlyPricing = Style.yearlyPremiumRow.with(size: .p4)
 
-    static let percentSaved = Style.yearlyPremiumRow.with(size: .p3).with(weight: .medium)
+    static let percentSaved = Style.yearlyPremiumRow.with(size: .p3).with(weight: .medium).with(alignment: .center)
 
     static let info = Style.body.sansSerif.with(size: .p4).with(color: .ui.grey4)
 

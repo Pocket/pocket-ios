@@ -196,8 +196,20 @@
 "year" = "year";
 // Short name of the annual premium subscription
 "Annual" = "Annual";
+
+//The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
+"premium.upgradeView.PremiumMembership" = "Premium\nMembership";
 // Description of the premium uprgade view
-"premium.upgradeview.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"premium.upgradeView.description" = "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.";
+"premium.upgradeView.save" = "Save";
+"premium.upgradeView.permanentLibrary" = "Permanent library of everything you've saved";
+//Ads will not be shown to Premuim users
+"premium.upgradeView.adFree" = "Ad-free";
+"premium.upgradeView.suggestedTags" = "Suggested tags";
+"premium.upgradeView.fullTextSearch" = "Full-text search";
+"premium.upgradeView.unlimitedHighlights" = "Unlimited highlights";
+"premium.upgradeView.premiumFonts" = "Premium fonts";
+
 "settings.goPremiumRow" = "Go Premium";
 "settings.premiumSubscriptionRow" = "Premium Subscription";
 "Hooray!" = "Hooray!";

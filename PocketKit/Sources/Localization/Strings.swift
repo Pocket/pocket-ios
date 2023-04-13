@@ -261,11 +261,28 @@ public enum Localization {
       /// You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.
       public static let message = Localization.tr("Localizable", "premium.success.message", fallback: "You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.")
     }
-    public enum Upgradeview {
+    public enum UpgradeView {
+      /// Ad-free
+      public static let adFree = Localization.tr("Localizable", "premium.upgradeView.adFree", fallback: "Ad-free")
       /// Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.
       public static func description(_ p1: Any, _ p2: Any) -> String {
-        return Localization.tr("Localizable", "premium.upgradeview.description", String(describing: p1), String(describing: p2), fallback: "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.")
+        return Localization.tr("Localizable", "premium.upgradeView.description", String(describing: p1), String(describing: p2), fallback: "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.")
       }
+      /// Full-text search
+      public static let fullTextSearch = Localization.tr("Localizable", "premium.upgradeView.fullTextSearch", fallback: "Full-text search")
+      /// Permanent library of everything you've saved
+      public static let permanentLibrary = Localization.tr("Localizable", "premium.upgradeView.permanentLibrary", fallback: "Permanent library of everything you've saved")
+      /// Premium fonts
+      public static let premiumFonts = Localization.tr("Localizable", "premium.upgradeView.premiumFonts", fallback: "Premium fonts")
+      /// Premium
+      /// Membership
+      public static let premiumMembership = Localization.tr("Localizable", "premium.upgradeView.PremiumMembership", fallback: "Premium\nMembership")
+      /// Save
+      public static let save = Localization.tr("Localizable", "premium.upgradeView.save", fallback: "Save")
+      /// Suggested tags
+      public static let suggestedTags = Localization.tr("Localizable", "premium.upgradeView.suggestedTags", fallback: "Suggested tags")
+      /// Unlimited highlights
+      public static let unlimitedHighlights = Localization.tr("Localizable", "premium.upgradeView.unlimitedHighlights", fallback: "Unlimited highlights")
     }
   }
   public enum Search {
