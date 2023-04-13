@@ -60,12 +60,15 @@ class FeatureFlagService: FeatureFlagServiceProtocol {
 /// Describes the current feature flags that iOS cares about
 public enum CurrentFeatureFlags: String, CaseIterable {
     case listen = "temp.ios.listen"
+    case listenTagsPlaylists = "temp.ios.listen.tag_playlists"
 
     /// Description to use in a debug menu
     var description: String {
         switch self {
-        case.listen:
+        case .listen:
             return "Enable the Listen feature"
+        case .listenTagsPlaylists:
+            return "Enable the Playlist support via tags in Listen"
         }
     }
 }
