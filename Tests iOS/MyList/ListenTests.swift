@@ -54,6 +54,7 @@ class ListenTests: XCTestCase {
         app.saves.pullToRefresh()
 
         app.saves.filterButton(for: "Listen").wait().tap()
+        app.listenPlay.wait()
     }
 
     func test_listen_doesNotShow_whenNotInFlag() {
