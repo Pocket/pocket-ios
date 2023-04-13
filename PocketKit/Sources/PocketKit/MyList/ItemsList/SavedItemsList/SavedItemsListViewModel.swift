@@ -619,7 +619,6 @@ extension SavedItemsListViewModel {
             // Remove any filters and sorts they selected and re-fetch data before showing listen.
             if !selectedFilters.isEmpty && !featureFlags.isAssigned(flag: .listenTagsPlaylists) {
                 selectedFilters.removeAll()
-                listOptions.selectedSortOption = .newest
                 applySorting()
                 fetch()
             }
