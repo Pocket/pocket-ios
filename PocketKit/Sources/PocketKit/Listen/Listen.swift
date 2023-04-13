@@ -108,9 +108,9 @@ extension Listen: PKTListenServiceDelegate {
         // cxt_scroll_amount will have the amount seeked if seeking
 
         // if cxt_ui has the value background, the change came from the UI Media player controls
-        var fromMPRemoteCommandCenter = false
+        var controlType: Events.Listen.ControlType = .inapp
         if let uiContext = userInfo["cxt_ui"] as? String, uiContext == "background" {
-            fromMPRemoteCommandCenter = true
+            controlType = .system
         }
 
         // TODO: If we use the Snowplow media element, we need to aquire the playback rate on all actions, which we dont have atm.
@@ -120,13 +120,22 @@ extension Listen: PKTListenServiceDelegate {
             guard let postiton = userInfo["cxt_index"] as? Int, let url = kusari?.album?.givenURL else {
                 return
             }
-            self.tracker.track(event: Events.Listen.ListenItemImpression(url: url, positionInList: postiton))
+            self.tracker.track(event: Events.Listen.ItemImpression(url: url, positionInList: postiton))
         } else if actionName == "start_listen" {
-            Log.debug("Listen action: \(actionName)")
+            guard let url = kusari?.album?.givenURL else {
+                return
+            }
+            self.tracker.track(event: Events.Listen.StartPlayback(url: url, controlType: controlType))
         } else if actionName == "resume_listen" {
-            Log.debug("Listen action: \(actionName)")
+            guard let url = kusari?.album?.givenURL else {
+                return
+            }
+            self.tracker.track(event: Events.Listen.ResumePlayback(url: url, controlType: controlType))
         } else if actionName == "pause_listen" {
-            Log.debug("Listen action: \(actionName)")
+            guard let url = kusari?.album?.givenURL else {
+                return
+            }
+            self.tracker.track(event: Events.Listen.PausePlayback(url: url, controlType: controlType))
         } else if actionName == "fast_forward_listen" {
             Log.debug("Listen action: \(actionName)")
         } else if actionName == "rewind_listen" {
