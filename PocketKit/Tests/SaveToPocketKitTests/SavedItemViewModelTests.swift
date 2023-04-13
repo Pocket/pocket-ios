@@ -299,6 +299,7 @@ extension SavedItemViewModelTests {
         saveService.stubRetrieveTags { _ in
             let tag: Tag = Tag(context: self.space.backgroundContext)
             tag.name = "tag 1"
+            tag.remoteID = tag.name?.uppercased()
             return [tag]
         }
         let tags = viewModel.retrieveTags(excluding: [])
