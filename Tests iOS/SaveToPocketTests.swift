@@ -27,7 +27,7 @@ class SaveToPocketTests: XCTestCase {
     }
 
     func test_whenLoggedOut_userTapsLogIn_opensApp() {
-        app.launch(arguments: .firstLaunch, environment: .noSession)
+        app.launch(arguments: .bypassSignIn, environment: .noSession)
 
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         safari.launch()
