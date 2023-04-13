@@ -73,7 +73,9 @@ class TagsFilterViewModel: ObservableObject {
         tags.forEach { tag in
             guard let tag: Tag = fetchedTags?.filter({ $0.name == tag }).first else { return }
             source.deleteTag(tag: tag)
+            fetchedTags?.removeAll(where: { $0.objectID == tag.objectID})
         }
+        refreshView = true
     }
 
     func rename(from oldName: String, to newName: String) {
