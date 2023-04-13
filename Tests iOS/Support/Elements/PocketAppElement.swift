@@ -177,3 +177,18 @@ struct PocketAppElement {
         app.activate()
     }
 }
+
+/// Listen
+/// Hacky helper extenstion until we add accessibility identifier helpers to Listen
+extension PocketAppElement {
+
+    var listenPlay: XCUIElement {
+        app.buttons["Play"]
+    }
+
+    /// Once listen is visible. its the first collection view that has articles
+    var listenList: XCUIElement {
+        app.collectionViews.element(boundBy: 0)
+    }
+
+}
