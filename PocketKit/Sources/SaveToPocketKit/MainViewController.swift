@@ -17,7 +17,14 @@ class MainViewController: UIViewController {
         let appSession = services.appSession
         let encryptedStore = PocketEncryptedStore()
         let userDefaults = services.userDefaults
+        let user = services.user
         let child: UIViewController
+
+        SignOutOnFirstLaunch(
+            appSession: appSession,
+            user: user,
+            userDefaults: userDefaults
+        ).signOutOnFirstLaunch()
 
         let legacyUserMigration = LegacyUserMigration(
             userDefaults: userDefaults,
