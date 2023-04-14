@@ -250,6 +250,9 @@
 // Short name of the annual premium subscription
 "Annual" = "Annual";
 
+"premium.infoView.terms.privacyPolicy" = "Privacy Policy";
+"premium.infoView.terms.TermsOfService" = "Terms of Service";
+
 //The title of our Premium Membership page spans 2 lines. The '\n' character denotes a newline character and is not shown to the user.
 "premium.upgradeView.PremiumMembership" = "Premium\nMembership";
 // Description of the premium uprgade view

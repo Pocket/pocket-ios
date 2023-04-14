@@ -269,7 +269,7 @@ private struct PremiumTermsView: View {
         HStack(spacing: 16) {
             Button(action: {
                 self.showPrivacyPolicy = true
-            }, label: { Text("Privacy Policy").style(.terms) })
+            }, label: { Text(Localization.Premium.InfoView.Terms.privacyPolicy).style(.terms) })
             .sheet(isPresented: $showPrivacyPolicy) {
                 if let privacyUrl = getUrlFor(typeOf: .privacyPolicy) {
                     SFSafariView(url: privacyUrl)
@@ -278,7 +278,7 @@ private struct PremiumTermsView: View {
             .accessibilityIdentifier("privacy-policy")
             Button(action: {
                 self.showTermsOfService = true
-            }, label: { Text("Terms of Service").style(.terms) })
+            }, label: { Text(Localization.Premium.InfoView.Terms.termsOfService).style(.terms) })
             .sheet(isPresented: $showTermsOfService) {
                 if let toSUrl = getUrlFor(typeOf: .termsOfService) {
                     SFSafariView(url: toSUrl)

@@ -285,6 +285,14 @@ public enum Localization {
     }
   }
   public enum Premium {
+    public enum InfoView {
+      public enum Terms {
+        /// Privacy Policy
+        public static let privacyPolicy = Localization.tr("Localizable", "premium.infoView.terms.privacyPolicy", fallback: "Privacy Policy")
+        /// Terms of Service
+        public static let termsOfService = Localization.tr("Localizable", "premium.infoView.terms.TermsOfService", fallback: "Terms of Service")
+      }
+    }
     public enum Success {
       /// You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.
       public static let message = Localization.tr("Localizable", "premium.success.message", fallback: "You’re officially a Pocket Premium member. Welcome to the new ad-free, customizable, permanent version of your Pocket. We think you’ll like it here.")
