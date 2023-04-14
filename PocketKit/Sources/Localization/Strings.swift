@@ -64,14 +64,10 @@ public enum Localization {
   public static let favorite = Localization.tr("Localizable", "Favorite", fallback: "Favorite")
   /// Favorites
   public static let favorites = Localization.tr("Localizable", "Favorites", fallback: "Favorites")
-  /// Find your favorites here
-  public static let findYourFavoritesHere = Localization.tr("Localizable", "Find your favorites here", fallback: "Find your favorites here")
   /// Font
   public static let font = Localization.tr("Localizable", "Font", fallback: "Font")
   /// Font Size
   public static let fontSize = Localization.tr("Localizable", "Font Size", fallback: "Font Size")
-  /// Hit the star icon to favorite an article and find it faster.
-  public static let hitTheStarIconToFavoriteAnArticleAndFindItFaster = Localization.tr("Localizable", "Hit the star icon to favorite an article and find it faster.", fallback: "Hit the star icon to favorite an article and find it faster.")
   /// Home
   public static let home = Localization.tr("Localizable", "Home", fallback: "Home")
   /// Hooray!
