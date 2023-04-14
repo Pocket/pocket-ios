@@ -385,7 +385,7 @@ extension SavesContainerViewController {
 
     private func present(tagsFilterViewModel: TagsFilterViewModel?) {
         guard true, let tagsFilterViewModel = tagsFilterViewModel else { return }
-        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel))
+        let hostingController = UIHostingController(rootView: TagsFilterView(viewModel: tagsFilterViewModel).environment(\.managedObjectContext, Services.shared.source.viewContext))
         hostingController.configurePocketDefaultDetents()
         self.present(hostingController, animated: true)
     }

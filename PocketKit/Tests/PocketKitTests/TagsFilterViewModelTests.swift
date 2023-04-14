@@ -72,23 +72,6 @@ class TagsFilterViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.recentTags, [])
     }
 
-    func test_getAllTags_returnsSortedOrder() {
-        _ = try? space.createSavedItem(createdAt: Date(), tags: ["a"])
-        _ = try? space.createSavedItem(createdAt: Date() + 1, tags: ["b"])
-        _ = try? space.createSavedItem(createdAt: Date() + 2, tags: ["c"])
-        _ = try? space.createSavedItem(createdAt: Date() + 3, tags: ["d"])
-        _ = try? space.createSavedItem(createdAt: Date() + 4, tags: ["e"])
-
-        let savedTags = try? space.fetchTags(isArchived: false)
-        XCTAssertEqual(savedTags?.compactMap { $0.name }, ["a", "b", "c", "d", "e"])
-        let viewModel = subject(fetchedTags: savedTags) { }
-
-        let tags = viewModel.getAllTags()
-
-        XCTAssertEqual(tags.count, 5)
-        XCTAssertEqual(tags, [TagType.tag("a"), TagType.tag("b"), TagType.tag("c"), TagType.tag("d"), TagType.tag("e")])
-    }
-
     func test_selectedTag_withTagName_sendsPredicate() {
         let expectSeletedTagCall = expectation(description: "expect selectedTag to be sent")
         let viewModel = subject(fetchedTags: nil) { }
