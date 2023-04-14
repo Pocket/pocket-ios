@@ -1,15 +1,13 @@
 import Foundation
-import Sync
-import SharedPocketKit
 
-class SignOutOnFirstLaunch {
+public class SignOutOnFirstLaunch {
     static let hasAppBeenLaunchedPreviouslyKey = UserDefaults.Key.hasAppBeenLaunchedPreviously
 
     private let appSession: AppSession
     private let user: User
     private let userDefaults: UserDefaults
 
-    init(
+    public init(
         appSession: AppSession,
         user: User,
         userDefaults: UserDefaults
@@ -19,7 +17,7 @@ class SignOutOnFirstLaunch {
         self.userDefaults = userDefaults
     }
 
-    var hasAppBeenLaunchedPreviously: Bool {
+    private var hasAppBeenLaunchedPreviously: Bool {
         get {
             userDefaults.bool(forKey: Self.hasAppBeenLaunchedPreviouslyKey)
         }
@@ -28,7 +26,7 @@ class SignOutOnFirstLaunch {
         }
     }
 
-    func signOutOnFirstLaunch() {
+    public func signOutOnFirstLaunch() {
         guard !hasAppBeenLaunchedPreviously else {
             return
         }
