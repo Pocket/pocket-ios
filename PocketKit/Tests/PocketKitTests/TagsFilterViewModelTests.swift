@@ -31,13 +31,17 @@ class TagsFilterViewModelTests: XCTestCase {
     }
 
     private func subject(
-        source: Source? = nil,
+        source: MockSource? = nil,
         userDefaults: UserDefaults? = nil,
         user: User? = nil,
         fetchedTags: [Tag]?,
         selectAllAction: @escaping () -> Void
     ) -> TagsFilterViewModel {
-        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, selectAllAction: selectAllAction)
+        let source: MockSource = source ?? self.source
+        source.stubFetchAllTags {
+            fetchedTags
+        }
+        return TagsFilterViewModel(source: source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, selectAllAction: selectAllAction)
     }
 
     func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() {
