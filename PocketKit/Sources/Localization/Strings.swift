@@ -264,6 +264,14 @@ public enum Localization {
       public static let tagged = Localization.tr("Localizable", "itemlist.filter.tagged", fallback: "Tagged")
     }
   }
+  public enum LoggedOut {
+    public enum Offline {
+      /// Looks like you're offline. Try checking your mobile data or wifi.
+      public static let detail = Localization.tr("Localizable", "loggedOut.offline.detail", fallback: "Looks like you're offline. Try checking your mobile data or wifi.")
+      /// No Internet Connection
+      public static let header = Localization.tr("Localizable", "loggedOut.offline.header", fallback: "No Internet Connection")
+    }
+  }
   public enum Login {
     public enum DeletedAccount {
       public enum Banner {

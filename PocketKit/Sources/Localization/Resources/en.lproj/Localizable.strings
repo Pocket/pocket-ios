@@ -137,6 +137,10 @@
 "itemlist.filter.favorites" = "Favorites";
 "itemlist.filter.sortFilter" = "Sort/Filter";
 
+//Logged Out
+"loggedOut.offline.header" = "No Internet Connection";
+"loggedOut.offline.detail" = "Looks like you're offline. Try checking your mobile data or wifi.";
+
 // Tags
 "tags.upsell.tagStoriesFasterThanEver" = "Tag stories faster than ever—get your most recent tags with Pocket Premium.";
 "tags.upsell.getPocketPremium" = "Get Pocket Premium";
