@@ -8,14 +8,9 @@ struct SettingsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if #available(iOS 16.0, *) {
-                    SettingsForm(model: model)
-                        .scrollContentBackground(.hidden)
-                        .background(Color(.ui.white1))
-            } else {
-                    SettingsForm(model: model)
-                        .background(Color(.ui.white1))
-            }
+            SettingsForm(model: model)
+                .scrollContentBackground(.hidden)
+                .background(Color(.ui.white1))
         }
         .navigationBarTitle(Localization.settings, displayMode: .large)
         .accessibilityIdentifier("settings")
@@ -97,14 +92,10 @@ extension SettingsForm {
     /// Handles top section separator on different versions of iOS
     @ViewBuilder
     private func topSectionWithLeadingDivider() -> some View {
-        if #available(iOS 16.0, *) {
-            topSection()
-                .alignmentGuide(.listRowSeparatorLeading) { _ in
-                    return 0
-                }
-        } else {
-            topSection()
-        }
+        topSection()
+            .alignmentGuide(.listRowSeparatorLeading) { _ in
+                return 0
+            }
     }
     /// Provides the standard top section view
     private func topSection() -> some View {
