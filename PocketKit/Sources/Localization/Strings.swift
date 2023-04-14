@@ -294,6 +294,16 @@ public enum Localization {
     public static let offlineMessage = Localization.tr("Localizable", "search.offlineMessage", fallback: "You can only search titles and URLs while offline. Connect to the internet to use Premium's full-text search.")
     /// Recent Searches
     public static let recent = Localization.tr("Localizable", "search.recent", fallback: "Recent Searches")
+    public enum AllItems {
+      public enum Premium {
+        /// Get Pocket Premium
+        public static let button = Localization.tr("Localizable", "search.allItems.premium.button", fallback: "Get Pocket Premium")
+        /// Search your entire Pocket, including archived items, with Pocket Premium.
+        public static let detail = Localization.tr("Localizable", "search.allItems.premium.detail", fallback: "Search your entire Pocket, including archived items, with Pocket Premium.")
+        /// Unlock more search options
+        public static let header = Localization.tr("Localizable", "search.allItems.premium.header", fallback: "Unlock more search options")
+      }
+    }
     public enum Banner {
       /// We’re experiencing an error and can’t show you full search results. Please try again later.
       public static let errorMessage = Localization.tr("Localizable", "search.banner.errorMessage.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")

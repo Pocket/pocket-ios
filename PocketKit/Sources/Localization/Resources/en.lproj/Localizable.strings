@@ -140,6 +140,7 @@
 "tags.section.recentTags" = "Recent tags";
 "tags.section.userTags" = "My tags";
 
+
 // Search
 "search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
 "search.limitedResults" = "Limited search results";
@@ -150,6 +151,10 @@
 "search.swipe.unableToMove" = "Unable to Move";
 "search.swipe.archive" = "Archive";
 "search.swipe.moveToSaves" = "Move to Saves";
+
+"search.allItems.premium.header" = "Unlock more search options";
+"search.allItems.premium.detail" = "Search your entire Pocket, including archived items, with Pocket Premium.";
+"search.allItems.premium.button" = "Get Pocket Premium";
 
 // Settings
 "settings.thankyou.credits" = "Thank you for using Pocket";
