@@ -2,7 +2,6 @@ import Foundation
 import Textile
 import Localization
 
-// TODO: Localization
 struct GetPremiumEmptyState: EmptyStateViewModel {
     let imageAsset: ImageAsset = .diamond
     let maxWidth: CGFloat = Width.normal.rawValue
