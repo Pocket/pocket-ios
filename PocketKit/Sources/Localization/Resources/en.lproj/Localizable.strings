@@ -157,7 +157,12 @@
 "search.allItems.premium.button" = "Get Pocket Premium";
 
 "search.results.empty.header" = "No results found";
-"search.results.empty.detail" ="Try using different keywords, checking for typos or changing your filters.";
+"search.results.empty.detail" = "Try using different keywords, checking for typos or changing your filters.";
+
+"search.results.offline.header" = "No Internet Connection";
+"search.results.offline.detail" = "You must be online to search %@ items.";
+"search.results.offline.detail.archive" = "archived";
+"search.results.offline.detail.all" = "all";
 
 // Settings
 "settings.thankyou.credits" = "Thank you for using Pocket";
@@ -185,6 +190,7 @@
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.title" = "Restore not successful";
 "settings.accountManagement.restoreSubscription.restoreNotSuccessful.message" = "We were unable to find a subscription. If you believe you have one, please send an email to support@getpocket.com and let us know.";
 
+"settings.noInternet.header" = "No Internet Connection";
 "settings.noInternet.youMustBeOnline" = "You must be online to upgrade to Pocket Premium. Please check your connection and try again.";
 
 //Shown to the user after they deleted their account

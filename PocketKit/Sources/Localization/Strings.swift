@@ -325,6 +325,20 @@ public enum Localization {
         /// No results found
         public static let header = Localization.tr("Localizable", "search.results.empty.header", fallback: "No results found")
       }
+      public enum Offline {
+        /// You must be online to search %@ items.
+        public static func detail(_ p1: Any) -> String {
+          return Localization.tr("Localizable", "search.results.offline.detail", String(describing: p1), fallback: "You must be online to search %@ items.")
+        }
+        /// No Internet Connection
+        public static let header = Localization.tr("Localizable", "search.results.offline.header", fallback: "No Internet Connection")
+        public enum Detail {
+          /// all
+          public static let all = Localization.tr("Localizable", "search.results.offline.detail.all", fallback: "all")
+          /// archived
+          public static let archive = Localization.tr("Localizable", "search.results.offline.detail.archive", fallback: "archived")
+        }
+      }
     }
     public enum Swipe {
       /// Archive
@@ -399,6 +413,8 @@ public enum Localization {
       public static let areYouSureMessage = Localization.tr("Localizable", "settings.logout.areYouSureMessage", fallback: "You will be logged out of your account and any items that have been saved for offline viewing will be removed from your device.")
     }
     public enum NoInternet {
+      /// No Internet Connection
+      public static let header = Localization.tr("Localizable", "settings.noInternet.header", fallback: "No Internet Connection")
       /// You must be online to upgrade to Pocket Premium. Please check your connection and try again.
       public static let youMustBeOnline = Localization.tr("Localizable", "settings.noInternet.youMustBeOnline", fallback: "You must be online to upgrade to Pocket Premium. Please check your connection and try again.")
     }
