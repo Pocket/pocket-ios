@@ -156,6 +156,9 @@
 "search.allItems.premium.detail" = "Search your entire Pocket, including archived items, with Pocket Premium.";
 "search.allItems.premium.button" = "Get Pocket Premium";
 
+"search.results.empty.header" = "No results found";
+"search.results.empty.detail" ="Try using different keywords, checking for typos or changing your filters.";
+
 // Settings
 "settings.thankyou.credits" = "Thank you for using Pocket";
 "settings.PocketForiOS %@ (%@)" = "Pocket for iOS %@ (%@)";

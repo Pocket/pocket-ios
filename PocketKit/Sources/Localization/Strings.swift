@@ -318,6 +318,14 @@ public enum Localization {
         public static let needsInternet = Localization.tr("Localizable", "search.error.view.needsInternet", fallback: "You must have an internet connection to view this item.")
       }
     }
+    public enum Results {
+      public enum Empty {
+        /// Try using different keywords, checking for typos or changing your filters.
+        public static let detail = Localization.tr("Localizable", "search.results.empty.detail", fallback: "Try using different keywords, checking for typos or changing your filters.")
+        /// No results found
+        public static let header = Localization.tr("Localizable", "search.results.empty.header", fallback: "No results found")
+      }
+    }
     public enum Swipe {
       /// Archive
       public static let archive = Localization.tr("Localizable", "search.swipe.archive", fallback: "Archive")
