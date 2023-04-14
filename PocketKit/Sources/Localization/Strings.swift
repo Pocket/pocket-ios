@@ -72,8 +72,6 @@ public enum Localization {
   public static let home = Localization.tr("Localizable", "Home", fallback: "Home")
   /// Hooray!
   public static let hooray = Localization.tr("Localizable", "Hooray!", fallback: "Hooray!")
-  /// How to tag
-  public static let howToTag = Localization.tr("Localizable", "How to tag", fallback: "How to tag")
   /// It contains misinformation
   public static let itContainsMisinformation = Localization.tr("Localizable", "It contains misinformation", fallback: "It contains misinformation")
   /// It's in the wrong category
@@ -100,8 +98,6 @@ public enum Localization {
   public static let no = Localization.tr("Localizable", "No", fallback: "No")
   /// No Internet Connection
   public static let noInternetConnection = Localization.tr("Localizable", "No Internet Connection", fallback: "No Internet Connection")
-  /// No saves with this tag.
-  public static let noSavesWithThisTag = Localization.tr("Localizable", "No saves with this tag.", fallback: "No saves with this tag.")
   /// not tagged
   public static let notTagged = Localization.tr("Localizable", "not tagged", fallback: "not tagged")
   /// OK
@@ -168,8 +164,6 @@ public enum Localization {
   public static let sortFilter = Localization.tr("Localizable", "Sort/Filter", fallback: "Sort/Filter")
   /// Submit feedback
   public static let submitFeedback = Localization.tr("Localizable", "Submit feedback", fallback: "Submit feedback")
-  /// Tag your saves by topic to find them later.
-  public static let tagYourSavesByTopicToFindThemLater = Localization.tr("Localizable", "Tag your saves by topic to find them later.", fallback: "Tag your saves by topic to find them later.")
   /// Tagged
   public static let tagged = Localization.tr("Localizable", "Tagged", fallback: "Tagged")
   /// Tags
