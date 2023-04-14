@@ -232,6 +232,14 @@ public enum Localization {
     /// Listen
     public static let listen = Localization.tr("Localizable", "carousel.listen", fallback: "Listen")
   }
+  public enum Favourites {
+    public enum Empty {
+      /// Hit the star icon to favorite an article and find it faster.
+      public static let detail = Localization.tr("Localizable", "favourites.empty.detail", fallback: "Hit the star icon to favorite an article and find it faster.")
+      /// Find your favorites here
+      public static let header = Localization.tr("Localizable", "favourites.empty.header", fallback: "Find your favorites here")
+    }
+  }
   public enum General {
     /// Oops! Try again?
     public static let oops = Localization.tr("Localizable", "general.oops", fallback: "Oops! Try again?")
