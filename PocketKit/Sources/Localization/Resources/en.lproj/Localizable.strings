@@ -19,12 +19,6 @@
 
 "Saves" = "Saves";
 
-"Sort by" = "Sort by";
-"Newest saved" = "Newest saved";
-"Oldest saved" = "Oldest saved";
-"Shortest to read" = "Shortest to read";
-"Longest to read" = "Longest to read";
-
 "Display Settings" = "Display Settings";
 "Font" = "Font";
 "Font Size" = "Font Size";
@@ -213,6 +207,13 @@
 
 "settings.noInternet.header" = "No Internet Connection";
 "settings.noInternet.youMustBeOnline" = "You must be online to upgrade to Pocket Premium. Please check your connection and try again.";
+
+//Sorting Options
+"sortingOption.sortBy" = "Sort by";
+"sortingOption.NewestSaved" = "Newest saved";
+"sortingOption.oldestSaved" = "Oldest saved";
+"sortingOption.shortestToRead" = "Shortest to read";
+"sortingOption.longestToRead" = "Longest to read";
 
 //Reader 
 "reader.activity.save" = "Save";

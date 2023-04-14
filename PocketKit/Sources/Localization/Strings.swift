@@ -76,16 +76,12 @@ public enum Localization {
   public static let itSSexuallyExplicit = Localization.tr("Localizable", "It's sexually explicit", fallback: "It's sexually explicit")
   /// Log In
   public static let logIn = Localization.tr("Localizable", "Log In", fallback: "Log In")
-  /// Longest to read
-  public static let longestToRead = Localization.tr("Localizable", "Longest to read", fallback: "Longest to read")
   /// Make the most of any moment
   public static let makeTheMostOfAnyMoment = Localization.tr("Localizable", "Make the most of any moment", fallback: "Make the most of any moment")
   /// month
   public static let month = Localization.tr("Localizable", "month", fallback: "month")
   /// Monthly
   public static let monthly = Localization.tr("Localizable", "Monthly", fallback: "Monthly")
-  /// Newest saved
-  public static let newestSaved = Localization.tr("Localizable", "Newest saved", fallback: "Newest saved")
   /// No
   public static let no = Localization.tr("Localizable", "No", fallback: "No")
   /// No Internet Connection
@@ -94,8 +90,6 @@ public enum Localization {
   public static let notTagged = Localization.tr("Localizable", "not tagged", fallback: "not tagged")
   /// OK
   public static let ok = Localization.tr("Localizable", "OK", fallback: "OK")
-  /// Oldest saved
-  public static let oldestSaved = Localization.tr("Localizable", "Oldest saved", fallback: "Oldest saved")
   /// Open
   public static let `open` = Localization.tr("Localizable", "Open", fallback: "Open")
   /// Open in Web View
@@ -134,8 +128,6 @@ public enum Localization {
   public static let settings = Localization.tr("Localizable", "Settings", fallback: "Settings")
   /// Share
   public static let share = Localization.tr("Localizable", "Share", fallback: "Share")
-  /// Shortest to read
-  public static let shortestToRead = Localization.tr("Localizable", "Shortest to read", fallback: "Shortest to read")
   /// Show App Badge Count
   public static let showAppBadgeCount = Localization.tr("Localizable", "Show App Badge Count", fallback: "Show App Badge Count")
   /// Sign Out
@@ -144,8 +136,6 @@ public enum Localization {
   public static let signUp = Localization.tr("Localizable", "Sign Up", fallback: "Sign Up")
   /// Sign up for Premium
   public static let signUpForPremium = Localization.tr("Localizable", "Sign up for Premium", fallback: "Sign up for Premium")
-  /// Sort by
-  public static let sortBy = Localization.tr("Localizable", "Sort by", fallback: "Sort by")
   /// Submit feedback
   public static let submitFeedback = Localization.tr("Localizable", "Submit feedback", fallback: "Submit feedback")
   /// Tags
@@ -516,6 +506,18 @@ public enum Localization {
       /// Thank you for using Pocket
       public static let credits = Localization.tr("Localizable", "settings.thankyou.credits", fallback: "Thank you for using Pocket")
     }
+  }
+  public enum SortingOption {
+    /// Longest to read
+    public static let longestToRead = Localization.tr("Localizable", "sortingOption.longestToRead", fallback: "Longest to read")
+    /// Newest saved
+    public static let newestSaved = Localization.tr("Localizable", "sortingOption.NewestSaved", fallback: "Newest saved")
+    /// Oldest saved
+    public static let oldestSaved = Localization.tr("Localizable", "sortingOption.oldestSaved", fallback: "Oldest saved")
+    /// Shortest to read
+    public static let shortestToRead = Localization.tr("Localizable", "sortingOption.shortestToRead", fallback: "Shortest to read")
+    /// Sort by
+    public static let sortBy = Localization.tr("Localizable", "sortingOption.sortBy", fallback: "Sort by")
   }
   public enum Tags {
     /// not tagged
