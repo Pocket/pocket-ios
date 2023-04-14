@@ -120,7 +120,8 @@ public class PocketSaveService: SaveService {
                 return
             }
 
-            guard let tags = savedItem.tags, let remoteID = savedItem.remoteID else { return }
+            guard let tags = savedItem.tags else { return }
+            let remoteID = savedItem.remoteID
             let names = Array(tags).compactMap { ($0 as? Tag)?.name }
 
             if names.isEmpty {

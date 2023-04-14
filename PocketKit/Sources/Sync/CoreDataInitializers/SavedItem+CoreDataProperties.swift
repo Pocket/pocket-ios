@@ -18,7 +18,7 @@ extension SavedItem {
     @NSManaged public var deletedAt: Date?
     @NSManaged public var isArchived: Bool
     @NSManaged public var isFavorite: Bool
-    @NSManaged public var remoteID: String?
+    @NSManaged public var remoteID: String
     @NSManaged public var url: URL
     @NSManaged public var item: Item?
     @NSManaged public var savedItemUpdatedNotification: SavedItemUpdatedNotification?
