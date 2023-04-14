@@ -30,9 +30,6 @@ public enum Localization {
   public static let appCustomization = Localization.tr("Localizable", "App Customization", fallback: "App Customization")
   /// Archive
   public static let archive = Localization.tr("Localizable", "Archive", fallback: "Archive")
-  /// Archive the saves you're finished with
-  ///  using the archive icon.
-  public static let archiveTheSavesYouReFinishedWithUsingTheArchiveIcon = Localization.tr("Localizable", "Archive the saves you're finished with\n using the archive icon.", fallback: "Archive the saves you're finished with\n using the archive icon.")
   /// Are you sure you want to delete the tags and remove it from all items?
   public static let areYouSureYouWantToDeleteTheTagsAndRemoveItFromAllItems = Localization.tr("Localizable", "Are you sure you want to delete the tags and remove it from all items?", fallback: "Are you sure you want to delete the tags and remove it from all items?")
   /// Are you sure you want to delete this item?
@@ -79,8 +76,6 @@ public enum Localization {
   public static let home = Localization.tr("Localizable", "Home", fallback: "Home")
   /// Hooray!
   public static let hooray = Localization.tr("Localizable", "Hooray!", fallback: "Hooray!")
-  /// How to archive
-  public static let howToArchive = Localization.tr("Localizable", "How to archive", fallback: "How to archive")
   /// How to tag
   public static let howToTag = Localization.tr("Localizable", "How to tag", fallback: "How to tag")
   /// It contains misinformation
@@ -91,8 +86,6 @@ public enum Localization {
   public static let itSRudeVulgarOrOffensive = Localization.tr("Localizable", "It's rude, vulgar, or offensive", fallback: "It's rude, vulgar, or offensive")
   /// It's sexually explicit
   public static let itSSexuallyExplicit = Localization.tr("Localizable", "It's sexually explicit", fallback: "It's sexually explicit")
-  /// Keep your list fresh and clean
-  public static let keepYourListFreshAndClean = Localization.tr("Localizable", "Keep your list fresh and clean", fallback: "Keep your list fresh and clean")
   /// Log In
   public static let logIn = Localization.tr("Localizable", "Log In", fallback: "Log In")
   /// Longest to read
