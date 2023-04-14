@@ -293,12 +293,11 @@ extension PocketSource {
     public func favorite(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Favoriting item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
-
+            let remoteID = item.remoteID
             item.isFavorite = true
             do {
                 try space.save()
@@ -319,12 +318,11 @@ extension PocketSource {
     public func unfavorite(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Unfavoriting item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
-
+            let remoteID = item.remoteID
             item.isFavorite = false
             do {
                 try space.save()
@@ -344,11 +342,11 @@ extension PocketSource {
     public func delete(item savedItem: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Deleting item with id \(String(describing: savedItem.remoteID))")
         space.performAndWait {
-            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem,
-                  let remoteID = savedItem.remoteID else {
+            guard let savedItem = space.backgroundObject(with: savedItem.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
+            let remoteID = savedItem.remoteID
 
             let item = savedItem.item
 
@@ -377,11 +375,11 @@ extension PocketSource {
     public func archive(item: SavedItem) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Archiving item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
+            let remoteID = item.remoteID
 
             item.isArchived = true
             item.archivedAt = Date()
@@ -446,11 +444,11 @@ extension PocketSource {
     public func addTags(item: SavedItem, tags: [String]) {
         Log.breadcrumb(category: "sync", level: .debug, message: "Adding tags to item with id \(String(describing: item.remoteID))")
         space.performAndWait {
-            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem,
-                  let remoteID = item.remoteID else {
+            guard let item = space.backgroundObject(with: item.objectID) as? SavedItem else {
                 Log.capture(message: "Could not retreive item from background context for mutation")
                 return
             }
+            let remoteID = item.remoteID
 
             item.tags = NSOrderedSet(array: tags.compactMap { $0 }.map({ tag in
                 space.fetchOrCreateTag(byName: tag)
@@ -541,9 +539,7 @@ extension PocketSource {
     public func fetchDetails(for savedItem: SavedItem) async throws {
         Log.breadcrumb(category: "sync", level: .debug, message: "Fetching detals for item with id \(String(describing: savedItem.remoteID))")
 
-        guard let remoteID = savedItem.remoteID else {
-            return
-        }
+        let remoteID = savedItem.remoteID
 
         guard let remoteSavedItem = try await apollo
             .fetch(query: SavedItemByIDQuery(id: remoteID))
