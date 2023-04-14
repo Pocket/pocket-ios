@@ -468,6 +468,14 @@ public enum Localization {
     }
   }
   public enum Tags {
+    public enum Empty {
+      /// How to tag
+      public static let button = Localization.tr("Localizable", "tags.empty.button", fallback: "How to tag")
+      /// Tag your saves by topic to find them later.
+      public static let detail = Localization.tr("Localizable", "tags.empty.detail", fallback: "Tag your saves by topic to find them later.")
+      /// No saves with this tag.
+      public static let header = Localization.tr("Localizable", "tags.empty.header", fallback: "No saves with this tag.")
+    }
     public enum Section {
       /// Recent tags
       public static let recentTags = Localization.tr("Localizable", "tags.section.recentTags", fallback: "Recent tags")

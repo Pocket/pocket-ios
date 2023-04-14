@@ -139,6 +139,10 @@
 "tags.section.recentTags" = "Recent tags";
 "tags.section.userTags" = "My tags";
 
+"tags.empty.header" = "No saves with this tag.";
+"tags.empty.detail" = "Tag your saves by topic to find them later.";
+"tags.empty.button" = "How to tag";
+
 //Saves
 "saves.empty.header" = "Start building your Pocket list";
 "saves.empty.button" = "How to save";
