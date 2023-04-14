@@ -98,8 +98,8 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
-        let fetchedTags = source.retrieveTags(excluding: tags)?.compactMap({ $0.name }) ?? []
-        otherTags = arrangeTags(with: fetchedTags)
+        // TODO: Remove ! when we have non-null on tagName
+        otherTags = source.retrieveTags(excluding: tags)?.compactMap({ .tag($0.name!) }) ?? []
         trackAllTagsImpression()
     }
 

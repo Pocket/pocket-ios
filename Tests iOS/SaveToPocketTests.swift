@@ -29,7 +29,7 @@ class SaveToPocketTests: XCTestCase {
     }
 
     func test_whenLoggedOut_userTapsLogIn_opensApp() {
-        app.launch(arguments: .firstLaunch, environment: .noSession)
+        app.launch(arguments: .bypassSignIn, environment: .noSession)
 
         let safari = XCUIApplication(bundleIdentifier: "com.apple.mobilesafari")
         safari.launch()
@@ -80,7 +80,7 @@ class SaveToPocketTests: XCTestCase {
     }
 
     func test_userSharesTextWithValidURL_showsConfirmationView() {
-        app.launch(arguments: .firstLaunch, environment: .withSession)
+        app.launch(arguments: .bypassSignIn, environment: .withSession)
         let reminders = XCUIApplication(bundleIdentifier: "com.apple.reminders")
         reminders.launch()
         if !reminders.buttons["New Reminder"].isHittable {
@@ -100,7 +100,7 @@ class SaveToPocketTests: XCTestCase {
     }
 
     func test_userSharesTextWithNoURL_showsErrorView() {
-        app.launch(arguments: .firstLaunch, environment: .withSession)
+        app.launch(arguments: .bypassSignIn, environment: .withSession)
         let reminders = XCUIApplication(bundleIdentifier: "com.apple.reminders")
         reminders.launch()
         if !reminders.buttons["New Reminder"].isHittable {

@@ -97,7 +97,9 @@ extension SavedItem {
         }
 
         tags = NSOrderedSet(array: summary.tags?.compactMap { $0 }.map { summaryTag in
-            space.fetchOrCreateTag(byName: summaryTag.name, context: context)
+            let tag = space.fetchOrCreateTag(byName: summaryTag.name, context: context)
+            tag.update(remote: summaryTag.fragments.tagParts)
+            return tag
         } ?? [])
 
         let itemToUpdate = try? space.fetchItem(byRemoteID: itemSummary.remoteID, context: context) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)

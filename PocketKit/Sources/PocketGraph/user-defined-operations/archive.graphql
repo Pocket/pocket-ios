@@ -34,7 +34,7 @@ fragment SavedItemSummary on SavedItem {
   _createdAt
   archivedAt
   tags {
-    name
+    ...TagParts
   }
   item {
     ...ItemSummary
