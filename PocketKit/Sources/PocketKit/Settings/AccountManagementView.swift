@@ -11,14 +11,9 @@ struct AccountManagementView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if #available(iOS 16.0, *) {
-                AccountManagementForm(model: model)
-                    .scrollContentBackground(.hidden)
-                    .background(Color(.ui.white1))
-            } else {
-                AccountManagementForm(model: model)
-                    .background(Color(.ui.white1))
-            }
+            AccountManagementForm(model: model)
+                .scrollContentBackground(.hidden)
+                .background(Color(.ui.white1))
         }
         .navigationBarTitle(Localization.Settings.accountManagement, displayMode: .large)
         .accessibilityIdentifier("account-management")

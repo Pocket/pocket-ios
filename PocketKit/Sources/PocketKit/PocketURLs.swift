@@ -10,12 +10,7 @@ func pocketPremiumURL(_ url: URL?, user: User) -> URL? {
     guard url.host == "getpocket.com", user.status == .premium else { return url }
 
     let premiumQueryItem = URLQueryItem(name: "premium_user", value: "true")
-
-    if #available(iOS 16, *) {
-        return url.appending(queryItems: [premiumQueryItem])
-    } else {
-        return append(queryItems: [premiumQueryItem], to: url)
-    }
+    return url.appending(queryItems: [premiumQueryItem])
 }
 
 func pocketShareURL(_ url: URL?, source: String) -> URL? {

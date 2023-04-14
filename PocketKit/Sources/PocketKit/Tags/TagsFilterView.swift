@@ -5,6 +5,7 @@
 import SwiftUI
 import Textile
 import Localization
+import Sync
 
 struct TagsFilterView: View {
     @ObservedObject var viewModel: TagsFilterViewModel
@@ -23,6 +24,11 @@ struct TagsFilterView: View {
 
     @State private var tagsSelected = Set<TagType>()
 
+    @FetchRequest(sortDescriptors: [
+        NSSortDescriptor( keyPath: \Tag.name, ascending: true)
+    ], animation: .default)
+    private var tags: FetchedResults<Tag>
+
     var body: some View {
         NavigationView {
             VStack {
@@ -37,7 +43,7 @@ struct TagsFilterView: View {
                     TagsSectionView(
                         showRecentTags: !isEditing && !viewModel.recentTags.isEmpty,
                         recentTags: viewModel.recentTags,
-                        allTags: viewModel.getAllTags(),
+                        allTags: tags.map { .tag($0.name!) },
                         tagAction: tagAction
                     ).disabled(isEditing)
                 }

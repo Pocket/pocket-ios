@@ -101,23 +101,12 @@ public struct PasteBoardModifier: ViewModifier {
     }
 
     func button() -> some View {
-        if #available(iOS 16.0, *) {
-            return PasteButton(payloadType: URL.self, onPaste: {urls in
-                guard let first = urls.first else { return }
-                data.action.action(first)
-            })
-            .tint(Color(.ui.teal2))
-            .labelStyle(.titleOnly)
-        } else {
-            return Button(data.action.text) {
-                data.action.action(UIPasteboard.general.url)
-            }
-            .buttonStyle(.bordered)
-            .background(Color(.ui.teal2))
-            .foregroundColor(Color(.ui.white))
-            .padding([.top, .bottom], 8)
-            .padding([.trailing, .leading], 16)
-        }
+        return PasteButton(payloadType: URL.self, onPaste: {urls in
+            guard let first = urls.first else { return }
+            data.action.action(first)
+        })
+        .tint(Color(.ui.teal2))
+        .labelStyle(.titleOnly)
     }
 }
 

@@ -4,7 +4,7 @@
 
 import Localization
 
-public enum TagType: Hashable {
+public enum TagType: Hashable, Comparable {
     case notTagged
     case recent(String)
     case tag(String)
@@ -17,11 +17,16 @@ public enum TagType: Hashable {
             return name
         }
     }
-}
 
-/// Arranges the list of tags for a user in both the Add Tags / Edit Tags view
-/// - Parameter tags: list of users tag names
-/// - Returns: converts users tags to display a list of `TagType`
-public func arrangeTags(with tags: [String]) -> [TagType] {
-    return Array(Set(tags)).sorted().compactMap { TagType.tag($0) }
+    public static func < (lhs: TagType, rhs: TagType) -> Bool {
+        return lhs.name < rhs.name
+    }
+
+    public static func > (lhs: TagType, rhs: TagType) -> Bool {
+        return lhs.name > rhs.name
+    }
+
+    public static func == (lhs: TagType, rhs: TagType) -> Bool {
+        return lhs.name == rhs.name
+    }
 }

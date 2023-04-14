@@ -22,11 +22,7 @@ struct AddTagsViewElement: PocketUIElement {
     var allTagsView: XCUIElement {
         let query: XCUIElementQuery
 
-        if #available(iOS 16, *) {
-            query = element.collectionViews
-        } else {
-            query = element.tables
-        }
+        query = element.collectionViews
 
         return query["all-tags"]
     }
