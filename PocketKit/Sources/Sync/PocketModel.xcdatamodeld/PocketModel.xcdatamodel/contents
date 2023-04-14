@@ -69,7 +69,7 @@
         <attribute name="deletedAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="isArchived" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" spotlightIndexingEnabled="YES"/>
         <attribute name="isFavorite" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" spotlightIndexingEnabled="YES"/>
-        <attribute name="remoteID" attributeType="String" defaultValueString="" spotlightIndexingEnabled="YES"/>
+        <attribute name="remoteID" attributeType="String" spotlightIndexingEnabled="YES"/>
         <attribute name="url" attributeType="URI"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Item" inverseName="savedItem" inverseEntity="Item" spotlightIndexingEnabled="YES"/>
         <relationship name="savedItemUpdatedNotification" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SavedItemUpdatedNotification" inverseName="savedItem" inverseEntity="SavedItemUpdatedNotification"/>
@@ -78,6 +78,9 @@
         <uniquenessConstraints>
             <uniquenessConstraint>
                 <constraint value="remoteID"/>
+            </uniquenessConstraint>
+            <uniquenessConstraint>
+                <constraint value="url"/>
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
