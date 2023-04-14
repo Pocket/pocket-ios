@@ -272,11 +272,7 @@ extension HomeViewModel {
             user: user,
             userDefaults: userDefaults
         )
-
-        guard let item = recommendation.item else {
-            Log.capture(message: "Selected recommendation without an associated item")
-            return
-        }
+        let item = recommendation.item
 
         if item.shouldOpenInWebView {
             selectedReadableType = .webViewRecommendation(viewModel)
@@ -307,7 +303,7 @@ extension HomeViewModel {
             userDefaults: userDefaults
         )
 
-        if let item = savedItem.item, item.shouldOpenInWebView {
+        if savedItem.item.shouldOpenInWebView {
             selectedReadableType = .webViewSavedItem(viewModel)
         } else {
             selectedReadableType = .savedItem(viewModel)
@@ -498,8 +494,8 @@ extension HomeViewModel {
         }
 
         return .recommendationPrimary { [weak self] _ in
-            let isSaved = recommendation.item?.savedItem != nil
-            && recommendation.item?.savedItem?.isArchived == false
+            let isSaved = recommendation.item.savedItem != nil
+            && recommendation.item.savedItem?.isArchived == false
 
             if isSaved {
                 self?.archive(recommendation, at: indexPath)
@@ -515,14 +511,13 @@ extension HomeViewModel {
 
     private func share(_ recommendation: Recommendation, at indexPath: IndexPath, with sender: Any?) {
         // This view model is used within the context of a view that is presented within Saves
-        self.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item?.bestURL, sender: sender)
-
+        self.sharedActivity = PocketItemActivity.fromHome(url: recommendation.item.bestURL, sender: sender)
+        let item = recommendation.item
         guard
-            let item = recommendation.item,
             let slate = recommendation.slate,
             let slateLineup = slate.slateLineup
         else {
-            Log.capture(message: "Shared recommendation without an associated item, slate and slatelineup, not logging analytics")
+            Log.capture(message: "Shared recommendation without slate and slatelineup, not logging analytics")
             return
         }
 
@@ -538,13 +533,12 @@ extension HomeViewModel {
 
     private func save(_ recommendation: Recommendation, at indexPath: IndexPath) {
         source.save(recommendation: recommendation)
-
+        let item = recommendation.item
         guard
-            let item = recommendation.item,
             let slate = recommendation.slate,
             let slateLineup = slate.slateLineup
         else {
-            Log.capture(message: "Saved recommendation without an associated item, slate and slatelineup, not logging analytics")
+            Log.capture(message: "Saved recommendation slate and slatelineup, not logging analytics")
             return
         }
 
@@ -553,13 +547,12 @@ extension HomeViewModel {
 
     private func archive(_ recommendation: Recommendation, at indexPath: IndexPath) {
         source.archive(recommendation: recommendation)
-
+        let item = recommendation.item
         guard
-            let item = recommendation.item,
             let slate = recommendation.slate,
             let slateLineup = slate.slateLineup
         else {
-            Log.capture(message: "Archived recommendation without an associated item, slate and slatelineup, not logging analytics")
+            Log.capture(message: "Archived recommendation without slate and slatelineup, not logging analytics")
             return
         }
 
@@ -592,13 +585,12 @@ extension HomeViewModel {
                 Log.capture(message: "Recommendation is null on willDisplay Home Recommendation")
                 return
             }
-
+            let item = recommendation.item
             guard
-                let item = recommendation.item,
                 let slate = recommendation.slate,
                 let slateLineup = slate.slateLineup
             else {
-                Log.capture(message: "Tried to display recommendation without an associated item, slate and slatelineup, not logging analytics")
+                Log.capture(message: "Tried to display recommendation without slate and slatelineup, not logging analytics")
                 return
             }
 
