@@ -81,9 +81,10 @@ stages:
       - run-tests-ui-1: {}
       - run-tests-ui-2: {}
       - run-tests-ui-3: {}
-      - run-tests-ui-1-legacy: {}
-      - run-tests-ui-2-legacy: {}
-      - run-tests-ui-3-legacy: {}
+      # Turning off until iOS 16 is legacy
+      # - run-tests-ui-1-legacy: {}
+      # - run-tests-ui-2-legacy: {}
+      # - run-tests-ui-3-legacy: {}
 
   deploy-test-results:
     workflows:
@@ -510,7 +511,10 @@ workflows:
                 #!/usr/bin/env bash
                 set -eo pipefail
 
-                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+                # Switch to this when legacy is turned back on
+                # xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UITESTS_1_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_2_LEGACY_XCRESULT_PATH}" "${BITRISE_UITESTS_3_LEGACY_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
+
+                xcrun xcresulttool merge "${BITRISE_UITESTS_1_XCRESULT_PATH}" "${BITRISE_UITESTS_2_XCRESULT_PATH}" "${BITRISE_UITESTS_3_XCRESULT_PATH}" "${BITRISE_UNIT_XCRESULT_PATH}"  --output-path "merged.xcresult"
 
                 envman add --key BITRISE_XCRESULT_PATH --value "$(pwd)/merged.xcresult"
       - custom-test-results-export@0:
