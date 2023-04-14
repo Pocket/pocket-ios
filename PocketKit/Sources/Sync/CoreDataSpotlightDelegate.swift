@@ -27,10 +27,8 @@ class CoreDataSpotlightDelegate: NSCoreDataCoreSpotlightDelegate {
     /// Helper function to turn a SavedItem into a CSSearchableItemAttributeSet
     /// - Parameter savedItem: The saved item to search
     /// - Returns: The CoreSpotlight result
-    private func csSearchableItemAttributeSet(for savedItem: SavedItem) -> CSSearchableItemAttributeSet? {
-        guard let identifier = savedItem.remoteID else {
-            return nil
-        }
+    private func csSearchableItemAttributeSet(for savedItem: SavedItem) -> CSSearchableItemAttributeSet {
+        let identifier = savedItem.remoteID
         let attributeSet = CSSearchableItemAttributeSet(contentType: .content)
         attributeSet.identifier = identifier
         attributeSet.displayName = savedItem.item?.title
