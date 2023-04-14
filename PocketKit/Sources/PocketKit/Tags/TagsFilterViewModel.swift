@@ -6,7 +6,11 @@ import Textile
 import SharedPocketKit
 
 class TagsFilterViewModel: ObservableObject {
-    private var fetchedTags: [Tag]
+
+    /// Grab the latest tags from the database on each ask for them to ensure we are up to date
+    private var fetchedTags: [Tag] {
+        self.source.fetchAllTags() ?? []
+    }
     private let tracker: Tracker
     private let source: Source
     private let userDefaults: UserDefaults
@@ -24,10 +28,9 @@ class TagsFilterViewModel: ObservableObject {
     @Published var selectedTag: TagType?
     @Published var refreshView: Bool? = false
 
-    init(source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, fetchedTags: [Tag]?, selectAllAction: @escaping () -> Void?) {
+    init(source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, selectAllAction: @escaping () -> Void?) {
         self.source = source
         self.tracker = tracker
-        self.fetchedTags = fetchedTags ?? []
         self.selectAllAction = selectAllAction
         self.userDefaults = userDefaults
         self.user = user

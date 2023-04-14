@@ -37,7 +37,7 @@ class TagsFilterViewModelTests: XCTestCase {
         fetchedTags: [Tag]?,
         selectAllAction: @escaping () -> Void
     ) -> TagsFilterViewModel {
-        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, fetchedTags: fetchedTags, selectAllAction: selectAllAction)
+        TagsFilterViewModel(source: source ?? self.source, tracker: tracker ?? self.tracker, userDefaults: userDefaults ?? self.userDefaults, user: user ?? self.user, selectAllAction: selectAllAction)
     }
 
     func test_recentTags_withThreeTags_andPremiumUser_returnsNoRecentTags() {
