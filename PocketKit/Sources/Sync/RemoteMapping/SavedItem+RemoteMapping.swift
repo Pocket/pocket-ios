@@ -55,21 +55,21 @@ extension SavedItem {
             return fetchedTag
         } ?? [])
 
-        let itemToUpdate = try? space.fetchItem(byRemoteID: itemParts.remoteID, context: context) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
-        itemToUpdate?.update(remote: itemParts, with: space)
+        let itemToUpdate = (try? space.fetchItem(byRemoteID: itemParts.remoteID, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemParts.remoteID)
+        itemToUpdate.update(remote: itemParts, with: space)
         item = itemToUpdate
     }
 
     public func update(from recommendation: Recommendation) {
-        guard let url = recommendation.item?.bestURL else {
-            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Recommendation \(recommendation.remoteID) from SavedItem \(self.remoteID) because \(recommendation.item?.bestURL) is not valid url")
+        guard let item = recommendation.item, let url = item.bestURL else {
+            Log.breadcrumb(category: "sync", level: .warning, message: "Skipping updating of Recommendation \(recommendation.remoteID) from SavedItem \(self.remoteID). Reason: item and/or url is invalid.")
             return
         }
 
         self.url = url
         self.createdAt = Date()
 
-        item = recommendation.item
+        self.item = item
     }
 
     public func update(from summary: SavedItemSummary, with space: Space) {
@@ -103,8 +103,8 @@ extension SavedItem {
             return tag
         } ?? [])
 
-        let itemToUpdate = try? space.fetchItem(byRemoteID: itemSummary.remoteID, context: context) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
-        itemToUpdate?.update(from: itemSummary, with: space)
+        let itemToUpdate = (try? space.fetchItem(byRemoteID: itemSummary.remoteID, context: context)) ?? Item(context: context, givenURL: itemUrl, remoteID: itemSummary.remoteID)
+        itemToUpdate.update(from: itemSummary, with: space)
         item = itemToUpdate
     }
 }
