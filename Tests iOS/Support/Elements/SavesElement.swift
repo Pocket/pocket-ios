@@ -95,17 +95,10 @@ struct SavesElement: PocketUIElement {
     }
 
     func pullToRefresh() {
-        let centerCenter = CGVector(dx: 0.5, dy: 0.8)
-
-        itemCells
-            .element(boundBy: 0)
-            .coordinate(withNormalizedOffset: centerCenter)
-            .press(
-                forDuration: 0.1,
-                thenDragTo: element.coordinate(
-                    withNormalizedOffset: centerCenter
-                )
-            )
+        let firstCell = itemCells.element(boundBy: 0)
+        let start = firstCell.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 0))
+        let finish = firstCell.coordinate(withNormalizedOffset: CGVector(dx: 0, dy: 6))
+        start.press(forDuration: 0, thenDragTo: finish)
     }
 
     @discardableResult

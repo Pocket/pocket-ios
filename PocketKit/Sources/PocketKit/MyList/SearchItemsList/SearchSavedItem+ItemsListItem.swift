@@ -86,7 +86,7 @@ extension SearchSavedItem: ItemsListItem {
     }
 
     var tagNames: [String]? {
-        remoteItem.tags?.compactMap { $0.name }
+        remoteItem.tags?.compactMap { $0.name }.sorted()
     }
 }
 

@@ -72,6 +72,7 @@ stages:
       - run-tests-flakey: {}
 
   deploy-test-results-flakey:
+    should_always_run: true
     workflows:
       - deploy-test-results-flakey: {}
 
@@ -87,10 +88,12 @@ stages:
       # - run-tests-ui-3-legacy: {}
 
   deploy-test-results:
+    should_always_run: true
     workflows:
       - deploy-test-results: {}
 
   deploy-test-results-nightly:
+    should_always_run: true
     workflows:
       - deploy-test-results-nightly: {}
 

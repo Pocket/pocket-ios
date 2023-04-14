@@ -36,7 +36,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
 
     /// Fetches all tags associated with item
     private var itemTagNames: [String] {
-        item.tags?.compactMap { ($0 as? Tag)?.name } ?? []
+        item.tags?.compactMap { ($0 as? Tag)?.name }.sorted() ?? []
     }
 
     /// Fetches all tags associated with a user
@@ -99,7 +99,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
         // TODO: Remove ! when we have non-null on tagName
-        otherTags = source.retrieveTags(excluding: tags)?.compactMap({ .tag($0.name!) }) ?? []
+        otherTags = source.retrieveTags(excluding: tags)?.compactMap({ .tag($0.name!) }).sorted() ?? []
         trackAllTagsImpression()
     }
 
@@ -110,7 +110,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
             allOtherTags()
             return
         }
-        let fetchedTags = source.filterTags(with: text.lowercased(), excluding: tags)?.compactMap { $0.name } ?? []
+        let fetchedTags = source.filterTags(with: text.lowercased(), excluding: tags)?.compactMap { $0.name }.sorted() ?? []
         let tagTypes = fetchedTags.compactMap { TagType.tag($0) }
         if !tagTypes.isEmpty {
             otherTags = tagTypes
