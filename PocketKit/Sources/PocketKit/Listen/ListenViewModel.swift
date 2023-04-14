@@ -31,7 +31,7 @@ class ListenViewModel: PKTListenDataSource<PKTListDiffable> {
                 return false
             }
 
-            return savedItem.item?.isArticle ?? false
+            return savedItem.item.isArticle ?? false
         }).compactMap({item in
             let v = PKTListenKusariCreate(item.albumID!, PKTListenQueueSectionType.item.rawValue, item, config)
             return v
