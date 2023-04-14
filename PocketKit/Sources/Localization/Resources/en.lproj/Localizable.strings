@@ -139,6 +139,8 @@
 "tags.empty.detail" = "Tag your saves by topic to find them later.";
 "tags.empty.button" = "How to tag";
 
+"tags.notTagged" = "not tagged";
+
 //Saves
 "saves.empty.header" = "Start building your Pocket list";
 "saves.empty.button" = "How to save";

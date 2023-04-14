@@ -462,6 +462,8 @@ public enum Localization {
     }
   }
   public enum Tags {
+    /// not tagged
+    public static let notTagged = Localization.tr("Localizable", "tags.notTagged", fallback: "not tagged")
     public enum Empty {
       /// How to tag
       public static let button = Localization.tr("Localizable", "tags.empty.button", fallback: "How to tag")
