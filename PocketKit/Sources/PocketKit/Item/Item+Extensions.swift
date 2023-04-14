@@ -8,11 +8,11 @@ import Sync
 
 public extension SavedItem {
     var textAlignment: TextAlignment {
-        TextAlignment(language: item?.language)
+        TextAlignment(language: item.language)
     }
 
     var bestURL: URL? {
-        item?.bestURL ?? url
+        item.bestURL ?? url
     }
 
     var isPending: Bool {
@@ -20,11 +20,11 @@ public extension SavedItem {
     }
 
     var shouldOpenInWebView: Bool {
-        item?.shouldOpenInWebView == true
+        item.shouldOpenInWebView == true
     }
 
     var isSyndicated: Bool {
-        item?.isSyndicated == true
+        item.isSyndicated == true
     }
 }
 
