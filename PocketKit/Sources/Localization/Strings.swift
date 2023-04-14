@@ -318,6 +318,10 @@ public enum Localization {
         public static let needsInternet = Localization.tr("Localizable", "search.error.view.needsInternet", fallback: "You must have an internet connection to view this item.")
       }
     }
+    public enum Recent {
+      /// Recent searches will appear here, so you can easily jump back in.
+      public static let empty = Localization.tr("Localizable", "search.recent.empty", fallback: "Recent searches will appear here, so you can easily jump back in.")
+    }
     public enum Results {
       public enum Empty {
         /// Try using different keywords, checking for typos or changing your filters.
