@@ -10,8 +10,8 @@ class HomeRecommendationCellViewModel {
     let primaryAction: ItemAction?
 
     var isSaved: Bool {
-        recommendation.item?.savedItem != nil &&
-        recommendation.item?.savedItem?.isArchived == false
+        recommendation.item.savedItem != nil &&
+        recommendation.item.savedItem?.isArchived == false
     }
 
     init(
@@ -55,7 +55,7 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
     }
 
     var timeToRead: String? {
-        guard let timeToRead = recommendation.item?.timeToRead,
+        guard let timeToRead = recommendation.item.timeToRead,
               timeToRead.intValue > 0 else {
             return nil
         }

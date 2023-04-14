@@ -3,7 +3,7 @@ import Sync
 
 extension Recommendation {
     var bestImageURL: URL? {
-        guard let topImageURL = imageURL ?? item?.syndicatedArticle?.imageURL ?? item?.topImageURL ?? (item?.images?.firstObject as? Image)?.source else {
+        guard let topImageURL = imageURL ?? item.syndicatedArticle?.imageURL ?? item.topImageURL ?? (item.images?.firstObject as? Image)?.source else {
             return nil
         }
 
@@ -11,14 +11,14 @@ extension Recommendation {
     }
 
     var bestDomain: String? {
-        item?.syndicatedArticle?.publisherName ?? item?.domainMetadata?.name ?? item?.domain ?? item?.bestURL?.host
+        item.syndicatedArticle?.publisherName ?? item.domainMetadata?.name ?? item.domain ?? item.bestURL?.host
     }
 
     var bestTitle: String? {
-        title ?? item?.syndicatedArticle?.title ?? item?.title
+        title ?? item.syndicatedArticle?.title ?? item.title
     }
 
     var bestExcerpt: String? {
-        excerpt ?? item?.syndicatedArticle?.excerpt ?? item?.excerpt
+        excerpt ?? item.syndicatedArticle?.excerpt ?? item.excerpt
     }
 }
