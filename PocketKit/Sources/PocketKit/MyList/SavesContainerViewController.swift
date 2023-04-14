@@ -152,12 +152,8 @@ class SavesContainerViewController: UIViewController, UISearchBarDelegate {
         navigationItem.searchController?.view.accessibilityIdentifier = "search-view"
         navigationItem.searchController?.searchBar.accessibilityHint = "Search"
         navigationItem.searchController?.searchBar.scopeButtonTitles = searchViewModel.scopeTitles
-        if #available(iOS 16.0, *) {
-            navigationItem.searchController?.scopeBarActivation = .onSearchActivation
-            navigationItem.preferredSearchBarPlacement = .stacked
-        } else {
-            navigationItem.searchController?.automaticallyShowsScopeBar = true
-        }
+        navigationItem.searchController?.scopeBarActivation = .onSearchActivation
+        navigationItem.preferredSearchBarPlacement = .stacked
         navigationItem.searchController?.showsSearchResultsController = true
 
         searchViewModel.$searchText.dropFirst().sink { searchText in
