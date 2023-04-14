@@ -218,6 +218,17 @@ public enum Localization {
     /// Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket
     public static let yourArticlesAndVideosWillBeReadyForYouInPocket = Localization.tr("Localizable", "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket", fallback: "Save from Safari, Twitter, YouTube or your favorite news app (for starters). Your articles and videos will be ready for you in Pocket")
   }
+  public enum Archive {
+    public enum Empty {
+      /// How to archive
+      public static let button = Localization.tr("Localizable", "archive.empty.button", fallback: "How to archive")
+      /// Archive the saves you're finished with
+      ///  using the archive icon.
+      public static let detail = Localization.tr("Localizable", "archive.empty.detail", fallback: "Archive the saves you're finished with\n using the archive icon.")
+      /// Keep your list fresh and clean
+      public static let header = Localization.tr("Localizable", "archive.empty.header", fallback: "Keep your list fresh and clean")
+    }
+  }
   public enum Back {
     public enum To {
       /// Back to Pocket

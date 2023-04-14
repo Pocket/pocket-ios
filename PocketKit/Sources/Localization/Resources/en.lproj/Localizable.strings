@@ -131,6 +131,11 @@
 //General Messages
 "general.oops" = "Oops! Try again?";
 
+//Archive
+"archive.empty.header" = "Keep your list fresh and clean";
+"archive.empty.detail" = "Archive the saves you're finished with\n using the archive icon.";
+"archive.empty.button" = "How to archive";
+
 // Tags
 "tags.upsell.tagStoriesFasterThanEver" = "Tag stories faster than ever—get your most recent tags with Pocket Premium.";
 "tags.upsell.getPocketPremium" = "Get Pocket Premium";
