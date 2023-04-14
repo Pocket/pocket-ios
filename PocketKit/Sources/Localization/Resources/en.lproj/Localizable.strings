@@ -153,6 +153,8 @@
 "search.swipe.archive" = "Archive";
 "search.swipe.moveToSaves" = "Move to Saves";
 
+"search.empty.header" = "Search by title or URL";
+
 "search.allItems.premium.header" = "Unlock more search options";
 "search.allItems.premium.detail" = "Search your entire Pocket, including archived items, with Pocket Premium.";
 "search.allItems.premium.button" = "Get Pocket Premium";

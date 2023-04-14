@@ -312,6 +312,10 @@ public enum Localization {
       /// We’re experiencing an error and can’t show you full search results. Please try again later.
       public static let errorMessage = Localization.tr("Localizable", "search.banner.errorMessage.", fallback: "We’re experiencing an error and can’t show you full search results. Please try again later.")
     }
+    public enum Empty {
+      /// Search by title or URL
+      public static let header = Localization.tr("Localizable", "search.empty.header", fallback: "Search by title or URL")
+    }
     public enum Error {
       public enum View {
         /// You must have an internet connection to view this item.
