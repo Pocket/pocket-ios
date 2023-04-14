@@ -584,7 +584,7 @@ extension SavedItemsListViewModel {
 
         switch listOptions.selectedSortOption {
         case .longestToRead, .shortestToRead:
-            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item?.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
+            sortDescriptorTemp = NSSortDescriptor(keyPath: \SavedItem.item.timeToRead, ascending: (listOptions.selectedSortOption == .shortestToRead))
         case .newest, .oldest:
 
             switch self.viewType {
