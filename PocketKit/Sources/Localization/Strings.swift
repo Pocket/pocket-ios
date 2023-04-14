@@ -58,8 +58,6 @@ public enum Localization {
   public static let displaySettings = Localization.tr("Localizable", "Display Settings", fallback: "Display Settings")
   /// Enter a new name for this tag
   public static let enterANewNameForThisTag = Localization.tr("Localizable", "Enter a new name for this tag", fallback: "Enter a new name for this tag")
-  /// Favorite
-  public static let favorite = Localization.tr("Localizable", "Favorite", fallback: "Favorite")
   /// Font
   public static let font = Localization.tr("Localizable", "Font", fallback: "Font")
   /// Font Size
@@ -86,8 +84,6 @@ public enum Localization {
   public static let month = Localization.tr("Localizable", "month", fallback: "month")
   /// Monthly
   public static let monthly = Localization.tr("Localizable", "Monthly", fallback: "Monthly")
-  /// Move to Saves
-  public static let moveToSaves = Localization.tr("Localizable", "Move to Saves", fallback: "Move to Saves")
   /// Newest saved
   public static let newestSaved = Localization.tr("Localizable", "Newest saved", fallback: "Newest saved")
   /// No
@@ -122,14 +118,10 @@ public enum Localization {
   public static let rename = Localization.tr("Localizable", "Rename", fallback: "Rename")
   /// Rename Tag
   public static let renameTag = Localization.tr("Localizable", "Rename Tag", fallback: "Rename Tag")
-  /// Report
-  public static let report = Localization.tr("Localizable", "Report", fallback: "Report")
   /// Report a concern
   public static let reportAConcern = Localization.tr("Localizable", "Report a concern", fallback: "Report a concern")
   /// Reported
   public static let reported = Localization.tr("Localizable", "Reported", fallback: "Reported")
-  /// Save
-  public static let save = Localization.tr("Localizable", "Save", fallback: "Save")
   /// Save what really interests you
   public static let saveWhatReallyInterestsYou = Localization.tr("Localizable", "Save what really interests you", fallback: "Save what really interests you")
   /// Saved
@@ -168,8 +160,6 @@ public enum Localization {
   public static let thisElementIsCurrentlyUnsupported = Localization.tr("Localizable", "This element is currently unsupported.", fallback: "This element is currently unsupported.")
   /// This video could not be loaded.
   public static let thisVideoCouldNotBeLoaded = Localization.tr("Localizable", "This video could not be loaded.", fallback: "This video could not be loaded.")
-  /// Unfavorite
-  public static let unfavorite = Localization.tr("Localizable", "Unfavorite", fallback: "Unfavorite")
   /// year
   public static let year = Localization.tr("Localizable", "year", fallback: "year")
   /// Yes
@@ -239,6 +229,36 @@ public enum Localization {
         return Localization.tr("Localizable", "item.list.min", String(describing: p1), fallback: "%@ min")
       }
     }
+    public enum OverflowMenu {
+      /// Move to Saves
+      public static let moveToSaves = Localization.tr("Localizable", "item.overflowMenu.moveToSaves", fallback: "Move to Saves")
+    }
+  }
+  public enum ItemAction {
+    /// Add Tags
+    public static let addTags = Localization.tr("Localizable", "itemAction.addTags", fallback: "Add Tags")
+    /// Archive
+    public static let archive = Localization.tr("Localizable", "itemAction.archive", fallback: "Archive")
+    /// Copy Link
+    public static let copyLink = Localization.tr("Localizable", "itemAction.copyLink", fallback: "Copy Link")
+    /// Delete
+    public static let delete = Localization.tr("Localizable", "itemAction.delete", fallback: "Delete")
+    /// Display Settings
+    public static let displaySettings = Localization.tr("Localizable", "itemAction.displaySettings", fallback: "Display Settings")
+    /// Favorite
+    public static let favorite = Localization.tr("Localizable", "itemAction.favorite", fallback: "Favorite")
+    /// Move to Saves
+    public static let moveToSaves = Localization.tr("Localizable", "itemAction.moveToSaves", fallback: "Move to Saves")
+    /// Open
+    public static let `open` = Localization.tr("Localizable", "itemAction.open", fallback: "Open")
+    /// Report
+    public static let report = Localization.tr("Localizable", "itemAction.report", fallback: "Report")
+    /// Save
+    public static let save = Localization.tr("Localizable", "itemAction.save", fallback: "Save")
+    /// Share
+    public static let share = Localization.tr("Localizable", "itemAction.share", fallback: "Share")
+    /// Unfavorite
+    public static let unfavorite = Localization.tr("Localizable", "itemAction.unfavorite", fallback: "Unfavorite")
   }
   public enum Itemlist {
     public enum Filter {
@@ -294,6 +314,30 @@ public enum Localization {
       /// Unlimited highlights
       public static let unlimitedHighlights = Localization.tr("Localizable", "premium.upgradeView.unlimitedHighlights", fallback: "Unlimited highlights")
     }
+  }
+  public enum Reader {
+    public enum Activity {
+      /// Archive
+      public static let archive = Localization.tr("Localizable", "reader.activity.archive", fallback: "Archive")
+      /// Delete
+      public static let delete = Localization.tr("Localizable", "reader.activity.delete", fallback: "Delete")
+      /// Favorite
+      public static let favorite = Localization.tr("Localizable", "reader.activity.favorite", fallback: "Favorite")
+      /// Move to Saves
+      public static let moveToSaves = Localization.tr("Localizable", "reader.activity.moveToSaves", fallback: "Move to Saves")
+      /// Report
+      public static let report = Localization.tr("Localizable", "reader.activity.report", fallback: "Report")
+      /// Save
+      public static let save = Localization.tr("Localizable", "reader.activity.save", fallback: "Save")
+      /// Unfavorite
+      public static let unfavorite = Localization.tr("Localizable", "reader.activity.unfavorite", fallback: "Unfavorite")
+    }
+  }
+  public enum Recommendation {
+    /// Save
+    public static let save = Localization.tr("Localizable", "recommendation.save", fallback: "Save")
+    /// Saved
+    public static let saved = Localization.tr("Localizable", "recommendation.saved", fallback: "Saved")
   }
   public enum Saves {
     public enum Empty {

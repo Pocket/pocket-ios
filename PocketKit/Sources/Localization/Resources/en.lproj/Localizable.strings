@@ -12,13 +12,6 @@
 "No Internet Connection" = "No Internet Connection";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Looks like you're offline. Try checking your mobile data or wifi.";
 
-"Save" = "Save";
-"Report" = "Report";
-"Delete" = "Delete";
-"Archive" = "Archive";
-"Favorite" = "Favorite";
-"Unfavorite" = "Unfavorite";
-"Move to Saves" = "Move to Saves";
 "Add Tags" = "Add Tags";
 "Tags" = "Tags";
 "Share" = "Share";
@@ -126,6 +119,23 @@
 //Home
 "home.recommendation.readTime" = "%@ min read";
 
+//Item
+"item.overflowMenu.moveToSaves" = "Move to Saves";
+
+//ItemAction
+"itemAction.addTags" = "Add Tags";
+"itemAction.archive" = "Archive";
+"itemAction.copyLink" = "Copy Link";
+"itemAction.delete" = "Delete";
+"itemAction.displaySettings" = "Display Settings";
+"itemAction.favorite" = "Favorite";
+"itemAction.unfavorite" = "Unfavorite";
+"itemAction.moveToSaves" = "Move to Saves";
+"itemAction.open" = "Open";
+"itemAction.report" = "Report";
+"itemAction.save" = "Save";
+"itemAction.share" = "Share";
+
 //ItemList
 "itemlist.filter.search" = "Search";
 "itemlist.filter.all" = "All";
@@ -203,6 +213,19 @@
 
 "settings.noInternet.header" = "No Internet Connection";
 "settings.noInternet.youMustBeOnline" = "You must be online to upgrade to Pocket Premium. Please check your connection and try again.";
+
+//Reader 
+"reader.activity.save" = "Save";
+"reader.activity.report" = "Report";
+"reader.activity.delete" = "Delete";
+"reader.activity.archive" = "Archive";
+"reader.activity.favorite" = "Favorite";
+"reader.activity.unfavorite" = "Unfavorite";
+"reader.activity.moveToSaves" = "Move to Saves";
+
+//Recommendation
+"recommendation.save" = "Save";
+"recommendation.saved" = "Saved";
 
 //Shown to the user after they deleted their account
 "login.deletedAccount.banner.title" = "You’ve deleted your Pocket account";
