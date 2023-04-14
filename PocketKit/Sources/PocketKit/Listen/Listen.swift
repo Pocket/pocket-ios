@@ -104,6 +104,12 @@ class Listen: NSObject {
 }
 
 extension Listen: PKTListenServiceDelegate {
+
+    static let skippedActions = [
+        "listen_opened",
+        "listen_closed"
+    ]
+
     func postAction(_ actionName: String, kusari: PKTKusari<PKTListenItem>?, data userInfo: [AnyHashable: Any]) {
         // cxt_progress will have the play progress
         // cxt_index will have the album position in the list
@@ -115,62 +121,61 @@ extension Listen: PKTListenServiceDelegate {
             controlType = .system
         }
 
+        if Self.skippedActions.contains(actionName) {
+            // Skip logging action because we handle it elsewhere.
+            return
+        }
+
+        Log.breadcrumb(category: "listen", level: .info, message: "Performed \(actionName) via \(controlType)")
+
+        guard let url = kusari?.album?.givenURL else {
+            Log.capture(message: "Listen action occurred without an item url")
+            return
+        }
+
         // TODO: If we use the Snowplow media element, we need to aquire the playback rate on all actions, which we dont have atm.
         // See MediaPlayerEntity for the options
 
         if actionName == "list_item_impression" {
-            guard let postiton = userInfo["cxt_index"] as? Int, let url = kusari?.album?.givenURL else {
+            guard let postiton = userInfo["cxt_index"] as? Int else {
                 return
             }
-            self.tracker.track(event: Events.Listen.ItemImpression(url: url, positionInList: postiton))
+            tracker.track(event: Events.Listen.ItemImpression(url: url, positionInList: postiton))
         } else if actionName == "start_listen" {
-            guard let url = kusari?.album?.givenURL else {
-                return
-            }
-            self.tracker.track(event: Events.Listen.StartPlayback(url: url, controlType: controlType))
+            tracker.track(event: Events.Listen.StartPlayback(url: url, controlType: controlType))
         } else if actionName == "resume_listen" {
-            guard let url = kusari?.album?.givenURL else {
-                return
-            }
-            self.tracker.track(event: Events.Listen.ResumePlayback(url: url, controlType: controlType))
+            tracker.track(event: Events.Listen.ResumePlayback(url: url, controlType: controlType))
         } else if actionName == "pause_listen" {
-            guard let url = kusari?.album?.givenURL else {
-                return
-            }
-            self.tracker.track(event: Events.Listen.PausePlayback(url: url, controlType: controlType))
+            tracker.track(event: Events.Listen.PausePlayback(url: url, controlType: controlType))
         } else if actionName == "fast_forward_listen" {
-            Log.debug("Listen action: \(actionName)")
+            tracker.track(event: Events.Listen.FastForward(url: url, controlType: controlType))
         } else if actionName == "rewind_listen" {
-            Log.debug("Listen action: \(actionName)")
+            tracker.track(event: Events.Listen.Rewind(url: url, controlType: controlType))
         } else if actionName == "skip_next_listen" {
-            Log.debug("Listen action: \(actionName)")
+            tracker.track(event: Events.Listen.SkipNext(url: url, controlType: controlType))
         } else if actionName == "skip_back_listen" {
-            Log.debug("Listen action: \(actionName)")
+            tracker.track(event: Events.Listen.SkipBack(url: url, controlType: controlType))
         } else if actionName == "set_speed" {
-            guard let playbackSpeed = userInfo["event"] as? Double, let url = kusari?.album?.givenURL else {
+            guard let playbackSpeed = userInfo["event"] as? Double else {
                 return
             }
-            // user set the speed of the playback
-            Log.debug("Listen action: \(actionName)")
+            // TODO: This is not currently being triggered by Listen
+            tracker.track(event: Events.Listen.SetSpeed(url: url, controlType: controlType, speed: playbackSpeed))
         } else if actionName == "reach_end_listen" {
-           // user finised listening to an article
-        } else if actionName == "listen_opened" {
-            Log.debug("Listen action: \(actionName)")
-        } else if actionName == "listen_closed" {
-            Log.debug("Listen action: \(actionName)")
-        } else {
-            // Note there can be actions for Saving and Archiving, but we listen 😉 for those in their specific callbacks on PKTListenPocketProxy
-            Log.debug("Listen action: \(actionName)")
+            tracker.track(event: Events.Listen.FinsihedListen(url: url, controlType: controlType))
         }
+        // Note there can be actions for Saving and Archiving, Closing, but we listen 😉 for those in their specific callbacks on PKTListenPocketProxy
     }
 
     func listenDidPresentPlayer(_ player: PKTListenAudibleQueuePresentationContext) {
+        tracker.track(event: Events.Listen.Opened())
     }
 
     func listenDidDismissPlayer(_ player: PKTListenAudibleQueuePresentationContext) {
     }
 
     func listenDidDismiss() {
+        tracker.track(event: Events.Listen.Closed())
     }
 
     func itemSessionService() -> PKTItemSessionService? {
@@ -178,15 +183,15 @@ extension Listen: PKTListenServiceDelegate {
     }
 
     func listenDidCollapse(intoMiniPlayer player: PKTListenAudibleQueuePresentationContext) {
-        // TODO: Analytics
+        tracker.track(event: Events.Listen.Collapsed())
     }
 
     func listenDidCloseMiniPlayer(_ player: PKTListenAudibleQueuePresentationContext) {
-        // TODO: Analytics
+        tracker.track(event: Events.Listen.MiniClosed())
     }
 
     func listenDidExpand(fromMiniPlayer player: PKTListenAudibleQueuePresentationContext) {
-        // TODO: Analytics
+        tracker.track(event: Events.Listen.Expanded())
     }
 
     func currentColors() -> PKTUITheme {
@@ -206,7 +211,12 @@ extension Listen: PKTListenPocketProxy {
         }
 
         self.source.archive(item: savedItem)
-        // TODO: Track analytics
+
+        guard let postiton = userInfo["cxt_index"] as? Int else {
+            Log.capture(message: "Tried to archive item from Listen where we dont have the Index, not logging analytics")
+            return
+        }
+        self.tracker.track(event: Events.Listen.Archived(url: savedItem.url, position: postiton))
     }
 
     /// User clicked save in the listen controls
@@ -219,7 +229,12 @@ extension Listen: PKTListenPocketProxy {
             return
         }
         _ = self.source.save(url: url)
-        // TODO: Track analytics
+
+        guard let postiton = userInfo["cxt_index"] as? Int else {
+            Log.capture(message: "Tried to add item from Listen where we dont have the Index, not logging analytics")
+            return
+        }
+        self.tracker.track(event: Events.Listen.MoveFromArchiveToSaves(url: url, position: postiton))
     }
 
     /// TODO: Ask nicole

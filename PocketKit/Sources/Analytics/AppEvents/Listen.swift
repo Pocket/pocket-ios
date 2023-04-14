@@ -50,11 +50,10 @@ public extension Events.Listen {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                // MediaPlayerEntity(currentTime: <#T##TimeInterval#>, duration: <#T##TimeInterval#>, ended: <#T##Bool#>, loop: <#T##Bool#>, muted: <#T##Bool#>, paused: <#T##Bool#>, playbackRate: <#T##Double#>, volume: <#T##Int#>)
             ]
         )
     }
-    
+
     /// Fired when a User resumes playback of an item
     /// - Parameters:
     ///   - url: URL of the item
@@ -70,15 +69,14 @@ public extension Events.Listen {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                // MediaPlayerEntity(currentTime: <#T##TimeInterval#>, duration: <#T##TimeInterval#>, ended: <#T##Bool#>, loop: <#T##Bool#>, muted: <#T##Bool#>, paused: <#T##Bool#>, playbackRate: <#T##Double#>, volume: <#T##Int#>)
             ]
         )
     }
-    
+
     /// Fired when a User pauses playback of an item
     /// - Parameters:
     ///   - url: URL of the item
-    ///   - controlType: How the playback resumed
+    ///   - controlType: How the playback paused
     /// - Returns: Engagement event
     static func PausePlayback(url: URL, controlType: ControlType) -> Engagement {
         return Engagement(
@@ -90,8 +88,219 @@ public extension Events.Listen {
             ),
             extraEntities: [
                 ContentEntity(url: url),
-                // MediaPlayerEntity(currentTime: <#T##TimeInterval#>, duration: <#T##TimeInterval#>, ended: <#T##Bool#>, loop: <#T##Bool#>, muted: <#T##Bool#>, paused: <#T##Bool#>, playbackRate: <#T##Double#>, volume: <#T##Int#>)
             ]
+        )
+    }
+
+    /// Fired when a User fast forwards an item
+    /// - Parameters:
+    ///   - url: URL of the item
+    ///   - controlType: How the playback fast forwarded
+    /// - Returns: Engagement event
+    static func FastForward(url: URL, controlType: ControlType) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.playback.fast_forward",
+                componentDetail: controlType.rawValue
+            ),
+            extraEntities: [
+                ContentEntity(url: url),
+            ]
+        )
+    }
+
+    /// Fired when a User rewinds an item
+    /// - Parameters:
+    ///   - url: URL of the item
+    ///   - controlType: How the playback rewound
+    /// - Returns: Engagement event
+    static func Rewind(url: URL, controlType: ControlType) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.playback.rewind",
+                componentDetail: controlType.rawValue
+            ),
+            extraEntities: [
+                ContentEntity(url: url),
+            ]
+        )
+    }
+
+    /// Fired when a User skip next an item
+    /// - Parameters:
+    ///   - url: URL of the item
+    ///   - controlType: How the playback skipped forward
+    /// - Returns: Engagement event
+    static func SkipNext(url: URL, controlType: ControlType) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.playback.skip_next",
+                componentDetail: controlType.rawValue
+            ),
+            extraEntities: [
+                ContentEntity(url: url),
+            ]
+        )
+    }
+
+    /// Fired when a User skips back an item
+    /// - Parameters:
+    ///   - url: URL of the item
+    ///   - controlType: How the playback skipped backward
+    /// - Returns: Engagement event
+    static func SkipBack(url: URL, controlType: ControlType) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.playback.skip_back",
+                componentDetail: controlType.rawValue
+            ),
+            extraEntities: [
+                ContentEntity(url: url),
+            ]
+        )
+    }
+
+    /// Fired when a User sets the speed of an item
+    /// - Parameters:
+    ///   - url: URL of the item
+    ///   - controlType: How the playback skipped backward
+    ///   - speed: The speed of the playback
+    /// - Returns: Engagement event
+    static func SetSpeed(url: URL, controlType: ControlType, speed: Double) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.playback.set_speed",
+                componentDetail: controlType.rawValue,
+                value: String(speed)
+            ),
+            extraEntities: [
+                ContentEntity(url: url),
+            ]
+        )
+    }
+
+    /// Fired when a User finishes the playback of an item
+    /// - Parameters:
+    ///   - url: URL of the item
+    ///   - controlType: How the playback was finished
+    /// - Returns: Engagement event
+    static func FinsihedListen(url: URL, controlType: ControlType) -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.playback.finished",
+                componentDetail: controlType.rawValue
+            ),
+            extraEntities: [
+                ContentEntity(url: url),
+            ]
+        )
+    }
+
+    /// Fired when a User opens listen with the item it was opened to
+    /// - Parameters:
+    ///   - controlType: How the playback was finished
+    /// - Returns: Engagement event
+    static func Opened() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.opened"
+            )
+        )
+    }
+
+    /// Fired when a User closes listen
+    /// - Returns: Engagement event
+    static func Closed() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.closed"
+            )
+        )
+    }
+
+    /// Fired when a user collapses the player into mini mode
+    /// - Returns: Engagement event
+    static func Collapsed() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.player.collapsed"
+            )
+        )
+    }
+
+    /// Fired when a user closes the mini player
+    /// - Returns: Engagement event
+    static func MiniClosed() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.player.mini.close"
+            )
+        )
+    }
+
+    /// Fired when a user expands the mini player
+    /// - Returns: Engagement event
+    static func Expanded() -> Engagement {
+        return Engagement(
+            .general,
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.player.expanded"
+            )
+        )
+    }
+
+    /// Fired when a user archives an article via listen
+    /// - Parameters:
+    ///   - url: URL of the item
+    ///   - position: Position in the list
+    /// - Returns: Engagement event
+    static func Archived(url: URL, position: Int) -> Engagement {
+        return Engagement(
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.archive",
+                index: position
+            ),
+            extraEntities: [
+                ContentEntity(url: url)
+            ]
+        )
+    }
+
+    /// Fired when a user moves an item from archive to saves via listen
+    /// - Parameters:
+    ///   - url: URL of the item
+    ///   - position: Position in the list
+    /// - Returns: Engagement event
+    static func MoveFromArchiveToSaves(url: URL, position: Int) -> Engagement {
+        return Engagement(
+            .save(contentEntity: ContentEntity(url: url)),
+            uiEntity: UiEntity(
+                .button,
+                identifier: "listen.un-archive",
+                index: position
+            )
         )
     }
 }
