@@ -14,11 +14,7 @@ struct SearchViewElement: PocketUIElement {
     var recentSearchesView: XCUIElement {
         let query: XCUIElementQuery
 
-        if #available(iOS 16, *) {
-            query = element.collectionViews
-        } else {
-            query = element.tables
-        }
+        query = element.collectionViews
 
         return query["recent-searches"]
     }
@@ -26,11 +22,7 @@ struct SearchViewElement: PocketUIElement {
     var searchResultsView: XCUIElement {
         let query: XCUIElementQuery
 
-        if #available(iOS 16, *) {
-            query = element.collectionViews
-        } else {
-            query = element.tables
-        }
+        query = element.collectionViews
 
         return query["search-results"]
     }
@@ -38,11 +30,7 @@ struct SearchViewElement: PocketUIElement {
     var skeletonView: XCUIElement {
         let query: XCUIElementQuery
 
-        if #available(iOS 16, *) {
-            query = element.collectionViews
-        } else {
-            query = element.tables
-        }
+        query = element.collectionViews
 
         return query["skeleton-view"]
     }
