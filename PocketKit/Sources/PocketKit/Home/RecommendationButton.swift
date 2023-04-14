@@ -1,18 +1,19 @@
 import UIKit
 import Textile
 
-class RecommendationOverflowButton: UIButton {
-    init() {
+class RecommendationButton: UIButton {
+    init(asset: ImageAsset) {
         super.init(frame: .zero)
 
         configuration = .plain()
+
         configuration?.contentInsets = NSDirectionalEdgeInsets(
             top: 16,
-            leading: 8,
+            leading: 4,
             bottom: 16,
-            trailing: 8
+            trailing: 4
         )
-        configuration?.image = UIImage(asset: .overflow)
+        configuration?.image = UIImage(asset: asset)
             .resized(to: CGSize(width: 20, height: 20))
             .withTintColor(UIColor(.ui.grey5), renderingMode: .alwaysOriginal)
 
