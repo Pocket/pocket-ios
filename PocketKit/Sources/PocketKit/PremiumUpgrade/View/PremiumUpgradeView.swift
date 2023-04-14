@@ -87,7 +87,7 @@ struct PremiumUpgradeView: View {
                                 }
                             }
                             .accessibilityIdentifier("premium-upgrade-view-monthly-button")
-                            .alert("Comiing Soon!", isPresented: $showingMonthlyAlert) {
+                            .alert(Localization.Premium.UpgradeView.comingSoon, isPresented: $showingMonthlyAlert) {
                                 Button("OK", role: .cancel) { }
                             }
                         }
@@ -112,7 +112,7 @@ struct PremiumUpgradeView: View {
                                     }
                                 }
                                 .accessibilityIdentifier("premium-upgrade-view-annual-button")
-                                .alert("Comiing Soon!", isPresented: $showingAnnualAlert) {
+                                .alert(Localization.Premium.UpgradeView.comingSoon, isPresented: $showingAnnualAlert) {
                                     Button("OK", role: .cancel) { }
                                 }
                                 PremiumYearlyPercent()
@@ -141,7 +141,7 @@ struct PremiumUpgradeView: View {
 
 private struct PremiumUpgradeHeader: View {
     var body: some View {
-        Text("Premium\nMembership").style(.upgradeHeader)
+        Text(Localization.Premium.UpgradeView.premiumMembership).style(.upgradeHeader)
     }
 }
 

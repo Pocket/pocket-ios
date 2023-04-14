@@ -300,6 +300,8 @@ public enum Localization {
     public enum UpgradeView {
       /// Ad-free
       public static let adFree = Localization.tr("Localizable", "premium.upgradeView.adFree", fallback: "Ad-free")
+      /// Coming Soon!
+      public static let comingSoon = Localization.tr("Localizable", "premium.upgradeView.comingSoon", fallback: "Coming Soon!")
       /// Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.
       public static func description(_ p1: Any, _ p2: Any) -> String {
         return Localization.tr("Localizable", "premium.upgradeView.description", String(describing: p1), String(describing: p2), fallback: "Subscriptions will be charged to your credit card through your iTunes account. Your account will be charged %1$@ (monthly) or %2$@ (yearly) for renewal within 24 hours prior to the end of the current period. Subscriptions will automatically renew unless canceled at least 24 hours before the end of the current period. It will not be possible to immediately cancel a subscription. You can manage subscriptions and turn off auto-renewal by going to your account settings after purchase. Refunds are not available for unused portions of a subscription.")
