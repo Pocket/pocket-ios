@@ -81,8 +81,6 @@ public enum Localization {
   public static let hooray = Localization.tr("Localizable", "Hooray!", fallback: "Hooray!")
   /// How to archive
   public static let howToArchive = Localization.tr("Localizable", "How to archive", fallback: "How to archive")
-  /// How to save
-  public static let howToSave = Localization.tr("Localizable", "How to save", fallback: "How to save")
   /// How to tag
   public static let howToTag = Localization.tr("Localizable", "How to tag", fallback: "How to tag")
   /// It contains misinformation
@@ -179,8 +177,6 @@ public enum Localization {
   public static let sortBy = Localization.tr("Localizable", "Sort by", fallback: "Sort by")
   /// Sort/Filter
   public static let sortFilter = Localization.tr("Localizable", "Sort/Filter", fallback: "Sort/Filter")
-  /// Start building your Pocket list
-  public static let startBuildingYourPocketList = Localization.tr("Localizable", "Start building your Pocket list", fallback: "Start building your Pocket list")
   /// Submit feedback
   public static let submitFeedback = Localization.tr("Localizable", "Submit feedback", fallback: "Submit feedback")
   /// Tag your saves by topic to find them later.
@@ -283,6 +279,14 @@ public enum Localization {
       public static let suggestedTags = Localization.tr("Localizable", "premium.upgradeView.suggestedTags", fallback: "Suggested tags")
       /// Unlimited highlights
       public static let unlimitedHighlights = Localization.tr("Localizable", "premium.upgradeView.unlimitedHighlights", fallback: "Unlimited highlights")
+    }
+  }
+  public enum Saves {
+    public enum Empty {
+      /// How to save
+      public static let button = Localization.tr("Localizable", "saves.empty.button", fallback: "How to save")
+      /// Start building your Pocket list
+      public static let header = Localization.tr("Localizable", "saves.empty.header", fallback: "Start building your Pocket list")
     }
   }
   public enum Search {

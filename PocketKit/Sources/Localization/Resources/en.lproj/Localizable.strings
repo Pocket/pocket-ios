@@ -19,9 +19,6 @@
 "Find your favorites here" = "Find your favorites here";
 "Hit the star icon to favorite an article and find it faster." = "Hit the star icon to favorite an article and find it faster.";
 
-"Start building your Pocket list" = "Start building your Pocket list";
-"How to save" = "How to save";
-
 "No saves with this tag." = "No saves with this tag.";
 "Tag your saves by topic to find them later." = "Tag your saves by topic to find them later.";
 "How to tag" = "How to tag";
@@ -140,6 +137,9 @@
 "tags.section.recentTags" = "Recent tags";
 "tags.section.userTags" = "My tags";
 
+//Saves
+"saves.empty.header" = "Start building your Pocket list";
+"saves.empty.button" = "How to save";
 
 // Search
 "search.errorMessage" = "We’re experiencing an error and temporarily can’t get you what you need. Please try again later.";
