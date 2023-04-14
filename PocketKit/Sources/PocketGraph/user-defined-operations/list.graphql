@@ -17,6 +17,7 @@ fragment SavedItemParts on SavedItem {
 }
 
 fragment TagParts on Tag {
+  __typename
   name
   id
 }
@@ -75,8 +76,7 @@ mutation DeleteTag($id: ID!) {
 
 mutation TagUpdate($input: TagUpdateInput!) {
   updateTag(input: $input) {
-    name
-    id
+     ...TagParts
   }
 }
 

@@ -151,9 +151,6 @@ class SavedItemsListViewModel: NSObject, ItemsListViewModel {
                     tracker: tracker,
                     userDefaults: userDefaults,
                     user: user,
-                    fetchedTags: { [weak self] in
-                        self?.source.fetchAllTags()
-                    }(),
                     selectAllAction: { [weak self] in
                         self?.selectCell(with: .filterButton(.all))
                     }
@@ -615,6 +612,13 @@ extension SavedItemsListViewModel {
 
         switch filter {
         case .listen:
+            // If the user selected a filter, and the user is not in the Listen tags playlist feature flag
+            // Remove any filters and sorts they selected and re-fetch data before showing listen.
+            if !selectedFilters.isEmpty && !featureFlags.isAssigned(flag: .listenTagsPlaylists) {
+                selectedFilters.removeAll()
+                applySorting()
+                fetch()
+            }
             presentedListenViewModel = ListenViewModel.source(savedItems: self.itemsController.fetchedObjects)
             selectedFilters.remove(.listen)
             // passin models

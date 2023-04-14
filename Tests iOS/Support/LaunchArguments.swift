@@ -7,7 +7,6 @@ import Foundation
 struct LaunchArguments {
     let clearKeychain: Bool
     let clearUserDefaults: Bool
-    let clearFirstLaunch: Bool
     let clearCoreData: Bool
     let clearImageCache: Bool
     let disableSentry: Bool
@@ -16,7 +15,6 @@ struct LaunchArguments {
     init(
         clearKeychain: Bool,
         clearUserDefaults: Bool,
-        clearFirstLaunch: Bool,
         clearCoreData: Bool,
         clearImageCache: Bool,
         disableSentry: Bool,
@@ -24,7 +22,6 @@ struct LaunchArguments {
     ) {
         self.clearKeychain = clearKeychain
         self.clearUserDefaults = clearUserDefaults
-        self.clearFirstLaunch = clearFirstLaunch
         self.clearCoreData = clearCoreData
         self.clearImageCache = clearImageCache
         self.disableSentry = disableSentry
@@ -38,9 +35,6 @@ struct LaunchArguments {
         }
         if clearUserDefaults {
             args.append("clearUserDefaults")
-        }
-        if clearFirstLaunch {
-            args.append("clearFirstLaunch")
         }
         if clearCoreData {
             args.append("clearCoreData")
@@ -59,31 +53,27 @@ struct LaunchArguments {
     }
 
     func with(clearKeychain: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearFirstLaunch: clearFirstLaunch, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
+        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
     }
 
     func with(clearUserDefaults: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearFirstLaunch: clearFirstLaunch, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
-    }
-
-    func with(clearFirstLaunch: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearFirstLaunch: clearFirstLaunch, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
+        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
     }
 
     func with(clearCoreData: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearFirstLaunch: clearFirstLaunch, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
+        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
     }
 
     func with(clearImageCache: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearFirstLaunch: clearFirstLaunch, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
+        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
     }
 
     func with(disableSentry: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearFirstLaunch: clearFirstLaunch, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
+        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
     }
 
     func with(disableSnowplow: Bool) -> LaunchArguments {
-        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearFirstLaunch: clearFirstLaunch, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
+        LaunchArguments(clearKeychain: clearKeychain, clearUserDefaults: clearUserDefaults, clearCoreData: clearCoreData, clearImageCache: clearImageCache, disableSentry: disableSentry, disableSnowplow: disableSnowplow)
     }
 }
 
@@ -91,19 +81,8 @@ extension LaunchArguments {
     static let preserve = LaunchArguments(
         clearKeychain: false,
         clearUserDefaults: false,
-        clearFirstLaunch: false,
         clearCoreData: false,
         clearImageCache: false,
-        disableSentry: true,
-        disableSnowplow: false
-    )
-
-    static let firstLaunch = LaunchArguments(
-        clearKeychain: true,
-        clearUserDefaults: true,
-        clearFirstLaunch: true,
-        clearCoreData: true,
-        clearImageCache: true,
         disableSentry: true,
         disableSnowplow: false
     )
@@ -111,7 +90,6 @@ extension LaunchArguments {
     static let bypassSignIn = LaunchArguments(
         clearKeychain: true,
         clearUserDefaults: true,
-        clearFirstLaunch: false,
         clearCoreData: true,
         clearImageCache: true,
         disableSentry: true,

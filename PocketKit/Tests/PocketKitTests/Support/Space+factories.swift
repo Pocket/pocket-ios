@@ -50,6 +50,7 @@ extension Space {
             let tags: [Tag]? = tags?.map { tag -> Tag in
                 let newTag: Tag = Tag(context: backgroundContext)
                 newTag.name = tag
+                newTag.remoteID = tag.uppercased() // making remote id different by uppercasing.
                 return newTag
             }
             savedItem.remoteID = remoteID

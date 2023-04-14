@@ -80,6 +80,7 @@
         "FavoriteAnItemTests",
         "HomeTests\/test_tappingRecentSavesItem_showsWebViewWhenItemIsVideo()",
         "HomeTests\/test_tappingRecentSavesSavesButton_opensSavesView()",
+        "ListenTests",
         "PullToRefreshTests",
         "ReaderTests",
         "ReportARecommendationTests",

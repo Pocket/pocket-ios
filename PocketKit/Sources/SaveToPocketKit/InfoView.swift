@@ -57,6 +57,7 @@ class InfoView: UIView {
             stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
+        accessibilityIdentifier = "save-extension-info-view"
     }
 
     required init?(coder: NSCoder) {

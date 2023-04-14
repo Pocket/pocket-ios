@@ -9,6 +9,7 @@ public class PersistentContainer: NSPersistentContainer {
 
     private lazy var backgroundContext = {
         let context = newBackgroundContext()
+        context.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
         return context
     }()
 
