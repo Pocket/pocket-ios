@@ -12,12 +12,6 @@
 "No Internet Connection" = "No Internet Connection";
 "Looks like you're offline. Try checking your mobile data or wifi." = "Looks like you're offline. Try checking your mobile data or wifi.";
 
-"Search" = "Search";
-"All" = "All";
-"Tagged" = "Tagged";
-"Favorites" = "Favorites";
-"Sort/Filter" = "Sort/Filter";
-
 "Save" = "Save";
 "Report" = "Report";
 "Delete" = "Delete";
@@ -131,6 +125,13 @@
 
 //Home
 "home.recommendation.readTime" = "%@ min read";
+
+//ItemList
+"itemlist.filter.search" = "Search";
+"itemlist.filter.all" = "All";
+"itemlist.filter.tagged" = "Tagged";
+"itemlist.filter.favorites" = "Favorites";
+"itemlist.filter.sortFilter" = "Sort/Filter";
 
 // Tags
 "tags.upsell.tagStoriesFasterThanEver" = "Tag stories faster than ever—get your most recent tags with Pocket Premium.";

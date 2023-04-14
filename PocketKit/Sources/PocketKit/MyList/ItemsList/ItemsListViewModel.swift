@@ -80,15 +80,15 @@ enum ItemsListFilter: String, Hashable, CaseIterable {
     var localized: String {
         switch self {
         case .all:
-            return Localization.all
+            return Localization.Itemlist.Filter.all
         case .tagged:
-            return Localization.tagged
+            return Localization.Itemlist.Filter.tagged
         case .favorites:
-            return Localization.favorites
+            return Localization.Itemlist.Filter.favorites
         case .sortAndFilter:
-            return Localization.sortFilter
+            return Localization.Itemlist.Filter.sortFilter
         case .search:
-            return Localization.search
+            return Localization.Itemlist.Filter.search
         case .listen:
             return Localization.Carousel.listen
         }

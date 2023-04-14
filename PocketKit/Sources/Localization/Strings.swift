@@ -20,8 +20,6 @@ public enum Localization {
   public static let addCopiedURLToYourSaves = Localization.tr("Localizable", "Add copied URL to your Saves?", fallback: "Add copied URL to your Saves?")
   /// Add Tags
   public static let addTags = Localization.tr("Localizable", "Add Tags", fallback: "Add Tags")
-  /// All
-  public static let all = Localization.tr("Localizable", "All", fallback: "All")
   /// An error occurred
   public static let anErrorOccurred = Localization.tr("Localizable", "An error occurred", fallback: "An error occurred")
   /// Annual
@@ -62,8 +60,6 @@ public enum Localization {
   public static let enterANewNameForThisTag = Localization.tr("Localizable", "Enter a new name for this tag", fallback: "Enter a new name for this tag")
   /// Favorite
   public static let favorite = Localization.tr("Localizable", "Favorite", fallback: "Favorite")
-  /// Favorites
-  public static let favorites = Localization.tr("Localizable", "Favorites", fallback: "Favorites")
   /// Font
   public static let font = Localization.tr("Localizable", "Font", fallback: "Font")
   /// Font Size
@@ -140,8 +136,6 @@ public enum Localization {
   public static let saved = Localization.tr("Localizable", "Saved", fallback: "Saved")
   /// Saves
   public static let saves = Localization.tr("Localizable", "Saves", fallback: "Saves")
-  /// Search
-  public static let search = Localization.tr("Localizable", "Search", fallback: "Search")
   /// See All
   public static let seeAll = Localization.tr("Localizable", "See All", fallback: "See All")
   /// Settings
@@ -160,12 +154,8 @@ public enum Localization {
   public static let signUpForPremium = Localization.tr("Localizable", "Sign up for Premium", fallback: "Sign up for Premium")
   /// Sort by
   public static let sortBy = Localization.tr("Localizable", "Sort by", fallback: "Sort by")
-  /// Sort/Filter
-  public static let sortFilter = Localization.tr("Localizable", "Sort/Filter", fallback: "Sort/Filter")
   /// Submit feedback
   public static let submitFeedback = Localization.tr("Localizable", "Submit feedback", fallback: "Submit feedback")
-  /// Tagged
-  public static let tagged = Localization.tr("Localizable", "Tagged", fallback: "Tagged")
   /// Tags
   public static let tags = Localization.tr("Localizable", "Tags", fallback: "Tags")
   /// Tell us more
@@ -248,6 +238,20 @@ public enum Localization {
       public static func min(_ p1: Any) -> String {
         return Localization.tr("Localizable", "item.list.min", String(describing: p1), fallback: "%@ min")
       }
+    }
+  }
+  public enum Itemlist {
+    public enum Filter {
+      /// All
+      public static let all = Localization.tr("Localizable", "itemlist.filter.all", fallback: "All")
+      /// Favorites
+      public static let favorites = Localization.tr("Localizable", "itemlist.filter.favorites", fallback: "Favorites")
+      /// Search
+      public static let search = Localization.tr("Localizable", "itemlist.filter.search", fallback: "Search")
+      /// Sort/Filter
+      public static let sortFilter = Localization.tr("Localizable", "itemlist.filter.sortFilter", fallback: "Sort/Filter")
+      /// Tagged
+      public static let tagged = Localization.tr("Localizable", "itemlist.filter.tagged", fallback: "Tagged")
     }
   }
   public enum Login {
