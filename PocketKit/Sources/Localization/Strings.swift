@@ -234,6 +234,14 @@ public enum Localization {
     /// Oops! Try again?
     public static let oops = Localization.tr("Localizable", "general.oops", fallback: "Oops! Try again?")
   }
+  public enum Home {
+    public enum Recommendation {
+      /// %@ min read
+      public static func readTime(_ p1: Any) -> String {
+        return Localization.tr("Localizable", "home.recommendation.readTime", String(describing: p1), fallback: "%@ min read")
+      }
+    }
+  }
   public enum Item {
     public enum List {
       /// %@ min

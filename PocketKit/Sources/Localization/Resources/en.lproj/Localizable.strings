@@ -129,6 +129,9 @@
 "favourites.empty.header" = "Find your favorites here";
 "favourites.empty.detail" = "Hit the star icon to favorite an article and find it faster.";
 
+//Home
+"home.recommendation.readTime" = "%@ min read";
+
 // Tags
 "tags.upsell.tagStoriesFasterThanEver" = "Tag stories faster than ever—get your most recent tags with Pocket Premium.";
 "tags.upsell.getPocketPremium" = "Get Pocket Premium";

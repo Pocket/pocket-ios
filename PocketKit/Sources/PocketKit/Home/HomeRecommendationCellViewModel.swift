@@ -3,6 +3,7 @@ import Sync
 import Combine
 import Textile
 import CoreData
+import Localization
 
 class HomeRecommendationCellViewModel {
     let recommendation: Recommendation
@@ -60,7 +61,7 @@ extension HomeRecommendationCellViewModel: RecommendationCellViewModel {
             return nil
         }
 
-        return "\(timeToRead) min read"
+        return Localization.Home.Recommendation.readTime(timeToRead)
     }
 }
 
