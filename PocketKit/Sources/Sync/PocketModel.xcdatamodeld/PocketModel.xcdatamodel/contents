@@ -130,7 +130,7 @@
             </uniquenessConstraint>
         </uniquenessConstraints>
     </entity>
-    <entity name="Tag" representedClassName="Tag" syncable="YES" codeGenerationType="class">
+    <entity name="Tag" representedClassName="Tag" syncable="YES">
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="remoteID" optional="YES" attributeType="String"/>
         <relationship name="savedItems" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="SavedItem" inverseName="tags" inverseEntity="SavedItem"/>
