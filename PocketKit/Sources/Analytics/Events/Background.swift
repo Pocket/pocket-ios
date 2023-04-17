@@ -34,7 +34,7 @@ public struct Background: Event, CustomStringConvertible {
             "id": NSString(string: self.description),
             "source": NSString(string: self.source.rawValue)
         ])
-        extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
+//        extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
 
         return base
     }
@@ -57,7 +57,7 @@ extension Background {
             case .succeeded:
                 return "ios.migration.to8.succeeded"
             case UserMigrationState.failed(let error):
-                if error == nil  {
+                if error == nil {
                     return "ios.migration.to8.failed"
                 }
                 return "ios.migration.to8.failedWithError"
