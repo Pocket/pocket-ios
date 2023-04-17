@@ -36,7 +36,7 @@ class SpaceTests: XCTestCase {
         let space = subject()
         let tag: Tag = Tag(context: space.backgroundContext)
         tag.name = "tag 0"
-        tag.remoteID = tag.name?.uppercased()
+        tag.remoteID = tag.name.uppercased()
         _ = space.buildSavedItem(tags: [tag])
         _ = createItemsWithTags(2, isArchived: true)
 
@@ -48,7 +48,7 @@ class SpaceTests: XCTestCase {
         let space = subject()
         let tag1: Tag = Tag(context: space.backgroundContext)
         tag1.name = "tag 1"
-        tag1.remoteID = tag1.name?.uppercased()
+        tag1.remoteID = tag1.name.uppercased()
 
         let fetchedTag1 = space.fetchOrCreateTag(byName: "tag 1")
         let fetchedTag2 = space.fetchOrCreateTag(byName: "tag 2")
