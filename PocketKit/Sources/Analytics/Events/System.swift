@@ -7,15 +7,15 @@ import Foundation
 /**
  * Event created by a background task
  */
-public struct Background: Event, CustomStringConvertible {
-    public static let schema = "iglu:com.pocket/content_open/jsonschema/1-0-0" // TODO
+public struct System: Event, CustomStringConvertible {
+    public static let schema = "iglu:com.pocket/system_event/jsonschema/1-0-0"
 
-    let type: Background.BackgroundType
+    let type: System.SystemEventType
     let source: MigrationSource
 
     let extraEntities: [Entity]
 
-    public init(type: BackgroundType, source: MigrationSource, extraEntities: [Entity] = []) {
+    public init(type: SystemEventType, source: MigrationSource, extraEntities: [Entity] = []) {
         self.type = type
         self.source = source
         self.extraEntities = extraEntities
@@ -29,19 +29,16 @@ public struct Background: Event, CustomStringConvertible {
     }
 
     public func toSelfDescribing() -> SelfDescribing {
-        let base = SelfDescribing(schema: Background.schema, payload: [
-            "type": NSString(string: "\(self.type)"),
-            "id": NSString(string: self.description),
-            "source": NSString(string: self.source.rawValue)
+        let base = SelfDescribing(schema: System.schema, payload: [
+            "identifier": NSString(string: self.description),
         ])
-//        extraEntities.forEach { base.contexts.add($0.toSelfDescribingJson()) }
 
         return base
     }
 }
 
-extension Background {
-    public enum BackgroundType {
+extension System {
+    public enum SystemEventType {
         case userMigration(UserMigrationState)
     }
 
