@@ -11,8 +11,8 @@ extension Tag {
         return NSFetchRequest<Tag>(entityName: "Tag")
     }
 
-    @NSManaged public var name: String?
-    @NSManaged public var remoteID: String?
+    @NSManaged public var name: String
+    @NSManaged public var remoteID: String
     @NSManaged public var savedItems: NSOrderedSet?
 
 }
