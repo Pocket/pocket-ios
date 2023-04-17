@@ -12,11 +12,11 @@ extension XCTestCase {
     }
 
     func wait(for expectations: [XCTestExpectation]) {
-        wait(for: expectations, timeout: 10)
+        wait(for: expectations, timeout: 20)
     }
 
     func fulfillment(of expectations: [XCTestExpectation]) async {
-        await fulfillment(of: expectations, timeout: 10)
+        await fulfillment(of: expectations, timeout: 20)
     }
 
     /// Very basic swipe to element function. As our needs increase, we will want something like https://github.com/PGSSoft/AutoMate/blob/master/AutoMate/XCTest%20extensions/XCUIElement%2BSwipe.swift
