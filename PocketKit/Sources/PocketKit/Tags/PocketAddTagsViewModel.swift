@@ -99,7 +99,7 @@ class PocketAddTagsViewModel: AddTagsViewModel {
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
         // TODO: Remove ! when we have non-null on tagName
-        otherTags = source.retrieveTags(excluding: tags)?.compactMap({ .tag($0.name!) }).sorted() ?? []
+        otherTags = source.retrieveTags(excluding: tags)?.compactMap({ .tag($0.name) }).sorted() ?? []
         trackAllTagsImpression()
     }
 

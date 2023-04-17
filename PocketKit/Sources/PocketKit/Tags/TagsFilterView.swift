@@ -43,7 +43,7 @@ struct TagsFilterView: View {
                     TagsSectionView(
                         showRecentTags: !isEditing && !viewModel.recentTags.isEmpty,
                         recentTags: viewModel.recentTags,
-                        allTags: tags.map { .tag($0.name!) },
+                        allTags: tags.map { .tag($0.name) },
                         tagAction: tagAction
                     ).disabled(isEditing)
                 }

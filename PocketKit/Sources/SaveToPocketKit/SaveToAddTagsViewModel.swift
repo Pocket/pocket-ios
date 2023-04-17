@@ -73,7 +73,7 @@ class SaveToAddTagsViewModel: AddTagsViewModel {
     /// Fetch all tags associated with an item to show user
     func allOtherTags() {
         // TODO: Remove ! when we have non-null on tagName
-        otherTags = retrieveAction(tags)?.map { .tag($0.name!) } ?? []
+        otherTags = retrieveAction(tags)?.map { .tag($0.name) } ?? []
         trackAllTagsImpression()
     }
 
