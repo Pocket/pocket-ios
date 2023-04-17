@@ -113,12 +113,12 @@ extension RefreshCoordinator {
     /// Submit the request to be scheduled anytime after the given interval
     private func submitRequest() {
         guard let refreshInterval else {
-            Log.info("No refresh interval set by developer, not scheduling a refresh for \(type(of: self))")
+            Log.info("No refresh interval set by developer, not scheduling a refresh for \(self.taskID)")
             return
         }
 
         guard appSession.currentSession != nil else {
-            Log.warning("No user session, so not scheduling a refresh \(type(of: self))")
+            Log.warning("No user session, so not scheduling a refresh \(self.taskID)")
             return
         }
 
@@ -134,7 +134,7 @@ extension RefreshCoordinator {
             request.earliestBeginDate = Date().addingTimeInterval(refreshInterval)
             try taskScheduler.submit(request)
         } catch {
-            Log.warning("Could not submit background task request for \(type(of: self))")
+            Log.warning("Could not submit background task request for \(self.taskID)")
             Log.capture(error: error)
         }
     }
@@ -158,6 +158,8 @@ extension RefreshCoordinator {
         task.expirationHandler = {
             task.setTaskCompleted(success: false)
         }
+
+        Log.breadcrumb(category: "background", level: .debug, message: "Starting background refresh call for \(self.taskID)")
 
         /// Call the refresh function and then upon sucess set the task completed
         self.refreshData {
