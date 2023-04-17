@@ -239,7 +239,7 @@ extension Space {
     @discardableResult
     func createRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil
+        item: Item
     ) throws -> Recommendation {
         try backgroundContext.performAndWait {
             let recommendation = buildRecommendation(
@@ -255,7 +255,7 @@ extension Space {
     @discardableResult
     func buildRecommendation(
         remoteID: String = "slate-1-rec-1",
-        item: Item? = nil,
+        item: Item,
         imageURL: URL? = nil,
         title: String? = nil,
         excerpt: String?  = nil
