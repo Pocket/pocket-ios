@@ -13,12 +13,9 @@ public struct System: Event, CustomStringConvertible {
     let type: System.SystemEventType
     let source: MigrationSource
 
-    let extraEntities: [Entity]
-
-    public init(type: SystemEventType, source: MigrationSource, extraEntities: [Entity] = []) {
+    public init(type: SystemEventType, source: MigrationSource) {
         self.type = type
         self.source = source
-        self.extraEntities = extraEntities
     }
 
     public var description: String {
@@ -31,6 +28,7 @@ public struct System: Event, CustomStringConvertible {
     public func toSelfDescribing() -> SelfDescribing {
         let base = SelfDescribing(schema: System.schema, payload: [
             "identifier": NSString(string: self.description),
+            "value": NSString()
         ])
 
         return base
