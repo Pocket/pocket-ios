@@ -26,7 +26,6 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     @Published var selectedTag: TagType?
-    @Published var refreshView: Bool? = false
 
     init(source: Source, tracker: Tracker, userDefaults: UserDefaults, user: User, selectAllAction: @escaping () -> Void?) {
         self.source = source
@@ -50,22 +49,24 @@ class TagsFilterViewModel: ObservableObject {
     }
 
     func delete(tags: [String]) {
-        let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Context = UIContext.button(identifier: .tagsDelete)
-        tracker.track(event: event, [contexts])
+        trackTagsDelete()
         tags.forEach { tag in
             guard let tag: Tag = fetchedTags.filter({ $0.name == tag }).first else { return }
             source.deleteTag(tag: tag)
         }
     }
 
-    func rename(from oldName: String, to newName: String) {
-        let event = SnowplowEngagement(type: .general, value: nil)
-        let contexts: Context = UIContext.button(identifier: .tagsSaveChanges)
-        tracker.track(event: event, [contexts])
-        guard let tag: Tag = fetchedTags.filter({ $0.name == oldName }).first else { return }
+    func rename(from oldName: String?, to newName: String, completion: () -> Void) {
+        guard let oldName else {
+            Log.capture(message: "Unable to rename tag")
+            return
+        }
+        let newName = newName.lowercased()
+        guard let tag: Tag = fetchedTags.filter({ $0.name == oldName }).first,
+              !fetchedTags.compactMap({ $0.name }).contains(newName) else { return }
         source.renameTag(from: tag, to: newName)
-        refreshView = true
+        trackTagRename()
+        completion()
     }
 }
 
@@ -80,5 +81,13 @@ extension TagsFilterViewModel {
         case .tag:
             tracker.track(event: Events.Tags.selectTagToFilter())
         }
+    }
+
+    func trackTagRename() {
+        tracker.track(event: Events.Tags.renameTag())
+    }
+
+    func trackTagsDelete() {
+        tracker.track(event: Events.Tags.deleteTags())
     }
 }
